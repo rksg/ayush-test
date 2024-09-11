@@ -263,9 +263,13 @@ export function MspCustomers () {
       {
         title: $t({ defaultMessage: '{adminCountHeader}' }, { adminCountHeader:
             mspUtils.transformAdminCountHeader(tenantType) }),
-        dataIndex: 'mspAdminCount',
+        dataIndex: tenantType === AccountType.MSP_INTEGRATOR ? 'mspIntegratorAdminCount'
+          : (tenantType === AccountType.MSP_INSTALLER ? 'mspInstallerAdminCount'
+            : 'mspAdminCount' ),
         align: 'center',
-        key: 'mspAdminCount',
+        key: tenantType === AccountType.MSP_INTEGRATOR ? 'mspIntegratorAdminCount'
+          : (tenantType === AccountType.MSP_INSTALLER ? 'mspInstallerAdminCount'
+            : 'mspAdminCount' ),
         sorter: true,
         width: 140,
         onCell: (data) => {
