@@ -67,7 +67,7 @@ function ScheduleDate ({ disabled = false }: { disabled?: boolean }) {
 
   return <Form.Item
     name={dateName}
-    label={<FormattedMessage defaultMessage='Start Date' />}
+    label={<FormattedMessage defaultMessage='Date' />}
     rules={[{ required: !disabled, message: $t({ defaultMessage: 'Please select date' }) }]}
     children={
       <DatePicker
@@ -88,9 +88,7 @@ function ScheduleTime ({ disabled = false }: { disabled?: boolean }) {
   const { intent } = useIntentContext()
   const showDate = isDateVisible(intent.status as Statuses)
 
-  const label = showDate
-    ? <FormattedMessage defaultMessage='Start Time' />
-    : <FormattedMessage defaultMessage='Schedule Time' />
+  const label = <FormattedMessage defaultMessage='Time' />
 
   const form = Form.useFormInstance<FormValues>()
   const date = (Form.useWatch(dateName) ?? form.getFieldValue(dateName)) as Moment | undefined
