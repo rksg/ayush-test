@@ -17,6 +17,7 @@ import { KpiCard }             from '../common/KpiCard'
 import { StatusTrail }         from '../common/StatusTrail'
 import { codes }               from '../config'
 import { useIntentContext }    from '../IntentContext'
+import { getStatusTooltip }    from '../services'
 import { getGraphKPIs }        from '../useIntentDetailsQuery'
 
 import { ConfigurationCard }   from './ConfigurationCard'
@@ -31,30 +32,32 @@ export function createIntentAIDetails (
     const { $t } = useIntl()
     const { intent, kpis, configuration } = useIntentContext()
     const valuesText = useValuesText()
+    const { code, path, sliceValue, metadata, updatedAt, displayStatus } = intent
 
     const fields = [
       {
         label: $t({ defaultMessage: 'Intent' }),
-        children: $t(codes[intent.code].intent)
+        children: $t(codes[code].intent)
       },
       {
         label: $t({ defaultMessage: 'Category' }),
-        children: $t(codes[intent.code].category)
+        children: $t(codes[code].category)
       },
       {
         label: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
-        children: intent.sliceValue,
-        tooltip: formattedPath(intent.path, intent.sliceValue)
+        children: sliceValue,
+        tooltip: formattedPath(path, sliceValue),
+        tooltipPlacement: 'right' as TooltipPlacement
       },
       {
         label: $t({ defaultMessage: 'Status' }),
-        children: getIntentStatus(intent.displayStatus),
-        tooltip: getIntentStatus(intent.displayStatus, true),
+        children: getIntentStatus(displayStatus),
+        tooltip: getStatusTooltip(displayStatus, sliceValue, { ...metadata, updatedAt }),
         tooltipPlacement: 'right' as TooltipPlacement
       },
       {
         label: $t({ defaultMessage: 'Date' }),
-        children: formatter(DateFormatEnum.DateTimeFormat)(moment(intent.updatedAt))
+        children: formatter(DateFormatEnum.DateTimeFormat)(moment(updatedAt))
       },
       ...options.showImpactedAPs
         ? [ { label: $t({ defaultMessage: 'AP Impact Count' }), children: <ImpactedAPCount /> } ]

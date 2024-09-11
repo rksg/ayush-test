@@ -5,10 +5,8 @@ import { getIntl } from '@acx-ui/utils'
 import { states }        from '../config'
 import { DisplayStates } from '../states'
 
-export function getIntentStatus (displayStatus: DisplayStates, tooltip?: boolean) {
+export function getIntentStatus (displayStatus: DisplayStates) {
   const { $t } = getIntl()
-  const unknownText = { text: defineMessage({ defaultMessage: 'Unknown' }) }
-  const unknownTooltip = { tooltip: defineMessage({ defaultMessage: 'Unknown' }) }
-  const state = states[displayStatus] ?? (tooltip ? unknownTooltip : unknownText)
-  return tooltip ? $t(state.tooltip) : $t(state.text)
+  const state = states[displayStatus] ?? { text: defineMessage({ defaultMessage: 'Unknown' }) }
+  return $t(state.text)
 }
