@@ -10,7 +10,6 @@ import {
   useGetBetaStatusQuery,
   useGetUserProfileQuery,
   useFeatureFlagStatesQuery,
-  useGetPrivilegeGroupsQuery,
   useGetVenuesListQuery
 } from './services'
 import { UserProfile }                         from './types'
@@ -28,6 +27,7 @@ export interface UserProfileContextProps {
   abacEnabled?: boolean
   isCustomRole?: boolean
   hasAllVenues?: boolean
+  venuesList?: string[]
 }
 
 const isPrimeAdmin = () => hasRoles(Role.PRIME_ADMIN)
@@ -56,8 +56,6 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
   const ptenantRbacEnable = featureFlagStates?.[ptenantRbacFF] ?? false
   abacEnabled = featureFlagStates?.[abacFF] ?? false
 
-  const { data: pgList } = useGetPrivilegeGroupsQuery({}, { skip: !abacEnabled })
-
   const { data: beta } = useGetBetaStatusQuery(
     { params: { tenantId }, enableRbac: ptenantRbacEnable },
     { skip: !Boolean(profile) })
@@ -71,9 +69,8 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
   const allowedOperations = [] as string[]
 
   const getHasAllVenues = () => {
-    if(pgList) {
-      const pg = pgList.find(item => item.name === profile?.role)
-      return pg?.allVenues
+    if(abacEnabled && profile?.scopes?.includes('venue' as never)) {
+      return false
     }
     return true
   }
@@ -127,7 +124,8 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       betaEnabled,
       abacEnabled,
       isCustomRole,
-      hasAllVenues
+      hasAllVenues,
+      venuesList
     }}
     children={props.children}
   />
