@@ -287,7 +287,7 @@ export function IntentAITable (
       render: (_, row) => formatter(DateFormatEnum.DateTimeFormat)(row.updatedAt)
     }
   ]
-
+  console.log(selectedFilters)
   return (
     <Loader states={[queryResults]}>
       <UI.IntentAITableStyle/>

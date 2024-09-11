@@ -14,13 +14,14 @@ import { RadioTypeEnum }                                                  from '
 import { useNavigate, useSearchParams, useTenantLink }                    from '@acx-ui/react-router-dom'
 import { Filters, fixedEncodeURIComponent, getIntl, useEncodedParameter } from '@acx-ui/utils'
 
-import { IntentListItem }       from './config'
+import { groupedStates, IntentListItem } from './config'
 import {
   TransitionMutationResponse,
   useLazyIntentWlansQuery,
   useTransitionIntentMutation
 } from './services'
-import * as UI          from './styledComponents'
+import { DisplayStates } from './states'
+import * as UI           from './styledComponents'
 import {
   Actions,
   TransitionIntentItem,
@@ -149,22 +150,52 @@ export function useIntentAIActions () {
       link: {
         text: 'View',
         onClick: () => {
-          const { status, statusReason } = getTransitionStatus(action, data[0])
-          const statusLabel = statusReason ? `${status}-${statusReason}` : status
+          const statusLabelList = new Set()
+          data.forEach((item) => {
+            const { status, statusReason } = getTransitionStatus(action, item)
+            let statusLabel = statusReason ? `${status}-${statusReason}` : status
+            switch (statusLabel) {
+              case DisplayStates.pausedFromActive.toString():
+              case DisplayStates.pausedFromInactive.toString():
+                statusLabel=`${DisplayStates.pausedFromActive}+${DisplayStates.pausedFromInactive}`
+                break
+              case DisplayStates.applyScheduled.toString():
+              case DisplayStates.scheduledOneClick.toString():
+                statusLabel=`${DisplayStates.applyScheduled}+${DisplayStates.scheduledOneClick}`
+                break
+              default:
+            }
+            statusLabelList.add(statusLabel)
+          })
+          // const groupedState = groupedStates.find(
+          //   ({ states }) => states.includes(statusLabel as string))
+          // console.log(groupedState)
+          // if (groupedState) {
+          //   console.log(groupedState.group.defaultMessage.valueOf())
+          //   switch(groupedState.group.defaultMessage) {
+          //     case 'Scheduled':
+          //       statusLabel=`${DisplayStates.applyScheduled}+${DisplayStates.scheduledOneClick}`
+          //       break
+          //     case 'Paused':
+          //       console.log('here')
+          //       statusLabel=`${DisplayStates.pausedFromActive}+${DisplayStates.pausedFromInactive}`
+          //   }
+          // }
+
+          console.log(statusLabelList)
           const currentParams = JSON.parse(
             decodeURIComponent(search.get('intentTableFilters') as string))
           console.log(currentParams)
           const newParams = {
             ...currentParams,
-            statusLabel: Array.from([statusLabel])
+            statusLabel: Array.from(statusLabelList)
           }
           console.log(newParams)
-          const newPath = fixedEncodeURIComponent(JSON.stringify(newParams))
-          console.log(newPath)
+          // const newPath = fixedEncodeURIComponent(JSON.stringify(newParams))
           search.set('intentTableFilters', fixedEncodeURIComponent(JSON.stringify(newParams)))
           setSearch(search, { replace: true })
           // navigate(`${getNewFilterLink(action, data)}`)
-          console.log(basePath)
+          // console.log(basePath)
           // navigate({
           //   ...basePath,
           //   search: `${basePath.search}${newPath}`
