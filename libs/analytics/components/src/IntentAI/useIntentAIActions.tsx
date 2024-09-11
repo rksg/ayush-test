@@ -11,7 +11,7 @@ import {
   useLazyVenueRadioActiveNetworksQuery
 } from '@acx-ui/rc/services'
 import { RadioTypeEnum }                                                  from '@acx-ui/rc/utils'
-import { useNavigate, useSearchParams }                                   from '@acx-ui/react-router-dom'
+import { useNavigate, useSearchParams, useTenantLink }                    from '@acx-ui/react-router-dom'
 import { Filters, fixedEncodeURIComponent, getIntl, useEncodedParameter } from '@acx-ui/utils'
 
 import { IntentListItem }       from './config'
@@ -122,34 +122,15 @@ const getR1WlanPayload = (venueId:string, code:string) => ({
 
 export function useIntentAIActions () {
   const { $t } = useIntl()
-  // const basePath = useTenantLink('/analytics/intentAI')
+  const basePath = useTenantLink('/analytics/intentAI')
+  const navigate = useNavigate()
   const [recommendationWlans] = useLazyIntentWlansQuery()
   const [venueRadioActiveNetworks] = useLazyVenueRadioActiveNetworksQuery()
   const [transitionIntent] = useTransitionIntentMutation()
   const initialDate = useRef(getDefaultTime())
   const isMlisa = Boolean(get('IS_MLISA_SA'))
   const [search, setSearch] = useSearchParams()
-  // const intentTableFilters = useEncodedParameter<Filters>('intentTableFilters')
 
-  // const navigate = useNavigate()
-
-  // const getNewFilterLink = (action: Actions, data: TransitionIntentItem[]) => {
-  //   const { status } = getTransitionStatus(action, data[0])
-  //   const currentParams = JSON.parse(decodeURIComponent(search.get('intentTableFilters') as string))
-  //   console.log(currentParams)
-  //   const newParams = {
-  //     ...currentParams,
-  //     statusLabel: Array.from([status])
-  //   }
-  //   handleFilterChange(newParams)
-  //   console.log(newParams)
-  //   console.log(fixedEncodeURIComponent(JSON.stringify(newParams)))
-  //   search.set('intentTableFilters', fixedEncodeURIComponent(JSON.stringify(newParams)))
-  //   console.log(search)
-  //   console.log(search.toString())
-  //   return search.toString()
-  // // return `${window.location.pathname}?${params.toString()}`
-  // }
 
   const showSuccessToast = (action: Actions, data: TransitionIntentItem[]) => {
 
@@ -178,9 +159,16 @@ export function useIntentAIActions () {
             statusLabel: Array.from([statusLabel])
           }
           console.log(newParams)
+          const newPath = fixedEncodeURIComponent(JSON.stringify(newParams))
+          console.log(newPath)
           search.set('intentTableFilters', fixedEncodeURIComponent(JSON.stringify(newParams)))
           setSearch(search, { replace: true })
           // navigate(`${getNewFilterLink(action, data)}`)
+          console.log(basePath)
+          // navigate({
+          //   ...basePath,
+          //   search: `${basePath.search}${newPath}`
+          // })
         }
       }
     })
