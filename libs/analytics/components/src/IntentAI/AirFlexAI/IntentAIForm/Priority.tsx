@@ -9,7 +9,7 @@ import { StepsForm } from '@acx-ui/components'
 import { TradeOff }         from '../../../TradeOff'
 import { useIntentContext } from '../../IntentContext'
 
-// import * as SideNotes from './SideNotes'
+import * as SideNotes from './SideNotes'
 
 const name = ['preferences', 'enable'] as NamePath
 const label = defineMessage({ defaultMessage: 'Intent Priority' })
@@ -63,7 +63,7 @@ export function Priority () {
       />
     </Col>
     <Col span={7} offset={2}>
-      {/* <SideNotes.Priority /> */}
+      <SideNotes.Priority />
     </Col>
   </Row>
 }
