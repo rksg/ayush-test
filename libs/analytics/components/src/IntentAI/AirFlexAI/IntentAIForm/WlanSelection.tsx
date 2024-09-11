@@ -3,23 +3,16 @@ import { useState, useEffect } from 'react'
 import { Form }                   from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { Loader, Select }                   from '@acx-ui/components'
-import { get }                              from '@acx-ui/config'
-import { useVenueRadioActiveNetworksQuery } from '@acx-ui/rc/services'
-import { RadioTypeEnum }                    from '@acx-ui/rc/utils'
+import { Loader, Select, useStepFormContext } from '@acx-ui/components'
+import { get }                                from '@acx-ui/config'
+import { useVenueRadioActiveNetworksQuery }   from '@acx-ui/rc/services'
+import { RadioTypeEnum }                      from '@acx-ui/rc/utils'
 
-// eslint-disable-next-line import/order
-import {
-  useRecommendationWlansQuery
-} from '../../../Recommendations/services'
+import { useIntentContext }    from '../../IntentContext'
+import { useIntentWlansQuery } from '../../services'
+import { Intent }              from '../../useIntentDetailsQuery'
 
-// TODO
-// import {
-//   useIntentWlansQuery,
-// } from '../../services'
-import { useIntentContext } from '../../IntentContext'
-
-type Wlan = {
+export type Wlan = {
   name: string
   ssid: string
   id: string
@@ -30,17 +23,22 @@ const codeToRadio: Record<string, RadioTypeEnum> = {
   'c-probeflex-5g': RadioTypeEnum._5_GHz,
   'c-probeflex-6g': RadioTypeEnum._6_GHz
 }
-export default function WlanSelection () {
+export default function WlanSelection ({ disabled }: { disabled: boolean }) {
   const isMlisa = Boolean(get('IS_MLISA_SA'))
   const { intent } = useIntentContext()
-  const { id, code, metadata, path } = intent
+  const { form } = useStepFormContext<Intent>()
+  const { root, code, metadata, sliceId } = intent
   const savedWlans = metadata.wlans
   const { $t } = useIntl()
   const [wlans, setWlans] = useState<Array<Wlan>>([])
   const selected = wlans.filter(wlan => !wlan.excluded)
   const selectedWlans = selected.length ? selected : wlans
-  const venueId = path?.filter(({ type }) => type === 'zone')?.[0].name
-  const raIQuery = useRecommendationWlansQuery({ id }, { skip: !isMlisa })
+  form.setFieldValue(
+    'wlans',
+    selectedWlans.map(wlan => ({ name: wlan.name, ssid: wlan.ssid, id: wlan.id }))
+  )
+  const venueId = sliceId
+  const raiQuery = useIntentWlansQuery({ sliceId, root, code }, { skip: !isMlisa || disabled })
   let available: Wlan[] | undefined
   const r1Networks = useVenueRadioActiveNetworksQuery({
     params: { venueId },
@@ -53,17 +51,16 @@ export default function WlanSelection () {
       sortOrder: 'ASC',
       pageSize: 10_000
     }
-  }, { skip: isMlisa })
-  const wlansQuery = isMlisa ? raIQuery : r1Networks
+  }, { skip: isMlisa || disabled })
+  const wlansQuery = isMlisa ? raiQuery : r1Networks
   useEffect(() => {
-
     if (isMlisa && wlansQuery.data) {
       available = wlansQuery.data.map(wlan => ({ ...wlan, id: wlan.name })) // RA does not have ID
-    } else if (!isMlisa && r1Networks.data) {
-      available = r1Networks.data
+    } else if (!isMlisa && wlansQuery.data) {
+      available = wlansQuery.data as typeof r1Networks.data
     }
-    if (available) {
-      if (savedWlans) {
+    if (available?.length) {
+      if (savedWlans?.length) {
         const saved = savedWlans.map(({ name }) => name)
         setWlans(available.map(wlan => ({
           ...wlan,
@@ -75,32 +72,45 @@ export default function WlanSelection () {
     }
   }, [r1Networks.data, code, isMlisa, savedWlans, venueId, wlansQuery])
   return<Loader states={[wlansQuery]} style={{ height: '72px' }}>
+    <Form.Item hidden name='wlans' children={<></>}></Form.Item>
     <Form.Item
       label={$t({ defaultMessage: 'Networks' })}
-      style={{ margin: '0 0 0 10px' }}
+      style={{
+        margin: '0 0 0 0',
+        fontWeight: 'normal',
+        color: 'var(--acx-neutrals-60)',
+        fontSize: 'var(--acx-body-4-font-size)'
+      }}
     >
       <Select
+        disabled={disabled}
         mode='multiple'
         maxTagCount='responsive'
         showArrow
         showSearch={false}
-        style={{ width: '260px', margin: '0 auto 10px auto' }}
-        onChange={setWlans}
-        placeholder={$t({ defaultMessage: 'Select networks' })}
+        style={{ width: '100%', margin: '0 auto 10px auto' }}
+        onChange={(ids: string[]) => {
+          setWlans(
+            wlans.map(wlan => ({ ...wlan, excluded: !ids.includes(wlan.id) }))
+          )
+        }}
+        placeholder={$t({ defaultMessage: 'Select Networks' })}
         value={selectedWlans.map(wlan => wlan.id)}
-        maxTagPlaceholder={() =>
-          <div title={selectedWlans.map(wlan => wlan.name).join(', ')}>
-            {$t({
-              defaultMessage: `{count} {count, plural,
+        maxTagPlaceholder={
+        // istanbul ignore next
+          () =>
+            <div title={selectedWlans.map(wlan => wlan.name).join(', ')}>
+              {$t({
+                defaultMessage: `{count} {count, plural,
               one {{singular}}
               other {{plural}}
             } selected`
-            }, {
-              count: selectedWlans.length,
-              singular: $t(defineMessage({ defaultMessage: 'network' })),
-              plural: $t(defineMessage({ defaultMessage: 'networks' }))
-            })}
-          </div>
+              }, {
+                count: selectedWlans.length,
+                singular: $t(defineMessage({ defaultMessage: 'network' })),
+                plural: $t(defineMessage({ defaultMessage: 'networks' }))
+              })}
+            </div>
         }
         children={wlans
           ?.map(({ id, name }: { id: string, name: string }) =>

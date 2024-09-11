@@ -1,37 +1,57 @@
+import React from 'react'
+
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { StepsForm } from '@acx-ui/components'
 
-import { IntentWizardHeader } from '../../common/IntentWizardHeader'
-import { useIntentContext }   from '../../IntentContext'
+import { IntentWizardHeader }                                                               from '../../common/IntentWizardHeader'
+import { getScheduledAt }                                                                   from '../../common/ScheduleTiming'
+import { createUseIntentTransition, FormValues, IntentTransitionPayload, useInitialValues } from '../../useIntentTransition'
+import { Actions, getTransitionStatus, TransitionIntentItem }                               from '../../utils'
 
 import { Introduction } from './Introduction'
 import { Priority }     from './Priority'
 import { Settings }     from './Settings'
+import { Summary }      from './Summary'
 
-export function IntentAIForm () {
-  const { intent } = useIntentContext()
-  const { $t } = useIntl()
-
-  //const queryResult = useIntentAICRRMQuery()
-  //const crrmData = queryResult.data!
-
-
-  const defaultValue = {
-    preferences: {
-      crrmFullOptimization: true
+type FormVal = { enable: boolean }
+function getFormDTO (values: FormValues<FormVal>): IntentTransitionPayload {
+  const isEnabled = values.preferences?.enable
+  const { status, statusReason } = getTransitionStatus(
+    isEnabled ? Actions.Optimize : Actions.Pause,
+    values as TransitionIntentItem
+  )
+  const dto = {
+    id: values.id,
+    status,
+    statusReason
+  } as IntentTransitionPayload
+  if (isEnabled) {
+    dto.metadata = {
+      ..._.pick(values, ['wlans']),
+      scheduledAt: getScheduledAt(values).utc().toISOString()
     }
   }
+  return dto
+}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const useIntentTransition = createUseIntentTransition<FormVal>(getFormDTO as any)
+export const IntentAIForm: React.FC = () => {
+  const { $t } = useIntl()
+  const { submit } = useIntentTransition()
+  // always enable = true, because only new, scheduled, active, applyscheduled can open wizard
+  const initialValues = { ...useInitialValues(), preferences: { enable: true } }
 
   return (<>
     <IntentWizardHeader />
 
     <StepsForm
+      onFinish={async (values) => { submit(values) }}
       buttonLabel={{
         submit: $t({ defaultMessage: 'Apply' })
       }}
-      initialValues={_.merge(defaultValue, intent)}
+      initialValues={initialValues}
     >
       <StepsForm.StepForm
         title={$t({ defaultMessage: 'Introduction' })}
@@ -45,14 +65,10 @@ export function IntentAIForm () {
         title={$t({ defaultMessage: 'Settings' })}
         children={<Settings />}
       />
-      {/* <StepsForm.StepForm
+      <StepsForm.StepForm
         title={$t({ defaultMessage: 'Summary' })}
-        children={<Summary
-          summaryUrlBefore={summaryUrlBefore}
-          summaryUrlAfter={summaryUrlAfter}
-          crrmData={crrmData}
-        />}
-      /> */}
+        children={<Summary />}
+      />
     </StepsForm>
   </>)
 }
