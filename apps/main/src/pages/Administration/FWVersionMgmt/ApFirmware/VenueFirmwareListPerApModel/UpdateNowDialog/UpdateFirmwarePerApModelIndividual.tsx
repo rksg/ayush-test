@@ -35,7 +35,8 @@ export function UpdateFirmwarePerApModelIndividual (props: UpdateFirmwarePerApMo
     <Space>
       <div style={{ width: labelSize === 'small' ? 50 : 90 }}>{apModel}</div>
       {versionOptions.length > 0
-        ? <Select onChange={onSelectedVersionChange} value={selectedVersion} style={{ width: 400 }}>
+        // eslint-disable-next-line max-len
+        ? <Select onChange={onSelectedVersionChange} value={selectedVersion} style={{ width: 400 }} showSearch>
           {versionOptions.map(option => <Option key={option.key}>{option.label}</Option>)}
           <Option key={''}>{emptyOptionLabel}</Option>
         </Select>
