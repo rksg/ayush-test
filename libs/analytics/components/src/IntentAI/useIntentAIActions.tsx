@@ -169,7 +169,7 @@ export function useIntentAIActions () {
         text: 'View',
         onClick: () => {
           const { status, statusReason } = getTransitionStatus(action, data[0])
-          const statusLabel = `${status}-${statusReason}`
+          const statusLabel = statusReason ? `${status}-${statusReason}` : status
           const currentParams = JSON.parse(
             decodeURIComponent(search.get('intentTableFilters') as string))
           console.log(currentParams)
