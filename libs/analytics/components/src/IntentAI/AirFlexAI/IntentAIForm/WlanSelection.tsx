@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 
-import { Form }                   from 'antd'
-import { defineMessage, useIntl } from 'react-intl'
+import { Form }    from 'antd'
+import { useIntl } from 'react-intl'
 
 import { Loader, Select, useStepFormContext } from '@acx-ui/components'
 import { get }                                from '@acx-ui/config'
@@ -102,13 +102,11 @@ export default function WlanSelection ({ disabled }: { disabled: boolean }) {
             <div title={selectedWlans.map(wlan => wlan.name).join(', ')}>
               {$t({
                 defaultMessage: `{count} {count, plural,
-              one {{singular}}
-              other {{plural}}
+              one {network}
+              other {networks}
             } selected`
               }, {
-                count: selectedWlans.length,
-                singular: $t(defineMessage({ defaultMessage: 'network' })),
-                plural: $t(defineMessage({ defaultMessage: 'networks' }))
+                count: selectedWlans.length
               })}
             </div>
         }
