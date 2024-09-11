@@ -3,6 +3,8 @@ import { MessageDescriptor, useIntl }     from 'react-intl'
 
 import { DataPromptAction, DataPromptVariable, GenericActionPreviewProps } from '@acx-ui/rc/utils'
 
+import PhoneInput from '../../PhoneInput'
+
 import { ContentPreview } from './ContentPreview'
 
 
@@ -28,10 +30,24 @@ export function DataPromptPreview (props: GenericActionPreviewProps<DataPromptAc
       <Space direction='vertical' align='center'>
         <Text>{data?.messageHtml}</Text>
         <Form layout='vertical' style={{ width: '250px' }}>
-          {data?.variables?.map((formField:DataPromptVariable) =>
-            <Form.Item key={getFormFieldLabel(formField)} label={getFormFieldLabel(formField)}>
-              <Input></Input>
-            </Form.Item>)}
+          {data?.variables?.map((formField:DataPromptVariable) => {
+            if(formField.type === 'PHONE') {
+              return <Form.Item
+                style={{ marginBottom: '0' }}
+                key={getFormFieldLabel(formField)}
+                label={getFormFieldLabel(formField)}
+                children={
+                  <PhoneInput
+                    name={getFormFieldLabel(formField)}
+                    onTop={false}
+                  />}
+              />
+            } else {
+              return <Form.Item key={getFormFieldLabel(formField)} label={getFormFieldLabel(formField)}>
+                <Input></Input>
+              </Form.Item>
+            }})
+          }
         </Form>
       </Space>
     }

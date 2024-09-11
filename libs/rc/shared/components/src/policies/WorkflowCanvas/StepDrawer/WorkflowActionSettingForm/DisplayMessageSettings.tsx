@@ -22,7 +22,7 @@ export function DisplayMessageSetting () {
         { validator: (_, value) => whitespaceOnlyRegExp(value) }
       ]}
     >
-      <Input />
+      <Input placeholder={$t({ defaultMessage: 'Type your title here...' })}/>
     </Form.Item>
 
     <Form.Item
@@ -35,7 +35,7 @@ export function DisplayMessageSetting () {
         { validator: (_, value) => whitespaceOnlyRegExp(value) }
       ]}
     >
-      <Input.TextArea rows={8} />
+      <Input.TextArea rows={8} placeholder={$t({ defaultMessage: 'Type your message here...' })}/>
     </Form.Item>
 
     <Form.Item

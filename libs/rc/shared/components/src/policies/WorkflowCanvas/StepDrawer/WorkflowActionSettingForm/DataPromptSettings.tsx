@@ -43,6 +43,7 @@ function DataPromptField () {
 
     return Promise.resolve()
   }
+
   return (
     <Form.List name={'variables'}>
       {(variables, { add, remove }) => {
@@ -116,8 +117,7 @@ export function DataPromptSettings () {
           name={'displayTitle'}
           valuePropName={'checked'}
         >
-          <Switch data-testid={'switch-title'}
-            onChange={setShowTitle}/>
+          <Switch data-testid={'switch-title'} onChange={setShowTitle}/>
         </Form.Item>
       </FieldLabel>
       { showTitle &&
@@ -130,7 +130,7 @@ export function DataPromptSettings () {
             { validator: (_, value) => whitespaceOnlyRegExp(value) }
           ]}
         >
-          <Input data-testid={'title'}/>
+          <Input placeholder={$t({ defaultMessage: 'Type your title here...' })} data-testid={'title'}/>
         </Form.Item>
       }
       <FieldLabel width='555px'>
@@ -155,6 +155,7 @@ export function DataPromptSettings () {
           ]}
         >
           <Input.TextArea rows={8}
+            placeholder={$t({ defaultMessage: 'Type your message here...' })}
             data-testid={'messageHtml'} />
         </Form.Item>
       }
