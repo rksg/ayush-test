@@ -10,11 +10,11 @@ import { DateFormatEnum, formatter }     from '@acx-ui/formatter'
 import {
   useLazyVenueRadioActiveNetworksQuery
 } from '@acx-ui/rc/services'
-import { RadioTypeEnum }                                                  from '@acx-ui/rc/utils'
-import { useNavigate, useSearchParams, useTenantLink }                    from '@acx-ui/react-router-dom'
-import { Filters, fixedEncodeURIComponent, getIntl, useEncodedParameter } from '@acx-ui/utils'
+import { RadioTypeEnum }                               from '@acx-ui/rc/utils'
+import { useNavigate, useSearchParams, useTenantLink } from '@acx-ui/react-router-dom'
+import {  fixedEncodeURIComponent, getIntl }           from '@acx-ui/utils'
 
-import { groupedStates, IntentListItem } from './config'
+import {  IntentListItem }      from './config'
 import {
   TransitionMutationResponse,
   useLazyIntentWlansQuery,
@@ -123,8 +123,8 @@ const getR1WlanPayload = (venueId:string, code:string) => ({
 
 export function useIntentAIActions () {
   const { $t } = useIntl()
-  const basePath = useTenantLink('/analytics/intentAI')
-  const navigate = useNavigate()
+  // const basePath = useTenantLink('/analytics/intentAI')
+  // const navigate = useNavigate()
   const [recommendationWlans] = useLazyIntentWlansQuery()
   const [venueRadioActiveNetworks] = useLazyVenueRadioActiveNetworksQuery()
   const [transitionIntent] = useTransitionIntentMutation()
@@ -181,11 +181,8 @@ export function useIntentAIActions () {
           //       statusLabel=`${DisplayStates.pausedFromActive}+${DisplayStates.pausedFromInactive}`
           //   }
           // }
-
-          console.log(statusLabelList)
           const currentParams = JSON.parse(
             decodeURIComponent(search.get('intentTableFilters') as string))
-          console.log(currentParams)
           const newParams = {
             ...currentParams,
             statusLabel: Array.from(statusLabelList)
