@@ -83,14 +83,16 @@ export function ButtonContent (props: ButtonContentProps) {
   const [clicked, setClicked] = useState(false)
   const { $t } = useIntl()
   return (
-    <PopOver content={<Widget visible={clicked}
-      value={value}
-      onFontColorChange={onFontColorChange}
-      onButtonColorChange={onButtonColorChange}/>}
-    onVisibleChange={(v) => setClicked(v)}
-    visible={clicked}
-    placement='leftTop'
-    overlayInnerStyle={{ backgroundColor: 'var(--acx-neutrals-10)', height: 40, width: 70 }}
+    <PopOver
+      content={<Widget visible={clicked}
+        value={value}
+        onFontColorChange={onFontColorChange}
+        onButtonColorChange={onButtonColorChange}
+      />}
+      onVisibleChange={(v) => setClicked(v)}
+      visible={clicked}
+      placement='leftTop'
+      overlayInnerStyle={{ backgroundColor: 'var(--acx-neutrals-10)', height: 40, width: 70 }}
     >
       <UI.PortalButton
         style={{
@@ -102,12 +104,6 @@ export function ButtonContent (props: ButtonContentProps) {
         onMouseOver={()=>{
           setCursor('pointer')
           setOutline(UI.hoverOutline)
-        }}
-        onMouseLeave={()=>{
-          if(!clicked) {
-            setCursor('none')
-            setOutline('none')
-          }
         }}
         onClick={()=> {
           setCursor('pointer')

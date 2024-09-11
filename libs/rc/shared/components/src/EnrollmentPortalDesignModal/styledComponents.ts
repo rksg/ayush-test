@@ -1,4 +1,4 @@
-import { Popover as AntPopover, Layout as AntLayout,
+import { Layout as AntLayout,
   Select as AntSelect } from 'antd'
 import styled, { css, createGlobalStyle } from 'styled-components/macro'
 
@@ -189,10 +189,6 @@ export const PortalButton = styled.button`
   line-height:16px;
 `
 
-
-export const Popover = styled(AntPopover)`
-
-`
 export const SettingOutlined = styled(AntSettingOutlined)`
   color: var(--acx-accents-blue-50);
   width: 16px;
