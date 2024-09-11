@@ -98,7 +98,8 @@ export function VenueFirmwareList () {
 
   const isBatchOperationEnable = useIsSplitOn(
     Features.EDGE_FIRMWARE_NOTIFICATION_BATCH_OPERATION_TOGGLE)
-  const [ skipEdgeFirmwareVenueSchedule ] = useSkipEdgeFirmwareVenueScheduleMutation()
+  const [updateEdgeFirmwareVenueSchedule] = useUpdateEdgeFirmwareVenueScheduleMutation()
+  const [skipEdgeFirmwareVenueSchedule] = useSkipEdgeFirmwareVenueScheduleMutation()
 
   const columns: TableProps<EdgeVenueFirmware>['columns'] = [
     {
@@ -287,11 +288,22 @@ export function VenueFirmwareList () {
     const requests = []
     const payload = { ...data }
     try {
-      for(let venueId of venueIds) {
-        requests.push(updateSchedule({
-          params: { venueId },
-          payload
+      if (isBatchOperationEnable) {
+        requests.push(updateEdgeFirmwareVenueSchedule({
+          payload: {
+            venueIds: venueIds,
+            date: payload.date,
+            time: payload.time,
+            version: payload.version
+          }
         }))
+      } else {
+        for(let venueId of venueIds) {
+          requests.push(updateSchedule({
+            params: { venueId },
+            payload
+          }))
+        }
       }
       Promise.all(requests).then(() => setSelectedRowKeys([]))
     } catch (error) {
