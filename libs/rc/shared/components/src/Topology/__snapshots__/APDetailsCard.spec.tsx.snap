@@ -87,6 +87,26 @@ exports[`Topology AP Card should render correctly 1`] = `
   padding-bottom: var(--acx-descriptions-space);
 }
 
+.c4 .ant-descriptions-item .ant-descriptions-item-label,
+.c4 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c4 .ant-descriptions-item .ant-descriptions-item-label {
+  color: var(--acx-neutrals-60);
+}
+
+.c4 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c4 .ant-descriptions-item .ant-descriptions-item-content {
+  color: var(--acx-primary-black);
+}
+
 .c4 .ant-descriptions-item .ant-descriptions-item-container {
   -webkit-align-items: baseline;
   -webkit-box-align: baseline;
@@ -94,20 +114,8 @@ exports[`Topology AP Card should render correctly 1`] = `
   align-items: baseline;
 }
 
-.c4 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-label,
-.c4 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-content {
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
-}
-
 .c4 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-label {
   width: 50%;
-  color: var(--acx-neutrals-60);
-}
-
-.c4 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-label::after {
-  bottom: 0;
-  margin: 0 0.25em 0 0;
 }
 
 .c4 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-content {
