@@ -361,13 +361,13 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
   rebootAp: {
     method: 'PATCH',
     // url: '/venues/aps/:serialNumber',
-    url: '/venues/:venueId/aps/:serialNumber',
+    url: '/venues/:venueId/aps/:serialNumber/systemCommands',
     newApi: true
   },
   factoryResetAp: {
     method: 'PATCH',
     // url: '/venues/aps/:serialNumber',
-    url: '/venues/:venueId/aps/:serialNumber',
+    url: '/venues/:venueId/aps/:serialNumber/systemCommands',
     newApi: true
   },
   getApPhoto: {
@@ -403,13 +403,13 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
   pingAp: {
     method: 'PATCH',
     // url: '/venues/aps/:serialNumber',
-    url: '/venues/:venueId/aps/:serialNumber',
+    url: '/venues/:venueId/aps/:serialNumber/diagnosisCommands',
     newApi: true
   },
   traceRouteAp: {
     method: 'PATCH',
     // url: '/venues/aps/:serialNumber',
-    url: '/venues/:venueId/aps/:serialNumber',
+    url: '/venues/:venueId/aps/:serialNumber/diagnosisCommands',
     newApi: true
   },
   startPacketCapture: {
@@ -433,7 +433,7 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
   blinkLedAp: {
     method: 'PATCH',
     // url: '/venues/aps/:serialNumber',
-    url: '/venues/:venueId/aps/:serialNumber',
+    url: '/venues/:venueId/aps/:serialNumber/diagnosisCommands',
     newApi: true
   },
   getApCapabilities: {
@@ -764,6 +764,42 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
   getRadiusServerSettings: {
     method: 'get',
     url: '/wifiNetworks/:networkId/radiusServerProfileSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  activateVlanPool: {
+    method: 'put',
+    url: '/wifiNetworks/:networkId/vlanPoolProfiles/:profileId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deactivateVlanPool: {
+    method: 'delete',
+    url: '/wifiNetworks/:networkId/vlanPoolProfiles/:profileId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  activateApGroupVlanPool: {
+    method: 'put',
+    url: '/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId/vlanPoolProfiles/:profileId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deactivateApGroupVlanPool: {
+    method: 'delete',
+    url: '/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId/vlanPoolProfiles/:profileId',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',

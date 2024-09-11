@@ -96,6 +96,10 @@ import ClientIsolationTable                                             from './
 import ConnectionMeteringDetail                                         from './pages/Policies/ConnectionMetering/ConnectionMeteringDetail'
 import ConnectionMeteringPageForm                                       from './pages/Policies/ConnectionMetering/ConnectionMeteringPageForm'
 import ConnectionMeteringTable                                          from './pages/Policies/ConnectionMetering/ConnectionMeteringTable'
+import AddEdgeHqosBandwidth                                             from './pages/Policies/HqosBandwidth/Edge/AddHqosBandwidth'
+import EditEdgeHqosBandwidth                                            from './pages/Policies/HqosBandwidth/Edge/EditHqosBandwidth'
+import EdgeHqosBandwidthDetail                                          from './pages/Policies/HqosBandwidth/Edge/HqosBandwidthDetail'
+import EdgeHqosBandwidthTable                                           from './pages/Policies/HqosBandwidth/Edge/HqosBandwidthTable'
 import IdentityProviderDetail                                           from './pages/Policies/IdentityProvider/IdentityProviderDetail/IdentityProviderDetail'
 import IdentityProviderTable                                            from './pages/Policies/IdentityProvider/IdentityProviderTable/IdentityProviderTable'
 import LbsServerProfileDetail                                           from './pages/Policies/LbsServerProfile/LbsServerProfileDetail/LbsServerProfileDetail'
@@ -103,10 +107,6 @@ import LbsServerProfileTable                                            from './
 import MacRegistrationListDetails                                       from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
 import MacRegistrationListsTable                                        from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
 import MyPolicies                                                       from './pages/Policies/MyPolicies'
-import AddEdgeQosBandwidth                                              from './pages/Policies/QosBandwidth/Edge/AddQosBandwidth'
-import EditEdgeQosBandwidth                                             from './pages/Policies/QosBandwidth/Edge/EditQosBandwidth'
-import EdgeQosBandwidthDetail                                           from './pages/Policies/QosBandwidth/Edge/QosBandwidthDetail'
-import EdgeQosBandwidthTable                                            from './pages/Policies/QosBandwidth/Edge/QosBandwidthTable'
 import SelectPolicyForm                                                 from './pages/Policies/SelectPolicyForm'
 import SnmpAgentDetail                                                  from './pages/Policies/SnmpAgent/SnmpAgentDetail/SnmpAgentDetail'
 import SnmpAgentForm                                                    from './pages/Policies/SnmpAgent/SnmpAgentForm/SnmpAgentForm'
@@ -1106,20 +1106,20 @@ function PolicyRoutes () {
         }
       />
       <Route
-        path={getPolicyRoutePath({ type: PolicyType.QOS_BANDWIDTH, oper: PolicyOperation.CREATE })}
-        element={<AddEdgeQosBandwidth />}
+        path={getPolicyRoutePath({ type: PolicyType.HQOS_BANDWIDTH, oper: PolicyOperation.CREATE })}
+        element={<AddEdgeHqosBandwidth />}
       />
       <Route
-        path={getPolicyRoutePath({ type: PolicyType.QOS_BANDWIDTH, oper: PolicyOperation.EDIT })}
-        element={<EditEdgeQosBandwidth />}
+        path={getPolicyRoutePath({ type: PolicyType.HQOS_BANDWIDTH, oper: PolicyOperation.EDIT })}
+        element={<EditEdgeHqosBandwidth />}
       />
       <Route
-        path={getPolicyRoutePath({ type: PolicyType.QOS_BANDWIDTH, oper: PolicyOperation.DETAIL })}
-        element={<EdgeQosBandwidthDetail />}
+        path={getPolicyRoutePath({ type: PolicyType.HQOS_BANDWIDTH, oper: PolicyOperation.DETAIL })}
+        element={<EdgeHqosBandwidthDetail />}
       />
       <Route
-        path={getPolicyRoutePath({ type: PolicyType.QOS_BANDWIDTH, oper: PolicyOperation.LIST })}
-        element={<EdgeQosBandwidthTable />}
+        path={getPolicyRoutePath({ type: PolicyType.HQOS_BANDWIDTH, oper: PolicyOperation.LIST })}
+        element={<EdgeHqosBandwidthTable />}
       />
       {isConnectionMeteringEnabled && <>
         <Route

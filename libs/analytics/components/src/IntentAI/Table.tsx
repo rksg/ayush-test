@@ -7,13 +7,14 @@ import { get }                                                                  
 import { DateFormatEnum, formatter }                                                           from '@acx-ui/formatter'
 import { AIDrivenRRM, AIOperation, AirFlexAI, EcoFlexAI }                                      from '@acx-ui/icons'
 import { useNavigate, useTenantLink, TenantLink }                                              from '@acx-ui/react-router-dom'
+import { WifiScopes }                                                                          from '@acx-ui/types'
 import { filterByAccess, getShowWithoutRbacCheckKey, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 import { noDataDisplay, PathFilter, useEncodedParameter }                                      from '@acx-ui/utils'
 
 import { Icon }                                        from './common/IntentIcon'
 import { aiFeatures, codes, IntentListItem }           from './config'
 import { useIntentAITableQuery }                       from './services'
-import { DisplayStates }                               from './states'
+import { DisplayStates, Statuses }                     from './states'
 import * as UI                                         from './styledComponents'
 import { IntentAIDateTimePicker, useIntentAIActions }  from './useIntentAIActions'
 import { Actions, getDefaultTime, isVisibledByAction } from './utils'
@@ -97,6 +98,7 @@ export type AIFeatureProps = {
   aiFeature: string
   root: string
   sliceId: string
+  status: Statuses
 }
 
 export const AIFeature = (props: AIFeatureProps): JSX.Element => {
@@ -108,12 +110,15 @@ export const AIFeature = (props: AIFeatureProps): JSX.Element => {
     >
       <Icon feature={codes[props.code].aiFeature} />
     </Tooltip>
-    <TenantLink to={get('IS_MLISA_SA')
-      ? `/analytics/intentAI/${props.root}/${props.sliceId}/${props.code}`
-      : `/analytics/intentAI/${props.sliceId}/${props.code}`
-    }>
-      <span>{props.aiFeature}</span>
-    </TenantLink>
+    {props.status === Statuses.new
+      ? <span>{props.aiFeature}</span>
+      : <TenantLink to={get('IS_MLISA_SA')
+        ? `/analytics/intentAI/${props.root}/${props.sliceId}/${props.code}`
+        : `/analytics/intentAI/${props.sliceId}/${props.code}`
+      }>
+        <span>{props.aiFeature}</span>
+      </TenantLink>
+    }
   </UI.FeatureIcon>)
 }
 
@@ -300,7 +305,7 @@ export function IntentAITable (
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
         rowSelection={hasCrossVenuesPermission() &&
-          hasPermission({ permission: 'WRITE_INTENT_AI' }) && {
+          hasPermission({ permission: 'WRITE_INTENT_AI', scopes: [WifiScopes.UPDATE] }) && {
           type: 'checkbox',
           selectedRowKeys,
           onChange: (_, selRows) => setSelectedRows(selRows)

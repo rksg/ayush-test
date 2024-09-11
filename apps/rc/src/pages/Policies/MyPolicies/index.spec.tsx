@@ -12,10 +12,10 @@ import {
   ApSnmpUrls,
   ClientIsolationUrls,
   ConnectionMeteringUrls,
-  EdgeQosProfilesUrls,
-  RogueApUrls, SoftGreUrls, SyslogUrls, VlanPoolRbacUrls, WifiUrlsInfo,
+  EdgeHqosProfilesUrls,
+  WorkflowUrls,
   getSelectPolicyRoutePath,
-  WorkflowUrls
+  RogueApUrls, SoftGreUrls, SyslogUrls, VlanPoolRbacUrls, WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -212,13 +212,13 @@ describe('MyPolicies', () => {
     expect(await screen.findByText(accessControlTitle)).toBeVisible()
   })
 
-  it('should render edge qos bandwidth correctly', async () => {
+  it('should render edge hqos bandwidth correctly', async () => {
     jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff =>
       [Features.EDGE_QOS_TOGGLE, Features.EDGES_TOGGLE].includes(ff as Features))
 
     mockServer.use(
       rest.post(
-        EdgeQosProfilesUrls.getEdgeQosProfileViewDataList.url,
+        EdgeHqosProfilesUrls.getEdgeHqosProfileViewDataList.url,
         (_req, res, ctx) => res(ctx.json(mockedClientIsolationQueryData))
       ),
       rest.post(
@@ -242,7 +242,7 @@ describe('MyPolicies', () => {
       }
     )
 
-    const edgeQosBandwidthTitle = 'QoS Bandwidth (1)'
+    const edgeQosBandwidthTitle = 'HQoS Bandwidth (1)'
     expect(await screen.findByText(edgeQosBandwidthTitle)).toBeVisible()
   })
 })

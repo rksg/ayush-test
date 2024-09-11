@@ -1,6 +1,8 @@
 import { Provider }                  from '@acx-ui/store'
 import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
+import { getZoneUrl } from './ZoneTabs'
+
 import ZoneDetails from '.'
 
 jest.mock('@acx-ui/analytics/components', () => {
@@ -127,3 +129,8 @@ describe('ZoneDetails', () => {
   })
 })
 
+describe('getZoneUrl', () => {
+  it('escapes slashes', () => {
+    expect(getZoneUrl('system/Name', 'zone/Name')).toBe('/zones/system%2FName/zone%2FName')
+  })
+})
