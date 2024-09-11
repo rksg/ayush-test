@@ -2,6 +2,7 @@ import { NetworkPath } from '@acx-ui/utils'
 
 import { aiFeatures }                                  from '../config'
 import { IntentConfigurationConfig, useIntentContext } from '../IntentContext'
+import { Statuses }                                    from '../states'
 import { AIFeatureProps }                              from '../Table'
 import { Intent, IntentKPIConfig, intentState }        from '../useIntentDetailsQuery'
 import { isDataRetained }                              from '../utils'
@@ -508,27 +509,39 @@ export const aiFeatureWithRRM = {
   code: 'c-crrm-channel5g-auto',
   aiFeature: aiFeatures.RRM,
   root: 'root1',
-  sliceId: 'sliceId1'
+  sliceId: 'sliceId1',
+  status: Statuses.active
 } as AIFeatureProps
 
 export const aiFeatureWithAirFlexAI = {
   code: 'c-probeflex-6g',
   aiFeature: aiFeatures.AirFlexAI,
   root: 'root2',
-  sliceId: 'sliceId2'
+  sliceId: 'sliceId2',
+  status: Statuses.active
+} as AIFeatureProps
+
+export const aiFeatureWithAirFlexAIWithNewStatus = {
+  code: 'c-probeflex-6g',
+  aiFeature: aiFeatures.AirFlexAI,
+  root: 'root2',
+  sliceId: 'sliceId2',
+  status: Statuses.new
 } as AIFeatureProps
 
 export const aiFeatureWithAIOps = {
   code: 'c-bgscan24g-enable',
   aiFeature: aiFeatures.AIOps,
   root: 'root3',
-  sliceId: 'sliceId3'
+  sliceId: 'sliceId3',
+  status: Statuses.active
 } as AIFeatureProps
 
 export const aiFeatureWithEcoFlexAI = {
   code: 'eco-flex-code',  //EcoFlexAI code is not defined
   aiFeature: aiFeatures.EcoFlexAI,
   root: 'root4',
-  sliceId: 'sliceId4'
+  sliceId: 'sliceId4',
+  status: Statuses.active
 } as AIFeatureProps
 

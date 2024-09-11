@@ -176,7 +176,7 @@ export const ImpactedClientsTable = ({
           total: totalCount
         }}
         rowKey='rowId'
-        type='tall'
+        type='compactBordered'
       />
     </Loader>
   )
