@@ -1,9 +1,17 @@
 import { intentAIUrl, store }           from '@acx-ui/store'
 import { mockGraphqlQuery, renderHook } from '@acx-ui/test-utils'
 
-import { mockedIntentCRRM }                               from './AIDrivenRRM/__tests__/fixtures'
-import { kpis }                                           from './AIDrivenRRM/common'
-import { api, getGraphKPIs, getKpiData, useIntentParams } from './useIntentDetailsQuery'
+import { mockedIntentCRRM } from './AIDrivenRRM/__tests__/fixtures'
+import { kpis }             from './AIDrivenRRM/common'
+import { Statuses }         from './states'
+import {
+  api,
+  getGraphKPIs,
+  getKPIData,
+  Intent,
+  intentState,
+  useIntentParams
+} from './useIntentDetailsQuery'
 
 describe('intentAI services', () => {
   describe('intent details', () => {
@@ -25,37 +33,86 @@ describe('intentAI services', () => {
       expect(data).toStrictEqual(mockedIntentCRRM)
     })
   })
-  describe('getKpiData', () => {
-    it('should return correct data', () => {
-      expect(getKpiData(mockedIntentCRRM, kpis[0])).toEqual({ compareData: 2, data: 0 })
-    })
-    it('should handle null', () => {
-      expect(getKpiData({
-        ...mockedIntentCRRM,
-        kpi_number_of_interfering_links: { data: null, compareData: null }
-      }, kpis[0])).toEqual({ compareData: null, data: null })
+})
+
+describe('getKPIData', () => {
+  it('should return correct data', () => {
+    expect(getKPIData(mockedIntentCRRM, kpis[0])).toEqual({
+      compareData: { result: 2, timestamp: '2023-06-26T00:00:25.772Z' },
+      data: { result: 0, timestamp: null }
     })
   })
-  describe('getGraphKPIs', () => {
-    it('should return correct data', () => {
-      const [ result ] = getGraphKPIs({
-        ...mockedIntentCRRM,
-        kpi_number_of_interfering_links: {
-          data: { timestamp: null, result: 2 },
-          compareData: { timestamp: null, result: 5 }
-        }
-      }, kpis)
-      expect(result.value).toEqual('2')
-      expect(result.delta).toEqual({ trend: 'positive', value: '-60%' })
-    })
-    it('should handle null', () => {
-      const [ result ] = getGraphKPIs({
-        ...mockedIntentCRRM,
-        kpi_number_of_interfering_links: { data: null, compareData: null }
-      }, kpis)
-      expect(result.value).toEqual('--')
-      expect(result.delta).toEqual(undefined)
-    })
+  it('should handle null', () => {
+    expect(getKPIData({
+      ...mockedIntentCRRM,
+      kpi_number_of_interfering_links: { data: null, compareData: null }
+    }, kpis[0])).toEqual({ compareData: null, data: null })
+  })
+})
+
+describe('getGraphKPIs', () => {
+  beforeEach(() => {
+    jest.spyOn(Date, 'now').mockReturnValue(+new Date('2023-07-15T14:15:00.000Z'))
+  })
+  it('should return correct data', () => {
+    const [ result ] = getGraphKPIs({
+      ...mockedIntentCRRM,
+      kpi_number_of_interfering_links: {
+        data: { timestamp: null, result: 2 },
+        compareData: { timestamp: null, result: 5 }
+      }
+    }, kpis)
+    expect(result.value).toEqual('2')
+    expect(result.delta).toEqual({ trend: 'positive', value: '-60%' })
+    expect(result.footer).toEqual('')
+  })
+  it('should handle null', () => {
+    const [ result ] = getGraphKPIs({
+      ...mockedIntentCRRM,
+      kpi_number_of_interfering_links: { data: null, compareData: null }
+    }, kpis)
+    expect(result.value).toEqual('--')
+    expect(result.delta).toEqual(undefined)
+    expect(result.footer).toEqual('')
+  })
+  it('handle kpi with data, without compareData', () => {
+    const [ result ] = getGraphKPIs({
+      ...mockedIntentCRRM,
+      kpi_number_of_interfering_links: {
+        data: { timestamp: null, result: 2 },
+        compareData: null
+      }
+    }, kpis)
+    expect(result.value).toEqual('2')
+    expect(result.delta).toEqual(undefined)
+    expect(result.footer).toEqual('')
+  })
+  it('handle na/paused', () => {
+    const [ result ] = getGraphKPIs({
+      ...mockedIntentCRRM,
+      status: Statuses.paused,
+      kpi_number_of_interfering_links: {
+        data: { timestamp: null, result: 2 },
+        compareData: { timestamp: null, result: 5 }
+      }
+    }, kpis)
+    expect(result.value).toEqual('--')
+    expect(result.delta).toEqual({ trend: 'none', value: '0%' })
+    expect(result.footer).toEqual('')
+  })
+  it('handle beyond data retention', () => {
+    jest.mocked(Date.now).mockRestore()
+    const [ result ] = getGraphKPIs({
+      ...mockedIntentCRRM,
+      status: Statuses.active,
+      kpi_number_of_interfering_links: {
+        data: { timestamp: null, result: 2 },
+        compareData: { timestamp: null, result: 5 }
+      }
+    }, kpis)
+    expect(result.value).toEqual('--')
+    expect(result.delta).toEqual(undefined)
+    expect(result.footer).toEqual('Beyond data retention period')
   })
 })
 
@@ -69,5 +126,25 @@ describe('useIntentParams', () => {
     const params = { tenantId: 'tenantId', sliceId: 'sliceId', code: 'code' }
     const { result } = renderHook(useIntentParams, { route: { params } })
     expect(result.current).toEqual({ root: 'tenantId', sliceId: 'sliceId', code: 'code' })
+  })
+})
+
+describe('intentState', () => {
+  it('returns correct state', () => {
+    const expectedSets = {
+      [Statuses.na]: 'no-data',
+      [Statuses.paused]: 'no-data',
+      [Statuses.new]: 'inactive',
+      [Statuses.scheduled]: 'inactive',
+      [Statuses.active]: 'active',
+      [Statuses.applyScheduled]: 'active',
+      [Statuses.applyScheduleInProgress]: 'active',
+      [Statuses.revertScheduled]: 'active',
+      [Statuses.revertScheduleInProgress]: 'active'
+    }
+    for (const [ status, expected ] of Object.entries(expectedSets)) {
+      const intent = { status } as unknown as Intent
+      expect(intentState(intent)).toEqual(expected)
+    }
   })
 })
