@@ -150,7 +150,7 @@ export function LanPortSettings (props: {
   const { data: apEthPortSettings, isLoading: isApEthPortSettingsLoading } =
     useGetEthernetPortProfileSettingsByApPortIdQuery({
       params: { venueId, serialNumber, portId: index as unknown as string }
-    }, { skip: !isEthernetPortProfileEnabled && !serialNumber })
+    }, { skip: !isEthernetPortProfileEnabled || !serialNumber })
 
   useEffect(() => {
     if (!isApEthPortSettingsLoading && apEthPortSettings) {

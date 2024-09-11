@@ -73,6 +73,9 @@ const EthernetPortProfileOverwriteItem = (props:EthernetPortProfileOverwriteProp
     <Form.Item
       hidden
       name={fieldName}
+      children={
+        <Input />
+      }
     />
     <StepsForm.FieldLabel width={width}>
       {$t({ defaultMessage: '{title}' }, { title })}
