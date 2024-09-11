@@ -221,9 +221,10 @@ const useGetAclPolicyInstance = (editMode: boolean) => {
 
   const aclPolicyData = tableQuery?.data?.data[0]
 
-  const aclPolicyDataWithDesc = {
+  const aclPolicyDataWithExtra = {
     ...aclPolicyData,
-    description: data?.description || ''
+    description: data?.description || '',
+    rateLimiting: data?.rateLimiting
   }
 
   const templateTableQuery = useTableQuery({
@@ -237,11 +238,12 @@ const useGetAclPolicyInstance = (editMode: boolean) => {
 
   const aclTemplatePolicyData = templateTableQuery?.data?.data[0]
 
-  const aclTemplatePolicyDataWithDesc = {
+  const aclTemplatePolicyDataWithExtra = {
     ...aclTemplatePolicyData,
-    description: data?.description || ''
+    description: data?.description || '',
+    rateLimiting: data?.rateLimiting
   }
 
   // eslint-disable-next-line max-len
-  return ((isTemplate ? aclTemplatePolicyDataWithDesc : aclPolicyDataWithDesc) || {}) as EnhancedAccessControlInfoType
+  return ((isTemplate ? aclTemplatePolicyDataWithExtra : aclPolicyDataWithExtra) || {}) as EnhancedAccessControlInfoType
 }
