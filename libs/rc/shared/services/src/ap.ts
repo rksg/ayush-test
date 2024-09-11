@@ -2,7 +2,7 @@
 import { QueryReturnValue }                                   from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import { MaybePromise }                                       from '@reduxjs/toolkit/dist/query/tsHelpers'
 import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
-import { reduce }                                             from 'lodash'
+import { omit, reduce }                                       from 'lodash'
 
 import { Filter }          from '@acx-ui/components'
 import {
@@ -873,38 +873,46 @@ export const apApi = baseApApi.injectEndpoints({
       invalidatesTags: [{ type: 'Ap', id: 'Details' }, { type: 'Ap', id: 'LanPorts' }]
     }),
     updateApEthernetPorts: build.mutation<WifiApSetting, RequestPayload>({
-      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
-        const apiCustomHeader = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined);
-        (payload as WifiApSetting).lanPorts?.map(async (l: LanPort, index: number) => {
-          const overwriteSetting: EhternetPortSettings = {
-            enabled: l.enabled,
-            overwriteUntagId: l.untagId,
-            overwriteVlanMembers: l.vlanMembers
+      queryFn: async ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) => {
+        try {
+          const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+          const ethApi = EthernetPortProfileUrls
+          for (let l of (payload as WifiApSetting)?.lanPorts ?? []) {
+            const overwriteSetting: EhternetPortSettings = {
+              enabled: l.enabled,
+              overwriteUntagId: l.untagId,
+              overwriteVlanMembers: l.vlanMembers
+            }
+            const oevrwriteParams = {
+              venueId: params!.venueId,
+              serialNumber: params!.serialNumber,
+              portId: l.portId
+            }
+            const ethParams = {
+              venueId: params!.venueId,
+              serialNumber: params!.serialNumber,
+              portId: l.portId,
+              id: l.ethernetPortProfileId
+            }
+            if (l.ethernetPortProfileId) {
+              const overwriteReq = createHttpRequest(
+                ethApi.updateEthernetPortSettingsByApPortId, oevrwriteParams,
+                apiCustomHeader)
+              await fetchWithBQ({ ...overwriteReq, body: JSON.stringify(overwriteSetting) })
+              const activateReq = createHttpRequest(
+                ethApi.activateEthernetPortProfileOnApPortId, ethParams, apiCustomHeader
+              )
+              await fetchWithBQ({ ...activateReq })
+            }
           }
-          const oevrwriteParams = {
-            venueId: params!.venueId,
-            serialNumber: params!.serialNumber,
-            portId: index as unknown as string
-          }
-          const ethParams = {
-            venueId: params!.venueId,
-            serialNumber: params!.serialNumber,
-            portId: index as unknown as string,
-            id: l.ethernetPortProfileId
-          }
-          const overwriteReq = createHttpRequest(
-            EthernetPortProfileUrls.updateEthernetPortProfileSettingsByApPortId, oevrwriteParams,
-            apiCustomHeader)
-          await fetchWithBQ({ ...overwriteReq, body: JSON.stringify(overwriteSetting) })
-          const activateReq = createHttpRequest(
-            EthernetPortProfileUrls.activateEthernetPortProfileOnApPortId, ethParams, apiCustomHeader
-          )
-          await fetchWithBQ({ ...activateReq })
-        })
-        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
-        const req = createHttpRequest(urlsInfo.updateApLanPorts, params, apiCustomHeader)
-        const res = await fetchWithBQ({ ...req, body: JSON.stringify(payload) })
-        return { data: res.data as WifiApSetting }
+
+          const req = createHttpRequest(WifiRbacUrlsInfo.updateApLanPorts, params, apiCustomHeader)
+          const res = await fetchWithBQ(
+            { ...req, body: JSON.stringify(omit(payload as WifiApSetting, 'lanPorts')) })
+          return { data: res.data as WifiApSetting }
+        } catch (err) {
+          return { error: err as FetchBaseQueryError }
+        }
       },
       invalidatesTags: [{ type: 'Ap', id: 'Details' }, { type: 'Ap', id: 'LanPorts' }]
     }),
@@ -1478,6 +1486,7 @@ export const {
   useGetDefaultApLanPortsQuery,
   useGetApLanPortsQuery,
   useUpdateApLanPortsMutation,
+  useUpdateApEthernetPortsMutation,
   useResetApLanPortsMutation,
   useGetApLedQuery,
   useUpdateApLedMutation,

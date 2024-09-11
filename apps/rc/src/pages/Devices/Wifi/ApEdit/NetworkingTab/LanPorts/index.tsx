@@ -23,7 +23,8 @@ import {
   useUpdateApLanPortsMutation,
   useResetApLanPortsMutation,
   useLazyGetDHCPProfileListViewModelQuery,
-  useGetDefaultApLanPortsQuery
+  useGetDefaultApLanPortsQuery,
+  useUpdateApEthernetPortsMutation
 } from '@acx-ui/rc/services'
 import {
   LanPort,
@@ -107,6 +108,8 @@ export function LanPorts () {
 
   const [updateApCustomization, {
     isLoading: isApLanPortsUpdating }] = useUpdateApLanPortsMutation()
+  const [updateEthernetPortProfile, {
+    isLoading: isEthernetPortProfileUpdating }] = useUpdateApEthernetPortsMutation()
   const [resetApCustomization, {
     isLoading: isApLanPortsResetting }] = useResetApLanPortsMutation()
 
@@ -245,7 +248,7 @@ export function LanPorts () {
   const processUpdateLanPorts = async (values: WifiApSetting) => {
     const { lan, poeOut, useVenueSettings } = values
 
-    if (isUseWifiRbacApi) {
+    if (isUseWifiRbacApi || isEthernetPortProfileEnabled) {
       const payload: WifiApSetting = {
         ...apLanPorts,
         lanPorts: lan,
@@ -254,7 +257,10 @@ export function LanPorts () {
         useVenueSettings
       }
 
-      await updateApCustomization({
+      isEthernetPortProfileEnabled ? await updateEthernetPortProfile({
+        params: { venueId, serialNumber },
+        payload
+      }).unwrap() : await updateApCustomization({
         params: { tenantId, serialNumber, venueId },
         payload,
         enableRbac: true
@@ -339,7 +345,7 @@ export function LanPorts () {
 
   return <Loader states={[{
     isLoading: formInitializing,
-    isFetching: isApLanPortsUpdating || isApLanPortsResetting
+    isFetching: isApLanPortsUpdating || isApLanPortsResetting || isEthernetPortProfileUpdating
   }]}>
     {selectedModel?.lanPorts
       ? <StepsFormLegacy
