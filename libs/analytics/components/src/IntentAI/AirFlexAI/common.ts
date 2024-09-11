@@ -21,7 +21,6 @@ export const kpis: IntentKPIConfig[] = [{
 }]
 
 export const commonAirFlexDetails = {
-  reason: defineMessage({ defaultMessage: 'AirFlexAI suppresses unnecessary probe responses from APs to reduce the management traffic overhead and steer clients to connect to APs with better RSS. This will free up airtime, especially in high density deployments, and increase the connection RSS, thus improving the overall network performance.' }),
   tradeoff: defineMessage({ defaultMessage: 'Potential trade-offs of intelligent and optimized probe responses include increased complexity in network management, potential delays in connecting lesser-priority devices, and possible issues with compatibility across different devices and manufacturers.' }),
   action: {
     active: defineMessage({ defaultMessage: 'AirFlexAI for this {scope} is currently {currentValue}. This is a RF feature that is only available via RUCKUS AI, and it performs better than the default Airtime Decongestion (ATD) feature in {smartZone}. It is recommended to enable AirFlexAI in all WLANs. It is possible to deselect specific WLANs when applying this recommendation.' }),

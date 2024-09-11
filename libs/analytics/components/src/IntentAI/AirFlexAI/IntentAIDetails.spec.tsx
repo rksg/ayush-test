@@ -70,8 +70,8 @@ describe('IntentAIDetails', () => {
     async function assertRenderCorrectly () {
       expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
 
-      expect(await screen.findByTestId('Why this recommendation?'))
-        .toHaveTextContent(/from APs to reduce the management traffic overhead and steer clients/)
+      expect(await screen.findByTestId('Benefits'))
+        .toHaveTextContent(/ML based probe responses in Wi-Fi network, dynamically manage/)
       expect(await screen.findByTestId('Potential trade-off'))
         // eslint-disable-next-line max-len
         .toHaveTextContent(/include increased complexity in network management, potential delays in connecting lesser-priority devices/)

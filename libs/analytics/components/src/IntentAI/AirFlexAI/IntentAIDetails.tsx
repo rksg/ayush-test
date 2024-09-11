@@ -25,8 +25,9 @@ import { useIntentContext }    from '../IntentContext'
 import { getGraphKPIs }        from '../useIntentDetailsQuery'
 import { IntentWlan }          from '../utils'
 
-export function createUseValuesText ({ reason, tradeoff, action }: {
-  reason: MessageDescriptor
+import * as SideNotes from './IntentAIForm/SideNotes'
+
+export function createUseValuesText ({ tradeoff, action }: {
   tradeoff: MessageDescriptor
   action: {
     active: MessageDescriptor,
@@ -50,7 +51,6 @@ export function createUseValuesText ({ reason, tradeoff, action }: {
       : $t({ defaultMessage: 'not enabled' })
 
     return {
-      reasonText: $t(reason),
       tradeoffText: $t(tradeoff),
       actionText: $t(actionText, {
         ...productNames,
@@ -155,10 +155,10 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
 
           <GridRow>
             <GridCol col={{ span: 12 }}>
-              <DetailsSection data-testid='Why this recommendation?'>
+              <DetailsSection data-testid='Benefits'>
                 <DetailsSection.Title
-                  children={$t({ defaultMessage: 'Why this recommendation?' })} />
-                <Card>{valuesText.reasonText}</Card>
+                  children={$t(SideNotes.title)} />
+                <Card>{$t(SideNotes.benefits)}</Card>
               </DetailsSection>
             </GridCol>
             <GridCol col={{ span: 12 }}>
