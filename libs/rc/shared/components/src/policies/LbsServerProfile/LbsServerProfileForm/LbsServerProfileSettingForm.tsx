@@ -55,7 +55,8 @@ const LbsServerProfileSettingForm = ( props: { list : TableResult<LbsServerProfi
       <div>
         <Form.Item
           name='lbsServerVenueName'
-          label={$t({ defaultMessage: 'LBS Server <VenueSingular></VenueSingular> Name' })}
+          // Not support VenueSingular for Hospitality Vertical
+          label={$t({ defaultMessage: 'LBS Server Venue Name' })}
           rules={[
             { required: true },
             { min: 2 },

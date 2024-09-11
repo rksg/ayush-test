@@ -1,6 +1,6 @@
 
 import {
-  EdgeQosProfileFixtures
+  EdgeHqosProfileFixtures
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -12,7 +12,7 @@ import {
 import { TrafficClassSettingsTable } from '.'
 
 
-const { mockTrafficClassSettings } = EdgeQosProfileFixtures
+const { mockTrafficClassSettings } = EdgeHqosProfileFixtures
 
 describe('Edge Qos Bandwitdth TrafficClassSettgins Table', () => {
   it('should correctly render', async () => {

@@ -676,7 +676,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
           },
           payload: {
             isTemplate: paramsIsTemplate,
-            apGroupIds: venueApgroupMap.get(paramsVenueId)?.map(item => item.apGroupId)
+            apGroupIds: venueApgroupMap.get(paramsVenueId)?.map(item => item.apGroupId),
+            filters: { 'venueApGroups.apGroupIds': venueApgroupMap.get(paramsVenueId)?.map(item => item.apGroupId) }
           }
         }, fetchWithBQ)
 
@@ -1062,6 +1063,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return{
           ...req
         }
+      },
+      providesTags: [{ type: 'Venue', id: 'SWITCH_SETTING' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg,
+            ['UpdateVenueSwitchSetting'], () => {
+              api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'SWITCH_SETTING' }]))
+            })
+        })
       }
     }),
     updateVenueSwitchSetting: build.mutation<Venue, RequestPayload>({

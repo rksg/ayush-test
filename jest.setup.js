@@ -90,6 +90,7 @@ beforeEach(async () => {
     betaEnabled: false,
     abacEnabled: false,
     isCustomRole: false,
+    hasAllVenues: true,
     profile: {
       region: '[NA]',
       allowedRegions: [

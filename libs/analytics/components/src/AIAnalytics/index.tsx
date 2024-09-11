@@ -4,10 +4,11 @@ import { PageHeader, Tabs, TimeRangeDropDownProvider } from '@acx-ui/components'
 import { get }                                         from '@acx-ui/config'
 import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
 import { useNavigate, useParams, useTenantLink }       from '@acx-ui/react-router-dom'
-import { hasPermission }                               from '@acx-ui/user'
+import { getShowWithoutRbacCheckKey, hasPermission }   from '@acx-ui/user'
 import { DateRange }                                   from '@acx-ui/utils'
 
 import { useHeaderExtra }           from '../Header'
+import { Filter }                   from '../Header/Header'
 import { IncidentTabContent }       from '../Incidents'
 import { IntentAITabContent }       from '../IntentAI'
 import { RecommendationTabContent } from '../Recommendations'
@@ -52,7 +53,7 @@ const useTabs = () : Tab[] => {
     key: AIAnalyticsTabEnum.INTENTAI,
     title: $t({ defaultMessage: 'IntentAI' }),
     component: <IntentAITabContent />,
-    headerExtra: useHeaderExtra({ datepicker: 'dropdown' })
+    headerExtra: [<Filter key={getShowWithoutRbacCheckKey('network-filter')} />]
   }
 
   const getRecommendationTabs = () => {
