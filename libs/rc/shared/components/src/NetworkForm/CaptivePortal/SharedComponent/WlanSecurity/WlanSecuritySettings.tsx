@@ -1,0 +1,232 @@
+import { useState, useContext, useEffect } from 'react'
+import { Form, Space, Select } from 'antd'
+import { useIntl } from 'react-intl'
+import { PasswordInput } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { InformationSolid } from '@acx-ui/icons'
+import {
+  passphraseRegExp,
+  PskWlanSecurityEnum,
+  SecurityOptionsDescription,
+  SecurityOptionsPassphraseLabel,
+  trailingNorLeadingSpaces,
+  WlanSecurityEnum,
+  WisprSecurityEnum,
+  WisprSecurityOptionsDescription,
+  ManagementFrameProtectionEnum
+} from '@acx-ui/rc/utils'
+import NetworkFormContext from '../../../NetworkFormContext'
+import { MLOContext } from '../../../NetworkForm'
+
+export const WlanSecurityFormItems = () => {
+  const isCaptivePortalPskEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_PSK)
+
+  const { $t } = useIntl()
+
+  const { data, setData } = useContext(NetworkFormContext)
+  const { disableMLO } = useContext(MLOContext)
+
+  const { useWatch } = Form
+  const form = Form.useFormInstance()
+
+  const wlanSecurity = useWatch('pskProtocol', form)
+  const networkSecurity = useWatch('networkSecurity', form)
+
+  const [enablePreShared, setEnablePreShared] = useState(false)
+
+  useEffect(() => {
+    const transNetworkSecurity =
+      WisprSecurityEnum[networkSecurity as keyof typeof WisprSecurityEnum]
+    const transWlanSecurity =
+      PskWlanSecurityEnum[wlanSecurity as keyof typeof PskWlanSecurityEnum]
+    const MLOEffectiveCondition = [
+      (transNetworkSecurity === WisprSecurityEnum.PSK &&
+        transWlanSecurity === PskWlanSecurityEnum.WPA23Mixed),
+      (transNetworkSecurity === WisprSecurityEnum.PSK &&
+        transWlanSecurity === PskWlanSecurityEnum.WPA3),
+      (transNetworkSecurity === WisprSecurityEnum.OWE)
+    ].some(Boolean)
+
+    disableMLO(!MLOEffectiveCondition)
+
+    if (!MLOEffectiveCondition) {
+      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
+    }
+  }, [wlanSecurity, networkSecurity])
+
+  useEffect(() => {
+    const { wlanSecurity } = data?.wlan || {}
+    if (wlanSecurity) {
+      if (wlanSecurity === WlanSecurityEnum.None) {
+        form.setFieldValue('networkSecurity', 'NONE')
+      } else if (wlanSecurity === WlanSecurityEnum.OWE) {
+        form.setFieldValue('networkSecurity', 'OWE')
+      } else {
+        form.setFieldValue('networkSecurity', 'PSK')
+        setEnablePreShared(true)
+        form.setFieldValue('pskProtocol', wlanSecurity)
+      }
+    }
+  }, [data?.wlan?.wlanSecurity])
+
+  const securityDescription = () => {
+    const wlanSecurity = form.getFieldValue('pskProtocol')
+    return (
+      <>
+        {SecurityOptionsDescription[wlanSecurity as keyof typeof PskWlanSecurityEnum]}
+        {[
+          WlanSecurityEnum.WPA2Personal,
+          WlanSecurityEnum.WPAPersonal,
+          WlanSecurityEnum.WEP
+        ].indexOf(wlanSecurity) > -1 &&
+          <Space align='start'>
+            <InformationSolid />
+            {SecurityOptionsDescription.WPA2_DESCRIPTION_WARNING}
+          </Space>
+        }
+      </>
+    )
+  }
+  const networkSecurityOptions = Object.entries(WisprSecurityEnum).map(([k, v]) => ({
+    value: k,
+    label: v
+  }))
+  const networkSecurityDescription = () => {
+    const networkSecurity = form.getFieldValue('networkSecurity')
+    return (
+      WisprSecurityOptionsDescription[networkSecurity as keyof typeof WisprSecurityEnum]
+    )
+  }
+  const securityOptions = Object.keys(PskWlanSecurityEnum).filter(key => key !== 'WPAPersonal' && key !== 'WEP').map((key =>
+    <Select.Option key={key}>{PskWlanSecurityEnum[key as keyof typeof PskWlanSecurityEnum]}
+    </Select.Option>
+  ))
+  const onProtocolChange = (networkSec: string, wlanSec: WlanSecurityEnum) => {
+    const protocol = {} as { [key: string]: string | undefined | null }
+    if (data?.wlan?.passphrase) {
+      protocol.passphrase =
+        [WlanSecurityEnum.WPAPersonal,
+        WlanSecurityEnum.WPA2Personal,
+        WlanSecurityEnum.WPA23Mixed].includes(wlanSec)
+          ? data?.wlan?.passphrase
+          : null
+    }
+    if (data?.wlan?.saePassphrase) {
+      protocol.saePassphrase = [WlanSecurityEnum.WPA23Mixed, WlanSecurityEnum.WPA3].includes(wlanSec)
+        ? data?.wlan?.saePassphrase
+        : null
+    }
+    if (data?.wlan?.wepHexKey) {
+      protocol.wepHexKey = wlanSec === WlanSecurityEnum.WEP
+        ? data?.wlan?.wepHexKey
+        : null
+    }
+    if (wlanSec === WlanSecurityEnum.OWE) {
+      protocol.managementFrameProtection = ManagementFrameProtectionEnum.Required
+    }
+    setData && setData({
+      ...(data as any),
+      ...{
+        wlan: {
+          ...data?.wlan,
+          wlanSecurity: wlanSec,
+          ...protocol
+        }
+      },
+      networkSecurity: networkSec
+    })
+  }
+
+  return (
+    <>
+      <Form.Item
+        name='networkSecurity'
+        initialValue={'NONE'}
+        label={$t({ defaultMessage: 'Secure your network' })}
+        extra={networkSecurityDescription()}
+        children={
+          <Select
+            placeholder={$t({ defaultMessage: 'None' })}
+            options={networkSecurityOptions}
+            onChange={(selected: string) => {
+              let security = data?.wlan?.wlanSecurity
+              /* eslint-disable */
+              switch (WisprSecurityEnum[selected as keyof typeof WisprSecurityEnum]) {
+                case WisprSecurityEnum.PSK:
+                  setEnablePreShared(true)
+                  disableMLO(true)
+                  security = WlanSecurityEnum.WPA2Personal
+                  form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
+                  break
+                case WisprSecurityEnum.OWE:
+                  setEnablePreShared(false)
+                  disableMLO(false)
+                  security = WlanSecurityEnum.OWE
+                  break
+                case WisprSecurityEnum.NONE:
+                  // disable secure network
+                  setEnablePreShared(false)
+                  disableMLO(true)
+                  form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
+                  security = WlanSecurityEnum.None
+                  break
+                default:
+                  disableMLO(true)
+                  form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
+                  return
+              }
+              /* eslint-enable */
+              onProtocolChange(selected, security)
+            }}
+          />}
+      />
+
+      {enablePreShared && wlanSecurity !== WlanSecurityEnum.WEP &&
+        wlanSecurity !== WlanSecurityEnum.WPA3 &&
+        <Form.Item
+          name={['wlan', 'passphrase']}
+          label={SecurityOptionsPassphraseLabel[wlanSecurity as keyof typeof PskWlanSecurityEnum]
+            ?? SecurityOptionsPassphraseLabel.WPA2Personal}
+          rules={[
+            { required: true, min: 8 },
+            { max: 64 },
+            { validator: (_, value) => trailingNorLeadingSpaces(value) },
+            { validator: (_, value) => passphraseRegExp(value) }
+          ]}
+          validateFirst
+          extra={$t({ defaultMessage: '8 characters minimum' })}
+          children={<PasswordInput />}
+        />
+      }
+      {enablePreShared &&
+        [WlanSecurityEnum.WPA23Mixed, WlanSecurityEnum.WPA3].includes(wlanSecurity) &&
+        <Form.Item
+          name={['wlan', 'saePassphrase']}
+          label={wlanSecurity === WlanSecurityEnum.WPA3
+            ? $t({ defaultMessage: 'SAE Passphrase' })
+            : $t({ defaultMessage: 'WPA3 SAE Passphrase' })
+          }
+          rules={[
+            { required: true, min: 8 },
+            { max: 64 },
+            { validator: (_, value) => trailingNorLeadingSpaces(value) },
+            { validator: (_, value) => passphraseRegExp(value) }
+          ]}
+          validateFirst
+          extra={$t({ defaultMessage: '8 characters minimum' })}
+          children={<PasswordInput />}
+        />
+      }
+      {enablePreShared && <Form.Item
+        label={$t({ defaultMessage: 'Security Protocol' })}
+        name='pskProtocol'
+        initialValue={WlanSecurityEnum.WPA2Personal}
+        extra={securityDescription()}
+      >
+        <Select onChange={(value) => onProtocolChange('PSK', value)}>
+          {securityOptions}
+        </Select>
+      </Form.Item>}
+    </>
+  );
+};

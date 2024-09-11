@@ -26,7 +26,6 @@ import { useParams }          from '@acx-ui/react-router-dom'
 import { validationMessages } from '@acx-ui/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
-import { MLOContext }              from '../NetworkForm'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 import * as UI                     from '../styledComponents'
@@ -39,6 +38,7 @@ import { RedirectUrlInput }                      from './RedirectUrlInput'
 import { BypassCaptiveNetworkAssistantCheckbox } from './SharedComponent/BypassCNA/BypassCaptiveNetworkAssistantCheckbox'
 import { SMSTokenCheckbox, isSMSTokenAvailable } from './SharedComponent/SMSToken/SMSTokenCheckbox'
 import { WalledGardenTextArea }                  from './SharedComponent/WalledGarden/WalledGardenTextArea'
+import { WlanSecurityFormItems }                 from './SharedComponent/WlanSecurity/WlanSecuritySettings'
 import TwitterSetting                            from './TwitterSetting'
 
 const SelfSignInAppStyle = { marginBottom: '0' }
@@ -50,7 +50,6 @@ export function SelfSignInForm () {
     editMode,
     cloneMode
   } = useContext(NetworkFormContext)
-  const { disableMLO } = useContext(MLOContext)
   const { useWatch } = Form
   const form = Form.useFormInstance()
   const [
@@ -186,8 +185,6 @@ export function SelfSignInForm () {
       setAllowedSignValue(allowedSignValueTemp)
     }
     if(!editMode) {
-      disableMLO(true)
-      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
       if (isRestEnableSmsLogin)
         form.setFieldValue(['guestPortal', 'enableSmsLogin'], false)
     }
@@ -314,6 +311,7 @@ export function SelfSignInForm () {
           </>}
         >
         </Form.Item>
+        <WlanSecurityFormItems />
         <Form.Item><>
           <Form.Item
             noStyle
