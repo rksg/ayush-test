@@ -43,6 +43,7 @@ export default function SelectPolicyForm () {
   const isEdgeEnabled = useIsEdgeReady()
   const macRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isWorkflowEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE)
   const isEdgeQosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
   const ApSnmpPolicyTotalCount = useGetApSnmpViewModelQuery({
     params,
@@ -126,6 +127,11 @@ export default function SelectPolicyForm () {
       type: PolicyType.CERTIFICATE_TEMPLATE,
       categories: [RadioCardCategory.WIFI],
       disabled: !isCertificateTemplateEnabled
+    },
+    {
+      type: PolicyType.WORKFLOW,
+      categories: [RadioCardCategory.WIFI],
+      disabled: !isWorkflowEnabled
     },
     {
       type: PolicyType.SOFTGRE,
