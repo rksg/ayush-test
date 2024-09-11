@@ -101,7 +101,6 @@ function MacRegActionInputPreview (props: { data?: MacRegOnboardedVariables , on
 }
 
 
-
 export function MacRegActionPreview (props: GenericActionPreviewProps<MacRegAction>) {
   const { data, ...rest } = props
   const [page, setPage] = useState('macInputPreview')
