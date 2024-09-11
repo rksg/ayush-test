@@ -235,10 +235,10 @@ export function LanPorts () {
           { poeOut: Object.values(poeOut).some(item => item === true) })
     }
 
-    const eqOriginLan = isEqualLanPort(apLanPortsData!, currentLanPorts!)
+    const eqOriginLan = isEqualLanPort(currentLanPorts!, apLanPortsData!)
     if (eqOriginLan) return false
 
-    return isEqualLanPort(defaultLanPorts!, currentLanPorts!)
+    return isEqualLanPort(currentLanPorts!, defaultLanPorts!)
   }
 
   const processUpdateLanPorts = async (values: WifiApSetting) => {

@@ -176,7 +176,8 @@ function useColumns () {
     },
     {
       key: 'lbsServerVenueName',
-      title: $t({ defaultMessage: 'LBS Server <VenueSingular></VenueSingular> Name' }),
+      // Not support VenueSingular for Hospitality Vertical
+      title: $t({ defaultMessage: 'LBS Server Venue Name' }),
       dataIndex: 'lbsServerVenueName',
       sorter: true
     },

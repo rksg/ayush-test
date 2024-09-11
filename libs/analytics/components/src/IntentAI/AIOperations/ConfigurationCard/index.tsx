@@ -1,38 +1,42 @@
-import { Col, Row }               from 'antd'
-import { defineMessage, useIntl } from 'react-intl'
+import { Col, Row } from 'antd'
+import _            from 'lodash'
+import { useIntl }  from 'react-intl'
 
 import { Card, Tooltip, cssStr } from '@acx-ui/components'
 
-import { IntentConfigurationConfig } from '../../IntentContext'
-import { Intent }                    from '../../useIntentDetailsQuery'
+import { useIntentContext } from '../../IntentContext'
 
 import * as UI from './styledComponents'
 
-export const ConfigurationCard: React.FC<{
-  configuration: IntentConfigurationConfig, intent: Intent
-}> = ({ configuration, intent }) => {
+export const ConfigurationCard = () => {
   const { $t } = useIntl()
+  const { configuration, intent, state } = useIntentContext()
+  const valueFormatter = _.get(configuration, 'valueFormatter', String)
+  const config = configuration!
 
   const values = [
     {
       key: 'currentValue',
-      label: defineMessage({ defaultMessage: 'Current' })
+      label: $t({ defaultMessage: 'Current' }),
+      value: state === 'no-data' ? '1.2.3.4.567' : valueFormatter(intent.currentValue)
     },
     {
       key: 'recommendedValue',
-      label: defineMessage({ defaultMessage: 'Recommended' }),
-      tooltip: configuration?.tooltip
+      label: $t({ defaultMessage: 'Recommended' }),
+      value: state === 'no-data' ? '1.2.3' : valueFormatter(intent.recommendedValue),
+      tooltip: config.tooltip
     }
   ]
 
   return <Card>
-    <UI.Title>{$t(configuration.label)}</UI.Title>
+    <UI.Title>{$t(config.label)}</UI.Title>
     <Row>
-      {values.map(({ key, label, tooltip })=>
+      {values.map(({ key, label, value, tooltip })=>
         <Col key={key} span={12}>
           <UI.Statistic
-            title={$t(label)}
-            value={configuration.valueFormatter?.(intent[key as keyof Intent])}
+            $blur={state === 'no-data'}
+            title={label}
+            value={value}
             suffix={tooltip &&
               <Tooltip.Info isFilled
                 title={$t(tooltip(intent))}

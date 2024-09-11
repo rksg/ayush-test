@@ -9,6 +9,7 @@ import { Icon }                 from '../../common/IntentIcon'
 import { IntroSummary }         from '../../common/IntroSummary'
 import { richTextFormatValues } from '../../common/richTextFormatValues'
 import { aiFeatures }           from '../../config'
+import { useIntentContext }     from '../../IntentContext'
 import { useIntentAICRRMQuery } from '../RRMGraph/services'
 
 import * as SideNotes from './SideNotes'
@@ -60,7 +61,7 @@ export function Introduction (
   { sliderUrlBefore, sliderUrlAfter, queryResult }:
   { sliderUrlBefore: string, sliderUrlAfter: string, queryResult: ReturnType<typeof useIntentAICRRMQuery> }) {
   const { $t } = useIntl()
-
+  const { isDataRetained: showData } = useIntentContext()
   const compareSlider = <Loader states={[queryResult]}>
     <CompareSlider
       style={{ width: '40%', height: '100%' }}
@@ -101,7 +102,7 @@ export function Introduction (
           `}
         />
       </StepsForm.TextContent>
-      {compareSlider}
+      {showData && compareSlider}
     </Col>
     <Col span={7} offset={2}>
       <SideNotes.Introduction />
