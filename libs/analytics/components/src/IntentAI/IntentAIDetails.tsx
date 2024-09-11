@@ -13,6 +13,9 @@ import * as CDfschannelsDisable        from './AIOperations/CDfschannelsDisable'
 import * as CDfschannelsEnable         from './AIOperations/CDfschannelsEnable'
 import * as CTxpowerSame               from './AIOperations/CTxpowerSame'
 import * as IZoneFirmwareUpgrade       from './AIOperations/IZoneFirmwareUpgrade'
+import * as CProbeFlex24g              from './AirFlexAI/CProbeFlex24g'
+import * as CProbeFlex5g               from './AirFlexAI/CProbeFlex5g'
+import * as CProbeFlex6g               from './AirFlexAI/CProbeFlex6g'
 import { createIntentContextProvider } from './IntentContext'
 
 export const IntentAIDetails = createIntentContextProvider('IntentAIDetails', {
@@ -31,5 +34,8 @@ export const IntentAIDetails = createIntentContextProvider('IntentAIDetails', {
   'c-dfschannels-disable': CDfschannelsDisable,
   'c-dfschannels-enable': CDfschannelsEnable,
   'c-txpower-same': CTxpowerSame,
-  'i-zonefirmware-upgrade': IZoneFirmwareUpgrade
+  'i-zonefirmware-upgrade': IZoneFirmwareUpgrade,
+  'c-probeflex-24g': CProbeFlex24g,
+  'c-probeflex-5g': CProbeFlex5g,
+  'c-probeflex-6g': CProbeFlex6g
 })
