@@ -101,38 +101,43 @@ export const WlanSecurityFormItems = () => {
     <Select.Option key={key}>{PskWlanSecurityEnum[key as keyof typeof PskWlanSecurityEnum]}
     </Select.Option>
   ))
-  const onProtocolChange = (networkSec: string, wlanSec: WlanSecurityEnum) => {
+  const onProtocolChange = (value: WlanSecurityEnum) => {
     const protocol = {} as { [key: string]: string | undefined | null }
     if (data?.wlan?.passphrase) {
       protocol.passphrase =
         [WlanSecurityEnum.WPAPersonal,
         WlanSecurityEnum.WPA2Personal,
-        WlanSecurityEnum.WPA23Mixed].includes(wlanSec)
+        WlanSecurityEnum.WPA23Mixed].includes(value)
           ? data?.wlan?.passphrase
           : null
     }
     if (data?.wlan?.saePassphrase) {
-      protocol.saePassphrase = [WlanSecurityEnum.WPA23Mixed, WlanSecurityEnum.WPA3].includes(wlanSec)
+      protocol.saePassphrase = [WlanSecurityEnum.WPA23Mixed, WlanSecurityEnum.WPA3].includes(value)
         ? data?.wlan?.saePassphrase
         : null
     }
     if (data?.wlan?.wepHexKey) {
-      protocol.wepHexKey = wlanSec === WlanSecurityEnum.WEP
+      protocol.wepHexKey = value === WlanSecurityEnum.WEP
         ? data?.wlan?.wepHexKey
         : null
     }
-    if (wlanSec === WlanSecurityEnum.OWE) {
+    let networkSec = 'PSK';
+    if (value === WlanSecurityEnum.OWE) {
+      networkSec = 'OWE'
       protocol.managementFrameProtection = ManagementFrameProtectionEnum.Required
+    } else if (value === WlanSecurityEnum.None) {
+      networkSec = 'NONE'
     }
     setData && setData({
       ...(data as any),
       ...{
         wlan: {
           ...data?.wlan,
-          wlanSecurity: wlanSec,
+          wlanSecurity: value,
           ...protocol
         }
       },
+      pskProtocol: value,
       networkSecurity: networkSec
     })
   }
@@ -176,7 +181,7 @@ export const WlanSecurityFormItems = () => {
                   return
               }
               /* eslint-enable */
-              onProtocolChange(selected, security)
+              onProtocolChange(security)
             }}
           />}
       />
@@ -223,7 +228,7 @@ export const WlanSecurityFormItems = () => {
         initialValue={WlanSecurityEnum.WPA2Personal}
         extra={securityDescription()}
       >
-        <Select onChange={(value) => onProtocolChange('PSK', value)}>
+        <Select onChange={onProtocolChange}>
           {securityOptions}
         </Select>
       </Form.Item>}
