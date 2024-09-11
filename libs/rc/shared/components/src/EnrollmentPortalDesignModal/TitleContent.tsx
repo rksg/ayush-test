@@ -85,6 +85,7 @@ export function TitleContent (props: TitleProps) {
       <TextArea
         maxLength={100}
         value={$t({ defaultMessage: 'Title text style' })}
+        placeholder='titletext'
         style={{
           fontSize: value.uiStyleSchema.titleFontSize,
           color: value.uiColorSchema.fontHeaderColor,

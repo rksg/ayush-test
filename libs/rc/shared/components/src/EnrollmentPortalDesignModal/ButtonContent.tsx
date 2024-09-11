@@ -105,6 +105,12 @@ export function ButtonContent (props: ButtonContentProps) {
           setCursor('pointer')
           setOutline(UI.hoverOutline)
         }}
+        onMouseLeave={() => {
+          if (!clicked){
+            setCursor('none')
+            setOutline('none')
+          }
+        }}
         onClick={()=> {
           setCursor('pointer')
           setClicked(true)
