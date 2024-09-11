@@ -84,7 +84,7 @@ describe('TenantLinkWrapper', () => {
       </MemoryRouter>
     )
 
-    expect(screen.getByRole('link', { name: /here/i })
+    expect(screen.getByRole('link', { name: /Explore more/i })
       .getAttribute('href'))
       .toContain(
         `/intentAI/${baseParams.crrm!.root}/${baseParams.crrm!.sliceId}/${baseParams.crrm!.code}`)
@@ -101,7 +101,7 @@ describe('TenantLinkWrapper', () => {
       </MemoryRouter>
     )
 
-    expect(screen.getByRole('link', { name: /here/i })
+    expect(screen.getByRole('link', { name: /Explore more/i })
       .getAttribute('href'))
       .toContain(`/intentAI/${baseParams.aclb!.sliceId}/${baseParams.aclb!.code}`)
 
@@ -116,7 +116,7 @@ describe('TenantLinkWrapper', () => {
       </MemoryRouter>
     )
 
-    expect(screen.getByRole('link', { name: /here/i })
+    expect(screen.getByRole('link', { name: /Explore more/i })
       .getAttribute('href'))
       .toContain(`/recommendations/crrm/${baseParams.crrm?.intentId}`)
   })
@@ -130,7 +130,7 @@ describe('TenantLinkWrapper', () => {
       </MemoryRouter>
     )
 
-    expect(screen.getByRole('link', { name: /here/i })
+    expect(screen.getByRole('link', { name: /Explore more/i })
       .getAttribute('href'))
       .toContain(`/recommendations/aiOps/${baseParams.aclb?.intentId}`)
   })
@@ -145,7 +145,7 @@ describe('TenantLinkWrapper', () => {
       </MemoryRouter>
     )
 
-    expect(screen.getByRole('link', { name: /here/i })
+    expect(screen.getByRole('link', { name: /Explore more/i })
       .getAttribute('href'))
       .toContain(`/recommendations/aiOps/${baseParams.recommendationId}`)
   })
