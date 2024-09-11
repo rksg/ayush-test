@@ -23,6 +23,7 @@ import {
   VenueRadioTypeDataKeyMap,
   LPIButtonText,
   SupportRadioChannelsContext,
+  SelectItemOption,
   txPowerAdjustmentOptions,
   txPowerAdjustment6GOptions,
   txPowerAdjustmentExtendedOptions
@@ -112,6 +113,7 @@ export function SingleRadioSettings (props:{
   const [channelBars] = useState({ ...initChannelBars })
   const [indoorChannelBars, setIndoorChannelBars] = useState({ ...initChannelBars })
   const [outdoorChannelBars, setOutdoorChannelBars] = useState({ ...initChannelBars })
+  const [txPowerOptions, setTxPowerOptions] = useState<SelectItemOption[]>([])
 
   const [groupSize, setGroupSize] = useState(1)
 
@@ -309,6 +311,22 @@ export function SingleRadioSettings (props:{
     //const hasErrors = !isEmpty(errMsg + indoorErrMsg + outdoorErrMsg)
   }, [allowedChannels, allowedIndoorChannels, allowedOutdoorChannels, channelMethod])
 
+  useEffect(() => {
+    const getTxPowerAdjustmentOptions = () => {
+      let res = (radioType === ApRadioTypeEnum.Radio6G)? txPowerAdjustment6GOptions
+        : txPowerAdjustmentOptions
+      if (isSupportAggressiveTxPowerAdjustment) {
+        return [...res, ...txPowerAdjustmentExtendedOptions].sort((a, b) => {
+          if (a.value === 'MIN') return 1
+          if (b.value === 'MIN') return -1
+          return 0
+        })
+      }
+      return res
+    }
+    setTxPowerOptions(getTxPowerAdjustmentOptions())
+  }, [radioType, isSupportAggressiveTxPowerAdjustment])
+
   const resetToDefaule = () => {
     if (props.onResetDefaultValue) {
       props.onResetDefaultValue(radioType)
@@ -331,18 +349,6 @@ export function SingleRadioSettings (props:{
     combinChannelOnChanged.current = true
   }
 
-  const getTxPowerAdjustmentOptions = (radioType : ApRadioTypeEnum) => {
-    let res = (radioType === ApRadioTypeEnum.Radio6G)? txPowerAdjustment6GOptions
-      : txPowerAdjustmentOptions
-    if (isSupportAggressiveTxPowerAdjustment) {
-      return [...res, ...txPowerAdjustmentExtendedOptions].sort((a, b) => {
-        if (a.value === 'MIN') return 1
-        if (b.value === 'MIN') return -1
-        return 0
-      })
-    }
-    return res
-  }
 
   const selectRadioChannelSelectionType = () => {
     if(channelBandwidth === '320MHz') {
@@ -407,7 +413,7 @@ export function SingleRadioSettings (props:{
               radioType={radioType}
               radioDataKey={radioDataKey}
               disabled={inherit5G || disable}
-              txPowerOptions={getTxPowerAdjustmentOptions(radioType)}
+              txPowerOptions={txPowerOptions}
               channelBandwidthOptions={bandwidthOptions}
               context={context}
               isUseVenueSettings={isUseVenueSettings}
