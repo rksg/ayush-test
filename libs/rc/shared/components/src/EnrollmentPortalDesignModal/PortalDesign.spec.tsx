@@ -101,6 +101,7 @@ describe('Portal Design', () => {
     await screen.findByText('Title text style')
     await screen.findByText('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
 
+    await userEvent.click(await screen.findByText('Reset'))
     await userEvent.click(await screen.findByText('Components'))
     const rows = await screen.findAllByRole('switch')
     const toogleButton = rows[2]
@@ -115,7 +116,6 @@ describe('Portal Design', () => {
     await userEvent.type(await screen.findByPlaceholderText(
       'Copy from your WiFi4EU installation report'),'UUID')
     await userEvent.click(await screen.findByRole('button', { name: 'OK' }))
-
     await waitFor(() => expect(getUIConfigApi).toHaveBeenCalled())
     await waitFor(() => expect(getUIConfigImageApi).toHaveBeenCalledTimes(2))
   })
