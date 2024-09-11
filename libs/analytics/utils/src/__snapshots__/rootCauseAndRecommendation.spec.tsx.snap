@@ -233,15 +233,15 @@ Array [
                   "children": Array [
                     Object {
                       "type": 0,
-                      "value": "Click ",
+                      "value": "Harness the power of IntentAI to automate configuration changes and enhance network performance. ",
                     },
                     Object {
                       "type": 1,
-                      "value": "link",
+                      "value": "crrmLink",
                     },
                     Object {
                       "type": 0,
-                      "value": " to apply the AI-Driven RRM recommendation.",
+                      "value": ".",
                     },
                   ],
                   "type": 8,
@@ -249,25 +249,18 @@ Array [
                 },
               ]
             }
-            id="JxjU5A"
+            id="7axqCg"
             values={
               Object {
-                "li": [Function],
-                "link": <TenantLink
-                  to="/recommendations/crrm/123"
-                >
-                  <Memo(MemoizedFormattedMessage)
-                    defaultMessage={
-                      Array [
-                        Object {
-                          "type": 0,
-                          "value": "here",
-                        },
-                      ]
+                "crrmLink": <TenantLinkWrapper
+                  linkType="crrm"
+                  params={
+                    Object {
+                      "recommendationId": "123",
                     }
-                    id="hniz8Z"
-                  />
-                </TenantLink>,
+                  }
+                />,
+                "li": [Function],
                 "ol": [Function],
                 "p": [Function],
                 "ul": [Function],
@@ -1277,7 +1270,7 @@ Array [
                   "children": Array [
                     Object {
                       "type": 0,
-                      "value": "Click ",
+                      "value": "Harness the power of IntentAI to automate configuration changes and enhance network performance. ",
                     },
                     Object {
                       "type": 1,
@@ -1285,7 +1278,7 @@ Array [
                     },
                     Object {
                       "type": 0,
-                      "value": " to enable client load balancing AI Ops recommendation.",
+                      "value": ".",
                     },
                   ],
                   "type": 8,
@@ -1293,24 +1286,17 @@ Array [
                 },
               ]
             }
-            id="OHOWDL"
+            id="cPP198"
             values={
               Object {
-                "aiOpsLink": <TenantLink
-                  to="/recommendations/aiOps/undefined"
-                >
-                  <Memo(MemoizedFormattedMessage)
-                    defaultMessage={
-                      Array [
-                        Object {
-                          "type": 0,
-                          "value": "here",
-                        },
-                      ]
+                "aiOpsLink": <TenantLinkWrapper
+                  linkType="aiOps"
+                  params={
+                    Object {
+                      "ssidCountPerRadioSlice": 1,
                     }
-                    id="hniz8Z"
-                  />
-                </TenantLink>,
+                  }
+                />,
                 "li": [Function],
                 "ol": [Function],
                 "p": [Function],
@@ -1359,7 +1345,7 @@ Array [
                   "children": Array [
                     Object {
                       "type": 0,
-                      "value": "Click ",
+                      "value": "Harness the power of IntentAI to automate configuration changes and enhance network performance. ",
                     },
                     Object {
                       "type": 1,
@@ -1367,7 +1353,7 @@ Array [
                     },
                     Object {
                       "type": 0,
-                      "value": " to apply the AI-Driven RRM recommendation.",
+                      "value": ".",
                     },
                   ],
                   "type": 8,
@@ -1375,24 +1361,1077 @@ Array [
                 },
               ]
             }
-            id="u1xTUb"
+            id="7axqCg"
             values={
               Object {
-                "crrmLink": <TenantLink
-                  to="/recommendations/crrm/undefined"
-                >
-                  <Memo(MemoizedFormattedMessage)
-                    defaultMessage={
-                      Array [
-                        Object {
-                          "type": 0,
-                          "value": "here",
-                        },
-                      ]
+                "crrmLink": <TenantLinkWrapper
+                  linkType="crrm"
+                  params={
+                    Object {
+                      "ssidCountPerRadioSlice": 1,
                     }
-                    id="hniz8Z"
-                  />
-                </TenantLink>,
+                  }
+                />,
+                "li": [Function],
+                "ol": [Function],
+                "p": [Function],
+                "ul": [Function],
+              }
+            }
+          />,
+          <Memo(MemoizedFormattedMessage)
+            defaultMessage={
+              Array [
+                Object {
+                  "children": Array [
+                    Object {
+                      "type": 0,
+                      "value": "Remove legacy devices or upgrade them. If possible, enable OFDM-only mode on WLANs.",
+                    },
+                  ],
+                  "type": 8,
+                  "value": "li",
+                },
+              ]
+            }
+            id="pBd7xL"
+            values={
+              Object {
+                "li": [Function],
+                "ol": [Function],
+                "p": [Function],
+                "ul": [Function],
+              }
+            }
+          />,
+        ],
+      },
+    },
+    "rootCauses": Object {
+      "rootCauseText": Object {
+        "defaultMessage": Array [
+          Object {
+            "children": Array [
+              Object {
+                "type": 0,
+                "value": "Airtime Rx is unusually high, and this can be a result from various factors, such as a high density of Wi-Fi devices, channel congestion due to co-channel interference, excessive number of management frames, and sub-optimal configurations.",
+              },
+            ],
+            "type": 8,
+            "value": "p",
+          },
+          Object {
+            "type": 0,
+            "value": " ",
+          },
+          Object {
+            "children": Array [
+              Object {
+                "type": 0,
+                "value": "The most likely root ",
+              },
+              Object {
+                "offset": 0,
+                "options": Object {
+                  "one": Object {
+                    "value": Array [
+                      Object {
+                        "type": 0,
+                        "value": "cause",
+                      },
+                    ],
+                  },
+                  "other": Object {
+                    "value": Array [
+                      Object {
+                        "type": 0,
+                        "value": "causes",
+                      },
+                    ],
+                  },
+                },
+                "pluralType": "cardinal",
+                "type": 6,
+                "value": "count",
+              },
+              Object {
+                "type": 0,
+                "value": " here ",
+              },
+              Object {
+                "offset": 0,
+                "options": Object {
+                  "one": Object {
+                    "value": Array [
+                      Object {
+                        "type": 0,
+                        "value": "is",
+                      },
+                    ],
+                  },
+                  "other": Object {
+                    "value": Array [
+                      Object {
+                        "type": 0,
+                        "value": "are",
+                      },
+                    ],
+                  },
+                },
+                "pluralType": "cardinal",
+                "type": 6,
+                "value": "count",
+              },
+              Object {
+                "type": 0,
+                "value": ":",
+              },
+            ],
+            "type": 8,
+            "value": "p",
+          },
+          Object {
+            "type": 0,
+            "value": " ",
+          },
+          Object {
+            "children": Array [
+              Object {
+                "type": 0,
+                "value": " ",
+              },
+              Object {
+                "type": 1,
+                "value": "params",
+              },
+              Object {
+                "type": 0,
+                "value": " ",
+              },
+            ],
+            "type": 8,
+            "value": "ol",
+          },
+        ],
+        "id": "ZbUSVU",
+      },
+      "rootCauseValues": Object {
+        "count": 4,
+        "params": Array [
+          <Memo(MemoizedFormattedMessage)
+            defaultMessage={
+              Array [
+                Object {
+                  "children": Array [
+                    Object {
+                      "type": 0,
+                      "value": "High density of Wi-Fi devices in the network.",
+                    },
+                  ],
+                  "type": 8,
+                  "value": "li",
+                },
+              ]
+            }
+            id="wdFloM"
+            values={
+              Object {
+                "li": [Function],
+                "ol": [Function],
+                "p": [Function],
+                "ul": [Function],
+              }
+            }
+          />,
+          <Memo(MemoizedFormattedMessage)
+            defaultMessage={
+              Array [
+                Object {
+                  "children": Array [
+                    Object {
+                      "type": 0,
+                      "value": "Excessive number of management frames due to too many SSIDs being broadcasted in the network.",
+                    },
+                  ],
+                  "type": 8,
+                  "value": "li",
+                },
+              ]
+            }
+            id="du1qG4"
+            values={
+              Object {
+                "li": [Function],
+                "ol": [Function],
+                "p": [Function],
+                "ul": [Function],
+              }
+            }
+          />,
+          <Memo(MemoizedFormattedMessage)
+            defaultMessage={
+              Array [
+                Object {
+                  "children": Array [
+                    Object {
+                      "type": 0,
+                      "value": "High co-channel interference.",
+                    },
+                  ],
+                  "type": 8,
+                  "value": "li",
+                },
+              ]
+            }
+            id="p0KsdC"
+            values={
+              Object {
+                "li": [Function],
+                "ol": [Function],
+                "p": [Function],
+                "ul": [Function],
+              }
+            }
+          />,
+          <Memo(MemoizedFormattedMessage)
+            defaultMessage={
+              Array [
+                Object {
+                  "children": Array [
+                    Object {
+                      "type": 0,
+                      "value": "High number of legacy Wi-Fi devices.",
+                    },
+                    Object {
+                      "children": Array [
+                        Object {
+                          "children": Array [
+                            Object {
+                              "type": 0,
+                              "value": "Definition of legacy devices - 11b, 11a, and a combination of 11a and 11b.",
+                            },
+                          ],
+                          "type": 8,
+                          "value": "li",
+                        },
+                      ],
+                      "type": 8,
+                      "value": "ul",
+                    },
+                  ],
+                  "type": 8,
+                  "value": "li",
+                },
+              ]
+            }
+            id="hp3B+1"
+            values={
+              Object {
+                "li": [Function],
+                "ol": [Function],
+                "p": [Function],
+                "ul": [Function],
+              }
+            }
+          />,
+        ],
+      },
+    },
+  },
+]
+`;
+
+exports[`getRootCauseAndRecommendations airtime Rx Incident should return correct data if feature flag is on RA 1`] = `
+Array [
+  Object {
+    "recommendations": Object {
+      "recommendationsText": Object {
+        "defaultMessage": Array [
+          Object {
+            "children": Array [
+              Object {
+                "type": 0,
+                "value": "Based on the root ",
+              },
+              Object {
+                "offset": 0,
+                "options": Object {
+                  "one": Object {
+                    "value": Array [
+                      Object {
+                        "type": 0,
+                        "value": "cause",
+                      },
+                    ],
+                  },
+                  "other": Object {
+                    "value": Array [
+                      Object {
+                        "type": 0,
+                        "value": "causes",
+                      },
+                    ],
+                  },
+                },
+                "pluralType": "cardinal",
+                "type": 6,
+                "value": "count",
+              },
+              Object {
+                "type": 0,
+                "value": " identified, the recommended ",
+              },
+              Object {
+                "offset": 0,
+                "options": Object {
+                  "one": Object {
+                    "value": Array [
+                      Object {
+                        "type": 0,
+                        "value": "resolution",
+                      },
+                    ],
+                  },
+                  "other": Object {
+                    "value": Array [
+                      Object {
+                        "type": 0,
+                        "value": "resolutions",
+                      },
+                    ],
+                  },
+                },
+                "pluralType": "cardinal",
+                "type": 6,
+                "value": "count",
+              },
+              Object {
+                "type": 0,
+                "value": " ",
+              },
+              Object {
+                "offset": 0,
+                "options": Object {
+                  "one": Object {
+                    "value": Array [
+                      Object {
+                        "type": 0,
+                        "value": "is",
+                      },
+                    ],
+                  },
+                  "other": Object {
+                    "value": Array [
+                      Object {
+                        "type": 0,
+                        "value": "are",
+                      },
+                    ],
+                  },
+                },
+                "pluralType": "cardinal",
+                "type": 6,
+                "value": "count",
+              },
+              Object {
+                "type": 0,
+                "value": ":",
+              },
+            ],
+            "type": 8,
+            "value": "p",
+          },
+          Object {
+            "type": 0,
+            "value": " ",
+          },
+          Object {
+            "children": Array [
+              Object {
+                "type": 0,
+                "value": " ",
+              },
+              Object {
+                "type": 1,
+                "value": "params",
+              },
+              Object {
+                "type": 0,
+                "value": " ",
+              },
+            ],
+            "type": 8,
+            "value": "ol",
+          },
+        ],
+        "id": "ru+scw",
+      },
+      "recommendationsValues": Object {
+        "count": 4,
+        "params": Array [
+          <Memo(MemoizedFormattedMessage)
+            defaultMessage={
+              Array [
+                Object {
+                  "children": Array [
+                    Object {
+                      "type": 0,
+                      "value": "Harness the power of IntentAI to automate configuration changes and enhance network performance. ",
+                    },
+                    Object {
+                      "type": 1,
+                      "value": "aiOpsLink",
+                    },
+                    Object {
+                      "type": 0,
+                      "value": ".",
+                    },
+                  ],
+                  "type": 8,
+                  "value": "li",
+                },
+              ]
+            }
+            id="cPP198"
+            values={
+              Object {
+                "aiOpsLink": <TenantLinkWrapper
+                  linkType="aiOps"
+                  params={
+                    Object {
+                      "aclb": Object {
+                        "code": "c-aclb-enable",
+                        "intentId": "49033f10-eeae-4318-bae2-5cf52ebc0319",
+                        "root": "6f931c53-21eb-4727-b2ad-e23b43d98846",
+                        "sliceId": "dff976ca-a4ea-4f6c-ab63-cb8e4a886df6",
+                      },
+                      "crrm": Object {
+                        "code": "c-crrm-channel24g-auto",
+                        "intentId": "3c61bda8-85ba-4356-b955-691b755cf6f8",
+                        "root": "204fa5c7-4d45-4315-848d-9c54460ae8d7",
+                        "sliceId": "cc36f41d-e6e8-4763-a28d-a38aebb500b2",
+                      },
+                      "ssidCountPerRadioSlice": 1,
+                    }
+                  }
+                />,
+                "li": [Function],
+                "ol": [Function],
+                "p": [Function],
+                "ul": [Function],
+              }
+            }
+          />,
+          <Memo(MemoizedFormattedMessage)
+            defaultMessage={
+              Array [
+                Object {
+                  "children": Array [
+                    Object {
+                      "type": 0,
+                      "value": "There are currently an average of ",
+                    },
+                    Object {
+                      "type": 1,
+                      "value": "ssidCountPerRadioSlice",
+                    },
+                    Object {
+                      "type": 0,
+                      "value": " SSIDs/WLANs being broadcasted per AP. Disable unnecessary SSIDs/WLANs. A general guideline would be 5 SSIDs/WLANs or less.",
+                    },
+                  ],
+                  "type": 8,
+                  "value": "li",
+                },
+              ]
+            }
+            id="avuUdE"
+            values={
+              Object {
+                "li": [Function],
+                "ol": [Function],
+                "p": [Function],
+                "ssidCountPerRadioSlice": 1,
+                "ul": [Function],
+              }
+            }
+          />,
+          <Memo(MemoizedFormattedMessage)
+            defaultMessage={
+              Array [
+                Object {
+                  "children": Array [
+                    Object {
+                      "type": 0,
+                      "value": "Harness the power of IntentAI to automate configuration changes and enhance network performance. ",
+                    },
+                    Object {
+                      "type": 1,
+                      "value": "crrmLink",
+                    },
+                    Object {
+                      "type": 0,
+                      "value": ".",
+                    },
+                  ],
+                  "type": 8,
+                  "value": "li",
+                },
+              ]
+            }
+            id="7axqCg"
+            values={
+              Object {
+                "crrmLink": <TenantLinkWrapper
+                  linkType="crrm"
+                  params={
+                    Object {
+                      "aclb": Object {
+                        "code": "c-aclb-enable",
+                        "intentId": "49033f10-eeae-4318-bae2-5cf52ebc0319",
+                        "root": "6f931c53-21eb-4727-b2ad-e23b43d98846",
+                        "sliceId": "dff976ca-a4ea-4f6c-ab63-cb8e4a886df6",
+                      },
+                      "crrm": Object {
+                        "code": "c-crrm-channel24g-auto",
+                        "intentId": "3c61bda8-85ba-4356-b955-691b755cf6f8",
+                        "root": "204fa5c7-4d45-4315-848d-9c54460ae8d7",
+                        "sliceId": "cc36f41d-e6e8-4763-a28d-a38aebb500b2",
+                      },
+                      "ssidCountPerRadioSlice": 1,
+                    }
+                  }
+                />,
+                "li": [Function],
+                "ol": [Function],
+                "p": [Function],
+                "ul": [Function],
+              }
+            }
+          />,
+          <Memo(MemoizedFormattedMessage)
+            defaultMessage={
+              Array [
+                Object {
+                  "children": Array [
+                    Object {
+                      "type": 0,
+                      "value": "Remove legacy devices or upgrade them. If possible, enable OFDM-only mode on WLANs.",
+                    },
+                  ],
+                  "type": 8,
+                  "value": "li",
+                },
+              ]
+            }
+            id="pBd7xL"
+            values={
+              Object {
+                "li": [Function],
+                "ol": [Function],
+                "p": [Function],
+                "ul": [Function],
+              }
+            }
+          />,
+        ],
+      },
+    },
+    "rootCauses": Object {
+      "rootCauseText": Object {
+        "defaultMessage": Array [
+          Object {
+            "children": Array [
+              Object {
+                "type": 0,
+                "value": "Airtime Rx is unusually high, and this can be a result from various factors, such as a high density of Wi-Fi devices, channel congestion due to co-channel interference, excessive number of management frames, and sub-optimal configurations.",
+              },
+            ],
+            "type": 8,
+            "value": "p",
+          },
+          Object {
+            "type": 0,
+            "value": " ",
+          },
+          Object {
+            "children": Array [
+              Object {
+                "type": 0,
+                "value": "The most likely root ",
+              },
+              Object {
+                "offset": 0,
+                "options": Object {
+                  "one": Object {
+                    "value": Array [
+                      Object {
+                        "type": 0,
+                        "value": "cause",
+                      },
+                    ],
+                  },
+                  "other": Object {
+                    "value": Array [
+                      Object {
+                        "type": 0,
+                        "value": "causes",
+                      },
+                    ],
+                  },
+                },
+                "pluralType": "cardinal",
+                "type": 6,
+                "value": "count",
+              },
+              Object {
+                "type": 0,
+                "value": " here ",
+              },
+              Object {
+                "offset": 0,
+                "options": Object {
+                  "one": Object {
+                    "value": Array [
+                      Object {
+                        "type": 0,
+                        "value": "is",
+                      },
+                    ],
+                  },
+                  "other": Object {
+                    "value": Array [
+                      Object {
+                        "type": 0,
+                        "value": "are",
+                      },
+                    ],
+                  },
+                },
+                "pluralType": "cardinal",
+                "type": 6,
+                "value": "count",
+              },
+              Object {
+                "type": 0,
+                "value": ":",
+              },
+            ],
+            "type": 8,
+            "value": "p",
+          },
+          Object {
+            "type": 0,
+            "value": " ",
+          },
+          Object {
+            "children": Array [
+              Object {
+                "type": 0,
+                "value": " ",
+              },
+              Object {
+                "type": 1,
+                "value": "params",
+              },
+              Object {
+                "type": 0,
+                "value": " ",
+              },
+            ],
+            "type": 8,
+            "value": "ol",
+          },
+        ],
+        "id": "ZbUSVU",
+      },
+      "rootCauseValues": Object {
+        "count": 4,
+        "params": Array [
+          <Memo(MemoizedFormattedMessage)
+            defaultMessage={
+              Array [
+                Object {
+                  "children": Array [
+                    Object {
+                      "type": 0,
+                      "value": "High density of Wi-Fi devices in the network.",
+                    },
+                  ],
+                  "type": 8,
+                  "value": "li",
+                },
+              ]
+            }
+            id="wdFloM"
+            values={
+              Object {
+                "li": [Function],
+                "ol": [Function],
+                "p": [Function],
+                "ul": [Function],
+              }
+            }
+          />,
+          <Memo(MemoizedFormattedMessage)
+            defaultMessage={
+              Array [
+                Object {
+                  "children": Array [
+                    Object {
+                      "type": 0,
+                      "value": "Excessive number of management frames due to too many SSIDs being broadcasted in the network.",
+                    },
+                  ],
+                  "type": 8,
+                  "value": "li",
+                },
+              ]
+            }
+            id="du1qG4"
+            values={
+              Object {
+                "li": [Function],
+                "ol": [Function],
+                "p": [Function],
+                "ul": [Function],
+              }
+            }
+          />,
+          <Memo(MemoizedFormattedMessage)
+            defaultMessage={
+              Array [
+                Object {
+                  "children": Array [
+                    Object {
+                      "type": 0,
+                      "value": "High co-channel interference.",
+                    },
+                  ],
+                  "type": 8,
+                  "value": "li",
+                },
+              ]
+            }
+            id="p0KsdC"
+            values={
+              Object {
+                "li": [Function],
+                "ol": [Function],
+                "p": [Function],
+                "ul": [Function],
+              }
+            }
+          />,
+          <Memo(MemoizedFormattedMessage)
+            defaultMessage={
+              Array [
+                Object {
+                  "children": Array [
+                    Object {
+                      "type": 0,
+                      "value": "High number of legacy Wi-Fi devices.",
+                    },
+                    Object {
+                      "children": Array [
+                        Object {
+                          "children": Array [
+                            Object {
+                              "type": 0,
+                              "value": "Definition of legacy devices - 11b, 11a, and a combination of 11a and 11b.",
+                            },
+                          ],
+                          "type": 8,
+                          "value": "li",
+                        },
+                      ],
+                      "type": 8,
+                      "value": "ul",
+                    },
+                  ],
+                  "type": 8,
+                  "value": "li",
+                },
+              ]
+            }
+            id="hp3B+1"
+            values={
+              Object {
+                "li": [Function],
+                "ol": [Function],
+                "p": [Function],
+                "ul": [Function],
+              }
+            }
+          />,
+        ],
+      },
+    },
+  },
+]
+`;
+
+exports[`getRootCauseAndRecommendations airtime Rx Incident should return correct data if feature flag is on for R1 1`] = `
+Array [
+  Object {
+    "recommendations": Object {
+      "recommendationsText": Object {
+        "defaultMessage": Array [
+          Object {
+            "children": Array [
+              Object {
+                "type": 0,
+                "value": "Based on the root ",
+              },
+              Object {
+                "offset": 0,
+                "options": Object {
+                  "one": Object {
+                    "value": Array [
+                      Object {
+                        "type": 0,
+                        "value": "cause",
+                      },
+                    ],
+                  },
+                  "other": Object {
+                    "value": Array [
+                      Object {
+                        "type": 0,
+                        "value": "causes",
+                      },
+                    ],
+                  },
+                },
+                "pluralType": "cardinal",
+                "type": 6,
+                "value": "count",
+              },
+              Object {
+                "type": 0,
+                "value": " identified, the recommended ",
+              },
+              Object {
+                "offset": 0,
+                "options": Object {
+                  "one": Object {
+                    "value": Array [
+                      Object {
+                        "type": 0,
+                        "value": "resolution",
+                      },
+                    ],
+                  },
+                  "other": Object {
+                    "value": Array [
+                      Object {
+                        "type": 0,
+                        "value": "resolutions",
+                      },
+                    ],
+                  },
+                },
+                "pluralType": "cardinal",
+                "type": 6,
+                "value": "count",
+              },
+              Object {
+                "type": 0,
+                "value": " ",
+              },
+              Object {
+                "offset": 0,
+                "options": Object {
+                  "one": Object {
+                    "value": Array [
+                      Object {
+                        "type": 0,
+                        "value": "is",
+                      },
+                    ],
+                  },
+                  "other": Object {
+                    "value": Array [
+                      Object {
+                        "type": 0,
+                        "value": "are",
+                      },
+                    ],
+                  },
+                },
+                "pluralType": "cardinal",
+                "type": 6,
+                "value": "count",
+              },
+              Object {
+                "type": 0,
+                "value": ":",
+              },
+            ],
+            "type": 8,
+            "value": "p",
+          },
+          Object {
+            "type": 0,
+            "value": " ",
+          },
+          Object {
+            "children": Array [
+              Object {
+                "type": 0,
+                "value": " ",
+              },
+              Object {
+                "type": 1,
+                "value": "params",
+              },
+              Object {
+                "type": 0,
+                "value": " ",
+              },
+            ],
+            "type": 8,
+            "value": "ol",
+          },
+        ],
+        "id": "ru+scw",
+      },
+      "recommendationsValues": Object {
+        "count": 4,
+        "params": Array [
+          <Memo(MemoizedFormattedMessage)
+            defaultMessage={
+              Array [
+                Object {
+                  "children": Array [
+                    Object {
+                      "type": 0,
+                      "value": "Harness the power of IntentAI to automate configuration changes and enhance network performance. ",
+                    },
+                    Object {
+                      "type": 1,
+                      "value": "aiOpsLink",
+                    },
+                    Object {
+                      "type": 0,
+                      "value": ".",
+                    },
+                  ],
+                  "type": 8,
+                  "value": "li",
+                },
+              ]
+            }
+            id="cPP198"
+            values={
+              Object {
+                "aiOpsLink": <TenantLinkWrapper
+                  linkType="aiOps"
+                  params={
+                    Object {
+                      "aclb": Object {
+                        "code": "c-aclb-enable",
+                        "intentId": "49033f10-eeae-4318-bae2-5cf52ebc0319",
+                        "root": "6f931c53-21eb-4727-b2ad-e23b43d98846",
+                        "sliceId": "dff976ca-a4ea-4f6c-ab63-cb8e4a886df6",
+                      },
+                      "crrm": Object {
+                        "code": "c-crrm-channel24g-auto",
+                        "intentId": "3c61bda8-85ba-4356-b955-691b755cf6f8",
+                        "root": "204fa5c7-4d45-4315-848d-9c54460ae8d7",
+                        "sliceId": "cc36f41d-e6e8-4763-a28d-a38aebb500b2",
+                      },
+                      "ssidCountPerRadioSlice": 1,
+                    }
+                  }
+                />,
+                "li": [Function],
+                "ol": [Function],
+                "p": [Function],
+                "ul": [Function],
+              }
+            }
+          />,
+          <Memo(MemoizedFormattedMessage)
+            defaultMessage={
+              Array [
+                Object {
+                  "children": Array [
+                    Object {
+                      "type": 0,
+                      "value": "There are currently an average of ",
+                    },
+                    Object {
+                      "type": 1,
+                      "value": "ssidCountPerRadioSlice",
+                    },
+                    Object {
+                      "type": 0,
+                      "value": " SSIDs/WLANs being broadcasted per AP. Disable unnecessary SSIDs/WLANs. A general guideline would be 5 SSIDs/WLANs or less.",
+                    },
+                  ],
+                  "type": 8,
+                  "value": "li",
+                },
+              ]
+            }
+            id="avuUdE"
+            values={
+              Object {
+                "li": [Function],
+                "ol": [Function],
+                "p": [Function],
+                "ssidCountPerRadioSlice": 1,
+                "ul": [Function],
+              }
+            }
+          />,
+          <Memo(MemoizedFormattedMessage)
+            defaultMessage={
+              Array [
+                Object {
+                  "children": Array [
+                    Object {
+                      "type": 0,
+                      "value": "Harness the power of IntentAI to automate configuration changes and enhance network performance. ",
+                    },
+                    Object {
+                      "type": 1,
+                      "value": "crrmLink",
+                    },
+                    Object {
+                      "type": 0,
+                      "value": ".",
+                    },
+                  ],
+                  "type": 8,
+                  "value": "li",
+                },
+              ]
+            }
+            id="7axqCg"
+            values={
+              Object {
+                "crrmLink": <TenantLinkWrapper
+                  linkType="crrm"
+                  params={
+                    Object {
+                      "aclb": Object {
+                        "code": "c-aclb-enable",
+                        "intentId": "49033f10-eeae-4318-bae2-5cf52ebc0319",
+                        "root": "6f931c53-21eb-4727-b2ad-e23b43d98846",
+                        "sliceId": "dff976ca-a4ea-4f6c-ab63-cb8e4a886df6",
+                      },
+                      "crrm": Object {
+                        "code": "c-crrm-channel24g-auto",
+                        "intentId": "3c61bda8-85ba-4356-b955-691b755cf6f8",
+                        "root": "204fa5c7-4d45-4315-848d-9c54460ae8d7",
+                        "sliceId": "cc36f41d-e6e8-4763-a28d-a38aebb500b2",
+                      },
+                      "ssidCountPerRadioSlice": 1,
+                    }
+                  }
+                />,
                 "li": [Function],
                 "ol": [Function],
                 "p": [Function],
@@ -1797,7 +2836,7 @@ Array [
                   "children": Array [
                     Object {
                       "type": 0,
-                      "value": "Click ",
+                      "value": "Harness the power of IntentAI to automate configuration changes and enhance network performance. ",
                     },
                     Object {
                       "type": 1,
@@ -1805,7 +2844,7 @@ Array [
                     },
                     Object {
                       "type": 0,
-                      "value": " to enable client load balancing AI Ops recommendation.",
+                      "value": ".",
                     },
                   ],
                   "type": 8,
@@ -1813,24 +2852,17 @@ Array [
                 },
               ]
             }
-            id="OHOWDL"
+            id="cPP198"
             values={
               Object {
-                "aiOpsLink": <TenantLink
-                  to="/recommendations/aiOps/undefined"
-                >
-                  <Memo(MemoizedFormattedMessage)
-                    defaultMessage={
-                      Array [
-                        Object {
-                          "type": 0,
-                          "value": "here",
-                        },
-                      ]
+                "aiOpsLink": <TenantLinkWrapper
+                  linkType="aiOps"
+                  params={
+                    Object {
+                      "ssidCountPerRadioSlice": 0,
                     }
-                    id="hniz8Z"
-                  />
-                </TenantLink>,
+                  }
+                />,
                 "li": [Function],
                 "ol": [Function],
                 "p": [Function],
@@ -2294,7 +3326,7 @@ Array [
                   "children": Array [
                     Object {
                       "type": 0,
-                      "value": "Click ",
+                      "value": "Harness the power of IntentAI to automate configuration changes and enhance network performance. ",
                     },
                     Object {
                       "type": 1,
@@ -2302,7 +3334,7 @@ Array [
                     },
                     Object {
                       "type": 0,
-                      "value": " to enable client load balancing AI Ops recommendation.",
+                      "value": ".",
                     },
                   ],
                   "type": 8,
@@ -2310,24 +3342,17 @@ Array [
                 },
               ]
             }
-            id="OHOWDL"
+            id="cPP198"
             values={
               Object {
-                "aiOpsLink": <TenantLink
-                  to="/recommendations/aiOps/undefined"
-                >
-                  <Memo(MemoizedFormattedMessage)
-                    defaultMessage={
-                      Array [
-                        Object {
-                          "type": 0,
-                          "value": "here",
-                        },
-                      ]
+                "aiOpsLink": <TenantLinkWrapper
+                  linkType="aiOps"
+                  params={
+                    Object {
+                      "ssidCountPerRadioSlice": 0,
                     }
-                    id="hniz8Z"
-                  />
-                </TenantLink>,
+                  }
+                />,
                 "li": [Function],
                 "ol": [Function],
                 "p": [Function],
@@ -3491,7 +4516,7 @@ Array [
                   "children": Array [
                     Object {
                       "type": 0,
-                      "value": "Click ",
+                      "value": "Harness the power of IntentAI to automate configuration changes and enhance network performance. ",
                     },
                     Object {
                       "type": 1,
@@ -3499,7 +4524,7 @@ Array [
                     },
                     Object {
                       "type": 0,
-                      "value": " to apply the AI-Driven RRM recommendation.",
+                      "value": ".",
                     },
                   ],
                   "type": 8,
@@ -3507,24 +4532,17 @@ Array [
                 },
               ]
             }
-            id="u1xTUb"
+            id="7axqCg"
             values={
               Object {
-                "crrmLink": <TenantLink
-                  to="/recommendations/crrm/undefined"
-                >
-                  <Memo(MemoizedFormattedMessage)
-                    defaultMessage={
-                      Array [
-                        Object {
-                          "type": 0,
-                          "value": "here",
-                        },
-                      ]
+                "crrmLink": <TenantLinkWrapper
+                  linkType="crrm"
+                  params={
+                    Object {
+                      "ssidCountPerRadioSlice": 0,
                     }
-                    id="hniz8Z"
-                  />
-                </TenantLink>,
+                  }
+                />,
                 "li": [Function],
                 "ol": [Function],
                 "p": [Function],
@@ -4837,15 +5855,15 @@ Array [
                   "children": Array [
                     Object {
                       "type": 0,
-                      "value": "Click ",
+                      "value": "Harness the power of IntentAI to automate configuration changes and enhance network performance. ",
                     },
                     Object {
                       "type": 1,
-                      "value": "link",
+                      "value": "aiOpsLink",
                     },
                     Object {
                       "type": 0,
-                      "value": " to enable client load balancing AI Ops recommendation.",
+                      "value": ".",
                     },
                   ],
                   "type": 8,
@@ -4853,25 +5871,18 @@ Array [
                 },
               ]
             }
-            id="dwDQ8B"
+            id="cPP198"
             values={
               Object {
                 "li": [Function],
-                "link": <TenantLink
-                  to="/recommendations/aiOps/undefined"
-                >
-                  <Memo(MemoizedFormattedMessage)
-                    defaultMessage={
-                      Array [
-                        Object {
-                          "type": 0,
-                          "value": "here",
-                        },
-                      ]
+                "link": <TenantLinkWrapper
+                  linkType="aiOps"
+                  params={
+                    Object {
+                      "ssidCountPerRadioSlice": 1,
                     }
-                    id="hniz8Z"
-                  />
-                </TenantLink>,
+                  }
+                />,
                 "ol": [Function],
                 "p": [Function],
                 "ul": [Function],
@@ -5384,15 +6395,15 @@ Array [
                   "children": Array [
                     Object {
                       "type": 0,
-                      "value": "Click ",
+                      "value": "Harness the power of IntentAI to automate configuration changes and enhance network performance. ",
                     },
                     Object {
                       "type": 1,
-                      "value": "link",
+                      "value": "aiOpsLink",
                     },
                     Object {
                       "type": 0,
-                      "value": " to enable client load balancing AI Ops recommendation.",
+                      "value": ".",
                     },
                   ],
                   "type": 8,
@@ -5400,25 +6411,18 @@ Array [
                 },
               ]
             }
-            id="dwDQ8B"
+            id="cPP198"
             values={
               Object {
                 "li": [Function],
-                "link": <TenantLink
-                  to="/recommendations/aiOps/undefined"
-                >
-                  <Memo(MemoizedFormattedMessage)
-                    defaultMessage={
-                      Array [
-                        Object {
-                          "type": 0,
-                          "value": "here",
-                        },
-                      ]
+                "link": <TenantLinkWrapper
+                  linkType="aiOps"
+                  params={
+                    Object {
+                      "ssidCountPerRadioSlice": 0,
                     }
-                    id="hniz8Z"
-                  />
-                </TenantLink>,
+                  }
+                />,
                 "ol": [Function],
                 "p": [Function],
                 "ul": [Function],
