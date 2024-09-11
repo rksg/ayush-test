@@ -1,11 +1,14 @@
+import 'jest-styled-components'
 import userEvent    from '@testing-library/user-event'
 import EChartsReact from 'echarts-for-react'
 
-import { GraphProps }                       from '@acx-ui/components'
-import { intentAIUrl, Provider }            from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
+import { GraphProps }     from '@acx-ui/components'
+import { Provider }       from '@acx-ui/store'
+import { render, screen } from '@acx-ui/test-utils'
 
-import { mockedCRRMGraphs, mockedIntentCRRM } from '../__tests__/fixtures'
+import { mockIntentContext } from '../../__tests__/fixtures'
+import { Statuses }          from '../../states'
+import { mockedIntentCRRM }  from '../__tests__/fixtures'
 
 import { mockCrrmData } from './__tests__/fixtures'
 
@@ -21,6 +24,7 @@ jest.mock('@acx-ui/components', () => ({
     return <div {...props} data-testid='rrm-graph' />
   }
 }))
+jest.mock('../../IntentContext')
 jest.mock('./Legend', () => ({
   Legend: () => <div data-testid='rrm-legend' />
 }))
@@ -30,26 +34,45 @@ jest.mock('./DownloadRRMComparison', () => ({
 
 describe('CloudRRM', () => {
   beforeEach(() => {
-    mockGraphqlQuery(intentAIUrl, 'IntentAIRRMGraph', {
-      data: { intent: mockedCRRMGraphs }
-    })
+    jest.spyOn(Date, 'now').mockReturnValue(+new Date('2023-07-15T14:15:00.000Z'))
+    mockIntentContext({ intent: mockedIntentCRRM })
   })
 
-  it('should render correctly', async () => {
-    const details = mockedIntentCRRM
-    render(<IntentAIRRMGraph details={details} crrmData={mockCrrmData}/>, { wrapper: Provider })
+  it('should render correctly for active states', async () => {
+    render(<IntentAIRRMGraph
+      crrmData={mockCrrmData}
+      summaryUrlBefore='data:image/svg+xml;charset=UTF-8,img-before.png'
+      summaryUrlAfter='data:image/svg+xml;charset=UTF-8,img-after.png'
+    />, { wrapper: Provider })
+
     expect(await screen.findByText('View More')).toBeVisible()
     expect(screen.queryByTestId('rrm-comparison-button')).toBeNull()
-    expect(screen.getByRole('img', { name: 'summary-before' })).toBeVisible()
-    expect(screen.getByRole('img', { name: 'summary-after' })).toBeVisible()
+    expect(screen.getByAltText('rrm-graph-before')).toBeVisible()
+    expect(screen.getByAltText('rrm-graph-after')).toBeVisible()
+  })
+
+  it('should render correctly for non-active states', async () => {
+    mockIntentContext({ intent: { ...mockedIntentCRRM, status: Statuses.na } })
+
+    render(<IntentAIRRMGraph crrmData={mockCrrmData} />, { wrapper: Provider })
+    expect(screen.queryByTestId('graph-wrapper')).toHaveStyleRule('filter', 'blur(8px)')
+    expect(screen.queryByTestId('rrm-comparison-button')).toBeNull()
   })
 
   it('should handle drawer', async () => {
-    const details = mockedIntentCRRM
-    render(<IntentAIRRMGraph details={details} crrmData={mockCrrmData}/>, { wrapper: Provider })
+    render(<IntentAIRRMGraph crrmData={mockCrrmData} />, { wrapper: Provider })
     await userEvent.click(await screen.findByText('View More'))
     expect(await screen.findByText('Key Performance Indications')).toBeVisible()
     expect(await screen.findAllByTestId('rrm-graph')).toHaveLength(2)
     await userEvent.click(await screen.findByTestId('CloseSymbol'))
+  })
+
+  it('handle beyond data retention', async () => {
+    jest.mocked(Date.now).mockRestore()
+    mockIntentContext({ intent: mockedIntentCRRM })
+    const { container } = render(<IntentAIRRMGraph crrmData={mockCrrmData} />, {
+      wrapper: Provider
+    })
+    expect(container).toHaveTextContent('Beyond data retention period')
   })
 })
