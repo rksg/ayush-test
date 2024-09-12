@@ -68,7 +68,7 @@ export function ServiceCard (props: ServiceCardProps) {
           navigate(linkToList)
         }
       }}
-      helpIcon={<span style={{ marginLeft: '5px' }}>{helpIcon}</span>}
+      helpIcon={helpIcon ? <span style={{ marginLeft: '5px' }}>{helpIcon}</span> : ''}
     />
   )
 }
