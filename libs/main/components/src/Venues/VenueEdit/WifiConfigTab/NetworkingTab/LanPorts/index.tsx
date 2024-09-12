@@ -17,7 +17,10 @@ import {
   useGetVenueTemplateLanPortsQuery,
   useUpdateVenueTemplateLanPortsMutation,
   useGetDHCPProfileListQuery,
-  useGetDhcpTemplateListQuery
+  useGetDhcpTemplateListQuery,
+  useActivateEthernetPortProfileOnVenueApModelPortIdMutation,
+  useUpdateEthernetPortSettingsByVenueApModelMutation,
+  useGetVenueLanPortWithEthernetPortSettingsQuery
 } from '@acx-ui/rc/services'
 import {
   CapabilitiesApModel,
@@ -95,6 +98,8 @@ export function LanPorts () {
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const isLanPortResetEnabled = useIsSplitOn(Features.WIFI_RESET_AP_LAN_PORT_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
+  const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
+  const supportTrunkPortUntaggedVlan = useIsSplitOn(Features.WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE)
 
   const { defaultLanPortsByModelMap, isDefaultPortsLoading } =
     useGetDefaultVenueLanPortsQuery({ params: { venueId } },
@@ -107,16 +112,24 @@ export function LanPorts () {
       }, skip: !isLanPortResetEnabled })
 
   const venueLanPorts = useVenueConfigTemplateQueryFnSwitcher<VenueLanPorts[]>({
-    useQueryFn: useGetVenueLanPortsQuery,
+    useQueryFn: (
+      (isEthernetPortProfileEnabled)?
+        useGetVenueLanPortWithEthernetPortSettingsQuery : useGetVenueLanPortsQuery
+    ),
     useTemplateQueryFn: useGetVenueTemplateLanPortsQuery,
     enableRbac: isWifiRbacEnabled
   })
-
   // eslint-disable-next-line max-len
   const [updateVenueLanPorts, { isLoading: isUpdatingVenueLanPorts }] = useVenueConfigTemplateMutationFnSwitcher(
     useUpdateVenueLanPortsMutation,
     useUpdateVenueTemplateLanPortsMutation
   )
+
+  const [updateActivateEthernetPortProfile] =
+    useActivateEthernetPortProfileOnVenueApModelPortIdMutation()
+
+  const [updateEthernetPortSetting] =
+    useUpdateEthernetPortSettingsByVenueApModelMutation()
 
   const apModelsOptions = venueLanPorts?.data?.map(m => ({ label: m.model, value: m.model })) ?? []
   const [activeTabIndex, setActiveTabIndex] = useState(0)
@@ -127,7 +140,6 @@ export function LanPorts () {
   const [selectedPortCaps, setSelectedPortCaps] = useState({} as LanPort)
   const [resetModels, setResetModels] = useState([] as string[])
 
-  const supportTrunkPortUntaggedVlan = useIsSplitOn(Features.WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE)
 
   const form = Form.useFormInstance()
   const [apModel, apPoeMode, lanPoeOut, lanPorts] = [
@@ -255,6 +267,60 @@ export function LanPorts () {
     }
   }
 
+  const getTargetOriginLanPort = (model:string, portId?:string) => {
+    return lanPortOrinData?.find(
+      (originVenueLanPort) => {
+        return originVenueLanPort.model === model
+      }
+    )?.lanPorts.find((originLanPort)=> {
+      return originLanPort.portId === portId
+    })
+  }
+
+  const handleUpdateEthernetPortProfile = async (
+    model:string,
+    lanPort:LanPort,
+    originLanPort?:LanPort
+  ) => {
+
+    // Workaround: The type will be empty if we set ethernet port profile, and this is for legacy API payload
+    if(!!!lanPort.type) {
+      lanPort.type = originLanPort?.type
+    }
+
+    if (lanPort.ethernetPortProfileId &&
+      lanPort.ethernetPortProfileId !== originLanPort?.ethernetPortProfileId) {
+
+      await updateActivateEthernetPortProfile({
+        params: {
+          venueId: venueId,
+          apModel: model,
+          portId: lanPort.portId,
+          id: lanPort.ethernetPortProfileId
+        }
+      }).unwrap()
+    }
+  }
+
+  const handleUpdateLanPortSettings = async (
+    model:string,
+    lanPort:LanPort,
+    originLanPort?:LanPort
+  ) => {
+    if (lanPort.enabled !== originLanPort?.enabled) {
+      await updateEthernetPortSetting({
+        params: {
+          venueId: venueId,
+          apModel: model,
+          portId: lanPort.portId
+        },
+        payload: {
+          enabled: lanPort.enabled
+        }
+      }).unwrap()
+    }
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleGUIChanged = (fieldName: string) => {
     customGuiChagedRef.current = true
@@ -299,6 +365,20 @@ export function LanPorts () {
   }
 
   const processUpdateVenueLanPorts = async (payload: VenueLanPorts[]) => {
+
+    if (isEthernetPortProfileEnabled) {
+      payload.map((venueLanPort) => {
+        venueLanPort.lanPorts.map((lanPort) => {
+          const originLanPort = getTargetOriginLanPort(venueLanPort.model, lanPort.portId)
+
+          // TODO: Update ethernet port profile
+          handleUpdateEthernetPortProfile(venueLanPort.model, lanPort, originLanPort)
+          // TODO: Update settings
+          handleUpdateLanPortSettings(venueLanPort.model, lanPort, originLanPort)
+        })
+      })
+    }
+
     setLanPortData(payload)
     setLanPortOrinData(payload)
     await updateVenueLanPorts({

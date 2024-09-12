@@ -1,5 +1,6 @@
 export * from './policyRouteUtils'
 export * from './macRegistrationListUtils'
 export * from './contentsMap'
+export * from './ethernetPortProfileUtils'
 export * from './tunnelProfileUtils'
 export * from './policyPageUtils'

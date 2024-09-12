@@ -3,17 +3,18 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
-import { venueApi }                                                                          from '@acx-ui/rc/services'
-import { CommonRbacUrlsInfo, CommonUrlsInfo, WifiUrlsInfo }                                  from '@acx-ui/rc/utils'
-import { Provider, store }                                                                   from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, within, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                                                             from '@acx-ui/feature-toggle'
+import { venueApi }                                                                           from '@acx-ui/rc/services'
+import { AaaUrls, CommonRbacUrlsInfo, CommonUrlsInfo, EthernetPortProfileUrls, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                    from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, within, waitFor, waitForElementToBeRemoved }  from '@acx-ui/test-utils'
 
 import { VenueUtilityContext } from '../..'
 import {
   venueData,
   venueCaps,
-  venueLanPorts
+  venueLanPorts,
+  mockEthProfiles
 } from '../../../../__tests__/fixtures'
 
 import { LanPorts } from './index'
@@ -36,7 +37,13 @@ const mockLanPorts = (
   </VenueUtilityContext.Provider>
 )
 
+const successResponse = {
+  requestId: 'request-id'
+}
+
 describe('LanPortsForm', () => {
+  const mockedApiFn = jest.fn()
+
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
@@ -54,7 +61,16 @@ describe('LanPortsForm', () => {
         (_, res, ctx) => res(ctx.json(venueLanPorts))),
       rest.get(
         CommonUrlsInfo.getVenueSettings.url,
-        (_, res, ctx) => res(ctx.json({})))
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.post(EthernetPortProfileUrls.getEthernetPortProfileViewDataList.url,
+        (_, res, ctx) => res(ctx.json(mockEthProfiles))),
+      rest.post(AaaUrls.getAAAPolicyViewModelList.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.post(EthernetPortProfileUrls.createEthernetPortProfile.url,
+        (_, res, ctx) => {
+          mockedApiFn()
+          return res(ctx.status(200), ctx.json(successResponse))
+        })
     )
   })
 
@@ -155,7 +171,8 @@ describe('LanPortsForm', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
       })
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.WIFI_RESET_AP_LAN_PORT_TOGGLE)
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
     await waitFor(() => screen.findByText('AP Model'))
 
@@ -173,5 +190,65 @@ describe('LanPortsForm', () => {
       expect(screen.getByRole('tooltip').textContent).toBe('Reset port settings to default')
     })
     await userEvent.click(resetBtn)
+  })
+
+  it ('Should render ethernet profile correctly with AP model T750SE', async () => {
+    // Given
+    render(
+      <Provider>
+        {mockLanPorts}
+      </Provider>, {
+        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
+      })
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.ETHERNET_PORT_PROFILE_TOGGLE)
+    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitFor(() => screen.findByText('AP Model'))
+
+    fireEvent.mouseDown(await screen.findByRole('combobox'))
+    const option = screen.getByText('T750')
+    await userEvent.click(option)
+
+    const enablePort = await screen.findByRole('switch', { name: 'Enable port' })
+    expect(enablePort).toHaveAttribute('aria-checked', 'true')
+
+    const profileSelector = await screen.findByRole('combobox', { name: 'Ethernet Port Profile' })
+    expect(profileSelector).toBeInTheDocument()
+    await userEvent.click(profileSelector)
+
+    const detailBtn = await screen.findByRole('button', { name: 'Profile Details' })
+    expect(detailBtn).toBeInTheDocument()
+    await userEvent.click(detailBtn)
+
+    expect(screen.getByText('Ethernet Port Details:')).toBeInTheDocument()
+    expect(await screen.findAllByText('Port Type')).toHaveLength(3)
+    expect(await screen.findAllByText('VLAN Untag ID')).toHaveLength(4)
+    expect(await screen.findAllByText('VLAN Members')).toHaveLength(3)
+    expect(await screen.findAllByText('802.1X')).toHaveLength(4)
+
+    const addBtn = await screen.findByRole('button', { name: 'Add Profile' })
+    expect(addBtn).toBeInTheDocument()
+    await userEvent.click(addBtn)
+
+    const form = within(await screen.findByTestId('steps-form'))
+    const actions = within(form.getByTestId('steps-form-actions'))
+
+    expect(screen.getByText('Add Ethernet Port Profile')).toBeInTheDocument()
+
+    const profileNameInput = await screen.findByLabelText('Profile Name')
+    expect(profileNameInput).toBeInTheDocument()
+    fireEvent.change(profileNameInput, { target: { value: 'eth_profile_1' } })
+    fireEvent.blur(profileNameInput)
+
+    expect(screen.getByText('VLAN')).toBeInTheDocument()
+    const untagVlanInput = await screen.findByLabelText('VLAN Untag ID')
+    expect(untagVlanInput).toBeInTheDocument()
+    fireEvent.change(untagVlanInput, { target: { value: 9 } })
+
+    expect(await screen.findByLabelText('802.1X Authentication')).toBeInTheDocument()
+
+    await userEvent.click(actions.getByRole('button', { name: 'Add' }))
+
+    await waitFor(() => expect(mockedApiFn).toBeCalled())
   })
 })

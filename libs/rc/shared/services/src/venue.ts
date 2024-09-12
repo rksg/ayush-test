@@ -98,7 +98,9 @@ import {
   NetworkDevice,
   NetworkDeviceType,
   NetworkDevicePosition,
-  RbacAPMesh
+  RbacAPMesh,
+  EthernetPortProfileUrls,
+  EthernetPortProfileViewData
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                                  from '@acx-ui/store'
 import { RequestPayload }                                from '@acx-ui/types'
@@ -2008,7 +2010,48 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'ExternalAntenna', id: 'LIST' }]
+    }),
+
+    getVenueLanPortWithEthernetPortSettings: build.query<VenueLanPorts[], RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+
+        const urlsInfo = arg.enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const rbacApiVersion = arg.enableRbac ? ApiVersionEnum.v1 : undefined
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const venueLanPortsQuery = await fetchWithBQ(createHttpRequest(urlsInfo.getVenueLanPorts, arg.params, apiCustomHeader))
+        const venueLanPortSettings = venueLanPortsQuery.data as VenueLanPorts[]
+
+        const venueId = arg.params?.venueId
+        if(venueId) {
+          const ethernetPortProfileReq = createHttpRequest(EthernetPortProfileUrls.getEthernetPortProfileViewDataList)
+          const ethernetPortProfileQuery = await fetchWithBQ(
+            { ...ethernetPortProfileReq, body: JSON.stringify({
+              filters: {
+                venueIds: [venueId]
+              }
+            }) }
+          )
+          const ethernetPortProfiles = (ethernetPortProfileQuery.data as TableResult<EthernetPortProfileViewData>).data
+
+          ethernetPortProfiles.map((profile) => {
+            if (profile.venueActivations) {
+              profile.venueActivations.map((activity)=>{
+                const targetLanPort = venueLanPortSettings.find(setting => setting.model === activity.apModel)
+                  ?.lanPorts.find(lanPort => lanPort.portId === activity.portId)
+
+                if(targetLanPort) {
+                  targetLanPort.ethernetPortProfileId = profile.id
+                }
+              })
+            }
+          })
+        }
+
+        return { data: venueLanPortSettings }
+      }
     })
+
+
   })
 })
 
@@ -2148,7 +2191,9 @@ export const {
   useRemoveApPositionMutation,
   useGetVenueApSmartMonitorQuery,
   useLazyGetVenueApSmartMonitorQuery,
-  useUpdateVenueApSmartMonitorMutation
+  useUpdateVenueApSmartMonitorMutation,
+
+  useGetVenueLanPortWithEthernetPortSettingsQuery
 } = venueApi
 
 

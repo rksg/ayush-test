@@ -842,6 +842,34 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
+
+    getAAAPolicyList: build.query<TableResult<AAAViewModalType>, RequestPayload>
+    ({
+      query: ({ payload, params }) => {
+        const req = createHttpRequest(
+          AaaUrls.queryAAAPolicyList, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      providesTags: [{ type: 'AAA', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'AddRadius',
+            'UpdateRadius',
+            'DeleteRadius',
+            'DeleteRadiuses'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(policyApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
+
     aaaPolicy: build.query<AAAPolicyType, RequestPayload>({
       query: commonQueryFn(AaaUrls.getAAAPolicy, AaaUrls.getAAAPolicyRbac),
       providesTags: [{ type: 'AAA', id: 'DETAIL' }]
@@ -3167,6 +3195,22 @@ export const policyApi = basePolicyApi.injectEndpoints({
           }
         }
       }
+    }),
+    getEthernetPortProfiles: build.query<Blob, RequestPayload>({
+      query: ({ params, customHeaders }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.downloadCertificateChains, params, { ...defaultCertTempVersioningHeaders, ...customHeaders })
+        return {
+          ...req,
+          responseHandler: async (response) => {
+            const extension = customHeaders?.Accept === CertificateAcceptType.PEM ? 'chain' : 'p7b'
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent ?
+              headerContent.split('filename=')[1] : `CertificateChain.${extension}`
+            downloadFile(response, fileName)
+          }
+        }
+      }
     })
   })
 })
@@ -3308,6 +3352,7 @@ export const {
   useGetVenueSyslogListQuery,
   useSyslogPolicyListQuery,
   useGetAAAPolicyViewModelListQuery,
+  useGetAAAPolicyListQuery,
   useGetApSnmpPolicyListQuery,
   useLazyGetApSnmpPolicyListQuery,
   useGetApSnmpPolicyQuery,

@@ -14,6 +14,7 @@ export * from './rulesManagement'
 export * from './connectionMetering'
 export * from './lbsServerProfile'
 export * from './certificateTemplate'
+export * from './ethernetPortProfile'
 export * from './edgeHqosProfile'
 export * from './softGre'
 

@@ -43,6 +43,7 @@ import {
   baseTimelineApi as timelineApi,
   baseTunnelProfileApi as tunnelProfileApi,
   userApi,
+  baseEthernetPortProfileApi as ethernetPortProfileApi,
   baseVenueApi as venueApi,
   videoCallQoeApi
 } from './baseApi'
@@ -92,6 +93,7 @@ export const store = configureStore({
     [baseEdgeSdLanApi.reducerPath]: baseEdgeSdLanApi.reducer,
     [baseConfigTemplateApi.reducerPath]: baseConfigTemplateApi.reducer,
     [smartZoneApi.reducerPath]: smartZoneApi.reducer,
+    [ethernetPortProfileApi.reducerPath]: ethernetPortProfileApi.reducer,
     [edgeHqosProfilesApi.reducerPath]: edgeHqosProfilesApi.reducer
   },
 
@@ -142,6 +144,7 @@ export const store = configureStore({
       baseEdgeSdLanApi.middleware,
       baseConfigTemplateApi.middleware,
       smartZoneApi.middleware,
+      ethernetPortProfileApi.middleware,
       edgeHqosProfilesApi.middleware
     ])
   },
