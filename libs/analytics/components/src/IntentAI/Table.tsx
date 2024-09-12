@@ -61,7 +61,7 @@ export const iconTooltips = {
       defaultMessage: `Choose between a network with maximum throughput,
       allowing some interference, or one with minimal interference, for high client density.` })}
   />,
-  [aiFeatures.AirFlexAI]: <IconTooltip
+  [aiFeatures.EquiFlex]: <IconTooltip
     icon={<AirFlexAI />}
     title={defineMessage({ defaultMessage: 'AirFlexAI' })}
     subTitleLeft={defineMessage({ defaultMessage: 'Time to Connect' })}

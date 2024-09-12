@@ -515,7 +515,7 @@ export const aiFeatureWithRRM = {
 
 export const aiFeatureWithAirFlexAI = {
   code: 'c-probeflex-6g',
-  aiFeature: aiFeatures.AirFlexAI,
+  aiFeature: aiFeatures.EquiFlex,
   root: 'root2',
   sliceId: 'sliceId2',
   status: Statuses.active
@@ -523,7 +523,7 @@ export const aiFeatureWithAirFlexAI = {
 
 export const aiFeatureWithAirFlexAIWithNewStatus = {
   code: 'c-probeflex-6g',
-  aiFeature: aiFeatures.AirFlexAI,
+  aiFeature: aiFeatures.EquiFlex,
   root: 'root2',
   sliceId: 'sliceId2',
   status: Statuses.new

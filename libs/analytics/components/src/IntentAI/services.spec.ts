@@ -236,7 +236,7 @@ describe('Intent services', () => {
       const customFilter = {
         sliceValue: null,
         category: null,
-        aiFeature: ['AirFlexAI'],
+        aiFeature: ['EquiFlex'],
         statusLabel: null
       }
       act(() => {

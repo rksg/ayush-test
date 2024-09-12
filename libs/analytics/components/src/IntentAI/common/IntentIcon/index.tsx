@@ -13,7 +13,7 @@ import * as UI from './styledComponents'
 
 export const icons = {
   [aiFeatures.RRM]: <AIDrivenRRM />,
-  [aiFeatures.AirFlexAI]: <AirFlexAI />,
+  [aiFeatures.EquiFlex]: <AirFlexAI />,
   [aiFeatures.AIOps]: <AIOperation />,
   [aiFeatures.EcoFlexAI]: <EcoFlexAI />
 }

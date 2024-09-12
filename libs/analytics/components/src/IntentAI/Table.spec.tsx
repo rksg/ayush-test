@@ -49,10 +49,10 @@ describe('AIFeature component', () => {
       <UI.FeatureIcon>
         <Tooltip
           placement='right'
-          title={iconTooltips[aiFeatures.AirFlexAI]}
+          title={iconTooltips[aiFeatures.EquiFlex]}
           overlayInnerStyle={{ width: '345px' }}
         >
-          <Icon feature={aiFeatures.AirFlexAI} />
+          <Icon feature={aiFeatures.EquiFlex} />
         </Tooltip>
         <TenantLink to={`/analytics/intentAI/${aiFeatureWithAirFlexAI.root}/${aiFeatureWithAirFlexAI.sliceId}/${aiFeatureWithAirFlexAI.code}`}>
           <span>{aiFeatureWithAirFlexAI.aiFeature}</span>
@@ -111,10 +111,10 @@ describe('AIFeature component', () => {
       <UI.FeatureIcon>
         <Tooltip
           placement='right'
-          title={iconTooltips[aiFeatures.AirFlexAI]}
+          title={iconTooltips[aiFeatures.EquiFlex]}
           overlayInnerStyle={{ width: '345px' }}
         >
-          <Icon feature={aiFeatures.AirFlexAI} />
+          <Icon feature={aiFeatures.EquiFlex} />
         </Tooltip>
         <TenantLink to={`/analytics/intentAI/${aiFeatureWithAirFlexAI.sliceId}/${aiFeatureWithAirFlexAI.code}`}>
           <span>{aiFeatureWithAirFlexAI.aiFeature}</span>
@@ -160,10 +160,10 @@ describe('AIFeature component', () => {
       <UI.FeatureIcon>
         <Tooltip
           placement='right'
-          title={iconTooltips[aiFeatures.AirFlexAI]}
+          title={iconTooltips[aiFeatures.EquiFlex]}
           overlayInnerStyle={{ width: '345px' }}
         >
-          <Icon feature={aiFeatures.AirFlexAI} />
+          <Icon feature={aiFeatures.EquiFlex} />
         </Tooltip>
         <span>{aiFeatureWithAirFlexAI.aiFeature}</span>
       </UI.FeatureIcon>
