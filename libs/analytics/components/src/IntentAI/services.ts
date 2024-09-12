@@ -37,7 +37,7 @@ export type HighlightItem = {
 
 export type IntentHighlight = {
   rrm?: HighlightItem
-  airflex?: HighlightItem
+  equiflex?: HighlightItem
   ops?: HighlightItem
 }
 
@@ -303,7 +303,7 @@ export const api = intentAIApi.injectEndpoints({
               new
               active
             }
-            airflex {
+            equiflex {
               new
               active
             }

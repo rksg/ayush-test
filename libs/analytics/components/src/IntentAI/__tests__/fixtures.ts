@@ -445,7 +445,7 @@ export const intentHighlights = {
       new: 4,
       active: 8
     },
-    airflex: {
+    equiflex: {
       new: 5,
       active: 10
     },
@@ -462,7 +462,7 @@ export const intentHighlightsWithZeroActive = {
       new: 4,
       active: 0
     },
-    airflex: {
+    equiflex: {
       new: 5,
       active: 0
     },
@@ -489,7 +489,7 @@ export const intentHighlightsWithRRM = {
 
 export const intentHighlightsWithEquiFlex = {
   highlights: {
-    airflex: {
+    equiflex: {
       new: 5,
       active: 10
     }

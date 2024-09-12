@@ -750,7 +750,7 @@ describe('Intent services', () => {
         new: 4,
         active: 8
       },
-      airflex: {
+      equiflex: {
         new: 5,
         active: 10
       },

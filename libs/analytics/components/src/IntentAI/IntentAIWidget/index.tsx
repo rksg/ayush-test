@@ -86,9 +86,9 @@ function useHighlightList (data: IntentHighlight | undefined) {
       type: aiFeatures.RRM
     })
   }
-  if (data?.airflex) {
+  if (data?.equiflex) {
     highlightList.push({
-      ...data.airflex,
+      ...data.equiflex,
       title: $t({ defaultMessage: 'EquiFlex' }),
       icon: <EquiFlex />,
       type: aiFeatures.EquiFlex
