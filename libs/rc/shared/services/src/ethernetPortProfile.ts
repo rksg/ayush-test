@@ -146,7 +146,6 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
         }
       }
     }),
-
     getEthernetPortProfileSettingsByApPortId: build.query<EhternetPortSettings, RequestPayload>({
       query: ({ params }) => {
         const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)

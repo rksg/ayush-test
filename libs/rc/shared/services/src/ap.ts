@@ -86,7 +86,12 @@ import {
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                    from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
-import { ApiInfo, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
+import {
+  ApiInfo,
+  batchApi,
+  createHttpRequest,
+  ignoreErrorModal
+} from '@acx-ui/utils'
 
 import {
   addApGroupFn,
@@ -875,40 +880,38 @@ export const apApi = baseApApi.injectEndpoints({
     updateApEthernetPorts: build.mutation<WifiApSetting, RequestPayload>({
       queryFn: async ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) => {
         try {
-          const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
-          const ethApi = EthernetPortProfileUrls
-          for (let l of (payload as WifiApSetting)?.lanPorts ?? []) {
-            const overwriteSetting: EhternetPortSettings = {
-              enabled: l.enabled,
-              overwriteUntagId: l.untagId,
-              overwriteVlanMembers: l.vlanMembers
-            }
-            const oevrwriteParams = {
-              venueId: params!.venueId,
-              serialNumber: params!.serialNumber,
-              portId: l.portId
-            }
-            const ethParams = {
+          const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+          const activateRequests = (payload as WifiApSetting)?.lanPorts?.
+          filter(l => l.ethernetPortProfileId ).map(l => ({
+            params: {
               venueId: params!.venueId,
               serialNumber: params!.serialNumber,
               portId: l.portId,
               id: l.ethernetPortProfileId
             }
-            if (l.ethernetPortProfileId) {
-              const overwriteReq = createHttpRequest(
-                ethApi.updateEthernetPortSettingsByApPortId, oevrwriteParams,
-                apiCustomHeader)
-              await fetchWithBQ({ ...overwriteReq, body: JSON.stringify(overwriteSetting) })
-              const activateReq = createHttpRequest(
-                ethApi.activateEthernetPortProfileOnApPortId, ethParams, apiCustomHeader
-              )
-              await fetchWithBQ({ ...activateReq })
+          }))
+          const overwriteRequests = (payload as WifiApSetting)?.lanPorts?.
+          filter(l => l.ethernetPortProfileId ).map(l => ({
+            params: {
+              venueId: params!.venueId,
+              serialNumber: params!.serialNumber,
+              portId: l.portId
+            },
+            payload: {
+              enabled: l.enabled,
+              overwriteUntagId: l.untagId,
+              overwriteVlanMembers: l.vlanMembers
             }
-          }
+          }))
+          await batchApi(EthernetPortProfileUrls.activateEthernetPortProfileOnApPortId,
+            activateRequests!, fetchWithBQ, customHeaders)
+          await batchApi(EthernetPortProfileUrls.updateEthernetPortSettingsByApPortId,
+            overwriteRequests!, fetchWithBQ, customHeaders)
+          const res = await batchApi(WifiRbacUrlsInfo.updateApLanPorts, [{
+            params,
+            payload: omit(payload as WifiApSetting, 'lanPorts')
+          }], fetchWithBQ, customHeaders)
 
-          const req = createHttpRequest(WifiRbacUrlsInfo.updateApLanPorts, params, apiCustomHeader)
-          const res = await fetchWithBQ(
-            { ...req, body: JSON.stringify(omit(payload as WifiApSetting, 'lanPorts')) })
           return { data: res.data as WifiApSetting }
         } catch (err) {
           return { error: err as FetchBaseQueryError }
