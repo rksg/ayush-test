@@ -59,7 +59,13 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
   const handleEditPersonaGroup = async (submittedData: PersonaGroup) => {
     if (!data) return
 
-    const personaGroupKeys = ['name', 'description', 'macRegistrationPoolId', 'dpskPoolId'] as const
+    const personaGroupKeys = [
+      'name',
+      'description',
+      'macRegistrationPoolId',
+      'dpskPoolId',
+      'certificateTemplateId'
+    ] as const
     const patchData = {}
 
     personaGroupKeys.forEach(key => {

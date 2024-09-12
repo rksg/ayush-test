@@ -61,6 +61,7 @@ export const VenueEdge = () => {
         {(isEdgeCompatibilityEnabled && edgeCompatibilities) &&
           <CompatibilityCheck
             data={edgeCompatibilities!.compatibilities}
+            venueId={params.venueId}
           />
         }
         <TenantLink to='/devices/edge/add' key='add'>
