@@ -12,6 +12,7 @@ import { mocked as mockedCDfschannelsDisable }         from './AIOperations/__te
 import { mocked as mockedCDfschannelsEnable }          from './AIOperations/__tests__/mockedCDfschannelsEnable'
 import { mocked as mockedCTxpowerSame }                from './AIOperations/__tests__/mockedCTxpowerSame'
 import { mocked as mockedIZoneFirmwareUpgrade }        from './AIOperations/__tests__/mockedIZoneFirmwareUpgrade'
+import { mockedIntentAirFlex }                         from './AirFlexAI/__tests__/fixtures'
 import { IntentAIDetails }                             from './IntentAIDetails'
 import { Intent }                                      from './useIntentDetailsQuery'
 
@@ -80,6 +81,19 @@ const doCRRMTest = async (codes: string[], intent: Intent) => {
     unmount()
   }
 }
+jest.mock('./AirFlexAI/CProbeFlex24g.tsx', () => ({
+  kpis: [],
+  IntentAIDetails: () => <div data-testid='c-probeflex-24g-IntentAIDetails'/>
+}))
+jest.mock('./AirFlexAI/CProbeFlex5g.tsx', () => ({
+  kpis: [],
+  IntentAIDetails: () => <div data-testid='c-probeflex-5g-IntentAIDetails'/>
+}))
+jest.mock('./AirFlexAI/CProbeFlex6g.tsx', () => ({
+  kpis: [],
+  IntentAIDetails: () => <div data-testid='c-probeflex-6g-IntentAIDetails'/>
+}))
+
 const doTest = async (codes: string[], intent: Intent) => {
   for (const code of codes) {
     const { unmount } = render(<IntentAIDetails />, {
@@ -160,5 +174,27 @@ describe('IntentAIDetails', () => {
       mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
       await doTest([intent.code], intent)
     })
+  })
+
+  it('should render for AirFlexAI', async () => {
+    mockGraphqlQuery(intentAIUrl, 'IntentDetails', {
+      data: { intent: mockedIntentAirFlex }
+    })
+    const codes = ['c-probeflex-24g', 'c-probeflex-5g', 'c-probeflex-6g']
+
+    for (const code of codes) {
+      const { unmount } = render(<IntentAIDetails />, {
+        route: {
+          params: {
+            code,
+            root: '33707ef3-b8c7-4e70-ab76-8e551343acb4',
+            sliceId: '4e3f1fbc-63dd-417b-b69d-2b08ee0abc52'
+          }
+        },
+        wrapper: Provider
+      })
+      expect(await screen.findByTestId(`${code}-IntentAIDetails`)).toBeVisible()
+      unmount()
+    }
   })
 })
