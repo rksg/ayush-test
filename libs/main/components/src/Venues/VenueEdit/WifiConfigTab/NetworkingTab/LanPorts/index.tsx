@@ -180,7 +180,6 @@ export function LanPorts () {
         isDirty: !isEqual(newData, lanPortOrinData),
         hasError: form.getFieldsError().map(item => item.errors).flat().length > 0
       })
-
       setEditNetworkingContextData && setEditNetworkingContextData({
         ...editNetworkingContextData,
         updateLanPorts: () => handleUpdateLanPorts(newData),
@@ -365,15 +364,14 @@ export function LanPorts () {
   }
 
   const processUpdateVenueLanPorts = async (payload: VenueLanPorts[]) => {
-
     if (isEthernetPortProfileEnabled) {
       payload.map((venueLanPort) => {
         venueLanPort.lanPorts.map((lanPort) => {
           const originLanPort = getTargetOriginLanPort(venueLanPort.model, lanPort.portId)
 
-          // TODO: Update ethernet port profile
+          // Update ethernet port profile
           handleUpdateEthernetPortProfile(venueLanPort.model, lanPort, originLanPort)
-          // TODO: Update settings
+          // Update settings
           handleUpdateLanPortSettings(venueLanPort.model, lanPort, originLanPort)
         })
       })

@@ -1,15 +1,19 @@
 import '@testing-library/jest-dom'
+import { useContext, useEffect, useState } from 'react'
+
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                                             from '@acx-ui/feature-toggle'
-import { venueApi }                                                                           from '@acx-ui/rc/services'
-import { AaaUrls, CommonRbacUrlsInfo, CommonUrlsInfo, EthernetPortProfileUrls, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                    from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, within, waitFor, waitForElementToBeRemoved }  from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                                                                             from '@acx-ui/feature-toggle'
+import { venueApi }                                                                                           from '@acx-ui/rc/services'
+import { AaaUrls, CommonRbacUrlsInfo, CommonUrlsInfo, EthernetPortProfileUrls, WifiUrlsInfo }                 from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                    from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, within, waitFor, waitForElementToBeRemoved, renderHook, act } from '@acx-ui/test-utils'
 
-import { VenueUtilityContext } from '../..'
+import { NetworkingSettingContext } from '..'
+import { VenueUtilityContext }      from '../..'
+import { VenueEditContext }         from '../../..'
 import {
   venueData,
   venueCaps,
@@ -43,34 +47,66 @@ const successResponse = {
 
 describe('LanPortsForm', () => {
   const mockedApiFn = jest.fn()
+  const mockedActivateEthernetPortProfileApiFn = jest.fn()
+  const mockedUpdateEthernetPortSettingApiFn = jest.fn()
+
 
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
+    mockedActivateEthernetPortProfileApiFn.mockClear()
+    mockedUpdateEthernetPortSettingApiFn.mockClear()
+
     mockServer.use(
       rest.get(
         CommonUrlsInfo.getVenue.url,
-        (_, res, ctx) => res(ctx.json(venueData))),
+        (_, res, ctx) => res(ctx.json(venueData))
+      ),
       rest.get(
         WifiUrlsInfo.getVenueApCapabilities.url,
-        (_, res, ctx) => res(ctx.json(venueCaps))),
+        (_, res, ctx) => res(ctx.json(venueCaps))
+      ),
       rest.get(
         CommonUrlsInfo.getVenueLanPorts.url,
-        (_, res, ctx) => res(ctx.json(venueLanPorts))),
+        (_, res, ctx) => res(ctx.json(venueLanPorts))
+      ),
       rest.get(
         CommonRbacUrlsInfo.getVenueLanPorts.url,
-        (_, res, ctx) => res(ctx.json(venueLanPorts))),
+        (_, res, ctx) => res(ctx.json(venueLanPorts))
+      ),
       rest.get(
         CommonUrlsInfo.getVenueSettings.url,
-        (_, res, ctx) => res(ctx.json({}))),
+        (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.put(
+        CommonUrlsInfo.updateVenueLanPorts.url,
+        (_, res, ctx) => res(ctx.json({}))
+      ),
+
       rest.post(EthernetPortProfileUrls.getEthernetPortProfileViewDataList.url,
-        (_, res, ctx) => res(ctx.json(mockEthProfiles))),
+        (_, res, ctx) => res(ctx.json(mockEthProfiles))
+      ),
       rest.post(AaaUrls.getAAAPolicyViewModelList.url,
-        (_, res, ctx) => res(ctx.json({}))),
+        (_, res, ctx) => res(ctx.json({}))
+      ),
       rest.post(EthernetPortProfileUrls.createEthernetPortProfile.url,
         (_, res, ctx) => {
           mockedApiFn()
           return res(ctx.status(200), ctx.json(successResponse))
-        })
+        }
+      ),
+      rest.put(EthernetPortProfileUrls.activateEthernetPortProfileOnVenueApModelPortId.url,
+        (_, res, ctx) => {
+          mockedActivateEthernetPortProfileApiFn()
+          return res(ctx.status(202))
+        }
+      ),
+
+      rest.put(EthernetPortProfileUrls.updateEthernetPortSettingsByVenueApModel.url,
+        (_, res, ctx) => {
+          mockedUpdateEthernetPortSettingApiFn()
+          return res(ctx.status(202))
+        }
+      )
     )
   })
 
@@ -251,4 +287,76 @@ describe('LanPortsForm', () => {
 
     await waitFor(() => expect(mockedApiFn).toBeCalled())
   })
+
+
+
+  // eslint-disable-next-line max-len
+  it ('Should render ethernet profile correctly with AP model T750 and save successfully', async () => {
+    const { result: venueEditContextHook } = renderHook(() => {
+      // eslint-disable-next-line max-len
+      const [editNetworkingContextData, setEditNetworkingContextData] = useState({ updateLanPorts: ()=>{} } as NetworkingSettingContext)
+      const [editContextData, setEditContextData] = useState({})
+
+      useEffect(()=>{
+        editNetworkingContextData.updateLanPorts?.()
+
+      }, [editNetworkingContextData])
+
+
+      return { editNetworkingContextData, setEditNetworkingContextData,
+        editContextData, setEditContextData }
+    })
+
+    render(
+
+      <Provider>
+        <VenueEditContext.Provider value={{
+          editNetworkingContextData: venueEditContextHook.current.editNetworkingContextData,
+          setEditNetworkingContextData: venueEditContextHook.current.setEditNetworkingContextData,
+          editContextData: venueEditContextHook.current.editContextData,
+          setEditContextData: venueEditContextHook.current.setEditContextData
+        }}>
+          <VenueUtilityContext.Provider value={{
+            venueApCaps: venueCaps,
+            isLoadingVenueApCaps: false
+          }} >
+            <Form>
+              <LanPorts />
+            </Form>
+          </VenueUtilityContext.Provider>
+        </VenueEditContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
+      })
+
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.ETHERNET_PORT_PROFILE_TOGGLE)
+
+    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitFor(() => screen.findByText('AP Model'))
+
+    fireEvent.mouseDown(await screen.findByRole('combobox'))
+    const option = screen.getByText('T750')
+    await userEvent.click(option)
+
+    const profileSelector = await screen.findByRole('combobox', { name: 'Ethernet Port Profile' })
+    expect(profileSelector).toBeInTheDocument()
+    await userEvent.click(profileSelector)
+    await userEvent.click(
+      await screen.findByText('Default Access')
+    )
+
+    const enablePort = await screen.findByRole('switch', { name: 'Enable port' })
+    expect(enablePort).toHaveAttribute('aria-checked', 'true')
+    await userEvent.click(enablePort)
+
+    // The renderHook will call editNetworkingContextData.updateLanPorts?.() by useEffect()
+
+    await waitFor(() => expect(mockedActivateEthernetPortProfileApiFn).toBeCalled())
+    await waitFor(() => expect(mockedUpdateEthernetPortSettingApiFn).toBeCalled())
+  })
+
+
+
+
 })
