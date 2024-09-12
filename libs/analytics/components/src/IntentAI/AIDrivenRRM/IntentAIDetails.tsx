@@ -29,26 +29,29 @@ export function createUseValuesText () {
   return function useValuesText () {
     const { $t } = getIntl()
     const { intent, kpis } = useIntentContext()
-    const isFullOptimization = intent.preferences?.crrmFullOptimization
+    const isFullOptimization = intent.preferences?.crrmFullOptimization ?? true
 
     const kpi = kpis.find(kpi => kpi.key === 'number-of-interfering-links')!
     const { data, compareData } = getKpiData(intent, kpi)
 
-    const summaryText = isFullOptimization
-      ? defineMessage({ defaultMessage: `
-        <p>This Intent is active, with following priority:</p>
-        <p><b>High number of clients in a dense network:</b></p>
+    const action = {
+      full: defineMessage({ defaultMessage: `
         <p>Leverage <b><i>AI-Driven RRM Full Optimization</i></b> mode to assess the neighbor AP radio channels for each AP radio and build a channel plan for each radio to minimize the interference.</p>
         <p>In this mode, while building the channel plan, IntentAI may optionally change the <i>AP Radio Channel Width</i> and <i>Transmit Power</i> to minimize the channel interference.</p>
         <p>IntentAI ensures that only the existing channels configured for this network are utilized in the channel planning process.</p>
-      ` })
-      : defineMessage({ defaultMessage: `
-        <p>This Intent is active, with following priority:</p>
-        <p><b>High client throughput in sparse network:</b></p>
+      ` }),
+      partial: defineMessage({ defaultMessage: `
         <p>Leverage <b><i>AI-Driven RRM Partial Optimization</i></b> mode to assess the neighbor AP channels for each AP radio and build a channel plan for each AP radio to minimize interference.</p>
         <p>In this mode, while building the channel plan, IntentAI <b>will NOT</b> change the <i>AP Radio Channel Width</i> and <i>Transmit Power</i>.</p>
         <p>IntentAI ensures that only the existing channels configured for this network are utilized in the channel planning process.</p>
       ` })
+    }
+    const inactive = defineMessage({ defaultMessage: 'When activated, this Intent takes over the automatic channel planning in the network.' })
+
+    const summaryText = intent.status === 'active'
+      ? isFullOptimization ? action.full : action.partial
+      : inactive
+
     const benefitText = defineMessage({ defaultMessage: `Low interference fosters improved 
       throughput, lower latency, better signal quality, stable connections, enhanced user 
       experience, longer battery life, efficient spectrum utilization, optimized channel usage, 

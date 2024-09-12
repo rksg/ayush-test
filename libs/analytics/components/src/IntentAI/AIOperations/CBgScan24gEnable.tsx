@@ -15,8 +15,6 @@ const configuration: IntentConfigurationConfig = {
 
 const useValuesText = createUseValuesText({
   action: defineMessage({ defaultMessage: `
-    <p>This Intent is active, with following priority:</p>
-    <p>Yes, apply the recommendation</p>
     <p>IntentAI will activate background scanning and configure the auto channel selection mode to "{channelSelectionMode}" for this network.</p>
     <p>IntentAI will continuously monitor these configurations.</p>
   ` }),

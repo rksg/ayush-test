@@ -107,8 +107,6 @@ describe('IntentAIDetails', () => {
     render(<IntentAIDetails />, { route: { params }, wrapper: Provider })
     expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
     expect(await screen.findByText('AI Operations')).toBeVisible()
-    expect(await screen.findByText('This Intent is active, with following priority:')).toBeVisible()
-    expect(await screen.findByText('Yes, apply the recommendation')).toBeVisible()
     // eslint-disable-next-line max-len
     expect(await screen.findByText('IntentAI will disable DFS Radar channels for this network, ensuring stable and predictable Wi-Fi performance by avoiding interference with radar systems and preventing the disruptions caused by mandatory channel switching.')).toBeVisible()
     // eslint-disable-next-line max-len

@@ -47,8 +47,6 @@ const useValuesText = createUseValuesText({
     </p>
   ` }),
   action: defineMessage({ defaultMessage: `
-    <p>This Intent is active, with following priority: </p>
-    <p>Yes, apply the recommendation</p>
     <p>IntentAI will enabling band balancing for this network, this change shall optimize network performance by efficiently distributing devices across available frequency bands, reducing congestion and enhancing overall Wi-Fi experience.</p>
     <p>IntentAI will continuously monitor these configurations.</p>
   ` }),

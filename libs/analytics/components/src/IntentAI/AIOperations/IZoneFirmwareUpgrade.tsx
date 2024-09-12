@@ -47,8 +47,6 @@ export const kpis: IntentKPIConfig[] = [{
 
 const useValuesText = createUseValuesText({
   action: defineMessage({ defaultMessage: `
-    <p>This Intent is active, with following priority: </p>
-    <p>Yes, apply the recommendation</p>
     <p>IntentAI will upgrade the Zone firmware ensuring the network remains secure and up-to-date with the latest features. This change will enhance protection against cyber threats and enabling access to new functionalities for improved performance and management.</p>
     <p>IntentAI will continuously monitor these configurations.</p>
   ` }),

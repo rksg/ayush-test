@@ -47,8 +47,6 @@ const useValuesText = createUseValuesText({
     </p>
   ` }),
   action: defineMessage({ defaultMessage: `
-    <p>This Intent is active, with following priority: </p>
-    <p>Yes, apply the recommendation</p>
     <p>IntentAI will change band balancing mode to Proactive for this network, this change will optimizes client distribution, enhancing overall network performance by efficiently balancing client load across access points, which shall improve throughput and reduce congestion.</p>
     <p>IntentAI will continuously monitor these configurations.</p>
   ` }),

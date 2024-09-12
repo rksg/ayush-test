@@ -47,8 +47,6 @@ const useValuesText = createUseValuesText({
     </p>
   ` }),
   action: defineMessage({ defaultMessage: `
-    <p>This Intent is active, with following priority: </p>
-    <p>Yes, apply the recommendation</p>
     <p>IntentAI will enable DFS Radar channels for this network, allowing access to more channels in the Wi-Fi network hence reducing congestion and enhancing Wi-Fi performance by leveraging less crowded frequencies.</p>
     <p>IntentAI will continuously monitor these configurations.</p>
   ` }),

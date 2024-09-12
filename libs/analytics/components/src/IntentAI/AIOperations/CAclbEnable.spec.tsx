@@ -97,8 +97,6 @@ describe('IntentAIDetails', () => {
     render(<IntentAIDetails />, { route: { params }, wrapper: Provider })
     expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
     expect(await screen.findByText('AI Operations')).toBeVisible()
-    expect(await screen.findByText('This Intent is active, with following priority:')).toBeVisible()
-    expect(await screen.findByText('Yes, apply the recommendation')).toBeVisible()
     // eslint-disable-next-line max-len
     expect(await screen.findByText('IntentAI will enable load balancing based on client count for this network, this change shall improves network performance by evenly distributing client connections, preventing congestion on specific access points and optimizing overall throughput and reliability.')).toBeVisible()
     // eslint-disable-next-line max-len

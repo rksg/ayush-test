@@ -52,8 +52,6 @@ const useValuesText = createUseValuesText({
     </p>
   ` }),
   action: defineMessage({ defaultMessage: `
-    <p>This Intent is active, with following priority: </p>
-    <p>Yes, apply the recommendation</p>
     <p>IntentAI will enable load balancing based on client count for this network, this change shall improves network performance by evenly distributing client connections, preventing congestion on specific access points and optimizing overall throughput and reliability.</p>
     <p>IntentAI will continuously monitor these configurations.</p>
   ` }),

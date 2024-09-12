@@ -54,8 +54,6 @@ const useValuesText = createUseValuesText({
     </p>
   ` }),
   action: defineMessage({ defaultMessage: `
-    <p>This Intent is active, with following priority: </p>
-    <p>Yes, apply the recommendation</p>
     <p>IntentAI will reduce 2.4 GHz power for this network. This change will enhance 5 GHz network performance by encouraging device connection to the less congested 5 GHz band, resulting in faster speeds and improved reliability for compatible devices.</p>
     <p>IntentAI will continuously monitor these configurations.</p>
   ` }),
