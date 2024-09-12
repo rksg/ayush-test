@@ -36,7 +36,7 @@ describe('MacRegActionPreview', () => {
     </Provider>)
     const macAddField = screen.getByRole('textbox', { name: macAddLabel })
     expect(macAddField).toHaveValue('')
-    expect(screen.queryByText('Please enter a valid MAC address')).toBeFalsy()
+    expect(screen.queryByText('This field is invalid')).toBeFalsy()
   })
   it('no alert on valid MAC Address', async () => {
 
@@ -46,19 +46,19 @@ describe('MacRegActionPreview', () => {
     </Provider>)
     const macAddField = screen.getByRole('textbox', { name: macAddLabel })
     expect(macAddField).toBeVisible()
-    expect(screen.queryByText('Please enter a valid MAC address')).toBeFalsy()
+    expect(screen.queryByText('This field is invalid')).toBeFalsy()
     await userEvent.type(macAddField, '5f:e7:78:6e:96:68')
-    expect(screen.queryByText('Please enter a valid MAC address')).toBeFalsy()
+    expect(screen.queryByText('This field is invalid')).toBeFalsy()
   })
   it('alert on invalid MAC Address', async () => {
 
     const macAddLabel = 'Enter the MAC address of your device here'
-    const macAddErrorMessage= 'Please enter a valid MAC address'
+    const macAddErrorMessage= 'This field is invalid'
     render(<Provider>
       <MacRegActionPreview data={mockMacReg} />
     </Provider>)
     const macAddField = screen.getByRole('textbox', { name: macAddLabel })
-    expect(screen.queryByText('Please enter a valid MAC address')).toBeFalsy()
+    expect(screen.queryByText('This field is invalid')).toBeFalsy()
 
     await userEvent.type(macAddField, '   ')
     let errorMessage = await screen.findByRole('alert')

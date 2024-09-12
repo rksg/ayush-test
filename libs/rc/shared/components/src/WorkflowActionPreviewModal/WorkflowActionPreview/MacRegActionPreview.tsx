@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback  } from 'react'
 
 import { Form, Input, List, Row, Space, Typography } from 'antd'
-import { defineMessage, useIntl }                    from 'react-intl'
+import { useIntl }                                   from 'react-intl'
 
-import { useLazyGetMacRegListQuery,useLazyNetworkListQuery } from '@acx-ui/rc/services'
-import { GenericActionPreviewProps, MacRegAction }           from '@acx-ui/rc/utils'
+import { useLazyGetMacRegListQuery,useLazyNetworkListQuery }                    from '@acx-ui/rc/services'
+import { GenericActionPreviewProps, MacRegAction, MacRegistrationFilterRegExp } from '@acx-ui/rc/utils'
 
 import { ContentPreview } from './ContentPreview'
 interface MacRegOnboardedVariables {
@@ -33,34 +33,23 @@ function MacRegOnboardedPreview (props: { onboard: MacRegOnboardedVariables }) {
         <Text strong data-testid='macAdd'>{macAddress} </Text>
         {$t({ defaultMessage: ' is now allowed to connect to the following network:' })}
       </Text>
-      {(selectedSsid && networkList.length === 1) &&
-          <Space direction='vertical' size='large' align='center'>
-            <Text strong={true}><b>{selectedSsid}</b><br/></Text>
-          </Space>
-      }
-      {(selectedSsid && networkList.length > 1) &&
-          <Space direction='vertical' size='large' align='center'>
-            <Link onClick={() => setSelectedSsid('')}>
-              <Text strong={true}><b>{selectedSsid}</b><br/></Text>
-            </Link>
-          </Space>
-      }
-      {(networkList.length > 1 && selectedSsid === '') &&
-          <List bordered
-            dataSource={networkList}
-            renderItem={
-              (ssid) => (
-                (ssid && ssid.trim().length > 0) && <List.Item>
-                  <Row justify='space-between' style={{ width: '100%' }}>
-                    <Space align='baseline'>
-                      <Link onClick={() => setSelectedSsid(ssid)} strong={true}>
-                        <Text strong={true}><b>{ssid}</b><br/></Text>
-                      </Link>
-                    </Space>
-                  </Row>
-                </List.Item>
-              )} />
-      }
+      <List bordered
+        dataSource={selectedSsid ? [selectedSsid] : networkList}
+        renderItem={
+          (ssid) => (
+            (ssid && ssid.trim().length > 0) && <List.Item>
+              <Row justify='space-between' style={{ width: '100%' }}>
+                <Space align='baseline'>
+                  {(networkList.length > 1) ?
+                    <Link onClick={() => setSelectedSsid(selectedSsid ? '' : ssid)} strong={true} >
+                      <Text strong={true}><b>{ssid}</b><br/></Text>
+                    </Link>
+                    : <Text strong={true}><b>{selectedSsid}</b><br/></Text>
+                  }
+                </Space>
+              </Row>
+            </List.Item>
+          )} />
       <br/>
     </Space>
   )
@@ -71,13 +60,6 @@ function MacRegActionInputPreview (props: { data?: MacRegOnboardedVariables , on
   const { $t } = useIntl()
   const { data , onMacAddressChange } = props
 
-  const macRegexString = {
-    name: 'macAddress',
-    // eslint-disable-next-line max-len
-    regex: new RegExp(/^(?:[0-9A-Fa-f]{2}([-:]?))(?:[0-9A-Fa-f]{2}\1){4}[0-9A-Fa-f]{2}|([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$/),
-    required: true,
-    errorMessage: defineMessage({ defaultMessage: 'Please enter a valid MAC address' })
-  }
   return (
     <Space direction='vertical' align='center'>
       <br/>
@@ -86,12 +68,9 @@ function MacRegActionInputPreview (props: { data?: MacRegOnboardedVariables , on
         <Form.Item
           label={$t({ defaultMessage: 'Enter the MAC address of your device here' })}
           name={'macAddress'}
-          rules={[{
-            whitespace: false,
-            pattern: macRegexString.regex,
-            message: $t(macRegexString.errorMessage),
-            required: macRegexString.required
-          }]}
+          rules={[{ required: true },
+            { validator: (_, value) => MacRegistrationFilterRegExp(value) }
+          ]}
         >
           <Input onChange={(e)=>onMacAddressChange(e.currentTarget?.value)}/>
         </Form.Item>
