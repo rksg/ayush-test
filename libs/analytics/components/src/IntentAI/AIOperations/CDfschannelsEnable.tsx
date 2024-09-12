@@ -54,7 +54,7 @@ const useValuesText = createUseValuesText({
   tradeoff: defineMessage({ defaultMessage: `
     <p>DFS activation may cause occasional disruptions due to radar detection and mandatory channel switching, impacting real-time applications like audio and video calls, and possibly causing brief connectivity interruptions.</p>
   ` }),
-  inactive: defineMessage({ defaultMessage: 'When activated, this AIOps Intent takes over the automatic configuration of DFS channels in the network.' })
+  noData: defineMessage({ defaultMessage: 'When activated, this AIOps Intent takes over the automatic configuration of DFS channels in the network.' })
 })
 
 export const IntentAIDetails = createIntentAIDetails(useValuesText)

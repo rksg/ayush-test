@@ -59,7 +59,7 @@ const useValuesText = createUseValuesText({
   tradeoff: defineMessage({ defaultMessage: `
     <p>Load balancing mechanisms may introduce complexity and require additional management overhead, potentially leading to increased network latency or disruptions during client reassignments.</p>
   ` }),
-  inactive: defineMessage({ defaultMessage: 'When activated, this AIOps Intent takes over the automatic configuration of load balancing in the network.' })
+  noData: defineMessage({ defaultMessage: 'When activated, this AIOps Intent takes over the automatic configuration of load balancing in the network.' })
 })
 
 export const IntentAIDetails = createIntentAIDetails(useValuesText)

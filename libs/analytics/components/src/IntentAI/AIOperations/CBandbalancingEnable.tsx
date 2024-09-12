@@ -54,7 +54,7 @@ const useValuesText = createUseValuesText({
   tradeoff: defineMessage({ defaultMessage: `
     <p>Some devices may experience compatibility issues or be forced to connect to less optimal bands, potentially impacting their performance and user experience.</p>
   ` }),
-  inactive: defineMessage({ defaultMessage: 'When activated, this AIOps Intent takes over the automatic configuration of Band balancing in the network.' })
+  noData: defineMessage({ defaultMessage: 'When activated, this AIOps Intent takes over the automatic configuration of Band balancing in the network.' })
 })
 
 export const IntentAIDetails = createIntentAIDetails(useValuesText)

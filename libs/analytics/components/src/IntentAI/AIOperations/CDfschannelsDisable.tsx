@@ -59,7 +59,7 @@ const useValuesText = createUseValuesText({
   tradeoff: defineMessage({ defaultMessage: `
     <p>Disabling DFS limits the available channels, potentially increasing network congestion and reducing overall Wi-Fi performance, especially in crowded environments with many competing devices.</p>
   ` }),
-  inactive: defineMessage({ defaultMessage: 'When activated, this AIOps Intent takes over the automatic configuration of DFS channels in the network.' })
+  noData: defineMessage({ defaultMessage: 'When activated, this AIOps Intent takes over the automatic configuration of DFS channels in the network.' })
 })
 
 export const IntentAIDetails = createIntentAIDetails(useValuesText)

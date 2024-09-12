@@ -62,7 +62,7 @@ const useValuesText = createUseValuesText({
   tradeoff: defineMessage({ defaultMessage: `
     <p>Devices that rely solely on the 2.4 GHz band may experience reduced signal strength and potentially slower speeds, particularly if they are located at the edge of coverage areas or in areas with obstacles that attenuate 5 GHz signals.</p>
   ` }),
-  inactive: defineMessage({ defaultMessage: 'When activated, this AIOps Intent takes over the automatic reduction of Transmit Power setting for 2.4 GHz in the network.' })
+  noData: defineMessage({ defaultMessage: 'When activated, this AIOps Intent takes over the automatic reduction of Transmit Power setting for 2.4 GHz in the network.' })
 })
 
 export const IntentAIDetails = createIntentAIDetails(useValuesText)

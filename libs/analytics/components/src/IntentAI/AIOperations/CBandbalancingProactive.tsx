@@ -47,14 +47,14 @@ const useValuesText = createUseValuesText({
     </p>
   ` }),
   action: defineMessage({ defaultMessage: `
-    <p>IntentAI will change band balancing mode to Proactive for this network, this change will optimizes client distribution, enhancing overall network performance by efficiently balancing client load across access points, which shall improve throughput and reduce congestion.</p>
+    <p>IntentAI will change band balancing mode to Proactive for this network, this change will optimize client distribution, enhancing overall network performance by efficiently balancing client load across access points, which shall improve throughput and reduce congestion.</p>
     <p>IntentAI will continuously monitor these configurations.</p>
   ` }),
   reason: defineMessage({ defaultMessage: 'Band Balancing (BB) feature intelligently distributes the WLAN clients on the 2.4 GHz and the 5 GHz channels in order to balance the client load. Mode "PROACTIVE" shall have higher efficiency in steering clients from one band to another and hence shall result in improve load on the AP resulting in better WiFi experience to the user.' }),
   tradeoff: defineMessage({ defaultMessage: `
     <p>Advanced client distribution techniques might introduce complexity and require additional configuration, potentially increasing management overhead and requiring more sophisticated monitoring and troubleshooting.</p>
   ` }),
-  inactive: defineMessage({ defaultMessage: 'When activated, this AIOps Intent takes over the automatic configuration of Band balancing mode in the network.' })
+  noData: defineMessage({ defaultMessage: 'When activated, this AIOps Intent takes over the automatic configuration of Band balancing mode in the network.' })
 })
 
 export const IntentAIDetails = createIntentAIDetails(useValuesText)
@@ -65,7 +65,7 @@ const options = {
     content: <FormattedMessage
       values={richTextFormatValues}
       defaultMessage={`
-        <p>IntentAI will change band balancing mode to Proactive for this network, this change will optimizes client distribution, enhancing overall network performance by efficiently balancing client load across access points, which shall improve throughput and reduce congestion.</p>
+        <p>IntentAI will change band balancing mode to Proactive for this network, this change will optimize client distribution, enhancing overall network performance by efficiently balancing client load across access points, which shall improve throughput and reduce congestion.</p>
         <p>IntentAI will continuously monitor these configurations.</p>
       `}
     />

@@ -98,7 +98,7 @@ describe('IntentAIDetails', () => {
     expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
     expect(await screen.findByText('AI Operations')).toBeVisible()
     // eslint-disable-next-line max-len
-    expect(await screen.findByText('IntentAI will change band balancing mode to Proactive for this network, this change will optimizes client distribution, enhancing overall network performance by efficiently balancing client load across access points, which shall improve throughput and reduce congestion.')).toBeVisible()
+    expect(await screen.findByText('IntentAI will change band balancing mode to Proactive for this network, this change will optimize client distribution, enhancing overall network performance by efficiently balancing client load across access points, which shall improve throughput and reduce congestion.')).toBeVisible()
     // eslint-disable-next-line max-len
     expect(await screen.findByText('IntentAI will continuously monitor these configurations.')).toBeVisible()
     expect(await screen.findByTestId('Details')).toBeVisible()

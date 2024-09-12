@@ -14,7 +14,6 @@ import { DetailsSection }           from '../common/DetailsSection'
 import { getIntentStatus }          from '../common/getIntentStatus'
 import { IntentDetailsHeader }      from '../common/IntentDetailsHeader'
 import { IntentIcon }               from '../common/IntentIcon'
-import { isIntentActive }           from '../common/isIntentActive'
 import { KpiCard }                  from '../common/KpiCard'
 import { richTextFormatValues }     from '../common/richTextFormatValues'
 import { StatusTrail }              from '../common/StatusTrail'
@@ -29,7 +28,7 @@ import { useIntentAICRRMQuery }                                    from './RRMGr
 export function createUseValuesText () {
   return function useValuesText () {
     const { $t } = getIntl()
-    const { intent, kpis } = useIntentContext()
+    const { intent, kpis, state } = useIntentContext()
     const isFullOptimization = intent.metadata.preferences?.crrmFullOptimization ?? true
 
     const kpi = kpis.find(kpi => kpi.key === 'number-of-interfering-links')!
@@ -47,11 +46,12 @@ export function createUseValuesText () {
         <p>IntentAI ensures that only the existing channels configured for this network are utilized in the channel planning process.</p>
       ` })
     }
-    const inactive = defineMessage({ defaultMessage: 'When activated, this Intent takes over the automatic channel planning in the network.' })
+    const noData = defineMessage({ defaultMessage: 'When activated, this Intent takes over the automatic channel planning in the network.' })
 
-    const summaryText = isIntentActive(intent)
-      ? isFullOptimization ? action.full : action.partial
-      : inactive
+    const summaryText = state === 'no-data'
+      ? noData
+      : isFullOptimization ? action.full : action.partial
+
 
     const benefitText = defineMessage({ defaultMessage: `Low interference fosters improved 
       throughput, lower latency, better signal quality, stable connections, enhanced user 

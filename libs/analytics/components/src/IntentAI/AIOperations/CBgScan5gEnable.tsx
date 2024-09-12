@@ -32,7 +32,7 @@ const useValuesText = createUseValuesText({
       This approach involves the network administrator manually assigning specific channels to Wi-Fi access points in the network, keeping these settings fixed unless changed manually, to maintain stable and controlled network performance.
     </p>
   ` }),
-  inactive: defineMessage({ defaultMessage: 'When activated, this AIOps Intent takes over the automatic configuration of auto channel selection mode and background scan capabilities on 5 GHz radio in the network.' })
+  noData: defineMessage({ defaultMessage: 'When activated, this AIOps Intent takes over the automatic configuration of auto channel selection mode and background scan capabilities on 5 GHz radio in the network.' })
 }, getValuesFn)
 
 const { IntentAIDetails, IntentAIForm } = createBgScanEnable(useValuesText)

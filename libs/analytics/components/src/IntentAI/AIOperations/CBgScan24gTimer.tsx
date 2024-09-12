@@ -31,7 +31,7 @@ const useValuesText = createUseValuesText({
       Maintaining the current interval for background scans ensures consistent and predictable network behavior, minimizing the risk of connectivity disruptions and maintaining stability.
     </p>
   ` }),
-  inactive: defineMessage({ defaultMessage: 'When activated, this AIOps Intent takes over the automatic configuration Background Scan Timer on 2.4 GHz radio in the network.' })
+  noData: defineMessage({ defaultMessage: 'When activated, this AIOps Intent takes over the automatic configuration Background Scan Timer on 2.4 GHz radio in the network.' })
 })
 
 const { IntentAIDetails, IntentAIForm } = createBgScanTimer(useValuesText)
