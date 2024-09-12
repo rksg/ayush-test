@@ -22,3 +22,8 @@ export const commonApi = baseCommonApi.injectEndpoints({
 export const {
   useStreamActivityMessagesQuery
 } = commonApi
+
+export interface CommonAsyncResponse {
+  id: string,
+  requestId: string
+}
