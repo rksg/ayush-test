@@ -63,7 +63,7 @@ export const iconTooltips = {
   />,
   [aiFeatures.EquiFlex]: <IconTooltip
     icon={<AirFlexAI />}
-    title={defineMessage({ defaultMessage: 'AirFlexAI' })}
+    title={defineMessage({ defaultMessage: 'EquiFlex' })}
     subTitleLeft={defineMessage({ defaultMessage: 'Time to Connect' })}
     subTitleMiddle={defineMessage({ defaultMessage: 'vs' })}
     subTitleRight={defineMessage({ defaultMessage: 'Client Density' })}

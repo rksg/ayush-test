@@ -216,7 +216,7 @@ describe('Intent services', () => {
       expect(result.current.tableQuery.originalArgs?.filterBy).toEqual([])
     })
 
-    it('handleFilterChange should handle feature filter case from url(AirFlexAI)', () => {
+    it('handleFilterChange should handle feature filter case from url(EquiFlex)', () => {
       mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
         data: intentListResult
 
@@ -229,7 +229,7 @@ describe('Intent services', () => {
           wrapper: Provider,
           route: {
             params: { tenantId: 'tenant-id' },
-            search: '?selectedTenants=tenantId&intentTableFilters=%7B%22feature%22%3A%22AirFlexAI%22%7D',
+            search: '?selectedTenants=tenantId&intentTableFilters=%7B%22feature%22%3A%22EquiFlex%22%7D',
             path: '/intentAI'
           }
         })

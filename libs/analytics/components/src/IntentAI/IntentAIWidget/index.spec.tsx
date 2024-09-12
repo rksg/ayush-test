@@ -14,7 +14,7 @@ import {
   intentHighlights,
   intentHighlightsWithNullFields,
   intentHighlightsWithRRM,
-  intentHighlightsWithAirflex,
+  intentHighlightsWithEquiFlex,
   intentHighlightsWithOperations,
   intentHighlightsWithZeroActive
 } from '../__tests__/fixtures'
@@ -100,9 +100,9 @@ describe('IntentAI dashboard', () => {
     expect(linkElm).toHaveAttribute('href', expect.stringContaining('active'))
   })
 
-  it('render AirFlex data when intentHighlights only have AirFlex fields', async () => {
+  it('render EquiFlex data when intentHighlights only have EquiFlex fields', async () => {
     mockGraphqlQuery(intentAIUrl, 'IntentHighlight', {
-      data: intentHighlightsWithAirflex
+      data: intentHighlightsWithEquiFlex
     })
     render(<IntentAIWidget pathFilters={pathFilters} />, { route: true, wrapper: Provider })
 
