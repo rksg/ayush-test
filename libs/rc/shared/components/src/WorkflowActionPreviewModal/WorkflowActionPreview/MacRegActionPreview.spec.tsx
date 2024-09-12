@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, MacRegListUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                           from '@acx-ui/store'
-import { mockServer, render, screen }         from '@acx-ui/test-utils'
+import { CommonUrlsInfo, MacRegListUrlsInfo }  from '@acx-ui/rc/utils'
+import { Provider }                            from '@acx-ui/store'
+import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { mockMacReg, mockedNetworkList, mockMacRegList } from './__tests__/fixtures'
 import { MacRegActionPreview }                           from './MacRegActionPreview'
@@ -13,16 +13,19 @@ const getMacRegList = jest.fn()
 describe('MacRegActionPreview', () => {
   const macAddLabel = 'Enter the MAC address of your device here'
   beforeEach( () => {
+    getMacRegList.mockClear()
+    getNetworkList.mockClear()
+
     mockServer.use(
       rest.get(
         MacRegListUrlsInfo.getMacRegistrationPool.url,
-        (req, res, ctx) => {
+        (_, res, ctx) => {
           getMacRegList()
           return res(ctx.json(mockMacRegList))
         }
       ),
       rest.post(CommonUrlsInfo.getVMNetworksList.url,
-        (req, res, ctx) => {
+        (_, res, ctx) => {
           getNetworkList()
           return res(ctx.json(mockedNetworkList))
         })
@@ -34,6 +37,8 @@ describe('MacRegActionPreview', () => {
     render(<Provider>
       <MacRegActionPreview data={mockMacReg} />
     </Provider>)
+    await waitFor(() => expect(getNetworkList).toHaveBeenCalled())
+
     const macAddField = screen.getByRole('textbox', { name: macAddLabel })
     expect(macAddField).toHaveValue('')
     expect(screen.queryByText('This field is invalid')).toBeFalsy()
@@ -44,6 +49,8 @@ describe('MacRegActionPreview', () => {
     render(<Provider>
       <MacRegActionPreview data={mockMacReg} />
     </Provider>)
+    await waitFor(() => expect(getNetworkList).toHaveBeenCalled())
+
     const macAddField = screen.getByRole('textbox', { name: macAddLabel })
     expect(macAddField).toBeVisible()
     expect(screen.queryByText('This field is invalid')).toBeFalsy()
@@ -57,6 +64,8 @@ describe('MacRegActionPreview', () => {
     render(<Provider>
       <MacRegActionPreview data={mockMacReg} />
     </Provider>)
+    await waitFor(() => expect(getNetworkList).toHaveBeenCalled())
+
     const macAddField = screen.getByRole('textbox', { name: macAddLabel })
     expect(screen.queryByText('This field is invalid')).toBeFalsy()
 
@@ -74,6 +83,8 @@ describe('MacRegActionPreview', () => {
     render(<Provider>
       <MacRegActionPreview data={mockMacReg} />
     </Provider>)
+    await waitFor(() => expect(getNetworkList).toHaveBeenCalled())
+
     let btnNext = screen.getByRole('button',{ name: /Next/ })
     expect(btnNext).toBeVisible()
     await userEvent.click(btnNext)
@@ -85,6 +96,7 @@ describe('MacRegActionPreview', () => {
     render(<Provider>
       <MacRegActionPreview data={mockMacReg} />
     </Provider>)
+    await waitFor(() => expect(getNetworkList).toHaveBeenCalled())
 
     let macAddField = screen.getByRole('textbox', { name: macAddLabel })
     await userEvent.type(macAddField, '5f:e7:78:6e:96:68')
@@ -103,6 +115,7 @@ describe('MacRegActionPreview', () => {
     render(<Provider>
       <MacRegActionPreview data={mockMacReg} />
     </Provider>)
+    await waitFor(() => expect(getNetworkList).toHaveBeenCalled())
 
     let macAddField = screen.getByRole('textbox', { name: macAddLabel })
     await userEvent.type(macAddField, '5f:e7:78:6e:96:68')
