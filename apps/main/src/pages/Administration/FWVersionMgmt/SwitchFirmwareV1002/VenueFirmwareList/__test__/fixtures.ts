@@ -732,7 +732,8 @@ export const icx8200AvGroupedData = [
       switchName: 'FPG4324V00H Switch - test',
       isStack: false,
       model: 'ICX8200_24PV',
-      currentFirmware: '10010e_b399',
+      // Change to real firmware version when 10010f release
+      currentFirmware: '10010f',
       preDownload: true,
       isSwitchLevelSchedule: false
     }

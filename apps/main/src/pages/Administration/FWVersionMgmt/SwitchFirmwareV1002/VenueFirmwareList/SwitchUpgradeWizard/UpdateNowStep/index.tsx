@@ -81,7 +81,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
         const groupedObject = _.groupBy(switchList, 'venueId')
         const icxRodanAvGroupedData = Object.values(groupedObject)
 
-        if (icx82hasVersionBelow10010eOr10020b && icxRodanAvGroupedData.length > 0) {
+        if (icx82hasVersionBelow10010fOr10020b && icxRodanAvGroupedData.length > 0) {
           noteData.push({ type: NotesEnum.NOTE8200_1, data: icxRodanAvGroupedData })
         }
       }
@@ -122,7 +122,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
     }
 
 
-  const icx82hasVersionBelow10010eOr10020b =
+  const icx82hasVersionBelow10010fOr10020b =
     getAvailableVersions(SwitchFirmwareModelGroup.ICX82)?.some(v => invalidVersionFor82Av(v.id))
 
   useEffect(() => {

@@ -32,7 +32,7 @@ export function SwitchNote (props: SwitchNoteProps) {
     [NotesEnum.NOTE8200_1]:
       $t({
         // eslint-disable-next-line max-len
-        defaultMessage: 'The following switches will not be upgraded because the ICX8200-AV models only support version 10.0.10e and above. You can still upgrade them to 10.0.10e and above by selecting the switches separately.'
+        defaultMessage: 'The following switches will not be upgraded because the ICX8200-AV models only support version 10.0.10f and above. You can still upgrade them to 10.0.10f and above by selecting the switches separately.'
       })
   }
 

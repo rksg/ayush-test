@@ -31,6 +31,6 @@ describe('SwitchNote', () => {
       , {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
-    expect(screen.getByText(/10.0.10e/i)).toBeInTheDocument()
+    expect(screen.getByText(/10.0.10f/i)).toBeInTheDocument()
   })
 })
