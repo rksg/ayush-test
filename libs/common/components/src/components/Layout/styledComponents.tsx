@@ -8,6 +8,8 @@ import styled, { css, createGlobalStyle } from 'styled-components/macro'
 
 import { get }                                         from '@acx-ui/config'
 import { ArrowChevronLeft, ArrowChevronRight, LogOut } from '@acx-ui/icons'
+import { RolesEnum }                                   from '@acx-ui/types'
+import { hasRoles }                                    from '@acx-ui/user'
 
 import modifyVars from '../../theme/modify-vars'
 
@@ -355,7 +357,7 @@ export const MenuGlobalStyle = createGlobalStyle`
 `
 
 export const MenuIcon = styled.span`
-  margin-right: 8px;
+  ${hasRoles([RolesEnum.GUEST_MANAGER]) ? 'margin-right: 8px;' : '' }
   color: var(--acx-primary-white) !important;
   > svg {
     height: 20px;
