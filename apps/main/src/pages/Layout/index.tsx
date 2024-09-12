@@ -94,7 +94,7 @@ function Layout () {
   const reportsAdminBasePath = useTenantLink('/dataStudio')
   useEffect(() => {
     if (isGuestManager && params['*'] !== 'guestsManager') {
-      (location.pathname.match(/\/userprofile/) !== null)
+      location.pathname.includes('/userprofile/')
         ? navigate({
           ...userProfileBasePath,
           pathname: `${userProfileBasePath.pathname}/${params['*']}`
