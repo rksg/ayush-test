@@ -2,18 +2,16 @@ import React from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader }                          from '@acx-ui/components'
-import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
-import { useGetEnhancedAccessControlProfileListQuery } from '@acx-ui/rc/services'
+import { Button, PageHeader }                                                                      from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                  from '@acx-ui/feature-toggle'
+import { useGetEnhancedAccessControlProfileListQuery }                                             from '@acx-ui/rc/services'
 import {
   PolicyType,
   PolicyOperation,
   getPolicyListRoutePath,
-  getPolicyRoutePath, useTableQuery
+  getPolicyRoutePath, useTableQuery, getScopeKeyByPolicy, filterByAccessForServicePolicyMutation
 } from '@acx-ui/rc/utils'
-import { TenantLink }     from '@acx-ui/react-router-dom'
-import { WifiScopes }     from '@acx-ui/types'
-import { filterByAccess } from '@acx-ui/user'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 import { PROFILE_MAX_COUNT_ACCESS_CONTROL } from '../constants'
 
@@ -52,13 +50,13 @@ export function AccessControlTable () {
           link: getPolicyListRoutePath(true)
         }
       ]}
-      extra={filterByAccess([
+      extra={filterByAccessForServicePolicyMutation([
         <TenantLink
           to={getPolicyRoutePath({
             type: PolicyType.ACCESS_CONTROL,
             oper: PolicyOperation.CREATE
           })}
-          scopeKey={[WifiScopes.CREATE]}
+          scopeKey={getScopeKeyByPolicy(PolicyType.ACCESS_CONTROL, PolicyOperation.CREATE)}
         >
           <Button
             type='primary'

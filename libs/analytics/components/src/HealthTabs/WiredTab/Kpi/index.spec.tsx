@@ -12,9 +12,10 @@ import {
   screen,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
-import { TimeStampRange }         from '@acx-ui/types'
-import { DateRange, NetworkPath } from '@acx-ui/utils'
-import type { AnalyticsFilter }   from '@acx-ui/utils'
+import { TimeStampRange }                 from '@acx-ui/types'
+import { setUserProfile, getUserProfile } from '@acx-ui/user'
+import { DateRange, NetworkPath }         from '@acx-ui/utils'
+import type { AnalyticsFilter }           from '@acx-ui/utils'
 
 import { HealthPageContext } from '../../../Health/HealthPageContext'
 
@@ -104,5 +105,36 @@ describe('Kpi Section', () => {
     const viewMore = await screen.findByRole('button', { name: 'View more' })
     await userEvent.click(viewMore)
     expect(await screen.findAllByText(/Temperature Compliance/i)).toHaveLength(1)
+  })
+  it('should disable threshold setting when wifi-u is missing', async () => {
+    setUserProfile({
+      ...getUserProfile(),
+      abacEnabled: true,
+      isCustomRole: true,
+      scopes: []
+    })
+    mockGraphqlQuery(dataApiURL, 'KPI', {
+      data: { mutationAllowed: false }
+    })
+    mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
+      data: { timeToConnect: { success: true }
+      }
+    })
+    const path = [{ type: 'network', name: 'Network' }] as NetworkPath
+    const params = { tenantId: 'testTenant' }
+    render(<Provider>
+      <HealthPageContext.Provider
+        value={{ ...healthContext }}
+      >
+        <KpiSection tab={'overview'} filters={{ ...filters, filter: pathToFilter(path) }} />
+      </HealthPageContext.Provider>
+    </Provider>, { route: { params, path: '/:tenantId' } })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const sliders = await screen.findAllByRole('slider')
+    sliders.forEach(slider => {
+      expect(slider).toHaveAttribute('aria-disabled', 'true')
+    })
+    expect(screen.queryByText('Apply')).not.toBeInTheDocument()
+    expect(screen.queryByText('Reset')).not.toBeInTheDocument()
   })
 })

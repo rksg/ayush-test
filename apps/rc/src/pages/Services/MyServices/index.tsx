@@ -17,15 +17,13 @@ import {
   useGetEdgeSdLanP2ViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
+  filterByAccessForServicePolicyMutation,
   getSelectServiceRoutePath,
-  isServicePolicyCardEnabled,
-  ServicePolicyCardData,
-  servicePolicyCardDataToScopeKeys,
+  isServiceCardEnabled,
+  ServiceOperation,
   ServiceType
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { EdgeScopes }            from '@acx-ui/types'
-import { filterByAccess }        from '@acx-ui/user'
 
 import { ServiceCard } from '../ServiceCard'
 
@@ -47,7 +45,7 @@ export default function MyServices () {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
-  const services: ServicePolicyCardData<ServiceType>[] = [
+  const services = [
     {
       type: ServiceType.MDNS_PROXY,
       categories: [RadioCardCategory.WIFI],
@@ -90,11 +88,7 @@ export default function MyServices () {
       },{
         skip: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
       }).data?.totalCount,
-      disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady),
-      scopeKeysMap: {
-        create: [EdgeScopes.CREATE],
-        read: [EdgeScopes.READ]
-      }
+      disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
     },
     {
       type: ServiceType.EDGE_FIREWALL,
@@ -145,22 +139,19 @@ export default function MyServices () {
     }
   ]
 
-  // eslint-disable-next-line max-len
-  const allServicesScopeKeysForCreate = servicePolicyCardDataToScopeKeys(services, 'create')
-
   return (
     <>
       <PageHeader
         title={$t({ defaultMessage: 'My Services' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
-        extra={filterByAccess([
-          <TenantLink to={getSelectServiceRoutePath(true)} scopeKey={allServicesScopeKeysForCreate}>
+        extra={filterByAccessForServicePolicyMutation([
+          <TenantLink to={getSelectServiceRoutePath(true)}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Service' })}</Button>
           </TenantLink>
         ])}
       />
       <GridRow>
-        {services.filter(s => isServicePolicyCardEnabled<ServiceType>(s, 'read')).map(service => {
+        {services.filter(svc => isServiceCardEnabled(svc, ServiceOperation.LIST)).map(service => {
           return (
             <GridCol key={service.type} col={{ span: 6 }}>
               <ServiceCard
@@ -169,8 +160,6 @@ export default function MyServices () {
                 categories={service.categories}
                 count={service.totalCount}
                 type={'default'}
-                scopeKeysMap={service.scopeKeysMap}
-                isBetaFeature={service.isBetaFeature}
               />
             </GridCol>
           )

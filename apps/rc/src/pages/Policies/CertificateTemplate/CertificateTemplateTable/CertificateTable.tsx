@@ -4,11 +4,10 @@ import { Modal as AntModal, Form }  from 'antd'
 import moment                       from 'moment'
 import { RawIntlProvider, useIntl } from 'react-intl'
 
-import { Button, Drawer, Loader, Table, TableProps }                                                                                                                                                           from '@acx-ui/components'
-import { useEditCertificateMutation, useGenerateCertificateMutation, useGetCertificatesQuery, useGetSpecificTemplateCertificatesQuery }                                                                        from '@acx-ui/rc/services'
-import { Certificate, CertificateCategoryType, CertificateStatusType, CertificateTemplate, EXPIRATION_DATE_FORMAT, EXPIRATION_TIME_FORMAT, EnrollmentType, FILTER, SEARCH, hasCloudpathAccess, useTableQuery } from '@acx-ui/rc/utils'
-import { filterByAccess }                                                                                                                                                                                      from '@acx-ui/user'
-import { getIntl, noDataDisplay }                                                                                                                                                                              from '@acx-ui/utils'
+import { Button, Drawer, Loader, Table, TableProps }                                                                                                                                                                                                                                 from '@acx-ui/components'
+import { useEditCertificateMutation, useGenerateCertificateMutation, useGetCertificatesQuery, useGetSpecificTemplateCertificatesQuery }                                                                                                                                              from '@acx-ui/rc/services'
+import { Certificate, CertificateCategoryType, CertificateStatusType, CertificateTemplate, EXPIRATION_DATE_FORMAT, EXPIRATION_TIME_FORMAT, EnrollmentType, FILTER, PolicyOperation, PolicyType, SEARCH, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, useTableQuery } from '@acx-ui/rc/utils'
+import { getIntl, noDataDisplay }                                                                                                                                                                                                                                                    from '@acx-ui/utils'
 
 import CertificateSettings from '../CertificateForm/CertificateSettings'
 import { issuedByLabel }   from '../contentsMap'
@@ -177,6 +176,7 @@ export default function CertificateTable ({ templateData, showGenerateCert = fal
 
   const rowActions: TableProps<Certificate>['rowActions'] = [
     {
+      scopeKey: getScopeKeyByPolicy(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Revoke' }),
       disabled: ([selectedRow]) =>
         getCertificateStatus(selectedRow) !== CertificateStatusType.VALID,
@@ -193,6 +193,7 @@ export default function CertificateTable ({ templateData, showGenerateCert = fal
       }
     },
     {
+      scopeKey: getScopeKeyByPolicy(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Unrevoke' }),
       disabled: ([selectedRow]) =>
         getCertificateStatus(selectedRow) !== CertificateStatusType.REVOKED,
@@ -204,6 +205,7 @@ export default function CertificateTable ({ templateData, showGenerateCert = fal
       }
     }
   ]
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
     const payload = {
@@ -218,7 +220,8 @@ export default function CertificateTable ({ templateData, showGenerateCert = fal
   }
 
   const actionButtons = [
-    ...(templateData && showGenerateCert && hasCloudpathAccess() ? [{
+    ...(templateData && showGenerateCert ? [{
+      scopeKey: getScopeKeyByPolicy(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.CREATE),
       label: $t({ defaultMessage: 'Generate Certificate' }),
       onClick: () => {
         setCertificateDrawerOpen(true)
@@ -235,10 +238,10 @@ export default function CertificateTable ({ templateData, showGenerateCert = fal
           dataSource={tableQuery?.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
-          rowActions={filterByAccess(rowActions)}
-          actions={filterByAccess(actionButtons)}
+          rowActions={allowedRowActions}
+          actions={filterByAccessForServicePolicyMutation(actionButtons)}
           rowSelection={
-            hasCloudpathAccess() && { type: 'radio' }}
+            allowedRowActions.length > 0 && { type: 'radio' }}
           rowKey='id'
           onFilterChange={handleFilterChange}
           enableApiFilter={true}

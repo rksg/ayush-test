@@ -285,7 +285,8 @@ export function Subscriptions () {
         summaryData.forEach(summary => {
           quantity += summary.purchasedQuantity + summary.courtesyQuantity
           courtesy += summary.courtesyQuantity
-          used += summary.usedQuantity
+          // usedQuantity includes used by EC and MSP
+          used += (summary.usedQuantity - summary.usedQuantityForOwnAssignment)
           assigned += summary.usedQuantityForOwnAssignment
         })
 
@@ -432,7 +433,7 @@ export function Subscriptions () {
   }
 
   const SubscriptionTable = () => {
-    const { data: rbacQueryResults } = useRbacEntitlementListQuery(
+    const { data: rbacQueryResults, ...rbacQueryState } = useRbacEntitlementListQuery(
       { params: useParams(), payload: entitlementListPayload },
       { skip: !isEntitlementRbacApiEnabled })
     const queryResults = useMspEntitlementListQuery(
@@ -454,7 +455,7 @@ export function Subscriptions () {
       })
 
     return (
-      <Loader states={[queryResults]}>
+      <Loader states={[queryResults, rbacQueryState]}>
         <Table
           settingsId='msp-subscription-table'
           columns={columns}

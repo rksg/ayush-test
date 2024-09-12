@@ -8,13 +8,12 @@ import { RadioCardCategory }                                                    
 import { Features, useIsSplitOn, useIsTierAllowed }                                                      from '@acx-ui/feature-toggle'
 import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import {
-  ServicePolicyCardData,
   ServiceType,
-  isServicePolicyCardSetEnabled,
-  isServicePolicyCardEnabled,
+  isServiceCardEnabled,
+  ServiceOperation,
+  isServiceCardSetEnabled,
   IncompatibilityFeatures
 } from '@acx-ui/rc/utils'
-import { EdgeScopes } from '@acx-ui/types'
 
 import { ServiceCard } from '../ServiceCard'
 
@@ -37,7 +36,7 @@ export default function ServiceCatalog () {
   // eslint-disable-next-line max-len
   const [edgeCompatibilityFeature, setEdgeCompatibilityFeature] = useState<IncompatibilityFeatures | undefined>()
 
-  const sets: { title: string, items: ServicePolicyCardData<ServiceType>[] }[] = [
+  const sets = [
     {
       title: $t({ defaultMessage: 'Connectivity' }),
       items: [
@@ -63,11 +62,7 @@ export default function ServiceCatalog () {
               onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.SD_LAN)}
             />
             : undefined,
-          disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady),
-          scopeKeysMap: {
-            create: [EdgeScopes.CREATE],
-            read: [EdgeScopes.READ]
-          }
+          disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
         }
       ]
     },
@@ -111,21 +106,19 @@ export default function ServiceCatalog () {
         title={$t({ defaultMessage: 'Service Catalog' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
       />
-      {sets.filter(set => isServicePolicyCardSetEnabled(set, 'read')).map(set => {
+      {sets.filter(set => isServiceCardSetEnabled(set, ServiceOperation.LIST)).map(set => {
         return <UI.CategoryContainer key={set.title}>
           <Typography.Title level={3}>
             { set.title }
           </Typography.Title>
           <GridRow>
-            {set.items.filter(i => isServicePolicyCardEnabled<ServiceType>(i, 'read')).map(item => {
+            {set.items.filter(i => isServiceCardEnabled(i, ServiceOperation.LIST)).map(item => {
               return <GridCol key={item.type} col={{ span: 6 }}>
                 <ServiceCard
                   key={item.type}
                   serviceType={item.type}
                   categories={item.categories}
                   type={'button'}
-                  scopeKeysMap={item.scopeKeysMap}
-                  isBetaFeature={item.isBetaFeature}
                   helpIcon={item.helpIcon}
                 />
               </GridCol>

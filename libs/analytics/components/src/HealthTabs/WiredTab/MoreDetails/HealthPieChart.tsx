@@ -145,37 +145,37 @@ export const MoreDetailsPieChart = ({
     : queryResults.data.slice(0, n)
   const total = pieData?.reduce((total, { value }) => total + value, 0)
   return (
-    <PieChartWrapper>
-      <Loader states={[queryResults]}>
-        {Title}
+
+    <Loader states={[queryResults]}>
+      {Title}
+      <PieChartWrapper>
         {pieData && pieData.length > 0 ?
           <AutoSizer defaultHeight={150}>
             {({ width, height }) => (
-              <>
-                <DonutChart
-                  data={pieData}
-                  style={{ height, width }}
-                  legend='name'
-                  size={'x-large'}
-                  showTotal={false}
-                  labelTextStyle={{
-                    overflow: 'truncate',
-                    width: 170
-                  }}
-                  showLegend
-                  dataFormatter={tooltipFormatter(total, formatter('countFormat'))} />
-                { hasOthers && <Space align='start' style={{ width }} >
-                  <InformationOutlined />
-                  {$t({
-                    defaultMessage: `Detailed breakup of all items beyond
-                    Top {n} can be explored using Data Studio custom charts.` }, { n })}
-                </Space> }
-              </>
+              <DonutChart
+                data={pieData}
+                style={{ height, width }}
+                legend='name'
+                size={'x-large'}
+                showTotal={false}
+                labelTextStyle={{
+                  overflow: 'truncate',
+                  width: 170
+                }}
+                showLegend
+                dataFormatter={tooltipFormatter(total, formatter('countFormat'))} />
             )}
           </AutoSizer> :
           <NoData />
         }
-      </Loader>
-    </PieChartWrapper>
+      </PieChartWrapper>
+      { hasOthers &&
+        <Space align='start' >
+          <InformationOutlined />
+          {$t({
+            defaultMessage: `Detailed breakup of all items beyond
+            Top {n} can be explored using Data Studio custom charts.` }, { n })}
+        </Space> }
+    </Loader>
   )
 }

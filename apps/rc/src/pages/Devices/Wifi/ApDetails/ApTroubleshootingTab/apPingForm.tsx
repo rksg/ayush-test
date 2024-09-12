@@ -5,10 +5,10 @@ import TextArea                  from 'antd/lib/input/TextArea'
 import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
 
-import { Button, Loader, Tooltip }                                     from '@acx-ui/components'
-import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
-import { usePingApMutation }                                           from '@acx-ui/rc/services'
-import { targetHostRegExp, WifiTroubleshootingMessages, useApContext } from '@acx-ui/rc/utils'
+import { Button, Loader, Tooltip }                                                        from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                         from '@acx-ui/feature-toggle'
+import { usePingApMutation }                                                              from '@acx-ui/rc/services'
+import { targetHostRegExp, WifiTroubleshootingMessages, useApContext, DiagnosisCommands } from '@acx-ui/rc/utils'
 
 
 export function ApPingForm () {
@@ -22,7 +22,7 @@ export function ApPingForm () {
     try {
       const payload = {
         targetHost: pingForm.getFieldValue('name'),
-        action: 'ping'
+        ...(isUseWifiRbacApi ? { type: DiagnosisCommands.PING } : { action: 'ping' })
       }
       const pingApResult = await pingAp({
         params: { tenantId, serialNumber, venueId },

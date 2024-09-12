@@ -756,8 +756,8 @@ export interface VenueLoadBalancing {
   bandBalancingClientPercent24G: number,
   steeringMode: SteeringModeEnum,
   stickyClientSteeringEnabled?: boolean,
-  stickyClientSnrThreshold: number,
-  stickyClientNbrApPercentageThreshold: number
+  stickyClientSnrThreshold?: number,
+  stickyClientNbrApPercentageThreshold?: number
 }
 
 export interface VenueBssColoring {
@@ -766,6 +766,12 @@ export interface VenueBssColoring {
 
 export interface ApEnhancedKey {
   tlsKeyEnhancedModeEnabled: boolean
+}
+
+export interface VenueApSmartMonitor {
+	enabled: boolean,
+	interval: number,
+	threshold: number
 }
 
 export interface ApManagementVlan {

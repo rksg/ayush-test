@@ -19,11 +19,11 @@ import {
   ServiceOperation,
   getServiceListRoutePath,
   getServiceRoutePath,
-  MdnsProxyViewModel
+  MdnsProxyViewModel,
+  getScopeKeyByService,
+  filterByAccessForServicePolicyMutation
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { WifiScopes }                                              from '@acx-ui/types'
-import { filterByAccess, hasPermission }                           from '@acx-ui/user'
 
 const defaultPayload = {
   fields: ['id', 'name', 'rules', 'venueIds', 'activations'],
@@ -64,7 +64,7 @@ export default function MdnsProxyTable () {
           }
         })
       },
-      scopeKey: [WifiScopes.DELETE]
+      scopeKey: getScopeKeyByService(ServiceType.MDNS_PROXY, ServiceOperation.DELETE)
     },
     {
       label: $t({ defaultMessage: 'Edit' }),
@@ -78,9 +78,11 @@ export default function MdnsProxyTable () {
           })
         })
       },
-      scopeKey: [WifiScopes.UPDATE]
+      scopeKey: getScopeKeyByService(ServiceType.MDNS_PROXY, ServiceOperation.EDIT)
     }
   ]
+
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
   return (
     <>
@@ -92,9 +94,12 @@ export default function MdnsProxyTable () {
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
-        extra={filterByAccess([
-          // eslint-disable-next-line max-len
-          <TenantLink scopeKey={[WifiScopes.CREATE]} to={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.CREATE })}>
+        extra={filterByAccessForServicePolicyMutation([
+          <TenantLink
+            scopeKey={getScopeKeyByService(ServiceType.MDNS_PROXY, ServiceOperation.CREATE)}
+            // eslint-disable-next-line max-len
+            to={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.CREATE })}
+          >
             <Button type='primary'>
               {$t({ defaultMessage: 'Add mDNS Proxy Service' })}</Button>
           </TenantLink>
@@ -107,11 +112,8 @@ export default function MdnsProxyTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={
-            hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) &&
-            { type: 'radio' }
-          }
+          rowActions={allowedRowActions}
+          rowSelection={(allowedRowActions.length > 0) && { type: 'radio' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />
