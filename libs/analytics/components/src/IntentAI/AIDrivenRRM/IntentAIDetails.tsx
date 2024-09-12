@@ -14,6 +14,7 @@ import { DetailsSection }           from '../common/DetailsSection'
 import { getIntentStatus }          from '../common/getIntentStatus'
 import { IntentDetailsHeader }      from '../common/IntentDetailsHeader'
 import { IntentIcon }               from '../common/IntentIcon'
+import { isIntentActive }           from '../common/isIntentActive'
 import { KpiCard }                  from '../common/KpiCard'
 import { richTextFormatValues }     from '../common/richTextFormatValues'
 import { StatusTrail }              from '../common/StatusTrail'
@@ -29,7 +30,7 @@ export function createUseValuesText () {
   return function useValuesText () {
     const { $t } = getIntl()
     const { intent, kpis } = useIntentContext()
-    const isFullOptimization = intent.preferences?.crrmFullOptimization ?? true
+    const isFullOptimization = intent.metadata.preferences?.crrmFullOptimization ?? true
 
     const kpi = kpis.find(kpi => kpi.key === 'number-of-interfering-links')!
     const { data, compareData } = getKpiData(intent, kpi)
@@ -48,7 +49,7 @@ export function createUseValuesText () {
     }
     const inactive = defineMessage({ defaultMessage: 'When activated, this Intent takes over the automatic channel planning in the network.' })
 
-    const summaryText = intent.status === 'active'
+    const summaryText = isIntentActive(intent)
       ? isFullOptimization ? action.full : action.partial
       : inactive
 

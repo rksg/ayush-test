@@ -2,9 +2,9 @@ import { FormattedMessage, MessageDescriptor } from 'react-intl'
 
 import { incidentScope } from '@acx-ui/analytics/utils'
 
+import { isIntentActive }       from '../common/isIntentActive'
 import { richTextFormatValues } from '../common/richTextFormatValues'
 import { useIntentContext }     from '../IntentContext'
-import { Statuses }             from '../states'
 import { Intent }               from '../useIntentDetailsQuery'
 
 export function createUseValuesText<ValuesType = unknown> (
@@ -26,8 +26,7 @@ export function createUseValuesText<ValuesType = unknown> (
       scope: incidentScope(intent),
       ...(getValuesFn && getValuesFn(intent))
     }
-    const summary = [ Statuses.paused, Statuses.na ]
-      .includes(intent.status as Statuses) ? config.inactive : config.action
+    const summary = isIntentActive(intent) ? config.action : config.inactive
     return {
       actionText: <FormattedMessage {...config.action} values={values} />,
       reasonText: <FormattedMessage {...config.reason} values={values} />,
