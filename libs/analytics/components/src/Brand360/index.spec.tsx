@@ -2,11 +2,13 @@ import '@testing-library/jest-dom'
 
 import { rest } from 'msw'
 
-import type { Settings }                                                                      from '@acx-ui/analytics/utils'
-import { useIsSplitOn }                                                                       from '@acx-ui/feature-toggle'
-import { dataApiURL, Provider, rbacApiURL }                                                   from '@acx-ui/store'
-import { render, screen, mockServer, fireEvent, mockGraphqlQuery, waitForElementToBeRemoved } from '@acx-ui/test-utils'
-import { AccountType }                                                                        from '@acx-ui/utils'
+import type { Settings }                                                                               from '@acx-ui/analytics/utils'
+import { useIsSplitOn }                                                                                from '@acx-ui/feature-toggle'
+import { dataApiURL, Provider, rbacApiURL }                                                            from '@acx-ui/store'
+import { render, screen, mockServer, fireEvent, mockGraphqlQuery, waitForElementToBeRemoved, waitFor } from '@acx-ui/test-utils'
+import { WifiScopes }                                                                                  from '@acx-ui/types'
+import { getUserProfile, setUserProfile }                                                              from '@acx-ui/user'
+import { AccountType }                                                                                 from '@acx-ui/utils'
 
 import { mockBrandTimeseries, prevTimeseries, currTimeseries, propertiesMappingData, franchisorZones } from './__tests__/fixtures'
 import { FranchisorTimeseries }                                                                        from './services'
@@ -172,6 +174,24 @@ describe('Brand360', () => {
     fireEvent.mouseUp(sliders[0])
     fireEvent.click(await screen.findByText('Reset'))
     expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('displays read only SLAs', async () => {
+    const userProfile = getUserProfile()
+    setUserProfile({
+      ...userProfile,
+      abacEnabled: true,
+      isCustomRole: true,
+      scopes: [WifiScopes.READ]
+    })
+    mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', mockBrandTimeseries)
+    mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', wrapData(prevTimeseries))
+    mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', wrapData(currTimeseries))
+    render(<Provider><Brand360 /></Provider>)
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    await waitFor(async () =>
+      expect(await screen.findByRole('button', { name: 'Apply' })).toBeDisabled()
+    )
   })
 
   it('should show not show option for LSP account', async () => {

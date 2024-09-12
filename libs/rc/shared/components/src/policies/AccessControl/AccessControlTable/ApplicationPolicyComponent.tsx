@@ -15,10 +15,9 @@ import {
 } from '@acx-ui/rc/services'
 import {
   useTableQuery, ApplicationPolicy, AclOptionType, Network,
-  WifiNetwork
+  WifiNetwork, getScopeKeyByPolicy, PolicyOperation, PolicyType,
+  filterByAccessForServicePolicyMutation
 } from '@acx-ui/rc/utils'
-import { WifiScopes }                    from '@acx-ui/types'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 import { defaultNetworkPayload }                from '../../../NetworkTable'
 import { AddModeProps }                         from '../../AccessControlForm'
@@ -106,7 +105,7 @@ const ApplicationPolicyComponent = () => {
   }, [networkTableQuery.data, networkIds])
 
   const actions = [{
-    scopeKey: [WifiScopes.CREATE],
+    scopeKey: getScopeKeyByPolicy(PolicyType.APPLICATION_POLICY, PolicyOperation.CREATE),
     label: $t({ defaultMessage: 'Add Application Policy' }),
     disabled: tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT_APPLICATION_POLICY,
     onClick: () => {
@@ -130,7 +129,7 @@ const ApplicationPolicyComponent = () => {
 
   const rowActions: TableProps<ApplicationPolicy>['rowActions'] = [
     {
-      scopeKey: [WifiScopes.DELETE],
+      scopeKey: getScopeKeyByPolicy(PolicyType.APPLICATION_POLICY, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedItems => selectedItems.length > 0),
       onClick: (rows, clearSelection) => {
@@ -138,7 +137,7 @@ const ApplicationPolicyComponent = () => {
       }
     },
     {
-      scopeKey: [WifiScopes.UPDATE],
+      scopeKey: getScopeKeyByPolicy(PolicyType.APPLICATION_POLICY, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems => selectedItems.length === 1),
       onClick: ([{ id }]) => {
@@ -146,6 +145,9 @@ const ApplicationPolicyComponent = () => {
       }
     }
   ]
+
+  const allowedActions = filterByAccessForServicePolicyMutation(actions)
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
   return <Loader states={[tableQuery]}>
     <Form>
@@ -161,12 +163,9 @@ const ApplicationPolicyComponent = () => {
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
         rowKey='id'
-        actions={filterByAccess(actions)}
-        rowActions={filterByAccess(rowActions)}
-        rowSelection={
-          // eslint-disable-next-line max-len
-          hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'checkbox' }
-        }
+        actions={allowedActions}
+        rowActions={allowedRowActions}
+        rowSelection={allowedRowActions.length > 0 && { type: 'checkbox' }}
       />
     </Form>
   </Loader>

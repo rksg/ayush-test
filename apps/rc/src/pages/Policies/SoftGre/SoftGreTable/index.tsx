@@ -15,11 +15,11 @@ import {
   SoftGreViewData,
   getPolicyDetailsLink,
   MtuTypeEnum,
-  useTableQuery
+  useTableQuery,
+  getScopeKeyByPolicy,
+  filterByAccessForServicePolicyMutation
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { WifiScopes }                                              from '@acx-ui/types'
-import { filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 
 const defaultPayload = {
   fields: [
@@ -32,7 +32,8 @@ const defaultPayload = {
     'mtuSize',
     'keepAliveInterval',
     'keepAliveRetryTimes',
-    'disassociateClientEnabled'
+    'disassociateClientEnabled',
+    'activations'
   ],
   searchString: '',
   filters: {},
@@ -53,11 +54,10 @@ export default function SoftGreTable () {
     pagination: { settingsId }
   })
 
-  const isSelectionVisible = hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] })
 
   const rowActions: TableProps<SoftGreViewData>['rowActions'] = [
     {
-      scopeKey: [WifiScopes.UPDATE],
+      scopeKey: getScopeKeyByPolicy(PolicyType.SOFTGRE, PolicyOperation.EDIT),
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -72,7 +72,7 @@ export default function SoftGreTable () {
       }
     },
     {
-      scopeKey: [WifiScopes.DELETE],
+      scopeKey: getScopeKeyByPolicy(PolicyType.SOFTGRE, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         showActionModal({
@@ -93,6 +93,7 @@ export default function SoftGreTable () {
     }
   ]
 
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
   return (
     <>
       <PageHeader
@@ -109,11 +110,11 @@ export default function SoftGreTable () {
             link: getPolicyListRoutePath(true)
           }
         ]}
-        extra={hasCrossVenuesPermission({ needGlobalPermission: true }) && filterByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             // eslint-disable-next-line max-len
             to={getPolicyRoutePath({ type: PolicyType.SOFTGRE, oper: PolicyOperation.CREATE })}
-            scopeKey={[WifiScopes.CREATE]}
+            scopeKey={getScopeKeyByPolicy(PolicyType.SOFTGRE, PolicyOperation.CREATE)}
           >
             <Button type='primary'>{$t({ defaultMessage: 'Add SoftGRE Profile' })}</Button>
           </TenantLink>
@@ -124,10 +125,9 @@ export default function SoftGreTable () {
           rowKey='id'
           settingsId={settingsId}
           columns={useColumns()}
-          rowActions={filterByAccess(rowActions)}
+          rowActions={allowedRowActions}
           rowSelection={
-            hasCrossVenuesPermission({ needGlobalPermission: true }) &&
-            isSelectionVisible && { type: 'checkbox' }
+            allowedRowActions.length > 0 && { type: 'checkbox' }
           }
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
@@ -234,7 +234,7 @@ function useColumns () {
       title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: 'venueCount',
       align: 'center',
-      filterKey: 'venueIds',
+      filterKey: 'activations.venueId',
       filterable: venueNameMap,
       sorter: true,
       render: function (_, row) {

@@ -23,7 +23,7 @@ interface FormValues { status: Statuses, settings: SettingsType, preferences?: u
 
 export function ScheduleTiming ({ disabled = false }: { disabled?: boolean }) {
   const { intent } = useIntentContext()
-  const showDate = isDateVisible(intent.status as Statuses)
+  const showDate = isDateVisible(intent.status)
 
   const summary = showDate ? <FormattedMessage
     values={richTextFormatValues}
@@ -56,7 +56,7 @@ export function ScheduleTiming ({ disabled = false }: { disabled?: boolean }) {
 
   return <>
     {summary}
-    {isDateVisible(intent.status as Statuses) && <ScheduleDate disabled={disabled} />}
+    {isDateVisible(intent.status) && <ScheduleDate disabled={disabled} />}
     <ScheduleTime disabled={disabled}/>
   </>
 }
@@ -86,7 +86,7 @@ function ScheduleDate ({ disabled = false }: { disabled?: boolean }) {
 function ScheduleTime ({ disabled = false }: { disabled?: boolean }) {
   const { $t } = useIntl()
   const { intent } = useIntentContext()
-  const showDate = isDateVisible(intent.status as Statuses)
+  const showDate = isDateVisible(intent.status)
 
   const label = showDate
     ? <FormattedMessage defaultMessage='Start Time' />
@@ -145,7 +145,7 @@ const formats = {
 ScheduleTiming.FieldSummary = function FieldSummary (): JSX.Element {
   const { $t } = useIntl()
   const { intent } = useIntentContext()
-  const showDate = isDateVisible(intent.status as Statuses)
+  const showDate = isDateVisible(intent.status)
   const format = showDate ? formats.datetime : formats.time
   const label = showDate
     ? $t({ defaultMessage: 'Start Date & Time' })
@@ -154,7 +154,7 @@ ScheduleTiming.FieldSummary = function FieldSummary (): JSX.Element {
   return <Form.Item name={fieldName} label={label}>
     <StepsForm.FieldSummary<SettingsType>
       convert={(settings) => format(getScheduledAt({
-        status: intent.status as Statuses,
+        status: intent.status,
         settings: settings!
       }))}
     />
@@ -169,11 +169,6 @@ function isDateVisible (status: Statuses) {
 }
 
 export function getScheduledAt (values: FormValues) {
-  // TODO:
-  // remove once switch to Intent resolver
-  // required due to Recommendation resolver doesn't return scheudledAt by default
-  values.settings.date ??= moment().clone().startOf('day')
-
   const duration = moment.duration(values.settings.time, 'hours')
   const scheduledAt = values.settings.date.clone().set({
     hours: duration.hours(),

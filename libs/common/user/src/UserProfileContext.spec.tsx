@@ -56,20 +56,6 @@ function TestUserProfile (props: {
 
 const route = { path: '/:tenantId/t', params: { tenantId } }
 
-const fakedPrivilegeGroupList =
-  [
-    {
-      id: '2765e98c7b9446e2a5bdd4720e0e8911',
-      name: 'PRIME_ADMIN',
-      description: 'Prime Admin Role',
-      roleName: 'PRIME_ADMIN',
-      type: 'System',
-      delegation: false,
-      allCustomers: false,
-      allVenues: true
-    }
-  ]
-
 const fakedVenueList = {
   fields: [
     'name',
@@ -111,9 +97,6 @@ describe('UserProfileContext', () => {
     services.useFeatureFlagStatesQuery = jest.fn().mockImplementation(() => {
       return { data: { 'abac-policies-toggle': false,
         'allowed-operations-toggle': false } }
-    })
-    services.useGetPrivilegeGroupsQuery = jest.fn().mockImplementation(() => {
-      return { data: fakedPrivilegeGroupList }
     })
     mockServer.use(
       rest.get(UserUrlsInfo.getAccountTier.url as string,
@@ -224,17 +207,50 @@ describe('UserProfileContext', () => {
     })
 
     const TestBetaEnabled = (props: TestUserProfileChildComponentProps) => {
-      const { abacEnabled, isCustomRole } = props.userProfileCtx
+      const { abacEnabled, isCustomRole, hasAllVenues } = props.userProfileCtx
       return <>
         <div>{`abacEnabled:${abacEnabled}`}</div>
         <div>{`isCustomRole:${isCustomRole}`}</div>
+        <div>{`hasAllVenues:${hasAllVenues}`}</div>
       </>
     }
 
     render(<TestUserProfile ChildComponent={TestBetaEnabled}/>, { wrapper, route })
     await checkDataRendered()
     expect(await screen.findByText('isCustomRole:true')).toBeVisible()
-    expect(screen.queryByText('abacEnabled:true')).toBeVisible()
+    expect(await screen.findByText('abacEnabled:true')).toBeVisible()
+    expect(await screen.findByText('hasAllVenues:true')).toBeVisible()
+  })
+
+  it('user profile abac enabled case and venue filtering case', async () => {
+    services.useGetUserProfileQuery = jest.fn().mockImplementation(() => {
+      const profile = {
+        ...mockedUserProfile,
+        scopes: ['switch-r', 'venue'],
+        customRoleName: 'CUSTOM_USER',
+        customRoleType: CustomRoleType.CUSTOM
+      }
+      return { data: transformResponse(profile as UserProfile) }
+    })
+    services.useFeatureFlagStatesQuery = jest.fn().mockImplementation(() => {
+      return { data: { 'abac-policies-toggle': true,
+        'allowed-operations-toggle': false } }
+    })
+
+    const TestBetaEnabled = (props: TestUserProfileChildComponentProps) => {
+      const { abacEnabled, isCustomRole, hasAllVenues } = props.userProfileCtx
+      return <>
+        <div>{`abacEnabled:${abacEnabled}`}</div>
+        <div>{`isCustomRole:${isCustomRole}`}</div>
+        <div>{`hasAllVenues:${hasAllVenues}`}</div>
+      </>
+    }
+
+    render(<TestUserProfile ChildComponent={TestBetaEnabled}/>, { wrapper, route })
+    await checkDataRendered()
+    expect(await screen.findByText('isCustomRole:true')).toBeVisible()
+    expect(await screen.findByText('abacEnabled:true')).toBeVisible()
+    expect(await screen.findByText('hasAllVenues:false')).toBeVisible()
   })
 
   it('user profile special abac disabled case with custom role', async () => {
@@ -323,9 +339,6 @@ describe('UserProfileContext', () => {
     services.useFeatureFlagStatesQuery = jest.fn().mockImplementation(() => {
       return { data: { 'abac-policies-toggle': false,
         'allowed-operations-toggle': false } }
-    })
-    services.useGetPrivilegeGroupsQuery = jest.fn().mockImplementation(() => {
-      return { data: null }
     })
 
     const TestBetaEnabled = (props: TestUserProfileChildComponentProps) => {

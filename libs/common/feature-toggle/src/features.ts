@@ -155,6 +155,7 @@ export enum Features {
   SWITCH_NEXT_GENERATION_TOPOLOGY_TOGGLE = 'switch-next-generation-topology-toggle',
   RUCKUS_AI_USERS_TOGGLE = 'ruckus-ai-sso-toggle',
   SWITCH_EXTERNAL_IP_TOGGLE = 'removable-ff',
+  WORKFLOW_TOGGLE = 'workflow-framework-enabled',
   AP_FW_MGMT_UPGRADE_BY_MODEL = 'ap-fw-mgmt-upgrade-by-model',
   WIFI_8021X_MAC_AUTH_TOGGLE = 'wifi-fr-8021x-mac-toggle',
   RUCKUS_AI_NEW_ROLES_TOGGLE = 'ruckus-ai-users-new-roles-toggle',
@@ -173,8 +174,10 @@ export enum Features {
   SWITCH_AP_PORT_HYPERLINK ='switch-ap-port-hyperlink-toggle',
   WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE = 'wifi-snmp-v3-agent-passphrase-complexity-toggle',
   WIFI_RESET_AP_LAN_PORT_TOGGLE = 'wifi-reset-ap-port-setting-toggle',
+  WIFI_SMART_MONITOR_DISABLE_WLAN_TOGGLE = 'wifi-smart-monitor-disable-wlan-toggle',
   SWITCH_ICX7850_48C_SUPPORT_PORT_SPEED_TOGGLE = 'switch-consumer-icx7850-48c-support-port-speed-toggle',
-  WIFI_AP_STICKY_CLIENT_STEERING_TOGGLE = 'wifi-ap-sticky-client-steering-toggle'
+  WIFI_AP_STICKY_CLIENT_STEERING_TOGGLE = 'wifi-ap-sticky-client-steering-toggle',
+  WIFI_OVER_THE_DS_FT_SUPPORT_TOGGLE = 'wifi-over-the-ds-ft-support-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
@@ -202,5 +205,5 @@ export const BetaListDetails:BetaList[] = [
   { key: TierFeatures.AP_70, description: defineMessage({ defaultMessage: 'AP-70: Wi-Fi 7 - Wi-Fi 7 UI configuration available for early adopters and customers provided with advance units of the R770. Contact your reseller for more information on availability of the new R770!' }), status: true },
   { key: TierFeatures.SMART_EDGES, description: defineMessage({ defaultMessage: 'SmartEdge: RUCKUS SmartEdge is a platfrom to run RUCKUS services on. Network administrators can utilize SD-LAN service or Personal Identity Networking service on a SmartEdge. SD-LAN provides WLAN tunnelling using VXLAN. This will provide end users a seamless roaming experience across a network. The Personal Identity Networking service provides individual networks for users which is typically used in a multi-dwelling facility.' }), status: true },
   { key: TierFeatures.CONFIG_TEMPLATE, description: defineMessage({ defaultMessage: 'Config Template: It allows MSP users to create templates for networks, <venuePlural></venuePlural>, services, and policies. These templates can then be applied to multiple customers, providing a centralized and efficient solution for managing RUCKUS brand network equipment across properties.' }), status: true },
-  { key: TierFeatures.BETA_LBS, description: defineMessage({ defaultMessage: 'LBS: TBD' }), status: true }
+  { key: TierFeatures.BETA_LBS, description: defineMessage({ defaultMessage: 'LBS: RUCKUS One now lets you create a Location Based Service (LBS) Server linked to multiple venues for efficient tracking and management of location-specific information. This feature gathers location data from connected access points (APs) and routes it to third-party application servers. You can add and manage LBS server profiles and enable Location Based Services for any venue directly from the RUCKUS One web interface, enhancing your venue management capabilities.' }), status: true }
 ]

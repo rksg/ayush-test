@@ -7,9 +7,15 @@ export enum MacRegistrationDetailsTabKey {
   MAC_REGISTRATIONS = 'macRegistrations'
 }
 
+export enum WorkflowDetailsTabKey {
+  OVERVIEW = 'overview',
+  VERSION_HISTORY = 'versionHistory'
+}
+
 export enum PolicyOperation {
   CREATE,
   EDIT,
+  DELETE,
   DETAIL,
   LIST
 }
@@ -22,14 +28,15 @@ export interface PolicyRoutePathProps {
 export interface PolicyDetailsLinkProps extends PolicyRoutePathProps {
   oper: Exclude<PolicyOperation, PolicyOperation.CREATE>;
   policyId: string;
-  activeTab?: MacRegistrationDetailsTabKey; // Union the other policies tab keys if needed
+  activeTab?: MacRegistrationDetailsTabKey | WorkflowDetailsTabKey; // Union the other policies tab keys if needed
 }
 
 const operationPathMapping: Record<PolicyOperation, string> = {
   [PolicyOperation.CREATE]: 'create',
   [PolicyOperation.EDIT]: ':policyId/edit',
   [PolicyOperation.DETAIL]: ':policyId/detail',
-  [PolicyOperation.LIST]: 'list'
+  [PolicyOperation.LIST]: 'list',
+  [PolicyOperation.DELETE]: ''
 }
 
 export const policyTypePathMapping: Record<PolicyType, string> = {
@@ -53,10 +60,11 @@ export const policyTypePathMapping: Record<PolicyType, string> = {
   [PolicyType.TUNNEL_PROFILE]: 'tunnelProfile',
   [PolicyType.CONNECTION_METERING]: 'connectionMetering',
   [PolicyType.LBS_SERVER_PROFILE]: 'lbsServerProfile',
+  [PolicyType.WORKFLOW]: 'workflow',
   [PolicyType.CERTIFICATE_TEMPLATE]: 'certificateTemplate',
   [PolicyType.CERTIFICATE_AUTHORITY]: 'certificateAuthority',
   [PolicyType.CERTIFICATE]: 'certificate',
-  [PolicyType.QOS_BANDWIDTH]: 'qosBandwidth',
+  [PolicyType.HQOS_BANDWIDTH]: 'hqosBandwidth',
   [PolicyType.SOFTGRE]: 'softGre'
 }
 
@@ -93,6 +101,8 @@ export function getSelectPolicyRoutePath (prefixSlash = false): string {
 
 function hasTab ({ type, oper }: PolicyRoutePathProps): boolean {
   if (type === PolicyType.MAC_REGISTRATION_LIST && oper === PolicyOperation.DETAIL) {
+    return true
+  } else if (type === PolicyType.WORKFLOW && oper === PolicyOperation.DETAIL) {
     return true
   }
   return false

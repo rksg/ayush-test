@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 
 import { Typography, Space }                              from 'antd'
 import { isNil, pick, remove, cloneDeep, unionBy, unset } from 'lodash'
-import { useIntl }                                        from 'react-intl'
+import { FormattedMessage, useIntl }                      from 'react-intl'
 
 import { Drawer }                                                            from '@acx-ui/components'
 import { EdgeSdLanP2ActivatedNetworksTable, showSdLanGuestFwdConflictModal } from '@acx-ui/rc/components'
@@ -163,10 +163,20 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
         />
       }
     >
-      <Space direction='vertical'>
-        <Typography.Paragraph >
-          { $t(messageMappings.drawer_table_description) }
-        </Typography.Paragraph>
+      <Space direction='vertical' size={0}>
+        <div>
+          <Typography.Paragraph>
+            { $t(messageMappings.drawer_table_description) }
+          </Typography.Paragraph>
+          <Typography.Paragraph>
+            <FormattedMessage
+              {...messageMappings.drawer_table_help}
+              values={{
+                b: (chunk) => <b>{chunk}</b>
+              }}
+            />
+          </Typography.Paragraph>
+        </div>
 
         <EdgeSdLanP2ActivatedNetworksTable
           venueId={venueId}
