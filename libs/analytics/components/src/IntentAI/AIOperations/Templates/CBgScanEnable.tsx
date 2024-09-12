@@ -20,9 +20,6 @@ import { createUseValuesText }                                from '../createUse
 import { Reason }                                             from '../SideNotes/Reason'
 import { Tradeoff }                                           from '../SideNotes/Tradeoff'
 
-// TODO: update TBD
-export const getValuesFn = () => ({ channelSelectionMode: 'TBD' })
-
 export const kpis: IntentKPIConfig[] = []
 
 export const createBgScanEnable = (
@@ -34,9 +31,9 @@ export const createBgScanEnable = (
     yes: {
       title: defineMessage({ defaultMessage: 'Yes, apply the recommendation' }),
       content: <FormattedMessage
-        values={{ ...richTextFormatValues, ...(getValuesFn()) }}
+        values={richTextFormatValues}
         defaultMessage={`
-          <p>IntentAI will activate background scanning and configure the auto channel selection mode to "{channelSelectionMode}" for this network.</p>
+          <p>IntentAI will activate background scanning and configure the auto channel selection mode to background scan for this network.</p>
           <p>IntentAI will continuously monitor these configurations.</p>
         `}
       />

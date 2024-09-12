@@ -5,8 +5,8 @@ import { formatter } from '@acx-ui/formatter'
 
 import { IntentConfigurationConfig } from '../IntentContext'
 
-import { createUseValuesText }                   from './createUseValuesText'
-import { createBgScanEnable, kpis, getValuesFn } from './Templates/CBgScanEnable'
+import { createUseValuesText }      from './createUseValuesText'
+import { createBgScanEnable, kpis } from './Templates/CBgScanEnable'
 
 const configuration: IntentConfigurationConfig = {
   label: defineMessage({ defaultMessage: 'Background Scan (5 GHz)' }),
@@ -15,7 +15,7 @@ const configuration: IntentConfigurationConfig = {
 
 const useValuesText = createUseValuesText({
   action: defineMessage({ defaultMessage: `
-    <p>IntentAI will activate background scanning and configure the auto channel selection mode to "{channelSelectionMode}" for this network.</p>
+    <p>IntentAI will activate background scanning and configure the auto channel selection mode to background scan for this network.</p>
     <p>IntentAI will continuously monitor these configurations.</p>
   ` }),
   reason: defineMessage({ defaultMessage: 'Auto Channel Selection feature works well only when RUCKUS APs can perform background scan of the available channels in the network. This helps in building the RF neighborhood. APs can then select an optimum channel for their operation. Hence it is recommended to enable Background Scan feature.' }),
@@ -33,7 +33,7 @@ const useValuesText = createUseValuesText({
     </p>
   ` }),
   noData: defineMessage({ defaultMessage: 'When activated, this AIOps Intent takes over the automatic configuration of auto channel selection mode and background scan capabilities on 5 GHz radio in the network.' })
-}, getValuesFn)
+})
 
 const { IntentAIDetails, IntentAIForm } = createBgScanEnable(useValuesText)
 
