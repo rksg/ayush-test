@@ -18,6 +18,8 @@ import { basePersonaApi }                               from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
 import { ApiInfo, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
+import { CommonAsyncResponse } from './common'
+
 const defaultPersonaVersioningHeaders = {
   'Content-Type': 'application/vnd.ruckus.v1+json',
   'Accept': 'application/vnd.ruckus.v1+json'
@@ -33,16 +35,11 @@ const createPersonaHttpRequest = (
   return createHttpRequest(apiInfo, paramValues, headers, ignoreDelegation)
 }
 
-export interface AsyncCommonResponse {
-  id?: string,
-  requestId: string
-}
-
 export const personaApi = basePersonaApi.injectEndpoints({
   endpoints: build => ({
     // PersonaGroup
     // eslint-disable-next-line max-len
-    addPersonaGroup: build.mutation<AsyncCommonResponse, RequestPayload<PersonaGroup> & { callback?: (response: AsyncCommonResponse) => void }>({
+    addPersonaGroup: build.mutation<CommonAsyncResponse, RequestPayload<PersonaGroup> & { callback?: (response: CommonAsyncResponse) => void }>({
       query: ({ params, payload, customHeaders }) => {
         const req = createPersonaHttpRequest(PersonaUrls.addPersonaGroup, params, customHeaders)
         return {
@@ -136,7 +133,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
         { type: 'Persona', id: 'ID' }
       ]
     }),
-    updatePersonaGroup: build.mutation<AsyncCommonResponse, RequestPayload>({
+    updatePersonaGroup: build.mutation<CommonAsyncResponse, RequestPayload>({
       query: ({ params, payload, customHeaders }) => {
         const req = createPersonaHttpRequest(PersonaUrls.updatePersonaGroup, params, customHeaders)
         return {

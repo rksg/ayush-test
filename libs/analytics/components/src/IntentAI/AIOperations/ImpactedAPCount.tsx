@@ -9,20 +9,19 @@ import { noDataDisplay }                                       from '@acx-ui/uti
 import { DescriptionRow }           from '../../DescriptionSection'
 import { useIntentContext }         from '../IntentContext'
 import { IntentAP, useGetApsQuery } from '../services'
-import { Statuses }                 from '../states'
 import { useIntentParams }          from '../useIntentDetailsQuery'
 
 export const ImpactedAPCount = () => {
   const { $t } = useIntl()
   const params = useIntentParams()
-  const { intent } = useIntentContext()
+  const { state } = useIntentContext()
   const [drawerVisible, setDrawerVisible] = useState(false)
-  const loadAPs = ![Statuses.na, Statuses.paused].includes(intent.status)
+  const hasData = state !== 'no-data'
 
-  const response = useGetApsQuery({ ...params, search: '' }, { skip: !loadAPs })
+  const response = useGetApsQuery({ ...params, search: '' }, { skip: !hasData })
   const onClick = useCallback(() => setDrawerVisible(true), [])
 
-  let children: React.ReactNode = loadAPs
+  let children: React.ReactNode = hasData
     ? $t(
       { defaultMessage: '{count} of {count} {count, plural, one {AP} other {APs}} ({percent})' },
       { count: response.data?.length, percent: formatter('percent')(100) }
@@ -37,8 +36,8 @@ export const ImpactedAPCount = () => {
   />
 
   return <>
-    <DescriptionRow onClick={loadAPs ? onClick : undefined} children={children} />
-    {loadAPs ? <ImpactedAPsDrawer
+    <DescriptionRow onClick={hasData ? onClick : undefined} children={children} />
+    {hasData ? <ImpactedAPsDrawer
       total={response.data?.length ?? 0}
       visible={drawerVisible}
       onClose={() => setDrawerVisible(false)}

@@ -23,9 +23,9 @@ import {
   RogueAPDetectionTable,
   SyslogDetailView, SyslogForm,
   VLANPoolForm,
+  WifiCallingForm, WifiCallingConfigureForm, WifiCallingDetailView,
+  WorkflowFormMode,
   VLANPoolDetail,
-  WifiCallingConfigureForm, WifiCallingDetailView,
-  WifiCallingForm,
   WifiOperatorForm,
   ConfigurationProfileForm,
   CliTemplateForm,
@@ -121,6 +121,9 @@ import TunnelProfileTable                                               from './
 import VLANPoolTable                                                    from './pages/Policies/VLANPool/VLANPoolTable/VLANPoolTable'
 import { WifiOperatorDetailView }                                       from './pages/Policies/WifiOperator/WifiOperatorDetail/WifiOperatorDetailView'
 import WifiOperatorTable                                                from './pages/Policies/WifiOperator/WifiOperatorTable/WifiOperatorTable'
+import WorkflowDetails                                                  from './pages/Policies/Workflow/WorkflowDetail'
+import WorkflowPageForm                                                 from './pages/Policies/Workflow/WorkflowPageForm'
+import WorkflowTable                                                    from './pages/Policies/Workflow/WorkflowTable'
 import DHCPTable                                                        from './pages/Services/DHCP/DHCPTable/DHCPTable'
 import AddDHCP                                                          from './pages/Services/DHCP/Edge/AddDHCP'
 import EdgeDHCPDetail                                                   from './pages/Services/DHCP/Edge/DHCPDetail'
@@ -783,6 +786,7 @@ function ServiceRoutes () {
 function PolicyRoutes () {
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
+  const isWorkflowEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE)
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
 
   return rootRoutes(
@@ -1237,6 +1241,26 @@ function PolicyRoutes () {
           // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST })}
           element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.ADAPTIVE_POLICY_SET}/>}
+        /> </>
+      }
+      {isWorkflowEnabled &&
+      <>
+        <Route
+          path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.LIST })}
+          element={<WorkflowTable/>}
+        />
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.DETAIL })}
+          element={<WorkflowDetails />} />
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.CREATE })}
+          element={<WorkflowPageForm mode={WorkflowFormMode.CREATE} />} />
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.EDIT })}
+          element={<WorkflowPageForm mode={WorkflowFormMode.EDIT} />}
         /> </>
       }
       {isCertificateTemplateEnabled && <>
