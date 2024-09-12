@@ -830,6 +830,13 @@ describe('SoftGreTunnel', () => {
   const mockedGetWifiNetworks = jest.fn()
   const mockedGetWifiNetwork = jest.fn()
   const mockedGetSoftGreFn = jest.fn()
+  const mockedAclPolicyResponse = {
+    data: [],
+    fields: ['name', 'id'],
+    totalCount: 0,
+    totalPages: 0,
+    page: 1
+  }
 
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE
@@ -893,7 +900,17 @@ describe('SoftGreTunnel', () => {
           mockedGetSoftGreFn()
           return res(ctx.json(mockSoftGreTable))
         }
-      )
+      ),
+      rest.post(AccessControlUrls.getL2AclPolicyListQuery.url,
+        (_, res, ctx) => res(ctx.json(mockedAclPolicyResponse))),
+      rest.post(AccessControlUrls.getL3AclPolicyListQuery.url,
+        (_, res, ctx) => res(ctx.json(mockedAclPolicyResponse))),
+      rest.post(AccessControlUrls.getApplicationPolicyListQuery.url,
+        (_, res, ctx) => res(ctx.json(mockedAclPolicyResponse))),
+      rest.post(AccessControlUrls.getAccessControlProfileQueryList.url,
+        (_, res, ctx) => res(ctx.json(mockedAclPolicyResponse))),
+      rest.post(AccessControlUrls.getDevicePolicyListQuery.url,
+        (req, res, ctx) => res(ctx.json(mockedAclPolicyResponse)))
     )
   })
 
