@@ -55,6 +55,7 @@ import { filterByAccess, hasAccess }               from '@acx-ui/user'
 
 import { AppliedToTenantDrawer }      from './AppliedToTenantDrawer'
 import { ApplyTemplateDrawer }        from './ApplyTemplateDrawer'
+import { ShowDriftsDrawer }           from './ShowDriftsDrawer'
 import { getConfigTemplateTypeLabel } from './templateUtils'
 import { useAddTemplateMenuProps }    from './useAddTemplateMenuProps'
 
@@ -63,6 +64,7 @@ export function ConfigTemplateList () {
   const navigate = useNavigate()
   const location = useLocation()
   const [ applyTemplateDrawerVisible, setApplyTemplateDrawerVisible ] = useState(false)
+  const [ showDriftsDrawerVisible, setShowDriftsDrawerVisible ] = useState(false)
   const [ appliedToTenantDrawerVisible, setAppliedToTenantDrawerVisible ] = useState(false)
   const [ selectedTemplates, setSelectedTemplates ] = useState<ConfigTemplate[]>([])
   const deleteMutationMap = useDeleteMutation()
@@ -104,6 +106,13 @@ export function ConfigTemplateList () {
       onClick: (rows: ConfigTemplate[]) => {
         setSelectedTemplates(rows)
         setApplyTemplateDrawerVisible(true)
+      }
+    },
+    {
+      label: $t({ defaultMessage: 'Show Drifts' }),
+      onClick: (rows: ConfigTemplate[]) => {
+        setSelectedTemplates(rows)
+        setShowDriftsDrawerVisible(true)
       }
     },
     {
@@ -157,6 +166,11 @@ export function ConfigTemplateList () {
       {applyTemplateDrawerVisible &&
       <ApplyTemplateDrawer
         setVisible={setApplyTemplateDrawerVisible}
+        selectedTemplate={selectedTemplates[0]}
+      />}
+      {showDriftsDrawerVisible &&
+      <ShowDriftsDrawer
+        setVisible={setShowDriftsDrawerVisible}
         selectedTemplate={selectedTemplates[0]}
       />}
       {appliedToTenantDrawerVisible &&
