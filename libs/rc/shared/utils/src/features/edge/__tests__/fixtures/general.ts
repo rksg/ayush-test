@@ -197,7 +197,7 @@ export const mockStaticRoutes = {
 export const mockEdgeClusterList = {
   fields: [
     'tenantId', 'clusterId', 'name', 'virtualIp', 'venueId', 'venueName',
-    'clusterStatus', 'edgeList'
+    'clusterStatus', 'edgeList', 'activeAps'
   ],
   totalCount: 5,
   page: 1,
@@ -213,6 +213,7 @@ export const mockEdgeClusterList = {
       highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE,
       firmwareVersion: '2.1.0.480',
       hasCorePort: true,
+      activeAps: 1000,
       edgeList: [
         {
           name: 'Smart Edge 1',
