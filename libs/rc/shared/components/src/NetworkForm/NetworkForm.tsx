@@ -88,7 +88,7 @@ import {
   transferVenuesToSave,
   updateClientIsolationAllowlist
 } from './parser'
-import PortalInstance           from './PortalInstance'
+import PortalInstance   from './PortalInstance'
 import {
   useNetworkVxLanTunnelProfileInfo,
   deriveRadiusFieldsFromServerData,
@@ -99,7 +99,8 @@ import {
   useAccessControlActivation,
   getDefaultMloOptions,
   useUpdateEdgeSdLanActivations,
-  useUpdateSoftGreActivations
+  useUpdateSoftGreActivations,
+  AsyncProcessManager
 } from './utils'
 import { Venues } from './Venues/Venues'
 
@@ -861,46 +862,75 @@ export function NetworkForm (props:{
       processEditData(formData)
       const payload = updateClientIsolationAllowlist(saveContextRef.current as NetworkSaveData)
       await updateNetworkInstance({ params, payload, enableRbac: resolvedRbacEnabled }).unwrap()
-      await activateCertificateTemplate(formData.certificateTemplateId, payload.id)
-      if (isUseWifiRbacApi) {
-        await activatePortal(payload.id, formData.portalServiceProfileId)
-      }
-      if (enableServiceRbac) {
-        await activateDpskPool(formData.dpskServiceProfileId, payload.id)
-        await activateMacRegistrationPool(formData.wlan?.macRegistrationListId, payload.id)
-      }
-      await updateHotspot20NetworkActivations(formData)
-      if (formData.type !== NetworkTypeEnum.HOTSPOT20) {
+
+      const asyncProcessManager = new AsyncProcessManager()
+      asyncProcessManager.addTask(
+        activateCertificateTemplate(formData.certificateTemplateId, payload.id)
+      )
+      asyncProcessManager.addTask(
+        activatePortal(payload.id, formData.portalServiceProfileId),
+        () => isUseWifiRbacApi
+      )
+      asyncProcessManager.addTask(
+        [
+          activateDpskPool(formData.dpskServiceProfileId, payload.id),
+          activateMacRegistrationPool(formData.wlan?.macRegistrationListId, payload.id)
+        ],
+        () => enableServiceRbac
+      )
+      asyncProcessManager.addTask(
+        updateHotspot20NetworkActivations(formData)
+      )
+      asyncProcessManager.addTask(
+        updateRadiusServer(formData, payload.id),
         // HS 20 Network:
         // The Radius service is binding on the Identity provider profile
         // So it doesn't need to do the network and radius service binding
-        await updateRadiusServer(formData, payload.id)
-      }
-      await updateWifiCallingActivation(payload.id, formData)
+        () => formData.type !== NetworkTypeEnum.HOTSPOT20
+      )
+      asyncProcessManager.addTask(
+        updateWifiCallingActivation(payload.id, formData)
+      )
 
-      // eslint-disable-next-line max-len
-      await updateVlanPoolActivation(payload.id, formData.wlan?.advancedCustomization?.vlanPool, vlanPoolId)
-      await updateAccessControl(formData, data)
+      asyncProcessManager.addTask(
+        // eslint-disable-next-line max-len
+        updateVlanPoolActivation(payload.id, formData.wlan?.advancedCustomization?.vlanPool, vlanPoolId)
+      )
+      asyncProcessManager.addTask(
+        updateAccessControl(formData, data)
+      )
       if (payload.id && (payload.venues || data?.venues)) {
         if (resolvedRbacEnabled) {
-          await handleRbacNetworkVenues(payload.id, payload.venues, data?.venues)
+          asyncProcessManager.addTask(
+            handleRbacNetworkVenues(payload.id, payload.venues, data?.venues)
+          )
         } else {
-          await handleNetworkVenues(payload.id, payload.venues, data?.venues)
+          asyncProcessManager.addTask(
+            handleNetworkVenues(payload.id, payload.venues, data?.venues)
+          )
         }
       }
-      await updateClientIsolationActivations(payload, data, payload.id)
+      asyncProcessManager.addTask(
+        updateClientIsolationActivations(payload, data, payload.id)
+      )
 
       // eslint-disable-next-line max-len
       if (isEdgeSdLanMvEnabled && form.getFieldValue('sdLanAssociationUpdate') && payload.id && payload.venues) {
-        // eslint-disable-next-line max-len
-        await updateEdgeSdLanActivations(payload.id, form.getFieldValue('sdLanAssociationUpdate') as NetworkTunnelSdLanAction[], payload.venues)
+        asyncProcessManager.addTask(
+          // eslint-disable-next-line max-len
+          updateEdgeSdLanActivations(payload.id, form.getFieldValue('sdLanAssociationUpdate') as NetworkTunnelSdLanAction[], payload.venues)
+        )
       }
 
       // eslint-disable-next-line max-len
       if (isSoftGreEnabled && formData['softGreAssociationUpdate'] && payload.id && payload.venues) {
-        // eslint-disable-next-line max-len
-        await updateSoftGreActivations(payload.id, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode)
+        asyncProcessManager.addTask(
+          // eslint-disable-next-line max-len
+          updateSoftGreActivations(payload.id, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode)
+        )
       }
+
+      await asyncProcessManager.runAllTasks()
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
