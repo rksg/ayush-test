@@ -263,19 +263,6 @@ function StepsForm<T = Record<string, any>> (
 
   const onSubmit = useRefFunction(() => {
     const form = formArrayRef.current[step]
-    try {
-      form.current?.validateFields().then(
-        () => {},
-        () => {
-          const errors = form.current?.getFieldsError()
-          // eslint-disable-next-line no-console
-          console.warn(errors)
-        }
-      )
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error)
-    }
     form.current?.submit()
   })
 
