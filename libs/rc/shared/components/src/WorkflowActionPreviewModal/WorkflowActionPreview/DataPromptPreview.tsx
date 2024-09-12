@@ -31,23 +31,19 @@ export function DataPromptPreview (props: GenericActionPreviewProps<DataPromptAc
         <Text>{data?.messageHtml}</Text>
         <Form layout='vertical' style={{ width: '250px' }}>
           {data?.variables?.map((formField:DataPromptVariable) => {
-            if(formField.type === 'PHONE') {
-              return <Form.Item
-                style={{ marginBottom: '0' }}
-                key={getFormFieldLabel(formField)}
-                label={getFormFieldLabel(formField)}
-                children={
-                  <PhoneInput
-                    name={getFormFieldLabel(formField)}
-                    onTop={false}
-                  />}
-              />
-            } else {
-              return <Form.Item key={getFormFieldLabel(formField)}
-                label={getFormFieldLabel(formField)}>
-                <Input></Input>
-              </Form.Item>
-            }})
+            return <Form.Item
+              key={getFormFieldLabel(formField)}
+              label={getFormFieldLabel(formField)}
+              style={formField.type === 'PHONE' ? { marginBottom: '0' } : {}}
+              children={
+                formField.type === 'PHONE' ?
+                <PhoneInput
+                  name={getFormFieldLabel(formField)}
+                  onTop={true}
+                /> :
+                <Input />
+              }
+            />})
           }
         </Form>
       </Space>
