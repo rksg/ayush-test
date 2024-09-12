@@ -10,5 +10,6 @@ export const messageMappings = {
   setting_dmz_cluster_tooltip: defineMessage({ defaultMessage: 'Select the cluster that the guest traffic will be destined on the DMZ' }),
   scope_network_table_description: defineMessage({ defaultMessage: 'Select the <venuePlural></venuePlural> and networks where the SD-LAN Service will be applied:' }),
   scope_dmz_tunnel_tooltip: defineMessage({ defaultMessage: 'The tunnel between clusters only supports manual Gateway Path MTU.' }),
-  drawer_table_description: defineMessage({ defaultMessage: 'Enable the networks that will tunnel the traffic to the selected cluster:' })
+  drawer_table_description: defineMessage({ defaultMessage: 'Enable the networks that will tunnel the traffic to the selected cluster:' }),
+  drawer_table_help: defineMessage({ defaultMessage: '<b>* Note:</b> Enabling "Tunnel Guest Traffic to DMZ" for any network with a specific VLAN ID will apply this behavior to all networks within the same VLAN in the same SD-LAN service.' })
 }
