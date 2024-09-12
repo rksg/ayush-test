@@ -217,8 +217,8 @@ export const mockedIntentCRRM = {
     }
   },
   preferences: null,
-  currentValue: { recommended: 'crrm', txPowerAPCount: 0 },
-  recommendedValue: { recommended: 'crrm', txPowerAPCount: 0 }
+  currentValue: null,
+  recommendedValue: null
 } as unknown as Intent
 
 export const mockedIntentCRRMnew = { // this fixture is used to test new crrm intent

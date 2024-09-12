@@ -128,7 +128,7 @@ describe('Insights Component', () => {
     expect(screen.getByText(
       'Based on the root cause identified, the recommended resolution is:')).toBeVisible()
     const link = screen.getByRole('link', {
-      name: /here/i
+      name: /Explore more/i
     })
     expect(link).toHaveAttribute('href', '/undefined/t/recommendations/aiOps/123456')
   })
