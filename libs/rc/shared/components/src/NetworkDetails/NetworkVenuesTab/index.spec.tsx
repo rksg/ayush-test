@@ -46,8 +46,6 @@ import {
 } from './__tests__/fixtures'
 
 import { NetworkVenuesTab } from './index'
-import {networkDetailHeaderData} from "../__tests__/fixtures";
-import {devicePolicyListResponse, policyListResponse} from "../../NetworkForm/__tests__/fixtures";
 
 const { mockedRbacWifiNetworkList } = WifiNetworkFixtures
 
