@@ -28,6 +28,18 @@ const checkMinAndMaxBandwidthCompare = (minBandwidth?: number, maxBandwidth?: nu
   return true
 }
 
+const MinBandwidthRemaining = (props: {
+  trafficClassSettings: TrafficClassSetting[]
+}) => {
+  const { $t } = useIntl()
+  const { trafficClassSettings } = props
+  const minBandwidthSum = sumMinBandWidth(trafficClassSettings)
+  const remaining = 100 - minBandwidthSum
+  return <Typography style={{ color: cssStr('--acx-neutrals-50') }}>
+    {$t({ defaultMessage: 'Remaining:{value}%' }, { value: remaining })}
+  </Typography>
+}
+
 const sumMinBandWidth = (trafficClassSettings?: TrafficClassSetting[]) => {
   const minBandwidthArray = trafficClassSettings?.map((item) => item?.minBandwidth)
   return minBandwidthArray?.reduce((a, b) => (a??0) + (b??0)) ?? 0 as number
@@ -89,17 +101,6 @@ export const SettingsForm = () => {
 
     }
     return Promise.resolve()
-  }
-
-  const MinBandwidthRemaining = (props: {
-    trafficClassSettings: TrafficClassSetting[]
-  }) => {
-    const { trafficClassSettings } = props
-    const minBandwidthSum = sumMinBandWidth(trafficClassSettings)
-    const remaining = 100 - minBandwidthSum
-    return <Typography style={{ color: cssStr('--acx-neutrals-50') }}>
-      {$t({ defaultMessage: 'Remaining:{value}%' }, { value: remaining })}
-    </Typography>
   }
 
   const columns: TableProps<TrafficClassSetting>['columns'] = [
