@@ -10,24 +10,41 @@ import {
   networkTypes
 } from '@acx-ui/rc/utils'
 
-import AaaProxyDiagram                from '../assets/images/network-wizard-diagrams/aaa-proxy.png'
-import AaaDiagram                     from '../assets/images/network-wizard-diagrams/aaa.png'
-import ClickThroughDiagram            from '../assets/images/network-wizard-diagrams/click-through.png'
-import DpskUsingRadiusNonProxyDiagram from '../assets/images/network-wizard-diagrams/dpsk-using-radius-non-proxy.png'
-import DpskUsingRadiusDiagram         from '../assets/images/network-wizard-diagrams/dpsk-using-radius.png'
-import DpskDiagram                    from '../assets/images/network-wizard-diagrams/dpsk.png'
-import GuestPassDiagram               from '../assets/images/network-wizard-diagrams/guest-pass.png'
-import HostApprovalDiagram            from '../assets/images/network-wizard-diagrams/host-approval.png'
-import Hotspot20Diagram               from '../assets/images/network-wizard-diagrams/hotspot2.0.png'
-import DefaultDiagram                 from '../assets/images/network-wizard-diagrams/none.png'
-import OpenDiagram                    from '../assets/images/network-wizard-diagrams/open.png'
-import PskDiagram                     from '../assets/images/network-wizard-diagrams/psk.png'
-import SelfSignInDiagram              from '../assets/images/network-wizard-diagrams/self-sign-in.png'
-import WISPrWithAlwaysAcceptDiagram   from '../assets/images/network-wizard-diagrams/wispr-always-accept.png'
-import WISPrWithPskDiagram            from '../assets/images/network-wizard-diagrams/wispr-psk.png'
-import WISPrDiagram                   from '../assets/images/network-wizard-diagrams/wispr.png'
-import NetworkFormContext             from '../NetworkFormContext'
-import { Diagram }                    from '../styledComponents'
+import AaaProxyDiagram                 from '../assets/images/network-wizard-diagrams/aaa-proxy.png'
+import AaaDiagram                      from '../assets/images/network-wizard-diagrams/aaa.png'
+import CloudpathDiagram                from '../assets/images/network-wizard-diagrams/cloudpath.png'
+import CloudpathWithPskDiagram         from '../assets/images/network-wizard-diagrams/cloudpath-psk.png'
+import CloudpathWithOweDiagram         from '../assets/images/network-wizard-diagrams/cloudpath-owe.png'
+import CloudpathProxyDiagram           from '../assets/images/network-wizard-diagrams/cloudpath-proxy.png'
+import CloudpathProxyWithPskDiagram    from '../assets/images/network-wizard-diagrams/cloudpath-proxy-psk.png'
+import CloudpathProxyWithOweDiagram    from '../assets/images/network-wizard-diagrams/cloudpath-proxy-owe.png'
+import ClickThroughDiagram             from '../assets/images/network-wizard-diagrams/click-through.png'
+import ClickThroughWithPskDiagram      from '../assets/images/network-wizard-diagrams/click-through-psk.png'
+import ClickThroughWithOweDiagram      from '../assets/images/network-wizard-diagrams/click-through-owe.png'
+import DpskUsingRadiusNonProxyDiagram  from '../assets/images/network-wizard-diagrams/dpsk-using-radius-non-proxy.png'
+import DpskUsingRadiusDiagram          from '../assets/images/network-wizard-diagrams/dpsk-using-radius.png'
+import DpskDiagram                     from '../assets/images/network-wizard-diagrams/dpsk.png'
+import GuestPassDiagram                from '../assets/images/network-wizard-diagrams/guest-pass.png'
+import GuestPassWithPskDiagram         from '../assets/images/network-wizard-diagrams/guest-pass-psk.png'
+import GuestPassWithOweDiagram         from '../assets/images/network-wizard-diagrams/guest-pass-owe.png'
+import HostApprovalDiagram             from '../assets/images/network-wizard-diagrams/host-approval.png'
+import HostApprovalWithPskDiagram      from '../assets/images/network-wizard-diagrams/host-approval-psk.png'
+import HostApprovalWithOweDiagram      from '../assets/images/network-wizard-diagrams/host-approval-owe.png'
+import Hotspot20Diagram                from '../assets/images/network-wizard-diagrams/hotspot2.0.png'
+import DefaultDiagram                  from '../assets/images/network-wizard-diagrams/none.png'
+import OpenDiagram                     from '../assets/images/network-wizard-diagrams/open.png'
+import PskDiagram                      from '../assets/images/network-wizard-diagrams/psk.png'
+import SelfSignInDiagram               from '../assets/images/network-wizard-diagrams/self-sign-in.png'
+import SelfSignInWithPskDiagram        from '../assets/images/network-wizard-diagrams/self-sign-in-psk.png'
+import SelfSignInWithOweDiagram        from '../assets/images/network-wizard-diagrams/self-sign-in-owe.png'
+import WISPrWithAlwaysAcceptDiagram    from '../assets/images/network-wizard-diagrams/wispr-always-accept.png'
+import WISPrWithAlwaysAcceptPskDiagram from '../assets/images/network-wizard-diagrams/wispr-always-accept-psk.png'
+import WISPrWithAlwaysAcceptOweDiagram from '../assets/images/network-wizard-diagrams/wispr-always-accept-owe.png'
+import WISPrWithPskDiagram             from '../assets/images/network-wizard-diagrams/wispr-psk.png'
+import WISPrWithOweDiagram             from '../assets/images/network-wizard-diagrams/wispr-owe.png'
+import WISPrDiagram                    from '../assets/images/network-wizard-diagrams/wispr.png'
+import NetworkFormContext              from '../NetworkFormContext'
+import { Diagram }                     from '../styledComponents'
 
 
 interface DiagramProps {
@@ -56,6 +73,7 @@ interface AaaDiagramProps extends DiagramProps {
 interface CaptivePortalDiagramProps extends DiagramProps {
   networkPortalType?: GuestNetworkTypeEnum
   wisprWithPsk?: boolean
+  wisprWithOwe?: boolean
   wisprWithAlwaysAccept?: boolean
 }
 
@@ -103,22 +121,41 @@ function getAAADiagram (props: AaaDiagramProps) {
   }
   return props.enableAuthProxy ? AaaProxyDiagram : AaaDiagram
 }
+function getCloudpathDiagram (wisprWithPsk: boolean, wisprWithOwe: boolean, props: AaaDiagramProps) {
+  let useProxy = false
+  if (props.showButtons) {
+    const enableAuthProxyService = !!(props.enableAuthProxy && props.enableAaaAuthBtn)
+    const enableAccProxyService = !!(props.enableAccountingProxy && !props.enableAaaAuthBtn)
+    useProxy = enableAuthProxyService || enableAccProxyService
+  }
+  if (useProxy || props.enableAuthProxy) {
+    return wisprWithPsk ? CloudpathProxyWithPskDiagram : (wisprWithOwe ? CloudpathProxyWithOweDiagram : CloudpathProxyDiagram)
+  } else {
+    return wisprWithPsk ? CloudpathWithPskDiagram : (wisprWithOwe ? CloudpathWithOweDiagram : CloudpathDiagram)
+  }
+}
 
 function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {
   const type = props.networkPortalType as GuestNetworkTypeEnum
+  const wisprWithPsk = props.wisprWithPsk ?? false
+  const wisprWithOwe = props.wisprWithOwe ?? false
 
   const CaptivePortalDiagramMap: Partial<Record<GuestNetworkTypeEnum, string>> = {
-    [GuestNetworkTypeEnum.ClickThrough]: ClickThroughDiagram,
-    [GuestNetworkTypeEnum.SelfSignIn]: SelfSignInDiagram,
-    [GuestNetworkTypeEnum.HostApproval]: HostApprovalDiagram,
-    [GuestNetworkTypeEnum.GuestPass]: GuestPassDiagram,
-    [GuestNetworkTypeEnum.WISPr]: props.wisprWithAlwaysAccept?
-      WISPrWithAlwaysAcceptDiagram : (props.wisprWithPsk ? WISPrWithPskDiagram : WISPrDiagram)
+    [GuestNetworkTypeEnum.ClickThrough]:  wisprWithPsk ? ClickThroughWithPskDiagram :
+      (wisprWithOwe ? ClickThroughWithOweDiagram : ClickThroughDiagram),
+    [GuestNetworkTypeEnum.SelfSignIn]: wisprWithPsk ? SelfSignInWithPskDiagram :
+      (wisprWithOwe ? SelfSignInWithOweDiagram : SelfSignInDiagram),
+    [GuestNetworkTypeEnum.HostApproval]: wisprWithPsk ? HostApprovalWithPskDiagram :
+      (wisprWithOwe ? HostApprovalWithOweDiagram : HostApprovalDiagram),
+    [GuestNetworkTypeEnum.GuestPass]:  wisprWithPsk ? GuestPassWithPskDiagram :
+      (wisprWithOwe ? GuestPassWithOweDiagram : GuestPassDiagram),
+    [GuestNetworkTypeEnum.Cloudpath]: getCloudpathDiagram(wisprWithPsk, wisprWithOwe, props),
+    [GuestNetworkTypeEnum.WISPr]: props.wisprWithAlwaysAccept ?
+      (wisprWithPsk ? WISPrWithAlwaysAcceptPskDiagram :
+        (wisprWithOwe ? WISPrWithAlwaysAcceptOweDiagram : WISPrWithAlwaysAcceptDiagram)) :
+      (wisprWithPsk ? WISPrWithPskDiagram : (wisprWithOwe ? WISPrWithOweDiagram : WISPrDiagram))
   }
-  if(type === GuestNetworkTypeEnum.Cloudpath){
-    return getAAADiagram(props)
-  }
-  else return CaptivePortalDiagramMap[type] || ClickThroughDiagram
+  return CaptivePortalDiagramMap[type] || ClickThroughDiagram
 }
 
 export function NetworkDiagram (props: NetworkDiagramProps) {
