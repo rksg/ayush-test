@@ -132,6 +132,7 @@ interface PolicyCardData {
   listViewPath?: Path
   disabled?: boolean
   helpIcon?: React.ReactNode
+  isBetaFeature?: boolean
 }
 
 function useCardData (): PolicyCardData[] {

@@ -18,6 +18,7 @@ export type ServiceCardProps = Pick<RadioCardProps, 'type' | 'categories'> & {
   serviceType: ServiceType
   count?: number
   helpIcon?: ReactNode
+  isBetaFeature?: boolean
 }
 
 export function ServiceCard (props: ServiceCardProps) {
