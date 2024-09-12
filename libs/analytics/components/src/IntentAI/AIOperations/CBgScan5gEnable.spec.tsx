@@ -97,7 +97,7 @@ describe('IntentAIDetails', () => {
     expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
     expect(await screen.findByText('AI Operations')).toBeVisible()
     // eslint-disable-next-line max-len
-    expect(await screen.findByText('IntentAI will activate background scanning and configure the auto channel selection mode to "TBD" for this network.')).toBeVisible()
+    expect(await screen.findByText('IntentAI will activate background scanning and configure the auto channel selection mode to background scan for this network.')).toBeVisible()
     // eslint-disable-next-line max-len
     expect(await screen.findByText('IntentAI will continuously monitor these configurations.')).toBeVisible()
     expect(await screen.findByTestId('Details')).toBeVisible()
