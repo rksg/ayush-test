@@ -944,5 +944,23 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
+  },
+  activateAccessControlProfileOnWifiNetwork: {
+    method: 'put',
+    url: '/templates/wifiNetworks/:networkId/accessControlProfiles/:accessControlProfileId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deactivateAccessControlProfileOnWifiNetwork: {
+    method: 'delete',
+    url: '/templates/wifiNetworks/:networkId/accessControlProfiles/:accessControlProfileId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }

@@ -3,6 +3,7 @@ import { FetchArgs, FetchBaseQueryError }                   from '@reduxjs/toolk
 import { keys, every, get, uniq, omit, findIndex, isEqual } from 'lodash'
 
 import {
+  AccessControlUrls,
   ApGroupConfigTemplateUrlsInfo,
   ApiVersionEnum,
   CommonRbacUrlsInfo, CommonResult,
@@ -655,6 +656,76 @@ export const fetchRbacVenueNetworkList = async (arg: any, fetchWithBQ: any) => {
     networkList,
     networkDeepListList,
     networkIds
+  }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, max-len
+export const fetchRbacAccessControlPolicyNetwork = async (queryArgs: RequestPayload, fetchWithBQ: any) => {
+  const { params, payload } = queryArgs
+  const queryPayload = {
+    filters: {
+      wifiNetworkIds: [params?.networkId]
+    },
+    fields: ['id']
+  }
+  const apis = (payload as { isTemplate: boolean }).isTemplate ? PoliciesConfigTemplateUrlsInfo : AccessControlUrls
+  const aclPolicyListInfo = {
+    // eslint-disable-next-line max-len
+    ...createHttpRequest(apis.getAccessControlProfileQueryList, params),
+    body: JSON.stringify(queryPayload)
+  }
+
+  const aclPolicyListInfoQuery = await fetchWithBQ(aclPolicyListInfo)
+
+  return {
+    error: aclPolicyListInfoQuery.error,
+    data: aclPolicyListInfoQuery.data
+  }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, max-len
+export const fetchRbacAccessControlSubPolicyNetwork = async (queryArgs: RequestPayload, fetchWithBQ: any) => {
+  const { params } = queryArgs
+  const queryPayload = {
+    filters: {
+      wifiNetworkIds: [params?.networkId]
+    },
+    fields: ['id']
+  }
+  const apis = AccessControlUrls
+  const l2aclPolicyListInfo = {
+    ...createHttpRequest(apis.getL2AclPolicyListQuery, params),
+    body: JSON.stringify(queryPayload)
+  }
+
+  const l3aclPolicyListInfo = {
+    ...createHttpRequest(apis.getL3AclPolicyListQuery, params),
+    body: JSON.stringify(queryPayload)
+  }
+
+  const appAclPolicyListInfo = {
+    ...createHttpRequest(apis.getApplicationPolicyListQuery, params),
+    body: JSON.stringify(queryPayload)
+  }
+
+  const deviceAclPolicyListInfo = {
+    ...createHttpRequest(apis.getDevicePolicyListQuery, params),
+    body: JSON.stringify(queryPayload)
+  }
+
+  const l2aclPolicyListInfoQuery = await fetchWithBQ(l2aclPolicyListInfo)
+  const l3aclPolicyListInfoQuery = await fetchWithBQ(l3aclPolicyListInfo)
+  const appAclPolicyListInfoQuery = await fetchWithBQ(appAclPolicyListInfo)
+  const deviceAclPolicyListInfoQuery = await fetchWithBQ(deviceAclPolicyListInfo)
+
+  return {
+    error: l2aclPolicyListInfoQuery.error || l3aclPolicyListInfoQuery.error || appAclPolicyListInfoQuery.error || deviceAclPolicyListInfoQuery.error,
+    data: {
+      ...(l2aclPolicyListInfoQuery.data.data.length ? { l2AclPolicyId: l2aclPolicyListInfoQuery.data.data[0].id, l2AclEnable: true } : {}),
+      ...(l3aclPolicyListInfoQuery.data.data.length ? { l3AclPolicyId: l3aclPolicyListInfoQuery.data.data[0].id, l3AclEnable: true } : {}),
+      ...(appAclPolicyListInfoQuery.data.data.length ? { appAclPolicyId: appAclPolicyListInfoQuery.data.data[0].id, applicationPolicyEnable: true } : {}),
+      ...(deviceAclPolicyListInfoQuery.data.data.length ? { devicePolicyId: deviceAclPolicyListInfoQuery.data.data[0].id, enableDeviceOs: true } : {})
+    }
   }
 }
 
