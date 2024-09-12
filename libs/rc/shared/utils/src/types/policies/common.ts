@@ -27,6 +27,7 @@ export enum PolicyType {
   CERTIFICATE_TEMPLATE = 'Certificate Template',
   CERTIFICATE_AUTHORITY = 'Certificate Authority',
   CERTIFICATE = 'Certificate',
+  WORKFLOW = 'Workflow',
   HQOS_BANDWIDTH = 'HQoS Bandwidth',
   SOFTGRE = 'SoftGRE'
 }
@@ -69,6 +70,7 @@ export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.CERTIFICATE_TEMPLATE]: defineMessage({ defaultMessage: 'Create certificates to establish secure communication and verify the identity of entities in a network' }),
   [PolicyType.CERTIFICATE_AUTHORITY]: defineMessage({ defaultMessage: 'Certificate Authority' }),
   [PolicyType.CERTIFICATE]: defineMessage({ defaultMessage: 'Certificate' }),
+  [PolicyType.WORKFLOW]: defineMessage({ defaultMessage: 'A customizable onboarding process that provides more control over who is granted network access' }),
   [PolicyType.HQOS_BANDWIDTH]: defineMessage({ defaultMessage: 'HQoS Bandwidth' }),
   [PolicyType.SOFTGRE]: defineMessage({ defaultMessage: 'Tunnel the traffic to a third party WLAN gateway' })
 }
