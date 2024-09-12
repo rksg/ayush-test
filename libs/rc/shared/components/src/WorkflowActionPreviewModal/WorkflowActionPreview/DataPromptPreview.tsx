@@ -37,11 +37,11 @@ export function DataPromptPreview (props: GenericActionPreviewProps<DataPromptAc
               style={formField.type === 'PHONE' ? { marginBottom: '0' } : {}}
               children={
                 formField.type === 'PHONE' ?
-                <PhoneInput
-                  name={getFormFieldLabel(formField)}
-                  onTop={true}
-                /> :
-                <Input />
+                  <PhoneInput
+                    name={getFormFieldLabel(formField)}
+                    onTop={true}
+                  /> :
+                  <Input />
               }
             />})
           }
