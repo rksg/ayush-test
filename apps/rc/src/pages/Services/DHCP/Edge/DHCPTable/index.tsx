@@ -2,11 +2,11 @@
 import { useIntl } from 'react-intl'
 
 import { Button, Loader, PageHeader, showActionModal, Table, TableProps } from '@acx-ui/components'
-import { EdgeServiceStatusLight, useEdgeDhcpActions }                     from '@acx-ui/rc/components'
+import { EdgeServiceStatusLight, useEdgeDhcpActions, SimpleListTooltip }  from '@acx-ui/rc/components'
 import {
   useDeleteEdgeDhcpServicesMutation,
   useGetDhcpStatsQuery,
-  useGetEdgeListQuery
+  useGetEdgeClusterListQuery
 } from '@acx-ui/rc/services'
 import {
   DhcpStats,
@@ -27,14 +27,13 @@ const EdgeDhcpTable = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
-
+  const emptyList: { key: string, value: string }[] = []
   const getDhcpStatsPayload = {
     fields: [
       'id',
       'serviceName',
       'dhcpPoolNum',
-      'edgeNum',
-      'venueNum',
+      'edgeClusterIds',
       'health',
       'targetVersion',
       'currentVersion',
@@ -55,21 +54,27 @@ const EdgeDhcpTable = () => {
     },
     pagination: { settingsId }
   })
-  const edgeOptionsDefaultPayload = {
-    fields: ['name', 'serialNumber'],
+  const edgeClusterOptionsDefaultPayload = {
+    fields: ['name', 'clusterId'],
     pageSize: 10000,
     sortField: 'name',
     sortOrder: 'ASC'
   }
-  const { edgeOptions = [] } = useGetEdgeListQuery(
-    { payload: edgeOptionsDefaultPayload },
+  const { edgeClusterNameMap = [], edgeClusterOptions = [] } = useGetEdgeClusterListQuery(
+    { payload: edgeClusterOptionsDefaultPayload },
     {
       selectFromResult: ({ data }) => {
+        const mappedData = data?.data
+          ? data.data.map(item => ({ key: item.clusterId, value: item.name }))
+          : emptyList
+
         return {
-          edgeOptions: data?.data.map(item => ({ value: item.name, key: item.serialNumber }))
+          edgeClusterNameMap: mappedData,
+          edgeClusterOptions: mappedData.map(item => ({ value: item.value, key: item.key }))
         }
       }
-    })
+    }
+  )
   const [deleteDhcp, { isLoading: isDeleteDhcpUpdating }] = useDeleteEdgeDhcpServicesMutation()
   const { upgradeEdgeDhcp, isEdgeDhcpUpgrading } = useEdgeDhcpActions()
 
@@ -110,26 +115,28 @@ const EdgeDhcpTable = () => {
     },
     {
       title: $t({ defaultMessage: 'DHCP Pools' }),
-      align: 'center',
+      // align: 'center',
       key: 'dhcpPoolNum',
       dataIndex: 'dhcpPoolNum',
       sorter: true
     },
     {
-      title: $t({ defaultMessage: 'SmartEdges' }),
-      align: 'center',
-      key: 'edgeNum',
-      dataIndex: 'edgeNum',
-      filterable: edgeOptions,
-      filterKey: 'edgeIds',
-      sorter: true
-    },
-    {
-      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
-      align: 'center',
-      key: 'venueNum',
-      dataIndex: 'venueNum',
-      sorter: true
+      title: $t({ defaultMessage: 'Clusters' }),
+      // align: 'center',
+      key: 'edgeClusterIds',
+      dataIndex: 'edgeClusterIds',
+      filterable: edgeClusterOptions,
+      filterKey: 'edgeClusterIds',
+      sorter: true,
+      render: (_, row) =>{
+        if (!row.edgeClusterIds || row.edgeClusterIds.length === 0) return 0
+        const edgeClusterIds = row.edgeClusterIds
+        const tooltipItems = edgeClusterNameMap
+          .filter(v => v.key && edgeClusterIds!.includes(v.key))
+          .map(v => v.value)
+          .filter((item): item is string => item !== undefined)
+        return <SimpleListTooltip items={tooltipItems} displayText={edgeClusterIds.length} />
+      }
     },
     {
       title: $t({ defaultMessage: 'Health' }),
@@ -137,7 +144,7 @@ const EdgeDhcpTable = () => {
       dataIndex: 'edgeAlarmSummary',
       sorter: true,
       render: (data, row) =>
-        (row?.edgeNum ?? 0) ?
+        (row?.edgeClusterIds ?? 0) ?
           <EdgeServiceStatusLight data={row.edgeAlarmSummary} /> :
           '--'
     },
