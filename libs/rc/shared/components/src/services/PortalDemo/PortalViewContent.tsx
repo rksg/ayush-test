@@ -67,11 +67,13 @@ export default function PortalViewContent (props:{
       }
       const acceptTermsText = termsMsg.replace('<1>{{linkText}}</1>','#')
       const linkIndex = acceptTermsText.indexOf('#')
+      const beforeLinkText = acceptTermsText.substring(0, linkIndex)
+      const afterLinkText = acceptTermsText.substring(linkIndex + 1)
       return (<span style={{ display: 'inline-block' }}>
         {view === PortalViewEnum.ClickThrough && <UI.Checkbox checked={true} style={{ verticalAlign: 'middle' }}/>}
         {(linkIndex !== 0) && <UI.FieldText style={{ display: 'inline' }}>{acceptTermsText.substring(0, linkIndex)}&nbsp;</UI.FieldText> }
         <UI.FieldLabelLink>{props.portalLang.acceptTermsLink}</UI.FieldLabelLink>
-        {(linkIndex !== acceptTermsText.length - 1) && <UI.FieldText style={{ display: 'inline' }}>&nbsp;{acceptTermsText.substring(linkIndex +1, acceptTermsText.length -1)}</UI.FieldText>}
+        {(linkIndex !== acceptTermsText.length - 1) && <UI.FieldText style={{ display: 'inline' }}>&nbsp;{beforeLinkText}{afterLinkText}</UI.FieldText>}
       </span>)
 
     }
