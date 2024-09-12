@@ -83,8 +83,13 @@ function GetNetworkFilterOptions (tenantId: string|undefined) {
 const AsyncLoadingInColumn = (
   row: ClientList,
   callBack: Function,
-  loadingCondition?: (row: ClientList) => boolean
+  loadingCondition?: (row: ClientList) => boolean,
+  animation?: boolean
 ): React.ReactNode => {
+  if (!animation) {
+    return callBack()
+  }
+
   const defaultCondition = (row: ClientList) =>
     row.apName === undefined && row.venueName === undefined
 

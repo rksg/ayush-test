@@ -97,6 +97,7 @@ describe('HQoS Scope Form', () => {
     expect(within(rows[0]).getByRole('cell', { name: /Edge Cluster 1/i })).toBeVisible()
     const switchBtn = within(rows[0]).getByRole('switch')
     expect(switchBtn).toBeChecked()
+    expect(within(rows[0]).getByText('1000')).toBeVisible()
 
     expect(within(rows[1]).getByRole('cell', { name: /Edge Cluster 2/i })).toBeVisible()
     const switchBtn2 = within(rows[0]).getByRole('switch')
