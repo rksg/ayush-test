@@ -1,6 +1,5 @@
 
 import { Alert, Checkbox, Col, Form, Input, InputNumber, Row, Space, Tooltip, Typography } from 'antd'
-import _                                                                                   from 'lodash'
 import { useIntl }                                                                         from 'react-intl'
 
 import { Table, TableProps, cssStr, useStepFormContext }                                                            from '@acx-ui/components'
@@ -29,6 +28,11 @@ const checkMinAndMaxBandwidthCompare = (minBandwidth?: number, maxBandwidth?: nu
   return true
 }
 
+const sumMinBandWidth = (trafficClassSettings?: TrafficClassSetting[]) => {
+  const minBandwidthArray = trafficClassSettings?.map((item) => item?.minBandwidth)
+  return minBandwidthArray?.reduce((a, b) => (a??0) + (b??0)) ?? 0 as number
+}
+
 export const SettingsForm = () => {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
@@ -42,14 +46,6 @@ export const SettingsForm = () => {
   const bandwidthRangeCompareErrMsg =
   $t({ defaultMessage: 'Max bandwidth must exceed minimal guaranteed bandwidth.' })
 
-  const sumMinBandWidthExcludeCurrent =
-  (index:number, trafficClassArray?:TrafficClassSetting[]) => {
-    const copyTrafficClassArray = _.cloneDeep(trafficClassArray)
-    copyTrafficClassArray?.splice(index, 1)
-    const otherMinBandwidthArray = copyTrafficClassArray?.map((item) => item?.minBandwidth)
-    return otherMinBandwidthArray?.reduce((a, b) => (a??0) + (b??0)) ?? 0 as number
-  }
-
   const validateMinBandwidth = (index:number, minBandwidth?: number) => {
     if(minBandwidth === undefined) {
       return Promise.resolve()
@@ -61,8 +57,8 @@ export const SettingsForm = () => {
     const trafficClassSettings = form.getFieldValue('trafficClassSettings')
     const trafficClassArray = Object.values(trafficClassSettings) as TrafficClassSetting[]
 
-    const otherMinBandwidthSum = sumMinBandWidthExcludeCurrent(index, trafficClassArray)
-    if(minBandwidth + otherMinBandwidthSum > 100) {
+    const minBandwidthSum = sumMinBandWidth(trafficClassSettings)
+    if(minBandwidthSum > 100) {
       return Promise.reject(guaranteedBandwidthSumErrMsg)
     }
 
@@ -99,10 +95,8 @@ export const SettingsForm = () => {
     trafficClassSettings: TrafficClassSetting[]
   }) => {
     const { trafficClassSettings } = props
-    const minBandwidthArray = trafficClassSettings?.map((item) => item?.minBandwidth)
-    const minBandwidthSum = minBandwidthArray?.reduce((a, b) => (a??0) + (b??0)) ?? 0 as number
+    const minBandwidthSum = sumMinBandWidth(trafficClassSettings)
     const remaining = 100 - minBandwidthSum
-
     return <Typography style={{ color: cssStr('--acx-neutrals-50') }}>
       {$t({ defaultMessage: 'Remaining:{value}%' }, { value: remaining })}
     </Typography>
