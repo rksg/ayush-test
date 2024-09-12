@@ -1,5 +1,5 @@
 import {
-  AsyncCommonResponse,
+  CommonAsyncResponse,
   useAddPersonaGroupMutation,
   useAssociateIdentityGroupWithCertificateTemplateMutation,
   useAssociateIdentityGroupWithDpskMutation,
@@ -49,7 +49,7 @@ export function usePersonaGroupAction () {
     return await addPersonaGroup({
       payload: { ...(isAsync ? groupData : submittedData) },
       customHeaders,
-      callback: (response: AsyncCommonResponse) => {
+      callback: (response: CommonAsyncResponse) => {
         callback?.(response)
         if (response.id && isAsync) {
           associateDpskCallback(response.id)
