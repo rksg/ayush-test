@@ -8,8 +8,8 @@ export function BetaIndicator () {
   </UI.IconWrapper>
 }
 
-export function getTitleWithIndicator (title: string) {
-  return <UI.IndicatorWrapper>
+export function getTitleWithIndicator (title: string, isMultiLinesText?: boolean) {
+  return <UI.IndicatorWrapper $isMultiLinesText={isMultiLinesText} >
     {title}
     <BetaIndicator />
   </UI.IndicatorWrapper>

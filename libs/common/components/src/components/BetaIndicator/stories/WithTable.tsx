@@ -47,6 +47,32 @@ const basicColumns2: TableProps<typeof basicData[0]>['columns'] = [
   }
 ]
 
+const basicColumns3: TableProps<typeof basicData[0]>['columns'] = [
+  {
+    title: 'Name',
+    dataIndex: 'name',
+    key: 'name',
+    tooltip: 'name',
+    isBetaFeature: true,
+    searchable: true
+  },
+  {
+    title: 'Age',
+    dataIndex: 'age',
+    key: 'age',
+    width: 150,
+    align: 'center',
+    filterable: true,
+    filterPlaceholder: 'Age',
+    isBetaFeature: true
+  },
+  {
+    title: 'Address',
+    dataIndex: 'address',
+    key: 'address'
+  }
+]
+
 
 const basicData = [
   {
@@ -73,10 +99,18 @@ export function WithTable () {
       />
     </div>
     <br></br><br></br>
-    With selection:
+    With selection (Beta Indicator):
     <div>
       <Table
         columns={basicColumns2}
+        dataSource={basicData}
+      />
+    </div>
+    <br></br><br></br>
+    With selection (Tooltip & Beta Indicator):
+    <div>
+      <Table
+        columns={basicColumns3}
         dataSource={basicData}
       />
     </div>

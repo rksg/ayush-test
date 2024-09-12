@@ -14,8 +14,15 @@ export const IconWrapper = styled(Space)`
     color: var(--acx-accents-orange-50);
   }
 `
-export const IndicatorWrapper = styled(Space)`
+export const IndicatorWrapper = styled(Space)<{ $isMultiLinesText?: boolean }>`
   display: inline-flex;
   align-items: center;
-  gap: 2px !important;
+  gap: 4px !important;
+
+  ${props => !props.$isMultiLinesText && `
+    svg {
+      position: relative;
+      top: -4px;
+    }
+  `}
 `

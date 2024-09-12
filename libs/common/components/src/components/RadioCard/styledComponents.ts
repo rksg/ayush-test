@@ -1,48 +1,24 @@
 import { Card as AntCard, Radio as AntRadio } from 'antd'
 import styled                                 from 'styled-components/macro'
 
-import { IndicatorWrapper }        from '../BetaIndicator/styledComponents'
 import { Button as DefaultButton } from '../Button'
 
 export type RadioCardType = 'default' | 'radio' | 'button' | 'disabled'
-
-export const Title = styled.div`
-  padding-right: 20px;
-  padding-bottom: 3px;
-  font-size: var(--acx-subtitle-4-font-size);
-  line-height: var(--acx-subtitle-4-line-height);
-  font-weight: var(--acx-subtitle-4-font-weight);
-`
 
 export const Card = styled(AntCard)<{ $cardType: RadioCardType }>`
   position: relative;
   border: solid 1px var(--acx-neutrals-30);
   box-shadow: 0px 2px 4px rgba(51, 51, 51, 0.08);
   height: 100%;
-  ${Title} {
-    display: flex;
-    justify-content: space-between;
-    padding-right: 0;
-  }
-  ${IndicatorWrapper} {
-    width: 100%;
-    justify-content: space-between;
-  }
 
   ${props => props.$cardType !== 'button'
     ?`:hover {
     border-radius: 4px;
     border: 1px solid var(--acx-accents-orange-50);
-  }
-  ${Title} {
-    padding-right: 20px;
   }`:''}
 
   ${props => props.$cardType === 'default'
-    ? `cursor: pointer;
-    ${Title} {
-      padding-right: 0;
-    }` :'' }
+    ?'cursor: pointer;':''}
 
   ${props => props.$cardType === 'disabled'
     ? `opacity : 50%;
@@ -139,4 +115,12 @@ export const Description = styled.div`
   font-size: var(--acx-body-4-font-size);
   line-height: var(--acx-body-5-line-height);
   padding-bottom: 30px;
+`
+
+export const Title = styled.div`
+  padding-right: 20px;
+  padding-bottom: 3px;
+  font-size: var(--acx-subtitle-4-font-size);
+  line-height: var(--acx-subtitle-4-line-height);
+  font-weight: var(--acx-subtitle-4-font-weight);
 `

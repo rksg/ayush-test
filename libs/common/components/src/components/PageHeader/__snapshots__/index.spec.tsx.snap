@@ -1435,7 +1435,12 @@ exports[`PageHeader should render tabs with Beta indicator (only one tab) 1`] = 
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  gap: 2px !important;
+  gap: 4px !important;
+}
+
+.c2 svg {
+  position: relative;
+  top: -4px;
 }
 
 .c1.ant-tabs-top > .ant-tabs-nav {
@@ -1772,7 +1777,12 @@ exports[`PageHeader should render tabs with Beta indicator (special case) 1`] = 
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  gap: 2px !important;
+  gap: 4px !important;
+}
+
+.c2 svg {
+  position: relative;
+  top: -4px;
 }
 
 .c1.ant-tabs-top > .ant-tabs-nav {
@@ -2178,7 +2188,12 @@ exports[`PageHeader should render tabs with Beta indicator 1`] = `
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  gap: 2px !important;
+  gap: 4px !important;
+}
+
+.c2 svg {
+  position: relative;
+  top: -4px;
 }
 
 .c1.ant-tabs-top > .ant-tabs-nav {

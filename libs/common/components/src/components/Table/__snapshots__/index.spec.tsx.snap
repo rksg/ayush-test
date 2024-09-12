@@ -4846,7 +4846,12 @@ exports[`Table component should render table with Beta indicator correctly 1`] =
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  gap: 2px !important;
+  gap: 4px !important;
+}
+
+.c1 svg {
+  position: relative;
+  top: -4px;
 }
 
 .c3 {

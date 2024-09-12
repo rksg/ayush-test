@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { RadioProps, Space }                         from 'antd'
+import { RadioProps }                                from 'antd'
 import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 
 import { getTitleWithIndicator } from '../BetaIndicator'
@@ -31,6 +31,7 @@ export type RadioCardProps = RadioProps & {
   buttonText?: MessageDescriptor,
   onClick?: () => void
   isBetaFeature?: boolean
+  helpIcon?: React.ReactNode
 }
 
 const categoryMapping = {
@@ -50,12 +51,13 @@ const categoryMapping = {
 
 export function RadioCard ({
   type = 'default', title, description, value, categories = [],
-  buttonText, onClick, isBetaFeature, ...rest
+  buttonText, onClick, isBetaFeature, helpIcon, ...rest
 }: RadioCardProps){
   const { $t } = useIntl()
   return <Card $cardType={type} onClick={type === 'default' ? onClick : undefined}>
     <Title>
-      { isBetaFeature ? getTitleWithIndicator(title as string) : <Space>{title}</Space> }
+      { isBetaFeature ? getTitleWithIndicator(title as string) : title }
+      { helpIcon }
     </Title>
     <Description>{description}</Description>
     { categories.length > 0 &&

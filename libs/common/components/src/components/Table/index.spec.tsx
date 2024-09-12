@@ -228,8 +228,9 @@ describe('Table component', () => {
   it('shows search/filter when no selected bar and row selected', async () => {
     const props: TableProps<TestRow> = {
       columns: [
-        { ...testColumns[0], searchable: true, tooltip: 'Name tooltip' },
-        ...testColumns.slice(1, 3)
+        { ...testColumns[0], searchable: true, tooltip: 'Name tooltip', isBetaFeature: true },
+        { ...testColumns[1], isBetaFeature: true },
+        ...testColumns.slice(2, 3)
       ],
       dataSource: testData,
       rowSelection: { type: 'radio' },

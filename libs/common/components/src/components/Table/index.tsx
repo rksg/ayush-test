@@ -239,25 +239,28 @@ function Table <RecordType extends Record<string, any>> ({
       ? [...props.columns, settingsColumn] as typeof props.columns
       : props.columns
 
-    return cols.map(column => ({
-      ..._.omit(column, 'scopeKey'),
-      tooltip: null,
-      title: column.tooltip
-        ? <UI.TitleWithTooltip>
-          {column.title as React.ReactNode}
-          <UI.InformationTooltip title={column.tooltip as string} />
-        </UI.TitleWithTooltip>
-        : (column?.isBetaFeature
-          ? getTitleWithIndicator(column?.title as string)
-          : column.title
-        ),
-      disable: Boolean(column.fixed || column.disable),
-      show: Boolean(column.fixed || column.disable || (column.show ?? true)),
-      ellipsis: type === 'tall' && column.key !== settingsKey,
-      children: 'children' in column
-        ? column.children.map(child => ({ ...child, ellipsis: type === 'tall' }))
-        : undefined
-    }))
+    return cols.map(column => {
+      const columnTitle = (column?.isBetaFeature
+        ? getTitleWithIndicator(column?.title as string)
+        : column.title
+      ) as React.ReactNode
+      return {
+        ..._.omit(column, 'scopeKey'),
+        tooltip: null,
+        title: column.tooltip
+          ? <UI.TitleWithTooltip>
+            {columnTitle}
+            <UI.InformationTooltip title={column.tooltip as string} />
+          </UI.TitleWithTooltip>
+          : columnTitle,
+        disable: Boolean(column.fixed || column.disable),
+        show: Boolean(column.fixed || column.disable || (column.show ?? true)),
+        ellipsis: type === 'tall' && column.key !== settingsKey,
+        children: 'children' in column
+          ? column.children.map(child => ({ ...child, ellipsis: type === 'tall' }))
+          : undefined
+      }
+    })
   }, [props.columns, type]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const columnsState = useColumnsState({ settingsId, columns: baseColumns, columnState })
