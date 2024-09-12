@@ -4,7 +4,7 @@ import AutoSizer                  from 'react-virtualized-auto-sizer'
 
 import { Loader, Card, ColorPill, NoDataIconOnly, Tooltip } from '@acx-ui/components'
 import { intlFormats }                                      from '@acx-ui/formatter'
-import { AIDrivenRRM, AIOperation, AirFlexAI }              from '@acx-ui/icons'
+import { AIDrivenRRM, AIOperation, EquiFlex }               from '@acx-ui/icons'
 import { TenantLink, useSearchParams }                      from '@acx-ui/react-router-dom'
 import { fixedEncodeURIComponent, type PathFilter }         from '@acx-ui/utils'
 
@@ -90,7 +90,7 @@ function useHighlightList (data: IntentHighlight | undefined) {
     highlightList.push({
       ...data.airflex,
       title: $t({ defaultMessage: 'EquiFlex' }),
-      icon: <AirFlexAI />,
+      icon: <EquiFlex />,
       type: aiFeatures.EquiFlex
     })
   }

@@ -5,7 +5,7 @@ import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 import { Loader, TableProps, Table, Tooltip }                                                  from '@acx-ui/components'
 import { get }                                                                                 from '@acx-ui/config'
 import { DateFormatEnum, formatter }                                                           from '@acx-ui/formatter'
-import { AIDrivenRRM, AIOperation, AirFlexAI, EcoFlexAI }                                      from '@acx-ui/icons'
+import { AIDrivenRRM, AIOperation, EquiFlex, EcoFlexAI }                                       from '@acx-ui/icons'
 import { useNavigate, useTenantLink, TenantLink }                                              from '@acx-ui/react-router-dom'
 import { WifiScopes }                                                                          from '@acx-ui/types'
 import { filterByAccess, getShowWithoutRbacCheckKey, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
@@ -62,7 +62,7 @@ export const iconTooltips = {
       allowing some interference, or one with minimal interference, for high client density.` })}
   />,
   [aiFeatures.EquiFlex]: <IconTooltip
-    icon={<AirFlexAI />}
+    icon={<EquiFlex />}
     title={defineMessage({ defaultMessage: 'EquiFlex' })}
     subTitleLeft={defineMessage({ defaultMessage: 'Time to Connect' })}
     subTitleMiddle={defineMessage({ defaultMessage: 'vs' })}
