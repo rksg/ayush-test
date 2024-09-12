@@ -11,7 +11,8 @@ export interface PersonaGroup {
   createdAt?: string,
   updatedAt?: string,
   identities?: Persona[],
-  identityCount?: number
+  identityCount?: number,
+  certificateTemplateId?: string
 }
 
 export interface Persona {
