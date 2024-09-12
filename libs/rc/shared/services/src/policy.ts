@@ -3116,11 +3116,11 @@ export const policyApi = basePolicyApi.injectEndpoints({
       }
     }),
     getSpecificTemplateScepKeys: build.query<TableResult<ScepKeyData>, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params }) => {
         const req = createNewTableHttpRequest({
           apiInfo: CertificateUrls.getCertificateTemplateScepKeys,
           params,
-          payload: payload as TableChangePayload
+          headers: defaultCertTempVersioningHeaders
         })
         return {
           ...req

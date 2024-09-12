@@ -7,13 +7,12 @@ import { RawIntlProvider, useIntl } from 'react-intl'
 import { Button, Drawer, Loader, Table, TableProps } from '@acx-ui/components'
 import {
   useEditCertificateMutation,
-  useGenerateCertificateMutation, useGetCertificatesQuery,
-  useGetSpecificTemplateCertificatesQuery,
+  useGenerateCertificateMutation,
   useSearchPersonaListQuery
 } from '@acx-ui/rc/services'
-import { TableQuery, Certificate, CertificateCategoryType, CertificateStatusType, CertificateTemplate, EXPIRATION_DATE_FORMAT, EXPIRATION_TIME_FORMAT, EnrollmentType, FILTER, PolicyOperation, PolicyType, SEARCH, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, useTableQuery } from '@acx-ui/rc/utils'
-import { RequestPayload }                                                                                                                                                                                                                                                                        from '@acx-ui/types'
-import { getIntl, noDataDisplay }                                                                                                                                                                                                                                                                from '@acx-ui/utils'
+import { TableQuery, Certificate, CertificateCategoryType, CertificateStatusType, CertificateTemplate, EXPIRATION_DATE_FORMAT, EXPIRATION_TIME_FORMAT, EnrollmentType, FILTER, PolicyOperation, PolicyType, SEARCH, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy } from '@acx-ui/rc/utils'
+import { RequestPayload }                                                                                                                                                                                                                                                         from '@acx-ui/types'
+import { getIntl, noDataDisplay }                                                                                                                                                                                                                                                 from '@acx-ui/utils'
 
 import { issuedByLabel } from '../contentsMap'
 
@@ -24,10 +23,9 @@ import RevokeForm                                              from './RevokeFor
 
 
 export function CertificateTable (
-  { templateData, showGenerateCert = false, type = 'all', customTableQuery }: {
+  { templateData, showGenerateCert = false, tableQuery }: {
     templateData?: CertificateTemplate, showGenerateCert?: boolean,
-    type?: 'all' | 'specificTemplate' | 'specificIdentity',
-    customTableQuery?: TableQuery<Certificate, RequestPayload, unknown>
+    tableQuery: TableQuery<Certificate, RequestPayload, unknown>
 }) {
   const { $t } = useIntl()
   const [certificateForm] = Form.useForm()
@@ -35,17 +33,7 @@ export function CertificateTable (
   const [certificateDrawerOpen, setCertificateDrawerOpen] = useState(false)
   const [detailData, setDetailData] = useState<Certificate | null>(null)
   const [detailId, setDetailId] = useState<string | null>(null)
-  const settingsId = 'certificate-table'
-  const defaultTableQuery = useTableQuery({
-    useQuery:
-    type === 'specificTemplate' ? useGetSpecificTemplateCertificatesQuery : useGetCertificatesQuery,
-    defaultPayload: {},
-    apiParams: type === 'specificTemplate' ? { templateId: templateData?.id! } : {},
-    pagination: { settingsId },
-    option: { skip: !!customTableQuery }
-  })
 
-  const tableQuery = customTableQuery ?? defaultTableQuery
   const { data: identityList } = useSearchPersonaListQuery(
     { payload: { ids: [...new Set(tableQuery.data?.data?.map(d => d.identityId))] } },
     { skip: !tableQuery.data })

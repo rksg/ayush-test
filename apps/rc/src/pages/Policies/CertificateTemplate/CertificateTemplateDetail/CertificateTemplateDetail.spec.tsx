@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { CertificateUrls }                                       from '@acx-ui/rc/utils'
+import { CertificateUrls, PersonaUrls }                          from '@acx-ui/rc/utils'
 import { Provider }                                              from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 import { RolesEnum, WifiScopes }                                 from '@acx-ui/types'
@@ -29,6 +29,10 @@ describe('CertificateTemplateDetail', () => {
       rest.get(
         CertificateUrls.getCertificateTemplateScepKeys.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(scepKeys))
+      ),
+      rest.post(
+        PersonaUrls.searchPersonaList.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json([]))
       )
     )
   })

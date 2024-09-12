@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom'
 import { Button, Loader, PageHeader, SummaryCard, Tabs }                                                                                                                                                            from '@acx-ui/components'
 import { caTypeShortLabel, CertificateTable }                                                                                                                                                                       from '@acx-ui/rc/components'
 import { useGetAdaptivePolicySetQuery, useGetCertificateAuthorityQuery, useGetCertificateTemplateQuery, useGetPersonaGroupByIdQuery, useGetSpecificTemplateCertificatesQuery, useGetSpecificTemplateScepKeysQuery } from '@acx-ui/rc/services'
-import { PolicyOperation, PolicyType, filterByAccessForServicePolicyMutation, getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath, getScopeKeyByPolicy }                                               from '@acx-ui/rc/utils'
+import { PolicyOperation, PolicyType, filterByAccessForServicePolicyMutation, getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath, getScopeKeyByPolicy, useTableQuery }                                from '@acx-ui/rc/utils'
 import { TenantLink }                                                                                                                                                                                               from '@acx-ui/react-router-dom'
 import { noDataDisplay }                                                                                                                                                                                            from '@acx-ui/utils'
 
@@ -57,6 +57,11 @@ export default function CertificateTemplateDetail () {
         privateKeyBase64: data?.privateKeyBase64
       })
     })
+  const certificateTableQuery = useTableQuery({
+    useQuery: useGetSpecificTemplateCertificatesQuery,
+    defaultPayload: {},
+    apiParams: { templateId: certificateTemplateData?.id! }
+  })
 
   const summaryInfo = [
     {
@@ -85,7 +90,7 @@ export default function CertificateTemplateDetail () {
 
   const tabMapping = {
     [TabKeyType.CERTIFICATE]: <CertificateTable
-      type='specificTemplate'
+      tableQuery={certificateTableQuery}
       templateData={certificateTemplateData}
       showGenerateCert={!!privateKeyBase64} />,
     [TabKeyType.SCEP]: <ScepTable templateId={certificateTemplateData?.id}/>,

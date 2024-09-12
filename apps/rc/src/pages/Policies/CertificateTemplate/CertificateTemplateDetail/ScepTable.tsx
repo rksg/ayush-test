@@ -9,7 +9,6 @@ import { Loader, PasswordInput, Table, TableProps, showActionModal }            
 import { CopyOutlined }                                                                                                                                from '@acx-ui/icons'
 import { useDeleteSpecificTemplateScepKeyMutation, useGetSpecificTemplateScepKeysQuery }                                                               from '@acx-ui/rc/services'
 import { ChallengePasswordType, PolicyOperation, PolicyType, ScepKeyData, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, useTableQuery } from '@acx-ui/rc/utils'
-import { filterByAccess }                                                                                                                              from '@acx-ui/user'
 
 import ScepDrawer from './ScepDrawer'
 
@@ -158,7 +157,7 @@ export default function ScepTable ({ templateId = '' }) {
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowActions={allowedRowActions}
-        actions={filterByAccess(actionButtons)}
+        actions={actionButtons}
         rowSelection={
           allowedRowActions.length > 0 && { type: 'radio', onChange: () => {
             setVisible(false)

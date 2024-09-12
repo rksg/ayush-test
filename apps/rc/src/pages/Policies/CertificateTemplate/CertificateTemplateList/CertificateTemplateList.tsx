@@ -1,10 +1,10 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Tabs }                                                                                                                                      from '@acx-ui/components'
-import { CertificateTable }                                                                                                                                              from '@acx-ui/rc/components'
-import { useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery, useGetCertificatesQuery }                                                                   from '@acx-ui/rc/services'
-import { CertificateCategoryType, PolicyOperation, PolicyType, filterByAccessForServicePolicyMutation, getPolicyListRoutePath, getPolicyRoutePath, getScopeKeyByPolicy } from '@acx-ui/rc/utils'
-import { Path, TenantLink, useNavigate, useTenantLink }                                                                                                                  from '@acx-ui/react-router-dom'
+import { Button, PageHeader, Tabs }                                                                                                                                                     from '@acx-ui/components'
+import { CertificateTable }                                                                                                                                                             from '@acx-ui/rc/components'
+import { useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery, useGetCertificatesQuery }                                                                                  from '@acx-ui/rc/services'
+import { CertificateCategoryType, PolicyOperation, PolicyType, filterByAccessForServicePolicyMutation, getPolicyListRoutePath, getPolicyRoutePath, getScopeKeyByPolicy, useTableQuery } from '@acx-ui/rc/utils'
+import { Path, TenantLink, useNavigate, useTenantLink }                                                                                                                                 from '@acx-ui/react-router-dom'
 
 import CertificateAuthorityTable from '../CertificateTemplateTable/CertificateAuthorityTable'
 import CertificateTemplateTable  from '../CertificateTemplateTable/CertificateTemplateTable'
@@ -18,11 +18,15 @@ export default function CertificateTemplateList (props: { tabKey: CertificateCat
   const getCertificateAuthorities =
     useGetCertificateAuthoritiesQuery({ payload: { pageSize: 1, page: 1 } })
   const getCertificates = useGetCertificatesQuery({ payload: { pageSize: 1, page: 1 } })
+  const certificateTableQuery = useTableQuery({
+    useQuery: useGetCertificatesQuery,
+    defaultPayload: {}
+  })
 
   const tabs: Record<CertificateCategoryType, JSX.Element> = {
     [CertificateCategoryType.CERTIFICATE_TEMPLATE]: <CertificateTemplateTable/>,
     [CertificateCategoryType.CERTIFICATE_AUTHORITY]: <CertificateAuthorityTable/>,
-    [CertificateCategoryType.CERTIFICATE]: <CertificateTable/>
+    [CertificateCategoryType.CERTIFICATE]: <CertificateTable tableQuery={certificateTableQuery}/>
   }
 
   const tabsPathMapping: Record<CertificateCategoryType, Path> = {
