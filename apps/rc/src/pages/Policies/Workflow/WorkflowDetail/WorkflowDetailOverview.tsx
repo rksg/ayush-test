@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 
-import { Space }     from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
@@ -66,13 +65,11 @@ export function WorkflowDetailOverview () {
 
   return (
     <>
-      <Space direction={'vertical'} style={{ paddingBottom: '24px' }}>
-        <SummaryCard
-          data={workflowInfo}
-          isLoading={workflowQuery.isLoading}
-          isFetching={workflowQuery.isFetching}
-        />
-      </Space>
+      <SummaryCard
+        data={workflowInfo}
+        isLoading={workflowQuery.isLoading}
+        isFetching={workflowQuery.isFetching}
+      />
       <WorkflowPanel
         workflowId={data?.id!!}
         mode={PanelMode.View}

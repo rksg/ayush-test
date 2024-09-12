@@ -64,7 +64,7 @@ export const policyTypePathMapping: Record<PolicyType, string> = {
   [PolicyType.CERTIFICATE_TEMPLATE]: 'certificateTemplate',
   [PolicyType.CERTIFICATE_AUTHORITY]: 'certificateAuthority',
   [PolicyType.CERTIFICATE]: 'certificate',
-  [PolicyType.QOS_BANDWIDTH]: 'qosBandwidth',
+  [PolicyType.HQOS_BANDWIDTH]: 'hqosBandwidth',
   [PolicyType.SOFTGRE]: 'softGre'
 }
 

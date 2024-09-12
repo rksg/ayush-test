@@ -35,6 +35,6 @@ export const policyTypeLabelMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.CERTIFICATE_TEMPLATE]: defineMessage({ defaultMessage: 'Certificate Template' }),
   [PolicyType.CERTIFICATE_AUTHORITY]: defineMessage({ defaultMessage: 'Certificate Authority' }),
   [PolicyType.CERTIFICATE]: defineMessage({ defaultMessage: 'Certificate' }),
-  [PolicyType.QOS_BANDWIDTH]: defineMessage({ defaultMessage: 'QoS Bandwidth' }),
+  [PolicyType.HQOS_BANDWIDTH]: defineMessage({ defaultMessage: 'HQoS Bandwidth' }),
   [PolicyType.SOFTGRE]: defineMessage({ defaultMessage: 'SoftGRE' })
 }

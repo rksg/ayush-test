@@ -21,11 +21,11 @@ import {
   fakeIncidentAirtimeTx,
   IncidentCode
 }                         from '@acx-ui/analytics/utils'
-import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
-import { Provider }                       from '@acx-ui/store'
-import { render, screen }                 from '@acx-ui/test-utils'
-import { RolesEnum }                      from '@acx-ui/types'
-import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import { useIsSplitOn }                        from '@acx-ui/feature-toggle'
+import { Provider }                            from '@acx-ui/store'
+import { render, screen }                      from '@acx-ui/test-utils'
+import { RolesEnum, SwitchScopes, WifiScopes } from '@acx-ui/types'
+import { getUserProfile, setUserProfile }      from '@acx-ui/user'
 
 import * as fixtures               from './__tests__/fixtures'
 import { AirtimeB }                from './AirtimeB'
@@ -338,6 +338,21 @@ describe('Test', () => {
         setUserProfile({ ...profile, profile: {
           ...profile.profile, roles: [RolesEnum.READ_ONLY]
         } })
+        const params = { incidentId: test.fakeIncident.id }
+        render(<Provider>
+          <test.component {...test.fakeIncident} />
+        </Provider>, { route: { params } })
+        expect(screen.queryByTestId('muteIncident')).not.toBeInTheDocument()
+      })
+      it(`should hide mute for ${test.component.name} when scope does not match`, () => {
+        const { sliceType } = test.fakeIncident
+        jest.mocked(useIsSplitOn).mockReturnValue(true)
+        setUserProfile({
+          ...getUserProfile(),
+          abacEnabled: true,
+          isCustomRole: true,
+          scopes: [sliceType.startsWith('switch') ? WifiScopes.UPDATE : SwitchScopes.UPDATE]
+        })
         const params = { incidentId: test.fakeIncident.id }
         render(<Provider>
           <test.component {...test.fakeIncident} />

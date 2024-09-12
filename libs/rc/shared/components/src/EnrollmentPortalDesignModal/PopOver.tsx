@@ -1,3 +1,4 @@
+import { Popover }          from 'antd'
 import { TooltipPlacement } from 'antd/es/tooltip'
 
 import * as UI from './styledComponents'
@@ -13,7 +14,7 @@ export interface PopOverProps {
 
 export function PopOver (props: PopOverProps) {
   const { visible, onVisibleChange, content, children, overlayInnerStyle, placement } = props
-  return <UI.Popover
+  return <Popover
     getPopupContainer={()=>document.getElementById('democontent') as HTMLElement}
     visible={visible}
     content={content}
@@ -26,5 +27,5 @@ export function PopOver (props: PopOverProps) {
     overlayInnerStyle={overlayInnerStyle}
   >
     {children}
-  </UI.Popover>
+  </Popover>
 }

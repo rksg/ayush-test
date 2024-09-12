@@ -1,5 +1,6 @@
-import { rest } from 'msw'
-import { Path } from 'react-router-dom'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
+import { Path }  from 'react-router-dom'
 
 import { useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { Workflow, WorkflowUrls }              from '@acx-ui/rc/utils'
@@ -26,6 +27,10 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useTenantLink: (): Path => mockedTenantPath
 }))
 
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  WorkflowActionPreviewModal: () => <div data-testid='WorkflowActionPreviewModal' />
+}))
 
 
 describe('WorkflowPageHeader', () => {
@@ -41,6 +46,12 @@ describe('WorkflowPageHeader', () => {
           getWorkflowApi()
           return res(ctx.json(workflows[0]))
         }
+      ),
+      rest.post(
+        WorkflowUrls.searchWorkflows.url.split('?')[0],
+        (req, res, ctx) => {
+          return res(ctx.json([]))
+        }
       )
     )
   })
@@ -52,8 +63,9 @@ describe('WorkflowPageHeader', () => {
       route: { params }
     })
 
-    await screen.findByText('Preview')
+    const preview = await screen.findByText('Preview')
     await screen.findByText('Configure')
+    await userEvent.click(preview)
     await screen.findByText(workflows[0].name)
     await waitFor(() => expect(getWorkflowApi).toHaveBeenCalled())
   })

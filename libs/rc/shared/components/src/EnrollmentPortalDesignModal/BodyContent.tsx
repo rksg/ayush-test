@@ -64,7 +64,6 @@ export function BodyContent (props: BodyContentProps) {
     >
       <TextArea
         maxLength={100}
-        // eslint-disable-next-line max-len
         value={$t({ defaultMessage: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' })}
         placeholder='bodytext'
         rows={4}

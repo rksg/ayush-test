@@ -895,6 +895,17 @@ export interface SupportCcdApGroup {
   aps: APExtended[]
 }
 
+export enum DiagnosisCommands {
+  PING = 'PING',
+  TRACE_ROUTE = 'TRACE_ROUTE',
+  BLINK_LED = 'BLINK_LED'
+}
+
+export enum SystemCommands {
+  REBOOT = 'REBOOT',
+  FACTORY_RESET = 'FACTORY_RESET'
+}
+
 export interface StickyClientSteering {
   enabled?: boolean
   snrThreshold?: number

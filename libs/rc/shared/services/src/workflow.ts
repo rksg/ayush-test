@@ -26,11 +26,12 @@ import {
   ActionBase,
   GetApiVersionHeader,
   ApiVersionEnum,
-  ImageUrl
+  ImageUrl,
+  CommonResult
 } from '@acx-ui/rc/utils'
-import { baseWorkflowApi }   from '@acx-ui/store'
-import { RequestPayload }    from '@acx-ui/types'
-import { createHttpRequest } from '@acx-ui/utils'
+import { baseWorkflowApi }             from '@acx-ui/store'
+import { RequestPayload }              from '@acx-ui/types'
+import { batchApi, createHttpRequest } from '@acx-ui/utils'
 
 import { CommonAsyncResponse } from './common'
 import { commonQueryFn }       from './servicePolicy.utils'
@@ -79,6 +80,14 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
         return {
           ...req
         }
+      },
+      invalidatesTags: [{ type: 'Workflow' }]
+    }),
+    deleteWorkflows: build.mutation<CommonResult, RequestPayload<string[]>>({
+      queryFn: async ({ payload }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const requests = payload!.map(id => ({ params: { id } }))
+        await batchApi(WorkflowUrls.deleteWorkflow, requests, fetchWithBQ)
+        return { data: {} as CommonResult }
       },
       invalidatesTags: [{ type: 'Workflow' }]
     }),
@@ -517,6 +526,7 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
 export const {
   useAddWorkflowMutation,
   useDeleteWorkflowMutation,
+  useDeleteWorkflowsMutation,
   useGetWorkflowByIdQuery,
   useLazyGetWorkflowByIdQuery,
   useUpdateWorkflowMutation,

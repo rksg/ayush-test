@@ -9,7 +9,8 @@ import {
   WorkflowFormProps
 } from '@acx-ui/rc/components'
 import {
-  getPolicyListRoutePath
+  PolicyType,
+  usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
 
 export default function WorkflowPageForm (props: WorkflowFormProps) {
@@ -18,11 +19,7 @@ export default function WorkflowPageForm (props: WorkflowFormProps) {
   return (
     <>
       <PageHeader
-        breadcrumb={
-          [
-            { text: $t({ defaultMessage: 'Policies & Profiles' }),
-              link: getPolicyListRoutePath(true) }
-          ]}
+        breadcrumb={usePolicyListBreadcrumb(PolicyType.WORKFLOW)}
         title={mode === WorkflowFormMode.CREATE ?
           $t({ defaultMessage: 'Add Workflow' }):
           $t({ defaultMessage: 'Edit Workflow' })
