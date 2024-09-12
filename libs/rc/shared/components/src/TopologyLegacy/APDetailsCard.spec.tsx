@@ -170,7 +170,7 @@ const apDetailWithNullTraffic = {
   downlinkCount: 2
 }
 
-const sample = { P1: 1, P2: 2, P3: 3, P4: 4 }
+const sample = { data: { P1: 1, P2: 2, P3: 3, P4: 4 } }
 
 jest.mock('@acx-ui/analytics/components', () => ({
   useIncidentToggles: () => ({}),
@@ -179,10 +179,13 @@ jest.mock('@acx-ui/analytics/components', () => ({
 
 describe('Topology AP Card', () => {
   it('should render correctly', async () => {
-    const { asFragment } = render(<Provider><APDetailsCard
-      apDetail={apDetail as ApViewModel}
-      isLoading={false}
-    /></Provider>, {
+    const { asFragment } = render(<Provider>
+      <APDetailsCard
+        apDetail={apDetail as ApViewModel}
+        isLoading={false}
+        onClose={() => {}}
+      />
+    </Provider>, {
       route: {}
     })
     const fragment = asFragment()
@@ -193,10 +196,13 @@ describe('Topology AP Card', () => {
   })
 
   it('should show empty traffic data', async () => {
-    const { asFragment } = render(<Provider><APDetailsCard
-      apDetail={apDetailWithNullTraffic as ApViewModel}
-      isLoading={false}
-    /></Provider>, {
+    const { asFragment } = render(<Provider>
+      <APDetailsCard
+        apDetail={apDetailWithNullTraffic as ApViewModel}
+        isLoading={false}
+        onClose={() => {}}
+      />
+    </Provider>, {
       route: {}
     })
     const fragment = asFragment()
