@@ -4,9 +4,10 @@ import moment    from 'moment-timezone'
 
 import { screen, render, renderHook } from '@acx-ui/test-utils'
 
+import { mockIntentContext }                     from '../../__tests__/fixtures'
 import { mockedIntentCRRM, mockedIntentCRRMnew } from '../../AIDrivenRRM/__tests__/fixtures'
-import { useIntentContext }                      from '../../IntentContext'
 import { Statuses }                              from '../../states'
+import { Intent }                                from '../../useIntentDetailsQuery'
 import { useInitialValues }                      from '../../useIntentTransition'
 
 import { getScheduledAt, ScheduleTiming, validateScheduleTiming } from '.'
@@ -50,7 +51,7 @@ describe('ScheduleTiming', () => {
   afterEach(() => jest.restoreAllMocks())
   describe('intent status = new/scheduled', () => {
     beforeEach(() =>
-      jest.mocked(useIntentContext).mockReturnValue({ intent: mockedIntentCRRMnew, kpis: [] }))
+      mockIntentContext({ intent: mockedIntentCRRMnew, kpis: [] }))
     it('show date & time & handle selection submission', async () => {
       const { form, onFinish } = renderForm(<ScheduleTiming/>)
 
@@ -73,7 +74,7 @@ describe('ScheduleTiming', () => {
         .toEqual({ date: '2024-08-13', time: '5.5' })
     })
     it('handle selected date & time, then waited past selected time validation', async () => {
-      jest.mocked(useIntentContext).mockReturnValue({
+      mockIntentContext({
         intent: { ...mockedIntentCRRMnew, metadata: {
           ...mockedIntentCRRMnew.metadata,
           scheduledAt: '2024-08-12T10:00:00'
@@ -123,7 +124,7 @@ describe('ScheduleTiming', () => {
 
   describe('intent status = active/applyscheduled', () => {
     beforeEach(() =>
-      jest.mocked(useIntentContext).mockReturnValue({ intent: mockedIntentCRRM, kpis: [] }))
+      mockIntentContext({ intent: mockedIntentCRRM, kpis: [] }))
     it('show time only & handle selection submission', async () => {
       const { form, onFinish } = renderForm(<ScheduleTiming/>)
 
@@ -144,18 +145,24 @@ describe('ScheduleTiming', () => {
 describe('ScheduleTiming.FieldSummary', () => {
   beforeEach(() => jest.spyOn(Date, 'now').mockReturnValue(+new Date('2024-08-12T10:38:00')))
   afterEach(() => jest.restoreAllMocks())
-  describe('intent status = new/scheduled', () => {
+  describe('intent status = scheduled', () => {
     it('show date + time', async () => {
-      jest.mocked(useIntentContext).mockReturnValue({ intent: mockedIntentCRRMnew, kpis: [] })
+      mockIntentContext({
+        intent: {
+          ...mockedIntentCRRMnew,
+          status: Statuses.scheduled,
+          metadata: { scheduledAt: '2024-08-12T00:00:00' } as Intent['metadata']
+        }
+      })
       renderForm(<ScheduleTiming.FieldSummary/>)
       expect(await screen.findByText('Start Date & Time')).toBeVisible()
       expect(await screen.findByText('08/12/2024 00:00')).toBeVisible()
     })
   })
 
-  describe('intent status = active/applyscheduled', () => {
+  describe('intent status = active', () => {
     it('show time only', async () => {
-      jest.mocked(useIntentContext).mockReturnValue({ intent: mockedIntentCRRM, kpis: [] })
+      mockIntentContext({ intent: mockedIntentCRRM, kpis: [] })
       renderForm(<ScheduleTiming.FieldSummary/>)
       expect(await screen.findByText('Schedule Time')).toBeVisible()
       expect(await screen.findByText('14:15')).toBeVisible()

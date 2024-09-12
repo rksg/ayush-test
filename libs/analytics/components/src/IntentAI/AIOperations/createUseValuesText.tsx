@@ -18,7 +18,7 @@ export function createUseValuesText<ValuesType = unknown> (
   getValuesFn?: (intent: Intent) => ValuesType
 ) {
   return function useValuesText () {
-    const { intent } = useIntentContext()
+    const { intent, state } = useIntentContext()
     const values = {
       ...richTextFormatValues,
       currentValue: intent.currentValue,
@@ -26,7 +26,11 @@ export function createUseValuesText<ValuesType = unknown> (
       scope: incidentScope(intent),
       ...(getValuesFn && getValuesFn(intent))
     }
-    const summary = isIntentActive(intent) ? config.action : config.inactive
+
+    const summary = (!isIntentActive(intent) || state === 'no-data')
+      ? config.inactive
+      : config.action
+
     return {
       actionText: <FormattedMessage {...config.action} values={values} />,
       reasonText: <FormattedMessage {...config.reason} values={values} />,
