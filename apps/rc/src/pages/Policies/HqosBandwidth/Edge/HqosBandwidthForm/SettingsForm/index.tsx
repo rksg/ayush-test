@@ -1,8 +1,9 @@
-import { Alert, Checkbox, Col, Form, Input, InputNumber, Row, Space, Table, TableProps, Tooltip } from 'antd'
-import _                                                                                          from 'lodash'
-import { useIntl }                                                                                from 'react-intl'
 
-import { useStepFormContext }                                                                                       from '@acx-ui/components'
+import { Alert, Checkbox, Col, Form, Input, InputNumber, Row, Space, Tooltip, Typography } from 'antd'
+import _                                                                                   from 'lodash'
+import { useIntl }                                                                         from 'react-intl'
+
+import { Table, TableProps, cssStr, useStepFormContext }                                                            from '@acx-ui/components'
 import { SpaceWrapper }                                                                                             from '@acx-ui/rc/components'
 import { EdgeHqosViewData, TrafficClassSetting, priorityToDisplay, servicePolicyNameRegExp, trafficClassToDisplay } from '@acx-ui/rc/utils'
 
@@ -32,6 +33,7 @@ export const SettingsForm = () => {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const { initialValues } = useStepFormContext<EdgeHqosViewData>()
+  const formTrafficClassSettings = Form.useWatch('trafficClassSettings', form)
 
   const bandwidthMinAndMaxErrMsg =
   $t({ defaultMessage: 'This value should be between 1 and 100' })
@@ -93,11 +95,25 @@ export const SettingsForm = () => {
     return Promise.resolve()
   }
 
+  const MinBandwidthRemaining = (props: {
+    trafficClassSettings: TrafficClassSetting[]
+  }) => {
+    const { trafficClassSettings } = props
+    const minBandwidthArray = trafficClassSettings?.map((item) => item?.minBandwidth)
+    const minBandwidthSum = minBandwidthArray?.reduce((a, b) => (a??0) + (b??0)) ?? 0 as number
+    const remaining = 100 - minBandwidthSum
+
+    return <Typography style={{ color: cssStr('--acx-neutrals-50') }}>
+      {$t({ defaultMessage: 'Remaining:{value}%' }, { value: remaining })}
+    </Typography>
+  }
+
   const columns: TableProps<TrafficClassSetting>['columns'] = [
     {
       title: $t({ defaultMessage: 'Traffic Class' }),
       key: 'trafficClass',
       dataIndex: 'trafficClass',
+      width: 80,
       render: function (_, row) {
         return trafficClassToDisplay(row.trafficClass)
       }
@@ -106,6 +122,7 @@ export const SettingsForm = () => {
       title: $t({ defaultMessage: 'Priority' }),
       key: 'priority',
       dataIndex: 'priority',
+      width: 60,
       render: function (_, row) {
         return priorityToDisplay(row.priority)
       }
@@ -113,6 +130,8 @@ export const SettingsForm = () => {
     {
       title: $t({ defaultMessage: 'Priority Scheduling' }),
       align: 'center',
+      key: 'priorityScheduling',
+      dataIndex: 'priorityScheduling',
       render: function (_, row, index) {
         return <Space>
           <Form.Item
@@ -125,8 +144,14 @@ export const SettingsForm = () => {
       }
     },
     {
-      title: $t({ defaultMessage: 'Guaranteed Bandwidth' }),
+      title: <>{$t({ defaultMessage: 'Guaranteed Bandwidth' })}
+        <MinBandwidthRemaining
+          trafficClassSettings={formTrafficClassSettings}
+        />
+      </>,
       align: 'center',
+      key: 'minBandwidth',
+      dataIndex: 'minBandwidth',
       render: function (_, row, index) {
         return <UI.BandwidthStyleFormItem>
           <Space>
@@ -160,6 +185,8 @@ export const SettingsForm = () => {
     {
       title: $t({ defaultMessage: 'Max Bandwidth' }),
       align: 'center',
+      key: 'maxBandwidth',
+      dataIndex: 'maxBandwidth',
       render: function (_, row, index) {
         return <UI.BandwidthStyleFormItem>
           <Space>
@@ -224,9 +251,7 @@ export const SettingsForm = () => {
                         'Configure the HQoS bandwidth settings for each traffic class' })}
                   </>}
                   rules={
-                    [{ required: true }
-                      // TODO:  { validator: (_, value) => validate(value) }
-                    ]
+                    [{ required: true }]
                   }
                 >
                   <Form.Item noStyle>
@@ -237,13 +262,13 @@ export const SettingsForm = () => {
                         Max bandwidth must exceed minimal guaranteed bandwidth in each class.` })
                       }
                     />
+                    <Table
+                      rowKey={(row: TrafficClassSetting) => `${row.trafficClass}-${row.priority}`}
+                      columns={columns}
+                      dataSource={initialValues?.trafficClassSettings}
+                      pagination={false}
+                    />
                   </Form.Item>
-                  <Table
-                    rowKey={(row: TrafficClassSetting) => `${row.trafficClass}-${row.priority}`}
-                    columns={columns}
-                    dataSource={initialValues?.trafficClassSettings}
-                    pagination={false}
-                  />
                 </Form.Item>
               </Row>
             </Col>
