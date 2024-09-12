@@ -9,11 +9,11 @@ import {
   useDisconnectClientMutation,
   useGetClientOrHistoryDetailQuery,
   useRevokeClientMutation } from '@acx-ui/rc/services'
-import { Client, ClientStatusEnum }                                         from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useSearchParams, useTenantLink }           from '@acx-ui/react-router-dom'
-import { RolesEnum, WifiScopes }                                            from '@acx-ui/types'
-import { filterByAccess,hasCrossVenuesPermission, hasRoles, hasPermission } from '@acx-ui/user'
-import { DateFilter, DateRange, encodeParameter, useDateFilter }            from '@acx-ui/utils'
+import { Client, ClientStatusEnum }                               from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useSearchParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }                                         from '@acx-ui/user'
+import { DateFilter, DateRange, encodeParameter, useDateFilter }  from '@acx-ui/utils'
+
 
 import ClientDetailTabs from './ClientDetailTabs'
 function DatePicker () {
@@ -44,7 +44,6 @@ function ClientDetailPageHeader () {
   const navigate = useNavigate()
   const basePath = useTenantLink('/users/wifi/clients')
   const wifiEDAClientRevokeToggle = useIsSplitOn(Features.WIFI_EDA_CLIENT_REVOKE_TOGGLE)
-  const isReadOnly = !hasCrossVenuesPermission() || hasRoles([RolesEnum.READ_ONLY])
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     switch (e.key) {
@@ -98,7 +97,7 @@ function ClientDetailPageHeader () {
   const menu = (
     <Menu
       onClick={handleMenuClick}
-      items={(isReadOnly ? [] : [
+      items={[
       // { TODO: post-ga
       //   label: $t({ defaultMessage: 'Edit User' }),
       //   key: 'edit-user'
@@ -109,17 +108,14 @@ function ClientDetailPageHeader () {
       // },
         {
           label: $t({ defaultMessage: 'Disconnect Client' }),
-          key: 'disconnect-client',
-          scopeKey: [WifiScopes.UPDATE]
+          key: 'disconnect-client'
         },
         // eslint-disable-next-line max-len
         ...((wifiEDAClientRevokeToggle && !result?.isHistorical && isEqualCaptivePortal(result?.data.networkType)) ? [{
           label: $t({ defaultMessage: 'Revoke Network Access' }),
-          key: 'revoke-client',
-          scopeKey: [WifiScopes.UPDATE]
+          key: 'revoke-client'
         }] : [])
-      ].filter(item => hasPermission({ scopes: item.scopeKey }))
-      )}
+      ]}
     />
   )
 
