@@ -90,7 +90,8 @@ export interface CertificateTemplate {
   certificateNames?: string[]
   chromebook?: Chromebook,
   networkIds?: string[],
-  variables?: string[]
+  variables?: string[],
+  identityGroupId?: string
 }
 
 export interface OnboardCA {
