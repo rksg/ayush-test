@@ -46,9 +46,10 @@ const successResponse = {
 }
 
 describe('LanPortsForm', () => {
-  const mockedApiFn = jest.fn()
+  const mockedCreateEthernetPortProfileFn = jest.fn()
   const mockedActivateEthernetPortProfileApiFn = jest.fn()
   const mockedUpdateEthernetPortSettingApiFn = jest.fn()
+  const mockedUpdateVenueLanPortsFn = jest.fn()
 
 
   beforeEach(() => {
@@ -79,7 +80,10 @@ describe('LanPortsForm', () => {
       ),
       rest.put(
         CommonUrlsInfo.updateVenueLanPorts.url,
-        (_, res, ctx) => res(ctx.json({}))
+        (_, res, ctx) => {
+          mockedUpdateVenueLanPortsFn()
+          return res(ctx.json({}))
+        }
       ),
 
       rest.post(EthernetPortProfileUrls.getEthernetPortProfileViewDataList.url,
@@ -90,7 +94,7 @@ describe('LanPortsForm', () => {
       ),
       rest.post(EthernetPortProfileUrls.createEthernetPortProfile.url,
         (_, res, ctx) => {
-          mockedApiFn()
+          mockedCreateEthernetPortProfileFn()
           return res(ctx.status(200), ctx.json(successResponse))
         }
       ),
@@ -228,6 +232,80 @@ describe('LanPortsForm', () => {
     await userEvent.click(resetBtn)
   })
 
+  it ('Should pop up warning message if reset port to default by ap model', async () => {
+    const { result: venueEditContextHook } = renderHook(() => {
+      const [editNetworkingContextData, setEditNetworkingContextData] =
+        useState({ updateLanPorts: ()=>{} } as NetworkingSettingContext)
+      const [editContextData, setEditContextData] = useState({})
+
+      useEffect(()=>{
+        editNetworkingContextData.updateLanPorts?.()
+      }, [editNetworkingContextData])
+
+
+      return { editNetworkingContextData, setEditNetworkingContextData,
+        editContextData, setEditContextData }
+    })
+
+    render(
+
+      <Provider>
+        <VenueEditContext.Provider value={{
+          editNetworkingContextData: venueEditContextHook.current.editNetworkingContextData,
+          setEditNetworkingContextData: venueEditContextHook.current.setEditNetworkingContextData,
+          editContextData: venueEditContextHook.current.editContextData,
+          setEditContextData: venueEditContextHook.current.setEditContextData
+        }}>
+          <VenueUtilityContext.Provider value={{
+            venueApCaps: venueCaps,
+            isLoadingVenueApCaps: false
+          }} >
+            <Form>
+              <LanPorts />
+            </Form>
+          </VenueUtilityContext.Provider>
+        </VenueEditContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
+      })
+
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.WIFI_RESET_AP_LAN_PORT_TOGGLE)
+
+    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitFor(() => screen.findByText('AP Model'))
+
+    fireEvent.mouseDown(await screen.findByRole('combobox'))
+    const option = screen.getByText('T750')
+    await userEvent.click(option)
+
+    const resetBtn = await screen.findByRole('button', { name: 'Reset to default' })
+    expect(resetBtn).toBeVisible()
+    fireEvent.mouseOver(resetBtn)
+    await waitFor(async () => {
+      expect(await screen.findByRole('tooltip')).toBeInTheDocument()
+    })
+    await waitFor(() => {
+      expect(screen.getByRole('tooltip').textContent).toBe('Reset port settings to default')
+    })
+
+    const enablePort = await screen.findByRole('switch', { name: 'Enable port' })
+    expect(enablePort).toHaveAttribute('aria-checked', 'true')
+    await userEvent.click(enablePort)
+    expect(enablePort).toHaveAttribute('aria-checked', 'false')
+
+    await userEvent.click(resetBtn)
+    const dialog = await screen.findByRole('dialog')
+
+    // eslint-disable-next-line max-len
+    expect(dialog).toHaveTextContent('Changing the port settings may result in loss of connectivity and communication issues to your APs. Do you want to continue with these changes?')
+
+    const continueBtn = await screen.findByRole('button', { name: 'Continue' })
+    expect(continueBtn).toBeVisible()
+    await userEvent.click(continueBtn)
+    await waitFor(() => expect(mockedUpdateVenueLanPortsFn).toBeCalled())
+  })
+
   it ('Should render ethernet profile correctly with AP model T750SE', async () => {
     // Given
     render(
@@ -285,7 +363,7 @@ describe('LanPortsForm', () => {
 
     await userEvent.click(actions.getByRole('button', { name: 'Add' }))
 
-    await waitFor(() => expect(mockedApiFn).toBeCalled())
+    await waitFor(() => expect(mockedCreateEthernetPortProfileFn).toBeCalled())
   })
 
 
@@ -355,8 +433,5 @@ describe('LanPortsForm', () => {
     await waitFor(() => expect(mockedActivateEthernetPortProfileApiFn).toBeCalled())
     await waitFor(() => expect(mockedUpdateEthernetPortSettingApiFn).toBeCalled())
   })
-
-
-
 
 })
