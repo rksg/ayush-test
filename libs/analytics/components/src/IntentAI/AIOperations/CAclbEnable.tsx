@@ -52,7 +52,7 @@ const useValuesText = createUseValuesText({
     </p>
   ` }),
   action: defineMessage({ defaultMessage: `
-    <p>IntentAI will enable load balancing based on client count for this network, this change shall improves network performance by evenly distributing client connections, preventing congestion on specific access points and optimizing overall throughput and reliability.</p>
+    <p>IntentAI will enable load balancing based on client count for this network, this change shall improve network performance by evenly distributing client connections, preventing congestion on specific access points and optimizing overall throughput and reliability.</p>
     <p>IntentAI will continuously monitor these configurations.</p>
   ` }),
   reason: defineMessage({ defaultMessage: 'Client Load Balancing allows equal distribution of clients by allowing heavily loaded APs to move clients to less loaded neighboring APs, This shall result in better radio utilization resulting in better Wi-Fi experience to the user.' }),
@@ -70,7 +70,7 @@ const options = {
     content: <FormattedMessage
       values={richTextFormatValues}
       defaultMessage={`
-        <p>IntentAI will enable load balancing based on client count for this network, this change shall improves network performance by evenly distributing client connections, preventing congestion on specific access points and optimizing overall throughput and reliability.</p>
+        <p>IntentAI will enable load balancing based on client count for this network, this change shall improve network performance by evenly distributing client connections, preventing congestion on specific access points and optimizing overall throughput and reliability.</p>
         <p>IntentAI will continuously monitor these configurations.</p>
       `}
     />
