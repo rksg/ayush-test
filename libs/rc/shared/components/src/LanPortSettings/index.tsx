@@ -138,7 +138,7 @@ export function LanPortSettings (props: {
           ethernetPortListQuery: queryResult
         }
       },
-      skip: !isTemplate || !isEthernetPortProfileEnabled
+      skip: isTemplate || !isEthernetPortProfileEnabled
     })
 
   useEffect(()=> {
@@ -152,7 +152,7 @@ export function LanPortSettings (props: {
   const { data: apEthPortSettings, isLoading: isApEthPortSettingsLoading } =
     useGetEthernetPortProfileSettingsByApPortIdQuery({
       params: { venueId, serialNumber, portId: index as unknown as string }
-    }, { skip: !isTemplate || !isEthernetPortProfileEnabled || !serialNumber })
+    }, { skip: isTemplate || !isEthernetPortProfileEnabled || !serialNumber })
 
   useEffect(() => {
     if (!isApEthPortSettingsLoading && apEthPortSettings) {
