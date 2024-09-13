@@ -30,7 +30,6 @@ const EthernetPortProfileTable = () => {
   const { $t } = useIntl()
   const params = useParams()
   const defaultEthernetPortProfileTablePayload = {}
-  const emptyResult: KeyValue<string, string>[] = []
   const basePath: Path = useTenantLink('')
   const navigate = useNavigate()
   const enableServicePolicyRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
@@ -47,7 +46,7 @@ const EthernetPortProfileTable = () => {
     }
   })
   // eslint-disable-next-line max-len
-  const { radiusNameMap }: { radiusNameMap: KeyValue<string, string>[] } = useGetAAAPolicyViewModelListQuery({
+  const { radiusNameMap = [] } = useGetAAAPolicyViewModelListQuery({
     params: { tenantId: params.tenantId },
     payload: {
       fields: ['name', 'id'],
@@ -59,14 +58,11 @@ const EthernetPortProfileTable = () => {
     enableRbac: enableServicePolicyRbac
   }, {
     selectFromResult: ({ data }: { data?: { data: AAAViewModalType[] } }) => ({
-      radiusNameMap: data?.data
-        ? data.data.map(radius => ({ key: radius.id!, value: radius.name }))
-        : emptyResult
+      radiusNameMap: data?.data?.map(radius => ({ key: radius.id!, value: radius.name }))
     })
   })
 
-  const emptyVenues: { key: string, value: string }[] = []
-  const { venueNameMap } = useGetVenuesQuery({
+  const { venueNameMap =[] } = useGetVenuesQuery({
     params: { tenantId: params.tenantId },
     payload: {
       fields: ['name', 'id'],
@@ -77,9 +73,7 @@ const EthernetPortProfileTable = () => {
     }
   }, {
     selectFromResult: ({ data }) => ({
-      venueNameMap: data?.data
-        ? data.data.map(venue => ({ key: venue.id, value: venue.name }))
-        : emptyVenues
+      venueNameMap: data?.data?.map(venue => ({ key: venue.id, value: venue.name }))
     })
   })
 

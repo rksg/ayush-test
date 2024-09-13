@@ -10,15 +10,13 @@ import {
   AAAViewModalType,
   EthernetPortAuthType,
   EthernetPortProfileViewData,
-  KeyValue, PolicyOperation,
+  PolicyOperation,
   PolicyType,
   getEthernetPortAuthTypeString,
   getEthernetPortCredentialTypeString,
   getEthernetPortTypeString,
   getPolicyDetailsLink } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
-
-// import * as UI from './styledComponents'
 
 interface EthernetPortProfileDetailsDrawerProps {
   title: string
@@ -33,16 +31,14 @@ const EthernetPortProfileDetailsDrawer = (props: EthernetPortProfileDetailsDrawe
   const { $t } = useIntl()
   const params = useParams()
   const { title, visible, setVisible, ethernetPortProfileData } = props
-  const emptyResult: KeyValue<string, string>[] = []
   const enableServicePolicyRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  // const { data: userProfile } = useUserProfileContext()
 
   const onClose = () => {
     setVisible(false)
   }
 
   // eslint-disable-next-line max-len
-  const { radiusNameMap }: { radiusNameMap: KeyValue<string, string>[] } = useGetAAAPolicyViewModelListQuery({
+  const { radiusNameMap = [] } = useGetAAAPolicyViewModelListQuery({
     params: { tenantId: params.tenantId },
     payload: {
       fields: ['name', 'id'],
@@ -54,9 +50,7 @@ const EthernetPortProfileDetailsDrawer = (props: EthernetPortProfileDetailsDrawe
     enableRbac: enableServicePolicyRbac
   }, {
     selectFromResult: ({ data }: { data?: { data: AAAViewModalType[] } }) => ({
-      radiusNameMap: data?.data
-        ? data.data.map(radius => ({ key: radius.id!, value: radius.name }))
-        : emptyResult
+      radiusNameMap: data?.data?.map(radius => ({ key: radius.id!, value: radius.name }))
     })
   })
 

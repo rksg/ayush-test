@@ -130,5 +130,3 @@ export const EditEthernetPortProfile = () => {
     </Loader>
   )
 }
-
-// export default EditEthernetPortProfile
