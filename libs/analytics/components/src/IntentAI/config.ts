@@ -293,12 +293,6 @@ export const codes = {
     intent: defineMessage({ defaultMessage: 'Time to Connect vs Client Density for 6 GHz' }),
     category: categories['Wi-Fi Experience']
   },
-  'eco-flex-code': {
-    // TODO: EcoFlex code is not defined yet
-    aiFeature: aiFeatures.EcoFlex,
-    intent: defineMessage({ defaultMessage: 'TBD' }),
-    category: categories['Wi-Fi Experience']
-  },
   'i-ecoflex': {
     aiFeature: aiFeatures.EcoFlex,
     intent: defineMessage({ defaultMessage: 'Energy Footprint vs Mission Criticality' }),

@@ -538,7 +538,7 @@ export const aiFeatureWithAIOps = {
 } as AIFeatureProps
 
 export const aiFeatureWithEcoFlex = {
-  code: 'eco-flex-code',  //EcoFlex code is not defined
+  code: 'i-ecoflex',
   aiFeature: aiFeatures.EcoFlex,
   root: 'root4',
   sliceId: 'sliceId4',
