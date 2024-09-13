@@ -165,7 +165,7 @@ export function AupSettings () {
           {$t({ defaultMessage: 'Paste text instead' })}
         </Button>}>
         <Upload.Dragger
-          data-testid='credential'
+          data-testid='aupPolicy'
           name={'aupFile'}
           multiple={false}
           accept={'application/pdf,' +
