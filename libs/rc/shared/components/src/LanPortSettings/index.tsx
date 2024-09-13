@@ -160,9 +160,8 @@ export function LanPortSettings (props: {
     }
   }, [apEthPortSettings, isApEthPortSettingsLoading])
 
-  function convertEthernetPortListToDropdownItems (
-    ethernetPortList?: EthernetPortProfileViewData[]
-  ): DefaultOptionType[] {
+  const convertEthernetPortListToDropdownItems = (
+    ethernetPortList?: EthernetPortProfileViewData[]): DefaultOptionType[] => {
     // eslint-disable-next-line max-len
     return ethernetPortList?.map(m => ({ label: m.name, value: m.id })) ?? []
   }

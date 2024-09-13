@@ -16,7 +16,6 @@ import {
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
-  KeyValue,
   PolicyOperation,
   PolicyType,
   useTableQuery
