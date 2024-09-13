@@ -365,8 +365,8 @@ export function LanPorts () {
 
   const processUpdateVenueLanPorts = async (payload: VenueLanPorts[]) => {
     if (isEthernetPortProfileEnabled) {
-      payload.map((venueLanPort) => {
-        venueLanPort.lanPorts.map((lanPort) => {
+      payload.forEach((venueLanPort) => {
+        venueLanPort.lanPorts.forEach((lanPort) => {
           const originLanPort = getTargetOriginLanPort(venueLanPort.model, lanPort.portId)
 
           // Update ethernet port profile
