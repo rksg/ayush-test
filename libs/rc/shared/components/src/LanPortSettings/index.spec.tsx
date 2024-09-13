@@ -3,8 +3,8 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
-import { Provider }     from '@acx-ui/store'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Provider }               from '@acx-ui/store'
 import {
   fireEvent,
   render,
@@ -122,7 +122,8 @@ describe('LanPortSettings', () => {
   })
 
   it('should render correctly with trunk port untagged vlan toggle', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff !== Features.ETHERNET_PORT_PROFILE_TOGGLE)
 
     render(<Provider>
       <Form initialValues={{ lan: lanData }}>
