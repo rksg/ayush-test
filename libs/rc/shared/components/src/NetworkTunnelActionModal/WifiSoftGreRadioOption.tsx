@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import { useEffect, useState } from 'react'
 
 import {  Form, Radio, Row, Space, Select } from 'antd'
@@ -16,7 +15,7 @@ import { NetworkTunnelTypeEnum } from './types'
 import { SoftGreNetworkTunnel }  from './useSoftGreTunnelActions'
 
 const defaultPayload = {
-  fields: ['id', 'name', 'activations'],
+  fields: ['id', 'name', 'primaryGatewayAddress', 'secondaryGatewayAddress','activations'],
   page: 1,
   pageSize: 10_000,
   searchString: '',
@@ -43,6 +42,7 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
   const [ addDrawerVisible, setAddDrawerVisible ] = useState<boolean>(false)
   const [ isLocked, setIsLocked ] = useState<boolean>(false)
   const [ softGreOption, setSoftGreOption ] = useState<DefaultOptionType[]>([])
+  const [ gatewayIpMapIds, setGatewayIpMapIds ] = useState<Record<string, string[]>>({})
 
   const softGreProfileId = Form.useWatch(['softGre', 'newProfileId'], form)
 
@@ -55,9 +55,10 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
 
   useEffect(() => {
     if (optionsDataQuery.data) {
-      const { options, isLockedOptions } = optionsDataQuery.data
+      const { options, isLockedOptions, gatewayIpMaps } = optionsDataQuery.data
       setSoftGreOption(options)
       setIsLocked(isLockedOptions)
+      setGatewayIpMapIds(gatewayIpMaps)
       const profileId = optionsDataQuery.data.id
       if (currentTunnelType === NetworkTunnelTypeEnum.SoftGre && cachedSoftGre.length > 0) {
         const softGreInfo = cachedSoftGre.find(
@@ -70,7 +71,8 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
       } else if (profileId) {
         form.setFieldValue(['softGre', 'newProfileId'], profileId)
         form.setFieldValue(['softGre', 'oldProfileId'], profileId)
-        form.setFieldValue(['softGre', 'newProfileName'], options.find(item => item.value === profileId)?.label)
+        form.setFieldValue(['softGre', 'newProfileName'],
+          options.find(item => item.value === profileId)?.label)
       }
     }
   }, [form, optionsDataQuery])
@@ -82,9 +84,12 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
     }
   }, [form, currentTunnelType])
 
-  const addOption = (option: DefaultOptionType) => {
+  const addOption = (option: DefaultOptionType, gatewayIps: string[]) => {
     setSoftGreOption((preState) => {
       return [{ ...option, disabled: isLocked }, ...preState]
+    })
+    setGatewayIpMapIds((preState) => {
+      return { ...preState, [`${option.value}`]: gatewayIps }
     })
     if (!isLocked) {
       form.setFieldValue(['softGre', 'newProfileId'], option.value)
@@ -93,9 +98,30 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
   }
 
   const onChange = (value:string) => {
-    form.setFieldValue(['softGre', 'newProfileName'], softGreOption?.find(item => item.value === value)?.label)
+    form.setFieldValue(['softGre', 'newProfileName'],
+      softGreOption?.find(item => item.value === value)?.label)
   }
 
+  const gatewayIpValidator = async (value: string) => {
+    let isValid = true
+    console.info('optionsDataQuery.data:', optionsDataQuery.data)
+    if (optionsDataQuery.data) {
+      const { id, gatewayIps } = optionsDataQuery.data
+      console.info('gatewayIps:', optionsDataQuery.data)
+      if (value !== id) {
+        const [ gatewayIp1, gatewayIp2 ] = gatewayIpMapIds[value]
+        console.info(`gatewayIp1 : ${gatewayIp1}, gatewayIp2: ${gatewayIp2}`)
+        if (gatewayIp1 && gatewayIps.includes(gatewayIp1)) isValid = false
+        if (gatewayIp2 && gatewayIps.includes(gatewayIp2)) isValid = false
+      }
+    }
+
+    return isValid ? Promise.resolve() :
+      Promise.reject(
+        /* eslint-disable max-len */
+        $t({ defaultMessage: 'The gateway address of the selected SoftGRE tunnel profile already exists in another applied profile at the same venue. Please choose a different one.' })
+      )
+  }
 
   const handleClickAdd = () => {
     setDetailDrawerVisible(false)
@@ -109,7 +135,7 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
 
   return <Row>
     <Form.Item
-      help={<UI.RadioSubTitle>
+      extra={<UI.RadioSubTitle>
         {$t({ defaultMessage: 'Tunnel the traffic to an third party WLAN gateway' })}
       </UI.RadioSubTitle>}
     >
@@ -124,7 +150,12 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
               <Space wrap>
                 <Form.Item noStyle
                   name={['softGre', 'newProfileId']}
-                  rules={[{ required: currentTunnelType === NetworkTunnelTypeEnum.SoftGre }]}
+                  rules={[
+                    { required: currentTunnelType === NetworkTunnelTypeEnum.SoftGre,
+                      message: $t({ defaultMessage: 'Please select a SoftGRE Profile' })
+                    },
+                    { validator: (_, value) => gatewayIpValidator(value) }
+                  ]}
                   initialValue=''
                   children={<Select
                     style={{ width: '150px' }}

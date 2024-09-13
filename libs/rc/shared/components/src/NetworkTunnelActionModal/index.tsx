@@ -57,7 +57,7 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
 
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
-  const [isValidSoftGre, setIsValidSoftGre] = useState<boolean>(true)
+  const [isValidData, setIsValidData] = useState<boolean>(true)
 
   const [form] = Form.useForm()
   const tunnelType = Form.useWatch(['tunnelType'], form)
@@ -99,13 +99,16 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
 
   useEffect(() => {
     if (visible) {
-      if (isSoftGreEnabled && tunnelType === NetworkTunnelTypeEnum.SoftGre) {
-        setIsValidSoftGre(!!softGreProfileId)
+      if (isSoftGreEnabled && tunnelType === NetworkTunnelTypeEnum.SdLan) {
+        setIsValidData(isEdgeSdLanMvEnabled && !venueSdLanInfo)
+      } else if (isSoftGreEnabled && tunnelType === NetworkTunnelTypeEnum.SoftGre) {
+        setIsValidData(!!softGreProfileId)
       } else {
-        setIsValidSoftGre(true)
+        setIsValidData(true)
       }
     }
-  }, [visible, tunnelType, isSoftGreEnabled, softGreProfileId])
+  // eslint-disable-next-line max-len
+  }, [visible, tunnelType, isSoftGreEnabled, isEdgeSdLanMvEnabled, venueSdLanInfo, softGreProfileId])
 
   const isDisabledAll = getIsDisabledAll(venueSdLanInfo, networkId)
   // eslint-disable-next-line max-len
@@ -124,8 +127,7 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
     visible={visible}
     title={$t({ defaultMessage: 'Tunnel' })}
     okText={$t({ defaultMessage: 'Apply' })}
-    okButtonProps={{ disabled: noChangePermission || isSubmitting ||
-      (isEdgeSdLanMvEnabled && !venueSdLanInfo) || !isValidSoftGre }}
+    okButtonProps={{ disabled: noChangePermission || isSubmitting || !isValidData }}
     maskClosable={false}
     keyboard={false}
     width={600}
@@ -146,7 +148,7 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
           <Space direction='vertical'>
             {/* default option - local breakout */}
             <Form.Item
-              help={<UI.RadioSubTitle>
+              extra={<UI.RadioSubTitle>
                 {
                 // eslint-disable-next-line max-len
                   $t({ defaultMessage: 'All network traffic will local breakout on this <venueSingular></venueSingular>' })
