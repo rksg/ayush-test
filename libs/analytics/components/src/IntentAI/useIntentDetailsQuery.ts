@@ -192,7 +192,7 @@ export const api = intentAIApi.injectEndpoints({
               path { type name }
               statusTrail { status statusReason displayStatus createdAt }
               ${kpiHelper(kpis)}
-              currentValue recommendedValue
+              ${!code.includes('ecoflex') ? 'currentValue recommendedValue' : ''}
             }
           }
         `,

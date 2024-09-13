@@ -81,9 +81,9 @@ export const iconTooltips = {
       defaultMessage: `Proactively monitor and tune network performance with RUCKUS AI's
       dynamic recommendations to enhance KPIs and user experience.` })}
   />,
-  [aiFeatures.EcoFlexAI]: <IconTooltip
+  [aiFeatures.EcoFlex]: <IconTooltip
     icon={<EcoFlexAI />}
-    title={defineMessage({ defaultMessage: 'EcoFlexAI' })}
+    title={defineMessage({ defaultMessage: 'EcoFlex' })}
     subTitleLeft={defineMessage({ defaultMessage: 'Energy Footprint' })}
     subTitleMiddle={defineMessage({ defaultMessage: 'vs' })}
     subTitleRight={defineMessage({ defaultMessage: 'Mission Criticality' })}

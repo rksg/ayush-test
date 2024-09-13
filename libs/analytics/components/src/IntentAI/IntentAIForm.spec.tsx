@@ -12,6 +12,8 @@ import { mocked as mockedCDfschannelsDisable }         from './AIOperations/__te
 import { mocked as mockedCDfschannelsEnable }          from './AIOperations/__tests__/mockedCDfschannelsEnable'
 import { mocked as mockedCTxpowerSame }                from './AIOperations/__tests__/mockedCTxpowerSame'
 import { mocked as mockedIZoneFirmwareUpgrade }        from './AIOperations/__tests__/mockedIZoneFirmwareUpgrade'
+import { mockedIntentEcoFlex }                         from './EcoFlex/__tests__/fixtures'
+import { mockedIntentEquiFlex }                        from './EquiFlex/__tests__/fixtures'
 import { IntentAIForm }                                from './IntentAIForm'
 import { Intent }                                      from './useIntentDetailsQuery'
 
@@ -76,6 +78,24 @@ jest.mock('./AIOperations/CBgScan5gTimer', () => ({
 jest.mock('./AIOperations/CBgScan6gTimer', () => ({
   kpis: [],
   IntentAIForm: () => <div data-testid='c-bgscan6g-timer-IntentAIForm'/>
+}))
+
+jest.mock('./EquiFlex/CProbeFlex24g', () => ({
+  kpis: [],
+  IntentAIForm: () => <div data-testid='c-probeflex-24g-IntentAIForm'/>
+}))
+jest.mock('./EquiFlex/CProbeFlex5g', () => ({
+  kpis: [],
+  IntentAIForm: () => <div data-testid='c-probeflex-5g-IntentAIForm'/>
+}))
+jest.mock('./EquiFlex/CProbeFlex6g', () => ({
+  kpis: [],
+  IntentAIForm: () => <div data-testid='c-probeflex-6g-IntentAIForm'/>
+}))
+
+jest.mock('./EcoFlex/IEcoFlex', () => ({
+  kpis: [],
+  IntentAIForm: () => <div data-testid='i-ecoflex-IntentAIForm'/>
 }))
 
 const doTest = async (codes: string[], intent: Intent) => {
@@ -160,5 +180,17 @@ describe('IntentAIForm', () => {
       mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
       await doTest([intent.code], intent)
     })
+  })
+
+  it('should render for EquiFlex', async () => {
+    mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent: mockedIntentEquiFlex } })
+    const codes = ['c-probeflex-24g', 'c-probeflex-5g', 'c-probeflex-6g']
+    await doTest(codes, mockedIntentEquiFlex)
+  })
+
+  it('should render for EcoFlex', async () => {
+    mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent: mockedIntentEcoFlex } })
+    const codes = ['i-ecoflex']
+    await doTest(codes, mockedIntentEcoFlex)
   })
 })

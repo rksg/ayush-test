@@ -1,0 +1,21 @@
+import { Intent } from '../../useIntentDetailsQuery'
+
+export const mocked = {
+  id: '2c392d0a-124f-4183-b5c4-529d6571f540',
+  root: '3e93a325-c53c-4bdb-876f-ced1f59ca820',
+  code: 'i-ecoflex',
+  sliceId: '5f46ced9-03b8-4cf1-89f1-fac17afdf421',
+  status: 'new',
+  sliceType: 'zone',
+  sliceValue: 'weiguo-mesh',
+  updatedAt: '2024-06-14T08:30:39.214Z',
+  dataEndTime: '2024-06-09T00:00:00.000Z',
+  path: [
+    { type: 'system', name: 'vsz-bruce' },
+    { type: 'zone', name: 'weiguo-mesh' }
+  ],
+  statusTrail: [
+    { status: 'new', createdAt: '2024-04-03T06:03:59.617Z' }
+  ],
+  metadata: {}
+} as unknown as Intent

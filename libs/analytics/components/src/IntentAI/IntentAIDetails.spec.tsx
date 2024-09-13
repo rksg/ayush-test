@@ -12,6 +12,7 @@ import { mocked as mockedCDfschannelsDisable }         from './AIOperations/__te
 import { mocked as mockedCDfschannelsEnable }          from './AIOperations/__tests__/mockedCDfschannelsEnable'
 import { mocked as mockedCTxpowerSame }                from './AIOperations/__tests__/mockedCTxpowerSame'
 import { mocked as mockedIZoneFirmwareUpgrade }        from './AIOperations/__tests__/mockedIZoneFirmwareUpgrade'
+import { mockedIntentEcoFlex }                         from './EcoFlex/__tests__/fixtures'
 import { mockedIntentEquiFlex }                        from './EquiFlex/__tests__/fixtures'
 import { IntentAIDetails }                             from './IntentAIDetails'
 import { Intent }                                      from './useIntentDetailsQuery'
@@ -90,6 +91,11 @@ jest.mock('./EquiFlex/CProbeFlex5g.tsx', () => ({
 jest.mock('./EquiFlex/CProbeFlex6g.tsx', () => ({
   kpis: [],
   IntentAIDetails: () => <div data-testid='c-probeflex-6g-IntentAIDetails'/>
+}))
+
+jest.mock('./EcoFlex/IEcoFlex.tsx', () => ({
+  kpis: [],
+  IntentAIDetails: () => <div data-testid='i-ecoflex-IntentAIDetails'/>
 }))
 
 const doTest = async (codes: string[], intent: Intent) => {
@@ -179,20 +185,14 @@ describe('IntentAIDetails', () => {
       data: { intent: mockedIntentEquiFlex }
     })
     const codes = ['c-probeflex-24g', 'c-probeflex-5g', 'c-probeflex-6g']
+    await doTest(codes, mockedIntentEquiFlex)
+  })
 
-    for (const code of codes) {
-      const { unmount } = render(<IntentAIDetails />, {
-        route: {
-          params: {
-            code,
-            root: '33707ef3-b8c7-4e70-ab76-8e551343acb4',
-            sliceId: '4e3f1fbc-63dd-417b-b69d-2b08ee0abc52'
-          }
-        },
-        wrapper: Provider
-      })
-      expect(await screen.findByTestId(`${code}-IntentAIDetails`)).toBeVisible()
-      unmount()
-    }
+  it('should render for EcoFlex', async () => {
+    mockGraphqlQuery(intentAIUrl, 'IntentDetails', {
+      data: { intent: mockedIntentEcoFlex }
+    })
+    const codes = ['i-ecoflex']
+    await doTest(codes, mockedIntentEcoFlex)
   })
 })

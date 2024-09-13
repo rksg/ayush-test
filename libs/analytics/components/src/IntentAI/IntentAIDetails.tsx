@@ -13,6 +13,7 @@ import * as CDfschannelsDisable        from './AIOperations/CDfschannelsDisable'
 import * as CDfschannelsEnable         from './AIOperations/CDfschannelsEnable'
 import * as CTxpowerSame               from './AIOperations/CTxpowerSame'
 import * as IZoneFirmwareUpgrade       from './AIOperations/IZoneFirmwareUpgrade'
+import * as IEcoFlex                   from './EcoFlex/IEcoFlex'
 import * as CProbeFlex24g              from './EquiFlex/CProbeFlex24g'
 import * as CProbeFlex5g               from './EquiFlex/CProbeFlex5g'
 import * as CProbeFlex6g               from './EquiFlex/CProbeFlex6g'
@@ -37,5 +38,6 @@ export const IntentAIDetails = createIntentContextProvider('IntentAIDetails', {
   'i-zonefirmware-upgrade': IZoneFirmwareUpgrade,
   'c-probeflex-24g': CProbeFlex24g,
   'c-probeflex-5g': CProbeFlex5g,
-  'c-probeflex-6g': CProbeFlex6g
+  'c-probeflex-6g': CProbeFlex6g,
+  'i-ecoflex': IEcoFlex
 })
