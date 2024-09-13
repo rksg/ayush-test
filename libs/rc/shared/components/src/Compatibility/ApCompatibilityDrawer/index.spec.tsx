@@ -3,10 +3,10 @@ import userEvent          from '@testing-library/user-event'
 import { cloneDeep, get } from 'lodash'
 import { rest }           from 'msw'
 
-import { venueApi, networkApi, apApi }                           from '@acx-ui/rc/services'
-import { WifiUrlsInfo, CommonUrlsInfo, IncompatibilityFeatures } from '@acx-ui/rc/utils'
-import { Provider, store }                                       from '@acx-ui/store'
-import { act, mockServer, render, screen, within }               from '@acx-ui/test-utils'
+import { venueApi, networkApi, apApi }                                        from '@acx-ui/rc/services'
+import { WifiUrlsInfo, CommonUrlsInfo, IncompatibilityFeatures }              from '@acx-ui/rc/utils'
+import { Provider, store }                                                    from '@acx-ui/store'
+import { act, mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 
 import { CompatibilityItemProps } from '../CompatibilityDrawer/CompatibilityItem'
@@ -216,6 +216,77 @@ describe('ApGeneralCompatibilityDrawer', () => {
     expect(icon).toBeVisible()
     await userEvent.click(icon)
     expect(mockedCloseDrawer).toBeCalledTimes(1)
+  })
+
+  it('should change query payload when props changed', async () => {
+    const apName = 'AP-Test'
+    const mockeReq = jest.fn()
+    mockServer.use(
+      rest.post(
+        WifiUrlsInfo.getApCompatibilitiesVenue.url,
+        (req, res, ctx) => {
+          mockeReq(req.body)
+          return res(ctx.json({ apCompatibilities: mockApCompatibilitiesVenue.apCompatibilities.slice(0, 1) }))
+        })
+    )
+
+    const { rerender } = render(
+      <Provider>
+        <ApGeneralCompatibilityDrawer
+          isMultiple
+          visible={false}
+          type={ApCompatibilityType.VENUE}
+          venueId={params.venueId}
+          apId={undefined}
+          apName={undefined}
+          onClose={mockedCloseDrawer}
+        />
+      </Provider>, {
+        route: { params, path: '/:tenantId' }
+      })
+
+    rerender(
+      <Provider>
+        <ApGeneralCompatibilityDrawer
+          isMultiple
+          visible={true}
+          type={ApCompatibilityType.VENUE}
+          venueId={params.venueId}
+          apId={'001001001'}
+          apName={apName}
+          onClose={mockedCloseDrawer}
+        />
+      </Provider>)
+
+    expect(await screen.findByText(`Incompatibility Details: ${apName}`)).toBeInTheDocument()
+    const compatibilityItems = await screen.findAllByTestId('CompatibilityItem')
+    expect(mockeReq).toBeCalledTimes(1)
+    expect(compatibilityItems.length).toBe(1)
+    const features = screen.getAllByTestId('FeatureItem')
+    expect(features.length).toBe(1)
+    expect(await screen.findByText(/The following features are not enabled on this access point/)).toBeInTheDocument()
+    expect(screen.getByText('7.0.0.0.123')).toBeInTheDocument()
+
+    rerender(
+      <Provider>
+        <ApGeneralCompatibilityDrawer
+          isMultiple
+          visible={true}
+          type={ApCompatibilityType.VENUE}
+          venueId={params.venueId}
+          apId={'001002222'}
+          apName={'AP2-Test'}
+          onClose={mockedCloseDrawer}
+        />
+      </Provider>)
+
+    expect(await screen.findByText('Incompatibility Details: AP2-Test')).toBeInTheDocument()
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(mockeReq).toBeCalledTimes(2)
+    expect(mockeReq).toHaveBeenNthCalledWith(2, {
+      filters: { apIds: ['001002222'] }
+    })
+    await screen.findAllByTestId('CompatibilityItem')
   })
 
   it('should also fetch requiredFeatures and merge data', async () => {
