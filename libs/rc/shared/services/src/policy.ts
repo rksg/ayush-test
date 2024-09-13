@@ -843,6 +843,34 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
+
+    getAAAPolicyList: build.query<TableResult<AAAViewModalType>, RequestPayload>
+    ({
+      query: ({ payload, params }) => {
+        const req = createHttpRequest(
+          AaaUrls.queryAAAPolicyList, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      providesTags: [{ type: 'AAA', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'AddRadius',
+            'UpdateRadius',
+            'DeleteRadius',
+            'DeleteRadiuses'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(policyApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
+
     aaaPolicy: build.query<AAAPolicyType, RequestPayload>({
       query: commonQueryFn(AaaUrls.getAAAPolicy, AaaUrls.getAAAPolicyRbac),
       providesTags: [{ type: 'AAA', id: 'DETAIL' }]
@@ -3394,6 +3422,7 @@ export const {
   useGetVenueSyslogListQuery,
   useSyslogPolicyListQuery,
   useGetAAAPolicyViewModelListQuery,
+  useGetAAAPolicyListQuery,
   useGetApSnmpPolicyListQuery,
   useLazyGetApSnmpPolicyListQuery,
   useGetApSnmpPolicyQuery,
