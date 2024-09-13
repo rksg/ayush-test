@@ -36,7 +36,6 @@ import {
   ApGroupDetails,
   SoftGreForm,
   useIsEdgeFeatureReady,
-  SoftGreForm,
   CertificateForm,
   AddEthernetPortProfile,
   EditEthernetPortProfile,

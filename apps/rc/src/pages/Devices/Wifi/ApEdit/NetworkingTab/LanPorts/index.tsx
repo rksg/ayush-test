@@ -77,6 +77,7 @@ export function LanPorts () {
   const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const isResetLanPortEnabled = useIsSplitOn(Features.WIFI_RESET_AP_LAN_PORT_TOGGLE)
 
+
   const {
     editContextData,
     setEditContextData,
@@ -91,6 +92,7 @@ export function LanPorts () {
   const venueId = venueData?.id
   const { setReadyToScroll } = useContext(AnchorContext)
 
+  const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const supportTrunkPortUntaggedVlan = useIsSplitOn(Features.WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE)
 
   const formRef = useRef<StepsFormLegacyInstance<WifiApSetting>>()
