@@ -7,7 +7,7 @@ import { Certificate, CertificateAuthority, CertificateCategoryType, Certificate
 import { getIntl, validationMessages }                                                                                                                                                                     from '@acx-ui/utils'
 
 import { deleteDescription }                                         from '../contentsMap'
-import { DescriptionRow, Description, ButtonWrapper, CollapseTitle } from '../styledComponents'
+import { ButtonWrapper, CollapseTitle, Description, DescriptionRow } from '../styledComponents'
 
 
 interface DownloadDrawerProps {

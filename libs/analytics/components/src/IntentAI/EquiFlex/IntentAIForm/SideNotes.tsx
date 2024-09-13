@@ -7,7 +7,7 @@ import { defineMessage, useIntl } from 'react-intl'
 import { SideNotes } from '../../common/SideNotes'
 
 export const title = defineMessage({ defaultMessage: 'Benefits' })
-export const benefits = defineMessage({ defaultMessage: 'AirFlexAI\'s ML based probe responses in Wi-Fi network, dynamically manage how access points respond to connection requests, reducing unnecessary management traffic. This enhances efficiency, decreases congestion, and improves overall network performance. By minimizing redundant responses, the network operates more smoothly, providing faster, more secure connections and better resource allocation, leading to an improved user experience.' })
+export const benefits = defineMessage({ defaultMessage: 'EquiFlex\'s ML based probe responses in Wi-Fi network, dynamically manage how access points respond to connection requests, reducing unnecessary management traffic. This enhances efficiency, decreases congestion, and improves overall network performance. By minimizing redundant responses, the network operates more smoothly, providing faster, more secure connections and better resource allocation, leading to an improved user experience.' })
 export const Introduction: React.FC = () => {
   const { $t } = useIntl()
 

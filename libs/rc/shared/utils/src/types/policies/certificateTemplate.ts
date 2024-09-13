@@ -76,6 +76,21 @@ export enum ChromebookCertRemovalType {
   ALL = 'ALL'
 }
 
+export enum ChallengePasswordType {
+  STATIC = 'STATIC',
+  NONE = 'NONE',
+  MICROSOFT = 'MICROSOFT_INTUNE'
+}
+
+export enum ScepKeyCommonNameType {
+  IGNORE = 'IGNORE',
+  MAC_ADDRESS = 'MAC_ADDRESS',
+  USERNAME = 'USERNAME',
+  DEVICE_NAME = 'DEVICE_NAME',
+  EMAIL = 'EMAIL',
+  LOCATION = 'LOCATION'
+}
+
 export interface CertificateTemplate {
   id: string
   description?: string
@@ -90,7 +105,8 @@ export interface CertificateTemplate {
   certificateNames?: string[]
   chromebook?: Chromebook,
   networkIds?: string[],
-  variables?: string[]
+  variables?: string[],
+  identityGroupId?: string
 }
 
 export interface OnboardCA {
@@ -129,6 +145,7 @@ export interface CertificateTemplateFormData extends CertificateTemplate {
   notAfter: ExpirationDateEntity
   chromebook?: ChromebookFormData
   policySetName: string
+  identityGroupName: string
 }
 
 export interface ChromebookFormData extends Chromebook {
@@ -202,6 +219,9 @@ export interface Certificate {
   details?: string
   description?: string
   enrollmentType?: EnrollmentType
+  identityId?: string
+  identityName?: string
+  identityGroupId?: string
 }
 
 export interface CertificateFormData {
@@ -210,6 +230,25 @@ export interface CertificateFormData {
   description?: string
   certificateTemplateId: string
   csrType: string
+}
+
+export interface ScepKeyData {
+  id: string
+  name: string
+  enrollmentUrl: string
+  allowedSubnets?: string
+  blockedSubnets?: string
+  expirationDate: string
+  challengePassword?: string
+  challengePasswordType: ChallengePasswordType
+  cnValue1: string
+  cnValue2: string
+  cnValue3: string
+  intuneTenantId?: string
+  azureApplicationId?: string
+  azureApplicationKey?: string
+  overrideDays: number
+  scepKey: string
 }
 
 export type CertificateTemplateMutationResult = {

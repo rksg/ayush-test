@@ -2,8 +2,13 @@ import { useEffect, useState } from 'react'
 
 import { useParams } from 'react-router-dom'
 
-import { useGetPersonaGroupByIdQuery, useLazyGetDpskPassphraseDevicesQuery, useSearchPersonaListQuery } from '@acx-ui/rc/services'
-import { DPSKDeviceInfo, Persona, useTableQuery }                                                       from '@acx-ui/rc/utils'
+import {
+  useGetPersonaGroupByIdQuery,
+  useLazyGetCertificatesByIdentityIdQuery,
+  useLazyGetDpskPassphraseDevicesQuery,
+  useSearchPersonaListQuery
+} from '@acx-ui/rc/services'
+import { Certificate, DPSKDeviceInfo, Persona, TableResult, useTableQuery } from '@acx-ui/rc/utils'
 
 
 interface UsePersonaListQueryProps {
@@ -15,6 +20,8 @@ export const usePersonaListQuery = (props: UsePersonaListQueryProps) => {
   const { personaGroupId, settingsId } = props
   const { tenantId } = useParams()
   const [dataSource, setDataSource] = useState<Persona[]>([])
+  const [deviceCountMap, setDeviceCountMap] = useState<{ [key: string]: number }>({})
+  const [certCountMap, setCertCountMap] = useState<{ [key: string]: number }>({})
 
   const personaGroupQuery = useGetPersonaGroupByIdQuery(
     { params: { groupId: personaGroupId } },
@@ -29,6 +36,7 @@ export const usePersonaListQuery = (props: UsePersonaListQueryProps) => {
     pagination: { settingsId }
   })
   const [getDpskDevices] = useLazyGetDpskPassphraseDevicesQuery()
+  const [ getCertificates ] = useLazyGetCertificatesByIdentityIdQuery()
   const { data, ...rest } = personaListTableQuery
 
   useEffect(() => {
@@ -47,8 +55,18 @@ export const usePersonaListQuery = (props: UsePersonaListQueryProps) => {
     if (!serviceId) return
 
     const requests = [] as Promise<unknown>[]
+    const certRequests = [] as Promise<unknown>[]
     personaListTableQuery?.data.data.forEach(persona => {
       const passphraseId = persona.dpskGuid
+      if (personaGroupQuery.data?.certificateTemplateId) {
+        certRequests.push(getCertificates({
+          params: {
+            templateId: personaGroupQuery.data?.certificateTemplateId!,
+            personaId: persona.id
+          },
+          payload: {}
+        }))
+      }
       if (!passphraseId) return
       requests.push(getDpskDevices({
         params: { tenantId, passphraseId, serviceId }
@@ -63,11 +81,21 @@ export const usePersonaListQuery = (props: UsePersonaListQueryProps) => {
         acc[item[0].devicePassphrase] = count
         return acc
       }, {}) as { [key: string]: number }
-      const result = personaListTableQuery.data?.data.map(item => ({
-        ...item,
-        deviceCount: (item.deviceCount ?? 0) + (dpskDeviceCounts[item.dpskGuid ?? ''] ?? 0)
-      }))
-      setDataSource(result as Persona[])
+
+      setDeviceCountMap(dpskDeviceCounts)
+    })
+
+    Promise.all(certRequests).then((res) => {
+      const certCount = res.reduce((acc: { [key: string]: number }, cur) => {
+        const allCertResult = (cur as { data: TableResult<Certificate> }).data
+        const { data, totalCount } = allCertResult
+        if (!data[0]?.identityId) return acc
+        acc[data[0].identityId] = totalCount
+
+        return acc
+      }, {}) as { [key:string]: number }
+
+      setCertCountMap(certCount)
     })
 
   }, [
@@ -76,6 +104,16 @@ export const usePersonaListQuery = (props: UsePersonaListQueryProps) => {
     personaGroupQuery.isLoading
   ]
   )
+
+  useEffect(() => {
+    const result = personaListTableQuery.data?.data.map(p => ({
+      ...p,
+      deviceCount: (p.deviceCount ?? 0) + (deviceCountMap[p.dpskGuid ?? ''] ?? 0),
+      certificateCount: certCountMap[p.id] ?? 0
+    }))
+
+    setDataSource(result ?? [] as Persona[])
+  }, [deviceCountMap, certCountMap])
 
   return {
     data: dataSource.length === 0
