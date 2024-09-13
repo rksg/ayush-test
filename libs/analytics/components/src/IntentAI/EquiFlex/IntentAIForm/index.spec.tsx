@@ -19,13 +19,21 @@ const { click, selectOptions } = userEvent
 jest.mock('antd', () => {
   const components = jest.requireActual('antd')
   const Select = ({
-    children, ...props
+    children, maxTagCount, showArrow,
+    showSearch, maxTagPlaceholder, menuItemSelectedIcon,dropdownClassName, value, mode,
+    ...props
   }: React.PropsWithChildren<{
     onChange?: (value: string) => void,
     maxTagCount?: number,
-    maxtagcount?: number
+    showArrow?: boolean,
+    showSearch?: boolean,
+    maxTagPlaceholder?: React.ReactNode,
+    menuItemSelectedIcon?: React.ReactNode,
+    dropdownClassName?: string,
+    value?: string | string[],
+    mode?: 'multiple'
   }>) => {
-    return (<select {...props} onChange={(e) => props.onChange?.(e.target.value)}>
+    return (<select value={value} multiple={mode === 'multiple'} {...props} onChange={(e) => props.onChange?.(e.target.value)}>
       {/* Additional <option> to ensure it is possible to reset value to empty */}
       <option value={undefined}></option>
       {children}
@@ -156,7 +164,7 @@ describe('IntentAIForm', () => {
     await click(actions.getByRole('button', { name: 'Next' }))
     expect((await screen.findAllByText('Summary')).length).toEqual(2)
     expect(await screen.findByText('Average management traffic per client')).toBeVisible()
-    expect(await screen.findByText('1 network selected')).toBeVisible()
+    expect(await screen.findByText('2 networks selected')).toBeVisible()
     await click(actions.getByRole('button', { name: 'Apply' }))
 
     expect(await screen.findByText(/has been updated/)).toBeVisible()
