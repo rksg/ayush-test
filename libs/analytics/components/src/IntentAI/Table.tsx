@@ -210,7 +210,9 @@ export function IntentAITable (
 
   const intentTableFilters = useEncodedParameter<Filters>('intentTableFilters')
   const selectedFilters = intentTableFilters.read() || {}
-  const { aiFeatures = [], categories = [], statuses = [], zones = [] } = filterOptions?.data || {}
+  const {
+    aiFeatures = [], categories = [], statuses = [], zones = [], intents = []
+  } = filterOptions?.data || {}
   const data = queryResults?.data?.intents
   const columns: TableProps<IntentListItem>['columns'] = [
     {
@@ -222,13 +224,19 @@ export function IntentAITable (
       filteredValue: selectedFilters.aiFeatures,
       filterSearch: true,
       filterPlaceholder: $t({ defaultMessage: 'All AI Features' }),
-      render: (_: ReactNode, row: IntentListItem) => <AIFeature {...row} />
+      render: (_: ReactNode, row: IntentListItem) => <AIFeature {...row} />,
+      filterableWidth: 175
     },
     {
       title: $t({ defaultMessage: 'Intent' }),
       width: 250,
       dataIndex: 'intent',
-      key: 'intent'
+      key: 'intent',
+      filterable: intents,
+      filteredValue: selectedFilters.intents,
+      filterSearch: true,
+      filterPlaceholder: $t({ defaultMessage: 'All Intents' }),
+      filterableWidth: 300
     },
     {
       title: $t({ defaultMessage: 'Category' }),
@@ -238,7 +246,8 @@ export function IntentAITable (
       filterable: categories,
       filteredValue: selectedFilters.categories,
       filterSearch: true,
-      filterPlaceholder: $t({ defaultMessage: 'All Categories' })
+      filterPlaceholder: $t({ defaultMessage: 'All Categories' }),
+      filterableWidth: 175
     },
     {
       title: get('IS_MLISA_SA')
