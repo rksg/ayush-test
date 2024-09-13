@@ -1,12 +1,12 @@
 import { Col, Divider, Form, Input, Row, Select } from 'antd'
 import { useIntl }                                from 'react-intl'
 
-import { MAX_CERTIFICATE_PER_TENANT }                                         from '@acx-ui/rc/components'
 import { useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery } from '@acx-ui/rc/services'
 import { CertificateTemplate }                                                from '@acx-ui/rc/utils'
 
-import { certificateDescription, onboardSettingsDescription } from '../contentsMap'
-import { Description }                                        from '../styledComponents'
+import { MAX_CERTIFICATE_PER_TENANT }                         from '../../constants'
+import { certificateDescription, onboardSettingsDescription } from '../../contentsMap'
+import { Description }                                        from '../../styledComponents'
 
 export default function CertificateSettings (
   { templateData }: { templateData?: CertificateTemplate }) {
