@@ -23,7 +23,7 @@ jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   useEditCertificateTemplateMutation: () => [mockedUsedEdit],
   useBindCertificateTemplateWithPolicySetMutation: () => [mockedBind],
-  useAssociateIdentityGroupWithCertTemplateMutation: () => [mockedAssociate]
+  useAssociateIdentityGroupWithCertificateTemplateMutation: () => [mockedAssociate]
 }))
 
 describe('CertificateTemplateForm', () => {

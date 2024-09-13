@@ -98,7 +98,6 @@ export interface CertificateTemplate {
   caType: string
   defaultAccess?: boolean | string
   policySetId?: string
-  identityGroupId: string
   onboard?: OnboardCA
   keyLength: number
   algorithm: AlgorithmType
@@ -106,7 +105,8 @@ export interface CertificateTemplate {
   certificateNames?: string[]
   chromebook?: Chromebook,
   networkIds?: string[],
-  variables?: string[]
+  variables?: string[],
+  identityGroupId?: string
 }
 
 export interface OnboardCA {

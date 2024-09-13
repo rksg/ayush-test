@@ -35,7 +35,11 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   associateCertTemplate: {
     method: 'put',
     url: `${NewPersonaBaseUrl}/:groupId/certificateTemplates/:templateId`,
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   searchPersonaGroupList: {
     method: 'post',

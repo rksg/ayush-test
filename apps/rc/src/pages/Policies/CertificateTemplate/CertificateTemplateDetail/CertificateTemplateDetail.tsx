@@ -60,7 +60,10 @@ export default function CertificateTemplateDetail () {
   const certificateTableQuery = useTableQuery({
     useQuery: useGetSpecificTemplateCertificatesQuery,
     defaultPayload: {},
-    apiParams: { templateId: certificateTemplateData?.id! }
+    apiParams: { templateId: certificateTemplateData?.id! },
+    option: {
+      skip: !certificateTemplateData?.id
+    }
   })
 
   const summaryInfo = [

@@ -4,10 +4,10 @@ import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { PageHeader, StepsForm }                                                                                                                                                                                                                                        from '@acx-ui/components'
-import { useAddCertificateTemplateMutation, useAssociateIdentityGroupWithCertTemplateMutation, useBindCertificateTemplateWithPolicySetMutation, useEditCertificateTemplateMutation, useGetCertificateTemplateQuery, useUnbindCertificateTemplateWithPolicySetMutation } from '@acx-ui/rc/services'
-import { AlgorithmType, CertificateAuthorityType, CertificateTemplateFormData, ChromebookCertRemovalType, ChromebookEnrollmentType, ExpirationDateEntity, ExpirationType, PolicyOperation, PolicyType, getPolicyListRoutePath, getPolicyRoutePath }                     from '@acx-ui/rc/utils'
-import { useTenantLink, useNavigate }                                                                                                                                                                                                                                   from '@acx-ui/react-router-dom'
+import { PageHeader, StepsForm }                                                                                                                                                                                                                                               from '@acx-ui/components'
+import { useAddCertificateTemplateMutation, useAssociateIdentityGroupWithCertificateTemplateMutation, useBindCertificateTemplateWithPolicySetMutation, useEditCertificateTemplateMutation, useGetCertificateTemplateQuery, useUnbindCertificateTemplateWithPolicySetMutation } from '@acx-ui/rc/services'
+import { AlgorithmType, CertificateAuthorityType, CertificateTemplateFormData, ChromebookCertRemovalType, ChromebookEnrollmentType, ExpirationDateEntity, ExpirationType, PolicyOperation, PolicyType, getPolicyListRoutePath, getPolicyRoutePath }                            from '@acx-ui/rc/utils'
+import { useTenantLink, useNavigate }                                                                                                                                                                                                                                          from '@acx-ui/react-router-dom'
 
 import { transferExpirationFormDataToPayload, transferPayloadToExpirationFormData } from '../certificateTemplateUtils'
 
@@ -34,7 +34,7 @@ export function CertificateTemplateForm (props: CerficateTemplateStepFromProps) 
   const [editCertificateTemplate] = useEditCertificateTemplateMutation()
   const [bindPolicySet] = useBindCertificateTemplateWithPolicySetMutation()
   const [unbindPolicySet] = useUnbindCertificateTemplateWithPolicySetMutation()
-  const [associateIdentityGroup] = useAssociateIdentityGroupWithCertTemplateMutation()
+  const [associateIdentityGroup] = useAssociateIdentityGroupWithCertificateTemplateMutation()
   const { data: dataFromServer } = useGetCertificateTemplateQuery({ params }, { skip: !editMode })
   const linkToList = useTenantLink(getPolicyRoutePath({
     type: PolicyType.CERTIFICATE_TEMPLATE,
