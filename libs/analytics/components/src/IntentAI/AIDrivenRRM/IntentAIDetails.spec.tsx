@@ -3,8 +3,9 @@ import _ from 'lodash'
 import { intentAIUrl, Provider, store, intentAIApi } from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, within }  from '@acx-ui/test-utils'
 
-import { useIntentContext } from '../IntentContext'
-import { Intent }           from '../useIntentDetailsQuery'
+import { mockIntentContext } from '../__tests__/fixtures'
+import { Statuses }          from '../states'
+import { Intent }            from '../useIntentDetailsQuery'
 
 import { mockedCRRMGraphs, mockedIntentCRRM } from './__tests__/fixtures'
 import * as CCrrmChannel24gAuto               from './CCrrmChannel24gAuto'
@@ -23,16 +24,9 @@ jest.mock('./RRMGraph/DownloadRRMComparison', () => ({
 }))
 
 const mockIntentContextWith = (data: Partial<Intent>) => {
-  let intent = mockedIntentCRRM
-  intent = _.merge({}, intent, data) as typeof intent
-  jest.mocked(useIntentContext).mockReturnValue({ intent, kpis })
-  return {
-    params: {
-      code: mockedIntentCRRM.code,
-      root: '33707ef3-b8c7-4e70-ab76-8e551343acb4',
-      sliceId: '4e3f1fbc-63dd-417b-b69d-2b08ee0abc52'
-    }
-  }
+  const intent = _.merge({}, mockedIntentCRRM, data) as Intent
+  const context = mockIntentContext({ intent, kpis })
+  return { params: _.pick(context.intent, ['code', 'root', 'sliceId']) }
 }
 
 describe('IntentAIDetails', () => {
@@ -46,7 +40,7 @@ describe('IntentAIDetails', () => {
   it('handle beyond data retention', async () => {
     const { params } = mockIntentContextWith({
       code: 'c-crrm-channel5g-auto',
-      status: 'applied',
+      status: Statuses.active,
       kpi_number_of_interfering_links: {
         data: {
           timestamp: null,
@@ -68,8 +62,6 @@ describe('IntentAIDetails', () => {
 
     expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
     expect(await screen.findByTestId('Benefits'))
-      .toHaveTextContent('Beyond data retention period')
-    expect(await screen.findByTestId('Key Performance Indications'))
       .toHaveTextContent('Beyond data retention period')
   })
 
@@ -119,7 +111,7 @@ describe('IntentAIDetails', () => {
     it('handle new rrm', async () => {
       const { params } = mockIntentContextWith({
         code: 'c-crrm-channel5g-auto',
-        status: 'new',
+        status: Statuses.new,
         kpi_number_of_interfering_links: {
           data: {
             timestamp: null,
@@ -148,7 +140,7 @@ describe('IntentAIDetails', () => {
     it('handle active full rrm', async () => {
       const { params } = mockIntentContextWith({
         code: 'c-crrm-channel5g-auto',
-        status: 'applied',
+        status: Statuses.active,
         kpi_number_of_interfering_links: {
           data: {
             timestamp: null,
@@ -179,7 +171,7 @@ describe('IntentAIDetails', () => {
     it('handle active partial rrm', async () => {
       const { params } = mockIntentContextWith({
         code: 'c-crrm-channel5g-auto',
-        status: 'applied',
+        status: Statuses.active,
         kpi_number_of_interfering_links: {
           data: {
             timestamp: null,

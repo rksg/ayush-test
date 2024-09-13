@@ -30,6 +30,8 @@ import { useParams }                          from '@acx-ui/react-router-dom'
 import { RolesEnum, SupportedDelegatedRoles } from '@acx-ui/types'
 import { AccountType }                        from '@acx-ui/utils'
 
+import * as UI from './styledComponents'
+
 interface ManageDelegateAdminDrawerProps {
   visible: boolean
   tenantId?: string
@@ -226,47 +228,64 @@ export const ManageDelegateAdminDrawer = (props: ManageDelegateAdminDrawerProps)
       </Subtitle>
       <Loader states={[queryResults
       ]}>
-        <Table
-          columns={columns}
-          dataSource={queryResults?.data}
-          rowKey='email'
-          rowSelection={{
-            type: 'checkbox',
-            selectedRowKeys: selectedKeys,
-            onChange (selectedRowKeys, selRows) {
-              const updatedSelRows = selRows.map((element:MspAdministrator) => {
-                const role = selectedRoles.find(row => row.id === element.id)?.role
+        <UI.TableWrapper>
+          <Table
+            columns={columns}
+            dataSource={queryResults?.data}
+            rowKey='email'
+            alwaysShowFilters={true}
+            rowSelection={{
+              type: 'checkbox',
+              selectedRowKeys: selectedKeys,
+              onChange (selectedRowKeys, selRows) {
+                const updatedSelRows = selRows.map((element:MspAdministrator) => {
+                  const role = selectedRoles.find(row => row.id === element.id)?.role
                   ?? SupportedDelegatedRoles.includes(element.role)
-                  ? element.role
-                  : RolesEnum.ADMINISTRATOR
-                const rowEntry = { ...element }
-                rowEntry.role = role as RolesEnum
-                return rowEntry
-              })
-              setSelectedRows(updatedSelRows)
-            },
-            getCheckboxProps: (record: MspAdministrator) => ({
-              disabled:
+                    ? element.role
+                    : RolesEnum.ADMINISTRATOR
+                  const rowEntry = { ...element }
+                  rowEntry.role = role as RolesEnum
+                  return rowEntry
+                })
+                if (selectedRowKeys.length === selRows.length) {
+                  setSelectedRows(updatedSelRows)
+                }
+                else {
+                // On row click to deselect (i.e. clicking on row itself not checkbox) selRows is empty array
+                  if (selRows.length === 0) {
+                    setSelectedRows([...selectedRows.filter(row =>
+                      selectedRowKeys.includes(row.email))])
+                  }
+                  // On row click to select (i.e. clicking on row itself not checkbox) selRows only has newly selected row
+                  else {
+                    setSelectedRows([...selectedRows, ...updatedSelRows])
+                  }
+                }
+                setSelectedKeys(selectedRowKeys)
+              },
+              getCheckboxProps: (record: MspAdministrator) => ({
+                disabled:
               record.role === RolesEnum.DPSK_ADMIN ||
                 (record.role === RolesEnum.GUEST_MANAGER && rowNotSelected(record.email)) ||
                 (selectedRoles.find((sel) => sel.id === record.id)
                   && !SupportedDelegatedRoles.includes(selectedRoles.find((sel) =>
                     sel.id === record.id)?.role as RolesEnum)) ||
                 mspAdminsToAllEcs.some(admin => admin.id === record.id)
-            })
-          }}
-          components={{
-            body: {
-              row: TooltipRow
-            }
-          }}
-        />
+              })
+            }}
+            components={{
+              body: {
+                row: TooltipRow
+              }
+            }}
+          />
+        </UI.TableWrapper>
       </Loader>
     </Space>
 
   const footer =<div>
     <Button
-      disabled={selectedRows.length === 0}
+      disabled={selectedKeys.length === 0}
       onClick={() => handleSave()}
       type='primary'
     >

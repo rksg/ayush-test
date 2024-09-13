@@ -1,8 +1,27 @@
 import { NetworkPath } from '@acx-ui/utils'
 
-import { aiFeatures }     from '../config'
-import { Statuses }       from '../states'
-import { AIFeatureProps } from '../Table'
+import { aiFeatures }                                  from '../config'
+import { IntentConfigurationConfig, useIntentContext } from '../IntentContext'
+import { Statuses }                                    from '../states'
+import { AIFeatureProps }                              from '../Table'
+import { Intent, IntentKPIConfig, intentState }        from '../useIntentDetailsQuery'
+import { isDataRetained }                              from '../utils'
+
+export const mockIntentContext = (config: {
+  intent: Intent
+  kpis?: IntentKPIConfig[],
+  configuration?: IntentConfigurationConfig
+}) => {
+  const context: ReturnType<typeof useIntentContext> = {
+    configuration: config.configuration,
+    intent: config.intent,
+    kpis: config.kpis ?? [],
+    state: intentState(config.intent),
+    isDataRetained: isDataRetained(config.intent.metadata.dataEndTime)
+  }
+  jest.mocked(useIntentContext).mockReturnValue(context)
+  return context
+}
 
 //Refer to libs/analytics/components/src/Recommendations/__tests__/fixtures.ts
 export const notEnoughLicenses = {
@@ -98,7 +117,7 @@ export const mockAIDrivenRow = {
   trigger: 'daily'
 }
 
-export const mockAirflexRows = [
+export const mockEquiFlexRows = [
   {
     id: '16',
     code: 'c-probeflex-24g',
@@ -426,7 +445,7 @@ export const intentHighlights = {
       new: 4,
       active: 8
     },
-    airflex: {
+    probeflex: {
       new: 5,
       active: 10
     },
@@ -443,7 +462,7 @@ export const intentHighlightsWithZeroActive = {
       new: 4,
       active: 0
     },
-    airflex: {
+    probeflex: {
       new: 5,
       active: 0
     },
@@ -468,9 +487,9 @@ export const intentHighlightsWithRRM = {
   }
 }
 
-export const intentHighlightsWithAirflex = {
+export const intentHighlightsWithEquiFlex = {
   highlights: {
-    airflex: {
+    probeflex: {
       new: 5,
       active: 10
     }
@@ -494,17 +513,17 @@ export const aiFeatureWithRRM = {
   status: Statuses.active
 } as AIFeatureProps
 
-export const aiFeatureWithAirFlexAI = {
+export const aiFeatureWithEquiFlex = {
   code: 'c-probeflex-6g',
-  aiFeature: aiFeatures.AirFlexAI,
+  aiFeature: aiFeatures.EquiFlex,
   root: 'root2',
   sliceId: 'sliceId2',
   status: Statuses.active
 } as AIFeatureProps
 
-export const aiFeatureWithAirFlexAIWithNewStatus = {
+export const aiFeatureWithEquiFlexWithNewStatus = {
   code: 'c-probeflex-6g',
-  aiFeature: aiFeatures.AirFlexAI,
+  aiFeature: aiFeatures.EquiFlex,
   root: 'root2',
   sliceId: 'sliceId2',
   status: Statuses.new

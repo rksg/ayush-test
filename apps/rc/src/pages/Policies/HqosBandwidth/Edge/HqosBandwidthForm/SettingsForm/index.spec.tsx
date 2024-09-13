@@ -66,6 +66,8 @@ describe('HQoS Settings Form', () => {
     await waitFor(()=>{
       expect(rows.length).toBe(2)
     })
+
+    expect(await screen.findByText(/Remaining:100%/i)).toBeVisible()
   })
 
   it('validate bandwidth value range return error', async () => {
@@ -139,6 +141,11 @@ describe('HQoS Settings Form', () => {
     })
     expect(inputNumberElems[0].getAttribute('value')).toBe('15')
     expect(inputNumberElems[1].getAttribute('value')).toBe('100')
+
+    const minBandwidthArray = mockTrafficClassSettings?.map((item) => item?.minBandwidth)
+    const minBandwidthSum = minBandwidthArray?.reduce((a, b) => (a??0) + (b??0)) ?? 0 as number
+    const remaining = 100 - minBandwidthSum
+    expect(await screen.findByText(`Remaining:${remaining}%`)).toBeVisible()
   })
 
 })
