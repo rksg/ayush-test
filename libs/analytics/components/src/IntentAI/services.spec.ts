@@ -89,6 +89,16 @@ describe('Intent services', () => {
           key: 'zone',
           value: 'zone'
         }
+      ],
+      intents: [
+        {
+          value: 'Client Density vs Throughput for 5 GHz radio',
+          key: 'Client Density vs Throughput for 5 GHz radio'
+        },
+        {
+          value: 'Secure AP firmware vs Client Device Compatibility',
+          key: 'Secure AP firmware vs Client Device Compatibility'
+        }
       ]
     }
     it('should fetch data correctly', async () => {
@@ -149,7 +159,8 @@ describe('Intent services', () => {
         sliceValue: ['1'],
         category: ['Wi-Fi Experience'],
         aiFeature: ['AI-Driven RRM'],
-        statusLabel: ['new', 'na-no-aps', 'paused-from-active+paused-by-default']
+        statusLabel: ['new', 'na-no-aps', 'paused-from-active+paused-by-default'],
+        intent: ['Client Density vs Throughput for 5 GHz radio']
       }
       act(() => {
         result.current.onFilterChange(customFilter, {})
@@ -180,6 +191,7 @@ describe('Intent services', () => {
             'eco-flex-code'
           ]
         },
+        { col: 'code', values: [ 'c-crrm-channel5g-auto' ] },
         {
           col: 'code',
           values: [
@@ -208,7 +220,8 @@ describe('Intent services', () => {
         sliceValue: null,
         category: null,
         aiFeature: null,
-        statusLabel: null
+        statusLabel: null,
+        intent: null
       }
       act(() => {
         result.current.onFilterChange(customFilter, {})
@@ -237,7 +250,8 @@ describe('Intent services', () => {
         sliceValue: null,
         category: null,
         aiFeature: ['AirFlexAI'],
-        statusLabel: null
+        statusLabel: null,
+        intent: null
       }
       act(() => {
         result.current.onFilterChange(customFilter, {})

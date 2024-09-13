@@ -10,6 +10,8 @@ import { mockedDpskPassphraseDevices, mockPersona } from '../__tests__/fixtures'
 
 import { PersonaDevicesTable } from './PersonaDevicesTable'
 
+import { IdentityDeviceContext } from '.'
+
 type MockModalProps = React.PropsWithChildren<{
   visible: boolean
   onSubmit: () => void
@@ -86,9 +88,12 @@ describe('PersonaDevicesTable', () => {
 
 
   it('should render persona devices table without dpsk devices', async () => {
+    const setValueFn = jest.fn()
     render(
       <Provider>
-        <PersonaDevicesTable disableAddButton={false} persona={mockPersona}/>
+        <IdentityDeviceContext.Provider value={{ setDeviceCount: setValueFn }}>
+          <PersonaDevicesTable disableAddButton={false} persona={mockPersona}/>
+        </IdentityDeviceContext.Provider>
       </Provider>, {
         route: {
           params,
@@ -100,7 +105,6 @@ describe('PersonaDevicesTable', () => {
 
     const expectedMacAddress = mockPersona?.devices ? mockPersona.devices[0].macAddress : ''
 
-    await screen.findByRole('heading', { name: /devices/i })
     await screen.findByRole('cell', { name: expectedMacAddress })
     // await screen.findByRole('cell', { name: 'Persona_Host_name' })  // to make sure that clients/metas api done
 
@@ -120,12 +124,16 @@ describe('PersonaDevicesTable', () => {
     // Cancel the modal
     await userEvent.click(await within(addDeviceModal).findByRole('button', { name: /cancel/i }))
     expect(addDeviceModal).not.toBeInTheDocument()
+    expect(setValueFn).toHaveBeenCalled()
   })
 
   it('should delete selected persona devices', async () => {
+    const setValueFn = jest.fn()
     render(
       <Provider>
-        <PersonaDevicesTable disableAddButton={false} persona={mockPersona}/>
+        <IdentityDeviceContext.Provider value={{ setDeviceCount: setValueFn }}>
+          <PersonaDevicesTable disableAddButton={false} persona={mockPersona}/>
+        </IdentityDeviceContext.Provider>
       </Provider>, {
         route: {
           params,
@@ -137,7 +145,6 @@ describe('PersonaDevicesTable', () => {
 
     const expectedMacAddress = mockPersona?.devices ? mockPersona.devices[0].macAddress : ''
 
-    await screen.findByRole('heading', { name: /devices/i })
     const row = await screen.findByRole('row', { name: new RegExp(expectedMacAddress) })
     await userEvent.click(await within(row).findByRole('checkbox'))
 
@@ -151,6 +158,7 @@ describe('PersonaDevicesTable', () => {
   })
 
   it.skip('should render persona device table with dpsk devices', async () => {
+    const setValueFn = jest.fn()
     mockServer.use(
       rest.get(
         DpskUrls.getPassphraseDevices.url.split('?')[0],
@@ -159,11 +167,13 @@ describe('PersonaDevicesTable', () => {
     )
     render(
       <Provider>
-        <PersonaDevicesTable
-          disableAddButton={true}
-          persona={mockPersona}
-          dpskPoolId={'dpsk-pool-id'}
-        />
+        <IdentityDeviceContext.Provider value={{ setDeviceCount: setValueFn }}>
+          <PersonaDevicesTable
+            disableAddButton={true}
+            persona={mockPersona}
+            dpskPoolId={'dpsk-pool-id'}
+          />
+        </IdentityDeviceContext.Provider>
       </Provider>, {
         route: {
           params,
@@ -175,15 +185,17 @@ describe('PersonaDevicesTable', () => {
 
     const expectedMacAddress = mockedDpskPassphraseDevices[0].mac.replaceAll(':', '-')
 
-    await screen.findByRole('heading', { name: /devices \(4\)/i })
     await screen.findByRole('row', { name: new RegExp(expectedMacAddress) })
     await screen.findByRole('cell', { name: 'dpsk-hostname' })  // to make sure that clients/metas api done
   })
 
   it('should disable `add device` while does not associate with MacPool', async () => {
+    const setValueFn = jest.fn()
     render(
       <Provider>
-        <PersonaDevicesTable disableAddButton={true} />
+        <IdentityDeviceContext.Provider value={{ setDeviceCount: setValueFn }}>
+          <PersonaDevicesTable disableAddButton={true} />
+        </IdentityDeviceContext.Provider>
       </Provider>, {
         route: {
           params,
