@@ -60,7 +60,6 @@ export const ApGeneralCompatibilityDrawer = (props: ApGeneralCompatibilityDrawer
   const title = isMultiple
     ? ($t({ defaultMessage: 'Incompatibility Details' }) + apNameTitle)
     : $t({ defaultMessage: 'Compatibility Requirement' })
-
   return (
     <CompatibilityDrawer
       data-testid={'ap-compatibility-drawer'}
@@ -155,12 +154,12 @@ const useApCompatibilityData = (props: Omit<ApGeneralCompatibilityDrawerProps, '
     } as ApCompatibility
 
     return { apCompatibilities: [apCompatibility] } as ApCompatibilityResponse
-  }, [type, apId, networkId, venueId, featureName, requiredFeatures, isFeatureEnabledRegardless])
+  }, [type, apId, networkId, venueId, featureName, isFeatureEnabledRegardless])
 
   useEffect(() => {
     // reset data when query payload changed
     setApCompatibilities(undefined)
-  }, [type, apId, networkId, venueId, featureName, requiredFeatures])
+  }, [type, apId, networkId, venueId, featureName])
 
   useEffect(() => {
     if (visible && isNil(apCompatibilities) && !isInitializing) {
