@@ -13,9 +13,9 @@ import * as CDfschannelsDisable        from './AIOperations/CDfschannelsDisable'
 import * as CDfschannelsEnable         from './AIOperations/CDfschannelsEnable'
 import * as CTxpowerSame               from './AIOperations/CTxpowerSame'
 import * as IZoneFirmwareUpgrade       from './AIOperations/IZoneFirmwareUpgrade'
-import * as CProbeFlex24g              from './AirFlexAI/CProbeFlex24g'
-import * as CProbeFlex5g               from './AirFlexAI/CProbeFlex5g'
-import * as CProbeFlex6g               from './AirFlexAI/CProbeFlex6g'
+import * as CProbeFlex24g              from './EquiFlex/CProbeFlex24g'
+import * as CProbeFlex5g               from './EquiFlex/CProbeFlex5g'
+import * as CProbeFlex6g               from './EquiFlex/CProbeFlex6g'
 import { createIntentContextProvider } from './IntentContext'
 
 export const IntentAIDetails = createIntentContextProvider('IntentAIDetails', {

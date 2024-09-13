@@ -7,7 +7,7 @@ import { mockServer, render, screen }               from '@acx-ui/test-utils'
 
 import { certificate, certificateAuthority, certificateAuthorityList, certificateTemplate } from '../__test__/fixtures'
 
-import DetailDrawer from './DetailDrawer'
+import { DetailDrawer } from './DetailDrawer'
 
 
 
@@ -34,7 +34,12 @@ describe('DetailDrawer', () => {
           setOpen={() => { }}
           data={certificate}
           type={CertificateCategoryType.CERTIFICATE} />
-      </Provider>)
+      </Provider>, {
+        route: {
+          params: { tenantId: 't-id' },
+          path: '/:tenantId/policies/certificate/list'
+        }
+      })
     expect(await screen.findByText('Certificate Details')).toBeVisible()
     await userEvent.click(screen.getByText('Certificate Information'))
     expect(await screen.findByText('Common Name')).toBeVisible()
@@ -52,6 +57,7 @@ describe('DetailDrawer', () => {
     expect(await screen.findByText('SHA Fingerprint')).toBeVisible()
     expect(await screen.findByText('Certificate Template')).toBeVisible()
     expect(await screen.findByText('Certificate Authority')).toBeVisible()
+    expect(await screen.findByText('Identity')).toBeVisible()
     expect(await screen.findByText('Description')).toBeVisible()
 
     await userEvent.click(screen.getByText('Download'))

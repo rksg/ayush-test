@@ -14,7 +14,7 @@ import {
   intentHighlights,
   intentHighlightsWithNullFields,
   intentHighlightsWithRRM,
-  intentHighlightsWithAirflex,
+  intentHighlightsWithEquiFlex,
   intentHighlightsWithOperations,
   intentHighlightsWithZeroActive
 } from '../__tests__/fixtures'
@@ -51,7 +51,7 @@ describe('IntentAI dashboard', () => {
     expect(await screen.findByText('AI-Driven RRM')).toBeVisible()
     expect(await screen.findByText('8 Intents are active.')).toBeVisible()
 
-    expect(await screen.findByText('AirFlexAI')).toBeVisible()
+    expect(await screen.findByText('EquiFlex')).toBeVisible()
     expect(await screen.findByText('10 Intents are active.')).toBeVisible()
 
     expect(await screen.findByText('AI Operations')).toBeVisible()
@@ -66,7 +66,7 @@ describe('IntentAI dashboard', () => {
     render(<IntentAIWidget pathFilters={pathFilters} />, { route: true, wrapper: Provider })
 
     expect(await screen.findByText('AI-Driven RRM')).toBeVisible()
-    expect(await screen.findByText('AirFlexAI')).toBeVisible()
+    expect(await screen.findByText('EquiFlex')).toBeVisible()
     expect(await screen.findByText('AI Operations')).toBeVisible()
     expect(await screen.findAllByText('Click here to view available Intents in the network.'))
       .toHaveLength(3)
@@ -81,7 +81,7 @@ describe('IntentAI dashboard', () => {
 
     expect(await screen.findByText('No Data')).toBeVisible()
     expect(screen.queryByText('AI-Driven RRM')).toBeNull()
-    expect(screen.queryByText('AirFlexAI')).toBeNull()
+    expect(screen.queryByText('EquiFlex')).toBeNull()
     expect(screen.queryByText('AI Operations')).toBeNull()
   })
 
@@ -92,7 +92,7 @@ describe('IntentAI dashboard', () => {
     render(<IntentAIWidget pathFilters={pathFilters} />, { route: true, wrapper: Provider })
 
     expect(await screen.findByText('AI-Driven RRM')).toBeVisible()
-    expect(screen.queryByText('AirFlexAI')).toBeNull()
+    expect(screen.queryByText('EquiFlex')).toBeNull()
     expect(screen.queryByText('AI Operations')).toBeNull()
     const linkElm = await screen.findByRole('link', { name: /Intents/ })
     expect(linkElm).toHaveAttribute('href', expect.stringContaining('intentTableFilters='))
@@ -100,18 +100,18 @@ describe('IntentAI dashboard', () => {
     expect(linkElm).toHaveAttribute('href', expect.stringContaining('active'))
   })
 
-  it('render AirFlex data when intentHighlights only have AirFlex fields', async () => {
+  it('render EquiFlex data when intentHighlights only have EquiFlex fields', async () => {
     mockGraphqlQuery(intentAIUrl, 'IntentHighlight', {
-      data: intentHighlightsWithAirflex
+      data: intentHighlightsWithEquiFlex
     })
     render(<IntentAIWidget pathFilters={pathFilters} />, { route: true, wrapper: Provider })
 
-    expect(await screen.findByText('AirFlexAI')).toBeVisible()
+    expect(await screen.findByText('EquiFlex')).toBeVisible()
     expect(screen.queryByText('AI-Driven RRM')).toBeNull()
     expect(screen.queryByText('AI Operations')).toBeNull()
     const linkElm = await screen.findByRole('link', { name: /Intents/ })
     expect(linkElm).toHaveAttribute('href', expect.stringContaining('intentTableFilters='))
-    expect(linkElm).toHaveAttribute('href', expect.stringContaining('AirFlexAI'))
+    expect(linkElm).toHaveAttribute('href', expect.stringContaining('EquiFlex'))
     expect(linkElm).toHaveAttribute('href', expect.stringContaining('active'))
   })
 
@@ -123,7 +123,7 @@ describe('IntentAI dashboard', () => {
 
     expect(await screen.findByText('AI Operations')).toBeVisible()
     expect(screen.queryByText('AI-Driven RRM')).toBeNull()
-    expect(screen.queryByText('AirFlexAI')).toBeNull()
+    expect(screen.queryByText('EquiFlex')).toBeNull()
     const linkElm = await screen.findByRole('link', { name: /Intents/ })
     expect(linkElm).toHaveAttribute('href', expect.stringContaining('intentTableFilters='))
     expect(linkElm).toHaveAttribute('href', expect.stringContaining('Operations'))
@@ -138,7 +138,7 @@ describe('IntentAI dashboard', () => {
 
     expect(await screen.findByText('AI Operations')).toBeVisible()
     expect(screen.queryByText('AI-Driven RRM')).toBeNull()
-    expect(screen.queryByText('AirFlexAI')).toBeNull()
+    expect(screen.queryByText('EquiFlex')).toBeNull()
     expect(screen.queryAllByRole('link')).toHaveLength(2)
     const iconElm = await screen.findByTestId('AIOperation')
     expect(iconElm).toBeVisible()
