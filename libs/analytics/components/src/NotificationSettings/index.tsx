@@ -126,7 +126,7 @@ export const NotificationSettings = ({ tenantId, apply }: {
         {$t({ defaultMessage: 'IntentAI' })}
         <Tooltip.Question
           // eslint-disable-next-line max-len
-          title={$t({ defaultMessage: 'AI-Driven RRM, other FlexAI features and all AIOps Recommendations are available under IntentAI' })}
+          title={$t({ defaultMessage: 'AI Features including AI-Driven RRM and all AIOPs Recommendations are available under IntentAI' })}
           placement='right'
         />
       </>}

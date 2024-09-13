@@ -24,7 +24,8 @@ import { mockDhcpStatsData } from '../__tests__/fixtures'
 
 import DHCPTable from '.'
 
-const { mockEdgeList } = EdgeGeneralFixtures
+const { mockEdgeClusterList } = EdgeGeneralFixtures
+const mockedGetClusterList = jest.fn()
 const mockedUsedNavigate = jest.fn()
 const mockedUpdateFn = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -43,6 +44,7 @@ describe('EdgeDhcpTable', () => {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
 
+    mockedGetClusterList.mockReset()
     store.dispatch(edgeApi.util.resetApiState())
     store.dispatch(edgeDhcpApi.util.resetApiState())
     mockServer.use(
@@ -55,8 +57,11 @@ describe('EdgeDhcpTable', () => {
         (req, res, ctx) => res(ctx.status(202))
       ),
       rest.post(
-        EdgeUrlsInfo.getEdgeList.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeList))
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (_req, res, ctx) => {
+          mockedGetClusterList()
+          return res(ctx.json(mockEdgeClusterList))
+        }
       ),
       rest.patch(
         EdgeDhcpUrls.patchDhcpService.url,
@@ -76,6 +81,7 @@ describe('EdgeDhcpTable', () => {
         route: { params, path: tablePath }
       })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    await waitFor(() => expect(mockedGetClusterList).toBeCalled())
     const row = await screen.findAllByRole('row', { name: /TestDHCP-/i })
     expect(row.length).toBe(4)
   })
@@ -248,5 +254,25 @@ describe('EdgeDhcpTable', () => {
     expect(await within(rows[3]).findByText('No')).toBeValid() //TestDHCP-3
     expect(within(rows[4]).getByRole('cell', { name: /TestDHCP-4/i })).toBeVisible()
     expect(await within(rows[4]).findByText('No')).toBeValid() //TestDHCP-4
+  })
+
+  it('Should render EdgeDhcpTable data as expected', async () => {
+    render(
+      <Provider>
+        <DHCPTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      })
+    await waitFor(() => expect(mockedGetClusterList).toBeCalled())
+    const row = await screen.findAllByRole('row', { name: /TestDHCP-1/i })
+
+    const receivedClusterCount = within(row[0]).getAllByRole('cell')[3].textContent
+    const expectedClusterCount = mockDhcpStatsData.data[0].edgeClusterIds.length.toString()
+    expect(receivedClusterCount).toEqual(expectedClusterCount)
+
+    const clusterCountCells = screen.getAllByRole('cell', { name: expectedClusterCount })
+    await userEvent.hover(within(clusterCountCells[0]).getByText(expectedClusterCount))
+    expect(await screen.findByRole('tooltip', { hidden: false }))
+      .toHaveTextContent(mockEdgeClusterList.data[0].name)
   })
 })

@@ -29,9 +29,9 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { WifiScopes }     from '@acx-ui/types'
-import { filterByAccess } from '@acx-ui/user'
-import { useDateFilter }  from '@acx-ui/utils'
+import { RolesEnum, WifiScopes }                                             from '@acx-ui/types'
+import { hasCrossVenuesPermission, hasRoles, hasPermission, filterByAccess } from '@acx-ui/user'
+import { useDateFilter }                                                     from '@acx-ui/utils'
 
 import { useGetApCapabilities } from '../hooks'
 
@@ -73,7 +73,7 @@ function ApPageHeader () {
   const location = useLocation()
   const basePath = useTenantLink(`/devices/wifi/${serialNumber}`)
   const linkToWifi = useTenantLink('/devices/wifi/')
-
+  const isReadOnly = !hasCrossVenuesPermission() || hasRoles([RolesEnum.READ_ONLY])
   const status = data?.headers.overview as ApDeviceStatusEnum
   const currentApOperational = status === ApDeviceStatusEnum.OPERATIONAL
   const ApStatusData = apStatusData as ApStatus
@@ -98,9 +98,16 @@ function ApPageHeader () {
   const menu = (
     <Menu
       onClick={handleMenuClick}
-      items={[{
+      items={(isReadOnly ? [{
+        label: $t({ defaultMessage: 'Download Log' }),
+        key: 'downloadLog'
+      }, {
+        label: $t({ defaultMessage: 'Blink LEDs' }),
+        key: 'blinkLed'
+      }] : [{
         label: $t({ defaultMessage: 'Reboot' }),
-        key: 'reboot'
+        key: 'reboot',
+        scopeKey: [WifiScopes.UPDATE]
       }, {
         label: $t({ defaultMessage: 'Download Log' }),
         key: 'downloadLog'
@@ -112,10 +119,15 @@ function ApPageHeader () {
         key: 'divider'
       }, {
         label: $t({ defaultMessage: 'Delete AP' }),
-        key: 'delete'
-      }].filter(item => (currentApOperational || item.key === 'delete' ||
-        (item.key === 'downloadLog' && status === ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED)
-      ))}
+        key: 'delete',
+        scopeKey: [WifiScopes.DELETE]
+      }]).filter(item => {
+        return (
+          (currentApOperational && hasPermission({ scopes: item.scopeKey })) ||
+          (item.key === 'delete' && hasPermission({ scopes: item.scopeKey })) ||
+          (item.key === 'downloadLog' && status === ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED)
+        )
+      })}
     />
   )
 
@@ -148,7 +160,7 @@ function ApPageHeader () {
           : <></>,
         ...filterByAccess([
           <Dropdown
-            scopeKey={[WifiScopes.DELETE, WifiScopes.UPDATE]}
+            scopeKey={[WifiScopes.READ, WifiScopes.DELETE, WifiScopes.UPDATE]}
             overlay={menu}>{()=>
               <Button>
                 <Space>
