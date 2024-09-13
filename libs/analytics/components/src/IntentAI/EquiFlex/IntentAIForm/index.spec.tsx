@@ -20,7 +20,11 @@ jest.mock('antd', () => {
   const components = jest.requireActual('antd')
   const Select = ({
     children, ...props
-  }: React.PropsWithChildren<{ onChange?: (value: string) => void }>) => {
+  }: React.PropsWithChildren<{
+    onChange?: (value: string) => void,
+    maxTagCount?: number,
+    maxtagcount?: number
+  }>) => {
     return (<select {...props} onChange={(e) => props.onChange?.(e.target.value)}>
       {/* Additional <option> to ensure it is possible to reset value to empty */}
       <option value={undefined}></option>
@@ -102,7 +106,11 @@ afterEach((done) => {
 
 const mockIntentContextWith = (data: Partial<Intent> = {}) => {
   const intent = { ...mocked, ...data }
-  jest.mocked(useIntentContext).mockReturnValue({ intent, kpis })
+  jest.mocked(useIntentContext).mockReturnValue({
+    intent, kpis,
+    isDataRetained: false,
+    state: 'no-data'
+  })
   return {
     params: { code: mocked.code, root: mocked.root, sliceId: mocked.sliceId }
   }
@@ -188,6 +196,7 @@ describe('IntentAIForm', () => {
   })
   it('should validate when no wlans', async () => {
     mockGet.mockReturnValue('true') // RAI
+    const data = { ...mocked, metadata: {} } as Intent
     mockGraphqlQuery(intentAIUrl, 'Wlans', {
       data: {
         intent: {
@@ -196,7 +205,7 @@ describe('IntentAIForm', () => {
       }
     })
 
-    const { params } = mockIntentContextWith()
+    const { params } = mockIntentContextWith(data)
     render(<IntentAIForm />, { route: { params }, wrapper: Provider })
     const form = within(await screen.findByTestId('steps-form'))
     const actions = within(form.getByTestId('steps-form-actions'))
