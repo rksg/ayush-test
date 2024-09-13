@@ -10,7 +10,7 @@ import { Features, useIsSplitOn }                                               
 import { ApRadioTypeEnum, SingleRadioSettings, LPIButtonText, SupportRadioChannelsContext } from '@acx-ui/rc/components'
 import { isAPLowPower }                                                                     from '@acx-ui/rc/services'
 import { AFCStatus,AFCProps }                                                               from '@acx-ui/rc/utils'
-import { compareVersions }                                                                  from '@acx-ui/utils'
+import { isApFwVersionLargerThan71 }                                       from '@acx-ui/utils'
 
 import { ApEditContext, ApDataContext } from '../..'
 import { DisabledDiv, FieldLabel }      from '../../styledComponents'
@@ -37,6 +37,8 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
 
   const { isEnabled, enabledFieldName, useVenueSettingsFieldName, radioTypeName, onEnableChanged } = props
   const { radioType, handleChanged, isUseVenueSettings, afcProps } = props
+
+  const isApTxPowerToggleEnabled = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
 
   const { bandwidthRadioOptions } = useContext(SupportRadioChannelsContext)
   const bandwidthOptions = bandwidthRadioOptions[radioType]
@@ -103,12 +105,6 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
 
     set(newButtonTextSetting, 'buttonText', newButtonText)
     return newButtonTextSetting
-  }
-
-  const isApTxPowerToggleEnabled = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
-
-  const isApFwVersionLargerThan71 = (fwVersion: string | undefined) => {
-    return fwVersion? compareVersions(fwVersion, '7.1') >= 0 : false
   }
 
   return (

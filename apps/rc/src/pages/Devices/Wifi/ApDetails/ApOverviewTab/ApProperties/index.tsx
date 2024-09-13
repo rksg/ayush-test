@@ -12,7 +12,7 @@ import {
 import { Features, useIsSplitOn }                                     from '@acx-ui/feature-toggle'
 import { ApDetails, ApVenueStatusEnum, ApViewModel, RadioProperties } from '@acx-ui/rc/utils'
 import { TenantLink }                                                 from '@acx-ui/react-router-dom'
-import { noDataDisplay, compareVersions }                             from '@acx-ui/utils'
+import { noDataDisplay, isApFwVersionLargerThan71 }                   from '@acx-ui/utils'
 
 import { ApDetailsDrawer } from './ApDetailsDrawer'
 import * as UI             from './styledComponents'
@@ -23,21 +23,18 @@ export function ApProperties (props:{
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const { currentAP, apDetails, isLoading } = props
+  const isApTxPowerToggleEnabled = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
   const onMoreAction = () => {
     setVisible(true)
   }
 
-  const isApTxPowerToggleEnabled = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
 
-  const getTxPowerByApFwVersion = (currentAP: ApViewModel, channel: RadioProperties) => {
+  const getTxPowerDisplayInfo = (currentAP: ApViewModel, channel: RadioProperties) => {
     if (isApTxPowerToggleEnabled) {
-      return ((isApFwVersionLargerThan71(currentAP))? channel?.actualTxPower : channel?.txPower)
+      return ((isApFwVersionLargerThan71(currentAP?.fwVersion))?
+        channel?.actualTxPower : channel?.txPower) || noDataDisplay
     }
-    return channel?.txPower
-  }
-
-  const isApFwVersionLargerThan71 = (currentAP: ApViewModel) => {
-    return currentAP.fwVersion && compareVersions(currentAP.fwVersion, '7.1') >= 0
+    return channel?.txPower || noDataDisplay
   }
 
   return (
@@ -107,8 +104,7 @@ export function ApProperties (props:{
                             <span>
                               {currentAP.channel24.operativeChannelBandwidth || noDataDisplay}
                             </span>
-                            <span>{getTxPowerByApFwVersion(currentAP, currentAP.channel24)
-                             || noDataDisplay}</span>
+                            <span>{getTxPowerDisplayInfo(currentAP, currentAP.channel24)}</span>
                           </UI.TextNumber>
                         )
                         }
@@ -121,8 +117,7 @@ export function ApProperties (props:{
                             <span>
                               {currentAP.channel50.operativeChannelBandwidth || noDataDisplay}
                             </span>
-                            <span>{getTxPowerByApFwVersion(currentAP, currentAP.channel50)
-                             || noDataDisplay}</span>
+                            <span>{getTxPowerDisplayInfo(currentAP, currentAP.channel50)}</span>
                           </UI.TextNumber>
                         )
                         }
@@ -135,8 +130,7 @@ export function ApProperties (props:{
                             <span>
                               {currentAP.channelL50.operativeChannelBandwidth || noDataDisplay}
                             </span>
-                            <span>{getTxPowerByApFwVersion(currentAP, currentAP.channelL50)
-                             || noDataDisplay}</span>
+                            <span>{getTxPowerDisplayInfo(currentAP, currentAP.channelL50)}</span>
                           </UI.TextNumber>
                         )
                         }
@@ -149,8 +143,7 @@ export function ApProperties (props:{
                             <span>
                               {currentAP.channelU50.operativeChannelBandwidth || noDataDisplay}
                             </span>
-                            <span>{getTxPowerByApFwVersion(currentAP, currentAP.channelU50)
-                             || noDataDisplay}</span>
+                            <span>{getTxPowerDisplayInfo(currentAP, currentAP.channelU50)}</span>
                           </UI.TextNumber>
                         )
                         }
@@ -163,8 +156,7 @@ export function ApProperties (props:{
                             <span>
                               {currentAP.channel60.operativeChannelBandwidth || noDataDisplay}
                             </span>
-                            <span>{getTxPowerByApFwVersion(currentAP, currentAP.channel60)
-                             || noDataDisplay}</span>
+                            <span>{getTxPowerDisplayInfo(currentAP, currentAP.channel60)}</span>
                           </UI.TextNumber>
                         )
                         }
