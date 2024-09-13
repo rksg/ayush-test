@@ -14,7 +14,7 @@ import { noDataDisplay, PathFilter, useEncodedParameter }                       
 import { Icon }                                        from './common/IntentIcon'
 import { aiFeatures, codes, IntentListItem }           from './config'
 import { useIntentAITableQuery }                       from './services'
-import { DisplayStates }                               from './states'
+import { DisplayStates, Statuses }                     from './states'
 import * as UI                                         from './styledComponents'
 import { IntentAIDateTimePicker, useIntentAIActions }  from './useIntentAIActions'
 import { Actions, getDefaultTime, isVisibledByAction } from './utils'
@@ -98,6 +98,7 @@ export type AIFeatureProps = {
   aiFeature: string
   root: string
   sliceId: string
+  status: Statuses
 }
 
 export const AIFeature = (props: AIFeatureProps): JSX.Element => {
@@ -109,12 +110,15 @@ export const AIFeature = (props: AIFeatureProps): JSX.Element => {
     >
       <Icon feature={codes[props.code].aiFeature} />
     </Tooltip>
-    <TenantLink to={get('IS_MLISA_SA')
-      ? `/analytics/intentAI/${props.root}/${props.sliceId}/${props.code}`
-      : `/analytics/intentAI/${props.sliceId}/${props.code}`
-    }>
-      <span>{props.aiFeature}</span>
-    </TenantLink>
+    {props.status === Statuses.new
+      ? <span>{props.aiFeature}</span>
+      : <TenantLink to={get('IS_MLISA_SA')
+        ? `/analytics/intentAI/${props.root}/${props.sliceId}/${props.code}`
+        : `/analytics/intentAI/${props.sliceId}/${props.code}`
+      }>
+        <span>{props.aiFeature}</span>
+      </TenantLink>
+    }
   </UI.FeatureIcon>)
 }
 

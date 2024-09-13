@@ -19,6 +19,7 @@ import {
   EhternetPortSettings,
   EthernetPortProfileViewData,
   LanPort,
+  useConfigTemplate,
   VenueLanPorts,
   WifiApSetting,
   WifiNetworkMessages
@@ -87,6 +88,7 @@ export function LanPortSettings (props: {
   const lan = form?.getFieldValue('lan')?.[index]
 
   // Ethernet Port Profile
+  const { isTemplate } = useConfigTemplate()
   const ethernetPortProfileId = Form.useWatch( ['lan', index, 'ethernetPortProfileId'] ,form)
   const [currentEthernetPortData, setCurrentEthernetPortData] =
     useState<EthernetPortProfileViewData>()
@@ -136,7 +138,7 @@ export function LanPortSettings (props: {
           ethernetPortListQuery: queryResult
         }
       },
-      skip: !isEthernetPortProfileEnabled
+      skip: isTemplate || !isEthernetPortProfileEnabled
     })
 
   useEffect(()=> {
@@ -150,7 +152,7 @@ export function LanPortSettings (props: {
   const { data: apEthPortSettings, isLoading: isApEthPortSettingsLoading } =
     useGetEthernetPortProfileSettingsByApPortIdQuery({
       params: { venueId, serialNumber, portId: index as unknown as string }
-    }, { skip: !isEthernetPortProfileEnabled || !serialNumber })
+    }, { skip: isTemplate || !isEthernetPortProfileEnabled || !serialNumber })
 
   useEffect(() => {
     if (!isApEthPortSettingsLoading && apEthPortSettings) {
@@ -226,7 +228,7 @@ export function LanPortSettings (props: {
       name={['lan', index, 'portId']}
       children={<Input />}
     />
-    {isEthernetPortProfileEnabled ?
+    {!isTemplate && isEthernetPortProfileEnabled ?
       (<><Space>
         <Form.Item
           name={['lan', index, 'ethernetPortProfileId']}
