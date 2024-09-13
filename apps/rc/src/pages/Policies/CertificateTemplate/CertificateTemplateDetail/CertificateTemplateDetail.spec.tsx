@@ -1,12 +1,12 @@
 import { rest } from 'msw'
 
-import { CertificateUrls }                                       from '@acx-ui/rc/utils'
+import { CertificateUrls, PersonaUrls }                          from '@acx-ui/rc/utils'
 import { Provider }                                              from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 import { RolesEnum, WifiScopes }                                 from '@acx-ui/types'
 import { getUserProfile, setUserProfile }                        from '@acx-ui/user'
 
-import { certificateAuthority, certificateList, certificateTemplate } from '../__test__/fixtures'
+import { certificateAuthority, certificateList, certificateTemplate, scepKeys } from '../__test__/fixtures'
 
 import CertificateTemplateDetail from './CertificateTemplateDetail'
 
@@ -25,6 +25,14 @@ describe('CertificateTemplateDetail', () => {
       rest.get(
         CertificateUrls.getCA.url,
         (req, res, ctx) => res(ctx.json(certificateAuthority))
+      ),
+      rest.get(
+        CertificateUrls.getCertificateTemplateScepKeys.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(scepKeys))
+      ),
+      rest.post(
+        PersonaUrls.searchPersonaList.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json([]))
       )
     )
   })
@@ -50,6 +58,7 @@ describe('CertificateTemplateDetail', () => {
     expect(screen.getByText('onboard2')).toBeInTheDocument()
     expect(screen.getByText('Adaptive Policy Set')).toBeInTheDocument()
     expect(screen.getByText('Certificate (2)')).toBeInTheDocument()
+    expect(screen.getByText('SCEP Keys (1)')).toBeInTheDocument()
     expect(screen.getByText('Chromebook Enrollment')).toBeInTheDocument()
   })
 

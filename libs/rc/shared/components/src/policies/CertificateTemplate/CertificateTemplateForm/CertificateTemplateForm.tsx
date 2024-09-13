@@ -4,10 +4,10 @@ import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { PageHeader, StepsForm }                                                                                                                                                                                                                    from '@acx-ui/components'
-import { useAddCertificateTemplateMutation, useBindCertificateTemplateWithPolicySetMutation, useEditCertificateTemplateMutation, useGetCertificateTemplateQuery, useUnbindCertificateTemplateWithPolicySetMutation }                                from '@acx-ui/rc/services'
-import { AlgorithmType, CertificateAuthorityType, CertificateTemplateFormData, ChromebookCertRemovalType, ChromebookEnrollmentType, ExpirationDateEntity, ExpirationType, PolicyOperation, PolicyType, getPolicyListRoutePath, getPolicyRoutePath } from '@acx-ui/rc/utils'
-import { useTenantLink, useNavigate }                                                                                                                                                                                                               from '@acx-ui/react-router-dom'
+import { PageHeader, StepsForm }                                                                                                                                                                                                                                               from '@acx-ui/components'
+import { useAddCertificateTemplateMutation, useAssociateIdentityGroupWithCertificateTemplateMutation, useBindCertificateTemplateWithPolicySetMutation, useEditCertificateTemplateMutation, useGetCertificateTemplateQuery, useUnbindCertificateTemplateWithPolicySetMutation } from '@acx-ui/rc/services'
+import { AlgorithmType, CertificateAuthorityType, CertificateTemplateFormData, ChromebookCertRemovalType, ChromebookEnrollmentType, ExpirationDateEntity, ExpirationType, PolicyOperation, PolicyType, getPolicyListRoutePath, getPolicyRoutePath }                            from '@acx-ui/rc/utils'
+import { useTenantLink, useNavigate }                                                                                                                                                                                                                                          from '@acx-ui/react-router-dom'
 
 import { transferExpirationFormDataToPayload, transferPayloadToExpirationFormData } from '../certificateTemplateUtils'
 
@@ -34,6 +34,7 @@ export function CertificateTemplateForm (props: CerficateTemplateStepFromProps) 
   const [editCertificateTemplate] = useEditCertificateTemplateMutation()
   const [bindPolicySet] = useBindCertificateTemplateWithPolicySetMutation()
   const [unbindPolicySet] = useUnbindCertificateTemplateWithPolicySetMutation()
+  const [associateIdentityGroup] = useAssociateIdentityGroupWithCertificateTemplateMutation()
   const { data: dataFromServer } = useGetCertificateTemplateQuery({ params }, { skip: !editMode })
   const linkToList = useTenantLink(getPolicyRoutePath({
     type: PolicyType.CERTIFICATE_TEMPLATE,
@@ -44,13 +45,13 @@ export function CertificateTemplateForm (props: CerficateTemplateStepFromProps) 
     {
       key: 'onboardCA',
       title: $t({ defaultMessage: 'Onboard CA' }),
-      content: <OnboardForm editMode={editMode} />,
+      content: <OnboardForm editMode={editMode}/>,
       showEdit: true
     },
     {
       key: 'moreSettings',
       title: $t({ defaultMessage: 'More Settings' }),
-      content: <MoreSettingsForm />,
+      content: <MoreSettingsForm editMode={editMode}/>,
       showEdit: true
     },
     {
@@ -111,16 +112,19 @@ export function CertificateTemplateForm (props: CerficateTemplateStepFromProps) 
           }
         } : { chromebook: { enabled: false } })
       }
-      await editCertificateTemplate({ params, payload })
+
+      const promises = []
+      promises.push(editCertificateTemplate({ params, payload }))
       if (policySetId) {
-        await bindPolicySet({ params: { templateId: params.policyId, policySetId } })
+        promises.push(bindPolicySet({ params: { templateId: params.policyId, policySetId } }))
       } else if (dataFromServer?.policySetId) {
         // eslint-disable-next-line max-len
-        await unbindPolicySet({ params: { templateId: params.policyId, policySetId: dataFromServer?.policySetId } })
+        promises.push(unbindPolicySet({ params: { templateId: params.policyId, policySetId: dataFromServer?.policySetId } }))
       }
+      await Promise.all(promises)
     } else {
-      const { notAfter, notBefore,
-        policySetId, policySetName, chromebook, ...restFormData } = formData
+      const { notAfter, notBefore, policySetId, policySetName,
+        identityGroupId, identityGroupName, chromebook, ...restFormData } = formData
       const payload = {
         ...restFormData,
         onboard: {
@@ -139,10 +143,17 @@ export function CertificateTemplateForm (props: CerficateTemplateStepFromProps) 
         payload
       }).unwrap()
 
-      if (res.id && policySetId) {
-        await bindPolicySet({ params: { templateId: res.id, policySetId } })
+      if (res.id) {
+        const promises = []
+        if (policySetId) {
+          promises.push(bindPolicySet({ params: { templateId: res.id, policySetId } }))
+        }
+        if (identityGroupId) {
+          // eslint-disable-next-line max-len
+          promises.push(associateIdentityGroup({ params: { templateId: res.id, groupId: identityGroupId } }))
+        }
+        await Promise.all(promises)
       }
-
       if (modalMode && res) {
         modalCallBack?.(res.id)
       }

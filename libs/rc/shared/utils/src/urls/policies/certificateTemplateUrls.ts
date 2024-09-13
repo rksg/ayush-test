@@ -1,5 +1,6 @@
 import { ApiInfo } from '@acx-ui/utils'
 
+const paginationParams = '?size=:pageSize&page=:page'
 export const CertificateUrls: { [key: string]: ApiInfo } = {
   getCertificateTemplates: {
     method: 'post',
@@ -40,6 +41,26 @@ export const CertificateUrls: { [key: string]: ApiInfo } = {
     method: 'delete',
     newApi: true,
     url: '/certificateTemplates/:templateId'
+  },
+  getCertificateTemplateScepKeys: {
+    method: 'get',
+    newApi: true,
+    url: '/certificateTemplates/:templateId/scepKeys' + paginationParams
+  },
+  createCertificateTemplateScepKeys: {
+    method: 'post',
+    newApi: true,
+    url: '/certificateTemplates/:policyId/scepKeys'
+  },
+  editCertificateTemplateScepKeys: {
+    method: 'PATCH',
+    newApi: true,
+    url: '/certificateTemplates/:policyId/scepKeys/:scepKeysId'
+  },
+  deleteCertificateTemplateScepKeys: {
+    method: 'delete',
+    newApi: true,
+    url: '/certificateTemplates/:policyId/scepKeys/:scepKeysId'
   },
   getCAs: {
     method: 'post',
@@ -126,5 +147,10 @@ export const CertificateUrls: { [key: string]: ApiInfo } = {
     method: 'get',
     newApi: true,
     url: '/certificateTemplates/:templateId/certificates/:certificateId/chains'
+  },
+  getCertificatesByIdentity: {
+    method: 'post',
+    newApi: true,
+    url: '/certificateTemplates/:templateId/identities/:personaId/certificates/query'
   }
 }

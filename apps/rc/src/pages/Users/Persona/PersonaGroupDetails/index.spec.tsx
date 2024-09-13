@@ -122,6 +122,10 @@ describe('Persona Group Details', () => {
       rest.get(
         PropertyUrlsInfo.getUnitById.url,
         (req, res, ctx) => res(ctx.json({ id: 'unit-id-1', name: 'unit-name-1' }))
+      ),
+      rest.post(
+        CertificateUrls.getCertificatesByIdentity.url,
+        (req, res, ctx) => res(ctx.json({ data: [], totalCount: 0 }))
       )
     )
     params = {

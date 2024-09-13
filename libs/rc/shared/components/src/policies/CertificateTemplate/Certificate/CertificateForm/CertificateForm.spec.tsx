@@ -6,9 +6,9 @@ import { Path, To, useTenantLink }                                          from
 import { Provider }                                                         from '@acx-ui/store'
 import { mockServer, render, renderHook, screen, waitFor }                  from '@acx-ui/test-utils'
 
-import { certificateAuthorityList, certificateTemplateList } from '../__test__/fixtures'
+import { certificateAuthorityList, certificateTemplateList } from '../../__test__/fixtures'
 
-import CertificateForm from './CertificateForm'
+import { CertificateForm } from './CertificateForm'
 
 const mockedUsedNavigate = jest.fn()
 const mockedTenantPath: Path = {
