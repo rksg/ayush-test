@@ -3258,20 +3258,28 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       }
     }),
-    getEthernetPortProfiles: build.query<Blob, RequestPayload>({
-      query: ({ params, customHeaders }) => {
-        // eslint-disable-next-line max-len
-        const req = createHttpRequest(CertificateUrls.downloadCertificateChains, params, { ...defaultCertTempVersioningHeaders, ...customHeaders })
+    getCertificatesByIdentityId: build.query<TableResult<Certificate>, RequestPayload>({
+      query: ({ params, payload }) => {
         return {
-          ...req,
-          responseHandler: async (response) => {
-            const extension = customHeaders?.Accept === CertificateAcceptType.PEM ? 'chain' : 'p7b'
-            const headerContent = response.headers.get('content-disposition')
-            const fileName = headerContent ?
-              headerContent.split('filename=')[1] : `CertificateChain.${extension}`
-            downloadFile(response, fileName)
-          }
+          ...createHttpRequest(CertificateUrls.getCertificatesByIdentity, params),
+          body: JSON.stringify(payload)
         }
+      },
+      providesTags: [{ type: 'Certificate', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'UPDATE_CERT',
+            'GENERATE_CERT',
+            'DELETE_CA',
+            'DELETE_TEMPLATE',
+            'UpdatePersona'
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'Certificate', id: 'LIST' }
+            ]))
+          })
+        })
       }
     })
   })
