@@ -2,14 +2,19 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
+import { rest }  from 'msw'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { Provider }               from '@acx-ui/store'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
+import { EthernetPortProfileUrls } from '@acx-ui/rc/utils'
+import { Provider }                from '@acx-ui/store'
 import {
   fireEvent,
+  mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
+
+import { ethernetPortProfileList } from './__tests__/fixtures'
 
 import { LanPortSettings } from '.'
 
@@ -176,5 +181,67 @@ describe('LanPortSettings', () => {
     expect(screen.getByLabelText(/Port type/)).toBeDisabled()
     expect(screen.getByLabelText(/VLAN untag ID/)).toBeDisabled()
     expect(screen.getByLabelText(/VLAN member/)).toBeDisabled()
+  })
+})
+
+describe('LanPortSettings - Ethernet Port Profile', () => {
+
+  beforeEach(() => {
+    mockServer.use(
+      rest.post(
+        EthernetPortProfileUrls.getEthernetPortProfileViewDataList.url,
+        (_, res, ctx) => res(ctx.json({
+          data: ethernetPortProfileList
+        }))
+      )
+    )
+  })
+
+  afterEach(() => {
+    mockServer.resetHandlers()
+  })
+
+  it('AP Level - should render with ethernet port profile correctly', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
+      return ff === Features.ETHERNET_PORT_PROFILE_TOGGLE
+    })
+
+    const apParams = {
+      tenantId: 'tenant-id',
+      serialNumber: '123456789042'
+    }
+
+    render(<Provider>
+      <Form initialValues={{ lan: lanData }}>
+        <LanPortSettings
+          index={0}
+          readOnly={false}
+          selectedPortCaps={selectedPortCaps}
+          selectedModel={selectedModel}
+          setSelectedPortCaps={jest.fn()}
+          selectedModelCaps={selectedModelCaps}
+          isDhcpEnabled={false}
+          isTrunkPortUntaggedVlanEnabled={true}
+          useVenueSettings={false}
+        />
+      </Form>
+    </Provider>, {
+      route: { params: apParams, path: '/:tenantId/t/devices/wifi/:serialNumber/edit/networking' }
+    })
+
+    expect(screen.getByLabelText(/Ethernet Port Profile/)).toBeInTheDocument()
+    expect(screen.getByText('Port Type')).toBeInTheDocument()
+    expect(screen.getByText('VLAN Untag ID')).toBeInTheDocument()
+    expect(screen.getByText('VLAN Members')).toBeInTheDocument()
+    expect(screen.getByText('802.1X')).toBeInTheDocument()
+
+    const untagIdReloadBtn = await screen.getByRole('button',
+      { name: 'VLAN Untag ID 1 (Custom) reload' })
+    expect(untagIdReloadBtn).toBeVisible()
+    await userEvent.click(untagIdReloadBtn)
+
+    const checkBtn = await screen.getByRole('button', { name: 'check' })
+    expect(checkBtn).toBeVisible()
+    await userEvent.click(checkBtn)
   })
 })

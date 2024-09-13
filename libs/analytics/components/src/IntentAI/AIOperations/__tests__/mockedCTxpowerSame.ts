@@ -15,46 +15,18 @@ export const mocked = {
     { type: 'domain', name: '52-IN-BDC-Analytics-CK' },
     { type: 'zone', name: 'CHETHAN-HOME' }
   ],
-  statusTrail: [
-    {
-      status: 'new',
-      statusReason: null,
-      displayStatus: 'new',
-      createdAt: '2024-08-28T06:05:53.608Z'
-    },
-    {
-      status: 'na',
-      statusReason: 'verified',
-      displayStatus: 'na-verified',
-      createdAt: '2024-08-25T06:04:20.982Z'
-    },
-    {
-      status: 'na',
-      statusReason: 'verified',
-      displayStatus: 'na-verified',
-      createdAt: '2024-08-24T06:04:38.206Z'
-    },
-    {
-      status: 'new',
-      statusReason: null,
-      displayStatus: 'new',
-      createdAt: '2024-08-23T06:04:43.160Z'
-    },
-    {
-      status: 'new',
-      statusReason: null,
-      displayStatus: 'new',
-      createdAt: '2024-08-22T06:04:47.170Z'
-    },
-    {
-      status: 'new',
-      statusReason: null,
-      displayStatus: 'new',
-      createdAt: '2024-08-21T08:01:05.586Z'
-    }
-  ],
+  statusTrail: [{
+    status: 'new',
+    statusReason: null,
+    displayStatus: 'new',
+    createdAt: '2024-08-28T06:05:53.608Z'
+  }],
   kpi_session_time_on_24_g_hz: {
     data: { timestamp: '2024-09-02T00:00:00.000Z', result: 0.9059967585089141 },
+    compareData: null
+  },
+  kpi_co_channel_interference_ratio: {
+    data: { timestamp: '2024-09-02T00:00:00.000Z', result: 0.16350931836211163 },
     compareData: null
   },
   currentValue: 'Full',

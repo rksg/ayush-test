@@ -13,7 +13,6 @@ import { useIntentContext }   from '../../IntentContext'
 import { Statuses }           from '../../states'
 import {
   createUseIntentTransition,
-  recToIntentStatues,
   FormValues,
   IntentTransitionPayload,
   useInitialValues
@@ -29,7 +28,6 @@ type CRRMFormValues = FormValues<{ crrmFullOptimization: boolean }>
 type CRRMPayload = IntentTransitionPayload<Exclude<CRRMFormValues['preferences'], undefined>>
 
 function getFormDTO (values: CRRMFormValues): CRRMPayload {
-  values = { ...values, ...recToIntentStatues(values) }
   return {
     id: values.id,
     status: values.status === Statuses.new ? Statuses.scheduled : values.status,

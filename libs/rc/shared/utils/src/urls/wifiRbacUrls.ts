@@ -770,6 +770,42 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
+  activateVlanPool: {
+    method: 'put',
+    url: '/wifiNetworks/:networkId/vlanPoolProfiles/:profileId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deactivateVlanPool: {
+    method: 'delete',
+    url: '/wifiNetworks/:networkId/vlanPoolProfiles/:profileId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  activateApGroupVlanPool: {
+    method: 'put',
+    url: '/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId/vlanPoolProfiles/:profileId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deactivateApGroupVlanPool: {
+    method: 'delete',
+    url: '/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId/vlanPoolProfiles/:profileId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
   getApStickyClientSteering: {
     method: 'GET',
     newApi: true,

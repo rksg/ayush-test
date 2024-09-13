@@ -49,8 +49,11 @@ describe('CountAndNamesTooltip', () => {
     expect(numberDisplay).toBeVisible()
 
     fireEvent.mouseOver(numberDisplay)
-    const tooltip = await screen.findByText('t1')
+    const tooltip = await screen.findByRole('tooltip')
     expect(tooltip).toBeInTheDocument()
+    expect(tooltip).toHaveTextContent('t1')
+    expect(tooltip).toHaveTextContent('t2')
+    expect(tooltip).toHaveTextContent('t3')
     const tooltipNote = await screen.findByText('And 2 more...')
     expect(tooltipNote).toBeInTheDocument()
   })

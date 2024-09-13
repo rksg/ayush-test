@@ -78,6 +78,7 @@ function Hotspot20Form () {
   const { useWatch } = Form
   const { editMode, cloneMode } = useContext(NetworkFormContext)
   const { disableMLO } = useContext(MLOContext)
+  const form = Form.useFormInstance()
   const wlanSecurity = useWatch(['wlan', 'wlanSecurity'])
   const wpa2Description = <FormattedMessage
     /* eslint-disable max-len */
@@ -102,7 +103,6 @@ function Hotspot20Form () {
     defaultMessage: 'WPA3 is the highest level of Wi-Fi security available but is supported only by devices manufactured after 2019.'
   })
 
-  const form = Form.useFormInstance()
   useEffect(() => {
     if (!editMode && !cloneMode) {
       if (!wlanSecurity || !Object.keys(AAAWlanSecurityEnum).includes(wlanSecurity)) {
@@ -156,183 +156,185 @@ function Hotspot20Form () {
     </>
   )
 
-  function Hotspot20Service () {
-    const { $t } = useIntl()
-    const { editMode, cloneMode, data } = useContext(NetworkFormContext)
-    const params = useParams()
-    const { networkId } = params
-    const [showOperatorDrawer, setShowOperatorDrawer] = useState(false)
-    const [showProviderDrawer, setShowProviderDrawer] = useState(false)
-    const [disabledSelectProvider, setDisabledSelectProvider] = useState(false)
-    const disabledAddProvider = useRef<boolean>(false)
-    const isInitProviders = useRef<boolean>(true)
-    const defaultPayload = {
-      fields: ['name', 'id', 'wifiNetworkIds'],
-      pageSize: 100,
-      sortField: 'name',
-      sortOrder: 'ASC'
-    }
+}
 
-    const { operatorSelectOptions, selectedOperatorId } = useGetWifiOperatorListQuery(
-      { payload: defaultPayload }, {
-        selectFromResult: ({ data }) => {
-          const d = data?.data
-          const operatorOptions = d?.map(item => ({ label: item.name, value: item.id })) ?? []
-          const selectedOperator = networkId && d?.filter(item => item.wifiNetworkIds
-            ?.includes(networkId)).map(item => item.id)?.at(0)
-          return { operatorSelectOptions: operatorOptions, selectedOperatorId: selectedOperator }
-        }
-      })
+function Hotspot20Service () {
+  const { $t } = useIntl()
+  const { editMode, cloneMode, data } = useContext(NetworkFormContext)
+  const params = useParams()
+  const { networkId } = params
+  const form = Form.useFormInstance()
+  const [showOperatorDrawer, setShowOperatorDrawer] = useState(false)
+  const [showProviderDrawer, setShowProviderDrawer] = useState(false)
+  const [disabledSelectProvider, setDisabledSelectProvider] = useState(false)
+  const disabledAddProvider = useRef<boolean>(false)
+  const isInitProviders = useRef<boolean>(true)
+  const defaultPayload = {
+    fields: ['name', 'id', 'wifiNetworkIds'],
+    pageSize: 100,
+    sortField: 'name',
+    sortOrder: 'ASC'
+  }
 
-    const { providerSelectOptions, selectedProviderIds } = useGetIdentityProviderListQuery(
-      { payload: defaultPayload }, {
-        selectFromResult: ({ data }) => {
-          const d = data?.data
-          const seletedIds = networkId && d?.filter(item => item.wifiNetworkIds
-            ?.includes(networkId)).map(item => item.id)
-          const providerOptions = d?.map(item => ({ label: item.name, value: item.id } )) ?? []
-          disabledAddProvider.current = providerOptions.length >= IDENTITY_PROVIDER_MAX_COUNT
-          return { providerSelectOptions: providerOptions, selectedProviderIds: seletedIds }
-        }
-      })
-
-    useEffect(() => {
-      form.setFieldValue(['hotspot20Settings', 'originalOperator'], selectedOperatorId)
-    }, [selectedOperatorId])
-
-    useEffect(() => {
-      form.setFieldValue(['hotspot20Settings', 'originalProviders'], selectedProviderIds)
-    }, [selectedProviderIds])
-
-    useEffect(() => {
-      if ( (editMode || cloneMode) && !form.isFieldsTouched() && selectedOperatorId &&
-       !data?.hotspot20Settings?.wifiOperator) {
-        form.setFieldValue(['hotspot20Settings', 'wifiOperator'], selectedOperatorId)
+  const { operatorSelectOptions, selectedOperatorId } = useGetWifiOperatorListQuery(
+    { payload: defaultPayload }, {
+      selectFromResult: ({ data }) => {
+        const d = data?.data
+        const operatorOptions = d?.map(item => ({ label: item.name, value: item.id })) ?? []
+        const selectedOperator = networkId && d?.filter(item => item.wifiNetworkIds
+          ?.includes(networkId)).map(item => item.id)?.at(0)
+        return { operatorSelectOptions: operatorOptions, selectedOperatorId: selectedOperator }
       }
-    }, [cloneMode, editMode, selectedOperatorId])
+    })
 
-    useEffect(() => {
-      if ( (editMode || cloneMode) && !form.isFieldsTouched() && selectedProviderIds &&
-        !data?.hotspot20Settings?.identityProviders && isInitProviders.current) {
-        form.setFieldValue(['hotspot20Settings', 'identityProviders'], selectedProviderIds)
-        setDisabledSelectProvider(selectedProviderIds.length >= NETWORK_IDENTITY_PROVIDER_MAX_COUNT)
+  const { providerSelectOptions, selectedProviderIds } = useGetIdentityProviderListQuery(
+    { payload: defaultPayload }, {
+      selectFromResult: ({ data }) => {
+        const d = data?.data
+        const seletedIds = networkId && d?.filter(item => item.wifiNetworkIds
+          ?.includes(networkId)).map(item => item.id)
+        const providerOptions = d?.map(item => ({ label: item.name, value: item.id } )) ?? []
+        disabledAddProvider.current = providerOptions.length >= IDENTITY_PROVIDER_MAX_COUNT
+        return { providerSelectOptions: providerOptions, selectedProviderIds: seletedIds }
       }
-    }, [cloneMode, editMode, selectedProviderIds])
+    })
 
-    const handleAddOperator = () => {
-      setShowOperatorDrawer(true)
+  useEffect(() => {
+    form.setFieldValue(['hotspot20Settings', 'originalOperator'], selectedOperatorId)
+  }, [selectedOperatorId])
+
+  useEffect(() => {
+    form.setFieldValue(['hotspot20Settings', 'originalProviders'], selectedProviderIds)
+  }, [selectedProviderIds])
+
+  useEffect(() => {
+    if ( (editMode || cloneMode) && !form.isFieldsTouched() && selectedOperatorId &&
+     !data?.hotspot20Settings?.wifiOperator) {
+      form.setFieldValue(['hotspot20Settings', 'wifiOperator'], selectedOperatorId)
     }
+  }, [cloneMode, editMode, selectedOperatorId])
 
-    const handleAddProvider = () => {
-      setShowProviderDrawer(true)
+  useEffect(() => {
+    if ( (editMode || cloneMode) && !form.isFieldsTouched() && selectedProviderIds &&
+      !data?.hotspot20Settings?.identityProviders && isInitProviders.current) {
+      form.setFieldValue(['hotspot20Settings', 'identityProviders'], selectedProviderIds)
+      setDisabledSelectProvider(selectedProviderIds.length >= NETWORK_IDENTITY_PROVIDER_MAX_COUNT)
     }
+  }, [cloneMode, editMode, selectedProviderIds])
 
-    const handleSaveWifiOperator = (id?: string) => {
-      if (id) {
-        form.setFieldValue(['hotspot20Settings', 'wifiOperator'], id)
-        form.validateFields()
-      }
-      setShowOperatorDrawer(false)
+  const handleAddOperator = () => {
+    setShowOperatorDrawer(true)
+  }
+
+  const handleAddProvider = () => {
+    setShowProviderDrawer(true)
+  }
+
+  const handleSaveWifiOperator = (id?: string) => {
+    if (id) {
+      form.setFieldValue(['hotspot20Settings', 'wifiOperator'], id)
+      form.validateFields()
     }
+    setShowOperatorDrawer(false)
+  }
 
-    const handleSaveIdentityProvider = (id?: string) => {
-      const identityProviders = form.getFieldValue(['hotspot20Settings', 'identityProviders']) ?? []
-      if (id && !identityProviders.includes(id) &&
-      identityProviders.length < NETWORK_IDENTITY_PROVIDER_MAX_COUNT) {
-        isInitProviders.current = false
-        let newIdentityProviders = cloneDeep(identityProviders)
-        newIdentityProviders.push(id)
-        form.setFieldValue(['hotspot20Settings', 'identityProviders'], newIdentityProviders)
-        disabledAddProvider.current = providerSelectOptions.length >= IDENTITY_PROVIDER_MAX_COUNT
-        form.validateFields()
-      }
-      setShowProviderDrawer(false)
-      setDisabledSelectProvider(
-        identityProviders.length >= NETWORK_IDENTITY_PROVIDER_MAX_COUNT)
+  const handleSaveIdentityProvider = (id?: string) => {
+    const identityProviders = form.getFieldValue(['hotspot20Settings', 'identityProviders']) ?? []
+    if (id && !identityProviders.includes(id) &&
+    identityProviders.length < NETWORK_IDENTITY_PROVIDER_MAX_COUNT) {
+      isInitProviders.current = false
+      let newIdentityProviders = cloneDeep(identityProviders)
+      newIdentityProviders.push(id)
+      form.setFieldValue(['hotspot20Settings', 'identityProviders'], newIdentityProviders)
+      disabledAddProvider.current = providerSelectOptions.length >= IDENTITY_PROVIDER_MAX_COUNT
+      form.validateFields()
     }
+    setShowProviderDrawer(false)
+    setDisabledSelectProvider(
+      identityProviders.length >= NETWORK_IDENTITY_PROVIDER_MAX_COUNT)
+  }
 
-    return (
-      <>
-        <Space>
+  return (
+    <>
+      <Space>
+        <Form.Item
+          label={$t({ defaultMessage: 'Wi-Fi Operator' })}
+          name={['hotspot20Settings', 'wifiOperator']}
+          rules={[
+            { required: true,
+              message: $t({ defaultMessage: 'Please select Wi-Fi Operator' })
+            }
+          ]}>
+          <Select
+            style={{ width: '280px' }}
+            options={operatorSelectOptions} />
+        </Form.Item>
+        <Button type='link'
+          disabled={operatorSelectOptions.length >= WIFI_OPERATOR_MAX_COUNT}
+          onClick={handleAddOperator}
+          children={$t({ defaultMessage: 'Add' })} />
+      </Space>
+
+      <Space align='start'>
+        <Form.Item
+          label='Identity Provider'
+          name={['hotspot20Settings', 'identityProviders']}
+          rules={[
+            { required: true,
+              message: $t({ defaultMessage: 'Please select Identity Provider(s)' })
+            }
+          ]}
+          extra={$t({ defaultMessage: 'Select up to 6' })}>
+          <Select
+            mode='multiple'
+            style={{ width: '280px' }}
+            open={disabledSelectProvider ? false : undefined}
+            options={providerSelectOptions}
+            onChange={(newProviders: string[]) => {
+              setDisabledSelectProvider(
+                newProviders.length >= NETWORK_IDENTITY_PROVIDER_MAX_COUNT)
+            }}
+          />
+        </Form.Item>
+        <Button type='link'
+          disabled={disabledAddProvider.current}
+          onClick={handleAddProvider}
+          children={$t({ defaultMessage: 'Add' })}
+          style={{ paddingTop: '36px' }} />
+      </Space>
+
+      {editMode &&
+        <>
           <Form.Item
-            label={$t({ defaultMessage: 'Wi-Fi Operator' })}
-            name={['hotspot20Settings', 'wifiOperator']}
-            rules={[
-              { required: true,
-                message: $t({ defaultMessage: 'Please select Wi-Fi Operator' })
-              }
-            ]}>
-            <Select
-              style={{ width: '280px' }}
-              options={operatorSelectOptions} />
+            name={['hotspot20Settings', 'originalOperator']}
+            hidden={true}
+            noStyle>
+            <Input />
           </Form.Item>
-          <Button type='link'
-            disabled={operatorSelectOptions.length >= WIFI_OPERATOR_MAX_COUNT}
-            onClick={handleAddOperator}
-            children={$t({ defaultMessage: 'Add' })} />
-        </Space>
 
-        <Space align='start'>
           <Form.Item
-            label='Identity Provider'
-            name={['hotspot20Settings', 'identityProviders']}
-            rules={[
-              { required: true,
-                message: $t({ defaultMessage: 'Please select Identity Provider(s)' })
-              }
-            ]}
-            extra={$t({ defaultMessage: 'Select up to 6' })}>
+            name={['hotspot20Settings', 'originalProviders']}
+            hidden={true}
+            noStyle>
             <Select
               mode='multiple'
-              style={{ width: '280px' }}
-              open={disabledSelectProvider ? false : undefined}
               options={providerSelectOptions}
-              onChange={(newProviders: string[]) => {
-                setDisabledSelectProvider(
-                  newProviders.length >= NETWORK_IDENTITY_PROVIDER_MAX_COUNT)
-              }}
             />
           </Form.Item>
-          <Button type='link'
-            disabled={disabledAddProvider.current}
-            onClick={handleAddProvider}
-            children={$t({ defaultMessage: 'Add' })}
-            style={{ paddingTop: '36px' }} />
-        </Space>
+        </>
+      }
 
-        {editMode &&
-          <>
-            <Form.Item
-              name={['hotspot20Settings', 'originalOperator']}
-              hidden={true}
-              noStyle>
-              <Input />
-            </Form.Item>
+      <WifiOperatorDrawer
+        visible={showOperatorDrawer}
+        setVisible={setShowOperatorDrawer}
+        handleSave={handleSaveWifiOperator}
+      />
 
-            <Form.Item
-              name={['hotspot20Settings', 'originalProviders']}
-              hidden={true}
-              noStyle>
-              <Select
-                mode='multiple'
-                options={providerSelectOptions}
-              />
-            </Form.Item>
-          </>
-        }
-
-        <WifiOperatorDrawer
-          visible={showOperatorDrawer}
-          setVisible={setShowOperatorDrawer}
-          handleSave={handleSaveWifiOperator}
-        />
-
-        <IdentityProviderDrawer
-          visible={showProviderDrawer}
-          setVisible={setShowProviderDrawer}
-          handleSave={handleSaveIdentityProvider}
-        />
-      </>
-    )
-  }
+      <IdentityProviderDrawer
+        visible={showProviderDrawer}
+        setVisible={setShowProviderDrawer}
+        handleSave={handleSaveIdentityProvider}
+      />
+    </>
+  )
 }
