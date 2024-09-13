@@ -60,7 +60,7 @@ const EdgeDhcpTable = () => {
     sortField: 'name',
     sortOrder: 'ASC'
   }
-  const { edgeClusterNameMap = [], edgeClusterOptions = [] } = useGetEdgeClusterListQuery(
+  const { edgeClusterOptions = [] } = useGetEdgeClusterListQuery(
     { payload: edgeClusterOptionsDefaultPayload },
     {
       selectFromResult: ({ data }) => {
@@ -68,10 +68,7 @@ const EdgeDhcpTable = () => {
           ? data.data.map(item => ({ key: item.clusterId, value: item.name }))
           : emptyList
 
-        return {
-          edgeClusterNameMap: mappedData,
-          edgeClusterOptions: mappedData.map(item => ({ value: item.value, key: item.key }))
-        }
+        return { edgeClusterOptions: mappedData }
       }
     }
   )
@@ -115,14 +112,14 @@ const EdgeDhcpTable = () => {
     },
     {
       title: $t({ defaultMessage: 'DHCP Pools' }),
-      // align: 'center',
+      align: 'center',
       key: 'dhcpPoolNum',
       dataIndex: 'dhcpPoolNum',
       sorter: true
     },
     {
       title: $t({ defaultMessage: 'Clusters' }),
-      // align: 'center',
+      align: 'center',
       key: 'edgeClusterIds',
       dataIndex: 'edgeClusterIds',
       filterable: edgeClusterOptions,
@@ -131,7 +128,7 @@ const EdgeDhcpTable = () => {
       render: (_, row) =>{
         if (!row.edgeClusterIds || row.edgeClusterIds.length === 0) return 0
         const edgeClusterIds = row.edgeClusterIds
-        const tooltipItems = edgeClusterNameMap
+        const tooltipItems = edgeClusterOptions
           .filter(v => v.key && edgeClusterIds!.includes(v.key))
           .map(v => v.value)
           .filter((item): item is string => item !== undefined)
