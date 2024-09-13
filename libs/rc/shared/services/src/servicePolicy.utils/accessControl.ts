@@ -92,14 +92,11 @@ export function comparePayload (
   } as ComparisonObjectType
 
   for (const key in currentPayload) {
-    if (!Object.keys(oldPayload).length || !oldPayload[key]) {
-      // comparisonObject.added.push(itemProcessFn(currentPayload, {}, key, id) as ActionItem)
-    } else {
-      if (JSON.stringify(currentPayload[key]) !== JSON.stringify(oldPayload[key])) {
-        comparisonObject.updated.push(
-          itemProcessFn(currentPayload, oldPayload, key, id) as UpdateActionItem
-        )
-      }
+    // eslint-disable-next-line max-len
+    if (oldPayload[key] && JSON.stringify(currentPayload[key]) !== JSON.stringify(oldPayload[key])) {
+      comparisonObject.updated.push(
+        itemProcessFn(currentPayload, oldPayload, key, id) as UpdateActionItem
+      )
     }
 
     comparisonObject.added.push(itemProcessFn(currentPayload, {}, key, id) as ActionItem)

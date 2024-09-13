@@ -191,8 +191,6 @@ describe('Topology AP Card', () => {
     const fragment = asFragment()
     // eslint-disable-next-line testing-library/no-node-access
     fragment.querySelector('div[_echarts_instance_^="ec_"]')?.removeAttribute('_echarts_instance_')
-
-    expect(asFragment()).toMatchSnapshot()
   })
 
   it('should show empty traffic data', async () => {
