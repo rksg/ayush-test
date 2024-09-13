@@ -27,7 +27,6 @@ const EdgeDhcpTable = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
-  const emptyList: { key: string, value: string }[] = []
   const getDhcpStatsPayload = {
     fields: [
       'id',
@@ -64,9 +63,7 @@ const EdgeDhcpTable = () => {
     { payload: edgeClusterOptionsDefaultPayload },
     {
       selectFromResult: ({ data }) => {
-        const mappedData = data?.data
-          ? data.data.map(item => ({ key: item.clusterId, value: item.name }))
-          : emptyList
+        const mappedData = data?.data?.map(item => ({ key: item.clusterId, value: item.name }))
 
         return { edgeClusterOptions: mappedData }
       }
@@ -126,7 +123,7 @@ const EdgeDhcpTable = () => {
       filterKey: 'edgeClusterIds',
       sorter: true,
       render: (_, row) =>{
-        if (!row.edgeClusterIds || row.edgeClusterIds.length === 0) return 0
+        if (!row.edgeClusterIds?.length) return 0
         const edgeClusterIds = row.edgeClusterIds
         const tooltipItems = edgeClusterOptions
           .filter(v => v.key && edgeClusterIds!.includes(v.key))
@@ -141,7 +138,7 @@ const EdgeDhcpTable = () => {
       dataIndex: 'edgeAlarmSummary',
       sorter: true,
       render: (data, row) =>
-        (row?.edgeClusterIds ?? 0) ?
+        (row?.edgeClusterIds?.length ?? 0) ?
           <EdgeServiceStatusLight data={row.edgeAlarmSummary} /> :
           '--'
     },
