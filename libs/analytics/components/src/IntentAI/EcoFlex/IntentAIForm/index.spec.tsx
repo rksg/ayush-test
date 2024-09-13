@@ -7,6 +7,7 @@ import { intentAIApi, intentAIUrl, Provider, store }                            
 import { mockGraphqlMutation, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import { mockIntentContext } from '../../__tests__/fixtures'
+import { Statuses }          from '../../states'
 import { Intent }            from '../../useIntentDetailsQuery'
 import { mocked }            from '../__tests__/mockedEcoFlex'
 import { kpis }              from '../common'
@@ -73,8 +74,8 @@ const mockIntentContextWith = (data: Partial<Intent> = {}) => {
 }
 
 describe('IntentAIForm', () => {
-  it('should work when active', async () => {
-    const { params } = mockIntentContextWith()
+  it('handle schedule intent', async () => {
+    const { params } = mockIntentContextWith({ status: Statuses.new })
     render(<IntentAIForm />, { route: { params }, wrapper: Provider })
     const form = within(await screen.findByTestId('steps-form'))
     const actions = within(form.getByTestId('steps-form-actions'))
@@ -96,11 +97,9 @@ describe('IntentAIForm', () => {
     await click(date)
     await click(await screen.findByRole('cell', { name: '2024-08-09' }))
     expect(date).toHaveValue('08/09/2024')
-    await selectOptions(
-      await screen.findByRole('combobox', { name: 'Start Time' }),
-      '12:30 (UTC+08)'
-    )
-    expect(await screen.findByRole('combobox', { name: 'Start Time' })).toHaveValue('12.5')
+    const time = await screen.findByPlaceholderText('Select time')
+    await selectOptions(time, '12:30 (UTC+08)')
+    expect(time).toHaveValue('12.5')
 
     await click(actions.getByRole('button', { name: 'Next' }))
     expect((await screen.findAllByText('Summary')).length).toEqual(2)
@@ -109,8 +108,8 @@ describe('IntentAIForm', () => {
     expect(await screen.findByText(/has been updated/)).toBeVisible()
     expect(mockNavigate).toBeCalled()
   })
-  it('should work when paused', async () => {
-    const { params } = mockIntentContextWith()
+  it('handle pause intent', async () => {
+    const { params } = mockIntentContextWith({ status: Statuses.new })
     render(<IntentAIForm />, { route: { params }, wrapper: Provider })
     const form = within(await screen.findByTestId('steps-form'))
     const actions = within(form.getByTestId('steps-form-actions'))
@@ -129,7 +128,8 @@ describe('IntentAIForm', () => {
     await click(actions.getByRole('button', { name: 'Next' }))
     expect(await screen.findByRole('heading', { name: 'Settings' })).toBeVisible()
 
-    expect(await screen.findByRole('combobox', { name: 'Start Time' })).toBeDisabled()
+    expect(await screen.findByPlaceholderText('Select date')).toBeDisabled()
+    expect(await screen.findByPlaceholderText('Select time')).toBeDisabled()
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Summary' })).toBeVisible()
