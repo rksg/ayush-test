@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
 
-import { GuestNetworkTypeEnum, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { GuestNetworkTypeEnum, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
 import { render, screen }                        from '@acx-ui/test-utils'
 
@@ -361,7 +361,7 @@ describe('NetworkDiagram', () => {
             setData: jest.fn()
           }}>
             <NetworkDiagram networkPortalType={portalType}
-              wisprWithPsk={true} />
+              wlanSecurity={WlanSecurityEnum.WPA2Personal} />
           </NetworkFormContext.Provider>
         </Provider>, {
           route: {

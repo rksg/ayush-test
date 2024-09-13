@@ -414,7 +414,7 @@ export function SelfSignInForm () {
       </GridCol>
       <GridCol col={{ span: 12 }}>
         <NetworkDiagram type={NetworkTypeEnum.CAPTIVEPORTAL}
-          networkPortalType={GuestNetworkTypeEnum.SelfSignIn} />
+          networkPortalType={GuestNetworkTypeEnum.SelfSignIn} wlanSecurity={data?.wlan?.wlanSecurity} />
       </GridCol>
     </GridRow>
     {!(editMode) && <GridRow>

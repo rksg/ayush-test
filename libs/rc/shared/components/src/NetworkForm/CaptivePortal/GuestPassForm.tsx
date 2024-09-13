@@ -1,16 +1,13 @@
 import { useContext, useEffect } from 'react'
 
-import {
-  Form, Switch
-} from 'antd'
+import { Form }    from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { GridCol, GridRow, StepsFormLegacy, Tooltip }                                                    from '@acx-ui/components'
-import { GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum, WifiNetworkMessages, WlanSecurityEnum } from '@acx-ui/rc/utils'
+import { GridCol, GridRow, StepsFormLegacy }                      from '@acx-ui/components'
+import { GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
-import { MLOContext }              from '../NetworkForm'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
@@ -18,31 +15,16 @@ import { DhcpCheckbox }                          from './DhcpCheckbox'
 import { RedirectUrlInput }                      from './RedirectUrlInput'
 import { BypassCaptiveNetworkAssistantCheckbox } from './SharedComponent/BypassCNA/BypassCaptiveNetworkAssistantCheckbox'
 import { WalledGardenTextArea }                  from './SharedComponent/WalledGarden/WalledGardenTextArea'
-
-
-const { useWatch } = Form
+import { WlanSecurityFormItems }                 from './SharedComponent/WlanSecurity/WlanSecuritySettings'
 
 export function GuestPassForm () {
   const {
     data,
     editMode,
-    cloneMode,
-    setData
+    cloneMode
   } = useContext(NetworkFormContext)
   const intl = useIntl()
   const form = Form.useFormInstance()
-  const { disableMLO } = useContext(MLOContext)
-
-  const [enableOwe] = [useWatch('enableOwe')]
-
-  useEffect(()=> {
-    if (enableOwe === true) {
-      disableMLO(false)
-    } else {
-      disableMLO(true)
-      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
-    }
-  },[enableOwe])
 
   useEffect(()=>{
     if((editMode || cloneMode) && data){
@@ -50,36 +32,14 @@ export function GuestPassForm () {
       if(data.guestPortal?.redirectUrl){
         form.setFieldValue('redirectCheckbox',true)
       }
-      if(data.wlan?.wlanSecurity){
-        form.setFieldValue('enableOwe',
-          data.wlan.wlanSecurity === WlanSecurityEnum.OWE ? true : false)
-      }
     }
   }, [data])
   return (<>
     <GridRow>
       <GridCol col={{ span: 10 }}>
         <StepsFormLegacy.Title children={intl.$t({ defaultMessage: 'Host Settings' })} />
+        <WlanSecurityFormItems />
         <RedirectUrlInput></RedirectUrlInput>
-        <Form.Item>
-          <Form.Item noStyle
-            name='enableOwe'
-            initialValue={false}
-            valuePropName='checked'
-            children={<Switch
-              onChange={function (checked: boolean) {
-                let mutableData = _.cloneDeep(data) ?? {}
-                _.set(mutableData, 'wlan.wlanSecurity',
-                  checked ? WlanSecurityEnum.OWE : WlanSecurityEnum.None)
-                setData && setData(mutableData)
-              }} />}
-          />
-          <span>{intl.$t({ defaultMessage: 'Enable OWE encryption' })}</span>
-          <Tooltip.Question
-            title={intl.$t(WifiNetworkMessages.ENABLE_OWE_TOOLTIP)}
-            placement='bottom'
-          />
-        </Form.Item>
         <DhcpCheckbox />
         <BypassCaptiveNetworkAssistantCheckbox/>
         <WalledGardenTextArea
@@ -87,7 +47,7 @@ export function GuestPassForm () {
       </GridCol>
       <GridCol col={{ span: 14 }}>
         <NetworkDiagram type={NetworkTypeEnum.CAPTIVEPORTAL}
-          networkPortalType={GuestNetworkTypeEnum.GuestPass}/>
+          networkPortalType={GuestNetworkTypeEnum.GuestPass} wlanSecurity={data?.wlan?.wlanSecurity} />
       </GridCol>
     </GridRow>
     {!(editMode) && <GridRow>

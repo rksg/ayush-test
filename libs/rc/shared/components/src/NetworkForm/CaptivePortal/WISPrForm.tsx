@@ -21,11 +21,9 @@ import {
   GuestNetworkTypeEnum,
   NetworkTypeEnum,
   Providers,
-  PskWlanSecurityEnum,
   Regions,
   URLProtocolRegExp,
-  AuthRadiusEnum,
-  WlanSecurityEnum
+  AuthRadiusEnum
 } from '@acx-ui/rc/utils'
 import { validationMessages } from '@acx-ui/utils'
 
@@ -382,8 +380,7 @@ export function WISPrForm () {
       <GridCol col={{ span: 14 }}>
         <NetworkDiagram type={NetworkTypeEnum.CAPTIVEPORTAL}
           networkPortalType={GuestNetworkTypeEnum.WISPr}
-          wisprWithPsk={Object.keys(PskWlanSecurityEnum).includes(data?.wlan?.wlanSecurity as keyof typeof PskWlanSecurityEnum)}
-          wisprWithOwe={data?.wlan?.wlanSecurity === WlanSecurityEnum.OWE}
+          wlanSecurity={data?.wlan?.wlanSecurity}
           // eslint-disable-next-line max-len
           wisprWithAlwaysAccept={data?.guestPortal?.wisprPage?.authType === AuthRadiusEnum.ALWAYS_ACCEPT}
         />

@@ -9,7 +9,6 @@ import { GridCol, GridRow, StepsFormLegacy }                      from '@acx-ui/
 import { GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
-import { MLOContext }              from '../NetworkForm'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
@@ -17,6 +16,7 @@ import { DhcpCheckbox }                          from './DhcpCheckbox'
 import { RedirectUrlInput }                      from './RedirectUrlInput'
 import { BypassCaptiveNetworkAssistantCheckbox } from './SharedComponent/BypassCNA/BypassCaptiveNetworkAssistantCheckbox'
 import { WalledGardenTextArea }                  from './SharedComponent/WalledGarden/WalledGardenTextArea'
+import { WlanSecurityFormItems }                 from './SharedComponent/WlanSecurity/WlanSecuritySettings'
 
 export function OnboardingForm () {
   const {
@@ -24,7 +24,6 @@ export function OnboardingForm () {
     editMode,
     cloneMode
   } = useContext(NetworkFormContext)
-  const { disableMLO } = useContext(MLOContext)
   const intl = useIntl()
   const form = Form.useFormInstance()
   useEffect(()=>{
@@ -34,15 +33,12 @@ export function OnboardingForm () {
         form.setFieldValue('redirectCheckbox',true)
       }
     }
-    if(!editMode) {
-      disableMLO(true)
-      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
-    }
   }, [data])
   return (<>
     <GridRow>
       <GridCol col={{ span: 10 }}>
         <StepsFormLegacy.Title>{intl.$t({ defaultMessage: 'Onboarding' })}</StepsFormLegacy.Title>
+        <WlanSecurityFormItems />
         <RedirectUrlInput />
         <DhcpCheckbox />
         <BypassCaptiveNetworkAssistantCheckbox/>
@@ -51,7 +47,7 @@ export function OnboardingForm () {
       </GridCol>
       <GridCol col={{ span: 14 }}>
         <NetworkDiagram type={NetworkTypeEnum.CAPTIVEPORTAL}
-          networkPortalType={GuestNetworkTypeEnum.ClickThrough} />
+          networkPortalType={GuestNetworkTypeEnum.ClickThrough} wlanSecurity={data?.wlan?.wlanSecurity} />
       </GridCol>
     </GridRow>
     {!(editMode) && <GridRow>
@@ -62,5 +58,3 @@ export function OnboardingForm () {
   </>
   )
 }
-
-

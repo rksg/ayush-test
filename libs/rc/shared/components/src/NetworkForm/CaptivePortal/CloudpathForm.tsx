@@ -13,17 +13,22 @@ import { GridCol, GridRow, StepsFormLegacy } from '@acx-ui/components'
 import {
   QuestionMarkCircleOutlined
 } from '@acx-ui/icons'
-import { NetworkSaveData, GuestNetworkTypeEnum, NetworkTypeEnum, URLProtocolRegExp } from '@acx-ui/rc/utils'
+import {
+  NetworkSaveData,
+  GuestNetworkTypeEnum,
+  NetworkTypeEnum,
+  URLProtocolRegExp
+} from '@acx-ui/rc/utils'
 import { validationMessages }                                                        from '@acx-ui/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
-import { MLOContext }              from '../NetworkForm'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
 import { AuthAccServerSetting }                  from './AuthAccServerSetting'
 import { BypassCaptiveNetworkAssistantCheckbox } from './SharedComponent/BypassCNA/BypassCaptiveNetworkAssistantCheckbox'
 import { WalledGardenTextArea }                  from './SharedComponent/WalledGarden/WalledGardenTextArea'
+import { WlanSecurityFormItems }                 from './SharedComponent/WlanSecurity/WlanSecuritySettings'
 
 export function CloudpathForm () {
   const {
@@ -31,7 +36,6 @@ export function CloudpathForm () {
     editMode,
     cloneMode
   } = useContext(NetworkFormContext)
-  const { disableMLO } = useContext(MLOContext)
   const { $t } = useIntl()
   const form = Form.useFormInstance()
 
@@ -47,10 +51,6 @@ export function CloudpathForm () {
         form.setFieldValue('authRadiusId',
           data.authRadius.id)
       }
-    }
-    if(!editMode) {
-      disableMLO(true)
-      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
     }
   },[data])
   return (<>
@@ -76,6 +76,7 @@ export function CloudpathForm () {
           'Copy from your Cloudpath\'s configuration' })}
           />}
         />
+        <WlanSecurityFormItems />
         <div style={{ display: 'flex' }}>
           <Form.Item
             name={['wlan','bypassCPUsingMacAddressAuthentication']}
@@ -101,7 +102,9 @@ export function CloudpathForm () {
       </GridCol>
       <GridCol col={{ span: 14 }}>
         <NetworkDiagram type={NetworkTypeEnum.CAPTIVEPORTAL}
-          networkPortalType={GuestNetworkTypeEnum.Cloudpath}/>
+          networkPortalType={GuestNetworkTypeEnum.Cloudpath}
+          wlanSecurity={data?.wlan?.wlanSecurity}
+        />
       </GridCol>
     </GridRow>
     {!(editMode) && <GridRow>

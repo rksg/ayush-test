@@ -7,7 +7,9 @@ import { Button } from '@acx-ui/components'
 import {
   GuestNetworkTypeEnum,
   NetworkTypeEnum,
-  networkTypes
+  networkTypes,
+  WlanSecurityEnum,
+  PskWlanSecurityEnum
 } from '@acx-ui/rc/utils'
 
 import AaaProxyDiagram                 from '../assets/images/network-wizard-diagrams/aaa-proxy.png'
@@ -72,8 +74,7 @@ interface AaaDiagramProps extends DiagramProps {
 }
 interface CaptivePortalDiagramProps extends DiagramProps {
   networkPortalType?: GuestNetworkTypeEnum
-  wisprWithPsk?: boolean
-  wisprWithOwe?: boolean
+  wlanSecurity?: WlanSecurityEnum
   wisprWithAlwaysAccept?: boolean
 }
 
@@ -137,8 +138,9 @@ function getCloudpathDiagram (wisprWithPsk: boolean, wisprWithOwe: boolean, prop
 
 function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {
   const type = props.networkPortalType as GuestNetworkTypeEnum
-  const wisprWithPsk = props.wisprWithPsk ?? false
-  const wisprWithOwe = props.wisprWithOwe ?? false
+  const wlanSecurity = props.wlanSecurity as WlanSecurityEnum
+  const wisprWithPsk=Object.keys(PskWlanSecurityEnum).includes(wlanSecurity as keyof typeof PskWlanSecurityEnum)
+  const wisprWithOwe=wlanSecurity === WlanSecurityEnum.OWE
 
   const CaptivePortalDiagramMap: Partial<Record<GuestNetworkTypeEnum, string>> = {
     [GuestNetworkTypeEnum.ClickThrough]:  wisprWithPsk ? ClickThroughWithPskDiagram :

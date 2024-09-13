@@ -31,7 +31,6 @@ import { validationMessages } from '@acx-ui/utils'
 
 import { captivePasswordExpiration } from '../contentsMap'
 import { NetworkDiagram }            from '../NetworkDiagram/NetworkDiagram'
-import { MLOContext }                from '../NetworkForm'
 import NetworkFormContext            from '../NetworkFormContext'
 import { NetworkMoreSettingsForm }   from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 import { AsteriskFormTitle }         from '../styledComponents'
@@ -40,7 +39,7 @@ import { DhcpCheckbox }                          from './DhcpCheckbox'
 import { RedirectUrlInput }                      from './RedirectUrlInput'
 import { BypassCaptiveNetworkAssistantCheckbox } from './SharedComponent/BypassCNA/BypassCaptiveNetworkAssistantCheckbox'
 import { WalledGardenTextArea }                  from './SharedComponent/WalledGarden/WalledGardenTextArea'
-
+import { WlanSecurityFormItems }                 from './SharedComponent/WlanSecurity/WlanSecuritySettings'
 
 export function HostApprovalForm () {
   const {
@@ -48,7 +47,6 @@ export function HostApprovalForm () {
     editMode,
     cloneMode
   } = useContext(NetworkFormContext)
-  const { disableMLO } = useContext(MLOContext)
   const { $t } = useIntl()
   const { useWatch } = Form
   const form = Form.useFormInstance()
@@ -72,10 +70,6 @@ export function HostApprovalForm () {
       } else if (!_.isEmpty(data.guestPortal?.hostGuestConfig?.hostEmails)) {
         setDomainOrEmail('email')
       }
-    }
-    if(!editMode) {
-      disableMLO(true)
-      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
     }
   }, [data])
 
@@ -231,6 +225,7 @@ export function HostApprovalForm () {
           </>
           }
         />
+        <WlanSecurityFormItems />
         <RedirectUrlInput/>
         <DhcpCheckbox />
         <BypassCaptiveNetworkAssistantCheckbox/>
@@ -239,7 +234,7 @@ export function HostApprovalForm () {
       </GridCol>
       <GridCol col={{ span: 14 }}>
         <NetworkDiagram type={NetworkTypeEnum.CAPTIVEPORTAL}
-          networkPortalType={GuestNetworkTypeEnum.HostApproval}/>
+          networkPortalType={GuestNetworkTypeEnum.HostApproval} wlanSecurity={data?.wlan?.wlanSecurity} />
       </GridCol>
     </GridRow>
     {!(editMode) && <GridRow>

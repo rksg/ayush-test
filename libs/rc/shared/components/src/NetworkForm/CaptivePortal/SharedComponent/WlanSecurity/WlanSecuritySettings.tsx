@@ -67,8 +67,10 @@ export const WlanSecurityFormItems = () => {
     if (wlanSecurity) {
       if (wlanSecurity === WlanSecurityEnum.None) {
         form.setFieldValue('networkSecurity', 'NONE')
+        setEnablePreShared(false)
       } else if (wlanSecurity === WlanSecurityEnum.OWE) {
         form.setFieldValue('networkSecurity', 'OWE')
+        setEnablePreShared(false)
       } else {
         form.setFieldValue('networkSecurity', 'PSK')
         setEnablePreShared(true)
