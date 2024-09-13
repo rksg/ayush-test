@@ -713,10 +713,17 @@ export const fetchRbacAccessControlSubPolicyNetwork = async (queryArgs: RequestP
     body: JSON.stringify(queryPayload)
   }
 
-  const l2aclPolicyListInfoQuery = await fetchWithBQ(l2aclPolicyListInfo)
-  const l3aclPolicyListInfoQuery = await fetchWithBQ(l3aclPolicyListInfo)
-  const appAclPolicyListInfoQuery = await fetchWithBQ(appAclPolicyListInfo)
-  const deviceAclPolicyListInfoQuery = await fetchWithBQ(deviceAclPolicyListInfo)
+  const allRequests = []
+  allRequests.push(fetchWithBQ(l2aclPolicyListInfo))
+  allRequests.push(fetchWithBQ(l3aclPolicyListInfo))
+  allRequests.push(fetchWithBQ(appAclPolicyListInfo))
+  allRequests.push(fetchWithBQ(deviceAclPolicyListInfo))
+  const [
+    l2aclPolicyListInfoQuery,
+    l3aclPolicyListInfoQuery,
+    appAclPolicyListInfoQuery,
+    deviceAclPolicyListInfoQuery
+  ] = await Promise.all(allRequests)
 
   return {
     error: l2aclPolicyListInfoQuery.error || l3aclPolicyListInfoQuery.error || appAclPolicyListInfoQuery.error || deviceAclPolicyListInfoQuery.error,
