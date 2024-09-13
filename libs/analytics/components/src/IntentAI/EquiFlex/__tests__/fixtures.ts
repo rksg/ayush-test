@@ -1,6 +1,6 @@
 import { Intent } from '../../useIntentDetailsQuery'
 
-export const mockedIntentAirFlex = {
+export const mockedIntentEquiFlex = {
   id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6',
   root: '33707ef3-b8c7-4e70-ab76-8e551343acb4',
   code: 'c-probeflex-24g',
@@ -58,7 +58,7 @@ export const mockedIntentAirFlex = {
   recommendedValue: true
 } as unknown as Intent
 
-export const mockedAirFlexKpi = {
+export const mockedEquiFlexKpi = {
   data: {
     timestamp: '2023-06-26T00:00:25.772Z',
     result: 2
