@@ -26,6 +26,7 @@ export function SwitchTroubleshootingTab () {
   // eslint-disable-next-line max-len
   const basePath = useTenantLink(`/devices/switch/${switchId}/${serialNumber}/details/troubleshooting/`)
   const isSwitchCliEnabled = useIsSplitOn(Features.SWITCH_CLI_MODE)
+  const isCableTestEnabled = useIsSplitOn(Features.SWITCH_CABLE_TEST)
 
   const onTabChange = (tab: string) => {
     navigate({
@@ -84,9 +85,11 @@ export function SwitchTroubleshootingTab () {
           <SwitchMacAddressForm />
         </TabPane>
       }
-      <TabPane tab={$t({ defaultMessage: 'Cable Test' })} key='cableTest'>
-        <SwitchCableTestForm/>
-      </TabPane>
+      {
+        isCableTestEnabled && <TabPane tab={$t({ defaultMessage: 'Cable Test' })} key='cableTest'>
+          <SwitchCableTestForm/>
+        </TabPane>
+      }
     </Tabs>
   )
 }

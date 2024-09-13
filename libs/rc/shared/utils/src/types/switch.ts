@@ -105,7 +105,8 @@ export enum TroubleshootingType {
   TRACE_ROUTE = 'trace-route',
   ROUTE_TABLE = 'route-table',
   MAC_ADDRESS_TABLE = 'mac-address-table',
-  DHCP_SERVER_LEASE_TABLE = 'dhcp-server-lease-table'
+  DHCP_SERVER_LEASE_TABLE = 'dhcp-server-lease-table',
+  CABLE_TEST = 'cable-test'
 }
 
 export enum DeviceRequestAction {

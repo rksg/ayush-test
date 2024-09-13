@@ -10,7 +10,7 @@ import { useParams }              from 'react-router-dom'
 import { Button, Loader, Select, showActionModal, StatusPill, Table, TableProps, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                                       from '@acx-ui/formatter'
-import { useGetTroubleshootingQuery,
+import { useCableTestMutation, useGetTroubleshootingQuery,
   useLazyGetTroubleshootingCleanQuery,
   useSwitchPortlistQuery }                             from '@acx-ui/rc/services'
 import { SwitchPortViewModelQueryFields, TroubleshootingType, sortPortFunction, SwitchPortViewModel } from '@acx-ui/rc/utils'
@@ -52,10 +52,11 @@ export function SwitchCableTestForm () {
   const troubleshootingParams = {
     tenantId,
     switchId,
-    troubleshootingType: TroubleshootingType.PING,
+    troubleshootingType: TroubleshootingType.CABLE_TEST,
     venueId: switchDetailsContextData.switchDetailHeader?.venueId
   }
 
+  const [runMutation] = useCableTestMutation()
   const [getTroubleshootingClean] = useLazyGetTroubleshootingCleanQuery()
   const getTroubleshooting =
     useGetTroubleshootingQuery({
@@ -71,7 +72,7 @@ export function SwitchCableTestForm () {
     filters: { switchId: [serialNumber] },
     sortField: 'portIdentifierFormatted',
     sortOrder: 'ASC',
-    fields: SwitchPortViewModelQueryFields
+    fields: [...SwitchPortViewModelQueryFields, 'portSpeedConfig', 'portConnectorType']
   }
   const portList = useSwitchPortlistQuery({
     params: { tenantId },
@@ -204,6 +205,7 @@ export function SwitchCableTestForm () {
             handler: async () => {
               try{
                 // const formValue = cableTestForm.getFieldsValue()
+                // onSubmit()
               } catch (error) {
                 console.log(error) // eslint-disable-line no-console
               }
@@ -214,33 +216,33 @@ export function SwitchCableTestForm () {
     })
   }
 
-  // const onSubmit = async () => {
-  //   setIsLoading(true)
-  //   try {
-  //     const payload = {
-  //       targetHost: cableTestForm.getFieldValue('targetHost'),
-  //       troubleshootingPayload: {
-  //         targetHost: cableTestForm.getFieldValue('targetHost')
-  //       },
-  //       troubleshootingType: 'ping'
-  //     }
-  //     const result = await runMutation({
-  //       params: {
-  //         tenantId,
-  //         switchId,
-  //         venueId: switchDetailsContextData.switchDetailHeader?.venueId
-  //       },
-  //       payload,
-  //       enableRbac: isSwitchRbacEnabled
-  //     }).unwrap()
-  //     if (result) {
-  //       refetchResult()
-  //     }
-  //   } catch (error) {
-  //     setIsValid(false)
-  //     console.log(error) // eslint-disable-line no-console
-  //   }
-  // }
+  const onSubmit = async () => {
+    setIsLoading(true)
+    try {
+      const payload = {
+        targetPort: cableTestForm.getFieldValue('port'),
+        troubleshootingPayload: {
+          targetPort: cableTestForm.getFieldValue('port')
+        },
+        troubleshootingType: 'cable-test'
+      }
+      console.log(payload)
+      const result = await runMutation({
+        params: {
+          tenantId,
+          switchId,
+          venueId: switchDetailsContextData.switchDetailHeader?.venueId
+        },
+        payload
+      }).unwrap()
+      if (result) {
+        refetchResult()
+      }
+    } catch (error) {
+      setIsValid(false)
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
 
   const onClear = async () => {
     setIsLoading(true)
