@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import moment        from 'moment-timezone'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, showActionModal, showToast, Subtitle, Table, TableProps, Tooltip } from '@acx-ui/components'
-import { SuccessSolid }                                                             from '@acx-ui/icons'
+import { Loader, showActionModal, showToast, Table, TableProps, Tooltip } from '@acx-ui/components'
+import { SuccessSolid }                                                   from '@acx-ui/icons'
 import {
   OSIconContainer,
   PersonaDeviceItem,
@@ -31,6 +31,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
 import { noDataDisplay }                            from '@acx-ui/utils'
+
+import { IdentityDeviceContext } from './index'
 
 
 const defaultClientPayload = {
@@ -58,6 +60,7 @@ export function PersonaDevicesTable (props: {
   const addClientMac = (mac: string) => setClientMac(prev => new Set(prev.add(mac)))
   const { customHeaders } = usePersonaAsyncHeaders()
 
+  const { setDeviceCount } = useContext(IdentityDeviceContext)
   const [getClientList] = useLazyGetClientsQuery()
 
   const { data: dpskDevicesData, ...dpskDevicesResult } = useGetDpskPassphraseDevicesQuery({
@@ -100,6 +103,7 @@ export function PersonaDevicesTable (props: {
         if (!result.data?.data) return
         setMacDevices(aggregateMacAuthDevices(macDevices, result.data.data))
         setDpskDevices(aggregateDpskDevices(dpskDevices, result.data.data))
+        setDeviceCount(dpskDevices.length + macDevices.length)
       })
   }, [clientMac])
 
@@ -339,12 +343,6 @@ export function PersonaDevicesTable (props: {
         { isLoading: false, isFetching: dpskDevicesResult.isFetching }
       ]}
     >
-      <Subtitle level={4}>
-        {$t(
-          { defaultMessage: 'Devices ({deviceCount})' },
-          { deviceCount: dpskDevices.length + macDevices.length }
-        )}
-      </Subtitle>
       <Table
         rowKey={'macAddress'}
         columns={columns}

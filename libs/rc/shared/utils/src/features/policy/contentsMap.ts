@@ -31,6 +31,7 @@ export const policyTypeLabelMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.CONNECTION_METERING]: defineMessage({ defaultMessage: 'Data Usage Metering' }),
   // eslint-disable-next-line max-len
   [PolicyType.LBS_SERVER_PROFILE]: defineMessage({ defaultMessage: 'Location Based Service Server' }),
+  [PolicyType.WORKFLOW]: defineMessage({ defaultMessage: 'Workflow' }),
   [PolicyType.CERTIFICATE_TEMPLATE]: defineMessage({ defaultMessage: 'Certificate Template' }),
   [PolicyType.CERTIFICATE_AUTHORITY]: defineMessage({ defaultMessage: 'Certificate Authority' }),
   [PolicyType.CERTIFICATE]: defineMessage({ defaultMessage: 'Certificate' }),
