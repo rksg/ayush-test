@@ -1,0 +1,233 @@
+import { MessageDescriptor }              from '@formatjs/intl'
+import { defineMessage, useIntl }         from 'react-intl'
+import { ConnectionLineType, Edge, Node } from 'reactflow'
+
+import {
+  AupActionTypeIcon,
+  DataPromptActionTypeIcon,
+  DisplayMessageActionTypeIcon,
+  DpskActionTypeIcon,
+  MacRegActionTypeIcon
+} from '@acx-ui/icons'
+
+import {
+  ActionType,
+  AupActionContext,
+  DataPromptActionContext, DataPromptVariable,
+  DisplayMessageActionContext,
+  UIConfiguration,
+  StepType,
+  WorkflowStep
+} from '../../types'
+
+export const WorkflowStepsEmptyCount = 2
+
+export const useGetActionDefaultValueByType = (actionType: ActionType) => {
+  const { $t } = useIntl()
+
+  return Object.entries(ActionDefaultValueMap[actionType])
+    .reduce((acc: Record<string, string | boolean | object>, [key, value]) => {
+      if (typeof value === 'string' || typeof value === 'boolean' || Array.isArray(value)) {
+        acc[key] = value
+      } else {
+        acc[key] = $t(value)
+      }
+      return acc
+    }, {})
+}
+
+export const findFirstStep = (steps: WorkflowStep[]): WorkflowStep | undefined => {
+  return steps.find(step =>
+    step.priorStepId === undefined && !step.splitOptionId
+  )
+}
+
+export const toStepMap = (steps: WorkflowStep[])
+  : Map<string, WorkflowStep> =>
+{
+  const map = new Map<string, WorkflowStep>()
+
+  steps.forEach(step => {
+    map.set(step.id, step)
+  })
+
+  return map
+}
+
+/* eslint-disable max-len */
+// TODO: need to be defined by UX designer
+export const ActionNodeDisplay: Record<ActionType, MessageDescriptor> = {
+  [ActionType.AUP]: defineMessage({ defaultMessage: 'Acceptable Use Policy' }),
+  [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Display a Form' }),
+  [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Custom Message' }),
+  [ActionType.DPSK]: defineMessage({ defaultMessage: 'Provide DPSK' }),
+  [ActionType.MAC_REG]: defineMessage({ defaultMessage: 'Mac Registration' })
+}
+
+export const ActionTypeCardIcon: Record<ActionType, React.FunctionComponent> = {
+  [ActionType.AUP]: AupActionTypeIcon,
+  [ActionType.DATA_PROMPT]: DataPromptActionTypeIcon,
+  [ActionType.DISPLAY_MESSAGE]: DisplayMessageActionTypeIcon,
+  [ActionType.DPSK]: DpskActionTypeIcon,
+  [ActionType.MAC_REG]: MacRegActionTypeIcon
+}
+
+export const ActionTypeTitle: Record<ActionType, MessageDescriptor> = {
+  [ActionType.AUP]: defineMessage({ defaultMessage: 'Acceptable Use Policy (AUP)' }),
+  [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Display a Form' }),
+  [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Custom Message' }),
+  [ActionType.DPSK]: defineMessage({ defaultMessage: 'Provide DPSK' }),
+  [ActionType.MAC_REG]: defineMessage({ defaultMessage: 'MAC Address Registration' })
+}
+
+export const ActionTypeDescription: Record<ActionType, MessageDescriptor> = {
+  [ActionType.AUP]: defineMessage({ defaultMessage: 'Requires that users signal their acceptance of the AUP or Terms & Conditions' }),
+  [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Displays a prompt screen with customizable data entry fields' }),
+  [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Displays a message to the user along with a single button to continue' }),
+  [ActionType.DPSK]: defineMessage({ defaultMessage: 'Generates a Ruckus DPSK and identity, for the requested Identity Group.' }),
+  [ActionType.MAC_REG]: defineMessage({ defaultMessage: 'MAC Address registers and authenticated with RADIUS, assigned to an Identity Group' })
+}
+
+export const AupActionDefaultValue: {
+  [key in keyof AupActionContext]: MessageDescriptor | string | boolean
+} = {
+  title: defineMessage({ defaultMessage: 'Welcome to the ACCOUNT_NAME Network' }),
+  messageHtml: defineMessage({ defaultMessage: 'Access to the ACCOUNT_NAME network is restricted to authorized users and requires acceptance of the Terms & Conditions below.\n\nOnce authorized for access, your device will be configured with a unique certificate for network access.' }),
+  checkboxText: defineMessage({ defaultMessage: 'I agree to the Terms & Conditions.' }),
+  bottomLabel: defineMessage({ defaultMessage: 'bottomLabel' }),
+  backButtonText: defineMessage({ defaultMessage: '< Back' }),
+  continueButtonText: defineMessage({ defaultMessage: 'Start' }),
+  checkboxHighlightColor: 'FCFFB3',
+  checkboxDefaultState: true,
+
+  useAupFile: false,
+  useContentFile: false
+  // contentFileLocation: 'fakeContentFileLocation',
+}
+
+export const DataPromptActionDefaultValue: {
+  [key in keyof DataPromptActionContext]: MessageDescriptor | boolean | string | DataPromptVariable[]
+} = {
+  title: defineMessage({ defaultMessage: 'Default Display Message Title' }),
+  displayTitle: true,
+  messageHtml: defineMessage({ defaultMessage: 'Default Display Message Body' }),
+  displayMessageHtml: true,
+  backButtonText: 'Back',
+  continueButtonText: 'Continue',
+  displayBackButton: true,
+  displayContinueButton: true,
+  variables: [{ type: 'USER_NAME', label: 'Username' }]
+}
+
+export const DisplayMessageActionDefaultValue: {
+  [key in keyof DisplayMessageActionContext]: MessageDescriptor | string | boolean
+} = {
+  title: defineMessage({ defaultMessage: 'Default Display Message Title' }),
+  messageHtml: defineMessage({ defaultMessage: 'Default Display Message Body' }),
+  backButtonText: 'Back',
+  continueButtonText: 'Continue',
+  displayBackButton: true,
+  displayContinueButton: true
+}
+
+export const ActionDefaultValueMap: Record<ActionType, object> = {
+  [ActionType.AUP]: AupActionDefaultValue,
+  [ActionType.DATA_PROMPT]: DataPromptActionDefaultValue,
+  [ActionType.DISPLAY_MESSAGE]: DisplayMessageActionDefaultValue,
+  [ActionType.DPSK]: {},
+  [ActionType.MAC_REG]: {}
+}
+/* eslint-enable max-len */
+
+export const composeNext = (
+  stepId: string, stepMap: Map<string, WorkflowStep>,
+  nodes: Node<WorkflowStep, ActionType>[], edges: Edge[],
+  currentX: number, currentY: number,
+  isStart?: boolean
+) => {
+  const SPACE_OF_NODES = 110
+  const step = stepMap.get(stepId)
+
+  if (!step) return
+
+  const {
+    id,
+    nextStepId,
+    type,
+    actionType
+  } = step
+  const nodeType: ActionType = (actionType ?? 'START') as ActionType
+  const nextStep = stepMap.get(nextStepId ?? '')
+
+  // console.log('Step :: ', nodeType, type, enrollmentActionId)
+
+  nodes.push({
+    id,
+    type: nodeType,
+    position: { x: currentX, y: currentY },
+    data: {
+      ...step,
+      isStart,
+      isEnd: nextStep?.type === StepType.End
+    },
+
+    hidden: type === StepType.End || (type === StepType.Start && stepMap.size !== 2),
+    deletable: false
+  })
+
+  if (nextStepId) {
+    edges.push({
+      id: `${id} -- ${nextStepId}`,
+      source: id,
+      target: nextStepId,
+      type: ConnectionLineType.Step,
+      style: { stroke: 'var(--acx-primary-black)' },
+
+      deletable: false
+    })
+
+    composeNext(nextStepId, stepMap, nodes, edges,
+      currentX, currentY + SPACE_OF_NODES, type === StepType.Start)
+  }
+}
+
+
+export function toReactFlowData (steps: WorkflowStep[])
+  : { nodes: Node[], edges: Edge[] } {
+  const nodes: Node<WorkflowStep, ActionType>[] = []
+  const edges: Edge[] = []
+  const START_X = 100
+  const START_Y = 0
+
+  if (steps.length === 0) {
+    return { nodes, edges }
+  }
+
+  const firstStep = findFirstStep(steps)
+  const stepMap = toStepMap(steps)
+
+  if (firstStep) {
+    composeNext(firstStep.id, stepMap, nodes, edges,
+      START_X, START_Y, firstStep.type === StepType.Start)
+  }
+
+  return { nodes, edges }
+}
+
+export const DefaultUIConfiguration : UIConfiguration = {
+  disablePoweredBy: false,
+  uiColorSchema: {
+    fontHeaderColor: 'var(--acx-neutrals-100)',
+    backgroundColor: 'var(--acx-primary-white)',
+    fontColor: 'var(--acx-neutrals-100)',
+
+    buttonFontColor: 'var(--acx-primary-white)',
+    buttonColor: 'var(--acx-accents-orange-50)'
+  },
+  uiStyleSchema: {
+    logoRatio: 1,
+    titleFontSize: 16
+  },
+  welcomeName: '',
+  welcomeTitle: ''
+}
