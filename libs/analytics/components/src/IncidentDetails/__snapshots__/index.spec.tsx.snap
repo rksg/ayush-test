@@ -313,19 +313,27 @@ exports[`incident details should render incident details correctly 1`] = `
   padding-bottom: 0;
 }
 
-.c8 .ant-descriptions-item-label {
+.c8 .ant-descriptions-item .ant-descriptions-item-label,
+.c8 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c8 .ant-descriptions-item .ant-descriptions-item-label {
   color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c8 .ant-descriptions-item-content {
+.c8 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c8 .ant-descriptions-item .ant-descriptions-item-content {
   color: var(--acx-primary-black);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c8 .ant-descriptions-item-content .ant-badge-status-dot {
+.c8 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
   top: -1px;
 }
 
@@ -1348,19 +1356,27 @@ exports[`incident details should render incident details correctly when there is
   padding-bottom: 0;
 }
 
-.c8 .ant-descriptions-item-label {
+.c8 .ant-descriptions-item .ant-descriptions-item-label,
+.c8 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c8 .ant-descriptions-item .ant-descriptions-item-label {
   color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c8 .ant-descriptions-item-content {
+.c8 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c8 .ant-descriptions-item .ant-descriptions-item-content {
   color: var(--acx-primary-black);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c8 .ant-descriptions-item-content .ant-badge-status-dot {
+.c8 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
   top: -1px;
 }
 
