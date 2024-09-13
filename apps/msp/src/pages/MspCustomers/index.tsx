@@ -81,6 +81,7 @@ export function MspCustomers () {
   const createEcWithTierEnabled = useIsSplitOn(Features.MSP_EC_CREATE_WITH_TIER)
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
   const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
+  const isvViewModelTpLoginEnabled = useIsSplitOn(Features.VIEWMODEL_TP_LOGIN_ADMIN_COUNT)
 
   const [ecTenantId, setTenantId] = useState('')
   const [selectedTenantType, setTenantType] = useState(AccountType.MSP_INTEGRATOR)
@@ -219,6 +220,10 @@ export function MspCustomers () {
   }
 
   function useColumns (mspEcAlarmList?: MspEcAlarmList, isSupportTier?: boolean) {
+    const mspAdminCountIndex = isvViewModelTpLoginEnabled ?
+      (tenantType === AccountType.MSP_INTEGRATOR ? 'mspIntegratorAdminCount'
+        : (tenantType === AccountType.MSP_INSTALLER ? 'mspInstallerAdminCount'
+          : 'mspAdminCount' )) : 'mspAdminCount'
 
     const columns: TableProps<MspEc>['columns'] = [
       {
@@ -263,9 +268,9 @@ export function MspCustomers () {
       {
         title: $t({ defaultMessage: '{adminCountHeader}' }, { adminCountHeader:
             mspUtils.transformAdminCountHeader(tenantType) }),
-        dataIndex: 'mspAdminCount',
+        dataIndex: mspAdminCountIndex,
         align: 'center',
-        key: 'mspAdminCount',
+        key: mspAdminCountIndex,
         sorter: true,
         width: 140,
         onCell: (data) => {
