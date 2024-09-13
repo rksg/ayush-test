@@ -117,7 +117,7 @@ export const mockAIDrivenRow = {
   trigger: 'daily'
 }
 
-export const mockAirflexRows = [
+export const mockEquiFlexRows = [
   {
     id: '16',
     code: 'c-probeflex-24g',
@@ -445,7 +445,7 @@ export const intentHighlights = {
       new: 4,
       active: 8
     },
-    airflex: {
+    probeflex: {
       new: 5,
       active: 10
     },
@@ -462,7 +462,7 @@ export const intentHighlightsWithZeroActive = {
       new: 4,
       active: 0
     },
-    airflex: {
+    probeflex: {
       new: 5,
       active: 0
     },
@@ -487,9 +487,9 @@ export const intentHighlightsWithRRM = {
   }
 }
 
-export const intentHighlightsWithAirflex = {
+export const intentHighlightsWithEquiFlex = {
   highlights: {
-    airflex: {
+    probeflex: {
       new: 5,
       active: 10
     }
@@ -513,17 +513,17 @@ export const aiFeatureWithRRM = {
   status: Statuses.active
 } as AIFeatureProps
 
-export const aiFeatureWithAirFlexAI = {
+export const aiFeatureWithEquiFlex = {
   code: 'c-probeflex-6g',
-  aiFeature: aiFeatures.AirFlexAI,
+  aiFeature: aiFeatures.EquiFlex,
   root: 'root2',
   sliceId: 'sliceId2',
   status: Statuses.active
 } as AIFeatureProps
 
-export const aiFeatureWithAirFlexAIWithNewStatus = {
+export const aiFeatureWithEquiFlexWithNewStatus = {
   code: 'c-probeflex-6g',
-  aiFeature: aiFeatures.AirFlexAI,
+  aiFeature: aiFeatures.EquiFlex,
   root: 'root2',
   sliceId: 'sliceId2',
   status: Statuses.new
