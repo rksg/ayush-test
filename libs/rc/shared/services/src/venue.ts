@@ -2027,9 +2027,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ethernetPortProfiles.map((profile) => {
             if (profile.venueActivations) {
               profile.venueActivations.map((activity)=>{
-                const targetLanPort = venueLanPortSettings.find(setting => setting.model === activity.apModel)
-                  ?.lanPorts.find(lanPort => lanPort.portId === activity.portId)
-
+                const targetLanPort = venueLanPortSettings.find(setting => setting.model === activity.apModel && venueId === activity.venueId)
+                  ?.lanPorts.find(lanPort => lanPort.portId?.toString() === activity.portId?.toString())
                 if(targetLanPort) {
                   targetLanPort.ethernetPortProfileId = profile.id
                 }
@@ -2037,7 +2036,6 @@ export const venueApi = baseVenueApi.injectEndpoints({
             }
           })
         }
-
         return { data: venueLanPortSettings }
       }
     })
