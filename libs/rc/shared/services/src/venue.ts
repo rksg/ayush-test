@@ -2033,9 +2033,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
           )
           const ethernetPortProfiles = (ethernetPortProfileQuery.data as TableResult<EthernetPortProfileViewData>).data
 
-          ethernetPortProfiles.map((profile) => {
+          ethernetPortProfiles.forEach((profile) => {
             if (profile.venueActivations) {
-              profile.venueActivations.map((activity)=>{
+              profile.venueActivations.forEach((activity)=>{
                 const targetLanPort = venueLanPortSettings.find(setting => setting.model === activity.apModel && venueId === activity.venueId)
                   ?.lanPorts.find(lanPort => lanPort.portId?.toString() === activity.portId?.toString())
                 if(targetLanPort) {
