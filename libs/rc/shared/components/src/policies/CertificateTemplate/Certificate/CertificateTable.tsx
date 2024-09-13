@@ -4,39 +4,49 @@ import { Modal as AntModal, Form }  from 'antd'
 import moment                       from 'moment'
 import { RawIntlProvider, useIntl } from 'react-intl'
 
-import { Button, Drawer, Loader, Table, TableProps }                                                                                                                                                                                                                                 from '@acx-ui/components'
-import { useEditCertificateMutation, useGenerateCertificateMutation, useGetCertificatesQuery, useGetSpecificTemplateCertificatesQuery }                                                                                                                                              from '@acx-ui/rc/services'
-import { Certificate, CertificateCategoryType, CertificateStatusType, CertificateTemplate, EXPIRATION_DATE_FORMAT, EXPIRATION_TIME_FORMAT, EnrollmentType, FILTER, PolicyOperation, PolicyType, SEARCH, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, useTableQuery } from '@acx-ui/rc/utils'
-import { getIntl, noDataDisplay }                                                                                                                                                                                                                                                    from '@acx-ui/utils'
+import { Button, Drawer, Loader, Table, TableProps } from '@acx-ui/components'
+import {
+  useEditCertificateMutation,
+  useGenerateCertificateMutation,
+  useSearchPersonaListQuery
+} from '@acx-ui/rc/services'
+import { TableQuery, Certificate, CertificateCategoryType, CertificateStatusType, CertificateTemplate, EXPIRATION_DATE_FORMAT, EXPIRATION_TIME_FORMAT, EnrollmentType, FILTER, PolicyOperation, PolicyType, SEARCH, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy } from '@acx-ui/rc/utils'
+import { RequestPayload }                                                                                                                                                                                                                                                         from '@acx-ui/types'
+import { getIntl, noDataDisplay }                                                                                                                                                                                                                                                 from '@acx-ui/utils'
 
-import CertificateSettings from '../CertificateForm/CertificateSettings'
-import { issuedByLabel }   from '../contentsMap'
+import { issuedByLabel } from '../contentsMap'
 
-import DetailDrawer                                            from './DetailDrawer'
+import CertificateSettings                                     from './CertificateForm/CertificateSettings'
+import { DetailDrawer }                                        from './DetailDrawer'
 import { getCertificateStatus, getDisplayedCertificateStatus } from './DetailDrawerHelper'
 import RevokeForm                                              from './RevokeForm'
 
 
-export default function CertificateTable ({ templateData, showGenerateCert = false }:
-  { templateData?: CertificateTemplate, showGenerateCert?: boolean }) {
+export function CertificateTable (
+  { templateData, showGenerateCert = false, tableQuery }: {
+    templateData?: CertificateTemplate, showGenerateCert?: boolean,
+    tableQuery: TableQuery<Certificate, RequestPayload, unknown>
+}) {
   const { $t } = useIntl()
   const [certificateForm] = Form.useForm()
   const [detailDrawerOpen, setDetailDrawerOpen] = useState(false)
   const [certificateDrawerOpen, setCertificateDrawerOpen] = useState(false)
   const [detailData, setDetailData] = useState<Certificate | null>(null)
   const [detailId, setDetailId] = useState<string | null>(null)
-  const settingsId = 'certificate-table'
-  const tableQuery = useTableQuery({
-    useQuery:
-    templateData ? useGetSpecificTemplateCertificatesQuery : useGetCertificatesQuery,
-    defaultPayload: {},
-    apiParams: templateData?.id ? { templateId: templateData?.id } : {},
-    pagination: { settingsId }
-  })
+
+  const { data: identityList } = useSearchPersonaListQuery(
+    { payload: { ids: [...new Set(tableQuery.data?.data?.map(d => d.identityId))] } },
+    { skip: !tableQuery.data })
 
   useEffect(() => {
-    tableQuery.data?.data?.filter((item) => item.id === detailId).map((item) => setDetailData(item))
-  }, [tableQuery])
+    tableQuery.data?.data?.filter((item) =>
+      item.id === detailId).map((item) => {
+      const identity = identityList?.data.filter(d=>d.id===item.identityId)[0]
+      setDetailData({ ...item,
+        identityName: identity?.name,
+        identityGroupId: identity?.groupId
+      })})
+  }, [tableQuery.data])
 
   const [editCertificate] = useEditCertificateMutation()
   const [generateCertificate] = useGenerateCertificateMutation()
@@ -61,7 +71,11 @@ export default function CertificateTable ({ templateData, showGenerateCert = fal
           <Button type='link'
             onClick={() => {
               setDetailId(row.id)
-              setDetailData(row)
+              const identity = identityList?.data?.filter(d=>d.id===row.identityId)[0]
+              setDetailData({ ...row,
+                identityName: identity?.name,
+                identityGroupId: identity?.groupId
+              })
               setDetailDrawerOpen(true)
             }}>{row.commonName}
           </Button>)
@@ -109,6 +123,16 @@ export default function CertificateTable ({ templateData, showGenerateCert = fal
         return row.revocationDate
           ? moment(row.revocationDate).format(EXPIRATION_TIME_FORMAT)
           : noDataDisplay
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Identity' }),
+      dataIndex: 'identityId',
+      key: 'identityId',
+      render: function (_, row) {
+        const item = identityList?.data?.filter(data =>
+          data.id===row.identityId).map(data => data.name)[0]
+        return item ?? noDataDisplay
       }
     },
     {
@@ -233,7 +257,7 @@ export default function CertificateTable ({ templateData, showGenerateCert = fal
     <>
       <Loader states={[tableQuery]}>
         <Table<Certificate>
-          settingsId={settingsId}
+          settingsId={'certificate-table'}
           columns={columns}
           dataSource={tableQuery?.data?.data}
           pagination={tableQuery.pagination}
