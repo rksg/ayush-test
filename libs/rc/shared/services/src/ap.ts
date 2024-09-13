@@ -77,15 +77,13 @@ import {
   onActivityMessageReceived,
   onSocketActivityChanged,
   NewApGroupViewModelResponseType,
-  LanPort,
-  EhternetPortSettings,
   EthernetPortProfileUrls,
   SystemCommands,
   StickyClientSteering,
   ApStickyClientSteering
 } from '@acx-ui/rc/utils'
-import { baseApApi }                                    from '@acx-ui/store'
-import { RequestPayload }                               from '@acx-ui/types'
+import { baseApApi }      from '@acx-ui/store'
+import { RequestPayload } from '@acx-ui/types'
 import {
   ApiInfo,
   batchApi,
@@ -881,28 +879,28 @@ export const apApi = baseApApi.injectEndpoints({
       queryFn: async ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) => {
         try {
           const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
-          const activateRequests = (payload as WifiApSetting)?.lanPorts?.
-          filter(l => l.ethernetPortProfileId ).map(l => ({
-            params: {
-              venueId: params!.venueId,
-              serialNumber: params!.serialNumber,
-              portId: l.portId,
-              id: l.ethernetPortProfileId
-            }
-          }))
-          const overwriteRequests = (payload as WifiApSetting)?.lanPorts?.
-          filter(l => l.ethernetPortProfileId ).map(l => ({
-            params: {
-              venueId: params!.venueId,
-              serialNumber: params!.serialNumber,
-              portId: l.portId
-            },
-            payload: {
-              enabled: l.enabled,
-              overwriteUntagId: l.untagId,
-              overwriteVlanMembers: l.vlanMembers
-            }
-          }))
+          const activateRequests = (payload as WifiApSetting)?.lanPorts
+            ?.filter(l => l.ethernetPortProfileId ).map(l => ({
+              params: {
+                venueId: params!.venueId,
+                serialNumber: params!.serialNumber,
+                portId: l.portId,
+                id: l.ethernetPortProfileId
+              }
+            }))
+          const overwriteRequests = (payload as WifiApSetting)?.lanPorts
+            ?.filter(l => l.ethernetPortProfileId ).map(l => ({
+              params: {
+                venueId: params!.venueId,
+                serialNumber: params!.serialNumber,
+                portId: l.portId
+              },
+              payload: {
+                enabled: l.enabled,
+                overwriteUntagId: l.untagId,
+                overwriteVlanMembers: l.vlanMembers
+              }
+            }))
           await batchApi(EthernetPortProfileUrls.activateEthernetPortProfileOnApPortId,
             activateRequests!, fetchWithBQ, customHeaders)
           await batchApi(EthernetPortProfileUrls.updateEthernetPortSettingsByApPortId,

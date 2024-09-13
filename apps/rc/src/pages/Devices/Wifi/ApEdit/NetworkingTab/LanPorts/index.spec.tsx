@@ -267,14 +267,6 @@ describe('AP Ethernet Port Profile', () => {
     const enablePort = await screen.findByRole('switch', { name: 'Enable port' })
     expect(enablePort).toHaveAttribute('aria-checked', 'true')
 
-    // const editBtn = await screen.findByRole('button', { name: 'edit' })
-    // expect(editBtn).toBeVisible()
-
-    // fireEvent.click(editBtn)
-
-    // const cancelBtn = await screen.findByRole('button', { name: 'close' })
-    // fireEvent.click(cancelBtn)
-
     const profileSelector = await screen.findByRole('combobox', { name: 'Ethernet Port Profile' })
     expect(profileSelector).toBeInTheDocument()
     await userEvent.click(profileSelector)

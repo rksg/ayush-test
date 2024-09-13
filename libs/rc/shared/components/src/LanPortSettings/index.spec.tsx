@@ -235,12 +235,12 @@ describe('LanPortSettings - Ethernet Port Profile', () => {
     expect(screen.getByText('VLAN Members')).toBeInTheDocument()
     expect(screen.getByText('802.1X')).toBeInTheDocument()
 
-    const untagIdReloadBtn = await screen.getByRole('button',
+    const untagIdReloadBtn = screen.getByRole('button',
       { name: 'VLAN Untag ID 1 (Custom) reload' })
     expect(untagIdReloadBtn).toBeVisible()
     await userEvent.click(untagIdReloadBtn)
 
-    const checkBtn = await screen.getByRole('button', { name: 'check' })
+    const checkBtn = screen.getByRole('button', { name: 'check' })
     expect(checkBtn).toBeVisible()
     await userEvent.click(checkBtn)
   })
