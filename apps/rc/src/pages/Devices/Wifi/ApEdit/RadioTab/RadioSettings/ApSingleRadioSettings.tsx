@@ -10,7 +10,7 @@ import { Features, useIsSplitOn }                                               
 import { ApRadioTypeEnum, SingleRadioSettings, LPIButtonText, SupportRadioChannelsContext } from '@acx-ui/rc/components'
 import { isAPLowPower }                                                                     from '@acx-ui/rc/services'
 import { AFCStatus,AFCProps }                                                               from '@acx-ui/rc/utils'
-import { isApFwVersionLargerThan71 }                                       from '@acx-ui/utils'
+import { isApFwVersionLargerThan71 }                                                        from '@acx-ui/utils'
 
 import { ApEditContext, ApDataContext } from '../..'
 import { DisabledDiv, FieldLabel }      from '../../styledComponents'
