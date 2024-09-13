@@ -1,78 +1,50 @@
 /* eslint-disable max-len */
 import { MessageDescriptor, defineMessage } from 'react-intl'
 
-import { CertificateCategoryType, CertificateStatusType, EnrollmentType, KeyUsageType, UsageType } from '@acx-ui/rc/utils'
+import { ChallengePasswordType, ScepKeyCommonNameType } from '@acx-ui/rc/utils'
 
 
-export const usagesLabel: Record<UsageType, MessageDescriptor> = {
-  [UsageType.CLIENT_AUTH]: defineMessage({ defaultMessage: 'Client Authentication' }),
-  [UsageType.SERVER_AUTH]: defineMessage({ defaultMessage: 'Server Authentication' })
-}
-
-export const keyUsagesLabel: Record<KeyUsageType, MessageDescriptor> = {
-  [KeyUsageType.DIGITAL_SIGNATURE]: defineMessage({ defaultMessage: 'Digital Signature' }),
-  [KeyUsageType.KEY_ENCIPHERMENT]: defineMessage({ defaultMessage: 'Key Encipherment' }),
-  [KeyUsageType.DATA_ENCIPHERMENT]: defineMessage({ defaultMessage: 'Data Encipherment' }),
-  [KeyUsageType.KEY_CERT_SIGN]: defineMessage({ defaultMessage: 'Certificate Signing' }),
-  [KeyUsageType.CRL_SIGN]: defineMessage({ defaultMessage: 'CRL Signing' })
-}
-
-export const certificateDescription: Record<string, MessageDescriptor> = {
-  INFORMATION: defineMessage({
-    defaultMessage: 'The following fields are used as variables within the selected certificate template. The values specified below will be used to replace the variables in the generated certificate.'
+export const challengePasswordTypeLabel: Record<ChallengePasswordType, MessageDescriptor> = {
+  [ChallengePasswordType.STATIC]: defineMessage({
+    defaultMessage: 'Static'
+  }),
+  [ChallengePasswordType.NONE]: defineMessage({
+    defaultMessage: 'None'
+  }),
+  [ChallengePasswordType.MICROSOFT]: defineMessage({
+    defaultMessage: 'Microsoft Intune'
   })
 }
 
-export const certificateStatusTypeLabel: Record<CertificateStatusType, MessageDescriptor> = {
-  [CertificateStatusType.VALID]: defineMessage({
-    defaultMessage: 'Valid'
+export const scepKeyCommonNameTypeLabel: Record<ScepKeyCommonNameType, MessageDescriptor> = {
+  [ScepKeyCommonNameType.IGNORE]: defineMessage({
+    defaultMessage: 'Ignore'
   }),
-  [CertificateStatusType.REVOKED]: defineMessage({
-    defaultMessage: 'Revoked'
+  [ScepKeyCommonNameType.MAC_ADDRESS]: defineMessage({
+    defaultMessage: 'MAC address, usable as $\'{MAC_ADDRESS} in the certificate template'
   }),
-  [CertificateStatusType.EXPIRED]: defineMessage({
-    defaultMessage: 'Expired'
+  [ScepKeyCommonNameType.USERNAME]: defineMessage({
+    defaultMessage: 'Username, usable as $\'{USERNAME} in the certificate template'
+  }),
+  [ScepKeyCommonNameType.DEVICE_NAME]: defineMessage({
+    defaultMessage: 'Device identifier, usable as $\'{ROLLUP_DEVICE_NAME} in the certificate template'
+  }),
+  [ScepKeyCommonNameType.EMAIL]: defineMessage({
+    defaultMessage: 'Email, usable as $\'{EMAIL} in the certificate template'
+  }),
+  [ScepKeyCommonNameType.LOCATION]: defineMessage({
+    defaultMessage: 'Location, usable as $\'{LOCATION} in the certificate template'
   })
 }
 
-export const deleteDescription: Record<string, MessageDescriptor> = {
-  CA_DETAIL: defineMessage({
-    defaultMessage: 'This will delete all data associated with the certificate authority, including templates, issued certificates, and more. Certificates issued from this CA will begin failing RADIUS authentication.'
+export const scepKeysDescription: Record<string, MessageDescriptor> = {
+  SCEP_KEY: defineMessage({
+    defaultMessage: 'The SCEP Key acts as a shared secret known by the caller and the server. The SCEP key is included in the URL, so it must be in a URL-safe format'
   }),
-  TEMPLATE_DETAIL: defineMessage({
-    defaultMessage: 'This will delete all data associated with the certificate template, including issued certificates. Certificates issued from this template will begin failing RADIUS authentication.'
+  VALIDITY_INFO: defineMessage({
+    defaultMessage: 'When possible, access to the SCEP server should be restricted as much as possible. When not in use, the SCEP key should be disabled.'
   }),
-  PRIVATE_KEY_1: defineMessage({
-    defaultMessage: 'Please verify that you have downloaded the private key before removing.'
-  }),
-  PRIVATE_KEY_2: defineMessage({
-    defaultMessage: 'You must download and store the private key before removing it. If you remove the private key without having a downloaded copy preserved, the certificate authority will no longer be usable.'
-  }),
-  PRIVATE_KEY_3: defineMessage({
-    defaultMessage: 'I have downloaded and saved the private key'
-  }),
-  UNDONE: defineMessage({
-    defaultMessage: 'This action cannot be undone.'
-  }),
-  CA_IN_USE: defineMessage({
-    defaultMessage: 'You are unable to delete this record due to its usage in network'
-  })
-}
-
-export const certDetailTitle: Record<CertificateCategoryType, MessageDescriptor> = {
-  [CertificateCategoryType.CERTIFICATE]: defineMessage({ defaultMessage: 'Certificate Details' }),
-  [CertificateCategoryType.CERTIFICATE_AUTHORITY]: defineMessage({ defaultMessage: 'Certificate Authority Details' }),
-  [CertificateCategoryType.CERTIFICATE_TEMPLATE]: defineMessage({ defaultMessage: 'Certificate Template Details' })
-}
-
-export const issuedByLabel: Record<EnrollmentType, MessageDescriptor> = {
-  [EnrollmentType.CHROMEBOOK]: defineMessage({ defaultMessage: 'Chromebook' }),
-  [EnrollmentType.SCEP]: defineMessage({ defaultMessage: 'SCEP' }),
-  [EnrollmentType.NONE]: defineMessage({ defaultMessage: 'None' })
-}
-
-export const onboardSettingsDescription: Record<string, MessageDescriptor> = {
-  KEY_LENGTH: defineMessage({
-    defaultMessage: 'For certificates generated by Chromebook enrollment or from CSRs manually added, the Key Length settings of certificate template does not apply.'
+  CONFIG_INFO: defineMessage({
+    defaultMessage: 'When certificates are issued using the SCEP key, the following settings will control the characteristics of the issued certificate.'
   })
 }
