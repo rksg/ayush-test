@@ -100,9 +100,7 @@ export const AupActionDefaultValue: {
   checkboxHighlightColor: 'FCFFB3',
   checkboxDefaultState: true,
 
-  useAupFile: false,
-  useContentFile: false
-  // contentFileLocation: 'fakeContentFileLocation',
+  useAupFile: false
 }
 
 export const DataPromptActionDefaultValue: {

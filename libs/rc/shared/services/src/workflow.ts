@@ -26,7 +26,7 @@ import {
   ActionBase,
   GetApiVersionHeader,
   ApiVersionEnum,
-  ImageUrl,
+  ImageUrl, RequestFormData, FileDto,
   CommonResult
 } from '@acx-ui/rc/utils'
 import { baseWorkflowApi }             from '@acx-ui/store'
@@ -439,6 +439,21 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
 
 
     /** Workflow Actions API */
+    uploadFile: build.mutation<FileDto, RequestFormData>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(WorkflowUrls.uploadFile, params,
+            { 'Content-Type': undefined, 'Accept': '*/*' }),
+          body: payload
+        }
+      } }),
+    deleteFile: build.mutation<void, RequestPayload>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(WorkflowUrls.deleteFile, params),
+          body: payload
+        }
+      } }),
     // eslint-disable-next-line max-len
     createAction: build.mutation<CommonAsyncResponse, RequestPayload & { callback?: (response: CommonAsyncResponse) => void }>({
       query: commonQueryFn(WorkflowUrls.createAction),
@@ -568,5 +583,7 @@ export const {
   useLazyGetActionByIdQuery,
   useGetAllActionsByTypeQuery,
   usePatchActionMutation,
-  useDeleteActionByIdMutation
+  useDeleteActionByIdMutation,
+  useUploadFileMutation,
+  useDeleteFileMutation
 } = workflowApi

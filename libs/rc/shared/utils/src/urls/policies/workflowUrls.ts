@@ -19,7 +19,7 @@ type WorkflowBaseUrlType = 'searchWorkflows' | 'getWorkflowDetail'
 
 type WorkflowActionUrlType = 'createAction' | 'patchAction'
   | 'deleteAction' | 'getActionById' | 'getAllActionsByType'
-  | 'queryActions'
+  | 'queryActions' | 'uploadFile' | 'deleteFile'
 
 type WorkflowStepUrlType = 'createWorkflowOption' | 'getWorkflowOptionById'
   | 'getWorkflowOptionsByStepId' | 'createWorkflowStepUnderOption' | 'deleteSplitOptionById'
@@ -296,5 +296,13 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
+  },
+  uploadFile: {
+    method: 'post',
+    url: `${WorkflowActionBaseUrl}/files`
+  },
+  deleteFile: {
+    method: 'delete',
+    url: `${WorkflowActionBaseUrl}/files`
   }
 }
