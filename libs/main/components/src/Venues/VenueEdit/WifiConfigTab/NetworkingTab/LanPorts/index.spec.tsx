@@ -420,7 +420,7 @@ describe('LanPortsForm', () => {
     expect(profileSelector).toBeInTheDocument()
     await userEvent.click(profileSelector)
     await userEvent.click(
-      await screen.findByText('Default Access')
+      (await screen.findAllByText('Default Access'))[1]
     )
 
     const enablePort = await screen.findByRole('switch', { name: 'Enable port' })

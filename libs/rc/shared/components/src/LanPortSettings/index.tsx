@@ -121,6 +121,12 @@ export function LanPortSettings (props: {
     onGUIChanged?.(fieldName)
   }
 
+  const convertEthernetPortListToDropdownItems = (
+    ethernetPortList?: EthernetPortProfileViewData[]): DefaultOptionType[] => {
+    // eslint-disable-next-line max-len
+    return ethernetPortList?.map(m => ({ label: m.name, value: m.id })) ?? []
+  }
+
   // Ethernet Port Profile
   const { ethernetPortDropdownItems, ethernetPortListQuery } =
     useGetEthernetPortProfileViewDataListQuery({
@@ -160,11 +166,7 @@ export function LanPortSettings (props: {
     }
   }, [apEthPortSettings, isApEthPortSettingsLoading])
 
-  const convertEthernetPortListToDropdownItems = (
-    ethernetPortList?: EthernetPortProfileViewData[]): DefaultOptionType[] => {
-    // eslint-disable-next-line max-len
-    return ethernetPortList?.map(m => ({ label: m.name, value: m.id })) ?? []
-  }
+
 
   const getOriginalEthProfileId = (ethernetPortList?: EthernetPortProfileViewData[]) => {
     let ethProfileId = null
