@@ -144,6 +144,26 @@ exports[`Topology Switch Card should render orrectly 1`] = `
   padding-bottom: var(--acx-descriptions-space);
 }
 
+.c5 .ant-descriptions-item .ant-descriptions-item-label,
+.c5 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c5 .ant-descriptions-item .ant-descriptions-item-label {
+  color: var(--acx-neutrals-60);
+}
+
+.c5 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c5 .ant-descriptions-item .ant-descriptions-item-content {
+  color: var(--acx-primary-black);
+}
+
 .c5 .ant-descriptions-item .ant-descriptions-item-container {
   -webkit-align-items: baseline;
   -webkit-box-align: baseline;
@@ -151,15 +171,8 @@ exports[`Topology Switch Card should render orrectly 1`] = `
   align-items: baseline;
 }
 
-.c5 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-label,
-.c5 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-content {
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
-}
-
 .c5 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-label {
   width: 50%;
-  color: var(--acx-neutrals-60);
 }
 
 .c5 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-content {

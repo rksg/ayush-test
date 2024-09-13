@@ -1,4 +1,3 @@
-import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Card, TrendPill } from '@acx-ui/components'
@@ -17,13 +16,11 @@ export const KpiCard: React.FC<{
   // TODO: show timestamps on hover
   return <Card>
     <UI.Title>{$t(kpi.label)}</UI.Title>
-    <Space align='center' size={5}>
-      <UI.Statistic
-        $blur={state === 'no-data'}
-        title={kpi.footer}
-        value={kpi.value}
-        suffix={kpi.delta && <TrendPill {...kpi.delta} />}
-      />
-    </Space>
+    <UI.Statistic
+      $blur={state === 'no-data'}
+      title={kpi.footer}
+      value={kpi.value}
+      suffix={kpi.delta && <TrendPill {...kpi.delta} />}
+    />
   </Card>
 }
