@@ -12,11 +12,11 @@ import { mockIntentContext } from '../__tests__/fixtures'
 import { Statuses }          from '../states'
 import { Intent }            from '../useIntentDetailsQuery'
 
-import { mockedIntentAirFlex, mockWifiNetworkList } from './__tests__/fixtures'
-import { configuration, kpis }                      from './common'
-import * as CProbeFlex24g                           from './CProbeFlex24g'
-import * as CProbeFlex5g                            from './CProbeFlex5g'
-import * as CProbeFlex6g                            from './CProbeFlex6g'
+import { mockedIntentEquiFlex, mockWifiNetworkList } from './__tests__/fixtures'
+import { configuration, kpis }                       from './common'
+import * as CProbeFlex24g                            from './CProbeFlex24g'
+import * as CProbeFlex5g                             from './CProbeFlex5g'
+import * as CProbeFlex6g                             from './CProbeFlex6g'
 
 jest.mock('../IntentContext')
 jest.mock('@acx-ui/config', () => ({
@@ -25,7 +25,7 @@ jest.mock('@acx-ui/config', () => ({
 const mockGet = get as jest.Mock
 
 const mockIntentContextWith = (data: Partial<Intent> = {}) => {
-  const intent = _.merge({}, mockedIntentAirFlex, data) as Intent
+  const intent = _.merge({}, mockedIntentEquiFlex, data) as Intent
   const context = mockIntentContext({ intent, configuration, kpis })
   return {
     params: _.pick(context.intent, ['code', 'root', 'sliceId']),
@@ -84,10 +84,10 @@ describe('IntentAIDetails', () => {
       await userEvent.hover(await screen.findByTestId('InformationSolid'))
       expect(await screen.findByRole('tooltip', { hidden: true }))
         // eslint-disable-next-line max-len
-        .toHaveTextContent('Enabling AirFlexAI will disable Airtime Decongestion')
+        .toHaveTextContent('Enabling EquiFlex will disable Airtime Decongestion')
     }
 
-    it('handle 2.4 GHz for airFlex', async () => {
+    it('handle 2.4 GHz for EquiFlex', async () => {
       const { params } = mockIntentContextWith({ code: 'c-probeflex-24g' })
       render(
         <CProbeFlex24g.IntentAIDetails />,
@@ -97,7 +97,7 @@ describe('IntentAIDetails', () => {
       await assertRenderCorrectly()
     })
 
-    it('handle 5 GHz for airFlex', async () => {
+    it('handle 5 GHz for EquiFlex', async () => {
       const { params } = mockIntentContextWith({ code: 'c-probeflex-5g' })
       render(
         <CProbeFlex5g.IntentAIDetails />,
@@ -107,7 +107,7 @@ describe('IntentAIDetails', () => {
       await assertRenderCorrectly()
     })
 
-    it('handle 6 GHz for airFlex', async () => {
+    it('handle 6 GHz for EquiFlex', async () => {
       const { params } = mockIntentContextWith({ code: 'c-probeflex-6g' })
       render(
         <CProbeFlex6g.IntentAIDetails />,
@@ -117,7 +117,7 @@ describe('IntentAIDetails', () => {
       await assertRenderCorrectly()
     })
 
-    it('handle active airFlex with currentValue is enabled', async () => {
+    it('handle active EquiFlex with currentValue is enabled', async () => {
       const { params } = mockIntentContextWith({
         code: 'c-probeflex-5g',
         status: Statuses.applyScheduled,
@@ -135,7 +135,7 @@ describe('IntentAIDetails', () => {
         .toHaveTextContent(/is currently enabled. This is a RF feature that is only available via RUCKUS AI,/)
     })
 
-    it('handle active airFlex with currentValue is not enabled', async () => {
+    it('handle active EquiFlex with currentValue is not enabled', async () => {
       const { params } = mockIntentContextWith({
         code: 'c-probeflex-5g',
         status: Statuses.applyScheduled,
@@ -153,7 +153,7 @@ describe('IntentAIDetails', () => {
         .toHaveTextContent(/is currently not enabled. This is a RF feature that is only available via RUCKUS AI,/)
     })
 
-    it('handle inactive airFlex', async () => {
+    it('handle inactive EquiFlex', async () => {
       const { params } = mockIntentContextWith({
         code: 'c-probeflex-5g',
         status: Statuses.na
@@ -170,7 +170,7 @@ describe('IntentAIDetails', () => {
         .toHaveTextContent(/When activated, this Intent takes over the automatic probe request/)
     })
 
-    it('handle airFlex without wlans', async () => {
+    it('handle EquiFlex without wlans', async () => {
       const { params } = mockIntentContextWith({ code: 'c-probeflex-5g' })
       render(
         <CProbeFlex5g.IntentAIDetails />,
@@ -182,7 +182,7 @@ describe('IntentAIDetails', () => {
       expect(screen.queryByText('Networks')).toBeNull()
     })
 
-    it('handle airFlex with wlans in RAI', async () => {
+    it('handle EquiFlex with wlans in RAI', async () => {
       mockGet.mockReturnValue('true') // get('IS_MLISA_SA')
       const { params, metadata } = mockIntentContextWith({
         code: 'c-probeflex-5g',
@@ -200,7 +200,7 @@ describe('IntentAIDetails', () => {
       expect(await screen.findByText(`${metadata.wlans?.length} networks selected`)).toBeVisible()
     })
 
-    it('handle airFlex with wlans in R1', async () => {
+    it('handle EquiFlex with wlans in R1', async () => {
       mockGet.mockReturnValue('false') // get('IS_MLISA_SA')
       const { params, metadata } = mockIntentContextWith({
         code: 'c-probeflex-5g',

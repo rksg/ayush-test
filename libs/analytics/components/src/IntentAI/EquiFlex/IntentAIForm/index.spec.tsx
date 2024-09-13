@@ -9,7 +9,7 @@ import { mockGraphqlMutation, mockGraphqlQuery, render, screen, waitForElementTo
 
 import { useIntentContext } from '../../IntentContext'
 import { Intent }           from '../../useIntentDetailsQuery'
-import { mocked }           from '../__tests__/mockedAirFlexAI'
+import { mocked }           from '../__tests__/mockedEquiFlex'
 import { kpis }             from '../common'
 
 import { IntentAIForm } from '.'

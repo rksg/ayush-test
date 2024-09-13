@@ -1,12 +1,12 @@
-import { commonAirFlexDetails }  from './common'
+import { commonEquiFlexDetails } from './common'
 import { createIntentAIDetails } from './IntentAIDetails'
 export { configuration, kpis } from './common'
 export { IntentAIForm } from './IntentAIForm'
 
 export const IntentAIDetails = createIntentAIDetails({
-  tradeoff: commonAirFlexDetails.tradeoff,
+  tradeoff: commonEquiFlexDetails.tradeoff,
   action: {
-    active: commonAirFlexDetails.action.active,
-    inactive: commonAirFlexDetails.action.inactive
+    active: commonEquiFlexDetails.action.active,
+    inactive: commonEquiFlexDetails.action.inactive
   }
 })
