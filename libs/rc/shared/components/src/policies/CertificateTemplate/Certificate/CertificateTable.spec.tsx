@@ -1,15 +1,16 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { AlgorithmType, CertificateUrls }                                         from '@acx-ui/rc/utils'
-import { Provider }                                                               from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
-import { RolesEnum, WifiScopes }                                                  from '@acx-ui/types'
-import { setUserProfile, getUserProfile }                                         from '@acx-ui/user'
+import { useGetSpecificTemplateCertificatesQuery }                    from '@acx-ui/rc/services'
+import { AlgorithmType, CertificateUrls, PersonaUrls, useTableQuery } from '@acx-ui/rc/utils'
+import { Provider }                                                   from '@acx-ui/store'
+import { mockServer, render, renderHook, screen, waitFor, within }    from '@acx-ui/test-utils'
+import { RolesEnum, WifiScopes }                                      from '@acx-ui/types'
+import { setUserProfile, getUserProfile }                             from '@acx-ui/user'
 
 import { certificateList, certificateTemplate } from '../__test__/fixtures'
 
-import CertificateTable from './CertificateTable'
+import { CertificateTable } from './CertificateTable'
 
 
 
@@ -28,18 +29,33 @@ describe('CertificateTable', () => {
       rest.get(
         CertificateUrls.getCertificateTemplate.url,
         (req, res, ctx) => res(ctx.json(certificateTemplate))
+      ),
+      rest.post(
+        PersonaUrls.searchPersonaList.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json([]))
       )
     )
   })
 
   it('should render table with correct columns', async () => {
-    render(<Provider><CertificateTable /></Provider>, {
+    const { result: certificateTableQuery } = renderHook(() =>
+      useTableQuery({
+        useQuery: useGetSpecificTemplateCertificatesQuery,
+        defaultPayload: {},
+        apiParams: { templateId: certificateTemplate?.id! }
+      }), { wrapper: ({ children }) => <Provider children={children} /> })
+
+    await waitFor(() => {
+      expect(certificateTableQuery.current.data).not.toBeUndefined()
+    })
+    render(<Provider>
+      <CertificateTable tableQuery={certificateTableQuery.current}/></Provider>, {
       route: {
         params: { tenantId: 't-id' },
         path: '/:tenantId/policies/certificate/list'
       }
     })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
     const row = await screen.findAllByRole('row')
     expect(row.length).toBe(3)
     expect(within(row[0]).getByText('Common name')).toBeInTheDocument()
@@ -47,20 +63,31 @@ describe('CertificateTable', () => {
     expect(within(row[0]).getByText('Expiration Date')).toBeInTheDocument()
     expect(within(row[0]).getByText('CA Name')).toBeInTheDocument()
     expect(within(row[0]).getByText('Template')).toBeInTheDocument()
+    expect(within(row[0]).getByText('Identity')).toBeInTheDocument()
     expect(within(row[0]).getByText('Revocation Date')).toBeInTheDocument()
     expect(within(row[0]).getByText('Issued By')).toBeInTheDocument()
     expect(within(row[0]).getByText('Timestamp')).toBeInTheDocument()
   })
 
   it('should open detail drawer when name button is clicked', async () => {
-    render(<Provider><CertificateTable /></Provider>, {
+    const { result: certificateTableQuery } = renderHook(() =>
+      useTableQuery({
+        useQuery: useGetSpecificTemplateCertificatesQuery,
+        defaultPayload: {},
+        apiParams: { templateId: certificateTemplate?.id! }
+      }), { wrapper: ({ children }) => <Provider children={children} /> })
+
+    await waitFor(() => {
+      expect(certificateTableQuery.current.data).not.toBeUndefined()
+    })
+    render(<Provider>
+      <CertificateTable tableQuery={certificateTableQuery.current}/></Provider>, {
       route: {
         params: { tenantId: 't-id' },
         path: '/:tenantId/policies/certificate/list'
       }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const name = screen.getByText('certificate1')
     await userEvent.click(name)
     expect(screen.getByText('Certificate Details')).toBeVisible()
@@ -81,13 +108,23 @@ describe('CertificateTable', () => {
         })
     )
 
-    render(<Provider><CertificateTable /></Provider>, {
+    const { result: certificateTableQuery } = renderHook(() =>
+      useTableQuery({
+        useQuery: useGetSpecificTemplateCertificatesQuery,
+        defaultPayload: {},
+        apiParams: { templateId: certificateTemplate?.id! }
+      }), { wrapper: ({ children }) => <Provider children={children} /> })
+
+    await waitFor(() => {
+      expect(certificateTableQuery.current.data).not.toBeUndefined()
+    })
+    render(<Provider>
+      <CertificateTable tableQuery={certificateTableQuery.current}/></Provider>, {
       route: {
         params: { tenantId: 't-id' },
         path: '/:tenantId/policies/certificate/list'
       }
     })
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     const row = await screen.findByRole('row', { name: /certificate1/ })
     await userEvent.click(within(row).getByRole('radio'))
@@ -116,14 +153,23 @@ describe('CertificateTable', () => {
           return res(ctx.json({ requestId: '12345' }))
         })
     )
+    const { result: certificateTableQuery } = renderHook(() =>
+      useTableQuery({
+        useQuery: useGetSpecificTemplateCertificatesQuery,
+        defaultPayload: {},
+        apiParams: { templateId: certificateTemplate?.id! }
+      }), { wrapper: ({ children }) => <Provider children={children} /> })
 
-    render(<Provider><CertificateTable /></Provider>, {
+    await waitFor(() => {
+      expect(certificateTableQuery.current.data).not.toBeUndefined()
+    })
+    render(<Provider>
+      <CertificateTable tableQuery={certificateTableQuery.current}/></Provider>, {
       route: {
         params: { tenantId: 't-id' },
         path: '/:tenantId/policies/certificate/list'
       }
     })
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     const row = await screen.findByRole('row', { name: /certificate2/ })
     await userEvent.click(within(row).getByRole('radio'))
@@ -142,11 +188,25 @@ describe('CertificateTable', () => {
       name: 'templateName',
       caType: 'caType',
       keyLength: 123,
-      algorithm: AlgorithmType.SHA_256
+      algorithm: AlgorithmType.SHA_256,
+      identityGroupId: '123'
     }
-    render(<Provider><CertificateTable templateData={certificateTemplate}/></Provider>)
+    const { result: certificateTableQuery } = renderHook(() =>
+      useTableQuery({
+        useQuery: useGetSpecificTemplateCertificatesQuery,
+        defaultPayload: {},
+        apiParams: { templateId: certificateTemplate?.id! }
+      }), { wrapper: ({ children }) => <Provider children={children} /> })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => {
+      expect(certificateTableQuery.current.data).not.toBeUndefined()
+    })
+
+    render(<Provider>
+      <CertificateTable
+        tableQuery={certificateTableQuery.current}
+        templateData={certificateTemplate}/></Provider>)
+
     const row = await screen.findAllByRole('row')
     expect(row.length).toBe(3)
     expect(within(row[0]).getByText('Common name')).toBeInTheDocument()
@@ -155,6 +215,7 @@ describe('CertificateTable', () => {
     expect(within(row[0]).getByText('Revocation Date')).toBeInTheDocument()
     expect(within(row[0]).getByText('Issued By')).toBeInTheDocument()
     expect(within(row[0]).getByText('Timestamp')).toBeInTheDocument()
+    expect(within(row[0]).getByText('Identity')).toBeInTheDocument()
     expect(within(row[0]).queryByText('CA Name')).not.toBeInTheDocument()
     expect(within(row[0]).queryByText('Template')).not.toBeInTheDocument()
   })
@@ -167,14 +228,25 @@ describe('CertificateTable', () => {
       profile: { ...getUserProfile().profile, roles: [RolesEnum.PRIME_ADMIN] }
     })
 
-    render(<Provider><CertificateTable /></Provider>, {
+    const { result: certificateTableQuery } = renderHook(() =>
+      useTableQuery({
+        useQuery: useGetSpecificTemplateCertificatesQuery,
+        defaultPayload: {},
+        apiParams: { templateId: certificateTemplate?.id! }
+      }), { wrapper: ({ children }) => <Provider children={children} /> })
+
+    await waitFor(() => {
+      expect(certificateTableQuery.current.data).not.toBeUndefined()
+    })
+
+    render(<Provider><CertificateTable
+      tableQuery={certificateTableQuery.current}/></Provider>, {
       route: {
         params: { tenantId: 't-id' },
         path: '/:tenantId/policies/certificate/list'
       }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const row = await screen.findByRole('row', { name: /certificate1/ })
     await userEvent.click(row)
     expect(await screen.findByRole('button', { name: 'Revoke' })).toBeVisible()
@@ -189,15 +261,25 @@ describe('CertificateTable', () => {
       scopes: [WifiScopes.READ],
       profile: { ...getUserProfile().profile, roles: [RolesEnum.READ_ONLY] }
     })
+    const { result: certificateTableQuery } = renderHook(() =>
+      useTableQuery({
+        useQuery: useGetSpecificTemplateCertificatesQuery,
+        defaultPayload: {},
+        apiParams: { templateId: certificateTemplate?.id! }
+      }), { wrapper: ({ children }) => <Provider children={children} /> })
 
-    render(<Provider><CertificateTable /></Provider>, {
+    await waitFor(() => {
+      expect(certificateTableQuery.current.data).not.toBeUndefined()
+    })
+
+    render(<Provider>
+      <CertificateTable tableQuery={certificateTableQuery.current}/></Provider>, {
       route: {
         params: { tenantId: 't-id' },
         path: '/:tenantId/policies/certificate/list'
       }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const row = await screen.findByRole('row', { name: /certificate1/ })
     await userEvent.click(row)
     expect(screen.queryByRole('button', { name: 'Revoke' })).not.toBeInTheDocument()
