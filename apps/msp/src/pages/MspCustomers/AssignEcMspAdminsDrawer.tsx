@@ -168,6 +168,7 @@ export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => 
           columns={columns}
           dataSource={queryResults?.data}
           rowKey='email'
+          alwaysShowFilters={true}
           rowSelection={{
             type: 'checkbox',
             onChange (selectedRowKeys, selRows) {

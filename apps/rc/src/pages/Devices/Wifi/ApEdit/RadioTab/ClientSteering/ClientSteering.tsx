@@ -70,7 +70,10 @@ export const ClientSteering = () => {
     useWatch(neighborApPercentageThresholdFieldName)
   ]
 
-  const [stickyClientSteeringDisable, setStickyClientSteeringDisable] = useState(false)
+  const [stickyClientSteeringDisable, setStickyClientSteeringDisable] = useState({
+    isDisable: false,
+    isVenueLoadBalancingOn: true
+  })
   const isUseVenueSettingsRef = useRef<boolean>(false)
   const [isUseVenueSettings, setIsUseVenueSettings] = useState(true)
   const venueRef = useRef<StickyClientSteering>()
@@ -103,7 +106,10 @@ export const ClientSteering = () => {
     const venueLoadBalancing = getVenueLoadBalancing.data
     if (!isUseVenueSettings) {
       if (venueLoadBalancing?.enabled === false || apCapabilities?.supportApStickyClientSteering === false) {
-        setStickyClientSteeringDisable(true)
+        setStickyClientSteeringDisable({
+          isDisable: true,
+          isVenueLoadBalancingOn: venueLoadBalancing?.enabled ?? true
+        })
         turnOffStickyClientSteering()
       }
     }
@@ -197,7 +203,7 @@ export const ClientSteering = () => {
       handleVenueSetting={handleVenueSetting} />
     <Row>
       <Col span={colSpan}>
-        <FieldLabel width='200px'>
+        <FieldLabel width='240px' style={{ marginLeft: '10px' }}>
           <Space>
             {$t({ defaultMessage: 'Sticky Client Steering' })}
             <Tooltip title={$t(stickyClientSteeringInfoMessage)} placement='bottom'>
@@ -216,10 +222,24 @@ export const ClientSteering = () => {
                 {stickyClientSteeringEnabled? $t({ defaultMessage: 'On' }): $t({ defaultMessage: 'Off' })}
               </span>
               :
-              <Switch
-                disabled={stickyClientSteeringDisable}
-                data-testid='sticky-client-steering-enabled'
-                onChange={onFormDataChanged} />
+              (stickyClientSteeringDisable.isDisable === true && stickyClientSteeringDisable.isVenueLoadBalancingOn === false) ?
+                <Tooltip
+                  title={$t({
+                    defaultMessage: 'Please turn on the load balancing at the venue level first, as it is required for this function to work.'
+                  })}
+                >
+                  <Switch
+                    disabled={true}
+                    data-testid='sticky-client-steering-enabled'
+                    onChange={onFormDataChanged}
+                  />
+                </Tooltip>
+                :
+                <Switch
+                  disabled={stickyClientSteeringDisable.isDisable}
+                  data-testid='sticky-client-steering-enabled'
+                  onChange={onFormDataChanged}
+                />
             }
           </Form.Item>
         </FieldLabel>

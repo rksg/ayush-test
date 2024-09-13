@@ -63,6 +63,7 @@ export function MspRecCustomers () {
   const isRbacEarlyAccessEnable = useIsTierAllowed(Features.RBAC_IMPLICIT_P1)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
+  const isvViewModelTpLoginEnabled = useIsSplitOn(Features.VIEWMODEL_TP_LOGIN_ADMIN_COUNT)
 
   const { data: userProfile } = useUserProfileContext()
   const { data: mspLabel } = useGetMspLabelQuery({ params, enableRbac: isRbacEnabled })
@@ -188,6 +189,11 @@ export function MspRecCustomers () {
     }
   }
 
+  const mspAdminCountIndex = isvViewModelTpLoginEnabled ?
+    (tenantType === AccountType.MSP_INTEGRATOR ? 'mspIntegratorAdminCount'
+      : (tenantType === AccountType.MSP_INSTALLER ? 'mspInstallerAdminCount'
+        : 'mspAdminCount' )) : 'mspAdminCount'
+
   const columns: TableProps<MspEc>['columns'] = [
     {
       title: $t({ defaultMessage: 'Customers' }),
@@ -224,9 +230,9 @@ export function MspRecCustomers () {
     {
       title: $t({ defaultMessage: '{adminCountHeader}' }, { adminCountHeader:
         mspUtils.transformAdminCountHeader(tenantType) }),
-      dataIndex: 'mspAdminCount',
+      dataIndex: mspAdminCountIndex,
       align: 'center',
-      key: 'mspAdminCount',
+      key: mspAdminCountIndex,
       sorter: true,
       width: 140,
       onCell: (data) => {
