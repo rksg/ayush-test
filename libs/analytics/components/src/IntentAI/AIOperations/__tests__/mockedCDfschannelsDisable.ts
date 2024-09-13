@@ -6,6 +6,7 @@ export const mocked = {
   code: 'c-dfschannels-disable',
   sliceId: '6f02e6f8-b246-4d3b-be84-957aeef1beb7',
   status: 'new',
+  displayStatus: 'new',
   metadata: { failures: ['dual-5g-disabled-or-no-R760', 'for-country-us'] },
   sliceType: 'zone',
   sliceValue: 'AlphaNet_5_1',
