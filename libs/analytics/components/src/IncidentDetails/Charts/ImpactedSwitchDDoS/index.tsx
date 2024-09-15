@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
@@ -25,13 +25,11 @@ export function ImpactedSwitchDDoSTable ({ incident }: ChartProps) {
   const response = useImpactedSwitchDDoSQuery({ id },
     { skip: druidRolledup })
 
-  const [selected, setSelected] = useState(0)
-
   return <Loader states={[response]}>
     <Card title={$t({ defaultMessage: 'Impacted Switches' })} type='no-border'>
       {druidRolledup
         ? <NoGranularityText />
-        : <ImpactedSwitchTable data={response.data!} {...{ selected, onChange: setSelected }} />
+        : <ImpactedSwitchTable data={response.data!} />
       }
     </Card>
   </Loader>
@@ -50,7 +48,7 @@ export function ImpactedSwitchDDoSDonut ({ incident }: ChartProps) {
       { value: data.impactedCount,
         name: 'Impacted Switches',
         color: cssStr('--acx-semantics-red-50') },
-      { value: Math.ceil(data.impactedCount * 0.3), // (data.totalCount - data.impactedCount),
+      { value: (data.totalCount - data.impactedCount), // Math.ceil(data.impactedCount * 0.3),
         name: 'Unimpacted Switches',
         color: cssStr('--acx-semantics-green-50') }
     ]
@@ -79,8 +77,6 @@ export function ImpactedSwitchDDoSDonut ({ incident }: ChartProps) {
 
 function ImpactedSwitchTable (props: {
   data: ImpactedSwitchPortRow[]
-  selected: number
-  onChange: Dispatch<SetStateAction<number>>
 }) {
   const { $t } = useIntl()
   const rows = props.data
