@@ -12,7 +12,7 @@ import { mocked as mockedCDfschannelsDisable }         from './AIOperations/__te
 import { mocked as mockedCDfschannelsEnable }          from './AIOperations/__tests__/mockedCDfschannelsEnable'
 import { mocked as mockedCTxpowerSame }                from './AIOperations/__tests__/mockedCTxpowerSame'
 import { mocked as mockedIZoneFirmwareUpgrade }        from './AIOperations/__tests__/mockedIZoneFirmwareUpgrade'
-import { mockedIntentAirFlex }                         from './AirFlexAI/__tests__/fixtures'
+import { mockedIntentEquiFlex }                        from './EquiFlex/__tests__/fixtures'
 import { IntentAIDetails }                             from './IntentAIDetails'
 import { Intent }                                      from './useIntentDetailsQuery'
 
@@ -79,15 +79,15 @@ jest.mock('./AIOperations/CBgScan6gTimer', () => ({
   IntentAIDetails: () => <div data-testid='c-bgscan6g-timer-IntentAIDetails'/>
 }))
 
-jest.mock('./AirFlexAI/CProbeFlex24g.tsx', () => ({
+jest.mock('./EquiFlex/CProbeFlex24g.tsx', () => ({
   kpis: [],
   IntentAIDetails: () => <div data-testid='c-probeflex-24g-IntentAIDetails'/>
 }))
-jest.mock('./AirFlexAI/CProbeFlex5g.tsx', () => ({
+jest.mock('./EquiFlex/CProbeFlex5g.tsx', () => ({
   kpis: [],
   IntentAIDetails: () => <div data-testid='c-probeflex-5g-IntentAIDetails'/>
 }))
-jest.mock('./AirFlexAI/CProbeFlex6g.tsx', () => ({
+jest.mock('./EquiFlex/CProbeFlex6g.tsx', () => ({
   kpis: [],
   IntentAIDetails: () => <div data-testid='c-probeflex-6g-IntentAIDetails'/>
 }))
@@ -174,9 +174,9 @@ describe('IntentAIDetails', () => {
     })
   })
 
-  it('should render for AirFlexAI', async () => {
+  it('should render for EquiFlex', async () => {
     mockGraphqlQuery(intentAIUrl, 'IntentDetails', {
-      data: { intent: mockedIntentAirFlex }
+      data: { intent: mockedIntentEquiFlex }
     })
     const codes = ['c-probeflex-24g', 'c-probeflex-5g', 'c-probeflex-6g']
 

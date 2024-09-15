@@ -6,6 +6,7 @@ export const mocked = {
   code: 'c-dfschannels-enable',
   sliceId: '4e3f1fbc-63dd-417b-b69d-2b08ee0abc52',
   status: 'new',
+  displayStatus: 'new',
   metadata: { failures: ['dfs-channel-5g-disabled'] },
   sliceType: 'zone',
   sliceValue: 'pazhyannur-zone',
