@@ -181,15 +181,22 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
           item.activations?.forEach(activation => {
             const isEqualVenue = activation.venueId === venueId
             if (isEqualVenue) {
+              let isOnlyAppliedCurrentNetwork = false
               isSame = activation.venueId === venueId
-              venueTotal += 1
               if (networkId && activation.wifiNetworkIds?.includes(networkId)) {
                 softGreProfileId = item.id
+                if (activation.wifiNetworkIds.length === 1) {
+                  isOnlyAppliedCurrentNetwork = true
+                } else {
+                  venueTotal += 1
+                }
+              } else {
+                venueTotal += 1
               }
-              if (primaryGatewayAddress) {
+              if (!isOnlyAppliedCurrentNetwork && primaryGatewayAddress) {
                 gatewayIps.add(primaryGatewayAddress)
               }
-              if (secondaryGatewayAddress) {
+              if (!isOnlyAppliedCurrentNetwork && secondaryGatewayAddress) {
                 gatewayIps.add(secondaryGatewayAddress)
               }
             }

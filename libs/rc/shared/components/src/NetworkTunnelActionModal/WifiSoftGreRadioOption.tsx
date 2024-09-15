@@ -104,13 +104,10 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
 
   const gatewayIpValidator = async (value: string) => {
     let isValid = true
-    console.info('optionsDataQuery.data:', optionsDataQuery.data)
     if (optionsDataQuery.data) {
       const { id, gatewayIps } = optionsDataQuery.data
-      console.info('gatewayIps:', optionsDataQuery.data)
       if (value !== id) {
         const [ gatewayIp1, gatewayIp2 ] = gatewayIpMapIds[value]
-        console.info(`gatewayIp1 : ${gatewayIp1}, gatewayIp2: ${gatewayIp2}`)
         if (gatewayIp1 && gatewayIps.includes(gatewayIp1)) isValid = false
         if (gatewayIp2 && gatewayIps.includes(gatewayIp2)) isValid = false
       }
