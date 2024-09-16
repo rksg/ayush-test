@@ -30,6 +30,10 @@ export interface LPIButtonText {
   isAPOutdoor?: boolean
 }
 
+export interface FirmwareProps {
+  firmware?: string
+}
+
 export const channelSelectionMethodsOptions = [
   { label: defineMessage({ defaultMessage: 'ChannelFly' }), value: 'CHANNELFLY' },
   { label: defineMessage({ defaultMessage: 'Background Scanning' }), value: 'BACKGROUND_SCANNING' }

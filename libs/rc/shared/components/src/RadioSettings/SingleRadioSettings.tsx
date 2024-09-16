@@ -4,8 +4,10 @@ import { Col, Row, Form, Switch } from 'antd'
 import { isEmpty }                from 'lodash'
 import { useIntl }                from 'react-intl'
 
-import { Button, cssStr } from '@acx-ui/components'
-import { AFCProps }       from '@acx-ui/rc/utils'
+import { Button, cssStr }            from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { AFCProps }                  from '@acx-ui/rc/utils'
+import { isApFwVersionLargerThan71 } from '@acx-ui/utils'
 
 import { RadioSettingsChannels }       from '../RadioSettingsChannels'
 import { findIsolatedGroupByChannel }  from '../RadioSettingsChannels/320Mhz/ChannelComponentStates'
@@ -14,7 +16,7 @@ import {
   RadioSettingsChannelsManual320Mhz
 } from '../RadioSettingsChannels/320Mhz/RadioSettingsChannelsManual320Mhz'
 
-import { ChannelBarControlPopover }  from './ChannelBarControlPopover'
+import { ChannelBarControlPopover } from './ChannelBarControlPopover'
 import {
   ApRadioTypeDataKeyMap,
   ApRadioTypeEnum, ChannelBars,
@@ -26,7 +28,8 @@ import {
   SelectItemOption,
   txPowerAdjustmentOptions,
   txPowerAdjustment6GOptions,
-  txPowerAdjustmentExtendedOptions
+  txPowerAdjustmentExtendedOptions,
+  FirmwareProps
 } from './RadioSettingsContents'
 import { RadioSettingsForm } from './RadioSettingsForm'
 
@@ -64,7 +67,7 @@ export function SingleRadioSettings (props:{
   isUseVenueSettings?: boolean,
   LPIButtonText?: LPIButtonText,
   afcProps?: AFCProps,
-  isSupportAggressiveTxPowerAdjustment?: boolean
+  firmwareProps?: FirmwareProps
 }) {
 
   const { $t } = useIntl()
@@ -77,7 +80,7 @@ export function SingleRadioSettings (props:{
     testId,
     LPIButtonText,
     afcProps,
-    isSupportAggressiveTxPowerAdjustment
+    firmwareProps
   } = props
 
   const { radioType, handleChanged } = props
@@ -147,6 +150,7 @@ export function SingleRadioSettings (props:{
                                      radioType !== ApRadioTypeEnum.Radio6G)
   const channelColSpan = (radioType === ApRadioTypeEnum.Radio5G) ? 22 : 20
 
+  const isApTxPowerToggleEnabled = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
 
   const [
     channelMethod,
@@ -315,17 +319,20 @@ export function SingleRadioSettings (props:{
     const getTxPowerAdjustmentOptions = () => {
       let res = (radioType === ApRadioTypeEnum.Radio6G)? txPowerAdjustment6GOptions
         : txPowerAdjustmentOptions
-      if (isSupportAggressiveTxPowerAdjustment) {
-        return [...res, ...txPowerAdjustmentExtendedOptions].sort((a, b) => {
-          if (a.value === 'MIN') return 1
-          if (b.value === 'MIN') return -1
-          return 0
-        })
+      if (isApTxPowerToggleEnabled) {
+        if (context === 'venue'
+          || (context === 'ap' && isApFwVersionLargerThan71(firmwareProps?.firmware))) {
+          return [...res, ...txPowerAdjustmentExtendedOptions].sort((a, b) => {
+            if (a.value === 'MIN') return 1
+            if (b.value === 'MIN') return -1
+            return 0
+          })
+        }
       }
       return res
     }
     setTxPowerOptions(getTxPowerAdjustmentOptions())
-  }, [radioType, isSupportAggressiveTxPowerAdjustment])
+  }, [radioType, firmwareProps])
 
   const resetToDefaule = () => {
     if (props.onResetDefaultValue) {

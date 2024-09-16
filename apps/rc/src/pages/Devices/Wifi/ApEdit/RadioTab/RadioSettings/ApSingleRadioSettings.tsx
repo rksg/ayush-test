@@ -6,11 +6,9 @@ import { NamePath }     from 'antd/es/form/interface'
 import { clone, set }   from 'lodash'
 import { useIntl }      from 'react-intl'
 
-import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
 import { ApRadioTypeEnum, SingleRadioSettings, LPIButtonText, SupportRadioChannelsContext } from '@acx-ui/rc/components'
 import { isAPLowPower }                                                                     from '@acx-ui/rc/services'
 import { AFCStatus,AFCProps }                                                               from '@acx-ui/rc/utils'
-import { isApFwVersionLargerThan71 }                                                        from '@acx-ui/utils'
 
 import { ApEditContext, ApDataContext } from '../..'
 import { DisabledDiv, FieldLabel }      from '../../styledComponents'
@@ -37,8 +35,6 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
 
   const { isEnabled, enabledFieldName, useVenueSettingsFieldName, radioTypeName, onEnableChanged } = props
   const { radioType, handleChanged, isUseVenueSettings, afcProps } = props
-
-  const isApTxPowerToggleEnabled = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
 
   const { bandwidthRadioOptions } = useContext(SupportRadioChannelsContext)
   const bandwidthOptions = bandwidthRadioOptions[radioType]
@@ -140,8 +136,7 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
             isUseVenueSettings={isUseVenueSettings}
             LPIButtonText={setLPIToggleText()}
             afcProps={afcProps}
-            isSupportAggressiveTxPowerAdjustment={isApTxPowerToggleEnabled
-              && isApFwVersionLargerThan71(apData?.firmware)}
+            firmwareProps={{ firmware: apData?.firmware }}
           />
         )
         }
