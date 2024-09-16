@@ -36,12 +36,14 @@ function MacRegOnboardedPreview (props: { onboard: MacRegOnboardedVariables }) {
       <List bordered
         dataSource={selectedSsid ? [selectedSsid] : networkList}
         renderItem={
-          (ssid) => (
+          (ssid, index) => (
             (ssid && ssid.trim().length > 0) && <List.Item>
               <Row justify='space-between' style={{ width: '100%' }}>
                 <Space align='baseline'>
                   {(networkList.length > 1) ?
-                    <Link onClick={() => setSelectedSsid(selectedSsid ? '' : ssid)} strong={true} >
+                    <Link data-testid={`lnw-${index}`}
+                      onClick={() => setSelectedSsid(selectedSsid ? '' : ssid)}
+                      strong={true} >
                       <Text strong={true}><b>{ssid}</b><br/></Text>
                     </Link>
                     : <Text strong={true}><b>{selectedSsid}</b><br/></Text>

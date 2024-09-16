@@ -111,6 +111,37 @@ describe('MacRegActionPreview', () => {
     expect(networks.childNodes[1].textContent).toEqual('ssid-02')
   })
 
+  it('renders network on select network', async () => {
+    render(<Provider>
+      <MacRegActionPreview data={mockMacReg} />
+    </Provider>)
+    await waitFor(() => expect(getNetworkList).toHaveBeenCalled())
+
+    let macAddField = screen.getByRole('textbox', { name: macAddLabel })
+    await userEvent.type(macAddField, '5f:e7:78:6e:96:68')
+    let btnNext = screen.getByRole('button', { name: /Next/ })
+    expect(btnNext).toBeVisible()
+    await userEvent.click(btnNext)
+    expect(screen.getByText('5f:e7:78:6e:96:68')).toBeInTheDocument()
+    let networks = screen.getByRole('list')
+    expect(networks).toBeVisible()
+    expect(networks.childNodes.length).toEqual(2)
+    expect(networks.childNodes[0].textContent).toEqual('ssid-01')
+    expect(networks.childNodes[1].textContent).toEqual('ssid-02')
+    let nw0 = screen.getByTestId('lnw-0')
+    await userEvent.click(nw0)
+    screen.getByRole('list')
+    networks = screen.getByRole('list')
+    expect(networks).toBeVisible()
+    expect(networks.childNodes.length).toEqual(1)
+    nw0 = screen.getByTestId('lnw-0')
+    await userEvent.click(nw0)
+    screen.getByRole('list')
+    networks = screen.getByRole('list')
+    expect(networks).toBeVisible()
+    expect(networks.childNodes.length).toEqual(2)
+  })
+
   it('renders preview page on Back button from onboarding page', async () => {
     render(<Provider>
       <MacRegActionPreview data={mockMacReg} />
