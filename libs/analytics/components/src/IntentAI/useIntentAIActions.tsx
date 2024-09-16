@@ -10,9 +10,9 @@ import { DateFormatEnum, formatter }     from '@acx-ui/formatter'
 import {
   useLazyVenueRadioActiveNetworksQuery
 } from '@acx-ui/rc/services'
-import { RadioTypeEnum }                               from '@acx-ui/rc/utils'
-import { useNavigate, useSearchParams, useTenantLink } from '@acx-ui/react-router-dom'
-import {  fixedEncodeURIComponent, getIntl }           from '@acx-ui/utils'
+import { RadioTypeEnum }                                                   from '@acx-ui/rc/utils'
+import { useNavigate, useSearchParams, useTenantLink }                     from '@acx-ui/react-router-dom'
+import {  Filters, fixedEncodeURIComponent, getIntl, useEncodedParameter } from '@acx-ui/utils'
 
 import {  IntentListItem }      from './config'
 import {
@@ -123,15 +123,13 @@ const getR1WlanPayload = (venueId:string, code:string) => ({
 
 export function useIntentAIActions () {
   const { $t } = useIntl()
-  // const basePath = useTenantLink('/analytics/intentAI')
-  // const navigate = useNavigate()
+  const navigate = useNavigate()
   const [recommendationWlans] = useLazyIntentWlansQuery()
   const [venueRadioActiveNetworks] = useLazyVenueRadioActiveNetworksQuery()
   const [transitionIntent] = useTransitionIntentMutation()
   const initialDate = useRef(getDefaultTime())
   const isMlisa = Boolean(get('IS_MLISA_SA'))
-  const [search, setSearch] = useSearchParams()
-
+  const intentTableFilters = useEncodedParameter<Filters>('intentTableFilters')
 
   const showSuccessToast = (action: Actions, data: TransitionIntentItem[]) => {
 
@@ -167,36 +165,13 @@ export function useIntentAIActions () {
             }
             statusLabelList.add(statusLabel)
           })
-          // const groupedState = groupedStates.find(
-          //   ({ states }) => states.includes(statusLabel as string))
-          // console.log(groupedState)
-          // if (groupedState) {
-          //   console.log(groupedState.group.defaultMessage.valueOf())
-          //   switch(groupedState.group.defaultMessage) {
-          //     case 'Scheduled':
-          //       statusLabel=`${DisplayStates.applyScheduled}+${DisplayStates.scheduledOneClick}`
-          //       break
-          //     case 'Paused':
-          //       console.log('here')
-          //       statusLabel=`${DisplayStates.pausedFromActive}+${DisplayStates.pausedFromInactive}`
-          //   }
-          // }
-          const currentParams = JSON.parse(
-            decodeURIComponent(search.get('intentTableFilters') as string))
-          const newParams = {
-            ...currentParams,
+          const currentFilter = intentTableFilters.read() || {}
+          const newFilter = {
+            ...currentFilter,
             statusLabel: Array.from(statusLabelList)
           }
-          console.log(newParams)
-          // const newPath = fixedEncodeURIComponent(JSON.stringify(newParams))
-          search.set('intentTableFilters', fixedEncodeURIComponent(JSON.stringify(newParams)))
-          setSearch(search, { replace: true })
-          // navigate(`${getNewFilterLink(action, data)}`)
-          // console.log(basePath)
-          // navigate({
-          //   ...basePath,
-          //   search: `${basePath.search}${newPath}`
-          // })
+          intentTableFilters.write(newFilter as Filters)
+          navigate(0)
         }
       }
     })

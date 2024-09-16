@@ -35,6 +35,12 @@ const mockedVenueRadioActiveNetworksQuery = jest.fn()
 //   useTenantLink: jest.fn()
 // }))
 
+// const components = require('@acx-ui/components')
+// jest.mock('@acx-ui/components', () => ({
+//   ...jest.requireActual('@acx-ui/components'),
+//   showToast: jest.fn()
+// }))
+
 const raiWlans = [
   { id: 'i1', name: 'n1', ssid: 's1' },
   { id: 'i2', name: 'n2', ssid: 's2' },
@@ -77,6 +83,13 @@ const extractItem = {
   statusTooltip: 'IntentAI is active and has successfully applied the changes to the zone-1.'
 }
 
+// await waitFor(async () => {
+//   expect(components.showToast)
+//     .toHaveBeenLastCalledWith({
+//       type: 'success',
+//       content: 'Notifications updated succesfully.'
+//     })
+// })
 describe('useIntentAIActions', () => {
   const now = new Date('2024-07-20T04:01:00.000Z').getTime()
   beforeEach(() => {
@@ -539,6 +552,12 @@ describe('useIntentAIActions', () => {
         }]
       })
       await waitFor(() => expect(mockOK).toBeCalledTimes(1))
+      // await waitFor(async () => {
+      //   expect(components.showToast)
+      //     .toHaveBeenLastCalledWith({
+      //       type: 'success'
+      //     })
+      // })
     })
 
     it('should handle revert', async () => {
