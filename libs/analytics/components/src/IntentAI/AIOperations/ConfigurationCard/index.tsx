@@ -4,9 +4,8 @@ import { useIntl }  from 'react-intl'
 
 import { Card, Tooltip, cssStr } from '@acx-ui/components'
 
+import * as UI              from '../../common/KpiCard/styledComponents'
 import { useIntentContext } from '../../IntentContext'
-
-import * as UI from './styledComponents'
 
 export const ConfigurationCard = () => {
   const { $t } = useIntl()

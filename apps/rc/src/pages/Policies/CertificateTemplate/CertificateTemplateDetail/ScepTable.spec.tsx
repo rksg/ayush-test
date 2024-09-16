@@ -24,7 +24,7 @@ describe('ScepTable', () => {
     expect(screen.getAllByText('Name')).toHaveLength(2)
     expect(screen.getByText('dddd')).toBeInTheDocument()
     expect(screen.getByText('Status')).toBeInTheDocument()
-    expect(screen.getByText('Enabled')).toBeInTheDocument()
+    expect(screen.getByText('Expired')).toBeInTheDocument()
     expect(screen.getByText('Access')).toBeInTheDocument()
     expect(screen.getByText('Restricted')).toBeInTheDocument()
     expect(screen.getByText('SCEP Enroll URL')).toBeInTheDocument()

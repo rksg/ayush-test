@@ -6,6 +6,7 @@ export const mocked = {
   code: 'c-bandbalancing-enable',
   sliceId: 'f3f207c0-776c-4ce7-9e6f-d12d9b9f0fe1',
   status: 'active',
+  displayStatus: 'active',
   metadata: { failures: ['band-balancing-disabled-zone-6.1'], dataEndTime: 1722902400000 },
   sliceType: 'zone',
   sliceValue: '14-US-CA-D14-Ken-Home',

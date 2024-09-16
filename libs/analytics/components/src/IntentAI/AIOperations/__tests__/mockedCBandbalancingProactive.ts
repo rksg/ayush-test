@@ -6,6 +6,7 @@ export const mocked = {
   code: 'c-bandbalancing-proactive',
   sliceId: '145208f3-1633-4607-9298-ee8ee8ae16f1',
   status: 'new',
+  displayStatus: 'new',
   metadata: { failures: [], dataEndTime: 1725235200000 },
   sliceType: 'zone',
   sliceValue: '26-US-CA-D26-Leslie-Mother-home',
