@@ -7,6 +7,7 @@ import { StepsForm } from '@acx-ui/components'
 
 import { IntentWizardHeader }                                                               from '../../common/IntentWizardHeader'
 import { getScheduledAt }                                                                   from '../../common/ScheduleTiming'
+import { useIntentContext }                                                                 from '../../IntentContext'
 import { createUseIntentTransition, FormValues, IntentTransitionPayload, useInitialValues } from '../../useIntentTransition'
 import { Actions, getTransitionStatus, TransitionIntentItem }                               from '../../utils'
 
@@ -40,9 +41,10 @@ const useIntentTransition = createUseIntentTransition<FormVal>(getFormDTO as any
 export const IntentAIForm: React.FC = () => {
   const { $t } = useIntl()
   const { submit } = useIntentTransition()
+  const { intent: { metadata } } = useIntentContext()
+  const wlans = metadata.wlans ? metadata.wlans : []
   // always enable = true, because only new, scheduled, active, applyscheduled can open wizard
-  const initialValues = { ...useInitialValues(), preferences: { enable: true } }
-
+  const initialValues = { ...useInitialValues(), preferences: { enable: true }, wlans }
   return (<>
     <IntentWizardHeader />
 
