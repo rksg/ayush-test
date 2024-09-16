@@ -219,5 +219,19 @@ describe('DataStudio', () => {
       expect(refreshJWTMock).toHaveBeenCalledWith(
         { headers: { 'login-token': 'token' }, type: 'refreshToken' })
     })
+
+    it('should call refreshJWT when event type is refreshToken and data type is of Headers', () => {
+      render(<Provider>
+        <DataStudio/>
+      </Provider>, { route: { params } })
+
+      act(() => {
+        window.dispatchEvent(new MessageEvent('message',
+          { data: { type: 'refreshToken', headers: new Headers({ 'login-token': 'token' }) } }))
+      })
+      expect(addEventListenerMock).toHaveBeenCalledWith('message', expect.any(Function))
+      expect(refreshJWTMock).toHaveBeenCalledWith(
+        { headers: { map: { 'login-token': 'token' } }, type: 'refreshToken' })
+    })
   })
 })
