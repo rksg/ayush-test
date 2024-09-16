@@ -361,7 +361,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
           { edgeName:
             find(tableQuery?.data?.data, { serialNumber: compatibilitiesDrawerEdgeId })?.name
           })}
-        type={EdgeCompatibilityType.VENUE}
+        type={EdgeCompatibilityType.DEVICE}
         onClose={() => setCompatibilitiesDrawerEdgeId(undefined)}
         // eslint-disable-next-line max-len
         venueId={find(tableQuery?.data?.data, { serialNumber: compatibilitiesDrawerEdgeId })?.venueId}

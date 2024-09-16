@@ -55,7 +55,7 @@ export type IntentAP = {
   version: string
 }
 
-const getStatusTooltip = (state: DisplayStates, sliceValue: string, metadata: Metadata) => {
+export const getStatusTooltip = (state: DisplayStates, sliceValue: string, metadata: Metadata) => {
   const { $t } = getIntl()
 
   const stateConfig = states[state]
