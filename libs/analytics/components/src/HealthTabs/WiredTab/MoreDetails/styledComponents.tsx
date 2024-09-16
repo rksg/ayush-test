@@ -9,8 +9,6 @@ export const ChartTitle = styled.span`
   padding-bottom: 10px;
 `
 export const PieChartWrapper = styled.div`
-  height: 100%;
-  .ant-card-body {
-    height: 100%
-  }
+  flex: none;
+  height: 210px;
 `

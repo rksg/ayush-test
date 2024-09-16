@@ -27,14 +27,15 @@ import * as UI                         from '../styledComponents'
 
 import { DpskActionPreview } from './DpskActionPreview'
 
-import { AupPreview, DataPromptPreview, DisplayMessagePreview } from './index'
+import { AupPreview, DataPromptPreview, DisplayMessagePreview, MacRegActionPreview } from './index'
+
 
 const previewMap = {
   [ActionType.AUP]: AupPreview,
   [ActionType.DATA_PROMPT]: DataPromptPreview,
   [ActionType.DISPLAY_MESSAGE]: DisplayMessagePreview ,
   [ActionType.DPSK]: DpskActionPreview,
-  [ActionType.MAC_REG]: AupPreview // TODO: FIXME - change to mac reg preview
+  [ActionType.MAC_REG]: MacRegActionPreview
 }
 
 export interface WorkflowActionPreviewProps {

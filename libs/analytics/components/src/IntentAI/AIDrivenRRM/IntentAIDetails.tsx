@@ -1,10 +1,10 @@
+/* eslint-disable max-len */
 import { useState } from 'react'
 
-import { Typography }                 from 'antd'
-import { TooltipPlacement }           from 'antd/es/tooltip'
-import _                              from 'lodash'
-import moment                         from 'moment-timezone'
-import { MessageDescriptor, useIntl } from 'react-intl'
+import { Typography }                               from 'antd'
+import { TooltipPlacement }                         from 'antd/es/tooltip'
+import moment                                       from 'moment-timezone'
+import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
 import { formattedPath }                  from '@acx-ui/analytics/utils'
 import { Card, GridCol, GridRow, Loader } from '@acx-ui/components'
@@ -16,8 +16,10 @@ import { FixedAutoSizer }           from '../../DescriptionSection/styledCompone
 import { DetailsSection }           from '../common/DetailsSection'
 import { getIntentStatus }          from '../common/getIntentStatus'
 import { IntentDetailsHeader }      from '../common/IntentDetailsHeader'
+import { IntentDetailsSidebar }     from '../common/IntentDetailsSidebar'
 import { IntentIcon }               from '../common/IntentIcon'
 import { KpiCard }                  from '../common/KpiCard'
+import { richTextFormatValues }     from '../common/richTextFormatValues'
 import { StatusTrail }              from '../common/StatusTrail'
 import { codes }                    from '../config'
 import { useIntentContext }         from '../IntentContext'
@@ -28,47 +30,56 @@ import { IntentAIRRMGraph, SummaryGraphAfter, SummaryGraphBefore } from './RRMGr
 import { DownloadRRMComparison }                                   from './RRMGraph/DownloadRRMComparison'
 import { useIntentAICRRMQuery }                                    from './RRMGraph/services'
 
-export function createUseValuesText ({ reason, tradeoff }: {
-  reason: {
-    default: MessageDescriptor
-    activeFull: MessageDescriptor
-    activePartial: MessageDescriptor
-  }
-  tradeoff: {
-    full: MessageDescriptor
-    partial: MessageDescriptor
-  }
-}) {
+export function createUseValuesText () {
   return function useValuesText () {
     const { $t } = getIntl()
     const { intent, kpis, state } = useIntentContext()
-    const isFullOptimization = !!_.get(
-      intent,
-      'metadata.algorithmData.isCrrmFullOptimization',
-      true
-    )
+    const isFullOptimization = intent.metadata.preferences?.crrmFullOptimization ?? true
 
     const kpi = kpis.find(kpi => kpi.key === 'number-of-interfering-links')!
     const { data, compareData } = getKPIData(intent, kpi)
 
-    const reasonText = state === 'active'
-      ? isFullOptimization ? reason.activeFull : reason.activePartial
-      : reason.default
+    const action = {
+      full: defineMessage({ defaultMessage: `
+        <p>Leverage <b><i>AI-Driven RRM Full Optimization</i></b> mode to assess the neighbor AP radio channels for each AP radio and build a channel plan for each radio to minimize the interference.</p>
+        <p>In this mode, while building the channel plan, IntentAI may optionally change the <i>AP Radio Channel Width</i> and <i>Transmit Power</i> to minimize the channel interference.</p>
+        <p>IntentAI ensures that only the existing channels configured for this network are utilized in the channel planning process.</p>
+      ` }),
+      partial: defineMessage({ defaultMessage: `
+        <p>Leverage <b><i>AI-Driven RRM Partial Optimization</i></b> mode to assess the neighbor AP channels for each AP radio and build a channel plan for each AP radio to minimize interference.</p>
+        <p>In this mode, while building the channel plan, IntentAI <b>will NOT</b> change the <i>AP Radio Channel Width</i> and <i>Transmit Power</i>.</p>
+        <p>IntentAI ensures that only the existing channels configured for this network are utilized in the channel planning process.</p>
+      ` })
+    }
+    const noData = defineMessage({ defaultMessage: 'When activated, this Intent takes over the automatic channel planning in the network.' })
 
-    const tradeoffText = isFullOptimization ? tradeoff.full : tradeoff.partial
+    const summaryText = state === 'no-data'
+      ? noData
+      : isFullOptimization ? action.full : action.partial
+
+
+    const benefitText = defineMessage({ defaultMessage: `Low interference fosters improved
+      throughput, lower latency, better signal quality, stable connections, enhanced user
+      experience, longer battery life, efficient spectrum utilization, optimized channel usage,
+      and reduced congestion, leading to higher data rates, higher SNR, consistent performance,
+      and balanced network load.` })
+
+    const tradeoffText = defineMessage({ defaultMessage: `In the quest for minimizing interference
+      between access points (APs), AI algorithms may opt to narrow channel widths. While this can
+      enhance spectral efficiency and alleviate congestion, it also heightens vulnerability to
+      noise, potentially reducing throughput. Narrow channels limit data capacity, which could
+      lower overall throughput.` })
 
     return {
-      reasonText: $t(reasonText, {
-        before: kpi.format(compareData?.result),
-        after: kpi.format(data?.result)
-      }),
+      summaryText: summaryText,
+      benefitText: $t(benefitText, { before: kpi.format(compareData), after: kpi.format(data) }),
       tradeoffText: $t(tradeoffText)
     }
   }
 }
 
-export function createIntentAIDetails (config: Parameters<typeof createUseValuesText>[0]) {
-  const useValuesText = createUseValuesText(config)
+export function createIntentAIDetails () {
+  const useValuesText = createUseValuesText()
 
   return function IntentAIDetails () {
     const { $t } = useIntl()
@@ -118,24 +129,21 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
       <GridRow>
         <GridCol col={{ span: 6, xxl: 4 }}>
           <FixedAutoSizer>
-            {({ width }) => (<div style={{ width }}>
+            {({ width }) => (<IntentDetailsSidebar style={{ width }}>
               <IntentIcon size='large' />
-              <Typography.Paragraph children={$t({
-                defaultMessage: 'Choose between a network with maximum throughput, ' +
-                  'allowing some interference, or one with minimal interference, ' +
-                  'for high client density.'
-              })} />
+              <Typography.Paragraph
+                children={<FormattedMessage {...valuesText.summaryText} values={richTextFormatValues} />}/>
               <DescriptionSection fields={fields}/>
               <br />
               {hasData
                 ? <DownloadRRMComparison title={$t({ defaultMessage: 'RRM comparison' })} />
                 : null}
-            </div>)}
+            </IntentDetailsSidebar>)}
           </FixedAutoSizer>
         </GridCol>
         <GridCol col={{ span: 18, xxl: 20 }}>
-          <DetailsSection data-testid='Benefits'>
-            <DetailsSection.Title children={$t({ defaultMessage: 'Benefits' })} />
+          <DetailsSection data-testid='Details'>
+            <DetailsSection.Title children={$t({ defaultMessage: 'Details' })} />
             <DetailsSection.Details>
               <GridRow>
                 {getGraphKPIs(intent, kpis).map(kpi => (
@@ -159,9 +167,9 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
 
           <GridRow>
             <GridCol col={{ span: 12 }}>
-              <DetailsSection data-testid='Why the intent?'>
-                <DetailsSection.Title children={$t({ defaultMessage: 'Why the intent?' })} />
-                <DetailsSection.Details children={<Card>{valuesText.reasonText}</Card>} />
+              <DetailsSection data-testid='Benefits'>
+                <DetailsSection.Title children={$t({ defaultMessage: 'Benefits' })} />
+                <DetailsSection.Details children={<Card>{valuesText.benefitText}</Card>} />
               </DetailsSection>
             </GridCol>
             <GridCol col={{ span: 12 }}>

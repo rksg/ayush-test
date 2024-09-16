@@ -70,7 +70,7 @@ describe('SoftGreTable', () => {
     expect(await screen.findByRole('link', { name: 'Policies & Profiles' })).toBeVisible()
 
     const rows = await screen.findAllByRole('row', { name: /softGreProfileName/i })
-    expect(rows).toHaveLength(3)
+    expect(rows).toHaveLength(4)
   })
 
   it('should navigate to SoftGreDetail Page correctly', async () => {
@@ -122,8 +122,8 @@ describe('SoftGreTable', () => {
         route: { params, path: tablePath }
       })
     const row = await screen.findAllByRole('row', { name: /softGreProfileName/i })
-    await user.click(within(row[0]).getByRole('checkbox'))
     await user.click(within(row[1]).getByRole('checkbox'))
+    await user.click(within(row[3]).getByRole('checkbox'))
     expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
 
     await user.click(screen.getByRole('button', { name: 'Delete' }))
@@ -147,12 +147,12 @@ describe('SoftGreTable', () => {
       </Provider>, {
         route: { params, path: tablePath }
       })
-    const row = await screen.findByRole('row', { name: /softGreProfileName1/i })
+    const row = await screen.findByRole('row', { name: /softGreProfileName2/i })
     await user.click(within(row).getByRole('checkbox'))
 
     await user.click(screen.getByRole('button', { name: 'Delete' }))
     const dialog = await screen.findByRole('dialog')
-    await(within(dialog).findByText('Delete "softGreProfileName1"?'))
+    await(within(dialog).findByText('Delete "softGreProfileName2"?'))
 
     await user.click(within(dialog).getByRole('button', { name: 'Delete Profile' }))
     await waitFor(() => {
@@ -161,6 +161,24 @@ describe('SoftGreTable', () => {
     await waitFor(() => {
       expect(dialog).not.toBeVisible()
     })
+  })
+
+  it('should delete to show error - single', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <SoftGreTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      })
+    const row = await screen.findByRole('row', { name: /softGreProfileName1/i })
+    await user.click(within(row).getByRole('checkbox'))
+
+    await user.click(screen.getByRole('button', { name: 'Delete' }))
+    const dialog = await screen.findByRole('dialog')
+    // eslint-disable-next-line max-len
+    await(within(dialog).findByText('You are unable to delete this record due to its usage in Network with Venue'))
+    await user.click(screen.getByRole('button', { name: 'OK' }))
   })
 
   it('should show tooltip when hover over on venues', async () => {

@@ -371,7 +371,7 @@ const getAirtimeTxRecommendations = (checks: (AirtimeTxChecks)[], params: Airtim
   const aiOpsLink = <TenantLinkWrapper params={params} linkType='aiOps' />
 
   const highDensityWifi = checkTrue.includes('isAclbRaised')
-    ? <FormattedMessage defaultMessage={'<li>Harness the power of IntentAI to automate configuration changes and enhance network performance. {aiOpsLink}.</li>'} values={{ ...htmlValues, link: aiOpsLink }}/>
+    ? <FormattedMessage defaultMessage={'<li>Harness the power of IntentAI to automate configuration changes and enhance network performance. {aiOpsLink}.</li>'} values={{ ...htmlValues, aiOpsLink }}/>
     : <FormattedMessage defaultMessage={'<li>Increase AP density to distribute the client load.</li>'} values={htmlValues}/>
   const excessiveFrame = checkTrue.includes('isHighSsidCountPerRadio')
     ? <FormattedMessage defaultMessage={'<li>There are currently an average of {ssidCountPerRadioSlice} SSIDs/WLANs being broadcasted per AP. Disable unnecessary SSIDs/WLANs. A general guideline would be 5 SSIDs/WLANs or less. Enabling Airtime Decongestion would be recommended as well.</li>'} values={{ ...htmlValues, ssidCountPerRadioSlice }}/>
