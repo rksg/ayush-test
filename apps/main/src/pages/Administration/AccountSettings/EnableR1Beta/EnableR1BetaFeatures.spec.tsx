@@ -10,52 +10,34 @@ import {
   screen,
   waitFor
 } from '@acx-ui/test-utils'
-import { UserUrlsInfo } from '@acx-ui/user'
+import { FeatureAPIResults, UserRbacUrlsInfo, UserUrlsInfo } from '@acx-ui/user'
 
 import { EnableR1BetaFeatures } from './EnableR1BetaFeatures'
 
-export interface Feature {
-  name: string,
-  desc: string,
-  enabled: boolean
-}
-const fakeFeatures: Feature[] = [
+const fakeFeatures: FeatureAPIResults[] = [
   {
-    name: 'DPSK3',
-    // eslint-disable-next-line max-len
-    desc: 'Dynamic Preshared Keys working with WPA3-DSAE. Users connect their devices to a WPA2/WPA3 network with DPSK and are automatically moved to the WPA3 WLAN, allowing DPSK operation with WiFi 6e or WiFi7. DPSK3 allows the customer to take advantage of the flexibility of DPSK with the security of WPA3.',
+    key: 'BETA-DPSK3',
     enabled: true
   },
   {
-    name: 'SmartEdge',
-    // eslint-disable-next-line max-len
-    desc: 'RUCKUS SmartEdge is a platfrom to run RUCKUS services on. Network administrators can utilize SD-LAN service or Personal Identity Networking service on a SmartEdge. SD-LAN provides WLAN tunnelling using VXLAN. This will provide end users a seamless roaming experience across a network. The Personal Identity Networking service provides individual networks for users which is typically used in a multi-dwelling facility.',
+    key: 'PLCY-EDGE',
     enabled: false
   },
   {
-    name: 'Feature 3',
-    // eslint-disable-next-line max-len
-    desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus pronin sapien nunc',
+    key: 'SAMPLE',
     enabled: true
-  },
-  {
-    name: 'Feature 4',
-    // eslint-disable-next-line max-len
-    desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus pronin sapien nunc',
-    enabled: true
-  },
-  {
-    name: 'Feature 5',
-    // eslint-disable-next-line max-len
-    desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus pronin sapien nunc',
-    enabled: false
   }
 ]
+const user = require('@acx-ui/user')
+jest.mock('@acx-ui/user', () => ({
+  ...jest.requireActual('@acx-ui/user'),
+  useUserProfileContext: jest.fn(() => ({ betaFeaturesList: fakeFeatures }))
+}))
+
 describe('Enable RUCKUS One Beta Feature List Checkbox', () => {
   jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.NUVO_SMS_PROVIDER_TOGGLE)
   const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
-  // const { location } = window
-  const consoleSpy = jest.spyOn(console, 'log')
+  jest.spyOn(user, 'useUpdateBetaFeatureListMutation')
   beforeEach(() => {
     mockServer.use(
       rest.put(
@@ -65,20 +47,13 @@ describe('Enable RUCKUS One Beta Feature List Checkbox', () => {
       rest.get(
         UserUrlsInfo.getBetaStatus.url,
         (_req, res, ctx) => res(ctx.status(200))
+      ),
+      rest.put(
+        UserRbacUrlsInfo.updateBetaFeatureList.url,
+        (_req, res, ctx) => res(ctx.json({ requestId: '123' }))
       )
     )
-
-    // Object.defineProperty(window, 'location', {
-    //   configurable: true,
-    //   enumerable: true,
-    //   value: {
-    //     ...window.location,
-    //     href: new URL('https://url/').href
-    //   }
-    // })
   })
-  // afterEach(() => Object.defineProperty(window, 'location', {
-  //   configurable: true, enumerable: true, value: location }))
 
   it('should display enable early access features drawer when checkbox changed', async () => {
     render(
@@ -160,11 +135,12 @@ describe('Enable RUCKUS One Beta Feature List Checkbox', () => {
     expect(save).toBeEnabled()
     await userEvent.click(screen.getAllByRole('switch')[0])
     await userEvent.click(save)
-    // TODO: update this when API is set up
-    const value: Object[] = expect.arrayContaining([
-      { ...fakeFeatures[0], enabled: !fakeFeatures[0].enabled }
-    ])
-    await waitFor(() => expect(consoleSpy).toHaveBeenLastCalledWith(value))
+
+    const value: [Function, Object] = [expect.any(Function), expect.objectContaining({
+      data: { requestId: '123' },
+      status: 'fulfilled'
+    })]
+    await waitFor(() => expect(user.useUpdateBetaFeatureListMutation).toHaveLastReturnedWith(value))
   })
 
   it('should show terms and conditions when link clicked', async () => {

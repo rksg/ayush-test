@@ -2,51 +2,15 @@ import { useEffect, useState } from 'react'
 
 import { Typography } from 'antd'
 import { useIntl }    from 'react-intl'
+import { useParams }  from 'react-router-dom'
 
-import { Button, Drawer, showActionModal } from '@acx-ui/components'
-import { useToggleBetaStatusMutation }     from '@acx-ui/user'
+import { Button, Drawer, showActionModal }                                                                                  from '@acx-ui/components'
+import { BetaListDetails }                                                                                                  from '@acx-ui/feature-toggle'
+import { Feature, FeatureAPIResults, useToggleBetaStatusMutation, useUpdateBetaFeatureListMutation, useUserProfileContext } from '@acx-ui/user'
 
 import { MessageMapping } from '../MessageMapping'
 
 import * as UI from './styledComponents'
-
-export interface Feature {
-  name: string,
-  desc: string,
-  enabled: boolean
-}
-const fakeFeatures: Feature[] = [
-  {
-    name: 'DPSK3',
-    // eslint-disable-next-line max-len
-    desc: 'Dynamic Preshared Keys working with WPA3-DSAE. Users connect their devices to a WPA2/WPA3 network with DPSK and are automatically moved to the WPA3 WLAN, allowing DPSK operation with WiFi 6e or WiFi7. DPSK3 allows the customer to take advantage of the flexibility of DPSK with the security of WPA3.',
-    enabled: true
-  },
-  {
-    name: 'SmartEdge',
-    // eslint-disable-next-line max-len
-    desc: 'RUCKUS SmartEdge is a platfrom to run RUCKUS services on. Network administrators can utilize SD-LAN service or Personal Identity Networking service on a SmartEdge. SD-LAN provides WLAN tunnelling using VXLAN. This will provide end users a seamless roaming experience across a network. The Personal Identity Networking service provides individual networks for users which is typically used in a multi-dwelling facility.',
-    enabled: false
-  },
-  {
-    name: 'Feature 3',
-    // eslint-disable-next-line max-len
-    desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus pronin sapien nunc',
-    enabled: true
-  },
-  {
-    name: 'Feature 4',
-    // eslint-disable-next-line max-len
-    desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus pronin sapien nunc',
-    enabled: true
-  },
-  {
-    name: 'Feature 5',
-    // eslint-disable-next-line max-len
-    desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus pronin sapien nunc',
-    enabled: false
-  }
-]
 
 export interface R1FeatureListDrawerProps {
   visible: boolean
@@ -60,9 +24,12 @@ function R1FeatureListDrawer (
 ) {
   const { $t } = useIntl()
   const { visible, setVisible, editMode } = props
+  const params = useParams()
   const [resetField, setResetField] = useState(false)
   const [featureList, setFeatureList] = useState<Feature[]>([])
   const [toggleBetaStatus ] = useToggleBetaStatusMutation()
+  const { betaFeaturesList } = useUserProfileContext()
+  const [updateBetaFeatures] = useUpdateBetaFeatureListMutation()
 
   const onSave = async () => {
     onClose()
@@ -72,6 +39,7 @@ function R1FeatureListDrawer (
           enable: true + ''
         }
       }).unwrap()
+      await updateBetaFeatures({ params, payload: featureList as FeatureAPIResults[] }).unwrap()
       // eslint-disable-next-line no-console
       console.log(featureList)
     } catch (error) {
@@ -85,12 +53,23 @@ function R1FeatureListDrawer (
   }
 
   useEffect(() => {
-    setFeatureList(fakeFeatures)
-  }, [fakeFeatures])
+    if (betaFeaturesList) {
+      const features = betaFeaturesList.map(f => {
+        const desc = $t(BetaListDetails.filter(detail => detail.key === f.key)[0].description)
+        const updatedFeature: Feature = {
+          name: desc.split(': ')[0],
+          desc: desc.split(': ')[1],
+          ...f
+        }
+        return updatedFeature
+      })
+      setFeatureList(features)
+    }
+  }, [betaFeaturesList])
 
   const onFeatureToggle = (checked: boolean, e: React.MouseEvent, feature: string) => {
     const features = featureList.map(f => {
-      if (f.name === feature) {
+      if (f.key === feature) {
         f.enabled = checked
       }
       return f
@@ -119,7 +98,7 @@ function R1FeatureListDrawer (
     children={
       <UI.DrawerContentWrapper>
         {featureList.map(feature => {
-          return <UI.DrawerContent key={feature.name}>
+          return <UI.DrawerContent key={feature.key}>
             <UI.FeatureTitleWrapper>
               <UI.FeatureTitle>{feature.name}</UI.FeatureTitle>
               <UI.EarlyAccessFeatureSwitch
@@ -127,7 +106,7 @@ function R1FeatureListDrawer (
                 unCheckedChildren='OFF'
                 defaultChecked={feature.enabled}
                 checked={feature.enabled}
-                onChange={(checked, e) => onFeatureToggle(checked, e, feature.name)} />
+                onChange={(checked, e) => onFeatureToggle(checked, e, feature.key)} />
             </UI.FeatureTitleWrapper>
             <UI.FeatureDescription>{feature.desc}</UI.FeatureDescription>
           </UI.DrawerContent>

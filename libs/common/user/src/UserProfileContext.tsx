@@ -11,9 +11,25 @@ import {
   useGetUserProfileQuery,
   useFeatureFlagStatesQuery,
   useGetVenuesListQuery
+  // useGetBetaFeatureListQuery
 } from './services'
-import { UserProfile }                         from './types'
+import { FeatureAPIResults, UserProfile }      from './types'
 import { setUserProfile, hasRoles, hasAccess } from './userProfile'
+
+const fakeFeatures: FeatureAPIResults[] = [
+  {
+    key: 'BETA-DPSK3',
+    enabled: true
+  },
+  {
+    key: 'PLCY-EDGE',
+    enabled: false
+  },
+  {
+    key: 'SAMPLE',
+    enabled: true
+  }
+]
 
 export interface UserProfileContextProps {
   data: UserProfile | undefined
@@ -28,6 +44,7 @@ export interface UserProfileContextProps {
   isCustomRole?: boolean
   hasAllVenues?: boolean
   venuesList?: string[]
+  betaFeaturesList?: FeatureAPIResults[]
 }
 
 const isPrimeAdmin = () => hasRoles(Role.PRIME_ADMIN)
@@ -89,6 +106,11 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
   const venuesList: string[] = (venues?.data.map(item => item.id)
     .filter((id): id is string => id !== undefined)) || []
 
+  // const { data: betaFeatures } = useGetBetaFeatureListQuery({ params })
+  const betaFeatures = fakeFeatures
+  const betaFeaturesList: FeatureAPIResults[] = (betaFeatures?.filter((feature):
+    feature is FeatureAPIResults => feature !== undefined)) || []
+
   if (allowedOperations && accountTier && !isFeatureFlagStatesLoading) {
     isCustomRole = profile?.customRoleType?.toLocaleLowerCase()?.includes('custom') ?? false
     const userProfile = { ...profile } as UserProfile
@@ -108,7 +130,8 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       isCustomRole,
       scopes: profile?.scopes,
       hasAllVenues,
-      venuesList
+      venuesList,
+      betaFeaturesList
     })
   }
 
@@ -125,7 +148,8 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       abacEnabled,
       isCustomRole,
       hasAllVenues,
-      venuesList
+      venuesList,
+      betaFeaturesList
     }}
     children={props.children}
   />

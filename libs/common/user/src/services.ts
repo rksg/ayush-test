@@ -13,7 +13,8 @@ import {
   UserSettings,
   UserProfile,
   UserSettingsUIModel,
-  BetaStatus
+  BetaStatus,
+  FeatureAPIResults
 } from './types'
 
 const getUserUrls = (enableRbac?: boolean | unknown) => {
@@ -183,6 +184,16 @@ export const UserRbacUrlsInfo = {
     method: 'get',
     url: '/roleAuthentications/privilegeGroups',
     newApi: true
+  },
+  getBetaFeatureList: {
+    method: 'get',
+    url: '/tenants/betaFeatureList',
+    newApi: true
+  },
+  updateBetaFeatureList: {
+    method: 'put',
+    url: '/tenants/betaFeatureList',
+    newApi: true
   }
 }
 
@@ -212,7 +223,9 @@ export const {
   useToggleBetaStatusMutation,
   useFeatureFlagStatesQuery,
   useGetPrivilegeGroupsQuery,
-  useGetVenuesListQuery
+  useGetVenuesListQuery,
+  useGetBetaFeatureListQuery,
+  useUpdateBetaFeatureListMutation
 } = userApi.injectEndpoints({
   endpoints: (build) => ({
     getAllUserSettings: build.query<UserSettingsUIModel, RequestPayload>({
@@ -385,6 +398,25 @@ export const {
         }
       },
       providesTags: [{ type: 'Venue', id: 'LIST' }]
+    }),
+    getBetaFeatureList: build.query<FeatureAPIResults[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(UserRbacUrlsInfo.getBetaFeatureList, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Beta', id: 'DETAIL' }]
+    }),
+    updateBetaFeatureList: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(UserRbacUrlsInfo.updateBetaFeatureList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Beta', id: 'DETAIL' }]
     })
   })
 })
