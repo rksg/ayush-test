@@ -73,7 +73,6 @@ export default function WlanSelection ({ disabled }: { disabled: boolean }) {
     }
   }, [r1Networks.data, code, isMlisa, savedWlans, venueId, wlansQuery])
   return<Loader states={[wlansQuery]} style={{ height: '72px' }}>
-    {/* <Form.Item hidden name='wlans' children={<></>}></Form.Item> */}
     <Form.Item
       label={$t({ defaultMessage: 'Networks' })}
       style={{
