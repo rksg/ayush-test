@@ -7,6 +7,7 @@ import { get }                                from '@acx-ui/config'
 import { useIsSplitOn, Features }             from '@acx-ui/feature-toggle'
 import { useAuthenticateMutation }            from '@acx-ui/reports/services'
 import type { DataStudioResponse }            from '@acx-ui/reports/services'
+import { refreshJWT }                         from '@acx-ui/store'
 import { getUserProfile as getUserProfileR1 } from '@acx-ui/user'
 import { useLocaleContext }                   from '@acx-ui/utils'
 
@@ -39,6 +40,9 @@ export function DataStudio () {
     const eventHandler = (event: MessageEvent) => {
       if (event.data && event.data.type === 'unauthorized') {
         showExpiredSessionModal()
+      }
+      if(event.data && event.data.type === 'refreshToken') {
+        refreshJWT(event.data)
       }
     }
     window.addEventListener('message', eventHandler)

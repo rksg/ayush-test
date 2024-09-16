@@ -5,7 +5,7 @@ import * as config                                  from '@acx-ui/config'
 import { useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import { ReportUrlsInfo, reportsApi }               from '@acx-ui/reports/services'
 import type { DataStudioResponse }                  from '@acx-ui/reports/services'
-import { Provider, store }                          from '@acx-ui/store'
+import { Provider, store, refreshJWT }              from '@acx-ui/store'
 import { render, screen, waitFor, mockServer, act } from '@acx-ui/test-utils'
 import { useLocaleContext }                         from '@acx-ui/utils'
 
@@ -29,6 +29,13 @@ jest.mock('@acx-ui/utils', () => ({
   useLocaleContext: jest.fn()
 }))
 const localeContext = jest.mocked(useLocaleContext)
+
+jest.mock('@acx-ui/store', () => ({
+  __esModule: true,
+  ...jest.requireActual('@acx-ui/store'),
+  refreshJWT: jest.fn()
+}))
+const refreshJWTMock = jest.mocked(refreshJWT)
 
 jest.mock('@acx-ui/config')
 const get = jest.mocked(config.get)
@@ -155,7 +162,7 @@ describe('DataStudio', () => {
     process.env = oldEnv
   })
 
-  describe('401 Unauthorized', () => {
+  describe('Event listener', () => {
     let addEventListenerMock: jest.SpyInstance
     let removeEventListenerMock: jest.SpyInstance
 
@@ -197,6 +204,20 @@ describe('DataStudio', () => {
 
       unmount()
       expect(removeEventListenerMock).toHaveBeenCalledWith('message', expect.any(Function))
+    })
+
+    it('should call refreshJWT when event type is refreshToken', () => {
+      render(<Provider>
+        <DataStudio/>
+      </Provider>, { route: { params } })
+
+      act(() => {
+        window.dispatchEvent(new MessageEvent('message',
+          { data: { type: 'refreshToken', headers: { 'login-token': 'token' } } }))
+      })
+      expect(addEventListenerMock).toHaveBeenCalledWith('message', expect.any(Function))
+      expect(refreshJWTMock).toHaveBeenCalledWith(
+        { headers: { 'login-token': 'token' }, type: 'refreshToken' })
     })
   })
 })

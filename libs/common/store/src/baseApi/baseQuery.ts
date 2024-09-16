@@ -14,16 +14,18 @@ import {
 import type { FetchArgs } from '@reduxjs/toolkit/dist/query/fetchBaseQuery'
 
 export { createApi }
-
-function refreshJWT (headers?: Headers) {
-  const loginToken = headers?.get('login-token')
-
+export function refreshJWT (headers?: Headers | Record<string, string>) {
   if (!headers) return
-  if (!loginToken) return
 
-  sessionStorage.setItem('jwt', loginToken)
-  sessionStorage.removeItem('ACX-ap-compatibiliy-note-hidden') // clear ap compatibiliy banner display condition
-  updateJwtCache(loginToken)
+  const jwtToken = headers instanceof Headers
+    ? headers.get('login-token')
+    : headers['login-token']
+
+  if (!jwtToken) return
+
+  sessionStorage.setItem('jwt', jwtToken)
+  sessionStorage.removeItem('ACX-ap-compatibiliy-note-hidden')
+  updateJwtCache(jwtToken)
   reconnectSockets()
 }
 
@@ -31,12 +33,9 @@ export const fetchBaseQuery: typeof originalFetchBaseQuery = (options) => {
   const baseQuery = originalFetchBaseQuery(options)
   const wrapperBaseQuery: typeof baseQuery = async (args, api, extraOptions) => {
     const result = await baseQuery(args, api, extraOptions)
-
     refreshJWT(result.meta?.response?.headers)
-
     return result
   }
-
   return wrapperBaseQuery
 }
 
