@@ -13,7 +13,7 @@ import {
   findTBody,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
-import { RolesEnum }                                                         from '@acx-ui/types'
+import { RolesEnum, WifiScopes }                                             from '@acx-ui/types'
 import { getUserProfile, RaiPermissions, setRaiPermissions, setUserProfile } from '@acx-ui/user'
 
 import * as fixtures            from '../__tests__/fixtures'
@@ -182,6 +182,20 @@ describe('Service Validation Table', () => {
     setUserProfile({ ...profile, profile: {
       ...profile.profile, roles: [RolesEnum.READ_ONLY]
     } })
+    mockGraphqlQuery(serviceGuardApiURL, 'FetchAllServiceGuardSpecs',
+      { data: fixtures.fetchAllServiceGuardSpecs })
+    render(<ServiceGuardTable/>, { wrapper: Provider, route: {} })
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    expect(screen.queryByRole('radio')).not.toBeInTheDocument()
+  })
+
+  it('should not allow row selection when scope is missing wifi-u', async () => {
+    setUserProfile({
+      ...getUserProfile(),
+      abacEnabled: true,
+      isCustomRole: true,
+      scopes: [WifiScopes.READ]
+    })
     mockGraphqlQuery(serviceGuardApiURL, 'FetchAllServiceGuardSpecs',
       { data: fixtures.fetchAllServiceGuardSpecs })
     render(<ServiceGuardTable/>, { wrapper: Provider, route: {} })

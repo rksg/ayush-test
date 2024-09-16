@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import moment        from 'moment-timezone'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, showActionModal, showToast, Subtitle, Table, TableProps, Tooltip } from '@acx-ui/components'
-import { SuccessSolid }                                                             from '@acx-ui/icons'
+import { Loader, showActionModal, showToast, Table, TableProps, Tooltip } from '@acx-ui/components'
+import { SuccessSolid }                                                   from '@acx-ui/icons'
 import {
   OSIconContainer,
   PersonaDeviceItem,
@@ -24,14 +24,15 @@ import {
   defaultSort,
   DPSKDeviceInfo,
   getOsTypeIcon,
-  hasCloudpathAccess,
   Persona,
   PersonaDevice,
   PersonaErrorResponse,
   sortProp
 } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
-import { noDataDisplay }  from '@acx-ui/utils'
+import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
+import { noDataDisplay }                            from '@acx-ui/utils'
+
+import { IdentityDeviceContext } from './index'
 
 
 const defaultClientPayload = {
@@ -59,6 +60,7 @@ export function PersonaDevicesTable (props: {
   const addClientMac = (mac: string) => setClientMac(prev => new Set(prev.add(mac)))
   const { customHeaders } = usePersonaAsyncHeaders()
 
+  const { setDeviceCount } = useContext(IdentityDeviceContext)
   const [getClientList] = useLazyGetClientsQuery()
 
   const { data: dpskDevicesData, ...dpskDevicesResult } = useGetDpskPassphraseDevicesQuery({
@@ -101,6 +103,7 @@ export function PersonaDevicesTable (props: {
         if (!result.data?.data) return
         setMacDevices(aggregateMacAuthDevices(macDevices, result.data.data))
         setDpskDevices(aggregateDpskDevices(dpskDevices, result.data.data))
+        setDeviceCount(dpskDevices.length + macDevices.length)
       })
   }, [clientMac])
 
@@ -252,33 +255,35 @@ export function PersonaDevicesTable (props: {
     }
   ]
 
-  const rowActions: TableProps<PersonaDevice>['rowActions'] = hasCloudpathAccess() ? [
-    {
-      label: $t({ defaultMessage: 'Delete' }),
-      onClick: (selectedItems, clearSelection) => {
+  const rowActions: TableProps<PersonaDevice>['rowActions'] =
+    hasCrossVenuesPermission({ needGlobalPermission: true })
+      ? [
+        {
+          label: $t({ defaultMessage: 'Delete' }),
+          onClick: (selectedItems, clearSelection) => {
 
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: selectedItems.length > 1 ? 'devices' : '',
-            entityValue: selectedItems.length === 1 ? selectedItems[0].macAddress : undefined,
-            numOfEntities: selectedItems.length
-          },
-          // FIXME: Need to add mac registration list id into this dialog
-          // eslint-disable-next-line max-len
-          content: $t({ defaultMessage: 'It will remove these devices from the MAC Registration list associated with this identity. Are you sure you want to delete them?' }),
-          onOk: () => {
-            deleteDevices(selectedItems)
-            clearSelection()
+            showActionModal({
+              type: 'confirm',
+              customContent: {
+                action: 'DELETE',
+                entityName: selectedItems.length > 1 ? 'devices' : '',
+                entityValue: selectedItems.length === 1 ? selectedItems[0].macAddress : undefined,
+                numOfEntities: selectedItems.length
+              },
+              // FIXME: Need to add mac registration list id into this dialog
+              // eslint-disable-next-line max-len
+              content: $t({ defaultMessage: 'It will remove these devices from the MAC Registration list associated with this identity. Are you sure you want to delete them?' }),
+              onOk: () => {
+                deleteDevices(selectedItems)
+                clearSelection()
+              }
+            })
           }
-        })
-      }
-    }
-  ] : []
+        }
+      ] : []
 
   const actions: TableProps<PersonaDevice>['actions'] =
-    hasCloudpathAccess()
+    hasCrossVenuesPermission({ needGlobalPermission: true })
       ? [{
         label: $t({ defaultMessage: 'Add Device' }),
         onClick: () => {
@@ -338,19 +343,13 @@ export function PersonaDevicesTable (props: {
         { isLoading: false, isFetching: dpskDevicesResult.isFetching }
       ]}
     >
-      <Subtitle level={4}>
-        {$t(
-          { defaultMessage: 'Devices ({deviceCount})' },
-          { deviceCount: dpskDevices.length + macDevices.length }
-        )}
-      </Subtitle>
       <Table
         rowKey={'macAddress'}
         columns={columns}
         dataSource={macDevices.concat(dpskDevices)}
         rowActions={filterByAccess(rowActions)}
         actions={filterByAccess(actions)}
-        rowSelection={hasCloudpathAccess() ? {
+        rowSelection={hasCrossVenuesPermission({ needGlobalPermission: true }) ? {
           type: 'checkbox',
           getCheckboxProps: (item) => ({
             // Those devices auth by DPSK can not edit on this page

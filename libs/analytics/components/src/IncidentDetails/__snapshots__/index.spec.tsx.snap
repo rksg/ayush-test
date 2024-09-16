@@ -39,24 +39,37 @@ exports[`incident details should render incident details correctly 1`] = `
 }
 
 .c3 svg path {
-  stroke: var(--acx-primary-black);
+  color: var(--acx-primary-black);
+}
+
+.c3.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c3.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c3.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
 }
 
 .c3.ant-btn-primary svg path {
-  stroke: var(--acx-primary-white) !important;
-  fill: var(--acx-primary-white) !important;
+  color: var(--acx-primary-white) !important;
 }
 
 .c3[disabled] svg path,
 .c3.ant-btn-disabled svg path {
-  stroke: var(--acx-primary-white);
+  color: var(--acx-primary-white);
 }
 
+.c3[disabled].ant-btn-link svg path,
+.c3.ant-btn-disabled.ant-btn-link svg path,
 .c3[disabled].ant-btn-default svg path,
 .c3.ant-btn-disabled.ant-btn-default svg path,
 .c3[disabled].ant-btn-primary svg path,
 .c3.ant-btn-disabled.ant-btn-primary svg path {
-  stroke: var(--acx-neutrals-40);
+  color: var(--acx-neutrals-40);
 }
 
 .c11 {
@@ -300,19 +313,27 @@ exports[`incident details should render incident details correctly 1`] = `
   padding-bottom: 0;
 }
 
-.c8 .ant-descriptions-item-label {
+.c8 .ant-descriptions-item .ant-descriptions-item-label,
+.c8 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c8 .ant-descriptions-item .ant-descriptions-item-label {
   color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c8 .ant-descriptions-item-content {
+.c8 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c8 .ant-descriptions-item .ant-descriptions-item-content {
   color: var(--acx-primary-black);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c8 .ant-descriptions-item-content .ant-badge-status-dot {
+.c8 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
   top: -1px;
 }
 
@@ -1061,24 +1082,37 @@ exports[`incident details should render incident details correctly when there is
 }
 
 .c3 svg path {
-  stroke: var(--acx-primary-black);
+  color: var(--acx-primary-black);
+}
+
+.c3.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c3.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c3.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
 }
 
 .c3.ant-btn-primary svg path {
-  stroke: var(--acx-primary-white) !important;
-  fill: var(--acx-primary-white) !important;
+  color: var(--acx-primary-white) !important;
 }
 
 .c3[disabled] svg path,
 .c3.ant-btn-disabled svg path {
-  stroke: var(--acx-primary-white);
+  color: var(--acx-primary-white);
 }
 
+.c3[disabled].ant-btn-link svg path,
+.c3.ant-btn-disabled.ant-btn-link svg path,
 .c3[disabled].ant-btn-default svg path,
 .c3.ant-btn-disabled.ant-btn-default svg path,
 .c3[disabled].ant-btn-primary svg path,
 .c3.ant-btn-disabled.ant-btn-primary svg path {
-  stroke: var(--acx-neutrals-40);
+  color: var(--acx-neutrals-40);
 }
 
 .c11 {
@@ -1322,19 +1356,27 @@ exports[`incident details should render incident details correctly when there is
   padding-bottom: 0;
 }
 
-.c8 .ant-descriptions-item-label {
+.c8 .ant-descriptions-item .ant-descriptions-item-label,
+.c8 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c8 .ant-descriptions-item .ant-descriptions-item-label {
   color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c8 .ant-descriptions-item-content {
+.c8 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c8 .ant-descriptions-item .ant-descriptions-item-content {
   color: var(--acx-primary-black);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c8 .ant-descriptions-item-content .ant-badge-status-dot {
+.c8 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
   top: -1px;
 }
 

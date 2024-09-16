@@ -9,12 +9,11 @@ import { formatter }                     from '@acx-ui/formatter'
 
 import { TradeOff }                                           from '../../TradeOff'
 import { IntroSummary }                                       from '../common/IntroSummary'
-import { isIntentActive }                                     from '../common/isIntentActive'
 import { KpiField }                                           from '../common/KpiField'
 import { richTextFormatValues }                               from '../common/richTextFormatValues'
 import { getScheduledAt, ScheduleTiming }                     from '../common/ScheduleTiming'
 import { IntentConfigurationConfig, useIntentContext }        from '../IntentContext'
-import { getGraphKPIs, Intent, IntentKPIConfig }              from '../useIntentDetailsQuery'
+import { getGraphKPIs, Intent, IntentKPIConfig, intentState } from '../useIntentDetailsQuery'
 import { useInitialValues }                                   from '../useIntentTransition'
 import { Actions, getTransitionStatus, TransitionIntentItem } from '../utils'
 
@@ -29,7 +28,7 @@ export const configuration: IntentConfigurationConfig = {
   label: defineMessage({ defaultMessage: 'AP Firmware Version' }),
   valueFormatter: formatter('noFormat'),
   tooltip: (intent: Intent) =>
-    (isIntentActive(intent) &&
+    (intentState(intent) === 'active' &&
       intent.currentValue &&
       compareVersion(intent.currentValue as string, intent.recommendedValue as string) > -1)
       ? defineMessage({ defaultMessage: 'Zone was upgraded manually to recommended AP firmware version. Manually check whether this intent is still valid.' })
@@ -64,7 +63,7 @@ const useValuesText = createUseValuesText({
   inactive: defineMessage({ defaultMessage: 'When activated, this AIOps Intent takes over the automatic upgrade of Zone firmware in the network.' })
 })
 
-export const IntentAIDetails = createIntentAIDetails(useValuesText)
+export const IntentAIDetails = createIntentAIDetails(useValuesText, { showImpactedAPs: true })
 
 const options = {
   yes: {

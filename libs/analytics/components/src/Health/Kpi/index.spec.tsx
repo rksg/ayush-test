@@ -12,7 +12,7 @@ import {
   screen,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
-import { RolesEnum, TimeStampRange }                                 from '@acx-ui/types'
+import { RolesEnum, TimeStampRange, WifiScopes }                     from '@acx-ui/types'
 import { setUserProfile, getUserProfile }                            from '@acx-ui/user'
 import { DateRange, NetworkPath, fixedEncodeURIComponent, NodeType } from '@acx-ui/utils'
 import type { AnalyticsFilter }                                      from '@acx-ui/utils'
@@ -192,6 +192,40 @@ describe('Kpi Section', () => {
     setUserProfile({ ...profile, profile: {
       ...profile.profile, roles: [RolesEnum.READ_ONLY]
     } })
+    mockGraphqlQuery(dataApiURL, 'KPI', {
+      data: { mutationAllowed: false }
+    })
+    mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
+      data: { timeToConnect: { success: true }
+      }
+    })
+    const path = [{ type: 'network', name: 'Network' }] as NetworkPath
+    const params = { tenantId: 'testTenant' }
+    render(<Provider>
+      <HealthPageContext.Provider
+        value={{ ...healthContext }}
+      >
+        <KpiSection tab={'overview'} filters={{ ...filters, filter: pathToFilter(path) }} />
+      </HealthPageContext.Provider>
+    </Provider>, { route: { params, path: '/:tenantId' } })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const viewMore = await screen.findByRole('button', { name: 'View more' })
+    await userEvent.click(viewMore)
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const sliders = await screen.findAllByRole('slider')
+    sliders.forEach(slider => {
+      expect(slider).toHaveAttribute('aria-disabled', 'true')
+    })
+    expect(screen.queryByText('Apply')).not.toBeInTheDocument()
+    expect(screen.queryByText('Reset')).not.toBeInTheDocument()
+  })
+  it('should disable threshold setting when wifi-u is missing', async () => {
+    setUserProfile({
+      ...getUserProfile(),
+      abacEnabled: true,
+      isCustomRole: true,
+      scopes: [WifiScopes.READ]
+    })
     mockGraphqlQuery(dataApiURL, 'KPI', {
       data: { mutationAllowed: false }
     })

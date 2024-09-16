@@ -3,14 +3,14 @@ import { message } from 'antd'
 import _           from 'lodash'
 import moment      from 'moment-timezone'
 
-import { intentAIApi, intentAIUrl, Provider, store }                              from '@acx-ui/store'
-import { mockGraphqlMutation, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { intentAIApi, intentAIUrl, Provider, store }                                                from '@acx-ui/store'
+import { mockGraphqlMutation, mockGraphqlQuery, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
-import { useIntentContext } from '../IntentContext'
-import { Statuses }         from '../states'
-import { Intent }           from '../useIntentDetailsQuery'
+import { mockIntentContext } from '../__tests__/fixtures'
+import { Statuses }          from '../states'
+import { Intent }            from '../useIntentDetailsQuery'
 
-import { mocked }                                             from './__tests__/mockedIZoneFirmwareUpgrade'
+import { mocked, mockedIntentAps }                            from './__tests__/mockedIZoneFirmwareUpgrade'
 import { configuration, kpis, IntentAIDetails, IntentAIForm } from './IZoneFirmwareUpgrade'
 
 const { click, selectOptions, hover } = userEvent
@@ -67,15 +67,16 @@ afterEach((done) => {
 })
 
 const mockIntentContextWith = (data: Partial<Intent> = {}) => {
-  let intent = mocked
-  intent = _.merge({}, intent, data) as typeof intent
-  jest.mocked(useIntentContext).mockReturnValue({ intent, configuration, kpis })
-  return {
-    params: { code: mocked.code, root: mocked.root, sliceId: mocked.sliceId }
-  }
+  const intent = _.merge({}, mocked, data) as Intent
+  const context = mockIntentContext({ intent, configuration, kpis })
+  return { params: _.pick(context.intent, ['code', 'root', 'sliceId']) }
 }
 
 describe('IntentAIDetails', () => {
+  beforeEach(() => {
+    mockGraphqlQuery(intentAIUrl, 'GetAps', { data: { intent: { aps: mockedIntentAps } } })
+  })
+
   it('should handle when status is paused/na', async () => {
     const { params } = mockIntentContextWith({ status: Statuses.paused })
     render(<IntentAIDetails />, { route: { params }, wrapper: Provider })
@@ -91,12 +92,26 @@ describe('IntentAIDetails', () => {
     expect(await screen.findByTestId('Status Trail')).toBeVisible()
   })
   it('should show different tooltip based on return value of compareVersion', async () => {
-    const { params } = mockIntentContextWith({ currentValue: '7.0.0' })
+    const { params } = mockIntentContextWith({ status: Statuses.active, currentValue: '7.0.0' })
     render(<IntentAIDetails />, { route: { params }, wrapper: Provider })
     await hover(await screen.findByTestId('InformationSolid'))
     expect(await screen.findByRole('tooltip', { hidden: true }))
       // eslint-disable-next-line max-len
       .toHaveTextContent('Zone was upgraded manually to recommended AP firmware version. Manually check whether this intent is still valid.')
+  })
+  it('should render correctly for firmware drawer', async () => {
+    const { params } = mockIntentContextWith()
+    render(<IntentAIDetails />, { route: { params }, wrapper: Provider })
+    expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
+    await userEvent.click(await screen.findByText('3 of 3 APs (100 %)'))
+    const drawerEl = await screen.findByRole('dialog')
+    const drawer = within(drawerEl)
+    expect(await drawer.findByText('3 Impacted APs')).toBeVisible()
+    expect(await drawer.findByText('B4:79:C8:3E:7E:50')).toBeVisible()
+    expect(await drawer.findByText('28:B3:71:27:38:E0')).toBeVisible()
+    expect(await drawer.findByText('C8:84:8C:3E:46:B0')).toBeVisible()
+    await userEvent.click(drawer.getByRole('button', { name: 'Close' }))
+    expect(drawerEl).not.toBeVisible()
   })
   it('should render', async () => {
     const { params } = mockIntentContextWith()
@@ -120,8 +135,8 @@ describe('IntentAIDetails', () => {
 })
 
 describe('IntentAIForm', () => {
-  it('should render when active', async () => {
-    const { params } = mockIntentContextWith()
+  it('handle schedule intent', async () => {
+    const { params } = mockIntentContextWith({ status: Statuses.new })
     render(<IntentAIForm />, { route: { params }, wrapper: Provider })
     const form = within(await screen.findByTestId('steps-form'))
     const actions = within(form.getByTestId('steps-form-actions'))
@@ -138,11 +153,13 @@ describe('IntentAIForm', () => {
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Settings' })).toBeVisible()
-    await selectOptions(
-      await screen.findByRole('combobox', { name: 'Schedule Time' }),
-      '12:30 (UTC+08)'
-    )
-    expect(await screen.findByRole('combobox', { name: 'Schedule Time' })).toHaveValue('12.5')
+    const date = await screen.findByPlaceholderText('Select date')
+    await click(date)
+    await click(await screen.findByRole('cell', { name: '2024-08-13' }))
+    expect(date).toHaveValue('08/13/2024')
+    const time = await screen.findByPlaceholderText('Select time')
+    await selectOptions(time, '12:30 (UTC+08)')
+    expect(time).toHaveValue('12.5')
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Summary' })).toBeVisible()
@@ -152,8 +169,8 @@ describe('IntentAIForm', () => {
     expect(await screen.findByText(/has been updated/)).toBeVisible()
     expect(mockNavigate).toBeCalled()
   })
-  it('should render when paused', async () => {
-    const { params } = mockIntentContextWith()
+  it('handle pause intent', async () => {
+    const { params } = mockIntentContextWith({ status: Statuses.new })
     render(<IntentAIForm />, { route: { params }, wrapper: Provider })
     const form = within(await screen.findByTestId('steps-form'))
     const actions = within(form.getByTestId('steps-form-actions'))
@@ -170,7 +187,8 @@ describe('IntentAIForm', () => {
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Settings' })).toBeVisible()
-    expect(await screen.findByRole('combobox', { name: 'Schedule Time' })).toBeDisabled()
+    expect(await screen.findByPlaceholderText('Select date')).toBeDisabled()
+    expect(await screen.findByPlaceholderText('Select time')).toBeDisabled()
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Summary' })).toBeVisible()

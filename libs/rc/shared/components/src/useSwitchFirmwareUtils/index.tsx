@@ -44,8 +44,8 @@ export function useSwitchFirmwareUtils () {
   const switchVersions = useGetSwitcDefaultVersionsQuery({
     enableRbac: isSwitchRbacEnabled || isSwitchFirmwareV1002Enabled,
     customHeaders: isSwitchFirmwareV1002Enabled ? {
-      'Content-Type': 'application/vnd.ruckus.v1.2+json',
-      'Accept': 'application/vnd.ruckus.v1.2+json'
+      'Content-Type': 'application/vnd.ruckus.v1.1+json',
+      'Accept': 'application/vnd.ruckus.v1.1+json'
     } : {}
   }, {
     refetchOnMountOrArgChange: false

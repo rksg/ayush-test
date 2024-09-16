@@ -5,9 +5,15 @@ import { MessageDescriptor } from 'react-intl'
 
 import { Loader }    from '@acx-ui/components'
 import { formatter } from '@acx-ui/formatter'
-import { useParams } from '@acx-ui/react-router-dom'
 
-import { Intent, IntentKPIConfig, useIntentDetailsQuery } from './useIntentDetailsQuery'
+import {
+  Intent,
+  IntentKPIConfig,
+  intentState,
+  useIntentDetailsQuery,
+  useIntentParams
+} from './useIntentDetailsQuery'
+import { isDataRetained } from './utils'
 
 export type IntentConfigurationConfig = {
   label: MessageDescriptor
@@ -19,6 +25,8 @@ type IIntentContext = {
   intent: Intent
   configuration?: IntentConfigurationConfig
   kpis: IntentKPIConfig[]
+  isDataRetained: boolean
+  state: ReturnType<typeof intentState>
 }
 
 export const IntentContext = createContext({} as IIntentContext)
@@ -34,28 +42,31 @@ export function createIntentContextProvider (
   }>
 ) {
   const Component: React.FC = function () {
-    const { tenantId, root, sliceId, code } = useParams() as {
-      tenantId?: string
-      root: Intent['root']
-      sliceId: Intent['sliceId']
-      code: string
-    }
-    const id = root || tenantId
-    const spec = specs[code]
+    const params = useIntentParams()
+
+    const spec = specs[params.code]
     const kpis = spec?.kpis
       // pick only 2 required field
       // which its value is primitive value type
       // to prevent RTK Query unable to use param as cache key
       .map(kpi => _.pick(kpi, ['key', 'deltaSign']))
-    const query = useIntentDetailsQuery(
-      { root: id as string, sliceId, code, kpis }, { skip: !spec })
+    const query = useIntentDetailsQuery({ ...params, kpis }, { skip: !spec })
 
     if (!spec) return null // no matching spec
     if (query.isSuccess && !query.data) return null // 404
 
+    const intent = query.data
+    const context: IIntentContext = {
+      intent: intent!,
+      configuration: spec.configuration,
+      kpis: spec.kpis,
+      isDataRetained: (intent && isDataRetained(intent.metadata.dataEndTime))!,
+      state: (intent && intentState(intent))!
+    }
+
     return <Loader states={[query]}>
       <IntentContext.Provider
-        value={{ intent: query.data!, configuration: spec.configuration, kpis: spec.kpis }}
+        value={context}
         children={React.createElement(spec[of])}
       />
     </Loader>

@@ -30,6 +30,8 @@ import { useParams, TenantLink }                                           from 
 import { hasRaiPermission }                                                from '@acx-ui/user'
 import { DateRange, fixedEncodeURIComponent, encodeParameter, DateFilter } from '@acx-ui/utils'
 
+import { getZoneUrl } from '../ZoneDetails/ZoneTabs'
+
 import NoData                               from './NoData'
 import { Collapse, Panel, Ul, Chevron, Li } from './styledComponents'
 
@@ -216,7 +218,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
         const networkPath = row.networkPath.slice(1)
         const filter = encodeFilterPath('analytics', row.networkPath)
         const defaultPath = row.type.toLowerCase() === 'zone'
-          ? `/zones/${networkPath?.[0]?.name}/${networkPath?.[1]?.name}/assurance`
+          ? `${getZoneUrl(networkPath?.[0]?.name, networkPath?.[1]?.name)}/assurance`
           : `/incidents?${filter}`
         const reportOnly = row.type.toLowerCase().includes('switch')
           ? `/reports/switches?${filter}`
@@ -446,11 +448,12 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
 
 export default function SearchResults () {
   const { searchVal } = useParams()
+  const trimmedSearchVal = searchVal?.trim()
   return <TimeRangeDropDownProvider availableRanges={[
     DateRange.last24Hours,
     DateRange.last7Days,
     DateRange.last30Days
   ]}>
-    <SearchResult key={searchVal} searchVal={searchVal} />
+    <SearchResult key={trimmedSearchVal} searchVal={trimmedSearchVal} />
   </TimeRangeDropDownProvider>
 }

@@ -28,7 +28,8 @@ type Profile = {
   abacEnabled?: boolean
   scopes?: ScopeKeys
   isCustomRole?: boolean,
-  hasAllVenues?: boolean
+  hasAllVenues?: boolean,
+  venuesList?: string[]
 }
 const userProfile: Profile = {
   profile: {} as UserProfile,
@@ -60,6 +61,7 @@ export const setUserProfile = (profile: Profile) => {
   userProfile.isCustomRole = profile.isCustomRole
   userProfile.scopes = profile?.scopes
   userProfile.hasAllVenues = profile?.hasAllVenues
+  userProfile.venuesList = profile?.venuesList
 }
 
 export const getShowWithoutRbacCheckKey = (id:string) => {
@@ -149,8 +151,8 @@ export function hasPermission (props?: {
  *
  * @param userScopes The scopes to check against the user's profile.
  *
- *  WifiScopes|SwitchScopes|EdgeScopes: means the scope is optional, and the user can have any one of these scopes.
- * (WifiScopes|SwitchScopes|EdgeScopes)[]: means the user must have these specific scopes.
+ * OR  -> WifiScopes|SwitchScopes|EdgeScopes: means the scope is optional, and the user can have any one of these scopes.
+ * AND -> (WifiScopes|SwitchScopes|EdgeScopes)[]: means the user must have these specific scopes.
  *
  */
 export function hasScope (userScopes: ScopeKeys) {
@@ -193,25 +195,17 @@ export function isCustomAdmin () {
   return false
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function hasCrossVenuesPermission (props?: Permission) {
   if (get('IS_MLISA_SA')) {
     return true
   }
-  /* For testing purposes */
-  // const { abacEnabled, hasAllVenues, isCustomRole } = getUserProfile()
-  // if(!abacEnabled) return true
-  // if(props?.needGlobalPermission) {
-  //   return !isCustomRole && hasAllVenues && hasRoles([Role.PRIME_ADMIN, Role.ADMINISTRATOR])
-  // } else {
-  //   return hasAllVenues
-  // }
-
-  /* Comment out the following code for testing purposes. */
+  const { abacEnabled, hasAllVenues, isCustomRole } = getUserProfile()
+  if(!abacEnabled) return true
   if(props?.needGlobalPermission) {
-    return hasRoles([Role.PRIME_ADMIN, Role.ADMINISTRATOR])
+    return !isCustomRole && hasAllVenues && hasRoles([Role.PRIME_ADMIN, Role.ADMINISTRATOR])
+  } else {
+    return hasAllVenues
   }
-  return true
 }
 
 export function AuthRoute (props: {
