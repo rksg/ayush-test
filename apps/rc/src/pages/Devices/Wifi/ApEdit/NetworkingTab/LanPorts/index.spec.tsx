@@ -2,20 +2,36 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
-import { apApi, venueApi }                                                    from '@acx-ui/rc/services'
-import { CommonRbacUrlsInfo, CommonUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                    from '@acx-ui/store'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { apApi, venueApi }        from '@acx-ui/rc/services'
+import {
+  AaaUrls,
+  CommonRbacUrlsInfo,
+  CommonUrlsInfo,
+  EthernetPortProfileUrls,
+  WifiRbacUrlsInfo,
+  WifiUrlsInfo
+} from '@acx-ui/rc/utils'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
   waitForElementToBeRemoved,
-  screen
+  screen,
+  fireEvent,
+  within
 }   from '@acx-ui/test-utils'
 
-import { ApNetworkingContext }                                                                    from '..'
-import { ApDataContext, ApEditContext }                                                           from '../..'
-import { ApCap_T750SE, ApData_T750SE, ApLanPorts_T750SE, venueData, venueLanPorts, venueSetting } from '../../../../__tests__/fixtures'
+import { ApNetworkingContext }          from '..'
+import { ApDataContext, ApEditContext } from '../..'
+import {
+  ApCap_T750SE,
+  ApData_T750SE,
+  ApLanPorts_T750SE,
+  mockEthProfiles,
+  venueData,
+  venueLanPorts,
+  venueSetting } from '../../../../__tests__/fixtures'
 
 import { LanPorts } from '.'
 
@@ -178,5 +194,114 @@ describe('AP Lan port settings', () => {
     expect(venueLink).toBeInTheDocument()
     await userEvent.click(venueLink)
     expect(mockedUsedNavigate).toBeCalled()
+  })
+})
+
+describe('AP Ethernet Port Profile', () => {
+  const defaultT750SeApCtxData = {
+    apData: ApData_T750SE,
+    apCapabilities: ApCap_T750SE,
+    venueData
+  }
+
+  beforeEach(() => {
+    store.dispatch(venueApi.util.resetApiState())
+    store.dispatch(apApi.util.resetApiState())
+
+    mockServer.use(
+      rest.get(CommonUrlsInfo.getVenueSettings.url,
+        (_, res, ctx) => res(ctx.json(venueSetting))),
+      rest.get(CommonUrlsInfo.getVenueLanPorts.url,
+        (_, res, ctx) => res(ctx.json(venueLanPorts))),
+      rest.get(CommonRbacUrlsInfo.getVenueLanPorts.url,
+        (_, res, ctx) => res(ctx.json(venueLanPorts))),
+      rest.get(WifiUrlsInfo.getApLanPorts.url,
+        (_, res, ctx) => res(ctx.json(ApLanPorts_T750SE))),
+      rest.get(WifiRbacUrlsInfo.getApLanPorts.url,
+        (_, res, ctx) => res(ctx.json(ApLanPorts_T750SE))),
+      rest.put(WifiUrlsInfo.updateApLanPorts.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.put(WifiRbacUrlsInfo.updateApLanPorts.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.delete(WifiUrlsInfo.resetApLanPorts.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.post(EthernetPortProfileUrls.getEthernetPortProfileViewDataList.url,
+        (_, res, ctx) => res(ctx.json(mockEthProfiles))),
+      rest.post(AaaUrls.getAAAPolicyViewModelList.url,
+        (_, res, ctx) => res(ctx.json({})))
+    )
+  })
+
+  it ('Should render ethernet profile correctly with AP model T750SE', async () => {
+    // Given
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.ETHERNET_PORT_PROFILE_TOGGLE)
+    render(
+      <Provider>
+        <ApEditContext.Provider value={{
+          editContextData: {
+            tabTitle: '',
+            isDirty: false,
+            hasError: false,
+            updateChanges: jest.fn(),
+            discardChanges: jest.fn()
+          },
+          setEditContextData: jest.fn(),
+          editNetworkingContextData: {} as ApNetworkingContext,
+          setEditNetworkingContextData: jest.fn()
+        }}>
+          <ApDataContext.Provider value={defaultT750SeApCtxData}>
+            <LanPorts />
+          </ApDataContext.Provider>
+        </ApEditContext.Provider>
+      </Provider>,{
+        route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/networking' }
+      }
+    )
+
+    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+
+    const tabs = await screen.findAllByRole('tab')
+    await userEvent.click(tabs[1])
+
+    const enablePort = await screen.findByRole('switch', { name: 'Enable port' })
+    expect(enablePort).toHaveAttribute('aria-checked', 'true')
+
+    const profileSelector = await screen.findByRole('combobox', { name: 'Ethernet Port Profile' })
+    expect(profileSelector).toBeInTheDocument()
+    await userEvent.click(profileSelector)
+
+    const detailBtn = await screen.findByRole('button', { name: 'Profile Details' })
+    expect(detailBtn).toBeInTheDocument()
+    await userEvent.click(detailBtn)
+
+    expect(screen.getByText('Ethernet Port Details:')).toBeInTheDocument()
+    expect(await screen.findAllByText('Port Type')).toHaveLength(3)
+    expect(await screen.findAllByText('VLAN Untag ID')).toHaveLength(4)
+    expect(await screen.findAllByText('VLAN Members')).toHaveLength(3)
+    expect(await screen.findAllByText('802.1X')).toHaveLength(4)
+
+    const addBtn = await screen.findByRole('button', { name: 'Add Profile' })
+    expect(addBtn).toBeInTheDocument()
+    await userEvent.click(addBtn)
+
+    const form = within(await screen.findByTestId('steps-form'))
+    const actions = within(form.getByTestId('steps-form-actions'))
+
+    expect(screen.getByText('Add Ethernet Port Profile')).toBeInTheDocument()
+
+    const profileNameInput = await screen.findByLabelText('Profile Name')
+    expect(profileNameInput).toBeInTheDocument()
+    fireEvent.change(profileNameInput, { target: { value: 'eth_profile_1' } })
+    fireEvent.blur(profileNameInput)
+
+    expect(screen.getByText('VLAN')).toBeInTheDocument()
+    const untagVlanInput = await screen.findByLabelText('VLAN Untag ID')
+    expect(untagVlanInput).toBeInTheDocument()
+    fireEvent.change(untagVlanInput, { target: { value: 9 } })
+
+    expect(await screen.findByLabelText('802.1X Authentication')).toBeInTheDocument()
+
+    await userEvent.click(actions.getByRole('button', { name: 'Add' }))
   })
 })
