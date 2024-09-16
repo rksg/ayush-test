@@ -51,6 +51,9 @@ export type Intent = {
     scheduledAt: string
     wlans?: IntentWlan[]
     dataEndTime: string
+    preferences?: {
+      crrmFullOptimization: boolean;
+    },
   }
   sliceType: NodeType
   sliceValue: string
@@ -62,9 +65,6 @@ export type Intent = {
     createdAt?: string
   }>
   updatedAt: string
-  preferences?: {
-    crrmFullOptimization: boolean;
-  },
   currentValue: IntentConfigurationValue
   recommendedValue: IntentConfigurationValue
 } & Partial<IntentKpi>
