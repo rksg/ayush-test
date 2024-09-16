@@ -190,7 +190,7 @@ export function NetworkingTab () {
       await editNetworkingContextData.discardLanPortsChanges?.()
       await editNetworkingContextData.discardMeshChanges?.()
       await editNetworkingContextData.discardDirectedMulticastChanges?.()
-      await editNetworkingContextData.updateSmartMonitor?.()
+      await editNetworkingContextData.discardSmartMonitorChanges?.()
 
       resetEditContextData()
 
