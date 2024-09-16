@@ -15,8 +15,7 @@ import { CommonActionSettings } from './CommonActionSettings'
 export function AupSettings () {
   const { $t } = useIntl()
   const formInstance = Form.useFormInstance()
-  const [displayFileOption, setDisplayFileOption] =
-    useState(false)
+  const [displayFileOption, setDisplayFileOption] = useState(false)
   const [uploadFile] = useUploadFileMutation()
   const [deleteFile] = useDeleteFileMutation()
 
@@ -81,7 +80,7 @@ export function AupSettings () {
         type: FileType.AUP_FILE
       }
       await deleteFile({
-        payload: JSON.stringify(fileDto)
+        payload: fileDto
       })
     }
   }
@@ -154,7 +153,7 @@ export function AupSettings () {
     {displayFileOption?
       <Form.Item
         name={'aupFile'}
-        label={'Policy Content'}
+        label={$t({ defaultMessage: 'Policy Content' })}
         rules={[
           { required: true }
         ]}
@@ -162,7 +161,7 @@ export function AupSettings () {
           type='link'
           size='small'
           onClick={aupFormatSwitch}>
-          {$t({ defaultMessage: 'Paste text instead' })}
+          label={$t({ defaultMessage: 'Policy Content' })}
         </Button>}>
         <Upload.Dragger
           data-testid='aupPolicy'

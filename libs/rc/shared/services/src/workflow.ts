@@ -451,7 +451,7 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
       query: ({ params, payload }) => {
         return {
           ...createHttpRequest(WorkflowUrls.deleteFile, params),
-          body: payload
+          body: JSON.stringify(payload)
         }
       } }),
     // eslint-disable-next-line max-len
