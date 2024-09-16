@@ -230,7 +230,33 @@ describe('AupSettings', () => {
     const uploadFileMessage = screen.getByText('Upload file instead')
     expect(uploadFileMessage).toBeInTheDocument()
     const policyContent = await screen.findByTestId('policy-text')
-    await userEvent.type(policyContent,'all is well')
+    await userEvent.type(policyContent, 'all is well')
+    const message = screen.getByText('all is well')
+    expect (message).toBeInTheDocument()
+  })
+
+  it('Should be able to upload file', async () => {
+    const { result: formRef } = renderHook(() => {
+      const [form] = Form.useForm<AupActionContext>()
+      form.setFieldsValue({
+        useAupFile: true,
+        aupFileLocation: '7c1a1cb9-548c-446e-b4dc-07d498759d9b-text.docs',
+        aupFileName: 'text.docs'
+      })
+      return form
+    })
+
+    render(<Provider>
+      <Form form={formRef.current}>
+        <AupSettings/>
+      </Form>
+    </Provider>)
+    expect(await screen.findByText('Paste text instead')).toBeVisible()
+    const dragFile = screen.getByText('Change File')
+    expect(dragFile).toBeInTheDocument()
+    const file = new File(['hello'], 'hello.png', { type: 'image/png' })
+    const testfile = screen.getByTestId('aupPolicy')
+    userEvent.upload(testfile, file)
   })
 
 })
