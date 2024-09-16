@@ -17,8 +17,8 @@ import {
   TopNByPortCongestionResult, TopNByStormPortCountResult,
   showTopNTableResult
 } from './config'
-import { usePieChartDataQuery }        from './services'
-import { ChartTitle, PieChartWrapper } from './styledComponents'
+import { usePieChartDataQuery }                           from './services'
+import { ChartTitle, DonutChartWrapper, PieChartWrapper } from './styledComponents'
 
 type PieChartData = {
   mac: string
@@ -148,7 +148,7 @@ export const MoreDetailsPieChart = ({
     <Loader states={[queryResults]}>
       <PieChartWrapper>
         {Title}
-        <div style={{ height: 210, minWidth: 400 }}>
+        <DonutChartWrapper>
           {pieData && pieData.length > 0 ?
             <AutoSizer defaultHeight={150}>
               {({ width, height }) => (
@@ -168,7 +168,7 @@ export const MoreDetailsPieChart = ({
             </AutoSizer> :
             <NoData />
           }
-        </div>
+        </DonutChartWrapper>
 
       </PieChartWrapper>
       { hasOthers &&

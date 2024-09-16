@@ -14,3 +14,8 @@ export const PieChartWrapper = styled.div`
     height: 100%
   }
 `
+
+export const DonutChartWrapper = styled.div`
+  height: 210px;
+  minWidth: 400px;
+`
