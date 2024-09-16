@@ -70,10 +70,14 @@ export const SliderBefore = () => {
   const { $t } = useIntl()
   return (
     <UI.SliderBefore>
-      <UI.LabelStyleBefore>
-        <span>{($t({ defaultMessage: 'Mission' }))}</span>
-        <span>{($t({ defaultMessage: 'criticality' }))}</span>
-      </UI.LabelStyleBefore>
+      <div style={{
+        width: '20%'
+      }}>
+        <UI.LabelStyleBefore>
+          <span>{($t({ defaultMessage: 'Mission' }))}</span>
+          <span>{($t({ defaultMessage: 'criticality' }))}</span>
+        </UI.LabelStyleBefore>
+      </div>
       <div style={{
         width: '100%'
       }}>
@@ -87,17 +91,20 @@ export const SliderAfter = () => {
   const { $t } = useIntl()
   return (
     <UI.SliderAfter>
+      <div style={{
+        width: '20%'
+      }}></div>
+      <div style={{
+        width: '100%'
+      }}>
+        <ChartAfter />
+      </div>
       <UI.LabelStyleAfter>
         <span>{($t({ defaultMessage: 'Energy' }))}</span>
         <span>{($t({ defaultMessage: 'footprint' }))}</span>
         <span>{($t({ defaultMessage: 'with' }))}</span>
         <Icon feature={aiFeatures.EcoFlex} size='xs' />
       </UI.LabelStyleAfter>
-      <div style={{
-        width: '100%'
-      }}>
-        <ChartAfter />
-      </div>
     </UI.SliderAfter>
   )
 }
