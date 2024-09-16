@@ -45,6 +45,7 @@ const ChartBefore = () => {
       showLegend={false}
       style={{ width: 200, height: 200 }}
       title={$t({ defaultMessage: '0 APs (0%) are supporting and enabling EcoFlex' })}
+      titleColor='white'
       showTotal={false}
       dataFormatter={formatter('countFormat')}
       data={ecoFlexDataBefore}
