@@ -236,7 +236,7 @@ export function IntentAITable (
       filteredValue: selectedFilters.intents,
       filterSearch: true,
       filterPlaceholder: $t({ defaultMessage: 'All Intents' }),
-      filterableWidth: 300
+      filterableWidth: 240
     },
     {
       title: $t({ defaultMessage: 'Category' }),
