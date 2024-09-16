@@ -27,16 +27,12 @@ export default function WlanSelection ({ disabled }: { disabled: boolean }) {
   const isMlisa = Boolean(get('IS_MLISA_SA'))
   const { intent } = useIntentContext()
   const { form } = useStepFormContext<Intent>()
-  const { root, code, metadata, sliceId } = intent
-  const savedWlans = metadata.wlans
+  const { root, code, sliceId } = intent
+  const savedWlans = form.getFieldValue('wlans') as Wlan[]
   const { $t } = useIntl()
-  const [wlans, setWlans] = useState<Array<Wlan>>([])
+  const [wlans, setWlans] = useState<Array<Wlan>>(savedWlans)
   const selected = wlans.filter(wlan => !wlan.excluded)
   const selectedWlans = selected.length ? selected : wlans
-  form.setFieldValue(
-    'wlans',
-    selectedWlans.map(wlan => ({ name: wlan.name, ssid: wlan.ssid, id: wlan.id }))
-  )
   const venueId = sliceId
   const raiQuery = useIntentWlansQuery({ sliceId, root, code }, { skip: !isMlisa || disabled })
   let available: Wlan[] | undefined
@@ -54,6 +50,7 @@ export default function WlanSelection ({ disabled }: { disabled: boolean }) {
   }, { skip: isMlisa || disabled })
   const wlansQuery = isMlisa ? raiQuery : r1Networks
   useEffect(() => {
+    let wlans: Wlan[]
     if (isMlisa && wlansQuery.data) {
       available = wlansQuery.data.map(wlan => ({ ...wlan, id: wlan.name })) // RA does not have ID
     } else if (!isMlisa && wlansQuery.data) {
@@ -62,17 +59,20 @@ export default function WlanSelection ({ disabled }: { disabled: boolean }) {
     if (available?.length) {
       if (savedWlans?.length) {
         const saved = savedWlans.map(({ name }) => name)
-        setWlans(available.map(wlan => ({
+        wlans = available.map(wlan => ({
           ...wlan,
           excluded: !saved.includes(isMlisa ? wlan.name : wlan.id)
-        })))
+        }))
       } else {
-        setWlans(available)
+        wlans = available
       }
+      setWlans(wlans)
+      !(form.getFieldValue('wlans') &&
+      form.getFieldValue('wlans').length) &&
+      form.setFieldValue('wlans', wlans.filter(wlan => !wlan.excluded))
     }
   }, [r1Networks.data, code, isMlisa, savedWlans, venueId, wlansQuery])
   return<Loader states={[wlansQuery]} style={{ height: '72px' }}>
-    <Form.Item hidden name='wlans' children={<></>}></Form.Item>
     <Form.Item
       label={$t({ defaultMessage: 'Networks' })}
       style={{
@@ -90,9 +90,9 @@ export default function WlanSelection ({ disabled }: { disabled: boolean }) {
         showSearch={false}
         style={{ width: '100%', margin: '0 auto 10px auto' }}
         onChange={(ids: string[]) => {
-          setWlans(
-            wlans.map(wlan => ({ ...wlan, excluded: !ids.includes(wlan.id) }))
-          )
+          const updatedList = wlans.map(wlan => ({ ...wlan, excluded: !ids.includes(wlan.id) }))
+          setWlans(updatedList)
+          form.setFieldValue('wlans', updatedList.filter(wlan => !wlan.excluded))
         }}
         placeholder={$t({ defaultMessage: 'Select Networks' })}
         value={selectedWlans.map(wlan => wlan.id)}
