@@ -16,6 +16,7 @@ import { FixedAutoSizer }           from '../../DescriptionSection/styledCompone
 import { DetailsSection }           from '../common/DetailsSection'
 import { getIntentStatus }          from '../common/getIntentStatus'
 import { IntentDetailsHeader }      from '../common/IntentDetailsHeader'
+import { IntentDetailsSidebar }     from '../common/IntentDetailsSidebar'
 import { IntentIcon }               from '../common/IntentIcon'
 import { KpiCard }                  from '../common/KpiCard'
 import { richTextFormatValues }     from '../common/richTextFormatValues'
@@ -57,10 +58,10 @@ export function createUseValuesText () {
       : isFullOptimization ? action.full : action.partial
 
 
-    const benefitText = defineMessage({ defaultMessage: `Low interference fosters improved 
-      throughput, lower latency, better signal quality, stable connections, enhanced user 
-      experience, longer battery life, efficient spectrum utilization, optimized channel usage, 
-      and reduced congestion, leading to higher data rates, higher SNR, consistent performance, 
+    const benefitText = defineMessage({ defaultMessage: `Low interference fosters improved
+      throughput, lower latency, better signal quality, stable connections, enhanced user
+      experience, longer battery life, efficient spectrum utilization, optimized channel usage,
+      and reduced congestion, leading to higher data rates, higher SNR, consistent performance,
       and balanced network load.` })
 
     const tradeoffText = defineMessage({ defaultMessage: `In the quest for minimizing interference
@@ -128,7 +129,7 @@ export function createIntentAIDetails () {
       <GridRow>
         <GridCol col={{ span: 6, xxl: 4 }}>
           <FixedAutoSizer>
-            {({ width }) => (<div style={{ width }}>
+            {({ width }) => (<IntentDetailsSidebar style={{ width }}>
               <IntentIcon size='large' />
               <Typography.Paragraph
                 children={<FormattedMessage {...valuesText.summaryText} values={richTextFormatValues} />}/>
@@ -137,7 +138,7 @@ export function createIntentAIDetails () {
               {hasData
                 ? <DownloadRRMComparison title={$t({ defaultMessage: 'RRM comparison' })} />
                 : null}
-            </div>)}
+            </IntentDetailsSidebar>)}
           </FixedAutoSizer>
         </GridCol>
         <GridCol col={{ span: 18, xxl: 20 }}>
