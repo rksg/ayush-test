@@ -17,8 +17,8 @@ import {
   TopNByPortCongestionResult, TopNByStormPortCountResult,
   showTopNTableResult
 } from './config'
-import { usePieChartDataQuery }                           from './services'
-import { ChartTitle, DonutChartWrapper, PieChartWrapper } from './styledComponents'
+import { usePieChartDataQuery }        from './services'
+import { ChartTitle, PieChartWrapper } from './styledComponents'
 
 type PieChartData = {
   mac: string
@@ -146,38 +146,35 @@ export const MoreDetailsPieChart = ({
   const total = pieData?.reduce((total, { value }) => total + value, 0)
   return (
     <Loader states={[queryResults]}>
-      <PieChartWrapper>
-        {Title}
-        <DonutChartWrapper>
-          {pieData && pieData.length > 0 ?
-            <AutoSizer defaultHeight={150}>
-              {({ width, height }) => (
-                <DonutChart
-                  data={pieData}
-                  style={{ height, width }}
-                  legend='name'
-                  size={'x-large'}
-                  showTotal={false}
-                  labelTextStyle={{
-                    overflow: 'truncate',
-                    width: 170
-                  }}
-                  showLegend
-                  dataFormatter={tooltipFormatter(total, formatter('countFormat'))} />
-              )}
-            </AutoSizer> :
-            <NoData />
-          }
-        </DonutChartWrapper>
-
-      </PieChartWrapper>
-      { hasOthers &&
+      {Title}
+      {pieData && pieData.length > 0
+        ? <PieChartWrapper>
+          <AutoSizer>
+            {({ width, height }) => (
+              <DonutChart
+                data={pieData}
+                style={{ height, width }}
+                legend='name'
+                size={'x-large'}
+                showTotal={false}
+                labelTextStyle={{
+                  overflow: 'truncate',
+                  width: 170
+                }}
+                showLegend
+                dataFormatter={tooltipFormatter(total, formatter('countFormat'))} />
+            )}
+          </AutoSizer>
+        </PieChartWrapper>
+        : <NoData />
+      }
+      {hasOthers &&
       <Space align='start' >
         <InformationOutlined />
         {$t({
           defaultMessage: `Detailed breakup of all items beyond
           Top {n} can be explored using Data Studio custom charts.` }, { n })}
-      </Space> }
+      </Space>}
     </Loader>
 
   )
