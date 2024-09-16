@@ -43,6 +43,9 @@ export const LabelStyleAfter = styled.div`
     grid-column: 1 / -1;
   }
   > span:nth-child(2) {
+    grid-column: 1 / -1;
+  }
+  > span:nth-child(3) {
     font-size: var(--acx-subtitle-6-font-size);
     line-height: var(--acx-subtitle-6-line-height);
     font-weight: var(--acx-subtitle-6-font-weight);

@@ -52,7 +52,7 @@ const ChartBefore = () => {
   )
 }
 
-export const SliderBeforeTest = () => {
+export const SliderBefore = () => {
   const { $t } = useIntl()
   return (
     <UI.SliderBefore>
@@ -61,7 +61,8 @@ export const SliderBeforeTest = () => {
         display: 'flex',
         alignItems: 'center',
         width: '100%',
-        height: '100%'
+        height: '100%',
+        backgroundColor: cssStr('--acx-primary-black')
       }}>
         <ChartBefore />
       </div>
@@ -83,12 +84,13 @@ const ChartAfter = () => {
   )
 }
 
-export const SliderAfterTest = () => {
+export const SliderAfter = () => {
   const { $t } = useIntl()
   return (
     <UI.SliderAfter>
       <UI.LabelStyleAfter>
-        <span>{($t({ defaultMessage: 'Forecast' }))}</span>
+        <span>{($t({ defaultMessage: 'Energy' }))}</span>
+        <span>{($t({ defaultMessage: 'footprint' }))}</span>
         <span>{($t({ defaultMessage: 'with' }))}</span>
         <Icon feature={aiFeatures.EcoFlex} size='xs' />
       </UI.LabelStyleAfter>
@@ -96,7 +98,8 @@ export const SliderAfterTest = () => {
         display: 'flex',
         alignItems: 'center',
         width: '100%',
-        height: '100%'
+        height: '100%',
+        backgroundColor: cssStr('--acx-primary-white')
       }}>
         <ChartAfter />
       </div>
@@ -114,11 +117,8 @@ export function Introduction (
   const { isDataRetained: showData } = useIntentContext()
   const compareSlider = <CompareSlider
     style={{ width: '40%', height: '100%' }}
-    // TODO: maybe we should follow RRM intentAIForm sample to use imageURL solution?
-    // itemOne={<SliderBefore image={sliderUrlBefore} />}
-    // itemTwo={<SliderAfter image={sliderUrlAfter} />}
-    itemOne={<SliderBeforeTest />}
-    itemTwo={<SliderAfterTest />}
+    itemOne={<SliderBefore />}
+    itemTwo={<SliderAfter />}
     disabled={false}
     portrait={false}
     boundsPadding={0}
