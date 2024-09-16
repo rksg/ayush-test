@@ -44,14 +44,14 @@ export interface NetworkTunnelActionModalProps {
     }
   ) => Promise<void>
   cachedActs?: NetworkTunnelSdLanAction[]
-  cachedSoftGre: SoftGreNetworkTunnel[]
+  cachedSoftGre?: SoftGreNetworkTunnel[]
   disableAll?: boolean
   radioOptTooltip?: string
 }
 
 const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
   const { $t } = getIntl()
-  const { visible, network, onClose, onFinish, cachedActs, cachedSoftGre } = props
+  const { visible, network, onClose, onFinish, cachedActs, cachedSoftGre=[] } = props
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
 
@@ -99,9 +99,9 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
 
   useEffect(() => {
     if (visible) {
-      if (isSoftGreEnabled && tunnelType === NetworkTunnelTypeEnum.SdLan) {
-        setIsValidData(isEdgeSdLanMvEnabled && !venueSdLanInfo)
-      } else if (isSoftGreEnabled && tunnelType === NetworkTunnelTypeEnum.SoftGre) {
+      if (tunnelType === NetworkTunnelTypeEnum.SdLan) {
+        setIsValidData(isEdgeSdLanMvEnabled && !!venueSdLanInfo)
+      } else if (tunnelType === NetworkTunnelTypeEnum.SoftGre) {
         setIsValidData(!!softGreProfileId)
       } else {
         setIsValidData(true)
