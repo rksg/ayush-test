@@ -10,9 +10,9 @@ import { DateFormatEnum, formatter }     from '@acx-ui/formatter'
 import {
   useLazyVenueRadioActiveNetworksQuery
 } from '@acx-ui/rc/services'
-import { RadioTypeEnum }                                                   from '@acx-ui/rc/utils'
-import { useNavigate, useSearchParams, useTenantLink }                     from '@acx-ui/react-router-dom'
-import {  Filters, fixedEncodeURIComponent, getIntl, useEncodedParameter } from '@acx-ui/utils'
+import { RadioTypeEnum }                          from '@acx-ui/rc/utils'
+import { useNavigate }                            from '@acx-ui/react-router-dom'
+import {  Filters, getIntl, useEncodedParameter } from '@acx-ui/utils'
 
 import {  IntentListItem }      from './config'
 import {
@@ -193,7 +193,8 @@ export function useIntentAIActions () {
     })
     if (errorMsgs.length > 0) {
       showToast({ type: 'error', content: errorMsgs })
-    } else {
+    }
+    if (errorMsgs.length < rows.length) {
       showSuccessToast(action, data)
     }
   }
