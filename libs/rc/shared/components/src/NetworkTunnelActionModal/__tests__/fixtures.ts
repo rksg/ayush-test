@@ -36,7 +36,7 @@ export const mockVlanPoolList = [
 ]
 
 export const mockSoftGreTable = {
-  totalCount: 2,
+  totalCount: 4,
   page: 1,
   data: [
     {
@@ -101,7 +101,7 @@ export const mockSoftGreTable = {
       activations: [
         {
           venueId: 'venueId-2',
-          wifiNetworkIds: ['network_6']
+          wifiNetworkIds: ['network_7','network_8']
         }
       ]
     }
@@ -131,7 +131,7 @@ export const mockedSoftGreScopeVenueMap = {
   ],
   'venueId-2': [
     {
-      networkIds: ['network_6'],
+      networkIds: ['network_7','network_8'],
       profileId: 'softGreProfileName4-id',
       profileName: 'softGreProfileName4',
       venueId: 'venueId-2'
