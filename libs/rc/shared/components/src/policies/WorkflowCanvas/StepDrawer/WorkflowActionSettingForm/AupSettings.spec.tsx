@@ -213,4 +213,24 @@ describe('AupSettings', () => {
 
   })
 
+  it('Should be accept text policy content', async () => {
+    const { result: formRef } = renderHook(() => {
+      const [form] = Form.useForm<AupActionContext>()
+      form.setFieldsValue({
+        useAupFile: false
+      })
+      return form
+    })
+
+    render(<Provider>
+      <Form form={formRef.current}>
+        <AupSettings />
+      </Form>
+    </Provider>)
+    const uploadFileMessage = screen.getByText('Upload file instead')
+    expect(uploadFileMessage).toBeInTheDocument()
+    const policyContent = await screen.findByTestId('policy-text')
+    await userEvent.type(policyContent,'all is well')
+  })
+
 })

@@ -157,6 +157,7 @@ export function AupSettings () {
         rules={[
           { required: true }
         ]}
+        valuePropName='file'
         extra={<Button
           type='link'
           size='small'
@@ -204,7 +205,8 @@ export function AupSettings () {
           onClick={aupFormatSwitch}>
           {$t({ defaultMessage: 'Upload file instead' })}
         </Button>}>
-        <Input.TextArea rows={8}
+        <Input.TextArea data-testid='policy-text'
+          rows={8}
           onChange={() => {
             formInstance.setFieldValue('useAupFile',false)
             formInstance.setFieldValue('aupFileLocation','')
