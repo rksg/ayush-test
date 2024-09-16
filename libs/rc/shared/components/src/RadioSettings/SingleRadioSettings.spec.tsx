@@ -1238,6 +1238,21 @@ const support6gSeparationChannels = {
   [ApRadioTypeEnum.RadioUpper5G]: validRadioChannels['5GUpperChannels']
 }
 
+jest.mock('./RadioSettingsContents', () => ({
+  ...jest.requireActual('./RadioSettingsContents'),
+  txPowerAdjustmentOptions: [
+    { label: 'Full', value: 'MAX' },
+    { label: 'txPowerOption', value: 'txPowerOption' }
+  ],
+  txPowerAdjustment6GOptions: [
+    { label: 'Full', value: 'MAX' },
+    { label: 'txPowerOption', value: 'txPowerOption' },
+    { label: 'txPower6gOption', value: 'txPower6gOption' }
+  ],
+  txPowerAdjustmentExtendedOptions: [{ label: 'txPowerExtendedOption',
+    value: 'txPowerExtendedOption' }]
+}))
+
 const resetToDefaultSpy = jest.fn()
 describe('SignaleRadioSettings component', () => {
   beforeEach(() => {
@@ -1601,8 +1616,9 @@ describe('SignaleRadioSettings component', () => {
 
     const transmitSelect = await screen.findByRole('combobox', { name: /Transmit Power/i })
     await userEvent.click(transmitSelect)
-    expect(screen.getByTitle('-8dB')).not.toBeNull()
-    expect(screen.getByTitle('-15dB')).not.toBeNull()
+    expect(screen.getByTitle('txPowerOption')).not.toBeNull()
+    expect(screen.queryByTitle('txPower6gOption')).toBeNull()
+    expect(screen.getByTitle('txPowerExtendedOption')).not.toBeNull()
   })
 
   it('should not show tx power extended options when AP version is small than 7.1', async () => {
@@ -1636,7 +1652,8 @@ describe('SignaleRadioSettings component', () => {
 
     const transmitSelect = await screen.findByRole('combobox', { name: /Transmit Power/i })
     await userEvent.click(transmitSelect)
-    expect(screen.getByTitle('-8dB')).not.toBeNull()
-    expect(screen.queryByTitle('-15dB')).toBeNull()
+    expect(screen.getByTitle('txPowerOption')).not.toBeNull()
+    expect(screen.queryByTitle('txPower6gOption')).toBeNull()
+    expect(screen.queryByTitle('txPowerExtendedOption')).toBeNull()
   })
 })
