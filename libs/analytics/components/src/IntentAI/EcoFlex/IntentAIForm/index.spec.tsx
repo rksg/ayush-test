@@ -14,6 +14,12 @@ import { kpis }              from '../common'
 
 import { IntentAIForm } from '.'
 
+class ResizeObserver {
+  observe () {}
+  unobserve () {}
+  disconnect () {}
+}
+
 const { click, selectOptions } = userEvent
 
 jest.mock('antd', () => {
@@ -44,6 +50,9 @@ jest.mock('../common/ScheduleTiming', () => ({
 }))
 
 jest.mock('../IntentContext')
+
+window.ResizeObserver = ResizeObserver
+
 beforeEach(() => {
   store.dispatch(intentAIApi.util.resetApiState())
   moment.tz.setDefault('Asia/Singapore')
