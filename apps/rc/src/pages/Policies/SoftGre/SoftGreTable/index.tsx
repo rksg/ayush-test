@@ -1,8 +1,9 @@
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, PageHeader, Table, TableProps, showActionModal } from '@acx-ui/components'
-import { SimpleListTooltip }                                              from '@acx-ui/rc/components'
+import { Button, Loader, PageHeader, Table, TableProps } from '@acx-ui/components'
+import { SimpleListTooltip }                             from '@acx-ui/rc/components'
 import {
+  doProfileDelete,
   useDeleteSoftGreMutation,
   useGetSoftGreViewDataListQuery,
   useGetVenuesQuery
@@ -74,21 +75,20 @@ export default function SoftGreTable () {
     {
       scopeKey: getScopeKeyByPolicy(PolicyType.SOFTGRE, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: (rows, clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Profile{plural}' },
-              { plural: rows.length === 1 ? '' : 's' }),
-            entityValue: rows.length === 1 ? rows[0].name : undefined,
-            numOfEntities: rows.length
-          },
-          onOk: () => {
-            Promise.all(rows.map(row => deleteSoftGreFn({ params: { policyId: row.id } })))
+      onClick: (selectedRows, clearSelection) => {
+        doProfileDelete(
+          selectedRows,
+          $t({ defaultMessage: 'Profile{plural}' },
+            { plural: selectedRows.length > 1 ? 's' : '' }),
+          selectedRows[0].name,
+          [{
+            fieldName: 'activations',
+            fieldText: $t({ defaultMessage: 'Network with <VenueSingular></VenueSingular>' })
+          }],
+          async () =>
+            Promise.all(selectedRows.map(row => deleteSoftGreFn({ params: { policyId: row.id } })))
               .then(clearSelection)
-          }
-        })
+        )
       }
     }
   ]
