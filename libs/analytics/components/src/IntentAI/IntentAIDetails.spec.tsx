@@ -16,17 +16,9 @@ import { mockedIntentEquiFlex }                        from './EquiFlex/__tests_
 import { IntentAIDetails }                             from './IntentAIDetails'
 import { Intent }                                      from './useIntentDetailsQuery'
 
-jest.mock('./AIDrivenRRM/CCrrmChannel24gAuto', () => ({
+jest.mock('./AIDrivenRRM/CCrrmChannelAuto', () => ({
   kpis: [],
-  IntentAIDetails: () => <div data-testid='c-crrm-channel24g-auto-IntentAIDetails'/>
-}))
-jest.mock('./AIDrivenRRM/CCrrmChannel5gAuto', () => ({
-  kpis: [],
-  IntentAIDetails: () => <div data-testid='c-crrm-channel5g-auto-IntentAIDetails'/>
-}))
-jest.mock('./AIDrivenRRM/CCrrmChannel6gAuto', () => ({
-  kpis: [],
-  IntentAIDetails: () => <div data-testid='c-crrm-channel6g-auto-IntentAIDetails'/>
+  IntentAIDetails: () => <div data-testid='c-crrm-channel-auto-IntentAIDetails'/>
 }))
 
 jest.mock('./AIOperations/IZoneFirmwareUpgrade', () => ({
@@ -79,6 +71,17 @@ jest.mock('./AIOperations/CBgScan6gTimer', () => ({
   IntentAIDetails: () => <div data-testid='c-bgscan6g-timer-IntentAIDetails'/>
 }))
 
+const doCRRMTest = async (codes: string[], intent: Intent) => {
+  for (const code of codes) {
+    const { unmount } = render(<IntentAIDetails />, {
+      route: { params: { code, root: intent.root, sliceId: intent.sliceId } },
+      wrapper: Provider
+    })
+    expect(await screen.findByTestId('c-crrm-channel-auto-IntentAIDetails')).toBeVisible()
+    unmount()
+  }
+}
+
 jest.mock('./EquiFlex/CProbeFlex24g.tsx', () => ({
   kpis: [],
   IntentAIDetails: () => <div data-testid='c-probeflex-24g-IntentAIDetails'/>
@@ -106,7 +109,7 @@ describe('IntentAIDetails', () => {
   it('should render for AIDrivenRRM', async () => {
     mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent: mockedIntentCRRM } })
     const codes = ['c-crrm-channel24g-auto', 'c-crrm-channel5g-auto', 'c-crrm-channel6g-auto']
-    await doTest(codes, mockedIntentCRRM)
+    await doCRRMTest(codes, mockedIntentCRRM)
   })
   const CBandbalancingEnable = () => require('./AIOperations/CBandbalancingEnable')
 
