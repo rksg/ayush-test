@@ -75,9 +75,7 @@ export const SliderBefore = () => {
         <span>{($t({ defaultMessage: 'criticality' }))}</span>
       </UI.LabelStyleBefore>
       <div style={{
-        width: '100%',
-        height: '100%',
-        backgroundColor: cssStr('--acx-primary-black')
+        width: '100%'
       }}>
         <ChartBefore />
       </div>
@@ -96,9 +94,7 @@ export const SliderAfter = () => {
         <Icon feature={aiFeatures.EcoFlex} size='xs' />
       </UI.LabelStyleAfter>
       <div style={{
-        width: '100%',
-        height: '100%',
-        backgroundColor: cssStr('--acx-primary-white')
+        width: '100%'
       }}>
         <ChartAfter />
       </div>

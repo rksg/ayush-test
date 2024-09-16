@@ -6,6 +6,7 @@ export const SliderBefore = styled.div`
   width: 100%;
   height: 100%;
   justify-content: start;
+  background-color: var(--acx-primary-black);
 `
 export const SliderAfter = styled.div`
   display: flex;
@@ -13,6 +14,7 @@ export const SliderAfter = styled.div`
   width: 100%;
   height: 100%;
   justify-content: end;
+  background-color: var(--acx-primary-white);
 `
 
 const labelStyle = css`
