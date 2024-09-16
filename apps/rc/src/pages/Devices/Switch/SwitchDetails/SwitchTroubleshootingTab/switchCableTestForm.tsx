@@ -13,22 +13,13 @@ import { DateFormatEnum, formatter }                                            
 import { useCableTestMutation, useGetTroubleshootingQuery,
   useLazyGetTroubleshootingCleanQuery,
   useSwitchPortlistQuery }                             from '@acx-ui/rc/services'
-import { SwitchPortViewModelQueryFields, TroubleshootingType, sortPortFunction, SwitchPortViewModel } from '@acx-ui/rc/utils'
-import { getIntl }                                                                                    from '@acx-ui/utils'
+import { SwitchPortViewModelQueryFields, TroubleshootingType, sortPortFunction, SwitchPortViewModel, CableTestTable } from '@acx-ui/rc/utils'
+import { getIntl }                                                                                                    from '@acx-ui/utils'
 
 import { SwitchDetailsContext } from '..'
 
 import * as UI from './styledComponents'
 
-interface CableTestTable {
-  port: string
-  speed: string
-  status: string
-  pairA: string
-  pairB: string
-  pairC: string
-  pairD: string
-}
 
 export const parseResult = function (response: string) {
   const { $t } = getIntl()
@@ -45,6 +36,7 @@ export function SwitchCableTestForm () {
   const [tableData, setTableData] = useState([] as CableTestTable[])
   const [lasySyncTime, setLastSyncTime] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [isNoData, setIsNoData] = useState(false)
   const [portOptions, setPortOptions] = useState([] as DefaultOptionType[])
 
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
@@ -61,7 +53,7 @@ export function SwitchCableTestForm () {
   const getTroubleshooting =
     useGetTroubleshootingQuery({
       params: troubleshootingParams,
-      enableRbac: isSwitchRbacEnabled
+      enableRbac: true
     }, {
       skip: !switchDetailsContextData.switchDetailHeader?.venueId
     })
@@ -81,7 +73,7 @@ export function SwitchCableTestForm () {
   })
 
   const getPortDisabled = (port: SwitchPortViewModel) => {
-    return port.portSpeed !== 'AUTO' || port.status !== 'Up' // || This test can only be executed on Copper ports.
+    return port.portSpeedConfig !== 'AUTO' || port.status !== 'Up' || port.portConnectorType !== 'COPPER'
   }
 
   const TOOLTIPS= {
@@ -92,13 +84,15 @@ export function SwitchCableTestForm () {
 
   const getPortDisabledTooltip = (port: SwitchPortViewModel) => {
     const t = []
-    if(port.portSpeed !== 'AUTO') {
+    if(port.portSpeedConfig !== 'AUTO') {
       t.push(TOOLTIPS.auto)
     }
     if(port.status !== 'Up') {
       t.push(TOOLTIPS.up)
     }
-    // t.push(TOOLTIPS.copper)
+    if(port.portConnectorType !== 'COPPER') {
+      t.push(TOOLTIPS.copper)
+    }
 
     if(t.length == 1) {
       return <span>{t[0]}</span>
@@ -122,16 +116,6 @@ export function SwitchCableTestForm () {
   }
 
   useEffect(() => {
-    setTableData([
-      { port: '1/1/1',
-        speed: '100M',
-        status: 'Shorted',
-        pairA: 'Shorted',
-        pairB: 'Abnormal',
-        pairC: 'OK',
-        pairD: 'OK'
-      }
-    ])
     if (getTroubleshooting.data?.response) {
       const response = getTroubleshooting.data.response
       setIsLoading(response.syncing)
@@ -139,20 +123,22 @@ export function SwitchCableTestForm () {
       if(response.syncing) {
         refetchResult()
       }
-
-      cableTestForm.setFieldValue('targetHost', response.pingIp)
-      // setLastSyncTime(response.latestResultResponseTime)
-      setLastSyncTime('2024-08-28T04:11:19.176+00:00')
+      if(response.cableTestResult) {
+        setTableData([response.cableTestResult] as CableTestTable[])
+      } else {
+        setTableData([])
+      }
+      setLastSyncTime(response.latestResultResponseTime)
       cableTestForm.setFieldValue('result', parseResult(response.result))
+      setIsNoData(response.result === 'EMPTY_RESULT')
 
       if (response.latestResultResponseTime) {
         setIsValid(true)
       }
-      if (!response.pingIp) {
+      if (!response.cableTestResult) {
         setIsValid(false)
       }
     }
-
   }, [getTroubleshooting])
 
   useEffect(() => {
@@ -162,16 +148,11 @@ export function SwitchCableTestForm () {
         ...(portList?.data?.data?.map(port => ({
           id: port.portIdentifier,
           label: port.portIdentifier,
+          value: port.portIdentifier,
           disabled: getPortDisabled(port),
           tooltip: getPortDisabledTooltip(port)
         }))
           .sort(sortPortFunction)
-          .map(item => ({
-            label: item.label,
-            value: item.id,
-            // disabled: true,
-            tooltip: item.tooltip
-          }))
       ?? [])
       ])
     }
@@ -205,7 +186,7 @@ export function SwitchCableTestForm () {
             handler: async () => {
               try{
                 // const formValue = cableTestForm.getFieldsValue()
-                // onSubmit()
+                onSubmit()
               } catch (error) {
                 console.log(error) // eslint-disable-line no-console
               }
@@ -226,7 +207,6 @@ export function SwitchCableTestForm () {
         },
         troubleshootingType: 'cable-test'
       }
-      console.log(payload)
       const result = await runMutation({
         params: {
           tenantId,
@@ -265,7 +245,7 @@ export function SwitchCableTestForm () {
   }
 
   const onCopy = async () => {
-    const response = 'test copy!!'
+    const response = cableTestForm.getFieldValue('result')
     navigator.clipboard.writeText(response)
   }
 
@@ -294,7 +274,7 @@ export function SwitchCableTestForm () {
       key: 'status',
       dataIndex: 'status',
       render: (_, row) => {
-        return <StatusPill color={getStausColor(row.status)} value={row.status} />
+        return <StatusPill color={getStausColor(row.overallStatus)} value={row.overallStatus} />
       }
     },
     {
@@ -302,7 +282,7 @@ export function SwitchCableTestForm () {
       key: 'pairA',
       dataIndex: 'pairA',
       render: (_, row) => {
-        return <StatusPill color={getStausColor(row.pairA)} value={row.pairA} />
+        return <StatusPill color={getStausColor(row.pairAStatus)} value={row.pairAStatus} />
       }
     },
     {
@@ -310,7 +290,7 @@ export function SwitchCableTestForm () {
       key: 'pairB',
       dataIndex: 'pairB',
       render: (_, row) => {
-        return <StatusPill color={getStausColor(row.pairB)} value={row.pairB} />
+        return <StatusPill color={getStausColor(row.pairBStatus)} value={row.pairBStatus} />
       }
     },
     {
@@ -318,7 +298,7 @@ export function SwitchCableTestForm () {
       key: 'pairC',
       dataIndex: 'pairC',
       render: (_, row) => {
-        return <StatusPill color={getStausColor(row.pairC)} value={row.pairC} />
+        return <StatusPill color={getStausColor(row.pairCStatus)} value={row.pairCStatus} />
       }
     },
     {
@@ -326,7 +306,7 @@ export function SwitchCableTestForm () {
       key: 'pairD',
       dataIndex: 'pairD',
       render: (_, row) => {
-        return <StatusPill color={getStausColor(row.pairD)} value={row.pairD} />
+        return <StatusPill color={getStausColor(row.pairDStatus)} value={row.pairDStatus} />
       }
     }
   ]
@@ -358,7 +338,7 @@ export function SwitchCableTestForm () {
                     <>{
                       disabled ? <Tooltip
                         placement='right'
-                        overlayStyle={{ minWidth: '380px' }}
+                        overlayStyle={{ maxWidth: '380px' }}
                         title={tooltip}>
                         <span>{label}</span></Tooltip> : <>{label}</>
                     }</>}
@@ -400,22 +380,26 @@ export function SwitchCableTestForm () {
     }]}>
       <UI.ResultContainer>
         {
-          tableData.length && <>
+          tableData.length ? <>
             <Table
               columns={columns}
               dataSource={tableData}
             />
             <div className='report'>
               <span className='title'>{$t({ defaultMessage: 'Report:' })}</span>
-              {reportMap[tableData[0].status]}
+              {reportMap[tableData[0].overallStatus]}
             </div>
-          </>
+          </> : null
         }
+        {
+          isNoData && $t({ defaultMessage: 'No data to display.' })
+        }
+        <Form.Item name='result' hidden />
       </UI.ResultContainer>
       <Button
         type='link'
         style={{ alignSelf: 'baseline' }}
-        // disabled={_.isEmpty(lasySyncTime) || isLoading}
+        disabled={_.isEmpty(lasySyncTime) || isLoading}
         onClick={onCopy}
       >
         {$t({ defaultMessage: 'Copy CLI Output' })}

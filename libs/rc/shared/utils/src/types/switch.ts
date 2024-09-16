@@ -171,7 +171,15 @@ export class Switch {
     this.rearModule = 'none'
   }
 }
-
+export interface CableTestTable {
+  port: string
+  speed: string
+  overallStatus: string
+  pairAStatus: string
+  pairBStatus: string
+  pairCStatus: string
+  pairDStatus: string
+}
 export interface TroubleshootingResponse {
   latestResultResponseTime: string
   result: string
@@ -185,6 +193,7 @@ export interface TroubleshootingResponse {
   macAddressTableAddress: string,
   macAddressTableType: TroubleshootingMacAddressOptionsEnum,
   dhcpServerLeaseList?: SwitchDhcpLease[]
+  cableTestResult?: CableTestTable
 }
 
 export interface TroubleshootingResult {
@@ -500,6 +509,8 @@ export interface SwitchPortViewModel extends GridDataRow {
   usedInUplink?: boolean;
   id?: string;
   venueId: string;
+  portSpeedConfig?: string;
+  portConnectorType?: string;
 }
 
 export interface SwitchPortStatus extends SwitchPortViewModel {

@@ -1111,9 +1111,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     }),
     getTroubleshooting: build.query<TroubleshootingResult, RequestPayload>({
       query: ({ params, enableRbac }) => {
-        const a = true
-        const headers = a ? customHeaders.v1 : {}
-        const switchUrls = getSwitchUrls(a)
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
         const req = createHttpRequest(switchUrls.getTroubleshooting, params, headers)
         return {
           ...req
