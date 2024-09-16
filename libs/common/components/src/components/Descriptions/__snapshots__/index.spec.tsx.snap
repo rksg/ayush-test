@@ -15,6 +15,26 @@ exports[`Descriptions should render 1`] = `
   padding-bottom: var(--acx-descriptions-space);
 }
 
+.c0 .ant-descriptions-item .ant-descriptions-item-label,
+.c0 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c0 .ant-descriptions-item .ant-descriptions-item-label {
+  color: var(--acx-neutrals-60);
+}
+
+.c0 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c0 .ant-descriptions-item .ant-descriptions-item-content {
+  color: var(--acx-primary-black);
+}
+
 .c0 .ant-descriptions-item .ant-descriptions-item-container {
   -webkit-align-items: baseline;
   -webkit-box-align: baseline;
@@ -22,15 +42,8 @@ exports[`Descriptions should render 1`] = `
   align-items: baseline;
 }
 
-.c0 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-label,
-.c0 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-content {
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
-}
-
 .c0 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-label {
   width: 30%;
-  color: var(--acx-neutrals-60);
 }
 
 .c0 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-content {
@@ -90,6 +103,26 @@ exports[`Descriptions should render with no space 1`] = `
   padding-bottom: calc(var(--acx-body-4-line-height) - var(--acx-body-4-font-size));
 }
 
+.c0 .ant-descriptions-item .ant-descriptions-item-label,
+.c0 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c0 .ant-descriptions-item .ant-descriptions-item-label {
+  color: var(--acx-neutrals-60);
+}
+
+.c0 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c0 .ant-descriptions-item .ant-descriptions-item-content {
+  color: var(--acx-primary-black);
+}
+
 .c0 .ant-descriptions-item .ant-descriptions-item-container {
   -webkit-align-items: baseline;
   -webkit-box-align: baseline;
@@ -97,15 +130,8 @@ exports[`Descriptions should render with no space 1`] = `
   align-items: baseline;
 }
 
-.c0 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-label,
-.c0 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-content {
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
-}
-
 .c0 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-label {
   width: unset;
-  color: var(--acx-neutrals-60);
 }
 
 .c0 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-content {

@@ -32,19 +32,27 @@ exports[`IncidentAttributes should match snapshot 1`] = `
   padding-bottom: 0;
 }
 
-.c0 .ant-descriptions-item-label {
+.c0 .ant-descriptions-item .ant-descriptions-item-label,
+.c0 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c0 .ant-descriptions-item .ant-descriptions-item-label {
   color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c0 .ant-descriptions-item-content {
+.c0 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c0 .ant-descriptions-item .ant-descriptions-item-content {
   color: var(--acx-primary-black);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c0 .ant-descriptions-item-content .ant-badge-status-dot {
+.c0 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
   top: -1px;
 }
 
