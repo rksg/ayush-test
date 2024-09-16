@@ -161,7 +161,7 @@ export function AupSettings () {
           type='link'
           size='small'
           onClick={aupFormatSwitch}>
-          label={$t({ defaultMessage: 'Policy Content' })}
+          {$t({ defaultMessage: 'Paste text instead' })}
         </Button>}>
         <Upload.Dragger
           data-testid='aupPolicy'
