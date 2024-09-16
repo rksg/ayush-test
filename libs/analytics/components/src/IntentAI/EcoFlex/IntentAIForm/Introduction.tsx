@@ -52,24 +52,6 @@ const ChartBefore = () => {
   )
 }
 
-export const SliderBefore = () => {
-  const { $t } = useIntl()
-  return (
-    <UI.SliderBefore>
-      <UI.LabelStyleBefore>{($t({ defaultMessage: 'Current' }))}</UI.LabelStyleBefore>
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        width: '100%',
-        height: '100%',
-        backgroundColor: cssStr('--acx-primary-black')
-      }}>
-        <ChartBefore />
-      </div>
-    </UI.SliderBefore>
-  )
-}
-
 const ChartAfter = () => {
   const { $t } = useIntl()
   return (
@@ -84,6 +66,22 @@ const ChartAfter = () => {
   )
 }
 
+export const SliderBefore = () => {
+  const { $t } = useIntl()
+  return (
+    <UI.SliderBefore>
+      <UI.LabelStyleBefore>{($t({ defaultMessage: 'Current' }))}</UI.LabelStyleBefore>
+      <div style={{
+        width: '100%',
+        height: '100%',
+        backgroundColor: cssStr('--acx-primary-black')
+      }}>
+        <ChartBefore />
+      </div>
+    </UI.SliderBefore>
+  )
+}
+
 export const SliderAfter = () => {
   const { $t } = useIntl()
   return (
@@ -95,8 +93,6 @@ export const SliderAfter = () => {
         <Icon feature={aiFeatures.EcoFlex} size='xs' />
       </UI.LabelStyleAfter>
       <div style={{
-        display: 'flex',
-        alignItems: 'center',
         width: '100%',
         height: '100%',
         backgroundColor: cssStr('--acx-primary-white')
@@ -116,7 +112,7 @@ export function Introduction (
   const para2 = $t({ defaultMessage: 'Maintain all access points at normal power continuously to ensure maximum reliability and performance for critical applications, guaranteeing uninterrupted, high-quality connectivity essential for mission-critical operations.' })
   const { isDataRetained: showData } = useIntentContext()
   const compareSlider = <CompareSlider
-    style={{ width: '40%', height: '100%' }}
+    style={{ width: '50%', height: '100%' }}
     itemOne={<SliderBefore />}
     itemTwo={<SliderAfter />}
     disabled={false}
