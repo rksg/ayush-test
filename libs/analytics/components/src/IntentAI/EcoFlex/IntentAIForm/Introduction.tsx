@@ -70,7 +70,10 @@ export const SliderBefore = () => {
   const { $t } = useIntl()
   return (
     <UI.SliderBefore>
-      <UI.LabelStyleBefore>{($t({ defaultMessage: 'Current' }))}</UI.LabelStyleBefore>
+      <UI.LabelStyleBefore>
+        <span>{($t({ defaultMessage: 'Mission' }))}</span>
+        <span>{($t({ defaultMessage: 'criticality' }))}</span>
+      </UI.LabelStyleBefore>
       <div style={{
         width: '100%',
         height: '100%',

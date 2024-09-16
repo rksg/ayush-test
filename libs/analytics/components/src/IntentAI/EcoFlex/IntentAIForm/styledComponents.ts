@@ -28,6 +28,18 @@ const labelStyle = css`
 export const LabelStyleBefore = styled.div`
   ${labelStyle}
   color: var(--acx-primary-white);
+  display: grid;
+  grid-template-columns: 1fr 20px;
+  align-items: center;
+  justify-items: start;
+  grid-row-gap: 2px;
+  grid-column-gap: 4px;
+  > span:nth-child(1) {
+    grid-column: 1 / -1;
+  }
+  > span:nth-child(2) {
+    grid-column: 1 / -1;
+  }
 `
 
 export const LabelStyleAfter = styled.div`
