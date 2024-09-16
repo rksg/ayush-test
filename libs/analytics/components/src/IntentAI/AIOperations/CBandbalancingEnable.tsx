@@ -47,7 +47,7 @@ const useValuesText = createUseValuesText({
     </p>
   ` }),
   action: defineMessage({ defaultMessage: `
-    <p>IntentAI will enabling band balancing for this network, this change shall optimize network performance by efficiently distributing devices across available frequency bands, reducing congestion and enhancing overall Wi-Fi experience.</p>
+    <p>IntentAI will enable band balancing for this network, this change shall optimize network performance by efficiently distributing devices across available frequency bands, reducing congestion and enhancing overall Wi-Fi experience.</p>
     <p>IntentAI will continuously monitor these configurations.</p>
   ` }),
   reason: defineMessage({ defaultMessage: 'Band Balancing feature intelligently distributes WLAN clients on 2.4 GHz and 5 GHz channels in order to balance the client load. Band Balancing shall result in better radio utilization resulting in better Wi-Fi experience to the user.' }),
@@ -65,7 +65,7 @@ const options = {
     content: <FormattedMessage
       values={richTextFormatValues}
       defaultMessage={`
-        <p>IntentAI will enabling band balancing for this network, this change shall optimize network performance by efficiently distributing devices across available frequency bands, reducing congestion and enhancing overall Wi-Fi experience.</p>
+        <p>IntentAI will enable band balancing for this network, this change shall optimize network performance by efficiently distributing devices across available frequency bands, reducing congestion and enhancing overall Wi-Fi experience.</p>
         <p>IntentAI will continuously monitor these configurations.</p>
       `}
     />

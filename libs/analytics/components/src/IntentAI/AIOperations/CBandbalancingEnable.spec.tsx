@@ -98,7 +98,7 @@ describe('IntentAIDetails', () => {
     expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
     expect(await screen.findByText('AI Operations')).toBeVisible()
     // eslint-disable-next-line max-len
-    expect(await screen.findByText('IntentAI will enabling band balancing for this network, this change shall optimize network performance by efficiently distributing devices across available frequency bands, reducing congestion and enhancing overall Wi-Fi experience.')).toBeVisible()
+    expect(await screen.findByText('IntentAI will enable band balancing for this network, this change shall optimize network performance by efficiently distributing devices across available frequency bands, reducing congestion and enhancing overall Wi-Fi experience.')).toBeVisible()
     // eslint-disable-next-line max-len
     expect(await screen.findByText('IntentAI will continuously monitor these configurations.')).toBeVisible()
     expect(await screen.findByTestId('Details')).toBeVisible()
