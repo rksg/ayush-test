@@ -8,9 +8,7 @@ import { IntentKPIConfig }           from '../useIntentDetailsQuery'
 
 export const configuration: IntentConfigurationConfig = {
   label: defineMessage({ defaultMessage: 'EcoFlex' }),
-  valueFormatter: formatter('enabledFormat'),
-  tooltip: () =>
-    defineMessage({ defaultMessage: 'TBD' })
+  valueFormatter: formatter('enabledFormat')
 }
 
 //This is mandatory for wizard/detail page
