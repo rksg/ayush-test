@@ -16,6 +16,7 @@ export * from './lbsServerProfile'
 export * from './workflow'
 export * from './workflowAction'
 export * from './certificateTemplate'
+export * from './ethernetPortProfile'
 export * from './edgeHqosProfile'
 export * from './softGre'
 

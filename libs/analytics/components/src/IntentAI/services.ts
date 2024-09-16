@@ -37,7 +37,7 @@ export type HighlightItem = {
 
 export type IntentHighlight = {
   rrm?: HighlightItem
-  airflex?: HighlightItem
+  probeflex?: HighlightItem
   ops?: HighlightItem
 }
 
@@ -55,7 +55,7 @@ export type IntentAP = {
   version: string
 }
 
-const getStatusTooltip = (state: DisplayStates, sliceValue: string, metadata: Metadata) => {
+export const getStatusTooltip = (state: DisplayStates, sliceValue: string, metadata: Metadata) => {
   const { $t } = getIntl()
 
   const stateConfig = states[state]
@@ -311,7 +311,7 @@ export const api = intentAIApi.injectEndpoints({
               new
               active
             }
-            airflex {
+            probeflex {
               new
               active
             }
