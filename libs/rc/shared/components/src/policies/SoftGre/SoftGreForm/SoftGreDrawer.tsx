@@ -5,6 +5,7 @@ import { useIntl }           from 'react-intl'
 
 import { Drawer }                   from '@acx-ui/components'
 import { useCreateSoftGreMutation } from '@acx-ui/rc/services'
+import { SoftGre }                  from '@acx-ui/rc/utils'
 import { useParams }                from '@acx-ui/react-router-dom'
 
 import { SoftGreSettingForm } from './SoftGreSettingForm'
@@ -17,7 +18,7 @@ interface SoftGreDrawerProps {
   readMode: boolean
   policyId?:string
   policyName?: string
-  callbackFn?: (option: DefaultOptionType) => void
+  callbackFn?: (option: DefaultOptionType, gatewayIps:string[]) => void
 }
 
 export default function SoftGreDrawer (props: SoftGreDrawerProps) {
@@ -37,7 +38,8 @@ export default function SoftGreDrawer (props: SoftGreDrawerProps) {
           const newOption = {
             value: resData.response?.id, label: values.name
           } as { value: string, label: string }
-          callbackFn && callbackFn(newOption)
+          // eslint-disable-next-line max-len
+          callbackFn && callbackFn(newOption, [values.primaryGatewayAddress, values.secondaryGatewayAddress ?? ''])
         }
       }
       setVisible(false)
@@ -59,7 +61,7 @@ export default function SoftGreDrawer (props: SoftGreDrawerProps) {
       }
       visible={visible}
       width={450}
-      children={visible && <Form layout='vertical' form={form} >
+      children={visible && <Form<SoftGre> layout='vertical' form={form} >
         <Row gutter={20}>
           <Col span={24}>
             <SoftGreSettingForm

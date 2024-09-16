@@ -6,13 +6,11 @@ import moment                   from 'moment'
 import { useIntl }              from 'react-intl'
 
 import { Loader, TableProps, Table, Button, showActionModal }                                                                                                                             from '@acx-ui/components'
-import { MAX_CERTIFICATE_PER_TENANT, SimpleListTooltip }                                                                                                                                  from '@acx-ui/rc/components'
+import { DetailDrawer, MAX_CERTIFICATE_PER_TENANT, SimpleListTooltip, deleteDescription }                                                                                                 from '@acx-ui/rc/components'
 import { showAppliedInstanceMessage, useDeleteCertificateAuthorityMutation, useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery }                                          from '@acx-ui/rc/services'
 import { CertificateAuthority, CertificateCategoryType, EXPIRATION_DATE_FORMAT, PolicyOperation, PolicyType, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, useTableQuery } from '@acx-ui/rc/utils'
 
-import { deleteDescription } from '../contentsMap'
 
-import DetailDrawer                 from './DetailDrawer'
 import EditCertificateAuthorityForm from './EditCertificateAuthorityForm'
 
 
@@ -39,11 +37,13 @@ export default function CertificateAuthorityTable () {
     pagination: { settingsId }
   })
 
-  const { inUsedCAs } = useGetCertificateTemplatesQuery({
+  const { networkUsedCAs, identityUsedCAs } = useGetCertificateTemplatesQuery({
     payload: { pageSize: MAX_CERTIFICATE_PER_TENANT, page: 1 }
   }, {
     selectFromResult: ({ data }) => ({
-      inUsedCAs: data?.data.filter((template) => (template.networkIds ?? []).length > 0)
+      networkUsedCAs: data?.data.filter((template) => (template.networkIds ?? []).length > 0)
+        .map((template) => (template.onboard?.certificateAuthorityId)) || [],
+      identityUsedCAs: data?.data.filter((template) => (template.certificateCount ?? 0) > 0)
         .map((template) => (template.onboard?.certificateAuthorityId)) || []
     })
   })
@@ -131,8 +131,12 @@ export default function CertificateAuthorityTable () {
   }
 
   const showDeleteModal = (selectedRow: CertificateAuthority, clearSelection: () => void) => {
-    if (inUsedCAs.includes(selectedRow.id)) {
-      showAppliedInstanceMessage($t(deleteDescription.CA_IN_USE))
+    if (networkUsedCAs.includes(selectedRow.id)) {
+      showAppliedInstanceMessage($t(deleteDescription.CA_IN_USE,
+        { instance: $t({ defaultMessage: 'network' }) }))
+    } else if (identityUsedCAs.includes(selectedRow.id)) {
+      showAppliedInstanceMessage($t(deleteDescription.CA_IN_USE,
+        { instance: $t({ defaultMessage: 'identity' }) }))
     } else {
       showActionModal({
         type: 'confirm',

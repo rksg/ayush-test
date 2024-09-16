@@ -11,7 +11,8 @@ export function PersonaTable () {
         description: { searchable: true },
         vni: { show: false },
         identityId: { disable: true, show: false },
-        deviceCount: { disable: true, show: false }
+        deviceCount: { disable: true, show: false },
+        certificateCount: { disable: true, show: false }
       }}
     />
   )

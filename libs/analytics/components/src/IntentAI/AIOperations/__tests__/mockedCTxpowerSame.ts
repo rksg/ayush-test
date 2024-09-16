@@ -6,6 +6,7 @@ export const mocked = {
   code: 'c-txpower-same',
   sliceId: 'e9ff6cd2-790c-40b5-883b-87d51bf2c3a6',
   status: 'new',
+  displayStatus: 'new',
   metadata: { dataEndTime: 1725235200000, failures: [] },
   sliceType: 'zone',
   sliceValue: 'CHETHAN-HOME',
