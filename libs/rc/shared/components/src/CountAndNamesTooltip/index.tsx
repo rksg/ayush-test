@@ -29,7 +29,7 @@ export function CountAndNamesTooltip (props: CountAndNamesTooltipProps) {
   )
 
   if (names && namesLen > 0) {
-    const truncateData = names.slice(0, maxShow-1)
+    const truncateData = names.slice(0, maxShow)
 
     if (namesLen > maxShow) {
       truncateData.push(

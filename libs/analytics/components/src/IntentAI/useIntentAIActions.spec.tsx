@@ -18,12 +18,12 @@ import {
   renderHook
 }                                                               from '@acx-ui/test-utils'
 
-import { mockAIDrivenRow, mockAirflexRows } from './__tests__/fixtures'
-import { IntentListItem }                   from './config'
-import { TransitionMutationResponse }       from './services'
-import { DisplayStates, Statuses }          from './states'
-import { useIntentAIActions  }              from './useIntentAIActions'
-import { Actions }                          from './utils'
+import { mockAIDrivenRow, mockEquiFlexRows } from './__tests__/fixtures'
+import { aiFeatures, IntentListItem }        from './config'
+import { TransitionMutationResponse }        from './services'
+import { DisplayStates, Statuses }           from './states'
+import { useIntentAIActions  }               from './useIntentAIActions'
+import { Actions }                           from './utils'
 
 const mockedTransitionIntent = jest.fn()
 const mockedIntentWlansQuery = jest.fn()
@@ -118,7 +118,7 @@ describe('useIntentAIActions', () => {
         jest.mocked(Date.now).mockReturnValue(new Date('2024-07-21T00:01:00.000Z').getTime())
         const selectedRow = [{
           ...mockAIDrivenRow,
-          aiFeature: 'AI-Driven RRM',
+          aiFeature: aiFeatures.RRM,
           preferences: undefined ,
           ...extractItem }] as IntentListItem[]
         const { result } = renderHook(() => useIntentAIActions(), {
@@ -159,7 +159,7 @@ describe('useIntentAIActions', () => {
       })
 
       it('should handle mutation correctly - single', async () => {
-        const selectedRow = [{ ...mockAIDrivenRow, aiFeature: 'AI-Driven RRM', ...extractItem }] as IntentListItem[]
+        const selectedRow = [{ ...mockAIDrivenRow, aiFeature: aiFeatures.RRM, ...extractItem }] as IntentListItem[]
         const { result } = renderHook(() => useIntentAIActions(), {
           wrapper: ({ children }) => <BrowserRouter><Provider children={children} /></BrowserRouter>
         })
@@ -198,9 +198,9 @@ describe('useIntentAIActions', () => {
       })
     })
 
-    describe('r1 - AirFlexAI', () => {
+    describe('r1 - EquiFlex', () => {
       it('should handle mutation correctly  - single', async () => {
-        const selectedRow = [{ ...mockAirflexRows[0], aiFeature: 'AirFlexAI', ...extractItem }] as IntentListItem[]
+        const selectedRow = [{ ...mockEquiFlexRows[0], aiFeature: aiFeatures.EquiFlex, ...extractItem }] as IntentListItem[]
         const { result } = renderHook(() => useIntentAIActions(), {
           wrapper: ({ children }) => <BrowserRouter><Provider children={children} /></BrowserRouter>
         })
@@ -237,7 +237,7 @@ describe('useIntentAIActions', () => {
       })
 
       it('should handle fetchWlans correctly', async () => {
-        const selectedRow = { ...mockAirflexRows[0], aiFeature: 'AirFlexAI', ...extractItem } as IntentListItem
+        const selectedRow = { ...mockEquiFlexRows[0], aiFeature: aiFeatures.EquiFlex, ...extractItem } as IntentListItem
         const { result } = renderHook(() => useIntentAIActions(), {
           wrapper: ({ children }) => <BrowserRouter><Provider children={children} /></BrowserRouter>
         })
@@ -251,8 +251,8 @@ describe('useIntentAIActions', () => {
 
     it('should handle mutation correctly (OPTIMIZE_TYPES.1_2) - multiple', async () => {
       const selectedRows = [
-        { ...mockAirflexRows[1], aiFeature: 'AirFlexAI', ...extractItem },
-        { ...mockAirflexRows[2], aiFeature: 'AirFlexAI', ...extractItem }
+        { ...mockEquiFlexRows[1], aiFeature: aiFeatures.EquiFlex, ...extractItem },
+        { ...mockEquiFlexRows[2], aiFeature: aiFeatures.EquiFlex, ...extractItem }
       ] as IntentListItem[]
       const { result } = renderHook(() => useIntentAIActions(), {
         wrapper: ({ children }) => <BrowserRouter><Provider children={children} /></BrowserRouter>
@@ -272,8 +272,8 @@ describe('useIntentAIActions', () => {
     it('should handle mutation correctly (OPTIMIZE_TYPES.2_1) - multiple', async () => {
       const { sliceValue } = mockAIDrivenRow
       const selectedRows = [
-        { ...mockAIDrivenRow, aiFeature: 'AI-Driven RRM', ...extractItem },
-        { ...mockAirflexRows[1], aiFeature: 'AirFlexAI', sliceValue, ...extractItem }
+        { ...mockAIDrivenRow, aiFeature: aiFeatures.RRM, ...extractItem },
+        { ...mockEquiFlexRows[1], aiFeature: aiFeatures.EquiFlex, sliceValue, ...extractItem }
       ] as IntentListItem[]
       const mockOK = jest.fn()
       const { result } = renderHook(() => useIntentAIActions(), {
@@ -293,8 +293,8 @@ describe('useIntentAIActions', () => {
 
     it('should handle mutation correctly (OPTIMIZE_TYPES.2_2)  - multiple', async () => {
       const selectedRows = [
-        { ...mockAIDrivenRow, aiFeature: 'AI-Driven RRM', ...extractItem },
-        { ...mockAirflexRows[1], aiFeature: 'AirFlexAI', ...extractItem }
+        { ...mockAIDrivenRow, aiFeature: aiFeatures.RRM, ...extractItem },
+        { ...mockEquiFlexRows[1], aiFeature: aiFeatures.EquiFlex, ...extractItem }
       ] as IntentListItem[]
       const { result } = renderHook(() => useIntentAIActions(), {
         wrapper: ({ children }) => <BrowserRouter><Provider children={children} /></BrowserRouter>
@@ -353,7 +353,7 @@ describe('useIntentAIActions', () => {
     })
     describe('rai - AI-Driven', () => {
       it('should handle mutation correctly - single', async () => {
-        const selectedRow = [{ ...mockAIDrivenRow, aiFeature: 'AI-Driven RRM', ...extractItem }] as IntentListItem[]
+        const selectedRow = [{ ...mockAIDrivenRow, aiFeature: aiFeatures.RRM, ...extractItem }] as IntentListItem[]
         const { result } = renderHook(() => useIntentAIActions(), {
           wrapper: ({ children }) => <BrowserRouter><Provider children={children} /></BrowserRouter>
         })
@@ -392,9 +392,9 @@ describe('useIntentAIActions', () => {
       })
     })
 
-    describe('rai - AirFlexAI', () => {
+    describe('rai - EquiFlex', () => {
       it('should handle mutation correctly  - single', async () => {
-        const selectedRow = [{ ...mockAirflexRows[0], aiFeature: 'AirFlexAI', ...extractItem }] as IntentListItem[]
+        const selectedRow = [{ ...mockEquiFlexRows[0], aiFeature: aiFeatures.EquiFlex, ...extractItem }] as IntentListItem[]
         const { result } = renderHook(() => useIntentAIActions(), {
           wrapper: ({ children }) => <BrowserRouter><Provider children={children} /></BrowserRouter>
         })
@@ -431,7 +431,7 @@ describe('useIntentAIActions', () => {
       })
 
       it('should show error when date time before  - single', async () => {
-        const selectedRow = [{ ...mockAirflexRows[0], aiFeature: 'AirFlexAI', ...extractItem }] as IntentListItem[]
+        const selectedRow = [{ ...mockEquiFlexRows[0], aiFeature: aiFeatures.EquiFlex, ...extractItem }] as IntentListItem[]
         const { result } = renderHook(() => useIntentAIActions(), {
           wrapper: ({ children }) => <BrowserRouter><Provider children={children} /></BrowserRouter>
         })
@@ -457,7 +457,7 @@ describe('useIntentAIActions', () => {
       })
 
       it('should handle fetchWlans correctly', async () => {
-        const selectedRow = { ...mockAirflexRows[0], aiFeature: 'AirFlexAI', ...extractItem } as IntentListItem
+        const selectedRow = { ...mockEquiFlexRows[0], aiFeature: aiFeatures.EquiFlex, ...extractItem } as IntentListItem
         const { result } = renderHook(() => useIntentAIActions(), {
           wrapper: ({ children }) => <BrowserRouter><Provider children={children} /></BrowserRouter>
         })
@@ -477,7 +477,7 @@ describe('useIntentAIActions', () => {
       } as TransitionMutationResponse
       mockedTransitionIntent.mockReturnValue(Promise.resolve({ data: resp }))
       mockGraphqlMutation(intentAIUrl, 'TransitionIntent', { data: resp })
-      const selectedRow = [{ ...mockAirflexRows[0], aiFeature: 'AirFlexAI', ...extractItem }] as IntentListItem[]
+      const selectedRow = [{ ...mockEquiFlexRows[0], aiFeature: aiFeatures.EquiFlex, ...extractItem }] as IntentListItem[]
       const { result } = renderHook(() => useIntentAIActions(), {
         wrapper: ({ children }) => <BrowserRouter><Provider children={children} /></BrowserRouter>
       })
@@ -514,13 +514,13 @@ describe('useIntentAIActions', () => {
       const statusTrail = [ { status: 'new' }]
       const selectedRows = [
         { ...mockAIDrivenRow,
-          aiFeature: 'AI-Driven RRM',
+          aiFeature: aiFeatures.RRM,
           ...extractItem,
           displayStatus: DisplayStates.active,
           status: Statuses.active,
           statusTrail
-        },{ ...mockAirflexRows[1],
-          aiFeature: 'AirFlexAI',
+        },{ ...mockEquiFlexRows[1],
+          aiFeature: aiFeatures.EquiFlex,
           ...extractItem,
           displayStatus: DisplayStates.active,
           status: Statuses.active,
@@ -559,13 +559,13 @@ describe('useIntentAIActions', () => {
     it('should handle revert', async () => {
       const statusTrail = [ { status: 'new' }]
       const selectedRows = [
-        { ...mockAIDrivenRow, aiFeature: 'AI-Driven RRM',
+        { ...mockAIDrivenRow, aiFeature: aiFeatures.RRM,
           ...extractItem,
           displayStatus: DisplayStates.active,
           status: Statuses.active,
           statusTrail
         },
-        { ...mockAirflexRows[1], aiFeature: 'AirFlexAI',
+        { ...mockEquiFlexRows[1], aiFeature: aiFeatures.EquiFlex,
           ...extractItem,
           displayStatus: DisplayStates.active,
           status: Statuses.active,
@@ -603,7 +603,7 @@ describe('useIntentAIActions', () => {
       } as TransitionMutationResponse
       mockedTransitionIntent.mockReturnValue(Promise.resolve({ data: resp }))
       mockGraphqlMutation(intentAIUrl, 'TransitionIntent', { data: resp })
-      const selectedRows = [{ ...mockAirflexRows[0], aiFeature: 'AirFlexAI', ...extractItem }] as IntentListItem[]
+      const selectedRows = [{ ...mockEquiFlexRows[0], aiFeature: aiFeatures.EquiFlex, ...extractItem }] as IntentListItem[]
       const { result } = renderHook(() => useIntentAIActions(), {
         wrapper: ({ children }) => <BrowserRouter><Provider children={children} /></BrowserRouter>
       })

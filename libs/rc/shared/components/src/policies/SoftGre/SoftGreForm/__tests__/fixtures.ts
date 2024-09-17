@@ -42,13 +42,16 @@ export const mockSoftGreTable = {
         mtuType: MtuTypeEnum.MANUAL,
         mtuSize: 1450,
         disassociateClientEnabled: false,
-        primaryGatewayAddress: '128.0.0.4',
+        primaryGatewayAddress: '128.0.0.3',
         secondaryGatewayAddress: '128.0.0.5',
         keepAliveInterval: 100,
         keepAliveRetryTimes: 8,
         activations: [
           {
-            venueId: '0e2f68ab79154ffea64aa52c5cc48826'
+            venueId: '0e2f68ab79154ffea64aa52c5cc48826',
+            wifiNetworkIds: [
+              '9b33509cc0a1464cad9447778a72006fe'
+            ]
           }
         ]
       }

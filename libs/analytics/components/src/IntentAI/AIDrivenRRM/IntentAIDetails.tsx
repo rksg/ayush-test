@@ -1,79 +1,124 @@
+/* eslint-disable max-len */
 import { useState } from 'react'
 
-import { Typography }                 from 'antd'
-import _                              from 'lodash'
-import moment                         from 'moment-timezone'
-import { MessageDescriptor, useIntl } from 'react-intl'
+import { Typography }                               from 'antd'
+import { TooltipPlacement }                         from 'antd/es/tooltip'
+import moment                                       from 'moment-timezone'
+import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
-import { Card, Descriptions, GridCol, GridRow, Loader } from '@acx-ui/components'
-import { DateFormatEnum, formatter }                    from '@acx-ui/formatter'
-import { getIntl }                                      from '@acx-ui/utils'
+import { formattedPath }                  from '@acx-ui/analytics/utils'
+import { Card, GridCol, GridRow, Loader } from '@acx-ui/components'
+import { DateFormatEnum, formatter }      from '@acx-ui/formatter'
+import { getIntl }                        from '@acx-ui/utils'
 
+import { DescriptionSection }       from '../../DescriptionSection'
 import { FixedAutoSizer }           from '../../DescriptionSection/styledComponents'
 import { DetailsSection }           from '../common/DetailsSection'
 import { getIntentStatus }          from '../common/getIntentStatus'
 import { IntentDetailsHeader }      from '../common/IntentDetailsHeader'
+import { IntentDetailsSidebar }     from '../common/IntentDetailsSidebar'
 import { IntentIcon }               from '../common/IntentIcon'
-import { isIntentActive }           from '../common/isIntentActive'
 import { KpiCard }                  from '../common/KpiCard'
+import { richTextFormatValues }     from '../common/richTextFormatValues'
 import { StatusTrail }              from '../common/StatusTrail'
 import { codes }                    from '../config'
 import { useIntentContext }         from '../IntentContext'
-import { getGraphKPIs, getKpiData } from '../useIntentDetailsQuery'
+import { getStatusTooltip }         from '../services'
+import { getGraphKPIs, getKPIData } from '../useIntentDetailsQuery'
 
 import { IntentAIRRMGraph, SummaryGraphAfter, SummaryGraphBefore } from './RRMGraph'
 import { DownloadRRMComparison }                                   from './RRMGraph/DownloadRRMComparison'
 import { useIntentAICRRMQuery }                                    from './RRMGraph/services'
 
-export function createUseValuesText ({ reason, tradeoff }: {
-  reason: {
-    default: MessageDescriptor
-    activeFull: MessageDescriptor
-    activePartial: MessageDescriptor
-  }
-  tradeoff: {
-    full: MessageDescriptor
-    partial: MessageDescriptor
-  }
-}) {
+export function createUseValuesText () {
   return function useValuesText () {
     const { $t } = getIntl()
-    const { intent, kpis } = useIntentContext()
-    const isFullOptimization = !!_.get(
-      intent,
-      'metadata.algorithmData.isCrrmFullOptimization',
-      true
-    )
+    const { intent, kpis, state } = useIntentContext()
+    const isFullOptimization = intent.metadata.preferences?.crrmFullOptimization ?? true
 
     const kpi = kpis.find(kpi => kpi.key === 'number-of-interfering-links')!
-    const { data, compareData } = getKpiData(intent, kpi)
+    const { data, compareData } = getKPIData(intent, kpi)
 
-    const reasonText = isIntentActive(intent)
-      ? isFullOptimization ? reason.activeFull : reason.activePartial
-      : reason.default
+    const action = {
+      full: defineMessage({ defaultMessage: `
+        <p>Leverage <b><i>AI-Driven RRM Full Optimization</i></b> mode to assess the neighbor AP radio channels for each AP radio and build a channel plan for each radio to minimize the interference.</p>
+        <p>In this mode, while building the channel plan, IntentAI may optionally change the <i>AP Radio Channel Width</i> and <i>Transmit Power</i> to minimize the channel interference.</p>
+        <p>IntentAI ensures that only the existing channels configured for this network are utilized in the channel planning process.</p>
+      ` }),
+      partial: defineMessage({ defaultMessage: `
+        <p>Leverage <b><i>AI-Driven RRM Partial Optimization</i></b> mode to assess the neighbor AP channels for each AP radio and build a channel plan for each AP radio to minimize interference.</p>
+        <p>In this mode, while building the channel plan, IntentAI <b>will NOT</b> change the <i>AP Radio Channel Width</i> and <i>Transmit Power</i>.</p>
+        <p>IntentAI ensures that only the existing channels configured for this network are utilized in the channel planning process.</p>
+      ` })
+    }
+    const noData = defineMessage({ defaultMessage: 'When activated, this Intent takes over the automatic channel planning in the network.' })
 
-    const tradeoffText = isFullOptimization ? tradeoff.full : tradeoff.partial
+    const summaryText = state === 'no-data'
+      ? noData
+      : isFullOptimization ? action.full : action.partial
+
+
+    const benefitText = defineMessage({ defaultMessage: `Low interference fosters improved
+      throughput, lower latency, better signal quality, stable connections, enhanced user
+      experience, longer battery life, efficient spectrum utilization, optimized channel usage,
+      and reduced congestion, leading to higher data rates, higher SNR, consistent performance,
+      and balanced network load.` })
+
+    const tradeoffText = defineMessage({ defaultMessage: `In the quest for minimizing interference
+      between access points (APs), AI algorithms may opt to narrow channel widths. While this can
+      enhance spectral efficiency and alleviate congestion, it also heightens vulnerability to
+      noise, potentially reducing throughput. Narrow channels limit data capacity, which could
+      lower overall throughput.` })
 
     return {
-      reasonText: $t(reasonText, { before: kpi.format(compareData), after: kpi.format(data) }),
+      summaryText: summaryText,
+      benefitText: $t(benefitText, { before: kpi.format(compareData), after: kpi.format(data) }),
       tradeoffText: $t(tradeoffText)
     }
   }
 }
 
-export function createIntentAIDetails (config: Parameters<typeof createUseValuesText>[0]) {
-  const useValuesText = createUseValuesText(config)
+export function createIntentAIDetails () {
+  const useValuesText = createUseValuesText()
 
   return function IntentAIDetails () {
     const { $t } = useIntl()
-    const { intent, kpis } = useIntentContext()
+    const { intent, kpis, isDataRetained: hasData } = useIntentContext()
     const valuesText = useValuesText()
+    const { code, path, sliceValue, metadata, updatedAt, displayStatus } = intent
 
     const [summaryUrlBefore, setSummaryUrlBefore] = useState<string>('')
     const [summaryUrlAfter, setSummaryUrlAfter] = useState<string>('')
 
     const queryResult = useIntentAICRRMQuery()
     const crrmData = queryResult.data!
+
+    const fields = [
+      {
+        label: $t({ defaultMessage: 'Intent' }),
+        children: $t(codes[code].intent)
+      },
+      {
+        label: $t({ defaultMessage: 'Category' }),
+        children: $t(codes[code].category)
+      },
+      {
+        label: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
+        children: sliceValue,
+        tooltip: formattedPath(path, sliceValue),
+        tooltipPlacement: 'right' as TooltipPlacement
+      },
+      {
+        label: $t({ defaultMessage: 'Status' }),
+        children: getIntentStatus(displayStatus),
+        tooltip: getStatusTooltip(displayStatus, sliceValue, { ...metadata, updatedAt }),
+        tooltipPlacement: 'right' as TooltipPlacement
+      },
+      {
+        label: $t({ defaultMessage: 'Date' }),
+        children: formatter(DateFormatEnum.DateTimeFormat)(moment(updatedAt))
+      }
+    ]
 
     return <Loader states={[queryResult]}>
       <div hidden>
@@ -84,89 +129,61 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
       <GridRow>
         <GridCol col={{ span: 6, xxl: 4 }}>
           <FixedAutoSizer>
-            {({ width }) => (<div style={{ width }}>
+            {({ width }) => (<IntentDetailsSidebar style={{ width }}>
               <IntentIcon size='large' />
-              <Typography.Paragraph children={$t({
-                defaultMessage: 'Choose between a network with maximum throughput, ' +
-                  'allowing some interference, or one with minimal interference, ' +
-                  'for high client density.'
-              })} />
-              <Descriptions noSpace>
-                <Descriptions.Item
-                  label={$t({ defaultMessage: 'Intent' })}
-                  children={$t(codes[intent.code].intent)}
-                />
-                <Descriptions.Item
-                  label={$t({ defaultMessage: 'Category' })}
-                  children={$t(codes[intent.code].category)}
-                />
-                <Descriptions.Item
-                  label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
-                  children={intent.sliceValue}
-                />
-                <Descriptions.Item
-                  label={$t({ defaultMessage: 'Status' })}
-                  children={getIntentStatus(intent.displayStatus)}
-                />
-                <Descriptions.Item
-                  label={$t({ defaultMessage: 'Date' })}
-                  children={formatter(DateFormatEnum.DateTimeFormat)(moment(intent.updatedAt))}
-                />
-              </Descriptions>
+              <Typography.Paragraph
+                children={<FormattedMessage {...valuesText.summaryText} values={richTextFormatValues} />}/>
+              <DescriptionSection fields={fields}/>
               <br />
-              {/* TODO: question: handle data retention? */}
-              <DownloadRRMComparison title={$t({ defaultMessage: 'RRM comparison' })} />
-            </div>)}
+              {hasData
+                ? <DownloadRRMComparison title={$t({ defaultMessage: 'RRM comparison' })} />
+                : null}
+            </IntentDetailsSidebar>)}
           </FixedAutoSizer>
         </GridCol>
         <GridCol col={{ span: 18, xxl: 20 }}>
-          <DetailsSection
-            checkDataRetention
-            data-testid='Benefits'
-            title={$t({ defaultMessage: 'Benefits' })}
-            children={<GridRow>
-              {getGraphKPIs(intent, kpis).map(kpi => (
-                <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
-                  <KpiCard kpi={kpi} />
-                </GridCol>
-              ))}
-            </GridRow>}
-          />
+          <DetailsSection data-testid='Details'>
+            <DetailsSection.Title children={$t({ defaultMessage: 'Details' })} />
+            <DetailsSection.Details>
+              <GridRow>
+                {getGraphKPIs(intent, kpis).map(kpi => (
+                  <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
+                    <KpiCard kpi={kpi} />
+                  </GridCol>
+                ))}
+              </GridRow>
+            </DetailsSection.Details>
+          </DetailsSection>
 
-          <DetailsSection
-            checkDataRetention
-            data-testid='Key Performance Indications'
-            title={$t({ defaultMessage: 'Key Performance Indications' })}
-            children={<IntentAIRRMGraph
-              details={intent}
+          <DetailsSection data-testid='Key Performance Indications'>
+            <DetailsSection.Title
+              children={$t({ defaultMessage: 'Key Performance Indications' })} />
+            <DetailsSection.Details children={<IntentAIRRMGraph
               crrmData={crrmData}
               summaryUrlBefore={summaryUrlBefore}
               summaryUrlAfter={summaryUrlAfter}
-            />}
-          />
+            />} />
+          </DetailsSection>
 
           <GridRow>
             <GridCol col={{ span: 12 }}>
-              <DetailsSection
-                data-testid='Why the intent?'
-                title={$t({ defaultMessage: 'Why the intent?' })}
-                children={<Card>{valuesText.reasonText}</Card>}
-              />
+              <DetailsSection data-testid='Benefits'>
+                <DetailsSection.Title children={$t({ defaultMessage: 'Benefits' })} />
+                <DetailsSection.Details children={<Card>{valuesText.benefitText}</Card>} />
+              </DetailsSection>
             </GridCol>
             <GridCol col={{ span: 12 }}>
-              <DetailsSection
-                data-testid='Potential trade-off'
-                title={$t({ defaultMessage: 'Potential trade-off' })}
-                children={<Card>{valuesText.tradeoffText}</Card>}
-              />
+              <DetailsSection data-testid='Potential trade-off'>
+                <DetailsSection.Title children={$t({ defaultMessage: 'Potential trade-off' })} />
+                <DetailsSection.Details children={<Card>{valuesText.tradeoffText}</Card>} />
+              </DetailsSection>
             </GridCol>
           </GridRow>
 
-          <DetailsSection
-            data-testid='Status Trail'
-            title={$t({ defaultMessage: 'Status Trail' })}
-            children={<StatusTrail />}
-          />
+          <DetailsSection data-testid='Status Trail'>
+            <DetailsSection.Title children={$t({ defaultMessage: 'Status Trail' })} />
+            <DetailsSection.Details children={<StatusTrail />} />
+          </DetailsSection>
         </GridCol>
       </GridRow>
     </Loader>

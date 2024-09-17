@@ -344,6 +344,14 @@ export function AssignMspLicense () {
           : updateAssignment
         await updateMspSubscription({ params: { tenantId: tenantId, assignmentId: assignId },
           payload: updatePayload, enableRbac: isEntitlementRbacApiEnabled }).unwrap()
+        if(isEntitlementRbacApiEnabled && updateAssignment.length > 1) {
+          const assignId = updateAssignment[1].assignmentId.toString()
+          const updatePayload = {
+            quantity: updateAssignment[1].quantity,
+            expirationDate: expirationDate }
+          await updateMspSubscription({ params: { tenantId: tenantId, assignmentId: assignId },
+            payload: updatePayload, enableRbac: isEntitlementRbacApiEnabled }).unwrap()
+        }
       }
       if (deleteAssignment.length > 0) {
         const assignId = deleteAssignment[0].assignmentId.toString()

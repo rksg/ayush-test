@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { Form, Typography }                         from 'antd'
+import { Form }                                     from 'antd'
 import _                                            from 'lodash'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
@@ -46,29 +46,32 @@ const useValuesText = createUseValuesText({
       Disabling band balancing ensures that all devices can connect to their preferred band without being forced to switch, which can avoid potential compatibility problems with certain devices.
     </p>
   ` }),
-  action: defineMessage({ defaultMessage: 'Band Balancing Mode for {scope} is disabled. It is recommended to enable Band Balancing Mode.' }),
+  action: defineMessage({ defaultMessage: `
+    <p>IntentAI will enable band balancing for this network, this change shall optimize network performance by efficiently distributing devices across available frequency bands, reducing congestion and enhancing overall Wi-Fi experience.</p>
+    <p>IntentAI will continuously monitor these configurations.</p>
+  ` }),
   reason: defineMessage({ defaultMessage: 'Band Balancing feature intelligently distributes WLAN clients on 2.4 GHz and 5 GHz channels in order to balance the client load. Band Balancing shall result in better radio utilization resulting in better Wi-Fi experience to the user.' }),
   tradeoff: defineMessage({ defaultMessage: `
     <p>Some devices may experience compatibility issues or be forced to connect to less optimal bands, potentially impacting their performance and user experience.</p>
   ` }),
-  inactive: defineMessage({ defaultMessage: 'When activated, this AIOps Intent takes over the automatic configuration of Band balancing in the network.' })
+  noData: defineMessage({ defaultMessage: 'When activated, this AIOps Intent takes over the automatic configuration of Band balancing in the network.' })
 })
 
 export const IntentAIDetails = createIntentAIDetails(useValuesText)
 
 const options = {
   yes: {
-    title: defineMessage({ defaultMessage: 'Yes, apply the intent' }),
+    title: defineMessage({ defaultMessage: 'Yes, apply the recommendation' }),
     content: <FormattedMessage
       values={richTextFormatValues}
       defaultMessage={`
-        <p>IntentAI will enabling band balancing for this network, this change shall optimize network performance by efficiently distributing devices across available frequency bands, reducing congestion and enhancing overall Wi-Fi experience.</p>
+        <p>IntentAI will enable band balancing for this network, this change shall optimize network performance by efficiently distributing devices across available frequency bands, reducing congestion and enhancing overall Wi-Fi experience.</p>
         <p>IntentAI will continuously monitor these configurations.</p>
       `}
     />
   },
   no: {
-    title: defineMessage({ defaultMessage: 'No, do not apply the intent' }),
+    title: defineMessage({ defaultMessage: 'No, do not apply the recommendation' }),
     content: <FormattedMessage
       values={richTextFormatValues}
       defaultMessage={`
@@ -127,7 +130,6 @@ export const IntentAIForm = createIntentAIForm<{ enable: boolean }>({
     const { $t } = useIntl()
     const { intent } = useIntentContext()
     return <>
-      <Typography.Paragraph children={useValuesText().actionText} />
       <StepsForm.Subtitle children={$t({ defaultMessage: 'What is your primary network intent for <VenueSingular></VenueSingular>: {zone}' }, { zone: intent.sliceValue })} />
 
       <Form.Item name={['preferences','enable']}>
