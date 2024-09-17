@@ -4,12 +4,12 @@ import { sumBy }   from 'lodash'
 import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps }                                                                                                                                 from '@acx-ui/components'
-import { useGetAvailableEdgeFirmwareVersionsQuery, useGetVenueEdgeFirmwareListQuery, useUpdateEdgeFirmwareNowMutation, useUpdateEdgeVenueSchedulesMutation } from '@acx-ui/rc/services'
-import { EdgeFirmwareVersion, EdgeUpdateScheduleRequest, EntityCompatibility }                                                                               from '@acx-ui/rc/utils'
-import { EdgeScopes }                                                                                                                                        from '@acx-ui/types'
-import { filterByAccess, hasPermission }                                                                                                                     from '@acx-ui/user'
-import { compareVersions }                                                                                                                                   from '@acx-ui/utils'
+import { Table, TableProps }                                                                                                                                                                from '@acx-ui/components'
+import { useGetAvailableEdgeFirmwareVersionsQuery, useGetLatestEdgeFirmwareQuery, useGetVenueEdgeFirmwareListQuery, useUpdateEdgeFirmwareNowMutation, useUpdateEdgeVenueSchedulesMutation } from '@acx-ui/rc/services'
+import { EdgeFirmwareVersion, EdgeUpdateScheduleRequest, EntityCompatibility }                                                                                                              from '@acx-ui/rc/utils'
+import { EdgeScopes }                                                                                                                                                                       from '@acx-ui/types'
+import { filterByAccess, hasPermission }                                                                                                                                                    from '@acx-ui/user'
+import { compareVersions }                                                                                                                                                                  from '@acx-ui/utils'
 
 import { EdgeChangeScheduleDialog } from '../../EdgeFirmware/ChangeScheduleDialog'
 import { EdgeUpdateNowDialog }      from '../../EdgeFirmware/UpdateNowDialog'
@@ -57,10 +57,24 @@ export const EdgeCompatibilityDetailTable = (props: EdgeCompatibilityDetailTable
 
   const [updateNow] = useUpdateEdgeFirmwareNowMutation()
   const [updateSchedule] = useUpdateEdgeVenueSchedulesMutation()
+  const { latestReleaseVersion } = useGetLatestEdgeFirmwareQuery({}, {
+    skip: requirementOnly,
+    selectFromResult: ({ data }) => ({
+      latestReleaseVersion: data?.[0]
+    })
+  })
   const { data: availableVersions } = useGetAvailableEdgeFirmwareVersionsQuery({},
     { skip: requirementOnly })
-  const { data: venueFirmwareList } = useGetVenueEdgeFirmwareListQuery({},
-    { skip: requirementOnly })
+  const { venueFirmware } = useGetVenueEdgeFirmwareListQuery({
+    payload: {
+      filter: { venueId }
+    }
+  }, {
+    skip: requirementOnly,
+    selectFromResult: ({ data }) => ({
+      venueFirmware: data?.[0]
+    })
+  })
 
   const columns = useColumns()
 
@@ -101,12 +115,13 @@ export const EdgeCompatibilityDetailTable = (props: EdgeCompatibilityDetailTable
     visible: (selectedRows) => {
       if (!selectedRows?.length) return false
 
-      const maxTargetVersion = getMaxMinVersion(selectedRows)
-      return (getFilteredVersions(availableVersions, maxTargetVersion)?.length ?? 0) > 0
+      return Boolean(latestReleaseVersion?.id &&
+          ((venueFirmware?.versions?.[0].id
+            && compareVersions(venueFirmware?.versions?.[0].id, latestReleaseVersion?.id) <= 0)
+          || !venueFirmware?.versions?.[0].id))
     },
     onClick: (selectedRows: EdgeCompatibilityDetailTableData[]) => {
-      const maxTargetVersion = getMaxMinVersion(selectedRows)
-      setUpdateNowFwVer(maxTargetVersion)
+      setUpdateNowFwVer(selectedRows[0].requiredFw)
     }
   }, {
     label: $t({ defaultMessage: 'Schedule Version Update' }),
@@ -114,15 +129,10 @@ export const EdgeCompatibilityDetailTable = (props: EdgeCompatibilityDetailTable
     visible: (selectedRows) => {
       if (!selectedRows?.length) return false
 
-      const targetData = venueFirmwareList?.filter(i => i.id === venueId)
-      if (!targetData?.[0]?.nextSchedule) return false
-
-      const maxTargetVersion = getMaxMinVersion(selectedRows)
-      return (getFilteredVersions(availableVersions, maxTargetVersion)?.length ?? 0) > 0
+      return !!venueFirmware?.nextSchedule
     },
     onClick: (selectedRows: EdgeCompatibilityDetailTableData[]) => {
-      const maxTargetVersion = getMaxMinVersion(selectedRows)
-      setScheduleUpdateFwVer(maxTargetVersion)
+      setScheduleUpdateFwVer(selectedRows[0].requiredFw)
     }
   }]
 
@@ -149,20 +159,15 @@ export const EdgeCompatibilityDetailTable = (props: EdgeCompatibilityDetailTable
       visible={!!updateNowFwVer}
       onCancel={() => setUpdateNowFwVer(undefined)}
       onSubmit={handleUpdateNowSubmit}
-      availableVersions={getFilteredVersions(availableVersions, updateNowFwVer)}
+      availableVersions={getFilteredVersions(availableVersions, latestReleaseVersion?.id)}
     />
     <EdgeChangeScheduleDialog
       visible={!!scheduleUpdateFwVer}
       onCancel={() => setScheduleUpdateFwVer(undefined)}
       onSubmit={handleScheduleSubmit}
-      availableVersions={getFilteredVersions(availableVersions, scheduleUpdateFwVer)}
+      availableVersions={getFilteredVersions(availableVersions, latestReleaseVersion?.id)}
     />
   </>
-}
-
-const getMaxMinVersion = (selectedRows: EdgeCompatibilityDetailTableData[]) => {
-  const sorted = selectedRows.sort((a, b) => compareVersions(a?.requiredFw, b?.requiredFw))
-  return sorted[0].requiredFw
 }
 
 const getFilteredVersions = (availableVersions?: EdgeFirmwareVersion[], minVer?: string) => {
