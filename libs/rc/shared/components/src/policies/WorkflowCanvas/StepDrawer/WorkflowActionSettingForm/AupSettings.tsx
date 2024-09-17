@@ -28,15 +28,13 @@ export function AupSettings () {
   }, [formInstance.getFieldValue('useAupFile')])
 
   const validateBeforeUpload = ( file: File | RcFile) => {
-    try {
-      let errorMsg = validateFileSize(file)
-      if (errorMsg) throw errorMsg
-      formInstance.setFieldValue('aupFileName',file.name)
-      return true
-    } catch (err) {
-      formInstance.setFieldValue('aupFileName',err as string)
+    let errorMsg = validateFileSize(file)
+    if (errorMsg) {
+      formInstance.setFieldValue('aupFileName',errorMsg as string)
       return false
     }
+    formInstance.setFieldValue('aupFileName',file.name)
+    return true
   }
 
   const validateFileSize = (file: File) => {

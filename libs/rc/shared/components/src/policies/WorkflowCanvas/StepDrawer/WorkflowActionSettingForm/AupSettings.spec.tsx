@@ -2,9 +2,9 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { ActionType, AupActionContext, WorkflowUrls } from '@acx-ui/rc/utils'
-import { Provider }                                   from '@acx-ui/store'
-import { mockServer, render, renderHook, screen }     from '@acx-ui/test-utils'
+import { ActionType, AupActionContext, WorkflowUrls }      from '@acx-ui/rc/utils'
+import { Provider }                                        from '@acx-ui/store'
+import { mockServer, render, renderHook, screen, waitFor } from '@acx-ui/test-utils'
 
 import { AupSettings } from './AupSettings'
 
@@ -16,13 +16,19 @@ const deleteFile = jest.fn()
 describe('AupSettings', () => {
 
   beforeEach(() => {
-    mockServer.use(rest.get(WorkflowUrls.uploadFile.url, (req, res, ctx) => {
+    mockServer.use(rest.post(WorkflowUrls.uploadFile.url, (req, res, ctx) => {
       uploadFile()
       return res(ctx.json('{url: 7c1a1cb9-548c-446e-b4dc-07d498759d9b-text.docs}'))
-    }), rest.get(WorkflowUrls.deleteFile.url, () => {
+    }), rest.delete(WorkflowUrls.deleteFile.url, () => {
       deleteFile()
+      return
     }))
   })
+
+  afterEach(() => mockServer.resetHandlers())
+
+
+  afterAll(() => mockServer.close())
 
   it('should render the form with default values', async () => {
     const { result: formRef } = renderHook(() => {
@@ -191,6 +197,73 @@ describe('AupSettings', () => {
 
   })
 
+  it('should validate the fields minimum length', async () => {
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+
+    render(
+      <Provider>
+        <Form form={formRef.current}>
+          <AupSettings />
+        </Form>
+      </Provider>
+    )
+
+    const pageTitleInput = await screen.findByRole('textbox', { name: /Title/ })
+    expect(pageTitleInput).toHaveValue('')
+
+    const pageBodyInput = await screen.findByRole('textbox', { name: /Message/ })
+    expect(pageBodyInput).toHaveValue('')
+
+    const generatedName = formRef.current.getFieldValue('name')
+    expect(generatedName.split('-')[0]).toBe(ActionType.AUP)
+
+    formRef.current.validateFields()
+
+    expect(await screen.findByText('Title')).toBeVisible()
+    expect(await screen.findByText('Message')).toBeVisible()
+  })
+
+  it('should validate whitespace only entries', async () => {
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+
+    render(
+      <Provider>
+        <Form form={formRef.current}>
+          <AupSettings />
+        </Form>
+      </Provider>
+    )
+
+    const pageTitleInput = await screen.findByRole('textbox', { name: /Title/ })
+    expect(pageTitleInput).toHaveValue('')
+
+    const pageBodyInput = await screen.findByRole('textbox', { name: /Message/ })
+    expect(pageBodyInput).toHaveValue('')
+
+    const generatedName = formRef.current.getFieldValue('name')
+    expect(generatedName.split('-')[0]).toBe(ActionType.AUP)
+
+    await userEvent.type(pageTitleInput, '  ')
+
+    formRef.current.validateFields()
+
+    expect(await screen.findByText('Whitespace chars only are not allowed')).toBeVisible()
+
+    await userEvent.type(pageTitleInput, 'a real value')
+    await userEvent.type(pageBodyInput, '  ')
+
+    formRef.current.validateFields()
+
+    expect(await screen.findByText('Whitespace chars only are not allowed')).toBeVisible()
+  })
+
+
   it('Should switch between policy option', async () => {
     const { result: formRef } = renderHook(() => {
       const [form] = Form.useForm()
@@ -235,13 +308,37 @@ describe('AupSettings', () => {
     expect (message).toBeInTheDocument()
   })
 
+
+  it('Validate file size', async () => {
+    const { result: formRef } = renderHook(() => {
+      const [form] = Form.useForm<AupActionContext>()
+      form.setFieldsValue({
+        useAupFile: true,
+        aupFileLocation: '7c1a1cb9-548c-446e-b4dc-07d498759d9b-text.pdf',
+        aupFileName: 'text.pdf'
+      })
+      return form
+    })
+
+    render(<Provider>
+      <Form form={formRef.current}>
+        <AupSettings/>
+      </Form>
+    </Provider>)
+    const file = new File(['hello'], 'hello.pdf', { type: 'application/pdf' })
+    Object.defineProperty(file, 'size', { value: 1024 * 1024 * 11 })
+    const testfile = screen.getByTestId('aupPolicy')
+    userEvent.upload(testfile, file)
+    expect(await screen.findByText('File size (11 MB) is too big.')).toBeVisible()
+  })
+
   it('Should be able to upload file', async () => {
     const { result: formRef } = renderHook(() => {
       const [form] = Form.useForm<AupActionContext>()
       form.setFieldsValue({
         useAupFile: true,
-        aupFileLocation: '7c1a1cb9-548c-446e-b4dc-07d498759d9b-text.docs',
-        aupFileName: 'text.docs'
+        aupFileLocation: '7c1a1cb9-548c-446e-b4dc-07d498759d9b-text.pdf',
+        aupFileName: 'text.pdf'
       })
       return form
     })
@@ -254,9 +351,11 @@ describe('AupSettings', () => {
     expect(await screen.findByText('Paste text instead')).toBeVisible()
     const dragFile = screen.getByText('Change File')
     expect(dragFile).toBeInTheDocument()
-    const file = new File(['hello'], 'hello.png', { type: 'image/png' })
+    const file = new File(['hello'], 'hello.pdf', { type: 'application/pdf' })
     const testfile = screen.getByTestId('aupPolicy')
     userEvent.upload(testfile, file)
+    await waitFor(() => expect(uploadFile).toHaveBeenCalled())
+    expect(await screen.findByText('hello.pdf')).toBeVisible()
   })
 
 })
