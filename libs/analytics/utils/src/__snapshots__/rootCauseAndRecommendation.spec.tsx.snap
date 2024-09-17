@@ -5874,8 +5874,7 @@ Array [
             id="cPP198"
             values={
               Object {
-                "li": [Function],
-                "link": <TenantLinkWrapper
+                "aiOpsLink": <TenantLinkWrapper
                   linkType="aiOps"
                   params={
                     Object {
@@ -5883,6 +5882,7 @@ Array [
                     }
                   }
                 />,
+                "li": [Function],
                 "ol": [Function],
                 "p": [Function],
                 "ul": [Function],
@@ -6414,8 +6414,7 @@ Array [
             id="cPP198"
             values={
               Object {
-                "li": [Function],
-                "link": <TenantLinkWrapper
+                "aiOpsLink": <TenantLinkWrapper
                   linkType="aiOps"
                   params={
                     Object {
@@ -6423,6 +6422,7 @@ Array [
                     }
                   }
                 />,
+                "li": [Function],
                 "ol": [Function],
                 "p": [Function],
                 "ul": [Function],

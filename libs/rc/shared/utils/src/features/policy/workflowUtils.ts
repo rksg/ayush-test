@@ -106,9 +106,9 @@ export const AupActionDefaultValue: {
 export const DataPromptActionDefaultValue: {
   [key in keyof DataPromptActionContext]: MessageDescriptor | boolean | string | DataPromptVariable[]
 } = {
-  title: defineMessage({ defaultMessage: 'Default Display Message Title' }),
+  title: '',
   displayTitle: true,
-  messageHtml: defineMessage({ defaultMessage: 'Default Display Message Body' }),
+  messageHtml: '',
   displayMessageHtml: true,
   backButtonText: 'Back',
   continueButtonText: 'Continue',
@@ -120,8 +120,8 @@ export const DataPromptActionDefaultValue: {
 export const DisplayMessageActionDefaultValue: {
   [key in keyof DisplayMessageActionContext]: MessageDescriptor | string | boolean
 } = {
-  title: defineMessage({ defaultMessage: 'Default Display Message Title' }),
-  messageHtml: defineMessage({ defaultMessage: 'Default Display Message Body' }),
+  title: '',
+  messageHtml: '',
   backButtonText: 'Back',
   continueButtonText: 'Continue',
   displayBackButton: true,
