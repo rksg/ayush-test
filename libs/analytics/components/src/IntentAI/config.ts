@@ -46,14 +46,14 @@ export enum aiFeatures {
   RRM = 'AI-Driven RRM',
   EquiFlex = 'EquiFlex',
   AIOps = 'AI Operations',
-  EcoFlexAI = 'EcoFlexAI'
+  EcoFlex = 'EcoFlex'
 }
 
 export const aiFeaturesLabel = {
   [aiFeatures.RRM]: defineMessage({ defaultMessage: 'AI-Driven RRM' }),
   [aiFeatures.EquiFlex]: defineMessage({ defaultMessage: 'EquiFlex' }),
   [aiFeatures.AIOps]: defineMessage({ defaultMessage: 'AI Operations' }),
-  [aiFeatures.EcoFlexAI]: defineMessage({ defaultMessage: 'EcoFlexAI' })
+  [aiFeatures.EcoFlex]: defineMessage({ defaultMessage: 'EcoFlex' })
 }
 
 type CodeInfo = {
@@ -71,7 +71,8 @@ const categories = {
   'Wi-Fi Experience': defineMessage({ defaultMessage: 'Wi-Fi Experience' }),
   'Security': defineMessage({ defaultMessage: 'Security' }),
   'Infrastructure': defineMessage({ defaultMessage: 'Infrastructure' }),
-  'AP Performance': defineMessage({ defaultMessage: 'AP Performance' })
+  'AP Performance': defineMessage({ defaultMessage: 'AP Performance' }),
+  'Sustainability': defineMessage({ defaultMessage: 'Sustainability' })
 }
 
 export const states = {
@@ -292,10 +293,9 @@ export const codes = {
     intent: defineMessage({ defaultMessage: 'Time to Connect vs Client Density for 6 GHz' }),
     category: categories['Wi-Fi Experience']
   },
-  'eco-flex-code': {
-    // TODO: EcoFlexAI code is not defined yet
-    aiFeature: aiFeatures.EcoFlexAI,
-    intent: defineMessage({ defaultMessage: 'TBD' }),
-    category: categories['Wi-Fi Experience']
+  'i-ecoflex': {
+    aiFeature: aiFeatures.EcoFlex,
+    intent: defineMessage({ defaultMessage: 'Energy Footprint vs Mission Criticality' }),
+    category: categories.Sustainability
   }
 } as Record<string, CodeInfo>
