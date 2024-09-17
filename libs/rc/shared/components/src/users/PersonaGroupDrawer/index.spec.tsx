@@ -1,17 +1,20 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   MacRegListUrlsInfo,
   NewPersonaBaseUrl,
   PersonaUrls,
-  DpskUrls
+  DpskUrls,
+  CertificateUrls
 } from '@acx-ui/rc/utils'
 import { Provider }                            from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 
 import {
+  certificateTemplateList,
   mockDpskList,
   mockMacRegistrationList,
   mockPersonaGroup,
@@ -24,12 +27,14 @@ import { PersonaGroupDrawer } from './index'
 const updatePersonaSpy = jest.fn()
 const createPersonaGroupSpy = jest.fn()
 const closeFn = jest.fn()
+const certQuerySpy = jest.fn()
 
 describe('Persona Group Drawer', () => {
   let params: { tenantId: string }
 
   beforeEach(async () => {
     closeFn.mockClear()
+    certQuerySpy.mockClear()
 
     mockServer.use(
       rest.post(
@@ -57,6 +62,13 @@ describe('Persona Group Drawer', () => {
       rest.post(
         DpskUrls.getEnhancedDpskList.url,
         (req, res, ctx) => res(ctx.json(mockDpskList))
+      ),
+      rest.post(
+        CertificateUrls.getCertificateTemplates.url,
+        (_, res, ctx) => {
+          certQuerySpy()
+          return res(ctx.json(certificateTemplateList))
+        }
       )
     )
     params = {
@@ -101,6 +113,8 @@ describe('Persona Group Drawer', () => {
   })
 
   it('should add a persona group', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation((ff) => ff === Features.CERTIFICATE_TEMPLATE)
+
     render(
       <Provider>
         <PersonaGroupDrawer
@@ -114,12 +128,15 @@ describe('Persona Group Drawer', () => {
     )
 
     await screen.findByRole('dialog')
+    await waitFor(() => expect(certQuerySpy).toHaveBeenCalled())
 
     const nameField = await screen.findByRole('textbox', { name: /identity group name/i })
     await userEvent.type(nameField, 'New Identity Group Name')
 
-    // Select a DPSK Service
     const selector = await screen.findAllByRole('combobox')
+    expect(selector.length).toBe(3)
+
+    // Select a DPSK Service
     const dpskPoolSelector = selector[0]
     await userEvent.click(dpskPoolSelector)
     await userEvent.type(dpskPoolSelector, 'DPSK')
@@ -131,11 +148,19 @@ describe('Persona Group Drawer', () => {
     await userEvent.type(macSelector, 'mac')
     await userEvent.click(await screen.findByText('mac-name-1'))
 
+    // Select a Certificate Template
+    const certSelector = selector[2]
+    await userEvent.click(certSelector)
+    await userEvent.type(certSelector, 'cert')
+    await userEvent.click(await screen.findByText('certTemplate'))
+
     // Submit
     const addButton = await screen.findAllByRole('button', { name: /Add/i })
     await userEvent.click(addButton[addButton.length - 1])
 
     await waitFor(() => expect(createPersonaGroupSpy).toHaveBeenCalled())
+
+    jest.mocked(useIsSplitOn).mockReset()
   })
 
   it('should edit a persona group', async () => {

@@ -98,7 +98,9 @@ import {
   NetworkDevice,
   NetworkDeviceType,
   NetworkDevicePosition,
-  RbacAPMesh
+  RbacAPMesh,
+  EthernetPortProfileUrls,
+  EthernetPortProfileViewData
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                                  from '@acx-ui/store'
 import { RequestPayload }                                from '@acx-ui/types'
@@ -1063,6 +1065,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return{
           ...req
         }
+      },
+      providesTags: [{ type: 'Venue', id: 'SWITCH_SETTING' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg,
+            ['UpdateVenueSwitchSetting'], () => {
+              api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'SWITCH_SETTING' }]))
+            })
+        })
       }
     }),
     updateVenueSwitchSetting: build.mutation<Venue, RequestPayload>({
@@ -1999,7 +2010,46 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'ExternalAntenna', id: 'LIST' }]
+    }),
+
+    getVenueLanPortWithEthernetPortSettings: build.query<VenueLanPorts[], RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+
+        const urlsInfo = arg.enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const rbacApiVersion = arg.enableRbac ? ApiVersionEnum.v1 : undefined
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const venueLanPortsQuery = await fetchWithBQ(createHttpRequest(urlsInfo.getVenueLanPorts, arg.params, apiCustomHeader))
+        const venueLanPortSettings = venueLanPortsQuery.data as VenueLanPorts[]
+
+        const venueId = arg.params?.venueId
+        if(venueId) {
+          const ethernetPortProfileReq = createHttpRequest(EthernetPortProfileUrls.getEthernetPortProfileViewDataList)
+          const ethernetPortProfileQuery = await fetchWithBQ(
+            { ...ethernetPortProfileReq, body: JSON.stringify({
+              filters: {
+                venueIds: [venueId]
+              }
+            }) }
+          )
+          const ethernetPortProfiles = (ethernetPortProfileQuery.data as TableResult<EthernetPortProfileViewData>).data
+
+          ethernetPortProfiles.forEach((profile) => {
+            if (profile.venueActivations) {
+              profile.venueActivations.forEach((activity)=>{
+                const targetLanPort = venueLanPortSettings.find(setting => setting.model === activity.apModel && venueId === activity.venueId)
+                  ?.lanPorts.find(lanPort => lanPort.portId?.toString() === activity.portId?.toString())
+                if(targetLanPort) {
+                  targetLanPort.ethernetPortProfileId = profile.id
+                }
+              })
+            }
+          })
+        }
+        return { data: venueLanPortSettings }
+      }
     })
+
+
   })
 })
 
@@ -2139,7 +2189,9 @@ export const {
   useRemoveApPositionMutation,
   useGetVenueApSmartMonitorQuery,
   useLazyGetVenueApSmartMonitorQuery,
-  useUpdateVenueApSmartMonitorMutation
+  useUpdateVenueApSmartMonitorMutation,
+
+  useGetVenueLanPortWithEthernetPortSettingsQuery
 } = venueApi
 
 

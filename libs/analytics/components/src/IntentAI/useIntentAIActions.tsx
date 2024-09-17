@@ -212,7 +212,7 @@ export function useIntentAIActions () {
     const optimizeList = await Promise.all(rows.map(async (row) => {
       const { code, preferences, displayStatus, status } = row
       const metadata = { scheduledAt } as TransitionIntentMetadata
-      if (code.startsWith('c-probeflex-')) { // AirflexAI c-probeflex-*
+      if (code.startsWith('c-probeflex-')) { // EquiFlex c-probeflex-*
         metadata.wlans = await fetchWlans(row)
 
       } else if (code.startsWith('c-crrm-')) { // AI-Driven

@@ -85,9 +85,6 @@ describe('WifiSoftGreRadioOption', () => {
       </Provider>,
       { route: { path: viewPath, params: { venueId, tenantId } } }
     )
-
-    expect(await screen.findByRole('button', { name: /Add/i })).toBeEnabled()
-    expect(await screen.findByRole('button', { name: /Profile details/i })).not.toBeEnabled()
     await waitFor(() => expect(mockedGetFn).toBeCalled())
     await waitFor(async () => expect(await screen.findByRole('button',
       { name: /Profile details/i }
@@ -105,5 +102,42 @@ describe('WifiSoftGreRadioOption', () => {
         newProfileId: '75aa5131892d44a6a85a623dd3e524ed'
       }
     })
+  })
+
+  it('should show error render softGRE tunneling selected', async () => {
+    const venueId = 'venueId-2'
+    const networkId = 'network_7'
+    const { result: formRef } = renderHook(() => {
+      return Form.useForm()[0]
+    })
+    render(
+      <Provider>
+        <Form form={formRef.current}>
+          <WifiSoftGreRadioOption
+            currentTunnelType={NetworkTunnelTypeEnum.SoftGre}
+            venueId={venueId}
+            networkId={networkId}
+            cachedSoftGre={[]}
+          />
+        </Form>
+      </Provider>,
+      { route: { path: viewPath, params: { venueId, tenantId } } }
+    )
+
+    expect(await screen.findByRole('button', { name: /Add/i })).toBeEnabled()
+    expect(await screen.findByRole('button', { name: /Profile details/i })).not.toBeEnabled()
+    await waitFor(() => expect(mockedGetFn).toBeCalled())
+    await waitFor(async () => expect(await screen.findByRole('button',
+      { name: /Profile details/i }
+    )).toBeEnabled())
+    expect(formRef.current.getFieldsValue()).toEqual({
+      softGre: {
+        newProfileId: 'softGreProfileName4-id'
+      }
+    })
+    await userEvent.click(await screen.findByRole('combobox'))
+    await userEvent.click(await screen.findByText('softGreProfileName3'))
+    expect(await screen.findByRole('button', { name: /Profile details/i })).toBeEnabled()
+    expect(await screen.findByText(/Please choose a different one./)).toBeVisible()
   })
 })

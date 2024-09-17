@@ -114,7 +114,8 @@ describe('SoftGreSettingForm', () => {
     // eslint-disable-next-line max-len
     const secondaryGatewayField = screen.getByRole('textbox', { name: 'Tunnel Secondary Gateway Address' })
     await user.type(secondaryGatewayField,'128.0.0.0')
-    const errMsg = await screen.findByText('IP address must be unique.')
+    // eslint-disable-next-line max-len
+    const errMsg = await screen.findByText('Primary and secondary IP addresses must be different. Please enter a new IP address')
     expect(errMsg).toBeVisible()
 
     await user.clear(secondaryGatewayField)
