@@ -35,7 +35,6 @@ const mockedVenueRadioActiveNetworksQuery = jest.fn()
 //   useTenantLink: jest.fn()
 // }))
 
-// const components = require('@acx-ui/components')
 // jest.mock('@acx-ui/components', () => ({
 //   ...jest.requireActual('@acx-ui/components'),
 //   showToast: jest.fn()
@@ -511,7 +510,7 @@ describe('useIntentAIActions', () => {
       jest.mocked(get).mockReturnValue('true')
       mockOK.mockClear()
     })
-    it('should handle handleTransitionIntent', async () => {
+    it.only('should handle handleTransitionIntent', async () => {
       const statusTrail = [ { status: 'new' }]
       const selectedRows = [
         { ...mockAIDrivenRow,
@@ -552,12 +551,9 @@ describe('useIntentAIActions', () => {
         }]
       })
       await waitFor(() => expect(mockOK).toBeCalledTimes(1))
-      // await waitFor(async () => {
-      //   expect(components.showToast)
-      //     .toHaveBeenLastCalledWith({
-      //       type: 'success'
-      //     })
-      // })
+      expect(await screen.findByText(/The selected intents has been updated/)).toBeVisible()
+      await userEvent.click((await screen.findAllByText('View'))[0])
+      expect(window.location.href).toContain('?intentTableFilters=%257B%2522statusLabel%2522%253A%255B%2522paused-from-active%252Bpaused-from-inactive%2522%255D%257D')
     })
 
     it('should handle revert', async () => {
