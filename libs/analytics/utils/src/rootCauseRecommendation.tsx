@@ -1,12 +1,14 @@
 /* eslint-disable max-len */
-import _                                    from 'lodash'
-import { defineMessage, MessageDescriptor } from 'react-intl'
-import { FormattedMessage }                 from 'react-intl'
+import _                                             from 'lodash'
+import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
+import { FormattedMessage }                          from 'react-intl'
 
 import { get }                    from '@acx-ui/config'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { TenantLink }             from '@acx-ui/react-router-dom'
+import { encodeParameter }        from '@acx-ui/utils'
 
+import { codes }                      from './config'
 import { IncidentCode }               from './constants'
 import { Incident, IncidentMetadata } from './types/incidents'
 
@@ -51,11 +53,29 @@ export const TenantLinkWrapper = ({ params, linkType }: {
     useIsSplitOn(Features.INTENT_AI_TOGGLE)
   ].some(Boolean)
   let path =''
+  const { $t } = useIntl()
   const intentData = linkType === 'crrm'
     ? params.crrm
     : params.aclb
   if (isIntentAIEnabled) {
-    path = `/intentAI${get('IS_MLISA_SA') ? `/${intentData!.root}` : ''}/${intentData!.sliceId}/${intentData!.code}`
+    const intentFilter = {
+      aiFeature: ['AI-Driven RRM'],
+      intent: [$t(codes[intentData!.code].intent)],
+      category: [$t(codes[intentData!.code].category)],
+      // intent: ['Client Density vs Throughput for 5 GHz radio'],
+      // category: ['Wi-Fi Experience'],
+
+      sliceValue: [intentData!.sliceId]
+    }
+    const encodedParameters = encodeParameter(intentFilter)
+    path = `/intentAI?intentTableFilters=${encodedParameters}`
+    console.log(intentData!.code)
+    console.log($t(codes[intentData!.code].intent))
+    console.log($t(codes[intentData!.code].intent))
+    console.log(codes[intentData!.code].category)
+    console.log(intentFilter)
+    console.log(encodedParameters)
+    console.log(path)
   } else {
     const id = intentData?.intentId ?? params.recommendationId
     path = `/recommendations/${linkType}/${id}`
