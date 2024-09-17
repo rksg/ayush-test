@@ -18,10 +18,10 @@ describe('AupSettings', () => {
   beforeEach(() => {
     mockServer.use(rest.post(WorkflowUrls.uploadFile.url, (req, res, ctx) => {
       uploadFile()
-      return res(ctx.json('{url: 7c1a1cb9-548c-446e-b4dc-07d498759d9b-text.docs}'))
-    }), rest.delete(WorkflowUrls.deleteFile.url, () => {
+      return res(ctx.json('{url: \'7c1a1cb9-548c-446e-b4dc-07d498759d9b-text.docs\'}'))
+    }), rest.delete(WorkflowUrls.deleteFile.url, (req, res, ctx) => {
       deleteFile()
-      return
+      return res(ctx.status(200))
     }))
   })
 
