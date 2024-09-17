@@ -70,6 +70,7 @@ export {
   UnknownDetails
 } from './Recommendations/RecommendationDetails'
 export { ReportTile } from './ReportTiles'
+export * from './RootCauseRecommendation'
 export { ServiceGuardDetails } from './ServiceGuard/ServiceGuardDetails'
 export { ServiceGuardForm } from './ServiceGuard/ServiceGuardForm'
 export * from './ServiceGuard/types'

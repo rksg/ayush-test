@@ -7,9 +7,10 @@ import {
   getSeriesData,
   mapCodeToReason,
   mapCodeToAttempt,
-  codeToFailureTypeMap,
   TimeSeriesDataType
 } from '@acx-ui/analytics/utils'
+
+import {codeToFailureTypeMap} from '@acx-ui/analytics/components'
 import { Card, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
 
 import type { TimeSeriesChartProps } from '../types'

@@ -3,16 +3,17 @@ import { useIntl, FormattedMessage } from 'react-intl'
 
 import {
   productNames,
-  getRootCauseAndRecommendations,
-  Incident,
-  htmlValues,
-  FormatMessageValue
+
+  Incident
+
 } from '@acx-ui/analytics/utils'
 import {
   Card,
   GridRow,
   GridCol
 } from '@acx-ui/components'
+
+import {  getRootCauseAndRecommendations, htmlValues,FormatMessageValue } from '../../RootCauseRecommendation'
 
 import * as UI from './styledComponents'
 

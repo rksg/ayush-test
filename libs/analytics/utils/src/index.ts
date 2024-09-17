@@ -3,7 +3,6 @@ export * from './analyticsFilter'
 export * from './barchart'
 export * from './compareVersion'
 export * from './constants'
-export * from './config'
 export * from './calculateGranularity'
 export * from './fakeIncident'
 export * from './getSparklineGranularity'
@@ -13,12 +12,6 @@ export * from './incidentInformation'
 export { default as incidentSeverities } from './incidentSeverities.json'
 export * from './kpiHelper'
 export { disconnectClientEvents } from './mapping/clientDisconnectEventsMap'
-export {
-  getRootCauseAndRecommendations,
-  codeToFailureTypeMap,
-  htmlValues
-} from './rootCauseRecommendation'
-export type { FormatMessageValue } from './rootCauseRecommendation'
 export {
   clientEventDescription,
   mapDisconnectCode,

@@ -5,9 +5,10 @@ import {
   Incident,
   getSeriesData,
   mapCodeToReason,
-  codeToFailureTypeMap,
   TimeSeriesDataType
 }                                         from '@acx-ui/analytics/utils'
+
+import { codeToFailureTypeMap } from '@acx-ui/analytics/components'
 import { Card, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
 import { formatter }                              from '@acx-ui/formatter'
 import { useNavigate, useTenantLink }             from '@acx-ui/react-router-dom'

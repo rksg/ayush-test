@@ -3,14 +3,14 @@ import _                                             from 'lodash'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 import { FormattedMessage }                          from 'react-intl'
 
-import { get }                    from '@acx-ui/config'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { TenantLink }             from '@acx-ui/react-router-dom'
-import { encodeParameter }        from '@acx-ui/utils'
+import { IncidentCode,Incident, IncidentMetadata } from '@acx-ui/analytics/utils'
+import { get }                                     from '@acx-ui/config'
+import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
+import { TenantLink }                              from '@acx-ui/react-router-dom'
+import { encodeParameter }                         from '@acx-ui/utils'
 
-import { codes }                      from './config'
-import { IncidentCode }               from './constants'
-import { Incident, IncidentMetadata } from './types/incidents'
+import { codes } from '../IntentAI/config'
+
 
 import type { FormatXMLElementFn, PrimitiveType } from 'intl-messageformat'
 
