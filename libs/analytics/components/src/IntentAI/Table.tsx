@@ -291,6 +291,7 @@ export function IntentAITable (
     <Loader states={[queryResults]}>
       <UI.IntentAITableStyle/>
       <Table<IntentListItem>
+        key={JSON.stringify(selectedFilters)}
         className='intentai-table'
         data-testid='intentAI'
         settingsId={'intentai-table'}

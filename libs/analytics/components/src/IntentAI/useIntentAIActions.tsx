@@ -171,7 +171,6 @@ export function useIntentAIActions () {
             statusLabel: Array.from(statusLabelList)
           }
           intentTableFilters.write(newFilter as Filters)
-          navigate(0)
         }
       }
     })
