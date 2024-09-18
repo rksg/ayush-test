@@ -107,6 +107,10 @@ type AdditionalColumnType <RecordType, ValueType> = {
    */
   coordinatedKeys?: string[]
   /**
+   * Add Beta indicator for column
+   */
+  isBetaFeature?: boolean
+  /**
    * Taken the original type for antd and add highlightFn for handling highlight
    * @default undefined
    */
