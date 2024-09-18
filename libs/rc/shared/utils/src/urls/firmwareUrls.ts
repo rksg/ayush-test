@@ -288,5 +288,41 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
+  },
+  startEdgeFirmwareBatchOperation: {
+    method: 'post',
+    url: '/edgeFirmwares/batchOperations',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  startEdgeFirmwareVenueUpdateNow: {
+    method: 'PATCH',
+    url: '/edgeFirmwares/batchOperations/:batchId/venues/:venueId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  updateEdgeFirmwareVenueSchedule: {
+    method: 'post',
+    url: '/edgeFirmwares/batchOperations/:batchId/venues/:venueId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  skipEdgeFirmwareVenueSchedule: {
+    method: 'delete',
+    url: '/edgeFirmwares/batchOperations/:batchId/venues/:venueId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }
