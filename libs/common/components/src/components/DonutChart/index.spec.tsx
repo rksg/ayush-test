@@ -41,7 +41,8 @@ describe('DonutChart - small', () => {
       style={{ width: 238, height: 176 }}
       data={data}
       showLegend
-      title='Donut Chart'/>)
+      title='Donut Chart'
+      titleColor='white'/>)
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(screen.getByText('Donut Chart').getAttribute('style'))
       .toEqual("font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;")
