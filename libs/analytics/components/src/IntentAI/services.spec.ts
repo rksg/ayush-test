@@ -157,7 +157,7 @@ describe('Intent services', () => {
       const { result } = renderHook(useIntentAITableQuery, { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
       const customFilter = {
         sliceValue: ['1'],
-        category: ['Wi-Fi Experience'],
+        category: ['Wi-Fi Experience', 'Sustainability'],
         aiFeature: ['AI-Driven RRM'],
         statusLabel: ['new', 'na-no-aps', 'paused-from-active+paused-by-default'],
         intent: ['Client Density vs Throughput for 5 GHz radio']
@@ -188,7 +188,7 @@ describe('Intent services', () => {
             'c-probeflex-24g',
             'c-probeflex-5g',
             'c-probeflex-6g',
-            'eco-flex-code'
+            'i-ecoflex'
           ]
         },
         { col: 'code', values: [ 'c-crrm-channel5g-auto' ] },

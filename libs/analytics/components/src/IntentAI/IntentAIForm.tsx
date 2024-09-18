@@ -11,6 +11,7 @@ import * as CDfschannelsDisable        from './AIOperations/CDfschannelsDisable'
 import * as CDfschannelsEnable         from './AIOperations/CDfschannelsEnable'
 import * as CTxpowerSame               from './AIOperations/CTxpowerSame'
 import * as IZoneFirmwareUpgrade       from './AIOperations/IZoneFirmwareUpgrade'
+import * as IEcoFlex                   from './EcoFlex/IEcoFlex'
 import * as CProbeFlex24g              from './EquiFlex/CProbeFlex24g'
 import * as CProbeFlex5g               from './EquiFlex/CProbeFlex5g'
 import * as CProbeFlex6g               from './EquiFlex/CProbeFlex6g'
@@ -35,5 +36,6 @@ export const IntentAIForm = createIntentContextProvider('IntentAIForm', {
   'c-dfschannels-disable': CDfschannelsDisable,
   'c-dfschannels-enable': CDfschannelsEnable,
   'c-txpower-same': CTxpowerSame,
-  'i-zonefirmware-upgrade': IZoneFirmwareUpgrade
+  'i-zonefirmware-upgrade': IZoneFirmwareUpgrade,
+  'i-ecoflex': IEcoFlex
 })
