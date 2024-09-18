@@ -11,7 +11,7 @@ import {
   CatchErrorResponse,
   getServiceListRoutePath,
   LocationExtended,
-  NetworkSegmentationGroup,
+  PersonalIdentityNetworks,
   redirectPreviousPage
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
@@ -30,7 +30,7 @@ interface PersonalIdentityNetworkFormStep {
   content: ReactNode
 }
 
-export interface PersonalIdentityNetworkFormData extends NetworkSegmentationGroup {
+export interface PersonalIdentityNetworkFormData extends PersonalIdentityNetworks {
   venueId: string
   venueName: string
   personaGroupId: string
@@ -63,24 +63,23 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
       id: formData.id,
       name: formData.name,
       vxlanTunnelProfileId: formData.vxlanTunnelProfileId,
-      venueInfos: [{
-        venueId: formData.venueId,
-        personaGroupId: formData.personaGroupId
-      }],
-      edgeInfos: [{
-        edgeId: formData.edgeId,
+      // venueInfos: [{
+      //   venueId: formData.venueId,
+      //   personaGroupId: formData.personaGroupId
+      // }],
+      edgeClusterInfos: [{
+        edgeClusterId: formData.edgeId,
         segments: formData.segments,
         devices: formData.devices,
         dhcpInfoId: formData.dhcpId,
         dhcpPoolId: formData.poolId
       }],
-      networkIds: formData.networkIds,
       distributionSwitchInfos: formData.distributionSwitchInfos?.map(ds=>_.omit(
         ds, ['accessSwitches', 'name'])),
       accessSwitchInfos: formData.accessSwitchInfos?.map(as=>_.omit(
-        as, ['name', 'familyId', 'firmwareVersion', 'model'])),
-      forceOverwriteReboot: formData.forceOverwriteReboot || false
+        as, ['name', 'familyId', 'firmwareVersion', 'model']))
     }
+
     try {
       await props.onFinish({ params, payload: payload }).unwrap()
       redirectPreviousPage(navigate, previousPath, linkToServices)
@@ -98,7 +97,6 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
           okText: $t({ defaultMessage: 'Yes' }),
           cancelText: $t({ defaultMessage: 'No' }),
           onOk: async () => {
-            formData.forceOverwriteReboot = true
             handleFinish(formData)
           },
           onCancel: async () => {}

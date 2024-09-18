@@ -476,7 +476,7 @@ export const mockContextData = {
   isDpskLoading: false,
   edgeOptions: mockEdgeList.data.map(item => ({ label: item.name, value: item.serialNumber })),
   isEdgeOptionsLoading: false,
-  dhcpProfles: mockEdgeDhcpDataList.content,
+  dhcpProfiles: mockEdgeDhcpDataList.content,
   dhcpOptions: mockEdgeDhcpDataList.content.map(item =>
     ({ label: item.serviceName, value: item.id })),
   isDhcpOptionsLoading: false,

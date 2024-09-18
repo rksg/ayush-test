@@ -1,24 +1,22 @@
 import { EdgeAlarmSummary } from '../..'
-export interface NetworkSegmentationGroup {
+export interface PersonalIdentityNetworks {
   id: string
   name: string
   vxlanTunnelProfileId: string
   venueInfos: VenueInfo[]
-  edgeInfos: EdgeInfo[]
-  networkIds: string[]
+  edgeClusterInfos: EdgeClusterInfos[]
   distributionSwitchInfos: DistributionSwitch[]
   accessSwitchInfos: AccessSwitch[]
-  forceOverwriteReboot?: boolean
 }
 
-export interface NetworkSegmentationGroupViewData {
+export interface PersonalIdentityNetworksViewData {
   id: string
   name: string
   tags: string[]
   vxlanTunnelProfileId: string
   networkIds: string[]
   venueInfos: VenueInfo[]
-  edgeInfos: EdgeInfo[]
+  edgeClusterInfos: EdgeClusterInfos[]
   distributionSwitchInfos: DistributionSwitch[]
   accessSwitchInfos: AccessSwitch[]
   serviceStatus: string
@@ -29,17 +27,15 @@ export interface NetworkSegmentationGroupViewData {
 export interface VenueInfo {
   venueId: string
   venueName: string
-  personaGroupId: string
+  personaGroupId?: string
 }
 
-export interface EdgeInfo {
-  edgeId: string
-  edgeName: string
+export interface EdgeClusterInfos {
+  edgeClusterId: string
   segments: number
   devices: number
   dhcpInfoId: string
   dhcpPoolId: string
-  serviceVersion: string
 }
 
 export interface WebAuthTemplate {

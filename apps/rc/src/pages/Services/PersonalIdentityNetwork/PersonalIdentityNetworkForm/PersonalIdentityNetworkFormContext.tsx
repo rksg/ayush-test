@@ -1,24 +1,26 @@
 import { Dispatch, SetStateAction, createContext, useEffect, useState } from 'react'
 
+
 import { BaseQueryFn, QueryActionCreatorResult, QueryDefinition } from '@reduxjs/toolkit/query'
 import { DefaultOptionType }                                      from 'antd/lib/select'
+import { find }                                                   from 'lodash'
 import { useParams }                                              from 'react-router-dom'
 
 import {
   useGetAvailableSwitchesQuery,
   useGetDpskQuery,
-  useGetEdgeListQuery,
+  useGetEdgeClusterListQuery,
   useGetNetworkSegmentationViewDataListQuery,
   useGetPersonaGroupByIdQuery,
   useGetPropertyConfigsQuery,
   useGetTunnelProfileViewDataListQuery,
   useVenueNetworkActivationsDataListQuery,
-  useVenuesListQuery
+  useVenuesListQuery,
+  useGetDhcpStatsQuery
 } from '@acx-ui/rc/services'
 import {
+  DhcpStats,
   DpskSaveData,
-  EdgeDhcpPool,
-  EdgeDhcpSetting,
   PersonaGroup,
   SwitchLite,
   TunnelTypeEnum,
@@ -37,12 +39,11 @@ export interface PersonalIdentityNetworkFormContextType {
   isPersonaGroupLoading: boolean
   dpskData?: DpskSaveData
   isDpskLoading: boolean
-  edgeOptions?: DefaultOptionType[]
-  isEdgeOptionsLoading: boolean
-  dhcpProfles?: EdgeDhcpSetting[]
+  clusterOptions?: DefaultOptionType[]
+  isClusterOptionsLoading: boolean
+  dhcpProfiles?: DhcpStats[]
   dhcpOptions?: DefaultOptionType[]
   isDhcpOptionsLoading: boolean
-  poolMap?: { [key: string]: EdgeDhcpPool[] }
   tunnelProfileOptions?: DefaultOptionType[]
   isTunnelLoading: boolean
   networkOptions?: DefaultOptionType[]
@@ -51,9 +52,9 @@ export interface PersonalIdentityNetworkFormContextType {
   refetchSwitchesQuery: () =>
     QueryActionCreatorResult<QueryDefinition<unknown, BaseQueryFn, string, unknown>>
   getVenueName: (venueId: string) => string
-  getEdgeName: (edgeId: string) => string
+  getClusterName: (edgeId: string) => string
   getDhcpName: (dhcpId: string) => string
-  getDhcpPoolName: (dhcpId: string, poolId: string) => string
+  // getDhcpPoolName: (dhcpId: string, poolId: string) => string
   getTunnelProfileName: (tunnelId: string) => string
   getNetworksName: (networkIds: string[]) => (string | undefined)[]
 }
@@ -86,7 +87,6 @@ const tunnelProfileDefaultPayload = {
   sortOrder: 'ASC'
 }
 
-// TODO This data provider needs to be fixed when doing PIN RBAC task
 export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) => {
   const params = useParams()
   const [venueId, setVenueId] = useState('')
@@ -120,6 +120,18 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
       }
     }
   )
+
+  const { dhcpProfiles, isDhcpOptionsLoading } = useGetDhcpStatsQuery({
+    payload: { pageSize: 10000 }
+  }, {
+    selectFromResult: ({ data, isLoading }) => {
+      return {
+        dhcpProfiles: data?.data,
+        isDhcpOptionsLoading: isLoading
+      }
+    }
+  })
+
   const {
     personaGroupData,
     isPersonaGroupLoading
@@ -150,20 +162,20 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
       }
     }
   )
-  const edgeOptionsDefaultPayload = {
-    fields: ['name', 'serialNumber'],
+  const clusterOptionsDefaultPayload = {
+    fields: ['name', 'clusterId'],
     pageSize: 10000,
     sortField: 'name',
-    filters: { venueId: [venueId], wanPortEnabled: ['TRUE'] },
+    filters: { venueId: [venueId] },
     sortOrder: 'ASC'
   }
-  const { edgeOptions, isLoading: isEdgeOptionsLoading } = useGetEdgeListQuery(
-    { params, payload: edgeOptionsDefaultPayload },
+  const { clusterOptions, isLoading: isClusterOptionsLoading } = useGetEdgeClusterListQuery(
+    { params, payload: clusterOptionsDefaultPayload },
     {
       skip: !Boolean(venueId),
       selectFromResult: ({ data, isLoading }) => {
         return {
-          edgeOptions: data?.data.map(item => ({ label: item.name, value: item.serialNumber })),
+          clusterOptions: data?.data.map(item => ({ label: item.name, value: item.clusterId })),
           isLoading
         }
       }
@@ -232,16 +244,12 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
     return venueOptions?.find(item => item.value === value)?.label ?? ''
   }
 
-  const getEdgeName = (value: string) => {
-    return edgeOptions?.find(item => item.value === value)?.label ?? ''
+  const getClusterName = (value: string) => {
+    return clusterOptions?.find(item => item.value === value)?.label ?? ''
   }
 
   const getDhcpName = (value: string) => {
-    return value
-  }
-
-  const getDhcpPoolName = (dhcpId: string, poolId: string) => {
-    return dhcpId + poolId
+    return find(dhcpProfiles, { id: value })?.serviceName ?? ''
   }
 
   const getTunnelProfileName = (value: string) => {
@@ -266,12 +274,11 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
         isPersonaGroupLoading,
         dpskData,
         isDpskLoading,
-        edgeOptions,
-        isEdgeOptionsLoading,
-        dhcpProfles: [],
-        dhcpOptions: [],
-        poolMap: {},
-        isDhcpOptionsLoading: false,
+        clusterOptions,
+        isClusterOptionsLoading,
+        dhcpProfiles,
+        dhcpOptions: dhcpProfiles?.map(item => ({ label: item.serviceName, value: item.id })),
+        isDhcpOptionsLoading,
         tunnelProfileOptions,
         isTunnelLoading,
         networkOptions,
@@ -279,9 +286,8 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
         switchList,
         refetchSwitchesQuery,
         getVenueName,
-        getEdgeName,
+        getClusterName,
         getDhcpName,
-        getDhcpPoolName,
         getTunnelProfileName,
         getNetworksName
       }}

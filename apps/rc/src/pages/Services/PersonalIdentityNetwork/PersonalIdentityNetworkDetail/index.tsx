@@ -44,8 +44,8 @@ const PersonalIdentityNetworkDetail = () => {
     }
   })
   const { dhcpRelay, dhcpPools } = useGetEdgeDhcpServiceQuery(
-    { params: { id: nsgViewData?.edgeInfos[0].dhcpInfoId } },{
-      skip: !!!nsgViewData?.edgeInfos[0],
+    { params: { id: nsgViewData?.edgeClusterInfos[0].dhcpInfoId } },{
+      skip: !!!nsgViewData?.edgeClusterInfos[0],
       selectFromResult: ({ data }) => {
         return {
           dhcpRelay: data?.dhcpRelay,
@@ -55,14 +55,14 @@ const PersonalIdentityNetworkDetail = () => {
     })
 
   const handleDownloadConfigs = () => {
-    const edgeInfo = nsgViewData?.edgeInfos[0]
-    const targetPool = dhcpPools?.find(item => item.id === edgeInfo?.dhcpPoolId)
-    if(!edgeInfo || !targetPool) return
+    const edgeClusterInfo = nsgViewData?.edgeClusterInfos[0]
+    const targetPool = dhcpPools?.find(item => item.id === edgeClusterInfo?.dhcpPoolId)
+    if(!edgeClusterInfo || !targetPool) return
     const dhcpConfigs = genDhcpConfigByNsgSetting(
       targetPool.poolStartIp,
       targetPool.poolEndIp,
-      edgeInfo.segments,
-      edgeInfo.devices
+      edgeClusterInfo.segments,
+      edgeClusterInfo.devices
     )
     const keaConfig = new File(
       [dhcpConfigs.keaDhcpConfig],

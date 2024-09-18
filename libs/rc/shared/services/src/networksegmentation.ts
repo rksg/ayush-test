@@ -1,12 +1,13 @@
 /* eslint-disable max-len */
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
+import { uniq }                from 'lodash'
 
 import {
   AccessSwitch,
   CommonResult,
   DistributionSwitch,
-  NetworkSegmentationGroup,
-  NetworkSegmentationGroupViewData,
+  PersonalIdentityNetworks,
+  PersonalIdentityNetworksViewData,
   NetworkSegmentationUrls,
   NetworkSegmentationRbacUrls,
   NewTableResult,
@@ -16,13 +17,18 @@ import {
   TableResult,
   transferToTableResult,
   WebAuthTemplate,
-  WebAuthTemplateTableData
+  WebAuthTemplateTableData,
+  EdgeClusterStatus,
+  EdgeUrlsInfo,
+  PropertyUrlsInfo,
+  PropertyConfigs
 } from '@acx-ui/rc/utils'
 import { baseNsgApi }                          from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
 import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
-import { serviceApi } from './service'
+import { serviceApi }        from './service'
+import { isPayloadHasField } from './utils'
 
 const customHeaders = {
   v1: {
@@ -53,13 +59,49 @@ export const nsgApi = baseNsgApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Networksegmentation', id: 'LIST' }]
     }),
-    getNetworkSegmentationViewDataList: build.query<TableResult<NetworkSegmentationGroupViewData>, RequestPayload>({
-      query: ({ payload }) => {
-        const req = createHttpRequest(NetworkSegmentationUrls.getNetworkSegmentationStatsList)
-        return {
-          ...req,
+    getNetworkSegmentationViewDataList: build.query<TableResult<PersonalIdentityNetworksViewData>, RequestPayload>({
+      async queryFn ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) {
+        const pinRequest = createHttpRequest(NetworkSegmentationUrls.getNetworkSegmentationStatsList, params)
+        const pinQuery = await fetchWithBQ({
+          ...pinRequest,
           body: payload
+        })
+        const pinList = pinQuery.data as TableResult<PersonalIdentityNetworksViewData>
+
+        // fetch venue id & name
+        const edgeClusterIds = uniq(pinList.data.flatMap(item => item.edgeClusterInfos.map(edge => edge.edgeClusterId)))
+        if (edgeClusterIds.length && isPayloadHasField(payload, 'venueId')) {
+          const clusterReq = createHttpRequest(EdgeUrlsInfo.getEdgeClusterStatusList)
+          const edgeClusterQuery = await fetchWithBQ({
+            ...clusterReq,
+            body: {
+              fields: [
+                'name',
+                'clusterId',
+                'venueId'
+              ],
+              filters: { clusterId: edgeClusterIds }
+            }
+          })
+
+          const clusterList = edgeClusterQuery.data as TableResult<EdgeClusterStatus>
+          aggregateVenueInfo(pinList, clusterList)
+
+          const venueIds = clusterList.data.map(cluster => cluster.venueId)
+          const personaReq = createHttpRequest(PropertyUrlsInfo.getPropertyConfigsQuery, params,
+            { Accept: 'application/hal+json' })
+          const personaQuery = await fetchWithBQ({
+            ...personaReq,
+            body: { filter: { venueId: venueIds } }
+          })
+
+          const personaList = personaQuery.data as TableResult<PropertyConfigs>
+          aggregatePersonaId(pinList, personaList)
         }
+
+        return pinQuery.data
+          ? { data: pinList }
+          : { error: pinQuery.error as FetchBaseQueryError }
       },
       providesTags: [{ type: 'Networksegmentation', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
@@ -89,7 +131,7 @@ export const nsgApi = baseNsgApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Networksegmentation', id: 'LIST' }]
     }),
-    updateNetworkSegmentationGroup: build.mutation<NetworkSegmentationGroup, RequestPayload>({
+    updateNetworkSegmentationGroup: build.mutation<PersonalIdentityNetworks, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
           NetworkSegmentationUrls.updateNetworkSegmentationGroup,
@@ -105,33 +147,56 @@ export const nsgApi = baseNsgApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Networksegmentation', id: 'LIST' }]
     }),
-    getNetworkSegmentationGroupById: build.query<NetworkSegmentationGroup, RequestPayload>({
-      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
-        const nsgRequest = createHttpRequest(
-          NetworkSegmentationUrls.getNetworkSegmentationGroupById, arg.params)
-        const nsgQuery = await fetchWithBQ(nsgRequest)
-        const nsg = nsgQuery.data as NetworkSegmentationGroup
+    getNetworkSegmentationGroupById: build.query<PersonalIdentityNetworks, RequestPayload>({
+      async queryFn ({ params }, _queryApi, _extraOptions, fetchWithBQ) {
+        const pinRequest = createHttpRequest(
+          NetworkSegmentationUrls.getNetworkSegmentationGroupById, params)
+        const pinQuery = await fetchWithBQ(pinRequest)
+        const pinData = pinQuery.data as PersonalIdentityNetworks
 
-        const nsgSwitchRequest = createHttpRequest(
-          NetworkSegmentationUrls.getSwitchInfoByNSGId, {
-            ...arg.params,
-            venueId: nsg.venueInfos[0].venueId
+        let pinSwitch
+        // fetch venue id & name
+        const edgeClusterId = pinData.edgeClusterInfos.map(edge => edge.edgeClusterId)
+        if (edgeClusterId) {
+          const clusterReq = createHttpRequest(EdgeUrlsInfo.getEdgeClusterStatusList)
+          const edgeClusterQuery = await fetchWithBQ({
+            ...clusterReq,
+            body: {
+              fields: [
+                'clusterId',
+                'venueId'
+              ],
+              filters: { clusterId: [edgeClusterId] }
+            }
           })
-        const nsgSwitchQuery = await fetchWithBQ(nsgSwitchRequest)
-        const nsgSwitch = nsgSwitchQuery.data as {
-          distributionSwitches: DistributionSwitch[]
-          accessSwitches: AccessSwitch[]
+
+          const clusterList = edgeClusterQuery.data as TableResult<EdgeClusterStatus>
+          const venueId = clusterList.data[0].venueId
+
+          pinData.venueInfos = [{
+            venueId: venueId ?? '',
+            venueName: clusterList.data[0]?.venueName ?? ''
+          }]
+
+          const pinSwitchRequest = createHttpRequest(
+            NetworkSegmentationUrls.getSwitchInfoByNSGId, {
+              ...params,
+              venueId
+            })
+          const pinSwitchQuery = await fetchWithBQ(pinSwitchRequest)
+          pinSwitch = pinSwitchQuery.data as {
+            distributionSwitches: DistributionSwitch[]
+            accessSwitches: AccessSwitch[]
+          }
         }
 
-        const aggregatedData = aggregatedNSGData(nsg, nsgSwitch)
-
-        return nsgQuery.data
-          ? { data: aggregatedData }
-          : { error: nsgQuery.error as FetchBaseQueryError }
+        return pinQuery.data
+          ? { data: pinSwitch ? aggregatedNSGData(pinData, pinSwitch) : pinData }
+          : { error: pinQuery.error as FetchBaseQueryError }
       }
     }),
     // eslint-disable-next-line max-len
-    getNetworkSegmentationGroupList: build.query<TableResult<NetworkSegmentationGroup>, RequestPayload>({
+    getNetworkSegmentationGroupList: build.query<TableResult<PersonalIdentityNetworks>, RequestPayload>({
       query: ({ params }) => {
         const req =
           createHttpRequest(NetworkSegmentationUrls.getNetworkSegmentationGroupList, params)
@@ -139,8 +204,8 @@ export const nsgApi = baseNsgApi.injectEndpoints({
           ...req
         }
       },
-      transformResponse (result: NewTableResult<NetworkSegmentationGroup>) {
-        return transferToTableResult<NetworkSegmentationGroup>(result)
+      transformResponse (result: NewTableResult<PersonalIdentityNetworks>) {
+        return transferToTableResult<PersonalIdentityNetworks>(result)
       }
     }),
 
@@ -242,12 +307,30 @@ export const nsgApi = baseNsgApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    activatePinNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(NetworkSegmentationUrls.activatePinNetwork, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    deactivatePinNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(NetworkSegmentationUrls.deactivatePinNetwork, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
   })
 })
 
 const aggregatedNSGData = (
-  nsg: NetworkSegmentationGroup,
+  nsg: PersonalIdentityNetworks,
   nsgSwitch: {
     distributionSwitches: DistributionSwitch[]
     accessSwitches: AccessSwitch[]
@@ -273,7 +356,36 @@ const aggregatedNSGData = (
     return ret
   }) || []
 
-  return { ...nsg, distributionSwitchInfos, accessSwitchInfos } as NetworkSegmentationGroup
+  return { ...nsg, distributionSwitchInfos, accessSwitchInfos } as PersonalIdentityNetworks
+}
+
+export const aggregateVenueInfo = (
+  pinList?: TableResult<PersonalIdentityNetworksViewData>,
+  clusterList?: TableResult<EdgeClusterStatus>
+) => {
+  const clusterListData = clusterList?.data
+  pinList?.data?.forEach(item => {
+    const target = clusterListData?.find(clusterItem =>
+      clusterItem.clusterId === item.edgeClusterInfos[0].edgeClusterId)
+
+    item.venueInfos = [{
+      venueId: target?.venueId ?? '',
+      venueName: target?.venueName ?? ''
+    }]
+  })
+}
+
+export const aggregatePersonaId = (
+  pinList?: TableResult<PersonalIdentityNetworksViewData>,
+  personaList?: TableResult<PropertyConfigs>
+) => {
+  const personaListData = personaList?.data
+  pinList?.data?.forEach(item => {
+    const target = personaListData?.find(persona =>
+      persona.venueId === item.venueInfos[0].venueId)
+
+    item.venueInfos[0].personaGroupId = target?.personaGroupId
+  })
 }
 
 export const {
@@ -293,5 +405,7 @@ export const {
   useDeleteWebAuthTemplateMutation,
   useGetAvailableSwitchesQuery,
   useValidateDistributionSwitchInfoMutation,
-  useValidateAccessSwitchInfoMutation
+  useValidateAccessSwitchInfoMutation,
+  useActivatePinNetworkMutation,
+  useDeactivatePinNetworkMutation
 } = nsgApi

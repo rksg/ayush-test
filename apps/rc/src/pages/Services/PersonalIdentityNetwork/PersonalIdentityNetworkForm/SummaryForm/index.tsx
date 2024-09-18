@@ -23,9 +23,9 @@ export const SummaryForm = () => {
   const { form } = useStepFormContext<PersonalIdentityNetworkFormData>()
   const {
     getVenueName,
-    getEdgeName,
+    getClusterName,
     getDhcpName,
-    getDhcpPoolName,
+    // getDhcpPoolName,
     getTunnelProfileName,
     getNetworksName
   } = useContext(PersonalIdentityNetworkFormContext)
@@ -40,6 +40,7 @@ export const SummaryForm = () => {
   const poolId = form.getFieldValue('poolId')
   const tunnelProfileId = form.getFieldValue('vxlanTunnelProfileId')
   const networkIds = form.getFieldValue('networkIds')
+  const poolName = form.getFieldValue('poolName')
 
   const distributionSwitchInfos = form.getFieldValue(
     'distributionSwitchInfos'
@@ -60,14 +61,14 @@ export const SummaryForm = () => {
   useEffect(() => {
     setSmartEdgeData([
       {
-        edgeName: getEdgeName(edgeId),
+        edgeName: getClusterName(edgeId),
         segments: segments.toString(),
         devices: devices.toString(),
         dhcpServiceName: getDhcpName(dhcpId),
-        dhcpPoolName: getDhcpPoolName(dhcpId, poolId)
+        dhcpPoolName: poolName.toString()
       }
     ])
-  }, [edgeId, segments, devices, dhcpId, poolId])
+  }, [edgeId, segments, devices, dhcpId, poolId, poolName])
 
   useEffect(() => {
     setAccessSwitchData(accessSwitchInfos?.map(as => ({

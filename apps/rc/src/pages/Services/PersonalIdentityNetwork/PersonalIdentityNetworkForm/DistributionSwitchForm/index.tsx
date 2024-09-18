@@ -20,7 +20,7 @@ export function DistributionSwitchForm () {
   const {
     switchList,
     refetchSwitchesQuery,
-    getEdgeName
+    getClusterName
   } = useContext(PersonalIdentityNetworkFormContext)
   const [openDrawer, setOpenDrawer] = useState(false)
   const [selected, setSelected] = useState<DistributionSwitch>()
@@ -121,8 +121,8 @@ export function DistributionSwitchForm () {
       message={$t({ defaultMessage:
         'Attention Required: Please ensure to configure {staticRoute} on SmartEdge ({edgeName}) ' +
         'for the distribution switch’s loopback IP addresses to establish the connection.' }, {
-        staticRoute: <StaticRouteModal edgeId={edgeId} edgeName={getEdgeName(edgeId)} />,
-        edgeName: getEdgeName(edgeId)
+        staticRoute: <StaticRouteModal edgeId={edgeId} edgeName={getClusterName(edgeId)} />,
+        edgeName: getClusterName(edgeId)
       })}
       showIcon
     /> }
