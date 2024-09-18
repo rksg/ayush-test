@@ -21,6 +21,7 @@ export interface WiredSummaryResult {
   portCount: number
   uplinkPortCount: number
   congestedPortCount: number
+  nonStackPortCount: number
 }
 
 export const api = dataApi.injectEndpoints({
@@ -49,6 +50,7 @@ export const api = dataApi.injectEndpoints({
                 uplinkPortCount
                 congestedPortCount
                 stormPortCount
+                nonStackPortCount
               }
             }
           }`,

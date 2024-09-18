@@ -27,8 +27,7 @@ import { IntentWlan }          from '../utils'
 
 import * as SideNotes from './IntentAIForm/SideNotes'
 
-export function createUseValuesText ({ tradeoff, action }: {
-  tradeoff: MessageDescriptor
+export function createUseValuesText ({ action }: {
   action: {
     active: MessageDescriptor,
     inactive: MessageDescriptor
@@ -51,7 +50,6 @@ export function createUseValuesText ({ tradeoff, action }: {
       : $t({ defaultMessage: 'not enabled' })
 
     return {
-      tradeoffText: $t(tradeoff),
       actionText: $t(actionText, {
         ...productNames,
         scope: `${nodeTypes(sliceType as NodeType)}: ${impactedArea(path, sliceValue)}`,
@@ -168,7 +166,7 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
             <GridCol col={{ span: 12 }}>
               <DetailsSection data-testid='Potential trade-off'>
                 <DetailsSection.Title children={$t({ defaultMessage: 'Potential trade-off' })} />
-                <Card>{valuesText.tradeoffText}</Card>
+                <Card>{$t(SideNotes.tradeoff)}</Card>
               </DetailsSection>
             </GridCol>
           </GridRow>
