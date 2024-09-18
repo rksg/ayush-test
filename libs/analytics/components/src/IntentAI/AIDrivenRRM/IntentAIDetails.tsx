@@ -24,6 +24,7 @@ import { StatusTrail }              from '../common/StatusTrail'
 import { codes }                    from '../config'
 import { useIntentContext }         from '../IntentContext'
 import { getStatusTooltip }         from '../services'
+import { Statuses }                 from '../states'
 import { getGraphKPIs, getKPIData } from '../useIntentDetailsQuery'
 
 import { IntentAIRRMGraph, SummaryGraphAfter, SummaryGraphBefore } from './RRMGraph'
@@ -117,7 +118,17 @@ export function createIntentAIDetails () {
       {
         label: $t({ defaultMessage: 'Date' }),
         children: formatter(DateFormatEnum.DateTimeFormat)(moment(updatedAt))
-      }
+      },
+      ...[
+        Statuses.scheduled,
+        Statuses.applyScheduled,
+        Statuses.revertScheduled
+      ].includes(intent.status)
+        ? [{
+          label: $t({ defaultMessage: 'Scheduled Date' }),
+          children: formatter(DateFormatEnum.DateTimeFormat)(moment(metadata.scheduledAt))
+        }]
+        : []
     ]
 
     return <Loader states={[queryResult]}>

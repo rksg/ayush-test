@@ -82,15 +82,15 @@ export const states = {
   },
   [DisplayStates.scheduled]: {
     text: defineMessage({ defaultMessage: 'Scheduled' }),
-    tooltip: defineMessage({ defaultMessage: 'The change recommendation has been scheduled via the user action "Optimize".' }) //TODO: initiated by the user {userName}
+    tooltip: defineMessage({ defaultMessage: 'The change recommendation has been scheduled for {scheduledAt}, via the user action "Optimize".' }) //TODO: initiated by the user {userName}
   },
   [DisplayStates.scheduledOneClick]: {
     text: defineMessage({ defaultMessage: 'Scheduled' }),
-    tooltip: defineMessage({ defaultMessage: 'The change recommendation has been scheduled via the user action "1-Click Optimize".' }) //TODO: initiated by the user {userName}
+    tooltip: defineMessage({ defaultMessage: 'The change recommendation has been scheduled for {scheduledAt}, via the user action "1-Click Optimize".' }) //TODO: initiated by the user {userName}
   },
   [DisplayStates.applyScheduled]: {
     text: defineMessage({ defaultMessage: 'Scheduled' }),
-    tooltip: defineMessage({ defaultMessage: 'The change recommendation has been automatically scheduled by IntentAI.' })
+    tooltip: defineMessage({ defaultMessage: 'The change recommendation has been automatically scheduled for {scheduledAt}, by IntentAI.' })
   },
   [DisplayStates.applyScheduleInProgress]: {
     text: defineMessage({ defaultMessage: 'Apply In Progress' }),

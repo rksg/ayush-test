@@ -14,6 +14,7 @@ import { IntentIcon }          from '../common/IntentIcon'
 import { StatusTrail }         from '../common/StatusTrail'
 import { codes }               from '../config'
 import { useIntentContext }    from '../IntentContext'
+import { Statuses }            from '../states'
 
 import * as SideNotes from './IntentAIForm/SideNotes'
 
@@ -76,6 +77,16 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
                   label={$t({ defaultMessage: 'Date' })}
                   children={formatter(DateFormatEnum.DateTimeFormat)(moment(intent.updatedAt))}
                 />
+                { [
+                  Statuses.scheduled,
+                  Statuses.applyScheduled,
+                  Statuses.revertScheduled
+                ].includes(intent.status) && <Descriptions.Item
+                  label={$t({ defaultMessage: 'Scheduled Date' })}
+                  children={
+                    formatter(DateFormatEnum.DateTimeFormat)(moment(intent.metadata.scheduledAt))
+                  }
+                />}
               </Descriptions>
               <br />
             </div>)}

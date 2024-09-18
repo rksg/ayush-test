@@ -22,6 +22,7 @@ import { KpiCard }             from '../common/KpiCard'
 import { StatusTrail }         from '../common/StatusTrail'
 import { codes }               from '../config'
 import { useIntentContext }    from '../IntentContext'
+import { Statuses  }           from '../states'
 import { getGraphKPIs }        from '../useIntentDetailsQuery'
 import { IntentWlan }          from '../utils'
 
@@ -123,6 +124,16 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
                   label={$t({ defaultMessage: 'Date' })}
                   children={formatter(DateFormatEnum.DateTimeFormat)(moment(intent.updatedAt))}
                 />
+                { [
+                  Statuses.scheduled,
+                  Statuses.applyScheduled,
+                  Statuses.revertScheduled
+                ].includes(intent.status) && <Descriptions.Item
+                  label={$t({ defaultMessage: 'Scheduled Date' })}
+                  children={
+                    formatter(DateFormatEnum.DateTimeFormat)(moment(intent.metadata.scheduledAt))
+                  }
+                />}
                 { needsWlans && <Descriptions.Item
                   label={$t({ defaultMessage: 'Networks' })}>
                   <DescriptionRow
