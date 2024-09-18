@@ -6,7 +6,7 @@ import { useIntl } from 'react-intl'
 
 import { Table, TableProps }                                                                                                                                                                from '@acx-ui/components'
 import { useGetAvailableEdgeFirmwareVersionsQuery, useGetLatestEdgeFirmwareQuery, useGetVenueEdgeFirmwareListQuery, useUpdateEdgeFirmwareNowMutation, useUpdateEdgeVenueSchedulesMutation } from '@acx-ui/rc/services'
-import { EdgeFirmwareVersion, EdgeUpdateScheduleRequest, EntityCompatibility }                                                                                                              from '@acx-ui/rc/utils'
+import { EdgeFirmwareVersion, EdgeUpdateScheduleRequest, EdgeVenueFirmware, EntityCompatibility }                                                                                           from '@acx-ui/rc/utils'
 import { EdgeScopes }                                                                                                                                                                       from '@acx-ui/types'
 import { filterByAccess, hasPermission }                                                                                                                                                    from '@acx-ui/user'
 import { compareVersions }                                                                                                                                                                  from '@acx-ui/utils'
@@ -71,9 +71,9 @@ export const EdgeCompatibilityDetailTable = (props: EdgeCompatibilityDetailTable
     }
   }, {
     skip: requirementOnly,
-    selectFromResult: ({ data }) => ({
-      venueFirmware: data?.[0]
-    })
+    selectFromResult: ({ data }) => {
+      return { venueFirmware: data?.[0] }
+    }
   })
 
   const columns = useColumns()
@@ -159,18 +159,22 @@ export const EdgeCompatibilityDetailTable = (props: EdgeCompatibilityDetailTable
       visible={!!updateNowFwVer}
       onCancel={() => setUpdateNowFwVer(undefined)}
       onSubmit={handleUpdateNowSubmit}
-      availableVersions={getFilteredVersions(availableVersions, latestReleaseVersion?.id)}
+      availableVersions={availableVersions}
     />
     <EdgeChangeScheduleDialog
       visible={!!scheduleUpdateFwVer}
       onCancel={() => setScheduleUpdateFwVer(undefined)}
       onSubmit={handleScheduleSubmit}
-      availableVersions={getFilteredVersions(availableVersions, latestReleaseVersion?.id)}
+      availableVersions={getFilteredScheduleVersions(availableVersions, venueFirmware)}
     />
   </>
 }
 
-const getFilteredVersions = (availableVersions?: EdgeFirmwareVersion[], minVer?: string) => {
-  if (!availableVersions || !minVer) return availableVersions
-  return availableVersions.filter(fw => compareVersions(fw.id, minVer) >= 0)
+// eslint-disable-next-line max-len
+const getFilteredScheduleVersions = (availableVersions?: EdgeFirmwareVersion[], venueFirmware?: EdgeVenueFirmware) => {
+  if (!availableVersions || !venueFirmware) return availableVersions
+
+  return availableVersions.filter(availableVersion => {
+    return venueFirmware.versions.some(version => version.id === availableVersion.id)
+  })
 }
