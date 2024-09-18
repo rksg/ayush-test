@@ -33,7 +33,6 @@ export const ConfigurationCard = () => {
       {values.map(({ key, label, value, tooltip })=>
         <Col key={key} span={12}>
           <UI.Statistic
-            $blur={state === 'no-data'}
             title={label}
             value={value}
             suffix={tooltip &&
