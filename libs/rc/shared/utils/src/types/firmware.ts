@@ -1,7 +1,5 @@
 import { IntlShape } from 'react-intl'
 
-import { SwitchStatusEnum } from '..'
-
 export interface UpgradePreferences {
   days?: Array<string>,
   times?: Array<string>,

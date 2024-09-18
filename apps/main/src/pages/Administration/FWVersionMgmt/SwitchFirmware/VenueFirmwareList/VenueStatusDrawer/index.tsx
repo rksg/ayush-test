@@ -113,7 +113,7 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
           }
 
           if (row.status === SwitchFwStatusEnum.FW_UPD_FAIL &&
-            SwitchStatusRdbEnum.FIRMWARE_UPGRADING ) {
+            row.switchStatus === SwitchStatusRdbEnum.FIRMWARE_UPGRADING ) {
             return <div>
               <Typography.Text
                 style={{ lineHeight: '24px' }}>
