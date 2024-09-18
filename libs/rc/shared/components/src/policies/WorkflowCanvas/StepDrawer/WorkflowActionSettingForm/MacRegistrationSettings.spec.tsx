@@ -75,8 +75,7 @@ describe('MacRegistrationSettings', () => {
       const [form] = Form.useForm<MacRegActionContext>()
       form.setFieldsValue({
         identityGroupId: mockPersonaGroupTableResult.content[1].id,
-        identityId: mockPersonaTableResult.content[0].id,
-        clientEnterMacAddress: true
+        identityId: mockPersonaTableResult.content[0].id
       })
       return form
     })
