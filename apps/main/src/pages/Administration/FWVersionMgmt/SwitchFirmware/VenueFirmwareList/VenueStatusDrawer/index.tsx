@@ -112,6 +112,8 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
             return fwMappings[row.switchStatus]
           }
 
+          // If the upgrade fails, the RDB switch status will stay at 'firmware_upgrading',
+          // and only then the retry button will appear.
           if (row.status === SwitchFwStatusEnum.FW_UPD_FAIL &&
             row.switchStatus === SwitchStatusRdbEnum.FIRMWARE_UPGRADING ) {
             return <div>
