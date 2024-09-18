@@ -488,3 +488,29 @@ export interface ApFirmwareStartBatchOperationResult {
     batchId: string
   }
 }
+
+export enum EdgeFirmwareBatchOperationType {
+  UPDATE_NOW = 'UPDATE_NOW',
+  SKIP_SCHEDULE = 'SKIP_SCHEDULE',
+  CHANGE_SCHEDULE = 'CHANGE_SCHEDULE'
+}
+
+export interface EdgeFirmwareStartBatchOperationResult {
+  requestId: string;
+  response: {
+    batchId: string;
+  }
+}
+
+export interface StartEdgeFirmwareVenueUpdateNowPayload {
+  venueIds: string[];
+  version: string;
+  state: string;
+}
+
+export interface UpdateEdgeFirmwareVenueSchedulePayload {
+  date?: string;
+  time?: string;
+  version?: string
+  venueIds: string[]
+}
