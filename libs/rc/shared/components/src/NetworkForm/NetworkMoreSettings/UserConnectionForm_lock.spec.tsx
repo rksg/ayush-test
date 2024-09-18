@@ -20,7 +20,7 @@ import { UserConnectionForm } from './UserConnectionForm'
 
 
 describe('UserConnectionForm', () => {
-  it('should render user connection form successfully', async () => {
+  it('should render user connection form successfully(lockoutPeriodEnabled)', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
     render(
@@ -34,7 +34,7 @@ describe('UserConnectionForm', () => {
       </Provider>, {
         route: { params }
       })
-    expect(await screen.findByText(/User Connection Settings/i)).toBeVisible()
+    expect(await screen.findByText('User Connection Settings (Time limited)')).toBeVisible()
     const spins = await screen.findAllByRole('spinbutton')
     await userEvent.click((await screen.findAllByTitle('Hours'))[0])
     await userEvent.click((await screen.findAllByTitle('Minutes'))[0])
@@ -42,8 +42,37 @@ describe('UserConnectionForm', () => {
     await userEvent.click((await screen.findAllByTitle('Minutes'))[0])
     await userEvent.click((await screen.findAllByTitle('Minutes'))[0])
     await userEvent.type(spins[0], '440')
-    // await userEvent.click((await screen.findAllByTitle('Hours'))[2])
-    // await userEvent.click((await screen.findAllByTitle('Days'))[1])
+    await userEvent.click(await screen.findByText('Add'))
+  })
+
+  it('should render user connection form successfully(lockoutPeriodDisabled)', async () => {
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+
+    render(
+      <Provider><NetworkFormContext.Provider
+        value={{
+          editMode: true, cloneMode: true,
+          data: { ...mockGuestMoreDataLockEnable,
+            guestPortal: {
+              ...mockGuestMoreDataLockEnable.guestPortal,
+              lockoutPeriodEnabled: false
+            }
+          }
+        }}>
+        <StepsFormLegacy><StepsFormLegacy.StepForm>
+          <UserConnectionForm /></StepsFormLegacy.StepForm>
+        </StepsFormLegacy></NetworkFormContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+    expect(await screen.findByText('User Connection Settings (Default)')).toBeVisible()
+    const spins = await screen.findAllByRole('spinbutton')
+    await userEvent.click((await screen.findAllByTitle('Hours'))[0])
+    await userEvent.click((await screen.findAllByTitle('Minutes'))[0])
+    await userEvent.click(await screen.findByText('Add'))
+    await userEvent.click((await screen.findAllByTitle('Minutes'))[0])
+    await userEvent.click((await screen.findAllByTitle('Minutes'))[0])
+    await userEvent.type(spins[0], '440')
     await userEvent.click(await screen.findByText('Add'))
   })
 

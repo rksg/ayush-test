@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 
-import moment       from 'moment-timezone'
-import { useIntl  } from 'react-intl'
+import { TooltipPlacement } from 'antd/es/tooltip'
+import moment               from 'moment-timezone'
+import { useIntl  }         from 'react-intl'
 
 import {
   impactValues,
@@ -97,7 +98,8 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
           description: 'Incident impacted scope'
         }),
         children: impactedArea(incident.path, incident.sliceValue),
-        tooltip: formattedPath(incident.path, incident.sliceValue)
+        tooltip: formattedPath(incident.path, incident.sliceValue),
+        tooltipPlacement: 'right' as TooltipPlacement
       })
     },
     [Attributes.Duration]: {

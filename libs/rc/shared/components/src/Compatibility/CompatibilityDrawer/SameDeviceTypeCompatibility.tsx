@@ -58,6 +58,7 @@ export const SameDeviceTypeCompatibility = (props: SameDeviceTypeCompatibilityPr
           },
           incompatibleDevices: i.incompatibleDevices ?? []
         }))}
+        venueId={props.venueId}
       />}
   </>
 }

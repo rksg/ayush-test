@@ -229,6 +229,9 @@ describe('NetworkMoreSettings', () => {
         await userEvent.click(enableFastRoaming)
 
         expect(screen.getByTestId('over-the-ds-full-block')).toBeVisible()
+
+        await userEvent.click(screen.getByTestId('over-the-ds-input'))
+
         expect(screen.getByTestId('reassociation-timeout-full-block')).toBeVisible()
 
         await userEvent.type(screen.getByTestId('reassociation-timeout-input'), '300')

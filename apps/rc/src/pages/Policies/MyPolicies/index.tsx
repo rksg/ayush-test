@@ -16,11 +16,13 @@ import {
   useGetEdgeHqosProfileViewDataListQuery,
   useGetEnhancedAccessControlProfileListQuery,
   useGetEnhancedClientIsolationListQuery,
+  useGetEthernetPortProfileViewDataListQuery,
   useGetIdentityProviderListQuery,
   useGetLbsServerProfileListQuery,
   useGetSoftGreViewDataListQuery,
   useGetTunnelProfileViewDataListQuery,
   useGetVLANPoolPolicyViewModelListQuery,
+  useSearchInProgressWorkflowListQuery,
   useGetWifiOperatorListQuery,
   useMacRegListsQuery,
   useSyslogPolicyListQuery
@@ -141,9 +143,11 @@ function useCardData (): PolicyCardData[] {
   const isEdgeEnabled = useIsEdgeReady()
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isWorkflowEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE)
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const isEdgeHqosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
 
@@ -279,6 +283,16 @@ function useCardData (): PolicyCardData[] {
       disabled: !supportLbs
     },
     {
+      type: PolicyType.WORKFLOW,
+      categories: [RadioCardCategory.WIFI],
+      totalCount: useSearchInProgressWorkflowListQuery({
+        params: { ...params, excludeContent: 'true' }
+      }, { skip: !isWorkflowEnabled }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.LIST })),
+      disabled: !isWorkflowEnabled
+    },
+    {
       type: PolicyType.CERTIFICATE_TEMPLATE,
       categories: [RadioCardCategory.WIFI],
       // eslint-disable-next-line max-len
@@ -286,6 +300,15 @@ function useCardData (): PolicyCardData[] {
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.CERTIFICATE, oper: PolicyOperation.LIST })),
       disabled: !isCertificateTemplateEnabled
+    },
+    {
+      type: PolicyType.ETHERNET_PORT_PROFILE,
+      categories: [RadioCardCategory.WIFI],
+      // eslint-disable-next-line max-len
+      totalCount: useGetEthernetPortProfileViewDataListQuery({ payload: { } }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ETHERNET_PORT_PROFILE, oper: PolicyOperation.LIST })),
+      disabled: !isEthernetPortProfileEnabled
     },
     {
       type: PolicyType.HQOS_BANDWIDTH,
