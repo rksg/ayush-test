@@ -6,7 +6,7 @@ import { rest }      from 'msw'
 import { venueApi, edgeApi }                                                                                                                      from '@acx-ui/rc/services'
 import { CommonUrlsInfo, EdgeUrlsInfo, WifiUrlsInfo, IncompatibilityFeatures, EdgeCompatibilityFixtures, FirmwareUrlsInfo, EdgeFirmwareFixtures } from '@acx-ui/rc/utils'
 import { Provider, store }                                                                                                                        from '@acx-ui/store'
-import { act, mockServer, render, screen, within }                                                                                                from '@acx-ui/test-utils'
+import { act, mockServer, render, screen, waitForElementToBeRemoved, within }                                                                     from '@acx-ui/test-utils'
 
 import { CompatibilityItemProps } from '../CompatibilityDrawer/CompatibilityItem'
 import { FeatureItemProps }       from '../CompatibilityDrawer/CompatibilityItem/FeatureItem'
@@ -236,6 +236,7 @@ describe('EdgeCompatibilityDrawer', () => {
         <EdgeCompatibilityDrawer
           visible={true}
           title='venue edge incompatible'
+          type={EdgeCompatibilityType.DEVICE}
           venueId={venueId}
           edgeId={'001001001'}
           onClose={mockedCloseDrawer}
@@ -254,5 +255,61 @@ describe('EdgeCompatibilityDrawer', () => {
     expect(within(tunnelProfileRow).getByText('2.1.0.400')).toBeValid()
     await userEvent.click(screen.getByTestId('CloseSymbol'))
     expect(mockedCloseDrawer).toBeCalledTimes(1)
+  })
+
+  it('should change query payload when props changed', async () => {
+    const mockeReq = jest.fn()
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getVenueEdgeCompatibilities.url,
+        (req, res, ctx) => {
+          mockeReq(req.body)
+          return res(ctx.json({ compatibilities: mockEdgeCompatibilitiesVenue.compatibilities.slice(0, 1) }))
+        })
+    )
+
+    const { rerender } = render(
+      <Provider>
+        <EdgeCompatibilityDrawer
+          visible={true}
+          title='venue edge incompatible'
+          type={EdgeCompatibilityType.DEVICE}
+          venueId={venueId}
+          edgeId={'001001001'}
+          onClose={jest.fn()}
+        />
+      </Provider>, {
+        route: { params: { tenantId, featureName }, path: '/:tenantId' }
+      })
+
+    expect(await screen.findByText(/The following features are not enabled on this SmartEdge /)).toBeInTheDocument()
+    const sdlanRow = screen.getByRole('row', { name: /SD-LAN/ })
+    expect(sdlanRow).toBeVisible()
+    expect(within(sdlanRow).getByText('2.1.0.200')).toBeValid()
+    const tunnelProfileRow = screen.getByRole('row', { name: /Tunnel Profile/ })
+    expect(within(tunnelProfileRow).getByText('2.1.0.400')).toBeValid()
+
+    rerender(
+      <Provider>
+        <EdgeCompatibilityDrawer
+          visible={true}
+          title='venue edge incompatible: Edge2'
+          type={EdgeCompatibilityType.DEVICE}
+          venueId={venueId}
+          edgeId={'001002222'}
+          onClose={mockedCloseDrawer}
+        />
+      </Provider>)
+
+    expect(await screen.findByText('venue edge incompatible: Edge2')).toBeInTheDocument()
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(mockeReq).toBeCalledTimes(2)
+    expect(mockeReq).toHaveBeenNthCalledWith(2, {
+      filters: {
+        edgeIds: ['001002222'],
+        venueIds: ['mock_venue_id']
+      }
+    })
+    screen.getByRole('row', { name: /SD-LAN/ })
   })
 })

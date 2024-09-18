@@ -4,7 +4,7 @@ import { Typography } from 'antd'
 import _              from 'lodash'
 import { useIntl }    from 'react-intl'
 
-import { AIDrivenRRM, AIOperation, AirFlexAI, EcoFlexAI } from '@acx-ui/icons'
+import { AIDrivenRRM, AIOperation, EquiFlex, EcoFlexAI } from '@acx-ui/icons'
 
 import { aiFeatures, aiFeaturesLabel, codes } from '../../config'
 import { useIntentContext }                   from '../../IntentContext'
@@ -13,9 +13,9 @@ import * as UI from './styledComponents'
 
 export const icons = {
   [aiFeatures.RRM]: <AIDrivenRRM />,
-  [aiFeatures.AirFlexAI]: <AirFlexAI />,
+  [aiFeatures.EquiFlex]: <EquiFlex />,
   [aiFeatures.AIOps]: <AIOperation />,
-  [aiFeatures.EcoFlexAI]: <EcoFlexAI />
+  [aiFeatures.EcoFlex]: <EcoFlexAI />
 }
 
 const sizes = {
