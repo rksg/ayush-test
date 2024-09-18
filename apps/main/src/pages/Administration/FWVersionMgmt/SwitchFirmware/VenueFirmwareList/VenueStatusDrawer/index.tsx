@@ -16,7 +16,7 @@ import {
   FirmwareSwitchVenue,
   SwitchFirmwareStatus,
   SwitchFwStatusEnum,
-  SwitchStatusEnum,
+  SwitchStatusRdbEnum,
   defaultSort,
   sortProp
 } from '@acx-ui/rc/utils'
@@ -104,15 +104,16 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
               $t({ defaultMessage: 'Firmware Update - Failed' }),
             [SwitchFwStatusEnum.FW_UPD_WAITING_RESPONSE]:
               $t({ defaultMessage: 'Firmware Update - Awaiting Response from Switch' }),
-            [SwitchStatusEnum.DISCONNECTED]:
+            [SwitchStatusRdbEnum.DISCONNECTED]:
               $t({ defaultMessage: 'Disconnected from cloud' })
           }
 
-          if (row.switchStatus === SwitchStatusEnum.DISCONNECTED) {
+          if (row.switchStatus === SwitchStatusRdbEnum.DISCONNECTED) {
             return fwMappings[row.switchStatus]
           }
 
-          if (row.status === SwitchFwStatusEnum.FW_UPD_FAIL) {
+          if (row.status === SwitchFwStatusEnum.FW_UPD_FAIL &&
+            SwitchStatusRdbEnum.FIRMWARE_UPGRADING ) {
             return <div>
               <Typography.Text
                 style={{ lineHeight: '24px' }}>
