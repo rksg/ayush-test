@@ -61,6 +61,7 @@ const config: LayoutProps['menuConfig'] = [
       {
         type: 'group',
         label: 'Wireless',
+        isBetaFeature: true,
         children: [
           {
             uri: '/users/wifi/clients',
