@@ -21,7 +21,6 @@ export const kpis: IntentKPIConfig[] = [{
 }]
 
 export const commonEquiFlexDetails = {
-  tradeoff: defineMessage({ defaultMessage: 'Potential trade-offs of intelligent and optimized probe responses include increased complexity in network management, potential delays in connecting lesser-priority devices, and possible issues with compatibility across different devices and manufacturers.' }),
   action: {
     active: defineMessage({ defaultMessage: `
       <p>Leverage <b><i>EquiFlex</i></b>, available only through IntentAI for intelligent handling of probe request/response and optimize management traffic in a dense network.</p>

@@ -8,7 +8,6 @@ import { Card, Descriptions, GridCol, GridRow } from '@acx-ui/components'
 import { get }                                  from '@acx-ui/config'
 import { DateFormatEnum, formatter }            from '@acx-ui/formatter'
 import { useWifiNetworkListQuery }              from '@acx-ui/rc/services'
-import { getIntl }                              from '@acx-ui/utils'
 
 import { DescriptionRow }       from '../../DescriptionSection'
 import { FixedAutoSizer }       from '../../DescriptionSection/styledComponents'
@@ -27,22 +26,19 @@ import { IntentWlan }           from '../utils'
 
 import * as SideNotes from './IntentAIForm/SideNotes'
 
-export function createUseValuesText ({ tradeoff, action }: {
-  tradeoff: MessageDescriptor
+export function createUseValuesText ({ action }: {
   action: {
     active: MessageDescriptor,
     inactive: MessageDescriptor
   }
 }) {
   return function useValuesText () {
-    const { $t } = getIntl()
     const { state } = useIntentContext()
     const actionText = state === 'no-data'
       ? action.inactive
       : action.active
 
     return {
-      tradeoffText: $t(tradeoff),
       actionText: actionText
     }
   }
@@ -157,7 +153,7 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
             <GridCol col={{ span: 12 }}>
               <DetailsSection data-testid='Potential trade-off'>
                 <DetailsSection.Title children={$t({ defaultMessage: 'Potential trade-off' })} />
-                <Card>{valuesText.tradeoffText}</Card>
+                <Card>{$t(SideNotes.tradeoff)}</Card>
               </DetailsSection>
             </GridCol>
           </GridRow>

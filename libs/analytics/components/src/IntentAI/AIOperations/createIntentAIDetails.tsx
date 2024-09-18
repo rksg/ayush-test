@@ -7,18 +7,19 @@ import { formattedPath }             from '@acx-ui/analytics/utils'
 import { Card, GridCol, GridRow }    from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
-import { DescriptionSection }  from '../../DescriptionSection'
-import { FixedAutoSizer }      from '../../DescriptionSection/styledComponents'
-import { DetailsSection }      from '../common/DetailsSection'
-import { getIntentStatus }     from '../common/getIntentStatus'
-import { IntentDetailsHeader } from '../common/IntentDetailsHeader'
-import { IntentIcon }          from '../common/IntentIcon'
-import { KpiCard }             from '../common/KpiCard'
-import { StatusTrail }         from '../common/StatusTrail'
-import { codes }               from '../config'
-import { useIntentContext }    from '../IntentContext'
-import { getStatusTooltip }    from '../services'
-import { getGraphKPIs }        from '../useIntentDetailsQuery'
+import { DescriptionSection }   from '../../DescriptionSection'
+import { FixedAutoSizer }       from '../../DescriptionSection/styledComponents'
+import { DetailsSection }       from '../common/DetailsSection'
+import { getIntentStatus }      from '../common/getIntentStatus'
+import { IntentDetailsHeader }  from '../common/IntentDetailsHeader'
+import { IntentDetailsSidebar } from '../common/IntentDetailsSidebar'
+import { IntentIcon }           from '../common/IntentIcon'
+import { KpiCard }              from '../common/KpiCard'
+import { StatusTrail }          from '../common/StatusTrail'
+import { codes }                from '../config'
+import { useIntentContext }     from '../IntentContext'
+import { getStatusTooltip }     from '../services'
+import { getGraphKPIs }         from '../useIntentDetailsQuery'
 
 import { ConfigurationCard }   from './ConfigurationCard'
 import { createUseValuesText } from './createUseValuesText'
@@ -69,11 +70,11 @@ export function createIntentAIDetails (
       <GridRow>
         <GridCol col={{ span: 6, xxl: 4 }}>
           <FixedAutoSizer>
-            {({ width }) => (<div style={{ width }}>
+            {({ width }) => (<IntentDetailsSidebar style={{ width }}>
               <IntentIcon size='large' />
               <Typography.Paragraph children={valuesText.summary} />
               <DescriptionSection fields={fields}/>
-            </div>)}
+            </IntentDetailsSidebar>)}
           </FixedAutoSizer>
         </GridCol>
         <GridCol col={{ span: 18, xxl: 20 }}>

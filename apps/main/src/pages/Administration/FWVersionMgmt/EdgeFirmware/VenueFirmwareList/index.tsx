@@ -9,7 +9,7 @@ import {
   Tooltip,
   showActionModal
 } from '@acx-ui/components'
-import { Features }                                                                                     from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                                       from '@acx-ui/feature-toggle'
 import { EdgeChangeScheduleDialog, EdgeUpdateNowDialog, useIsEdgeFeatureReady, useSwitchFirmwareUtils } from '@acx-ui/rc/components'
 import {
   useGetAvailableEdgeFirmwareVersionsQuery,
@@ -19,7 +19,10 @@ import {
   useSkipEdgeUpgradeSchedulesMutation,
   useUpdateEdgeFirmwareNowMutation,
   useUpdateEdgeUpgradePreferencesMutation,
-  useUpdateEdgeVenueSchedulesMutation
+  useUpdateEdgeVenueSchedulesMutation,
+  useStartEdgeFirmwareVenueUpdateNowMutation,
+  useUpdateEdgeFirmwareVenueScheduleMutation,
+  useSkipEdgeFirmwareVenueScheduleMutation
 } from '@acx-ui/rc/services'
 import {
   EdgeFirmwareVersion,
@@ -92,6 +95,12 @@ export function VenueFirmwareList () {
   const [updatePreferences] = useUpdateEdgeUpgradePreferencesMutation()
   const [updateSchedule] = useUpdateEdgeVenueSchedulesMutation()
   const [skipSchedule] = useSkipEdgeUpgradeSchedulesMutation()
+
+  const isBatchOperationEnable = useIsSplitOn(
+    Features.EDGE_FIRMWARE_NOTIFICATION_BATCH_OPERATION_TOGGLE)
+  const [startEdgeFirmwareVenueUpdateNow] = useStartEdgeFirmwareVenueUpdateNowMutation()
+  const [updateEdgeFirmwareVenueSchedule] = useUpdateEdgeFirmwareVenueScheduleMutation()
+  const [skipEdgeFirmwareVenueSchedule] = useSkipEdgeFirmwareVenueScheduleMutation()
 
   const columns: TableProps<EdgeVenueFirmware>['columns'] = [
     {
@@ -215,10 +224,16 @@ export function VenueFirmwareList () {
             onOk () {
               const requests = []
               try {
-                for(let row of selectedRows) {
-                  requests.push(skipSchedule({
-                    params: { venueId: row.id }
+                if (isBatchOperationEnable) {
+                  requests.push(skipEdgeFirmwareVenueSchedule({
+                    payload: { venueIds: selectedRows.map((row) => row.id) }
                   }))
+                } else {
+                  for(let row of selectedRows) {
+                    requests.push(skipSchedule({
+                      params: { venueId: row.id }
+                    }))
+                  }
                 }
                 Promise.all(requests).then(() => clearSelection())
               } catch (error) {
@@ -242,11 +257,21 @@ export function VenueFirmwareList () {
       version: data
     }
     try {
-      for(let venueId of venueIds) {
-        requests.push(updateNow({
-          params: { venueId },
-          payload
+      if (isBatchOperationEnable) {
+        requests.push(startEdgeFirmwareVenueUpdateNow({
+          payload: {
+            venueIds: venueIds,
+            version: data,
+            state: 'UPDATE_NOW'
+          }
         }))
+      } else {
+        for(let venueId of venueIds) {
+          requests.push(updateNow({
+            params: { venueId },
+            payload
+          }))
+        }
       }
       Promise.all(requests).then(() => setSelectedRowKeys([]))
     } catch (error) {
@@ -274,11 +299,22 @@ export function VenueFirmwareList () {
     const requests = []
     const payload = { ...data }
     try {
-      for(let venueId of venueIds) {
-        requests.push(updateSchedule({
-          params: { venueId },
-          payload
+      if (isBatchOperationEnable) {
+        requests.push(updateEdgeFirmwareVenueSchedule({
+          payload: {
+            venueIds: venueIds,
+            date: payload.date,
+            time: payload.time,
+            version: payload.version
+          }
         }))
+      } else {
+        for(let venueId of venueIds) {
+          requests.push(updateSchedule({
+            params: { venueId },
+            payload
+          }))
+        }
       }
       Promise.all(requests).then(() => setSelectedRowKeys([]))
     } catch (error) {
