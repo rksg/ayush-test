@@ -1,3 +1,4 @@
+
 import { PageNotFound }                             from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
@@ -23,9 +24,9 @@ import {
   RogueAPDetectionTable,
   SyslogDetailView, SyslogForm,
   VLANPoolForm,
+  WifiCallingForm, WifiCallingConfigureForm, WifiCallingDetailView,
+  WorkflowFormMode,
   VLANPoolDetail,
-  WifiCallingConfigureForm, WifiCallingDetailView,
-  WifiCallingForm,
   WifiOperatorForm,
   ConfigurationProfileForm,
   CliTemplateForm,
@@ -33,8 +34,12 @@ import {
   IdentityProviderForm,
   LbsServerProfileForm,
   ApGroupDetails,
+  SoftGreForm,
   useIsEdgeFeatureReady,
-  SoftGreForm
+  CertificateForm,
+  AddEthernetPortProfile,
+  EditEthernetPortProfile,
+  EthernetPortProfileDetail
 } from '@acx-ui/rc/components'
 import {
   PolicyOperation,
@@ -88,7 +93,6 @@ import RadiusAttributeGroupDetail
 import RadiusAttributeGroupForm
   // eslint-disable-next-line max-len
   from './pages/Policies/AdaptivePolicy/RadiusAttributeGroup/RadiusAttributeGroupForm/RadiusAttributeGroupForm'
-import CertificateForm                                                  from './pages/Policies/CertificateTemplate/CertificateForm/CertificateForm'
 import CertificateTemplateDetail                                        from './pages/Policies/CertificateTemplate/CertificateTemplateDetail/CertificateTemplateDetail'
 import CertificateTemplateList                                          from './pages/Policies/CertificateTemplate/CertificateTemplateList/CertificateTemplateList'
 import ClientIsolationDetail                                            from './pages/Policies/ClientIsolation/ClientIsolationDetail/ClientIsolationDetail'
@@ -96,6 +100,7 @@ import ClientIsolationTable                                             from './
 import ConnectionMeteringDetail                                         from './pages/Policies/ConnectionMetering/ConnectionMeteringDetail'
 import ConnectionMeteringPageForm                                       from './pages/Policies/ConnectionMetering/ConnectionMeteringPageForm'
 import ConnectionMeteringTable                                          from './pages/Policies/ConnectionMetering/ConnectionMeteringTable'
+import EthernetPortProfileTable                                         from './pages/Policies/EthernetPortProfile/EthernetPortProfileTable'
 import AddEdgeHqosBandwidth                                             from './pages/Policies/HqosBandwidth/Edge/AddHqosBandwidth'
 import EditEdgeHqosBandwidth                                            from './pages/Policies/HqosBandwidth/Edge/EditHqosBandwidth'
 import EdgeHqosBandwidthDetail                                          from './pages/Policies/HqosBandwidth/Edge/HqosBandwidthDetail'
@@ -121,6 +126,9 @@ import TunnelProfileTable                                               from './
 import VLANPoolTable                                                    from './pages/Policies/VLANPool/VLANPoolTable/VLANPoolTable'
 import { WifiOperatorDetailView }                                       from './pages/Policies/WifiOperator/WifiOperatorDetail/WifiOperatorDetailView'
 import WifiOperatorTable                                                from './pages/Policies/WifiOperator/WifiOperatorTable/WifiOperatorTable'
+import WorkflowDetails                                                  from './pages/Policies/Workflow/WorkflowDetail'
+import WorkflowPageForm                                                 from './pages/Policies/Workflow/WorkflowPageForm'
+import WorkflowTable                                                    from './pages/Policies/Workflow/WorkflowTable'
 import DHCPTable                                                        from './pages/Services/DHCP/DHCPTable/DHCPTable'
 import AddDHCP                                                          from './pages/Services/DHCP/Edge/AddDHCP'
 import EdgeDHCPDetail                                                   from './pages/Services/DHCP/Edge/DHCPDetail'
@@ -159,6 +167,7 @@ import SwitchClientList                                                 from './
 import WifiClientDetails                                                from './pages/Users/Wifi/ClientDetails'
 import { WifiClientList, WirelessTabsEnum }                             from './pages/Users/Wifi/ClientList'
 import GuestManagerPage                                                 from './pages/Users/Wifi/GuestManagerPage'
+
 
 
 export default function RcRoutes () {
@@ -783,6 +792,7 @@ function ServiceRoutes () {
 function PolicyRoutes () {
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
+  const isWorkflowEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE)
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
 
   return rootRoutes(
@@ -1239,6 +1249,26 @@ function PolicyRoutes () {
           element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.ADAPTIVE_POLICY_SET}/>}
         /> </>
       }
+      {isWorkflowEnabled &&
+      <>
+        <Route
+          path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.LIST })}
+          element={<WorkflowTable/>}
+        />
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.DETAIL })}
+          element={<WorkflowDetails />} />
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.CREATE })}
+          element={<WorkflowPageForm mode={WorkflowFormMode.CREATE} />} />
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.EDIT })}
+          element={<WorkflowPageForm mode={WorkflowFormMode.EDIT} />}
+        /> </>
+      }
       {isCertificateTemplateEnabled && <>
         <Route
           // eslint-disable-next-line max-len
@@ -1324,6 +1354,38 @@ function PolicyRoutes () {
           </PolicyAuthRoute>
         }
       />
+      {/* </>} */}
+      {<>
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.ETHERNET_PORT_PROFILE ,
+            oper: PolicyOperation.LIST
+          })}
+          element={<EthernetPortProfileTable/>}
+        />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.ETHERNET_PORT_PROFILE ,
+            oper: PolicyOperation.CREATE
+          })}
+          element={<AddEthernetPortProfile/>}
+        />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.ETHERNET_PORT_PROFILE ,
+            oper: PolicyOperation.EDIT
+          })}
+          element={<EditEthernetPortProfile/>}
+        />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.ETHERNET_PORT_PROFILE ,
+            oper: PolicyOperation.DETAIL
+          })}
+          element={<EthernetPortProfileDetail/>}
+        />
+      </>
+      }
     </Route>
   )
 }

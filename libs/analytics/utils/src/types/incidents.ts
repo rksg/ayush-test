@@ -17,7 +17,7 @@ export interface IncidentMetadata {
   dominant?: { ssid?: string }
   rootCauseChecks?: {
     checks: Record<string,boolean>[]
-    params?: Record<string,string | number>
+    params?: Record<string,string | number | object>
   }
   apRadioDeploy?: string,
   avgAnomalousAirtime?: number

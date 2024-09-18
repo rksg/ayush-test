@@ -1,10 +1,10 @@
 import { rest } from 'msw'
 
-import { CertificateCategoryType, CertificateUrls, CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                 from '@acx-ui/store'
-import { mockServer, render, screen }                               from '@acx-ui/test-utils'
-import { RolesEnum, WifiScopes }                                    from '@acx-ui/types'
-import { setUserProfile, getUserProfile }                           from '@acx-ui/user'
+import { CertificateCategoryType, CertificateUrls, CommonUrlsInfo, PersonaUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                              from '@acx-ui/store'
+import { mockServer, render, screen }                                            from '@acx-ui/test-utils'
+import { RolesEnum, WifiScopes }                                                 from '@acx-ui/types'
+import { setUserProfile, getUserProfile }                                        from '@acx-ui/user'
 
 import { certificateAuthorityList, certificateList, certificateTemplateList } from '../__test__/fixtures'
 
@@ -34,6 +34,14 @@ describe('CertificateTemplateList', () => {
             { name: 'testAAA-ct', id: 'testNetworkId1' },
             { name: 'testAAA-ct2', id: 'testNetworkId2' }]
         }))
+      ),
+      rest.post(
+        PersonaUrls.searchPersonaList.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json([]))
+      ),
+      rest.post(
+        PersonaUrls.searchPersonaGroupList.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json([]))
       )
     )
   })
