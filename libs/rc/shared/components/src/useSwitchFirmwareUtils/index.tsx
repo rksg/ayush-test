@@ -325,7 +325,7 @@ export function useSwitchFirmwareUtils () {
     }
     let filterVersions = availableVersions.map(availableVersion => {
 
-      const versions = availableVersion.versions.map(v => {
+      const versions = availableVersion.versions?.map(v => {
         const inUseVersion = selectedVersion?.versions.find(
           sc => sc.modelGroup === availableVersion.modelGroup)?.version || ''
         const recommendedVersions = defaultVersions.find(
