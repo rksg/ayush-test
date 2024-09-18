@@ -193,7 +193,7 @@ export function AupSettings () {
       </Form.Item> :
       <Form.Item
         name={'aupPlainText'}
-        label={'Policy Content'}
+        label={$t({ defaultMessage: 'Policy Content' })}
         rules={[
           { required: true }
         ]}
