@@ -151,17 +151,6 @@ export function useIntentAIActions () {
           data.forEach((item) => {
             const { status, statusReason } = getTransitionStatus(action, item)
             let statusLabel = statusReason ? `${status}-${statusReason}` : status
-            switch (statusLabel) {
-              case DisplayStates.pausedFromActive.toString():
-              case DisplayStates.pausedFromInactive.toString():
-                statusLabel=`${DisplayStates.pausedFromActive}+${DisplayStates.pausedFromInactive}`
-                break
-              case DisplayStates.applyScheduled.toString():
-              case DisplayStates.scheduledOneClick.toString():
-                statusLabel=`${DisplayStates.applyScheduled}+${DisplayStates.scheduledOneClick}`
-                break
-              default:
-            }
             statusLabelList.add(statusLabel)
           })
           const currentFilter = intentTableFilters.read() || {}
@@ -192,7 +181,6 @@ export function useIntentAIActions () {
     if (errorMsgs.length > 0) {
       showToast({ type: 'error', content: errorMsgs })
     }
-    console.log('here')
     if (errorMsgs.length < rows.length) {
       showSuccessToast(action, data)
     }

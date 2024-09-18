@@ -118,20 +118,6 @@ export function createUseIntentTransition <Preferences> (
             onClick: () => {
               const { status, statusReason } = intent
               let statusLabel = statusReason ? `${status}-${statusReason}` : status
-              switch (statusLabel) {
-                case DisplayStates.pausedByDefault.toString():
-                case DisplayStates.pausedFromActive.toString():
-                case DisplayStates.pausedFromInactive.toString():
-                  statusLabel=
-                  `${DisplayStates.pausedFromActive}+${DisplayStates.pausedFromInactive}`
-                  break
-                case DisplayStates.scheduled.toString():
-                case DisplayStates.applyScheduled.toString():
-                case DisplayStates.scheduledOneClick.toString():
-                  statusLabel=`${DisplayStates.applyScheduled}+${DisplayStates.scheduledOneClick}`
-                  break
-                default:
-              }
               const intentFilter = {
                 aiFeature: [featureValue],
                 intent: [intentValue],
@@ -139,7 +125,6 @@ export function createUseIntentTransition <Preferences> (
                 sliceValue: [intent!.sliceId],
                 statusLabel: [statusLabel]
               }
-              console.log(intentFilter)
               const encodedParameters = encodeParameter(intentFilter)
               const newSearch =
                 new URLSearchParams(basePath.search)
