@@ -188,7 +188,7 @@ export const ManageDelegateAdminDrawer = (props: ManageDelegateAdminDrawerProps)
   }
 
   const transformAdminRole = (id: string, initialRole: RolesEnum) => {
-    const role = delegatedAdmins?.data?.find((admin) => admin.msp_admin_id === id)?.msp_admin_role
+    const role = selectedRoles.find(row => row.id === id)?.role
     ?? (SupportedDelegatedRoles.includes(initialRole)
       ? initialRole : RolesEnum.ADMINISTRATOR)
 
