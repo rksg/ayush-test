@@ -28,15 +28,15 @@ import * as SideNotes from './IntentAIForm/SideNotes'
 
 export function createUseValuesText ({ action }: {
   action: {
-    active: MessageDescriptor,
-    inactive: MessageDescriptor
+    hasData: MessageDescriptor,
+    noData: MessageDescriptor
   }
 }) {
   return function useValuesText () {
     const { state } = useIntentContext()
     const actionText = state === 'no-data'
-      ? action.inactive
-      : action.active
+      ? action.noData
+      : action.hasData
 
     return {
       actionText: actionText
