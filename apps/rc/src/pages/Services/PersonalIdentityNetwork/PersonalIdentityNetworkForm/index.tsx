@@ -34,7 +34,7 @@ export interface PersonalIdentityNetworkFormData extends PersonalIdentityNetwork
   venueId: string
   venueName: string
   personaGroupId: string
-  edgeId: string
+  edgeClusterId: string
   edgeName: string
   dhcpId: string
   dhcpName: string
@@ -68,7 +68,7 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
       //   personaGroupId: formData.personaGroupId
       // }],
       edgeClusterInfos: [{
-        edgeClusterId: formData.edgeId,
+        edgeClusterId: formData.edgeClusterId,
         segments: formData.segments,
         devices: formData.devices,
         dhcpInfoId: formData.dhcpId,

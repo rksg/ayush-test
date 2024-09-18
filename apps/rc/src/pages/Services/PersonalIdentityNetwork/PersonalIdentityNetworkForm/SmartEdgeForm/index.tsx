@@ -35,7 +35,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
     isDhcpOptionsLoading
   } = useContext(PersonalIdentityNetworkFormContext)
 
-  const edgeId = Form.useWatch('edgeId', form)
+  const edgeClusterId = Form.useWatch('edgeClusterId', form)
   const dhcpId = Form.useWatch('dhcpId', form) || form.getFieldValue('dhcpId')
   const poolId = form.getFieldValue('poolId')
   const dhcpRelay = form.getFieldValue('dhcpRelay')
@@ -67,11 +67,11 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
           'id',
           'dhcpRelay'
         ],
-        filters: { edgeClusterIds: [edgeId] }
+        filters: { edgeClusterIds: [edgeClusterId] }
       }
     },
     {
-      skip: !Boolean(edgeId),
+      skip: !Boolean(edgeClusterId),
       selectFromResult: ({ data, isFetching }) => {
         return {
           currentEdgeDhcp: data?.data[0],
@@ -85,7 +85,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
   useEffect(() => {
     if(isGetDhcpByEdgeIdFetching) return
     if(!dhcpId) {
-      if(!edgeId || isGetDhcpByEdgeIdFail) {
+      if(!edgeClusterId || isGetDhcpByEdgeIdFail) {
         form.setFieldValue('dhcpId', null)
       } else {
         form.setFieldValue('dhcpId', currentEdgeDhcp?.id)
@@ -97,7 +97,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
   }, [
     currentEdgeDhcp,
     isGetDhcpByEdgeIdFail,
-    edgeId,
+    edgeClusterId,
     isGetDhcpByEdgeIdFetching
   ])
 
@@ -182,11 +182,11 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
         <Col span={8}>
           <StepsForm.Title>{$t({ defaultMessage: 'SmartEdge Settings' })}</StepsForm.Title>
           <Form.Item
-            name='edgeId'
-            label={$t({ defaultMessage: 'SmartEdge' })}
+            name='edgeClusterId'
+            label={$t({ defaultMessage: 'Cluster' })}
             rules={[{
               required: true,
-              message: $t({ defaultMessage: 'Please enter SmartEdge' })
+              message: $t({ defaultMessage: 'Please select Cluster' })
             }]}
             children={
               <Select

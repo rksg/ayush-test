@@ -52,7 +52,7 @@ export interface PersonalIdentityNetworkFormContextType {
   refetchSwitchesQuery: () =>
     QueryActionCreatorResult<QueryDefinition<unknown, BaseQueryFn, string, unknown>>
   getVenueName: (venueId: string) => string
-  getClusterName: (edgeId: string) => string
+  getClusterName: (edgeClusterId: string) => string
   getDhcpName: (dhcpId: string) => string
   // getDhcpPoolName: (dhcpId: string, poolId: string) => string
   getTunnelProfileName: (tunnelId: string) => string

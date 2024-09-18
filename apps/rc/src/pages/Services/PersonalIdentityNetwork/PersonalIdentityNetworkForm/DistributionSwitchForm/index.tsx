@@ -27,7 +27,7 @@ export function DistributionSwitchForm () {
   const distributionSwitchInfos = Form.useWatch('distributionSwitchInfos', form) ||
     form.getFieldValue('distributionSwitchInfos')
   const accessSwitchInfos = form.getFieldValue('accessSwitchInfos') as AccessSwitch []
-  const edgeId = form.getFieldValue('edgeId') as string
+  const edgeClusterId = form.getFieldValue('edgeClusterId') as string
 
   useEffect(()=>{
     if (distributionSwitchInfos) {
@@ -121,8 +121,9 @@ export function DistributionSwitchForm () {
       message={$t({ defaultMessage:
         'Attention Required: Please ensure to configure {staticRoute} on SmartEdge ({edgeName}) ' +
         'for the distribution switch’s loopback IP addresses to establish the connection.' }, {
-        staticRoute: <StaticRouteModal edgeId={edgeId} edgeName={getClusterName(edgeId)} />,
-        edgeName: getClusterName(edgeId)
+        // eslint-disable-next-line max-len
+        staticRoute: <StaticRouteModal edgeId={edgeClusterId} edgeName={getClusterName(edgeClusterId)} />,
+        edgeName: getClusterName(edgeClusterId)
       })}
       showIcon
     /> }

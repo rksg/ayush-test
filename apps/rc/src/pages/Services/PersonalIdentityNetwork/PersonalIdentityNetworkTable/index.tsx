@@ -161,7 +161,7 @@ const PersonalIdentityNetworkTable = () => {
       dataIndex: 'edgeClusterInfos',
       sorter: true,
       filterable: clusterOptions,
-      filterKey: 'edgeInfoIds',
+      filterKey: 'edgeClusterInfoIds',
       render: (_, row) => {
         const edgeInfo = row.edgeClusterInfos[0]
         return (
@@ -224,7 +224,7 @@ const PersonalIdentityNetworkTable = () => {
       key: 'serviceVersion',
       dataIndex: 'edgeClusterInfos',
       sorter: true,
-      render: (_, row) => {
+      render: () => {
         // const edgeInfo = row.edgeClusterInfos[0]
         // TODO:
         return (

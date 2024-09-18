@@ -152,7 +152,7 @@ export const PersonalIdentityNetworkServiceInfo = styled((
       )
     },
     {
-      title: $t({ defaultMessage: 'SmartEdge' }),
+      title: $t({ defaultMessage: 'Cluster' }),
       content: () => {
         const edgeInfo = nsgViewData?.edgeClusterInfos?.[0]
         return (

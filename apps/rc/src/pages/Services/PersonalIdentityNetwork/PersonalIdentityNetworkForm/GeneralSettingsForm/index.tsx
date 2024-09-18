@@ -42,7 +42,7 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
   const onVenueChange = (value: string) => {
     setVenueId(value)
     form.setFieldsValue({
-      edgeId: undefined,
+      edgeClusterId: undefined,
       dhcpId: undefined,
       poolId: undefined
     })

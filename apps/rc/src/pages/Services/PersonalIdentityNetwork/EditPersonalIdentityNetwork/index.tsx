@@ -34,7 +34,7 @@ const EditPersonalIdentityNetwork = () => {
       form.setFieldsValue({
         name: nsgData.name,
         venueId: nsgData.venueInfos[0]?.venueId,
-        edgeId: nsgData.edgeClusterInfos[0]?.edgeClusterId,
+        edgeClusterId: nsgData.edgeClusterInfos[0]?.edgeClusterId,
         segments: nsgData.edgeClusterInfos[0]?.segments,
         devices: nsgData.edgeClusterInfos[0]?.devices,
         dhcpId: nsgData.edgeClusterInfos[0]?.dhcpInfoId,

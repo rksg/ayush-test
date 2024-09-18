@@ -42,9 +42,9 @@ export function DistributionSwitchDrawer (props: {
 
   const { form: nsgForm } = useStepFormContext<PersonalIdentityNetworkFormData>()
   const venueId = nsgForm.getFieldValue('venueId')
-  const edgeId = nsgForm.getFieldValue('edgeId')
+  const edgeClusterId = nsgForm.getFieldValue('edgeClusterId')
 
-  const defaultRecord = { siteKeepAlive: '5', siteRetry: '3', siteName: edgeId }
+  const defaultRecord = { siteKeepAlive: '5', siteRetry: '3', siteName: edgeClusterId }
 
   const [openModal, setOpenModal] = useState(false)
   const [availableSwitchList, setAvailableSwitchList] = useState<SwitchLite[]>([])

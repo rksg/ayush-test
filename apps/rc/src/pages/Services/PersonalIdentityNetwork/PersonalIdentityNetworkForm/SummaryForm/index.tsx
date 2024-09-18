@@ -33,7 +33,7 @@ export const SummaryForm = () => {
   const [accessSwitchData, setAccessSwitchData] = useState<AccessSwitchTableDataType[]>([])
   const nsgName = form.getFieldValue('name')
   const venueId = form.getFieldValue('venueId')
-  const edgeId = form.getFieldValue('edgeId')
+  const edgeClusterId = form.getFieldValue('edgeClusterId')
   const segments = form.getFieldValue('segments')
   const devices = form.getFieldValue('devices')
   const dhcpId = form.getFieldValue('dhcpId')
@@ -61,14 +61,14 @@ export const SummaryForm = () => {
   useEffect(() => {
     setSmartEdgeData([
       {
-        edgeName: getClusterName(edgeId),
+        edgeName: getClusterName(edgeClusterId),
         segments: segments.toString(),
         devices: devices.toString(),
         dhcpServiceName: getDhcpName(dhcpId),
         dhcpPoolName: poolName.toString()
       }
     ])
-  }, [edgeId, segments, devices, dhcpId, poolId, poolName])
+  }, [edgeClusterId, segments, devices, dhcpId, poolId, poolName])
 
   useEffect(() => {
     setAccessSwitchData(accessSwitchInfos?.map(as => ({
