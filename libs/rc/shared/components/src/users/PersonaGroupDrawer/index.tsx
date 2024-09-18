@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 
 import { Drawer, showToast } from '@acx-ui/components'
 import {
-  AsyncCommonResponse
+  CommonAsyncResponse
 } from '@acx-ui/rc/services'
 import { PersonaGroup } from '@acx-ui/rc/utils'
 
@@ -15,7 +15,7 @@ import { usePersonaGroupAction } from './usePersonaGroupActions'
 interface PersonaGroupDrawerProps {
   isEdit: boolean,
   visible: boolean,
-  onClose: (result?: AsyncCommonResponse) => void,
+  onClose: (result?: CommonAsyncResponse) => void,
   data?: PersonaGroup
 }
 
@@ -51,7 +51,7 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
   }
 
   const handleAddPersonaGroup = async (submittedData: PersonaGroup) => {
-    return new Promise<AsyncCommonResponse>(async (resolve) => {
+    return new Promise<CommonAsyncResponse>(async (resolve) => {
       await createPersonaGroupMutation(submittedData, resolve)
     })
   }
@@ -59,7 +59,13 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
   const handleEditPersonaGroup = async (submittedData: PersonaGroup) => {
     if (!data) return
 
-    const personaGroupKeys = ['name', 'description', 'macRegistrationPoolId', 'dpskPoolId'] as const
+    const personaGroupKeys = [
+      'name',
+      'description',
+      'macRegistrationPoolId',
+      'dpskPoolId',
+      'certificateTemplateId'
+    ] as const
     const patchData = {}
 
     personaGroupKeys.forEach(key => {

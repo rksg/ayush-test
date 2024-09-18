@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import {
   Checkbox,
@@ -9,8 +9,8 @@ import {
   Row,
   Col
 } from 'antd'
-import _           from 'lodash'
-import { useIntl } from 'react-intl'
+import _, { isNumber } from 'lodash'
+import { useIntl }     from 'react-intl'
 
 import { StepsForm, Button, Fieldset, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
@@ -19,38 +19,64 @@ import { GuestNetworkTypeEnum }                 from '@acx-ui/rc/utils'
 import NetworkFormContext from '../NetworkFormContext'
 
 const { Option } = Select
-const sessionMapping: { [key:string]:number }={
-  hours: 240,
-  days: 10,
-  minutes: 14400
-}
-const durationMapping: { [key:string]:number }={
-  hours: 24,
-  minutes: 1440,
-  days: 30,
-  weeks: 7
-}
-const lockoutMapping: { [key:string]:number }={
-  days: 45,
-  hours: 1092,
-  minutes: 65535
-}
-const minutesMapping: { [key:string]:number }={
-  hours: 60,
-  days: 1440,
-  minutes: 1
-}
+const { useWatch, useFormInstance } = Form
+
 const oneDay = 1440
 const oneHour = 60
 const oneWeek = 10080
+
+const enum UnitEnum {
+  MINS = 'minutes',
+  HOURS = 'hours',
+  DAYS = 'days',
+  WEEKS = 'weeks'
+}
+const sessionMapping: { [key:string]:number }={
+  [UnitEnum.HOURS]: 240,
+  [UnitEnum.DAYS]: 10,
+  [UnitEnum.MINS]: 14400
+}
+const durationMapping: { [key:string]:number }={
+  [UnitEnum.MINS]: 1440,
+  [UnitEnum.HOURS]: 24,
+  [UnitEnum.DAYS]: 30,
+  [UnitEnum.WEEKS]: 7
+}
+const lockoutMapping: { [key:string]:number }={
+  [UnitEnum.MINS]: 65535,
+  [UnitEnum.HOURS]: 1092,
+  [UnitEnum.DAYS]: 45
+}
+
+const calGracePeriod = (sessionTimeoutUnit: string, value: number) => {
+  if(sessionTimeoutUnit === UnitEnum.DAYS){
+    return value * 1440
+  }else if(sessionTimeoutUnit === UnitEnum.HOURS){
+    return value * 60
+  }
+  return value
+}
+
+const calCurrentDataAndUnit = (timeData: number, units: UnitEnum[]) => {
+  if(units.includes(UnitEnum.DAYS) &&
+    timeData && timeData >= oneDay && timeData % oneDay === 0){
+    return [timeData/oneDay, UnitEnum.DAYS]
+  } else if (
+    units.includes(UnitEnum.HOURS) &&
+    timeData && timeData >= oneHour && timeData % oneHour === 0){
+    return [timeData/oneHour, UnitEnum.HOURS]
+  }
+  return [timeData, UnitEnum.MINS]
+}
+
 export function UserConnectionForm () {
-
-  const isSessionDurationEnable = useIsSplitOn(Features.SESSION_DURATION_TOGGLE)
-
-
   const { $t } = useIntl()
-  const { useWatch } = Form
-  const form = Form.useFormInstance()
+  const form = useFormInstance()
+  const isSessionDurationEnable = useIsSplitOn(Features.SESSION_DURATION_TOGGLE)
+  const { data, editMode, cloneMode } = useContext(NetworkFormContext)
+  const [isRetrievedData, setIsRetrievedData]=useState<boolean>(!editMode && !cloneMode)
+  const [useDefaultSetting, setUseDefaultSetting]=useState<boolean>(true)
+  const [maxGracePeriod, setMaxGracePeriod]=useState<number>(1440)
   const [checkDuration,
     userSessionTimeoutUnit,
     lockoutPeriodUnit,
@@ -62,279 +88,206 @@ export function UserConnectionForm () {
     useWatch('macCredentialsDurationUnit'),
     useWatch(['guestPortal','userSessionTimeout'])
   ]
-
-  const { data, editMode, cloneMode } = useContext(NetworkFormContext)
-  const [useDefaultSetting, setUseDefaultSetting]=useState(true)
-  const [maxGracePeriod, setMaxGracePeriod]=useState(1440)
+  const guestType = data?.guestPortal?.guestNetworkType
+  const isClickThrough = guestType === GuestNetworkTypeEnum.ClickThrough
+  const isWispr = guestType === GuestNetworkTypeEnum.WISPr
 
   useEffect(() => {
-    let timeoutValue = userSessionTimeout
-    switch(userSessionTimeoutUnit){
-      case 'days':
-        timeoutValue = timeoutValue * 24 *60
-        break
-      case 'hours':
-        timeoutValue = timeoutValue * 60
-        break
+    if (!isNumber(userSessionTimeout)) return
+    const gracePeriod = calGracePeriod(userSessionTimeoutUnit, userSessionTimeout)
+    if (gracePeriod !== maxGracePeriod) {
+      setMaxGracePeriod(maxGracePeriod)
     }
-    setMaxGracePeriod(timeoutValue)
-  }, [userSessionTimeoutUnit, userSessionTimeout])
+  }, [userSessionTimeoutUnit, userSessionTimeout, maxGracePeriod])
 
-  /* eslint-disable max-len */
   useEffect(() => {
-    if ((editMode || cloneMode) && data) {
-      if(_.get(data, 'userSessionTimeoutUnit')){
-        setMaxGracePeriod((data.guestPortal?.userSessionTimeout || 1) * minutesMapping[_.get(data, 'userSessionTimeoutUnit')] || maxGracePeriod)
-      } else {
-        setMaxGracePeriod(data.guestPortal?.userSessionTimeout || maxGracePeriod)
+    if ((editMode || cloneMode) && data && data.guestPortal && !isRetrievedData) {
+      const userSessionTimeoutUnitData = _.get(data, 'userSessionTimeoutUnit')
+      const userSessionTimeoutData = _.get(data, 'guestPortal.userSessionTimeout')
+      const lockoutPeriodUnitData = _.get(data, 'lockoutPeriodUnit')
+      const lockoutPeriodEnabledData = _.get(data, 'guestPortal.lockoutPeriodEnabled')
+      const lockoutPeriodData = _.get(data, 'guestPortal.lockoutPeriod')
+      const macCredentialsDurationUnitData = _.get(data, 'macCredentialsDurationUnit')
+      const macCredentialsDurationData = _.get(data, 'guestPortal.macCredentialsDuration')
+      const userSessionGracePeriodData = _.get(data, 'guestPortal.userSessionGracePeriod')
+      /* eslint-disable max-len */
+      const currentGracePeriod = calGracePeriod(userSessionTimeoutUnitData, userSessionTimeoutData) || maxGracePeriod
+      if (currentGracePeriod !== maxGracePeriod) {
+        setMaxGracePeriod(currentGracePeriod)
       }
 
-      form.setFieldValue(['guestPortal','userSessionGracePeriod'], data.guestPortal?.userSessionGracePeriod)
+      form.setFieldValue(['guestPortal','userSessionGracePeriod'], userSessionGracePeriodData)
 
-      if(data.guestPortal?.lockoutPeriodEnabled){
+      if(lockoutPeriodEnabledData){
         setUseDefaultSetting(false)
-        const userSessionTimeoutUnit = _.get(data, 'userSessionTimeoutUnit')
-        if(userSessionTimeoutUnit){
-          form.setFieldValue('userSessionTimeoutUnit', userSessionTimeoutUnit)
-        }
-        if(data.guestPortal.userSessionTimeout
-          && data.guestPortal.userSessionTimeout >= oneHour
-          && data.guestPortal.userSessionTimeout % oneHour === 0
-          && !userSessionTimeoutUnit){
-          form.setFieldValue(['guestPortal','userSessionTimeout'], data.guestPortal.userSessionTimeout/oneHour)
-          form.setFieldValue('userSessionTimeoutUnit', 'hours')
-        } else if (!userSessionTimeoutUnit) {
-          form.setFieldValue(['guestPortal','userSessionTimeout'], data.guestPortal.userSessionTimeout)
-          form.setFieldValue('userSessionTimeoutUnit', 'minutes')
+
+        if (!userSessionTimeoutUnitData) {
+          const [timeData, unit] = calCurrentDataAndUnit(userSessionTimeoutData, [UnitEnum.HOURS, UnitEnum.MINS])
+          form.setFieldValue(['guestPortal','userSessionTimeout'], timeData)
+          form.setFieldValue('userSessionTimeoutUnit', unit)
         }
 
-        const lockoutPeriodUnit = _.get(data, 'lockoutPeriodUnit')
-        if(lockoutPeriodUnit){
-          form.setFieldValue('lockoutPeriodUnit', lockoutPeriodUnit)
+        if (!lockoutPeriodUnitData) {
+          const [timeData, unit] = calCurrentDataAndUnit(lockoutPeriodData, [UnitEnum.DAYS, UnitEnum.HOURS, UnitEnum.HOURS])
+          form.setFieldValue(['guestPortal','lockoutPeriod'], timeData)
+          form.setFieldValue('lockoutPeriodUnit', unit)
         }
-        if(data.guestPortal.lockoutPeriod
-          && data.guestPortal.lockoutPeriod >= oneDay
-          && data.guestPortal.lockoutPeriod % oneDay === 0
-          && !lockoutPeriodUnit){
-          form.setFieldValue(['guestPortal','lockoutPeriod'], data.guestPortal.lockoutPeriod/oneDay)
-          form.setFieldValue('lockoutPeriodUnit', 'days')
-        } else if (data.guestPortal.lockoutPeriod
-          && data.guestPortal.lockoutPeriod >= oneHour
-          && data.guestPortal.lockoutPeriod % oneHour === 0
-          && !lockoutPeriodUnit){
-          form.setFieldValue(['guestPortal','lockoutPeriod'], data.guestPortal.lockoutPeriod/oneHour)
-          form.setFieldValue('lockoutPeriodUnit', 'hours')
-        } else if (!lockoutPeriodUnit) {
-          form.setFieldValue(['guestPortal','lockoutPeriod'], data.guestPortal.lockoutPeriod)
-          form.setFieldValue('lockoutPeriodUnit', 'minutes')
-        }
+
       } else {
-        const userSessionTimeoutUnit = _.get(data, 'userSessionTimeoutUnit')
-        if(userSessionTimeoutUnit){
-          form.setFieldValue('userSessionTimeoutUnit', userSessionTimeoutUnit)
-        }
-        if(data.guestPortal?.userSessionTimeout
-          && data.guestPortal.userSessionTimeout >= oneDay
-          && data.guestPortal?.userSessionTimeout % oneDay === 0
-          && !userSessionTimeoutUnit){
-          form.setFieldValue(['guestPortal','userSessionTimeout'], data.guestPortal.userSessionTimeout/oneDay)
-          form.setFieldValue('userSessionTimeoutUnit', 'days')
-        } else if (data.guestPortal?.userSessionTimeout
-          && data.guestPortal.userSessionTimeout >= oneHour
-          && data.guestPortal.userSessionTimeout % oneHour === 0
-          && !userSessionTimeoutUnit){
-          form.setFieldValue(['guestPortal','userSessionTimeout'], data.guestPortal.userSessionTimeout/oneHour)
-          form.setFieldValue('userSessionTimeoutUnit', 'hours')
-        } else if (!userSessionTimeoutUnit) {
-          form.setFieldValue(['guestPortal','userSessionTimeout'], data.guestPortal?.userSessionTimeout)
-          form.setFieldValue('userSessionTimeoutUnit', 'minutes')
+        if (!userSessionTimeoutUnitData) {
+          const [timeData, unit] = calCurrentDataAndUnit(userSessionTimeoutData, [UnitEnum.DAYS, UnitEnum.HOURS, UnitEnum.MINS])
+          form.setFieldValue(['guestPortal','userSessionTimeout'], timeData)
+          form.setFieldValue('userSessionTimeoutUnit', unit)
         }
 
-        const macCredentialsDurationUnit = _.get(data, 'macCredentialsDurationUnit')
-        if (macCredentialsDurationUnit){
-          form.setFieldValue('macCredentialsDurationUnit', macCredentialsDurationUnit)
-        }
         // Parsing the minutes to different time unit, backend will only return/receive duration as minutes without unit
         // Both duration and unit will be parse again in Network form before sending it to backend.
-        if (data.guestPortal?.macCredentialsDuration && !macCredentialsDurationUnit) {
-          let duration = data.guestPortal?.macCredentialsDuration
-          let durationUnit = 'minutes'
-          switch(true) {
-            case (duration >= oneWeek && duration % oneWeek === 0):
-              duration = duration / oneWeek
-              durationUnit = 'weeks'
-              break
-            case (duration >= oneDay && duration % oneDay === 0):
-              duration = duration / oneDay
-              durationUnit = 'days'
-              break
-            case (duration >= oneHour && duration % oneHour === 0):
-              duration = duration / oneHour
-              durationUnit = 'hours'
-              break
+        if (macCredentialsDurationData && !macCredentialsDurationUnitData) {
+          let duration = macCredentialsDurationData
+          let durationUnit = UnitEnum.MINS
+          if (isSessionDurationEnable && macCredentialsDurationData >= oneWeek && macCredentialsDurationData % oneWeek === 0) {
+            duration = macCredentialsDurationData / oneWeek
+            durationUnit = UnitEnum.WEEKS
+          } else if (isSessionDurationEnable && macCredentialsDurationData >= oneDay && macCredentialsDurationData % oneDay === 0) {
+            duration = macCredentialsDurationData / oneDay
+            durationUnit = UnitEnum.DAYS
+          } else if (macCredentialsDurationData >= oneHour && macCredentialsDurationData % oneHour === 0) {
+            duration = macCredentialsDurationData / oneHour
+            durationUnit = UnitEnum.HOURS
           }
           form.setFieldValue(['guestPortal','macCredentialsDuration'], duration)
           form.setFieldValue('macCredentialsDurationUnit', durationUnit)
         }
       }
+      setIsRetrievedData(true)
     }
-  }, [data])
+  }, [data?.guestPortal, isRetrievedData, isSessionDurationEnable])
+
   /* eslint-enable max-len */
   const changeSettings=()=>{
-    form.setFieldValue(['guestPortal','lockoutPeriodEnabled'],useDefaultSetting)
-    setUseDefaultSetting(!useDefaultSetting)
     if(useDefaultSetting){
-      if(userSessionTimeoutUnit === 'days'){
-        form.setFieldValue('userSessionTimeoutUnit', 'hours')
-        form.setFieldValue(['guestPortal','userSessionTimeout'],
-          form.getFieldValue(['guestPortal','userSessionTimeout'])*24)
+      if(userSessionTimeoutUnit === UnitEnum.DAYS){
+        const sessionTimeout = form.getFieldValue(['guestPortal','userSessionTimeout'])
+        form.setFieldValue('userSessionTimeoutUnit', UnitEnum.HOURS)
+        form.setFieldValue(['guestPortal','userSessionTimeout'], sessionTimeout*24)
       }
     }
+    form.setFieldValue(['guestPortal','lockoutPeriodEnabled'],useDefaultSetting)
+    setUseDefaultSetting(!useDefaultSetting)
   }
-  const guestType = data?.guestPortal?.guestNetworkType
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const validateUserSessionTimeout = (value:any) => {
+    const unit = userSessionTimeoutUnit === UnitEnum.MINS ? 2 :1
+    if(!isNumber(value) || value < unit || value > sessionMapping[userSessionTimeoutUnit]){
+      return Promise.reject($t({ defaultMessage:
+        'Value must between 2-14400 minutes or 1-240 hours or 1-10 days' }))
+    }
+    return Promise.resolve()
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const validateMacCredentialsDuration = (value:any) => {
+    if(!isNumber(value) || value > durationMapping[macCredentialsDurationUnit]){
+      /* eslint-disable-next-line */
+      return Promise.reject($t({ defaultMessage: 'Value must between 1-1440 minutes or 1-24 hours or 1-30 days or 1-7 weeks' }))
+    }
+    return Promise.resolve()
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const validateUserSessionGracePeriod = (value:any) => {
+    if(!isNumber(value) || value >= 14400 || value > maxGracePeriod){
+      return Promise.reject($t({ defaultMessage:
+        'Value cannot be more than the time the user is allowed to '+
+        'stay connected and cannot be more than 14399 minutes' }))
+    }
+    return Promise.resolve()
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const validateLockoutPeriod = (value:any) => {
+    if(!isNumber(value) || value >lockoutMapping[lockoutPeriodUnit]){
+      return Promise.reject($t({ defaultMessage:
+        'Value must between 1-65535 minutes or 1-1092 hours or 1-45 days' }))
+    }
+    return Promise.resolve()
+  }
 
   return(
     <>
       <Row justify='space-between'>
         <Col>
           <StepsForm.Subtitle style={{ marginTop: 5 }}>
-            {guestType!==GuestNetworkTypeEnum.ClickThrough &&
+            {!isClickThrough &&
               $t({ defaultMessage: 'User Connection Settings' })}
-            {guestType===GuestNetworkTypeEnum.ClickThrough && useDefaultSetting &&
-              $t({ defaultMessage: 'User Connection Settings (Default)' })}
-            {guestType===GuestNetworkTypeEnum.ClickThrough && !useDefaultSetting &&
-              $t({ defaultMessage: 'User Connection Settings (Time limited)' })}
+            {isClickThrough &&
+              $t({ defaultMessage: 'User Connection Settings ({desc})' }, {
+                desc: useDefaultSetting ?
+                  $t({ defaultMessage: 'Default' }) :
+                  $t({ defaultMessage: 'Time limited' })
+              })}
           </StepsForm.Subtitle>
         </Col>
-        {guestType===GuestNetworkTypeEnum.ClickThrough&&
+        {isClickThrough &&
         <Col style={{ height: '20px', paddingTop: '20px', paddingBottom: '10px', marginTop: 5 }}>
           <Button type='link'
             onClick={changeSettings}
             style={{ fontSize: 12 }}>
-            {!useDefaultSetting&&$t({ defaultMessage: 'Change to default connection' })}
-            {useDefaultSetting&&$t({ defaultMessage: 'Change to Time limited connection' })}
+            {!useDefaultSetting && $t({ defaultMessage: 'Change to default connection' })}
+            {useDefaultSetting && $t({ defaultMessage: 'Change to Time limited connection' })}
           </Button>
         </Col>}
       </Row>
-      {useDefaultSetting&&<Form.Item label={<>
-        {$t({ defaultMessage: 'Allow the user to stay connected for' })}
-        <Tooltip.Question
-          title={$t({ defaultMessage:
-            'Once this connection time limit has been reached, the client will be disconnected' })}
-          placement='bottom' />
-      </>}>
+      <Form.Item
+        label={<>
+          { useDefaultSetting ?
+            $t({ defaultMessage: 'Allow the user to stay connected for' }) :
+            $t({ defaultMessage: 'Allow user to connect for' })}
+          <Tooltip.Question
+            title={useDefaultSetting ?
+              $t({ defaultMessage:
+            'Once this connection time limit has been reached, the client will be disconnected' }) :
+              $t({ defaultMessage: 'Once this aggregated connection time'+
+              ' limit has been reached the client will be disconnected' })}
+            placement='bottom' />
+        </>}>
         <Space align='start'>
           <Form.Item
             noStyle
             name={['guestPortal','userSessionTimeout']}
             validateTrigger='onChange'
-            initialValue={1}
+            initialValue={useDefaultSetting? 1 :24}
             label={$t({ defaultMessage: 'User Session Timeout' })}
             rules={[
               { required: true },
-              { validator: (_, value) => {
-                if(value<(userSessionTimeoutUnit==='minutes'?2:1) ||
-                  value >sessionMapping[userSessionTimeoutUnit]){
-                  return Promise.reject($t({ defaultMessage:
-                    'Value must between 2-14400 minutes or 1-240 hours or 1-10 days' }))
-                }
-                return Promise.resolve()
-              } }
+              { validator: (_, value) => validateUserSessionTimeout(value) }
             ]}
           >
             <InputNumber data-testid='userSessionTimeout'
-              min={userSessionTimeoutUnit==='minutes'?2:1}
+              min={userSessionTimeoutUnit===UnitEnum.MINS ? 2 : 1}
               max={sessionMapping[userSessionTimeoutUnit]}
               style={{ width: '100px' }}
-              onChange={(value)=>{
-                if(userSessionTimeoutUnit === 'days'){
-                  setMaxGracePeriod(value*24*60)
-                }else if(userSessionTimeoutUnit === 'hours'){
-                  setMaxGracePeriod(value*60)
-                }else{
-                  setMaxGracePeriod(value)
-                }
-              }}
+              onChange={(value)=>setMaxGracePeriod(calGracePeriod(userSessionTimeoutUnit, value))}
             />
           </Form.Item>
-          <Form.Item noStyle name='userSessionTimeoutUnit' initialValue={'days'}>
+          <Form.Item noStyle name='userSessionTimeoutUnit' initialValue={UnitEnum.DAYS}>
             <Select data-testid='userSessionTimeoutUnit'
-              onChange={(value)=>{
-                if(value === 'days'){
-                  setMaxGracePeriod(userSessionTimeout*24*60)
-                }else if(value === 'hours'){
-                  setMaxGracePeriod(userSessionTimeout*60)
-                }else{
-                  setMaxGracePeriod(userSessionTimeout)
-                }
-              }}>
-              <Option value={'days'}>{$t({ defaultMessage: 'Days' })}</Option>
-              <Option value={'hours'}>{$t({ defaultMessage: 'Hours' })}</Option>
-              <Option value={'minutes'}>{$t({ defaultMessage: 'Minutes' })}</Option>
+              style={{ minWidth: '100px' }}
+              onChange={(value)=>setMaxGracePeriod(calGracePeriod(value, userSessionTimeout))}>
+              {useDefaultSetting &&
+              <Option value={UnitEnum.DAYS}>{$t({ defaultMessage: 'Days' })}</Option>}
+              <Option value={UnitEnum.HOURS}>{$t({ defaultMessage: 'Hours' })}</Option>
+              <Option value={UnitEnum.MINS}>{$t({ defaultMessage: 'Minutes' })}</Option>
             </Select>
           </Form.Item>
         </Space>
-      </Form.Item>}
-      {!useDefaultSetting&&<>
-        <Form.Item label={<>
-          {$t({ defaultMessage: 'Allow user to connect for' })}
-          <Tooltip.Question
-            title={$t({ defaultMessage: 'Once this aggregated connection time'+
-            ' limit has been reached the client will be disconnected' })}
-            placement='bottom' />
-        </>}>
-          <Space align='start'>
-            <Form.Item
-              noStyle
-              name={['guestPortal','userSessionTimeout']}
-              validateTrigger='onChange'
-              initialValue={24}
-              label={$t({ defaultMessage: 'User Session Timeout' })}
-              rules={[
-                { required: true },
-                { validator: (_, value) => {
-                  if(value<(userSessionTimeoutUnit==='minutes'?2:1) ||
-                    value >sessionMapping[userSessionTimeoutUnit]){
-                    return Promise.reject($t({ defaultMessage:
-                      'Value must between 2-14400 minutes or 1-240 hours' }))
-                  }
-                  return Promise.resolve()
-                } }
-              ]}
-            >
-              <InputNumber data-testid='userSessionTimeout'
-                onChange={(value)=>{
-                  if(userSessionTimeoutUnit === 'hours'){
-                    setMaxGracePeriod(value*60)
-                  }else{
-                    setMaxGracePeriod(value)
-                  }
-                }}
-                min={userSessionTimeoutUnit==='minutes'?2:1}
-                max={sessionMapping[userSessionTimeoutUnit]}
-                style={{ width: '100px' }} />
-            </Form.Item>
-            <Form.Item noStyle name='userSessionTimeoutUnit' initialValue={'hours'}>
-              <Select data-testid='userSessionTimeoutUnit'
-                onChange={(value)=>{
-                  if(value === 'hours'){
-                    setMaxGracePeriod(userSessionTimeout*60)
-                  }else{
-                    setMaxGracePeriod(userSessionTimeout)
-                  }
-                }}
-              >
-                <Option value={'hours'}>{$t({ defaultMessage: 'Hours' })}</Option>
-                <Option value={'minutes'}>{$t({ defaultMessage: 'Minutes' })}</Option>
-              </Select>
-            </Form.Item>
-          </Space>
-        </Form.Item>
+      </Form.Item>
+      {!useDefaultSetting && <>
         <Form.Item
           hidden
           name={['guestPortal','lockoutPeriodEnabled']}
           initialValue={false}
-          children={<></>}
         />
         <Form.Item label={<>
           {$t({ defaultMessage: 'After that time, don\'t allow to reconnect for' })}
@@ -352,13 +305,7 @@ export function UserConnectionForm () {
               label={$t({ defaultMessage: 'Lock-out period' })}
               rules={[
                 { required: true },
-                { validator: (_, value) => {
-                  if(value >lockoutMapping[lockoutPeriodUnit]){
-                    return Promise.reject($t({ defaultMessage:
-                      'Value must between 1-65535 minutes or 1-1092 hours or 1-45 days' }))
-                  }
-                  return Promise.resolve()
-                } }
+                { validator: (_, value) => validateLockoutPeriod(value) }
               ]}
             >
               <InputNumber data-testid='lockoutPeriod'
@@ -366,11 +313,11 @@ export function UserConnectionForm () {
                 max={lockoutMapping[lockoutPeriodUnit]}
                 style={{ width: '100px' }} />
             </Form.Item>
-            <Form.Item noStyle name='lockoutPeriodUnit' initialValue={'hours'}>
-              <Select data-testid='lockoutPeriodUnit'>
-                <Option value={'days'}>{$t({ defaultMessage: 'Days' })}</Option>
-                <Option value={'hours'}>{$t({ defaultMessage: 'Hours' })}</Option>
-                <Option value={'minutes'}>{$t({ defaultMessage: 'Minutes' })}</Option>
+            <Form.Item noStyle name='lockoutPeriodUnit' initialValue={UnitEnum.HOURS}>
+              <Select data-testid='lockoutPeriodUnit' style={{ minWidth: '100px' }}>
+                <Option value={UnitEnum.DAYS}>{$t({ defaultMessage: 'Days' })}</Option>
+                <Option value={UnitEnum.HOURS}>{$t({ defaultMessage: 'Hours' })}</Option>
+                <Option value={UnitEnum.MINS}>{$t({ defaultMessage: 'Minutes' })}</Option>
               </Select>
             </Form.Item>
           </Space>
@@ -381,7 +328,7 @@ export function UserConnectionForm () {
       checked={true}
       switchStyle={{ display: 'none' }}
       >
-        {useDefaultSetting&&guestType !== GuestNetworkTypeEnum.WISPr &&<Form.Item>
+        {useDefaultSetting&& !isWispr && <Form.Item>
           <Space align='start'>
             <Form.Item style={{ height: 32, marginBottom: 0 }}
               name={['wlan','bypassCPUsingMacAddressAuthentication']}
@@ -397,13 +344,7 @@ export function UserConnectionForm () {
               label={$t({ defaultMessage: 'Mac Credentials Duration' })}
               rules={[
                 { required: true },
-                { validator: (_, value) => {
-                  if(value > durationMapping[macCredentialsDurationUnit]){
-                    /* eslint-disable-next-line */
-                    return Promise.reject($t({ defaultMessage: 'Value must between 1-1440 minutes or 1-24 hours or 1-30 days or 1-7 weeks' }))
-                  }
-                  return Promise.resolve()
-                } }
+                { validator: (_, value) => validateMacCredentialsDuration(value) }
               ]}
             >
               <InputNumber data-testid='macCredentialsDuration'
@@ -412,15 +353,17 @@ export function UserConnectionForm () {
                 disabled={!checkDuration}
                 style={{ width: '100px' }} />
             </Form.Item>
-            <Form.Item noStyle name='macCredentialsDurationUnit' initialValue={'hours'}>
-              <Select data-testid='macCredentialsDurationUnit' disabled={!checkDuration}>
-                <Option value={'minutes'}>{$t({ defaultMessage: 'Minutes' })}</Option>
-                <Option value={'hours'}>{$t({ defaultMessage: 'Hours' })}</Option>
+            <Form.Item noStyle name='macCredentialsDurationUnit' initialValue={UnitEnum.HOURS}>
+              <Select data-testid='macCredentialsDurationUnit'
+                style={{ minWidth: '100px' }}
+                disabled={!checkDuration}>
+                <Option value={UnitEnum.MINS}>{$t({ defaultMessage: 'Minutes' })}</Option>
+                <Option value={UnitEnum.HOURS}>{$t({ defaultMessage: 'Hours' })}</Option>
                 {
                   isSessionDurationEnable &&
                   <>
-                    <Option value={'days'}>{$t({ defaultMessage: 'Days' })}</Option>
-                    <Option value={'weeks'}>{$t({ defaultMessage: 'Weeks' })}</Option>
+                    <Option value={UnitEnum.DAYS}>{$t({ defaultMessage: 'Days' })}</Option>
+                    <Option value={UnitEnum.WEEKS}>{$t({ defaultMessage: 'Weeks' })}</Option>
                   </>
                 }
               </Select>
@@ -447,14 +390,7 @@ export function UserConnectionForm () {
               validateTrigger='onChange'
               rules={[
                 { required: true },
-                { validator: (_, value) => {
-                  if(value >= 14400 || value >maxGracePeriod){
-                    return Promise.reject($t({ defaultMessage:
-                      'Value cannot be more than the time the user is allowed to '+
-                      'stay connected and cannot be more than 14399 minutes' }))
-                  }
-                  return Promise.resolve()
-                } }
+                { validator: (_, value) => validateUserSessionGracePeriod(value) }
               ]}
             >
               <InputNumber data-testid='userSessionGracePeriod'

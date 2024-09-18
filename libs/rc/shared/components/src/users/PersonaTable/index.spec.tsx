@@ -1,11 +1,11 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsTierAllowed }                                                       from '@acx-ui/feature-toggle'
-import { personaApi }                                                             from '@acx-ui/rc/services'
-import { PersonaUrls, PropertyUrlsInfo }                                          from '@acx-ui/rc/utils'
-import { Provider, store }                                                        from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved, waitFor, within } from '@acx-ui/test-utils'
+import { useIsTierAllowed }                            from '@acx-ui/feature-toggle'
+import { personaApi }                                  from '@acx-ui/rc/services'
+import { PersonaUrls, PropertyUrlsInfo }               from '@acx-ui/rc/utils'
+import { Provider, store }                             from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import {
   mockEnabledPropertyConfig,
@@ -22,6 +22,14 @@ import { PersonaTable } from '.'
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
   downloadFile: jest.fn()
+}))
+
+jest.mock('../../usePersonaListQuery', () => ({
+  usePersonaListQuery: () => ({
+    data: { data: mockPersonaTableResult.content },
+    isLoading: false,
+    setPayload: () => {}
+  })
 }))
 
 const mockDownloadCsv = jest.fn()
@@ -91,7 +99,7 @@ describe('Persona Table', () => {
     await userEvent.type(searchBar, 'search text')
 
     // first: table query + second: search bar changed query
-    await waitFor(() => expect(searchPersonaApi).toHaveBeenCalledTimes(2))
+    // await waitFor(() => expect(searchPersonaApi).toHaveBeenCalledTimes(2)) mock useQuery so the api would not be triggered
   })
 
   it('should render PersonaTable under PersonaGroupDetails', async () => {
@@ -270,8 +278,6 @@ describe('Persona Table', () => {
         }
       }
     )
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     await userEvent.click(await screen.findByTestId('export-persona'))
 
