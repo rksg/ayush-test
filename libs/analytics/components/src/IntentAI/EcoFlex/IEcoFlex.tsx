@@ -10,7 +10,7 @@ export const IntentAIDetails = createIntentAIDetails({
       defaultMessage: `
         Leverage <b><i>EcoFlexAI</i></b>, available only through IntentAI for AI/ML based Energy 
         Saving Model for the network. In this mode, based on the usage pattern PowerSave supported 
-        APs are switched to PowerSaving mode and  resumed to normal power based on the increased 
+        APs are switched to PowerSaving mode and resumed to normal power based on the increased 
         network activity.
       ` }),
     noData: defineMessage({
