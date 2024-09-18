@@ -25,8 +25,7 @@ import { AddNetworkModal }       from '../../../NetworkForm/AddNetworkModal'
 import { useIsEdgeFeatureReady } from '../../../useEdgeActions'
 
 import { ActivateNetworkSwitchButtonP2, ActivateNetworkSwitchButtonP2Props } from './ActivateNetworkSwitchButton'
-import ForwardGuestTrafficDiagramVertical                                    from './assets/images/edge-sd-lan-forward-guest-traffic.png'
-import MvForwardGuestTrafficDiagramVertical                                  from './assets/images/edge-sd-lan-mv-forward-guest-traffic.svg'
+import ForwardGuestTrafficDiagramVertical                                    from './assets/images/edge-sd-lan-forward-guest-traffic.svg'
 import * as UI                                                               from './styledComponents'
 
 const dmzTunnelColumnHeaderTooltip = defineMessage({
@@ -268,10 +267,7 @@ export const MoreDetailsDrawer = (props: { visible: boolean, setVisible: (open: 
     <Space direction='vertical' size={40}>
       <UI.DiagramContainer>
         <img
-          src={isEdgeSdLanMvEnabled
-            ? MvForwardGuestTrafficDiagramVertical
-            : ForwardGuestTrafficDiagramVertical
-          }
+          src={ForwardGuestTrafficDiagramVertical}
           alt={$t({ defaultMessage: 'SD-LAN forward guest traffic' })}
         />
         {!isEdgeSdLanMvEnabled && <UI.FrameOverDiagram />}
@@ -279,7 +275,7 @@ export const MoreDetailsDrawer = (props: { visible: boolean, setVisible: (open: 
       <UI.StyledParagraph>
         {
           // eslint-disable-next-line max-len
-          $t({ defaultMessage: 'Enabling \'Forward guest traffic to DMZ\' will tunnel the guest traffic further to the cluster (SmartEdges) in DMZ. If it\'s disabled, the guest traffic could still be sent to the cluster (SmartEdges) in the Data Center, but only if the \'Enable Tunnel\' toggle is enabled.' })
+          $t({ defaultMessage: 'Enabling \'Forward guest traffic to DMZ\' will tunnel the guest traffic further to the cluster (RUCKUS Edges) in DMZ. If it\'s disabled, the guest traffic could still be sent to the cluster (RUCKUS Edges) in the Data Center, but only if the \'Enable Tunnel\' toggle is enabled.' })
         }
       </UI.StyledParagraph>
     </Space>

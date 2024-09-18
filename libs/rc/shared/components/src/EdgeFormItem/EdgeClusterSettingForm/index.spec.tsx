@@ -106,24 +106,25 @@ describe('EdgeClusterSettingForm', () => {
     renderClusterForm()
 
     // Add to maximum 4 nodes
-    const addBtn = screen.getByRole('button', { name: 'Add another SmartEdge' })
+    const addBtn = screen.getByRole('button', { name: 'Add another RUCKUS Edge' })
     for (let i = 0; i < 3; i++) {
       await userEvent.click(addBtn)
     }
     await waitFor(() =>
-      expect(screen.getAllByRole('textbox', { name: 'SmartEdge Name' }).length).toBe(4)
+      expect(screen.getAllByRole('textbox', { name: 'RUCKUS Edge Name' }).length).toBe(4)
     )
     // Add button is hidden after having 4 nodes
-    expect(screen.queryByRole('button', { name: 'Add another SmartEdge' })).not.toBeInTheDocument()
+    // eslint-disable-next-line max-len
+    expect(screen.queryByRole('button', { name: 'Add another RUCKUS Edge' })).not.toBeInTheDocument()
 
     // Delete 1 node
     const deleteBtns = screen.getAllByRole('button', { name: 'delete' })
     await userEvent.click(deleteBtns[0])
     await waitFor(async () =>
-      expect((await screen.findAllByRole('textbox', { name: 'SmartEdge Name' })).length).toBe(3)
+      expect((await screen.findAllByRole('textbox', { name: 'RUCKUS Edge Name' })).length).toBe(3)
     )
     // Add button becomes enabled again
-    expect(screen.getByRole('button', { name: 'Add another SmartEdge' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Add another RUCKUS Edge' })).toBeInTheDocument()
   })
 
   it('should disable HaMode when Edge count goes beyond the max AB mode allows', async () => {
@@ -137,12 +138,12 @@ describe('EdgeClusterSettingForm', () => {
     await userEvent.click(activeActiveRadio!)
 
     // Add 3 Edges that goes beyond the maximum allowed count for AB mode
-    const addBtn = screen.getByRole('button', { name: 'Add another SmartEdge' })
+    const addBtn = screen.getByRole('button', { name: 'Add another RUCKUS Edge' })
     for (let i = 0; i < 2; i++) {
       await userEvent.click(addBtn)
     }
     await waitFor(() =>
-      expect(screen.getAllByRole('textbox', { name: 'SmartEdge Name' }).length).toBe(3)
+      expect(screen.getAllByRole('textbox', { name: 'RUCKUS Edge Name' }).length).toBe(3)
     )
 
     const activeStandbyRadio = screen.getAllByRole('radio')
@@ -155,29 +156,30 @@ describe('EdgeClusterSettingForm', () => {
     expect(screen.getByRole('combobox', { name: 'Venue' })).toBeVisible()
     expect(screen.getByRole('textbox', { name: 'Cluster Name' })).toBeVisible()
     expect(screen.getByRole('textbox', { name: 'Description' })).toBeVisible()
-    expect(screen.getByText('SmartEdges (0)')).toBeVisible()
-    expect(screen.getByRole('button', { name: 'Add another SmartEdge' })).toBeVisible()
+    expect(screen.getByText('RUCKUS Edges (0)')).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Add another RUCKUS Edge' })).toBeVisible()
     expect(screen.getByText(/The cluster function will operate/i)).toBeVisible()
-    expect(screen.getByRole('textbox', { name: 'SmartEdge Name' })).toBeVisible()
+    expect(screen.getByRole('textbox', { name: 'RUCKUS Edge Name' })).toBeVisible()
     expect(screen.getByRole('textbox', { name: 'Serial Number' })).toBeVisible()
   })
 
   it('should add and delete edge correctly', async () => {
     renderClusterForm()
 
-    const addBtn = screen.getByRole('button', { name: 'Add another SmartEdge' })
+    const addBtn = screen.getByRole('button', { name: 'Add another RUCKUS Edge' })
     await userEvent.click(addBtn)
     await waitFor(async () =>
-      expect((await screen.findAllByRole('textbox', { name: 'SmartEdge Name' })).length).toBe(2)
+      expect((await screen.findAllByRole('textbox', { name: 'RUCKUS Edge Name' })).length).toBe(2)
     )
     await waitFor(async () =>
       expect((await screen.findAllByRole('textbox', { name: 'Serial Number' })).length).toBe(2)
     )
-    expect(screen.queryByRole('button', { name: 'Add another SmartEdge' })).not.toBeInTheDocument()
+    // eslint-disable-next-line max-len
+    expect(screen.queryByRole('button', { name: 'Add another RUCKUS Edge' })).not.toBeInTheDocument()
     const deleteBtns = screen.getAllByRole('button', { name: 'delete' })
     await userEvent.click(deleteBtns[0])
     await waitFor(async () =>
-      expect((await screen.findAllByRole('textbox', { name: 'SmartEdge Name' })).length).toBe(1)
+      expect((await screen.findAllByRole('textbox', { name: 'RUCKUS Edge Name' })).length).toBe(1)
     )
     await waitFor(async () =>
       expect((await screen.findAllByRole('textbox', { name: 'Serial Number' })).length).toBe(1)
@@ -188,10 +190,10 @@ describe('EdgeClusterSettingForm', () => {
   it('should derive vSmartEdge model correctly', async () => {
     renderClusterForm()
 
-    const addBtn = screen.getByRole('button', { name: 'Add another SmartEdge' })
+    const addBtn = screen.getByRole('button', { name: 'Add another RUCKUS Edge' })
     await userEvent.click(addBtn)
     await waitFor(async () =>
-      expect((await screen.findAllByRole('textbox', { name: 'SmartEdge Name' })).length).toBe(2)
+      expect((await screen.findAllByRole('textbox', { name: 'RUCKUS Edge Name' })).length).toBe(2)
     )
     await waitFor(async () =>
       expect((await screen.findAllByRole('textbox', { name: 'Serial Number' })).length).toBe(2)
@@ -220,9 +222,9 @@ describe('EdgeClusterSettingForm', () => {
       expect(screen.getByRole('textbox', { name: 'Cluster Name' })).toHaveValue('Edge Cluster 1')
     )
     await waitFor(() =>
-      expect(screen.getByText('SmartEdges (2)')).toBeVisible()
+      expect(screen.getByText('RUCKUS Edges (2)')).toBeVisible()
     )
-    const edgeNames = await screen.findAllByRole('textbox', { name: 'SmartEdge Name' })
+    const edgeNames = await screen.findAllByRole('textbox', { name: 'RUCKUS Edge Name' })
     expect(edgeNames[0]).toHaveValue('Smart Edge 1')
     expect(edgeNames[1]).toHaveValue('Smart Edge 2')
     const serialNumbers = await screen.findAllByRole('textbox', { name: 'Serial Number' })

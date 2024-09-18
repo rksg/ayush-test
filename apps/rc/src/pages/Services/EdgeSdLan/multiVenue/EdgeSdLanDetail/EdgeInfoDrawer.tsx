@@ -91,7 +91,7 @@ export const EdgeInfoDrawer = (props: EdgeInfoDrawerProps) => {
 
   const columns: TableProps<EdgeInfoDrawerTableDataType>['columns'] = [
     {
-      title: $t({ defaultMessage: 'SmartEdge' }),
+      title: $t({ defaultMessage: 'RUCKUS Edge' }),
       key: 'edgeNodeId',
       dataIndex: 'edgeNodeId',
       sorter: true,
@@ -128,7 +128,7 @@ export const EdgeInfoDrawer = (props: EdgeInfoDrawerProps) => {
     {
       title: $t(
         { defaultMessage: '# of Active {deviceType}' },
-        { deviceType: currentEdgeInfo?.isDmzCluster ? 'SmartEdges' : 'APs' }
+        { deviceType: currentEdgeInfo?.isDmzCluster ? 'RUCKUS Edges' : 'APs' }
       ),
       key: 'activeDeviceCount',
       dataIndex: 'activeDeviceCount',
@@ -139,7 +139,7 @@ export const EdgeInfoDrawer = (props: EdgeInfoDrawerProps) => {
         [{
           title: $t(
             { defaultMessage: '# of Allocated {deviceType}' },
-            { deviceType: currentEdgeInfo?.isDmzCluster ? 'SmartEdges' : 'APs' }
+            { deviceType: currentEdgeInfo?.isDmzCluster ? 'RUCKUS Edges' : 'APs' }
           ),
           key: 'allocatedDeviceCount',
           dataIndex: 'allocatedDeviceCount',
@@ -170,7 +170,7 @@ export const EdgeInfoDrawer = (props: EdgeInfoDrawerProps) => {
   return (
     <Drawer
       title={$t(
-        { defaultMessage: '{edgeClusterName}: SmartEdges' },
+        { defaultMessage: '{edgeClusterName}: RUCKUS Edges' },
         { edgeClusterName: currentEdgeInfo?.clusterName }
       )}
       visible={visible}

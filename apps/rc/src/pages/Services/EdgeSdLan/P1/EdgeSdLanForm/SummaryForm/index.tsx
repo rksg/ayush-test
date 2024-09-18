@@ -41,7 +41,7 @@ export const SummaryForm = () => {
               {formValues.venueName}
             </StyledAntdDescriptions.Item>
             <StyledAntdDescriptions.Item
-              label={$t({ defaultMessage: 'SmartEdge' })}
+              label={$t({ defaultMessage: 'RUCKUS Edge' })}
             >
               {formValues.edgeName}
             </StyledAntdDescriptions.Item>

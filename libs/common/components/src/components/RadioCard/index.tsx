@@ -40,7 +40,7 @@ const categoryMapping = {
     color: '--acx-semantics-green-60'
   },
   edge: {
-    text: defineMessage({ defaultMessage: 'SmartEdge' }),
+    text: defineMessage({ defaultMessage: 'RUCKUS Edge' }),
     color: '--acx-semantics-yellow-60'
   }
 }
