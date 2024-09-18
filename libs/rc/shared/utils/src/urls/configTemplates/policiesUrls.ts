@@ -411,8 +411,8 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/devicePolicies/:templateId',
     newApi: true,
     defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1+json',
-      'Content-Type': 'application/vnd.ruckus.v1+json'
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
     }
   },
   delDevicePolicyRbac: {
