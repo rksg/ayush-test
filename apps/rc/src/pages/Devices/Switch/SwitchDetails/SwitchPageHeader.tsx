@@ -194,8 +194,8 @@ function SwitchPageHeader () {
     if(switchDetailHeader?.stackMembers){
       const switchModel = switchDetailHeader?.model || ''
       const syncedStackMemberCount = switchData?.stackMembers?.length || 0
-      const currentFW = switchDetailHeader?.firmwareVersion || venueFW || ''
-      const currentAboveTenFW = switchDetailHeader?.firmwareVersion || venueAboveTenFw || ''
+      const currentFW = switchDetailHeader?.firmware || venueFW || ''
+      const currentAboveTenFW = switchDetailHeader?.firmware || venueAboveTenFw || ''
       const maxUnits = getStackUnitsMinLimitation(switchModel, currentFW, currentAboveTenFW)
 
       setMaxMembers(maxUnits - syncedStackMemberCount)
