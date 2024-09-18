@@ -2,6 +2,7 @@
 import userEvent         from '@testing-library/user-event'
 import { Form, message } from 'antd'
 import moment            from 'moment-timezone'
+import { BrowserRouter } from 'react-router-dom'
 
 import { Provider, intentAIApi, intentAIUrl, store }                                  from '@acx-ui/store'
 import { mockGraphqlMutation, render, renderHook, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
@@ -88,7 +89,7 @@ describe('createUseIntentTransition', () => {
       mockGraphqlMutation(intentAIUrl, 'IntentTransition', {
         data: { transition: { success: true, errorMsg: '' , errorCode: '' } }
       })
-      render(<Provider><TestForm /></Provider>)
+      render(<BrowserRouter><Provider><TestForm /></Provider></BrowserRouter>)
       await click(await screen.findByRole('button', { name: 'Submit' }))
       expect(await screen.findByTestId('toast-content'))
         // eslint-disable-next-line max-len
@@ -102,7 +103,7 @@ describe('createUseIntentTransition', () => {
       mockGraphqlMutation(intentAIUrl, 'IntentTransition', {
         data: { transition: { success: false, errorMsg: 'error' , errorCode: '' } }
       })
-      render(<Provider><TestForm /></Provider>)
+      render(<BrowserRouter><Provider><TestForm /></Provider></BrowserRouter>)
       await click(await screen.findByRole('button', { name: 'Submit' }))
       expect(await screen.findByTestId('toast-content')).toHaveTextContent('error')
     })
@@ -111,7 +112,7 @@ describe('createUseIntentTransition', () => {
         intent: { ...mockedIntentCRRMnew, metadata: {
           ...mockedIntentCRRMnew.metadata, scheduledAt: '2024-08-12T00:00:00' } }
       })
-      render(<Provider><TestForm /></Provider>)
+      render(<BrowserRouter><Provider><TestForm /></Provider></BrowserRouter>)
       await click(await screen.findByRole('button', { name: 'Submit' }))
       expect(await screen.findByTestId('toast-content'))
         .toHaveTextContent('Scheduled time cannot be before 08/12/2024 20:30')
