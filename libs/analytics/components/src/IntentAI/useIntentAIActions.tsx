@@ -11,7 +11,6 @@ import {
   useLazyVenueRadioActiveNetworksQuery
 } from '@acx-ui/rc/services'
 import { RadioTypeEnum }                          from '@acx-ui/rc/utils'
-import { useNavigate }                            from '@acx-ui/react-router-dom'
 import {  Filters, getIntl, useEncodedParameter } from '@acx-ui/utils'
 
 import {  IntentListItem }      from './config'
@@ -20,8 +19,7 @@ import {
   useLazyIntentWlansQuery,
   useTransitionIntentMutation
 } from './services'
-import { DisplayStates } from './states'
-import * as UI           from './styledComponents'
+import * as UI          from './styledComponents'
 import {
   Actions,
   TransitionIntentItem,
@@ -150,7 +148,7 @@ export function useIntentAIActions () {
           const statusLabelList = new Set()
           data.forEach((item) => {
             const { status, statusReason } = getTransitionStatus(action, item)
-            let statusLabel = statusReason ? `${status}-${statusReason}` : status
+            const statusLabel = [status,statusReason].filter((val)=>val).join('-')
             statusLabelList.add(statusLabel)
           })
           const currentFilter = intentTableFilters.read() || {}

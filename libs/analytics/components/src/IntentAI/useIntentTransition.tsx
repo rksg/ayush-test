@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useRef } from 'react'
 
 import { gql }                       from 'graphql-request'
 import moment, { Moment }            from 'moment-timezone'
@@ -87,6 +87,7 @@ export function createUseIntentTransition <Preferences> (
   return function useIntentTransition () {
     const { $t } = useIntl()
     const { intent } = useIntentContext()
+    const intentRef = useRef(intent)
     const basePath = useTenantLink('/intentAI')
     const navigate = useNavigate()
     const [doSubmit, response] = useIntentTransitionMutation()
@@ -99,9 +100,9 @@ export function createUseIntentTransition <Preferences> (
       if (!response.data) return
 
       if (response.data.success) {
-        const featureValue = $t(aiFeaturesLabel[codes[intent.code].aiFeature])
-        const intentValue = $t(codes[intent.code].intent)
-        const sliceValue = intent.sliceValue
+        const featureValue = $t(aiFeaturesLabel[codes[intentRef.current.code].aiFeature])
+        const intentValue = $t(codes[intentRef.current.code].intent)
+        const sliceValue = intentRef.current.sliceValue
         showToast({
           type: 'success',
           content: <FormattedMessage
@@ -116,13 +117,13 @@ export function createUseIntentTransition <Preferences> (
           link: {
             text: 'View',
             onClick: () => {
-              const { status, statusReason } = intent
-              let statusLabel = statusReason ? `${status}-${statusReason}` : status
+              const { status, statusReason } = response.originalArgs!
+              const statusLabel = [status,statusReason].filter((val)=>val).join('-')
               const intentFilter = {
                 aiFeature: [featureValue],
                 intent: [intentValue],
-                category: [$t(codes[intent!.code].category)],
-                sliceValue: [intent!.sliceId],
+                category: [$t(codes[intentRef.current.code].category)],
+                sliceValue: [intentRef.current.sliceId],
                 statusLabel: [statusLabel]
               }
               const encodedParameters = encodeParameter(intentFilter)
@@ -139,7 +140,8 @@ export function createUseIntentTransition <Preferences> (
       } else {
         showToast({ type: 'error', content: response.data.errorMsg })
       }
-    }, [$t, navigate, basePath, intent, response])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [$t, navigate, response])
 
     return { submit, response }
   }

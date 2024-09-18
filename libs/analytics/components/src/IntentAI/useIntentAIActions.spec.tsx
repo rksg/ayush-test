@@ -1,14 +1,14 @@
 /* eslint-disable max-len */
 
-import userEvent         from '@testing-library/user-event'
-import { Modal }         from 'antd'
-import moment            from 'moment-timezone'
-import { BrowserRouter } from 'react-router-dom'
+import userEvent          from '@testing-library/user-event'
+import { message, Modal } from 'antd'
+import moment             from 'moment-timezone'
+import { BrowserRouter }  from 'react-router-dom'
 
-import { get }                   from '@acx-ui/config'
-import { useIsSplitOn }          from '@acx-ui/feature-toggle'
-import { Provider, intentAIUrl } from '@acx-ui/store'
-import { act }                   from '@acx-ui/test-utils'
+import { get }                            from '@acx-ui/config'
+import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { Provider, intentAIUrl }          from '@acx-ui/store'
+import { act, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 import {
   mockGraphqlMutation,
   screen,
@@ -29,16 +29,10 @@ const mockedTransitionIntent = jest.fn()
 const mockedIntentWlansQuery = jest.fn()
 const mockedVenueRadioActiveNetworksQuery = jest.fn()
 
-// jest.mock('react-router-dom', () => ({
-//   ...jest.requireActual('react-router-dom'),
-//   useNavigate: jest.fn(),
-//   useTenantLink: jest.fn()
-// }))
-
-// jest.mock('@acx-ui/components', () => ({
-//   ...jest.requireActual('@acx-ui/components'),
-//   showToast: jest.fn()
-// }))
+declare global {
+  // eslint-disable-next-line no-var
+  var originalLocation: Location
+}
 
 const raiWlans = [
   { id: 'i1', name: 'n1', ssid: 's1' },
@@ -82,16 +76,10 @@ const extractItem = {
   statusTooltip: 'IntentAI is active and has successfully applied the changes to the zone-1.'
 }
 
-// await waitFor(async () => {
-//   expect(components.showToast)
-//     .toHaveBeenLastCalledWith({
-//       type: 'success',
-//       content: 'Notifications updated succesfully.'
-//     })
-// })
 describe('useIntentAIActions', () => {
   const now = new Date('2024-07-20T04:01:00.000Z').getTime()
   beforeEach(() => {
+    global.originalLocation = window.location
     const resp = { t1: { success: true, errorMsg: '' , errorCode: '' } } as TransitionMutationResponse
     mockedTransitionIntent.mockReturnValue(Promise.resolve({ data: resp }))
     mockedIntentWlansQuery.mockReturnValue({ unwrap: () => Promise.resolve(raiWlans) })
@@ -100,12 +88,20 @@ describe('useIntentAIActions', () => {
     mockGraphqlMutation(intentAIUrl, 'TransitionIntent', { data: resp })
     jest.spyOn(Date, 'now').mockReturnValue(now)
   })
-  afterEach(() => {
-    cleanup()
+  afterEach((done) => {
     jest.mocked(get).mockReturnValue('')
     jest.clearAllMocks()
     jest.restoreAllMocks()
     Modal.destroyAll()
+    window.location = global.originalLocation
+
+    const toast = screen.queryByRole('img', { name: 'close' })
+    if (toast) {
+      waitForElementToBeRemoved(toast).then(done)
+      message.destroy()
+    } else {
+      done()
+    }
   })
   describe('r1 - OneClickOptimize', () => {
     const mockOK = jest.fn()
@@ -351,6 +347,9 @@ describe('useIntentAIActions', () => {
       jest.mocked(get).mockReturnValue('true')
       mockOK.mockClear()
     })
+    afterEach(() => {
+      cleanup()
+    })
     describe('rai - AI-Driven', () => {
       it('should handle mutation correctly - single', async () => {
         const selectedRow = [{ ...mockAIDrivenRow, aiFeature: aiFeatures.RRM, ...extractItem }] as IntentListItem[]
@@ -503,7 +502,7 @@ describe('useIntentAIActions', () => {
     })
   })
 
-  describe.only('Other Actions', () => {
+  describe('Other Actions', () => {
     const mockOK = jest.fn()
     beforeEach(() => {
       jest.mocked(useIsSplitOn).mockReturnValue(false)
@@ -551,15 +550,13 @@ describe('useIntentAIActions', () => {
         }]
       })
       await waitFor(() => expect(mockOK).toBeCalledTimes(1))
-      expect(await screen.findByText(/The selected intents has been updated/)).toBeVisible()
-      const viewElement = await screen.findByText('View')
-      // const viewElement = screen.getByRole('button', { name: 'View' })
-      // expect(viewElement)
-      //   .toHaveAttribute('href', '?intentTableFilters=%257B%2522statusLabel%2522%253A%255B%2522paused-from-active%252Bpaused-from-inactive%2522%255D%257D')
-      await userEvent.click(viewElement)
 
-      // expect(await screen.findByText(/Paused/)).toBeVisible()
-      expect(window.location.href).toContain('?intentTableFilters=%257B%2522statusLabel%2522%253A%255B%2522paused-from-active%252Bpaused-from-inactive%2522%255D%257D')
+      expect(await screen.findByText(/The selected intents has been updated/)).toBeVisible()
+      const link =
+      '?intentTableFilters=%257B%2522statusLabel%2522%253A%255B%2522paused-from-active%2522%255D%257D'
+      const viewElement = await screen.findByText('View')
+      await userEvent.click(viewElement)
+      expect(window.location.href).toContain(link)
     })
 
     it('should handle revert', async () => {
@@ -600,6 +597,12 @@ describe('useIntentAIActions', () => {
         }]
       })
       await waitFor(() => expect(mockOK).toBeCalledTimes(1))
+      expect(await screen.findByText(/The selected intents has been updated/)).toBeVisible()
+      const link =
+      '?intentTableFilters=%257B%2522statusLabel%2522%253A%255B%2522revertscheduled%2522%255D%257D'
+      const viewElement = await screen.findByText('View')
+      await userEvent.click(viewElement)
+      expect(window.location.href).toContain(link)
     })
 
     it('should show error toast when revert fail - single', async () => {
