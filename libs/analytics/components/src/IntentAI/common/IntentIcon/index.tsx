@@ -15,7 +15,7 @@ export const icons = {
   [aiFeatures.RRM]: <AIDrivenRRM />,
   [aiFeatures.EquiFlex]: <EquiFlex />,
   [aiFeatures.AIOps]: <AIOperation />,
-  [aiFeatures.EcoFlexAI]: <EcoFlexAI />
+  [aiFeatures.EcoFlex]: <EcoFlexAI />
 }
 
 const sizes = {
