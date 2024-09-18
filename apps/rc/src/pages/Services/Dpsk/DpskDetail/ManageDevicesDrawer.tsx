@@ -87,8 +87,8 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
   }
 
   const getOnlineStatus = (row: DPSKDeviceInfo) => {
-    const dateContent = row.lastConnected
-      ? new Date(row.lastConnected + ' GMT').toLocaleString()
+    const dateContent = row.lastConnectedTime
+      ? new Date(row.lastConnectedTime).toLocaleString()
       : '-'
     return row.online
       ? $t({ defaultMessage: 'Online' })
