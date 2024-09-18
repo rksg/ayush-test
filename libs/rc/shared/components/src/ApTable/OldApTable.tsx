@@ -734,8 +734,9 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
       {isEdgeCompatibilityEnabled && <EnhancedApCompatibilityDrawer
         visible={compatibilitiesDrawerVisible}
         isMultiple
-        type={ApCompatibilityType.VENUE}
+        type={params.venueId?ApCompatibilityType.VENUE:ApCompatibilityType.NETWORK}
         venueId={params.venueId}
+        networkId={params.networkId}
         apId={selectedApSN}
         apName={selectedApName}
         onClose={() => setCompatibilitiesDrawerVisible(false)}

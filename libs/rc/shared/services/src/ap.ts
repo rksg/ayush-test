@@ -2,7 +2,7 @@
 import { QueryReturnValue }                                   from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import { MaybePromise }                                       from '@reduxjs/toolkit/dist/query/tsHelpers'
 import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
-import { reduce }                                             from 'lodash'
+import { omit, reduce }                                       from 'lodash'
 
 import { Filter }          from '@acx-ui/components'
 import {
@@ -18,6 +18,7 @@ import {
   ApAntennaTypeSettings,
   ApBandModeSettings,
   ApBssColoringSettings,
+  ApSmartMonitor,
   ApClientAdmissionControl,
   ApDeep,
   ApDetailHeader,
@@ -76,12 +77,19 @@ import {
   onActivityMessageReceived,
   onSocketActivityChanged,
   NewApGroupViewModelResponseType,
+  EthernetPortProfileUrls,
+  SystemCommands,
   StickyClientSteering,
   ApStickyClientSteering
 } from '@acx-ui/rc/utils'
-import { baseApApi }                                    from '@acx-ui/store'
-import { RequestPayload }                               from '@acx-ui/types'
-import { ApiInfo, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
+import { baseApApi }      from '@acx-ui/store'
+import { RequestPayload } from '@acx-ui/types'
+import {
+  ApiInfo,
+  batchApi,
+  createHttpRequest,
+  ignoreErrorModal
+} from '@acx-ui/utils'
 
 import {
   addApGroupFn,
@@ -627,8 +635,17 @@ export const apApi = baseApApi.injectEndpoints({
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
         const apiCustomHeader = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
         const req = createHttpRequest(urlsInfo.factoryResetAp, params, apiCustomHeader)
-        return {
-          ...req
+        if (enableRbac) {
+          return {
+            ...req,
+            body: JSON.stringify({
+              type: SystemCommands.FACTORY_RESET
+            })
+          }
+        } else {
+          return {
+            ...req
+          }
         }
       }
     }),
@@ -858,6 +875,48 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'Details' }, { type: 'Ap', id: 'LanPorts' }]
     }),
+    updateApEthernetPorts: build.mutation<WifiApSetting, RequestPayload>({
+      queryFn: async ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) => {
+        try {
+          const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+          const activateRequests = (payload as WifiApSetting)?.lanPorts
+            ?.filter(l => l.ethernetPortProfileId ).map(l => ({
+              params: {
+                venueId: params!.venueId,
+                serialNumber: params!.serialNumber,
+                portId: l.portId,
+                id: l.ethernetPortProfileId
+              }
+            }))
+          const overwriteRequests = (payload as WifiApSetting)?.lanPorts
+            ?.filter(l => l.ethernetPortProfileId ).map(l => ({
+              params: {
+                venueId: params!.venueId,
+                serialNumber: params!.serialNumber,
+                portId: l.portId
+              },
+              payload: {
+                enabled: l.enabled,
+                overwriteUntagId: l.untagId,
+                overwriteVlanMembers: l.vlanMembers
+              }
+            }))
+          await batchApi(EthernetPortProfileUrls.activateEthernetPortProfileOnApPortId,
+            activateRequests!, fetchWithBQ, customHeaders)
+          await batchApi(EthernetPortProfileUrls.updateEthernetPortSettingsByApPortId,
+            overwriteRequests!, fetchWithBQ, customHeaders)
+          const res = await batchApi(WifiRbacUrlsInfo.updateApLanPorts, [{
+            params,
+            payload: omit(payload as WifiApSetting, 'lanPorts')
+          }], fetchWithBQ, customHeaders)
+
+          return { data: res.data as WifiApSetting }
+        } catch (err) {
+          return { error: err as FetchBaseQueryError }
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'Details' }, { type: 'Ap', id: 'LanPorts' }]
+    }),
     resetApLanPorts: build.mutation<WifiApSetting, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.resetApLanPorts, params)
@@ -979,6 +1038,28 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'BssColoring' }]
+    }),
+    getApSmartMonitor: build.query<ApSmartMonitor, RequestPayload>({
+      query: ({ params, payload }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApSmartMonitor, params, customHeaders)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'SmartMonitor' }]
+    }),
+    updateApSmartMonitor: build.mutation<ApSmartMonitor, RequestPayload>({
+      query: ({ params, payload }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateApSmartMonitor, params, customHeaders)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'SmartMonitor' }]
     }),
     getApValidChannel: build.query<VenueDefaultRegulatoryChannels, RequestPayload>({
       query: ({ params, enableRbac, enableSeparation = false }) => {
@@ -1406,6 +1487,7 @@ export const {
   useGetDefaultApLanPortsQuery,
   useGetApLanPortsQuery,
   useUpdateApLanPortsMutation,
+  useUpdateApEthernetPortsMutation,
   useResetApLanPortsMutation,
   useGetApLedQuery,
   useUpdateApLedMutation,
@@ -1418,6 +1500,9 @@ export const {
   useUpdateApAntennaTypeSettingsMutation,
   useGetApBssColoringQuery,
   useUpdateApBssColoringMutation,
+  useGetApSmartMonitorQuery,
+  useLazyGetApSmartMonitorQuery,
+  useUpdateApSmartMonitorMutation,
   useGetApCapabilitiesQuery,     // deprecated
   useLazyGetApCapabilitiesQuery, // deprecated
   useGetOldApCapabilitiesByModelQuery,

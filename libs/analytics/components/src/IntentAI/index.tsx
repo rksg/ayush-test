@@ -1,20 +1,18 @@
-import { useAnalyticsFilter }             from '@acx-ui/analytics/utils'
-import { GridRow, GridCol, useDateRange } from '@acx-ui/components'
-import { getDateRangeFilter }             from '@acx-ui/utils'
+import { useAnalyticsFilter } from '@acx-ui/analytics/utils'
+import { GridRow, GridCol }   from '@acx-ui/components'
 
 import * as UI           from './styledComponents'
 import { IntentAITable } from './Table'
 
 export const IntentAITabContent = () => {
   const { pathFilters } = useAnalyticsFilter()
-  const { selectedRange } = useDateRange()
 
   return (
     <GridRow>
       <GridCol col={{ span: 24 }} style={{ minHeight: '180px' }}>
         <UI.ApplyModalStyle />
         <IntentAITable
-          pathFilters={{ ...pathFilters, ...getDateRangeFilter(selectedRange) }}
+          pathFilters={pathFilters}
         />
       </GridCol>
     </GridRow>

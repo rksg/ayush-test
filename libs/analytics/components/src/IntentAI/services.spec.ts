@@ -14,7 +14,7 @@ import {
 } from './__tests__/fixtures'
 import { mockedIntentAps }                                                  from './AIOperations/__tests__/mockedIZoneFirmwareUpgrade'
 import { IntentListItem }                                                   from './config'
-import { api, useIntentAITableQuery, TransitionMutationResponse, IntentAp } from './services'
+import { api, useIntentAITableQuery, TransitionMutationResponse, IntentAP } from './services'
 import { DisplayStates, Statuses, StatusReasons }                           from './states'
 import { Actions }                                                          from './utils'
 
@@ -89,6 +89,16 @@ describe('Intent services', () => {
           key: 'zone',
           value: 'zone'
         }
+      ],
+      intents: [
+        {
+          value: 'Client Density vs Throughput for 5 GHz radio',
+          key: 'Client Density vs Throughput for 5 GHz radio'
+        },
+        {
+          value: 'Secure AP firmware vs Client Device Compatibility',
+          key: 'Secure AP firmware vs Client Device Compatibility'
+        }
       ]
     }
     it('should fetch data correctly', async () => {
@@ -147,9 +157,10 @@ describe('Intent services', () => {
       const { result } = renderHook(useIntentAITableQuery, { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
       const customFilter = {
         sliceValue: ['1'],
-        category: ['Wi-Fi Experience'],
+        category: ['Wi-Fi Experience', 'Sustainability'],
         aiFeature: ['AI-Driven RRM'],
-        statusLabel: ['new', 'na-no-aps', 'paused-from-active+paused-by-default']
+        statusLabel: ['new', 'na-no-aps', 'paused-from-active+paused-by-default'],
+        intent: ['Client Density vs Throughput for 5 GHz radio']
       }
       act(() => {
         result.current.onFilterChange(customFilter, {})
@@ -177,9 +188,10 @@ describe('Intent services', () => {
             'c-probeflex-24g',
             'c-probeflex-5g',
             'c-probeflex-6g',
-            'eco-flex-code'
+            'i-ecoflex'
           ]
         },
+        { col: 'code', values: [ 'c-crrm-channel5g-auto' ] },
         {
           col: 'code',
           values: [
@@ -208,7 +220,8 @@ describe('Intent services', () => {
         sliceValue: null,
         category: null,
         aiFeature: null,
-        statusLabel: null
+        statusLabel: null,
+        intent: null
       }
       act(() => {
         result.current.onFilterChange(customFilter, {})
@@ -216,7 +229,7 @@ describe('Intent services', () => {
       expect(result.current.tableQuery.originalArgs?.filterBy).toEqual([])
     })
 
-    it('handleFilterChange should handle feature filter case from url(AirFlexAI)', () => {
+    it('handleFilterChange should handle feature filter case from url(EquiFlex)', () => {
       mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
         data: intentListResult
 
@@ -229,15 +242,16 @@ describe('Intent services', () => {
           wrapper: Provider,
           route: {
             params: { tenantId: 'tenant-id' },
-            search: '?selectedTenants=tenantId&intentTableFilters=%7B%22feature%22%3A%22AirFlexAI%22%7D',
+            search: '?selectedTenants=tenantId&intentTableFilters=%7B%22feature%22%3A%22EquiFlex%22%7D',
             path: '/intentAI'
           }
         })
       const customFilter = {
         sliceValue: null,
         category: null,
-        aiFeature: ['AirFlexAI'],
-        statusLabel: null
+        aiFeature: ['EquiFlex'],
+        statusLabel: null,
+        intent: null
       }
       act(() => {
         result.current.onFilterChange(customFilter, {})
@@ -710,7 +724,7 @@ describe('Intent services', () => {
     )
     expect(status).toBe('fulfilled')
     expect(error).toBeUndefined()
-    expect(data).toStrictEqual<IntentAp[]>([
+    expect(data).toStrictEqual<IntentAP[]>([
       {
         name: 'RuckusAP',
         mac: '28:B3:71:27:38:E0',
@@ -737,7 +751,6 @@ describe('Intent services', () => {
       data: intentHighlights
     }, true)
 
-
     const { status, data, error } = await store.dispatch(
       api.endpoints.intentHighlight.initiate({
         startDate: '2023-06-10T00:00:00+08:00',
@@ -751,7 +764,7 @@ describe('Intent services', () => {
         new: 4,
         active: 8
       },
-      airflex: {
+      probeflex: {
         new: 5,
         active: 10
       },

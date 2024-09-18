@@ -480,7 +480,8 @@ export interface LanPort {
   enabled?: boolean,
   portId?: string,
   type?: 'ACCESS' | 'GENERAL' | 'TRUNK',
-  vni: number
+  vni: number,
+  ethernetPortProfileId: string
 }
 
 export enum ApModelTypeEnum {
@@ -684,6 +685,12 @@ export interface ApDirectedMulticast {
   networkEnabled: boolean
 }
 
+export interface ApSmartMonitor {
+  useVenueSettings: boolean,
+  enabled: boolean,
+  interval: number,
+  threshold: number
+}
 
 export interface APExtendedGrouped extends APExtended {
   networks: {
@@ -894,6 +901,17 @@ export interface SupportCcdApGroup {
   venueId: string,
   members: number,
   aps: APExtended[]
+}
+
+export enum DiagnosisCommands {
+  PING = 'PING',
+  TRACE_ROUTE = 'TRACE_ROUTE',
+  BLINK_LED = 'BLINK_LED'
+}
+
+export enum SystemCommands {
+  REBOOT = 'REBOOT',
+  FACTORY_RESET = 'FACTORY_RESET'
 }
 
 export interface StickyClientSteering {

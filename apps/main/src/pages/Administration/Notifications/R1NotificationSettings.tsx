@@ -37,7 +37,7 @@ function OptionsList ({ preferences, setState }: {
   const { $t } = useIntl()
   const apiChangesNotificationEnabled =
     useIsSplitOn(Features.NOTIFICATION_CHANNEL_API_CHANGES_TOGGLE)
-  const labelsCombined = apiChangesNotificationEnabled ? { ...apiChanges, ...labels } : labels
+  const labelsCombined = apiChangesNotificationEnabled ? { ...labels, ...apiChanges } : labels
 
   return <>{Object.entries(labelsCombined).map(([key, label]) => <div key={key}>
     <Checkbox

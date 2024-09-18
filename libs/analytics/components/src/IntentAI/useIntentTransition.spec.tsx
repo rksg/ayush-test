@@ -6,8 +6,8 @@ import moment            from 'moment-timezone'
 import { Provider, intentAIApi, intentAIUrl, store }                                  from '@acx-ui/store'
 import { mockGraphqlMutation, render, renderHook, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
+import { mockIntentContext }                           from './__tests__/fixtures'
 import { mockedIntentCRRM, mockedIntentCRRMnew }       from './AIDrivenRRM/__tests__/fixtures'
-import { useIntentContext }                            from './IntentContext'
 import { DisplayStates, Statuses }                     from './states'
 import { createUseIntentTransition, useInitialValues } from './useIntentTransition'
 
@@ -31,7 +31,7 @@ describe('createUseIntentTransition', () => {
 
   describe('initialValues', () => {
     it('handle new intent', async () => {
-      jest.mocked(useIntentContext).mockReturnValue({ intent: mockedIntentCRRMnew, kpis: [] })
+      mockIntentContext({ intent: mockedIntentCRRMnew })
       const { result: { current: initialValues } } = renderHook(() => useInitialValues())
       expect(initialValues).toStrictEqual({
         id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b7',
@@ -42,12 +42,12 @@ describe('createUseIntentTransition', () => {
       })
     })
     it('handle existing intent with scheduledAt', async () => {
-      jest.mocked(useIntentContext).mockReturnValue({ intent: mockedIntentCRRM, kpis: [] })
+      mockIntentContext({ intent: mockedIntentCRRM })
       const { result: { current: initialValues } } = renderHook(() => useInitialValues())
       expect(initialValues).toStrictEqual({
         id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6',
         settings: { date: moment('2023-07-15T14:15:00.000Z'), time: 22.25 },
-        status: Statuses.active,
+        status: Statuses.applyScheduled,
         statusReason: undefined,
         displayStatus: DisplayStates.applyScheduled
       })
@@ -81,10 +81,9 @@ describe('createUseIntentTransition', () => {
     })
 
     it('handle submit success', async () => {
-      jest.mocked(useIntentContext).mockReturnValue({
+      mockIntentContext({
         intent: { ...mockedIntentCRRM, metadata: {
-          ...mockedIntentCRRM.metadata, scheduledAt: '2024-08-12T13:00:00' } },
-        kpis: []
+          ...mockedIntentCRRM.metadata, scheduledAt: '2024-08-12T13:00:00' } }
       })
       mockGraphqlMutation(intentAIUrl, 'IntentTransition', {
         data: { transition: { success: true, errorMsg: '' , errorCode: '' } }
@@ -96,10 +95,9 @@ describe('createUseIntentTransition', () => {
         .toHaveTextContent('AI-Driven RRM: Client Density vs Throughput for 2.4 GHz radio for 21_US_Beta_Samsung has been updated')
     })
     it('handle submit error', async () => {
-      jest.mocked(useIntentContext).mockReturnValue({
+      mockIntentContext({
         intent: { ...mockedIntentCRRM, metadata: {
-          ...mockedIntentCRRM.metadata, scheduledAt: '2024-08-12T13:00:00' } },
-        kpis: []
+          ...mockedIntentCRRM.metadata, scheduledAt: '2024-08-12T13:00:00' } }
       })
       mockGraphqlMutation(intentAIUrl, 'IntentTransition', {
         data: { transition: { success: false, errorMsg: 'error' , errorCode: '' } }
@@ -109,10 +107,9 @@ describe('createUseIntentTransition', () => {
       expect(await screen.findByTestId('toast-content')).toHaveTextContent('error')
     })
     it('handle scheduledAt validation', async () => {
-      jest.mocked(useIntentContext).mockReturnValue({
+      mockIntentContext({
         intent: { ...mockedIntentCRRMnew, metadata: {
-          ...mockedIntentCRRMnew.metadata, scheduledAt: '2024-08-12T00:00:00' } },
-        kpis: []
+          ...mockedIntentCRRMnew.metadata, scheduledAt: '2024-08-12T00:00:00' } }
       })
       render(<Provider><TestForm /></Provider>)
       await click(await screen.findByRole('button', { name: 'Submit' }))

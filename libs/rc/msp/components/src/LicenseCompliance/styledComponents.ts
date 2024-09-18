@@ -1,8 +1,8 @@
 import { Space } from 'antd'
 import styled    from 'styled-components/macro'
 
-import { Button, Card, Modal }  from '@acx-ui/components'
-import { CheckMarkCircleSolid } from '@acx-ui/icons'
+import { Button, Card, Modal }                      from '@acx-ui/components'
+import { CheckMarkCircleSolid, WarningCircleSolid } from '@acx-ui/icons'
 
 export const PreDownloadLabel = styled.label`
   font-size: 15px;
@@ -209,16 +209,19 @@ export const YellowTickIcon = styled(CheckMarkCircleSolid)`
     stroke-width: 3px
   }
 `
-export const RedTickIcon = styled(CheckMarkCircleSolid)`
+export const RedTickIcon = styled(WarningCircleSolid)`
   height: 30px;
   width: 30px;
-  path:nth-child(1) {
+  path:nth-child(2) {
     fill: var(--acx-semantics-red-50);
-  }
-  path:nth-child(3) {
     stroke: var(--acx-semantics-red-50);
   }
-  path:nth-child(2) {
-    stroke-width: 3px
+  path:nth-child(3) {
+    d: path('M12 7V12.75');
+    stroke-width: 3px;
+  }
+  path:nth-child(4) {
+    stroke: white;
+    stroke-width: 2px;
   }
 `

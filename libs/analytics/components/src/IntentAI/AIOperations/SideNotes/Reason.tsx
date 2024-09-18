@@ -11,7 +11,7 @@ const icons = {
 }
 
 export const Reason = (props: {
-  reasonText: React.ReactNode
+  reasonText?: React.ReactNode
   resources?: Array<{
     icon: 'video' | 'document'
     link: string
@@ -26,9 +26,10 @@ export const Reason = (props: {
     </a>
   ))
   return <SideNotes>
-    <SideNotes.Section title={$t({ defaultMessage: 'Why the intent?' })}>
+    { props.reasonText &&
+    (<SideNotes.Section title={$t({ defaultMessage: 'Why is the recommendation?' })}>
       <Typography.Paragraph children={props.reasonText} />
-    </SideNotes.Section>
+    </SideNotes.Section>)}
     {props.resources?.length && (
       <SideNotes.Section title={$t({ defaultMessage: 'Resources' })}>
         <Typography.Paragraph children={resources} />
