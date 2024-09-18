@@ -1,29 +1,29 @@
 import { useEffect, useState } from 'react'
 
-import { Typography }                 from 'antd'
-import moment                         from 'moment-timezone'
-import { MessageDescriptor, useIntl } from 'react-intl'
+import { Typography }                                   from 'antd'
+import moment                                           from 'moment-timezone'
+import { FormattedMessage, MessageDescriptor, useIntl } from 'react-intl'
 
-import { impactedArea, nodeTypes, productNames } from '@acx-ui/analytics/utils'
-import { Card, Descriptions, GridCol, GridRow }  from '@acx-ui/components'
-import { get }                                   from '@acx-ui/config'
-import { DateFormatEnum, formatter }             from '@acx-ui/formatter'
-import { useWifiNetworkListQuery }               from '@acx-ui/rc/services'
-import { getIntl, NodeType }                     from '@acx-ui/utils'
+import { Card, Descriptions, GridCol, GridRow } from '@acx-ui/components'
+import { get }                                  from '@acx-ui/config'
+import { DateFormatEnum, formatter }            from '@acx-ui/formatter'
+import { useWifiNetworkListQuery }              from '@acx-ui/rc/services'
+import { getIntl }                              from '@acx-ui/utils'
 
-import { DescriptionRow }      from '../../DescriptionSection'
-import { FixedAutoSizer }      from '../../DescriptionSection/styledComponents'
-import { ConfigurationCard }   from '../AIOperations/ConfigurationCard'
-import { DetailsSection }      from '../common/DetailsSection'
-import { getIntentStatus }     from '../common/getIntentStatus'
-import { IntentDetailsHeader } from '../common/IntentDetailsHeader'
-import { IntentIcon }          from '../common/IntentIcon'
-import { KpiCard }             from '../common/KpiCard'
-import { StatusTrail }         from '../common/StatusTrail'
-import { codes }               from '../config'
-import { useIntentContext }    from '../IntentContext'
-import { getGraphKPIs }        from '../useIntentDetailsQuery'
-import { IntentWlan }          from '../utils'
+import { DescriptionRow }       from '../../DescriptionSection'
+import { FixedAutoSizer }       from '../../DescriptionSection/styledComponents'
+import { ConfigurationCard }    from '../AIOperations/ConfigurationCard'
+import { DetailsSection }       from '../common/DetailsSection'
+import { getIntentStatus }      from '../common/getIntentStatus'
+import { IntentDetailsHeader }  from '../common/IntentDetailsHeader'
+import { IntentIcon }           from '../common/IntentIcon'
+import { KpiCard }              from '../common/KpiCard'
+import { richTextFormatValues } from '../common/richTextFormatValues'
+import { StatusTrail }          from '../common/StatusTrail'
+import { codes }                from '../config'
+import { useIntentContext }     from '../IntentContext'
+import { getGraphKPIs }         from '../useIntentDetailsQuery'
+import { IntentWlan }           from '../utils'
 
 import * as SideNotes from './IntentAIForm/SideNotes'
 
@@ -36,27 +36,14 @@ export function createUseValuesText ({ tradeoff, action }: {
 }) {
   return function useValuesText () {
     const { $t } = getIntl()
-    const { intent, state } = useIntentContext()
-    const {
-      path,
-      sliceType,
-      sliceValue
-    } = intent
-
-    const actionText = state === 'active'
-      ? action.active
-      : action.inactive
-    const currentValueText = (intent.currentValue === true)
-      ? $t({ defaultMessage: 'enabled' })
-      : $t({ defaultMessage: 'not enabled' })
+    const { state } = useIntentContext()
+    const actionText = state === 'no-data'
+      ? action.inactive
+      : action.active
 
     return {
       tradeoffText: $t(tradeoff),
-      actionText: $t(actionText, {
-        ...productNames,
-        scope: `${nodeTypes(sliceType as NodeType)}: ${impactedArea(path, sliceValue)}`,
-        currentValue: currentValueText
-      })
+      actionText: actionText
     }
   }
 }
@@ -103,7 +90,9 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
               <IntentIcon size='large' />
               <Typography.Paragraph
                 data-testid='Overview text'
-                children={valuesText.actionText} />
+                children={
+                  <FormattedMessage {...valuesText.actionText} values={richTextFormatValues}/>
+                }/>
               <Descriptions noSpace>
                 <Descriptions.Item
                   label={$t({ defaultMessage: 'Intent' })}
