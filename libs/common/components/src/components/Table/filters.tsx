@@ -106,7 +106,7 @@ export function renderSearch <RecordType> (
 ): React.ReactNode {
 
   const getColumnTitle = (column: TableColumn<RecordType, 'text'>): string => {
-    if (typeof column.title === 'string') {
+    if (typeof column?.title === 'string') {
       return column.title
     } else if (typeof column === 'string') {
       return column
