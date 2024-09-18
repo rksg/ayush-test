@@ -1,3 +1,4 @@
+
 import { PageNotFound }                             from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
@@ -33,9 +34,12 @@ import {
   IdentityProviderForm,
   LbsServerProfileForm,
   ApGroupDetails,
-  useIsEdgeFeatureReady,
   SoftGreForm,
-  CertificateForm
+  useIsEdgeFeatureReady,
+  CertificateForm,
+  AddEthernetPortProfile,
+  EditEthernetPortProfile,
+  EthernetPortProfileDetail
 } from '@acx-ui/rc/components'
 import {
   PolicyOperation,
@@ -96,6 +100,7 @@ import ClientIsolationTable                                             from './
 import ConnectionMeteringDetail                                         from './pages/Policies/ConnectionMetering/ConnectionMeteringDetail'
 import ConnectionMeteringPageForm                                       from './pages/Policies/ConnectionMetering/ConnectionMeteringPageForm'
 import ConnectionMeteringTable                                          from './pages/Policies/ConnectionMetering/ConnectionMeteringTable'
+import EthernetPortProfileTable                                         from './pages/Policies/EthernetPortProfile/EthernetPortProfileTable'
 import AddEdgeHqosBandwidth                                             from './pages/Policies/HqosBandwidth/Edge/AddHqosBandwidth'
 import EditEdgeHqosBandwidth                                            from './pages/Policies/HqosBandwidth/Edge/EditHqosBandwidth'
 import EdgeHqosBandwidthDetail                                          from './pages/Policies/HqosBandwidth/Edge/HqosBandwidthDetail'
@@ -162,6 +167,7 @@ import SwitchClientList                                                 from './
 import WifiClientDetails                                                from './pages/Users/Wifi/ClientDetails'
 import { WifiClientList, WirelessTabsEnum }                             from './pages/Users/Wifi/ClientList'
 import GuestManagerPage                                                 from './pages/Users/Wifi/GuestManagerPage'
+
 
 
 export default function RcRoutes () {
@@ -1348,6 +1354,38 @@ function PolicyRoutes () {
           </PolicyAuthRoute>
         }
       />
+      {/* </>} */}
+      {<>
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.ETHERNET_PORT_PROFILE ,
+            oper: PolicyOperation.LIST
+          })}
+          element={<EthernetPortProfileTable/>}
+        />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.ETHERNET_PORT_PROFILE ,
+            oper: PolicyOperation.CREATE
+          })}
+          element={<AddEthernetPortProfile/>}
+        />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.ETHERNET_PORT_PROFILE ,
+            oper: PolicyOperation.EDIT
+          })}
+          element={<EditEthernetPortProfile/>}
+        />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.ETHERNET_PORT_PROFILE ,
+            oper: PolicyOperation.DETAIL
+          })}
+          element={<EthernetPortProfileDetail/>}
+        />
+      </>
+      }
     </Route>
   )
 }
