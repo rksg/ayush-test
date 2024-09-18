@@ -37,6 +37,7 @@ export function SwitchCableTestForm () {
   const [lasySyncTime, setLastSyncTime] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [isNoData, setIsNoData] = useState(false)
+  const [clearPort, setClearPort] = useState(false)
   const [portOptions, setPortOptions] = useState([] as DefaultOptionType[])
 
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
@@ -108,25 +109,30 @@ export function SwitchCableTestForm () {
   }
 
   const reportMap: { [key:string]: string } = {
-    OK: $t(defineMessage({ defaultMessage: 'All Pairs are terminated properly.' })),
-    Shorted: $t(defineMessage({ defaultMessage: 'One or more pairs are shorted. Re run the test to be sure and if the result is the same, replace the cable.' })),
-    Open: $t(defineMessage({ defaultMessage: 'One or more pairs are Open. Re-run the test to be sure and if the result is the same, try connecting the cable properly. If it still shows up as ‘Open’, replace the cable.' })),
-    Abnormal: $t(defineMessage({ defaultMessage: 'Impedance on the highlighted pairs above is not within expected bounds. It is either too high or too low. Replace the cable if you any flaps or errors are seen on the port.' })),
-    Failed: $t(defineMessage({ defaultMessage: 'The test failed on the highlighted pairs above. Run the test again.' }))
+    'OK': $t(defineMessage({ defaultMessage: 'All Pairs are terminated properly.' })),
+    'Open': $t(defineMessage({ defaultMessage: 'One or more pairs are Open. Re-run the test to be sure and if the result is the same, try connecting the cable properly. If it still shows up as ‘Open’, replace the cable.' })),
+    'Same Pair Short': $t(defineMessage({ defaultMessage: 'Same pair short detected. Re run the test to be sure and if the result is the same, replace the cable.' })),
+    'Cross Pair Short': $t(defineMessage({ defaultMessage: 'Cross pair short detected. Re run the test to be sure and if the result is the same, replace the cable.' })),
+    'Failed': $t(defineMessage({ defaultMessage: 'The test failed on the highlighted pairs above. Run the test again.' })),
+    'Unknown': $t(defineMessage({ defaultMessage: 'An unknown error has occurred during the test and the cable health could not be determined. Re-run the test and if the fail again, replace the cable.' }))
   }
 
   useEffect(() => {
     if (getTroubleshooting.data?.response) {
       const response = getTroubleshooting.data.response
       setIsLoading(response.syncing)
-
       if(response.syncing) {
         refetchResult()
       }
       if(response.cableTestResult) {
         setTableData([response.cableTestResult] as CableTestTable[])
+        cableTestForm.setFieldValue('port', response.cableTestResult.port)
       } else {
         setTableData([])
+        setIsValid(false)
+        if(clearPort){
+          cableTestForm.setFieldValue('port', null)
+        }
       }
       setLastSyncTime(response.latestResultResponseTime)
       cableTestForm.setFieldValue('result', parseResult(response.result))
@@ -134,9 +140,6 @@ export function SwitchCableTestForm () {
 
       if (response.latestResultResponseTime) {
         setIsValid(true)
-      }
-      if (!response.cableTestResult) {
-        setIsValid(false)
       }
     }
   }, [getTroubleshooting])
@@ -199,6 +202,7 @@ export function SwitchCableTestForm () {
 
   const onSubmit = async () => {
     setIsLoading(true)
+    setClearPort(false)
     try {
       const payload = {
         targetPort: cableTestForm.getFieldValue('port'),
@@ -226,7 +230,7 @@ export function SwitchCableTestForm () {
 
   const onClear = async () => {
     setIsLoading(true)
-    setIsValid(false)
+    setClearPort(true)
     await getTroubleshootingClean({
       params: troubleshootingParams,
       enableRbac: isSwitchRbacEnabled
@@ -251,11 +255,14 @@ export function SwitchCableTestForm () {
 
   const getStausColor = (status: string) => {
     const colorMap = {
-      OK: 'green',
-      Shorted: 'red',
-      Abnormal: 'yellow'
+      'OK': 'green',
+      'Open': 'yellow',
+      'Failed': 'yellow',
+      'Unknown': 'yellow',
+      'Same Pair Short': 'red',
+      'Cross Pair Short': 'red'
     } as { [key:string]: string }
-    return colorMap[status] || 'green'
+    return colorMap[status] || 'yellow'
   }
 
   const columns: TableProps<CableTestTable>['columns'] = [
@@ -324,10 +331,10 @@ export function SwitchCableTestForm () {
             { required: true }
           ]}
           children={<Select
+            disabled={isLoading}
             defaultValue={null}
             showSearch
             onChange={onChangeForm}
-            dropdownMatchSelectWidth={false}
             allowClear>
             {
               portOptions.map(({ label, value, disabled, tooltip }) =>
