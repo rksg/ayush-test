@@ -4,9 +4,10 @@ import { gql }                       from 'graphql-request'
 import moment, { Moment }            from 'moment-timezone'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { showToast }         from '@acx-ui/components'
-import { useNavigateToPath } from '@acx-ui/react-router-dom'
-import { intentAIApi }       from '@acx-ui/store'
+import { showToast }                  from '@acx-ui/components'
+import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { intentAIApi }                from '@acx-ui/store'
+import { encodeParameter }            from '@acx-ui/utils'
 
 import { validateScheduleTiming }                 from './common/ScheduleTiming'
 import { aiFeaturesLabel, codes, Intent }         from './config'
@@ -86,7 +87,8 @@ export function createUseIntentTransition <Preferences> (
   return function useIntentTransition () {
     const { $t } = useIntl()
     const { intent } = useIntentContext()
-    const navigate = useNavigateToPath('/analytics/intentAI')
+    const basePath = useTenantLink('/intentAI')
+    const navigate = useNavigate()
     const [doSubmit, response] = useIntentTransitionMutation()
 
     const submit = useCallback(async (values: FormValues<Preferences>) => {
@@ -97,23 +99,62 @@ export function createUseIntentTransition <Preferences> (
       if (!response.data) return
 
       if (response.data.success) {
-        const feature = codes[intent.code]
+        const featureValue = $t(aiFeaturesLabel[codes[intent.code].aiFeature])
+        const intentValue = $t(codes[intent.code].intent)
+        const sliceValue = intent.sliceValue
         showToast({
           type: 'success',
           content: <FormattedMessage
             defaultMessage='{feature}: {intent} for {sliceValue} has been updated'
             values={{
-              feature: $t(aiFeaturesLabel[feature.aiFeature]),
-              intent: $t(feature.intent),
-              sliceValue: intent.sliceValue
+              feature: featureValue,
+              intent: intentValue,
+              sliceValue: sliceValue
             }}
           />
+          ,
+          link: {
+            text: 'View',
+            onClick: () => {
+              const { status, statusReason } = intent
+              let statusLabel = statusReason ? `${status}-${statusReason}` : status
+              switch (statusLabel) {
+                case DisplayStates.pausedByDefault.toString():
+                case DisplayStates.pausedFromActive.toString():
+                case DisplayStates.pausedFromInactive.toString():
+                  statusLabel=
+                  `${DisplayStates.pausedFromActive}+${DisplayStates.pausedFromInactive}`
+                  break
+                case DisplayStates.scheduled.toString():
+                case DisplayStates.applyScheduled.toString():
+                case DisplayStates.scheduledOneClick.toString():
+                  statusLabel=`${DisplayStates.applyScheduled}+${DisplayStates.scheduledOneClick}`
+                  break
+                default:
+              }
+              const intentFilter = {
+                aiFeature: [featureValue],
+                intent: [intentValue],
+                category: [$t(codes[intent!.code].category)],
+                sliceValue: [intent!.sliceId],
+                statusLabel: [statusLabel]
+              }
+              console.log(intentFilter)
+              const encodedParameters = encodeParameter(intentFilter)
+              const newSearch =
+                new URLSearchParams(basePath.search)
+              newSearch.set('intentTableFilters', encodedParameters)
+              navigate({
+                ...basePath,
+                search: newSearch.toString()
+              })
+            }
+          }
         })
-        navigate()
       } else {
         showToast({ type: 'error', content: response.data.errorMsg })
       }
-    }, [$t, navigate, intent, response])
+    }, [$t, navigate, basePath, intent, response])
 
     return { submit, response }
   }

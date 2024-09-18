@@ -503,14 +503,14 @@ describe('useIntentAIActions', () => {
     })
   })
 
-  describe('Other Actions', () => {
+  describe.only('Other Actions', () => {
     const mockOK = jest.fn()
     beforeEach(() => {
       jest.mocked(useIsSplitOn).mockReturnValue(false)
       jest.mocked(get).mockReturnValue('true')
       mockOK.mockClear()
     })
-    it.only('should handle handleTransitionIntent', async () => {
+    it('should handle handleTransitionIntent', async () => {
       const statusTrail = [ { status: 'new' }]
       const selectedRows = [
         { ...mockAIDrivenRow,
@@ -552,7 +552,13 @@ describe('useIntentAIActions', () => {
       })
       await waitFor(() => expect(mockOK).toBeCalledTimes(1))
       expect(await screen.findByText(/The selected intents has been updated/)).toBeVisible()
-      await userEvent.click((await screen.findAllByText('View'))[0])
+      const viewElement = await screen.findByText('View')
+      // const viewElement = screen.getByRole('button', { name: 'View' })
+      // expect(viewElement)
+      //   .toHaveAttribute('href', '?intentTableFilters=%257B%2522statusLabel%2522%253A%255B%2522paused-from-active%252Bpaused-from-inactive%2522%255D%257D')
+      await userEvent.click(viewElement)
+
+      // expect(await screen.findByText(/Paused/)).toBeVisible()
       expect(window.location.href).toContain('?intentTableFilters=%257B%2522statusLabel%2522%253A%255B%2522paused-from-active%252Bpaused-from-inactive%2522%255D%257D')
     })
 

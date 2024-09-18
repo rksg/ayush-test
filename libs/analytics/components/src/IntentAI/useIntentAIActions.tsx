@@ -123,7 +123,6 @@ const getR1WlanPayload = (venueId:string, code:string) => ({
 
 export function useIntentAIActions () {
   const { $t } = useIntl()
-  const navigate = useNavigate()
   const [recommendationWlans] = useLazyIntentWlansQuery()
   const [venueRadioActiveNetworks] = useLazyVenueRadioActiveNetworksQuery()
   const [transitionIntent] = useTransitionIntentMutation()
@@ -193,6 +192,7 @@ export function useIntentAIActions () {
     if (errorMsgs.length > 0) {
       showToast({ type: 'error', content: errorMsgs })
     }
+    console.log('here')
     if (errorMsgs.length < rows.length) {
       showSuccessToast(action, data)
     }
