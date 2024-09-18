@@ -6,8 +6,8 @@ export const wiredSummaryNoDataFixture = {
       stormPortCount: 0,
       portCount: 0,
       uplinkPortCount: 0,
-      congestedPortCount: 0
-
+      congestedPortCount: 0,
+      nonStackPortCount: 0
     }
   }
 }
@@ -20,7 +20,8 @@ export const wiredSummaryDataFixture = {
       stormPortCount: 5,
       portCount: 637,
       uplinkPortCount: 155,
-      congestedPortCount: 4
+      congestedPortCount: 4,
+      nonStackPortCount: 500
     }
   }
 }
