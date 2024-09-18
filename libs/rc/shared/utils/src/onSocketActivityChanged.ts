@@ -7,8 +7,7 @@ import {
 } from '@reduxjs/toolkit/query/react'
 import { Params } from 'react-router-dom'
 
-// import { getUserProfile }           from '@acx-ui/user'
-
+import { getUserProfile }          from '@acx-ui/user'
 import { offActivity, onActivity } from '@acx-ui/utils'
 
 import { Transaction } from '.'
@@ -45,17 +44,17 @@ export async function onSocketActivityChanged <
   await cacheDataLoaded
 
   const onActivityChangedEvent = (data: string) => {
-    // const userProfile = getUserProfile()
+    const userProfile = getUserProfile()
     const jsonData = JSON.parse(data)
-    // if(userProfile.abacEnabled){
-    //   const hasPermittedVenue = jsonData?.scopeType === 'venues' && jsonData?.scopeIds?.some(
-    //     (id: string) => userProfile.venuesList?.includes(id))
-    //   if(userProfile.hasAllVenues || hasPermittedVenue){
-    //     handler(jsonData)
-    //   }
-    // } else {
-    handler(jsonData)
-    // }
+    if(userProfile.abacEnabled){
+      const hasPermittedVenue = jsonData?.scopeType === 'venues' && jsonData?.scopeIds?.some(
+        (id: string) => userProfile.venuesList?.includes(id))
+      if(userProfile.hasAllVenues || hasPermittedVenue){
+        handler(jsonData)
+      }
+    } else {
+      handler(jsonData)
+    }
   }
 
   onActivity(onActivityChangedEvent)
