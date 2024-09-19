@@ -12,7 +12,7 @@ export function createUseValuesText<ValuesType = unknown> (
     action: MessageDescriptor
     reason: MessageDescriptor
     tradeoff: MessageDescriptor
-    inactive: MessageDescriptor
+    noData: MessageDescriptor
   },
   getValuesFn?: (intent: Intent) => ValuesType
 ) {
@@ -25,7 +25,9 @@ export function createUseValuesText<ValuesType = unknown> (
       scope: incidentScope(intent),
       ...(getValuesFn && getValuesFn(intent))
     }
-    const summary = state === 'no-data' ? config.inactive : config.action
+
+    const summary = state === 'no-data' ? config.noData : config.action
+
     return {
       actionText: <FormattedMessage {...config.action} values={values} />,
       reasonText: <FormattedMessage {...config.reason} values={values} />,

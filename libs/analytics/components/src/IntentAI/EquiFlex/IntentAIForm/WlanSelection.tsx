@@ -96,20 +96,6 @@ export default function WlanSelection ({ disabled }: { disabled: boolean }) {
         }}
         placeholder={$t({ defaultMessage: 'Select Networks' })}
         value={selectedWlans.map(wlan => wlan.id)}
-        maxTagPlaceholder={
-        // istanbul ignore next
-          () =>
-            <div title={selectedWlans.map(wlan => wlan.name).join(', ')}>
-              {$t({
-                defaultMessage: `{count} {count, plural,
-              one {network}
-              other {networks}
-            } selected`
-              }, {
-                count: selectedWlans.length
-              })}
-            </div>
-        }
         children={wlans
           ?.map(({ id, name }: { id: string, name: string }) =>
             <Select.Option key={id} value={id} children={name} />
