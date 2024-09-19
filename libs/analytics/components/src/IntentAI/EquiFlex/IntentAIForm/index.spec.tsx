@@ -48,7 +48,7 @@ jest.mock('antd', () => {
 const mockNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
-  useNavigateToPath: () => mockNavigate
+  useNavigate: () => mockNavigate
 }))
 
 jest.mock('../common/ScheduleTiming', () => ({
@@ -103,20 +103,6 @@ beforeEach(() => {
   })
 })
 
-afterEach((done) => {
-  jest.clearAllMocks()
-  jest.restoreAllMocks()
-  const toast = screen.queryAllByRole('img', { name: 'close' })
-  toast.forEach((t) => {
-    if (t) {
-      waitForElementToBeRemoved(toast).then(done)
-      message.destroy()
-    } else {
-      done()
-    }
-  })
-})
-
 const mockIntentContextWith = (data: Partial<Intent> = {}) => {
   const intent = { ...mocked, ...data }
   mockIntentContext({ intent, kpis })
@@ -126,83 +112,131 @@ const mockIntentContextWith = (data: Partial<Intent> = {}) => {
 }
 
 describe('IntentAIForm', () => {
-  it('handle schedule intent', async () => {
-    mockGet.mockReturnValue('true') // RAI
+  describe('IntentAI Actions', () => {
+    afterEach((done) => {
+      jest.clearAllMocks()
+      jest.restoreAllMocks()
+      const toast = screen.queryAllByRole('img', { name: 'close' })
+      toast.forEach((t) => {
+        if (t) {
+          waitForElementToBeRemoved(toast).then(done)
+          message.destroy()
+        } else {
+          done()
+        }
+      })
+    })
 
-    const { params } = mockIntentContextWith({ status: Statuses.new })
-    render(<IntentAIForm />, { route: { params }, wrapper: Provider })
-    const form = within(await screen.findByTestId('steps-form'))
-    const actions = within(form.getByTestId('steps-form-actions'))
+    it('handle schedule intent', async () => {
+      mockGet.mockReturnValue('true') // RAI
 
-    expect(await screen.findByRole('heading', { name: 'Introduction' })).toBeVisible()
-    expect((await screen.findAllByText('Time to Connect vs Client Density for 5 GHz')).length).toEqual(1)
-    await click(actions.getByRole('button', { name: 'Next' }))
+      const { params } = mockIntentContextWith({ status: Statuses.new })
+      render(<IntentAIForm />, { route: { params }, wrapper: Provider })
+      const form = within(await screen.findByTestId('steps-form'))
+      const actions = within(form.getByTestId('steps-form-actions'))
 
-    expect(await screen.findByRole('heading', { name: 'Intent Priority' })).toBeVisible()
-    expect(await screen.findByText('Potential trade-off')).toBeVisible()
-    const radioEnabled = screen.getByRole('radio', { name: 'Reduce Management traffic in dense network' })
-    await click(radioEnabled)
-    expect(radioEnabled).toBeChecked()
-    await click(actions.getByRole('button', { name: 'Next' }))
+      expect(await screen.findByRole('heading', { name: 'Introduction' })).toBeVisible()
+      expect((await screen.findAllByText('Time to Connect vs Client Density for 5 GHz')).length).toEqual(1)
+      await click(actions.getByRole('button', { name: 'Next' }))
 
-    expect(await screen.findByRole('heading', { name: 'Settings' })).toBeVisible()
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    const date = await screen.findByPlaceholderText('Select date')
-    await click(date)
-    await click(await screen.findByRole('cell', { name: '2024-08-09' }))
-    expect(date).toHaveValue('08/09/2024')
-    const time = await screen.findByPlaceholderText('Select time')
-    await selectOptions(time, '12:30 (UTC+08)')
-    expect(time).toHaveValue('12.5')
-    await selectOptions(
-      await screen.findByPlaceholderText('Select Networks'),
-      'DENSITY'
-    )
-    await click(actions.getByRole('button', { name: 'Next' }))
+      expect(await screen.findByRole('heading', { name: 'Intent Priority' })).toBeVisible()
+      expect(await screen.findByText('Potential trade-off')).toBeVisible()
+      const radioEnabled = screen.getByRole('radio', { name: 'Reduce Management traffic in dense network' })
+      await click(radioEnabled)
+      expect(radioEnabled).toBeChecked()
+      await click(actions.getByRole('button', { name: 'Next' }))
 
-    expect((await screen.findAllByText('Summary')).length).toEqual(2)
-    expect(await screen.findByText('Average management traffic per client')).toBeVisible()
-    expect(await screen.findByText('2 networks selected')).toBeVisible()
-    await click(actions.getByRole('button', { name: 'Apply' }))
+      expect(await screen.findByRole('heading', { name: 'Settings' })).toBeVisible()
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      const date = await screen.findByPlaceholderText('Select date')
+      await click(date)
+      await click(await screen.findByRole('cell', { name: '2024-08-09' }))
+      expect(date).toHaveValue('08/09/2024')
+      const time = await screen.findByPlaceholderText('Select time')
+      await selectOptions(time, '12:30 (UTC+08)')
+      expect(time).toHaveValue('12.5')
+      await selectOptions(
+        await screen.findByPlaceholderText('Select Networks'),
+        'DENSITY'
+      )
+      await click(actions.getByRole('button', { name: 'Next' }))
 
-    expect(await screen.findByText(/has been updated/)).toBeVisible()
-    await click(await screen.findByText(/View/))
-    expect(mockNavigate).toBeCalled()
+      expect((await screen.findAllByText('Summary')).length).toEqual(2)
+      expect(await screen.findByText('Average management traffic per client')).toBeVisible()
+      expect(await screen.findByText('2 networks selected')).toBeVisible()
+      await click(actions.getByRole('button', { name: 'Apply' }))
+
+      expect(await screen.findByText(/has been updated/)).toBeVisible()
+      await click(await screen.findByText(/View/))
+      expect(mockNavigate).toBeCalled()
+    })
+    it('handle pause intent', async () => {
+      mockGet.mockReturnValue(false) //R1
+      const { params } = mockIntentContextWith({ status: Statuses.new })
+      render(<IntentAIForm />, { route: { params }, wrapper: Provider })
+      const form = within(await screen.findByTestId('steps-form'))
+      const actions = within(form.getByTestId('steps-form-actions'))
+
+      expect(await screen.findByRole('heading', { name: 'Introduction' })).toBeVisible()
+      await click(actions.getByRole('button', { name: 'Next' }))
+
+      expect(await screen.findByRole('heading', { name: 'Intent Priority' })).toBeVisible()
+      expect(await screen.findByText('Potential trade-off')).toBeVisible()
+      const radioDisabled = screen.getByRole(
+        'radio',
+        { name: 'Standard Management traffic in a sparse network' }
+      )
+      await click(radioDisabled)
+      expect(radioDisabled).toBeChecked()
+      await click(actions.getByRole('button', { name: 'Next' }))
+
+      expect(await screen.findByRole('heading', { name: 'Settings' })).toBeVisible()
+      expect(await screen.findByPlaceholderText('Select date')).toBeDisabled()
+      expect(await screen.findByPlaceholderText('Select time')).toBeDisabled()
+      await click(actions.getByRole('button', { name: 'Next' }))
+
+      expect(await screen.findByRole('heading', { name: 'Summary' })).toBeVisible()
+
+      expect(await screen.findByText(/IntentAI will maintain the existing network configuration and will cease automated monitoring of configuration for handling probe request\/response in the network./)).toBeVisible()
+      await click(actions.getByRole('button', { name: 'Apply' }))
+
+      expect(await screen.findByText(/has been updated/)).toBeVisible()
+      await click(await screen.findByText(/View/))
+      expect(mockNavigate).toBeCalled()
+    })
+    it('should use all wlans when no saved wlans', async () => {
+      mockGet.mockReturnValue('true') // RAI
+      const data = { ...mocked, metadata: { wlans: [] } } as Intent
+      const { params } = mockIntentContextWith(data)
+      render(<IntentAIForm />, { route: { params }, wrapper: Provider })
+      const form = within(await screen.findByTestId('steps-form'))
+      const actions = within(form.getByTestId('steps-form-actions'))
+
+      await click(actions.getByRole('button', { name: 'Next' }))
+
+      await click(actions.getByRole('button', { name: 'Next' }))
+
+      expect(await screen.findByRole('heading', { name: 'Settings' })).toBeVisible()
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      const date = await screen.findByPlaceholderText('Select date')
+      await click(date)
+      await click(await screen.findByRole('cell', { name: '2024-08-09' }))
+      expect(date).toHaveValue('08/09/2024')
+      const time = await screen.findByPlaceholderText('Select time')
+      await selectOptions(time, '12:30 (UTC+08)')
+      expect(time).toHaveValue('12.5')
+      await click(actions.getByRole('button', { name: 'Next' }))
+
+      expect((await screen.findAllByText('Summary')).length).toEqual(2)
+      expect(await screen.findByText('2 networks selected')).toBeVisible()
+      await click(actions.getByRole('button', { name: 'Apply' }))
+
+      expect(await screen.findByText(/has been updated/)).toBeVisible()
+      await click(await screen.findByText(/View/))
+      expect(mockNavigate).toBeCalled()
+    })
   })
-  it('handle pause intent', async () => {
-    mockGet.mockReturnValue(false) //R1
-    const { params } = mockIntentContextWith({ status: Statuses.new })
-    render(<IntentAIForm />, { route: { params }, wrapper: Provider })
-    const form = within(await screen.findByTestId('steps-form'))
-    const actions = within(form.getByTestId('steps-form-actions'))
 
-    expect(await screen.findByRole('heading', { name: 'Introduction' })).toBeVisible()
-    await click(actions.getByRole('button', { name: 'Next' }))
-
-    expect(await screen.findByRole('heading', { name: 'Intent Priority' })).toBeVisible()
-    expect(await screen.findByText('Potential trade-off')).toBeVisible()
-    const radioDisabled = screen.getByRole(
-      'radio',
-      { name: 'Standard Management traffic in a sparse network' }
-    )
-    await click(radioDisabled)
-    expect(radioDisabled).toBeChecked()
-    await click(actions.getByRole('button', { name: 'Next' }))
-
-    expect(await screen.findByRole('heading', { name: 'Settings' })).toBeVisible()
-    expect(await screen.findByPlaceholderText('Select date')).toBeDisabled()
-    expect(await screen.findByPlaceholderText('Select time')).toBeDisabled()
-    await click(actions.getByRole('button', { name: 'Next' }))
-
-    expect(await screen.findByRole('heading', { name: 'Summary' })).toBeVisible()
-
-    expect(await screen.findByText(/IntentAI will maintain the existing network configuration and will cease automated monitoring of configuration for handling probe request\/response in the network./)).toBeVisible()
-    await click(actions.getByRole('button', { name: 'Apply' }))
-
-    expect(await screen.findByText(/has been updated/)).toBeVisible()
-    await click(await screen.findByText(/View/))
-    expect(mockNavigate).toBeCalled()
-  })
   it('should validate when no wlans', async () => {
     mockGet.mockReturnValue('true') // RAI
     const data = { ...mocked, metadata: {} } as Intent
@@ -239,36 +273,5 @@ describe('IntentAIForm', () => {
     await click(actions.getByRole('button', { name: 'Apply' }))
 
     expect(await screen.findByText(/Please select at least one network in Settings/)).toBeVisible()
-  })
-  it('should use all wlans when no saved wlans', async () => {
-    mockGet.mockReturnValue('true') // RAI
-    const data = { ...mocked, metadata: { wlans: [] } } as Intent
-    const { params } = mockIntentContextWith(data)
-    render(<IntentAIForm />, { route: { params }, wrapper: Provider })
-    const form = within(await screen.findByTestId('steps-form'))
-    const actions = within(form.getByTestId('steps-form-actions'))
-
-    await click(actions.getByRole('button', { name: 'Next' }))
-
-    await click(actions.getByRole('button', { name: 'Next' }))
-
-    expect(await screen.findByRole('heading', { name: 'Settings' })).toBeVisible()
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    const date = await screen.findByPlaceholderText('Select date')
-    await click(date)
-    await click(await screen.findByRole('cell', { name: '2024-08-09' }))
-    expect(date).toHaveValue('08/09/2024')
-    const time = await screen.findByPlaceholderText('Select time')
-    await selectOptions(time, '12:30 (UTC+08)')
-    expect(time).toHaveValue('12.5')
-    await click(actions.getByRole('button', { name: 'Next' }))
-
-    expect((await screen.findAllByText('Summary')).length).toEqual(2)
-    expect(await screen.findByText('2 networks selected')).toBeVisible()
-    await click(actions.getByRole('button', { name: 'Apply' }))
-
-    expect(await screen.findByText(/has been updated/)).toBeVisible()
-    await click(await screen.findByText(/View/))
-    expect(mockNavigate).toBeCalled()
   })
 })
