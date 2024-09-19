@@ -19,7 +19,7 @@ import {
   NetworkTypeEnum,
   URLProtocolRegExp
 } from '@acx-ui/rc/utils'
-import { validationMessages }                                                        from '@acx-ui/utils'
+import { validationMessages } from '@acx-ui/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext          from '../NetworkFormContext'

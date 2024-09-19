@@ -1,7 +1,6 @@
 import { useContext, useEffect } from 'react'
 
 import { Form }    from 'antd'
-import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { GridCol, GridRow, StepsFormLegacy }                      from '@acx-ui/components'
@@ -47,7 +46,8 @@ export function GuestPassForm () {
       </GridCol>
       <GridCol col={{ span: 14 }}>
         <NetworkDiagram type={NetworkTypeEnum.CAPTIVEPORTAL}
-          networkPortalType={GuestNetworkTypeEnum.GuestPass} wlanSecurity={data?.wlan?.wlanSecurity} />
+          networkPortalType={GuestNetworkTypeEnum.GuestPass}
+          wlanSecurity={data?.wlan?.wlanSecurity} />
       </GridCol>
     </GridRow>
     {!(editMode) && <GridRow>

@@ -13,9 +13,9 @@ import { useParams } from 'react-router-dom'
 
 import { Button, GridCol, GridRow, StepsFormLegacy, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
-import { useGetMspEcProfileQuery }   from '@acx-ui/msp/services'
-import { MSPUtils }                  from '@acx-ui/msp/utils'
-import { useExternalProvidersQuery } from '@acx-ui/rc/services'
+import { useGetMspEcProfileQuery }                            from '@acx-ui/msp/services'
+import { MSPUtils }                                           from '@acx-ui/msp/utils'
+import { useExternalProvidersQuery }                          from '@acx-ui/rc/services'
 import {
   NetworkSaveData,
   GuestNetworkTypeEnum,

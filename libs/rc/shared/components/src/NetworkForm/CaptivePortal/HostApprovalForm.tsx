@@ -234,7 +234,8 @@ export function HostApprovalForm () {
       </GridCol>
       <GridCol col={{ span: 14 }}>
         <NetworkDiagram type={NetworkTypeEnum.CAPTIVEPORTAL}
-          networkPortalType={GuestNetworkTypeEnum.HostApproval} wlanSecurity={data?.wlan?.wlanSecurity} />
+          networkPortalType={GuestNetworkTypeEnum.HostApproval}
+          wlanSecurity={data?.wlan?.wlanSecurity} />
       </GridCol>
     </GridRow>
     {!(editMode) && <GridRow>

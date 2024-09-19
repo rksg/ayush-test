@@ -1,9 +1,11 @@
 import { useState, useContext, useEffect } from 'react'
+
 import { Form, Space, Select } from 'antd'
-import { useIntl } from 'react-intl'
-import { Button, PasswordInput } from '@acx-ui/components'
+import { useIntl }             from 'react-intl'
+
+import { Button, PasswordInput }  from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { InformationSolid } from '@acx-ui/icons'
+import { InformationSolid }       from '@acx-ui/icons'
 import {
   generateHexKey,
   GuestNetworkTypeEnum,
@@ -18,8 +20,9 @@ import {
   WisprSecurityOptionsDescription,
   ManagementFrameProtectionEnum
 } from '@acx-ui/rc/utils'
+
+import { MLOContext }     from '../../../NetworkForm'
 import NetworkFormContext from '../../../NetworkFormContext'
-import { MLOContext } from '../../../NetworkForm'
 
 export const WlanSecurityFormItems = () => {
   const { $t } = useIntl()
@@ -36,11 +39,13 @@ export const WlanSecurityFormItems = () => {
   const [enablePreShared, setEnablePreShared] = useState(false)
 
   const isGuestNetworkTypeWISPr = (): boolean => {
-    return data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr;
-  };
+    return data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr
+  }
 
-  const isCaptivePortalPskEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_PSK) || isGuestNetworkTypeWISPr()
-  const isCaptivePortalOweEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_OWE) || isGuestNetworkTypeWISPr()
+  const isCaptivePortalPskEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_PSK) ||
+    isGuestNetworkTypeWISPr()
+  const isCaptivePortalOweEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_OWE) ||
+    isGuestNetworkTypeWISPr()
 
   useEffect(() => {
     const transNetworkSecurity =
@@ -103,16 +108,16 @@ export const WlanSecurityFormItems = () => {
   }
   const networkSecurityOptions = Object.entries(WisprSecurityEnum).filter(([k]) => {
     if (k === 'PSK' && !isCaptivePortalPskEnabled) {
-      return false;
+      return false
     }
     if (k === 'OWE' && !isCaptivePortalOweEnabled) {
-      return false;
+      return false
     }
-    return true;
+    return true
   }).map(([k, v]) => ({
     value: k,
     label: v
-  }));
+  }))
   const networkSecurityDescription = () => {
     const networkSecurity = form.getFieldValue('networkSecurity')
     return (
@@ -120,7 +125,7 @@ export const WlanSecurityFormItems = () => {
     )
   }
   const securityOptions = Object.keys(PskWlanSecurityEnum).filter(key => {
-    return isGuestNetworkTypeWISPr() || (key !== 'WPAPersonal' && key !== 'WEP');
+    return isGuestNetworkTypeWISPr() || (key !== 'WPAPersonal' && key !== 'WEP')
   }).map((key =>
     <Select.Option key={key}>{PskWlanSecurityEnum[key as keyof typeof PskWlanSecurityEnum]}
     </Select.Option>
@@ -130,8 +135,8 @@ export const WlanSecurityFormItems = () => {
     if (data?.wlan?.passphrase) {
       protocol.passphrase =
         [WlanSecurityEnum.WPAPersonal,
-        WlanSecurityEnum.WPA2Personal,
-        WlanSecurityEnum.WPA23Mixed].includes(value)
+          WlanSecurityEnum.WPA2Personal,
+          WlanSecurityEnum.WPA23Mixed].includes(value)
           ? data?.wlan?.passphrase
           : null
     }
@@ -145,7 +150,7 @@ export const WlanSecurityFormItems = () => {
         ? data?.wlan?.wepHexKey
         : null
     }
-    let networkSec = 'PSK';
+    let networkSec = 'PSK'
     if (value === WlanSecurityEnum.OWE) {
       networkSec = 'OWE'
       protocol.managementFrameProtection = ManagementFrameProtectionEnum.Required
@@ -153,7 +158,7 @@ export const WlanSecurityFormItems = () => {
       networkSec = 'NONE'
     }
     setData && setData({
-      ...(data as any),
+      ...data,
       ...{
         wlan: {
           ...data?.wlan,
@@ -161,11 +166,12 @@ export const WlanSecurityFormItems = () => {
           ...protocol
         }
       },
-      pskProtocol: value,
-      networkSecurity: networkSec
+      ...{
+        pskProtocol: value,
+        networkSecurity: networkSec
+      }
     })
   }
-
   return (
     <>
       {(isCaptivePortalPskEnabled || isCaptivePortalOweEnabled) &&
@@ -276,5 +282,5 @@ export const WlanSecurityFormItems = () => {
         </Select>
       </Form.Item>}
     </>
-  );
-};
+  )
+}

@@ -47,7 +47,8 @@ export function OnboardingForm () {
       </GridCol>
       <GridCol col={{ span: 14 }}>
         <NetworkDiagram type={NetworkTypeEnum.CAPTIVEPORTAL}
-          networkPortalType={GuestNetworkTypeEnum.ClickThrough} wlanSecurity={data?.wlan?.wlanSecurity} />
+          networkPortalType={GuestNetworkTypeEnum.ClickThrough}
+          wlanSecurity={data?.wlan?.wlanSecurity} />
       </GridCol>
     </GridRow>
     {!(editMode) && <GridRow>
