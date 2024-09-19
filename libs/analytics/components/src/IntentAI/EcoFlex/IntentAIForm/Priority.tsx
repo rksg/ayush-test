@@ -1,13 +1,14 @@
 /* eslint-disable max-len */
 
-import { Row, Col, Form }         from 'antd'
-import { NamePath }               from 'antd/lib/form/interface'
-import { useIntl, defineMessage } from 'react-intl'
+import { Row, Col, Form }                           from 'antd'
+import { NamePath }                                 from 'antd/lib/form/interface'
+import { useIntl, defineMessage, FormattedMessage } from 'react-intl'
 
 import { StepsForm } from '@acx-ui/components'
 
-import { TradeOff }         from '../../../TradeOff'
-import { useIntentContext } from '../../IntentContext'
+import { TradeOff }             from '../../../TradeOff'
+import { richTextFormatValues } from '../../common/richTextFormatValues'
+import { useIntentContext }     from '../../IntentContext'
 
 import * as SideNotes from './SideNotes'
 
@@ -24,9 +25,12 @@ export function Priority () {
       children: $t({ defaultMessage: 'Reduction in energy footprint' }),
       columns: [
         $t({ defaultMessage: 'Reduction in energy footprint' }),
-        $t({
-          defaultMessage: `Leverage EcoFlex, available only through IntentAI for AI/ML based Energy Saving Model for the network. 
-          In this mode, based on the usage pattern PowerSave supported APs are switched to PowerSaving mode and resumed to normal power based on the increased network activity.` })
+        <FormattedMessage {...defineMessage({ defaultMessage: `
+          Leverage <b><i>EcoFlex</i></b>, available only through IntentAI for AI/ML based Energy Saving Model for the network. 
+          In this mode, based on the usage pattern PowerSave supported APs are switched to PowerSaving mode and resumed to normal power based on the increased network activity.
+          ` })}
+        values={richTextFormatValues}
+        />
       ]
     },
     {
