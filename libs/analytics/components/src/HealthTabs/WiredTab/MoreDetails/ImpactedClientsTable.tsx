@@ -1,4 +1,4 @@
-import { useIntl, FormattedMessage } from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import { sortProp, defaultSort  } from '@acx-ui/analytics/utils'
 import {
@@ -21,7 +21,7 @@ import {
   wiredDevicesQueryMapping,
   topNQueryMapping
 } from './services'
-import { ChartTitle, TableHeading } from './styledComponents'
+import { TableHeading } from './styledComponents'
 
 export const ImpactedClientsTable = ({
   filters,
@@ -90,14 +90,12 @@ export const ImpactedClientsTable = ({
         </TenantLink>
       ),
       disable: true,
-      fixed: 'left',
       sorter: { compare: sortProp('switchName', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Local Port' }),
       dataIndex: 'localPortName',
       key: 'localPortName',
-      fixed: 'left',
       width: 160,
       disable: true,
       sorter: { compare: sortProp('localPortName', defaultSort) }
@@ -161,7 +159,6 @@ export const ImpactedClientsTable = ({
         { totalCount, portType: queryType === 'portStorm' ? 'Storm': 'Uplink' }
         )}
       </TableHeading>
-
       <Table<ImpactedClients>
         settingsId='switch-health-impacted-devices-table'
         columns={columns}

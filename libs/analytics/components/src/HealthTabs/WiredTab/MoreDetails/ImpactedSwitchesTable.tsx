@@ -1,4 +1,4 @@
-import { useIntl, FormattedMessage } from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import { sortProp, defaultSort  } from '@acx-ui/analytics/utils'
 import {
@@ -16,7 +16,7 @@ import {
   showTopNTableResult, topImpactedSwitchesLimit
 } from './config'
 import { useImpactedSwitchesDataQuery, fieldsMap, topNQueryMapping } from './services'
-import { ChartTitle, TableHeading }                                  from './styledComponents'
+import { TableHeading }                                              from './styledComponents'
 
 export const ImpactedSwitchesTable = ({
   filters,
@@ -67,7 +67,6 @@ export const ImpactedSwitchesTable = ({
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
       key: 'name',
-      fixed: 'left',
       render: (_, row: SwitchDetails) => (
         <TenantLink
           to={`/devices/switch/${row.mac?.toLowerCase()}/serial/details/${get('IS_MLISA_SA')
@@ -82,7 +81,6 @@ export const ImpactedSwitchesTable = ({
       title: $t({ defaultMessage: 'MAC Address' }),
       dataIndex: 'mac',
       key: 'mac',
-      fixed: 'left',
       sorter: { compare: sortProp('mac', defaultSort) }
     },
     {
@@ -139,9 +137,8 @@ export const ImpactedSwitchesTable = ({
         }` }, { totalCount }
         )}
       </TableHeading>
-
       <Table
-        settingsId='switch-health-impacted-switches-table'
+        // settingsId='switch-health-impacted-switches-table'
         columns={columns}
         dataSource={data as SwitchDetails[]}
         rowKey='rowId'

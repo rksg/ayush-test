@@ -1,5 +1,7 @@
 import styled from 'styled-components/macro'
 
+import { GridRow } from '@acx-ui/components'
+
 export const DrawerTitle = styled.span`
   margin-top: 5px;
 `
@@ -14,4 +16,9 @@ export const PieChartWrapper = styled.div`
 export const TableHeading = styled.span`
   padding-bottom : 10px;
   font-size: 12px;
+`
+export const WrapperRow = styled(GridRow)`
+  margin-left: 0px !important;
+  margin-right: 0px !important;
+  padding: 0px 0px;
 `

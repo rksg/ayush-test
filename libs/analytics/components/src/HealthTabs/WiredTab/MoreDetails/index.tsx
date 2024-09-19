@@ -1,8 +1,8 @@
 import { Typography } from 'antd'
 import { useIntl }    from 'react-intl'
 
-import { Drawer, GridCol, GridRow } from '@acx-ui/components'
-import { AnalyticsFilter }          from '@acx-ui/utils'
+import { Drawer, GridCol } from '@acx-ui/components'
+import { AnalyticsFilter } from '@acx-ui/utils'
 
 import { WidgetType }            from './config'
 import { MoreDetailsPieChart }   from './HealthPieChart'
@@ -56,6 +56,7 @@ export const MoreDetailsDrawer = (props: MoreDetailsDrawerProps) => {
     }
   ]
   const { title, pieTitle, type } = mapping.filter(item => item.type === widget)[0]
+  const height = '355px'
   return (
     <Drawer
       title={
@@ -69,26 +70,24 @@ export const MoreDetailsDrawer = (props: MoreDetailsDrawerProps) => {
       visible={visible}
       onClose={onClose}
       children={
-        <GridRow style={{ paddingTop: 20 }}>
-          <GridCol col={{ span: 8 }} key={`pie-${type}`} style={{ height: 220 }}>
+        <UI.WrapperRow>
+          <GridCol col={{ span: 9 }} key={`pie-${type}`} style={{ height }}>
             <MoreDetailsPieChart
               filters={filters}
               queryType={type}
               title={pieTitle}/>
           </GridCol>
-          {
-            (type === 'dhcpFailure' || type === 'cpuUsage') &&
-            <GridCol col={{ span: 16 }} key={`table-${type}`} style={{ overflow: 'auto' }}>
-              <ImpactedSwitchesTable filters={filters} queryType={type}/>
-            </GridCol>
-          }
-          {
-            (type === 'portStorm' || type === 'congestion') &&
-            <GridCol col={{ span: 16 }} key={`table-${type}`} style={{ overflow: 'auto' }}>
-              <ImpactedClientsTable filters={filters} queryType={type}/>
-            </GridCol>
-          }
-        </GridRow>
+          <GridCol col={{ span: 15 }} key={`table-${type}`} style={{ height, overflow: 'auto' }}>
+            {
+              (type === 'dhcpFailure' || type === 'cpuUsage') &&
+                  <ImpactedSwitchesTable filters={filters} queryType={type}/>
+            }
+            {
+              (type === 'portStorm' || type === 'congestion') &&
+                  <ImpactedClientsTable filters={filters} queryType={type}/>
+            }
+          </GridCol>
+        </UI.WrapperRow>
       }
     />
   )

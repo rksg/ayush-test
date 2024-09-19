@@ -176,6 +176,5 @@ export const MoreDetailsPieChart = ({
           Top {n} can be explored using Data Studio custom charts.` }, { n })}
       </Space>}
     </Loader>
-
   )
 }
