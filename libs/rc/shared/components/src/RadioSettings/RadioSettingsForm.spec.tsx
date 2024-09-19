@@ -8,7 +8,8 @@ import { ApRadioTypeDataKeyMap, ApRadioTypeEnum,
   channelBandwidth24GOptions,
   channelBandwidth5GOptions,
   channelBandwidth6GOptions,
-  VenueRadioTypeDataKeyMap
+  VenueRadioTypeDataKeyMap,
+  txPowerAdjustment6GOptions
 } from './RadioSettingsContents'
 import { RadioSettingsForm } from './RadioSettingsForm'
 
@@ -24,6 +25,7 @@ describe.skip('RadioSettingForm component', () => {
           radioType={radioType}
           radioDataKey={radioDataKey}
           channelBandwidthOptions={bandwidthOptions}
+          txPowerOptions={txPowerAdjustment6GOptions}
         />
       </Provider>)
 
@@ -57,6 +59,7 @@ describe.skip('RadioSettingForm component', () => {
           radioType={radioType}
           radioDataKey={radioDataKey}
           channelBandwidthOptions={bandwidthOptions}
+          txPowerOptions={txPowerAdjustment6GOptions}
         />
       </Provider>)
 
@@ -88,6 +91,7 @@ describe.skip('RadioSettingForm component', () => {
           radioType={radioType}
           radioDataKey={radioDataKey}
           channelBandwidthOptions={bandwidthOptions}
+          txPowerOptions={txPowerAdjustment6GOptions}
         />
       </Provider>)
 
@@ -132,6 +136,7 @@ describe.skip('RadioSettingForm component', () => {
           radioType={radioType}
           radioDataKey={radioDataKey}
           channelBandwidthOptions={bandwidthOptions}
+          txPowerOptions={txPowerAdjustment6GOptions}
         />
       </Provider>)
 
@@ -166,6 +171,7 @@ describe.skip('RadioSettingForm component', () => {
           radioDataKey={radioDataKey}
           channelBandwidthOptions={bandwidthOptions}
           isUseVenueSettings={isUseVenueSettings}
+          txPowerOptions={txPowerAdjustment6GOptions}
         />
       </Provider>)
 
