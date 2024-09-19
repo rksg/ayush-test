@@ -4,11 +4,14 @@ export const DrawerTitle = styled.span`
   margin-top: 5px;
 `
 export const ChartTitle = styled.span`
-  text-align: left;
   font-size: 12px;
   padding-bottom: 10px;
 `
 export const PieChartWrapper = styled.div`
   flex: none;
   height: 210px;
+`
+export const TableHeading = styled.span`
+  padding-bottom : 10px;
+  font-size: 12px;
 `

@@ -16,7 +16,7 @@ import {
   showTopNTableResult, topImpactedSwitchesLimit
 } from './config'
 import { useImpactedSwitchesDataQuery, fieldsMap, topNQueryMapping } from './services'
-import { ChartTitle }                                                from './styledComponents'
+import { ChartTitle, TableHeading }                                  from './styledComponents'
 
 export const ImpactedSwitchesTable = ({
   filters,
@@ -131,19 +131,15 @@ export const ImpactedSwitchesTable = ({
 
   return (
     <Loader states={[queryResults]}>
-      <ChartTitle>
-        <FormattedMessage
-          defaultMessage={`<b>{count}</b> Impacted {totalCount, plural,
-            one {Switch}
-            other {Switches}
-          }`}
-          values={{
-            count: showTopNTableResult($t, totalCount, topImpactedSwitchesLimit),
-            totalCount,
-            b: (chunk) => <b>{chunk}</b>
-          }}
-        />
-      </ChartTitle>
+      <TableHeading>
+        <b>{showTopNTableResult($t, totalCount, topImpactedSwitchesLimit)} </b>
+        {$t({ defaultMessage: `Impacted {totalCount, plural,
+          one {Switch}
+          other {Switches}
+        }` }, { totalCount }
+        )}
+      </TableHeading>
+
       <Table
         settingsId='switch-health-impacted-switches-table'
         columns={columns}

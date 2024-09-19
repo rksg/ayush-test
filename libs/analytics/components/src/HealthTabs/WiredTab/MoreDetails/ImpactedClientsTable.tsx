@@ -21,7 +21,7 @@ import {
   wiredDevicesQueryMapping,
   topNQueryMapping
 } from './services'
-import { ChartTitle } from './styledComponents'
+import { ChartTitle, TableHeading } from './styledComponents'
 
 export const ImpactedClientsTable = ({
   filters,
@@ -154,18 +154,14 @@ export const ImpactedClientsTable = ({
 
   return (
     <Loader states={[impactedClients, impactedSwitches]}>
-      <ChartTitle>
-        <FormattedMessage
-          defaultMessage={`<b>{count}</b> Impacted {portType} 
-            {totalCount, plural, one {Port} other {Ports}}`}
-          values={{
-            count: showTopNTableResult($t, totalCount, topImpactedSwitchesLimit),
-            totalCount,
-            portType: queryType === 'portStorm' ? 'Storm': 'Uplink',
-            b: (chunk) => <b>{chunk}</b>
-          }}
-        />
-      </ChartTitle>
+      <TableHeading>
+        <b>{showTopNTableResult($t, totalCount, topImpactedSwitchesLimit)} </b>
+        {$t({ defaultMessage: `Impacted {portType}
+            {totalCount, plural, one {Port} other {Ports}}` },
+        { totalCount, portType: queryType === 'portStorm' ? 'Storm': 'Uplink' }
+        )}
+      </TableHeading>
+
       <Table<ImpactedClients>
         settingsId='switch-health-impacted-devices-table'
         columns={columns}

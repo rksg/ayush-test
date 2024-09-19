@@ -78,13 +78,13 @@ export const MoreDetailsDrawer = (props: MoreDetailsDrawerProps) => {
           </GridCol>
           {
             (type === 'dhcpFailure' || type === 'cpuUsage') &&
-            <GridCol col={{ span: 16 }} key={`table-${type}`}>
+            <GridCol col={{ span: 16 }} key={`table-${type}`} style={{ overflow: 'auto' }}>
               <ImpactedSwitchesTable filters={filters} queryType={type}/>
             </GridCol>
           }
           {
             (type === 'portStorm' || type === 'congestion') &&
-            <GridCol col={{ span: 16 }} key={`table-${type}`}>
+            <GridCol col={{ span: 16 }} key={`table-${type}`} style={{ overflow: 'auto' }}>
               <ImpactedClientsTable filters={filters} queryType={type}/>
             </GridCol>
           }
