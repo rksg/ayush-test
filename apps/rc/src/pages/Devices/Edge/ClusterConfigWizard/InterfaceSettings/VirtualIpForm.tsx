@@ -25,7 +25,7 @@ export const VirtualIpForm = () => {
       {$t({ defaultMessage: 'Cluster Virtual IP' })}
     </Typography.Title>
     <Typography.Text>
-      {$t({ defaultMessage: `Please select the interfaces for SmartEdges 
+      {$t({ defaultMessage: `Please select the interfaces for RUCKUS Edges 
       and assign virtual IPs for seamless failover:` })}
     </Typography.Text>
   </Space>

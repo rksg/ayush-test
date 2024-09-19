@@ -84,7 +84,7 @@ export const EdgeClusterTable = () => {
 
   const columns: TableProps<EdgeClusterTableDataType>['columns'] = [
     {
-      title: $t({ defaultMessage: 'SmartEdge' }),
+      title: $t({ defaultMessage: 'RUCKUS Edge' }),
       key: 'name',
       dataIndex: 'name',
       sorter: true,
@@ -281,7 +281,7 @@ export const EdgeClusterTable = () => {
       scopeKey: [EdgeScopes.UPDATE],
       visible: (selectedRows) =>
         (selectedRows.length === 1 && Boolean(selectedRows[0]?.isFirstLevel)),
-      label: $t({ defaultMessage: 'Run Cluster & SmartEdge configuration wizard' }),
+      label: $t({ defaultMessage: 'Run Cluster & RUCKUS Edge configuration wizard' }),
       onClick: (selectedRows) => {
         if(selectedRows[0].isFirstLevel) {
           navigate({

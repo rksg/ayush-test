@@ -29,7 +29,7 @@ describe('SmartEdgeForm > AddDhcpServiceModal', () => {
 
     await user.click(await screen.findByRole('button', { name: 'Add' }))
     const addDhcpModal = await screen.findByRole('dialog')
-    await screen.findByText('Add DHCP for SmartEdge Service')
+    await screen.findByText('Add DHCP for RUCKUS Edge Service')
     const dhcpServiceNameInput = await screen.findByRole('textbox', { name: 'Service Name' })
     await user.type(dhcpServiceNameInput, 'myTest')
     await user.click(await screen.findByRole('button', { name: 'Add DHCP Pool' }))
@@ -62,7 +62,7 @@ describe('SmartEdgeForm > AddDhcpServiceModal', () => {
 
     await user.click(await screen.findByRole('button', { name: 'Add' }))
     const addDhcpModal = await screen.findByRole('dialog')
-    await screen.findByText('Add DHCP for SmartEdge Service')
+    await screen.findByText('Add DHCP for RUCKUS Edge Service')
     const cancelButtons = within(addDhcpModal).getAllByRole('button', { name: 'Cancel' })
     await user.click(cancelButtons[0])
     await waitFor(() => expect(addDhcpModal).not.toBeVisible())

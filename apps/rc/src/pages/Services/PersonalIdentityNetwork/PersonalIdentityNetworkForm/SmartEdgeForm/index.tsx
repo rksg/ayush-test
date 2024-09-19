@@ -159,13 +159,13 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
       />
       <Row gutter={20}>
         <Col span={8}>
-          <StepsForm.Title>{$t({ defaultMessage: 'SmartEdge Settings' })}</StepsForm.Title>
+          <StepsForm.Title>{$t({ defaultMessage: 'RUCKUS Edge Settings' })}</StepsForm.Title>
           <Form.Item
             name='edgeId'
-            label={$t({ defaultMessage: 'SmartEdge' })}
+            label={$t({ defaultMessage: 'RUCKUS Edge' })}
             rules={[{
               required: true,
-              message: $t({ defaultMessage: 'Please enter SmartEdge' })
+              message: $t({ defaultMessage: 'Please enter RUCKUS Edge' })
             }]}
             children={
               <Select
