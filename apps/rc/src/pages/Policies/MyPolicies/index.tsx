@@ -85,16 +85,11 @@ export default function MyPolicies () {
           policies.filter(p => isPolicyCardEnabled(p, PolicyOperation.LIST)).map((policy, index) => {
             const title = <FormattedMessage
               defaultMessage={
-                '{name} ({count})<helpIcon></helpIcon>'
+                '{name} ({count})'
               }
               values={{
                 name: $t(policyTypeLabelMapping[policy.type]),
-                count: policy.totalCount ?? 0,
-                helpIcon: () => {
-                  return policy.helpIcon
-                    ? <span style={{ marginLeft: '5px' }}>{policy.helpIcon}</span>
-                    : ''
-                }
+                count: policy.totalCount ?? 0
               }}
             />
 
@@ -110,6 +105,11 @@ export default function MyPolicies () {
                   onClick={() => {
                     policy.listViewPath && navigate(policy.listViewPath)
                   }}
+                  helpIcon={
+                    policy.helpIcon
+                      ? <span style={{ marginLeft: '5px' }}>{policy.helpIcon}</span>
+                      : ''
+                  }
                 />
               </GridCol>
             )
