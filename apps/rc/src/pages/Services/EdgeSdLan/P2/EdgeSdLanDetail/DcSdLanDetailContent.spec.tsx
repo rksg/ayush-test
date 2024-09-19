@@ -52,7 +52,7 @@ describe('Edge SD-LAN Detail - DC', () => {
       { name: 'dpskNetwork Dynamic Pre-Shared Key (DPSK)' })).toBeValid()
   })
 
-  it('should display SmartEdges tab correctly', async () => {
+  it('should display RUCKUS Edges tab correctly', async () => {
     render(
       <Provider>
         <DcSdLanDetailContent data={mockedSdLanData}/>
@@ -62,7 +62,7 @@ describe('Edge SD-LAN Detail - DC', () => {
     )
 
     expect(await screen.findByText('Instances')).toBeVisible()
-    const seTab = await screen.findByRole('tab', { name: 'SmartEdges(1)' })
+    const seTab = await screen.findByRole('tab', { name: 'RUCKUS Edges(1)' })
     await userEvent.click(seTab)
     expect(await screen.findByRole('row',
       { name: 'SE_Cluster 1 20 15' })).toBeVisible()
@@ -90,7 +90,7 @@ describe('Edge SD-LAN Detail - DC', () => {
 
     expect(await screen.findByText('Instances')).toBeVisible()
     await screen.findByRole('tab', { name: 'Networks(0)' })
-    const seTab = await screen.findByRole('tab', { name: 'SmartEdges(0)' })
+    const seTab = await screen.findByRole('tab', { name: 'RUCKUS Edges(0)' })
     await userEvent.click(seTab)
     expect(await screen.findByText('# of tunneled VLANs')).toBeVisible()
     expect(screen.getAllByText('--').length).toBe(3)
@@ -107,7 +107,7 @@ describe('Edge SD-LAN Detail - DC', () => {
     )
 
     expect(await screen.findByText('Instances')).toBeVisible()
-    const edgesTable = await screen.findByRole('tab', { name: 'SmartEdges(1)' })
+    const edgesTable = await screen.findByRole('tab', { name: 'RUCKUS Edges(1)' })
     await userEvent.click(edgesTable)
     const row = await screen.findByRole('row', { name: /SE_Cluster 1/i })
     expect(row.textContent).toBe('SE_Cluster 12015')

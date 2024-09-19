@@ -31,12 +31,12 @@ export const useEdgeClusterActions = () => {
         {
           defaultMessage: `Reboot "{count, plural,
             one {{name}}
-            other {{count} SmartEdges}
+            other {{count} RUCKUS Edges}
           }"?`
         }, { count: data.length, name: data[0].name }
       ),
       content: $t({
-        defaultMessage: `Rebooting the SmartEdge will disconnect all connected clients.
+        defaultMessage: `Rebooting the RUCKUS Edge will disconnect all connected clients.
           Are you sure you want to reboot?`
       }),
       customContent: {
@@ -73,13 +73,13 @@ export const useEdgeClusterActions = () => {
         {
           defaultMessage: `Shutdown "{count, plural,
             one {{name}}
-            other {{count} SmartEdges}
+            other {{count} RUCKUS Edges}
           }"?`
         }, { count: data.length, name: data[0].name }
       ),
       content: $t({
-        defaultMessage: `Shutdown will safely end all operations on SmartEdge. You will need to 
-        manually restart the device. Are you sure you want to shut down this SmartEdge?`
+        defaultMessage: `Shutdown will safely end all operations on RUCKUS Edge. You will need to 
+        manually restart the device. Are you sure you want to shut down this RUCKUS Edge?`
       }),
       customContent: {
         action: 'CUSTOM_BUTTONS',
@@ -175,7 +175,7 @@ export const useEdgeClusterActions = () => {
           <div className='mb-16'>
             {
               $t({
-                defaultMessage: 'Are you sure you want to reset and recover this SmartEdge?'
+                defaultMessage: 'Are you sure you want to reset and recover this RUCKUS Edge?'
               })
             }
           </div>

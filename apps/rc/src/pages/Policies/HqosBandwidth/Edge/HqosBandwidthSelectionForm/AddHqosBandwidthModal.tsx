@@ -62,7 +62,7 @@ export const AddHqosBandwidthModal = () => {
         {$t({ defaultMessage: 'Add' })}
       </Button>
       <Modal
-        title={$t({ defaultMessage: 'Add HQos for SmartEdge Profile' })}
+        title={$t({ defaultMessage: 'Add HQos for RUCKUS Edge Profile' })}
         width={1100}
         visible={visible}
         type={ModalType.ModalStepsForm}
