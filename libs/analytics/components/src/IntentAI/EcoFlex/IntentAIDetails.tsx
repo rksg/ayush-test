@@ -1,18 +1,16 @@
 import { Typography }                                   from 'antd'
-import moment                                           from 'moment-timezone'
 import { FormattedMessage, MessageDescriptor, useIntl } from 'react-intl'
 
-import { Card, Descriptions, GridCol, GridRow } from '@acx-ui/components'
-import { DateFormatEnum, formatter }            from '@acx-ui/formatter'
+import { Card, GridCol, GridRow } from '@acx-ui/components'
 
+import { DescriptionSection }   from '../../DescriptionSection'
 import { FixedAutoSizer }       from '../../DescriptionSection/styledComponents'
+import { useCommonFields }      from '../common/commonFields'
 import { DetailsSection }       from '../common/DetailsSection'
-import { getIntentStatus }      from '../common/getIntentStatus'
 import { IntentDetailsHeader }  from '../common/IntentDetailsHeader'
 import { IntentIcon }           from '../common/IntentIcon'
 import { richTextFormatValues } from '../common/richTextFormatValues'
 import { StatusTrail }          from '../common/StatusTrail'
-import { codes }                from '../config'
 import { useIntentContext }     from '../IntentContext'
 
 import * as SideNotes from './IntentAIForm/SideNotes'
@@ -43,6 +41,7 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
     const { $t } = useIntl()
     const { intent } = useIntentContext()
     const valuesText = useValuesText()
+    const fields = useCommonFields(intent)
 
     return <>
       <IntentDetailsHeader />
@@ -56,28 +55,7 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
                 children={
                   <FormattedMessage {...valuesText.actionText} values={richTextFormatValues}/>
                 }/>
-              <Descriptions noSpace>
-                <Descriptions.Item
-                  label={$t({ defaultMessage: 'Intent' })}
-                  children={$t(codes[intent.code].intent)}
-                />
-                <Descriptions.Item
-                  label={$t({ defaultMessage: 'Category' })}
-                  children={$t(codes[intent.code].category)}
-                />
-                <Descriptions.Item
-                  label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
-                  children={intent.sliceValue}
-                />
-                <Descriptions.Item
-                  label={$t({ defaultMessage: 'Status' })}
-                  children={getIntentStatus(intent.displayStatus)}
-                />
-                <Descriptions.Item
-                  label={$t({ defaultMessage: 'Date' })}
-                  children={formatter(DateFormatEnum.DateTimeFormat)(moment(intent.updatedAt))}
-                />
-              </Descriptions>
+              <DescriptionSection fields={fields}/>
               <br />
             </div>)}
           </FixedAutoSizer>
