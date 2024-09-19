@@ -50,7 +50,7 @@ export const CompatibilityCheck = ({ venueId }: { venueId: string }) => {
         },
         {
           apCount: incompatibleCount,
-          edgeText: hasEdgeFeature ? $t({ defaultMessage: ' & SmartEdge' }) : ''
+          edgeText: hasEdgeFeature ? $t({ defaultMessage: ' & RUCKUS Edge' }) : ''
         })}
         cacheKey={ACX_UI_AP_COMPATIBILITY_NOTE_HIDDEN_KEY}
         onClick={() => toggleCompatibilityDrawer(true)}

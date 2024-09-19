@@ -105,7 +105,7 @@ export const DcSdLanDetailContent = (props: { data?: EdgeMvSdLanViewData }) => {
             />
           </Tabs.TabPane>
           <Tabs.TabPane
-            tab={$t({ defaultMessage: 'SmartEdges({count})' },
+            tab={$t({ defaultMessage: 'RUCKUS Edges({count})' },
               { count: data?.edgeClusterId ? 1 : 0 })}
             key='se'
           >
