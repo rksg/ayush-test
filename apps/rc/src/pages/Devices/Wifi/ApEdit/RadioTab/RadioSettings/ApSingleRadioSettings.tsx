@@ -49,8 +49,7 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
     apViewContextData
   } = useContext(ApEditContext)
   const {
-    apCapabilities,
-    apData
+    apCapabilities
   } = useContext(ApDataContext)
 
   const defaultButtonTextSetting: LPIButtonText = {
