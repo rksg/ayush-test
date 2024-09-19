@@ -47,7 +47,7 @@ const EditDhcp = () => {
   return (
     <EdgeDhcpForm
       form={form}
-      title={$t({ defaultMessage: 'Edit DHCP for SmartEdge Service' })}
+      title={$t({ defaultMessage: 'Edit DHCP for RUCKUS Edge Service' })}
       submitButtonLabel={$t({ defaultMessage: 'Apply' })}
       onFinish={handelEdit}
       isSubmiting={isEdgeDhcpProfileUpdating}

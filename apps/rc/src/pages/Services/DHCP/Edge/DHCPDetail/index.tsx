@@ -59,7 +59,7 @@ const EdgeDHCPDetail = () => {
 
   const columns: TableProps<DhcpUeSummaryStats>['columns'] = [
     {
-      title: $t({ defaultMessage: 'SmartEdge' }),
+      title: $t({ defaultMessage: 'RUCKUS Edge' }),
       key: 'edgeName',
       dataIndex: 'edgeName',
       sorter: { compare: sortProp('edgeName', defaultSort) },
@@ -163,7 +163,7 @@ const EdgeDHCPDetail = () => {
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
           {
-            text: $t({ defaultMessage: 'DHCP for SmartEdge' }),
+            text: $t({ defaultMessage: 'DHCP for RUCKUS Edge' }),
             link: getServiceRoutePath({
               type: ServiceType.EDGE_DHCP,
               oper: ServiceOperation.LIST

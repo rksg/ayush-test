@@ -19,7 +19,7 @@ export const getApFirmwareLink = () => {
 export const getEdgeFirmwareLink = () => {
   const { $t } = getIntl()
   return <TenantLink to='/administration/fwVersionMgmt/edgeFirmware'>
-    { $t({ defaultMessage: 'Administration > Version Management > SmartEdge Firmware' }) }
+    { $t({ defaultMessage: 'Administration > Version Management > RUCKUS Edge Firmware' }) }
   </TenantLink>
 }
 

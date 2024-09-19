@@ -105,7 +105,7 @@ describe('useEdgeActions', () => {
     const dialog = await screen.findByRole('dialog')
     expect(dialog).toHaveTextContent('Reboot "Smart Edge 1"?')
     // eslint-disable-next-line max-len
-    expect(dialog).toHaveTextContent('Rebooting the SmartEdge will disconnect all connected clients. Are you sure you want to reboot?')
+    expect(dialog).toHaveTextContent('Rebooting the RUCKUS Edge will disconnect all connected clients. Are you sure you want to reboot?')
     await userEvent.click(within(dialog).getByRole('button', { name: 'Reboot' }))
     await waitFor(() => {
       expect(mockedRebootApi).toBeCalledTimes(1)
@@ -129,7 +129,7 @@ describe('useEdgeActions', () => {
     const dialog = await screen.findByRole('dialog')
     expect(dialog).toHaveTextContent('Shutdown "Smart Edge 1"?')
     // eslint-disable-next-line max-len
-    expect(dialog).toHaveTextContent('Shutdown will safely end all operations on SmartEdge. You will need to manually restart the device. Are you sure you want to shut down this SmartEdge?')
+    expect(dialog).toHaveTextContent('Shutdown will safely end all operations on RUCKUS Edge. You will need to manually restart the device. Are you sure you want to shut down this RUCKUS Edge?')
     await userEvent.click(within(dialog).getByRole('button', { name: 'Shutdown' }))
     await waitFor(() => {
       expect(mockedShutdownApi).toBeCalledTimes(1)
@@ -151,7 +151,7 @@ describe('useEdgeActions', () => {
     factoryReset(mockedEdges[0])
     const dialog = await screen.findByRole('dialog')
     // eslint-disable-next-line max-len
-    expect(dialog).toHaveTextContent('Reset & Recover "Smart Edge 1"?Are you sure you want to reset and recover this SmartEdge?Note: Reset & Recover can address anomalies, but may not resolve all issues, especially for complex, misconfigured, or hardware-related problems.CancelResetCancel')
+    expect(dialog).toHaveTextContent('Reset & Recover "Smart Edge 1"?Are you sure you want to reset and recover this RUCKUS Edge?Note: Reset & Recover can address anomalies, but may not resolve all issues, especially for complex, misconfigured, or hardware-related problems.CancelResetCancel')
     await userEvent.click(within(dialog).getByRole('button', { name: 'Reset' }))
     await waitFor(() => {
       expect(mockedResetApi).toBeCalledTimes(1)
@@ -172,7 +172,7 @@ describe('useEdgeActions', () => {
     const dialog = await screen.findByRole('dialog')
     expect(dialog).toHaveTextContent('Delete "Smart Edge 1"?')
     // eslint-disable-next-line max-len
-    expect(dialog).toHaveTextContent('Are you sure you want to delete this SmartEdge?')
+    expect(dialog).toHaveTextContent('Are you sure you want to delete this RUCKUS Edge?')
     await userEvent.click(within(dialog).getByRole('button', { name: 'Delete' }))
     await waitFor(() => {
       expect(mockedDeleteApi).toBeCalledTimes(1)
@@ -194,9 +194,9 @@ describe('useEdgeActions', () => {
     const { deleteEdges } = result.current
     deleteEdges([mockedEdges[3], mockedEdges[4]], mockedCallback)
     const dialog = await screen.findByRole('dialog')
-    expect(dialog).toHaveTextContent('Delete "2 SmartEdges"?')
+    expect(dialog).toHaveTextContent('Delete "2 RUCKUS Edges"?')
     // eslint-disable-next-line max-len
-    expect(dialog).toHaveTextContent('Are you sure you want to delete these SmartEdges?')
+    expect(dialog).toHaveTextContent('Are you sure you want to delete these RUCKUS Edges?')
     await userEvent.type(within(dialog).getByRole('textbox'), 'Delete')
     await userEvent.click(within(dialog).getByRole('button', { name: 'Delete' }))
     await waitFor(() => {

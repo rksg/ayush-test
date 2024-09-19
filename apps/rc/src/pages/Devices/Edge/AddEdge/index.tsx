@@ -68,9 +68,9 @@ const AddEdge = () => {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Add SmartEdge' })}
+        title={$t({ defaultMessage: 'Add RUCKUS Edge' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'SmartEdges' }), link: '/devices/edge' }
+          { text: $t({ defaultMessage: 'RUCKUS Edges' }), link: '/devices/edge' }
         ]}
       />
       <StepsForm
