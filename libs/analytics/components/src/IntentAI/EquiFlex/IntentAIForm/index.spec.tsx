@@ -104,13 +104,17 @@ beforeEach(() => {
 })
 
 afterEach((done) => {
-  const toast = screen.queryByRole('img', { name: 'close' })
-  if (toast) {
-    waitForElementToBeRemoved(toast).then(done)
-    message.destroy()
-  } else {
-    done()
-  }
+  jest.clearAllMocks()
+  jest.restoreAllMocks()
+  const toast = screen.queryAllByRole('img', { name: 'close' })
+  toast.forEach((t) => {
+    if (t) {
+      waitForElementToBeRemoved(toast).then(done)
+      message.destroy()
+    } else {
+      done()
+    }
+  })
 })
 
 const mockIntentContextWith = (data: Partial<Intent> = {}) => {
@@ -162,6 +166,7 @@ describe('IntentAIForm', () => {
     await click(actions.getByRole('button', { name: 'Apply' }))
 
     expect(await screen.findByText(/has been updated/)).toBeVisible()
+    await click(await screen.findByText(/View/))
     expect(mockNavigate).toBeCalled()
   })
   it('handle pause intent', async () => {
@@ -195,6 +200,7 @@ describe('IntentAIForm', () => {
     await click(actions.getByRole('button', { name: 'Apply' }))
 
     expect(await screen.findByText(/has been updated/)).toBeVisible()
+    await click(await screen.findByText(/View/))
     expect(mockNavigate).toBeCalled()
   })
   it('should validate when no wlans', async () => {
@@ -262,6 +268,7 @@ describe('IntentAIForm', () => {
     await click(actions.getByRole('button', { name: 'Apply' }))
 
     expect(await screen.findByText(/has been updated/)).toBeVisible()
+    await click(await screen.findByText(/View/))
     expect(mockNavigate).toBeCalled()
   })
 })

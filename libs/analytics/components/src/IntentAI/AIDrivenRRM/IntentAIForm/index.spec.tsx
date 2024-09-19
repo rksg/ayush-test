@@ -38,7 +38,7 @@ jest.mock('@acx-ui/config')
 const mockNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
-  useNavigateToPath: () => mockNavigate
+  useNavigate: () => mockNavigate
 }))
 jest.mock('../../IntentContext')
 jest.mock('../../common/ScheduleTiming', () => ({
@@ -72,6 +72,8 @@ describe('IntentAIForm', () => {
   })
 
   afterEach((done) => {
+    jest.clearAllMocks()
+    jest.restoreAllMocks()
     const toast = screen.queryByRole('img', { name: 'close' })
     if (toast) {
       waitForElementToBeRemoved(toast).then(done)
@@ -119,6 +121,7 @@ describe('IntentAIForm', () => {
     await click(actions.getByRole('button', { name: 'Apply' }))
 
     expect(await screen.findByText(/has been updated/)).toBeVisible()
+    await click(await screen.findByText(/View/))
     expect(mockNavigate).toBeCalled()
   }
 
