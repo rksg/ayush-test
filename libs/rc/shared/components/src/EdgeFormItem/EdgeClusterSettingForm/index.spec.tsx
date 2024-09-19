@@ -206,7 +206,7 @@ describe('EdgeClusterSettingForm', () => {
       screen.getAllByRole('textbox', { name: 'Serial Number' })[1],
       '190000000001'
     )
-    expect((await screen.findAllByText('vSmartEdge')).length).toBe(1)
+    expect((await screen.findAllByText('vEdge')).length).toBe(1)
     expect((await screen.findAllByText('-')).length).toBe(1)
   })
 
