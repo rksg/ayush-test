@@ -95,9 +95,9 @@ export function PskSettingsForm () {
 }
 
 function SettingsForm () {
+  const { $t } = useIntl()
   const { editMode, cloneMode, data, setData } = useContext(NetworkFormContext)
   const { disableMLO } = useContext(MLOContext)
-  const { $t } = useIntl()
   const form = Form.useFormInstance()
   const { isTemplate } = useConfigTemplate()
   const [

@@ -398,7 +398,18 @@ export function useMenuConfig () {
       ]
     }
   ]
-  if (isGuestManager || isDPSKAdmin) { return [] }
+  if (isGuestManager) {
+    return [
+      {
+        label: $t({
+          defaultMessage: 'Guest Pass Credentials'
+        }),
+        inactiveIcon: AccountCircleOutlined,
+        activeIcon: AccountCircleSolid,
+        uri: '/users/guestsManager'
+      }
+    ]}
+  if (isDPSKAdmin) { return [] }
   if (isReportsAdmin) {
     return [
       {

@@ -9,7 +9,9 @@ import {
 } from '@acx-ui/rc/utils'
 
 
-export const CompatibilityCheck = ({ data }: { data: EntityCompatibility[] }) => {
+export const CompatibilityCheck = ({ data, venueId }:
+  { data: EntityCompatibility[], venueId?: string }
+) => {
   const { $t } = useIntl()
   const [drawerFeature, setDrawerFeature] = useState<boolean>(false)
 
@@ -38,6 +40,7 @@ export const CompatibilityCheck = ({ data }: { data: EntityCompatibility[] }) =>
         visible={drawerFeature}
         title={$t({ defaultMessage: 'Incompatibility Details' })}
         type={EdgeCompatibilityType.VENUE}
+        venueId={venueId}
         data={data}
         onClose={() => toggleCompatibilityDrawer(false)}
         width={700}

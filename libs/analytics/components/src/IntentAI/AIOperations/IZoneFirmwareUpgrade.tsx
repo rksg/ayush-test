@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { Form, Typography }                         from 'antd'
+import { Form }                                     from 'antd'
 import _                                            from 'lodash'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
@@ -9,12 +9,11 @@ import { formatter }                     from '@acx-ui/formatter'
 
 import { TradeOff }                                           from '../../TradeOff'
 import { IntroSummary }                                       from '../common/IntroSummary'
-import { isIntentActive }                                     from '../common/isIntentActive'
 import { KpiField }                                           from '../common/KpiField'
 import { richTextFormatValues }                               from '../common/richTextFormatValues'
 import { getScheduledAt, ScheduleTiming }                     from '../common/ScheduleTiming'
 import { IntentConfigurationConfig, useIntentContext }        from '../IntentContext'
-import { getGraphKPIs, Intent, IntentKPIConfig }              from '../useIntentDetailsQuery'
+import { getGraphKPIs, Intent, IntentKPIConfig, intentState } from '../useIntentDetailsQuery'
 import { useInitialValues }                                   from '../useIntentTransition'
 import { Actions, getTransitionStatus, TransitionIntentItem } from '../utils'
 
@@ -29,7 +28,7 @@ export const configuration: IntentConfigurationConfig = {
   label: defineMessage({ defaultMessage: 'AP Firmware Version' }),
   valueFormatter: formatter('noFormat'),
   tooltip: (intent: Intent) =>
-    (isIntentActive(intent) &&
+    (intentState(intent) === 'active' &&
       intent.currentValue &&
       compareVersion(intent.currentValue as string, intent.recommendedValue as string) > -1)
       ? defineMessage({ defaultMessage: 'Zone was upgraded manually to recommended AP firmware version. Manually check whether this intent is still valid.' })
@@ -46,7 +45,10 @@ export const kpis: IntentKPIConfig[] = [{
 }]
 
 const useValuesText = createUseValuesText({
-  action: defineMessage({ defaultMessage: '{scope} is running with older AP firmware version {currentValue}. It is recommended to upgrade zone to the latest available AP firmware version.' }),
+  action: defineMessage({ defaultMessage: `
+    <p>IntentAI will upgrade the Zone firmware ensuring the network remains secure and up-to-date with the latest features. This change will enhance protection against cyber threats and enabling access to new functionalities for improved performance and management.</p>
+    <p>IntentAI will continuously monitor these configurations.</p>
+  ` }),
   reason: defineMessage({ defaultMessage: 'Latest AP firmware version in the zone will ensure all the APs in zone have the best available firmware with appropriate security/bug fixes and new features.' }),
   tradeoff: defineMessage({ defaultMessage: `
     <p>Upgrades may temporarily disrupt network operations and require careful planning to mitigate potential compatibility issues with existing hardware or software configurations.</p>
@@ -61,14 +63,14 @@ const useValuesText = createUseValuesText({
       Delaying upgrades prioritizes network stability and compatibility, minimizing the risk of potential downtime and ensuring existing devices continue to function without compatibility issues.
     </p>
   ` }),
-  inactive: defineMessage({ defaultMessage: 'When activated, this AIOps Intent takes over the automatic upgrade of Zone firmware in the network.' })
+  noData: defineMessage({ defaultMessage: 'When activated, this AIOps Intent takes over the automatic upgrade of Zone firmware in the network.' })
 })
 
 export const IntentAIDetails = createIntentAIDetails(useValuesText, { showImpactedAPs: true })
 
 const options = {
   yes: {
-    title: defineMessage({ defaultMessage: 'Yes, apply the intent' }),
+    title: defineMessage({ defaultMessage: 'Yes, apply the recommendation' }),
     content: <FormattedMessage
       values={richTextFormatValues}
       defaultMessage={`
@@ -78,7 +80,7 @@ const options = {
     />
   },
   no: {
-    title: defineMessage({ defaultMessage: 'No, do not apply the intent' }),
+    title: defineMessage({ defaultMessage: 'No, do not apply the recommendation' }),
     content: <FormattedMessage
       values={richTextFormatValues}
       defaultMessage={`
@@ -137,7 +139,6 @@ export const IntentAIForm = createIntentAIForm<{ enable: boolean }>({
     const { $t } = useIntl()
     const { intent } = useIntentContext()
     return <>
-      <Typography.Paragraph children={useValuesText().actionText} />
       <StepsForm.Subtitle children={$t({ defaultMessage: 'What is your primary network intent for <VenueSingular></VenueSingular>: {zone}' }, { zone: intent.sliceValue })} />
 
       <Form.Item name={['preferences','enable']}>

@@ -55,7 +55,6 @@ export const MoreDetailsDrawer = (props: MoreDetailsDrawerProps) => {
       pieTitle: 'High CPU'
     }
   ]
-
   const { title, pieTitle, type } = mapping.filter(item => item.type === widget)[0]
   return (
     <Drawer
@@ -71,7 +70,7 @@ export const MoreDetailsDrawer = (props: MoreDetailsDrawerProps) => {
       onClose={onClose}
       children={
         <GridRow style={{ paddingTop: 20 }}>
-          <GridCol col={{ span: 8 }} key={`pie-${type}`} style={{ height: 220, minWidth: 380 }}>
+          <GridCol col={{ span: 8 }} key={`pie-${type}`} style={{ height: 220 }}>
             <MoreDetailsPieChart
               filters={filters}
               queryType={type}

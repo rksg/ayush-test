@@ -44,6 +44,7 @@ export enum Features {
   EDGE_COMPATIBILITY_CHECK_TOGGLE = 'edge-compatibility-check-toggle',
   EDGE_HA_AA_FALLBACK_TOGGLE = 'edge-ha-aa-fallback-toggle',
   EDGE_HA_AA_DMZ_TOGGLE = 'edge-ha-aa-dmz-toggle',
+  EDGE_FIRMWARE_NOTIFICATION_BATCH_OPERATION_TOGGLE= 'edge-firmware-notification-batch-operation-toggle',
   ENTITLEMENT_EXTENDED_TRIAL_TOGGLE = 'entitlement-acx-extended-trial-toggle',
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
@@ -51,6 +52,8 @@ export enum Features {
   ENTITLEMENT_RBAC_API = 'acx-ui-rbac-api-entitlement-toggle',
   ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE = 'entitlement-virtual-smart-edge-toggle',
   EOL_AP_2022_12_PHASE_2_TOGGLE = 'eol-ap-2022-12-phase-2-toggle',
+  ETHERNET_PORT_PROFILE_TOGGLE = 'acx-ui-ethernet-toggle',
+  ETHERNET_PORT_PROFILE_DVLAN_TOGGLE = 'acx-ui-ethernet-dvlan-toggle',
   EXPORT_DEVICE = 'viewmodel-export-device-inventory',
   EXPORT_EVENTS_TOGGLE = 'acx-ui-scheduled-events-export-toggle',
   G_MAP = 'acx-ui-maps-api-toggle',
@@ -85,7 +88,7 @@ export enum Features {
   NETWORK_SEGMENTATION = 'acx-ui-network-segmentation-toggle',
   NETWORK_SEGMENTATION_SWITCH = 'switch-consumer-nsg-toggle',
   NEW_OS_VENDOR_IN_DEVICE_POLICY = 'acx-ui-new-os-vendor-in-device-policy-toggle',
-  NOTIFICATION_CHANNEL_API_CHANGES_TOGGLE = 'nuvo-notification-channel-api-changes',
+  NOTIFICATION_CHANNEL_API_CHANGES_TOGGLE = 'nuvo-notification-api-changes-toggle',
   NOTIFICATION_CHANNEL_SELECTION_TOGGLE = 'nuvo-notification-channel-selection',
   NUVO_SMS_PROVIDER_TOGGLE = 'nuvo-customer-owned-sms-provider',
   NUVO_SMS_GRACE_PERIOD_TOGGLE = 'nuvo-sms-grace-period',
@@ -128,6 +131,7 @@ export enum Features {
   TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs',
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
   VENUE_AP_MANAGEMENT_VLAN_TOGGLE = 'wifi-venue-ap-mgmt-vlan-toggle',
+  VIEWMODEL_TP_LOGIN_ADMIN_COUNT = 'viewmodel-query-tenantadmindelegation-tp-login',
   WIFI_DOWNGRADE_VENUE_ABF_TOGGLE = 'wifi-downgrade-venue-abf-toggle',
   WIFI_EDA_BSS_PRIORITY_TOGGLE = 'wifi-eda-bss-priority-toggle',
   WIFI_EDA_CLIENT_REVOKE_TOGGLE = 'wifi-eda-client-revoke-toggle',
@@ -153,6 +157,7 @@ export enum Features {
   SWITCH_NEXT_GENERATION_TOPOLOGY_TOGGLE = 'switch-next-generation-topology-toggle',
   RUCKUS_AI_USERS_TOGGLE = 'ruckus-ai-sso-toggle',
   SWITCH_EXTERNAL_IP_TOGGLE = 'removable-ff',
+  WORKFLOW_TOGGLE = 'workflow-framework-enabled',
   AP_FW_MGMT_UPGRADE_BY_MODEL = 'ap-fw-mgmt-upgrade-by-model',
   WIFI_8021X_MAC_AUTH_TOGGLE = 'wifi-fr-8021x-mac-toggle',
   RUCKUS_AI_NEW_ROLES_TOGGLE = 'ruckus-ai-users-new-roles-toggle',
@@ -171,8 +176,10 @@ export enum Features {
   SWITCH_AP_PORT_HYPERLINK ='switch-ap-port-hyperlink-toggle',
   WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE = 'wifi-snmp-v3-agent-passphrase-complexity-toggle',
   WIFI_RESET_AP_LAN_PORT_TOGGLE = 'wifi-reset-ap-port-setting-toggle',
+  WIFI_SMART_MONITOR_DISABLE_WLAN_TOGGLE = 'wifi-smart-monitor-disable-wlan-toggle',
   SWITCH_ICX7850_48C_SUPPORT_PORT_SPEED_TOGGLE = 'switch-consumer-icx7850-48c-support-port-speed-toggle',
-  WIFI_AP_STICKY_CLIENT_STEERING_TOGGLE = 'wifi-ap-sticky-client-steering-toggle'
+  WIFI_AP_STICKY_CLIENT_STEERING_TOGGLE = 'wifi-ap-sticky-client-steering-toggle',
+  WIFI_OVER_THE_DS_FT_SUPPORT_TOGGLE = 'wifi-over-the-ds-ft-support-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

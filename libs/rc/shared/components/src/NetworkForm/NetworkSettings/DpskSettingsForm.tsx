@@ -21,7 +21,9 @@ import {
   transformAdvancedDpskExpirationText,
   useConfigTemplateQueryFnSwitcher,
   TableResult,
-  hasDpskAccess
+  hasServicePermission,
+  ServiceType,
+  ServiceOperation
 } from '@acx-ui/rc/utils'
 
 import { DpskForm }       from '../../services/DpskForm/DpskForm'
@@ -168,6 +170,9 @@ function DpskServiceSelector () {
   })
 
   const dpskServiceProfileId = useWatch('dpskServiceProfileId')
+  const hasAddDpskPermission = hasServicePermission({
+    type: ServiceType.DPSK, oper: ServiceOperation.CREATE
+  })
 
   const findService = (serviceId: string) => {
     return dpskList?.data.find((dpsk: DpskSaveData) => dpsk.id === serviceId)
@@ -212,7 +217,7 @@ function DpskServiceSelector () {
         >
         </Select>
       </Form.Item>
-      { hasDpskAccess() && <Button
+      { hasAddDpskPermission && <Button
         type='link'
         style={{ marginBottom: '16px' }}
         onClick={() => setDpskModalVisible(true)}

@@ -149,7 +149,7 @@ export const ImpactedSwitchesTable = ({
         columns={columns}
         dataSource={data as SwitchDetails[]}
         rowKey='rowId'
-        type='tall'
+        type='compactBordered'
       />
     </Loader>
   )

@@ -8,14 +8,14 @@ import {
   EdgeMvSdLanViewData,
   ServiceOperation,
   ServiceType,
+  filterByAccessForServicePolicyMutation,
+  getScopeKeyByService,
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { EdgeScopes }            from '@acx-ui/types'
-import { filterByAccess }        from '@acx-ui/user'
 
 import { CompatibilityCheck }    from './CompatibilityCheck'
 import { DcSdLanDetailContent }  from './DcSdLanDetailContent'
@@ -74,9 +74,9 @@ const EdgeSdLanDetail = () => {
             })
           }
         ]}
-        extra={filterByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink
-            scopeKey={[EdgeScopes.UPDATE]}
+            scopeKey={getScopeKeyByService(ServiceType.EDGE_SD_LAN, ServiceOperation.EDIT)}
             to={getServiceDetailsLink({
               type: ServiceType.EDGE_SD_LAN,
               oper: ServiceOperation.EDIT,

@@ -5,7 +5,7 @@ import {
 } from '@reduxjs/toolkit/query/react'
 import _ from 'lodash'
 
-import { updateJwtCache } from '@acx-ui/utils'
+import { reconnectSockets, updateJwtCache } from '@acx-ui/utils'
 
 import {
   graphqlRequestBaseQuery as originalGraphqlRequestBaseQuery
@@ -15,34 +15,34 @@ import type { FetchArgs } from '@reduxjs/toolkit/dist/query/fetchBaseQuery'
 
 export { createApi }
 
-function refreshJWT (headers?: Headers) {
-  const loginToken = headers?.get('login-token')
-
+export function refreshJWT (headers?: Headers | Record<string, string>) {
   if (!headers) return
-  if (!loginToken) return
 
-  sessionStorage.setItem('jwt', loginToken)
+  const jwtToken = headers instanceof Headers
+    ? headers.get('login-token')
+    : headers['login-token']
+
+  if (!jwtToken) return
+
+  sessionStorage.setItem('jwt', jwtToken)
   sessionStorage.removeItem('ACX-ap-compatibiliy-note-hidden') // clear ap compatibiliy banner display condition
-  updateJwtCache(loginToken)
+  updateJwtCache(jwtToken)
+  reconnectSockets()
 }
 
 export const fetchBaseQuery: typeof originalFetchBaseQuery = (options) => {
   const baseQuery = originalFetchBaseQuery(options)
   const wrapperBaseQuery: typeof baseQuery = async (args, api, extraOptions) => {
     const result = await baseQuery(args, api, extraOptions)
-
     refreshJWT(result.meta?.response?.headers)
-
     return result
   }
-
   return wrapperBaseQuery
 }
 
 export const baseQuery = retry(
   async (args: string | FetchArgs, api, extraOptions) => {
     const result = await fetchBaseQuery()(args, api, extraOptions)
-
     if (result.error) {
       const status = result.error?.status
       const errorCode = _.get(result.error, 'originalStatus')
@@ -53,7 +53,6 @@ export const baseQuery = retry(
         })
       }
     }
-
     return result
   },
   { maxRetries: 0 }
@@ -63,11 +62,8 @@ export const graphqlRequestBaseQuery: typeof originalGraphqlRequestBaseQuery = (
   const baseQuery = originalGraphqlRequestBaseQuery(options)
   const wrapperBaseQuery: typeof baseQuery = async (args, api, extraOptions) => {
     const result = await baseQuery(args, api, extraOptions)
-
     refreshJWT(result.meta?.response?.headers)
-
     return result
   }
-
   return wrapperBaseQuery
 }

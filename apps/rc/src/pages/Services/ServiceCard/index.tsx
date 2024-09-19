@@ -1,34 +1,29 @@
 import { ReactNode } from 'react'
 
-import { omit }                                     from 'lodash'
-import { FormattedMessage, defineMessage, useIntl } from 'react-intl'
+import { defineMessage, useIntl } from 'react-intl'
 
 import { RadioCard, RadioCardProps } from '@acx-ui/components'
 import {
   getServiceRoutePath,
   ServiceOperation,
-  ServicePolicyScopeKeyOper,
-  servicePolicyCardDataToScopeKeys,
   ServiceType,
   serviceTypeDescMapping,
   serviceTypeLabelMapping,
-  hasDpskAccess
+  hasServicePermission
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { RolesEnum, ScopeKeys }                    from '@acx-ui/types'
-import { hasPermission }                           from '@acx-ui/user'
+import { RolesEnum }                               from '@acx-ui/types'
 
 export type ServiceCardProps = Pick<RadioCardProps, 'type' | 'categories'> & {
   serviceType: ServiceType
   count?: number
-  scopeKeysMap?: Record<ServicePolicyScopeKeyOper, ScopeKeys>
   helpIcon?: ReactNode
 }
 
 export function ServiceCard (props: ServiceCardProps) {
   const { $t } = useIntl()
   const location = useLocation()
-  const { serviceType, type: cardType, categories = [], count, scopeKeysMap, helpIcon } = props
+  const { serviceType, type: cardType, categories = [], count, helpIcon } = props
   // eslint-disable-next-line max-len
   const linkToCreate = useTenantLink(getServiceRoutePath({ type: serviceType, oper: ServiceOperation.CREATE }))
   // eslint-disable-next-line max-len
@@ -37,34 +32,21 @@ export function ServiceCard (props: ServiceCardProps) {
 
   const isAddButtonAllowed = () => {
     if (cardType !== 'button') return false
-    if (serviceType === ServiceType.DPSK) return hasDpskAccess()
-    // eslint-disable-next-line max-len
-    const scopeKeyForCreate = servicePolicyCardDataToScopeKeys([{ scopeKeysMap, categories }], 'create')
-    return hasPermission({
-      roles: [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR],
-      scopes: scopeKeyForCreate
+
+    return hasServicePermission({
+      type: serviceType,
+      oper: ServiceOperation.CREATE,
+      roles: [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]
     })
   }
 
   const formatServiceName = () => {
     const name = $t(serviceTypeLabelMapping[serviceType])
-    const msgValues = {
-      name,
-      count,
-      helpIcon: () => {
-        return helpIcon ? <span style={{ marginLeft: '5px' }}>{helpIcon}</span> : ''
-      }
-    }
 
-    return count === undefined
-      ? <FormattedMessage
-        defaultMessage='{name}<helpIcon></helpIcon>'
-        values={omit(msgValues, 'count')}
-      />
-      : <FormattedMessage
-        defaultMessage='{name} ({count})<helpIcon></helpIcon>'
-        values={msgValues}
-      />
+    if (count === undefined) {
+      return name
+    }
+    return $t({ defaultMessage: '{name} ({count})' }, { name, count })
   }
 
   return (
@@ -86,6 +68,7 @@ export function ServiceCard (props: ServiceCardProps) {
           navigate(linkToList)
         }
       }}
+      helpIcon={helpIcon ? <span style={{ marginLeft: '5px' }}>{helpIcon}</span> : ''}
     />
   )
 }

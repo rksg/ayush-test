@@ -27,10 +27,9 @@ import {
   DHCPProfileAps, DHCPSaveData, DHCPConfigTypeEnum,
   ApDeviceStatusEnum, APExtended, DHCP_LIMIT_NUMBER,
   getServiceRoutePath, ServiceOperation, ServiceType,
-  useConfigTemplateQueryFnSwitcher, VenueDHCPProfile, useConfigTemplate
+  useConfigTemplateQueryFnSwitcher, VenueDHCPProfile, useConfigTemplate,
+  hasServicePermission
 } from '@acx-ui/rc/utils'
-import { WifiScopes }    from '@acx-ui/types'
-import { hasPermission } from '@acx-ui/user'
 
 import useDHCPInfo                                               from './hooks/useDHCPInfo'
 import { AntSelect, IconContainer, AddBtnContainer, StyledForm } from './styledComponents'
@@ -107,7 +106,9 @@ const VenueDHCPForm = (props: {
   const isMaxNumberReached = ()=>{
     return dhcpProfileList && dhcpProfileList.length >= DHCP_LIMIT_NUMBER
   }
-  const hasAddDhcpPermission = hasPermission({ scopes: [WifiScopes.CREATE] })
+  const hasAddDhcpPermission = hasServicePermission({
+    type: ServiceType.DHCP, oper: ServiceOperation.CREATE
+  })
 
   useEffect(() => {
     async function fetchData () {
@@ -322,26 +323,26 @@ const VenueDHCPForm = (props: {
             )}
           </AntSelect>
         </StyledForm.Item>
-
-        <Link style={!hasAddDhcpPermission || isMaxNumberReached()
-          ? { marginLeft: 10, cursor: 'not-allowed', color: 'var(--acx-neutrals-40)' }
-          : { marginLeft: 10 }}
-        onClick={(e) => {
-          if(!hasAddDhcpPermission || isMaxNumberReached()){
-            e.preventDefault()
-            e.stopPropagation()
-          }
-        }}
-        to={addDhcpPath}
-        state={{
-          from: {
-            pathname: venueServicesTabPath,
-            returnParams: { showConfig: true }
-          }
-        }}>
-          {$t({ defaultMessage: 'Add DHCP for Wi-Fi Service' })}
-        </Link>
-
+        {hasAddDhcpPermission &&
+          <Link style={isMaxNumberReached()
+            ? { marginLeft: 10, cursor: 'not-allowed', color: 'var(--acx-neutrals-40)' }
+            : { marginLeft: 10 }}
+          onClick={(e) => {
+            if (isMaxNumberReached()) {
+              e.preventDefault()
+              e.stopPropagation()
+            }
+          }}
+          to={addDhcpPath}
+          state={{
+            from: {
+              pathname: venueServicesTabPath,
+              returnParams: { showConfig: true }
+            }
+          }}>
+            {$t({ defaultMessage: 'Add DHCP for Wi-Fi Service' })}
+          </Link>
+        }
       </Space>
     </StyledForm.Item>
 

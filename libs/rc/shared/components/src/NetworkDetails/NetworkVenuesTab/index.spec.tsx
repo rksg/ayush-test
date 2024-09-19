@@ -5,11 +5,13 @@ import userEvent     from '@testing-library/user-event'
 import { cloneDeep } from 'lodash'
 import { rest }      from 'msw'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { networkApi, venueApi }   from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { networkApi, softGreApi, venueApi } from '@acx-ui/rc/services'
 import {
   CommonRbacUrlsInfo,
   CommonUrlsInfo,
+  SoftGreUrls,
+  VlanPoolRbacUrls,
   WifiNetworkFixtures,
   WifiRbacUrlsInfo,
   WifiUrlsInfo
@@ -37,7 +39,9 @@ import {
   networkVenue_apgroup,
   networkVenueApCompatibilities,
   mockNetworkSaveData,
-  vlanPoolList
+  vlanPoolList,
+  mockSoftGreTable,
+  vlanPoolProfilesData
 } from './__tests__/fixtures'
 
 import { NetworkVenuesTab } from './index'
@@ -52,7 +56,8 @@ const disabledFFs = [
   Features.EDGE_SD_LAN_MV_TOGGLE,
   Features.RBAC_SERVICE_POLICY_TOGGLE,
   Features.WIFI_RBAC_API,
-  Features.SWITCH_RBAC_API
+  Features.ABAC_POLICIES_TOGGLE,
+  Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE
 ]
 type MockDialogProps = React.PropsWithChildren<{
   visible: boolean
@@ -94,6 +99,7 @@ describe('NetworkVenuesTab', () => {
     act(() => {
       store.dispatch(networkApi.util.resetApiState())
       store.dispatch(venueApi.util.resetApiState())
+      store.dispatch(softGreApi.util.resetApiState())
       mockedGetApCompatibilitiesNetwork.mockClear()
     })
 
@@ -147,6 +153,10 @@ describe('NetworkVenuesTab', () => {
       rest.post(
         WifiUrlsInfo.getVlanPoolViewModelList.url,
         (_, res, ctx) => res(ctx.json({ data: vlanPoolList }))
+      ),
+      rest.post(
+        SoftGreUrls.getSoftGreViewDataList.url,
+        (_, res, ctx) => res(ctx.json(mockSoftGreTable))
       )
     )
   })
@@ -712,6 +722,7 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
     const dialog = await screen.findByTestId('NetworkVenueScheduleDialog')
     await waitFor(() => expect(dialog).toBeVisible())
   })
+
 })
 
 describe('WIFI_RBAC_API is turned on', () => {
@@ -722,12 +733,13 @@ describe('WIFI_RBAC_API is turned on', () => {
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_RBAC_API || !disabledFFs.includes(ff as Features))
 
+    mockedGetWifiNetwork.mockClear()
+    mockedGetApCompatibilitiesNetwork.mockClear()
     act(() => {
       store.dispatch(networkApi.util.resetApiState())
       store.dispatch(venueApi.util.resetApiState())
+      store.dispatch(softGreApi.util.resetApiState())
     })
-
-    mockedGetWifiNetwork.mockClear()
 
     mockServer.use(
       rest.post(
@@ -763,6 +775,14 @@ describe('WIFI_RBAC_API is turned on', () => {
           mockedGetWifiNetwork()
           return res(ctx.json({ data: mockedNetworks }))
         }
+      ),
+      rest.post(
+        VlanPoolRbacUrls.getVLANPoolPolicyList.url,
+        (_req, res, ctx) => res(ctx.json(vlanPoolProfilesData))
+      ),
+      rest.post(
+        SoftGreUrls.getSoftGreViewDataList.url,
+        (_, res, ctx) => res(ctx.json(mockSoftGreTable))
       )
     )
   })
@@ -781,5 +801,103 @@ describe('WIFI_RBAC_API is turned on', () => {
     expect(row).toHaveTextContent('24/7')
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)
+  })
+})
+
+
+describe('SoftGreTunnel', () => {
+  const tenantId = 'tenantId'
+  const mockedNetworks = cloneDeep(mockedRbacWifiNetworkList)
+  mockedNetworks[0].venueApGroups[1].venueId = list.data[0].id
+  const mockedGetWifiNetworks = jest.fn()
+  const mockedGetWifiNetwork = jest.fn()
+  const mockedGetSoftGreFn = jest.fn()
+
+  beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE
+      || ff === Features.WIFI_RBAC_API || !disabledFFs.includes(ff as Features))
+
+    act(() => {
+      store.dispatch(networkApi.util.resetApiState())
+      store.dispatch(venueApi.util.resetApiState())
+      store.dispatch(softGreApi.util.resetApiState())
+      mockedGetWifiNetwork.mockClear()
+      mockedGetApCompatibilitiesNetwork.mockClear()
+      mockedGetWifiNetwork.mockClear()
+      mockedGetSoftGreFn.mockClear()
+    })
+
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json(list))
+      ),
+      rest.post(
+        CommonUrlsInfo.networkActivations.url,
+        (req, res, ctx) => res(ctx.json({ data: [networkVenue_allAps, networkVenue_apgroup] }))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getNetwork.url,
+        (req, res, ctx) => {
+          mockedGetWifiNetwork()
+          return res(ctx.json(network))
+        }
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenueCityList.url,
+        (req, res, ctx) => res(ctx.json([]))
+      ),
+      rest.post(
+        WifiUrlsInfo.getApCompatibilitiesNetwork.url,
+        (req, res, ctx) => {
+          mockedGetApCompatibilitiesNetwork()
+          return res(ctx.json(networkVenueApCompatibilities))
+        }
+      ),
+      rest.post(
+        WifiUrlsInfo.getVlanPoolViewModelList.url,
+        (_, res, ctx) => res(ctx.json({ data: vlanPoolList }))
+      ),
+      rest.post(
+        CommonRbacUrlsInfo.getWifiNetworksList.url,
+        (_, res, ctx) => {
+          mockedGetWifiNetworks()
+          return res(ctx.json({ data: mockedNetworks }))
+        }
+      ),
+      rest.post(
+        VlanPoolRbacUrls.getVLANPoolPolicyList.url,
+        (_req, res, ctx) => res(ctx.json(vlanPoolProfilesData))
+      ),
+      rest.post(
+        SoftGreUrls.getSoftGreViewDataList.url,
+        (_, res, ctx) => {
+          mockedGetSoftGreFn()
+          return res(ctx.json(mockSoftGreTable))
+        }
+      )
+    )
+  })
+
+  it('should correctly display tunnel column when SoftGre is running on it', async () => {
+    const networkId = '373377b0cb6e46ea8982b1c80aabe1fa'
+    render(<Provider><NetworkVenuesTab /></Provider>, {
+      route: { params: { tenantId, networkId },
+        path: '/:tenantId/t/:networkId' }
+    })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => expect(mockedGetApCompatibilitiesNetwork).toHaveBeenCalled())
+    await waitFor(() => expect(mockedGetWifiNetwork).toHaveBeenCalled())
+    await waitFor(() => expect(mockedGetWifiNetworks).toHaveBeenCalled())
+    await waitFor(() => expect(mockedGetSoftGreFn).toBeCalled())
+    const activatedRow = await screen.findByRole('row', { name: /network-venue-1/i })
+    screen.getByRole('columnheader', { name: 'Tunnel' })
+    const tunnelBtn = await within(activatedRow).findByRole('button', { name: 'Tunneled (softGreProfileName1)' })
+    await userEvent.click(tunnelBtn)
+    const tunnelNetworkModal = await screen.findByRole('dialog')
+    const softGreRadio = await within(tunnelNetworkModal).findByRole('radio', { name: 'SoftGRE Tunneling' })
+    await within(tunnelNetworkModal).findByText('softGreProfileName1')
+    await waitFor(() => expect(softGreRadio).toBeChecked())
   })
 })

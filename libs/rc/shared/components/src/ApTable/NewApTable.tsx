@@ -60,12 +60,12 @@ import { RequestPayload, WifiScopes }                                     from '
 import { filterByAccess }                                                 from '@acx-ui/user'
 import { exportMessageMapping }                                           from '@acx-ui/utils'
 
-import { ApCompatibilityDrawer, ApCompatibilityFeature, ApCompatibilityQueryTypes, ApCompatibilityType } from '../ApCompatibility'
-import { ApGeneralCompatibilityDrawer as EnhancedApCompatibilityDrawer }                                 from '../Compatibility'
-import { seriesMappingAP }                                                                               from '../DevicesWidget/helper'
-import { CsvSize, ImportFileDrawer, ImportFileDrawerType }                                               from '../ImportFileDrawer'
-import { useApActions }                                                                                  from '../useApActions'
-import { useIsEdgeFeatureReady }                                                                         from '../useEdgeActions'
+import { ApCompatibilityDrawer, ApCompatibilityFeature, ApCompatibilityType } from '../ApCompatibility'
+import { ApGeneralCompatibilityDrawer as EnhancedApCompatibilityDrawer }      from '../Compatibility'
+import { seriesMappingAP }                                                    from '../DevicesWidget/helper'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType }                    from '../ImportFileDrawer'
+import { useApActions }                                                       from '../useApActions'
+import { useIsEdgeFeatureReady }                                              from '../useEdgeActions'
 
 import { getGroupableConfig } from './newGroupByConfig'
 import { useExportCsv }       from './useExportCsv'
@@ -736,9 +736,6 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
         type={params.venueId?ApCompatibilityType.VENUE:ApCompatibilityType.NETWORK}
         venueId={params.venueId}
         networkId={params.networkId}
-        queryType={params.venueId ?
-          ApCompatibilityQueryTypes.CHECK_VENUE_WITH_APS :
-          ApCompatibilityQueryTypes.CHECK_NETWORK_WITH_APS}
         apIds={selectedApSN ? [selectedApSN] : []}
         apName={selectedApName}
         isMultiple
@@ -747,8 +744,9 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       {isEdgeCompatibilityEnabled && <EnhancedApCompatibilityDrawer
         visible={compatibilitiesDrawerVisible}
         isMultiple
-        type={ApCompatibilityType.VENUE}
+        type={params.venueId?ApCompatibilityType.VENUE:ApCompatibilityType.NETWORK}
         venueId={params.venueId}
+        networkId={params.networkId}
         apId={selectedApSN}
         apName={selectedApName}
         onClose={() => setCompatibilitiesDrawerVisible(false)}
