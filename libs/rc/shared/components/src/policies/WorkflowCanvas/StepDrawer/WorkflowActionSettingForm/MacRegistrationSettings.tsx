@@ -157,8 +157,9 @@ export function MacRegistrationSettings () {
           <Form.Item
             name='clientEnterMacAddress'
             valuePropName='checked'
+            hidden={true}
           >
-            <Checkbox defaultChecked={false}>
+            <Checkbox defaultChecked={true}>
               {$t({ defaultMessage: 'Ask client to manually enter MAC Address' })}
             </Checkbox>
           </Form.Item>
