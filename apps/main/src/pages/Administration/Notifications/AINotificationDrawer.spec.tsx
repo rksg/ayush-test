@@ -161,7 +161,7 @@ describe('IncidentNotificationDrawer', () => {
     await waitFor(() => {
       expect(screen.getByRole('checkbox', { name: 'Switch Firmware' })).not.toBeChecked() })
     await waitFor(() => {
-      expect(screen.getByRole('checkbox', { name: 'SmartEdge Firmware' })).toBeChecked() })
+      expect(screen.getByRole('checkbox', { name: 'RUCKUS Edge Firmware' })).toBeChecked() })
   })
   it('should handle notification preference update', async () => {
     const mockedPref = {
@@ -363,7 +363,7 @@ describe('IncidentNotificationDrawer', () => {
     await waitFor(async () => {
       expect(await screen.findByRole('checkbox', { name: 'Switch Firmware' })).toBeChecked() })
     await waitFor(async () => {
-      expect(await screen.findByRole('checkbox', { name: 'SmartEdge Firmware' })).toBeChecked()
+      expect(await screen.findByRole('checkbox', { name: 'RUCKUS Edge Firmware' })).toBeChecked()
     })
     await waitFor(async () => {
       expect(await screen.findByRole('checkbox', { name: 'API Changes' })).not.toBeChecked() })
@@ -427,7 +427,7 @@ describe('IncidentNotificationDrawer', () => {
     await waitFor(async () => {
       expect(await screen.findByRole('checkbox', { name: 'Switch Firmware' })).toBeChecked() })
     await waitFor(async () => {
-      expect(await screen.findByRole('checkbox', { name: 'SmartEdge Firmware' })).toBeChecked()
+      expect(await screen.findByRole('checkbox', { name: 'RUCKUS Edge Firmware' })).toBeChecked()
     })
     await waitFor(async () => {
       expect(await screen.findByRole('checkbox', { name: 'API Changes' })).not.toBeChecked() })
@@ -489,6 +489,6 @@ describe('IncidentNotificationDrawer', () => {
     await waitFor(() => {
       expect(screen.getByRole('checkbox', { name: 'Switch Firmware' })).toBeChecked() })
     await waitFor(() => {
-      expect(screen.getByRole('checkbox', { name: 'SmartEdge Firmware' })).toBeChecked() })
+      expect(screen.getByRole('checkbox', { name: 'RUCKUS Edge Firmware' })).toBeChecked() })
   })
 })

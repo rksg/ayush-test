@@ -49,7 +49,7 @@ export const EdgeTable = (props: EdgeTableProps) => {
 
   const columns: TableProps<EdgeStatus>['columns'] = [
     {
-      title: $t({ defaultMessage: 'SmartEdge' }),
+      title: $t({ defaultMessage: 'RUCKUS Edge' }),
       key: 'name',
       dataIndex: 'name',
       sorter: true,

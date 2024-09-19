@@ -110,7 +110,7 @@ export const DmzSdLanDetailContent = (props: { data?: EdgeMvSdLanViewData }) => 
           />
         </Tabs.TabPane>
         <Tabs.TabPane
-          tab={$t({ defaultMessage: 'SmartEdges({count})' }, { count: 2 })}
+          tab={$t({ defaultMessage: 'RUCKUS Edges({count})' }, { count: 2 })}
           key='se'
         >
           <SmartEdgesTable sdLanData={data} />

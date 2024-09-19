@@ -77,7 +77,7 @@ describe('EdgeSettingForm', () => {
     renderEdgeSettingForm()
 
     expect(await screen.findByRole('combobox', { name: 'Venue' })).toBeVisible()
-    expect(screen.getByRole('textbox', { name: 'SmartEdge Name' })).toBeVisible()
+    expect(screen.getByRole('textbox', { name: 'RUCKUS Edge Name' })).toBeVisible()
     expect(screen.getByRole('textbox', { name: 'Serial Number' })).toBeVisible()
     expect(screen.getByRole('textbox', { name: 'Description' })).toBeVisible()
   })

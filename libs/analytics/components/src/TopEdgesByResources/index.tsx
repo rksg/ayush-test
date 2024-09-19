@@ -126,7 +126,7 @@ function TopEdgesByResourcesWidget ({ filters }: { filters : AnalyticsFilter }) 
   return (
     <Loader states={[queryResults]}>
       <HistoricalCard
-        title={intl.$t({ defaultMessage: 'Top 5 SmartEdges by Resource Utilization' })}
+        title={intl.$t({ defaultMessage: 'Top 5 RUCKUS Edges by Resource Utilization' })}
       >
         <Row justify='end'>
           <Col>
