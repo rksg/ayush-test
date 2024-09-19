@@ -46,14 +46,14 @@ export enum AiFeatures {
   RRM = 'AI-Driven RRM',
   EquiFlex = 'EquiFlex',
   AIOps = 'AI Operations',
-  EcoFlexAI = 'EcoFlexAI'
+  EcoFlex = 'EcoFlex'
 }
 
 export const aiFeaturesLabel = {
   [AiFeatures.RRM]: defineMessage({ defaultMessage: 'AI-Driven RRM' }),
   [AiFeatures.EquiFlex]: defineMessage({ defaultMessage: 'EquiFlex' }),
   [AiFeatures.AIOps]: defineMessage({ defaultMessage: 'AI Operations' }),
-  [AiFeatures.EcoFlexAI]: defineMessage({ defaultMessage: 'EcoFlexAI' })
+  [AiFeatures.EcoFlex]: defineMessage({ defaultMessage: 'EcoFlex' })
 }
 
 type CodeInfo = {
@@ -71,7 +71,8 @@ const categories = {
   'Wi-Fi Experience': defineMessage({ defaultMessage: 'Wi-Fi Experience' }),
   'Security': defineMessage({ defaultMessage: 'Security' }),
   'Infrastructure': defineMessage({ defaultMessage: 'Infrastructure' }),
-  'AP Performance': defineMessage({ defaultMessage: 'AP Performance' })
+  'AP Performance': defineMessage({ defaultMessage: 'AP Performance' }),
+  'Sustainability': defineMessage({ defaultMessage: 'Sustainability' })
 }
 
 export const states = {
@@ -81,15 +82,15 @@ export const states = {
   },
   [DisplayStates.scheduled]: {
     text: defineMessage({ defaultMessage: 'Scheduled' }),
-    tooltip: defineMessage({ defaultMessage: 'The change recommendation has been scheduled via the user action "Optimize".' }) //TODO: initiated by the user {userName}
+    tooltip: defineMessage({ defaultMessage: 'The change recommendation has been scheduled for {scheduledAt}, via the user action "Optimize".' }) //TODO: initiated by the user {userName}
   },
   [DisplayStates.scheduledOneClick]: {
     text: defineMessage({ defaultMessage: 'Scheduled' }),
-    tooltip: defineMessage({ defaultMessage: 'The change recommendation has been scheduled via the user action "1-Click Optimize".' }) //TODO: initiated by the user {userName}
+    tooltip: defineMessage({ defaultMessage: 'The change recommendation has been scheduled for {scheduledAt}, via the user action "1-Click Optimize".' }) //TODO: initiated by the user {userName}
   },
   [DisplayStates.applyScheduled]: {
     text: defineMessage({ defaultMessage: 'Scheduled' }),
-    tooltip: defineMessage({ defaultMessage: 'The change recommendation has been automatically scheduled by IntentAI.' })
+    tooltip: defineMessage({ defaultMessage: 'The change recommendation has been automatically scheduled for {scheduledAt}, by IntentAI.' })
   },
   [DisplayStates.applyScheduleInProgress]: {
     text: defineMessage({ defaultMessage: 'Apply In Progress' }),
@@ -292,10 +293,9 @@ export const codes = {
     intent: defineMessage({ defaultMessage: 'Time to Connect vs Client Density for 6 GHz' }),
     category: categories['Wi-Fi Experience']
   },
-  'eco-flex-code': {
-    // TODO: EcoFlexAI code is not defined yet
-    aiFeature: AiFeatures.EcoFlexAI,
-    intent: defineMessage({ defaultMessage: 'TBD' }),
-    category: categories['Wi-Fi Experience']
+  'i-ecoflex': {
+    aiFeature: AiFeatures.EcoFlex,
+    intent: defineMessage({ defaultMessage: 'Energy Footprint vs Mission Criticality' }),
+    category: categories.Sustainability
   }
 } as Record<string, CodeInfo>

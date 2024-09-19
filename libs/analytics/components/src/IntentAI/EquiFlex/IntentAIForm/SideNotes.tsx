@@ -19,12 +19,12 @@ export const Introduction: React.FC = () => {
   </SideNotes>
 }
 
+export const tradeoff = defineMessage({ defaultMessage: 'Potential trade-offs of intelligent and optimized probe responses include increased complexity in network management, potential delays in connecting lesser-priority devices, and possible issues with compatibility across different devices and manufacturers.' })
 export const Priority: React.FC = () => {
   const { $t } = useIntl()
-  const tradeoff = $t({ defaultMessage: 'Potential trade-offs of intelligent and optimized probe responses include increased complexity in network management, potential delays in connecting lesser-priority devices, and possible issues with compatibility across different devices and manufacturers.' })
   return <SideNotes>
     <SideNotes.Section title={$t({ defaultMessage: 'Potential trade-off' })}>
-      <Typography.Paragraph children={tradeoff} />
+      <Typography.Paragraph children={$t(tradeoff)} />
     </SideNotes.Section>
   </SideNotes>
 }

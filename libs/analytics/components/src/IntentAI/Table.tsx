@@ -81,9 +81,9 @@ export const iconTooltips = {
       defaultMessage: `Proactively monitor and tune network performance with RUCKUS AI's
       dynamic recommendations to enhance KPIs and user experience.` })}
   />,
-  [AiFeatures.EcoFlexAI]: <IconTooltip
+  [AiFeatures.EcoFlex]: <IconTooltip
     icon={<EcoFlexAI />}
-    title={defineMessage({ defaultMessage: 'EcoFlexAI' })}
+    title={defineMessage({ defaultMessage: 'EcoFlex' })}
     subTitleLeft={defineMessage({ defaultMessage: 'Energy Footprint' })}
     subTitleMiddle={defineMessage({ defaultMessage: 'vs' })}
     subTitleRight={defineMessage({ defaultMessage: 'Mission Criticality' })}
@@ -236,7 +236,7 @@ export function IntentAITable (
       filteredValue: selectedFilters.intents,
       filterSearch: true,
       filterPlaceholder: $t({ defaultMessage: 'All Intents' }),
-      filterableWidth: 300
+      filterableWidth: 240
     },
     {
       title: $t({ defaultMessage: 'Category' }),

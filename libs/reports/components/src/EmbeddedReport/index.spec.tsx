@@ -7,7 +7,7 @@ import * as config                                                  from '@acx-u
 import { useIsSplitOn }                                             from '@acx-ui/feature-toggle'
 import {  ReportUrlsInfo, reportsApi }                              from '@acx-ui/reports/services'
 import type { GuestToken, EmbeddedResponse }                        from '@acx-ui/reports/services'
-import { Provider, store, rbacApiURL }                              from '@acx-ui/store'
+import { Provider, store, rbacApiURL, refreshJWT }                  from '@acx-ui/store'
 import { render, mockServer, act, waitFor }                         from '@acx-ui/test-utils'
 import { RolesEnum as RolesEnumR1 }                                 from '@acx-ui/types'
 import { CustomRoleType, getUserProfile as getUserProfileR1 }       from '@acx-ui/user'
@@ -49,6 +49,13 @@ jest.mock('@acx-ui/utils', () => ({
   getJwtToken: jest.fn().mockReturnValue('some token')
 }))
 const localeContext = jest.mocked(useLocaleContext)
+
+jest.mock('@acx-ui/store', () => ({
+  __esModule: true,
+  ...jest.requireActual('@acx-ui/store'),
+  refreshJWT: jest.fn()
+}))
+const refreshJWTMock = jest.mocked(refreshJWT)
 
 jest.mock('@acx-ui/config')
 const get = jest.mocked(config.get)
@@ -330,7 +337,7 @@ describe('EmbeddedDashboard', () => {
     </Provider>, { route: { params } })
   })
 
-  describe('401 Unauthorized', () => {
+  describe('Event listener', () => {
     let addEventListenerMock: jest.SpyInstance
     let removeEventListenerMock: jest.SpyInstance
 
@@ -360,7 +367,6 @@ describe('EmbeddedDashboard', () => {
 
       actionModal.mock.calls[0][0].onOk!()
     })
-
     it('should NOT call showExpiredSessionModal when event type is NOT unauthorized', () => {
       const { unmount } = render(<Provider>
         <EmbeddedReport
@@ -376,6 +382,21 @@ describe('EmbeddedDashboard', () => {
 
       unmount()
       expect(removeEventListenerMock).toHaveBeenCalledWith('message', expect.any(Function))
+    })
+    it('should call refreshJWT when event type is refreshToken', () => {
+      render(<Provider>
+        <EmbeddedReport
+          reportName={ReportType.OVERVIEW}
+          rlsClause='venue filter'/>
+      </Provider>, { route: { params } })
+
+      act(() => {
+        window.dispatchEvent(new MessageEvent('message',
+          { data: { type: 'refreshToken', headers: { 'login-token': 'token' } } }))
+      })
+      expect(addEventListenerMock).toHaveBeenCalledWith('message', expect.any(Function))
+      expect(refreshJWTMock).toHaveBeenCalledWith(
+        { headers: { 'login-token': 'token' }, type: 'refreshToken' })
     })
   })
 })
