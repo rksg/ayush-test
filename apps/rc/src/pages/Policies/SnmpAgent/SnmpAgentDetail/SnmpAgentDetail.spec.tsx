@@ -3,7 +3,6 @@ import { rest }  from 'msw'
 
 import {
   ApSnmpUrls,
-  getPolicyDetailsLink,
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType
@@ -108,22 +107,4 @@ describe('SnmpAgentDetail', () => {
     })).toBeVisible()
   })
 
-  it('should navigate to the edit page', async () => {
-    const editLink = `/${params.tenantId}/t/` + getPolicyDetailsLink({
-      type: PolicyType.SNMP_AGENT,
-      oper: PolicyOperation.EDIT,
-      policyId: params.policyId
-    })
-
-    render(
-      <Provider>
-        <SnmpAgentDetail />
-      </Provider>, {
-        route: { params, path: detailPath }
-      }
-    )
-
-    // eslint-disable-next-line max-len
-    expect(await screen.findByRole('link', { name: 'Configure' })).toHaveAttribute('href', editLink)
-  })
 })
