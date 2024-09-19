@@ -160,7 +160,7 @@ export function createIntentAIDetails () {
               children={$t({ defaultMessage: 'Key Performance Indications' })} />
             <DetailsSection.Details children={
               state === 'no-data'
-                ? $t({ defaultMessage: 'Graph modeling will be generated once Intent is activated.' })
+                ? <Card>{$t({ defaultMessage: 'Graph modeling will be generated once Intent is activated.' })}</Card>
                 : <IntentAIRRMGraph
                   crrmData={crrmData}
                   summaryUrlBefore={summaryUrlBefore}
