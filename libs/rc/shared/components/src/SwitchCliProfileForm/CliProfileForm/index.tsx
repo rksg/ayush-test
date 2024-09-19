@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Form }                   from 'antd'
 import _                          from 'lodash'
@@ -68,10 +68,13 @@ export function CliProfileForm () {
   const navigate = useNavigate()
   const linkToProfiles = usePathBasedOnConfigTemplate('/networks/wired/profiles', '')
   const editMode = params.action === 'edit'
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
   const { isTemplate } = useConfigTemplate()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const rbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isSwitchRbacEnabled
+
+  const [appliedModels, setAppliedModels] = useState({} as unknown as Record<string, string[]>)
 
   const [form] = Form.useForm()
   const [getProfiles] = useConfigTemplateLazyQueryFnSwitcher({
@@ -220,6 +223,11 @@ export function CliProfileForm () {
         models: cliProfile?.venueCliTemplate?.switchModels?.split(',')
       }
 
+      const venueAppliedModels = cliProfile?.venues?.reduce((result, v) => ({
+        ...result, [v]: data.models
+      }), {}) || {}
+
+      setAppliedModels(venueAppliedModels)
       form?.setFieldsValue(data)
     }
   }, [cliProfile])
@@ -275,7 +283,7 @@ export function CliProfileForm () {
               return true
             }}
           >
-            <CliStepConfiguration />
+            <CliStepConfiguration appliedModels={appliedModels} />
           </StepsForm.StepForm>
 
           <StepsForm.StepForm

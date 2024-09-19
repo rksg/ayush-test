@@ -99,6 +99,9 @@ describe('Cli Profile Form', () => {
           return res(ctx.json({ requestId: 'request-id' }))
         }
       ),
+      rest.post(SwitchUrlsInfo.getSwitchList.url,
+        (_, res, ctx) => res(ctx.json([]))
+      ),
       rest.get(SwitchRbacUrlsInfo.getCliFamilyModels.url,
         (_, res, ctx) => res(ctx.json(familyModels))
       ),

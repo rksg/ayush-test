@@ -149,18 +149,20 @@ export function CliStepModels () {
       </Col>
       <Col span={16}>
         <Space style={{
-          display: 'flex', justifyContent: 'space-between', marginBottom: '12px'
+          display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '12px'
         }}>
           {$t({ defaultMessage: '{count} Models selected' }, { count })}
           <Space>
             <Button
               type='link'
+              size='small'
               disabled={checkAllSelected()}
               onClick={() => onSelectAllModels(true)}>
               {$t({ defaultMessage: 'Select All' })}
             </Button>
             <Button
               type='link'
+              size='small'
               disabled={
                 !getVisibleModelList(allFamilyModels, filteredModelFamily)?.length
                 || !checkAllSelected()

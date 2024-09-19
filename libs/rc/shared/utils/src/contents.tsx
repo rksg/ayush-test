@@ -106,6 +106,27 @@ export const SwitchMessages = {
   })
 }
 
+export const SwitchCliMessages = {
+  ALLOW_CUSTOMIZED_CLI_TOOLTIP: defineMessage({
+    defaultMessage: 'This section allows you to dictate the variable value getting assigned to the selected switch.'
+  }),
+  PREPROVISIONED_SWITCH_LIST_TOOLTIP: defineMessage({
+    defaultMessage: 'Only the selected models from the previous step will be available for selection when customizing variables.'
+  }),
+  PLEASE_ENTER_START_IP: defineMessage({
+    defaultMessage: 'Please enter Start IP Address first'
+  }),
+  PLEASE_ENTER_END_IP: defineMessage({
+    defaultMessage: 'Please enter End IP Address first'
+  }),
+  PLEASE_ENTER_MASK: defineMessage({
+    defaultMessage: 'Please enter Network Mask first'
+  }),
+  PLEASE_ENTER_ADDRESS_VALUES: defineMessage({
+    defaultMessage: 'Please enter Start IP Address, End IP Address and Network Mask first'
+  })
+}
+
 /* eslint-disable max-len */
 export const WifiNetworkMessages = {
   ENABLE_PROXY_TOOLTIP: defineMessage({

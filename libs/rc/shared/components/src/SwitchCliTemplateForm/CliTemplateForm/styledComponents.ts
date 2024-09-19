@@ -2,6 +2,7 @@ import {
   Collapse as AntCollapse,
   Divider as AntDivider,
   List,
+  Select as AntSelect,
   Space
 } from 'antd'
 import styled from 'styled-components/macro'
@@ -9,8 +10,6 @@ import 'codemirror/addon/hint/show-hint.css'
 
 import { Tabs }          from '@acx-ui/components'
 import {
-  MoreVertical,
-  Plus,
   QuestionMarkCircleOutlined,
   WarningTriangleSolid
 } from '@acx-ui/icons'
@@ -49,18 +48,6 @@ export const Divider = styled(AntDivider).attrs({ type: 'vertical' })`
 export const TabsLayout = styled(Tabs)`
   .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-tab {
     padding: 6px 8px 11px;
-  }
-`
-
-export const MoreVerticalIcon = styled(MoreVertical)`
-  path {
-    stroke: var(--acx-accents-blue-60) !important;
-  }
-`
-
-export const PlusIcon = styled(Plus)`
-  path {
-    stroke: var(--acx-accents-blue-60) !important;
   }
 `
 
@@ -125,11 +112,65 @@ export const VariableList = styled(List)`
     .ant-list-item-action {
       display: flex;
       align-items: center;
+      margin-left: 0;
       li {
         padding: 0;
       }
       .ant-list-item-action-split {
         display: none;
+      }
+    }
+  }
+`
+
+export const TypeLabel = styled(Space)`
+  font-size: 11px;
+  color: var(--acx-primary-white);
+  border-radius: 20px;
+  padding: 2px 8px;
+`
+
+export const VariableTitle = styled('div')`
+  font-size: 10px;
+  color: var(--acx-neutrals-60);
+  line-height: 16px;
+`
+
+export const VariableContent = styled('div')`
+  font-size: 12px;
+  color: var(--acx-primary-black);
+  margin-bottom: 6px;
+  line-height: 16px;
+`
+
+export const CliVariableContent = styled('span')`
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+`
+
+export const CustomizedSection = styled('div')`
+  background: var(--acx-neutrals-10);
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+`
+
+export const CustomizedFields = styled(Space)`
+  display: grid;
+  grid-template-columns: 1fr 4px 1fr;
+  gap: 0 8px !important;
+  align-items: flex-start;
+`
+
+export const Select = styled(AntSelect)`
+  &.string-type {
+    .ant-select-selector {
+      height: 50.5px;
+      align-items: flex-start;
+      .ant-select-selection-placeholder {
+        top: 14px;
       }
     }
   }

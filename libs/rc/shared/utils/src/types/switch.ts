@@ -806,11 +806,16 @@ export interface CliTemplateVariable {
   name: string
   type: string
   value: string
-  rangeStart?: number,
-  rangeEnd?: number,
-  ipAddressStart?: string,
-  ipAddressEnd?: string,
+  rangeStart?: number
+  rangeEnd?: number
+  ipAddressStart?: string
+  ipAddressEnd?: string
   subMask?: string
+  // switches?: string[]
+  switchVariables?: {
+    serialNumbers: string[]
+    value: string
+  }[]
 }
 
 export interface CliTemplateVenueSwitches {

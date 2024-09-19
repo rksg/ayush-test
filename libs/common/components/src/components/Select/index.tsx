@@ -3,7 +3,11 @@ import { useIntl }             from 'react-intl'
 
 import { Check } from '@acx-ui/icons'
 
-import type { SelectProps } from 'antd'
+import type { SelectProps as AntSelectProps } from 'antd'
+
+interface SelectProps extends AntSelectProps {
+  $maxCount?: number
+}
 
 export function Select (props: SelectProps) {
   const { options = [], children = [], ...restProps } = props
@@ -16,7 +20,8 @@ export function Select (props: SelectProps) {
   const extraClassName = [
     ...(props?.dropdownClassName?.split(' ') ?? []),
     isGroupingDropdown ? 'grouping-dropdown' : '',
-    props?.mode === 'multiple' ? 'multiple-dropdown' : ''
+    props?.mode === 'multiple' ? 'multiple-dropdown' : '',
+    props?.$maxCount === 1 ? 'radio-type' : ''
   ].filter(cls => cls).join(' ')
 
   const getGroupOptions = () => {
@@ -26,13 +31,15 @@ export function Select (props: SelectProps) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         options: props?.children?.map(({ props }: any) => ({
           label: props?.children,
-          value: props?.value
+          value: props?.value,
+          disabled: props?.disabled
         }))
       }))
       : options?.map(opt => ({
         label: <span>{opt?.label}</span>,
         ...(opt.options ? { options: opt.options } : null),
-        ...(opt.value ? { value: opt.value } : null)
+        ...(opt.value ? { value: opt.value } : null),
+        ...(opt.disabled ? { disabled: opt.disabled } : null)
       }))
   }
 

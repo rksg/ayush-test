@@ -1,8 +1,22 @@
 import { useState, useRef, useEffect } from 'react'
 
-import { Col, Dropdown, Form, Input, List, Menu, MenuProps, Row, Space, Select, Switch, Typography, FormInstance } from 'antd'
-import { useIntl, FormattedMessage }                                                                               from 'react-intl'
-
+import {
+  Col,
+  Dropdown,
+  Form,
+  FormInstance,
+  Input,
+  List,
+  Menu,
+  MenuProps,
+  Row,
+  Space,
+  Select,
+  Switch,
+  Typography
+} from 'antd'
+import _                                        from 'lodash'
+import { useIntl, FormattedMessage, IntlShape } from 'react-intl'
 import 'codemirror/addon/hint/show-hint.js'
 
 import {
@@ -14,14 +28,19 @@ import {
   useStepFormContext
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { MoreVertical, Plus }     from '@acx-ui/icons-new'
 import {
   useGetCliConfigExamplesQuery,
-  useGetCliTemplatesQuery
+  useGetCliFamilyModelsQuery,
+  useGetCliTemplatesQuery,
+  useGetSwitchListQuery
 } from '@acx-ui/rc/services'
 import {
   checkObjectNotExists,
   CliTemplateExample,
   CliTemplateVariable,
+  SwitchStatusEnum,
+  SwitchViewModel,
   transformTitleCase,
   whitespaceOnlyRegExp
 } from '@acx-ui/rc/utils'
@@ -30,6 +49,7 @@ import { getIntl }   from '@acx-ui/utils'
 
 import { CodeMirrorWidget }                                from '../../CodeMirrorWidget'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../../ImportFileDrawer'
+import { CustomizedSwitchesSettingDrawer }                 from '../../SwitchCliProfileForm/CliProfileForm/CustomizedSwitchesSettingDrawer'
 
 import { CliVariableModal } from './CliVariableModal'
 import * as UI              from './styledComponents'
@@ -76,6 +96,12 @@ const cliExamplesTooltip = <FormattedMessage
   }}
 />
 
+export interface SwitchSettings {
+  name: string,
+  value: string,
+  venueName: string
+}
+
 export const maxVariableCount = 200
 const cliTemplatesPayload = {
   fields: ['name', 'id', 'venueSwitches'],
@@ -84,14 +110,30 @@ const cliTemplatesPayload = {
   sortOrder: 'DESC'
 }
 
+const switchListPayload = {
+  fields: [
+    'check-all', 'name', 'id', 'serialNumber', 'isStack', 'formStacking',
+    'venueId', 'switchName', 'model', 'uptime', 'configReady',
+    'syncedSwitchConfig', 'operationalWarning', 'venueName'
+  ],
+  pageSize: 9999,
+  filters: {
+    deviceStatus: [SwitchStatusEnum.NEVER_CONTACTED_CLOUD]
+  }
+}
+
 // TODO: move to rc/components
-export function CliStepConfiguration () {
+export function CliStepConfiguration (props: {
+  appliedModels?: Record<string, string[]>
+}) {
   const { $t } = useIntl()
   const params = useParams()
   const { form, editMode } = useStepFormContext()
   const isTemplate = params?.configType !== 'profiles'
   const cliDefaultString = isTemplate ? '' : 'manager registrar'
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isSwitchLevelCliProfileEnabled = useIsSplitOn(Features.SWITCH_LEVEL_CLI_PROFILE)
+  const isCustomizedVariableEnabled = isSwitchLevelCliProfileEnabled && !isTemplate
 
   const [cli, setCli] = useState('')
   const [cliFontSize, setCliFontSize] = useState('14')
@@ -103,6 +145,15 @@ export function CliStepConfiguration () {
   const [importModalvisible, setImportModalvisible] = useState(false)
   const [initVariableList, setInitVariableList] = useState(false)
 
+
+  const [selectedModels, setSelectedModels] = useState([] as string[])
+  const [venueAppliedModels, setVenueAppliedModels]
+    = useState({} as unknown as Record<string, string[]>)
+
+  const [switchSettings, setSwitchSettings] = useState([] as SwitchSettings[])
+  const [switchSettingType, setSwitchSettingType] = useState('')
+  const [switchSettingDrawerVisible, setSwitchSettingDrawerVisible] = useState(false)
+
   const { data: configExamples } = useGetCliConfigExamplesQuery({
     params, enableRbac: isSwitchRbacEnabled
   })
@@ -112,6 +163,21 @@ export function CliStepConfiguration () {
       payload: cliTemplatesPayload,
       enableRbac: isSwitchRbacEnabled
     }, { skip: !isTemplate })
+
+  const { data: preprovisionedSwitchList } = useGetSwitchListQuery({
+    params,
+    payload: switchListPayload,
+    enableRbac: isSwitchRbacEnabled
+  }, {
+    skip: !isCustomizedVariableEnabled
+  })
+
+  const { data: cliFamilyModels } = useGetCliFamilyModelsQuery({
+    params,
+    enableRbac: isSwitchRbacEnabled
+  }, {
+    skip: !isCustomizedVariableEnabled
+  })
 
   const codeMirrorEl = useRef(null as unknown as {
     getInstance: Function,
@@ -158,6 +224,7 @@ export function CliStepConfiguration () {
         })
 
       setVariableList((transformVariables ?? []) as CliTemplateVariable[])
+      setSelectedModels(data?.models)
       setInitVariableList(true)
     }
   }, [])
@@ -171,6 +238,25 @@ export function CliStepConfiguration () {
       })
     }
   }, [variableList])
+
+  console.log('variableList: ', variableList)
+
+  useEffect(() => {
+    if (cliFamilyModels) {
+      const venueAppliedModels = cliFamilyModels?.reduce((result, v) => {
+        const venueId = v.venueId as unknown as string
+        const models = v.familyModels?.map(f => f.models).flat()?.map(m => m.model) ?? []
+        const appliedModels = props?.appliedModels?.[venueId]
+        const diffModels = appliedModels ? _.difference(models, appliedModels) : models
+        return {
+          ...result,
+          [v.venueId]: diffModels
+        }
+      }, {}) as Record<string, string[]>
+
+      setVenueAppliedModels(venueAppliedModels)
+    }
+  }, [cliFamilyModels])
 
   useEffect(() => {
     if (codeMirrorInstance) {
@@ -407,19 +493,21 @@ export function CliStepConfiguration () {
                   actions={[
                     <Button
                       data-testid='add-var-btn'
+                      type='link'
                       size='small'
-                      ghost={true}
+                      ghost
+                      icon={<Plus size='sm' />}
                       onClick={() => {
                         appendContentToCliEditor(codeMirrorInstance, 'var', variable.name)
-                      }}>
-                      <UI.PlusIcon />
-                    </Button>,
+                      }}
+                    />,
                     <Dropdown overlay={variableActionMenu} trigger={['click']} key='actionMenu'>
                       <Button
                         data-testid='edit-var-btn'
+                        type='link'
                         size='small'
-                        ghost={true}
-                        icon={<UI.MoreVerticalIcon />}
+                        ghost
+                        icon={<MoreVertical size='sm' />}
                         onClick={() => {
                           setSelectedEditVariable(variable)
                         }}
@@ -428,11 +516,35 @@ export function CliStepConfiguration () {
                   ]}
                 >
                   <List.Item.Meta
-                    title={<Space size={0} split={<UI.Divider type='vertical' />}>
-                      <Space style={{ fontWeight: 600 }}>{variable.name}</Space>
-                      {transformTitleCase(variable.type)}</Space>
+                    title={
+                      isSwitchLevelCliProfileEnabled
+                        ? <Space size={4}>
+                          <Space style={{ fontWeight: 600, lineHeight: '20px' }}>{
+                            variable.name
+                          }</Space>
+                          <UI.TypeLabel style={{
+                            backgroundColor: getVariableColor(variable.type)
+                          }}>{
+                              transformTitleCase(variable.type)
+                            }</UI.TypeLabel>
+                        </Space>
+                        : <Space size={0} split={<UI.Divider type='vertical' />}>
+                          <Space style={{ fontWeight: 600 }}>{variable.name}</Space>
+                          {transformTitleCase(variable.type)}
+                        </Space>
                     }
-                    description={transformVariableValue(variable.type, variable.value)}
+                    description={
+                      isSwitchLevelCliProfileEnabled
+                        ? displayVariableValue(
+                          variable.type,
+                          variable,
+                          preprovisionedSwitchList?.data || [],
+                          setSwitchSettings,
+                          setSwitchSettingType,
+                          setSwitchSettingDrawerVisible,
+                          $t)
+                        : transformVariableValue(variable.type, variable.value)
+                    }
                   />
                 </List.Item>
               }}
@@ -449,6 +561,17 @@ export function CliStepConfiguration () {
       setModalvisible={setVariableModalvisible}
       variableList={variableList}
       setVariableList={setVariableList}
+      isCustomizedVariableEnabled={isCustomizedVariableEnabled}
+      venueAppliedModels={venueAppliedModels}
+      selectedModels={selectedModels}
+      preprovisionedSwitchList={preprovisionedSwitchList?.data}
+    />}
+
+    {isCustomizedVariableEnabled && <CustomizedSwitchesSettingDrawer
+      type={switchSettingType}
+      switchSettings={switchSettings}
+      switchSettingDrawerVisible={switchSettingDrawerVisible}
+      setSwitchSettingDrawerVisible={setSwitchSettingDrawerVisible}
     />}
 
     <ImportFileDrawer
@@ -486,11 +609,11 @@ function CliTemplateExampleList (props: {
               data-testid='add-example-btn'
               type='link'
               size='small'
+              icon={<Plus size='sm' />}
               onClick={() => {
                 appendContentToCliEditor(codeMirrorInstance, 'example', `\n${example.cli}\n`)
-              }}>
-              <UI.PlusIcon />
-            </Button>
+              }}
+            />
           ]}
         >{example.name}</List.Item>
       </Tooltip>
@@ -660,4 +783,121 @@ function htmlDecode (code: string) {
   let div = document.createElement('div')
   div.innerHTML = code
   return div.innerText?.replace(/↵/g, '\n') || div?.textContent?.replace(/↵/g, '')
+}
+
+function getVariableColor (type: string) {
+  const variableType = type.toUpperCase()
+  const colorMap:{ [key:string]: string } = {
+    ADDRESS: 'var(--acx-semantics-green-40)',
+    RANGE: 'var(--acx-accents-blue-50)',
+    STRING: 'var(--acx-accents-orange-50)'
+  }
+  return colorMap[variableType]
+}
+
+function displayVariableValue (
+  vtype: string,
+  values: CliTemplateVariable,
+  preprovisionedSwitchList: SwitchViewModel[],
+  setSwitchSettings: (data: SwitchSettings[]) => void,
+  setSwitchSettingType: (data: string) => void,
+  setSwitchSettingDrawerVisible: (visible: boolean) => void,
+  $t: IntlShape['$t']
+) {
+  const type = vtype.toUpperCase()
+  const switchCount = values?.switchVariables?.map(s => s.serialNumbers).flat()?.length
+
+  const customizedSwitches = !!switchCount && <>
+    <UI.VariableTitle>{
+      $t({ defaultMessage: 'Switches with their own settings' })
+    }</UI.VariableTitle>
+    <UI.VariableContent>
+      <Button type='link'
+        size='small'
+        // key='switches'
+        onClick={() => {
+          const switchVariables = values?.switchVariables?.map((switchVariable)=> {
+            if (Array.isArray(switchVariable.serialNumbers)) {
+              return switchVariable.serialNumbers.map(s => ({
+                serialNumber: s, value: switchVariable.value
+              }))
+            }
+            return {
+              serialNumber: switchVariable.serialNumbers, value: switchVariable.value
+            }
+          }).flat()
+
+          const settings = switchVariables?.map(switchVariable => {
+            const switchData = _.find(preprovisionedSwitchList, (s) => {
+              return s.serialNumber === switchVariable?.serialNumber
+            })
+            const hasSwitchName = switchData?.name !== switchData?.serialNumber
+            const name = hasSwitchName
+              ? `${switchData?.serialNumber} (${switchData?.name})` : switchData?.name
+            return {
+              ...switchData,
+              ...switchVariable,
+              name
+            }
+          }) as SwitchSettings[]
+
+          setSwitchSettings(settings)
+          setSwitchSettingType(type)
+          setSwitchSettingDrawerVisible(true)
+          // setEditMode(true)
+          // setDrawerVisible(true)
+        }}>
+        { $t({ defaultMessage: '{count} Switch(es)' }, { count: switchCount }) }
+      </Button>
+    </UI.VariableContent>
+  </>
+  console.log('displayVariableValue; ', values)
+
+  switch (type) {
+    case VariableType.ADDRESS:
+      return <>
+        <UI.VariableTitle>{ $t({ defaultMessage: 'Start - End IP Address' }) }</UI.VariableTitle>
+        <UI.VariableContent>{
+          $t({ defaultMessage: '{start} - {end}' }, {
+            start: values?.ipAddressStart, end: values?.ipAddressEnd
+          })
+        }</UI.VariableContent>
+        <UI.VariableTitle>{ $t({ defaultMessage: 'Network Mask' }) }</UI.VariableTitle>
+        <UI.VariableContent>{ values?.subMask }</UI.VariableContent>
+        { customizedSwitches }
+      </>
+    case VariableType.RANGE:
+      return <>
+        <UI.VariableTitle>{ $t({ defaultMessage: 'Start - End Value' }) }</UI.VariableTitle>
+        <UI.VariableContent>{
+          $t({ defaultMessage: '{start} - {end}' }, {
+            start: values?.rangeStart, end: values?.rangeEnd
+          })
+        }</UI.VariableContent>
+        { customizedSwitches }
+      </>
+    default:
+      return <>
+        <UI.VariableTitle>{ $t({ defaultMessage: 'String' }) }</UI.VariableTitle>
+        <UI.VariableContent>
+          <Tooltip title={getSplitContent(values?.value, 3)}dottedUnderline>
+            <UI.CliVariableContent>{ values?.value }</UI.CliVariableContent>
+          </Tooltip>
+        </UI.VariableContent>
+        { customizedSwitches }
+      </>
+  }
+}
+
+function getSplitContent (content:string, maxLines: number) { //TODO
+  const { $t } = useIntl()
+  const splitContent = content.split(/\r\n|\r|\n/)
+  const totalLength = splitContent?.length
+  const newContent = splitContent.slice(0, maxLines)
+
+  return $t({ defaultMessage: '{content}{br}{br}and {lines} more lines...' }, {
+    content: newContent.join('\r\n'),
+    lines: totalLength - maxLines,
+    br: <br/>
+  })
 }
