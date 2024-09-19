@@ -83,7 +83,7 @@ export function createIntentAIDetails () {
 
   return function IntentAIDetails () {
     const { $t } = useIntl()
-    const { intent, kpis, isDataRetained: hasData } = useIntentContext()
+    const { intent, kpis, isDataRetained: hasData, state } = useIntentContext()
     const valuesText = useValuesText()
     const { code, path, sliceValue, metadata, updatedAt, displayStatus } = intent
 
@@ -158,11 +158,15 @@ export function createIntentAIDetails () {
           <DetailsSection data-testid='Key Performance Indications'>
             <DetailsSection.Title
               children={$t({ defaultMessage: 'Key Performance Indications' })} />
-            <DetailsSection.Details children={<IntentAIRRMGraph
-              crrmData={crrmData}
-              summaryUrlBefore={summaryUrlBefore}
-              summaryUrlAfter={summaryUrlAfter}
-            />} />
+            <DetailsSection.Details children={
+              state === 'no-data'
+                ? $t({ defaultMessage: 'For Graph use text "Graph modeling will be generated once Intent is activated.' })
+                : <IntentAIRRMGraph
+                  crrmData={crrmData}
+                  summaryUrlBefore={summaryUrlBefore}
+                  summaryUrlAfter={summaryUrlAfter}
+                />
+            }/>
           </DetailsSection>
 
           <GridRow>
