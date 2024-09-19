@@ -79,7 +79,6 @@ const extractItem = {
 describe('useIntentAIActions', () => {
   const now = new Date('2024-07-20T04:01:00.000Z').getTime()
   beforeEach(() => {
-    global.originalLocation = window.location
     const resp = { t1: { success: true, errorMsg: '' , errorCode: '' } } as TransitionMutationResponse
     mockedTransitionIntent.mockReturnValue(Promise.resolve({ data: resp }))
     mockedIntentWlansQuery.mockReturnValue({ unwrap: () => Promise.resolve(raiWlans) })
@@ -88,22 +87,11 @@ describe('useIntentAIActions', () => {
     mockGraphqlMutation(intentAIUrl, 'TransitionIntent', { data: resp })
     jest.spyOn(Date, 'now').mockReturnValue(now)
   })
-  afterEach((done) => {
+  afterEach(() => {
     jest.mocked(get).mockReturnValue('')
     jest.clearAllMocks()
     jest.restoreAllMocks()
     Modal.destroyAll()
-    window.location = global.originalLocation
-
-    const toast = screen.queryAllByRole('img', { name: 'close' })
-    toast.forEach((t) => {
-      if (t) {
-        waitForElementToBeRemoved(toast).then(done)
-        message.destroy()
-      } else {
-        done()
-      }
-    })
   })
   describe('r1 - OneClickOptimize', () => {
     const mockOK = jest.fn()
@@ -506,10 +494,20 @@ describe('useIntentAIActions', () => {
 
   describe('Other Actions', () => {
     const mockOK = jest.fn()
-    beforeEach(() => {
+    beforeEach((done) => {
+      global.originalLocation = window.location
       jest.mocked(useIsSplitOn).mockReturnValue(false)
       jest.mocked(get).mockReturnValue('true')
       mockOK.mockClear()
+      const toast = screen.queryAllByRole('img', { name: 'close' })
+      toast.forEach((t) => {
+        if (t) {
+          waitForElementToBeRemoved(toast).then(done)
+          message.destroy()
+        } else {
+          done()
+        }
+      })
     })
     it('should handle handleTransitionIntent', async () => {
       const statusTrail = [ { status: 'new' }]
