@@ -9,9 +9,9 @@ import {
   mapCodeToAttempt,
   TimeSeriesDataType
 } from '@acx-ui/analytics/utils'
-
-import {codeToFailureTypeMap} from '@acx-ui/analytics/components'
 import { Card, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
+
+import { codeToFailureTypeMap } from '../../../RootCauseRecommendation'
 
 import type { TimeSeriesChartProps } from '../types'
 

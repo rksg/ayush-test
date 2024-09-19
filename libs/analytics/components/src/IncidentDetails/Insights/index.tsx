@@ -3,9 +3,7 @@ import { useIntl, FormattedMessage } from 'react-intl'
 
 import {
   productNames,
-
   Incident
-
 } from '@acx-ui/analytics/utils'
 import {
   Card,
