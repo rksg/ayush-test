@@ -83,7 +83,7 @@ describe('Dashboard', () => {
     ]
     switchWidgets.forEach(widget => expect(screen.getByTitle(widget)).toBeVisible())
 
-    fireEvent.click(screen.getByRole('radio', { name: 'SmartEdge' }))
+    fireEvent.click(screen.getByRole('radio', { name: 'RUCKUS Edge' }))
     expect(localStorage.getItem('dashboard-tab')).toBe('edge')
 
     const edgeWidgets = [

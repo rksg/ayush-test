@@ -86,7 +86,7 @@ describe('AddEdgeDhcp', () => {
       name: 'My Services'
     })).toBeVisible()
     expect(screen.getByRole('link', {
-      name: 'DHCP for SmartEdge'
+      name: 'DHCP for RUCKUS Edge'
     })).toBeVisible()
   })
 

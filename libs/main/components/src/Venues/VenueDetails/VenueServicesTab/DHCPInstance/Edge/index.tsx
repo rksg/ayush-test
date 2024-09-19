@@ -116,7 +116,7 @@ const EdgeDhcpTab = () => {
       content: dhcpData?.leaseTime
     },
     {
-      title: $t({ defaultMessage: 'SmartEdge' }),
+      title: $t({ defaultMessage: 'RUCKUS Edge' }),
       content: (
         <TenantLink to={`/devices/edge/${edgeData?.serialNumber}/details/overview`}>
           {edgeData?.name}

@@ -42,11 +42,11 @@ const SelectedContent = () => {
   return activeContent ?
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Cluster & SmartEdge Configuration Wizard' })}
+        title={$t({ defaultMessage: 'Cluster & RUCKUS Edge Configuration Wizard' })}
         subTitle={<ClusterConfigWizardSubtitle clusterInfo={clusterInfo} />}
         breadcrumb={[
           {
-            text: $t({ defaultMessage: 'SmartEdges' }),
+            text: $t({ defaultMessage: 'RUCKUS Edges' }),
             link: '/devices/edge'
           }
         ]}

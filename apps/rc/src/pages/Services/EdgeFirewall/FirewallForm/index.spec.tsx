@@ -188,7 +188,7 @@ describe('firewall form', () => {
       expect((aclResult.parentNode as HTMLDivElement).textContent)
         .toBe('Stateful ACLOFF')
 
-      expect(screen.getByText('SmartEdge (0)')).not.toBeNull()
+      expect(screen.getByText('RUCKUS Edge (0)')).not.toBeNull()
 
       await click(actions.getByRole('button', { name: 'Add' }))
       await waitFor(() => {
@@ -233,7 +233,7 @@ describe('firewall form', () => {
       expect((ddosResult.parentNode as HTMLDivElement).textContent)
         .toBe('DDoS Rate-limitingOFF')
 
-      expect(screen.getByText('SmartEdge (0)')).not.toBeNull()
+      expect(screen.getByText('RUCKUS Edge (0)')).not.toBeNull()
 
       await click(actions.getByRole('button', { name: 'Add' }))
       await waitFor(() => {

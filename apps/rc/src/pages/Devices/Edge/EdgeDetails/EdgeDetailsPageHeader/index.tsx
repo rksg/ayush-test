@@ -92,7 +92,7 @@ export const EdgeDetailsPageHeader = () => {
     },
     {
       scopeKey: [EdgeScopes.DELETE],
-      label: $t({ defaultMessage: 'Delete SmartEdge' }),
+      label: $t({ defaultMessage: 'Delete RUCKUS Edge' }),
       key: 'delete',
       showupstatus: [...Object.values(EdgeStatusEnum)]
     }
@@ -158,7 +158,7 @@ export const EdgeDetailsPageHeader = () => {
         </Row>
       }
       breadcrumb={[
-        { text: $t({ defaultMessage: 'SmartEdges' }), link: '/devices/edge' }
+        { text: $t({ defaultMessage: 'RUCKUS Edges' }), link: '/devices/edge' }
       ]}
       extra={[
         <RangePicker

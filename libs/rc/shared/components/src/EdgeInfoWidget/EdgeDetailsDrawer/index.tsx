@@ -176,7 +176,7 @@ const EdgeDetailsDrawer = (props: EdgeDetailsDrawerProps) => {
 
   return (
     <Drawer
-      title={$t({ defaultMessage: 'SmartEdge Details' })}
+      title={$t({ defaultMessage: 'RUCKUS Edge Details' })}
       visible={visible}
       onClose={onClose}
       children={content}
