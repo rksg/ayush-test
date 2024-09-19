@@ -1,28 +1,25 @@
 import { useEffect, useState } from 'react'
 
 import { Typography }                 from 'antd'
-import moment                         from 'moment-timezone'
+import { TooltipPlacement }           from 'antd/es/tooltip'
 import { MessageDescriptor, useIntl } from 'react-intl'
 
 import { impactedArea, nodeTypes, productNames } from '@acx-ui/analytics/utils'
-import { Card, Descriptions, GridCol, GridRow }  from '@acx-ui/components'
+import { Card, GridCol, GridRow }                from '@acx-ui/components'
 import { get }                                   from '@acx-ui/config'
-import { DateFormatEnum, formatter }             from '@acx-ui/formatter'
 import { useWifiNetworkListQuery }               from '@acx-ui/rc/services'
 import { getIntl, NodeType }                     from '@acx-ui/utils'
 
-import { DescriptionRow }      from '../../DescriptionSection'
+import { DescriptionSection }  from '../../DescriptionSection'
 import { FixedAutoSizer }      from '../../DescriptionSection/styledComponents'
 import { ConfigurationCard }   from '../AIOperations/ConfigurationCard'
+import { useCommonFields }     from '../common/commonFields'
 import { DetailsSection }      from '../common/DetailsSection'
-import { getIntentStatus }     from '../common/getIntentStatus'
 import { IntentDetailsHeader } from '../common/IntentDetailsHeader'
 import { IntentIcon }          from '../common/IntentIcon'
 import { KpiCard }             from '../common/KpiCard'
 import { StatusTrail }         from '../common/StatusTrail'
-import { codes }               from '../config'
 import { useIntentContext }    from '../IntentContext'
-import { Statuses  }           from '../states'
 import { getGraphKPIs }        from '../useIntentDetailsQuery'
 import { IntentWlan }          from '../utils'
 
@@ -92,6 +89,23 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
     const { wlans } = intent.metadata
     const needsWlans = wlans && wlans.length > 0
     const wlanRecords = useWlanRecords(wlans, !needsWlans || isMlisa)
+    const fields = [
+      ...useCommonFields(intent),
+      ...(needsWlans
+        ? [{
+          label: $t({ defaultMessage: 'Networks' }),
+          children: $t({ defaultMessage: `{count} {count, plural,
+              one {network}
+              other {networks}
+            } selected` }, {
+            count: wlans.length
+          }),
+          tooltip: wlanRecords.map(wlan => wlan.name).join('\n'),
+          tooltipPlacement: 'right' as TooltipPlacement
+        }]
+        : []
+      )
+    ]
 
     return <>
       <IntentDetailsHeader />
@@ -103,50 +117,7 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
               <Typography.Paragraph
                 data-testid='Overview text'
                 children={valuesText.actionText} />
-              <Descriptions noSpace>
-                <Descriptions.Item
-                  label={$t({ defaultMessage: 'Intent' })}
-                  children={$t(codes[intent.code].intent)}
-                />
-                <Descriptions.Item
-                  label={$t({ defaultMessage: 'Category' })}
-                  children={$t(codes[intent.code].category)}
-                />
-                <Descriptions.Item
-                  label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
-                  children={intent.sliceValue}
-                />
-                <Descriptions.Item
-                  label={$t({ defaultMessage: 'Status' })}
-                  children={getIntentStatus(intent.displayStatus)}
-                />
-                <Descriptions.Item
-                  label={$t({ defaultMessage: 'Date' })}
-                  children={formatter(DateFormatEnum.DateTimeFormat)(moment(intent.updatedAt))}
-                />
-                { [
-                  Statuses.scheduled,
-                  Statuses.applyScheduled,
-                  Statuses.revertScheduled
-                ].includes(intent.status) && <Descriptions.Item
-                  label={$t({ defaultMessage: 'Scheduled Date' })}
-                  children={
-                    formatter(DateFormatEnum.DateTimeFormat)(moment(intent.metadata.scheduledAt))
-                  }
-                />}
-                { needsWlans && <Descriptions.Item
-                  label={$t({ defaultMessage: 'Networks' })}>
-                  <DescriptionRow
-                    children={$t({ defaultMessage: `{count} {count, plural,
-                        one {network}
-                        other {networks}
-                      } selected` }, {
-                      count: wlans.length
-                    })}
-                    popover={wlanRecords.map(wlan => wlan.name).join('\n')}
-                  />
-                </Descriptions.Item>}
-              </Descriptions>
+              <DescriptionSection fields={fields}/>
               <br />
             </div>)}
           </FixedAutoSizer>
