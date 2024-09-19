@@ -1,19 +1,27 @@
 import React from 'react'
 
 import { Space, Typography }         from 'antd'
+import { kebabCase }                 from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
+import sanitize                      from 'sanitize-filename'
 
 import { useStepFormContext }              from '@acx-ui/components'
+import { formatter }                       from '@acx-ui/formatter'
 import { LinkDocumentIcon, LinkVideoIcon } from '@acx-ui/icons'
 
-import { richTextFormatValues } from '../../common/richTextFormatValues'
-import { SideNotes }            from '../../common/SideNotes'
-import { Intent }               from '../../useIntentDetailsQuery'
+import { richTextFormatValues }                    from '../../common/richTextFormatValues'
+import { SideNotes }                               from '../../common/SideNotes'
+import { useIntentContext }                        from '../../IntentContext'
+import { Statuses }                                from '../../states'
+import { Intent }                                  from '../../useIntentDetailsQuery'
+import { useDownloadUrl }                          from '../RRMGraph/DownloadRRMComparison'
+import { intentBandMapping, useIntentAICRRMQuery } from '../RRMGraph/services'
 
 import {
   Priority as PriorityPage,
   priorities
 } from './Priority'
+
 
 export const Introduction: React.FC = () => {
   const { $t } = useIntl()
@@ -67,15 +75,51 @@ export const Priority: React.FC = () => {
 }
 
 export const Summary: React.FC = () => {
+  const { $t } = useIntl()
   const { form } = useStepFormContext<Intent>()
+  const { intent } = useIntentContext()
+  const queryResult = useIntentAICRRMQuery()
   const isFullOptimization = form.getFieldValue(PriorityPage.fieldName)
   const priority = isFullOptimization ? priorities.full : priorities.partial
+
+  const band = intentBandMapping[intent.code as keyof typeof intentBandMapping]
+  const filename = sanitize([
+    'rrm-comparison',
+    kebabCase(intent.sliceValue),
+    kebabCase(formatter('radioFormat')(band).toLowerCase())
+  ].join('-') + '.csv')
+
+  const resources = [
+    {
+      icon: <LinkDocumentIcon />,
+      label: $t({ defaultMessage: 'Download channel plan' }),
+      link: useDownloadUrl(queryResult.csv, 'text/csv'),
+      download: filename
+    }
+  ].map((item, index) => (
+    <a
+      href={item.link}
+      key={`resources-${index}`}
+      target='_blank'
+      rel='noreferrer'
+      download={item.download}
+    >
+      <Space>{item.icon}{item.label}</Space>
+    </a>
+  ))
 
   return <SideNotes>
     <SideNotes.Section
       title={priority.title}
       children={priority.content}
     />
+    {shouldShowResources(intent.status) && (
+      <SideNotes.Section title={$t({ defaultMessage: 'Resources' })}>
+        <Typography.Paragraph children={resources} />
+      </SideNotes.Section>
+    )}
   </SideNotes>
 }
 
+const shouldShowResources = (status: string): boolean =>
+  status !== Statuses.na && status !== Statuses.paused

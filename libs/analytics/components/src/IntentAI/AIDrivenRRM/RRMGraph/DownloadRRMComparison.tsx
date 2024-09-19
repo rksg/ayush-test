@@ -19,7 +19,7 @@ import { DownloadWrapper }                         from './styledComponents'
 
 const { DefaultFallback: Spinner } = SuspenseBoundary
 
-const useDownloadUrl = (data: unknown, type: string) => {
+export const useDownloadUrl = (data: unknown, type: string) => {
   const [url, setUrl] = useState<string>()
   useEffect(() => {
     if (!data) return
