@@ -133,6 +133,18 @@ describe('IntentAIDetails', () => {
     expect(await screen.findByRole('tooltip', { hidden: true }))
       // eslint-disable-next-line max-len
       .toHaveTextContent('Latest available AP firmware version will be used when this intent is applied.')
+    expect(screen.queryByText('Scheduled Date')).not.toBeInTheDocument()
+  })
+  it('should render with scheduled date', async () => {
+    const { params } = mockIntentContextWith({
+      ...mocked,
+      status: Statuses.scheduled,
+      metadata: { scheduledAt: '2022-01-01T00:00:00.000Z', dataEndTime: '2022-01-01T00:00:00.000Z' }
+    })
+    render(<IntentAIDetails />, { route: { params }, wrapper: Provider })
+    expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
+    expect(await screen.findByText('AI Operations')).toBeVisible()
+    expect(await screen.findByText('Scheduled Date')).toBeVisible()
   })
 })
 
