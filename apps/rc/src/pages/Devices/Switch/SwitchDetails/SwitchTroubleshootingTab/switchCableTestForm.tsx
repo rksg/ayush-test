@@ -1,14 +1,14 @@
 /* eslint-disable max-len */
 import { useContext, useEffect, useState } from 'react'
 
-import { Row, Col, Form }         from 'antd'
-import { DefaultOptionType }      from 'antd/lib/select'
-import _                          from 'lodash'
-import { defineMessage, useIntl } from 'react-intl'
-import { useParams }              from 'react-router-dom'
+import { Row, Col, Form }    from 'antd'
+import TextArea              from 'antd/lib/input/TextArea'
+import { DefaultOptionType } from 'antd/lib/select'
+import _                     from 'lodash'
+import { useIntl }           from 'react-intl'
+import { useParams }         from 'react-router-dom'
 
 import { Button, Loader, Select, showActionModal, StatusPill, Table, TableProps, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                                       from '@acx-ui/formatter'
 import { useCableTestMutation, useGetTroubleshootingQuery,
   useLazyGetTroubleshootingCleanQuery,
@@ -40,8 +40,6 @@ export function SwitchCableTestForm () {
   const [clearPort, setClearPort] = useState(false)
   const [portOptions, setPortOptions] = useState([] as DefaultOptionType[])
 
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-
   const troubleshootingParams = {
     tenantId,
     switchId,
@@ -70,7 +68,7 @@ export function SwitchCableTestForm () {
   const portList = useSwitchPortlistQuery({
     params: { tenantId },
     payload: portPayload,
-    enableRbac: isSwitchRbacEnabled
+    enableRbac: true
   })
 
   const getPortDisabled = (port: SwitchPortViewModel) => {
@@ -78,9 +76,9 @@ export function SwitchCableTestForm () {
   }
 
   const TOOLTIPS= {
-    auto: $t(defineMessage({ defaultMessage: 'To execute the cable test, port speed must be set to “Auto”' })),
-    up: $t(defineMessage({ defaultMessage: 'To execute the cable test, the port must be UP' })),
-    copper: $t(defineMessage({ defaultMessage: 'This test can only be executed on Copper ports. Fiber ports are not supported' }))
+    auto: $t({ defaultMessage: 'To execute the cable test, port speed must be set to “Auto”' }),
+    up: $t({ defaultMessage: 'To execute the cable test, the port must be UP' }),
+    copper: $t({ defaultMessage: 'This test can only be executed on Copper ports. Fiber ports are not supported' })
   }
 
   const getPortDisabledTooltip = (port: SwitchPortViewModel) => {
@@ -98,7 +96,7 @@ export function SwitchCableTestForm () {
     if(t.length == 1) {
       return <span>{t[0]}</span>
     }else {
-      return <ul>{t.map(i => <li>{i}</li>)}</ul>
+      return <ul>{t.map(i => <li key={port.portIdentifier + i}>{i}</li>)}</ul>
     }
   }
 
@@ -109,12 +107,12 @@ export function SwitchCableTestForm () {
   }
 
   const reportMap: { [key:string]: string } = {
-    'OK': $t(defineMessage({ defaultMessage: 'All Pairs are terminated properly.' })),
-    'Open': $t(defineMessage({ defaultMessage: 'One or more pairs are Open. Re-run the test to be sure and if the result is the same, try connecting the cable properly. If it still shows up as ‘Open’, replace the cable.' })),
-    'Same Pair Short': $t(defineMessage({ defaultMessage: 'Same pair short detected. Re run the test to be sure and if the result is the same, replace the cable.' })),
-    'Cross Pair Short': $t(defineMessage({ defaultMessage: 'Cross pair short detected. Re run the test to be sure and if the result is the same, replace the cable.' })),
-    'Failed': $t(defineMessage({ defaultMessage: 'The test failed on the highlighted pairs above. Run the test again.' })),
-    'Unknown': $t(defineMessage({ defaultMessage: 'An unknown error has occurred during the test and the cable health could not be determined. Re-run the test and if the fail again, replace the cable.' }))
+    'OK': $t({ defaultMessage: 'All Pairs are terminated properly.' }),
+    'Open': $t({ defaultMessage: 'One or more pairs are Open. Re-run the test to be sure and if the result is the same, try connecting the cable properly. If it still shows up as ‘Open’, replace the cable.' }),
+    'Same Pair Short': $t({ defaultMessage: 'Same pair short detected. Re run the test to be sure and if the result is the same, replace the cable.' }),
+    'Cross Pair Short': $t({ defaultMessage: 'Cross pair short detected. Re run the test to be sure and if the result is the same, replace the cable.' }),
+    'Failed': $t({ defaultMessage: 'The test failed on the highlighted pairs above. Run the test again.' }),
+    'Unknown': $t({ defaultMessage: 'An unknown error has occurred during the test and the cable health could not be determined. Re-run the test and if the fail again, replace the cable.' })
   }
 
   useEffect(() => {
@@ -188,7 +186,6 @@ export function SwitchCableTestForm () {
             closeAfterAction: true,
             handler: async () => {
               try{
-                // const formValue = cableTestForm.getFieldsValue()
                 onSubmit()
               } catch (error) {
                 console.log(error) // eslint-disable-line no-console
@@ -233,7 +230,7 @@ export function SwitchCableTestForm () {
     setClearPort(true)
     await getTroubleshootingClean({
       params: troubleshootingParams,
-      enableRbac: isSwitchRbacEnabled
+      enableRbac: true
     })
     refetchResult()
   }
@@ -323,16 +320,17 @@ export function SwitchCableTestForm () {
     layout='vertical'
   >
     <Row gutter={20}>
-      <Col span={4}>
+      <Col span={8}>
         <Form.Item
           name='port'
+          initialValue={null}
           label={<>{$t({ defaultMessage: 'Port' })}</>}
           rules={[
             { required: true }
           ]}
           children={<Select
+            style={{ width: '200px' }}
             disabled={isLoading}
-            defaultValue={null}
             showSearch
             onChange={onChangeForm}
             allowClear>
@@ -385,24 +383,33 @@ export function SwitchCableTestForm () {
       isLoading: false,
       isFetching: isLoading
     }]}>
-      <UI.ResultContainer>
-        {
-          tableData.length ? <>
-            <Table
-              columns={columns}
-              dataSource={tableData}
+      {
+        isNoData ? <Form.Item name='result'
+          children={<TextArea
+            style={{ resize: 'none', height: '300px', fontFamily: 'monospace' }}
+            autoSize={false}
+            readOnly={true}/>}
+        />
+          : <UI.ResultContainer>
+            {
+              tableData.length && tableData[0].port ? <>
+                <Table
+                  columns={columns}
+                  dataSource={tableData}
+                  rowKey='port'
+                />
+                <div className='report'>
+                  <span className='title'>{$t({ defaultMessage: 'Report:' })}</span>
+                  {reportMap[tableData[0].overallStatus]}
+                </div>
+              </> : null
+            }
+            <Form.Item name='result'
+              hidden
+              children={<TextArea/>}
             />
-            <div className='report'>
-              <span className='title'>{$t({ defaultMessage: 'Report:' })}</span>
-              {reportMap[tableData[0].overallStatus]}
-            </div>
-          </> : null
-        }
-        {
-          isNoData && $t({ defaultMessage: 'No data to display.' })
-        }
-        <Form.Item name='result' hidden />
-      </UI.ResultContainer>
+          </UI.ResultContainer>
+      }
       <Button
         type='link'
         style={{ alignSelf: 'baseline' }}
