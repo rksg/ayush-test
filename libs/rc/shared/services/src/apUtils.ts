@@ -29,6 +29,7 @@ import {
   NewAPModel,
   NewAPModelExtended,
   RadioProperties,
+  SwitchInformation,
   TableResult,
   Venue,
   WifiRbacUrlsInfo
@@ -328,6 +329,33 @@ export const aggregateVenueInfo = (
     } else {
       apItem.venueName = venueListData?.find(venueItem =>
         venueItem.id === apItem.venueId)?.name
+    }
+  })
+}
+
+export const aggregateSwitchInfo = (
+  apList?: TableResult<NewAPModelExtended|NewAPExtendedGrouped, ApExtraParams>,
+  apSwitchInfoMap?: Map<string, SwitchInformation>
+) => {
+  const apListData = apList?.data
+
+  apListData?.forEach(apItem => {
+    if(apItem.hasOwnProperty('groupedField')) {
+      (apItem as NewAPExtendedGrouped).aps.forEach(groupedAp => {
+        const apMac = groupedAp.macAddress ?? ''
+        const switchInformation = apSwitchInfoMap?.get(apMac)
+
+        groupedAp.switchId = switchInformation?.id
+        groupedAp.switchName = switchInformation?.name
+        groupedAp.switchSerialNumber = switchInformation?.serialNumber
+      })
+    } else {
+      const apMac = apItem.macAddress ?? ''
+      const switchInformation = apSwitchInfoMap?.get(apMac)
+
+      apItem.switchId = switchInformation?.id
+      apItem.switchName = switchInformation?.name
+      apItem.switchSerialNumber = switchInformation?.serialNumber
     }
   })
 }
