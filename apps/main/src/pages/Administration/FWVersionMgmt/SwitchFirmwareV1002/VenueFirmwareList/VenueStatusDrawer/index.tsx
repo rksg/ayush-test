@@ -15,7 +15,7 @@ import {
   FirmwareSwitchVenueV1002,
   SwitchFirmwareStatus,
   SwitchFwStatusEnum,
-  SwitchStatusEnum,
+  SwitchStatusRdbEnum,
   defaultSort,
   sortProp
 } from '@acx-ui/rc/utils'
@@ -99,15 +99,18 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
               $t({ defaultMessage: 'Firmware Update - Failed' }),
             [SwitchFwStatusEnum.FW_UPD_WAITING_RESPONSE]:
               $t({ defaultMessage: 'Firmware Update - Awaiting Response from Switch' }),
-            [SwitchStatusEnum.DISCONNECTED]:
+            [SwitchStatusRdbEnum.DISCONNECTED]:
               $t({ defaultMessage: 'Disconnected from cloud' })
           }
 
-          if (row.switchStatus === SwitchStatusEnum.DISCONNECTED) {
+          if (row.switchStatus === SwitchStatusRdbEnum.DISCONNECTED) {
             return fwMappings[row.switchStatus]
           }
 
-          if (row.status === SwitchFwStatusEnum.FW_UPD_FAIL) {
+          // If the upgrade fails, the RDB switch status will stay at 'firmware_upgrading',
+          // and only then the retry button will appear.
+          if (row.status === SwitchFwStatusEnum.FW_UPD_FAIL &&
+            row.switchStatus === SwitchStatusRdbEnum.FIRMWARE_UPGRADING) {
             return <div>
               <Typography.Text
                 style={{ lineHeight: '24px' }}>
