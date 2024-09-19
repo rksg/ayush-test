@@ -158,7 +158,7 @@ const FirewallTable = () => {
       }
     },
     {
-      title: $t({ defaultMessage: 'SmartEdges' }),
+      title: $t({ defaultMessage: 'RUCKUS Edges' }),
       key: 'edgeIds',
       dataIndex: 'edgeIds',
       align: 'center',
@@ -255,7 +255,7 @@ const FirewallTable = () => {
       disabled: isDeleteBtnDisable,
       tooltip: (selectedRows) => isDeleteBtnDisable(selectedRows)
         // eslint-disable-next-line max-len
-        ? $t({ defaultMessage: 'Please deactivate the SmartEdge Firewall Service under Scope menu first' })
+        ? $t({ defaultMessage: 'Please deactivate the RUCKUS Edge Firewall Service under Scope menu first' })
         : undefined,
       onClick: (rows, clearSelection) => {
         showActionModal({

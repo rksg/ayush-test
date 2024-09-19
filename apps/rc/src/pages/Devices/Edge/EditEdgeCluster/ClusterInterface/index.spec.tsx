@@ -51,7 +51,7 @@ describe('Edit Edge Cluster - ClusterInterface', () => {
       , {
         route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab' }
       })
-    expect(screen.getByText('Cluster interface will be used as a communication channel between SmartEdges. Please select the cluster interfaces for all SmartEdges in this cluster:')).toBeVisible()
+    expect(screen.getByText('Cluster interface will be used as a communication channel between RUCKUS Edges. Please select the cluster interfaces for all RUCKUS Edges in this cluster:')).toBeVisible()
     expect(await screen.findByRole('row', { name: /Smart Edge 1 Lag0 192.168.11.136 255.255.255.0/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: /Smart Edge 2 Lag0 192.168.12.136 255.255.255.0/i })).toBeVisible()
     expect(screen.getByTestId('edit-cluster-interface-drawer')).toBeVisible()

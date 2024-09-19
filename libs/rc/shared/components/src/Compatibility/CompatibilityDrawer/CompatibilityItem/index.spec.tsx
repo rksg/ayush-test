@@ -79,7 +79,7 @@ describe('CompatibilityItem', () => {
   })
 
   describe('Edge cases', () => {
-    it('should display smartEdge info correctly', async () => {
+    it('should display RUCKUS Edge info correctly', async () => {
       const mockData = transformedMockEdgeCompatibilitiesVenue.compatibilities[0]
       render(
         <Provider>
@@ -97,12 +97,12 @@ describe('CompatibilityItem', () => {
       expect(fItems.length).toBe(2)
 
       const sdlanInfo = fItems[0]
-      within(sdlanInfo).getByText('Incompatible SmartEdges (Currently)')
+      within(sdlanInfo).getByText('Incompatible RUCKUS Edges (Currently)')
       expect(within(sdlanInfo).getByText('2.1.0.200')).toBeInTheDocument()
       expect(within(sdlanInfo).getByText('1 / 6')).toBeInTheDocument()
 
       const tunnelProfileInfo = fItems[1]
-      within(tunnelProfileInfo).getByText('Incompatible SmartEdges (Currently)')
+      within(tunnelProfileInfo).getByText('Incompatible RUCKUS Edges (Currently)')
       expect(within(tunnelProfileInfo).getByText('2.1.0.400')).toBeInTheDocument()
       expect(within(tunnelProfileInfo).getByText('2 / 6')).toBeInTheDocument()
     })

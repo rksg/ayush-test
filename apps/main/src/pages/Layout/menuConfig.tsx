@@ -285,7 +285,7 @@ export function useMenuConfig () {
     ...(isEdgeEnabled ? [{
       uri: '/devices/edge',
       isActiveCheck: new RegExp('^/devices/edge'),
-      label: $t({ defaultMessage: 'SmartEdge' }),
+      label: $t({ defaultMessage: 'RUCKUS Edge' }),
       inactiveIcon: SmartEdgeOutlined,
       activeIcon: SmartEdgeSolid
     }] : []),

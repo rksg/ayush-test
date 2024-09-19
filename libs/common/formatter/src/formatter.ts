@@ -35,6 +35,19 @@ const txpowerMapping = {
   _8DB: '-8dB',
   _9DB: '-9dB(1/8)',
   _10DB: '-10dB',
+  _11DB: '-11dB',
+  _12DB: '-12dB',
+  _13DB: '-13dB',
+  _14DB: '-14dB',
+  _15DB: '-15dB',
+  _16DB: '-16dB',
+  _17DB: '-17dB',
+  _18DB: '-18dB',
+  _19DB: '-19dB',
+  _20DB: '-20dB',
+  _21DB: '-21dB',
+  _22DB: '-22dB',
+  _23DB: '-23dB',
   _MIN: 'Min'
 }
 const durations = [

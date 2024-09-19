@@ -17,8 +17,6 @@ import NetworkFormContext from '../NetworkFormContext'
 
 import { UserConnectionForm } from './UserConnectionForm'
 
-
-
 describe('UserConnectionForm', () => {
   it('should render user connection form successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
