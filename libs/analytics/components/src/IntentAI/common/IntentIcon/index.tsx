@@ -6,16 +6,16 @@ import { useIntl }    from 'react-intl'
 
 import { AIDrivenRRM, AIOperation, EquiFlex, EcoFlexAI } from '@acx-ui/icons'
 
-import { aiFeatures, aiFeaturesLabel, codes } from '../../config'
+import { AiFeatures, aiFeaturesLabel, codes } from '../../config'
 import { useIntentContext }                   from '../../IntentContext'
 
 import * as UI from './styledComponents'
 
 export const icons = {
-  [aiFeatures.RRM]: <AIDrivenRRM />,
-  [aiFeatures.EquiFlex]: <EquiFlex />,
-  [aiFeatures.AIOps]: <AIOperation />,
-  [aiFeatures.EcoFlexAI]: <EcoFlexAI />
+  [AiFeatures.RRM]: <AIDrivenRRM />,
+  [AiFeatures.EquiFlex]: <EquiFlex />,
+  [AiFeatures.AIOps]: <AIOperation />,
+  [AiFeatures.EcoFlexAI]: <EcoFlexAI />
 }
 
 const sizes = {
@@ -32,7 +32,7 @@ export const Icon = ({
   feature,
   size,
   ...props
-}: { feature: aiFeatures } & SizeProps & React.SVGProps<SVGSVGElement>) => {
+}: { feature: AiFeatures } & SizeProps & React.SVGProps<SVGSVGElement>) => {
   return React.cloneElement(icons[feature], {
     ...props,
     style: _.merge({}, size ? sizes[size] : {}, props.style)
