@@ -32,6 +32,7 @@ export interface VenueInfo {
 
 export interface EdgeClusterInfos {
   edgeClusterId: string
+  edgeClusterName: string
   segments: number
   devices: number
   dhcpInfoId: string

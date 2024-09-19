@@ -166,7 +166,7 @@ const PersonalIdentityNetworkTable = () => {
         const edgeInfo = row.edgeClusterInfos[0]
         return (
           <TenantLink to={`/devices/edge/${edgeInfo?.edgeClusterId}/details/overview`}>
-            {edgeInfo?.edgeClusterId}
+            {edgeInfo?.edgeClusterName}
           </TenantLink>
         )
       }
@@ -218,19 +218,19 @@ const PersonalIdentityNetworkTable = () => {
       render: () => {
         return $t({ defaultMessage: 'No' })
       }
-    },
-    {
-      title: $t({ defaultMessage: 'Service Version' }),
-      key: 'serviceVersion',
-      dataIndex: 'edgeClusterInfos',
-      sorter: true,
-      render: () => {
-        // const edgeInfo = row.edgeClusterInfos[0]
-        // TODO:
-        return (
-          ''// edgeInfo?.serviceVersion
-        )
-      }
+    // },
+    // {
+    //   title: $t({ defaultMessage: 'Service Version' }),
+    //   key: 'serviceVersion',
+    //   dataIndex: 'edgeClusterInfos',
+    //   sorter: true,
+    //   render: () => {
+    //     // const edgeInfo = row.edgeClusterInfos[0]
+    //     // TODO:
+    //     return (
+    //       ''// edgeInfo?.serviceVersion
+    //     )
+    //   }
     }
   ]
 
