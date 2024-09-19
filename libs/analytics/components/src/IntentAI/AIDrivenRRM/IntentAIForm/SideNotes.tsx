@@ -1,21 +1,17 @@
 import React from 'react'
 
 import { Space, Typography }         from 'antd'
-import { kebabCase }                 from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
-import sanitize                      from 'sanitize-filename'
 
 import { useStepFormContext }              from '@acx-ui/components'
-import { formatter }                       from '@acx-ui/formatter'
 import { LinkDocumentIcon, LinkVideoIcon } from '@acx-ui/icons'
 
-import { richTextFormatValues }                    from '../../common/richTextFormatValues'
-import { SideNotes }                               from '../../common/SideNotes'
-import { useIntentContext }                        from '../../IntentContext'
-import { Statuses }                                from '../../states'
-import { Intent }                                  from '../../useIntentDetailsQuery'
-import { useDownloadUrl }                          from '../RRMGraph/DownloadRRMComparison'
-import { intentBandMapping, useIntentAICRRMQuery } from '../RRMGraph/services'
+import { richTextFormatValues } from '../../common/richTextFormatValues'
+import { SideNotes }            from '../../common/SideNotes'
+import { useIntentContext }     from '../../IntentContext'
+import { Statuses }             from '../../states'
+import { Intent }               from '../../useIntentDetailsQuery'
+import { useDownloadData }      from '../RRMGraph/DownloadRRMComparison'
 
 import {
   Priority as PriorityPage,
@@ -78,22 +74,15 @@ export const Summary: React.FC = () => {
   const { $t } = useIntl()
   const { form } = useStepFormContext<Intent>()
   const { intent } = useIntentContext()
-  const queryResult = useIntentAICRRMQuery()
   const isFullOptimization = form.getFieldValue(PriorityPage.fieldName)
   const priority = isFullOptimization ? priorities.full : priorities.partial
-
-  const band = intentBandMapping[intent.code as keyof typeof intentBandMapping]
-  const filename = sanitize([
-    'rrm-comparison',
-    kebabCase(intent.sliceValue),
-    kebabCase(formatter('radioFormat')(band).toLowerCase())
-  ].join('-') + '.csv')
+  const { url, filename } = useDownloadData(intent)
 
   const resources = [
     {
       icon: <LinkDocumentIcon />,
       label: $t({ defaultMessage: 'Download channel plan' }),
-      link: useDownloadUrl(queryResult.csv, 'text/csv'),
+      link: url,
       download: filename
     }
   ].map((item, index) => (

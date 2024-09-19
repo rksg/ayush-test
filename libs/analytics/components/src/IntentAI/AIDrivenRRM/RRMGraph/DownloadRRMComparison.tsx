@@ -13,13 +13,14 @@ import { formatter }        from '@acx-ui/formatter'
 import { DownloadOutlined } from '@acx-ui/icons'
 
 import { useIntentContext } from '../../IntentContext'
+import { Intent }           from '../../useIntentDetailsQuery'
 
 import { intentBandMapping, useIntentAICRRMQuery } from './services'
 import { DownloadWrapper }                         from './styledComponents'
 
 const { DefaultFallback: Spinner } = SuspenseBoundary
 
-export const useDownloadUrl = (data: unknown, type: string) => {
+const useDownloadUrl = (data: unknown, type: string) => {
   const [url, setUrl] = useState<string>()
   useEffect(() => {
     if (!data) return
@@ -33,16 +34,8 @@ export const useDownloadUrl = (data: unknown, type: string) => {
 export function DownloadRRMComparison (props: { title?: string }) {
   const { $t } = useIntl()
   const { intent } = useIntentContext()
-
-  const band = intentBandMapping[intent.code as keyof typeof intentBandMapping]
   const queryResult = useIntentAICRRMQuery()
-  const url = useDownloadUrl(queryResult.csv, 'text/csv')
-
-  const filename = sanitize([
-    'rrm-comparison',
-    kebabCase(intent.sliceValue),
-    kebabCase(formatter('radioFormat')(band).toLowerCase())
-  ].join('-') + '.csv')
+  const { url, filename } = useDownloadData(intent)
 
   return <DownloadWrapper>
     <Loader states={[queryResult]} fallback={<Spinner size='default' />}>
@@ -55,4 +48,21 @@ export function DownloadRRMComparison (props: { title?: string }) {
       >{props.title || $t({ defaultMessage: 'Download RRM comparison' })}</Button>
     </Loader>
   </DownloadWrapper>
+}
+
+export const useDownloadData = (intent: Intent) => {
+  const band = intentBandMapping[intent.code as keyof typeof intentBandMapping]
+  const queryResult = useIntentAICRRMQuery()
+  const url = useDownloadUrl(queryResult.csv, 'text/csv')
+
+  const filename = sanitize([
+    'rrm-comparison',
+    kebabCase(intent.sliceValue),
+    kebabCase(formatter('radioFormat')(band).toLowerCase())
+  ].join('-') + '.csv')
+
+  return {
+    url,
+    filename
+  }
 }
