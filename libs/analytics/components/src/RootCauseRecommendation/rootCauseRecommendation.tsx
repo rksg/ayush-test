@@ -3,11 +3,11 @@ import _                                             from 'lodash'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 import { FormattedMessage }                          from 'react-intl'
 
-import { IncidentCode,Incident, IncidentMetadata } from '@acx-ui/analytics/utils'
-import { get }                                     from '@acx-ui/config'
-import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
-import { TenantLink }                              from '@acx-ui/react-router-dom'
-import { encodeParameter }                         from '@acx-ui/utils'
+import { IncidentCode, Incident, IncidentMetadata } from '@acx-ui/analytics/utils'
+import { get }                                      from '@acx-ui/config'
+import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { TenantLink }                               from '@acx-ui/react-router-dom'
+import { encodeParameter }                          from '@acx-ui/utils'
 
 import { codes } from '../IntentAI/config'
 
@@ -59,23 +59,13 @@ export const TenantLinkWrapper = ({ params, linkType }: {
     : params.aclb
   if (isIntentAIEnabled) {
     const intentFilter = {
-      aiFeature: ['AI-Driven RRM'],
+      aiFeature: [(codes[intentData!.code].aiFeature)],
       intent: [$t(codes[intentData!.code].intent)],
       category: [$t(codes[intentData!.code].category)],
-      // intent: ['Client Density vs Throughput for 5 GHz radio'],
-      // category: ['Wi-Fi Experience'],
-
       sliceValue: [intentData!.sliceId]
     }
     const encodedParameters = encodeParameter(intentFilter)
     path = `/intentAI?intentTableFilters=${encodedParameters}`
-    console.log(intentData!.code)
-    console.log($t(codes[intentData!.code].intent))
-    console.log($t(codes[intentData!.code].intent))
-    console.log(codes[intentData!.code].category)
-    console.log(intentFilter)
-    console.log(encodedParameters)
-    console.log(path)
   } else {
     const id = intentData?.intentId ?? params.recommendationId
     path = `/recommendations/${linkType}/${id}`
