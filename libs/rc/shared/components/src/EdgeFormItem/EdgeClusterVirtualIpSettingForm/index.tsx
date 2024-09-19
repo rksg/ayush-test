@@ -81,7 +81,7 @@ export const EdgeClusterVirtualIpSettingForm = (props: EdgeClusterVirtualIpSetti
                 title={
                   $t({ defaultMessage: `
                     The VRRP timer of 6 seconds or above is recommended
-                    for SmartEdge usecases. A timer lesser than this is
+                    for RUCKUS Edge usecases. A timer lesser than this is
                     too aggressive and could potentially cause VRRP issues
                     in some networks. HA timeout refers to the duration
                     within which if a node does not receive a periodic

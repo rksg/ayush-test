@@ -51,8 +51,8 @@ const FirewallEdgesTable = (props: { data?: FirewallFormEdge[] }) => {
 
   const columns: TableProps<EdgeStatus>['columns'] = useMemo(() => ([
     {
-      title: $t({ defaultMessage: 'SmartEdge' }),
-      tooltip: $t({ defaultMessage: 'SmartEdge' }),
+      title: $t({ defaultMessage: 'RUCKUS Edge' }),
+      tooltip: $t({ defaultMessage: 'RUCKUS Edge' }),
       key: 'name',
       dataIndex: 'name',
       defaultSortOrder: 'ascend',
@@ -190,7 +190,7 @@ export const ScopeForm = () => {
       <Row >
         <Col span={24}>
           <Typography.Text>
-            {$t({ defaultMessage: 'Select the SmartEdges to run the Firewall Service on:' })}
+            {$t({ defaultMessage: 'Select the RUCKUS Edges to run the Firewall Service on:' })}
           </Typography.Text>
         </Col>
       </Row>

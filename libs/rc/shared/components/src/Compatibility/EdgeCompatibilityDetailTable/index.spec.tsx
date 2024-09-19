@@ -79,7 +79,7 @@ describe('EdgeCompatibilityDetailTable', () => {
 
     const rows = await basicCheck()
     expect(rows.length).toBe(3) // including header
-    expect(screen.getByRole('columnheader', { name: 'Incompatible SmartEdges' })).toBeVisible()
+    expect(screen.getByRole('columnheader', { name: 'Incompatible RUCKUS Edges' })).toBeVisible()
 
     const row1 = screen.getByRole('row', { name: /SD-LAN 1 2.1.0.200/i })
     screen.getByRole('row', { name: /Tunnel Profile 2 2.1.0.400/i })
@@ -99,7 +99,7 @@ describe('EdgeCompatibilityDetailTable', () => {
 
     const rows = await basicCheck()
     expect(rows.length).toBe(3) // including header
-    expect(screen.getByRole('columnheader', { name: 'Incompatible SmartEdges' })).toBeVisible()
+    expect(screen.getByRole('columnheader', { name: 'Incompatible RUCKUS Edges' })).toBeVisible()
 
     const row1 = screen.getByRole('row', { name: /SD-LAN 1 2.1.0.200/i })
     screen.getByRole('row', { name: /Tunnel Profile 2 2.1.0.400/i })
@@ -126,7 +126,7 @@ describe('EdgeCompatibilityDetailTable', () => {
 
     const rows = await basicCheck()
     expect(rows.length).toBe(3) // including header
-    expect(screen.getByRole('columnheader', { name: 'Incompatible SmartEdges' })).toBeVisible()
+    expect(screen.getByRole('columnheader', { name: 'Incompatible RUCKUS Edges' })).toBeVisible()
 
     const row1 = screen.getByRole('row', { name: /SD-LAN 1 2.1.0.200/i })
     screen.getByRole('row', { name: /Tunnel Profile 2 2.1.0.400/i })
@@ -179,7 +179,7 @@ describe('EdgeCompatibilityDetailTable', () => {
 
     const rows = await basicCheck()
     expect(rows.length).toBe(3) // including header
-    expect(screen.getByRole('columnheader', { name: 'Incompatible SmartEdges' })).toBeVisible()
+    expect(screen.getByRole('columnheader', { name: 'Incompatible RUCKUS Edges' })).toBeVisible()
 
     const row1 = screen.getByRole('row', { name: /SD-LAN 1 2.1.0.200/i })
     screen.getByRole('row', { name: /Tunnel Profile 2 2.1.0.400/i })
@@ -203,7 +203,7 @@ describe('EdgeCompatibilityDetailTable', () => {
 
     const rows = await basicCheck()
     expect(rows.length).toBe(3) // including header
-    expect(screen.queryByRole('columnheader', { name: 'Incompatible SmartEdges' })).toBeNull()
+    expect(screen.queryByRole('columnheader', { name: 'Incompatible RUCKUS Edges' })).toBeNull()
 
     screen.getByRole('row', { name: /SD-LAN 2.1.0.200/i })
     screen.getByRole('row', { name: /Tunnel Profile 2.1.0.400/i })

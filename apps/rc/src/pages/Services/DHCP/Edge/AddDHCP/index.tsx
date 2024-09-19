@@ -12,7 +12,7 @@ const AddDhcp = () => {
 
   return (
     <EdgeDhcpForm
-      title={$t({ defaultMessage: 'Add DHCP for SmartEdge Service' })}
+      title={$t({ defaultMessage: 'Add DHCP for RUCKUS Edge Service' })}
       submitButtonLabel={$t({ defaultMessage: 'Add' })}
       onFinish={createEdgeDhcpProfile}
       isSubmiting={isEdgeDhcpProfileCreating}
