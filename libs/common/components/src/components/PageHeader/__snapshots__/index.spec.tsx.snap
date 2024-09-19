@@ -1145,3 +1145,1402 @@ exports[`PageHeader should render page header without bottom padding 1`] = `
   </div>
 </DocumentFragment>
 `;
+
+exports[`PageHeader should render tabs correctly (no content) 1`] = `
+<DocumentFragment>
+  .c1.ant-tabs-top > .ant-tabs-nav {
+  border-bottom: 1px solid var(--acx-neutrals-30);
+}
+
+.c1.ant-tabs-top > .ant-tabs-nav:before {
+  border: 0;
+}
+
+.c1.ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-ink-bar {
+  height: 3px;
+}
+
+.c1.ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-tab {
+  padding: 16px 8px 11px;
+}
+
+.c1.ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  font-size: var(--acx-subtitle-4-font-size);
+  font-weight: var(--acx-subtitle-4-font-weight);
+  line-height: var(--acx-subtitle-4-line-height);
+  text-shadow: none;
+}
+
+.c1.ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-tab + .ant-tabs-tab {
+  margin-left: 20px;
+}
+
+.c0 {
+  position: -webkit-sticky;
+  position: sticky;
+  top: calc( var(--acx-header-height) + var(--acx-content-vertical-space) + (var(--acx-cloudmessagebanner-height) * var(--acx-has-cloudmessagebanner)) );
+  z-index: 7;
+  background-color: var(--acx-primary-white);
+  padding: 0 var(--acx-content-horizontal-space);
+  margin: 0 calc(var(--acx-content-horizontal-space) * -1);
+}
+
+.c0 .ant-page-header {
+  padding: 0;
+  margin: 4px 0 var(--acx-content-vertical-space);
+}
+
+.c0 .ant-page-header-heading {
+  gap: 12px;
+}
+
+.c0 .ant-page-header-heading h1 {
+  margin-bottom: 0;
+}
+
+.c0 .ant-page-header-heading-left {
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  margin: 0;
+}
+
+.c0 .ant-page-header-heading-extra {
+  margin: 0;
+}
+
+.c0 .ant-page-header-heading-extra > .ant-space {
+  gap: 12px !important;
+}
+
+.c0 .ant-page-header-heading-title {
+  width: 100%;
+  -webkit-align-self: flex-start;
+  -ms-flex-item-align: start;
+  align-self: flex-start;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 10px;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c0 .ant-page-header-content {
+  padding: 6px 0 0;
+  color: var(--acx-primary-black);
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  font-weight: var(--acx-body-font-weight);
+}
+
+.c0 .ant-page-header-content .ant-divider-vertical {
+  background-color: var(--acx-primary-black);
+  margin: 0 0.5em;
+  height: 0.9em;
+}
+
+.c0 .ant-page-header .ant-breadcrumb {
+  line-height: 16px;
+}
+
+.c0 .ant-page-header .ant-breadcrumb a:hover {
+  -webkit-text-decoration: underline;
+  text-decoration: underline;
+}
+
+.c0 .ant-page-header .ant-breadcrumb + .ant-page-header-heading {
+  margin-top: 3px;
+}
+
+.c0 .ant-page-header.has-footer {
+  margin-bottom: 0;
+}
+
+.c0 .ant-page-header.has-footer .ant-page-header-content {
+  padding-bottom: 2px;
+}
+
+.c0 .ant-page-header.has-footer .ant-page-header-footer {
+  margin-top: 8px;
+}
+
+.c2 {
+  height: var(--acx-content-vertical-space);
+}
+
+<div
+    class="c0"
+  >
+    <div
+      class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/undefined/t/networks"
+              >
+                Networks
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              With Tabs
+            </h1>
+          </span>
+        </div>
+      </div>
+      <div
+        class="ant-page-header-footer"
+      >
+        <div
+          class="ant-tabs ant-tabs-top c1 sticky-top"
+        >
+          <div
+            class="ant-tabs-nav"
+            role="tablist"
+          >
+            <div
+              class="ant-tabs-nav-wrap"
+            >
+              <div
+                class="ant-tabs-nav-list"
+                style="transform: translate(0px, 0px);"
+              >
+                <div
+                  class="ant-tabs-ink-bar ant-tabs-ink-bar-animated"
+                />
+              </div>
+            </div>
+            <div
+              class="ant-tabs-nav-operations ant-tabs-nav-operations-hidden"
+            >
+              <button
+                aria-controls="rc-tabs-test-more-popup"
+                aria-expanded="false"
+                aria-haspopup="listbox"
+                aria-hidden="true"
+                class="ant-tabs-nav-more"
+                id="rc-tabs-test-more"
+                style="visibility: hidden; order: 1;"
+                tabindex="-1"
+                type="button"
+              >
+                <span
+                  aria-label="ellipsis"
+                  class="anticon anticon-ellipsis"
+                  role="img"
+                >
+                  <svg
+                    aria-hidden="true"
+                    data-icon="ellipsis"
+                    fill="currentColor"
+                    focusable="false"
+                    height="1em"
+                    viewBox="64 64 896 896"
+                    width="1em"
+                  >
+                    <path
+                      d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"
+                    />
+                  </svg>
+                </span>
+              </button>
+            </div>
+          </div>
+          <div
+            class="ant-tabs-content-holder"
+          >
+            <div
+              class="ant-tabs-content ant-tabs-content-top"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="c2"
+    />
+  </div>
+</DocumentFragment>
+`;
+
+exports[`PageHeader should render tabs with Beta indicator (only one tab) 1`] = `
+<DocumentFragment>
+  .c3 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  width: 16px;
+  height: 16px;
+}
+
+.c3 svg {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  width: 16px !important;
+  height: 16px !important;
+  margin: 0 !important;
+  color: var(--acx-accents-orange-50);
+}
+
+.c2 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 4px !important;
+}
+
+.c2 svg {
+  position: relative;
+  top: -4px;
+}
+
+.c1.ant-tabs-top > .ant-tabs-nav {
+  border-bottom: 1px solid var(--acx-neutrals-30);
+}
+
+.c1.ant-tabs-top > .ant-tabs-nav:before {
+  border: 0;
+}
+
+.c1.ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-ink-bar {
+  height: 3px;
+}
+
+.c1.ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-tab {
+  padding: 16px 8px 11px;
+}
+
+.c1.ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  font-size: var(--acx-subtitle-4-font-size);
+  font-weight: var(--acx-subtitle-4-font-weight);
+  line-height: var(--acx-subtitle-4-line-height);
+  text-shadow: none;
+}
+
+.c1.ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-tab + .ant-tabs-tab {
+  margin-left: 20px;
+}
+
+.c0 {
+  position: -webkit-sticky;
+  position: sticky;
+  top: calc( var(--acx-header-height) + var(--acx-content-vertical-space) + (var(--acx-cloudmessagebanner-height) * var(--acx-has-cloudmessagebanner)) );
+  z-index: 7;
+  background-color: var(--acx-primary-white);
+  padding: 0 var(--acx-content-horizontal-space);
+  margin: 0 calc(var(--acx-content-horizontal-space) * -1);
+}
+
+.c0 .ant-page-header {
+  padding: 0;
+  margin: 4px 0 var(--acx-content-vertical-space);
+}
+
+.c0 .ant-page-header-heading {
+  gap: 12px;
+}
+
+.c0 .ant-page-header-heading h1 {
+  margin-bottom: 0;
+}
+
+.c0 .ant-page-header-heading-left {
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  margin: 0;
+}
+
+.c0 .ant-page-header-heading-extra {
+  margin: 0;
+}
+
+.c0 .ant-page-header-heading-extra > .ant-space {
+  gap: 12px !important;
+}
+
+.c0 .ant-page-header-heading-title {
+  width: 100%;
+  -webkit-align-self: flex-start;
+  -ms-flex-item-align: start;
+  align-self: flex-start;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 10px;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c0 .ant-page-header-content {
+  padding: 6px 0 0;
+  color: var(--acx-primary-black);
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  font-weight: var(--acx-body-font-weight);
+}
+
+.c0 .ant-page-header-content .ant-divider-vertical {
+  background-color: var(--acx-primary-black);
+  margin: 0 0.5em;
+  height: 0.9em;
+}
+
+.c0 .ant-page-header .ant-breadcrumb {
+  line-height: 16px;
+}
+
+.c0 .ant-page-header .ant-breadcrumb a:hover {
+  -webkit-text-decoration: underline;
+  text-decoration: underline;
+}
+
+.c0 .ant-page-header .ant-breadcrumb + .ant-page-header-heading {
+  margin-top: 3px;
+}
+
+.c0 .ant-page-header.has-footer {
+  margin-bottom: 0;
+}
+
+.c0 .ant-page-header.has-footer .ant-page-header-content {
+  padding-bottom: 2px;
+}
+
+.c0 .ant-page-header.has-footer .ant-page-header-footer {
+  margin-top: 8px;
+}
+
+.c4 {
+  height: var(--acx-content-vertical-space);
+}
+
+<div
+    class="c0"
+  >
+    <div
+      class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/undefined/t/networks"
+              >
+                Networks
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              With Tabs
+            </h1>
+          </span>
+        </div>
+      </div>
+      <div
+        class="ant-page-header-footer"
+      >
+        <div
+          class="ant-tabs ant-tabs-top c1 sticky-top"
+        >
+          <div
+            class="ant-tabs-nav"
+            role="tablist"
+          >
+            <div
+              class="ant-tabs-nav-wrap"
+            >
+              <div
+                class="ant-tabs-nav-list"
+                style="transform: translate(0px, 0px);"
+              >
+                <div
+                  class="ant-tabs-tab ant-tabs-tab-active"
+                >
+                  <div
+                    aria-controls="rc-tabs-test-panel-1"
+                    aria-selected="true"
+                    class="ant-tabs-tab-btn"
+                    id="rc-tabs-test-tab-1"
+                    role="tab"
+                    tabindex="0"
+                  >
+                    <div
+                      class="ant-space ant-space-horizontal ant-space-align-center c2"
+                    >
+                      <div
+                        class="ant-space-item"
+                        style="margin-right: 8px;"
+                      >
+                        Overview
+                      </div>
+                      <div
+                        class="ant-space-item"
+                      >
+                        <div
+                          class="ant-space ant-space-horizontal ant-space-align-center c3"
+                        >
+                          <div
+                            class="ant-space-item"
+                          >
+                            <svg
+                              data-testid="RocketOutlined"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-tabs-ink-bar ant-tabs-ink-bar-animated"
+                />
+              </div>
+            </div>
+            <div
+              class="ant-tabs-nav-operations ant-tabs-nav-operations-hidden"
+            >
+              <button
+                aria-controls="rc-tabs-test-more-popup"
+                aria-expanded="false"
+                aria-haspopup="listbox"
+                aria-hidden="true"
+                class="ant-tabs-nav-more"
+                id="rc-tabs-test-more"
+                style="visibility: hidden; order: 1;"
+                tabindex="-1"
+                type="button"
+              >
+                <span
+                  aria-label="ellipsis"
+                  class="anticon anticon-ellipsis"
+                  role="img"
+                >
+                  <svg
+                    aria-hidden="true"
+                    data-icon="ellipsis"
+                    fill="currentColor"
+                    focusable="false"
+                    height="1em"
+                    viewBox="64 64 896 896"
+                    width="1em"
+                  >
+                    <path
+                      d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"
+                    />
+                  </svg>
+                </span>
+              </button>
+            </div>
+          </div>
+          <div
+            class="ant-tabs-content-holder"
+          >
+            <div
+              class="ant-tabs-content ant-tabs-content-top"
+            >
+              <div
+                aria-hidden="false"
+                aria-labelledby="rc-tabs-test-tab-1"
+                class="ant-tabs-tabpane ant-tabs-tabpane-active"
+                id="rc-tabs-test-panel-1"
+                role="tabpanel"
+                tabindex="0"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="c4"
+    />
+  </div>
+</DocumentFragment>
+`;
+
+exports[`PageHeader should render tabs with Beta indicator (special case) 1`] = `
+<DocumentFragment>
+  .c3 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  width: 16px;
+  height: 16px;
+}
+
+.c3 svg {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  width: 16px !important;
+  height: 16px !important;
+  margin: 0 !important;
+  color: var(--acx-accents-orange-50);
+}
+
+.c2 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 4px !important;
+}
+
+.c2 svg {
+  position: relative;
+  top: -4px;
+}
+
+.c1.ant-tabs-top > .ant-tabs-nav {
+  border-bottom: 1px solid var(--acx-neutrals-30);
+}
+
+.c1.ant-tabs-top > .ant-tabs-nav:before {
+  border: 0;
+}
+
+.c1.ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-ink-bar {
+  height: 3px;
+}
+
+.c1.ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-tab {
+  padding: 16px 8px 11px;
+}
+
+.c1.ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  font-size: var(--acx-subtitle-4-font-size);
+  font-weight: var(--acx-subtitle-4-font-weight);
+  line-height: var(--acx-subtitle-4-line-height);
+  text-shadow: none;
+}
+
+.c1.ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-tab + .ant-tabs-tab {
+  margin-left: 20px;
+}
+
+.c0 {
+  position: -webkit-sticky;
+  position: sticky;
+  top: calc( var(--acx-header-height) + var(--acx-content-vertical-space) + (var(--acx-cloudmessagebanner-height) * var(--acx-has-cloudmessagebanner)) );
+  z-index: 7;
+  background-color: var(--acx-primary-white);
+  padding: 0 var(--acx-content-horizontal-space);
+  margin: 0 calc(var(--acx-content-horizontal-space) * -1);
+}
+
+.c0 .ant-page-header {
+  padding: 0;
+  margin: 4px 0 var(--acx-content-vertical-space);
+}
+
+.c0 .ant-page-header-heading {
+  gap: 12px;
+}
+
+.c0 .ant-page-header-heading h1 {
+  margin-bottom: 0;
+}
+
+.c0 .ant-page-header-heading-left {
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  margin: 0;
+}
+
+.c0 .ant-page-header-heading-extra {
+  margin: 0;
+}
+
+.c0 .ant-page-header-heading-extra > .ant-space {
+  gap: 12px !important;
+}
+
+.c0 .ant-page-header-heading-title {
+  width: 100%;
+  -webkit-align-self: flex-start;
+  -ms-flex-item-align: start;
+  align-self: flex-start;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 10px;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c0 .ant-page-header-content {
+  padding: 6px 0 0;
+  color: var(--acx-primary-black);
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  font-weight: var(--acx-body-font-weight);
+}
+
+.c0 .ant-page-header-content .ant-divider-vertical {
+  background-color: var(--acx-primary-black);
+  margin: 0 0.5em;
+  height: 0.9em;
+}
+
+.c0 .ant-page-header .ant-breadcrumb {
+  line-height: 16px;
+}
+
+.c0 .ant-page-header .ant-breadcrumb a:hover {
+  -webkit-text-decoration: underline;
+  text-decoration: underline;
+}
+
+.c0 .ant-page-header .ant-breadcrumb + .ant-page-header-heading {
+  margin-top: 3px;
+}
+
+.c0 .ant-page-header.has-footer {
+  margin-bottom: 0;
+}
+
+.c0 .ant-page-header.has-footer .ant-page-header-content {
+  padding-bottom: 2px;
+}
+
+.c0 .ant-page-header.has-footer .ant-page-header-footer {
+  margin-top: 8px;
+}
+
+.c4 {
+  height: var(--acx-content-vertical-space);
+}
+
+<div
+    class="c0"
+  >
+    <div
+      class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/undefined/t/networks"
+              >
+                Networks
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              With Tabs
+            </h1>
+          </span>
+        </div>
+      </div>
+      <div
+        class="ant-page-header-footer"
+      >
+        <div
+          class="ant-tabs ant-tabs-top c1 sticky-top"
+        >
+          <div
+            class="ant-tabs-nav"
+            role="tablist"
+          >
+            <div
+              class="ant-tabs-nav-wrap"
+            >
+              <div
+                class="ant-tabs-nav-list"
+                style="transform: translate(0px, 0px);"
+              >
+                <div
+                  class="ant-tabs-tab ant-tabs-tab-active"
+                >
+                  <div
+                    aria-controls="rc-tabs-test-panel-1"
+                    aria-selected="true"
+                    class="ant-tabs-tab-btn"
+                    id="rc-tabs-test-tab-1"
+                    role="tab"
+                    tabindex="0"
+                  >
+                    Overview
+                  </div>
+                </div>
+                <div
+                  class="ant-tabs-tab"
+                >
+                  <div
+                    aria-controls="rc-tabs-test-panel-Tab1"
+                    aria-selected="false"
+                    class="ant-tabs-tab-btn"
+                    id="rc-tabs-test-tab-Tab1"
+                    role="tab"
+                    tabindex="0"
+                  >
+                    Tab1
+                  </div>
+                </div>
+                <div
+                  class="ant-tabs-tab"
+                >
+                  <div
+                    aria-controls="rc-tabs-test-panel-Tab2"
+                    aria-selected="false"
+                    class="ant-tabs-tab-btn"
+                    id="rc-tabs-test-tab-Tab2"
+                    role="tab"
+                    tabindex="0"
+                  >
+                    <div
+                      class="ant-space ant-space-horizontal ant-space-align-center c2"
+                    >
+                      <div
+                        class="ant-space-item"
+                        style="margin-right: 8px;"
+                      >
+                        Tab2
+                      </div>
+                      <div
+                        class="ant-space-item"
+                      >
+                        <div
+                          class="ant-space ant-space-horizontal ant-space-align-center c3"
+                        >
+                          <div
+                            class="ant-space-item"
+                          >
+                            <svg
+                              data-testid="RocketOutlined"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-tabs-tab"
+                >
+                  <div
+                    aria-controls="rc-tabs-test-panel-Tab3"
+                    aria-selected="false"
+                    class="ant-tabs-tab-btn"
+                    id="rc-tabs-test-tab-Tab3"
+                    role="tab"
+                    tabindex="0"
+                  >
+                    Tab3
+                  </div>
+                </div>
+                <div
+                  class="ant-tabs-ink-bar ant-tabs-ink-bar-animated"
+                />
+              </div>
+            </div>
+            <div
+              class="ant-tabs-nav-operations ant-tabs-nav-operations-hidden"
+            >
+              <button
+                aria-controls="rc-tabs-test-more-popup"
+                aria-expanded="false"
+                aria-haspopup="listbox"
+                aria-hidden="true"
+                class="ant-tabs-nav-more"
+                id="rc-tabs-test-more"
+                style="visibility: hidden; order: 1;"
+                tabindex="-1"
+                type="button"
+              >
+                <span
+                  aria-label="ellipsis"
+                  class="anticon anticon-ellipsis"
+                  role="img"
+                >
+                  <svg
+                    aria-hidden="true"
+                    data-icon="ellipsis"
+                    fill="currentColor"
+                    focusable="false"
+                    height="1em"
+                    viewBox="64 64 896 896"
+                    width="1em"
+                  >
+                    <path
+                      d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"
+                    />
+                  </svg>
+                </span>
+              </button>
+            </div>
+          </div>
+          <div
+            class="ant-tabs-content-holder"
+          >
+            <div
+              class="ant-tabs-content ant-tabs-content-top"
+            >
+              <div
+                aria-hidden="false"
+                aria-labelledby="rc-tabs-test-tab-1"
+                class="ant-tabs-tabpane ant-tabs-tabpane-active"
+                id="rc-tabs-test-panel-1"
+                role="tabpanel"
+                tabindex="0"
+              />
+              <div
+                aria-hidden="true"
+                aria-labelledby="rc-tabs-test-tab-Tab1"
+                class="ant-tabs-tabpane"
+                id="rc-tabs-test-panel-Tab1"
+                role="tabpanel"
+                style="display: none;"
+                tabindex="-1"
+              />
+              <div
+                aria-hidden="true"
+                aria-labelledby="rc-tabs-test-tab-Tab2"
+                class="ant-tabs-tabpane"
+                id="rc-tabs-test-panel-Tab2"
+                role="tabpanel"
+                style="display: none;"
+                tabindex="-1"
+              />
+              <div
+                aria-hidden="true"
+                aria-labelledby="rc-tabs-test-tab-Tab3"
+                class="ant-tabs-tabpane"
+                id="rc-tabs-test-panel-Tab3"
+                role="tabpanel"
+                style="display: none;"
+                tabindex="-1"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="c4"
+    />
+  </div>
+</DocumentFragment>
+`;
+
+exports[`PageHeader should render tabs with Beta indicator 1`] = `
+<DocumentFragment>
+  .c3 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  width: 16px;
+  height: 16px;
+}
+
+.c3 svg {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  width: 16px !important;
+  height: 16px !important;
+  margin: 0 !important;
+  color: var(--acx-accents-orange-50);
+}
+
+.c2 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 4px !important;
+}
+
+.c2 svg {
+  position: relative;
+  top: -4px;
+}
+
+.c1.ant-tabs-top > .ant-tabs-nav {
+  border-bottom: 1px solid var(--acx-neutrals-30);
+}
+
+.c1.ant-tabs-top > .ant-tabs-nav:before {
+  border: 0;
+}
+
+.c1.ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-ink-bar {
+  height: 3px;
+}
+
+.c1.ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-tab {
+  padding: 16px 8px 11px;
+}
+
+.c1.ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  font-size: var(--acx-subtitle-4-font-size);
+  font-weight: var(--acx-subtitle-4-font-weight);
+  line-height: var(--acx-subtitle-4-line-height);
+  text-shadow: none;
+}
+
+.c1.ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-tab + .ant-tabs-tab {
+  margin-left: 20px;
+}
+
+.c0 {
+  position: -webkit-sticky;
+  position: sticky;
+  top: calc( var(--acx-header-height) + var(--acx-content-vertical-space) + (var(--acx-cloudmessagebanner-height) * var(--acx-has-cloudmessagebanner)) );
+  z-index: 7;
+  background-color: var(--acx-primary-white);
+  padding: 0 var(--acx-content-horizontal-space);
+  margin: 0 calc(var(--acx-content-horizontal-space) * -1);
+}
+
+.c0 .ant-page-header {
+  padding: 0;
+  margin: 4px 0 var(--acx-content-vertical-space);
+}
+
+.c0 .ant-page-header-heading {
+  gap: 12px;
+}
+
+.c0 .ant-page-header-heading h1 {
+  margin-bottom: 0;
+}
+
+.c0 .ant-page-header-heading-left {
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  margin: 0;
+}
+
+.c0 .ant-page-header-heading-extra {
+  margin: 0;
+}
+
+.c0 .ant-page-header-heading-extra > .ant-space {
+  gap: 12px !important;
+}
+
+.c0 .ant-page-header-heading-title {
+  width: 100%;
+  -webkit-align-self: flex-start;
+  -ms-flex-item-align: start;
+  align-self: flex-start;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 10px;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c0 .ant-page-header-content {
+  padding: 6px 0 0;
+  color: var(--acx-primary-black);
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  font-weight: var(--acx-body-font-weight);
+}
+
+.c0 .ant-page-header-content .ant-divider-vertical {
+  background-color: var(--acx-primary-black);
+  margin: 0 0.5em;
+  height: 0.9em;
+}
+
+.c0 .ant-page-header .ant-breadcrumb {
+  line-height: 16px;
+}
+
+.c0 .ant-page-header .ant-breadcrumb a:hover {
+  -webkit-text-decoration: underline;
+  text-decoration: underline;
+}
+
+.c0 .ant-page-header .ant-breadcrumb + .ant-page-header-heading {
+  margin-top: 3px;
+}
+
+.c0 .ant-page-header.has-footer {
+  margin-bottom: 0;
+}
+
+.c0 .ant-page-header.has-footer .ant-page-header-content {
+  padding-bottom: 2px;
+}
+
+.c0 .ant-page-header.has-footer .ant-page-header-footer {
+  margin-top: 8px;
+}
+
+.c4 {
+  height: var(--acx-content-vertical-space);
+}
+
+<div
+    class="c0"
+  >
+    <div
+      class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/undefined/t/networks"
+              >
+                Networks
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              With Tabs
+            </h1>
+          </span>
+        </div>
+      </div>
+      <div
+        class="ant-page-header-footer"
+      >
+        <div
+          class="ant-tabs ant-tabs-top c1 sticky-top"
+        >
+          <div
+            class="ant-tabs-nav"
+            role="tablist"
+          >
+            <div
+              class="ant-tabs-nav-wrap"
+            >
+              <div
+                class="ant-tabs-nav-list"
+                style="transform: translate(0px, 0px);"
+              >
+                <div
+                  class="ant-tabs-tab ant-tabs-tab-active"
+                >
+                  <div
+                    aria-controls="rc-tabs-test-panel-1"
+                    aria-selected="true"
+                    class="ant-tabs-tab-btn"
+                    id="rc-tabs-test-tab-1"
+                    role="tab"
+                    tabindex="0"
+                  >
+                    Tab1
+                  </div>
+                </div>
+                <div
+                  class="ant-tabs-tab"
+                >
+                  <div
+                    aria-controls="rc-tabs-test-panel-2"
+                    aria-selected="false"
+                    class="ant-tabs-tab-btn"
+                    id="rc-tabs-test-tab-2"
+                    role="tab"
+                    tabindex="0"
+                  >
+                    <div
+                      class="ant-space ant-space-horizontal ant-space-align-center c2"
+                    >
+                      <div
+                        class="ant-space-item"
+                        style="margin-right: 8px;"
+                      >
+                        Tab2
+                      </div>
+                      <div
+                        class="ant-space-item"
+                      >
+                        <div
+                          class="ant-space ant-space-horizontal ant-space-align-center c3"
+                        >
+                          <div
+                            class="ant-space-item"
+                          >
+                            <svg
+                              data-testid="RocketOutlined"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-tabs-tab"
+                >
+                  <div
+                    aria-controls="rc-tabs-test-panel-3"
+                    aria-selected="false"
+                    class="ant-tabs-tab-btn"
+                    id="rc-tabs-test-tab-3"
+                    role="tab"
+                    tabindex="0"
+                  >
+                    Tab3
+                  </div>
+                </div>
+                <div
+                  class="ant-tabs-ink-bar ant-tabs-ink-bar-animated"
+                />
+              </div>
+            </div>
+            <div
+              class="ant-tabs-nav-operations ant-tabs-nav-operations-hidden"
+            >
+              <button
+                aria-controls="rc-tabs-test-more-popup"
+                aria-expanded="false"
+                aria-haspopup="listbox"
+                aria-hidden="true"
+                class="ant-tabs-nav-more"
+                id="rc-tabs-test-more"
+                style="visibility: hidden; order: 1;"
+                tabindex="-1"
+                type="button"
+              >
+                <span
+                  aria-label="ellipsis"
+                  class="anticon anticon-ellipsis"
+                  role="img"
+                >
+                  <svg
+                    aria-hidden="true"
+                    data-icon="ellipsis"
+                    fill="currentColor"
+                    focusable="false"
+                    height="1em"
+                    viewBox="64 64 896 896"
+                    width="1em"
+                  >
+                    <path
+                      d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"
+                    />
+                  </svg>
+                </span>
+              </button>
+            </div>
+          </div>
+          <div
+            class="ant-tabs-content-holder"
+          >
+            <div
+              class="ant-tabs-content ant-tabs-content-top"
+            >
+              <div
+                aria-hidden="false"
+                aria-labelledby="rc-tabs-test-tab-1"
+                class="ant-tabs-tabpane ant-tabs-tabpane-active"
+                id="rc-tabs-test-panel-1"
+                role="tabpanel"
+                tabindex="0"
+              />
+              <div
+                aria-hidden="true"
+                aria-labelledby="rc-tabs-test-tab-2"
+                class="ant-tabs-tabpane"
+                id="rc-tabs-test-panel-2"
+                role="tabpanel"
+                style="display: none;"
+                tabindex="-1"
+              />
+              <div
+                aria-hidden="true"
+                aria-labelledby="rc-tabs-test-tab-3"
+                class="ant-tabs-tabpane"
+                id="rc-tabs-test-panel-3"
+                role="tabpanel"
+                style="display: none;"
+                tabindex="-1"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="c4"
+    />
+  </div>
+</DocumentFragment>
+`;

@@ -15,13 +15,16 @@ import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 import { EdgeCompatibilityDetailTable } from '.'
 
 const { mockEdgeCompatibilitiesVenue } = EdgeCompatibilityFixtures
+const TEST_VERSION = '2.1.0.600'
 const mockAvailableVersions = cloneDeep(EdgeFirmwareFixtures.mockAvailableVersions).slice(0, 1)
 mockAvailableVersions.forEach(item => {
-  item.id = '2.1.0.600'
-  item.name = '2.1.0.600'
+  item.id = TEST_VERSION
+  item.name = TEST_VERSION
 })
 const mockedVenueFirmwareList = cloneDeep(EdgeFirmwareFixtures.mockedVenueFirmwareList)
 mockedVenueFirmwareList[0].id = 'mock_venue_id'
+mockedVenueFirmwareList[0].versions[0].id = TEST_VERSION
+mockedVenueFirmwareList[0].versions[0].name = TEST_VERSION
 
 jest.spyOn(Date, 'now').mockImplementation(() => {
   return new Date('2023-01-20T12:33:37.101+00:00').getTime()
@@ -150,14 +153,18 @@ describe('EdgeCompatibilityDetailTable', () => {
   })
 
   it('should not have action button when available version is lower', async () => {
+    const mockAvailableVersionsReq = jest.fn()
+    const tt = EdgeFirmwareFixtures.mockedVenueFirmwareList
     mockServer.use(
       rest.post(
         FirmwareUrlsInfo.getVenueEdgeFirmwareList.url,
-        (_req, res, ctx) => res(ctx.json(EdgeFirmwareFixtures.mockedVenueFirmwareList))
-      ),
+        (_req, res, ctx) => res(ctx.json(tt))),
       rest.get(
         FirmwareUrlsInfo.getAvailableEdgeFirmwareVersions.url,
-        (_req, res, ctx) => res(ctx.json(EdgeFirmwareFixtures.mockAvailableVersions))
+        (_req, res, ctx) => {
+          mockAvailableVersionsReq()
+          return res(ctx.json(EdgeFirmwareFixtures.mockAvailableVersions))
+        }
       )
     )
 
@@ -177,8 +184,8 @@ describe('EdgeCompatibilityDetailTable', () => {
     const row1 = screen.getByRole('row', { name: /SD-LAN 1 2.1.0.200/i })
     screen.getByRole('row', { name: /Tunnel Profile 2 2.1.0.400/i })
     await userEvent.click(within(row1).getByRole('checkbox'))
-
-    expect(screen.queryByRole('button', { name: 'Update Version Now' })).toBeNull()
+    await screen.findByRole('button', { name: 'Update Version Now' })
+    expect(mockAvailableVersionsReq).toBeCalledTimes(2)
     expect(screen.queryByRole('button', { name: 'Schedule Version Update' })).toBeNull()
   })
 

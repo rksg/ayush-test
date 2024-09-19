@@ -4,7 +4,6 @@ export { configuration, kpis } from './common'
 export { IntentAIForm } from './IntentAIForm'
 
 export const IntentAIDetails = createIntentAIDetails({
-  tradeoff: commonEquiFlexDetails.tradeoff,
   action: {
     active: commonEquiFlexDetails.action.active,
     inactive: commonEquiFlexDetails.action.inactive
