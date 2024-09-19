@@ -32,15 +32,18 @@ module.exports = {
               prop => prop.key.name === 'defaultMessage'
             );
 
-            if (
-              defaultMessageProperty &&
-              defaultMessageProperty.value.type === 'Literal'
-            ) {
-              const messageValue = defaultMessageProperty.value.value;
+            if (defaultMessageProperty) {
+              let messageValue = null
+              if (defaultMessageProperty.value.type === 'Literal') {
+                messageValue = defaultMessageProperty.value.value;
+              } else if (defaultMessageProperty.value.type === 'TemplateLiteral') {
+                // Collect the raw text from the template elements
+                messageValue = defaultMessageProperty.value.quasis.map(quasi => quasi.value.raw).join('');
+              }
 
               // Regular expression to match "venue" or "venues"
               const invalidVenueRegex = /\b(venue|Venue|venues|Venues)\b/;
-              const matchArray = messageValue.match(invalidVenueRegex);
+              const matchArray = messageValue && messageValue.match(invalidVenueRegex);
 
               // Check if the message contains "venue" or "venues"
               if (Array.isArray(matchArray) && matchArray.length > 0) {
@@ -53,8 +56,11 @@ module.exports = {
                     placeHolder: placeHolderMap[venueWord]
                   },
                   fix: function (fixer) {
-                    const fixedMessage = messageValue.replace(invalidVenueRegex, match => placeHolderMap[match]);
-                    return fixer.replaceText( defaultMessageProperty.value, `'${fixedMessage}'`);
+                    // Handle 'Literal' type
+                    if (defaultMessageProperty.value.type === 'Literal') {
+                      const fixedMessage = defaultMessageProperty.value.value.replace(invalidVenueRegex, match => placeHolderMap[match]);
+                      return fixer.replaceText( defaultMessageProperty.value, `'${fixedMessage}'`);
+                    }
                   }
                 });
               }
