@@ -16,11 +16,13 @@ import { EdgeCompatibilityDetailTable } from '.'
 
 const { mockEdgeCompatibilitiesVenue } = EdgeCompatibilityFixtures
 const TEST_VERSION = '2.1.0.600'
-const mockAvailableVersions = cloneDeep(EdgeFirmwareFixtures.mockAvailableVersions).slice(0, 1)
-mockAvailableVersions.forEach(item => {
-  item.id = TEST_VERSION
-  item.name = TEST_VERSION
-})
+const NEXT_TEST_VERSION = '2.1.0.700'
+const mockAvailableVersions = cloneDeep(EdgeFirmwareFixtures.mockAvailableVersions).slice(0, 2)
+mockAvailableVersions[0].id = TEST_VERSION
+mockAvailableVersions[0].name = TEST_VERSION
+mockAvailableVersions[1].id = NEXT_TEST_VERSION
+mockAvailableVersions[1].name = NEXT_TEST_VERSION
+
 const mockedVenueFirmwareList = cloneDeep(EdgeFirmwareFixtures.mockedVenueFirmwareList)
 mockedVenueFirmwareList[0].id = 'mock_venue_id'
 mockedVenueFirmwareList[0].versions[0].id = TEST_VERSION
@@ -136,7 +138,7 @@ describe('EdgeCompatibilityDetailTable', () => {
     const nowDateStr = moment().add(2, 'days').format('YYYY-MM-DD')
     const nowDayStr = nowDateStr.split('-')[2]
     await userEvent.click(await screen.findByRole('radio',
-      { name: '2.1.0.600 (Release - Recommended) - 02/23/2023' }
+      { name: '2.1.0.700 (Release - Recommended) - 02/23/2023' }
     ))
     await userEvent.click(screen.getByPlaceholderText('Select date'))
     const cell = await screen.findByRole('cell', { name: new RegExp(nowDateStr) })
@@ -147,7 +149,7 @@ describe('EdgeCompatibilityDetailTable', () => {
     await waitFor(() => expect(mockedUpdateSchedule).toBeCalledWith({
       date: '2023-01-22',
       time: '00:00-02:00',
-      version: '2.1.0.600'
+      version: '2.1.0.700'
     }))
     await waitFor(() => expect(submitBtn).not.toBeVisible())
   })
