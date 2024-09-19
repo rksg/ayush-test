@@ -95,13 +95,15 @@ describe('useIntentAIActions', () => {
     Modal.destroyAll()
     window.location = global.originalLocation
 
-    const toast = screen.queryByRole('img', { name: 'close' })
-    if (toast) {
-      waitForElementToBeRemoved(toast).then(done)
-      message.destroy()
-    } else {
-      done()
-    }
+    const toast = screen.queryAllByRole('img', { name: 'close' })
+    toast.forEach((t) => {
+      if (t) {
+        waitForElementToBeRemoved(toast).then(done)
+        message.destroy()
+      } else {
+        done()
+      }
+    })
   })
   describe('r1 - OneClickOptimize', () => {
     const mockOK = jest.fn()
