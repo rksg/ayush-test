@@ -70,12 +70,14 @@ describe('IntentAIDetails', () => {
       jest.spyOn(Date, 'now').mockReturnValue(+new Date('2023-07-15T14:15:00.000Z'))
     })
 
-    async function assertRenderCorrectly () {
+    async function assertRenderCorrectly (withGraph: boolean) {
       expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
-      expect(await screen.findByTestId('IntentAIRRMGraph')).toBeVisible()
+      withGraph
+        ? expect(await screen.findByTestId('IntentAIRRMGraph')).toBeVisible()
+        : expect(screen.queryByTestId('IntentAIRRMGraph')).toBeNull()
       expect(await screen.findByTestId('DownloadRRMComparison')).toBeVisible()
-      const benefits = await screen.findByTestId('Details')
-      expect(await within(benefits).findAllByTestId('KPI')).toHaveLength(1)
+      const details = await screen.findByTestId('Details')
+      expect(await within(details).findAllByTestId('KPI')).toHaveLength(1)
     }
 
     it('handles 2.4 GHz', async () => {
@@ -85,7 +87,7 @@ describe('IntentAIDetails', () => {
         { route: { params }, wrapper: Provider }
       )
 
-      await assertRenderCorrectly()
+      await assertRenderCorrectly(true)
     })
 
     it('handles 5 GHz', async () => {
@@ -95,7 +97,7 @@ describe('IntentAIDetails', () => {
         { route: { params }, wrapper: Provider }
       )
 
-      await assertRenderCorrectly()
+      await assertRenderCorrectly(true)
     })
 
     it('handles 6 GHz', async () => {
@@ -105,7 +107,7 @@ describe('IntentAIDetails', () => {
         { route: { params }, wrapper: Provider }
       )
 
-      await assertRenderCorrectly()
+      await assertRenderCorrectly(true)
     })
 
     it('handles new rrm', async () => {
@@ -128,7 +130,7 @@ describe('IntentAIDetails', () => {
         { route: { params }, wrapper: Provider }
       )
 
-      await assertRenderCorrectly()
+      await assertRenderCorrectly(true)
 
       expect(await screen.findByText('IntentAI ensures that only the existing channels configured for this network are utilized in the channel planning process.')).toBeVisible() // eslint-disable-line max-len
 
@@ -163,7 +165,7 @@ describe('IntentAIDetails', () => {
         { route: { params }, wrapper: Provider }
       )
 
-      await assertRenderCorrectly()
+      await assertRenderCorrectly(true)
 
       expect(await screen.findByText('IntentAI ensures that only the existing channels configured for this network are utilized in the channel planning process.')).toBeVisible() // eslint-disable-line max-len
 
@@ -198,7 +200,7 @@ describe('IntentAIDetails', () => {
         { route: { params }, wrapper: Provider }
       )
 
-      await assertRenderCorrectly()
+      await assertRenderCorrectly(true)
 
       expect(await screen.findByText('IntentAI ensures that only the existing channels configured for this network are utilized in the channel planning process.')).toBeVisible() // eslint-disable-line max-len
 
@@ -228,9 +230,11 @@ describe('IntentAIDetails', () => {
         { route: { params }, wrapper: Provider }
       )
 
-      await assertRenderCorrectly()
+      await assertRenderCorrectly(false)
       expect(await screen.findByText('When activated, this Intent takes over the automatic channel planning in the network.')).toBeVisible() // eslint-disable-line max-len
 
+      expect(await screen.findByTestId('Key Performance Indications'))
+        .toHaveTextContent('Graph modeling will be generated once Intent is activated.') // eslint-disable-line max-len
       expect(await screen.findByTestId('Benefits'))
         .toHaveTextContent('Low interference fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.') // eslint-disable-line max-len
       expect(await screen.findByTestId('Potential trade-off'))

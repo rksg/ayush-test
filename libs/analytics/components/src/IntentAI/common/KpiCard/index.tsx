@@ -15,7 +15,6 @@ export const KpiCard: React.FC<{
   return <Card>
     <UI.Title>{$t(kpi.label)}</UI.Title>
     <UI.Statistic
-      // $blur={state === 'no-data'}
       title={kpi.footer}
       value={kpi.value}
       suffix={kpi.delta && <TrendPill {...kpi.delta} />}

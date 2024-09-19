@@ -55,7 +55,6 @@ describe('CloudRRM', () => {
     mockIntentContext({ intent: { ...mockedIntentCRRM, status: Statuses.na } })
 
     render(<IntentAIRRMGraph crrmData={mockCrrmData} />, { wrapper: Provider })
-    expect(screen.queryByTestId('graph-wrapper')).toHaveStyleRule('filter', 'blur(8px)')
     expect(screen.queryByTestId('rrm-comparison-button')).toBeNull()
   })
 
