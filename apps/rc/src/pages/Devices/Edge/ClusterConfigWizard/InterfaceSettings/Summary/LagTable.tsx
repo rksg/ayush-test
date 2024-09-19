@@ -59,7 +59,7 @@ export const LagTable = (props: LagTableProps) => {
 
   const columns: TableProps<LagTableData>['columns'] = [
     {
-      title: $t({ defaultMessage: 'SmartEdge' }),
+      title: $t({ defaultMessage: 'RUCKUS Edge' }),
       key: 'edgeName',
       dataIndex: 'edgeName'
     },

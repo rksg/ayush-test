@@ -35,7 +35,7 @@ const useColumns = () => {
     dataIndex: 'featureName',
     defaultSortOrder: 'ascend'
   }, {
-    title: $t({ defaultMessage: 'Incompatible SmartEdges' }),
+    title: $t({ defaultMessage: 'Incompatible RUCKUS Edges' }),
     key: 'incompatible',
     dataIndex: 'incompatible',
     align: 'center'

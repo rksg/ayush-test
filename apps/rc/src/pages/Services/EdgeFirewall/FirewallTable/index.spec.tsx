@@ -198,7 +198,7 @@ describe('Firewall Table', () => {
 
     fireEvent.mouseOver(deleteBtn)
     expect(await screen.findByRole('tooltip'))
-      .toHaveTextContent('Please deactivate the SmartEdge Firewall Service')
+      .toHaveTextContent('Please deactivate the RUCKUS Edge Firewall Service')
   })
 
 })

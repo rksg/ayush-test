@@ -178,7 +178,7 @@ const PersonalIdentityNetworkTable = () => {
       }
     },
     {
-      title: $t({ defaultMessage: 'SmartEdge' }),
+      title: $t({ defaultMessage: 'RUCKUS Edge' }),
       key: 'edge',
       dataIndex: 'edgeInfos',
       sorter: true,
