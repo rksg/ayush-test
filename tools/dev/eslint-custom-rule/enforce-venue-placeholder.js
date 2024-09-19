@@ -53,9 +53,7 @@ module.exports = {
                     placeHolder: placeHolderMap[venueWord]
                   },
                   fix: function (fixer) {
-                    const fixedMessage = messageValue.replace(invalidVenueRegex, function(match){
-                      return placeHolderMap[match];
-                    });
+                    const fixedMessage = messageValue.replace(invalidVenueRegex, match => placeHolderMap[match]);
                     return fixer.replaceText( defaultMessageProperty.value, `'${fixedMessage}'`);
                   }
                 });

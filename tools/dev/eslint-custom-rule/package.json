@@ -9,8 +9,7 @@
   "peerDependencies": {
     "eslint": ">=8.0.0"
   },
-  "author": "george.chiu",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "eslint": "^8.0.0"
   }
