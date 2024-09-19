@@ -13,7 +13,7 @@ export const userLogout = () => {
 
   if (Boolean(get('IS_MLISA_SA'))) {
     const form = document.createElement('form')
-    form.action = get('MLISA_LOGOUT_URL')
+    form.action = `${get('MLISA_LOGOUT_URL')}${window.location.search}`
     form.method = 'POST'
     document.body.appendChild(form)
     form.submit()
