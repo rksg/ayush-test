@@ -121,7 +121,7 @@ describe('IntentAIForm', () => {
     await click(actions.getByRole('button', { name: 'Apply' }))
 
     expect(await screen.findByText(/has been updated/)).toBeVisible()
-    await click(await screen.findByText(/View/))
+    await click(await screen.findByText('View'))
     expect(mockNavigate).toBeCalled()
   }
 
