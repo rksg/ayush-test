@@ -5,8 +5,8 @@ import { DefaultOptionType }                               from 'antd/lib/select
 import { FormattedMessage, useIntl }                       from 'react-intl'
 import { useParams }                                       from 'react-router-dom'
 
-import { cssStr, Tooltip }                     from '@acx-ui/components'
-import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
+import { cssStr, Tooltip }                      from '@acx-ui/components'
+import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
 import {
   useGetEthernetPortProfileSettingsByApPortIdQuery,
   useGetEthernetPortProfileViewDataListQuery
@@ -140,8 +140,8 @@ export function LanPortSettings (props: {
       skip: isTemplate || !isEthernetPortProfileEnabled,
       selectFromResult: ({ data: queryResult, ...rest }) => ({
         ethernetPortDropdownItems: (queryResult)?
-            convertEthernetPortListToDropdownItems(queryResult.data) :
-            [],
+          convertEthernetPortListToDropdownItems(queryResult.data) :
+          [],
         ethernetPortListQuery: queryResult,
         ...rest
       })
