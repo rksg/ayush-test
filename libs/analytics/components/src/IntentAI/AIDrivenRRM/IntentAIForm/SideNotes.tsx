@@ -9,7 +9,6 @@ import { LinkDocumentIcon, LinkVideoIcon } from '@acx-ui/icons'
 import { richTextFormatValues } from '../../common/richTextFormatValues'
 import { SideNotes }            from '../../common/SideNotes'
 import { useIntentContext }     from '../../IntentContext'
-import { Statuses }             from '../../states'
 import { Intent }               from '../../useIntentDetailsQuery'
 import { useDownloadData }      from '../RRMGraph/DownloadRRMComparison'
 
@@ -73,7 +72,7 @@ export const Priority: React.FC = () => {
 export const Summary: React.FC = () => {
   const { $t } = useIntl()
   const { form } = useStepFormContext<Intent>()
-  const { intent } = useIntentContext()
+  const { intent, state } = useIntentContext()
   const isFullOptimization = form.getFieldValue(PriorityPage.fieldName)
   const priority = isFullOptimization ? priorities.full : priorities.partial
   const { url, filename } = useDownloadData(intent)
@@ -102,13 +101,10 @@ export const Summary: React.FC = () => {
       title={priority.title}
       children={priority.content}
     />
-    {shouldShowResources(intent.status) && (
+    {state !== 'no-data' && (
       <SideNotes.Section title={$t({ defaultMessage: 'Resources' })}>
         <Typography.Paragraph children={resources} />
       </SideNotes.Section>
     )}
   </SideNotes>
 }
-
-const shouldShowResources = (status: string): boolean =>
-  status !== Statuses.na && status !== Statuses.paused
