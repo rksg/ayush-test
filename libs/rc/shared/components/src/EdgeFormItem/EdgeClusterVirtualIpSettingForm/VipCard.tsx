@@ -170,7 +170,7 @@ const validateInterfaces = async (
   if(nodeLength > 1 && validInterfaces.length !== nodeLength) {
     return Promise.reject(
       // eslint-disable-next-line max-len
-      $t({ defaultMessage: 'Please make sure you select an interface and configure the IP subnet for the SmartEdge(s).' })
+      $t({ defaultMessage: 'Please make sure you select an interface and configure the IP subnet for the RUCKUS Edge(s).' })
     )
   }
 

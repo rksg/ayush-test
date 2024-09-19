@@ -27,7 +27,7 @@ export const FeatureCrossDeviceTypeCompatibility = (props: FeatureCrossDeviceTyp
   const deviceTypesString = $t({
     defaultMessage: '{hasEdge} {hasAnd} {hasAp}' },
   {
-    hasEdge: (hasEdge ? $t({ defaultMessage: 'SmartEdges' }) : ''),
+    hasEdge: (hasEdge ? $t({ defaultMessage: 'RUCKUS Edges' }) : ''),
     hasAnd: (isAllHas ? $t({ defaultMessage: 'and' }) : ''),
     hasAp: (hasAp ? $t({ defaultMessage: 'access points' }) : '')
   })

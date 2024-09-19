@@ -157,7 +157,7 @@ export const SdLanApTable = (props: SdLanApTableProps) => {
     },
     {
       key: 'connectedEdge',
-      title: $t({ defaultMessage: 'Connected SmartEdge Node' }),
+      title: $t({ defaultMessage: 'Connected RUCKUS Edge Node' }),
       dataIndex: 'apStatusData.vxlanStatus.activeRvtepInfo.deviceId',
       sorter: false,
       render: (_, row: APExtended) => {

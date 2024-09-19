@@ -1,8 +1,8 @@
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import WithApAndSwitchDiagram from '../../../../../assets/images/personal-identity-diagrams/personal-identity-with-ap-and-switch.png'
-import ApOnlyDiagram          from '../../../../../assets/images/personal-identity-diagrams/personal-identity-with-ap-only.png'
+import WithApAndSwitchDiagram from '../../../../../assets/images/personal-identity-diagrams/personal-identity-with-ap-and-switch.svg'
+import ApOnlyDiagram          from '../../../../../assets/images/personal-identity-diagrams/personal-identity-with-ap-only.svg'
 
 import { Diagram } from './styledComponents'
 

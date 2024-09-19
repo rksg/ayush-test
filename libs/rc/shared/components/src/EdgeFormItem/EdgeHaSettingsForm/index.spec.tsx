@@ -27,7 +27,7 @@ describe('EdgeHaSettingsForm', () => {
       </StepsForm>
     )
 
-    const enableFallback = screen.getByRole('switch', { name: 'SmartEdge Fallback' })
+    const enableFallback = screen.getByRole('switch', { name: 'RUCKUS Edge Fallback' })
     expect(enableFallback).toBeVisible()
     expect(screen.getByRole('combobox', { name: 'Load Distribution' })).toBeInTheDocument()
 
