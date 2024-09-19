@@ -4,8 +4,10 @@ import { Col, Row, Form, Switch } from 'antd'
 import { isEmpty }                from 'lodash'
 import { useIntl }                from 'react-intl'
 
-import { Button, cssStr } from '@acx-ui/components'
-import { AFCProps }       from '@acx-ui/rc/utils'
+import { Button, cssStr }            from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { AFCProps }                  from '@acx-ui/rc/utils'
+import { isApFwVersionLargerThan71 } from '@acx-ui/utils'
 
 import { RadioSettingsChannels }       from '../RadioSettingsChannels'
 import { findIsolatedGroupByChannel }  from '../RadioSettingsChannels/320Mhz/ChannelComponentStates'
@@ -22,7 +24,12 @@ import {
   split5GChannels,
   VenueRadioTypeDataKeyMap,
   LPIButtonText,
-  SupportRadioChannelsContext
+  SupportRadioChannelsContext,
+  SelectItemOption,
+  txPowerAdjustmentOptions,
+  txPowerAdjustment6GOptions,
+  txPowerAdjustmentExtendedOptions,
+  FirmwareProps
 } from './RadioSettingsContents'
 import { RadioSettingsForm } from './RadioSettingsForm'
 
@@ -59,7 +66,8 @@ export function SingleRadioSettings (props:{
   testId?: string,
   isUseVenueSettings?: boolean,
   LPIButtonText?: LPIButtonText,
-  afcProps?: AFCProps
+  afcProps?: AFCProps,
+  firmwareProps?: FirmwareProps
 }) {
 
   const { $t } = useIntl()
@@ -71,7 +79,8 @@ export function SingleRadioSettings (props:{
     isUseVenueSettings = false,
     testId,
     LPIButtonText,
-    afcProps
+    afcProps,
+    firmwareProps
   } = props
 
   const { radioType, handleChanged } = props
@@ -107,6 +116,7 @@ export function SingleRadioSettings (props:{
   const [channelBars] = useState({ ...initChannelBars })
   const [indoorChannelBars, setIndoorChannelBars] = useState({ ...initChannelBars })
   const [outdoorChannelBars, setOutdoorChannelBars] = useState({ ...initChannelBars })
+  const [txPowerOptions, setTxPowerOptions] = useState<SelectItemOption[]>([])
 
   const [groupSize, setGroupSize] = useState(1)
 
@@ -140,6 +150,7 @@ export function SingleRadioSettings (props:{
                                      radioType !== ApRadioTypeEnum.Radio6G)
   const channelColSpan = (radioType === ApRadioTypeEnum.Radio5G) ? 22 : 20
 
+  const isApTxPowerToggleEnabled = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
 
   const [
     channelMethod,
@@ -304,6 +315,25 @@ export function SingleRadioSettings (props:{
     //const hasErrors = !isEmpty(errMsg + indoorErrMsg + outdoorErrMsg)
   }, [allowedChannels, allowedIndoorChannels, allowedOutdoorChannels, channelMethod])
 
+  useEffect(() => {
+    const getTxPowerAdjustmentOptions = () => {
+      let res = (radioType === ApRadioTypeEnum.Radio6G)? txPowerAdjustment6GOptions
+        : txPowerAdjustmentOptions
+      if (isApTxPowerToggleEnabled) {
+        if (context === 'venue'
+          || (context === 'ap' && isApFwVersionLargerThan71(firmwareProps?.firmware))) {
+          return [...res, ...txPowerAdjustmentExtendedOptions].sort((a, b) => {
+            if (a.value === 'MIN') return 1
+            if (b.value === 'MIN') return -1
+            return 0
+          })
+        }
+      }
+      return res
+    }
+    setTxPowerOptions(getTxPowerAdjustmentOptions())
+  }, [radioType, firmwareProps])
+
   const resetToDefaule = () => {
     if (props.onResetDefaultValue) {
       props.onResetDefaultValue(radioType)
@@ -325,6 +355,7 @@ export function SingleRadioSettings (props:{
   const handleCombinChannelsChanged = () => {
     combinChannelOnChanged.current = true
   }
+
 
   const selectRadioChannelSelectionType = () => {
     if(channelBandwidth === '320MHz') {
@@ -389,6 +420,7 @@ export function SingleRadioSettings (props:{
               radioType={radioType}
               radioDataKey={radioDataKey}
               disabled={inherit5G || disable}
+              txPowerOptions={txPowerOptions}
               channelBandwidthOptions={bandwidthOptions}
               context={context}
               isUseVenueSettings={isUseVenueSettings}

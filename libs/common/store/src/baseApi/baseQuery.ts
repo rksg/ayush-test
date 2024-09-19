@@ -65,5 +65,12 @@ export const graphqlRequestBaseQuery: typeof originalGraphqlRequestBaseQuery = (
     refreshJWT(result.meta?.response?.headers)
     return result
   }
-  return wrapperBaseQuery
+
+  return retry(wrapperBaseQuery, {
+    retryCondition: (error) => {
+      const err = error as unknown as Error
+      // retry when request fails with status 200 and error is empty, ref ACX-66743
+      return err.message.includes('"error":"","status":200')
+    }
+  })
 }
