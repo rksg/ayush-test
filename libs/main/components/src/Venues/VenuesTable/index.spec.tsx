@@ -136,7 +136,7 @@ describe('Venues Table', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByText('My-Venue')).toBeVisible()
-    expect(await screen.findByRole('columnheader', { name: 'SmartEdges' })).toBeVisible()
+    expect(await screen.findByRole('columnheader', { name: 'RUCKUS Edges' })).toBeVisible()
   })
 
   it('should not have edge column when feature flag off', async () => {
@@ -151,7 +151,7 @@ describe('Venues Table', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByText('My-Venue')).toBeVisible()
-    expect(screen.queryByRole('columnheader', { name: 'SmartEdges' })).toBeFalsy()
+    expect(screen.queryByRole('columnheader', { name: 'RUCKUS Edges' })).toBeFalsy()
   })
 
   it('should have correct edge device quantity', async () => {

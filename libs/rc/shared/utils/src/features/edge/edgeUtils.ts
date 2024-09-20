@@ -235,7 +235,7 @@ export const isVirtualEdgeSerial = (value: string) => {
 }
 
 export const deriveEdgeModel = (serial: string) => {
-  return isVirtualEdgeSerial(serial) ? 'vSmartEdge' : '-'
+  return isVirtualEdgeSerial(serial) ? 'vEdge' : '-'
 }
 
 export const isOtpEnrollmentRequired = (serial: string) => {

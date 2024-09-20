@@ -113,7 +113,7 @@ describe('Edge centrailized forwarding form: CorePortFormItem', () => {
 
     const formBody = await screen.findByTestId('steps-form-body')
     await within(formBody).findByText('Core Port: N/A')
-    await click(await within(formBody).findByText('SmartEdge\'s Port configuration'))
+    await click(await within(formBody).findByText('RUCKUS Edge\'s Port configuration'))
     await waitFor(async () => expect(await screen.findByRole('dialog')).toBeVisible())
     const dialog = screen.getByRole('dialog')
     expect(within(dialog).queryByText('Smart Edge 3')).toBeValid()
@@ -164,7 +164,7 @@ describe('Edge centrailized forwarding form: CorePortFormItem', () => {
 
     const formBody = await screen.findByTestId('steps-form-body')
     await within(formBody).findByText('Core Port: N/A')
-    await click(await within(formBody).findByText('SmartEdge\'s Port configuration'))
+    await click(await within(formBody).findByText('RUCKUS Edge\'s Port configuration'))
     await waitFor(async () => expect(await screen.findByRole('dialog')).toBeVisible())
     const dialog = screen.getByRole('dialog')
     expect(within(dialog).queryByText('Smart Edge 3')).toBeValid()
@@ -196,7 +196,7 @@ describe('Edge centrailized forwarding form: CorePortFormItem', () => {
 
     const formBody = await screen.findByTestId('steps-form-body')
     await within(formBody).findByText('Core Port: N/A')
-    await click(await within(formBody).findByText('SmartEdge\'s Port configuration'))
+    await click(await within(formBody).findByText('RUCKUS Edge\'s Port configuration'))
     await waitFor(async () => expect(await screen.findByRole('dialog')).toBeVisible())
     const dialog = screen.getByRole('dialog')
     expect(within(dialog).queryByText('Smart Edge 3')).toBeValid()

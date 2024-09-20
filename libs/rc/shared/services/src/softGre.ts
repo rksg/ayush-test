@@ -159,6 +159,7 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
         const { venueId, networkId } = params as { venueId: string, networkId?: string }
         const gatewayIps = new Set<string>()
         const gatewayIpMaps:Record<string, string[]> = {}
+        const activationProfiles:string[] = []
 
         const softGreListReq = createHttpRequest(SoftGreUrls.getSoftGreViewDataList)
         const softGreListRes = await fetchWithBQ({
@@ -166,7 +167,14 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
           body: JSON.stringify(payload)
         })
         // eslint-disable-next-line max-len
-        if (softGreListRes.error) return { data: { options: [], isLockedOptions: true, gatewayIps: Array.from(gatewayIps), gatewayIpMaps } as SoftGreOptionsData }
+        if (softGreListRes.error) return {
+          data: {
+            options: [],
+            isLockedOptions: true,
+            gatewayIps: Array.from(gatewayIps),
+            gatewayIpMaps,
+            activationProfiles
+          } as SoftGreOptionsData }
 
         let { data: listData } = softGreListRes.data as TableResult<SoftGreViewData>
 
@@ -181,6 +189,7 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
           item.activations?.forEach(activation => {
             const isEqualVenue = activation.venueId === venueId
             if (isEqualVenue) {
+              activationProfiles.push(item.id)
               let isOnlyAppliedCurrentNetwork = false
               isSame = activation.venueId === venueId
               if (networkId && activation.wifiNetworkIds?.includes(networkId)) {
@@ -207,14 +216,19 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
             label: item.name
           } as DefaultOptionType
         })
+        const commonData = {
+          gatewayIps: Array.from(gatewayIps),
+          gatewayIpMaps,
+          activationProfiles
+        }
+
         if (venueTotal >= 3) {
           return {
             data: {
               options: options,
               id: softGreProfileId,
               isLockedOptions: true,
-              gatewayIps: Array.from(gatewayIps),
-              gatewayIpMaps
+              ...commonData
             } as SoftGreOptionsData
           }
         }
@@ -224,8 +238,7 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
               ({ value: item.value, label: item.label, disabled: false })) ,
             id: softGreProfileId,
             isLockedOptions: false,
-            gatewayIps: Array.from(gatewayIps),
-            gatewayIpMaps
+            ...commonData
           } as SoftGreOptionsData
         }
       },
