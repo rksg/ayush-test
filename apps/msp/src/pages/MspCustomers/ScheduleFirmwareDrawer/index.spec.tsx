@@ -338,7 +338,7 @@ describe('ScheduleFirmwareDrawer', () => {
     expect(services.useMspEcFirmwareUpgradeSchedulesMutation).toHaveBeenCalled()
   })
 
-  it('should show fireware version correctly', async () => {
+  it('should show firmware version correctly', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff =>
       ff !== Features.AP_FIRMWARE_UPGRADE_BY_MODEL_TOGGLE )
 
