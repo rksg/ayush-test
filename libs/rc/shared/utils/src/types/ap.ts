@@ -193,6 +193,7 @@ export interface NewAPModelExtended extends NewAPModel {
   switchSerialNumber?: string
   switchId?: string
   switchName?: string
+  switchPort?: string
   rogueCategory?: { [key: string]: number }
   incompatible?: number
 }
