@@ -79,12 +79,10 @@ import {
   VeuneApAntennaTypeSettings,
   NetworkApGroup,
   ConfigTemplateUrlsInfo,
-  getVenueTimeZone,
   getCurrentTimeSlotIndex,
   SchedulerTypeEnum,
   ISlotIndex,
   Network,
-  ITimeZone,
   WifiRbacUrlsInfo,
   GetApiVersionHeader,
   CommonRbacUrlsInfo,
@@ -103,8 +101,8 @@ import {
   EthernetPortProfileViewData
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                                  from '@acx-ui/store'
-import { RequestPayload }                                from '@acx-ui/types'
-import { batchApi, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
+import { ITimeZone, RequestPayload }                     from '@acx-ui/types'
+import { batchApi, createHttpRequest, getVenueTimeZone, ignoreErrorModal } from '@acx-ui/utils'
 
 import { getNewApViewmodelPayloadFromOld, fetchAppendApPositions } from './apUtils'
 import { fetchRbacAllApGroupNetworkVenueList }                     from './networkVenueUtils'

@@ -72,3 +72,21 @@ export enum EdgeScopes {
 }
 // eslint-disable-next-line max-len
 export type ScopeKeys = (WifiScopes|SwitchScopes|EdgeScopes|(WifiScopes|SwitchScopes|EdgeScopes)[])[]
+
+export interface ITimeZone {
+  dstOffset: number
+  rawOffset: number
+  timeZoneId: string
+  timeZoneName: string
+}
+
+export interface Scheduler {
+  type: 'ALWAYS_ON' | 'ALWAYS_OFF' | 'CUSTOM' | string
+  sun?: string
+  mon?: string
+  tue?: string
+  wed?: string
+  thu?: string
+  fri?: string
+  sat?: string
+}
