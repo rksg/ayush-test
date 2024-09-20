@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
@@ -7,18 +6,16 @@ import { Button, PageHeader }                                              from 
 import { WorkflowActionPreviewModal }                                      from '@acx-ui/rc/components'
 import { useGetWorkflowByIdQuery, useLazySearchWorkflowsVersionListQuery } from '@acx-ui/rc/services'
 import {
-  getPolicyListRoutePath,
+  filterByAccessForServicePolicyMutation,
   getPolicyDetailsLink,
+  getPolicyListRoutePath,
+  getPolicyRoutePath,
+  getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType,
-  getPolicyRoutePath,
   Workflow
 } from '@acx-ui/rc/utils'
-import {
-  useParams,
-  TenantLink
-} from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 
 function WorkflowPageHeader () {
@@ -66,19 +63,29 @@ function WorkflowPageHeader () {
           }
         ]}
         extra={
-          filterByAccess([
-            <Button type='default' onClick={()=>setVisible(true)}>
-              {$t({ defaultMessage: 'Preview' })}</Button>,
+          [<Button
+            type='default'
+            onClick={() => setVisible(true)}
+          >
+            {$t({ defaultMessage: 'Preview' })}
+          </Button>,
+          ...filterByAccessForServicePolicyMutation([
             <TenantLink
+              scopeKey={getScopeKeyByPolicy(PolicyType.WORKFLOW, PolicyOperation.EDIT)}
               to={getPolicyDetailsLink({
                 type: PolicyType.WORKFLOW,
                 oper: PolicyOperation.EDIT,
                 policyId: policyId!
               })}
             >
-              <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
+              <Button
+                key='configure'
+                type='primary'
+              >
+                {$t({ defaultMessage: 'Configure' })}
+              </Button>
             </TenantLink>
-          ])}
+          ])]}
       />
       {visible &&
       <WorkflowActionPreviewModal

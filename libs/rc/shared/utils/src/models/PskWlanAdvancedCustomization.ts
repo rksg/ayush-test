@@ -79,6 +79,8 @@ export class PskWlanAdvancedCustomization {
 
   l3AclEnable?: boolean
 
+  enableDeviceOs?: boolean
+
   wifiCallingEnabled?: boolean
 
   wifiCallingIds?: string[]

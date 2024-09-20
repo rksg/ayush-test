@@ -101,7 +101,25 @@ describe('comparePayload and operateAction', () => {
     const expectedComparisonObject: ComparisonObjectType = {
       added: [
         {
+          idId: {
+            nameId: undefined,
+            policyId: '832ad540d6aa4dfc802a07e04e43f29d'
+          }
+        },
+        {
+          nameId: {
+            nameId: undefined,
+            policyId: '832ad540d6aa4dfc802a07e04e43f29d'
+          }
+        },
+        {
           descriptionId: {
+            policyId: '832ad540d6aa4dfc802a07e04e43f29d'
+          }
+        },
+        {
+          l2AclPolicyId: {
+            l2AclPolicyId: '13e531e332e543cd97c1122e581c707c',
             policyId: '832ad540d6aa4dfc802a07e04e43f29d'
           }
         },
@@ -109,6 +127,12 @@ describe('comparePayload and operateAction', () => {
           l3AclPolicyId: {
             policyId: '832ad540d6aa4dfc802a07e04e43f29d',
             l3AclPolicyId: 'b1a39dd622984eac855fadbf719b8317'
+          }
+        },
+        {
+          applicationPolicyId: {
+            applicationPolicyId: '11c545eacd9742bdacfeb21cbb043221',
+            policyId: '832ad540d6aa4dfc802a07e04e43f29d'
           }
         }
       ],
@@ -161,7 +185,7 @@ describe('comparePayload and operateAction', () => {
 
     await operateAction(comparisonResult, accessControlActionMap, mockFetchWithBQ, true)
 
-    expect(mockFetchWithBQ).toHaveBeenCalledTimes(6) // add: 1, removed: 1, updated: 2 * 2
+    expect(mockFetchWithBQ).toHaveBeenCalledTimes(8) // add: 3, removed: 1, updated: 2 * 2
   })
 })
 
