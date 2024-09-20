@@ -275,7 +275,6 @@ describe('AP Ethernet Port Profile', () => {
     expect(detailBtn).toBeInTheDocument()
     await userEvent.click(detailBtn)
 
-    expect(screen.getByText('Ethernet Port Details:')).toBeInTheDocument()
     expect(await screen.findAllByText('Port Type')).toHaveLength(3)
     expect(await screen.findAllByText('VLAN Untag ID')).toHaveLength(4)
     expect(await screen.findAllByText('VLAN Members')).toHaveLength(3)

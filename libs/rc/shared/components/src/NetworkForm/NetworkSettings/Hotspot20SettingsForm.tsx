@@ -21,7 +21,10 @@ import {
 }              from '@acx-ui/rc/services'
 import {
   AAAWlanSecurityEnum,
+  hasPolicyPermission,
   ManagementFrameProtectionEnum,
+  PolicyOperation,
+  PolicyType,
   WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
@@ -269,10 +272,12 @@ function Hotspot20Service () {
             style={{ width: '280px' }}
             options={operatorSelectOptions} />
         </Form.Item>
-        <Button type='link'
-          disabled={operatorSelectOptions.length >= WIFI_OPERATOR_MAX_COUNT}
-          onClick={handleAddOperator}
-          children={$t({ defaultMessage: 'Add' })} />
+        { hasPolicyPermission({ type: PolicyType.WIFI_OPERATOR, oper: PolicyOperation.CREATE }) &&
+          <Button type='link'
+            disabled={operatorSelectOptions.length >= WIFI_OPERATOR_MAX_COUNT}
+            onClick={handleAddOperator}
+            children={$t({ defaultMessage: 'Add' })} />
+        }
       </Space>
 
       <Space align='start'>
@@ -296,11 +301,14 @@ function Hotspot20Service () {
             }}
           />
         </Form.Item>
-        <Button type='link'
-          disabled={disabledAddProvider.current}
-          onClick={handleAddProvider}
-          children={$t({ defaultMessage: 'Add' })}
-          style={{ paddingTop: '36px' }} />
+        { // eslint-disable-next-line max-len
+          hasPolicyPermission({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.CREATE }) &&
+          <Button type='link'
+            disabled={disabledAddProvider.current}
+            onClick={handleAddProvider}
+            children={$t({ defaultMessage: 'Add' })}
+            style={{ paddingTop: '36px' }} />
+        }
       </Space>
 
       {editMode &&
