@@ -108,10 +108,10 @@ describe('IntentAIForm', () => {
     // Step 3
     await screen.findAllByRole('heading', { name: 'Settings' })
     await selectOptions(
-      await screen.findByRole('combobox', { name: 'Schedule Time' }),
+      await screen.findByPlaceholderText('Select time'),
       '12:30 (UTC+08)'
     )
-    expect(await screen.findByRole('combobox', { name: 'Schedule Time' })).toHaveValue('12.5')
+    expect(await screen.findByPlaceholderText('Select time')).toHaveValue('12.5')
     await click(actions.getByRole('button', { name: 'Next' }))
 
     // Step 4

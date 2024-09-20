@@ -136,7 +136,7 @@ export const PersonalIdentityNetworkServiceInfo = styled((
       )
     },
     {
-      title: $t({ defaultMessage: 'SmartEdge' }),
+      title: $t({ defaultMessage: 'RUCKUS Edge' }),
       content: () => {
         const edgeInfo = nsgViewData?.edgeInfos?.[0]
         return (

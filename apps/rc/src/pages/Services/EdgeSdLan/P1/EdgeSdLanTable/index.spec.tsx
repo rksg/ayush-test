@@ -67,7 +67,7 @@ describe('SD-LAN Table', () => {
     )
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    await screen.findByRole('columnheader', { name: 'SmartEdge' })
+    await screen.findByRole('columnheader', { name: 'RUCKUS Edge' })
     const rows = await screen.findAllByRole('row', { name: /Mocked_SDLAN_/i })
     expect(rows.length).toBe(2)
     // eslint-disable-next-line max-len
@@ -169,7 +169,7 @@ describe('SD-LAN Table', () => {
     )
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    await screen.findByRole('columnheader', { name: 'SmartEdge' })
+    await screen.findByRole('columnheader', { name: 'RUCKUS Edge' })
     const rows = await screen.findAllByRole('row', { name: /Mocked_SDLAN_/i })
     // eslint-disable-next-line max-len
     // eslint-disable-next-line max-len
@@ -204,7 +204,7 @@ describe('SD-LAN Table', () => {
     )
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    await screen.findByRole('columnheader', { name: 'SmartEdge' })
+    await screen.findByRole('columnheader', { name: 'RUCKUS Edge' })
     await screen.findByText(/sdLan_good_health/i)
     // eslint-disable-next-line max-len
     await screen.findByRole('row', { name: 'sdLan_good_health Mocked-Venue-1 vSE-b490 Mocked_tunnel-1 1 Good' })

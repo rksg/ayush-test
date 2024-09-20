@@ -149,7 +149,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
 
   const defaultColumns: TableProps<EdgeStatus>['columns'] = useMemo(() => [
     {
-      title: $t({ defaultMessage: 'SmartEdge' }),
+      title: $t({ defaultMessage: 'RUCKUS Edge' }),
       key: 'name',
       dataIndex: 'name',
       sorter: true,
@@ -245,7 +245,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
     ...(isEdgeCompatibilityEnabled && incompatibleCheck ? [{
       key: 'incompatible',
       // eslint-disable-next-line max-len
-      tooltip: $t({ defaultMessage: 'Check for the SmartEdge features of <venueSingular></venueSingular> not supported by earlier versions.' }),
+      tooltip: $t({ defaultMessage: 'Check for the RUCKUS Edge features of <venueSingular></venueSingular> not supported by earlier versions.' }),
       title: $t({ defaultMessage: 'Feature Compatibility' }),
       filterPlaceholder: $t({ defaultMessage: 'Feature Incompatibility' }),
       filterValueArray: true,
@@ -361,7 +361,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
           { edgeName:
             find(tableQuery?.data?.data, { serialNumber: compatibilitiesDrawerEdgeId })?.name
           })}
-        type={EdgeCompatibilityType.VENUE}
+        type={EdgeCompatibilityType.DEVICE}
         onClose={() => setCompatibilitiesDrawerEdgeId(undefined)}
         // eslint-disable-next-line max-len
         venueId={find(tableQuery?.data?.data, { serialNumber: compatibilitiesDrawerEdgeId })?.venueId}

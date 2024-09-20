@@ -11,7 +11,8 @@ import {
   useRevokeClientMutation } from '@acx-ui/rc/services'
 import { Client, ClientStatusEnum }                               from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useSearchParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                                         from '@acx-ui/user'
+import { WifiScopes }                                             from '@acx-ui/types'
+import { hasCrossVenuesPermission, hasPermission }                from '@acx-ui/user'
 import { DateFilter, DateRange, encodeParameter, useDateFilter }  from '@acx-ui/utils'
 
 
@@ -137,7 +138,8 @@ function ClientDetailPageHeader () {
       ]}
       extra={[
         <DatePicker />,
-        ...filterByAccess([
+        hasCrossVenuesPermission() &&
+          hasPermission({ scopes: [WifiScopes.UPDATE] }) &&
           <Dropdown overlay={menu}>{()=>
             <Button type='primary'>
               <Space>
@@ -146,7 +148,6 @@ function ClientDetailPageHeader () {
               </Space>
             </Button>
           }</Dropdown>
-        ])
       ]}
       footer={<ClientDetailTabs />}
     />

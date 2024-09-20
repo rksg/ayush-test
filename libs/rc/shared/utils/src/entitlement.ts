@@ -50,7 +50,7 @@ export class EntitlementUtil {
       case EntitlementDeviceType.ANALYTICS:
         return $t({ defaultMessage: 'Analytics' })
       case EntitlementDeviceType.EDGE:
-        return $t({ defaultMessage: 'SmartEdge' })
+        return $t({ defaultMessage: 'RUCKUS Edge' })
       case EntitlementDeviceType.APSW:
       case EntitlementDeviceType.MSP_APSW:
       case EntitlementDeviceType.MSP_APSW_TEMP:

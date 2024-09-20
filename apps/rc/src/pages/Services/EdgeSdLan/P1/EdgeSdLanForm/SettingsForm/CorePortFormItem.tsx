@@ -167,11 +167,12 @@ export const CorePortFormItem = (props: {
             {$t({
               defaultMessage: `To use SD-LAN on the <venueSingular></venueSingular>,
               you must select a port as the Core Port/LAG on the {editPortLink}.
-              Core port is the port used to connect SmartEdge to the core network for SDLAN service`
+              Core port is the port used to connect RUCKUS Edge to the core network
+              for SDLAN service`
             },
             { editPortLink:
               <UI.LinkButton type='link' onClick={handleClick}>
-                {$t({ defaultMessage: 'SmartEdge\'s Port configuration' })}
+                {$t({ defaultMessage: 'RUCKUS Edge\'s Port configuration' })}
               </UI.LinkButton>
             })}
           </Typography.Text>

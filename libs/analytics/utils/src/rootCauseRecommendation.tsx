@@ -3,8 +3,9 @@ import _                                    from 'lodash'
 import { defineMessage, MessageDescriptor } from 'react-intl'
 import { FormattedMessage }                 from 'react-intl'
 
-import { get }        from '@acx-ui/config'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { get }                    from '@acx-ui/config'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { TenantLink }             from '@acx-ui/react-router-dom'
 
 import { IncidentCode }               from './constants'
 import { Incident, IncidentMetadata } from './types/incidents'
@@ -39,6 +40,30 @@ type RecommendationsFunction = (
 interface RootCauseAndRecommendation {
   rootCauses: MessageDescriptor | RootCausesFunction
   recommendations: MessageDescriptor | RecommendationsFunction
+}
+
+export const TenantLinkWrapper = ({ params, linkType }: {
+    params: AirtimeParams,
+    linkType: string
+  }) => {
+  const isIntentAIEnabled = [
+    useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_TOGGLE),
+    useIsSplitOn(Features.INTENT_AI_TOGGLE)
+  ].some(Boolean)
+  let path =''
+  const intentData = linkType === 'crrm'
+    ? params.crrm
+    : params.aclb
+  if (isIntentAIEnabled) {
+    path = `/intentAI${get('IS_MLISA_SA') ? `/${intentData!.root}` : ''}/${intentData!.sliceId}/${intentData!.code}`
+  } else {
+    const id = intentData?.intentId ?? params.recommendationId
+    path = `/recommendations/${linkType}/${id}`
+  }
+  return (
+    <TenantLink to={path}>
+      <FormattedMessage defaultMessage={'Explore more'} />
+    </TenantLink>)
 }
 
 const commonRecommendations = defineMessage({
@@ -138,9 +163,18 @@ export type AirtimeTxChecks = {
 
 export type AirtimeArray = (AirtimeBusyChecks | AirtimeRxChecks | AirtimeTxChecks)[]
 
+export type IntentQueryParams = {
+  code: string,
+  root: string,
+  sliceId: string,
+  intentId: string
+}
+
 export type AirtimeParams = {
   ssidCountPerRadioSlice: number
-  recommendationId: string
+  recommendationId?: string,
+  crrm?: IntentQueryParams,
+  aclb?: IntentQueryParams,
 }
 
 export const htmlValues: FormatMessageValues = {
@@ -162,13 +196,13 @@ export const getAirtimeBusyRecommendations = (
   checks: Array<AirtimeBusyChecks>, params: AirtimeParams, extraValues: FormatMessageValues
 ) => {
   const checkTrue = checkTrueParams(checks)
-  const recommendationId = params.recommendationId
-  const link = <TenantLink to={`/recommendations/crrm/${recommendationId}`}><FormattedMessage defaultMessage={'here'}/></TenantLink>
+  const crrmLink = <TenantLinkWrapper params={params} linkType='crrm' />
+
   const rogueAP = checkTrue.includes('isRogueDetectionEnabled')
     ? <FormattedMessage defaultMessage={'<li>Click <rogueapdrawer>here</rogueapdrawer> for a list of rogue APs for removal in your premises.</li>'} values={{ ...htmlValues, ...extraValues }}/>
     : <FormattedMessage defaultMessage={'<li>Enable rogue AP detection to search, identify, and physically remove rogue APs from your premises.</li>'} values={htmlValues}/>
   const nonWifiInterference = <FormattedMessage defaultMessage={'<li>Identify and mitigate sources of non-WiFi interference, such as microwave ovens, Bluetooth devices, and cordless phones.</li>'} values={htmlValues}/>
-  const crrmRaised = <FormattedMessage defaultMessage={'<li>Click {link} to apply the AI-Driven RRM recommendation.</li>'} values={{ ...htmlValues, link }}/>
+  const crrmRaised = <FormattedMessage defaultMessage={'<li>Harness the power of IntentAI to automate configuration changes and enhance network performance. {crrmLink}.</li>'} values={{ ...htmlValues, crrmLink }}/>
 
   const stringlist = [
     rogueAP,
@@ -241,17 +275,16 @@ const getAirtimeRxRecommendations = (checks: (AirtimeRxChecks)[], params: Airtim
   const allFalse = airtimeRxAllFalseChecks
     .filter(check => Array.from([check]).flat().every(property => checkTrue.includes(property)))
     .length === 0
-  const { ssidCountPerRadioSlice, recommendationId } = params
-  const aiOpsLink = <TenantLink to={`/recommendations/aiOps/${recommendationId}`}>{<FormattedMessage defaultMessage={'here'}/>}</TenantLink>
-  const crrmLink = <TenantLink to={`/recommendations/crrm/${recommendationId}`}>{<FormattedMessage defaultMessage={'here'}/>}</TenantLink>
-
+  const { ssidCountPerRadioSlice } = params
+  const aiOpsLink = <TenantLinkWrapper params={params} linkType='aiOps' />
+  const crrmLink = <TenantLinkWrapper params={params} linkType='crrm' />
   const highDensityWifi = checkTrue.includes('isAclbRaised')
-    ? <FormattedMessage defaultMessage={'<li>Click {aiOpsLink} to enable client load balancing AI Ops recommendation.</li>'} values={{ ...htmlValues, aiOpsLink }}/>
+    ? <FormattedMessage defaultMessage={'<li>Harness the power of IntentAI to automate configuration changes and enhance network performance. {aiOpsLink}.</li>'} values={{ ...htmlValues, aiOpsLink }}/>
     : <FormattedMessage defaultMessage={'<li>Increase AP density to distribute the client load.</li>'} values={htmlValues}/>
   const excessiveFrame = checkTrue.includes('isHighSsidCountPerRadio')
     ? <FormattedMessage defaultMessage={'<li>There are currently an average of {ssidCountPerRadioSlice} SSIDs/WLANs being broadcasted per AP. Disable unnecessary SSIDs/WLANs. A general guideline would be 5 SSIDs/WLANs or less.</li>'} values={{ ...htmlValues, ssidCountPerRadioSlice }}/>
     : ''
-  const crrmRaisedText = <FormattedMessage defaultMessage={'<li>Click {crrmLink} to apply the AI-Driven RRM recommendation.</li>'} values={{ ...htmlValues, crrmLink }}/>
+  const crrmRaisedText = <FormattedMessage defaultMessage={'<li>Harness the power of IntentAI to automate configuration changes and enhance network performance. {crrmLink}.</li>'} values={{ ...htmlValues, crrmLink }}/>
   const channelFly = checkTrue.includes('isChannelFlyEnabled')
     ? <FormattedMessage defaultMessage={'<li>Review the channel planning, AP density and deployment.</li>'} values={htmlValues}/>
     : get('IS_MLISA_SA')
@@ -334,11 +367,11 @@ const getAirtimeTxRootCauses = (checks: (AirtimeTxChecks)[]) => {
 const getAirtimeTxRecommendations = (checks: (AirtimeTxChecks)[], params: AirtimeParams) => {
   const checkTrue = checkTrueParams(checks)
   const allFalse = airtimeTxAllFalseChecks.filter(check => checkTrue.includes(check)).length === 0
-  const { ssidCountPerRadioSlice, recommendationId } = params
-  const link = <TenantLink to={`/recommendations/aiOps/${recommendationId}`}><FormattedMessage defaultMessage={'here'}/></TenantLink>
+  const { ssidCountPerRadioSlice } = params
+  const aiOpsLink = <TenantLinkWrapper params={params} linkType='aiOps' />
 
   const highDensityWifi = checkTrue.includes('isAclbRaised')
-    ? <FormattedMessage defaultMessage={'<li>Click {link} to enable client load balancing AI Ops recommendation.</li>'} values={{ ...htmlValues, link }}/>
+    ? <FormattedMessage defaultMessage={'<li>Harness the power of IntentAI to automate configuration changes and enhance network performance. {aiOpsLink}.</li>'} values={{ ...htmlValues, aiOpsLink }}/>
     : <FormattedMessage defaultMessage={'<li>Increase AP density to distribute the client load.</li>'} values={htmlValues}/>
   const excessiveFrame = checkTrue.includes('isHighSsidCountPerRadio')
     ? <FormattedMessage defaultMessage={'<li>There are currently an average of {ssidCountPerRadioSlice} SSIDs/WLANs being broadcasted per AP. Disable unnecessary SSIDs/WLANs. A general guideline would be 5 SSIDs/WLANs or less. Enabling Airtime Decongestion would be recommended as well.</li>'} values={{ ...htmlValues, ssidCountPerRadioSlice }}/>

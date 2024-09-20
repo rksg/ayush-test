@@ -51,6 +51,24 @@ const devicesTrialAssignmentSummary =
     }
   ]
 
+const devicesAssignmentSummaryWithTrial =
+  [
+    {
+      courtesyMspEntitlementsUsed: false,
+      deviceType: 'MSP_APSW',
+      quantity: 93,
+      remainingDevices: 12,
+      trial: false
+    },
+    {
+      courtesyMspEntitlementsUsed: false,
+      deviceType: 'MSP_APSW',
+      quantity: 93,
+      remainingDevices: 12,
+      trial: true
+    }
+  ]
+
 const assignmentHistory =
   [
     {
@@ -814,6 +832,47 @@ describe('AssignMspLicense', () => {
       expect(services.useUpdateMspAssignmentMutation).toHaveLastReturnedWith(value)
     })
   })
+  it('should save correctly for edit both paid and trial assigned device', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.DEVICE_AGNOSTIC)
+    services.useMspAssignmentSummaryQuery = jest.fn().mockImplementation(() => {
+      return { data: devicesAssignmentSummaryWithTrial }
+    })
+    services.useMspAssignmentHistoryQuery = jest.fn().mockImplementation(() => {
+      return { data: deviceAssignmentHistoryWithTrial }
+    })
+    render(
+      <Provider>
+        <AssignMspLicense />
+      </Provider>, {
+        route: { params }
+      })
+
+    const deviceInput = screen.getAllByRole('spinbutton')[0]
+    fireEvent.change(deviceInput, { target: { value: '1' } })
+    const trialDeviceInput = screen.getAllByRole('spinbutton')[1]
+    fireEvent.change(trialDeviceInput, { target: { value: '1' } })
+    expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled()
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }))
+
+    const value: [Function, Object] = [
+      expect.any(Function),
+      expect.objectContaining({
+        data: { requestId: 456 },
+        status: 'fulfilled'
+      })
+    ]
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalledWith({
+        pathname: `/${params.tenantId}/v/msplicenses`,
+        hash: '',
+        search: ''
+      }, { replace: true })
+    })
+    await waitFor(() => {
+      expect(services.useUpdateMspAssignmentMutation).toHaveLastReturnedWith(value)
+    })
+  })
+
   it('should save correctly for delete assigned device', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.DEVICE_AGNOSTIC)
     services.useMspAssignmentSummaryQuery = jest.fn().mockImplementation(() => {

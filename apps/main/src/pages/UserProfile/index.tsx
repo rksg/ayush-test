@@ -8,15 +8,14 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { RolesEnum }         from '@acx-ui/types'
+import { RolesEnum } from '@acx-ui/types'
 import {
   DetailLevel,
   UserProfile as UserProfileInterface,
   useUserProfileContext,
   useUpdateUserProfileMutation,
   roleStringMap,
-  hasRoles,
-  hasCrossVenuesPermission
+  hasRoles
 } from '@acx-ui/user'
 
 import { PreferredLanguageFormItem } from './PreferredLanguageFormItem'
@@ -32,6 +31,8 @@ export function UserProfile () {
   const { data: userProfile } = useUserProfileContext()
   const [ updateUserProfile ] = useUpdateUserProfileMutation()
   const basePath = useTenantLink('/userprofile')
+  const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
+  const rootPath = useTenantLink('/')
 
   const handleUpdateSettings = async (data: Partial<UserProfileInterface>) => {
     await updateUserProfile({ payload: data, params: { tenantId } })
@@ -40,13 +41,14 @@ export function UserProfile () {
   }
 
   const handleCancel = () => {
-    navigate(-1)
+    isGuestManager ?
+      navigate({ pathname: rootPath.pathname }):
+      navigate(-1)
   }
 
   const SettingsTab = () => {
     return (
       <StepsForm
-        disabled={!hasCrossVenuesPermission()}
         buttonLabel={{ submit: $t({ defaultMessage: 'Apply Settings' }) }}
         onFinish={handleUpdateSettings}
         onCancel={async () => handleCancel()}
@@ -59,7 +61,7 @@ export function UserProfile () {
                 label={$t({ defaultMessage: 'Date Format' })}
                 initialValue={userProfile?.dateFormat}
                 children={
-                  <Select disabled={!hasCrossVenuesPermission()}>
+                  <Select>
                     <Option value={'mm/dd/yyyy'}>
                       {$t({ defaultMessage: 'MM/DD/YYYY' })}</Option>
                     <Option value={'dd/mm/yyyy'}>
@@ -74,7 +76,7 @@ export function UserProfile () {
                 label={$t({ defaultMessage: 'Event Details Level' })}
                 initialValue={userProfile?.detailLevel}
                 children={
-                  <Select disabled={!hasCrossVenuesPermission()}>
+                  <Select>
                     <Option value={DetailLevel.BASIC_USER}>
                       {$t({ defaultMessage: 'Basic User' })}</Option>
                     <Option value={DetailLevel.IT_PROFESSIONAL}>
