@@ -19,15 +19,15 @@ import {
 } from '@acx-ui/rc/services'
 import {
   ApSnmpViewModelData,
+  filterByAccessForServicePolicyMutation,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
+  getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType,
   useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink, useTenantLink }                               from '@acx-ui/react-router-dom'
-import { WifiScopes }                                              from '@acx-ui/types'
-import { filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
+import { TenantLink, useTenantLink } from '@acx-ui/react-router-dom'
 
 const defaultPayload = {
   searchString: '',
@@ -94,7 +94,7 @@ export default function SnmpAgentTable () {
   const rowActions: TableProps<ApSnmpViewModelData>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
-      scopeKey: [WifiScopes.UPDATE],
+      scopeKey: getScopeKeyByPolicy(PolicyType.SNMP_AGENT, PolicyOperation.EDIT),
       visible: (selectedRows) => selectedRows.length === 1,
       onClick: ([{ id }]) => {
         navigate({
@@ -109,7 +109,7 @@ export default function SnmpAgentTable () {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      scopeKey: [WifiScopes.DELETE],
+      scopeKey: getScopeKeyByPolicy(PolicyType.SNMP_AGENT, PolicyOperation.DELETE),
       onClick: (selectedRows, clearSelection) => {
         const ids = selectedRows.map(row => row.id)
         const hasSnmpActivityVenues = _.some(selectedRows, (r) => {
@@ -144,6 +144,8 @@ export default function SnmpAgentTable () {
     }
   ]
 
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+
   return (
     <>
       <PageHeader
@@ -160,8 +162,9 @@ export default function SnmpAgentTable () {
             link: getPolicyListRoutePath(true)
           }
         ]}
-        extra={(hasCrossVenuesPermission() && (list?.totalCount as number) < 64) && filterByAccess([
-          <TenantLink scopeKey={[WifiScopes.CREATE]}
+        extra={((list?.totalCount as number) < 64) && filterByAccessForServicePolicyMutation([
+          <TenantLink
+            scopeKey={getScopeKeyByPolicy(PolicyType.SNMP_AGENT, PolicyOperation.CREATE)}
             to={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.CREATE })}
           >
             <Button type='primary'>
@@ -179,8 +182,8 @@ export default function SnmpAgentTable () {
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
           rowKey='id'
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={hasCrossVenuesPermission() && hasPermission() && { type: 'radio' }}
+          rowActions={allowedRowActions}
+          rowSelection={(allowedRowActions.length > 0) && { type: 'radio' }}
         />
       </Loader>
     </>

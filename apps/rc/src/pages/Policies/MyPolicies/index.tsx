@@ -305,7 +305,7 @@ function useCardData (): PolicyCardData[] {
       type: PolicyType.ETHERNET_PORT_PROFILE,
       categories: [RadioCardCategory.WIFI],
       // eslint-disable-next-line max-len
-      totalCount: useGetEthernetPortProfileViewDataListQuery({ payload: { } }).data?.totalCount,
+      totalCount: useGetEthernetPortProfileViewDataListQuery({ payload: {} }, { skip: !isEthernetPortProfileEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ETHERNET_PORT_PROFILE, oper: PolicyOperation.LIST })),
       disabled: !isEthernetPortProfileEnabled
