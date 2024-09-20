@@ -228,7 +228,12 @@ describe('IntentAIDetails', () => {
         { route: { params }, wrapper: Provider }
       )
 
-      await assertRenderCorrectly()
+
+      expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
+      expect(await screen.findByTestId('IntentAIRRMGraph')).toBeVisible()
+      const benefits = await screen.findByTestId('Details')
+      expect(await within(benefits).findAllByTestId('KPI')).toHaveLength(1)
+
       expect(await screen.findByText('When activated, this Intent takes over the automatic channel planning in the network.')).toBeVisible() // eslint-disable-line max-len
 
       expect(await screen.findByTestId('Benefits'))
