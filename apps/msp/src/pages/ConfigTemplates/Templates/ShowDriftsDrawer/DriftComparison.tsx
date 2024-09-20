@@ -1,32 +1,36 @@
 import { Col, Row } from 'antd'
 
+import { TemplateInstanceDriftValue } from '@acx-ui/rc/utils'
+
 export interface DriftComparisonData {
   name: string
-  values: Array<string | number | boolean | null | undefined> // the array structure is [templateValue, instanceValue]
+  values: {
+    template: TemplateInstanceDriftValue
+    instance: TemplateInstanceDriftValue
+  }
 }
-
 
 export function DriftComparison (props: DriftComparisonData) {
   const { name, values } = props
-  const [templateValue, instanceValue] = values
+  const { template, instance } = values
   // eslint-disable-next-line max-len
-  const { templateValueBgColor, instanceValueBgColor } = getItemBgColor(templateValue, instanceValue)
+  const { templateValueBgColor, instanceValueBgColor } = getItemBgColor(template, instance)
 
   return <div>
     <div style={{ fontWeight: '600' }}>{name}</div>
     <Row style={{ marginBottom: '12px' }}>
       <Col span={12} style={{ backgroundColor: templateValueBgColor }}>
-        {displayConversion(templateValue)}
+        {displayConversion(template)}
       </Col>
       <Col span={12} style={{ backgroundColor: instanceValueBgColor }}>
-        {displayConversion(instanceValue)}
+        {displayConversion(instance)}
       </Col>
     </Row>
   </div>
 }
 
 function getItemBgColor (
-  value1: DriftComparisonData['values'][number], value2: DriftComparisonData['values'][number]
+  value1: TemplateInstanceDriftValue, value2: TemplateInstanceDriftValue
 ): { templateValueBgColor: string, instanceValueBgColor: string } {
 
   if (value1 && isEmpty(value2)) {
@@ -47,11 +51,11 @@ function getItemBgColor (
   }
 }
 
-function isEmpty (value: DriftComparisonData['values'][number]): boolean {
+function isEmpty (value: TemplateInstanceDriftValue): boolean {
   return value === null || value === undefined || value === ''
 }
 
-function displayConversion (value: DriftComparisonData['values'][number]): string {
+function displayConversion (value: TemplateInstanceDriftValue): string {
   if (isEmpty(value)) return ''
 
   return value!.toString()

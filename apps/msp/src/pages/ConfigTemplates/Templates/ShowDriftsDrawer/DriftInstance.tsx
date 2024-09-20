@@ -7,9 +7,11 @@ import { useIntl }             from 'react-intl'
 import { Collapse, Loader }                 from '@acx-ui/components'
 import { CollapseActive, CollapseInactive } from '@acx-ui/icons'
 
-import { mockedDriftData }                            from './__tests__/fixtures'
+import { mockedDriftResponse }                        from './__tests__/fixtures'
 import { DriftComparisonSet, DriftComparisonSetData } from './DriftComparisonSet'
 import * as UI                                        from './styledComponents'
+import { transformDriftResponse }                     from './utils'
+
 
 
 interface DriftInstanceProps {
@@ -23,8 +25,9 @@ interface DriftInstanceProps {
 export function DriftInstance (props: DriftInstanceProps) {
   const { $t } = useIntl()
   const { instanceName, instanceId, selected = false, updateSelection, disalbed = false } = props
-  const { isLoading, driftData, trigger } = useGetDriftData()
+  const [ trigger, { isLoading } ] = useLazyGetDriftData()
   const [ checked, setChecked ] = useState(selected)
+  const [ driftData, setDriftData ] = useState<DriftComparisonSetData[]>([])
 
   const onCheckboxChange = (checked: boolean) => {
     setChecked(checked)
@@ -34,7 +37,7 @@ export function DriftInstance (props: DriftInstanceProps) {
   const onCollapseChange = (key: string | string[]) => {
     if (!key || key.length === 0) return
 
-    trigger()
+    trigger(instanceId).then(data => setDriftData(data))
   }
 
   useEffect(() => {
@@ -78,21 +81,21 @@ export function DriftInstance (props: DriftInstanceProps) {
   </UI.DriftInstanceCollapse>
 }
 
-function useGetDriftData () {
+// eslint-disable-next-line max-len
+function useLazyGetDriftData (): [ (instanceId: string) => Promise<DriftComparisonSetData[]>, { isLoading: boolean } ] {
   const [ isLoading, setIsLoading ] = useState(false)
-  const [ driftData, setDriftData ] = useState<DriftComparisonSetData[]>([])
 
-  const trigger = () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const trigger = (instanceId: string) => {
     setIsLoading(true)
-    setTimeout(() => {
-      setIsLoading(false)
-      setDriftData(mockedDriftData)
-    }, 1500)
+
+    return new Promise<DriftComparisonSetData[]>(resolve => {
+      setTimeout(() => {
+        setIsLoading(false)
+        resolve(transformDriftResponse(mockedDriftResponse))
+      }, 1500)
+    })
   }
 
-  return {
-    isLoading,
-    driftData,
-    trigger
-  }
+  return [ trigger, { isLoading } ]
 }

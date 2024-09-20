@@ -41,3 +41,31 @@ export interface ConfigTemplate {
 export interface ApplyConfigTemplatePaylod {
   overrides: Array<{ [key in string]: string | number | boolean | [] }>
 }
+
+export type TemplateInstanceDriftValue = string | number | boolean | null | undefined
+
+// eslint-disable-next-line max-len
+export type TemplateInstanceDriftPair = { template: TemplateInstanceDriftValue, instance: TemplateInstanceDriftValue }
+
+export type TemplateInstanceDriftRecord = Record<string, TemplateInstanceDriftPair>
+
+// TemplateInstanceDriftResponse type example:
+// {
+//   WifiNetwork: {
+//     '/wlan/advancedCustomization/qosMirroringEnabled': {
+//       template: true,
+//       instance: false
+//     }
+//   },
+//   RadiusOnWifiNetwork: {
+//     '/id': {
+//       template: 'radius-template-id',
+//       instance: 'radius-server-id'
+//     },
+//     '/idName': {
+//       template: 'radius-template-name',
+//       instance: 'radius-server-name'
+//     }
+//   }
+// }
+export type TemplateInstanceDriftResponse = Record<string, TemplateInstanceDriftRecord>

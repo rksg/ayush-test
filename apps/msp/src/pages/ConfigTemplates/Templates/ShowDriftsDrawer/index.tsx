@@ -12,40 +12,8 @@ import { ConfigTemplate } from '@acx-ui/rc/utils'
 
 import { MAX_SYNC_EC_TENANTS } from '../../constants'
 
+import { mockedData }    from './__tests__/fixtures'
 import { DriftInstance } from './DriftInstance'
-
-const maxInstances = 20
-const customerNames = [
-  'Edu Hotels',
-  'Campus Resorts',
-  'Premier Lodges',
-  'Health Group',
-  'Wellness Retreats',
-  'Care Hospitals',
-  'Scholar Inn',
-  'Graduate Services',
-  'Learning Lodges',
-  'Care Facilities',
-  'Wellness Hotels',
-  'Stay Centers',
-  'Campus Suites',
-  'Future Lodging',
-  'Healing Hotels',
-  'Study & Care',
-  'Health Lodges',
-  'Life Retreats',
-  'Scholar Resorts',
-  'Edu Care Homes'
-]
-
-let mockedData: Array<{ id: string, name: string }> = []
-
-for (let i = 0; i < maxInstances; i++) {
-  mockedData.push({
-    id: `id_${Math.floor(Math.random() * 100000)}`,
-    name: customerNames[i]
-  })
-}
 
 interface ShowDriftsDrawerProps {
   setVisible: (visible: boolean) => void
