@@ -1,4 +1,4 @@
-import { useIntl } from 'react-intl'
+import { FormattedMessage, useIntl } from 'react-intl'
 
 import { sortProp, defaultSort  } from '@acx-ui/analytics/utils'
 import {
@@ -16,7 +16,7 @@ import {
   showTopNTableResult, topImpactedSwitchesLimit
 } from './config'
 import { useImpactedSwitchesDataQuery, fieldsMap, topNQueryMapping } from './services'
-import { TableHeading }                                              from './styledComponents'
+import { ChartTitle }                                                from './styledComponents'
 
 export const ImpactedSwitchesTable = ({
   filters,
@@ -129,16 +129,21 @@ export const ImpactedSwitchesTable = ({
 
   return (
     <Loader states={[queryResults]}>
-      <TableHeading>
-        <b>{showTopNTableResult($t, totalCount, topImpactedSwitchesLimit)} </b>
-        {$t({ defaultMessage: `Impacted {totalCount, plural,
-          one {Switch}
-          other {Switches}
-        }` }, { totalCount }
-        )}
-      </TableHeading>
+      <ChartTitle>
+        <FormattedMessage
+          defaultMessage={`<b>{count}</b> Impacted {totalCount, plural,
+            one {Switch}
+            other {Switches}
+          }`}
+          values={{
+            count: showTopNTableResult($t, totalCount, topImpactedSwitchesLimit),
+            totalCount,
+            b: (chunk) => <b>{chunk}</b>
+          }}
+        />
+      </ChartTitle>
       <Table
-        // settingsId='switch-health-impacted-switches-table'
+        settingsId='switch-health-impacted-switches-table'
         columns={columns}
         dataSource={data as SwitchDetails[]}
         rowKey='rowId'

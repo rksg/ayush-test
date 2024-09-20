@@ -13,10 +13,6 @@ export const PieChartWrapper = styled.div`
   flex: none;
   height: 210px;
 `
-export const TableHeading = styled.span`
-  padding-bottom : 10px;
-  font-size: 12px;
-`
 export const WrapperRow = styled(GridRow)`
   margin-left: 0px !important;
   margin-right: 0px !important;

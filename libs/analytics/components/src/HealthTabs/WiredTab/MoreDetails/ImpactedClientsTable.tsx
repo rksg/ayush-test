@@ -1,4 +1,4 @@
-import { useIntl } from 'react-intl'
+import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
 import { sortProp, defaultSort  } from '@acx-ui/analytics/utils'
 import {
@@ -21,7 +21,7 @@ import {
   wiredDevicesQueryMapping,
   topNQueryMapping
 } from './services'
-import { TableHeading } from './styledComponents'
+import { ChartTitle } from './styledComponents'
 
 export const ImpactedClientsTable = ({
   filters,
@@ -152,13 +152,20 @@ export const ImpactedClientsTable = ({
 
   return (
     <Loader states={[impactedClients, impactedSwitches]}>
-      <TableHeading>
-        <b>{showTopNTableResult($t, totalCount, topImpactedSwitchesLimit)} </b>
-        {$t({ defaultMessage: `Impacted {portType}
-            {totalCount, plural, one {Port} other {Ports}}` },
-        { totalCount, portType: queryType === 'portStorm' ? 'Storm': 'Uplink' }
-        )}
-      </TableHeading>
+      <ChartTitle>
+        <FormattedMessage
+          {...(queryType === 'portStorm'
+            ? defineMessage({ defaultMessage:
+              '<b>{count}</b> Impacted Storm  {totalCount, plural, one {Port} other {Ports}}' })
+            : defineMessage({ defaultMessage:
+               '<b>{count}</b> Impacted Uplink  {totalCount, plural, one {Port} other {Ports}}' }))
+          }
+          values={{
+            count: showTopNTableResult($t, totalCount, topImpactedSwitchesLimit),
+            totalCount,
+            b: (chunk) => <b>{chunk}</b>
+          }}/>
+      </ChartTitle>
       <Table<ImpactedClients>
         settingsId='switch-health-impacted-devices-table'
         columns={columns}
