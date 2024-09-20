@@ -17,7 +17,8 @@ import {
   DisplayMessageActionContext,
   UIConfiguration,
   StepType,
-  WorkflowStep
+  WorkflowStep,
+  LogoSize
 } from '../../types'
 
 export const WorkflowStepsEmptyCount = 2
@@ -223,9 +224,15 @@ export const DefaultUIConfiguration : UIConfiguration = {
     buttonColor: 'var(--acx-accents-orange-50)'
   },
   uiStyleSchema: {
-    logoRatio: 1,
-    titleFontSize: 16
+    logoSize: 'MEDIUM',
+    headerFontSize: 16
   },
   welcomeName: '',
   welcomeTitle: ''
+}
+
+export function getLogoImageSize (size: LogoSize):number {
+  if (size === 'SMALL') return 105
+  else if (size ==='LARGE') return 105 * 2.25
+  return 105 * 1.5
 }
