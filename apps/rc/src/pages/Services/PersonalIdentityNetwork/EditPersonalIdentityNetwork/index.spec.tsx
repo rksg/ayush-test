@@ -99,7 +99,7 @@ describe('Edit PersonalIdentityNetwork', () => {
       })
     // step 1
     await screen.findByTestId('GeneralSettingsForm')
-    await user.click(await screen.findByText('SmartEdge'))
+    await user.click(await screen.findByText('RUCKUS Edge'))
     // step 2
     await screen.findByTestId('SmartEdgeForm')
     await user.click(await screen.findByText('Wireless Network'))

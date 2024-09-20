@@ -48,7 +48,7 @@ describe('TopEdgesByTrafficWidget', () => {
       )
     )
     const { asFragment } =render(wrapper)
-    await screen.findByText('Top 5 SmartEdges by Traffic')
+    await screen.findByText('Top 5 RUCKUS Edges by Traffic')
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
   })
