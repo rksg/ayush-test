@@ -70,8 +70,8 @@ describe('Edit PersonalIdentityNetwork', () => {
     mockServer.use(
       rest.put(
         NetworkSegmentationUrls.updateNetworkSegmentationGroup.url,
-        (req, res, ctx) => res(ctx.status(202))
-      )
+        (_req, res, ctx) => res(ctx.status(202)))
+
     )
   })
 

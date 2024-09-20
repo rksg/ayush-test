@@ -4,7 +4,7 @@ import { AccessSwitch, DistributionSwitch, PersonaGroup } from '../../../../type
 export const mockNsgStatsList = {
   fields: [
     'venueInfos',
-    'edgeInfos',
+    'edgeClusterInfos',
     'networkIds',
     'name',
     'id',
@@ -19,8 +19,8 @@ export const mockNsgStatsList = {
       name: 'nsg1',
       vxlanTunnelProfileId: 'test123',
       networkIds: [
-        'wlan-1',
-        'wlan2'
+        'wlan-1'
+        // 'wlan2'
       ],
       venueInfos: [
         {
@@ -30,13 +30,13 @@ export const mockNsgStatsList = {
           personaGroupId: 'per-444'
         }
       ],
-      edgeInfos: [
+      edgeClusterInfos: [
         {
           id: '5e5a85d5-1540-4aab-86c4-a8d8b9f3e28b',
-          edgeId: '0000000001',
-          edgeName: 'Edge1',
-          segments: 10,
-          devices: 10,
+          edgeClusterId: '0000000001',
+          edgeClusterName: 'Edge1',
+          segments: 1,
+          devices: 1,
           dhcpInfoId: 'ee61bd6e-c637-4177-b070-0ded060af3bd',
           dhcpPoolId: '6a408e31-30a0-4ac1-a672-76b666f57d6e',
           vniRange: ''
@@ -57,7 +57,7 @@ export const mockNsgStatsList = {
       name: 'nsg2',
       vxlanTunnelProfileId: 'test123',
       networkIds: [
-        'wlan-1',
+        // 'wlan-1',
         'wlan2'
       ],
       venueInfos: [
@@ -68,11 +68,11 @@ export const mockNsgStatsList = {
           personaGroupId: 'per-444'
         }
       ],
-      edgeInfos: [
+      edgeClusterInfos: [
         {
           id: '5e5a85d5-1540-4aab-86c4-a8d8b9f3e28b',
-          edgeId: '0000000002',
-          edgeName: 'Edge2',
+          edgeClusterId: '0000000002',
+          edgeClusterName: 'Edge2',
           segments: 10,
           devices: 10,
           dhcpInfoId: 'ee61bd6e-c637-4177-b070-0ded060af3bd',

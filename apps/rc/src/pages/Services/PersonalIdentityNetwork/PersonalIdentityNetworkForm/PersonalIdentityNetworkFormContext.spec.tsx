@@ -5,6 +5,8 @@ import { rest } from 'msw'
 import {
   CommonUrlsInfo,
   DpskUrls,
+  EdgeDHCPFixtures,
+  EdgeDhcpUrls,
   EdgeGeneralFixtures,
   EdgeNSGFixtures,
   EdgeTunnelProfileFixtures,
@@ -39,8 +41,9 @@ const {
   mockNsgStatsList,
   mockNsgSwitchInfoData
 } = EdgeNSGFixtures
-const { mockEdgeList } = EdgeGeneralFixtures
+const { mockEdgeClusterList } = EdgeGeneralFixtures
 const { mockedTunnelProfileViewData } = EdgeTunnelProfileFixtures
+const { mockDhcpStatsData } = EdgeDHCPFixtures
 const pinTunnelData = {
   ...mockedTunnelProfileViewData,
   data: mockedTunnelProfileViewData.data.filter(item => item.type === TunnelTypeEnum.VXLAN)
@@ -63,49 +66,52 @@ describe('PersonalIdentityNetworkFormContext', () => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
-        (req, res, ctx) => res(ctx.json(mockVenueOptions))
+        (_req, res, ctx) => res(ctx.json(mockVenueOptions))
       ),
       rest.get(
         PersonaUrls.getPersonaGroupById.url,
-        (req, res, ctx) => res(ctx.json(mockPersonaGroup))
+        (_req, res, ctx) => res(ctx.json(mockPersonaGroup))
       ),
       rest.get(
         DpskUrls.getDpsk.url,
-        (req, res, ctx) => res(ctx.json(mockDpsk))
+        (_req, res, ctx) => res(ctx.json(mockDpsk))
       ),
       rest.get(
         PropertyUrlsInfo.getPropertyConfigs.url,
-        (req, res, ctx) => res(ctx.json(mockPropertyConfigs))
+        (_req, res, ctx) => res(ctx.json(mockPropertyConfigs))
       ),
       rest.post(
-        EdgeUrlsInfo.getEdgeList.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeList))
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeClusterList))
       ),
       rest.post(
         CommonUrlsInfo.networkActivations.url,
-        (req, res, ctx) => res(ctx.json(mockNetworkSaveData))
+        (_req, res, ctx) => res(ctx.json(mockNetworkSaveData))
       ),
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
-        (req, res, ctx) => res(ctx.json(mockNetworkGroup))
+        (_req, res, ctx) => res(ctx.json(mockNetworkGroup))
       ),
       rest.post(
         TunnelProfileUrls.getTunnelProfileViewDataList.url,
-        (req, res, ctx) => res(ctx.json(pinTunnelData))
+        (_req, res, ctx) => res(ctx.json(pinTunnelData))
       ),
       rest.post(
         NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
-        (req, res, ctx) => res(ctx.json(mockNsgStatsList))
+        (_req, res, ctx) => res(ctx.json(mockNsgStatsList))
       ),
       rest.get(
         NetworkSegmentationUrls.getAvailableSwitches.url,
-        (req, res, ctx) => {
+        (_req, res, ctx) => {
           return res(ctx.json({ switchViewList: [
             ...mockNsgSwitchInfoData.distributionSwitches,
             ...mockNsgSwitchInfoData.accessSwitches
           ] }))
         }
-      )
+      ),
+      rest.post(
+        EdgeDhcpUrls.getDhcpStats.url,
+        (_req, res, ctx) => res(ctx.json(mockDhcpStatsData)))
     )
   })
 
@@ -132,9 +138,9 @@ describe('PersonalIdentityNetworkFormContext', () => {
     await waitFor(() =>
       expect(result.current.dpskData?.id).toBe(mockDpsk.id))
     await waitFor(() =>
-      expect(result.current.edgeOptions?.length).toBe(5))
-    expect(result.current.edgeOptions?.[0].label).toBe(mockEdgeList.data[0].name)
-    expect(result.current.edgeOptions?.[0].value).toBe(mockEdgeList.data[0].serialNumber)
+      expect(result.current.clusterOptions?.length).toBe(5))
+    expect(result.current.clusterOptions?.[0].label).toBe(mockEdgeClusterList.data[0].name)
+    expect(result.current.clusterOptions?.[0].value).toBe(mockEdgeClusterList.data[0].clusterId)
     await waitFor(() =>
       expect(result.current.tunnelProfileOptions?.length)
         .toBe(pinTunnelData.data.length))
@@ -167,11 +173,9 @@ describe('PersonalIdentityNetworkFormContext', () => {
     await waitFor(() =>
       expect(result.current.getVenueName('mock_venue_1')).toBe('Mock Venue 1'))
     await waitFor(() =>
-      expect(result.current.getEdgeName('0000000001')).toBe('Smart Edge 1'))
+      expect(result.current.getClusterName('clusterId_1')).toBe('Edge Cluster 1'))
     await waitFor(() =>
-      expect(result.current.getDhcpName('1')).toBe('1')) // Should be updated when doing PIN RBAC task
-    await waitFor(() =>
-      expect(result.current.getDhcpPoolName('1', '1')).toBe('11')) // Should be updated when doing PIN RBAC task
+      expect(result.current.getDhcpName('1')).toBe('TestDhcp-1'))
     await waitFor(() =>
       expect(result.current.getTunnelProfileName('tunnelProfileId1')).toBe('tunnelProfile1'))
     await waitFor(() =>
