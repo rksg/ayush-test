@@ -13,10 +13,10 @@ import {
   getAdaptivePolicyDetailLink,
   getPolicyRoutePath,
   PolicyOperation,
-  PolicyType, SEARCH, useTableQuery, hasCloudpathAccess
+  PolicyType, SEARCH, useTableQuery, getScopeKeyByPolicy,
+  filterByAccessForServicePolicyMutation
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                               from '@acx-ui/user'
 
 
 export default function AdaptivePolicyTable () {
@@ -103,6 +103,7 @@ export default function AdaptivePolicyTable () {
   }
 
   const rowActions: TableProps<AdaptivePolicy>['rowActions'] = [{
+    scopeKey: getScopeKeyByPolicy(PolicyType.ADAPTIVE_POLICY, PolicyOperation.EDIT),
     label: $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows) => {
       navigate({
@@ -117,6 +118,7 @@ export default function AdaptivePolicyTable () {
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
+    scopeKey: getScopeKeyByPolicy(PolicyType.ADAPTIVE_POLICY, PolicyOperation.DELETE),
     onClick: ([selectedRow], clearSelection) => {
       const name = selectedRow.name
       doProfileDelete(
@@ -149,6 +151,8 @@ export default function AdaptivePolicyTable () {
     tableQuery.setPayload(payload)
   }
 
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+
   return (
     <Loader states={[
       tableQuery,
@@ -163,11 +167,12 @@ export default function AdaptivePolicyTable () {
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'
-        rowActions={filterByAccess(rowActions)}
+        rowActions={allowedRowActions}
         onFilterChange={handleFilterChange}
         // eslint-disable-next-line max-len
-        rowSelection={hasCloudpathAccess() && { type: 'radio' }}
-        actions={filterByAccess( hasCloudpathAccess() ? [{
+        rowSelection={allowedRowActions.length > 0 && { type: 'radio' }}
+        actions={filterByAccessForServicePolicyMutation([{
+          scopeKey: getScopeKeyByPolicy(PolicyType.ADAPTIVE_POLICY, PolicyOperation.CREATE),
           label: $t({ defaultMessage: 'Add Policy' }),
           onClick: () => {
             navigate({
@@ -178,7 +183,7 @@ export default function AdaptivePolicyTable () {
               })
             })
           }
-        }] : [])}
+        }])}
       />
     </Loader>
   )

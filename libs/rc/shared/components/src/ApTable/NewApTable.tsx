@@ -60,10 +60,12 @@ import { RequestPayload, WifiScopes }                                     from '
 import { filterByAccess }                                                 from '@acx-ui/user'
 import { exportMessageMapping }                                           from '@acx-ui/utils'
 
-import { ApCompatibilityDrawer, ApCompatibilityFeature, ApCompatibilityQueryTypes, ApCompatibilityType } from '../ApCompatibility'
-import { seriesMappingAP }                                                                               from '../DevicesWidget/helper'
-import { CsvSize, ImportFileDrawer, ImportFileDrawerType }                                               from '../ImportFileDrawer'
-import { useApActions }                                                                                  from '../useApActions'
+import { ApCompatibilityDrawer, ApCompatibilityFeature, ApCompatibilityType } from '../ApCompatibility'
+import { ApGeneralCompatibilityDrawer as EnhancedApCompatibilityDrawer }      from '../Compatibility'
+import { seriesMappingAP }                                                    from '../DevicesWidget/helper'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType }                    from '../ImportFileDrawer'
+import { useApActions }                                                       from '../useApActions'
+import { useIsEdgeFeatureReady }                                              from '../useEdgeActions'
 
 import { getGroupableConfig } from './newGroupByConfig'
 import { useExportCsv }       from './useExportCsv'
@@ -105,6 +107,9 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const apUptimeFlag = useIsSplitOn(Features.AP_UPTIME_TOGGLE)
   const apMgmtVlanFlag = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
+  const apTxPowerFlag = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
+  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+
   const [ getApCompatibilitiesVenue ] = useLazyGetApCompatibilitiesVenueQuery()
   const [ getApCompatibilitiesNetwork ] = useLazyGetApCompatibilitiesNetworkQuery()
   const { data: wifiCapabilities } = useWifiCapabilitiesQuery({ params: { }, enableRbac: true })
@@ -216,6 +221,14 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       channelL50: false,
       channelU50: false,
       channel60: false
+    }
+
+    const actualTxPowerChannelMap = {
+      channel24: 'actualTxPower24',
+      channel50: 'actualTxPower50',
+      channelL50: 'actualTxPowerL50',
+      channelU50: 'actualTxPowerU50',
+      channel60: 'actualTxPower60'
     }
 
     const columns: TableProps<NewAPModelExtended|NewAPExtendedGrouped>['columns'] = [{
@@ -345,7 +358,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       title: $t({ defaultMessage: 'AP Group' }),
       dataIndex: 'apGroupId',
       filterKey: 'apGroupId',
-      filterable: filterables ? filterables['apGroupId'] : false,
+      filterable: filterables ? filterables['deviceGroupId'] : false,
       sorter: true,
       groupable: enableGroups
         ? filterables && getGroupableConfig(apAction)?.deviceGroupNameGroupableOptions
@@ -502,6 +515,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       render: (_: ReactNode, row: NewAPModelExtended) => {
         return (<ApCompatibilityFeature
           count={row?.incompatible}
+          deviceStatus={row?.status}
           onClick={() => {
             setSelectedApSN(row?.serialNumber)
             setSelectedApName(row?.name ?? '')
@@ -509,6 +523,24 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
           }} />
         )
       }
+    }] : []),
+    ...(apTxPowerFlag ? [{
+      key: 'actualTxPower',
+      dataIndex: 'actualTxPower',
+      title: $t({ defaultMessage: 'Tx Power' }),
+      children: Object.entries(extraParams).reduce((acc, [channel, visible]) => {
+        if (!visible) return acc
+        const channelKey = channel as keyof ApExtraParams
+        const key = actualTxPowerChannelMap[channelKey]
+        acc.push({
+          key: key,
+          width: 80,
+          dataIndex: key,
+          title: <Table.SubTitle children={channelTitleMap[channelKey]} />,
+          align: 'center'
+        })
+        return acc
+      }, [] as TableProps<NewAPModelExtended|NewAPExtendedGrouped>['columns'])
     }] : [])
     ]
     return columns
@@ -726,19 +758,26 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
           }
         />
       </ImportFileDrawer>
-      <ApCompatibilityDrawer
+      {!isEdgeCompatibilityEnabled && <ApCompatibilityDrawer
         visible={compatibilitiesDrawerVisible}
         type={params.venueId?ApCompatibilityType.VENUE:ApCompatibilityType.NETWORK}
         venueId={params.venueId}
         networkId={params.networkId}
-        queryType={params.venueId ?
-          ApCompatibilityQueryTypes.CHECK_VENUE_WITH_APS :
-          ApCompatibilityQueryTypes.CHECK_NETWORK_WITH_APS}
         apIds={selectedApSN ? [selectedApSN] : []}
         apName={selectedApName}
         isMultiple
         onClose={() => setCompatibilitiesDrawerVisible(false)}
-      />
+      />}
+      {isEdgeCompatibilityEnabled && <EnhancedApCompatibilityDrawer
+        visible={compatibilitiesDrawerVisible}
+        isMultiple
+        type={params.venueId?ApCompatibilityType.VENUE:ApCompatibilityType.NETWORK}
+        venueId={params.venueId}
+        networkId={params.networkId}
+        apId={selectedApSN}
+        apName={selectedApName}
+        onClose={() => setCompatibilitiesDrawerVisible(false)}
+      />}
     </Loader>
   )
 })

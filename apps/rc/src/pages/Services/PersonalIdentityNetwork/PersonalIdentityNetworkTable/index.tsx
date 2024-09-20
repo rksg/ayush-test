@@ -21,6 +21,8 @@ import {
   useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
+  filterByAccessForServicePolicyMutation,
+  getScopeKeyByService,
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath,
@@ -30,7 +32,6 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                           from '@acx-ui/user'
 
 const getNetworkSegmentationPayload = {
   fields: [
@@ -177,7 +178,7 @@ const PersonalIdentityNetworkTable = () => {
       }
     },
     {
-      title: $t({ defaultMessage: 'SmartEdge' }),
+      title: $t({ defaultMessage: 'RUCKUS Edge' }),
       key: 'edge',
       dataIndex: 'edgeInfos',
       sorter: true,
@@ -251,6 +252,7 @@ const PersonalIdentityNetworkTable = () => {
 
   const rowActions: TableProps<NetworkSegmentationGroupViewData>['rowActions'] = [
     {
+      scopeKey: getScopeKeyByService(ServiceType.NETWORK_SEGMENTATION, ServiceOperation.EDIT),
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -266,6 +268,7 @@ const PersonalIdentityNetworkTable = () => {
       }
     },
     {
+      scopeKey: getScopeKeyByService(ServiceType.NETWORK_SEGMENTATION, ServiceOperation.DELETE),
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
@@ -287,6 +290,8 @@ const PersonalIdentityNetworkTable = () => {
     }
   ]
 
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+
   return (
     <>
       <PageHeader
@@ -298,12 +303,15 @@ const PersonalIdentityNetworkTable = () => {
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
-        extra={filterByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink state={{ from: location }}
             to={getServiceRoutePath({
               type: ServiceType.NETWORK_SEGMENTATION,
               oper: ServiceOperation.CREATE
-            })}>
+            })}
+            // eslint-disable-next-line max-len
+            scopeKey={getScopeKeyByService(ServiceType.NETWORK_SEGMENTATION, ServiceOperation.CREATE)}
+          >
             {/* eslint-disable-next-line max-len */}
             <Button type='primary'>{$t({ defaultMessage: 'Add Personal Identity Network' })}</Button>
           </TenantLink>
@@ -316,8 +324,8 @@ const PersonalIdentityNetworkTable = () => {
         <Table
           settingsId={settingsId}
           rowKey='id'
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'checkbox' }}
+          rowActions={allowedRowActions}
+          rowSelection={allowedRowActions.length > 0 && { type: 'checkbox' }}
           columns={columns}
           dataSource={tableQuery?.data?.data}
           pagination={tableQuery.pagination}

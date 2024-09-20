@@ -108,14 +108,15 @@ describe('Edge SD-LAN Detail', () => {
 
     const sdlanWarning = await screen.findByText(/SD-LAN is not able to be brought up on/)
     // eslint-disable-next-line testing-library/no-node-access
-    const detailBtn = within(sdlanWarning.parentNode as HTMLElement)
+    const detailBtn = within(sdlanWarning.closest('.ant-space') as HTMLElement)
       .getByRole('button', { name: 'See details' })
     await screen.findByText(/Tunnel Profile is not able to be brought up on/)
 
     await userEvent.click(detailBtn)
     const compatibleInfoDrawer = await screen.findByRole('dialog')
 
-    expect(await within(compatibleInfoDrawer).findByText(/SmartEdge Firmware/)).toBeInTheDocument()
+    // eslint-disable-next-line max-len
+    expect(await within(compatibleInfoDrawer).findByText(/RUCKUS Edge Firmware/)).toBeInTheDocument()
     expect(within(compatibleInfoDrawer).getByText('2.1.0.200')).toBeValid()
     expect(within(compatibleInfoDrawer).getByText('5 / 14')).toBeValid()
 

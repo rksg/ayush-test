@@ -13,8 +13,8 @@ import {
   Subtitle,
   showToast
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
-import { ManageAdminsDrawer, SelectIntegratorDrawer } from '@acx-ui/msp/components'
+import { Features, useIsSplitOn }                                                from '@acx-ui/feature-toggle'
+import { ManageAdminsDrawer, ManageDelegateAdminDrawer, SelectIntegratorDrawer } from '@acx-ui/msp/components'
 import {
   useAddBrandCustomersMutation,
   useAddRecCustomerMutation,
@@ -72,6 +72,7 @@ export function AddRecCustomer () {
   const { Paragraph } = Typography
   const isEditMode = action === 'edit'
   const multiPropertySelectionEnabled = useIsSplitOn(Features.MSP_MULTI_PROPERTY_CREATION_TOGGLE)
+  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
 
   const { data: userProfileData } = useUserProfileContext()
@@ -283,7 +284,8 @@ export function AddRecCustomer () {
     return <>
       {mspAdmins.map(admin =>
         <UI.AdminList key={admin.id}>
-          {admin.email} ({intl.$t(roleDisplayText[admin.role])})
+          {admin.email} {roleDisplayText[admin.role]
+            ? intl.$t(roleDisplayText[admin.role]) : admin.role}
         </UI.AdminList>
       )}
     </>
@@ -421,12 +423,18 @@ export function AddRecCustomer () {
         multiSelectionEnabled={multiPropertySelectionEnabled}
         tenantId={mspEcTenantId}
       />}
-      {drawerAdminVisible && <ManageAdminsDrawer
-        visible={drawerAdminVisible}
-        setVisible={setDrawerAdminVisible}
-        setSelected={selectedMspAdmins}
-        tenantId={mspEcTenantId}
-      />}
+      {drawerAdminVisible && (isAbacToggleEnabled
+        ? <ManageDelegateAdminDrawer
+          visible={drawerAdminVisible}
+          setVisible={setDrawerAdminVisible}
+          setSelected={selectedMspAdmins}
+          tenantId={mspEcTenantId}/>
+        : <ManageAdminsDrawer
+          visible={drawerAdminVisible}
+          setVisible={setDrawerAdminVisible}
+          setSelected={selectedMspAdmins}
+          tenantId={mspEcTenantId}/>
+      )}
       {drawerIntegratorVisible && <SelectIntegratorDrawer
         visible={drawerIntegratorVisible}
         tenantType={AccountType.MSP_INTEGRATOR}

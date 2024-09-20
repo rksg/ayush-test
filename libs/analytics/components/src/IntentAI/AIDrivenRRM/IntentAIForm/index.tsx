@@ -1,23 +1,50 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { StepsForm } from '@acx-ui/components'
+import { StepsForm }   from '@acx-ui/components'
+import { useNavigate } from '@acx-ui/react-router-dom'
 
-import { IntentWizardHeader }                                                         from '../../common/IntentWizardHeader'
-import { useIntentContext }                                                           from '../../IntentContext'
+import { IntentWizardHeader } from '../../common/IntentWizardHeader'
+import { getScheduledAt }     from '../../common/ScheduleTiming'
+import { SettingsPage }       from '../../common/SettingsPage'
+import { useIntentContext }   from '../../IntentContext'
+import { Statuses }           from '../../states'
+import {
+  createUseIntentTransition,
+  FormValues,
+  IntentTransitionPayload,
+  useInitialValues
+} from '../../useIntentTransition'
 import { SliderGraphAfter, SliderGraphBefore, SummaryGraphAfter, SummaryGraphBefore } from '../RRMGraph'
 import { useIntentAICRRMQuery }                                                       from '../RRMGraph/services'
 
 import { Introduction } from './Introduction'
 import { Priority }     from './Priority'
-import { Settings }     from './Settings'
 import { Summary }      from './Summary'
+
+type CRRMFormValues = FormValues<{ crrmFullOptimization: boolean }>
+type CRRMPayload = IntentTransitionPayload<Exclude<CRRMFormValues['preferences'], undefined>>
+
+function getFormDTO (values: CRRMFormValues): CRRMPayload {
+  return {
+    id: values.id,
+    status: values.status === Statuses.new ? Statuses.scheduled : values.status,
+    statusReason: values.status === Statuses.new ? undefined : values.statusReason,
+    metadata: {
+      ..._.pick(values, ['preferences']),
+      scheduledAt: getScheduledAt(values).utc().toISOString()
+    }
+  }
+}
+
+const useIntentTransition = createUseIntentTransition(getFormDTO)
 
 export function IntentAIForm () {
   const { intent } = useIntentContext()
   const { $t } = useIntl()
+  const navigate = useNavigate()
 
   const queryResult = useIntentAICRRMQuery()
   const crrmData = queryResult.data!
@@ -26,11 +53,8 @@ export function IntentAIForm () {
   const [summaryUrlBefore, setSummaryUrlBefore] = useState<string>('')
   const [summaryUrlAfter, setSummaryUrlAfter] = useState<string>('')
 
-  const defaultValue = {
-    preferences: {
-      crrmFullOptimization: true
-    }
-  }
+  const { submit } = useIntentTransition()
+  const initialValues = useInitialValues()
 
   return (<>
     <IntentWizardHeader />
@@ -42,10 +66,13 @@ export function IntentAIForm () {
       <SummaryGraphAfter crrmData={crrmData} setUrl={setSummaryUrlAfter} />
     </div>}
     <StepsForm
-      buttonLabel={{
-        submit: $t({ defaultMessage: 'Apply' })
+      buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
+      initialValues={{
+        ...initialValues,
+        preferences: _.get(intent, ['metadata','preferences']) || { crrmFullOptimization: true }
       }}
-      initialValues={_.merge(defaultValue, intent)}
+      onCancel={() => { navigate(-1) }}
+      onFinish={async (values) => { submit(values) }}
     >
       <StepsForm.StepForm
         title={$t({ defaultMessage: 'Introduction' })}
@@ -61,7 +88,7 @@ export function IntentAIForm () {
       />
       <StepsForm.StepForm
         title={$t({ defaultMessage: 'Settings' })}
-        children={<Settings />}
+        children={<SettingsPage />}
       />
       <StepsForm.StepForm
         title={$t({ defaultMessage: 'Summary' })}

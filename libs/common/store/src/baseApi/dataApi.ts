@@ -1,8 +1,9 @@
-import { createApi }               from '@reduxjs/toolkit/query/react'
-import { graphqlRequestBaseQuery } from '@rtk-query/graphql-request-base-query'
+import { createApi } from '@reduxjs/toolkit/query/react'
 
 import { get }           from '@acx-ui/config'
 import { getJwtHeaders } from '@acx-ui/utils'
+
+import { graphqlRequestBaseQuery } from './baseQuery'
 
 const getApiUrls = () => {
   const r1ApiURL = `${window.location.origin}/api/a4rc/api/rsa-data-api/graphql/analytics`

@@ -46,30 +46,41 @@ function TestUserProfile (props: {
   ChildComponent?: React.FunctionComponent<TestUserProfileChildComponentProps>
 }) {
   const data = useUserProfileContext()
-  const { data: userProfile, allowedOperations } = data
+  const { data: userProfile } = data
 
   return <>
     <div>{userProfile?.fullName}</div>
-    <div>{JSON.stringify(allowedOperations)}</div>
     {props.ChildComponent && <props.ChildComponent userProfileCtx={data}/>}
   </>
 }
 
 const route = { path: '/:tenantId/t', params: { tenantId } }
 
-const fakedPrivilegeGroupList =
-  [
+const fakedVenueList = {
+  fields: [
+    'name',
+    'id'
+  ],
+  totalCount: 5,
+  page: 1,
+  data: [
     {
-      id: '2765e98c7b9446e2a5bdd4720e0e8911',
-      name: 'PRIME_ADMIN',
-      description: 'Prime Admin Role',
-      roleName: 'PRIME_ADMIN',
-      type: 'System',
-      delegation: false,
-      allCustomers: false,
-      allVenues: true
+      id: '31331a644e454c75911467cdd6933af2'
+    },
+    {
+      id: '9148ca1e5eeb425dae5d04af38e8e1b2'
+    },
+    {
+      id: '4d0fe96778b7478a829bc6e7d81319e2'
+    },
+    {
+      id: '7bdda584ada34de991a8081e4c59da89'
+    },
+    {
+      id: '05b61055a7cf499eb153f414eb7230f4'
     }
   ]
+}
 
 describe('UserProfileContext', () => {
   const wrapper = (props: { children: React.ReactNode }) => (
@@ -87,30 +98,15 @@ describe('UserProfileContext', () => {
       return { data: { 'abac-policies-toggle': false,
         'allowed-operations-toggle': false } }
     })
-    services.useGetPrivilegeGroupsQuery = jest.fn().mockImplementation(() => {
-      return { data: fakedPrivilegeGroupList }
-    })
     mockServer.use(
-      rest.get(UserUrlsInfo.wifiAllowedOperations.url.replace('?service=wifi', ''),
-        (_req, res, ctx) => res(ctx.json(['some-operation']))),
-      rest.get(UserUrlsInfo.switchAllowedOperations.url.replace('?service=switch', ''),
-        (_req, res, ctx) => res(ctx.json([]))),
-      rest.get(UserUrlsInfo.tenantAllowedOperations.url,
-        (_req, res, ctx) => res(ctx.json(['tenantOps']))),
-      rest.get(UserUrlsInfo.venueAllowedOperations.url,
-        (_req, res, ctx) => res(ctx.json(['venueOps']))),
-      rest.get(UserUrlsInfo.guestAllowedOperations.url.replace('?service=guest', ''),
-        (_req, res, ctx) => res(ctx.json([]))),
-      rest.get(UserUrlsInfo.upgradeAllowedOperations.url.replace('?service=upgradeConfig', ''),
-        (_req, res, ctx) => res(ctx.json([]))),
-      rest.get(UserUrlsInfo.rcgAllowedOperations.url,
-        (_req, res, ctx) => res(ctx.json(['some-operation', 'venueOps']))),
       rest.get(UserUrlsInfo.getAccountTier.url as string,
         (_req, res, ctx) => { return res(ctx.json({ acx_account_tier: 'Gold' }))}),
       rest.get(UserUrlsInfo.getBetaStatus.url,(_req, res, ctx) =>
         res(ctx.status(200))),
       rest.put(UserUrlsInfo.toggleBetaStatus.url,
-        (_req, res, ctx) => res(ctx.json({})))
+        (_req, res, ctx) => res(ctx.json({}))),
+      rest.post(UserUrlsInfo.getVenuesList.url,
+        (_req, res, ctx) => res(ctx.json(fakedVenueList)))
     )
   })
 
@@ -135,11 +131,9 @@ describe('UserProfileContext', () => {
     }
 
     render(<TestUserProfile ChildComponent={TestUndefinedUserName}/>, { wrapper, route })
-    expect(await screen.findByText(/some-operation/)).toBeVisible()
-    expect(await screen.findByText(/venueOps/)).toBeVisible()
+    expect(await screen.findByText('accountTier:Gold')).toBeVisible()
     expect(screen.queryByText('initials:undefined')).toBeVisible()
     expect(screen.queryByText('betaEnabled:false')).toBeVisible()
-    expect(screen.queryByText('accountTier:Gold')).toBeVisible()
   })
 
   it('requests for user profile and stores in context', async () => {
@@ -213,17 +207,50 @@ describe('UserProfileContext', () => {
     })
 
     const TestBetaEnabled = (props: TestUserProfileChildComponentProps) => {
-      const { abacEnabled, isCustomRole } = props.userProfileCtx
+      const { abacEnabled, isCustomRole, hasAllVenues } = props.userProfileCtx
       return <>
         <div>{`abacEnabled:${abacEnabled}`}</div>
         <div>{`isCustomRole:${isCustomRole}`}</div>
+        <div>{`hasAllVenues:${hasAllVenues}`}</div>
       </>
     }
 
     render(<TestUserProfile ChildComponent={TestBetaEnabled}/>, { wrapper, route })
     await checkDataRendered()
-    expect(screen.queryByText('abacEnabled:true')).toBeVisible()
-    expect(screen.queryByText('isCustomRole:true')).toBeVisible()
+    expect(await screen.findByText('isCustomRole:true')).toBeVisible()
+    expect(await screen.findByText('abacEnabled:true')).toBeVisible()
+    expect(await screen.findByText('hasAllVenues:true')).toBeVisible()
+  })
+
+  it('user profile abac enabled case and venue filtering case', async () => {
+    services.useGetUserProfileQuery = jest.fn().mockImplementation(() => {
+      const profile = {
+        ...mockedUserProfile,
+        scopes: ['switch-r', 'venue'],
+        customRoleName: 'CUSTOM_USER',
+        customRoleType: CustomRoleType.CUSTOM
+      }
+      return { data: transformResponse(profile as UserProfile) }
+    })
+    services.useFeatureFlagStatesQuery = jest.fn().mockImplementation(() => {
+      return { data: { 'abac-policies-toggle': true,
+        'allowed-operations-toggle': false } }
+    })
+
+    const TestBetaEnabled = (props: TestUserProfileChildComponentProps) => {
+      const { abacEnabled, isCustomRole, hasAllVenues } = props.userProfileCtx
+      return <>
+        <div>{`abacEnabled:${abacEnabled}`}</div>
+        <div>{`isCustomRole:${isCustomRole}`}</div>
+        <div>{`hasAllVenues:${hasAllVenues}`}</div>
+      </>
+    }
+
+    render(<TestUserProfile ChildComponent={TestBetaEnabled}/>, { wrapper, route })
+    await checkDataRendered()
+    expect(await screen.findByText('isCustomRole:true')).toBeVisible()
+    expect(await screen.findByText('abacEnabled:true')).toBeVisible()
+    expect(await screen.findByText('hasAllVenues:false')).toBeVisible()
   })
 
   it('user profile special abac disabled case with custom role', async () => {
@@ -244,17 +271,57 @@ describe('UserProfileContext', () => {
     })
 
     const TestBetaEnabled = (props: TestUserProfileChildComponentProps) => {
-      const { abacEnabled, isCustomRole } = props.userProfileCtx
+      const { abacEnabled, isCustomRole, accountTier } = props.userProfileCtx
       return <>
         <div>{`abacEnabled:${abacEnabled}`}</div>
         <div>{`isCustomRole:${isCustomRole}`}</div>
+        <div>{`accountTier:${accountTier}`}</div>
       </>
     }
 
     render(<TestUserProfile ChildComponent={TestBetaEnabled}/>, { wrapper, route })
     await checkDataRendered()
-    expect(screen.queryByText('abacEnabled:false')).toBeVisible()
+    expect(await screen.findByText('accountTier:Gold')).toBeVisible()
     expect(screen.queryByText('isCustomRole:false')).toBeVisible()
+    expect(screen.queryByText('abacEnabled:false')).toBeVisible()
+  })
+
+  it('user profile special abac disabled case with system redefined role', async () => {
+    services.useGetUserProfileQuery = jest.fn().mockImplementation(() => {
+      const profile = {
+        ...mockedUserProfile,
+        role: 'DPSK_ADMIN',
+        roles: ['DPSK_ADMIN'],
+        scopes: ['switch-r'],
+        customRoleName: 'CUSTOM_USER',
+        customRoleType: CustomRoleType.CUSTOM
+      }
+      return { data: transformResponse(profile as UserProfile) }
+    })
+    services.useFeatureFlagStatesQuery = jest.fn().mockImplementation(() => {
+      return { data: { 'abac-policies-toggle': false,
+        'allowed-operations-toggle': false } }
+    })
+
+    const TestBetaEnabled = (props: TestUserProfileChildComponentProps) => {
+      const { abacEnabled, isCustomRole, accountTier, data } = props.userProfileCtx
+      return <>
+        <div>{`abacEnabled:${abacEnabled}`}</div>
+        <div>{`isCustomRole:${isCustomRole}`}</div>
+        <div>{`accountTier:${accountTier}`}</div>
+        <div>{`role:${data?.role}`}</div>
+        <div>{`roles:${data?.roles}`}</div>
+
+      </>
+    }
+
+    render(<TestUserProfile ChildComponent={TestBetaEnabled}/>, { wrapper, route })
+    await checkDataRendered()
+    expect(await screen.findByText('accountTier:Gold')).toBeVisible()
+    expect(screen.queryByText('role:DPSK_ADMIN')).toBeVisible()
+    expect(screen.queryByText('roles:DPSK_ADMIN')).toBeVisible()
+    expect(screen.queryByText('isCustomRole:false')).toBeVisible()
+    expect(screen.queryByText('abacEnabled:false')).toBeVisible()
   })
 
   it('user profile special abac disabled case with default role (PRIME_ADMIN)', async () => {
@@ -272,9 +339,6 @@ describe('UserProfileContext', () => {
     services.useFeatureFlagStatesQuery = jest.fn().mockImplementation(() => {
       return { data: { 'abac-policies-toggle': false,
         'allowed-operations-toggle': false } }
-    })
-    services.useGetPrivilegeGroupsQuery = jest.fn().mockImplementation(() => {
-      return { data: null }
     })
 
     const TestBetaEnabled = (props: TestUserProfileChildComponentProps) => {
@@ -336,10 +400,31 @@ describe('UserProfileContext', () => {
     expect(screen.queryByText('abacEnabled:false')).toBeVisible()
   })
 
+  it('should generate venuesList correctly when abacEnabled and not hasAllVenues', async () => {
+    services.useFeatureFlagStatesQuery = jest.fn().mockImplementation(() => {
+      return { data: { 'abac-policies-toggle': true, 'allowed-operations-toggle': false } }
+    })
+    services.useGetVenuesListQuery = jest.fn().mockImplementation(() => {
+      return { data: fakedVenueList }
+    })
+
+    const TestVenuesList = (props: TestUserProfileChildComponentProps) => {
+      const { venuesList, abacEnabled } = props.userProfileCtx
+      return <>
+        <div>{`abacEnabled:${abacEnabled}`}</div>
+        <div>{`venuesList:${JSON.stringify(venuesList)}`}</div>
+      </>
+    }
+
+    render(<TestUserProfile ChildComponent={TestVenuesList}/>, { wrapper, route })
+    await checkDataRendered()
+    expect(screen.queryByText('abacEnabled:true')).toBeVisible()
+    expect(screen.queryByText(`venuesList:${JSON.stringify(
+      fakedVenueList.data.map(item => item.id))}`)).toBeVisible()
+  })
+
 })
 
 const checkDataRendered = async () => {
   expect(await screen.findByText('First Last')).toBeVisible()
-  expect(await screen.findByText(/some-operation/)).toBeVisible()
-  expect(await screen.findByText(/venueOps/)).toBeVisible()
 }

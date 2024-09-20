@@ -4,7 +4,7 @@ export const productMapping = {
   GENERAL: defineMessage({ defaultMessage: 'General' }),
   WIFI: defineMessage({ defaultMessage: 'Wi-Fi' }),
   SWITCH: defineMessage({ defaultMessage: 'Switch' }),
-  EDGE: defineMessage({ defaultMessage: 'SmartEdge' })
+  EDGE: defineMessage({ defaultMessage: 'RUCKUS Edge' })
 }
 
 export const severityMapping = {

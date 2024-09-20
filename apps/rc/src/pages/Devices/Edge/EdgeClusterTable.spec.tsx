@@ -198,7 +198,7 @@ describe('Edge Cluster Table', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const row = await screen.findByRole('row', { name: /Edge Cluster 1/i })
     await userEvent.click(within(row).getByRole('checkbox'))
-    const configWizardBtn = screen.getByRole('button', { name: 'Run Cluster & SmartEdge configuration wizard' })
+    const configWizardBtn = screen.getByRole('button', { name: 'Run Cluster & RUCKUS Edge configuration wizard' })
     expect(configWizardBtn).not.toBeDisabled()
     await userEvent.click(configWizardBtn)
     expect(mockedUsedNavigate).toBeCalledWith({
@@ -219,6 +219,6 @@ describe('Edge Cluster Table', () => {
     await userEvent.click(within(row).getByRole('button'))
     const subRow = screen.getByRole('row', { name: /Smart Edge 1/i })
     await userEvent.click(within(subRow).getByRole('checkbox'))
-    expect(screen.queryByRole('button', { name: 'Run Cluster & SmartEdge configuration wizard' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Run Cluster & RUCKUS Edge configuration wizard' })).toBeNull()
   })
 })

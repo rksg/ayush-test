@@ -11,15 +11,15 @@ import { InformationSolid }                                                    f
 import { SpaceWrapper, CompatibilityWarningCircleIcon, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import {
   useGetEdgeClusterListQuery,
-  useGetEdgeFeatureSetsQuery
+  useGetEdgeFeatureSetsQuery,
+  useGetEdgeListQuery
 } from '@acx-ui/rc/services'
 import {
   servicePolicyNameRegExp,
   useHelpPageLink,
   EdgeMvSdLanFormModel,
   ClusterHighAvailabilityModeEnum,
-  EdgeFeatureEnum
-} from '@acx-ui/rc/utils'
+  EdgeFeatureEnum } from '@acx-ui/rc/utils'
 import { TenantLink }      from '@acx-ui/react-router-dom'
 import { compareVersions } from '@acx-ui/utils'
 
@@ -46,10 +46,6 @@ export const SettingsForm = () => {
     .flatMap(item => [item.edgeClusterId, item.guestEdgeClusterId])
     .filter(val => !!val)
 
-  const filterSn = editMode ? [initialValues?.edgeClusterId] : []
-  if (editMode && initialValues?.guestEdgeClusterId)
-    filterSn.push(initialValues?.guestEdgeClusterId)
-
   const { clusterData, isLoading: isClusterOptsLoading } = useGetEdgeClusterListQuery(
     { payload: {
       fields: [
@@ -61,9 +57,7 @@ export const SettingsForm = () => {
         'highAvailabilityMode',
         'firmwareVersion'
       ],
-      ...(filterSn.length === 2
-        ? { filters: { clusterId: filterSn } }
-        : { pageSize: 10000 })
+      pageSize: 10000
     } },
     {
       selectFromResult: ({ data, isLoading }) => {
@@ -100,15 +94,6 @@ export const SettingsForm = () => {
     }
   }, [clusterData, editMode, initialValues])
 
-  useEffect(() => {
-    if (!editMode) {
-      if ((isGuestTunnelEnabled && guestEdgeClusterId) || (!isGuestTunnelEnabled && edgeClusterId))
-        form.validateFields(isGuestTunnelEnabled
-          ? ['edgeClusterId', 'guestEdgeClusterId']
-          : ['edgeClusterId'])
-    }
-  }, [isGuestTunnelEnabled, editMode, edgeClusterId, guestEdgeClusterId])
-
   const onEdgeClusterChange = (val: string) => {
     const edgeData = clusterData?.filter(i => i.clusterId === val)[0]
     form.setFieldsValue({
@@ -126,7 +111,7 @@ export const SettingsForm = () => {
   }
 
   const checkCorePortConfigured = (clusterId: string) => {
-    if (findIndex(clusterData, { clusterId, hasCorePort: true }) !== -1) {
+    if (!clusterData || findIndex(clusterData, { clusterId, hasCorePort: true }) !== -1) {
       return Promise.resolve()
     } else
       return Promise.reject(<UI.ClusterSelectorHelper>
@@ -143,7 +128,7 @@ export const SettingsForm = () => {
     const isDmzClusteAAMode = find(clusterData, { clusterId: dmzClusterId })
       ?.highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
 
-    if (isGuestTunnelOn && dmzClusterId && isDmzClusteAAMode) {
+    if (clusterData && isGuestTunnelOn && dmzClusterId && isDmzClusteAAMode) {
       return Promise.reject($t({ defaultMessage: 'DMZ cluster cannot be active-active mode.' }))
     } else {
       return Promise.resolve()
@@ -152,11 +137,11 @@ export const SettingsForm = () => {
 
   const getDmzClusterOpts = () => clusterOptions?.filter(item => {
     // eslint-disable-next-line max-len
-    const isAAMode = find(clusterData, { clusterId: item.value })?.highAvailabilityMode !== ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
+    const isNonAAMode = find(clusterData, { clusterId: item.value })?.highAvailabilityMode !== ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
 
     return item.value !== edgeClusterId &&
           // eslint-disable-next-line max-len
-          (isHaAaDmzEnabled || (!isHaAaDmzEnabled && (isAAMode || (editMode && item.value === guestEdgeClusterId))))
+          (isHaAaDmzEnabled || (!isHaAaDmzEnabled && (isNonAAMode || (editMode && item.value === guestEdgeClusterId))))
   })
 
   return (
@@ -214,7 +199,8 @@ export const SettingsForm = () => {
                 {edgeClusterId &&
                 <Col span={24}>
                   <ClusterFirmwareInfo
-                    fwVersion={find(clusterData, { clusterId: edgeClusterId })?.firmwareVersion} />
+                    clusterId={edgeClusterId}
+                  />
                 </Col>
                 }
               </Row>
@@ -263,7 +249,6 @@ export const SettingsForm = () => {
                     loading={isClusterOptsLoading}
                     options={getDmzClusterOpts()}
                     placeholder={$t({ defaultMessage: 'Select ...' })}
-                    disabled={editMode && !!initialValues?.guestEdgeClusterId}
                     onChange={onDmzClusterChange}
                   />
                 </Form.Item>
@@ -271,8 +256,7 @@ export const SettingsForm = () => {
               {guestEdgeClusterId &&
                 <Col span={24}>
                   <ClusterFirmwareInfo
-                    // eslint-disable-next-line max-len
-                    fwVersion={find(clusterData, { clusterId: guestEdgeClusterId })?.firmwareVersion}
+                    clusterId={guestEdgeClusterId}
                   />
                 </Col>
               }
@@ -298,10 +282,11 @@ const sdLanFeatureRequirementPayload = {
   }
 }
 const ClusterFirmwareInfo = (props: {
-  fwVersion?: string
+  clusterId: string,
+  fwVersion?: string,
 }) => {
   const { $t } = useIntl()
-  const { fwVersion } = props
+  const { clusterId } = props
   const isEdgeCompatibilityEnabled = useIsSplitOn(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
   const { requiredFw, isLoading } = useGetEdgeFeatureSetsQuery({
@@ -316,24 +301,42 @@ const ClusterFirmwareInfo = (props: {
     }
   })
 
-  const isLower = compareVersions(fwVersion, requiredFw) < 0
+  const { nodesData, isFwVerFetching } = useGetEdgeListQuery({
+    payload: {
+      fields: [
+        'serialNumber',
+        'firmwareVersion'
+      ],
+      filters: { clusterId: [clusterId] }
+    } }, {
+    skip: !isEdgeCompatibilityEnabled,
+    selectFromResult: ({ data, isFetching }) => ({
+      nodesData: data?.data ?? [],
+      isFwVerFetching: isFetching
+    })
+  })
 
-  return isEdgeCompatibilityEnabled
+  // eslint-disable-next-line max-len
+  const edgesData = [...nodesData]?.sort((n1, n2) => compareVersions(n1.firmwareVersion, n2.firmwareVersion))
+  const minNodeVersion = edgesData?.[0]?.firmwareVersion
+  const isLower = !!minNodeVersion && compareVersions(minNodeVersion, requiredFw) < 0
+
+  return isEdgeCompatibilityEnabled && !isFwVerFetching
     ? ( <Space align='center' size='small'>
       <Typography>
         {$t({ defaultMessage: 'Cluster Firmware Version: {fwVersion}' },
-          { fwVersion }) }
+          { fwVersion: minNodeVersion }) }
       </Typography>
-      {(!!fwVersion && isLower) && <Tooltip
+      {isLower && <Tooltip
         title={<Loader states={[{ isLoading }]}>
-          {$t({ defaultMessage: `SD-LAN feature requires your SmartEdge cluster 
-        running firmware version <b>{requiredFw}</b> or higher. You may upgrade your venue firmware
-        from {targetLink}` },
+          {$t({ defaultMessage: `SD-LAN feature requires your RUCKUS Edge cluster
+              running firmware version <b>{requiredFw}</b> or higher. You may upgrade your
+              <venueSingular></venueSingular> firmware from {targetLink}` },
           {
             b: (txt) => <b>{txt}</b>,
             requiredFw,
             targetLink: <TenantLink to='/administration/fwVersionMgmt/edgeFirmware'>
-              {$t({ defaultMessage: 'Administration > Version Management > SmartEdge Firmware' })}
+              {$t({ defaultMessage: 'Administration > Version Management > RUCKUS Edge Firmware' })}
             </TenantLink>
           })}
         </Loader>

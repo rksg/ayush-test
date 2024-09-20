@@ -31,6 +31,8 @@ export function UserProfile () {
   const { data: userProfile } = useUserProfileContext()
   const [ updateUserProfile ] = useUpdateUserProfileMutation()
   const basePath = useTenantLink('/userprofile')
+  const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
+  const rootPath = useTenantLink('/')
 
   const handleUpdateSettings = async (data: Partial<UserProfileInterface>) => {
     await updateUserProfile({ payload: data, params: { tenantId } })
@@ -39,7 +41,9 @@ export function UserProfile () {
   }
 
   const handleCancel = () => {
-    navigate(-1)
+    isGuestManager ?
+      navigate({ pathname: rootPath.pathname }):
+      navigate(-1)
   }
 
   const SettingsTab = () => {

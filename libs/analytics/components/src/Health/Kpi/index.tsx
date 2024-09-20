@@ -84,12 +84,13 @@ export default function KpiSections (props: { tab: CategoryTab, filters: Analyti
 }
 
 export function KpiSection (props: {
+  isSwitch?: boolean
   kpis: string[]
   thresholds: KpiThresholdType
   mutationAllowed: boolean
   filters : AnalyticsFilter
 }) {
-  const { kpis, filters, thresholds } = props
+  const { kpis, filters, thresholds, isSwitch } = props
   const { timeWindow, setTimeWindow } = useContext(HealthPageContext)
   const [ kpiThreshold, setKpiThreshold ] = useState<KpiThresholdType>(thresholds)
   const [ loadMore, setLoadMore ] = useState<boolean>(true)
@@ -137,7 +138,12 @@ export function KpiSection (props: {
           <GridCol col={{ span: 8 }} style={{ height: '160px' }}>
             {Object(kpiConfig[kpi as keyof typeof kpiConfig])?.histogram ? (
               <Histogram
-                filters={filters}
+                filters={{
+                  ...filters,
+                  startDate: timeWindow[0] as string,
+                  endDate: timeWindow[1] as string
+                }
+                }
                 kpi={kpi as keyof typeof kpiConfig}
                 threshold={kpiThreshold[kpi as keyof KpiThresholdType]}
                 setKpiThreshold={setKpiThreshold}
@@ -146,7 +152,7 @@ export function KpiSection (props: {
                 isNetwork={!filters.filter.networkNodes}
                 disabled={!(hasCrossVenuesPermission() && hasPermission({
                   permission: 'WRITE_HEALTH',
-                  scopes: [WifiScopes.UPDATE, SwitchScopes.UPDATE]
+                  scopes: [isSwitch ? SwitchScopes.UPDATE : WifiScopes.UPDATE]
                 }))}
               />
             ) : (

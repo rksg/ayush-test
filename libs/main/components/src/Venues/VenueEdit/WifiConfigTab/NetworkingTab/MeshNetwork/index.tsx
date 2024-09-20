@@ -59,6 +59,20 @@ const Mesh6GhzInfoIcon = () => {
   />
 }
 
+const Mesh5GhzInfoIcon = () => {
+  const { $t } = useIntl()
+
+  return <Tooltip.Info iconStyle={{
+    position: 'absolute',
+    bottom: '0px'
+  }}
+  isFilled
+  title={
+    $t({ defaultMessage: 'When selecting the 5GHz radio to link other mesh APs, 2R APs (2/6) will form mesh on the 6GHz band.' })
+  }
+  />
+}
+
 const useVenueWifiSettings = (venueId: string | undefined): VenueSettings | undefined => {
   const { isTemplate } = useConfigTemplate()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
@@ -512,7 +526,7 @@ export function MeshNetwork () {
                   {$t({ defaultMessage: '5 & 6 GHz' })}
                 </Radio>
                 <Radio value='5-GHz' data-testid='radio5'>
-                  {$t({ defaultMessage: '5 GHz' })}
+                  {$t({ defaultMessage: '5 GHz' })}<Mesh5GhzInfoIcon/>
                 </Radio>
                 {
                   isSupport6GRadio ? (

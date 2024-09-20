@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl'
 
 import {
   CompatibleAlertBanner,
-  EdgeSdLanDetailCompatibilityDrawer,
+  EdgeDetailCompatibilityDrawer,
   getSdLanDetailsCompatibilitiesDrawerData,
   useEdgeSdLanDetailsCompatibilitiesData
 } from '@acx-ui/rc/components'
@@ -100,7 +100,7 @@ export const CompatibilityCheck = ({ serviceId }: { serviceId: string }) => {
                 featureName: getCompatibilityFeatureDisplayName(featureName as IncompatibilityFeatures),
                 edgeInfo: (isEdge
                 // eslint-disable-next-line max-len
-                  ? $t({ defaultMessage: '{edgeCount} {edgeCount, plural, one {SmartEdge} other {SmartEdges}}' }, { edgeCount })
+                  ? $t({ defaultMessage: '{edgeCount} {edgeCount, plural, one {RUCKUS Edge} other {RUCKUS Edges}}' }, { edgeCount })
                   : ''),
                 hasAnd: (isAll ? $t({ defaultMessage: 'and' }) : ''),
                 apInfo: (isAp
@@ -114,12 +114,14 @@ export const CompatibilityCheck = ({ serviceId }: { serviceId: string }) => {
             : null
         })}
       </StyledSpace>
-      {drawerFeature && <EdgeSdLanDetailCompatibilityDrawer
+      <EdgeDetailCompatibilityDrawer
         visible={!!drawerFeature}
         featureName={drawerFeature as IncompatibilityFeatures}
-        data={getSdLanDetailsCompatibilitiesDrawerData(sdLanCompatibilities, drawerFeature)}
+        data={drawerFeature
+          ? getSdLanDetailsCompatibilitiesDrawerData(sdLanCompatibilities, drawerFeature)
+          : {}}
         onClose={() => toggleCompatibilityDrawer(undefined)}
-      />}
+      />
     </>
     : null
 }

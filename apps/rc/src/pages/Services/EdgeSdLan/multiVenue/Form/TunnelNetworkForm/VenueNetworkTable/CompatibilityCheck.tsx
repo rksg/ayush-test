@@ -10,6 +10,8 @@ import {
 import { useGetApCompatibilitiesVenueQuery } from '@acx-ui/rc/services'
 import { IncompatibilityFeatures }           from '@acx-ui/rc/utils'
 
+const SdLanRequiredFeatures = [IncompatibilityFeatures.TUNNEL_PROFILE]
+
 // eslint-disable-next-line max-len
 export const CompatibilityCheck = ({ venueId, venueName } : { venueId: string, venueName?: string }) => {
   const { $t } = useIntl()
@@ -47,16 +49,16 @@ export const CompatibilityCheck = ({ venueId, venueName } : { venueId: string, v
         icon={<CompatibilityWarningCircleIcon />}
         onClick={() => setOpen(true)}
       />
-      {open && <ApGeneralCompatibilityDrawer
+      <ApGeneralCompatibilityDrawer
         visible={open}
         type={ApCompatibilityType.VENUE}
         venueId={venueId}
         venueName={venueName}
         featureName={IncompatibilityFeatures.SD_LAN}
-        requiredFeatures={[IncompatibilityFeatures.TUNNEL_PROFILE]}
+        requiredFeatures={SdLanRequiredFeatures}
         isFeatureEnabledRegardless
         onClose={() => setOpen(false)}
-      />}
+      />
     </>
     : null
 }

@@ -10,6 +10,7 @@ import { useIntl }                                                    from 'reac
 import { MinusSquareOutlined, PlusSquareOutlined, SettingsOutlined } from '@acx-ui/icons'
 import { TABLE_DEFAULT_PAGE_SIZE }                                   from '@acx-ui/utils'
 
+import { getTitleWithIndicator }               from '../BetaIndicator'
 import { Button, DisabledButton, ButtonProps } from '../Button'
 import { Dropdown }                            from '../Dropdown'
 import { useLayoutContext }                    from '../Layout'
@@ -74,6 +75,7 @@ export interface TableProps <RecordType>
     enableApiFilter?: boolean
     floatRightFilters?: boolean
     alwaysShowFilters? : boolean
+    selectedFilters?: Filter,
     onFilterChange?: (
       filters: Filter,
       search: { searchString?: string, searchTargetFields?: string[] },
@@ -148,7 +150,7 @@ function useSelectedRowKeys <RecordType> (
 function Table <RecordType extends Record<string, any>> ({
   type = 'tall', columnState, enableApiFilter, iconButton, onFilterChange, settingsId,
   enableResizableColumn = true, onDisplayRowChange, stickyHeaders, stickyPagination,
-  enablePagination = false, ...props
+  enablePagination = false, selectedFilters = {}, ...props
 }: TableProps<RecordType>) {
   const { dataSource, filterableWidth, searchableWidth, style } = props
   const wrapperRef = useRef<HTMLDivElement>(null)
@@ -156,7 +158,7 @@ function Table <RecordType extends Record<string, any>> ({
   const rowKey = (props.rowKey ?? 'key')
   const intl = useIntl()
   const { $t } = intl
-  const [filterValues, setFilterValues] = useState<Filter>({})
+  const [filterValues, setFilterValues] = useState<Filter>(selectedFilters)
   const [searchValue, setSearchValue] = useState<string>('')
   const [groupByValue, setGroupByValue] = useState<string | undefined>(undefined)
   const onFilter = useRef(onFilterChange)
@@ -237,22 +239,28 @@ function Table <RecordType extends Record<string, any>> ({
       ? [...props.columns, settingsColumn] as typeof props.columns
       : props.columns
 
-    return cols.map(column => ({
-      ..._.omit(column, 'scopeKey'),
-      tooltip: null,
-      title: column.tooltip
-        ? <UI.TitleWithTooltip>
-          {column.title as React.ReactNode}
-          <UI.InformationTooltip title={column.tooltip as string} />
-        </UI.TitleWithTooltip>
-        : column.title,
-      disable: Boolean(column.fixed || column.disable),
-      show: Boolean(column.fixed || column.disable || (column.show ?? true)),
-      ellipsis: type === 'tall' && column.key !== settingsKey,
-      children: 'children' in column
-        ? column.children.map(child => ({ ...child, ellipsis: type === 'tall' }))
-        : undefined
-    }))
+    return cols.map(column => {
+      const columnTitle = (column?.isBetaFeature
+        ? getTitleWithIndicator(column?.title as string)
+        : column.title
+      ) as React.ReactNode
+      return {
+        ..._.omit(column, 'scopeKey'),
+        tooltip: null,
+        title: column.tooltip
+          ? <UI.TitleWithTooltip>
+            {columnTitle}
+            <UI.InformationTooltip title={column.tooltip as string} />
+          </UI.TitleWithTooltip>
+          : columnTitle,
+        disable: Boolean(column.fixed || column.disable),
+        show: Boolean(column.fixed || column.disable || (column.show ?? true)),
+        ellipsis: type === 'tall' && column.key !== settingsKey,
+        children: 'children' in column
+          ? column.children.map(child => ({ ...child, ellipsis: type === 'tall' }))
+          : undefined
+      }
+    })
   }, [props.columns, type]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const columnsState = useColumnsState({ settingsId, columns: baseColumns, columnState })

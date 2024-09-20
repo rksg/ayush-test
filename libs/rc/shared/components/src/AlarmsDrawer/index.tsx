@@ -28,8 +28,10 @@ import {
   EventSeverityEnum,
   EventTypeEnum
 } from '@acx-ui/rc/utils'
-import { useParams, TenantLink } from '@acx-ui/react-router-dom'
-import { store }                 from '@acx-ui/store'
+import { useParams, TenantLink }              from '@acx-ui/react-router-dom'
+import { store }                              from '@acx-ui/store'
+import { RolesEnum }                          from '@acx-ui/types'
+import { hasCrossVenuesPermission, hasRoles } from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
@@ -114,7 +116,7 @@ export function AlarmsDrawer (props: AlarmsType) {
   ] = useClearAlarmByVenueMutation()
 
   const { data: venuesList } =
-    useGetVenuesQuery({ params: useParams(), payload: venuesListPayload })
+    useGetVenuesQuery({ params: useParams(), payload: venuesListPayload }, { skip: !visible })
 
 
   const tableQuery = useTableQuery({
@@ -211,6 +213,9 @@ export function AlarmsDrawer (props: AlarmsType) {
     return venueIds
   }
 
+  const hasPermission = hasCrossVenuesPermission() &&
+  hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+
   const alarmList = <>
     <UI.FilterRow>
       <Select value={severity}
@@ -230,7 +235,7 @@ export function AlarmsDrawer (props: AlarmsType) {
         </Select.Option>
       </Select>
       <Button type='link'
-        disabled={tableQuery.data?.totalCount===0}
+        disabled={!hasPermission || tableQuery.data?.totalCount === 0}
         size='small'
         style={{ fontWeight: 'var(--acx-body-font-weight-bold)' }}
         onClick={async ()=>{

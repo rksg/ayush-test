@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 
 import { Col, Form, FormInstance, FormListFieldData, FormListOperation, Input, Radio, Row, Space } from 'antd'
 import TextArea                                                                                    from 'antd/lib/input/TextArea'
@@ -18,15 +18,19 @@ import {
   EdgeClusterStatus,
   EdgeFeatureEnum,
   EdgeStatusEnum,
+  IncompatibilityFeatures,
   deriveEdgeModel,
   edgeSerialNumberValidator,
   isOtpEnrollmentRequired
 } from '@acx-ui/rc/utils'
 import { compareVersions } from '@acx-ui/utils'
 
-import { showDeleteModal, useIsEdgeFeatureReady } from '../../useEdgeActions'
 
-import { RadioDescription, FwDescription, FwVersion } from './styledComponents'
+import { ApCompatibilityToolTip }                         from '../../ApCompatibility/ApCompatibilityToolTip'
+import { EdgeCompatibilityDrawer, EdgeCompatibilityType } from '../../Compatibility/EdgeCompatibilityDrawer'
+import { showDeleteModal, useIsEdgeFeatureReady }         from '../../useEdgeActions'
+
+import { FwDescription, FwVersion, RadioDescription } from './styledComponents'
 
 interface EdgeClusterSettingFormProps {
   editData?: EdgeClusterStatus
@@ -98,6 +102,9 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
 
   const isEdgeHaAaReady = useIsEdgeFeatureReady(Features.EDGE_HA_AA_TOGGLE)
 
+  // eslint-disable-next-line max-len
+  const [edgeCompatibilityFeature, setEdgeCompatibilityFeature] = useState<IncompatibilityFeatures | undefined>()
+
   useEffect(() => {
     if(editData) {
       form.setFieldsValue({
@@ -128,7 +135,7 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
 
   const otpWarningMsg = $t({ defaultMessage: `The one-time-password (OTP) will be
   automatically sent to your email address or via SMS for verification when you add
-  a virtual SmartEdge node. The password will expire in 10 minutes and you must
+  a virtual RUCKUS Edge node. The password will expire in 10 minutes and you must
   complete the authentication process before using it.` })
 
   const showClusterWarning = (editData?.edgeList?.filter(item =>
@@ -138,13 +145,13 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
     !item?.isEdit &&
     isOtpEnrollmentRequired(item?.serialNumber ?? ''))
 
-  const activeActiveMessage = $t({ defaultMessage: `All SmartEdges work together and
-  balance the load, enhancing redundancy and performance. If one SmartEdge fails, the
+  const activeActiveMessage = $t({ defaultMessage: `All RUCKUS Edges work together and
+  balance the load, enhancing redundancy and performance. If one RUCKUS Edge fails, the
   rest take over the tasks.` })
 
   const activeStandbyMessage = $t({ defaultMessage: `Active-standby high availability
-  has one active SmartEdge handling tasks while a standby SmartEdge waits to take over
-  if the active SmartEdge fails.` })
+  has one active RUCKUS Edge handling tasks while a standby RUCKUS Edge waits to take over
+  if the active RUCKUS Edge fails.` })
 
   const deleteNode = (fieldName: number, serialNumber?: string) => {
     if(!smartEdges?.[fieldName]?.isEdit) {
@@ -194,7 +201,7 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
               <div>
                 <FwDescription>
                   {$t({ defaultMessage:
-                    '<VenueSingular></VenueSingular> firmware version for SmartEdge:'
+                    '<VenueSingular></VenueSingular> firmware version for RUCKUS Edge:'
                   })}
                 </FwDescription> <FwVersion>{getVenueFirmware(venueId)}</FwVersion>
               </div>
@@ -253,6 +260,11 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
                       value={ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE}
                       id={ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE}>
                       {$t({ defaultMessage: 'Active-Active' })}
+                      <ApCompatibilityToolTip
+                        title={''}
+                        visible={true}
+                        onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.HA_AA)}
+                      />
                       <RadioDescription>{activeActiveMessage}</RadioDescription>
                     </Radio>
                     <Radio
@@ -275,7 +287,7 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
             <Col span={8}>
               <Subtitle level={3}>
                 {
-                  $t({ defaultMessage: 'SmartEdges ({edgeCount})' },
+                  $t({ defaultMessage: 'RUCKUS Edges ({edgeCount})' },
                     { edgeCount: editData?.edgeList?.length ?? 0 })
                 }
               </Subtitle>
@@ -309,7 +321,7 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
               <Col span={13}>
                 <Button
                   type='link'
-                  children={$t({ defaultMessage: 'Add another SmartEdge' })}
+                  children={$t({ defaultMessage: 'Add another RUCKUS Edge' })}
                   onClick={() => formListRef.current?.add()}
                   disabled={isDisableAddEdgeButton()}
                 />
@@ -326,6 +338,13 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
           }
         </Col>
       </Row>
+      {edgeCompatibilityFeature && <EdgeCompatibilityDrawer
+        visible
+        type={EdgeCompatibilityType.ALONE}
+        title={$t({ defaultMessage: 'Compatibility Requirement' })}
+        featureName={edgeCompatibilityFeature}
+        onClose={() => setEdgeCompatibilityFeature(undefined)}
+      />}
     </>
   )
 }
@@ -371,7 +390,7 @@ const NodeList = forwardRef((props: NodeListProps, ref) => {
           <Col span={7}>
             <Form.Item
               name={[field.name, 'name']}
-              label={$t({ defaultMessage: 'SmartEdge Name' })}
+              label={$t({ defaultMessage: 'RUCKUS Edge Name' })}
               rules={[
                 { required: true },
                 { max: 64 }

@@ -41,6 +41,7 @@ interface NewApRadioProperties {
     channel: number
     channelBandwidth: string
     rssi: number
+    actualTxPower?: number
 }
 
 export interface APSystem extends IpSettings {
@@ -173,6 +174,11 @@ export interface NewAPModelExtended extends NewAPModel {
   channelL50?: string | number
   channelU50?: string | number
   channel60?: string | number
+  actualTxPower24?: string | number
+  actualTxPower50?: string | number
+  actualTxPowerL50?: string | number
+  actualTxPowerU50?: string | number
+  actualTxPower60?: string | number
   hasPoeStatus?: boolean
   isPoEStatusUp?: boolean
   poePortInfo?: string
@@ -474,7 +480,8 @@ export interface LanPort {
   enabled?: boolean,
   portId?: string,
   type?: 'ACCESS' | 'GENERAL' | 'TRUNK',
-  vni: number
+  vni: number,
+  ethernetPortProfileId: string
 }
 
 export enum ApModelTypeEnum {
@@ -519,7 +526,8 @@ export interface CapabilitiesApModel {
   defaultAntennaType?: ApAntennaTypeEnum,
   supportBandCombination?: boolean,
   bandCombinationCapabilities?: BandModeEnum[],
-  defaultBandCombination?: BandModeEnum
+  defaultBandCombination?: BandModeEnum,
+  supportApStickyClientSteering?: boolean
 }
 
 export interface PingAp {
@@ -529,6 +537,7 @@ export interface PingAp {
 export interface RadioProperties {
   Rssi: string | null,
   txPower?: string | null,
+  actualTxPower?: number,
   channel: string | number,
   band?: string,
   radioId?: number,
@@ -676,6 +685,12 @@ export interface ApDirectedMulticast {
   networkEnabled: boolean
 }
 
+export interface ApSmartMonitor {
+  useVenueSettings: boolean,
+  enabled: boolean,
+  interval: number,
+  threshold: number
+}
 
 export interface APExtendedGrouped extends APExtended {
   networks: {
@@ -886,4 +901,25 @@ export interface SupportCcdApGroup {
   venueId: string,
   members: number,
   aps: APExtended[]
+}
+
+export enum DiagnosisCommands {
+  PING = 'PING',
+  TRACE_ROUTE = 'TRACE_ROUTE',
+  BLINK_LED = 'BLINK_LED'
+}
+
+export enum SystemCommands {
+  REBOOT = 'REBOOT',
+  FACTORY_RESET = 'FACTORY_RESET'
+}
+
+export interface StickyClientSteering {
+  enabled?: boolean
+  snrThreshold?: number
+  neighborApPercentageThreshold?: number
+}
+
+export interface ApStickyClientSteering extends StickyClientSteering {
+  useVenueSettings?: boolean
 }

@@ -20,10 +20,10 @@ import {
   EmbeddedResponse
 } from '@acx-ui/reports/services'
 import { useReportsFilter }                      from '@acx-ui/reports/utils'
-import { REPORT_BASE_RELATIVE_URL }              from '@acx-ui/store'
+import { REPORT_BASE_RELATIVE_URL, refreshJWT }  from '@acx-ui/store'
 import { RolesEnum as RolesEnumR1 }              from '@acx-ui/types'
 import { getUserProfile as getUserProfileR1,
-  UserProfile as UserProfileR1, CustomRoleType }                            from '@acx-ui/user'
+  UserProfile as UserProfileR1, CustomRoleType }                     from '@acx-ui/user'
 import { useDateFilter, getJwtToken, NetworkPath, useLocaleContext } from '@acx-ui/utils'
 
 import {
@@ -288,6 +288,9 @@ export function EmbeddedReport (props: ReportProps) {
       if (event.data && event.data.type === 'unauthorized') {
         showExpiredSessionModal()
       }
+      if(event.data && event.data.type === 'refreshToken') {
+        refreshJWT(event.data)
+      }
     }
     window.addEventListener('message', eventHandler)
     return () => window.removeEventListener('message', eventHandler)
@@ -380,17 +383,16 @@ export function EmbeddedReport (props: ReportProps) {
   }
 
   const isRoleReadOnly = () => {
-    const { isApReport, isSwitchReport } = getReportType(reportName)
-    const regex = scopeRegexMapping[isApReport ? 'ap' : isSwitchReport ? 'switch' : 'both']
     const systemRolesWithWritePermissions = [RolesEnumR1.PRIME_ADMIN, RolesEnumR1.ADMINISTRATOR]
-
-    if (scopes) {
-      const hasWriteScope = scopes.some(scope => regex.test(scope))
-      return !hasWriteScope
-    } else if (customRoleType === CustomRoleType.SYSTEM) {
+    if (customRoleType === CustomRoleType.SYSTEM) {
       return !systemRolesWithWritePermissions.includes(customRoleName as RolesEnumR1)
     }
-
+    if (scopes) {
+      const { isApReport, isSwitchReport } = getReportType(reportName)
+      const regex = scopeRegexMapping[isApReport ? 'ap' : isSwitchReport ? 'switch' : 'both']
+      const hasWriteScope = scopes.some(scope => regex.test(scope))
+      return !hasWriteScope
+    }
     return !systemRolesWithWritePermissions.some(role => roles.includes(role))
   }
 

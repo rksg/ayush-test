@@ -8,11 +8,11 @@ import { useGetEdgeClusterListQuery, useGetEdgeClusterQuery }                   
 import { ClusterHighAvailabilityModeEnum, CommonOperation, Device, EdgeStatusEnum, getUrl } from '@acx-ui/rc/utils'
 import { useTenantLink }                                                                    from '@acx-ui/react-router-dom'
 
-import { ClusterDetails }   from './ClusterDetails'
-import { ClusterInterface } from './ClusterInterface'
-import { EdgeClusterDhcp }  from './EdgeClusterDhcp'
-import { HaSettings }       from './HaSettings'
-import { VirtualIp }        from './VirtualIp'
+import { ClusterDetails }     from './ClusterDetails'
+import { ClusterInterface }   from './ClusterInterface'
+import { HaSettings }         from './HaSettings'
+import { EdgeNetworkControl } from './NetworkControl'
+import { VirtualIp }          from './VirtualIp'
 
 
 const EditEdgeCluster = () => {
@@ -21,6 +21,7 @@ const EditEdgeCluster = () => {
   const navigate = useNavigate()
   const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
   const isEdgeHaAaReady = useIsEdgeFeatureReady(Features.EDGE_HA_AA_TOGGLE)
+  const isEdgeQosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
   const basePath = useTenantLink(getUrl({
     feature: Device.EdgeCluster,
     oper: CommonOperation.Edit,
@@ -87,11 +88,11 @@ const EditEdgeCluster = () => {
     }
   }
 
-  const clusterTabs = !isEdgeDhcpHaReady
+  const clusterTabs = !isEdgeDhcpHaReady && !isEdgeQosEnabled
     ? basicTabs
-    : Object.assign(basicTabs, { dhcp: {
-      title: $t({ defaultMessage: 'DHCP' }),
-      content: <EdgeClusterDhcp currentClusterStatus={currentClusterStatus} />
+    : Object.assign(basicTabs, { networkControl: {
+      title: $t({ defaultMessage: 'Network Control' }),
+      content: <EdgeNetworkControl currentClusterStatus={currentClusterStatus} />
     } })
 
   const onTabChange = (finalTabs: string) => {
@@ -106,7 +107,7 @@ const EditEdgeCluster = () => {
       <PageHeader
         title={$t({ defaultMessage: 'Configure {name}' }, { name: currentClusterStatus?.name })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'SmartEdges' }), link: '/devices/edge' }
+          { text: $t({ defaultMessage: 'RUCKUS Edges' }), link: '/devices/edge' }
         ]}
         footer={
           <Tabs onChange={onTabChange} activeKey={activeTab}>

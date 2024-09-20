@@ -86,8 +86,13 @@ function GetNetworkFilterOptions (tenantId: string|undefined) {
 const AsyncLoadingInColumn = (
   row: ClientInfo,
   callBack: Function,
-  loadingCondition?: (row: ClientInfo) => boolean
+  loadingCondition?: (row: ClientInfo) => boolean,
+  animation?: boolean
 ): React.ReactNode => {
+  if (!animation) {
+    return callBack()
+  }
+
   const defaultCondition = (row: ClientInfo) => !!row.apInformation?.name || !!row.venueInformation?.name
 
   if ((loadingCondition ?? defaultCondition)(row)) {
@@ -268,7 +273,7 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
             return <Tooltip title={mac}>
               {mac || noDataDisplay}
             </Tooltip>
-          }, (row) => row.mldMacAddress !== undefined)
+          }, (row) => row.mldMacAddress !== undefined || !!row.apInformation?.name || !!row.venueInformation?.name)
         }
       }] : []),
       {

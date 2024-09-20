@@ -4,7 +4,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { Features }                                          from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
 import { DownloadOutlined }                                  from '@acx-ui/icons'
 import {
   DpskPoolLink,
@@ -14,15 +14,18 @@ import {
   PersonaGroupDrawer,
   usePersonaAsyncHeaders,
   useIsEdgeFeatureReady,
-  VenueLink
+  VenueLink,
+  CertTemplateLink
 } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeletePersonaGroupMutation,
+  useGetCertificateTemplatesQuery,
   useGetEnhancedDpskListQuery,
   useGetNetworkSegmentationViewDataListQuery,
   useGetQueriablePropertyConfigsQuery,
   useLazyDownloadPersonaGroupsQuery,
+  useLazyGetCertificateTemplateQuery,
   useLazyGetDpskQuery,
   useLazyGetMacRegListQuery,
   useLazyGetNetworkSegmentationGroupByIdQuery,
@@ -30,9 +33,9 @@ import {
   useSearchMacRegListsQuery,
   useSearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
-import { FILTER, hasCloudpathAccess, PersonaGroup, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
-import { filterByAccess }                                                  from '@acx-ui/user'
-import { exportMessageMapping }                                            from '@acx-ui/utils'
+import { FILTER, PersonaGroup, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
+import { filterByAccess, hasCrossVenuesPermission }    from '@acx-ui/user'
+import { exportMessageMapping }                        from '@acx-ui/utils'
 
 import { IdentityGroupContext } from '..'
 
@@ -62,10 +65,12 @@ function useColumns (
   macRegistrationPools: Map<string, string>,
   dpskPools: Map<string, string>,
   venuesMap: Map<string, string>,
-  nsgMap: Map<string, string>
+  nsgMap: Map<string, string>,
+  certTemplateMap: Map<string, string>
 ) {
   const { $t } = useIntl()
   const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+  const isCertTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
 
   const { data: dpskPool } = useGetEnhancedDpskListQuery({
     payload: { sortField: 'name', sortOrder: 'ASC', page: 1, pageSize: 10000 }
@@ -91,6 +96,17 @@ function useColumns (
         venueOptions: data?.data.map(item => ({ value: item.venueName!, key: item.venueId! })) ?? []
       }
     }
+  })
+  const { certTemplateOptions, isCertTemplatesLoading } = useGetCertificateTemplatesQuery({
+    payload: { page: 1, pageSize: 10000 }
+  }, {
+    selectFromResult: ({ data, isLoading }) => {
+      return {
+        isCertTemplatesLoading: isLoading,
+        certTemplateOptions: data?.data.map(t => ({ value: t.name, key: t.id! })) ?? []
+      }
+    },
+    skip: !isCertTemplateEnabled
   })
 
   const columns: TableProps<PersonaGroup>['columns'] = [
@@ -152,6 +168,19 @@ function useColumns (
           macRegistrationPoolId={row.macRegistrationPoolId}
         />
     },
+    ...(isCertTemplateEnabled ? [{
+      key: 'certificateTemplateId',
+      title: $t({ defaultMessage: 'Certificate Template' }),
+      dataIndex: 'certificateTemplateId',
+      sorter: true,
+      filterMultiple: false,
+      filterable: isCertTemplatesLoading ? [] : certTemplateOptions,
+      render: (_, row) =>
+        <CertTemplateLink
+          name={certTemplateMap.get(row.certificateTemplateId ?? '')}
+          id={row.certificateTemplateId}
+        />
+    } as TableColumn<PersonaGroup>] : []),
     ...(networkSegmentationEnabled ? [{
       key: 'personalIdentityNetworkId',
       title: $t({ defaultMessage: 'Personal Identity Network' }),
@@ -191,6 +220,7 @@ export function PersonaGroupTable () {
   const [macRegistrationPoolMap, setMacRegistrationPoolMap] = useState(new Map())
   const [dpskPoolMap, setDpskPoolMap] = useState(new Map())
   const [nsgPoolMap, setNsgPoolMap] = useState(new Map())
+  const [certTemplateMap, setCertTemplateMap] = useState(new Map())
   const [drawerState, setDrawerState] = useState({
     isEdit: false,
     visible: false,
@@ -200,6 +230,7 @@ export function PersonaGroupTable () {
   const { isAsync, customHeaders } = usePersonaAsyncHeaders()
 
   const [getVenues] = useLazyVenuesListQuery()
+  const [getCertTemplate] = useLazyGetCertificateTemplateQuery()
   const [getDpskById] = useLazyGetDpskQuery()
   const [getMacRegistrationById] = useLazyGetMacRegListQuery()
   const [getNsgById] = useLazyGetNetworkSegmentationGroupByIdQuery()
@@ -217,6 +248,7 @@ export function PersonaGroupTable () {
     pagination: { settingsId }
   })
   const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+  const isCertTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
 
   useEffect(() => {
     if (tableQuery.isLoading) return
@@ -225,17 +257,28 @@ export function PersonaGroupTable () {
     const macPools = new Map()
     const dpskPools = new Map()
     const nsgPools = new Map()
+    const certTemplates = new Map()
 
     tableQuery.data?.data.forEach(personaGroup => {
       const {
         macRegistrationPoolId,
         dpskPoolId,
         propertyId,
-        personalIdentityNetworkId
+        personalIdentityNetworkId,
+        certificateTemplateId
       } = personaGroup
 
       if (propertyId) {
         venueIds.push(propertyId)
+      }
+
+      if (isCertTemplateEnabled && certificateTemplateId) {
+        getCertTemplate({ params: { policyId: certificateTemplateId } })
+          .then(result => {
+            if (result.data) {
+              certTemplates.set(certificateTemplateId, result.data.name)
+            }
+          })
       }
 
       if (macRegistrationPoolId) {
@@ -279,6 +322,7 @@ export function PersonaGroupTable () {
     setDpskPoolMap(dpskPools)
     setMacRegistrationPoolMap(macPools)
     setNsgPoolMap(nsgPools)
+    setCertTemplateMap(certTemplates)
   }, [tableQuery.data])
 
   const downloadPersonaGroups = () => {
@@ -315,7 +359,7 @@ export function PersonaGroupTable () {
   }
 
   const actions: TableProps<PersonaGroup>['actions'] =
-    hasCloudpathAccess()
+    hasCrossVenuesPermission({ needGlobalPermission: true })
       ? [{
         label: $t({ defaultMessage: 'Add Identity Group' }),
         onClick: () => {
@@ -324,7 +368,7 @@ export function PersonaGroupTable () {
       }] : []
 
   const rowActions: TableProps<PersonaGroup>['rowActions'] =
-    hasCloudpathAccess()
+    hasCrossVenuesPermission({ needGlobalPermission: true })
       ? [
         {
           label: $t({ defaultMessage: 'Edit' }),
@@ -356,7 +400,9 @@ export function PersonaGroupTable () {
       personalIdentityNetworkId: Array.isArray(customFilters?.personalIdentityNetworkId)
         ? customFilters?.personalIdentityNetworkId[0] : undefined,
       propertyId: Array.isArray(customFilters?.propertyId)
-        ? customFilters?.propertyId[0] : undefined
+        ? customFilters?.propertyId[0] : undefined,
+      certificateTemplateId: Array.isArray(customFilters?.certificateTemplateId)
+        ? customFilters?.certificateTemplateId[0] : undefined
     }
 
     tableQuery.setPayload(payload)
@@ -373,7 +419,8 @@ export function PersonaGroupTable () {
       <Table<PersonaGroup>
         enableApiFilter
         settingsId={settingsId}
-        columns={useColumns(macRegistrationPoolMap, dpskPoolMap, venueMap, nsgPoolMap)}
+        // eslint-disable-next-line max-len
+        columns={useColumns(macRegistrationPoolMap, dpskPoolMap, venueMap, nsgPoolMap, certTemplateMap)}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
@@ -382,7 +429,7 @@ export function PersonaGroupTable () {
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
         rowSelection={
-          hasCloudpathAccess() && { type: 'radio' }}
+          hasCrossVenuesPermission({ needGlobalPermission: true }) && { type: 'radio' }}
         iconButton={{
           icon: <DownloadOutlined data-testid={'export-persona-group'} />,
           tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),

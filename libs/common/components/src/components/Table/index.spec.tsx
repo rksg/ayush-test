@@ -83,6 +83,17 @@ describe('Table component', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
+  it('should render table with Beta indicator correctly', () => {
+    const { asFragment } = render(<Table
+      columns={[
+        { ...testColumns[0], isBetaFeature: true },
+        ...testColumns.slice(1, 3)
+      ]}
+      dataSource={testData}
+    />)
+    expect(asFragment()).toMatchSnapshot()
+  })
+
   it('should only render pagination when total items exceeds default page size', async () => {
     const props: TableProps<TestRow> = {
       columns: testColumns,
@@ -217,8 +228,9 @@ describe('Table component', () => {
   it('shows search/filter when no selected bar and row selected', async () => {
     const props: TableProps<TestRow> = {
       columns: [
-        { ...testColumns[0], searchable: true },
-        ...testColumns.slice(1, 3)
+        { ...testColumns[0], searchable: true, tooltip: 'Name tooltip', isBetaFeature: true },
+        { ...testColumns[1], isBetaFeature: true },
+        ...testColumns.slice(2, 3)
       ],
       dataSource: testData,
       rowSelection: { type: 'radio' },
@@ -1246,7 +1258,9 @@ describe('Table component', () => {
     it.skip('should render select data from all pages option correctly', async () => {
       render(<GroupTable rowSelection={{
         type: 'checkbox'
-      }} />)
+      }}
+      columns={[]}
+      />)
       const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
       expect(filters.length).toBe(4)
       const groupBySelector = filters[3]
@@ -1265,9 +1279,11 @@ describe('Table component', () => {
       render(<GroupTable rowSelection={{
         type: 'checkbox',
         getCheckboxProps: (record) => ({
-          disabled: record.deviceStatus
+          disabled: !!record.deviceStatus
         })
-      }}/>)
+      }}
+      columns={[]}
+      />)
       const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
       expect(filters.length).toBe(4)
       const groupBySelector = filters[3]

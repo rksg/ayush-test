@@ -1,18 +1,48 @@
-import { fetchBaseQuery, retry } from '@reduxjs/toolkit/query/react'
-import _                         from 'lodash'
+import {
+  createApi,
+  fetchBaseQuery as originalFetchBaseQuery,
+  retry
+} from '@reduxjs/toolkit/query/react'
+import _ from 'lodash'
 
-import { updateJwtCache } from '@acx-ui/utils'
+import { reconnectSockets, updateJwtCache } from '@acx-ui/utils'
+
+import {
+  graphqlRequestBaseQuery as originalGraphqlRequestBaseQuery
+} from './graphqlRequestBaseQuery'
 
 import type { FetchArgs } from '@reduxjs/toolkit/dist/query/fetchBaseQuery'
 
+export { createApi }
+
+export function refreshJWT (headers?: Headers | Record<string, string>) {
+  if (!headers) return
+
+  const jwtToken = headers instanceof Headers
+    ? headers.get('login-token')
+    : headers['login-token']
+
+  if (!jwtToken) return
+
+  sessionStorage.setItem('jwt', jwtToken)
+  sessionStorage.removeItem('ACX-ap-compatibiliy-note-hidden') // clear ap compatibiliy banner display condition
+  updateJwtCache(jwtToken)
+  reconnectSockets()
+}
+
+export const fetchBaseQuery: typeof originalFetchBaseQuery = (options) => {
+  const baseQuery = originalFetchBaseQuery(options)
+  const wrapperBaseQuery: typeof baseQuery = async (args, api, extraOptions) => {
+    const result = await baseQuery(args, api, extraOptions)
+    refreshJWT(result.meta?.response?.headers)
+    return result
+  }
+  return wrapperBaseQuery
+}
+
 export const baseQuery = retry(
   async (args: string | FetchArgs, api, extraOptions) => {
-    const result = await fetchBaseQuery()(
-      args,
-      api,
-      extraOptions
-    )
-
+    const result = await fetchBaseQuery()(args, api, extraOptions)
     if (result.error) {
       const status = result.error?.status
       const errorCode = _.get(result.error, 'originalStatus')
@@ -23,20 +53,24 @@ export const baseQuery = retry(
         })
       }
     }
-
-    const headers = result?.meta?.response?.headers
-    if (headers) {
-      const loginToken = headers.get('login-token')
-      if (loginToken) {
-        sessionStorage.setItem('jwt', loginToken)
-        sessionStorage.removeItem('ACX-ap-compatibiliy-note-hidden') // clear ap compatibiliy banner display condition
-        updateJwtCache(loginToken)
-      }
-    }
-
     return result
   },
-  {
-    maxRetries: 0
-  }
+  { maxRetries: 0 }
 )
+
+export const graphqlRequestBaseQuery: typeof originalGraphqlRequestBaseQuery = (options) => {
+  const baseQuery = originalGraphqlRequestBaseQuery(options)
+  const wrapperBaseQuery: typeof baseQuery = async (args, api, extraOptions) => {
+    const result = await baseQuery(args, api, extraOptions)
+    refreshJWT(result.meta?.response?.headers)
+    return result
+  }
+
+  return retry(wrapperBaseQuery, {
+    retryCondition: (error) => {
+      const err = error as unknown as Error
+      // retry when request fails with status 200 and error is empty, ref ACX-66743
+      return err.message.includes('"error":"","status":200')
+    }
+  })
+}

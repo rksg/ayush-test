@@ -25,8 +25,7 @@ import { AddNetworkModal }       from '../../../NetworkForm/AddNetworkModal'
 import { useIsEdgeFeatureReady } from '../../../useEdgeActions'
 
 import { ActivateNetworkSwitchButtonP2, ActivateNetworkSwitchButtonP2Props } from './ActivateNetworkSwitchButton'
-import ForwardGuestTrafficDiagramVertical                                    from './assets/images/edge-sd-lan-forward-guest-traffic.png'
-import MvForwardGuestTrafficDiagramVertical                                  from './assets/images/edge-sd-lan-mv-forward-guest-traffic.svg'
+import ForwardGuestTrafficDiagramVertical                                    from './assets/images/edge-sd-lan-forward-guest-traffic.svg'
 import * as UI                                                               from './styledComponents'
 
 const dmzTunnelColumnHeaderTooltip = defineMessage({
@@ -64,13 +63,22 @@ const getRowDisabledInfo = (
   return { disabled, tooltip }
 }
 
+type SdLanActivatedNetworksIsDisableFn = (
+  venueId: string,
+  row: Network,
+  isGuestActivation: boolean
+) => {
+  isDisabled: boolean,
+  tooltip?: string
+} | undefined
+
 export interface ActivatedNetworksTableP2Props {
   venueId: string,
   isGuestTunnelEnabled: boolean
   columnsSetting?: Partial<Omit<TableColumn<Network, 'text'>, 'render'>>[],
   activated?: string[],
   activatedGuest?: string[],
-  disabled?: boolean,
+  disabled?: boolean | SdLanActivatedNetworksIsDisableFn,
   toggleButtonTooltip?: string,
   onActivateChange?: ActivateNetworkSwitchButtonP2Props['onChange'],
   isUpdating?: boolean
@@ -148,38 +156,51 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
     width: 80,
     render: (_: unknown, row: Network) => {
       const disabledInfo = getRowDisabledInfo(venueId, row, false, dsaeOnboardNetworkIds)
+      let isDisabled = disabled
+      let tooltip = toggleButtonTooltip
+      if (typeof disabled === 'function') {
+        isDisabled = disabled(venueId, row, false)?.isDisabled
+        tooltip = disabled(venueId, row, false)?.tooltip
+      }
 
       return <ActivateNetworkSwitchButtonP2
         fieldName='activatedNetworks'
         row={row}
         activated={activated ?? []}
-        disabled={disabled || disabledInfo.disabled}
-        tooltip={toggleButtonTooltip || disabledInfo.tooltip}
+        disabled={(isDisabled as boolean) || disabledInfo.disabled}
+        tooltip={tooltip || disabledInfo.tooltip}
         onChange={onActivateChange}
       />
     }
   }, ...(isGuestTunnelEnabled ? [{
     title: $t({ defaultMessage: 'Forward Guest Traffic to DMZ' }),
-    tooltip: !detailDrawerVisible ? $t(dmzTunnelColumnHeaderTooltip, {
-      detailLink: <Button type='link' onClick={showMoreDetails} style={{ fontSize: 'inherit' }}>
-        {$t({ defaultMessage: 'More details about the feature.' })}
-      </Button>
-    }) : undefined,
+    tooltip: !detailDrawerVisible
+      ? $t(dmzTunnelColumnHeaderTooltip, {
+        detailLink: <Button type='link' onClick={showMoreDetails} style={{ fontSize: 'inherit' }}>
+          {$t({ defaultMessage: 'More details about the feature.' })}
+        </Button>
+      })
+      : undefined,
     key: 'action2',
     dataIndex: 'action2',
     align: 'center' as AlignType,
     width: 120,
     render: (_: unknown, row: Network) => {
-      // eslint-disable-next-line max-len
       const disabledInfo = getRowDisabledInfo(venueId, row, true, dsaeOnboardNetworkIds)
+      let isDisabled = disabled
+      let tooltip = toggleButtonTooltip
+      if (typeof disabled === 'function') {
+        isDisabled = disabled(venueId, row, true)?.isDisabled
+        tooltip = disabled(venueId, row, true)?.tooltip
+      }
 
       return row.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL
         ? <ActivateNetworkSwitchButtonP2
           fieldName='activatedGuestNetworks'
           row={row}
           activated={activatedGuest ?? []}
-          disabled={disabled || disabledInfo.disabled}
-          tooltip={toggleButtonTooltip || disabledInfo.tooltip}
+          disabled={(isDisabled as boolean) || disabledInfo.disabled}
+          tooltip={tooltip || disabledInfo.tooltip}
           onChange={onActivateChange}
         />
         : ''
@@ -246,10 +267,7 @@ export const MoreDetailsDrawer = (props: { visible: boolean, setVisible: (open: 
     <Space direction='vertical' size={40}>
       <UI.DiagramContainer>
         <img
-          src={isEdgeSdLanMvEnabled
-            ? MvForwardGuestTrafficDiagramVertical
-            : ForwardGuestTrafficDiagramVertical
-          }
+          src={ForwardGuestTrafficDiagramVertical}
           alt={$t({ defaultMessage: 'SD-LAN forward guest traffic' })}
         />
         {!isEdgeSdLanMvEnabled && <UI.FrameOverDiagram />}
@@ -257,7 +275,7 @@ export const MoreDetailsDrawer = (props: { visible: boolean, setVisible: (open: 
       <UI.StyledParagraph>
         {
           // eslint-disable-next-line max-len
-          $t({ defaultMessage: 'Enabling \'Forward guest traffic to DMZ\' will tunnel the guest traffic further to the cluster (SmartEdges) in DMZ. If it\'s disabled, the guest traffic could still be sent to the cluster (SmartEdges) in the Data Center, but only if the \'Enable Tunnel\' toggle is enabled.' })
+          $t({ defaultMessage: 'Enabling \'Forward guest traffic to DMZ\' will tunnel the guest traffic further to the cluster (RUCKUS Edges) in DMZ. If it\'s disabled, the guest traffic could still be sent to the cluster (RUCKUS Edges) in the Data Center, but only if the \'Enable Tunnel\' toggle is enabled.' })
         }
       </UI.StyledParagraph>
     </Space>

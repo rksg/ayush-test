@@ -10,8 +10,9 @@ export function LbsServerProfileOverview (props: { data: LbsServerProfileViewMod
 
   const lbsServerProfileInfo = [
     {
-      title: $t({ defaultMessage: 'LBS <VenueSingular></VenueSingular>' }),
-      content: data.lbsVenueName
+      // Not support VenueSingular for Hospitality Vertical
+      title: $t({ defaultMessage: 'LBS Server Venue Name' }),
+      content: data.lbsServerVenueName
     },
     {
       title: $t({ defaultMessage: 'Server' }),

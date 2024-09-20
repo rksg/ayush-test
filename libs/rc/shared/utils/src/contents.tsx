@@ -259,6 +259,10 @@ export const EditPortMessages = {
   }),
   INVALID_VOICE_VLAN: defineMessage({
     defaultMessage: 'Voice VLAN needs to be configured together with Tagged VLAN.'
+  }),
+  RESET_PORT_WARNING: defineMessage({
+    defaultMessage: `Changing the port settings may result in loss of connectivity and
+      communication issues to your APs. Do you want to continue with these changes?`
   })
 }
 
@@ -419,5 +423,25 @@ export const EditPropertyConfigMessages = {
 export const PropertyUnitMessages = {
   /* eslint-disable max-len */
   RESEND_NOTIFICATION: defineMessage({ defaultMessage: 'The unit assignment SMS and/or Email has been sent to the unit contact.' })
+  /* eslint-enable */
+}
+
+export const EthernetPortProfileMessages = {
+  /* eslint-disable max-len */
+  AUTH_TYPE_ROLE_TRUNK: defineMessage({
+    defaultMessage: 'Choose Port-based Authenticator if the AP will authenticate devices connecting to it, or Supplicant if the AP needs to be authenticated by an upstream device, e.g.: Switch'
+  }),
+  AUTH_TYPE_ROLE_ACCESS: defineMessage({
+    defaultMessage: 'If multiple devices connect to an AP port, it can be configured as either Port-based or MAC-based Authenticator. In Port-based mode, one authorized MAC grants access to all hosts. In MAC-based mode, each MAC is individually authenticated.'
+  }),
+  MAC_AUTH_BYPASS: defineMessage({
+    defaultMessage: 'If MAC authentication bypass is enabled, the port first attempts to authenticate the attached device by MAC address, and if that fails, it attempts to authenticate the device using 802.1X.'
+  }),
+  DYNAMIC_VLAN: defineMessage({
+    defaultMessage: 'Enable dynamic VLAN assignment if you want the controller to assign VLAN IDs on a per-user basis.'
+  }),
+  GUEST_VLAN: defineMessage({
+    defaultMessage: 'A guest VLAN is used if you want to allow a device that fails authentication to access the Internet but restrict it from accessing internal network resources'
+  })
   /* eslint-enable */
 }

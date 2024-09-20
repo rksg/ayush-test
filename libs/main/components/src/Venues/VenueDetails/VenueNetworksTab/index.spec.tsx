@@ -9,6 +9,7 @@ import { useSdLanScopedVenueNetworks } from '@acx-ui/rc/components'
 import {
   aggregatedVenueNetworksDataV2,
   networkApi,
+  softGreApi,
   venueApi
 } from '@acx-ui/rc/services'
 import {
@@ -18,7 +19,10 @@ import {
   ConfigTemplateUrlsInfo,
   EdgeMvSdLanViewData,
   EdgeSdLanFixtures,
+  EdgeSdLanTunneledWlan,
   EdgeSdLanUrls,
+  MtuTypeEnum,
+  SoftGreUrls,
   VlanPoolRbacUrls,
   WifiRbacUrlsInfo,
   WifiUrlsInfo
@@ -39,7 +43,8 @@ import {
   venueData,
   venueNetworkApCompatibilitiesData,
   venueNetworkApGroupData,
-  venuelist
+  venuelist,
+  mockSoftGreTable
 } from '../../__tests__/fixtures'
 
 import { VenueNetworksTab } from './index'
@@ -128,6 +133,7 @@ describe('VenueNetworksTab', () => {
     act(() => {
       store.dispatch(networkApi.util.resetApiState())
       store.dispatch(venueApi.util.resetApiState())
+      store.dispatch(softGreApi.util.resetApiState())
     })
 
     mockServer.use(
@@ -164,7 +170,10 @@ describe('VenueNetworksTab', () => {
       rest.post(
         CommonRbacUrlsInfo.getWifiNetworksList.url,
         (_, res, ctx) => res(ctx.json(venueNetworkList))
-      )
+      ),
+      rest.post(
+        SoftGreUrls.getSoftGreViewDataList.url,
+        (_, res, ctx) => res(ctx.json(mockSoftGreTable)))
     )
   })
 
@@ -402,7 +411,8 @@ describe('VenueNetworksTab', () => {
     beforeEach(() => {
       jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP
         && ff !== Features.WIFI_RBAC_API
-        && ff !== Features.EDGE_SD_LAN_MV_TOGGLE)
+        && ff !== Features.EDGE_SD_LAN_MV_TOGGLE
+        && ff !== Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
     })
     const mockedSdLanScopeData = {
       sdLans: [{
@@ -522,6 +532,49 @@ describe('VenueNetworksTab', () => {
       await waitFor(() => expect(radioOpt_sdlan).toBeChecked())
     })
 
+    it('should greyout when the WLAN is the last one in SDLAN', async () => {
+      const mockedData = {
+        sdLans: [{
+          ...mockedMvSdLanDataList[0],
+          name: 'Mocked_SDLAN_last_one_test',
+          tunneledWlans: [{
+            networkId: targetNetworkId,
+            networkName: 'test_1',
+            venueId: params.venueId
+          }] as EdgeSdLanTunneledWlan[],
+          tunneledGuestWlans: [] as EdgeSdLanTunneledWlan[]
+        }] as EdgeMvSdLanViewData[],
+        scopedNetworkIds: [targetNetworkId],
+        scopedGuestNetworkIds: []
+      }
+      jest.mocked(useSdLanScopedVenueNetworks).mockReturnValue(mockedData)
+
+      mockServer.use(
+        rest.post(
+          EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+          (_, res, ctx) => {
+            return res(ctx.json({ data: mockedData.sdLans }))
+          }
+        )
+      )
+
+      render(<Provider><VenueNetworksTab /></Provider>, {
+        route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
+      })
+
+      const activatedRow = await screen.findByRole('row', { name: /test_1/i })
+      screen.getByRole('columnheader', { name: 'Tunnel' })
+      const tunnelBtn = await within(activatedRow).findByRole('button', { name: 'Tunneled (SE_Cluster 0)' })
+      await userEvent.click(tunnelBtn)
+      const tunnelNetworkModal = await screen.findByRole('dialog')
+      const radioOpt_sdlan = await within(tunnelNetworkModal).findByRole('radio', { name: /SD-LAN Tunneling/ })
+      await within(tunnelNetworkModal).findByText('Mocked_SDLAN_last_one_test')
+      await waitFor(() => expect(radioOpt_sdlan).toBeChecked())
+      expect(radioOpt_sdlan).toBeDisabled()
+      const radioOpt_none = within(tunnelNetworkModal).getByRole('radio', { name: /Local Breakout/ })
+      expect(radioOpt_none).toBeDisabled()
+    })
+
     it('should correctly display local breakout when the network is not SDLAN selected', async () => {
       const mockSdLan = cloneDeep(mockedMvSdLanDataList[0])
       mockSdLan.tunneledWlans![0].venueId = params.venueId
@@ -556,6 +609,74 @@ describe('VenueNetworksTab', () => {
       const activatedRow = await screen.findByRole('row', { name: /test_1/i })
       screen.getByRole('columnheader', { name: 'Tunnel' })
       await within(activatedRow).findByRole('button', { name: 'Local Breakout' })
+    })
+  })
+
+  describe('SoftGreTunnel', () => {
+    const tenantId = 'tenantId'
+    const venueId = 'venueId-1'
+
+    beforeEach(() => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff =>
+        ff !== Features.G_MAP &&
+        ff !== Features.EDGES_SD_LAN_TOGGLE &&
+        ff !== Features.EDGES_SD_LAN_HA_TOGGLE &&
+        ff !== Features.EDGE_SD_LAN_MV_TOGGLE)
+    })
+
+    it('should correctly display tunnel column when SoftGre is running on it', async () => {
+      render(<Provider><VenueNetworksTab /></Provider>, {
+        route: { params: { tenantId, venueId },
+          path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
+      })
+
+      const activatedRow = await screen.findByRole('row', { name: /test_1/i })
+      screen.getByRole('columnheader', { name: 'Tunnel' })
+      const tunnelBtn = await within(activatedRow).findByRole('button', { name: 'Tunneled (softGreProfileName1)' })
+      await userEvent.click(tunnelBtn)
+      const tunnelNetworkModal = await screen.findByRole('dialog')
+      const softGreRadio = await within(tunnelNetworkModal).findByRole('radio', { name: 'SoftGRE Tunneling' })
+      // await within(tunnelNetworkModal).findByText('softGreProfileName1')
+      await waitFor(() => expect(softGreRadio).toBeChecked())
+    })
+
+    it('should correctly display local breakout when the network is not SoftGre selected', async () => {
+      mockServer.use(
+        rest.post(
+          SoftGreUrls.getSoftGreViewDataList.url,
+          (_, res, ctx) => res(ctx.json({ totalCount: 1,page: 1, data: [{
+            id: '0d89c0f5596c4689900fb7f5f53a0859',
+            name: 'softGreProfileName1',
+            mtuType: MtuTypeEnum.MANUAL,
+            mtuSize: 1450,
+            disassociateClientEnabled: false,
+            primaryGatewayAddress: '128.0.0.1',
+            secondaryGatewayAddress: '128.0.0.0',
+            keepAliveInterval: 100,
+            keepAliveRetryTimes: 8,
+            activations: [
+              {
+                venueId: 'venueId-1',
+                wifiNetworkIds: ['network_1', 'network_2', 'network_3']
+              }
+            ]
+          }] }))
+        )
+      )
+      render(<Provider><VenueNetworksTab /></Provider>, {
+        route: { params: { tenantId, venueId },
+          path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
+      })
+
+      const activatedRow = await screen.findByRole('row', { name: /test_1/i })
+      screen.getByRole('columnheader', { name: 'Tunnel' })
+      const tunnelBtn = await within(activatedRow).findByRole('button', { name: 'Local Breakout' })
+      await userEvent.click(tunnelBtn)
+      const tunnelNetworkModal = await screen.findByRole('dialog')
+      const localRadio = await within(tunnelNetworkModal).findByRole('radio', { name: 'Local Breakout' })
+      await waitFor(() => expect(localRadio).toBeChecked())
+      const softGreRadio = await within(tunnelNetworkModal).findByRole('radio', { name: 'SoftGRE Tunneling' })
+      await waitFor(() => expect(softGreRadio).not.toBeChecked())
     })
   })
 })

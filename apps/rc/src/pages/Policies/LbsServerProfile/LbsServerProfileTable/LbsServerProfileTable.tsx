@@ -27,7 +27,7 @@ import { WifiScopes }                                              from '@acx-ui
 import { filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 
 const defaultPayload = {
-  fields: ['id', 'name', 'tenantId', 'lbsVenueName', 'server', 'venueIds'],
+  fields: ['id', 'name', 'tenantId', 'lbsServerVenueName', 'server', 'venueIds'],
   searchString: '',
   filters: {}
 }
@@ -175,9 +175,10 @@ function useColumns () {
       )
     },
     {
-      key: 'lbsVenueName',
-      title: $t({ defaultMessage: 'LBS <VenueSingular></VenueSingular> Name' }),
-      dataIndex: 'lbsVenueName',
+      key: 'lbsServerVenueName',
+      // Not support VenueSingular for Hospitality Vertical
+      title: $t({ defaultMessage: 'LBS Server Venue Name' }),
+      dataIndex: 'lbsServerVenueName',
       sorter: true
     },
     {
