@@ -59,6 +59,23 @@ export function SwitchTroubleshootingTab () {
     }
   }
 
+  const isSupportCLIMode = function () {
+    // Waiting for 10.0.10f fw
+    return true
+    // if(switchDetailsContextData.switchDetailHeader?.firmware){
+    //   const fwVersion = switchDetailsContextData.switchDetailHeader?.firmware
+    //   /*
+    //   Only support the firmware versions listed below:
+    //   1. > 10010f < 10020
+    //   2. > 10020b
+    //   */
+    //   return isVerGEVer(fwVersion, '10010f', false) &&
+    //   (!isVerGEVer(fwVersion, '10020', false) || isVerGEVer(fwVersion, '10020b', false))
+    // }else{
+    //   return false
+    // }
+  }
+
   return (
     <Tabs
       destroyInactiveTabPane={true}
@@ -86,7 +103,8 @@ export function SwitchTroubleshootingTab () {
         </TabPane>
       }
       {
-        isCableTestEnabled && <TabPane tab={$t({ defaultMessage: 'Cable Test' })} key='cableTest'>
+        isSupportCLIMode() && isCableTestEnabled &&
+        <TabPane tab={$t({ defaultMessage: 'Cable Test' })} key='cableTest'>
           <SwitchCableTestForm/>
         </TabPane>
       }
