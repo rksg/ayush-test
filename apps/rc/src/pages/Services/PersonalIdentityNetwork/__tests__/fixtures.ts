@@ -167,52 +167,52 @@ export const mockVenueNetworkData = {
 //   ]
 // }
 
-export const mockNsgData = {
-  id: '2599f95d-86a2-470c-9679-e739de054ba1',
-  name: 'RLTestNsg-1',
-  vxlanTunnelProfileId: 'test123',
-  venueInfos: [
-    {
-      venueId: 'mock_venue_1',
-      personaId: ''
-    }
-  ],
-  edgeClusterInfos: [
-    {
-      edgeClusterId: '0000000001',
-      segments: 10,
-      devices: 10,
-      dhcpInfoId: '1',
-      dhcpPoolId: '1'
-    }
-  ],
-  networkIds: ['1', '2'],
-  distributionSwitchInfos: [
-    {
-      id: 'c8:03:f5:3a:95:c6',
-      siteName: '964fe8920291194e208b6d22370c2cc82c',
-      loopbackInterfaceId: '12',
-      loopbackInterfaceIp: '1.2.3.4',
-      loopbackInterfaceSubnetMask: '255.255.255.0',
-      vlans: '23',
-      siteKeepAlive: '5',
-      siteRetry: '3'
-    }
-  ],
-  accessSwitchInfos: [
-    {
-      id: 'c0:c5:20:aa:35:fd',
-      templateId: '723250a97f3a4c3780e70c83c5b095ba',
-      webAuthPageType: 'TEMPLATE',
-      vlanId: '111',
-      webAuthPasswordLabel: 'password-Ken-0209',
-      webAuthCustomTitle: 'title-Ken-0209',
-      webAuthCustomTop: 'top-Ken-0209',
-      webAuthCustomLoginButton: 'login-Ken-0209',
-      webAuthCustomBottom: 'bottom-Ken-0209'
-    }
-  ]
-}
+// export const mockNsgData = {
+//   id: '2599f95d-86a2-470c-9679-e739de054ba1',
+//   name: 'RLTestNsg-1',
+//   vxlanTunnelProfileId: 'test123',
+//   venueInfos: [
+//     {
+//       venueId: 'mock_venue_1',
+//       personaId: ''
+//     }
+//   ],
+//   edgeClusterInfos: [
+//     {
+//       edgeClusterId: '0000000001',
+//       segments: 10,
+//       devices: 10,
+//       dhcpInfoId: '1',
+//       dhcpPoolId: '1'
+//     }
+//   ],
+//   networkIds: ['1', '2'],
+//   distributionSwitchInfos: [
+//     {
+//       id: 'c8:03:f5:3a:95:c6',
+//       siteName: '964fe8920291194e208b6d22370c2cc82c',
+//       loopbackInterfaceId: '12',
+//       loopbackInterfaceIp: '1.2.3.4',
+//       loopbackInterfaceSubnetMask: '255.255.255.0',
+//       vlans: '23',
+//       siteKeepAlive: '5',
+//       siteRetry: '3'
+//     }
+//   ],
+//   accessSwitchInfos: [
+//     {
+//       id: 'c0:c5:20:aa:35:fd',
+//       templateId: '723250a97f3a4c3780e70c83c5b095ba',
+//       webAuthPageType: 'TEMPLATE',
+//       vlanId: '111',
+//       webAuthPasswordLabel: 'password-Ken-0209',
+//       webAuthCustomTitle: 'title-Ken-0209',
+//       webAuthCustomTop: 'top-Ken-0209',
+//       webAuthCustomLoginButton: 'login-Ken-0209',
+//       webAuthCustomBottom: 'bottom-Ken-0209'
+//     }
+//   ]
+// }
 
 export const webAuthList = [{
   id: '723250a97f3a4c3780e70c83c5b095ba',

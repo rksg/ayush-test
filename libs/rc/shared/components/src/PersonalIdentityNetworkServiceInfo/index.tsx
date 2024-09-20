@@ -57,6 +57,7 @@ export const PersonalIdentityNetworkServiceInfo = styled((
   } = useGetNetworkSegmentationGroupByIdQuery({
     params: { serviceId: nsgId }
   })
+
   const apListQuery = useApListQuery({
     payload: {
       ...defaultApPayload,
@@ -81,6 +82,7 @@ export const PersonalIdentityNetworkServiceInfo = styled((
         }
       }
     })
+
   const { dhcpName, dhcpId, dhcpPools, isLoading: isDhcpLoading } = useGetEdgeDhcpServiceQuery(
     { params: { id: nsgViewData?.edgeClusterInfos[0].dhcpInfoId } },{
       skip: !!!nsgViewData?.edgeClusterInfos[0],

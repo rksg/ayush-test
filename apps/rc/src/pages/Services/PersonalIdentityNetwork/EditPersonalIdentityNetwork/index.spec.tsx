@@ -17,9 +17,6 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
-import {
-  mockNsgData
-} from '../__tests__/fixtures'
 import { afterSubmitMessage } from '../PersonalIdentityNetworkForm'
 
 import EditNetworkSegmentation from '.'
@@ -57,7 +54,7 @@ jest.mock('react-router-dom', () => ({
 }))
 
 const updateNsgPath = '/:tenantId/t/services/personalIdentityNetwork/:serviceId/edit'
-const { mockNsgSwitchInfoData } = EdgeNSGFixtures
+const { mockNsgSwitchInfoData, mockNsgData } = EdgeNSGFixtures
 
 describe('Edit PersonalIdentityNetwork', () => {
   let params: { tenantId: string, serviceId: string }

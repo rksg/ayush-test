@@ -10,11 +10,9 @@ import {
   screen, waitFor, within
 } from '@acx-ui/test-utils'
 
-import { mockNsgData } from '../../__tests__/fixtures'
-
 import { DistributionSwitchDrawer } from './DistributionSwitchDrawer'
 
-const { mockNsgSwitchInfoData } = EdgeNSGFixtures
+const { mockNsgSwitchInfoData, mockNsgData } = EdgeNSGFixtures
 
 describe('DistributionSwitchDrawer', () => {
   const params = {

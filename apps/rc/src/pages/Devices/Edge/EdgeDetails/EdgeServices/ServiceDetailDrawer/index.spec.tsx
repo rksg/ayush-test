@@ -1,5 +1,6 @@
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import userEvent     from '@testing-library/user-event'
+import { cloneDeep } from 'lodash'
+import { rest }      from 'msw'
 
 import { Features }              from '@acx-ui/feature-toggle'
 import { useIsEdgeFeatureReady } from '@acx-ui/rc/components'
@@ -41,8 +42,10 @@ const {
 } = EdgeGeneralFixtures
 const { mockedSdLanDataList, mockedSdLanDataListP2, mockedMvSdLanDataList } = EdgeSdLanFixtures
 const { mockFirewallData } = EdgeFirewallFixtures
-const { mockNsgStatsList } = EdgeNSGFixtures
 const { mockDhcpStatsData, mockEdgeDhcpDataList } = EdgeDHCPFixtures
+const mockNsgStatsList = cloneDeep(EdgeNSGFixtures.mockNsgStatsList)
+mockNsgStatsList.data[0].edgeClusterInfos[0].segments = 10
+mockNsgStatsList.data[0].edgeClusterInfos[0].devices = 10
 
 const mockedSetVisible = jest.fn()
 const mockedUseSearchParams = jest.fn()
@@ -185,7 +188,7 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
     expect(await screen.findByText('Tunnel Profile')).toBeVisible()
     expect(await screen.findByRole('link', { name: /tunnelProfile1/i })).toBeVisible()
     expect(await screen.findByText('Networks')).toBeVisible()
-    expect(await screen.findByText('2')).toBeVisible()
+    expect(await screen.findByText('1')).toBeVisible()
     expect(await screen.findByTestId('rc-PinTableGroup')).toBeVisible()
   })
 
