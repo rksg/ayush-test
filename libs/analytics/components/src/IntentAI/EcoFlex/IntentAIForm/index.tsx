@@ -7,6 +7,7 @@ import { StepsForm } from '@acx-ui/components'
 
 import { IntentWizardHeader }                                                               from '../../common/IntentWizardHeader'
 import { getScheduledAt }                                                                   from '../../common/ScheduleTiming'
+import { useIntentContext }                                                                 from '../../IntentContext'
 import { createUseIntentTransition, FormValues, IntentTransitionPayload, useInitialValues } from '../../useIntentTransition'
 import { Actions, getTransitionStatus, TransitionIntentItem }                               from '../../utils'
 
@@ -29,7 +30,7 @@ function getFormDTO (values: FormValues<FormVal>): IntentTransitionPayload {
   } as IntentTransitionPayload
   if (isEnabled) {
     dto.metadata = {
-      ..._.pick(values, ['wlans']),
+      ..._.pick(values, ['averagePowerPrice']),
       scheduledAt: getScheduledAt(values).utc().toISOString()
     }
   }
@@ -40,9 +41,12 @@ const useIntentTransition = createUseIntentTransition<FormVal>(getFormDTO as any
 export const IntentAIForm: React.FC = () => {
   const { $t } = useIntl()
   const { submit } = useIntentTransition()
+  const { intent: { metadata } } = useIntentContext()
+  const averagePowerPrice = metadata.averagePowerPrice
+    ? metadata.averagePowerPrice
+    : { currency: $t({ defaultMessage: 'USD' }), value: 0 }
   // always enable = true, because only new, scheduled, active, applyscheduled can open wizard
-  const initialValues = { ...useInitialValues(), preferences: { enable: true } }
-
+  const initialValues = { ...useInitialValues(), preferences: { enable: true }, averagePowerPrice }
   return (<>
     <IntentWizardHeader />
 

@@ -54,6 +54,10 @@ export type Intent = {
     preferences?: {
       crrmFullOptimization: boolean;
     },
+    averagePowerPrice?: {
+      currency: string
+      value: number
+    }
   }
   sliceType: NodeType
   sliceValue: string

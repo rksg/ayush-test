@@ -3,8 +3,8 @@ import userEvent   from '@testing-library/user-event'
 import { message } from 'antd'
 import moment      from 'moment-timezone'
 
-import { intentAIApi, intentAIUrl, Provider, store }                              from '@acx-ui/store'
-import { mockGraphqlMutation, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { intentAIApi, intentAIUrl, Provider, store }                                         from '@acx-ui/store'
+import { fireEvent, mockGraphqlMutation, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import { mockIntentContext } from '../../__tests__/fixtures'
 import { Statuses }          from '../../states'
@@ -98,10 +98,12 @@ describe('IntentAIForm', () => {
     const radioEnabled = screen.getByRole('radio', { name: 'Reduction in energy footprint' })
     await click(radioEnabled)
     expect(radioEnabled).toBeChecked()
+    const currInput = await screen.findByDisplayValue('USD')
+    fireEvent.change(currInput, { target: { value: 'SGD' } })
+    expect(screen.getByDisplayValue('SGD')).toBeVisible()
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Settings' })).toBeVisible()
-    // await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const date = await screen.findByPlaceholderText('Select date')
     await click(date)
     await click(await screen.findByRole('cell', { name: '2024-08-09' }))
@@ -118,7 +120,14 @@ describe('IntentAIForm', () => {
     expect(mockNavigate).toBeCalled()
   })
   it('handle pause intent', async () => {
-    const { params } = mockIntentContextWith({ status: Statuses.new })
+    const { params } = mockIntentContextWith({
+      status: Statuses.new,
+      metadata: {
+        averagePowerPrice: { currency: 'SGD', value: 0 },
+        scheduledAt: '',
+        dataEndTime: ''
+      }
+    })
     render(<IntentAIForm />, { route: { params }, wrapper: Provider })
     const form = within(await screen.findByTestId('steps-form'))
     const actions = within(form.getByTestId('steps-form-actions'))
@@ -134,6 +143,7 @@ describe('IntentAIForm', () => {
     )
     await click(radioDisabled)
     expect(radioDisabled).toBeChecked()
+    expect(screen.getByDisplayValue('SGD')).toBeVisible()
     await click(actions.getByRole('button', { name: 'Next' }))
     expect(await screen.findByRole('heading', { name: 'Settings' })).toBeVisible()
 
