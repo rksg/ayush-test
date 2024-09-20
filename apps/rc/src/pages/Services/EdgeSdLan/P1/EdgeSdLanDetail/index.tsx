@@ -46,7 +46,7 @@ const EdgeSdLanDetail = () => {
       : noDataDisplay
     )
   }, {
-    title: $t({ defaultMessage: 'SmartEdge' }),
+    title: $t({ defaultMessage: 'RUCKUS Edge' }),
     content: () => ((edgeSdLanData.edgeId)
       ? <TenantLink to={`/devices/edge/${edgeSdLanData.edgeId}/details/overview`}>
         {edgeSdLanData.edgeName}

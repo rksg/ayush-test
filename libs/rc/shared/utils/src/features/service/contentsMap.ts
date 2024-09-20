@@ -21,7 +21,7 @@ export const defaultAccessLabelMapping: Record<PolicyDefaultAccess, MessageDescr
 export const serviceTypeLabelMapping: Record<ServiceType, MessageDescriptor> = {
   [ServiceType.PORTAL]: defineMessage({ defaultMessage: 'Portal' }),
   [ServiceType.DHCP]: defineMessage({ defaultMessage: 'DHCP for Wi-Fi' }),
-  [ServiceType.EDGE_DHCP]: defineMessage({ defaultMessage: 'DHCP for SmartEdge' }),
+  [ServiceType.EDGE_DHCP]: defineMessage({ defaultMessage: 'DHCP for RUCKUS Edge' }),
   [ServiceType.EDGE_FIREWALL]: defineMessage({ defaultMessage: 'Firewall' }),
   [ServiceType.EDGE_SD_LAN]: defineMessage({
     defaultMessage: 'SD-LAN' }),

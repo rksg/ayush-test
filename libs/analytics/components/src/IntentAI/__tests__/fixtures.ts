@@ -303,19 +303,28 @@ export const intentListWithAllStatus = {
       ...intentStatus,
       status: 'scheduled',
       statusReason: '',
-      displayStatus: 'scheduled'
+      displayStatus: 'scheduled',
+      metadata: {
+        scheduledAt: '2023-06-17T00:00:00.000Z'
+      }
     },
     {
       ...intentStatus,
       status: 'scheduled',
       statusReason: 'one-click',
-      displayStatus: 'scheduled-one-click'
+      displayStatus: 'scheduled-one-click',
+      metadata: {
+        scheduledAt: '2023-06-17T00:00:00.000Z'
+      }
     },
     {
       ...intentStatus,
       status: 'applyscheduled',
       statusReason: '',
-      displayStatus: 'applyscheduled'
+      displayStatus: 'applyscheduled',
+      metadata: {
+        scheduledAt: '2023-06-17T00:00:00.000Z'
+      }
     },
     {
       ...intentStatus,

@@ -57,7 +57,7 @@ const disabledFFs = [
   Features.EDGE_SD_LAN_MV_TOGGLE,
   Features.RBAC_SERVICE_POLICY_TOGGLE,
   Features.WIFI_RBAC_API,
-  Features.SWITCH_RBAC_API,
+  Features.ABAC_POLICIES_TOGGLE,
   Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE
 ]
 type MockDialogProps = React.PropsWithChildren<{

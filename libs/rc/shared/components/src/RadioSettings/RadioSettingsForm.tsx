@@ -19,11 +19,9 @@ import { usePathBasedOnConfigTemplate } from '../configTemplates'
 import {
   ApRadioTypeEnum,
   channelSelectionMethodsOptions,
-  txPowerAdjustmentOptions,
   SelectItemOption,
   bssMinRate6GOptions,
   mgmtTxRate6GOptions,
-  txPowerAdjustment6GOptions,
   apChannelSelectionMethodsOptions,
   apChannelSelectionMethods6GOptions,
   LPIButtonText
@@ -38,6 +36,7 @@ export function RadioSettingsForm (props:{
   radioType: ApRadioTypeEnum,
   radioDataKey: string[],
   disabled?: boolean,
+  txPowerOptions: SelectItemOption[],
   channelBandwidthOptions: SelectItemOption[],
   context?: string
   isUseVenueSettings?: boolean,
@@ -51,6 +50,7 @@ export function RadioSettingsForm (props:{
     radioType,
     disabled = false,
     radioDataKey,
+    txPowerOptions,
     channelBandwidthOptions,
     context = 'venue',
     isUseVenueSettings = false,
@@ -413,8 +413,7 @@ export function RadioSettingsForm (props:{
           bordered={!isUseVenueSettings}
           showArrow={!isUseVenueSettings}
           className={isUseVenueSettings? 'readOnly' : undefined}
-          options={(radioType === ApRadioTypeEnum.Radio6G)?
-            txPowerAdjustment6GOptions : txPowerAdjustmentOptions}
+          options={txPowerOptions}
           onChange={() => onChangedByCustom('txPower')}
         />
       </Form.Item>

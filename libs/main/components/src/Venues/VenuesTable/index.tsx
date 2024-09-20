@@ -179,7 +179,7 @@ function useColumns (
       }
     },
     {
-      title: $t({ defaultMessage: 'SmartEdges' }),
+      title: $t({ defaultMessage: 'RUCKUS Edges' }),
       key: 'edges',
       dataIndex: 'edges',
       align: 'center',
@@ -192,7 +192,7 @@ function useColumns (
             />
             {row?.incompatibleEdges && row.incompatibleEdges > 0 ?
               <Tooltip.Info isFilled
-                title={$t({ defaultMessage: 'Some SmartEdges may not be compatible with certain features in this <venueSingular></venueSingular>.' })}
+                title={$t({ defaultMessage: 'Some RUCKUS Edges may not be compatible with certain features in this <venueSingular></venueSingular>.' })}
                 placement='right'
                 iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px', marginLeft: '4px', color: cssStr('--acx-semantics-yellow-50') }}
               />:[]
@@ -369,11 +369,11 @@ function shouldShowConfirmation (selectedVenues: Venue[]) {
 
 function useGetVenueCityList () {
   const params = useParams()
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isRbacEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
 
   const venueCityList = useGetVenueCityListQuery({
     params,
-    enableRbac: isSwitchRbacEnabled
+    enableRbac: isRbacEnabled
   }, {
     selectFromResult: ({ data }) => ({
       cityFilterOptions: transformToCityListOptions(data)

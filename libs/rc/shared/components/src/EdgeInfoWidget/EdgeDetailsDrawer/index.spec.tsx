@@ -34,6 +34,7 @@ describe('Edge Detail Drawer', () => {
     expect(screen.queryByText('Login Password')).toBeNull()
     expect(screen.queryByText('Enable Password')).toBeNull()
     expect(await screen.findByText('Edge Cluster 1')).toBeVisible()
+    expect(await screen.findByText('Hierarchical QoS')).toBeVisible()
   })
 
   it('should render -- if data is undefined', async () => {

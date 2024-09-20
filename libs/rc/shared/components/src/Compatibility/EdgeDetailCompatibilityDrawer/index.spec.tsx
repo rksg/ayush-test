@@ -77,7 +77,7 @@ describe('EdgeDetailCompatibilityDrawer', () => {
     expect(features.length).toBe(2)
 
     const edge = compatibilityItems[0]
-    expect(await screen.findByRole('link', { name: /SmartEdge Firmware/ })).toBeInTheDocument()
+    expect(await screen.findByRole('link', { name: /RUCKUS Edge Firmware/ })).toBeInTheDocument()
     expect(within(edge).getByText('2.1.0.200')).toBeValid()
     expect(within(edge).getByText('5 / 14')).toBeValid()
 
@@ -114,7 +114,7 @@ describe('EdgeDetailCompatibilityDrawer', () => {
     expect(features.length).toBe(1)
 
     const edge = compatibilityItems[0]
-    expect(await screen.findByRole('link', { name: /SmartEdge Firmware/ })).toBeInTheDocument()
+    expect(await screen.findByRole('link', { name: /RUCKUS Edge Firmware/ })).toBeInTheDocument()
     expect(within(edge).getByText('2.1.0.400')).toBeValid()
     expect(within(edge).getByText('7 / 14')).toBeValid()
   })

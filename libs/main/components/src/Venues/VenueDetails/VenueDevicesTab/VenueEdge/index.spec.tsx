@@ -44,7 +44,7 @@ describe('VenueEdge', () => {
 
     expect(await screen.findByTestId('EdgesTable')).toBeVisible()
 
-    const target = await screen.findByRole('link', { name: 'Add SmartEdge' })
+    const target = await screen.findByRole('link', { name: 'Add RUCKUS Edge' })
     expect(target.getAttribute('href')).toBe(`/${params.tenantId}/t/devices/edge/add`)
   })
 
@@ -59,7 +59,7 @@ describe('VenueEdge', () => {
     const edgeTable = await screen.findByTestId('EdgesTable')
     expect(edgeTable).toBeVisible()
 
-    const target = screen.getByRole('link', { name: 'Add SmartEdge' })
+    const target = screen.getByRole('link', { name: 'Add RUCKUS Edge' })
     expect(target.getAttribute('href')).toBe(`/${params.tenantId}/t/devices/edge/add`)
     await waitFor(() => expect(within(edgeTable).queryByText('incompatibleCheck:true')).toBeValid())
 
