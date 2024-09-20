@@ -107,6 +107,11 @@ export const IntentAIRRMGraph: React.FC<{
   const title = $t({ defaultMessage: 'Key Performance Indications' })
   const noData = state === 'no-data'
 
+  if (noData) {
+    return <Card>
+      {$t({ defaultMessage: 'Graph modeling will be generated once Intent is activated.' })}
+    </Card>
+  }
   if (!isDataRetained) return <>{$t(dataRetentionText)}</>
 
   return <UI.Wrapper>

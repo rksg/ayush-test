@@ -77,7 +77,7 @@ export function createIntentAIDetails () {
 
   return function IntentAIDetails () {
     const { $t } = useIntl()
-    const { intent, kpis, isDataRetained: hasData, state } = useIntentContext()
+    const { intent, kpis, isDataRetained: hasData } = useIntentContext()
     const valuesText = useValuesText()
 
     const [summaryUrlBefore, setSummaryUrlBefore] = useState<string>('')
@@ -126,13 +126,11 @@ export function createIntentAIDetails () {
             <DetailsSection.Title
               children={$t({ defaultMessage: 'Key Performance Indications' })} />
             <DetailsSection.Details children={
-              state === 'no-data'
-                ? <Card>{$t({ defaultMessage: 'Graph modeling will be generated once Intent is activated.' })}</Card>
-                : <IntentAIRRMGraph
-                  crrmData={crrmData}
-                  summaryUrlBefore={summaryUrlBefore}
-                  summaryUrlAfter={summaryUrlAfter}
-                />
+              <IntentAIRRMGraph
+                crrmData={crrmData}
+                summaryUrlBefore={summaryUrlBefore}
+                summaryUrlAfter={summaryUrlAfter}
+              />
             }/>
           </DetailsSection>
 
