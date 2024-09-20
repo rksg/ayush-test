@@ -94,6 +94,7 @@ export function LanPortSettings (props: {
     useState<EthernetPortProfileViewData>()
   const [ethernetPortSettings, setEthernetPortSettings] =
     useState<EhternetPortSettings>()
+  const [ethernetProfileCreateId, setEthernetProfileCreateId] = useState<String>()
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
 
   // Non ethernet port profile
@@ -128,23 +129,22 @@ export function LanPortSettings (props: {
   }
 
   // Ethernet Port Profile
-  const { ethernetPortDropdownItems, ethernetPortListQuery } =
+  const { ethernetPortDropdownItems, ethernetPortListQuery,
+    isLoading: isLoadingEthPortList } =
     useGetEthernetPortProfileViewDataListQuery({
       payload: {
         sortField: 'name',
         sortOrder: 'ASC'
       }
     }, {
-      selectFromResult: ({ data: queryResult })=>{
-
-        return {
-          ethernetPortDropdownItems: (queryResult)?
-            convertEthernetPortListToDropdownItems(queryResult.data) :
-            [],
-          ethernetPortListQuery: queryResult
-        }
-      },
-      skip: isTemplate || !isEthernetPortProfileEnabled
+      skip: isTemplate || !isEthernetPortProfileEnabled,
+      selectFromResult: ({ data: queryResult, ...rest }) => ({
+        ethernetPortDropdownItems: (queryResult)?
+          convertEthernetPortListToDropdownItems(queryResult.data) :
+          [],
+        ethernetPortListQuery: queryResult,
+        ...rest
+      })
     })
 
   useEffect(()=> {
@@ -153,6 +153,19 @@ export function LanPortSettings (props: {
         ethernetPortListQuery.data.find((profile)=> profile.id === ethernetPortProfileId))
     }
   }, [ethernetPortProfileId, ethernetPortListQuery?.data])
+
+  useEffect(()=> {
+    if (!isLoadingEthPortList && ethernetPortListQuery?.data) {
+      const eth = getOriginalEthProfile(ethernetPortListQuery?.data)
+      form.setFieldValue(['lan', index, 'ethernetPortProfileId'],
+        ethernetProfileCreateId ?? (eth?.id ?? null))
+      setCurrentEthernetPortData(eth)
+      setEthernetProfileCreateId(undefined)
+      if (onGUIChanged) {
+        onGUIChanged('ethernetPortProfileId')
+      }
+    }
+  }, [ethernetPortListQuery?.data])
 
   // AP level
   const { data: apEthPortSettings, isLoading: isApEthPortSettingsLoading } =
@@ -166,22 +179,25 @@ export function LanPortSettings (props: {
     }
   }, [apEthPortSettings, isApEthPortSettingsLoading])
 
-
-
-  const getOriginalEthProfileId = (ethernetPortList?: EthernetPortProfileViewData[]) => {
-    let ethProfileId = null
-    if (venueId) {
-      ethProfileId = ethernetPortList?.filter(
-        m => m.venueIds && m.venueIds.includes(venueId) &&
-        m.venueActivations?.filter(v => v.apModel === (selectedModel as VenueLanPorts).model &&
-      v.portId === index))?.[0]?.id ?? null
-    } else if (serialNumber) {
-      ethProfileId = ethernetPortList?.filter(
-        m => m.apSerialNumbers && m.apSerialNumbers.includes(serialNumber) &&
-        m.apActivations?.filter(a => a.portId === index)
-      )?.[0]?.id ?? null
+  const getOriginalEthProfile = (ethernetPortList?: EthernetPortProfileViewData[]) => {
+    if (isLoadingEthPortList || !ethernetPortList) {
+      return undefined
     }
-    return ethProfileId
+
+    const portIndex = index + 1
+    let ethProfile = undefined
+    if (venueId) {
+      ethProfile = ethernetPortList?.filter(
+        m => m.venueIds && m.venueIds.includes(venueId) &&
+        m.venueActivations?.map(v => v.apModel).includes((selectedModel as VenueLanPorts).model) &&
+        m.venueActivations?.map(v => v.portId).includes(portIndex))?.[0] ?? undefined
+    } else if (serialNumber) {
+      ethProfile = ethernetPortList?.filter(
+        m => m.apSerialNumbers && m.apSerialNumbers.includes(serialNumber) &&
+        m.apActivations?.map(l => l.portId).includes(portIndex)
+      )?.[0] ?? undefined
+    }
+    return ethProfile
   }
 
   return (<>
@@ -234,7 +250,6 @@ export function LanPortSettings (props: {
         <Form.Item
           name={['lan', index, 'ethernetPortProfileId']}
           label={$t({ defaultMessage: 'Ethernet Port Profile' })}
-          initialValue={getOriginalEthProfileId(ethernetPortListQuery?.data)}
           children={<Select
             disabled={readOnly
               || isDhcpEnabled
@@ -249,7 +264,7 @@ export function LanPortSettings (props: {
           />} />
         <EthernetPortProfileDrawer
           updateInstance={(createId) => {
-            form.setFieldValue(['lan', index, 'ethernetPortProfileId'], createId)
+            setEthernetProfileCreateId(createId)
           }}
           currentEthernetPortData={currentEthernetPortData} />
       </Space>

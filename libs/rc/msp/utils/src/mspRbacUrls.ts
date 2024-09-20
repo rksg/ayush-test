@@ -337,6 +337,11 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
   //   url: '/apFirmwares?status=default',
   //   newApi: true
   // },
+  getFirmwareUpgradeByApModel: {
+    method: 'get',
+    url: '/apModelFirmwares?status=greenfieldFirmware',
+    newApi: true
+  },
   mspEcFirmwareUpgradeSchedules: {
     method: 'post',
     url: '/tenants/firmwareUpgradeSchedules',
