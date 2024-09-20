@@ -13,7 +13,7 @@ import { NotificationPreference }                                from '@acx-ui/r
 const labels = {
   DEVICE_AP_FIRMWARE: defineMessage({ defaultMessage: 'AP Firmware' }),
   DEVICE_SWITCH_FIRMWARE: defineMessage({ defaultMessage: 'Switch Firmware' }),
-  DEVICE_EDGE_FIRMWARE: defineMessage({ defaultMessage: 'SmartEdge Firmware' })
+  DEVICE_EDGE_FIRMWARE: defineMessage({ defaultMessage: 'RUCKUS Edge Firmware' })
 }
 
 const apiChanges = {

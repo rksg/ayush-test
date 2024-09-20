@@ -26,9 +26,9 @@ export const CompatibilityCheck = ({ data, venueId }:
       <CompatibleAlertBanner
         title={$t({
           defaultMessage: `{edgeCount} { edgeCount, plural,
-                  one {SmartEdge is}
-                  other {SmartEdges are}
-                } not compatible with certain SmartEdge features.`
+                  one {RUCKUS Edge is}
+                  other {RUCKUS Edges are}
+                } not compatible with certain RUCKUS Edge features.`
         },
         {
           edgeCount: incompatibleCount

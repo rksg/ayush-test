@@ -137,11 +137,18 @@ const minutesMapping: { [key:string]:number }={
   minutes: 1,
   weeks: 10080
 }
+
+interface UserConnection {
+  lockoutPeriod?: number
+  lockoutPeriodUnit?: string
+  userSessionTimeout?: number
+  userSessionTimeoutUnit?: string
+  macCredentialsDuration?: number
+  macCredentialsDurationUnit?: string
+}
 interface GuestMore {
   guestPortal?: GuestPortal,
-  userSessionTimeoutUnit?: string,
-  macCredentialsDurationUnit?: string,
-  lockoutPeriodUnit?: string
+  userConnection?: UserConnection
 
 }
 export function NetworkForm (props:{
@@ -458,30 +465,32 @@ export function NetworkForm (props:{
         }
       }
     }
-    return data
+    return handleUserConnection(data)
   }
 
   const handleUserConnection = (data: GuestMore) => {
-    if(data.guestPortal){
-      if(data.guestPortal.userSessionTimeout&&data.userSessionTimeoutUnit){
+    if(data.guestPortal && data.userConnection){
+      const { userSessionTimeout, userSessionTimeoutUnit,
+        lockoutPeriod, lockoutPeriodUnit,
+        macCredentialsDuration, macCredentialsDurationUnit
+      } = data.userConnection
+      if(userSessionTimeout && userSessionTimeoutUnit){
         data.guestPortal={
           ...data.guestPortal,
-          userSessionTimeout: data.guestPortal.userSessionTimeout*
-          minutesMapping[data.userSessionTimeoutUnit]
+          userSessionTimeout: userSessionTimeout* minutesMapping[userSessionTimeoutUnit]
         }
       }
-      if(data.lockoutPeriodUnit&&data.guestPortal.lockoutPeriod){
+      if(lockoutPeriod && lockoutPeriodUnit){
         data.guestPortal={
           ...data.guestPortal,
-          lockoutPeriod: data.guestPortal.lockoutPeriod*
-          minutesMapping[data.lockoutPeriodUnit]
+          lockoutPeriod: lockoutPeriod* minutesMapping[lockoutPeriodUnit]
         }
       }
-      if(data.macCredentialsDurationUnit&&data.guestPortal.macCredentialsDuration){
+      if(macCredentialsDurationUnit && macCredentialsDuration){
         data.guestPortal={
           ...data.guestPortal,
-          macCredentialsDuration: data.guestPortal.macCredentialsDuration*
-          minutesMapping[data.macCredentialsDurationUnit]
+          // eslint-disable-next-line max-len
+          macCredentialsDuration: macCredentialsDuration * minutesMapping[macCredentialsDurationUnit]
         }
       }
     }
@@ -715,8 +724,7 @@ export function NetworkForm (props:{
   }
 
   const processAddData = function (data: NetworkSaveData) {
-    const dataConnection = handleUserConnection(data)
-    const dataWlan = handleWlanAdvanced3MLO(dataConnection, wifi7Mlo3LinkFlag)
+    const dataWlan = handleWlanAdvanced3MLO(data, wifi7Mlo3LinkFlag)
     const saveData = handleGuestMoreSetting(dataWlan)
     const payload = updateClientIsolationAllowlist(
       // omit id to handle clone
@@ -732,6 +740,7 @@ export function NetworkForm (props:{
           'hotspot20Settings.originalOperator',
           'hotspot20Settings.identityProviders',
           'hotspot20Settings.originalProviders',
+          'userConnection',
           ...(enableServiceRbac) ? ['dpskServiceId', 'macRegistrationPoolId'] : [],
           ...(isUseWifiRbacApi) ? ['portalServiceProfileId'] : []
         ]))
@@ -798,8 +807,7 @@ export function NetworkForm (props:{
       handleOnboarding(data)
     }
 
-    const dataConnection = handleUserConnection(data)
-    const dataWlan = handleWlanAdvanced3MLO(dataConnection, wifi7Mlo3LinkFlag)
+    const dataWlan = handleWlanAdvanced3MLO(data, wifi7Mlo3LinkFlag)
     const dataMore = handleGuestMoreSetting(dataWlan)
 
     if(isPortalWebRender(dataMore)){
@@ -816,7 +824,8 @@ export function NetworkForm (props:{
           'accountingRadiusId',
           'authRadiusId',
           'guestPortal.wisprPage.authRadius',
-          'guestPortal.wisprPage.authRadiusId'
+          'guestPortal.wisprPage.authRadiusId',
+          'userConnection'
         ]
       )
     } else {
@@ -836,6 +845,7 @@ export function NetworkForm (props:{
             'hotspot20Settings.originalOperator',
             'hotspot20Settings.identityProviders',
             'hotspot20Settings.originalProviders',
+            'userConnection',
             ...(isUseWifiRbacApi) ? ['portalServiceProfileId'] : []
           ]
         )
@@ -848,6 +858,7 @@ export function NetworkForm (props:{
             'isOweMaster',
             'owePairNetworkId',
             'certificateTemplateId',
+            'userConnection',
             ...(enableServiceRbac) ? ['dpskServiceId', 'macRegistrationPoolId'] : [],
             ...(isUseWifiRbacApi) ? ['portalServiceProfileId'] : []
           ]

@@ -7,7 +7,7 @@ export const getCompatibilityDeviceTypeDisplayName = (deviceType: CompatibilityD
 
   switch(deviceType) {
     case CompatibilityDeviceEnum.EDGE:
-      return $t({ defaultMessage: 'SmartEdge' })
+      return $t({ defaultMessage: 'RUCKUS Edge' })
     case CompatibilityDeviceEnum.AP:
       return $t({ defaultMessage: 'Wi-Fi' })
     default:

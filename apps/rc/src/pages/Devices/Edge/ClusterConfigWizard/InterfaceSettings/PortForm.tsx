@@ -20,7 +20,7 @@ export const PortForm = ({ onInit }: InterfaceSettingFormStepCommonProps) => {
     </Typography.Title>
     <Typography.Text>
       {$t({ defaultMessage: `Configure the port general settings for 
-      all SmartEdges in this cluster:` })}
+      all RUCKUS Edges in this cluster:` })}
     </Typography.Text>
   </Space>
 

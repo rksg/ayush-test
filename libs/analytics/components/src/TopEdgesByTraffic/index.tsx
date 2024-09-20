@@ -77,7 +77,7 @@ function TopEdgesByTrafficWidget ({ filters }: { filters : AnalyticsFilter }) {
 
   return (
     <Loader states={[queryResults]}>
-      <HistoricalCard title={$t({ defaultMessage: 'Top 5 SmartEdges by Traffic' })}>
+      <HistoricalCard title={$t({ defaultMessage: 'Top 5 RUCKUS Edges by Traffic' })}>
         <AutoSizer>
           {({ height, width }) => (
             data && data.source?.length

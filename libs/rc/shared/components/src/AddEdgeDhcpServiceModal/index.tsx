@@ -43,7 +43,7 @@ export const AddEdgeDhcpServiceModal = () => {
         {$t({ defaultMessage: 'Add' })}
       </Button>
       <Modal
-        title={$t({ defaultMessage: 'Add DHCP for SmartEdge Service' })}
+        title={$t({ defaultMessage: 'Add DHCP for RUCKUS Edge Service' })}
         width={1100}
         visible={visible}
         type={ModalType.ModalStepsForm}

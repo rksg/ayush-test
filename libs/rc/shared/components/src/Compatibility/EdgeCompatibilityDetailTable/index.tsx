@@ -35,7 +35,7 @@ const useColumns = () => {
     dataIndex: 'featureName',
     defaultSortOrder: 'ascend'
   }, {
-    title: $t({ defaultMessage: 'Incompatible SmartEdges' }),
+    title: $t({ defaultMessage: 'Incompatible RUCKUS Edges' }),
     key: 'incompatible',
     dataIndex: 'incompatible',
     align: 'center'
@@ -175,6 +175,6 @@ const getFilteredScheduleVersions = (availableVersions?: EdgeFirmwareVersion[], 
   if (!availableVersions || !venueFirmware) return availableVersions
 
   return availableVersions.filter(availableVersion => {
-    return venueFirmware.versions.some(version => version.id === availableVersion.id)
+    return !venueFirmware.versions.some(version => version.id === availableVersion.id)
   })
 }

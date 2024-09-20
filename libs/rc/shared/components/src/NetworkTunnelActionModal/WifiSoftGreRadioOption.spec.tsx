@@ -104,7 +104,38 @@ describe('WifiSoftGreRadioOption', () => {
     })
   })
 
-  it('should show error render softGRE tunneling selected', async () => {
+  it('should show error render softGRE tunneling selected(Non-profile)', async () => {
+    const venueId = 'venueId-2'
+    const networkId = 'network_9'
+    const { result: formRef } = renderHook(() => {
+      return Form.useForm()[0]
+    })
+    render(
+      <Provider>
+        <Form form={formRef.current}>
+          <WifiSoftGreRadioOption
+            currentTunnelType={NetworkTunnelTypeEnum.SoftGre}
+            venueId={venueId}
+            networkId={networkId}
+            cachedSoftGre={[]}
+          />
+        </Form>
+      </Provider>,
+      { route: { path: viewPath, params: { venueId, tenantId } } }
+    )
+
+    expect(await screen.findByRole('button', { name: /Add/i })).toBeEnabled()
+    expect(await screen.findByRole('button', { name: /Profile details/i })).not.toBeEnabled()
+    await userEvent.click(await screen.findByRole('combobox'))
+    await userEvent.click(await screen.findByText('softGreProfileName3'))
+    expect(await screen.findByRole('button', { name: /Profile details/i })).toBeEnabled()
+    expect(await screen.findByText(/Please choose a different one./)).toBeVisible()
+    await userEvent.click(await screen.findByRole('combobox'))
+    await userEvent.click(await screen.findByText('softGreProfileName4'))
+    await waitFor(() => expect(screen.queryByText(/Please choose a different one./)).toBeNull())
+  })
+
+  it('should show error render softGRE tunneling selected(Exist-profile)', async () => {
     const venueId = 'venueId-2'
     const networkId = 'network_7'
     const { result: formRef } = renderHook(() => {
@@ -135,9 +166,18 @@ describe('WifiSoftGreRadioOption', () => {
         newProfileId: 'softGreProfileName4-id'
       }
     })
+    expect(screen.queryByText(/Please choose a different one./)).toBeNull()
     await userEvent.click(await screen.findByRole('combobox'))
     await userEvent.click(await screen.findByText('softGreProfileName3'))
     expect(await screen.findByRole('button', { name: /Profile details/i })).toBeEnabled()
     expect(await screen.findByText(/Please choose a different one./)).toBeVisible()
+    await userEvent.click(await screen.findByRole('combobox'))
+    await userEvent.click(await screen.findByText('softGreProfileName2'))
+    expect(formRef.current.getFieldsValue()).toEqual({
+      softGre: {
+        newProfileId: '75aa5131892d44a6a85a623dd3e524ed'
+      }
+    })
+    await waitFor(() => expect(screen.queryByText(/Please choose a different one./)).toBeNull())
   })
 })
