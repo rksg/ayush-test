@@ -5,6 +5,7 @@ import { useIntl }                                       from 'react-intl'
 
 import { Loader, showActionModal }                            from '@acx-ui/components'
 import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
+import { RocketOutlined }                                     from '@acx-ui/icons-new'
 import { SpaceWrapper }                                       from '@acx-ui/rc/components'
 import { useUserProfileContext, useToggleBetaStatusMutation } from '@acx-ui/user'
 
@@ -14,6 +15,21 @@ import { R1FeatureListDrawer } from './R1FeatureListDrawer'
 import * as UI                 from './styledComponents'
 
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
+
+type Size = 'sm' | 'md' | 'lg'
+type IconProps = {
+  size?: Size;
+  color?: string;
+  style?: React.CSSProperties;
+} & React.SVGProps<SVGSVGElement>
+
+export function BetaIndicator ({
+  size
+}: IconProps) {
+  return <UI.IconWrapper>
+    <RocketOutlined size={size} />
+  </UI.IconWrapper>
+}
 
 /* eslint-disable-next-line */
 export interface EnableR1BetaFeaturesProps {
@@ -75,7 +91,7 @@ function EnableR1BetaFeatures (props: EnableR1BetaFeaturesProps) {
     <Row gutter={24} className={className}>
       <Col span={24}>
         <Form.Item>
-          <SpaceWrapper full justifycontent='flex-start'>
+          <UI.IconCheckboxWrapper full justifycontent='flex-start'>
             <Tooltip
               title={isUpdating ?
                 $t({ defaultMessage: 'Updating, please wait' }) :
@@ -86,15 +102,17 @@ function EnableR1BetaFeatures (props: EnableR1BetaFeaturesProps) {
                 checked={checked}
                 disabled={isDisabled}
               >
-                <UI.OrangeRocketOutlined width='20' height='20' />
-                {$t({ defaultMessage: 'Enable RUCKUS One Early Access features' })}
+                <Row>
+                  <BetaIndicator size='sm' />
+                  {$t({ defaultMessage: 'Enable RUCKUS One Early Access features' })}
+                </Row>
               </Checkbox>
             </Tooltip>
 
             {checked && <Typography.Link role='link' onClick={openR1FeatureListDrawer}>
               {$t({ defaultMessage: 'Manage' })}
             </Typography.Link>}
-          </SpaceWrapper>
+          </UI.IconCheckboxWrapper>
         </Form.Item>
 
         <SpaceWrapper full className='indent' justifycontent='flex-start'>

@@ -6,6 +6,7 @@ import { useParams }  from 'react-router-dom'
 
 import { Button, Drawer, showActionModal }                                                                                  from '@acx-ui/components'
 import { BetaListDetails }                                                                                                  from '@acx-ui/feature-toggle'
+import { RocketOutlined }                                                                                                   from '@acx-ui/icons-new'
 import { Feature, FeatureAPIResults, useToggleBetaStatusMutation, useUpdateBetaFeatureListMutation, useUserProfileContext } from '@acx-ui/user'
 
 import { MessageMapping } from '../MessageMapping'
@@ -17,6 +18,21 @@ export interface R1FeatureListDrawerProps {
   setVisible: (visible: boolean) => void
   width?: number
   editMode?: boolean
+}
+
+type Size = 'sm' | 'md' | 'lg'
+type IconProps = {
+  size?: Size;
+  color?: string;
+  style?: React.CSSProperties;
+} & React.SVGProps<SVGSVGElement>
+
+export function BetaIndicator ({
+  size
+}: IconProps) {
+  return <UI.IconWrapper>
+    <RocketOutlined size={size} />
+  </UI.IconWrapper>
 }
 
 function R1FeatureListDrawer (
@@ -91,7 +107,7 @@ function R1FeatureListDrawer (
   return <Drawer
     destroyOnClose={resetField}
     title={$t({ defaultMessage: 'Early Access Features' })}
-    icon={<UI.OrangeRocketOutlined/>}
+    icon={<BetaIndicator size='md' />}
     visible={visible}
     onClose={onClose}
     width={'430px'}

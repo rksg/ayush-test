@@ -1,11 +1,12 @@
 import {
   Checkbox as AntCheckbox,
+  Space,
   Switch,
   Typography
 } from 'antd'
 import styled from 'styled-components/macro'
 
-import { RocketOutlined } from '@acx-ui/icons'
+import { SpaceWrapper } from '@acx-ui/rc/components'
 
 
 export const Wrapper = styled.div`
@@ -154,17 +155,20 @@ export const EarlyAccessFeatureSwitch = styled(Switch)`
     background: var(--acx-primary-white) !important;
   }
 `
-export const OrangeRocketOutlined = styled(RocketOutlined)`
-  ${(props) => props.width ? `width: ${props.width}px;` : '' }
-  ${(props) => props.height ? `height: ${props.height}px;` : '' }
-  vertical-align: middle;
-  path:nth-child(1),
-  path:nth-child(2),
-  path:nth-child(3),
-  path:nth-child(4) {
-    stroke: var(--acx-accents-orange-50);
+export const IconWrapper = styled(Space)`
+  display: flex;
+  svg {
+    display: flex;
+    margin: 0 !important;
+    color: var(--acx-accents-orange-50);
   }
-  path:nth-child(5) {
-    fill: var(--acx-accents-orange-50);
+`
+export const IconCheckboxWrapper = styled(SpaceWrapper)`
+  .ant-checkbox {
+    top: 3px;
+  }
+  .ant-row {
+    position: relative;
+    top: 3px;
   }
 `
