@@ -100,7 +100,7 @@ export default function Dashboard () {
     },
     ...(isEdgeEnabled ? [
       {
-        label: $t({ defaultMessage: 'SmartEdge' }),
+        label: $t({ defaultMessage: 'RUCKUS Edge' }),
         value: 'edge',
         children: <EdgeWidgets />
       }
@@ -192,7 +192,7 @@ function DashboardPageHeader () {
           ...(isEdgeEnabled && hasPermission({ scopes: [EdgeScopes.CREATE] })) ? [{
             key: 'add-edge',
             label: <TenantLink to='devices/edge/add'>{
-              $t({ defaultMessage: 'SmartEdge' })
+              $t({ defaultMessage: 'RUCKUS Edge' })
             }</TenantLink>
           }] : []
         ]

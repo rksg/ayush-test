@@ -4,7 +4,7 @@ import { MaybePromise }                                       from '@reduxjs/too
 import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 import { omit, reduce }                                       from 'lodash'
 
-import { Filter }          from '@acx-ui/components'
+import { Filter }     from '@acx-ui/components'
 import {
   AFCInfo,
   AFCPowerMode,
@@ -80,7 +80,10 @@ import {
   EthernetPortProfileUrls,
   SystemCommands,
   StickyClientSteering,
-  ApStickyClientSteering
+  ApStickyClientSteering,
+  SwitchRbacUrlsInfo,
+  SwitchClient,
+  SwitchInformation
 } from '@acx-ui/rc/utils'
 import { baseApApi }      from '@acx-ui/store'
 import { RequestPayload } from '@acx-ui/types'
@@ -100,6 +103,7 @@ import {
 import {
   aggregateApGroupInfo,
   aggregatePoePortInfo,
+  aggregateSwitchInfo,
   aggregateVenueInfo,
   getApListFn,
   getApViewmodelListFn,
@@ -165,7 +169,7 @@ export const apApi = baseApApi.injectEndpoints({
         let venueIds
         let groupIds
         let apGroupList
-        if(groupByField) {
+        if (groupByField) {
           apList = apListRes.data as TableResult<NewAPExtendedGrouped, ApExtraParams>
           venueIds = apList?.data.flatMap(item => item.aps.map(item => item.venueId))
           groupIds = groupByField === 'apGroupId' ?
@@ -176,7 +180,7 @@ export const apApi = baseApApi.injectEndpoints({
           venueIds = apList?.data.map(item => item.venueId).filter(item => item)
           groupIds = apList?.data.map(item => item.apGroupId).filter(item => item)
         }
-        if(venueIds.length > 0) {
+        if (venueIds.length > 0) {
           const venuePayload = {
             fields: ['name', 'id'],
             pageSize: 10000,
@@ -186,7 +190,7 @@ export const apApi = baseApApi.injectEndpoints({
           const venueList = venueListRes.data as TableResult<Venue>
           aggregateVenueInfo(apList, venueList)
         }
-        if(groupIds.length > 0) {
+        if (groupIds.length > 0) {
           const apGroupPayload = {
             fields: ['name', 'id', 'wifiNetworkIds'],
             pageSize: 10000,
@@ -199,6 +203,44 @@ export const apApi = baseApApi.injectEndpoints({
           apGroupList = apGroupListRes.data as TableResult<NewApGroupViewModelResponseType>
           aggregateApGroupInfo(apList, apGroupList)
         }
+
+        if (apList && apList.data.length > 0) {
+          const apMacSwitchMap = new Map<string, SwitchInformation>()
+          const unqueClientApMacs: Set<string> = new Set()
+          apList?.data.forEach((item) => {
+            const { macAddress } = item
+            if (macAddress) {
+              unqueClientApMacs.add(macAddress)
+            }
+          })
+          const switchClientMacs: string[] = Array.from(unqueClientApMacs)
+          const switchApiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+          const switchClientPayload = {
+            fields: ['clientMac', 'switchId', 'switchName', 'switchSerialNumber'],
+            page: 1,
+            pageSize: 10000,
+            filters: { clientMac: switchClientMacs }
+          }
+          const switchClistInfo = {
+            ...createHttpRequest(SwitchRbacUrlsInfo.getSwitchClientList, {}, switchApiCustomHeader),
+            body: JSON.stringify(switchClientPayload)
+          }
+          const switchClientsQuery = await fetchWithBQ(switchClistInfo)
+          const switchClients = switchClientsQuery.data as TableResult<SwitchClient>
+
+          switchClients?.data?.forEach((switchInfo) => {
+            const { clientMac, switchId, switchName, switchSerialNumber } = switchInfo
+            apMacSwitchMap.set(clientMac, {
+              id: switchId,
+              name: switchName,
+              serialNumber: switchSerialNumber
+            })
+          })
+
+          aggregateSwitchInfo(apList, apMacSwitchMap)
+        }
+
+
         const capabilitiesRes = await fetchWithBQ(createHttpRequest(WifiRbacUrlsInfo.getWifiCapabilities, apiCustomHeader))
         const capabilities = capabilitiesRes.data as Capabilities
         aggregatePoePortInfo(apList, capabilities)

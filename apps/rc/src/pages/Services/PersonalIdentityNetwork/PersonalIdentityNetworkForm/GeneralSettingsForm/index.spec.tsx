@@ -84,7 +84,7 @@ describe('PersonalIdentityNetworkForm - GeneralSettingsForm', () => {
       </Provider>,
       { route: { params, path: createNsgPath } })
     expect(await screen.findByRole('textbox', { name: 'Service Name' })).toBeVisible()
-    expect(await screen.findByRole('combobox', { name: 'Venue with SmartEdge deployed' })).toBeVisible()
+    expect(await screen.findByRole('combobox', { name: 'Venue with RUCKUS Edge deployed' })).toBeVisible()
     expect(await screen.findByTestId('PersonalIdentityPreparationListDrawer')).toBeVisible()
   })
 
@@ -104,7 +104,7 @@ describe('PersonalIdentityNetworkForm - GeneralSettingsForm', () => {
       { route: { params, path: createNsgPath } })
     expect(screen.queryByTestId('PropertyManagementInfo')).not.toBeInTheDocument()
     await userEvent.selectOptions(
-      await screen.findByRole('combobox', { name: 'Venue with SmartEdge deployed' }),
+      await screen.findByRole('combobox', { name: 'Venue with RUCKUS Edge deployed' }),
       await screen.findByRole('option', { name: 'Mock Venue 1' })
     )
     await screen.findByTestId('PropertyManagementInfo')
@@ -145,7 +145,7 @@ describe('PersonalIdentityNetworkForm - GeneralSettingsForm', () => {
       { route: { params, path: createNsgPath } })
     expect(screen.queryByTestId('PersonalIdentityDiagram')).not.toBeInTheDocument()
     await userEvent.selectOptions(
-      await screen.findByRole('combobox', { name: 'Venue with SmartEdge deployed' }),
+      await screen.findByRole('combobox', { name: 'Venue with RUCKUS Edge deployed' }),
       await screen.findByRole('option', { name: 'Mock Venue 1' })
     )
     expect(screen.queryByTestId('PersonalIdentityDiagram')).toBeVisible()

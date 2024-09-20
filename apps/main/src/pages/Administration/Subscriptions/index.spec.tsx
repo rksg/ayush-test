@@ -203,7 +203,7 @@ describe('Subscriptions', () => {
     const wifiRowCells = await within(wifiRow as HTMLTableRowElement).findAllByRole('cell')
     expect((wifiRowCells[1] as HTMLTableCellElement).innerHTML).toBe('Trial')
 
-    const edgeRow = await screen.findByRole('row', { name: /SmartEdge/i })
+    const edgeRow = await screen.findByRole('row', { name: /RUCKUS Edge/i })
     const edgeRowCells = await within(edgeRow as HTMLTableRowElement).findAllByRole('cell')
     expect((edgeRowCells[1] as HTMLTableCellElement).innerHTML).toBe('Basic')
   })
@@ -218,7 +218,7 @@ describe('Subscriptions', () => {
 
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     await screen.findByRole('columnheader', { name: 'Device Count' })
-    await screen.findByRole('row', { name: /SmartEdge/i })
+    await screen.findByRole('row', { name: /RUCKUS Edge/i })
   })
   it('should filter edge data when edge FF is not denabled', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => !excludedFlags.concat(Features.EDGES_TOGGLE)
@@ -234,9 +234,9 @@ describe('Subscriptions', () => {
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     await screen.findByRole('columnheader', { name: 'Device Count' })
     await screen.findByRole('row', { name: /Wi-Fi/i })
-    expect(screen.queryByRole('row', { name: /SmartEdge/i })).toBeNull()
+    expect(screen.queryByRole('row', { name: /RUCKUS Edge/i })).toBeNull()
     expect((await screen.findByTestId('rc-SubscriptionHeader'))).toBeVisible()
-    expect(screen.queryAllByText('SmartEdge').length).toBe(0)
+    expect(screen.queryAllByText('RUCKUS Edge').length).toBe(0)
   })
 
   it('should show banner on no subscription active error', async () => {

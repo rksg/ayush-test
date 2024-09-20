@@ -2,11 +2,11 @@
 import { Divider, Form } from 'antd'
 import { useIntl }       from 'react-intl'
 
-import { Drawer, PasswordInput }                                                                                                        from '@acx-ui/components'
-import { formatter }                                                                                                                    from '@acx-ui/formatter'
-import { EdgeClusterStatus, EdgeDnsServers, EdgePasswordDetail, EdgeStatus, EdgeStatusEnum, isVirtualEdgeSerial, transformDisplayText } from '@acx-ui/rc/utils'
-import { TenantLink }                                                                                                                   from '@acx-ui/react-router-dom'
-import { useUserProfileContext }                                                                                                        from '@acx-ui/user'
+import { Drawer, PasswordInput }                                                                                                                                         from '@acx-ui/components'
+import { formatter }                                                                                                                                                     from '@acx-ui/formatter'
+import { EdgeClusterStatus, EdgeDnsServers, EdgePasswordDetail, EdgeStatus, EdgeStatusEnum, isVirtualEdgeSerial, transformDisplayEnabledDisabled, transformDisplayText } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                                                                                    from '@acx-ui/react-router-dom'
+import { useUserProfileContext }                                                                                                                                         from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
@@ -18,6 +18,7 @@ interface EdgeDetailsDrawerProps {
   dnsServers: EdgeDnsServers | undefined
   passwordDetail: EdgePasswordDetail | undefined
 }
+
 
 const EdgeDetailsDrawer = (props: EdgeDetailsDrawerProps) => {
   const { $t } = useIntl()
@@ -81,6 +82,15 @@ const EdgeDetailsDrawer = (props: EdgeDetailsDrawerProps) => {
         label={$t({ defaultMessage: 'Secondary DNS Server' })}
         children={
           transformDisplayText(dnsServers?.secondary)
+        }
+      />
+
+      <Divider/>
+
+      <Form.Item
+        label={$t({ defaultMessage: 'Hierarchical QoS' })}
+        children={
+          transformDisplayEnabledDisabled(currentEdge?.isHqosEnabled??false)
         }
       />
 
@@ -166,7 +176,7 @@ const EdgeDetailsDrawer = (props: EdgeDetailsDrawerProps) => {
 
   return (
     <Drawer
-      title={$t({ defaultMessage: 'SmartEdge Details' })}
+      title={$t({ defaultMessage: 'RUCKUS Edge Details' })}
       visible={visible}
       onClose={onClose}
       children={content}

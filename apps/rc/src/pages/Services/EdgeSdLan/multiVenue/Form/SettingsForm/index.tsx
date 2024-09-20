@@ -329,14 +329,14 @@ const ClusterFirmwareInfo = (props: {
       </Typography>
       {isLower && <Tooltip
         title={<Loader states={[{ isLoading }]}>
-          {$t({ defaultMessage: `SD-LAN feature requires your SmartEdge cluster
+          {$t({ defaultMessage: `SD-LAN feature requires your RUCKUS Edge cluster
               running firmware version <b>{requiredFw}</b> or higher. You may upgrade your
               <venueSingular></venueSingular> firmware from {targetLink}` },
           {
             b: (txt) => <b>{txt}</b>,
             requiredFw,
             targetLink: <TenantLink to='/administration/fwVersionMgmt/edgeFirmware'>
-              {$t({ defaultMessage: 'Administration > Version Management > SmartEdge Firmware' })}
+              {$t({ defaultMessage: 'Administration > Version Management > RUCKUS Edge Firmware' })}
             </TenantLink>
           })}
         </Loader>
