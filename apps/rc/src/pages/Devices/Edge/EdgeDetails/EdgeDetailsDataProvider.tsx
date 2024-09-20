@@ -39,7 +39,8 @@ export const EdgeDetailsDataProvider = (props:EdgeDetailsDataProviderProps) => {
       'memoryTotalKb',
       'diskUsedKb',
       'diskTotalKb',
-      'description'
+      'description',
+      'isHqosEnabled'
     ],
     filters: { serialNumber: [serialNumber] } }
 

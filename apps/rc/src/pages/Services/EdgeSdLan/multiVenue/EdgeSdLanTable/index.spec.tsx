@@ -308,7 +308,7 @@ describe('Multi-venue SD-LAN Table', () => {
     const fwWarningIcon = await within(row1).findByTestId('WarningCircleSolid')
     await userEvent.hover(fwWarningIcon)
     expect(await screen.findByRole('tooltip', { hidden: true }))
-      .toHaveTextContent('SmartEdges and access points')
+      .toHaveTextContent('RUCKUS Edges and access points')
   })
 })
 

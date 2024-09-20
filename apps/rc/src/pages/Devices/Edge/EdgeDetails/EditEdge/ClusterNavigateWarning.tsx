@@ -20,7 +20,7 @@ export const ClusterNavigateWarning = () => {
       {
         redirectLink: <TenantLink
           to={`/devices/edge/cluster/${clusterInfo?.clusterId}/configure`}
-          children={$t({ defaultMessage: 'Cluster & SmartEdge configuration wizard' })}
+          children={$t({ defaultMessage: 'Cluster & RUCKUS Edge configuration wizard' })}
         />,
         clusterName: clusterInfo?.name
       }

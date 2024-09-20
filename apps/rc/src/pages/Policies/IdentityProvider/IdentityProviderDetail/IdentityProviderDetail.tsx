@@ -9,11 +9,12 @@ import {
   IdentityProviderViewModel,
   PolicyOperation,
   PolicyType,
+  filterByAccessForServicePolicyMutation,
   getPolicyDetailsLink,
+  getScopeKeyByPolicy,
   usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
-import { TenantLink }                               from '@acx-ui/react-router-dom'
-import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 import { IdentityProviderInstancesTable } from './IdentityProviderInstancesTable'
 import { IdentityProviderOverview }       from './IdentityProviderOverview'
@@ -49,12 +50,13 @@ const IdentityProviderDetail = () => {
     <PageHeader
       title={data?.name || ''}
       breadcrumb={breadcrumb}
-      extra={hasCrossVenuesPermission() && filterByAccess([
+      extra={filterByAccessForServicePolicyMutation([
         <TenantLink to={getPolicyDetailsLink({
           type: PolicyType.IDENTITY_PROVIDER,
           oper: PolicyOperation.EDIT,
           policyId: policyId as string
-        })}>
+        })}
+        scopeKey={getScopeKeyByPolicy(PolicyType.IDENTITY_PROVIDER, PolicyOperation.EDIT)}>
           <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
         </TenantLink>
       ])} />

@@ -85,7 +85,9 @@ describe('AP Networking Tab', () => {
       updateMesh: jest.fn(),
       discardMeshChanges: jest.fn(),
       updateDirectedMulticast: jest.fn(),
-      discardDirectedMulticastChanges: jest.fn()
+      discardDirectedMulticastChanges: jest.fn(),
+      updateSmartMonitor: jest.fn(),
+      discardSmartMonitorChanges: jest.fn()
     }
 
     render(
@@ -127,7 +129,9 @@ describe('AP Networking Tab', () => {
       updateMesh: jest.fn(),
       discardMeshChanges: jest.fn(),
       updateDirectedMulticast: jest.fn(),
-      discardDirectedMulticastChanges: jest.fn()
+      discardDirectedMulticastChanges: jest.fn(),
+      updateSmartMonitor: jest.fn(),
+      discardSmartMonitorChanges: jest.fn()
     }
 
     render(

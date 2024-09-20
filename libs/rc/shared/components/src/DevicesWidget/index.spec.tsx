@@ -155,11 +155,11 @@ describe('Devices widget V2 edge enabled', () => {
     await screen.findByText('Devices')
     await screen.findByText('Access Points')
     await screen.findByText('Switches')
-    await screen.findByText('SmartEdges')
+    await screen.findByText('RUCKUS Edges')
     expect(asFragment().querySelectorAll('svg').length).toBe(3)
   })
 
-  it('should render add smartEdge when no edge', async () => {
+  it('should render add RUCKUS Edge when no edge', async () => {
     const params = {
       tenantId: 'tenant-id'
     }
@@ -180,9 +180,9 @@ describe('Devices widget V2 edge enabled', () => {
     await screen.findByText('Devices')
     await screen.findByText('Access Points')
     await screen.findByText('Switches')
-    await screen.findByText('No SmartEdges')
+    await screen.findByText('No RUCKUS Edges')
     expect(asFragment().querySelectorAll('svg').length).toBe(2)
-    expect(screen.getByRole('link', { name: 'Add SmartEdge' }))
+    expect(screen.getByRole('link', { name: 'Add RUCKUS Edge' }))
       .toHaveAttribute('href', '/tenant-id/t/devices/edge/add')
   })
 
