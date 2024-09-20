@@ -173,6 +173,7 @@ export type SwitchInformation = {
   id: string
   name: string
   serialNumber: string
+  port?: string
 }
 
 type NetworkInformation = {
