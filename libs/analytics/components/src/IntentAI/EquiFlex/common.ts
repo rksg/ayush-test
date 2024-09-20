@@ -22,7 +22,10 @@ export const kpis: IntentKPIConfig[] = [{
 
 export const commonEquiFlexDetails = {
   action: {
-    active: defineMessage({ defaultMessage: 'EquiFlex for this {scope} is currently {currentValue}. This is a RF feature that is only available via RUCKUS AI, and it performs better than the default Airtime Decongestion (ATD) feature in {smartZone}. It is recommended to enable EquiFlex in all WLANs. It is possible to deselect specific WLANs when applying this recommendation.' }),
-    inactive: defineMessage({ defaultMessage: 'When activated, this Intent takes over the automatic probe request/response optimization in the network.' })
+    hasData: defineMessage({ defaultMessage: `
+      <p>Leverage <b><i>EquiFlex</i></b>, available only through IntentAI for intelligent handling of probe request/response and optimize management traffic in a dense network.</p>
+      <p>For improved performance, this option will disable the Air Time Decongestion (ATD) feature if previously enabled for this network.</p>
+    ` }),
+    noData: defineMessage({ defaultMessage: 'When activated, this Intent takes over the automatic probe request/response optimization in the network.' })
   }
 }
