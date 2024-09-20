@@ -19,13 +19,13 @@ const Edges = () => {
   const isEdgeHaEnabled = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
 
   if (!isEdgeEnabled) {
-    return <span>{ $t({ defaultMessage: 'SmartEdge is not enabled' }) }</span>
+    return <span>{ $t({ defaultMessage: 'RUCKUS Edge is not enabled' }) }</span>
   }
 
   return isEdgeHaEnabled ?
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'SmartEdge' })}
+        title={$t({ defaultMessage: 'RUCKUS Edge' })}
         extra={hasPermission({ scopes: [EdgeScopes.CREATE] }) && <AddMenu />}
       />
       <EdgeClusterTable />
@@ -43,7 +43,7 @@ const AddMenu = () => {
         feature: Device.Edge,
         oper: CommonOperation.Add
       })}>
-        {$t({ defaultMessage: 'SmartEdge' })}
+        {$t({ defaultMessage: 'RUCKUS Edge' })}
       </TenantLink>
     },
     {

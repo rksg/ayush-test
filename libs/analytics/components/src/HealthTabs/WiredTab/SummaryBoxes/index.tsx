@@ -68,7 +68,7 @@ export const SummaryBoxes = ( props: { filters: AnalyticsFilter, noSwitches?: bo
         title: defineMessage({ defaultMessage: 'Multicast Storm Ports' }),
         value: formatValue(
           summaryData?.stormPortCount,
-          summaryData?.portCount,
+          summaryData?.nonStackPortCount,
           noSwitches)
       }],
       onClick: () => { moreDetails('portStorm') }

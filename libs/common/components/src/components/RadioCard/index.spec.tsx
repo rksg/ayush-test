@@ -28,6 +28,19 @@ describe('RadioCard', () => {
       fireEvent.click(await screen.findByText('title'))
       expect(onClick).toBeCalledTimes(1)
     })
+    it('should render RadioCard with Beta indicator correctly', async () => {
+      render(<RadioCard
+        value='value'
+        title='title'
+        description='description'
+        categories={[Category.WIFI, Category.SWITCH, Category.EDGE]}
+        isBetaFeature
+      />)
+      await screen.findByText('title')
+      await screen.findByText('description')
+      await screen.findByText('Wi-Fi')
+      expect(await screen.findByTestId('RocketOutlined')).toBeVisible()
+    })
   })
   describe('type = radio', () => {
     it('should render', async () => {

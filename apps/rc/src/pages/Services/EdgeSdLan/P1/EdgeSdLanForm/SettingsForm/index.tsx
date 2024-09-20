@@ -245,10 +245,10 @@ export const SettingsForm = () => {
                 <Col span={13}>
                   <Form.Item
                     name='edgeId'
-                    label={$t({ defaultMessage: 'SmartEdge' })}
+                    label={$t({ defaultMessage: 'RUCKUS Edge' })}
                     rules={[{
                       required: true,
-                      message: $t({ defaultMessage: 'Please select a SmartEdge' })
+                      message: $t({ defaultMessage: 'Please select a RUCKUS Edge' })
                     }]}
                   >
                     <Select

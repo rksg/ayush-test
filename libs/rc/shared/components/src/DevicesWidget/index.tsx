@@ -82,7 +82,7 @@ export function DevicesWidget (props: {
                 <DonutChart
                   key='smartEdge-donutChart'
                   style={{ width: width/numDonut, height }}
-                  title={$t({ defaultMessage: 'SmartEdge' })}
+                  title={$t({ defaultMessage: 'RUCKUS Edge' })}
                   data={props.edgeData}/>
               </UI.NavigationContainer>)}
             { showRwgUI && rwgHasPermission && (
@@ -217,8 +217,8 @@ export function DevicesWidgetv2 (props: {
               <GridRow align={'middle'}>
                 <GridCol col={{ span: edgeTotalCount ? 9 : 12 }}>
                   { edgeTotalCount > 0
-                    ? $t({ defaultMessage: 'SmartEdges' })
-                    : $t({ defaultMessage: 'No SmartEdges' }) }
+                    ? $t({ defaultMessage: 'RUCKUS Edges' })
+                    : $t({ defaultMessage: 'No RUCKUS Edges' }) }
                 </GridCol>
                 <GridCol col={{ span: edgeTotalCount ? 15 : 12 }}>
                   { edgeTotalCount > 0
@@ -245,7 +245,7 @@ export function DevicesWidgetv2 (props: {
                       {filterByAccess([<TenantLink
                         scopeKey={[EdgeScopes.CREATE]}
                         to={'/devices/edge/add'}>
-                        {$t({ defaultMessage: 'Add SmartEdge' })}
+                        {$t({ defaultMessage: 'Add RUCKUS Edge' })}
                       </TenantLink>])}
                     </UI.LinkContainer>
                   }
