@@ -3,12 +3,65 @@ import userEvent from '@testing-library/user-event'
 import moment    from 'moment'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                   from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
 import { MspUrlsInfo }                                    from '@acx-ui/msp/utils'
 import { Provider }                                       from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { ScheduleFirmwareDrawer } from '.'
+
+const versionList = {
+  data: [
+    {
+      id: '6.2.0.103.553',
+      supportedApModels: [
+        'R600',
+        'R500',
+        'R310',
+        'R730',
+        'T300',
+        'T300E',
+        'T301N',
+        'T301S',
+        'R720',
+        'R710',
+        'R610',
+        'R510',
+        'R320',
+        'M510',
+        'H510',
+        'H320',
+        'T350SE'
+      ]
+    },
+    {
+      id: '6.2.4.103.255',
+      supportedApModels: [
+        'R720',
+        'R710',
+        'R610',
+        'R510',
+        'R320',
+        'M510',
+        'H510',
+        'R850',
+        'R750',
+        'R650',
+        'R550',
+        'R350',
+        'H550',
+        'H350',
+        'T750',
+        'T750SE',
+        'T350C',
+        'T350D',
+        'T350SE',
+        'R560',
+        'R760'
+      ]
+    }
+  ]
+}
 
 const services = require('@acx-ui/msp/services')
 jest.mock('@acx-ui/msp/services', () => ({
@@ -21,6 +74,9 @@ describe('ScheduleFirmwareDrawer', () => {
   beforeEach(async () => {
     services.useGetRecommandFirmwareUpgradeQuery = jest.fn().mockImplementation(() => {
       return {}
+    })
+    services.useGetFirmwareUpgradeByApModelQuery = jest.fn().mockImplementation(() => {
+      return versionList
     })
     jest.spyOn(services, 'useMspEcFirmwareUpgradeSchedulesMutation')
     mockServer.use(
@@ -280,5 +336,24 @@ describe('ScheduleFirmwareDrawer', () => {
     })
     expect(mockedSetVisible).toHaveBeenLastCalledWith(false)
     expect(services.useMspEcFirmwareUpgradeSchedulesMutation).toHaveBeenCalled()
+  })
+
+  it('should show fireware version correctly', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff !== Features.AP_FIRMWARE_UPGRADE_BY_MODEL_TOGGLE )
+
+    render(
+      <Provider>
+        <ScheduleFirmwareDrawer
+          visible={true}
+          tenantIds={[params.tenantId]}
+          setVisible={mockedSetVisible}
+        />
+      </Provider>, {
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+      })
+    expect(screen.getByText('Schedule Firmware Update')).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Next' })).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible()
   })
 })
