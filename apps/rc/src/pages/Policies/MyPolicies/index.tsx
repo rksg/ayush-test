@@ -16,6 +16,7 @@ import {
   useGetEdgeHqosProfileViewDataListQuery,
   useGetEnhancedAccessControlProfileListQuery,
   useGetEnhancedClientIsolationListQuery,
+  useGetEthernetPortProfileViewDataListQuery,
   useGetIdentityProviderListQuery,
   useGetLbsServerProfileListQuery,
   useGetSoftGreViewDataListQuery,
@@ -84,16 +85,11 @@ export default function MyPolicies () {
           policies.filter(p => isPolicyCardEnabled(p, PolicyOperation.LIST)).map((policy, index) => {
             const title = <FormattedMessage
               defaultMessage={
-                '{name} ({count})<helpIcon></helpIcon>'
+                '{name} ({count})'
               }
               values={{
                 name: $t(policyTypeLabelMapping[policy.type]),
-                count: policy.totalCount ?? 0,
-                helpIcon: () => {
-                  return policy.helpIcon
-                    ? <span style={{ marginLeft: '5px' }}>{policy.helpIcon}</span>
-                    : ''
-                }
+                count: policy.totalCount ?? 0
               }}
             />
 
@@ -109,6 +105,11 @@ export default function MyPolicies () {
                   onClick={() => {
                     policy.listViewPath && navigate(policy.listViewPath)
                   }}
+                  helpIcon={
+                    policy.helpIcon
+                      ? <span style={{ marginLeft: '5px' }}>{policy.helpIcon}</span>
+                      : ''
+                  }
                 />
               </GridCol>
             )
@@ -139,8 +140,8 @@ function useCardData (): PolicyCardData[] {
   const params = useParams()
   const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
   const isLbsFeatureEnabled = useIsSplitOn(Features.WIFI_EDA_LBS_TOGGLE)
-  const isLbsBetaFeatureEnabled = useIsTierAllowed(TierFeatures.BETA_LBS)
-  const supportLbs = isLbsFeatureEnabled && isLbsBetaFeatureEnabled
+  const isLbsFeatureTierAllowed = useIsTierAllowed(TierFeatures.BETA_LBS)
+  const supportLbs = isLbsFeatureEnabled && isLbsFeatureTierAllowed
   const isEdgeEnabled = useIsEdgeReady()
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
@@ -148,6 +149,7 @@ function useCardData (): PolicyCardData[] {
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const isEdgeHqosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
 
@@ -300,6 +302,15 @@ function useCardData (): PolicyCardData[] {
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.CERTIFICATE, oper: PolicyOperation.LIST })),
       disabled: !isCertificateTemplateEnabled
+    },
+    {
+      type: PolicyType.ETHERNET_PORT_PROFILE,
+      categories: [RadioCardCategory.WIFI],
+      // eslint-disable-next-line max-len
+      totalCount: useGetEthernetPortProfileViewDataListQuery({ payload: {} }, { skip: !isEthernetPortProfileEnabled }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ETHERNET_PORT_PROFILE, oper: PolicyOperation.LIST })),
+      disabled: !isEthernetPortProfileEnabled
     },
     {
       type: PolicyType.HQOS_BANDWIDTH,

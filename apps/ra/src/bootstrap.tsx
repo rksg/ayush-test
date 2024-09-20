@@ -15,10 +15,9 @@ import { Provider }      from '@acx-ui/store'
 import {
   renderPendo,
   useLocaleContext,
-  LocaleProvider,
-  setUpIntl,
   LangKey,
-  getJwtHeaders
+  getJwtHeaders,
+  userLogout
 } from '@acx-ui/utils'
 
 import AllRoutes           from './AllRoutes'
@@ -27,11 +26,23 @@ import { errorMiddleware } from './errorMiddleware'
 import '@acx-ui/theme'
 
 function PreferredLangConfigProvider (props: React.PropsWithChildren) {
-  const { lang } = useLocaleContext()
+  const { preferences, userId } = getUserProfile()
+  const preferredLanguage = preferences?.preferredLanguage || 'en-US'
   const { children } = props
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
-    children={<ConfigProvider children={children} lang={lang} />}
+    states={[{ isLoading: !Boolean(userId) }]}
+    children={<ConfigProvider children={children} lang={preferredLanguage as LangKey} />}
+  />
+}
+
+function DataGuardLoader (props: React.PropsWithChildren) {
+  const locale = useLocaleContext()
+
+  return <Loader
+    fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
+    states={[{ isLoading: !Boolean(locale.messages) }]}
+    children={props.children}
   />
 }
 
@@ -40,26 +51,24 @@ export async function init (root: Root) {
   const user = await fetch('/analytics/api/rsa-mlisa-rbac/users/profile', {
     headers: { ...getJwtHeaders() }
   })
+  const isDevModeOn = window.location.hostname === 'localhost'
   if (user.status === 401) {
-    showExpiredSessionModal()
+    !isDevModeOn ? userLogout() : showExpiredSessionModal()
   } else {
     setUserProfile(await(user).json())
   }
-  const { preferences } = getUserProfile()
-  const preferredLanguage = preferences?.preferredLanguage || 'en-US'
-  setUpIntl({ locale: preferredLanguage })
   root.render(
     <React.StrictMode>
       <Provider>
-        <LocaleProvider lang={preferredLanguage as LangKey}>
+        <BrowserRouter>
           <PreferredLangConfigProvider>
-            <BrowserRouter>
+            <DataGuardLoader>
               <React.Suspense fallback={null}>
                 <AllRoutes />
               </React.Suspense>
-            </BrowserRouter>
+            </DataGuardLoader>
           </PreferredLangConfigProvider>
-        </LocaleProvider>
+        </BrowserRouter>
       </Provider>
     </React.StrictMode>
   )

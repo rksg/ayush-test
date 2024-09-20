@@ -8,13 +8,13 @@ import { get }            from '@acx-ui/config'
 import { TenantLink }     from '@acx-ui/react-router-dom'
 import { render, screen } from '@acx-ui/test-utils'
 
-import { aiFeatureWithAIOps, aiFeatureWithAirFlexAI, aiFeatureWithAirFlexAIWithNewStatus, aiFeatureWithEcoFlexAI, aiFeatureWithRRM, mockAIDrivenRow } from './__tests__/fixtures'
-import { Icon }                                                                                                                                       from './common/IntentIcon'
-import { aiFeatures }                                                                                                                                 from './config'
-import { DisplayStates, Statuses }                                                                                                                    from './states'
-import * as UI                                                                                                                                        from './styledComponents'
-import { AIFeature, iconTooltips }                                                                                                                    from './Table'
-import { Actions, isVisibledByAction }                                                                                                                from './utils'
+import { aiFeatureWithAIOps, aiFeatureWithEquiFlex, aiFeatureWithEquiFlexWithNewStatus, aiFeatureWithEcoFlex, aiFeatureWithRRM, mockAIDrivenRow } from './__tests__/fixtures'
+import { Icon }                                                                                                                                   from './common/IntentIcon'
+import { aiFeatures }                                                                                                                             from './config'
+import { DisplayStates, Statuses }                                                                                                                from './states'
+import * as UI                                                                                                                                    from './styledComponents'
+import { AIFeature, iconTooltips }                                                                                                                from './Table'
+import { Actions, isVisibledByAction }                                                                                                            from './utils'
 
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
@@ -45,17 +45,17 @@ describe('AIFeature component', () => {
       </UI.FeatureIcon>
     )
 
-    expect(AIFeature(aiFeatureWithAirFlexAI)).toEqual(
+    expect(AIFeature(aiFeatureWithEquiFlex)).toEqual(
       <UI.FeatureIcon>
         <Tooltip
           placement='right'
-          title={iconTooltips[aiFeatures.AirFlexAI]}
+          title={iconTooltips[aiFeatures.EquiFlex]}
           overlayInnerStyle={{ width: '345px' }}
         >
-          <Icon feature={aiFeatures.AirFlexAI} />
+          <Icon feature={aiFeatures.EquiFlex} />
         </Tooltip>
-        <TenantLink to={`/analytics/intentAI/${aiFeatureWithAirFlexAI.root}/${aiFeatureWithAirFlexAI.sliceId}/${aiFeatureWithAirFlexAI.code}`}>
-          <span>{aiFeatureWithAirFlexAI.aiFeature}</span>
+        <TenantLink to={`/analytics/intentAI/${aiFeatureWithEquiFlex.root}/${aiFeatureWithEquiFlex.sliceId}/${aiFeatureWithEquiFlex.code}`}>
+          <span>{aiFeatureWithEquiFlex.aiFeature}</span>
         </TenantLink>
       </UI.FeatureIcon>
     )
@@ -75,17 +75,17 @@ describe('AIFeature component', () => {
       </UI.FeatureIcon>
     )
 
-    expect(AIFeature(aiFeatureWithEcoFlexAI)).toEqual(
+    expect(AIFeature(aiFeatureWithEcoFlex)).toEqual(
       <UI.FeatureIcon>
         <Tooltip
           placement='right'
-          title={iconTooltips[aiFeatures.EcoFlexAI]}
+          title={iconTooltips[aiFeatures.EcoFlex]}
           overlayInnerStyle={{ width: '345px' }}
         >
-          <Icon feature={aiFeatures.EcoFlexAI} />
+          <Icon feature={aiFeatures.EcoFlex} />
         </Tooltip>
-        <TenantLink to={`/analytics/intentAI/${aiFeatureWithEcoFlexAI.root}/${aiFeatureWithEcoFlexAI.sliceId}/${aiFeatureWithEcoFlexAI.code}`}>
-          <span>{aiFeatureWithEcoFlexAI.aiFeature}</span>
+        <TenantLink to={`/analytics/intentAI/${aiFeatureWithEcoFlex.root}/${aiFeatureWithEcoFlex.sliceId}/${aiFeatureWithEcoFlex.code}`}>
+          <span>{aiFeatureWithEcoFlex.aiFeature}</span>
         </TenantLink>
       </UI.FeatureIcon>
     )
@@ -107,17 +107,17 @@ describe('AIFeature component', () => {
       </UI.FeatureIcon>
     )
 
-    expect(AIFeature(aiFeatureWithAirFlexAI)).toEqual(
+    expect(AIFeature(aiFeatureWithEquiFlex)).toEqual(
       <UI.FeatureIcon>
         <Tooltip
           placement='right'
-          title={iconTooltips[aiFeatures.AirFlexAI]}
+          title={iconTooltips[aiFeatures.EquiFlex]}
           overlayInnerStyle={{ width: '345px' }}
         >
-          <Icon feature={aiFeatures.AirFlexAI} />
+          <Icon feature={aiFeatures.EquiFlex} />
         </Tooltip>
-        <TenantLink to={`/analytics/intentAI/${aiFeatureWithAirFlexAI.sliceId}/${aiFeatureWithAirFlexAI.code}`}>
-          <span>{aiFeatureWithAirFlexAI.aiFeature}</span>
+        <TenantLink to={`/analytics/intentAI/${aiFeatureWithEquiFlex.sliceId}/${aiFeatureWithEquiFlex.code}`}>
+          <span>{aiFeatureWithEquiFlex.aiFeature}</span>
         </TenantLink>
       </UI.FeatureIcon>
     )
@@ -137,17 +137,17 @@ describe('AIFeature component', () => {
       </UI.FeatureIcon>
     )
 
-    expect(AIFeature(aiFeatureWithEcoFlexAI)).toEqual(
+    expect(AIFeature(aiFeatureWithEcoFlex)).toEqual(
       <UI.FeatureIcon>
         <Tooltip
           placement='right'
-          title={iconTooltips[aiFeatures.EcoFlexAI]}
+          title={iconTooltips[aiFeatures.EcoFlex]}
           overlayInnerStyle={{ width: '345px' }}
         >
-          <Icon feature={aiFeatures.EcoFlexAI} />
+          <Icon feature={aiFeatures.EcoFlex} />
         </Tooltip>
-        <TenantLink to={`/analytics/intentAI/${aiFeatureWithEcoFlexAI.sliceId}/${aiFeatureWithEcoFlexAI.code}`}>
-          <span>{aiFeatureWithEcoFlexAI.aiFeature}</span>
+        <TenantLink to={`/analytics/intentAI/${aiFeatureWithEcoFlex.sliceId}/${aiFeatureWithEcoFlex.code}`}>
+          <span>{aiFeatureWithEcoFlex.aiFeature}</span>
         </TenantLink>
       </UI.FeatureIcon>
     )
@@ -156,16 +156,16 @@ describe('AIFeature component', () => {
   it('should not render link for AIFeature when status is new', async () => {
     mockGet.mockReturnValue('true')
 
-    expect(AIFeature(aiFeatureWithAirFlexAIWithNewStatus)).toEqual(
+    expect(AIFeature(aiFeatureWithEquiFlexWithNewStatus)).toEqual(
       <UI.FeatureIcon>
         <Tooltip
           placement='right'
-          title={iconTooltips[aiFeatures.AirFlexAI]}
+          title={iconTooltips[aiFeatures.EquiFlex]}
           overlayInnerStyle={{ width: '345px' }}
         >
-          <Icon feature={aiFeatures.AirFlexAI} />
+          <Icon feature={aiFeatures.EquiFlex} />
         </Tooltip>
-        <span>{aiFeatureWithAirFlexAI.aiFeature}</span>
+        <span>{aiFeatureWithEquiFlex.aiFeature}</span>
       </UI.FeatureIcon>
     )
 

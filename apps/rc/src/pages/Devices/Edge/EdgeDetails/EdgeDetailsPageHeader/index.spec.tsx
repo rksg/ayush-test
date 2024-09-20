@@ -123,7 +123,7 @@ describe('Edge Detail Page Header', () => {
     const dropdownBtn = screen.getByRole('button', { name: 'More Actions' })
     await userEvent.click(dropdownBtn)
 
-    const deleteBtn = await screen.findByRole('menuitem', { name: 'Delete SmartEdge' })
+    const deleteBtn = await screen.findByRole('menuitem', { name: 'Delete RUCKUS Edge' })
     await userEvent.click(deleteBtn)
 
     const deleteDialog = await screen.findByRole('dialog')

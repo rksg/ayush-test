@@ -26,10 +26,6 @@ export const Title = styled(Typography.Title).attrs({ level: 3 })`
   font-weight: var(--acx-steps-form-form-title-font-weight);
 `
 
-export const CollapseTitle = styled.div`
-  font-size: var(--acx-body-4-font-size);
-  `
-
 export const DescriptionText = styled(Typography.Text)`
   font-size: var(--acx-subtitle-5-font-size);
   display: block;
@@ -43,18 +39,23 @@ export const ButtonWrapper = styled.div`
   }
  }
 `
+export const CollapseTitle = styled.div`
+  font-size: var(--acx-body-4-font-size);
+  `
 
 export const CollapseWrapper = styled.div`
-.ant-collapse-content-box {
-  padding-left: 0;
-  padding-right: 0;
-}
-.ant-collapse-item {
-  margin-bottom: 20px;
-}
-`
+  .ant-collapse-content-box {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .ant-collapse-item {
+    margin-bottom: 20px;
+  }
+  `
 
-export const CollapsePanelContentWrapper = styled.div`
-  margin-top: 10px;
-
-`
+export const DrawerTitle = styled.div`
+  font-size: var(--acx-body-4-font-size);
+  font-weight: var(--acx-subtitle-3-font-weight);
+  border-bottom: 1px solid var(--acx-neutrals-20);
+  padding-bottom: 4px;
+  `

@@ -11,6 +11,7 @@ export enum Features {
   AP_UPTIME_TOGGLE = 'ap-uptime-toggle',
   APP_INSIGHTS = 'acx-ui-app-insights-toggle',
   ASSIGN_MULTI_EC_TO_MSP_ADMINS = 'mspservice-assign-multi-ec-to-multi-msp-admin',
+  AP_TX_POWER_TOGGLE = 'ap-tx-power-toggle',
   BETA_BUTTON = 'acx-ui-beta-button-toggle',
   CLOUDMOTE_SERVICE = 'cloudmote-service-enabled',
   CLOUDPATH_ASYNC_API_TOGGLE = 'acx-ui-cloudpath-async-api-toggle',
@@ -44,6 +45,7 @@ export enum Features {
   EDGE_COMPATIBILITY_CHECK_TOGGLE = 'edge-compatibility-check-toggle',
   EDGE_HA_AA_FALLBACK_TOGGLE = 'edge-ha-aa-fallback-toggle',
   EDGE_HA_AA_DMZ_TOGGLE = 'edge-ha-aa-dmz-toggle',
+  EDGE_FIRMWARE_NOTIFICATION_BATCH_OPERATION_TOGGLE= 'edge-firmware-notification-batch-operation-toggle',
   ENTITLEMENT_EXTENDED_TRIAL_TOGGLE = 'entitlement-acx-extended-trial-toggle',
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
@@ -51,6 +53,8 @@ export enum Features {
   ENTITLEMENT_RBAC_API = 'acx-ui-rbac-api-entitlement-toggle',
   ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE = 'entitlement-virtual-smart-edge-toggle',
   EOL_AP_2022_12_PHASE_2_TOGGLE = 'eol-ap-2022-12-phase-2-toggle',
+  ETHERNET_PORT_PROFILE_TOGGLE = 'acx-ui-ethernet-toggle',
+  ETHERNET_PORT_PROFILE_DVLAN_TOGGLE = 'acx-ui-ethernet-dvlan-toggle',
   EXPORT_DEVICE = 'viewmodel-export-device-inventory',
   EXPORT_EVENTS_TOGGLE = 'acx-ui-scheduled-events-export-toggle',
   G_MAP = 'acx-ui-maps-api-toggle',
@@ -130,6 +134,7 @@ export enum Features {
   TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs',
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
   VENUE_AP_MANAGEMENT_VLAN_TOGGLE = 'wifi-venue-ap-mgmt-vlan-toggle',
+  VIEWMODEL_TP_LOGIN_ADMIN_COUNT = 'viewmodel-query-tenantadmindelegation-tp-login',
   WIFI_DOWNGRADE_VENUE_ABF_TOGGLE = 'wifi-downgrade-venue-abf-toggle',
   WIFI_EDA_BSS_PRIORITY_TOGGLE = 'wifi-eda-bss-priority-toggle',
   WIFI_EDA_CLIENT_REVOKE_TOGGLE = 'wifi-eda-client-revoke-toggle',
@@ -185,7 +190,7 @@ export enum TierFeatures { // for Tier (ex: Beta) feature flag
   BETA_DPSK3 = 'BETA-DPSK3',
   SMART_EDGES = 'PLCY-EDGE',
   CONFIG_TEMPLATE = 'CONFIG-TEMPLATE',
-  BETA_LBS = 'BETA-LocationBasedServices'
+  LOCATION_BASED_SERVICES = 'LocationBasedServices'
 }
 
 interface BetaList {
@@ -203,7 +208,7 @@ interface BetaList {
 export const BetaListDetails:BetaList[] = [
   { key: TierFeatures.BETA_DPSK3, description: defineMessage({ defaultMessage: 'DPSK3: Dynamic Preshared Keys working with WPA3-DSAE. Users connect their devices to a WPA2/WPA3 network with DPSK and are automatically moved to the WPA3 WLAN, allowing DPSK operation with WiFi 6e or WiFi7. DPSK3 allows the customer to take advantage of the flexibility of DPSK with the security of WPA3.' }), status: true },
   { key: TierFeatures.AP_70, description: defineMessage({ defaultMessage: 'AP-70: Wi-Fi 7 - Wi-Fi 7 UI configuration available for early adopters and customers provided with advance units of the R770. Contact your reseller for more information on availability of the new R770!' }), status: true },
-  { key: TierFeatures.SMART_EDGES, description: defineMessage({ defaultMessage: 'SmartEdge: RUCKUS SmartEdge is a platfrom to run RUCKUS services on. Network administrators can utilize SD-LAN service or Personal Identity Networking service on a SmartEdge. SD-LAN provides WLAN tunnelling using VXLAN. This will provide end users a seamless roaming experience across a network. The Personal Identity Networking service provides individual networks for users which is typically used in a multi-dwelling facility.' }), status: true },
+  { key: TierFeatures.SMART_EDGES, description: defineMessage({ defaultMessage: 'RUCKUS Edge: RUCKUS Edge is a platfrom to run RUCKUS services on. Network administrators can utilize SD-LAN service or Personal Identity Networking service on a RUCKUS Edge. SD-LAN provides WLAN tunnelling using VXLAN. This will provide end users a seamless roaming experience across a network. The Personal Identity Networking service provides individual networks for users which is typically used in a multi-dwelling facility.' }), status: true },
   { key: TierFeatures.CONFIG_TEMPLATE, description: defineMessage({ defaultMessage: 'Config Template: It allows MSP users to create templates for networks, <venuePlural></venuePlural>, services, and policies. These templates can then be applied to multiple customers, providing a centralized and efficient solution for managing RUCKUS brand network equipment across properties.' }), status: true },
-  { key: TierFeatures.BETA_LBS, description: defineMessage({ defaultMessage: 'LBS: RUCKUS One now lets you create a Location Based Service (LBS) Server linked to multiple venues for efficient tracking and management of location-specific information. This feature gathers location data from connected access points (APs) and routes it to third-party application servers. You can add and manage LBS server profiles and enable Location Based Services for any venue directly from the RUCKUS One web interface, enhancing your venue management capabilities.' }), status: true }
+  { key: TierFeatures.LOCATION_BASED_SERVICES, description: defineMessage({ defaultMessage: 'LBS: RUCKUS One now lets you create a Location Based Service (LBS) Server linked to multiple venues for efficient tracking and management of location-specific information. This feature gathers location data from connected access points (APs) and routes it to third-party application servers. You can add and manage LBS server profiles and enable Location Based Services for any venue directly from the RUCKUS One web interface, enhancing your venue management capabilities.' }), status: true }
 ]

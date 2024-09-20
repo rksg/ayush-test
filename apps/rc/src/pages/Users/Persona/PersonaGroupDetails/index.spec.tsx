@@ -7,10 +7,11 @@ import {
   PersonaBaseUrl,
   DpskUrls,
   PropertyUrlsInfo,
-  CommonUrlsInfo
+  CommonUrlsInfo,
+  CertificateUrls
 } from '@acx-ui/rc/utils'
-import { Provider }                                                                 from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved, fireEvent, within } from '@acx-ui/test-utils'
+import { Provider }                                                                          from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved, fireEvent, within, waitFor } from '@acx-ui/test-utils'
 
 import {
   mockDpskPool,
@@ -25,8 +26,6 @@ import {
 } from '../__tests__/fixtures'
 
 import PersonaGroupDetails from '.'
-
-jest.mocked(useIsSplitOn).mockReturnValue(true)
 
 const venueData = {
   address: {
@@ -45,10 +44,20 @@ const venueData = {
   updatedDate: '2022-07-08T04:59:22.351+00:00'
 }
 
+const spyGetVenue = jest.fn()
+const spyGetDpsk = jest.fn()
+const spyGetMacReg = jest.fn()
+const spyGetCertTemplate = jest.fn()
+
 describe('Persona Group Details', () => {
   let params: { tenantId: string, personaGroupId: string }
 
   beforeEach( async () => {
+    spyGetVenue.mockClear()
+    spyGetDpsk.mockClear()
+    spyGetMacReg.mockClear()
+    spyGetCertTemplate.mockClear()
+
     mockServer.use(
       rest.get(
         PersonaUrls.getPersonaGroupById.url,
@@ -56,14 +65,21 @@ describe('Persona Group Details', () => {
       ),
       rest.get(
         CommonUrlsInfo.getVenue.url,
-        (_, res, ctx) => res(ctx.json(venueData))),
+        (_, res, ctx) => {
+          spyGetVenue()
+          return res(ctx.json(venueData))
+        }
+      ),
       rest.get(
         PersonaBaseUrl,
         (req, res, ctx) => res(ctx.json(mockPersonaGroupList))
       ),
       rest.get(
         MacRegListUrlsInfo.getMacRegistrationPool.url,
-        (req, res, ctx) => res(ctx.json(mockMacRegistration))
+        (_, res, ctx) => {
+          spyGetMacReg()
+          return res(ctx.json(mockMacRegistration))
+        }
       ),
       rest.delete(
         PersonaUrls.deletePersonas.url,
@@ -87,15 +103,29 @@ describe('Persona Group Details', () => {
       ),
       rest.get(
         DpskUrls.getDpsk.url,
-        (req, res, ctx) => res(ctx.json(mockDpskPool))
+        (_, res, ctx) => {
+          spyGetDpsk()
+          return res(ctx.json(mockDpskPool))
+        }
       ),
       rest.get(
         PropertyUrlsInfo.getPropertyConfigs.url,
         (req, res, ctx) => res(ctx.json(mockEnabledPropertyConfig))
       ),
       rest.get(
+        CertificateUrls.getCertificateTemplate.url,
+        (_, res, ctx) => {
+          spyGetCertTemplate()
+          return res(ctx.json({ id: 'cert-template-1', name: 'cert-template-name' }))
+        }
+      ),
+      rest.get(
         PropertyUrlsInfo.getUnitById.url,
         (req, res, ctx) => res(ctx.json({ id: 'unit-id-1', name: 'unit-name-1' }))
+      ),
+      rest.post(
+        CertificateUrls.getCertificatesByIdentity.url,
+        (req, res, ctx) => res(ctx.json({ data: [], totalCount: 0 }))
       )
     )
     params = {
@@ -104,7 +134,9 @@ describe('Persona Group Details', () => {
     }
   })
 
-  it.skip('should render persona group details', async () => {
+  it('should render persona group details', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
     render(
       <Provider>
         <PersonaGroupDetails />
@@ -116,10 +148,26 @@ describe('Persona Group Details', () => {
       }
     )
 
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    // await waitFor(() => expect(spyGetPIN).toHaveBeenCalled())
+    await waitFor(() => expect(spyGetVenue).toHaveBeenCalled())
+    await waitFor(() => expect(spyGetDpsk).toHaveBeenCalled())
+    await waitFor(() => expect(spyGetMacReg).toHaveBeenCalled())
+    await waitFor(() => expect(spyGetCertTemplate).toHaveBeenCalled())
 
-    await screen.findByRole('heading', { level: 1, name: mockPersonaGroup.name })
-    await screen.findByRole('heading', { level: 4, name: /Identities/i })
+    // Check those columns render in the screen correctly.
+    expect(screen.getByText(/Venue/i)).toBeInTheDocument()
+    expect(screen.getByText(/DPSK Service/i)).toBeInTheDocument()
+    expect(screen.getByText(/Mac Registration/i)).toBeInTheDocument()
+    expect(screen.getByText(/Certificate Template/i)).toBeInTheDocument()
+    expect(screen.getByText(/Personal Identity Network/i)).toBeInTheDocument()
+
+    // Check each value render in the screen correctly.
+    expect(await screen.findByText(/My-Venue/i)).toBeInTheDocument()
+    expect(await screen.findByText(/dpsk-pook-1/i)).toBeInTheDocument()
+    expect(await screen.findByText(/mac-name-1/i)).toBeInTheDocument()
+    expect(await screen.findByText(/cert-template-name/i)).toBeInTheDocument()
+
+    jest.mocked(useIsSplitOn).mockReset()
   })
 
   it('should render breadcrumb correctly', async () => {

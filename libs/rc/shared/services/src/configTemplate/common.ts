@@ -23,10 +23,14 @@ import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
 import { createHttpRequest }     from '@acx-ui/utils'
 
-import { networkApi }                                      from '../network'
-import { fetchRbacNetworkVenueList, updateNetworkVenueFn } from '../networkVenueUtils'
-import { commonQueryFn }                                   from '../servicePolicy.utils'
-import { addNetworkVenueFn }                               from '../servicePolicy.utils/network'
+import { networkApi }    from '../network'
+import {
+  fetchRbacAccessControlPolicyNetwork,
+  fetchRbacNetworkVenueList,
+  updateNetworkVenueFn
+} from '../networkVenueUtils'
+import { commonQueryFn }     from '../servicePolicy.utils'
+import { addNetworkVenueFn } from '../servicePolicy.utils/network'
 
 import {
   useCasesToRefreshRadiusServerTemplateList, useCasesToRefreshTemplateList,
@@ -101,11 +105,24 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
             networkDeep
           } = await fetchRbacNetworkVenueList(arg, fetchWithBQ)
 
+          const {
+            error: accessControlPolicyNetworkError,
+            data: accessControlPolicyNetwork
+          } = await fetchRbacAccessControlPolicyNetwork(arg, fetchWithBQ)
+
           if (networkVenuesListQueryError)
             return { error: networkVenuesListQueryError }
 
+          if (accessControlPolicyNetworkError)
+            return { error: accessControlPolicyNetworkError }
+
           if (networkDeep?.venues) {
             networkDeepData.venues = cloneDeep(networkDeep.venues)
+          }
+
+          if (accessControlPolicyNetwork?.data.length > 0 && networkDeepData.wlan?.advancedCustomization) {
+            networkDeepData.wlan.advancedCustomization.accessControlEnable = true
+            networkDeepData.wlan.advancedCustomization.accessControlProfileId = accessControlPolicyNetwork.data[0].id
           }
         }
 

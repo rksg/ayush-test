@@ -32,7 +32,7 @@ export const CompatibilityCheck = (props: CompatibilityCheckProps) => {
       {
         edgeInfo: (edgeIncompatible
         // eslint-disable-next-line max-len
-          ? $t({ defaultMessage: '{edgeCount, plural, one {SmartEdge} other {SmartEdges}}' }, { edgeCount: edgeIncompatibleCount })
+          ? $t({ defaultMessage: '{edgeCount, plural, one {RUCKUS Edge} other {RUCKUS Edges}}' }, { edgeCount: edgeIncompatibleCount })
           : ''),
         hasAnd: ((edgeIncompatible && apIncompatible) ? $t({ defaultMessage: 'and' }) : ''),
         apInfo: (apIncompatible

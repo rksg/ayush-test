@@ -80,7 +80,7 @@ export const SummaryForm = styled(({ className }: { className?: string }) => {
 
       <Col span={24}>
         <Subtitle level={4}>
-          { $t({ defaultMessage: 'SmartEdge ({edgeAmount})' }, { edgeAmount }) }
+          { $t({ defaultMessage: 'RUCKUS Edge ({edgeAmount})' }, { edgeAmount }) }
         </Subtitle>
         <Descriptions>
           <Descriptions.NoLabel>

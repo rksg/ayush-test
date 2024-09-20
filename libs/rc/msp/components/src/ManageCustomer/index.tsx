@@ -1422,7 +1422,7 @@ export function ManageCustomer () {
             <label>{intl.$t({ defaultMessage: '25 devices' })}</label>
           </UI.FieldLabel2>
           {isEdgeEnabled && <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
-            <label>{intl.$t({ defaultMessage: 'SmartEdge Subscription' })}</label>
+            <label>{intl.$t({ defaultMessage: 'RUCKUS Edge Subscription' })}</label>
             <label>{intl.$t({ defaultMessage: '25 devices' })}</label>
           </UI.FieldLabel2>}
         </div>}
@@ -1678,7 +1678,7 @@ export function ManageCustomer () {
             <Paragraph>{switchAssigned}</Paragraph>
           </Form.Item>
           {isEdgeEnabled && <Form.Item style={{ marginTop: '-22px' }}
-            label={intl.$t({ defaultMessage: 'SmartEdge Subscriptions' })}
+            label={intl.$t({ defaultMessage: 'RUCKUS Edge Subscriptions' })}
           >
             <Paragraph>25</Paragraph>
           </Form.Item>}

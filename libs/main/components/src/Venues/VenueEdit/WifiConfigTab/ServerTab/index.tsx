@@ -33,8 +33,8 @@ export function ServerTab () {
   const { isTemplate } = useConfigTemplate()
   const isSyslogTemplateEnabled = useIsConfigTemplateEnabledByType(ConfigTemplateType.SYSLOG)
   const isLbsFeatureEnabled = useIsSplitOn(Features.WIFI_EDA_LBS_TOGGLE)
-  const isLbsBetaFeatureEnabled = useIsTierAllowed(TierFeatures.BETA_LBS)
-  const supportLbs = isLbsFeatureEnabled && isLbsBetaFeatureEnabled
+  const isLbsFeatureTierAllowed = useIsTierAllowed(TierFeatures.LOCATION_BASED_SERVICES)
+  const supportLbs = isLbsFeatureEnabled && isLbsFeatureTierAllowed
 
   const {
     previousPath,

@@ -29,6 +29,7 @@ import {
   NewAPModel,
   NewAPModelExtended,
   RadioProperties,
+  SwitchInformation,
   TableResult,
   Venue,
   WifiRbacUrlsInfo
@@ -264,6 +265,12 @@ const setAPRadioInfo = (
   row.channelU50 = get(radios.radioU50, 'channel') || undefined
   row.channel60 = get(radios.radio60, 'channel') || undefined
 
+  row.actualTxPower24 = get(radios.radio24, 'actualTxPower') || undefined
+  row.actualTxPower50 = get(radios.radio50, 'actualTxPower') || undefined
+  row.actualTxPowerL50 = get(radios.radioL50, 'actualTxPower') || undefined
+  row.actualTxPowerU50 = get(radios.radioU50, 'actualTxPower') || undefined
+  row.actualTxPower60 = get(radios.radio60, 'actualTxPower') || undefined
+
   if (channelColumnShow) {
     if (!channelColumnShow.channel24 && radios.radio24) channelColumnShow.channel24 = true
     if (!channelColumnShow.channel50 && radios.radio50) channelColumnShow.channel50 = true
@@ -322,6 +329,33 @@ export const aggregateVenueInfo = (
     } else {
       apItem.venueName = venueListData?.find(venueItem =>
         venueItem.id === apItem.venueId)?.name
+    }
+  })
+}
+
+export const aggregateSwitchInfo = (
+  apList?: TableResult<NewAPModelExtended|NewAPExtendedGrouped, ApExtraParams>,
+  apSwitchInfoMap?: Map<string, SwitchInformation>
+) => {
+  const apListData = apList?.data
+
+  apListData?.forEach(apItem => {
+    if(apItem.hasOwnProperty('groupedField')) {
+      (apItem as NewAPExtendedGrouped).aps.forEach(groupedAp => {
+        const apMac = groupedAp.macAddress ?? ''
+        const switchInformation = apSwitchInfoMap?.get(apMac)
+
+        groupedAp.switchId = switchInformation?.id
+        groupedAp.switchName = switchInformation?.name
+        groupedAp.switchSerialNumber = switchInformation?.serialNumber
+      })
+    } else {
+      const apMac = apItem.macAddress ?? ''
+      const switchInformation = apSwitchInfoMap?.get(apMac)
+
+      apItem.switchId = switchInformation?.id
+      apItem.switchName = switchInformation?.name
+      apItem.switchSerialNumber = switchInformation?.serialNumber
     }
   })
 }

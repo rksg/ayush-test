@@ -117,7 +117,7 @@ export const mockAIDrivenRow = {
   trigger: 'daily'
 }
 
-export const mockAirflexRows = [
+export const mockEquiFlexRows = [
   {
     id: '16',
     code: 'c-probeflex-24g',
@@ -303,19 +303,28 @@ export const intentListWithAllStatus = {
       ...intentStatus,
       status: 'scheduled',
       statusReason: '',
-      displayStatus: 'scheduled'
+      displayStatus: 'scheduled',
+      metadata: {
+        scheduledAt: '2023-06-17T00:00:00.000Z'
+      }
     },
     {
       ...intentStatus,
       status: 'scheduled',
       statusReason: 'one-click',
-      displayStatus: 'scheduled-one-click'
+      displayStatus: 'scheduled-one-click',
+      metadata: {
+        scheduledAt: '2023-06-17T00:00:00.000Z'
+      }
     },
     {
       ...intentStatus,
       status: 'applyscheduled',
       statusReason: '',
-      displayStatus: 'applyscheduled'
+      displayStatus: 'applyscheduled',
+      metadata: {
+        scheduledAt: '2023-06-17T00:00:00.000Z'
+      }
     },
     {
       ...intentStatus,
@@ -445,7 +454,7 @@ export const intentHighlights = {
       new: 4,
       active: 8
     },
-    airflex: {
+    probeflex: {
       new: 5,
       active: 10
     },
@@ -462,7 +471,7 @@ export const intentHighlightsWithZeroActive = {
       new: 4,
       active: 0
     },
-    airflex: {
+    probeflex: {
       new: 5,
       active: 0
     },
@@ -487,9 +496,9 @@ export const intentHighlightsWithRRM = {
   }
 }
 
-export const intentHighlightsWithAirflex = {
+export const intentHighlightsWithEquiFlex = {
   highlights: {
-    airflex: {
+    probeflex: {
       new: 5,
       active: 10
     }
@@ -513,17 +522,17 @@ export const aiFeatureWithRRM = {
   status: Statuses.active
 } as AIFeatureProps
 
-export const aiFeatureWithAirFlexAI = {
+export const aiFeatureWithEquiFlex = {
   code: 'c-probeflex-6g',
-  aiFeature: aiFeatures.AirFlexAI,
+  aiFeature: aiFeatures.EquiFlex,
   root: 'root2',
   sliceId: 'sliceId2',
   status: Statuses.active
 } as AIFeatureProps
 
-export const aiFeatureWithAirFlexAIWithNewStatus = {
+export const aiFeatureWithEquiFlexWithNewStatus = {
   code: 'c-probeflex-6g',
-  aiFeature: aiFeatures.AirFlexAI,
+  aiFeature: aiFeatures.EquiFlex,
   root: 'root2',
   sliceId: 'sliceId2',
   status: Statuses.new
@@ -537,9 +546,9 @@ export const aiFeatureWithAIOps = {
   status: Statuses.active
 } as AIFeatureProps
 
-export const aiFeatureWithEcoFlexAI = {
-  code: 'eco-flex-code',  //EcoFlexAI code is not defined
-  aiFeature: aiFeatures.EcoFlexAI,
+export const aiFeatureWithEcoFlex = {
+  code: 'i-ecoflex',
+  aiFeature: aiFeatures.EcoFlex,
   root: 'root4',
   sliceId: 'sliceId4',
   status: Statuses.active

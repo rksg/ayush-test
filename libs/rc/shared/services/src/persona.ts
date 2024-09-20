@@ -78,6 +78,14 @@ export const personaApi = basePersonaApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'PersonaGroup' }]
     }),
+    associateIdentityGroupWithCertificateTemplate: build.mutation({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(PersonaUrls.associateCertTemplate, params)
+        }
+      },
+      invalidatesTags: [{ type: 'PersonaGroup' }]
+    }),
     searchPersonaGroupList: build.query<TableResult<PersonaGroup>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createNewTableHttpRequest({
@@ -344,6 +352,7 @@ export const {
   useAddPersonaGroupMutation,
   useAssociateIdentityGroupWithDpskMutation,
   useAssociateIdentityGroupWithMacRegistrationMutation,
+  useAssociateIdentityGroupWithCertificateTemplateMutation,
   useSearchPersonaGroupListQuery,
   useLazySearchPersonaGroupListQuery,
   useGetPersonaGroupByIdQuery,

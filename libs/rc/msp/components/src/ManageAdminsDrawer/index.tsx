@@ -208,7 +208,21 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
             type: 'checkbox',
             selectedRowKeys: selectedKeys,
             onChange (selectedRowKeys, selRows) {
-              setSelectedRows(selRows)
+              if (selectedRowKeys.length === selRows.length) {
+                setSelectedRows(selRows)
+              }
+              else {
+                // On row click to deselect (i.e. clicking on row itself not checkbox) selRows is empty array
+                if (selRows.length === 0) {
+                  setSelectedRows([...selectedRows.filter(row =>
+                    selectedRowKeys.includes(row.email))])
+                }
+                // On row click to select (i.e. clicking on row itself not checkbox) selRows only has newly selected row
+                else {
+                  setSelectedRows([...selectedRows, ...selRows])
+                }
+              }
+              setSelectedKeys(selectedRowKeys)
             },
             getCheckboxProps: (record: MspAdministrator) => ({
               disabled:
@@ -222,7 +236,7 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
 
   const footer =<div>
     <Button
-      disabled={selectedRows.length === 0}
+      disabled={selectedKeys.length === 0}
       onClick={() => handleSave()}
       type='primary'
     >

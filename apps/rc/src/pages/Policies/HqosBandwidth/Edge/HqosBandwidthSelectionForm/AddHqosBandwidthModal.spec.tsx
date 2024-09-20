@@ -85,7 +85,7 @@ describe('SmartEdgeForm > AddHqosBandwidthModal', () => {
 
     await click(await screen.findByRole('button', { name: 'Add' }))
     const addModal = await screen.findByRole('dialog')
-    await screen.findByText('Add HQos for SmartEdge Profile')
+    await screen.findByText('Add HQos for RUCKUS Edge Profile')
     expect(await screen.findByTestId('rc-HqosBandwidthForm')).toBeVisible()
 
     await click(within(addModal).getByRole('button', { name: 'Submit' }))
@@ -102,7 +102,7 @@ describe('SmartEdgeForm > AddHqosBandwidthModal', () => {
 
     await click(await screen.findByRole('button', { name: 'Add' }))
     const addModal = await screen.findByRole('dialog')
-    await screen.findByText('Add HQos for SmartEdge Profile')
+    await screen.findByText('Add HQos for RUCKUS Edge Profile')
     const mockForm = await screen.findByTestId('rc-HqosBandwidthForm')
     expect(mockForm).toBeVisible()
     const cancelButton = within(mockForm).getByRole('button', { name: 'Cancel' })

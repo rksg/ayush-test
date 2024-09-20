@@ -65,6 +65,7 @@ export interface EdgeStatus extends EdgeResourceUtilization {
   clusterId?: string
   hasCorePort?: boolean
   incompatible?: number // UI only
+  isHqosEnabled?: boolean
 }
 export interface EdgeDetails {
   serialNumber: string
