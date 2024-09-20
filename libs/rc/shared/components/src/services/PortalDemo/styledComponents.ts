@@ -1,5 +1,5 @@
 import { Popover as AntPopover, Layout as AntLayout,
-  Select as AntSelect } from 'antd'
+  Select as AntSelect, Checkbox as AntCheckbox } from 'antd'
 import styled, { css, createGlobalStyle } from 'styled-components/macro'
 
 import { Tabs as UITabs, Button as UIButton } from '@acx-ui/components'
@@ -217,6 +217,9 @@ export const FieldLabel = styled.div`
   margin-top:10px;
   margin-bottom:5px;
   line-height: 24px;
+`
+export const Checkbox = styled(AntCheckbox)`
+  margin-right:4px;
 `
 const fieldInputStyle = css`
 ::placeholder{

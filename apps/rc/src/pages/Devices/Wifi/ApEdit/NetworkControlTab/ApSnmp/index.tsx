@@ -22,6 +22,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   getPolicyRoutePath,
+  hasPolicyPermission,
   PolicyOperation,
   PolicyType
 } from '@acx-ui/rc/utils'
@@ -31,8 +32,6 @@ import {
   useNavigate,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { WifiScopes }                              from '@acx-ui/types'
-import { hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 
 import { ApDataContext, ApEditContext } from '../..'
 import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
@@ -292,9 +291,9 @@ export function ApSnmp () {
                     style={{ width: '200px' }}
                   />
                 </Form.Item>
-                { hasCrossVenuesPermission() &&
-                  hasPermission({ scopes: [WifiScopes.CREATE] }) &&
-                  ((getApSnmpAgentList?.data?.length as number) < 64) &&
+                {((getApSnmpAgentList?.data?.length as number) < 64) &&
+                  // eslint-disable-next-line max-len
+                  hasPolicyPermission({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.CREATE }) &&
                   <Button
                     data-testid='use-push'
                     type='link'

@@ -107,6 +107,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const apUptimeFlag = useIsSplitOn(Features.AP_UPTIME_TOGGLE)
   const apMgmtVlanFlag = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
+  const apTxPowerFlag = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
   const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
   const [ getApCompatibilitiesVenue ] = useLazyGetApCompatibilitiesVenueQuery()
@@ -220,6 +221,14 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       channelL50: false,
       channelU50: false,
       channel60: false
+    }
+
+    const actualTxPowerChannelMap = {
+      channel24: 'actualTxPower24',
+      channel50: 'actualTxPower50',
+      channelL50: 'actualTxPowerL50',
+      channelU50: 'actualTxPowerU50',
+      channel60: 'actualTxPower60'
     }
 
     const columns: TableProps<NewAPModelExtended|NewAPExtendedGrouped>['columns'] = [{
@@ -514,6 +523,24 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
           }} />
         )
       }
+    }] : []),
+    ...(apTxPowerFlag ? [{
+      key: 'actualTxPower',
+      dataIndex: 'actualTxPower',
+      title: $t({ defaultMessage: 'Tx Power' }),
+      children: Object.entries(extraParams).reduce((acc, [channel, visible]) => {
+        if (!visible) return acc
+        const channelKey = channel as keyof ApExtraParams
+        const key = actualTxPowerChannelMap[channelKey]
+        acc.push({
+          key: key,
+          width: 80,
+          dataIndex: key,
+          title: <Table.SubTitle children={channelTitleMap[channelKey]} />,
+          align: 'center'
+        })
+        return acc
+      }, [] as TableProps<NewAPModelExtended|NewAPExtendedGrouped>['columns'])
     }] : [])
     ]
     return columns

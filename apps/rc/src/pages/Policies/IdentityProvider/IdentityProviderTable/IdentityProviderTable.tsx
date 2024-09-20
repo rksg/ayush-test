@@ -21,11 +21,11 @@ import {
   getPolicyRoutePath,
   IdentityProviderViewModel,
   Network,
-  AAAViewModalType
+  AAAViewModalType,
+  getScopeKeyByPolicy,
+  filterByAccessForServicePolicyMutation
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { WifiScopes }                                              from '@acx-ui/types'
-import { filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 
 const defaultPayload = {
   fields: ['id', 'name',
@@ -69,14 +69,14 @@ export default function IdentityProviderTable () {
   const rowActions: TableProps<IdentityProviderViewModel>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
-      scopeKey: [WifiScopes.DELETE],
+      scopeKey: getScopeKeyByPolicy(PolicyType.IDENTITY_PROVIDER, PolicyOperation.DELETE),
       onClick: (selectedRows: IdentityProviderViewModel[], clearSelection) => {
         doDelete(selectedRows, clearSelection)
       }
     },
     {
       label: $t({ defaultMessage: 'Edit' }),
-      scopeKey: [WifiScopes.UPDATE],
+      scopeKey: getScopeKeyByPolicy(PolicyType.IDENTITY_PROVIDER, PolicyOperation.EDIT),
       visible: (selectedRows) => selectedRows?.length === 1,
       onClick: ([{ id }]) => {
         navigate({
@@ -91,6 +91,8 @@ export default function IdentityProviderTable () {
     }
   ]
 
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+
   return (
     <>
       <PageHeader
@@ -102,10 +104,10 @@ export default function IdentityProviderTable () {
             link: getPolicyListRoutePath(true)
           }
         ]}
-        extra={hasCrossVenuesPermission() && filterByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           // eslint-disable-next-line max-len
           <TenantLink to={getPolicyRoutePath({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.CREATE })}
-            scopeKey={[WifiScopes.CREATE]}>
+            scopeKey={getScopeKeyByPolicy(PolicyType.IDENTITY_PROVIDER, PolicyOperation.CREATE)}>
             <Button
               type='primary'
               disabled={tableQuery.data?.totalCount! >= IDENTITY_PROVIDER_MAX_COUNT}>
@@ -122,8 +124,8 @@ export default function IdentityProviderTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={hasCrossVenuesPermission() && hasPermission() && { type: 'checkbox' }}
+          rowActions={allowedRowActions}
+          rowSelection={(allowedRowActions.length > 0) && { type: 'checkbox' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />

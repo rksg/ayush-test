@@ -149,7 +149,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
 
   const defaultColumns: TableProps<EdgeStatus>['columns'] = useMemo(() => [
     {
-      title: $t({ defaultMessage: 'SmartEdge' }),
+      title: $t({ defaultMessage: 'RUCKUS Edge' }),
       key: 'name',
       dataIndex: 'name',
       sorter: true,
@@ -245,7 +245,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
     ...(isEdgeCompatibilityEnabled && incompatibleCheck ? [{
       key: 'incompatible',
       // eslint-disable-next-line max-len
-      tooltip: $t({ defaultMessage: 'Check for the SmartEdge features of <venueSingular></venueSingular> not supported by earlier versions.' }),
+      tooltip: $t({ defaultMessage: 'Check for the RUCKUS Edge features of <venueSingular></venueSingular> not supported by earlier versions.' }),
       title: $t({ defaultMessage: 'Feature Compatibility' }),
       filterPlaceholder: $t({ defaultMessage: 'Feature Incompatibility' }),
       filterValueArray: true,

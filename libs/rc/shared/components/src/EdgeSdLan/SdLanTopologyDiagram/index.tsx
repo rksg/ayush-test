@@ -1,27 +1,21 @@
-import { Row, Space, Badge } from 'antd'
+import { Badge, Row, Space } from 'antd'
 import { useIntl }           from 'react-intl'
 
-import { cssStr }   from '@acx-ui/components'
-import { Features } from '@acx-ui/feature-toggle'
+import { cssStr } from '@acx-ui/components'
 
-import { SpaceWrapper }          from '../../SpaceWrapper'
-import { useIsEdgeFeatureReady } from '../../useEdgeActions'
+import { SpaceWrapper } from '../../SpaceWrapper'
 
-import DcDmzDiagramHorizontal   from './assets/images/edge-sd-lan-dc-dmz-horizontal.png'
-import DcDmzDiagramVertical     from './assets/images/edge-sd-lan-dc-dmz-vertical.png'
-import DcDiagramHorizontal      from './assets/images/edge-sd-lan-dc-horizontal.png'
-import DcDiagramVertical        from './assets/images/edge-sd-lan-dc-vertical.png'
-import MvDcDmzDiagramHorizontal from './assets/images/edge-sd-lan-mv-dc-dmz-horizontal.svg'
-import MvDcDmzDiagramVertical   from './assets/images/edge-sd-lan-mv-dc-dmz-vertical.svg'
-import MvDcDiagramHorizontal    from './assets/images/edge-sd-lan-mv-dc-horizontal.svg'
-import MvDcDiagramVertical      from './assets/images/edge-sd-lan-mv-dc-vertical.svg'
-import { messageMappings }      from './messageMappings'
-import * as UI                  from './styledComponents'
+import DcDmzDiagramHorizontal from './assets/images/edge-sd-lan-dc-dmz-horizontal.svg'
+import DcDmzDiagramVertical   from './assets/images/edge-sd-lan-dc-dmz-vertical.svg'
+import DcDiagramHorizontal    from './assets/images/edge-sd-lan-dc-horizontal.svg'
+import DcDiagramVertical      from './assets/images/edge-sd-lan-dc-vertical.svg'
+import { messageMappings }    from './messageMappings'
+import * as UI                from './styledComponents'
 
 const lineMap = [
   {
     id: 'ap_se',
-    color: cssStr('--acx-semantics-yellow-50'),
+    color: cssStr('--acx-accents-orange-50'),
     text: messageMappings.diagram_legend_ap_se
   }, {
     id: 'se_dmz',
@@ -41,7 +35,6 @@ export const SdLanTopologyDiagram = (props: {
 }) => {
   const { $t } = useIntl()
   const { isGuestTunnelEnabled, vertical, className } = props
-  const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
 
   const lines = lineMap.filter(item => isGuestTunnelEnabled || item.id !== 'se_dmz')
 
@@ -55,17 +48,12 @@ export const SdLanTopologyDiagram = (props: {
       {
         isGuestTunnelEnabled
           ? <UI.Diagram
-            src={vertical
-              ? (isEdgeSdLanMvEnabled ? MvDcDmzDiagramVertical : DcDmzDiagramVertical)
-              : (isEdgeSdLanMvEnabled ? MvDcDmzDiagramHorizontal : DcDmzDiagramHorizontal)
-            }
+            src={vertical ? DcDmzDiagramVertical : DcDmzDiagramHorizontal}
             alt={$t({ defaultMessage: 'SD-LAN with DMZ' })}
             $vertical={vertical}
           />
           : <UI.Diagram
-            src={vertical
-              ? (isEdgeSdLanMvEnabled ? MvDcDiagramVertical : DcDiagramVertical)
-              : (isEdgeSdLanMvEnabled ? MvDcDiagramHorizontal : DcDiagramHorizontal)}
+            src={vertical ? DcDiagramVertical : DcDiagramHorizontal}
             alt={$t({ defaultMessage: 'SD-LAN' })}
             $vertical={vertical}
           />

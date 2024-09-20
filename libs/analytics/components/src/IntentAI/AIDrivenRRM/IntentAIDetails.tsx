@@ -2,28 +2,22 @@
 import { useState } from 'react'
 
 import { Typography }                               from 'antd'
-import { TooltipPlacement }                         from 'antd/es/tooltip'
-import moment                                       from 'moment-timezone'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
-import { formattedPath }                  from '@acx-ui/analytics/utils'
 import { Card, GridCol, GridRow, Loader } from '@acx-ui/components'
-import { DateFormatEnum, formatter }      from '@acx-ui/formatter'
 import { getIntl }                        from '@acx-ui/utils'
 
 import { DescriptionSection }       from '../../DescriptionSection'
 import { FixedAutoSizer }           from '../../DescriptionSection/styledComponents'
+import { useCommonFields }          from '../common/commonFields'
 import { DetailsSection }           from '../common/DetailsSection'
-import { getIntentStatus }          from '../common/getIntentStatus'
 import { IntentDetailsHeader }      from '../common/IntentDetailsHeader'
 import { IntentDetailsSidebar }     from '../common/IntentDetailsSidebar'
 import { IntentIcon }               from '../common/IntentIcon'
 import { KpiCard }                  from '../common/KpiCard'
 import { richTextFormatValues }     from '../common/richTextFormatValues'
 import { StatusTrail }              from '../common/StatusTrail'
-import { codes }                    from '../config'
 import { useIntentContext }         from '../IntentContext'
-import { getStatusTooltip }         from '../services'
 import { getGraphKPIs, getKPIData } from '../useIntentDetailsQuery'
 
 import { IntentAIRRMGraph, SummaryGraphAfter, SummaryGraphBefore } from './RRMGraph'
@@ -85,40 +79,13 @@ export function createIntentAIDetails () {
     const { $t } = useIntl()
     const { intent, kpis, isDataRetained: hasData, state } = useIntentContext()
     const valuesText = useValuesText()
-    const { code, path, sliceValue, metadata, updatedAt, displayStatus } = intent
 
     const [summaryUrlBefore, setSummaryUrlBefore] = useState<string>('')
     const [summaryUrlAfter, setSummaryUrlAfter] = useState<string>('')
 
     const queryResult = useIntentAICRRMQuery()
     const crrmData = queryResult.data!
-
-    const fields = [
-      {
-        label: $t({ defaultMessage: 'Intent' }),
-        children: $t(codes[code].intent)
-      },
-      {
-        label: $t({ defaultMessage: 'Category' }),
-        children: $t(codes[code].category)
-      },
-      {
-        label: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
-        children: sliceValue,
-        tooltip: formattedPath(path, sliceValue),
-        tooltipPlacement: 'right' as TooltipPlacement
-      },
-      {
-        label: $t({ defaultMessage: 'Status' }),
-        children: getIntentStatus(displayStatus),
-        tooltip: getStatusTooltip(displayStatus, sliceValue, { ...metadata, updatedAt }),
-        tooltipPlacement: 'right' as TooltipPlacement
-      },
-      {
-        label: $t({ defaultMessage: 'Date' }),
-        children: formatter(DateFormatEnum.DateTimeFormat)(moment(updatedAt))
-      }
-    ]
+    const fields = useCommonFields(intent)
 
     return <Loader states={[queryResult]}>
       <div hidden>

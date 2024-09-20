@@ -558,21 +558,21 @@ describe('Intent services', () => {
           ...expectedCommonResult,
           status: Statuses.scheduled,
           statusLabel: 'Scheduled',
-          statusTooltip: 'The change recommendation has been scheduled via the user action "Optimize".'
+          statusTooltip: 'The change recommendation has been scheduled for 06/17/2023 00:00, via the user action "Optimize".'
         },
         {
           ...intentListWithAllStatus.intents.data[2],
           ...expectedCommonResult,
           status: Statuses.scheduled,
           statusLabel: 'Scheduled',
-          statusTooltip: 'The change recommendation has been scheduled via the user action "1-Click Optimize".'
+          statusTooltip: 'The change recommendation has been scheduled for 06/17/2023 00:00, via the user action "1-Click Optimize".'
         },
         {
           ...intentListWithAllStatus.intents.data[3],
           ...expectedCommonResult,
           status: Statuses.applyScheduled,
           statusLabel: 'Scheduled',
-          statusTooltip: 'The change recommendation has been automatically scheduled by IntentAI.'
+          statusTooltip: 'The change recommendation has been automatically scheduled for 06/17/2023 00:00, by IntentAI.'
         },
         {
           ...intentListWithAllStatus.intents.data[4],

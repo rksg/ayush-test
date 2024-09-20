@@ -72,9 +72,9 @@ describe('useEdgeClusterActions', () => {
     const { reboot } = result.current
     reboot(mockEdgeList.data as EdgeStatus[], mockedCallback)
     const dialog = await screen.findByRole('dialog')
-    expect(dialog).toHaveTextContent('Reboot "5 SmartEdges"?')
+    expect(dialog).toHaveTextContent('Reboot "5 RUCKUS Edges"?')
     // eslint-disable-next-line max-len
-    expect(dialog).toHaveTextContent('Rebooting the SmartEdge will disconnect all connected clients. Are you sure you want to reboot?')
+    expect(dialog).toHaveTextContent('Rebooting the RUCKUS Edge will disconnect all connected clients. Are you sure you want to reboot?')
     await userEvent.click(within(dialog).getByRole('button', { name: 'Reboot' }))
     await waitFor(() => {
       expect(mockedRebootApi).toBeCalledTimes(5)
@@ -96,7 +96,7 @@ describe('useEdgeClusterActions', () => {
     const { shutdown } = result.current
     shutdown(mockEdgeList.data as EdgeStatus[], mockedCallback)
     const dialog = await screen.findByRole('dialog')
-    expect(dialog).toHaveTextContent('Shutdown "5 SmartEdges"?')
+    expect(dialog).toHaveTextContent('Shutdown "5 RUCKUS Edges"?')
     await userEvent.click(within(dialog).getByRole('button', { name: 'Shutdown' }))
     await waitFor(() => {
       expect(mockedShutdownApi).toBeCalledTimes(5)
@@ -124,9 +124,9 @@ describe('useEdgeClusterActions', () => {
       mockedCallback
     )
     const dialog = await screen.findByRole('dialog')
-    expect(dialog).toHaveTextContent('Delete "3 SmartEdges"?')
+    expect(dialog).toHaveTextContent('Delete "3 RUCKUS Edges"?')
     // eslint-disable-next-line max-len
-    expect(dialog).toHaveTextContent('Are you sure you want to delete these SmartEdges?')
+    expect(dialog).toHaveTextContent('Are you sure you want to delete these RUCKUS Edges?')
     await userEvent.click(within(dialog).getByRole('button', { name: 'Delete' }))
     await waitFor(() => {
       expect(mockedDeleteApi).toBeCalledTimes(1)
