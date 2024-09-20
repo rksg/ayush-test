@@ -116,7 +116,7 @@ export function AlarmsDrawer (props: AlarmsType) {
   ] = useClearAlarmByVenueMutation()
 
   const { data: venuesList } =
-    useGetVenuesQuery({ params: useParams(), payload: venuesListPayload })
+    useGetVenuesQuery({ params: useParams(), payload: venuesListPayload }, { skip: !visible })
 
 
   const tableQuery = useTableQuery({

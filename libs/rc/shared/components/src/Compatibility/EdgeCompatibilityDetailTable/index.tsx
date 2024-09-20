@@ -175,6 +175,6 @@ const getFilteredScheduleVersions = (availableVersions?: EdgeFirmwareVersion[], 
   if (!availableVersions || !venueFirmware) return availableVersions
 
   return availableVersions.filter(availableVersion => {
-    return venueFirmware.versions.some(version => version.id === availableVersion.id)
+    return !venueFirmware.versions.some(version => version.id === availableVersion.id)
   })
 }
