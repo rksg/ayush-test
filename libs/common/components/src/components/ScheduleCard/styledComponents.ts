@@ -15,20 +15,33 @@ export const VerticalLabel = styled.div`
 `
 
 const channelWidth = '10px'
+const channelWidth40 = '40px'
+const channelChildEven = `
+  .ant-checkbox-wrapper:nth-child(even) {
+	  border-right: 1px solid var(--acx-neutrals-40)
+  }
+  .ant-checkbox-wrapper-checked:nth-child(even) {
+	  border-right: 1px solid var(--acx-neutrals-60)
+  }
+`
+const channelChild = `
+  .ant-checkbox-wrapper {
+	  border-right: 1px solid var(--acx-neutrals-60)
+  }
+  .ant-checkbox-wrapper-checked {
+	  border-right: 1px solid var(--acx-neutrals-60)
+  }
+`
 
-export const CheckboxGroup = styled(Checkbox.Group)`
+export const CheckboxGroup = styled(Checkbox.Group)<{ intervalunit: number }>`
+${(props) => `
   .ant-checkbox-group-item{
 	  margin-right: 0;
   }
   .ant-checkbox-wrapper:first-child {
 	  border-left: 1px solid var(--acx-neutrals-60)
   }
-  .ant-checkbox-wrapper:nth-child(even) {
-	  border-right: 1px solid var(--acx-neutrals-50)
-  }
-  .ant-checkbox-wrapper-checked:nth-child(even) {
-	  border-right: 1px solid var(--acx-neutrals-60)
-  }
+  ${props.intervalunit===15?channelChildEven:channelChild}
   .ant-checkbox-wrapper:nth-child(4n) {
 	  border-right: 1px solid var(--acx-neutrals-60)
   }
@@ -38,7 +51,7 @@ export const CheckboxGroup = styled(Checkbox.Group)`
   .ant-checkbox-wrapper {
     position: relative;
     font-size: 10px;
-    width: ${channelWidth};
+    width: ${props.intervalunit===15?channelWidth:channelWidth40};
     height: 32px;
     background: var(--acx-neutrals-30);
     .channels > span + span {
@@ -83,33 +96,47 @@ export const CheckboxGroup = styled(Checkbox.Group)`
     }
   }
 }
-`
+`}`
+
 export const DayCheckbox = styled(Checkbox)`
   .ant-checkbox-inner{
     background-color: var(--acx-accents-blue-50);
   }
 `
 
-export const Timetick = styled.div`
-  width: 80px;
-  height: 15px;
-  color: var(--acx-neutrals-60);
-  float: left;
-  font-size: 12px;
+const timeTickWidth = '80px'
+const timeTickWidth20 = '40px'
+const marginLeftChildSecond = `
   &:nth-child(2) {
     margin-left: 15px;
   }
 `
 
-export const Timetickborder = styled.div`
-  width: 20px;
+export const Timetick = styled.div<{ intervalunit: number }>`
+${(props) => `
+  width: ${props.intervalunit===15?timeTickWidth:timeTickWidth20};
+  height: 15px;
+  color: var(--acx-neutrals-60);
+  float: left;
+  font-size: 12px;
+  ${props.intervalunit===15?marginLeftChildSecond:''}
+`}`
+
+const timetickborderWidth = '20px'
+const timetickborderWidth40 = '80px'
+const timetickborderFirstChild = '19px'
+const timetickborderFirstChild79= '19px'
+
+export const Timetickborder = styled.div<{ intervalunit: number }>`
+${(props) => `
+  width: ${props.intervalunit===15?timetickborderWidth:timetickborderWidth40};
   height: 5px;
   float: left;
   border-left: 1px solid var(--acx-neutrals-60);
   &:first-child {
-	  width: 19px;
+	  width: ${props.intervalunit===15?timetickborderFirstChild:timetickborderFirstChild79};
   }
-`
+`}`
 
 export const Section = styled.section`
   header {

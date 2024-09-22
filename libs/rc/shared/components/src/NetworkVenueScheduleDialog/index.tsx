@@ -14,6 +14,7 @@ import { useIntl } from 'react-intl'
 import {
   Modal,
   ScheduleCard,
+  parseNetworkVenueScheduler,
   showActionModal
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
@@ -22,8 +23,6 @@ import {
   NetworkVenue,
   NetworkSaveData,
   SchedulerTypeEnum } from '@acx-ui/rc/utils'
-
-
 
 import * as UI from './styledComponents'
 
@@ -40,8 +39,8 @@ interface SchedulingModalProps extends AntdModalProps {
 
 export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
   const { networkVenue, venue, network, formName } = props
-  const type = networkVenue?.scheduler?.type ? networkVenue.scheduler.type : SchedulerTypeEnum.ALWAYS_ON
-  const scheduler = networkVenue ? { ...networkVenue.scheduler, type: type.valueOf() } : undefined
+  const type = networkVenue?.scheduler?.type ? networkVenue.scheduler.type.valueOf() : SchedulerTypeEnum.ALWAYS_ON
+  const scheduler = networkVenue ? parseNetworkVenueScheduler({ ...networkVenue.scheduler }) : undefined
   const open = !!props.visible
   const { $t } = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
@@ -185,16 +184,16 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
             </Col>
           </Row>
           <ScheduleCard
+            type={type}
             scheduler={scheduler}
             venue={venue}
             lazyQuery={isMapEnabled? getTimezone: undefined}
             form={form}
-            fieldName='scheduler'
+            fieldNamePath={['scheduler']}
             disabled={disabled}
             loading={loading}
+            intervalUnit={15}
             title={$t({ defaultMessage: 'Mark/ unmark areas to change network availability' })}
-            isShowTimezone
-            isShowTips
           />
         </div>
       </Form>

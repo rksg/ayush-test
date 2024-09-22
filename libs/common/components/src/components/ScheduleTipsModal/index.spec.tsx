@@ -5,19 +5,7 @@ import userEvent from '@testing-library/user-event'
 
 import { render, screen } from '@acx-ui/test-utils'
 
-import { Button } from '../Button'
-
-import { ScheduleTipsModal } from '.'
-
-export const BasicTipsModal = () => {
-  const [isOpen, setIsOpen] = React.useState(false)
-  return (
-    <>
-      <Button type='primary' onClick={() => setIsOpen(true)}>Open</Button>
-      <ScheduleTipsModal isModalOpen={isOpen} onOK={() => setIsOpen(false)}/>
-    </>
-  )
-}
+import { BasicTipsModal } from './stories'
 
 describe('ScheduleTipsModal', () => {
   it('should render correct', async () => {

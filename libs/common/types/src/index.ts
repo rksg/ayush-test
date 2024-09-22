@@ -80,8 +80,7 @@ export interface ITimeZone {
   timeZoneName: string
 }
 
-export interface Scheduler {
-  type: 'ALWAYS_ON' | 'ALWAYS_OFF' | 'CUSTOM' | string
+export interface NetworkVenueScheduler {
   sun?: string
   mon?: string
   tue?: string
@@ -90,3 +89,6 @@ export interface Scheduler {
   fri?: string
   sat?: string
 }
+
+export interface Scheduler extends Record<string, string[]> {}
+
