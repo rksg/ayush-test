@@ -41,10 +41,12 @@ export function getReSkinningElements (locale?: Pick<LocaleContextType, 'lang' |
     VenueSingular: () => intl ? intl.$t({ defaultMessage: 'Space' }) : 'Space',
     VenuePlural: () => intl ? intl.$t({ defaultMessage: 'Spaces' }) : 'Spaces'
   } : {
+    /* eslint-disable custom/enforce-venue-placeholder */
     venueSingular: () => intl ? intl.$t({ defaultMessage: 'venue' }) : 'venue' ,
     venuePlural: () => intl ? intl.$t({ defaultMessage: 'venues' }) : 'venues',
     VenueSingular: () => intl ? intl.$t({ defaultMessage: 'Venue' }) : 'Venue',
     VenuePlural: () => intl ? intl.$t({ defaultMessage: 'Venues' }) : 'Venues'
+    /* eslint-enable */
   }
 }
 
