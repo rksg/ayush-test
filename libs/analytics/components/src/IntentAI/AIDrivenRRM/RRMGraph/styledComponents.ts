@@ -20,13 +20,12 @@ export const DownloadWrapper = styled.div`
   width: fit-content;
 `
 
-export const GraphWrapper = styled.div<{ $blur?: boolean }>`
+export const GraphWrapper = styled.div`
   position: relative;
   display: grid;
   grid-template-columns: 3fr 0.6fr 3fr 1.8fr;
   width: 100%;
   height: 100%;
-  ${props => props.$blur && 'filter: blur(8px);'}
 `
 
 export const GraphTitleWrapper = styled.div`
