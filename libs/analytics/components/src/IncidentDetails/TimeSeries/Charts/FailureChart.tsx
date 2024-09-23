@@ -11,7 +11,7 @@ import { Card, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
 import { formatter }                              from '@acx-ui/formatter'
 import { useNavigate, useTenantLink }             from '@acx-ui/react-router-dom'
 
-import { codeToFailureTypeMap } from '../../../RootCauseRecommendation'
+import { codeToFailureTypeMap } from '../../RootCauseRecommendation'
 
 import { onMarkAreaClick, getMarkers } from './incidentTimeSeriesMarker'
 

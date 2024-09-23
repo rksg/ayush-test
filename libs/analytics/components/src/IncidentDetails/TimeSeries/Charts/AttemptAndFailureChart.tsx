@@ -11,7 +11,7 @@ import {
 } from '@acx-ui/analytics/utils'
 import { Card, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
 
-import { codeToFailureTypeMap } from '../../../RootCauseRecommendation'
+import { codeToFailureTypeMap } from '../../RootCauseRecommendation'
 
 import type { TimeSeriesChartProps } from '../types'
 
