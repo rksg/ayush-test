@@ -70,22 +70,28 @@ export const MoreDetailsDrawer = (props: MoreDetailsDrawerProps) => {
       visible={visible}
       onClose={onClose}
       children={
-        <GridRow style={{ paddingTop: 20 }}>
-          <GridCol col={{ span: 9 }} key={`pie-${type}`} style={{ height }}>
-            <MoreDetailsPieChart
-              filters={filters}
-              queryType={type}
-              title={pieTitle}/>
-          </GridCol>
-          <GridCol col={{ span: 15 }} key={`table-${type}`} style={{ height, overflow: 'auto' }}>
-            {
-              (type === 'dhcpFailure' || type === 'cpuUsage') &&
-                  <ImpactedSwitchesTable filters={filters} queryType={type}/>
-            }
-            {
-              (type === 'portStorm' || type === 'congestion') &&
-                  <ImpactedClientsTable filters={filters} queryType={type}/>
-            }
+        <GridRow>
+          <GridCol col={{ span: 24 }} key={`drawer-${type}`} style={{ height: 220, minWidth: 380 }}>
+            <GridRow style={{ paddingTop: 10 }}>
+              <GridCol col={{ span: 9 }} key={`pie-${type}`} style={{ height }}>
+                <MoreDetailsPieChart
+                  filters={filters}
+                  queryType={type}
+                  title={pieTitle}/>
+              </GridCol>
+              <GridCol col={{ span: 15 }}
+                key={`table-${type}`}
+                style={{ height, overflow: 'auto' }}>
+                {
+                  (type === 'dhcpFailure' || type === 'cpuUsage') &&
+                      <ImpactedSwitchesTable filters={filters} queryType={type}/>
+                }
+                {
+                  (type === 'portStorm' || type === 'congestion') &&
+                      <ImpactedClientsTable filters={filters} queryType={type}/>
+                }
+              </GridCol>
+            </GridRow>
           </GridCol>
         </GridRow>
       }

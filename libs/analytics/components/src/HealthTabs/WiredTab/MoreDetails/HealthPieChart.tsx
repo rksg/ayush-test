@@ -17,8 +17,8 @@ import {
   TopNByPortCongestionResult, TopNByStormPortCountResult,
   showTopNTableResult
 } from './config'
-import { usePieChartDataQuery }        from './services'
-import { ChartTitle, PieChartWrapper } from './styledComponents'
+import { usePieChartDataQuery }                 from './services'
+import { PieChartTitle, HealthPieChartWrapper } from './styledComponents'
 
 type PieChartData = {
   mac: string
@@ -116,7 +116,7 @@ export const MoreDetailsPieChart = ({
     ? queryResults?.data?.length
     : queryResults?.data?.filter(({ mac })=> mac !== 'Others').length
   const showTopNResult = enableWithOthers ? showTopNPieChartResult : showTopNTableResult
-  const Title = <ChartTitle>
+  const Title = <PieChartTitle>
     <FormattedMessage
       defaultMessage={`<b>{count}</b> {title} {totalCount, plural,
       one {Switch}
@@ -129,7 +129,7 @@ export const MoreDetailsPieChart = ({
         b: (chunk) => <b>{chunk}</b>
       }}
     />
-  </ChartTitle>
+  </PieChartTitle>
 
   const hasOthers = enableWithOthers
     ? queryResults?.data?.find(({ mac })=> mac === 'Others')
@@ -146,28 +146,28 @@ export const MoreDetailsPieChart = ({
   const total = pieData?.reduce((total, { value }) => total + value, 0)
   return (
     <Loader states={[queryResults]}>
-      {Title}
-      {pieData && pieData.length > 0
-        ? <PieChartWrapper>
-          <AutoSizer>
-            {({ width, height }) => (
-              <DonutChart
-                data={pieData}
-                style={{ height, width }}
-                legend='name'
-                size={'x-large'}
-                showTotal={false}
-                labelTextStyle={{
-                  overflow: 'truncate',
-                  width: 170
-                }}
-                showLegend
-                dataFormatter={tooltipFormatter(total, formatter('countFormat'))} />
-            )}
-          </AutoSizer>
-        </PieChartWrapper>
-        : <NoData />
-      }
+      <HealthPieChartWrapper>
+        {Title}
+        <div style={{ height: 260, minWidth: 430 }}>
+          {pieData && pieData.length > 0
+            ?
+            <AutoSizer defaultHeight={150}>
+              {({ width, height }) => (
+                <DonutChart
+                  data={pieData}
+                  style={{ height, width }}
+                  legend='name'
+                  size={'x-large'}
+                  showTotal={false}
+                  showLegend
+                  dataFormatter={tooltipFormatter(total, formatter('countFormat'))} />
+              )}
+            </AutoSizer>
+
+            : <NoData />
+          }
+        </div>
+      </HealthPieChartWrapper>
       {hasOthers &&
       <Space align='start' >
         <InformationOutlined />

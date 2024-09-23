@@ -9,9 +9,16 @@ export const ChartTitle = styled.span`
   font-size: 12px;
   padding-bottom: 10px;
 `
-export const PieChartWrapper = styled.div`
-  flex: none;
-  height: 210px;
+export const PieChartTitle = styled.div`
+  text-align: left;
+  font-size: 12px;
+  padding-bottom: 10px;
+`
+export const HealthPieChartWrapper = styled.div`
+  height: 100%;
+  .ant-card-body {
+    height: 100%
+  }
 `
 export const WrapperRow = styled(GridRow)`
   margin-left: 0px !important;
