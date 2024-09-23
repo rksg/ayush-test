@@ -1,4 +1,5 @@
-/* eslint-disable no-console */
+import { unitOfTime } from 'moment-timezone'
+
 import type { Incident }    from '@acx-ui/analytics/utils'
 import { GridRow, GridCol } from '@acx-ui/components'
 
@@ -6,6 +7,8 @@ import { FixedAutoSizer }                                   from '../../Descript
 import { ImpactedSwitchDDoSDonut, ImpactedSwitchDDoSTable } from '../Charts/ImpactedSwitchDDoS'
 import { IncidentAttributes, Attributes }                   from '../IncidentAttributes'
 import { Insights }                                         from '../Insights'
+import { TimeSeries }                                       from '../TimeSeries'
+import { TimeSeriesChartTypes }                             from '../TimeSeries/config'
 
 import { IncidentHeader } from './IncidentHeader'
 
@@ -19,6 +22,15 @@ export const SwitchTcpSynDDoS = (incident: Incident) => {
     Attributes.EventStartTime,
     Attributes.EventEndTime
   ]
+
+  const timeSeriesCharts: TimeSeriesChartTypes[] = [
+    TimeSeriesChartTypes.SwitchDDoSAttackChart
+  ]
+
+  const buffer = {
+    front: { value: 10, unit: 'days' as unitOfTime.Base },
+    back: { value: 1, unit: 'second' as unitOfTime.Base }
+  }
 
   return <>
     <IncidentHeader incident={incident} />
@@ -37,10 +49,15 @@ export const SwitchTcpSynDDoS = (incident: Incident) => {
         <ImpactedSwitchDDoSDonut incident={incident}/>
       </GridCol>
       <GridCol col={{ span: 16 }} style={{ minHeight: '129px' }}>
-        <ImpactedSwitchDDoSTable incident={incident} />
+        <TimeSeries
+          incident={incident}
+          charts={timeSeriesCharts}
+          minGranularity='PT1H'
+          buffer={buffer}
+        />
       </GridCol>
       <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '326px' }}>
-        <h1>Timeseries Chart</h1>
+        <ImpactedSwitchDDoSTable incident={incident} />
       </GridCol>
     </GridRow>
   </>

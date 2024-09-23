@@ -20486,8 +20486,12 @@ exports[`Test Details should render SwitchTcpSynDDoS correctly 1`] = `
         style="min-height: 129px;"
       >
         <div
-          data-testid="impactedSwitchDDoSTable"
-        />
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-SwitchDDoSAttackChart"
+          />
+        </div>
       </div>
     </div>
     <div
@@ -20498,9 +20502,9 @@ exports[`Test Details should render SwitchTcpSynDDoS correctly 1`] = `
         class="c1"
         style="min-height: 326px;"
       >
-        <h1>
-          Timeseries Chart
-        </h1>
+        <div
+          data-testid="impactedSwitchDDoSTable"
+        />
       </div>
     </div>
   </div>

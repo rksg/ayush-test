@@ -200,7 +200,7 @@ describe('Test', () => {
         component: SwitchTcpSynDDoS,
         fakeIncident: fakeIncidentDDoS,
         hasNetworkImpact: false,
-        hasTimeSeries: false,
+        hasTimeSeries: true,
         charts: ['impactedSwitchDDoSTable','impactedSwitchDDoSDonut']
       },
       {
