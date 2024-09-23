@@ -34,6 +34,8 @@ import { RolesEnum }                                                            
 import { hasRoles, useUserProfileContext }                                                 from '@acx-ui/user'
 import { AccountType, AccountVertical, getJwtTokenPayload, isDelegationMode, useTenantId } from '@acx-ui/utils'
 
+import RuckusGptButton from '../GptButton'
+
 import { useMenuConfig } from './menuConfig'
 import * as UI           from './styledComponents'
 import { useLogo }       from './useLogo'
@@ -194,6 +196,7 @@ function Layout () {
         {isDelegationMode()
           ? <MspEcDropdownList/>
           : <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>}
+        <RuckusGptButton/>
         {!(isGuestManager || isDPSKAdmin || isReportsAdmin) &&
           <>
             <AlarmsButton/>
