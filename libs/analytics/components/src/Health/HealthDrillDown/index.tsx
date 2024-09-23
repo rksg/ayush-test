@@ -2,9 +2,9 @@ import { useState } from 'react'
 
 import { isNull } from 'lodash'
 
-import { GridCol, Loader, cssStr } from '@acx-ui/components'
-import { formatter }               from '@acx-ui/formatter'
-import type { AnalyticsFilter }    from '@acx-ui/utils'
+import { GridCol, GridRow, Loader, cssStr } from '@acx-ui/components'
+import { formatter }                        from '@acx-ui/formatter'
+import type { AnalyticsFilter }             from '@acx-ui/utils'
 
 import {
   Stages,
@@ -17,7 +17,7 @@ import { FunnelChart }                                       from './funnelChart
 import { HealthPieChart }                                    from './healthPieChart'
 import { ImpactedClientsTable }                              from './impactedClientTable'
 import { useTtcDrilldownQuery, useConnectionDrilldownQuery } from './services'
-import { Point, Separator, DrillDownRow }                    from './styledComponents'
+import { Point, Separator }                                  from './styledComponents'
 
 const HealthDrillDown = (props: {
   filters: AnalyticsFilter;
@@ -98,7 +98,7 @@ const HealthDrillDown = (props: {
   const format = formatter(isConnectionFailure ? 'countFormat' : 'durationFormat')
   const height = '355px'
   return drilldownSelection ? (
-    <DrillDownRow>
+    <GridRow>
       <GridCol col={{ span: 24 }}>
         <Loader states={[funnelChartData]}>
           <FunnelChart
@@ -135,7 +135,7 @@ const HealthDrillDown = (props: {
           </GridCol>
         </>
       )}
-    </DrillDownRow>
+    </GridRow>
   ) : null
 }
 export { HealthDrillDown }

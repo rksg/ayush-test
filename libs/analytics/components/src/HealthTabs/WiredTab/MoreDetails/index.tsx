@@ -1,8 +1,8 @@
 import { Typography } from 'antd'
 import { useIntl }    from 'react-intl'
 
-import { Drawer, GridCol } from '@acx-ui/components'
-import { AnalyticsFilter } from '@acx-ui/utils'
+import { Drawer, GridCol, GridRow } from '@acx-ui/components'
+import { AnalyticsFilter }          from '@acx-ui/utils'
 
 import { WidgetType }            from './config'
 import { MoreDetailsPieChart }   from './HealthPieChart'
@@ -70,7 +70,7 @@ export const MoreDetailsDrawer = (props: MoreDetailsDrawerProps) => {
       visible={visible}
       onClose={onClose}
       children={
-        <UI.WrapperRow>
+        <GridRow style={{ paddingTop: 20 }}>
           <GridCol col={{ span: 9 }} key={`pie-${type}`} style={{ height }}>
             <MoreDetailsPieChart
               filters={filters}
@@ -87,7 +87,7 @@ export const MoreDetailsDrawer = (props: MoreDetailsDrawerProps) => {
                   <ImpactedClientsTable filters={filters} queryType={type}/>
             }
           </GridCol>
-        </UI.WrapperRow>
+        </GridRow>
       }
     />
   )
