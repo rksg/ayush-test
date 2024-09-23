@@ -125,11 +125,13 @@ export function createIntentAIDetails () {
           <DetailsSection data-testid='Key Performance Indications'>
             <DetailsSection.Title
               children={$t({ defaultMessage: 'Key Performance Indications' })} />
-            <DetailsSection.Details children={<IntentAIRRMGraph
-              crrmData={crrmData}
-              summaryUrlBefore={summaryUrlBefore}
-              summaryUrlAfter={summaryUrlAfter}
-            />} />
+            <DetailsSection.Details children={
+              <IntentAIRRMGraph
+                crrmData={crrmData}
+                summaryUrlBefore={summaryUrlBefore}
+                summaryUrlAfter={summaryUrlAfter}
+              />
+            }/>
           </DetailsSection>
 
           <GridRow>
