@@ -250,7 +250,7 @@ export function SwitchCableTestForm () {
     navigator.clipboard.writeText(response)
   }
 
-  const getStausColor = (status: string) => {
+  const getStatusColor = (status: string) => {
     const colorMap = {
       'OK': 'green',
       'Open': 'yellow',
@@ -278,7 +278,7 @@ export function SwitchCableTestForm () {
       key: 'status',
       dataIndex: 'status',
       render: (_, row) => {
-        return <StatusPill color={getStausColor(row.overallStatus)} value={row.overallStatus} />
+        return <StatusPill color={getStatusColor(row.overallStatus)} value={row.overallStatus} />
       }
     },
     {
@@ -286,7 +286,7 @@ export function SwitchCableTestForm () {
       key: 'pairA',
       dataIndex: 'pairA',
       render: (_, row) => {
-        return <StatusPill color={getStausColor(row.pairAStatus)} value={row.pairAStatus} />
+        return <StatusPill color={getStatusColor(row.pairAStatus)} value={row.pairAStatus} />
       }
     },
     {
@@ -294,7 +294,7 @@ export function SwitchCableTestForm () {
       key: 'pairB',
       dataIndex: 'pairB',
       render: (_, row) => {
-        return <StatusPill color={getStausColor(row.pairBStatus)} value={row.pairBStatus} />
+        return <StatusPill color={getStatusColor(row.pairBStatus)} value={row.pairBStatus} />
       }
     },
     {
@@ -302,7 +302,7 @@ export function SwitchCableTestForm () {
       key: 'pairC',
       dataIndex: 'pairC',
       render: (_, row) => {
-        return <StatusPill color={getStausColor(row.pairCStatus)} value={row.pairCStatus} />
+        return <StatusPill color={getStatusColor(row.pairCStatus)} value={row.pairCStatus} />
       }
     },
     {
@@ -310,7 +310,7 @@ export function SwitchCableTestForm () {
       key: 'pairD',
       dataIndex: 'pairD',
       render: (_, row) => {
-        return <StatusPill color={getStausColor(row.pairDStatus)} value={row.pairDStatus} />
+        return <StatusPill color={getStatusColor(row.pairDStatus)} value={row.pairDStatus} />
       }
     }
   ]
