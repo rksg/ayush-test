@@ -79,6 +79,8 @@ export function VarCustomers () {
 
   const { data: userProfile } = useUserProfileContext()
   const adminRoles = [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]
+  // special handle here, only system administratot/prime admin can do VAR delegation ACX-68291
+  // backend will fix this later
   const isAdmin = userProfile?.roles?.some(role => adminRoles.includes(role as RolesEnum))
 
   const [ handleInvitation
