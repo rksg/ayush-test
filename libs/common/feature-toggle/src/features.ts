@@ -190,7 +190,7 @@ export enum TierFeatures { // for Tier (ex: Beta) feature flag
   BETA_DPSK3 = 'BETA-DPSK3',
   SMART_EDGES = 'PLCY-EDGE',
   CONFIG_TEMPLATE = 'CONFIG-TEMPLATE',
-  LOCATION_BASED_SERVICES = 'LocationBasedServices'
+  LOCATION_BASED_SERVICES = 'LOCATION-BASED-SERVICES'
 }
 
 interface BetaList {
