@@ -20,6 +20,7 @@ import {
   toReactFlowData,
   GenericActionData
 } from '@acx-ui/rc/utils'
+import { hasCrossVenuesPermission } from '@acx-ui/user'
 
 import { EnrollmentPortalDesignModal } from '../../EnrollmentPortalDesignModal'
 import { ActionNavigationDrawer }      from '../ActionNavigationDrawer'
@@ -175,6 +176,7 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
                   setMarked({ desk: false, tablet: false, mobile: true })
                 }}/>
             </div>
+
             <div
               style={{
                 flex: '0 0 513px',
@@ -183,17 +185,19 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
                 paddingRight: 80,
                 paddingTop: 4
               }}>
-              <div>
-                <UI.Button type='default'
-                  size='small'
-                  style={{ fontSize: '14px' }}
-                  onClick={()=>{
-                    setNavigatorVisible(false)
-                    setPortalVisible(true)
-                  }}>
-                  {$t({ defaultMessage: 'Portal Design' })}
-                </UI.Button>
-              </div>
+              {hasCrossVenuesPermission({ needGlobalPermission: true }) &&
+                <div>
+                  <UI.Button type='default'
+                    size='small'
+                    style={{ fontSize: '14px' }}
+                    onClick={() => {
+                      setNavigatorVisible(false)
+                      setPortalVisible(true)
+                    }}>
+                    {$t({ defaultMessage: 'Portal Design' })}
+                  </UI.Button>
+                </div>
+              }
             </div>
           </div>
         </UI.LayoutHeader>

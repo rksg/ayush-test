@@ -282,7 +282,7 @@ function SaveAsAcProfileButton (props: AcProfileModalProps) {
     useWatch(['wlan', 'advancedCustomization', 'l3AclPolicyId']),
     useWatch(['wlan', 'advancedCustomization', 'l3AclEnable']),
     useWatch(['wlan', 'advancedCustomization', 'devicePolicyId']),
-    useWatch(['enableDeviceOs']),
+    useWatch(['wlan', 'advancedCustomization', 'enableDeviceOs']),
     useWatch(['wlan', 'advancedCustomization', 'applicationPolicyId']),
     useWatch(['wlan', 'advancedCustomization', 'applicationPolicyEnable']),
     useWatch(['wlan', 'advancedCustomization', 'userUplinkRateLimiting']),
@@ -404,7 +404,7 @@ function SelectAccessProfileProfile (props: {
   const resetProfiles = () => {
     form.setFieldValue(['wlan','advancedCustomization','l2AclEnable'], false)
     form.setFieldValue(['wlan','advancedCustomization','l3AclEnable'], false)
-    form.setFieldValue('enableDeviceOs', false)
+    form.setFieldValue(['wlan','advancedCustomization','enableDeviceOs'], false)
     form.setFieldValue(['wlan','advancedCustomization','applicationPolicyEnable'], false)
     form.setFieldValue('enableClientRateLimit', false)
   }
@@ -786,7 +786,7 @@ function AccessControlConfigForm () {
   ] = [
     useWatch<boolean>(['wlan','advancedCustomization','l2AclEnable']),
     useWatch<boolean>(['wlan','advancedCustomization','l3AclEnable']),
-    useWatch<boolean>('enableDeviceOs'),
+    useWatch<boolean>(['wlan','advancedCustomization','enableDeviceOs']),
     useWatch<boolean>(['wlan','advancedCustomization','applicationPolicyEnable']),
     useWatch<boolean>('enableDownloadLimit'),
     useWatch<boolean>('enableUploadLimit'),
@@ -854,7 +854,7 @@ function AccessControlConfigForm () {
       {$t({ defaultMessage: 'Device & OS' })}
       <div style={{ display: 'grid', gridTemplateColumns: '50px 190px auto' }}>
         <Form.Item
-          name='enableDeviceOs'
+          name={['wlan','advancedCustomization','enableDeviceOs']}
           style={{ marginBottom: '10px' }}
           valuePropName='checked'
           initialValue={false}
