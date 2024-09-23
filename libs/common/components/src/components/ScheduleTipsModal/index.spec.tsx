@@ -15,6 +15,6 @@ describe('ScheduleTipsModal', () => {
     expect(await screen.findByText('You can set custom schedule using the following options:')).toBeVisible()
     userEvent.click(await screen.findByText('OK'))
     // eslint-disable-next-line max-len
-    await waitFor(async() => expect(await screen.findByRole('dialog')).toBeVisible())    
+    await waitFor(async () => expect(await screen.findByRole('dialog')).toBeVisible())
   })
 })
