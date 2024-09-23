@@ -17,7 +17,8 @@ import {
   schedulerResponse,
   mockedCustom,
   scheduleResultR1,
-  scheduleResultRAI
+  scheduleResultRAI,
+  scheduleResultAlwaysOn
 } from './__tests__/fixtures'
 
 import { parseNetworkVenueScheduler, ScheduleCard } from './index'
@@ -113,7 +114,7 @@ describe('ScheduleCard', () => {
           </Form>
         </Provider>)
 
-      expect(formRef.current.getFieldsValue()).toEqual({ })
+      expect(formRef.current.getFieldsValue()).toEqual({ scheduler: scheduleResultAlwaysOn })
     })
     it('should render schedule dialog with drag and select timeslots successfully', async () => {
       const { result: formRef } = renderHook(() => {

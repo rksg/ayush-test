@@ -15,7 +15,7 @@ export const VerticalLabel = styled.div`
 `
 
 const channelWidth = '10px'
-const channelWidth40 = '40px'
+const channelWidthUnit60 = '20px'
 const channelChildEven = `
   .ant-checkbox-wrapper:nth-child(even) {
 	  border-right: 1px solid var(--acx-neutrals-40)
@@ -24,7 +24,7 @@ const channelChildEven = `
 	  border-right: 1px solid var(--acx-neutrals-60)
   }
 `
-const channelChild = `
+const channelChildUnit60 = `
   .ant-checkbox-wrapper {
 	  border-right: 1px solid var(--acx-neutrals-60)
   }
@@ -41,7 +41,7 @@ ${(props) => `
   .ant-checkbox-wrapper:first-child {
 	  border-left: 1px solid var(--acx-neutrals-60)
   }
-  ${props.intervalunit===15?channelChildEven:channelChild}
+  ${props.intervalunit===15?channelChildEven:channelChildUnit60}
   .ant-checkbox-wrapper:nth-child(4n) {
 	  border-right: 1px solid var(--acx-neutrals-60)
   }
@@ -51,7 +51,7 @@ ${(props) => `
   .ant-checkbox-wrapper {
     position: relative;
     font-size: 10px;
-    width: ${props.intervalunit===15?channelWidth:channelWidth40};
+    width: ${props.intervalunit===15?channelWidth:channelWidthUnit60};
     height: 32px;
     background: var(--acx-neutrals-30);
     .channels > span + span {
@@ -105,36 +105,40 @@ export const DayCheckbox = styled(Checkbox)`
 `
 
 const timeTickWidth = '80px'
-const timeTickWidth20 = '40px'
+const timeTickWidthUnit60 = '60px'
 const marginLeftChildSecond = `
   &:nth-child(2) {
     margin-left: 15px;
   }
 `
 
+const marginLeftChildSecondUnit60 = `
+  &:nth-child(2) {
+    margin-left: -5px;
+  }
+`
+
 export const Timetick = styled.div<{ intervalunit: number }>`
 ${(props) => `
-  width: ${props.intervalunit===15?timeTickWidth:timeTickWidth20};
+  width: ${props.intervalunit===15?timeTickWidth:timeTickWidthUnit60};
   height: 15px;
   color: var(--acx-neutrals-60);
   float: left;
   font-size: 12px;
-  ${props.intervalunit===15?marginLeftChildSecond:''}
+  ${props.intervalunit===15?marginLeftChildSecond:marginLeftChildSecondUnit60}
 `}`
 
 const timetickborderWidth = '20px'
-const timetickborderWidth40 = '80px'
-const timetickborderFirstChild = '19px'
-const timetickborderFirstChild79= '19px'
+const timetickborderWidthUnit60 = '40px'
 
 export const Timetickborder = styled.div<{ intervalunit: number }>`
 ${(props) => `
-  width: ${props.intervalunit===15?timetickborderWidth:timetickborderWidth40};
+  width: ${props.intervalunit===15?timetickborderWidth:timetickborderWidthUnit60};
   height: 5px;
   float: left;
   border-left: 1px solid var(--acx-neutrals-60);
   &:first-child {
-	  width: ${props.intervalunit===15?timetickborderFirstChild:timetickborderFirstChild79};
+	  width: 19px;
   }
 `}`
 

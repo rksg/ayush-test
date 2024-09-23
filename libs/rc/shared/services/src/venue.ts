@@ -100,8 +100,8 @@ import {
   EthernetPortProfileUrls,
   EthernetPortProfileViewData
 } from '@acx-ui/rc/utils'
-import { baseVenueApi }                                  from '@acx-ui/store'
-import { ITimeZone, RequestPayload }                     from '@acx-ui/types'
+import { baseVenueApi }                                                    from '@acx-ui/store'
+import { ITimeZone, RequestPayload }                                       from '@acx-ui/types'
 import { batchApi, createHttpRequest, getVenueTimeZone, ignoreErrorModal } from '@acx-ui/utils'
 
 import { getNewApViewmodelPayloadFromOld, fetchAppendApPositions } from './apUtils'

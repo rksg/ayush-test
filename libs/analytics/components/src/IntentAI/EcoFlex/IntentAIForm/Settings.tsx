@@ -6,6 +6,7 @@ import { useIntl }                       from 'react-intl'
 
 import { StepsForm, useStepFormContext } from '@acx-ui/components'
 
+import { ScheduleTiming } from '../../common/ScheduleTiming'
 import { ScheduleWeekly } from '../../common/ScheduleWeekly'
 import { Intent }         from '../../useIntentDetailsQuery'
 
@@ -13,7 +14,8 @@ const { Paragraph } = Typography
 
 export function Settings () {
   const { $t } = useIntl()
-  const { form } = useStepFormContext<Intent>()
+  const { form, initialValues } = useStepFormContext<Intent>()
+  const isEnabled = form.getFieldValue('preferences').enable
   const excludedHours = form.getFieldValue('preferences').excludedHours
   const [checkedSchedule, setCheckedSchedule] = useState(excludedHours??false)
 
@@ -27,6 +29,7 @@ export function Settings () {
   return <Row gutter={20}>
     <Col span={15}>
       <StepsForm.Title children={$t({ defaultMessage: 'Settings' })} />
+      <ScheduleTiming disabled={!isEnabled} />
       <StepsForm.Subtitle children={$t({ defaultMessage: 'Optional' })} />
       <Paragraph><span>{content.description}</span></Paragraph>
       <Checkbox
@@ -34,7 +37,10 @@ export function Settings () {
         checked={checkedSchedule}
         children={content.option1}
       />
-      {checkedSchedule && <ScheduleWeekly form={form} excludedHours={excludedHours}/>}
+      {checkedSchedule && initialValues?.sliceValue && <ScheduleWeekly
+        form={form}
+        excludedHours={excludedHours}
+        venueName={initialValues.sliceValue} />}
     </Col>
 
   </Row>

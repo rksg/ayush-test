@@ -19,9 +19,8 @@ import {
   Tooltip,
   FormInstance
 } from 'antd'
-import { NamePath } from 'antd/lib/form/interface'
-import _            from 'lodash'
-import { useIntl }  from 'react-intl'
+import _           from 'lodash'
+import { useIntl } from 'react-intl'
 
 import { ITimeZone, NetworkVenueScheduler, Scheduler }   from '@acx-ui/types'
 import { getVenueTimeZone, transformTimezoneDifference } from '@acx-ui/utils'
@@ -48,7 +47,7 @@ interface ScheduleCardProps extends AntdModalProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   lazyQuery?: LazyQueryTrigger<DefaultQueryDefinition<any>>
   form: FormInstance
-  fieldNamePath: NamePath
+  fieldNamePath: string[]
   disabled: boolean
   timelineLabelTop?: boolean
   intervalUnit: 15 | 60 | number
@@ -123,26 +122,23 @@ export function ScheduleCard (props: ScheduleCardProps) {
   const initialValues = (scheduler: Scheduler) => {
     if (props.type === 'ALWAYS_OFF') {
       for (let daykey in dayIndex) {
-        form.setFieldValue([...fieldNamePath, daykey], Array.from({ length: intervalsCount }, (_, i) => (prefix?`${daykey}_${i}`:`${i}`)))
+        form.setFieldValue(fieldNamePath.concat(daykey), Array.from({ length: intervalsCount }, (_, i) => (prefix?`${daykey}_${i}`:`${i}`)))
         arrCheckAll[dayIndex[daykey]] = true
         setCheckAll(arrCheckAll)
       }
     } else if (scheduler){
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      let map: { [key: string]: any } = scheduler
-      Object.entries(map).forEach(([key, value]) => {
-        form.setFieldValue([...fieldNamePath, key], value)
+      Object.entries(scheduler).forEach(([key, value]) => {
+        form.setFieldValue(fieldNamePath.concat(key), value)
 
         const index = dayIndex[key]
         arrCheckedList[index] = value
-        setCheckedList(arrCheckedList)
-
         arrCheckAll[index] = value.length === intervalsCount
-        setCheckAll(arrCheckAll)
-
         arrIndeterminate[index] = !!value.length && value.length < intervalsCount
-        setIndeterminate(arrIndeterminate)
       })
+      setCheckedList(arrCheckedList)
+      setCheckAll(arrCheckAll)
+      setIndeterminate(arrIndeterminate)
     }
 
   }
@@ -155,7 +151,7 @@ export function ScheduleCard (props: ScheduleCardProps) {
       setTimezone(timeZone)
     }
 
-    if(scheduler){
+    if(venue){
       setScheduleList(
         Object.keys(dayIndex).map((item: string) => {
           return { key: item, value: Array.from({ length: intervalsCount }, (_, i) => (prefix?`${item}_${i}`:`${i}`)) }
@@ -165,12 +161,12 @@ export function ScheduleCard (props: ScheduleCardProps) {
       venue && initTimeZone(venue.latitude.toString(), venue.longitude.toString())
       _genTimeTicks()
     }
-  }, [form, scheduler])
+  }, [form, venue])
 
   useEffect(() => {
-    if (disabled) {
+    if (disabled || !scheduler) {
       for (let daykey in dayIndex) {
-        form.setFieldValue([...fieldNamePath, daykey], Array.from({ length: intervalsCount }, (_, i) => (prefix?`${daykey}_${i}`:`${i}`) ))
+        form.setFieldValue(fieldNamePath.concat(daykey), Array.from({ length: intervalsCount }, (_, i) => (prefix?`${daykey}_${i}`:`${i}`) ))
         arrCheckAll[dayIndex[daykey]] = true
         setCheckAll(arrCheckAll)
         arrIndeterminate[dayIndex[daykey]] = false
@@ -179,7 +175,7 @@ export function ScheduleCard (props: ScheduleCardProps) {
     } else {
       initialValues(scheduler as Scheduler)
     }
-  }, [disabled])
+  }, [disabled, scheduler])
 
   const convertToTimeFromSlotIndex = (index: number): string => {
     const unit = 60 / intervalUnit
@@ -211,33 +207,30 @@ export function ScheduleCard (props: ScheduleCardProps) {
       timeticks.push('Midnight')
       setTimeTicks(timeticks)
     } else {
-      for (let i = 0; i < 24; i++) {
-        timeticks.push(`${i}`)
+      for (let i = 0; i <= 8; i++) {
+        timeticks.push(`${i*3}`)
       }
       setTimeTicks(timeticks)
     }
   }
 
-  const onChange = (list: CheckboxValueType[]) => {
-    let index = dayIndex['mon']
-    if(typeof list[0] === 'string'){
-      index = prefix ? dayIndex[list[0].split('_')[0]] : dayIndex[list[0]]
-    }
+  const onChange = (list: CheckboxValueType[], key:string) => {
+    let index = dayIndex[key]
     const arrCheckedList = [...checkedList]
     arrCheckedList[index] = list
     setCheckedList(arrCheckedList)
 
     const arrIndeterminate = [...indeterminate]
-    arrIndeterminate[index] = !!arrCheckedList[index].length && arrCheckedList[index].length < scheduleList[index].value.length
+    arrIndeterminate[index] = !!arrCheckedList[index].length && arrCheckedList[index].length < intervalsCount
     setIndeterminate(arrIndeterminate)
   }
 
   const onCheckAllChange = (e: CheckboxChangeEvent) => {
     const index = dayIndex[e.target.value]
     if(e.target.checked){
-      form.setFieldValue([...fieldNamePath, e.target.value], Array.from({ length: intervalsCount }, (_, i) => (prefix?`${e.target.value}_${i}`:`${i}`) ))
+      form.setFieldValue(fieldNamePath.concat(e.target.value), Array.from({ length: intervalsCount }, (_, i) => (prefix?`${e.target.value}_${i}`:`${i}`) ))
     }else{
-      form.setFieldValue([...fieldNamePath, e.target.value], [])
+      form.setFieldValue(fieldNamePath.concat(e.target.value), [])
     }
     const arrCheckAll = [...checkAll]
     arrCheckAll[index] = e.target.checked
@@ -295,11 +288,12 @@ export function ScheduleCard (props: ScheduleCardProps) {
     onSelectionEnd: () => {
       selectedItems = _.uniq(selectedItems)
       for (let daykey in dayIndex) {
-        const daySchedule = form.getFieldValue([...fieldNamePath, daykey]) || []
+        const daySchedule = form.getFieldValue(fieldNamePath.concat(daykey)) ?? []
+        // const schedule = daySchedule
         const schedule = prefix ? daySchedule : parseNonePrefixScheduler(daykey, daySchedule)
         if(selectedItems.filter((item: string) => item.indexOf(daykey) > -1)){
           let uniqSchedule = memoUniqSchedule(schedule, selectedItems, daykey)
-          form.setFieldValue([...fieldNamePath, daykey], uniqSchedule.map((item: string) => prefix?item:`${item.split('_')[1]}`))
+          form.setFieldValue(fieldNamePath.concat(daykey), uniqSchedule.map((item: string) => prefix?item:`${item.split('_')[1]}`))
           if(uniqSchedule && uniqSchedule.length === intervalsCount){
             arrCheckAll[dayIndex[daykey]] = true
             setCheckAll(arrCheckAll)
@@ -341,7 +335,7 @@ export function ScheduleCard (props: ScheduleCardProps) {
           <div className='selectable-area'>
             {scheduleList && scheduleList.map((item, i) => (
               <Row gutter={24} key={`row2_${item.key}_${i}`}>
-                <Col span={2} key={`col2_${item.key}_${i}`}>
+                <Col span={intervalUnit === 15?2:4} key={`col2_${item.key}_${i}`}>
                   <Checkbox
                     data-testid={`checkbox_${item.key}`}
                     indeterminate={indeterminate[i]}
@@ -354,9 +348,9 @@ export function ScheduleCard (props: ScheduleCardProps) {
                   />
                   <UI.DaySpan>{$t({ defaultMessage: '{day}' }, { day: item.key })}</UI.DaySpan>
                 </Col>
-                <Col span={22} key={`col2_${item.key}`}>
+                <Col span={intervalUnit === 15?22:20} key={`col2_${item.key}`}>
                   { timelineLabelTop && i === 0 &&
-                          <div style={{ width: '100%', height: '25px', marginLeft: intervalUnit === 15 ? '-30px' : '0px' }}>
+                          <div style={{ width: '100%', height: '25px', marginLeft: intervalUnit === 15 ? '-30px' : '15px' }}>
                             {timeTicks.map((item: string, i: number) => {
                               return (
                                 <UI.Timetick intervalunit={intervalUnit} key={`timetick_${i}`}>{item}</UI.Timetick>
@@ -372,13 +366,13 @@ export function ScheduleCard (props: ScheduleCardProps) {
                           </div>}
                   <Form.Item
                     key={`checkboxGroup_form_${item.key}`}
-                    name={[...fieldNamePath, item.key]}
+                    name={fieldNamePath.concat(item.key)}
                     children={
                       <UI.CheckboxGroup
                         intervalunit={intervalUnit}
                         key={`checkboxGroup_${item.key}`}
                         value={checkedList[i]}
-                        onChange={onChange}
+                        onChange={(list) => onChange(list, item.key)}
                         options={item.value.map((timeslot, i) => ({
                           label: <Tooltip
                             title={`${item.key}-${convertToTimeFromSlotIndex(i)}`}

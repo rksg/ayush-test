@@ -1,24 +1,27 @@
+import React from 'react'
+
 import { storiesOf } from '@storybook/react'
 import { Form }      from 'antd'
 
 import { Button } from '../Button'
 
-import { scheduleResultR1, scheduleResultRAI, schedulerResponse, venueResponse } from './__tests__/fixtures'
+import { scheduleResultR1, scheduleResultRAI, venueResponse } from './__tests__/fixtures'
 
 import { ScheduleCard } from '.'
 
 const BasicCard = () => {
   const [form] = Form.useForm()
+  const [values, setValues] = React.useState({})
   const props = {
     loading: false,
     isShowTimezone: true,
     isShowTips: true,
-    fieldName: 'scheduler',
+    fieldNamePath: ['scheduler'],
     title: 'TestTitle',
     venue: venueResponse,
     scheduler: scheduleResultR1,
     intervalUnit: 15,
-    type: schedulerResponse.type
+    type: 'CUSTOM'
   }
   return (
     <>
@@ -30,15 +33,16 @@ const BasicCard = () => {
 
       <Button type='primary'
         onClick={() => {
-          // eslint-disable-next-line no-console
-          console.info(form.getFieldsValue())
+          setValues(form.getFieldsValue())
         }}>Apply</Button>
+      {JSON.stringify(values)}
     </>
   )
 }
 
 const OneHourCard = () => {
   const [form] = Form.useForm()
+  const [values, setValues] = React.useState({})
   const props = {
     loading: false,
     isShowTimezone: false,
@@ -46,7 +50,7 @@ const OneHourCard = () => {
     is12H: false,
     prefix: false,
     timelineLabelTop: false,
-    fieldName: 'scheduler',
+    fieldNamePath: ['scheduler'],
     title: 'TestTitleRAI',
     venue: venueResponse,
     scheduler: scheduleResultRAI,
@@ -63,9 +67,9 @@ const OneHourCard = () => {
 
       <Button type='primary'
         onClick={() => {
-          // eslint-disable-next-line no-console
-          console.info(form.getFieldsValue())
+          setValues(form.getFieldsValue())
         }}>Apply</Button>
+      {JSON.stringify(values)}
     </>
   )
 }
