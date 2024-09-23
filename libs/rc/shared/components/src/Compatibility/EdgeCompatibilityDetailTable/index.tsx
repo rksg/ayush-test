@@ -1,8 +1,9 @@
 import { useState } from 'react'
 
-import { sumBy }   from 'lodash'
-import moment      from 'moment'
-import { useIntl } from 'react-intl'
+import { Typography } from 'antd'
+import { sumBy }      from 'lodash'
+import moment         from 'moment'
+import { useIntl }    from 'react-intl'
 
 import { Table, TableProps }                                                                                                                                                                from '@acx-ui/components'
 import { useGetAvailableEdgeFirmwareVersionsQuery, useGetLatestEdgeFirmwareQuery, useGetVenueEdgeFirmwareListQuery, useUpdateEdgeFirmwareNowMutation, useUpdateEdgeVenueSchedulesMutation } from '@acx-ui/rc/services'
@@ -67,12 +68,12 @@ export const EdgeCompatibilityDetailTable = (props: EdgeCompatibilityDetailTable
     { skip: requirementOnly })
   const { venueFirmware } = useGetVenueEdgeFirmwareListQuery({
     payload: {
-      filter: { venueId }
+      filters: { venueId: [venueId] }
     }
   }, {
     skip: requirementOnly,
     selectFromResult: ({ data }) => {
-      return { venueFirmware: data?.[0] }
+      return { venueFirmware: data?.filter(fw => fw.id === venueId)?.[0] }
     }
   })
 
@@ -144,6 +145,12 @@ export const EdgeCompatibilityDetailTable = (props: EdgeCompatibilityDetailTable
   const showCheckbox = hasPermission({ scopes: [EdgeScopes.UPDATE] }) && !requirementOnly
 
   return <>
+    <Typography.Text>
+      {
+        // eslint-disable-next-line max-len
+        $t({ defaultMessage: '* Please note that all RUCKUS Edges in this <venueSingular></venueSingular> would be upgraded together.' })
+      }
+    </Typography.Text>
     <Table
       rowKey='featureName'
       columns={columns.filter(i => requirementOnly ? i.dataIndex !== 'incompatible' : true)}
