@@ -33,6 +33,7 @@ describe('ScheduleWeekly', () => {
         </Form>
       </Provider>)
 
+    expect(await screen.findByText(/Local time/)).toBeVisible()
     const scheduleCheckbox = await screen.findByTestId('checkbox_mon')
     expect(scheduleCheckbox).toBeVisible()
     await userEvent.click(scheduleCheckbox)

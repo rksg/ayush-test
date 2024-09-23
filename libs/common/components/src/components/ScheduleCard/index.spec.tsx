@@ -11,6 +11,7 @@ import {
   screen,
   renderHook
 } from '@acx-ui/test-utils'
+import { Scheduler } from '@acx-ui/types'
 
 import {
   venueResponse,
@@ -37,15 +38,13 @@ describe('ScheduleCard', () => {
   describe('intervalUnit-15 > R1', () => {
     const props = {
       loading: false,
-      isShowTimezone: true,
-      isShowTips: true,
       fieldNamePath: ['scheduler'],
       title: 'TestTitle',
       venue: venueResponse,
       scheduler: scheduleResultR1,
       lazyQuery: mockedLazyQuey,
-      intervalUnit: 15,
-      type: schedulerResponse.type
+      type: schedulerResponse.type,
+      intervalUnit: 15
     }
 
     it('parseNetworkVenueScheduler', () => {
@@ -62,13 +61,42 @@ describe('ScheduleCard', () => {
             layout='horizontal'
             size='small'
             onFinish={onApply}>
-            <ScheduleCard {...props} form={formRef.current} disabled />
+            <ScheduleCard {...props} type='ALWAYS_ON' form={formRef.current} disabled />
           </Form>
         </Provider>)
 
       expect(await screen.findByRole('button', { name: 'See tips' })).toBeVisible()
       expect(await screen.findByText('TestTitle')).toBeVisible()
-      expect(formRef.current.getFieldsValue()).toMatchSnapshot()
+      const mondayTimeSlot9 = await screen.findByTestId('mon_0')
+      const mondayTimeSlot95 = await screen.findByTestId('mon_95')
+
+      fireEvent.mouseDown(mondayTimeSlot9)
+      fireEvent.mouseMove(mondayTimeSlot95)
+      fireEvent.mouseUp(mondayTimeSlot95)
+      expect(formRef.current.getFieldsValue()).toEqual({ scheduler: scheduleResultAlwaysOn })
+    })
+
+    it('should render schedule successfully enable (ALWAYS_ON)', async () => {
+      const { result: formRef } = renderHook(() => {
+        return Form.useForm()[0]
+      })
+      render(
+        <Provider>
+          <Form form={formRef.current}
+            layout='horizontal'
+            size='small'
+            onFinish={onApply}>
+            <ScheduleCard {...props} type='ALWAYS_ON' form={formRef.current} disabled={false} />
+          </Form>
+        </Provider>)
+
+      expect(await screen.findByRole('button', { name: 'See tips' })).toBeVisible()
+      await userEvent.click(await screen.findByRole('button', { name: 'See tips' }))
+      expect(await screen.findByRole('dialog')).toBeVisible()
+      await userEvent.click(await screen.findByRole('button', { name: 'OK' }))
+      expect(screen.queryByRole('dialog')).toBeNull()
+      // eslint-disable-next-line max-len
+      expect(formRef.current.getFieldsValue()).toEqual({ scheduler: scheduleResultAlwaysOn })
     })
 
     it('should render schedule successfully (CUSTOM)', async () => {
@@ -78,29 +106,44 @@ describe('ScheduleCard', () => {
       render(
         <Provider>
           <Form form={formRef.current} onFinish={onApply}>
-            <ScheduleCard {...props} form={formRef.current} disabled />
+            <ScheduleCard {...props} form={formRef.current} disabled={false} />
           </Form>
         </Provider>)
 
-      expect(formRef.current.getFieldsValue()).toMatchSnapshot()
+      // eslint-disable-next-line max-len
+      expect(formRef.current.getFieldsValue()).toEqual({ scheduler: mockedCustom })
     })
 
     it('should render schedule monday checkbox options successfully (CUSTOM)', async () => {
       const { result: formRef } = renderHook(() => {
         return Form.useForm()[0]
       })
+      const scheduler = { ...mockedCustom, tue: [] } as Scheduler
       render(
         <Provider>
           <Form form={formRef.current} onFinish={onApply}>
-            <ScheduleCard {...props} form={formRef.current} disabled={false} />
+            <ScheduleCard {...props}
+              form={formRef.current}
+              scheduler={scheduler}
+              lazyQuery={undefined}
+              disabled={false} />
           </Form>
         </Provider>)
 
-      const scheduleCheckbox = await screen.findByTestId('checkbox_mon')
-      expect(scheduleCheckbox).toBeVisible()
-      await userEvent.click(scheduleCheckbox)
-      // eslint-disable-next-line max-len
-      expect(formRef.current.getFieldsValue()).toEqual({ scheduler: { ...mockedCustom, mon: [] } })
+      const scheduleCheckboxMon = await screen.findByTestId('checkbox_mon')
+      expect(scheduleCheckboxMon).toBeChecked()
+      await userEvent.click(scheduleCheckboxMon)
+      expect(scheduleCheckboxMon).not.toBeChecked()
+      const scheduleCheckboxTue = await screen.findByTestId('checkbox_tue')
+      expect(scheduleCheckboxTue).not.toBeChecked()
+      await userEvent.click(scheduleCheckboxTue)
+      expect(scheduleCheckboxTue).toBeChecked()
+      expect(formRef.current.getFieldsValue()).toEqual({
+        scheduler: {
+          ...mockedCustom,
+          mon: []
+        }
+      })
     })
 
     it('should render scheduler undefined successfully', async () => {
@@ -110,7 +153,7 @@ describe('ScheduleCard', () => {
       render(
         <Provider>
           <Form form={formRef.current} onFinish={onApply}>
-            <ScheduleCard {...props} form={formRef.current} scheduler={undefined} disabled={true} />
+            <ScheduleCard {...props} form={formRef.current} scheduler={undefined} disabled />
           </Form>
         </Provider>)
 
@@ -120,23 +163,39 @@ describe('ScheduleCard', () => {
       const { result: formRef } = renderHook(() => {
         return Form.useForm()[0]
       })
+      const scheduler = { ...scheduleResultAlwaysOn, mon: ['mon_0', 'mon_1', 'mon_2', 'mon_10'] }
       render(
         <Provider>
           <Form form={formRef.current} onFinish={onApply}>
-            <ScheduleCard {...props} form={formRef.current} disabled={false} />
+            <ScheduleCard
+              {...props}
+              scheduler={scheduler}
+              form={formRef.current}
+              disabled={false} />
           </Form>
         </Provider>)
 
-      const scheduleCheckbox = await screen.findByTestId('checkbox_mon')
-      expect(scheduleCheckbox).toBeVisible()
-      await userEvent.click(scheduleCheckbox)
+      const scheduleCheckboxTue = await screen.findByTestId('checkbox_tue')
+      expect(scheduleCheckboxTue).toBeChecked()
+      await userEvent.click(scheduleCheckboxTue)
+      expect(scheduleCheckboxTue).not.toBeChecked()
 
-      const mondayTimeSlot = await screen.findByTestId('mon_0')
-      const mondayLastTimeSlot = await screen.findByTestId('mon_95')
+      const mondayTimeSlot9 = await screen.findByTestId('mon_0')
+      const mondayTimeSlot95 = await screen.findByTestId('mon_95')
 
-      fireEvent.mouseDown(mondayLastTimeSlot)
-      fireEvent.mouseMove(mondayTimeSlot)
-      fireEvent.mouseUp(mondayTimeSlot)
+      fireEvent.mouseDown(mondayTimeSlot9)
+      fireEvent.mouseMove(mondayTimeSlot95)
+      fireEvent.mouseUp(mondayTimeSlot95)
+
+      await userEvent.click(scheduleCheckboxTue)
+      expect(scheduleCheckboxTue).toBeChecked()
+
+      expect(formRef.current.getFieldsValue()).toEqual({
+        scheduler: {
+          ...scheduleResultAlwaysOn,
+          mon: ['mon_0', 'mon_1', 'mon_2', 'mon_10']
+        }
+      })
     })
     it('should drag and select partial timeslots successfully', async () => {
       const { result: formRef } = renderHook(() => {
@@ -158,6 +217,9 @@ describe('ScheduleCard', () => {
       fireEvent.mouseDown(tuesdayTimeSlot1)
       fireEvent.mouseMove(tuesdayTimeSlot2)
       fireEvent.mouseUp(tuesdayTimeSlot2)
+
+      // eslint-disable-next-line max-len
+      expect(formRef.current.getFieldsValue()).toEqual({ scheduler: { ...scheduleResultAlwaysOn,sat: [], tue: [] } })
     })
   })
 
@@ -171,11 +233,10 @@ describe('ScheduleCard', () => {
       timelineLabelTop: false,
       fieldNamePath: ['scheduler'],
       title: 'TestTitleRAI',
-      venue: venueResponse,
       scheduler: scheduleResultRAI,
-      lazyQuery: mockedLazyQuey,
       intervalUnit: 60,
-      type: 'CUSTOM'
+      type: 'CUSTOM',
+      localTimeZone: true
     }
 
     it('should render schedule successfully (CUSTOM)', async () => {
@@ -185,29 +246,99 @@ describe('ScheduleCard', () => {
       render(
         <Provider>
           <Form form={formRef.current} onFinish={onApply}>
-            <ScheduleCard {...props} form={formRef.current} disabled />
+            <ScheduleCard {...props} form={formRef.current} disabled={false} />
           </Form>
         </Provider>)
-
-      expect(formRef.current.getFieldsValue()).toMatchSnapshot()
+      expect(await screen.findByText(/Local time/)).toBeVisible()
+      // eslint-disable-next-line max-len
+      expect(formRef.current.getFieldsValue()).toEqual({ scheduler: scheduleResultRAI })
     })
 
-    it('should render schedule monday checkbox options successfully (CUSTOM)', async () => {
+    it('should render schedule successfully (ALWAYS_ON)', async () => {
       const { result: formRef } = renderHook(() => {
         return Form.useForm()[0]
       })
       render(
         <Provider>
           <Form form={formRef.current} onFinish={onApply}>
-            <ScheduleCard {...props} form={formRef.current} disabled={false} />
+            <ScheduleCard {...props} form={formRef.current} type='ALWAYS_ON' disabled={false} />
+          </Form>
+        </Provider>)
+      expect(await screen.findByText(/Local time/)).toBeVisible()
+      // eslint-disable-next-line max-len
+      expect(formRef.current.getFieldsValue()).toEqual({
+        scheduler: {
+          ...scheduleResultRAI,
+          sat: scheduleResultRAI.mon,
+          sun: scheduleResultRAI.mon }
+      })
+    })
+
+    it('should render schedule undefined successfully (CUSTOM)', async () => {
+      const { result: formRef } = renderHook(() => {
+        return Form.useForm()[0]
+      })
+      render(
+        <Provider>
+          <Form form={formRef.current} onFinish={onApply}>
+            <ScheduleCard {...props}
+              scheduler={undefined}
+              form={formRef.current}
+              disabled={false} />
+          </Form>
+        </Provider>)
+      expect(await screen.findByText(/Local time/)).toBeVisible()
+      expect(formRef.current.getFieldsValue()).toEqual({
+        scheduler: { ...scheduleResultRAI, sat: scheduleResultRAI.mon, sun: scheduleResultRAI.mon }
+      })
+    })
+
+    it('should render schedule monday checkbox options successfully (CUSTOM)', async () => {
+      const { result: formRef } = renderHook(() => {
+        return Form.useForm()[0]
+      })
+      const scheduler = { ...scheduleResultRAI, mon: [] }
+      render(
+        <Provider>
+          <Form form={formRef.current} onFinish={onApply}>
+            <ScheduleCard
+              {...props}
+              form={formRef.current}
+              scheduler={scheduler}
+              disabled={false} />
           </Form>
         </Provider>)
 
-      const scheduleCheckbox = await screen.findByTestId('checkbox_mon')
+      const scheduleCheckboxMon = await screen.findByTestId('checkbox_mon')
+      expect(scheduleCheckboxMon).not.toBeChecked()
+      await userEvent.click(scheduleCheckboxMon)
+      expect(scheduleCheckboxMon).toBeChecked()
+      const scheduleCheckboxFri = await screen.findByTestId('checkbox_fri')
+      expect(scheduleCheckboxFri).toBeChecked()
+      await userEvent.click(scheduleCheckboxFri)
+      expect(scheduleCheckboxFri).not.toBeChecked()
+      // eslint-disable-next-line max-len
+      expect(formRef.current.getFieldsValue()).toEqual({ scheduler: { ...scheduleResultRAI, fri: [] } })
+    })
+
+    it('should render schedule mon_2 checkbox options successfully (CUSTOM)', async () => {
+      const { result: formRef } = renderHook(() => {
+        return Form.useForm()[0]
+      })
+      render(
+        <Provider>
+          <Form form={formRef.current} onFinish={onApply}>
+            <ScheduleCard {...props}
+              form={formRef.current}
+              disabled={false} />
+          </Form>
+        </Provider>)
+
+      const scheduleCheckbox = await screen.findByTestId('mon_2')
       expect(scheduleCheckbox).toBeVisible()
       await userEvent.click(scheduleCheckbox)
       // eslint-disable-next-line max-len
-      expect(formRef.current.getFieldsValue()).toEqual({ scheduler: { ...scheduleResultRAI, mon: [] } })
+      expect(formRef.current.getFieldsValue()).toEqual({ scheduler: { ...scheduleResultRAI, mon: scheduleResultRAI.mon.filter(item => item !== '2') } })
     })
   })
 

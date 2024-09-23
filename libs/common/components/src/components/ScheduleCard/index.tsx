@@ -101,7 +101,7 @@ const parseNonePrefixScheduler = (key:string, values: string[]) => {
 export function ScheduleCard (props: ScheduleCardProps) {
   const { $t } = useIntl()
   const { scheduler, venue, disabled, form, fieldNamePath, lazyQuery: getTimezone, localTimeZone=false,
-    isShowTips=true, isShowTimezone=true, timelineLabelTop= true, intervalUnit=15, is12H=true, prefix=true } = props
+    isShowTips=true, isShowTimezone=true, timelineLabelTop= true, intervalUnit, is12H=true, prefix=true } = props
 
   const [scheduleList, setScheduleList] = useState<Schedule[]>([])
   const [checkedList, setCheckedList] = useState<CheckboxValueType[][]>([])
@@ -122,7 +122,7 @@ export function ScheduleCard (props: ScheduleCardProps) {
   const arrIndeterminate = [...indeterminate]
 
   const initialValues = (scheduler: Scheduler) => {
-    if (props.type === 'ALWAYS_OFF') {
+    if (props.type === 'ALWAYS_ON') {
       for (let daykey in dayIndex) {
         form.setFieldValue(fieldNamePath.concat(daykey), Array.from({ length: intervalsCount }, (_, i) => (prefix?`${daykey}_${i}`:`${i}`)))
         arrCheckAll[dayIndex[daykey]] = true
@@ -176,7 +176,7 @@ export function ScheduleCard (props: ScheduleCardProps) {
       }
       _genTimeTicks()
     }
-  }, [form, venue])
+  }, [form, venue, localTimeZone])
 
   useEffect(() => {
     if (disabled || !scheduler) {
