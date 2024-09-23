@@ -73,7 +73,6 @@ describe('IntentAIDetails', () => {
     async function assertRenderCorrectly () {
       expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
       expect(await screen.findByTestId('IntentAIRRMGraph')).toBeVisible()
-      // expect(await screen.findByTestId('DownloadRRMComparison')).toBeVisible()
       const details = await screen.findByTestId('Details')
       expect(await within(details).findAllByTestId('KPI')).toHaveLength(1)
     }
