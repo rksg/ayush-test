@@ -18,6 +18,7 @@ RUN source ${ENV_FILE} \
 # Install dependencies
 COPY package.json package-lock.json ./
 COPY patches ./patches
+COPY tools/dev/eslint-custom-rule ./tools/dev/eslint-custom-rule
 RUN npm install
 
 COPY .eslintignore \

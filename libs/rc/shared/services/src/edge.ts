@@ -977,7 +977,13 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           const tmp = [] as (EdgePortStatus | EdgeLagStatus)[]
           const params = { serialNumber: edgeId }
           const edgePortListReq = createHttpRequest(EdgeUrlsInfo.getEdgePortStatusList, params)
-          const edgePortList = await fetchWithBQ({ ...edgePortListReq, body: {} })
+          const edgePortList = await fetchWithBQ({
+            ...edgePortListReq,
+            body: {
+              sortField: 'sortIdx',
+              sortOrder: 'ASC'
+            }
+          })
           tmp.push(...((edgePortList.data as TableResult<EdgePortStatus>).data))
 
           const edgeLagListReq = createHttpRequest(EdgeUrlsInfo.getEdgeLagStatusList, params)
