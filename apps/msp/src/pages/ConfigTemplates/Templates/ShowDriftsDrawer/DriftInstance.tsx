@@ -14,7 +14,7 @@ import { transformDriftResponse }                     from './utils'
 
 
 
-interface DriftInstanceProps {
+export interface DriftInstanceProps {
   instanceName: string
   instanceId: string
   updateSelection: (id: string, selected: boolean) => void
