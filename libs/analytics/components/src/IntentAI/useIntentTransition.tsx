@@ -73,13 +73,13 @@ const { useIntentTransitionMutation } = intentAIApi.injectEndpoints({
 
 export function useInitialValues <Preferences> () {
   // eslint-disable-next-line max-len
-  const { id, metadata, status, statusReason, displayStatus, sliceValue } = useIntentContext().intent
+  const { id, metadata, status, statusReason, displayStatus } = useIntentContext().intent
   const settings = metadata?.scheduledAt ? {
     date: moment(metadata.scheduledAt),
     time: moment.duration(moment(metadata.scheduledAt).format('HH:mm:ss')).asHours()
   } : { date: undefined, time: undefined }
   // eslint-disable-next-line max-len
-  return { id, status, statusReason, displayStatus, settings, sliceValue } as FormValues<Preferences>
+  return { id, status, statusReason, displayStatus, settings } as FormValues<Preferences>
 }
 
 export function createUseIntentTransition <Preferences> (

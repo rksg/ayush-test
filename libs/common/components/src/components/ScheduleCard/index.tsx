@@ -20,6 +20,7 @@ import {
   FormInstance
 } from 'antd'
 import _           from 'lodash'
+import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
 import { ITimeZone, NetworkVenueScheduler, Scheduler }   from '@acx-ui/types'
@@ -42,10 +43,11 @@ interface ScheduleCardProps extends AntdModalProps {
   venue?: {
     latitude: string,
     longitude: string,
-    name: string
+    name?: string
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   lazyQuery?: LazyQueryTrigger<DefaultQueryDefinition<any>>
+  localTimeZone?: boolean
   form: FormInstance
   fieldNamePath: string[]
   disabled: boolean
@@ -98,7 +100,7 @@ const parseNonePrefixScheduler = (key:string, values: string[]) => {
 
 export function ScheduleCard (props: ScheduleCardProps) {
   const { $t } = useIntl()
-  const { scheduler, venue, disabled, form, fieldNamePath, lazyQuery: getTimezone,
+  const { scheduler, venue, disabled, form, fieldNamePath, lazyQuery: getTimezone, localTimeZone=false,
     isShowTips=true, isShowTimezone=true, timelineLabelTop= true, intervalUnit=15, is12H=true, prefix=true } = props
 
   const [scheduleList, setScheduleList] = useState<Schedule[]>([])
@@ -151,14 +153,27 @@ export function ScheduleCard (props: ScheduleCardProps) {
       setTimezone(timeZone)
     }
 
-    if(venue){
+    const initLocalTimeZone = () => {
+      setTimezone({
+        dstOffset: 0,
+        rawOffset: moment().utcOffset()*60,
+        timeZoneId: '',
+        timeZoneName: moment().zoneAbbr()
+      })
+    }
+
+    if(venue || localTimeZone){
       setScheduleList(
         Object.keys(dayIndex).map((item: string) => {
           return { key: item, value: Array.from({ length: intervalsCount }, (_, i) => (prefix?`${item}_${i}`:`${i}`)) }
         })
       )
 
-      venue && initTimeZone(venue.latitude.toString(), venue.longitude.toString())
+      if (localTimeZone) {
+        initLocalTimeZone()
+      } else if (venue) {
+        initTimeZone(venue.latitude.toString(), venue.longitude.toString())
+      }
       _genTimeTicks()
     }
   }, [form, venue])
@@ -400,6 +415,14 @@ export function ScheduleCard (props: ScheduleCardProps) {
                             })}
                           </div>
                   }
+                  {localTimeZone && i === scheduleList.length -1 &&
+                  <div style={{ width: '100%', height: '25px' }}>
+                    <UI.LocalTimeZone intervalunit={intervalUnit} key={'localtime'}>
+                      {$t({ defaultMessage: 'Local time ({timeOffset})' },
+                        { timeOffset: transformTimezoneDifference(timezone.dstOffset+timezone.rawOffset) })}
+                    </UI.LocalTimeZone>
+                  </div>}
+
                 </Col>
               </Row>
             ))

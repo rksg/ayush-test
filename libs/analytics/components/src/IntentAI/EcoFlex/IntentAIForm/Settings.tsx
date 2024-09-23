@@ -14,7 +14,7 @@ const { Paragraph } = Typography
 
 export function Settings () {
   const { $t } = useIntl()
-  const { form, initialValues } = useStepFormContext<Intent>()
+  const { form } = useStepFormContext<Intent>()
   const isEnabled = form.getFieldValue('preferences').enable
   const excludedHours = form.getFieldValue('preferences').excludedHours
   const [checkedSchedule, setCheckedSchedule] = useState(excludedHours??false)
@@ -39,8 +39,7 @@ export function Settings () {
       />
       {checkedSchedule && initialValues?.sliceValue && <ScheduleWeekly
         form={form}
-        excludedHours={excludedHours}
-        venueName={initialValues.sliceValue} />}
+        excludedHours={excludedHours} />}
     </Col>
 
   </Row>

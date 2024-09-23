@@ -35,12 +35,13 @@ const BasicCard = () => {
         onClick={() => {
           setValues(form.getFieldsValue())
         }}>Apply</Button>
-      {JSON.stringify(values)}
+      {`form value: 
+      ${JSON.stringify(values)}`}
     </>
   )
 }
 
-const OneHourCard = () => {
+const OneHourAndLocalTimeZoneCard = () => {
   const [form] = Form.useForm()
   const [values, setValues] = React.useState({})
   const props = {
@@ -52,10 +53,10 @@ const OneHourCard = () => {
     timelineLabelTop: false,
     fieldNamePath: ['scheduler'],
     title: 'TestTitleRAI',
-    venue: venueResponse,
     scheduler: scheduleResultRAI,
     intervalUnit: 60,
-    type: 'CUSTOM'
+    type: 'CUSTOM',
+    localTimeZone: true
   }
   return (
     <>
@@ -69,13 +70,14 @@ const OneHourCard = () => {
         onClick={() => {
           setValues(form.getFieldsValue())
         }}>Apply</Button>
-      {JSON.stringify(values)}
+      {`form value: 
+      ${JSON.stringify(values)}`}
     </>
   )
 }
 
 storiesOf('ScheduleCard', module)
   .add('default', BasicCard)
-  .add('OneHourCard', OneHourCard)
+  .add('OneHourAndLocalTimeZone', OneHourAndLocalTimeZoneCard)
 
 export {}

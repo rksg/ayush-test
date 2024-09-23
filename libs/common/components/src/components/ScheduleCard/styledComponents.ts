@@ -128,6 +128,16 @@ ${(props) => `
   ${props.intervalunit===15?marginLeftChildSecond:marginLeftChildSecondUnit60}
 `}`
 
+export const LocalTimeZone = styled.div<{ intervalunit: number }>`
+${(props) => `
+  width: 100%;
+  height: 15px;
+  color: var(--acx-neutrals-60);
+  margin-left: 160px;
+  font-size: 12px;
+  ${props.intervalunit===15?marginLeftChildSecond:marginLeftChildSecondUnit60}
+`}`
+
 const timetickborderWidth = '20px'
 const timetickborderWidthUnit60 = '40px'
 
