@@ -43,7 +43,10 @@ export function SelectionControl (
         {props.options.map(({ value, label, icon, disabled, tooltip }) => {
           if(tooltip){
             return (
-              <Tooltip title={tooltip}>
+              <Tooltip 
+                title={tooltip}
+                mouseEnterDelay = {1}
+              >
                 <Radio.Button {...{ value, disabled, key: value }}>
                   {icon}
                   {label}
