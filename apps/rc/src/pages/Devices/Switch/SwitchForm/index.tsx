@@ -325,7 +325,10 @@ export function SwitchForm () {
         newStackMemberSerialNumber: serialNumber
       }
       try {
-        await addStackMember({ params }).unwrap()
+        await addStackMember({
+          params,
+          enableRbac: isSwitchRbacEnabled
+        }).unwrap()
         navigate(`${basePath.pathname}/switch`, { replace: true })
       } catch (error) {
         console.log(error) // eslint-disable-line no-console
