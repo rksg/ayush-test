@@ -321,8 +321,11 @@ export function SwitchForm () {
     } else if (switchRole === MEMEBER_TYPE.MEMBER) {
       const params = {
         tenantId,
+        venueId: values.venueId,
         stackSerialNumber: formRef.current?.getFieldValue('existingStack'),
-        newStackMemberSerialNumber: serialNumber
+        newStackMemberSerialNumber: serialNumber,
+        switchId: formRef.current?.getFieldValue('existingStack'),
+        memberId: serialNumber
       }
       try {
         await addStackMember({
