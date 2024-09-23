@@ -124,13 +124,13 @@ function getAAADiagram (props: AaaDiagramProps) {
 }
 function getCloudpathDiagram (wisprWithPsk: boolean, wisprWithOwe: boolean,
   props: AaaDiagramProps) {
-  let useProxy = false
+  let useProxy = props.enableAuthProxy
   if (props.showButtons) {
     const enableAuthProxyService = !!(props.enableAuthProxy && props.enableAaaAuthBtn)
     const enableAccProxyService = !!(props.enableAccountingProxy && !props.enableAaaAuthBtn)
     useProxy = enableAuthProxyService || enableAccProxyService
   }
-  if (useProxy || props.enableAuthProxy) {
+  if (useProxy) {
     return wisprWithPsk ? CloudpathProxyWithPskDiagram :
       (wisprWithOwe ? CloudpathProxyWithOweDiagram : CloudpathProxyDiagram)
   } else {
