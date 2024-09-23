@@ -1,11 +1,11 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonRbacUrlsInfo, PolicyOperation, PolicyType, Venue, getPolicyRoutePath } from '@acx-ui/rc/utils'
-import { Provider }                                                                   from '@acx-ui/store'
-import { mockServer, render, waitForElementToBeRemoved, screen }                      from '@acx-ui/test-utils'
+import { CommonRbacUrlsInfo, PolicyOperation, PolicyType, SwitchRbacUrlsInfo, Venue, getPolicyRoutePath } from '@acx-ui/rc/utils'
+import { Provider }                                                                                       from '@acx-ui/store'
+import { mockServer, render, waitForElementToBeRemoved, screen }                                          from '@acx-ui/test-utils'
 
-import { dummyApList, dummyVenue, mockedPolicyId1, mockedTenantId } from '../__tests__/fixtures'
+import { dummyApList, dummySwitchClientList, dummyVenue, mockedPolicyId1, mockedTenantId } from '../__tests__/fixtures'
 
 
 import { LbsServerVenueApsDrawer } from './LbsServerVenueApsDrawer'
@@ -27,6 +27,10 @@ describe('LbsServerVenueApsDrawer', () => {
       rest.post(
         CommonRbacUrlsInfo.getApsList.url,
         (_req, res, ctx) => res(ctx.json(dummyApList))
+      ),
+      rest.post(
+        SwitchRbacUrlsInfo.getSwitchClientList.url,
+        (_req, res, ctx) => res(ctx.json(dummySwitchClientList))
       )
     )
   })

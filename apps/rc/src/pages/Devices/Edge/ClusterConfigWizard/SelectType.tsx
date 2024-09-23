@@ -145,17 +145,17 @@ export const SelectType = () => {
 
   return <>
     <PageHeader
-      title={$t({ defaultMessage: 'Cluster & SmartEdge Configuration Wizard' })}
+      title={$t({ defaultMessage: 'Cluster & RUCKUS Edge Configuration Wizard' })}
       subTitle={<ClusterConfigWizardSubtitle clusterInfo={clusterInfo} />}
       breadcrumb={[
-        { text: $t({ defaultMessage: 'SmartEdge' }), link: '/devices/edge' }
+        { text: $t({ defaultMessage: 'RUCKUS Edges' }), link: '/devices/edge' }
       ]}
     />
     <SpaceWrapper fullWidth size={50} direction='vertical'>
       <Row>
         <Typography.Text>
           {$t({ defaultMessage: `Select which configuration you want to quickly set up for
-      all SmartEdges in this cluster:` },
+      all RUCKUS Edges in this cluster:` },
           { clusterName })}
         </Typography.Text>
       </Row>
@@ -204,7 +204,7 @@ export const SelectType = () => {
             <UI.WarningTxt>
               {
               // eslint-disable-next-line max-len
-                $t({ defaultMessage: 'The number of CPU cores, memory, or physical ports on the SmartEdges do not meet the requirements for High Availability. {br}'+
+                $t({ defaultMessage: 'The number of CPU cores, memory, or physical ports on the RUCKUS Edges do not meet the requirements for High Availability. {br}'+
               // eslint-disable-next-line max-len
               'Please ensure the devices have matching specifications to establish a reliable HA configurations.' }, {
                   br: <br/>

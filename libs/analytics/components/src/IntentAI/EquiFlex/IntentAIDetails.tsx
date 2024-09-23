@@ -1,58 +1,43 @@
 import { useEffect, useState } from 'react'
 
-import { Typography }                 from 'antd'
-import { TooltipPlacement }           from 'antd/es/tooltip'
-import { MessageDescriptor, useIntl } from 'react-intl'
+import { Typography }                                   from 'antd'
+import { TooltipPlacement }                             from 'antd/es/tooltip'
+import { FormattedMessage, MessageDescriptor, useIntl } from 'react-intl'
 
-import { impactedArea, nodeTypes, productNames } from '@acx-ui/analytics/utils'
-import { Card, GridCol, GridRow }                from '@acx-ui/components'
-import { get }                                   from '@acx-ui/config'
-import { useWifiNetworkListQuery }               from '@acx-ui/rc/services'
-import { getIntl, NodeType }                     from '@acx-ui/utils'
+import { Card, GridCol, GridRow }  from '@acx-ui/components'
+import { get }                     from '@acx-ui/config'
+import { useWifiNetworkListQuery } from '@acx-ui/rc/services'
 
-import { DescriptionSection }  from '../../DescriptionSection'
-import { FixedAutoSizer }      from '../../DescriptionSection/styledComponents'
-import { ConfigurationCard }   from '../AIOperations/ConfigurationCard'
-import { useCommonFields }     from '../common/commonFields'
-import { DetailsSection }      from '../common/DetailsSection'
-import { IntentDetailsHeader } from '../common/IntentDetailsHeader'
-import { IntentIcon }          from '../common/IntentIcon'
-import { KpiCard }             from '../common/KpiCard'
-import { StatusTrail }         from '../common/StatusTrail'
-import { useIntentContext }    from '../IntentContext'
-import { getGraphKPIs }        from '../useIntentDetailsQuery'
-import { IntentWlan }          from '../utils'
+import { DescriptionSection }   from '../../DescriptionSection'
+import { FixedAutoSizer }       from '../../DescriptionSection/styledComponents'
+import { ConfigurationCard }    from '../AIOperations/ConfigurationCard'
+import { useCommonFields }      from '../common/commonFields'
+import { DetailsSection }       from '../common/DetailsSection'
+import { IntentDetailsHeader }  from '../common/IntentDetailsHeader'
+import { IntentIcon }           from '../common/IntentIcon'
+import { KpiCard }              from '../common/KpiCard'
+import { richTextFormatValues } from '../common/richTextFormatValues'
+import { StatusTrail }          from '../common/StatusTrail'
+import { useIntentContext }     from '../IntentContext'
+import { getGraphKPIs }         from '../useIntentDetailsQuery'
+import { IntentWlan }           from '../utils'
 
 import * as SideNotes from './IntentAIForm/SideNotes'
 
 export function createUseValuesText ({ action }: {
   action: {
-    active: MessageDescriptor,
-    inactive: MessageDescriptor
+    hasData: MessageDescriptor,
+    noData: MessageDescriptor
   }
 }) {
   return function useValuesText () {
-    const { $t } = getIntl()
-    const { intent, state } = useIntentContext()
-    const {
-      path,
-      sliceType,
-      sliceValue
-    } = intent
-
-    const actionText = state === 'active'
-      ? action.active
-      : action.inactive
-    const currentValueText = (intent.currentValue === true)
-      ? $t({ defaultMessage: 'enabled' })
-      : $t({ defaultMessage: 'not enabled' })
+    const { state } = useIntentContext()
+    const actionText = state === 'no-data'
+      ? action.noData
+      : action.hasData
 
     return {
-      actionText: $t(actionText, {
-        ...productNames,
-        scope: `${nodeTypes(sliceType as NodeType)}: ${impactedArea(path, sliceValue)}`,
-        currentValue: currentValueText
-      })
+      actionText: actionText
     }
   }
 }
@@ -116,7 +101,9 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
               <IntentIcon size='large' />
               <Typography.Paragraph
                 data-testid='Overview text'
-                children={valuesText.actionText} />
+                children={
+                  <FormattedMessage {...valuesText.actionText} values={richTextFormatValues}/>
+                }/>
               <DescriptionSection fields={fields}/>
               <br />
             </div>)}
