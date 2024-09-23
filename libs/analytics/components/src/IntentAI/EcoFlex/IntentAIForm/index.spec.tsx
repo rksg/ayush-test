@@ -110,6 +110,11 @@ describe('IntentAIForm', () => {
     await selectOptions(time, '12:30 (UTC+08)')
     expect(time).toHaveValue('12.5')
 
+    const scheduleEnabled = screen.getByRole('checkbox', { name: /following time slots of the week/ })
+    await click(scheduleEnabled)
+    expect(scheduleEnabled).toBeChecked()
+    expect(await screen.findByText(/Local time/)).toBeVisible()
+
     await click(actions.getByRole('button', { name: 'Next' }))
     expect((await screen.findAllByText('Summary')).length).toEqual(2)
     await click(actions.getByRole('button', { name: 'Apply' }))
