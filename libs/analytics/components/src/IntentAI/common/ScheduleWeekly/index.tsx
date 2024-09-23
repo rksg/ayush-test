@@ -27,6 +27,7 @@ export const ScheduleWeekly = (props:ScheduleWeeklyProps) => {
       prefix={false}
       timelineLabelTop={false}
       title=''
+      isShowTimezone={false}
       localTimeZone
     />
   )

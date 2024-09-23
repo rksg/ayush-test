@@ -65,11 +65,9 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
 
   useEffect(() => {
     const scheduler = networkVenue?.scheduler
-    if (scheduler) {
-      const type = scheduler.type
-      setDisabled(type !== SchedulerTypeEnum.CUSTOM)
-      form.setFieldValue(['scheduler', 'type'], type)
-    }
+    const type = scheduler?.type ?? SchedulerTypeEnum.ALWAYS_ON
+    setDisabled(type !== SchedulerTypeEnum.CUSTOM)
+    form.setFieldValue(['scheduler', 'type'], type)
   }, [form, networkVenue, networkVenue?.scheduler])
 
   const showAlwaysOnConfirmDialog = () => {

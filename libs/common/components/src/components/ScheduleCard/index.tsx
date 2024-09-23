@@ -311,20 +311,17 @@ export function ScheduleCard (props: ScheduleCardProps) {
           form.setFieldValue(fieldNamePath.concat(daykey), uniqSchedule.map((item: string) => prefix?item:`${item.split('_')[1]}`))
           if(uniqSchedule && uniqSchedule.length === intervalsCount){
             arrCheckAll[dayIndex[daykey]] = true
-            setCheckAll(arrCheckAll)
             arrIndeterminate[dayIndex[daykey]] = false
-            setIndeterminate(arrIndeterminate)
           }else if(uniqSchedule && uniqSchedule.length > 0 && uniqSchedule.length < intervalsCount){
             arrIndeterminate[dayIndex[daykey]] = true
-            setIndeterminate(arrIndeterminate)
           }else{
             arrCheckAll[dayIndex[daykey]] = false
-            setCheckAll(arrCheckAll)
             arrIndeterminate[dayIndex[daykey]] = false
-            setIndeterminate(arrIndeterminate)
           }
         }
       }
+      setCheckAll(arrCheckAll)
+      setIndeterminate(arrIndeterminate)
     },
     isEnabled: true
   })

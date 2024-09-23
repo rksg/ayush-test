@@ -37,7 +37,7 @@ export function Settings () {
         checked={checkedSchedule}
         children={content.option1}
       />
-      {checkedSchedule && initialValues?.sliceValue && <ScheduleWeekly
+      {checkedSchedule && <ScheduleWeekly
         form={form}
         excludedHours={excludedHours} />}
     </Col>

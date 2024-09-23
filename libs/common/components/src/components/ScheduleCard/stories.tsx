@@ -52,7 +52,6 @@ const OneHourAndLocalTimeZoneCard = () => {
     prefix: false,
     timelineLabelTop: false,
     fieldNamePath: ['scheduler'],
-    title: 'TestTitleRAI',
     scheduler: scheduleResultRAI,
     intervalUnit: 60,
     type: 'CUSTOM',

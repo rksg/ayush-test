@@ -2,12 +2,12 @@ import { Intent } from '../../useIntentDetailsQuery'
 
 export const mocked = {
   id: '2c392d0a-124f-4183-b5c4-529d6571f540',
-  root: '3e93a325-c53c-4bdb-876f-ced1f59ca820',
+  root: '6f931c53-21eb-4727-b2ad-e23b43d98846',
   code: 'i-ecoflex',
-  sliceId: '5f46ced9-03b8-4cf1-89f1-fac17afdf421',
+  sliceId: '0e2f68ab79154ffea64aa52c5cc48826',
   status: 'new',
-  sliceType: 'zone',
-  sliceValue: 'weiguo-mesh',
+  sliceType: 'Yakubpur-MH',
+  sliceValue: 'My-Venue',
   updatedAt: '2024-06-14T08:30:39.214Z',
   dataEndTime: '2024-06-09T00:00:00.000Z',
   path: [
