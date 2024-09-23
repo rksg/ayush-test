@@ -10,10 +10,10 @@ import { DateFormatEnum, formatter }     from '@acx-ui/formatter'
 import {
   useLazyVenueRadioActiveNetworksQuery
 } from '@acx-ui/rc/services'
-import { RadioTypeEnum }                          from '@acx-ui/rc/utils'
-import {  Filters, getIntl, useEncodedParameter } from '@acx-ui/utils'
+import { RadioTypeEnum }                         from '@acx-ui/rc/utils'
+import { Filters, getIntl, useEncodedParameter } from '@acx-ui/utils'
 
-import {  IntentListItem }      from './config'
+import { IntentListItem }       from './config'
 import {
   TransitionMutationResponse,
   useLazyIntentWlansQuery,
