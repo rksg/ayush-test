@@ -15,6 +15,7 @@ import {
 import {
   CliConfiguration,
   CliFamilyModels,
+  SwitchViewModel,
   Venue,
   useConfigTemplate,
   useConfigTemplateQueryFnSwitcher,
@@ -29,10 +30,13 @@ interface VenueExtend extends Venue {
   inactiveTooltip?: string
 }
 
-export function CliStepVenues () {
+export function CliStepVenues (props: {
+  allowedSwitchList?: SwitchViewModel[]
+}) {
   const { $t } = useIntl()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
+  const { isTemplate } = useConfigTemplate()
   const { form, initialValues } = useStepFormContext()
   const data = (form?.getFieldsValue(true) as CliConfiguration)
 
@@ -43,7 +47,7 @@ export function CliStepVenues () {
   })
 
   const [selectedRows, setSelectedRows] = useState<React.Key[]>([])
-  const { isTemplate } = useConfigTemplate()
+  const [customizedSwitchVenues, setCustomizedSwitchVenues] = useState<string[]>([])
 
   const columns: TableProps<Venue>['columns'] = [{
     title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
@@ -96,7 +100,12 @@ export function CliStepVenues () {
     form?.setFieldValue('venues', values)
   }
 
-  const transformData = (list?: Venue[], models?: string[], selectedVenues?: React.Key[]) => {
+  const transformData = (
+    list?: Venue[],
+    models?: string[],
+    selectedVenues?: React.Key[],
+    customizedSwitchVenues?: string[]
+  ) => {
     return list?.map(venue => {
       const venueApplyModels = cliFamilyModels
         ?.find(familyModel => familyModel.venueId === venue.id)?.familyModels
@@ -111,11 +120,24 @@ export function CliStepVenues () {
       return {
         ...venue,
         models: venueApplyModels,
-        inactiveRow: isModelOverlap,
-        inactiveTooltip: $t(cliFormMessages.OVERLAPPING_MODELS_TOOLTIP)
+        inactiveRow: isModelOverlap || customizedSwitchVenues?.includes(venue.id),
+        inactiveTooltip: isModelOverlap
+          ? $t(cliFormMessages.OVERLAPPING_MODELS_TOOLTIP)
+          : $t(cliFormMessages.PRE_SELECT_VENUE_FOR_CUSTOMIZED)
       }
     })
   }
+
+  useEffect(() => {
+    const customizedSwitches = _.uniq(data?.variables
+      ?.flatMap(variable => variable.switchVariables?.flatMap(s => s.serialNumbers) || []))
+    const customizedSwitchVenues = _.uniq(props?.allowedSwitchList
+      ?.filter(s => customizedSwitches.includes(s?.serialNumber || ''))
+      .map(s => s.venueId)
+    )
+
+    setCustomizedSwitchVenues(customizedSwitchVenues)
+  }, [data?.variables, props?.allowedSwitchList])
 
   useEffect(() => {
     onChangeVenues(data?.venues)
@@ -123,8 +145,13 @@ export function CliStepVenues () {
 
   useEffect(() => {
     if (!tableQuery.isLoading) {
-      const list = transformData(tableQuery?.data?.data, data?.models, selectedRows)
-      const venues = form?.getFieldValue('venues')
+      // eslint-disable-next-line max-len
+      const list = transformData(tableQuery?.data?.data, data?.models, selectedRows, customizedSwitchVenues)
+      const venues = _.uniq([
+        ...( form?.getFieldValue('venues') || []),
+        ...customizedSwitchVenues
+      ])
+
       const updateVenues = venues?.filter((vId:string) => {
         const venueApplyModels = list?.find(v => v.id === vId)?.models
         const excludeApplyingModels = venueApplyModels?.filter(m => !data?.models?.includes(m))
@@ -134,7 +161,7 @@ export function CliStepVenues () {
       setSelectedRows(updateVenues as React.Key[])
       form?.setFieldValue('venues', updateVenues)
     }
-  }, [data?.models, tableQuery.isLoading])
+  }, [data?.models, tableQuery.isLoading, customizedSwitchVenues])
 
   return <Row gutter={24}>
     <Col span={24}>
@@ -161,7 +188,9 @@ export function CliStepVenues () {
       <Loader states={[{ isLoading: tableQuery.isLoading || tableQuery.isFetching }]}>
         <Table
           columns={columns}
-          dataSource={transformData(tableQuery?.data?.data, data?.models, selectedRows)}
+          dataSource={transformData(
+            tableQuery?.data?.data, data?.models, selectedRows, customizedSwitchVenues
+          )}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'

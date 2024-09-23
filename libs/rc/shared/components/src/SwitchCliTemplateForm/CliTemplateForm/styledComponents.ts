@@ -2,7 +2,6 @@ import {
   Collapse as AntCollapse,
   Divider as AntDivider,
   List,
-  Select as AntSelect,
   Space
 } from 'antd'
 import styled from 'styled-components/macro'
@@ -150,32 +149,6 @@ export const CliVariableContent = styled('span')`
   text-overflow: ellipsis;
 `
 
-export const CustomizedSection = styled('div')`
-  background: var(--acx-neutrals-10);
-  padding: 12px;
-  border-radius: 4px;
-  margin-bottom: 20px;
-`
-
-export const CustomizedFields = styled(Space)`
-  display: grid;
-  grid-template-columns: 1fr 4px 1fr;
-  gap: 0 8px !important;
-  align-items: flex-start;
-`
-
-export const Select = styled(AntSelect)`
-  &.string-type {
-    .ant-select-selector {
-      height: 50.5px;
-      align-items: flex-start;
-      .ant-select-selection-placeholder {
-        top: 14px;
-      }
-    }
-  }
-`
-
 export const CodeMirrorContainer = styled('div')`
   .CodeMirror {
     font-family: var(--acx-neutral-brand-font);
@@ -209,4 +182,11 @@ export const Collapse = styled(AntCollapse)`
 
 export const ToggleWrapper = styled('div')`
   margin-bottom: 10px;
+`
+
+export const CustomizedSection = styled('div')`
+  background: var(--acx-neutrals-10);
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 20px;
 `

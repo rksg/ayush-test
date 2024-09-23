@@ -107,8 +107,17 @@ export const SwitchMessages = {
 }
 
 export const SwitchCliMessages = {
+  ALLOW_CUSTOMIZED_ADDRESS_TOOLTIP: defineMessage({
+    defaultMessage: 'Select an IP address from the subnet defined above.'
+  }),
+  ALLOW_CUSTOMIZED_RANGE_TOOLTIP: defineMessage({
+    defaultMessage: 'Select a number from the range defined above.'
+  }),
   ALLOW_CUSTOMIZED_CLI_TOOLTIP: defineMessage({
     defaultMessage: 'This section allows you to dictate the variable value getting assigned to the selected switch.'
+  }),
+  NOT_ALLOW_APPLY_PROFILE: defineMessage({
+    defaultMessage: 'This switch is already linked with a different configuration profile.'
   }),
   PREPROVISIONED_SWITCH_LIST_TOOLTIP: defineMessage({
     defaultMessage: 'Only the selected models from the previous step will be available for selection when customizing variables.'

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { Form }                   from 'antd'
-import _                          from 'lodash'
+import _, { isArray }             from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import {
@@ -14,6 +14,7 @@ import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
 import {
   useLazyGetProfilesQuery,
   useGetSwitchConfigProfileQuery,
+  useGetSwitchListQuery,
   useAddSwitchConfigProfileMutation,
   useUpdateSwitchConfigProfileMutation,
   useBatchAssociateSwitchProfileMutation,
@@ -27,10 +28,12 @@ import {
 } from '@acx-ui/rc/services'
 import {
   CliConfiguration,
+  ConfigurationProfile,
+  SwitchStatusEnum,
+  SwitchViewModel,
   useConfigTemplatePageHeaderTitle,
   useConfigTemplateBreadcrumb,
   useConfigTemplateQueryFnSwitcher,
-  ConfigurationProfile,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplate,
   useConfigTemplateLazyQueryFnSwitcher
@@ -51,7 +54,8 @@ import { CliStepVenues }  from './CliStepVenues'
 /* eslint-disable max-len */
 export const cliFormMessages = {
   OVERLAPPING_MODELS_TOOLTIP: defineMessage({ defaultMessage: 'A CLI configuration profile with overlapping switch models has been applied to this <venueSingular></venueSingular> so it cannot be selected.' }),
-  VENUE_STEP_DESP: defineMessage({ defaultMessage: 'The configuration will be applied to all switches of the selected models, as well as any switch that will be added to the <venueSingular></venueSingular> in the future' })
+  VENUE_STEP_DESP: defineMessage({ defaultMessage: 'The configuration will be applied to all switches of the selected models, as well as any switch that will be added to the <venueSingular></venueSingular> in the future' }),
+  PRE_SELECT_VENUE_FOR_CUSTOMIZED: defineMessage({ defaultMessage: 'Cannot unselect this <venueSingular></venueSingular> because some of it\'s switches have custom variables assigned from the previous step' })
 }
 /* eslint-enable max-len */
 
@@ -60,6 +64,18 @@ export const profilesPayload = {
   pageSize: 9999,
   sortField: 'name',
   sortOrder: 'DESC'
+}
+
+const switchListPayload = {
+  fields: [
+    'check-all', 'name', 'id', 'serialNumber', 'isStack', 'formStacking',
+    'venueId', 'switchName', 'model', 'uptime', 'configReady',
+    'syncedSwitchConfig', 'operationalWarning', 'venueName', 'deviceStatus'
+  ],
+  pageSize: 9999
+  // filters: {
+  //   deviceStatus: [SwitchStatusEnum.NEVER_CONTACTED_CLOUD]
+  // }
 }
 
 export function CliProfileForm () {
@@ -72,9 +88,14 @@ export function CliProfileForm () {
   const { isTemplate } = useConfigTemplate()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const isSwitchLevelCliProfileEnabled = useIsSplitOn(Features.SWITCH_LEVEL_CLI_PROFILE)
+  // eslint-disable-next-line max-len
+  const isCustomizedVariableEnabled = !isTemplate && isSwitchLevelCliProfileEnabled && params?.configType === 'profiles' //TODO
+
   const rbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isSwitchRbacEnabled
 
   const [appliedModels, setAppliedModels] = useState({} as unknown as Record<string, string[]>)
+  const [allowedSwitchList, setAllowedSwitchList] = useState([] as SwitchViewModel[])
 
   const [form] = Form.useForm()
   const [getProfiles] = useConfigTemplateLazyQueryFnSwitcher({
@@ -90,7 +111,6 @@ export function CliProfileForm () {
     useMutationFn: useBatchDisassociateSwitchProfileMutation,
     useTemplateMutationFn: useBatchDisassociateSwitchConfigProfileTemplateMutation
   })
-
 
   const [addSwitchConfigProfile] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useAddSwitchConfigProfileMutation,
@@ -108,6 +128,14 @@ export function CliProfileForm () {
     enableRbac: isSwitchRbacEnabled
   })
 
+  const { data: switchList, isLoading: isSwitchLoading } = useGetSwitchListQuery({
+    params,
+    payload: switchListPayload,
+    enableRbac: isSwitchRbacEnabled
+  }, {
+    skip: !isCustomizedVariableEnabled || isTemplate
+  })
+
   // Config Template related states
   const breadcrumb = useConfigTemplateBreadcrumb([
     { text: $t({ defaultMessage: 'Wired' }) },
@@ -121,6 +149,14 @@ export function CliProfileForm () {
 
   const transformSaveData = (data: CliConfiguration) => {
     const { name, cli, overwrite, variables } = data
+    // TODO
+    const customizedSwitches = _.uniq(variables
+      ?.flatMap(variable => variable.switchVariables?.flatMap(s => s.serialNumbers) || []))
+    const customizedSwitchVenues = _.uniq(allowedSwitchList
+      ?.filter(s => customizedSwitches.includes(s?.serialNumber || ''))
+      .map(s => s.venueId)
+    )
+
     return {
       name,
       profileType: 'CLI',
@@ -130,9 +166,20 @@ export function CliProfileForm () {
         name,
         cli,
         overwrite,
-        variables
+        variables: variables?.map(v => ({
+          ...v,
+          ...(v?.switchVariables ? {
+            switchVariables: v?.switchVariables.map(s => ({
+              ...s,
+              serialNumbers: isArray(s.serialNumbers) ? s.serialNumbers : [s.serialNumbers]
+            }))
+          } : {})
+        }))
       },
-      venues: data?.venues
+      venues: _.uniq([
+        ...( data?.venues || []),
+        ...customizedSwitchVenues
+      ])
     }
   }
 
@@ -214,7 +261,12 @@ export function CliProfileForm () {
   }
 
   useEffect(() => {
-    if (!isProfileLoading) {
+    if (!isProfileLoading && !isSwitchLoading) {
+      const allowedSwitchList = switchList?.data?.filter(s => {
+        // TODO
+        return s.deviceStatus === SwitchStatusEnum.NEVER_CONTACTED_CLOUD
+      }) as SwitchViewModel[]
+
       const data = {
         ...cliProfile,
         cli: cliProfile?.venueCliTemplate?.cli,
@@ -227,10 +279,11 @@ export function CliProfileForm () {
         ...result, [v]: data.models
       }), {}) || {}
 
+      setAllowedSwitchList(allowedSwitchList)
       setAppliedModels(venueAppliedModels)
       form?.setFieldsValue(data)
     }
-  }, [cliProfile])
+  }, [cliProfile, isProfileLoading, switchList, isSwitchLoading])
 
   return (
     <>
@@ -283,14 +336,17 @@ export function CliProfileForm () {
               return true
             }}
           >
-            <CliStepConfiguration appliedModels={appliedModels} />
+            <CliStepConfiguration
+              appliedModels={appliedModels}
+              allowedSwitchList={allowedSwitchList}
+            />
           </StepsForm.StepForm>
 
           <StepsForm.StepForm
             name='venues'
             title={$t({ defaultMessage: '<VenuePlural></VenuePlural>' })}
           >
-            <CliStepVenues />
+            <CliStepVenues allowedSwitchList={allowedSwitchList} />
           </StepsForm.StepForm>
 
           {!editMode &&

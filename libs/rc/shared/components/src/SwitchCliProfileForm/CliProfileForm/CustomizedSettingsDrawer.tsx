@@ -11,7 +11,7 @@ import * as UI            from '../../SwitchCliTemplateForm/CliTemplateForm/styl
 
 import { VariableType } from './CliStepModels'
 
-export const CustomizedSwitchesSettingDrawer = (props: {
+export const CustomizedSettingsDrawer = (props: {
   type: string
   switchSettings: SwitchSettings[],
   switchSettingDrawerVisible: boolean,
@@ -34,7 +34,7 @@ export const CustomizedSwitchesSettingDrawer = (props: {
     dataIndex: 'value',
     key: 'value',
     render: (data: React.ReactNode) => {
-      return type === VariableType.RANGE
+      return type !== VariableType.STRING
         ? data
         : <Tooltip title={data} dottedUnderline>
           <UI.CliVariableContent style={{ maxWidth: '180px' }}>{ data }</UI.CliVariableContent>
@@ -55,6 +55,7 @@ export const CustomizedSwitchesSettingDrawer = (props: {
     destroyOnClose={true}
   >
     <Table
+      rowKey='name'
       type='form'
       style={{ marginTop: '4px' }}
       columns={columns}

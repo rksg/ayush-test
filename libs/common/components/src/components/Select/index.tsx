@@ -5,8 +5,8 @@ import { Check } from '@acx-ui/icons'
 
 import type { SelectProps as AntSelectProps } from 'antd'
 
-interface SelectProps extends AntSelectProps {
-  $maxCount?: number
+export interface SelectProps extends AntSelectProps {
+  type?: string
 }
 
 export function Select (props: SelectProps) {
@@ -21,7 +21,7 @@ export function Select (props: SelectProps) {
     ...(props?.dropdownClassName?.split(' ') ?? []),
     isGroupingDropdown ? 'grouping-dropdown' : '',
     props?.mode === 'multiple' ? 'multiple-dropdown' : '',
-    props?.$maxCount === 1 ? 'radio-type' : ''
+    props?.type === 'radio' ? 'radio-type' : ''
   ].filter(cls => cls).join(' ')
 
   const getGroupOptions = () => {
@@ -32,6 +32,7 @@ export function Select (props: SelectProps) {
         options: props?.children?.map(({ props }: any) => ({
           label: props?.children,
           value: props?.value,
+          key: props?.label,
           disabled: props?.disabled
         }))
       }))
@@ -44,8 +45,8 @@ export function Select (props: SelectProps) {
   }
 
   const selectProps = isGroupingDropdown ? {
-    ...restProps,
     showArrow: true,
+    ...restProps,
     options: getGroupOptions()
   } : props
 

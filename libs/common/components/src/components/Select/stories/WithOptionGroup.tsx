@@ -19,6 +19,7 @@ export function WithOptionGroup () {
         {...defaultProps}
         mode='multiple'
         options={normalGroupOption}
+        optionFilterProp='label'
       />
     </div>
   </Space>

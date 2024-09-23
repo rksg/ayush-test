@@ -32,14 +32,12 @@ import { MoreVertical, Plus }     from '@acx-ui/icons-new'
 import {
   useGetCliConfigExamplesQuery,
   useGetCliFamilyModelsQuery,
-  useGetCliTemplatesQuery,
-  useGetSwitchListQuery
+  useGetCliTemplatesQuery
 } from '@acx-ui/rc/services'
 import {
   checkObjectNotExists,
   CliTemplateExample,
   CliTemplateVariable,
-  SwitchStatusEnum,
   SwitchViewModel,
   transformTitleCase,
   whitespaceOnlyRegExp
@@ -49,10 +47,10 @@ import { getIntl }   from '@acx-ui/utils'
 
 import { CodeMirrorWidget }                                from '../../CodeMirrorWidget'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../../ImportFileDrawer'
-import { CustomizedSwitchesSettingDrawer }                 from '../../SwitchCliProfileForm/CliProfileForm/CustomizedSwitchesSettingDrawer'
+import { CliVariableModal }                                from '../../SwitchCLI/CliVariableModal'
+import { CustomizedSettingsDrawer }                        from '../../SwitchCliProfileForm/CliProfileForm/CustomizedSettingsDrawer'
 
-import { CliVariableModal } from './CliVariableModal'
-import * as UI              from './styledComponents'
+import * as UI from './styledComponents'
 
 import { tooltip, getVariableSeparator, VariableType } from './'
 
@@ -110,21 +108,9 @@ const cliTemplatesPayload = {
   sortOrder: 'DESC'
 }
 
-const switchListPayload = {
-  fields: [
-    'check-all', 'name', 'id', 'serialNumber', 'isStack', 'formStacking',
-    'venueId', 'switchName', 'model', 'uptime', 'configReady',
-    'syncedSwitchConfig', 'operationalWarning', 'venueName'
-  ],
-  pageSize: 9999,
-  filters: {
-    deviceStatus: [SwitchStatusEnum.NEVER_CONTACTED_CLOUD]
-  }
-}
-
-// TODO: move to rc/components
 export function CliStepConfiguration (props: {
   appliedModels?: Record<string, string[]>
+  allowedSwitchList?: SwitchViewModel[]
 }) {
   const { $t } = useIntl()
   const params = useParams()
@@ -145,7 +131,6 @@ export function CliStepConfiguration (props: {
   const [importModalvisible, setImportModalvisible] = useState(false)
   const [initVariableList, setInitVariableList] = useState(false)
 
-
   const [selectedModels, setSelectedModels] = useState([] as string[])
   const [venueAppliedModels, setVenueAppliedModels]
     = useState({} as unknown as Record<string, string[]>)
@@ -163,14 +148,6 @@ export function CliStepConfiguration (props: {
       payload: cliTemplatesPayload,
       enableRbac: isSwitchRbacEnabled
     }, { skip: !isTemplate })
-
-  const { data: preprovisionedSwitchList } = useGetSwitchListQuery({
-    params,
-    payload: switchListPayload,
-    enableRbac: isSwitchRbacEnabled
-  }, {
-    skip: !isCustomizedVariableEnabled
-  })
 
   const { data: cliFamilyModels } = useGetCliFamilyModelsQuery({
     params,
@@ -238,8 +215,6 @@ export function CliStepConfiguration (props: {
       })
     }
   }, [variableList])
-
-  console.log('variableList: ', variableList)
 
   useEffect(() => {
     if (cliFamilyModels) {
@@ -495,7 +470,6 @@ export function CliStepConfiguration (props: {
                       data-testid='add-var-btn'
                       type='link'
                       size='small'
-                      ghost
                       icon={<Plus size='sm' />}
                       onClick={() => {
                         appendContentToCliEditor(codeMirrorInstance, 'var', variable.name)
@@ -506,7 +480,6 @@ export function CliStepConfiguration (props: {
                         data-testid='edit-var-btn'
                         type='link'
                         size='small'
-                        ghost
                         icon={<MoreVertical size='sm' />}
                         onClick={() => {
                           setSelectedEditVariable(variable)
@@ -538,7 +511,7 @@ export function CliStepConfiguration (props: {
                         ? displayVariableValue(
                           variable.type,
                           variable,
-                          preprovisionedSwitchList?.data || [],
+                          props?.allowedSwitchList || [],
                           setSwitchSettings,
                           setSwitchSettingType,
                           setSwitchSettingDrawerVisible,
@@ -564,10 +537,10 @@ export function CliStepConfiguration (props: {
       isCustomizedVariableEnabled={isCustomizedVariableEnabled}
       venueAppliedModels={venueAppliedModels}
       selectedModels={selectedModels}
-      preprovisionedSwitchList={preprovisionedSwitchList?.data}
+      allowedSwitchList={props?.allowedSwitchList}
     />}
 
-    {isCustomizedVariableEnabled && <CustomizedSwitchesSettingDrawer
+    {isCustomizedVariableEnabled && <CustomizedSettingsDrawer
       type={switchSettingType}
       switchSettings={switchSettings}
       switchSettingDrawerVisible={switchSettingDrawerVisible}
@@ -798,7 +771,7 @@ function getVariableColor (type: string) {
 function displayVariableValue (
   vtype: string,
   values: CliTemplateVariable,
-  preprovisionedSwitchList: SwitchViewModel[],
+  allowedSwitchList: SwitchViewModel[],
   setSwitchSettings: (data: SwitchSettings[]) => void,
   setSwitchSettingType: (data: string) => void,
   setSwitchSettingDrawerVisible: (visible: boolean) => void,
@@ -828,7 +801,7 @@ function displayVariableValue (
           }).flat()
 
           const settings = switchVariables?.map(switchVariable => {
-            const switchData = _.find(preprovisionedSwitchList, (s) => {
+            const switchData = _.find(allowedSwitchList, (s) => {
               return s.serialNumber === switchVariable?.serialNumber
             })
             const hasSwitchName = switchData?.name !== switchData?.serialNumber
@@ -851,7 +824,6 @@ function displayVariableValue (
       </Button>
     </UI.VariableContent>
   </>
-  console.log('displayVariableValue; ', values)
 
   switch (type) {
     case VariableType.ADDRESS:
@@ -880,8 +852,10 @@ function displayVariableValue (
       return <>
         <UI.VariableTitle>{ $t({ defaultMessage: 'String' }) }</UI.VariableTitle>
         <UI.VariableContent>
-          <Tooltip title={getSplitContent(values?.value, 3)}dottedUnderline>
-            <UI.CliVariableContent>{ values?.value }</UI.CliVariableContent>
+          <Tooltip title={getSplitContent(values?.value, 25, $t)} dottedUnderline>
+            <UI.CliVariableContent>{
+              values?.value.split(/\r\n|\r|\n/)?.[0]
+            }</UI.CliVariableContent>
           </Tooltip>
         </UI.VariableContent>
         { customizedSwitches }
@@ -889,15 +863,15 @@ function displayVariableValue (
   }
 }
 
-function getSplitContent (content:string, maxLines: number) { //TODO
-  const { $t } = useIntl()
+function getSplitContent (content:string, maxLines: number, $t: IntlShape['$t']) { //TODO
   const splitContent = content.split(/\r\n|\r|\n/)
   const totalLength = splitContent?.length
   const newContent = splitContent.slice(0, maxLines)
 
-  return $t({ defaultMessage: '{content}{br}{br}and {lines} more lines...' }, {
-    content: newContent.join('\r\n'),
-    lines: totalLength - maxLines,
-    br: <br/>
-  })
+  return totalLength > maxLines
+    ? $t({ defaultMessage: '{content}{br}{br}and {lines} more lines...' }, {
+      content: newContent.join('\r\n'),
+      lines: totalLength - maxLines,
+      br: <br/>
+    }) : content
 }
