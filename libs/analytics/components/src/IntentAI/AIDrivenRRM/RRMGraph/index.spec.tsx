@@ -55,7 +55,8 @@ describe('CloudRRM', () => {
     mockIntentContext({ intent: { ...mockedIntentCRRM, status: Statuses.na } })
 
     render(<IntentAIRRMGraph crrmData={mockCrrmData} />, { wrapper: Provider })
-    expect(screen.queryByTestId('graph-wrapper')).toHaveStyleRule('filter', 'blur(8px)')
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('Graph modeling will be generated once Intent is activated.')).toBeVisible()
     expect(screen.queryByTestId('rrm-comparison-button')).toBeNull()
   })
 

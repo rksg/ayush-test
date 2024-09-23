@@ -103,9 +103,6 @@ import {
 } from './utils'
 import { Venues } from './Venues/Venues'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type DefaultMutationDefinition = MutationDefinition<any, any, any, any>
-
 export interface MLOContextType {
   isDisableMLO: boolean,
   disableMLO: (state: boolean) => void
@@ -872,46 +869,54 @@ export function NetworkForm (props:{
       processEditData(formData)
       const payload = updateClientIsolationAllowlist(saveContextRef.current as NetworkSaveData)
       await updateNetworkInstance({ params, payload, enableRbac: resolvedRbacEnabled }).unwrap()
-      await activateCertificateTemplate(formData.certificateTemplateId, payload.id)
+
+      const allRequests = []
+      allRequests.push(activateCertificateTemplate(formData.certificateTemplateId, payload.id))
       if (isUseWifiRbacApi) {
-        await activatePortal(payload.id, formData.portalServiceProfileId)
+        allRequests.push(activatePortal(payload.id, formData.portalServiceProfileId))
       }
       if (enableServiceRbac) {
-        await activateDpskPool(formData.dpskServiceProfileId, payload.id)
-        await activateMacRegistrationPool(formData.wlan?.macRegistrationListId, payload.id)
+        allRequests.push(activateDpskPool(formData.dpskServiceProfileId, payload.id))
+        // eslint-disable-next-line max-len
+        allRequests.push(activateMacRegistrationPool(formData.wlan?.macRegistrationListId, payload.id))
       }
-      await updateHotspot20NetworkActivations(formData)
+      allRequests.push(updateHotspot20NetworkActivations(formData))
       if (formData.type !== NetworkTypeEnum.HOTSPOT20) {
         // HS 20 Network:
         // The Radius service is binding on the Identity provider profile
         // So it doesn't need to do the network and radius service binding
-        await updateRadiusServer(formData, payload.id)
+        allRequests.push(updateRadiusServer(formData, payload.id))
       }
-      await updateWifiCallingActivation(payload.id, formData)
-
+      allRequests.push(updateWifiCallingActivation(payload.id, formData))
       // eslint-disable-next-line max-len
-      await updateVlanPoolActivation(payload.id, formData.wlan?.advancedCustomization?.vlanPool, vlanPoolId)
-      await updateAccessControl(formData, data)
+      allRequests.push(updateVlanPoolActivation(payload.id, formData.wlan?.advancedCustomization?.vlanPool, vlanPoolId))
+      allRequests.push(updateAccessControl(formData, data))
       if (payload.id && (payload.venues || data?.venues)) {
         if (resolvedRbacEnabled) {
-          await handleRbacNetworkVenues(payload.id, payload.venues, data?.venues)
+          allRequests.push(handleRbacNetworkVenues(payload.id, payload.venues, data?.venues))
         } else {
-          await handleNetworkVenues(payload.id, payload.venues, data?.venues)
+          allRequests.push(handleNetworkVenues(payload.id, payload.venues, data?.venues))
         }
       }
-      await updateClientIsolationActivations(payload, data, payload.id)
+      allRequests.push(updateClientIsolationActivations(payload, data, payload.id))
 
       // eslint-disable-next-line max-len
       if (isEdgeSdLanMvEnabled && form.getFieldValue('sdLanAssociationUpdate') && payload.id && payload.venues) {
-        // eslint-disable-next-line max-len
-        await updateEdgeSdLanActivations(payload.id, form.getFieldValue('sdLanAssociationUpdate') as NetworkTunnelSdLanAction[], payload.venues)
+        allRequests.push(
+          // eslint-disable-next-line max-len
+          updateEdgeSdLanActivations(payload.id, form.getFieldValue('sdLanAssociationUpdate') as NetworkTunnelSdLanAction[], payload.venues)
+        )
       }
 
       // eslint-disable-next-line max-len
       if (isSoftGreEnabled && formData['softGreAssociationUpdate'] && payload.id && payload.venues) {
-        // eslint-disable-next-line max-len
-        await updateSoftGreActivations(payload.id, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode)
+        allRequests.push(
+          // eslint-disable-next-line max-len
+          updateSoftGreActivations(payload.id, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode)
+        )
       }
+
+      await Promise.allSettled(allRequests)
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
