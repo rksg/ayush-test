@@ -137,6 +137,7 @@ export const EdgeHaSettingsForm = () => {
                                   <TimePicker
                                     format='HH:mm'
                                     onClick={(e) => e.preventDefault()}
+                                    showNow={false}
                                   />
                                 }
                               />
@@ -184,6 +185,7 @@ export const EdgeHaSettingsForm = () => {
                                   <TimePicker
                                     format='HH:mm'
                                     onClick={(e) => e.preventDefault()}
+                                    showNow={false}
                                   />
                                 }
                               />
@@ -214,7 +216,13 @@ export const EdgeHaSettingsForm = () => {
                                     max: 24
                                   }
                                 ]}
-                                children={<InputNumber style={{ width: '60px' }} />}
+                                children={
+                                  <InputNumber
+                                    style={{ width: '60px' }}
+                                    min={1}
+                                    max={24}
+                                  />
+                                }
                               />
                               {$t({ defaultMessage: 'hours' })}
                             </Space>
