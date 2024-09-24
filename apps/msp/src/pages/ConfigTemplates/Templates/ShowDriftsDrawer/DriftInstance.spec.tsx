@@ -64,4 +64,11 @@ describe('DriftInstance Component', () => {
     const checkbox = screen.getByRole('checkbox')
     expect(checkbox).toBeDisabled()
   })
+
+  it('should not disable the checkbox when disabled and selected prop are true', () => {
+    render(<DriftInstance {...defaultProps} selected={true} disalbed={true} />)
+
+    const checkbox = screen.getByRole('checkbox')
+    expect(checkbox).not.toBeDisabled()
+  })
 })

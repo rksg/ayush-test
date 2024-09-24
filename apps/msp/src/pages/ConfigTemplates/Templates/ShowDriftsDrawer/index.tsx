@@ -58,37 +58,6 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
     return driftInstances.map(i => i.id).slice(0, MAX_SYNC_EC_TENANTS)
   }
 
-  // eslint-disable-next-line max-len
-  const description = <p>{ $t({ defaultMessage: 'During sync all configurations in the selected template overwrite the corresponding configuration in the associated customers.' }) }</p>
-
-  const toolbar = <Row justify='space-between' align='middle' style={{ paddingLeft: '16px' }}>
-    <Col span={12}>
-      <Checkbox onChange={onSyncAllChange}>
-        {$t({ defaultMessage: 'Sync all drifts for all customers' })}
-      </Checkbox>
-    </Col>
-    <Col span={12} style={{ textAlign: 'right' }}>
-      <Select
-        style={{ minWidth: 200, textAlign: 'left' }}
-        placeholder={$t({ defaultMessage: 'All Customers' })}
-        allowClear
-        showSearch
-        onChange={onInstanceFilterSelect}
-        options={mockedData.map(i => ({ label: i.name, value: i.id }))}
-      />
-    </Col>
-  </Row>
-
-  const selectedCustomersIndicator = selectedInstances.length > 0
-    ? <div style={{
-      padding: '6px 20px',
-      backgroundColor: 'var(--acx-accents-blue-10)',
-      borderRadius: '4px'
-    }}>
-      { $t({ defaultMessage: '{num} selected' }, { num: selectedInstances.length }) }
-    </div>
-    : null
-
   const footer = <div>
     <Button
       disabled={selectedInstances.length === 0}
@@ -112,9 +81,11 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
       width={650}
     >
       <Space direction='vertical' size='small'>
-        {description}
-        {toolbar}
-        {selectedCustomersIndicator}
+        {/* eslint-disable-next-line max-len */}
+        <p>{ $t({ defaultMessage: 'During sync all configurations in the selected template overwrite the corresponding configuration in the associated customers.' }) }</p>
+        {/* eslint-disable-next-line max-len */}
+        <Toolbar onSyncAllChange={onSyncAllChange} onInstanceFilterSelect={onInstanceFilterSelect} />
+        <SelectedCustomersIndicator selectedCount={selectedInstances.length} />
       </Space>
       <List
         split={false}
@@ -134,6 +105,49 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
       />
     </Drawer>
   )
+}
+
+interface ToolbarProps {
+  onSyncAllChange: (e: CheckboxChangeEvent) => void
+  onInstanceFilterSelect: (value: string | undefined) => void
+}
+
+function Toolbar (props: ToolbarProps) {
+  const { onSyncAllChange, onInstanceFilterSelect } = props
+  const { $t } = useIntl()
+
+  return <Row justify='space-between' align='middle' style={{ paddingLeft: '16px' }}>
+    <Col span={12}>
+      <Checkbox onChange={onSyncAllChange}>
+        {$t({ defaultMessage: 'Sync all drifts for all customers' })}
+      </Checkbox>
+    </Col>
+    <Col span={12} style={{ textAlign: 'right' }}>
+      <Select
+        style={{ minWidth: 200, textAlign: 'left' }}
+        placeholder={$t({ defaultMessage: 'All Customers' })}
+        allowClear
+        showSearch
+        onChange={onInstanceFilterSelect}
+        options={mockedData.map(i => ({ label: i.name, value: i.id }))}
+      />
+    </Col>
+  </Row>
+}
+
+export function SelectedCustomersIndicator (props: { selectedCount: number }) {
+  const { selectedCount } = props
+  const { $t } = useIntl()
+
+  if (selectedCount === 0) return null
+
+  return <div style={{
+    padding: '6px 20px',
+    backgroundColor: 'var(--acx-accents-blue-10)',
+    borderRadius: '4px'
+  }}>
+    { $t({ defaultMessage: '{num} selected' }, { num: selectedCount }) }
+  </div>
 }
 
 function useGetDriftInstances (instanceIds: string[]) {

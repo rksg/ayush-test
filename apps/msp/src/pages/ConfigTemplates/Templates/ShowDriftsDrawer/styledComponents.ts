@@ -4,7 +4,7 @@ import { Collapse } from '@acx-ui/components'
 
 export const DriftSetCollapse = styled(Collapse)`
   .ant-collapse-item .ant-collapse-header {
-    padding-bottom: 0;
+    padding-bottom: 4px;
     padding-top: 8px;
     padding-left: 0;
     align-items: center;
@@ -19,9 +19,6 @@ export const DriftSetCollapse = styled(Collapse)`
       }
     }
   }
-  .ant-collapse-item > .ant-collapse-content > .ant-collapse-content-box {
-    padding-top: 4px;
-  }
 `
 export const DriftInstanceCollapse = styled(Collapse)`
   width: 100%;
@@ -35,5 +32,8 @@ export const DriftInstanceCollapse = styled(Collapse)`
         top: 57%;
       }
     }
+  }
+  .ant-collapse-item > .ant-collapse-content > .ant-collapse-content-box {
+    padding-bottom: 4px;
   }
 `

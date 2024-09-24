@@ -1,4 +1,15 @@
-import { TemplateInstanceDriftResponse } from '@acx-ui/rc/utils'
+import { ConfigTemplateType, TemplateInstanceDriftResponse } from '@acx-ui/rc/utils'
+
+export const mockedConfigTemplate = {
+  id: '1',
+  name: 'Template 1',
+  createdOn: 1690598400000,
+  createdBy: 'Author 1',
+  appliedOnTenants: ['t1', '1969e24ce9af4348833968096ff6cb47'],
+  type: ConfigTemplateType.NETWORK,
+  lastModified: 1690598400000,
+  lastApplied: 1690598405000
+}
 
 export const mockedDriftResponse: TemplateInstanceDriftResponse = {
   WifiNetwork: {
