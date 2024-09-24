@@ -42,9 +42,7 @@ export function SwitchTroubleshootingTab () {
   const isSupportRouter = switchDetailsContextData.switchDetailHeader?.switchType ?
     isRouter(switchDetailsContextData.switchDetailHeader.switchType) : false
 
-
-
-  const isSupportMacAddress = function () {
+  const isSupportCLIMode = function () {
     if(switchDetailsContextData.switchDetailHeader?.firmware){
       const fwVersion = switchDetailsContextData.switchDetailHeader?.firmware
       /*
@@ -57,23 +55,6 @@ export function SwitchTroubleshootingTab () {
     }else{
       return false
     }
-  }
-
-  const isSupportCLIMode = function () {
-    // Waiting for 10.0.10f fw
-    return true
-    // if(switchDetailsContextData.switchDetailHeader?.firmware){
-    //   const fwVersion = switchDetailsContextData.switchDetailHeader?.firmware
-    //   /*
-    //   Only support the firmware versions listed below:
-    //   1. > 10010f < 10020
-    //   2. > 10020b
-    //   */
-    //   return isVerGEVer(fwVersion, '10010f', false) &&
-    //   (!isVerGEVer(fwVersion, '10020', false) || isVerGEVer(fwVersion, '10020b', false))
-    // }else{
-    //   return false
-    // }
   }
 
   return (
@@ -97,7 +78,7 @@ export function SwitchTroubleshootingTab () {
         </TabPane>
       }
       {
-        isSupportMacAddress() && isSwitchCliEnabled &&
+        isSupportCLIMode() && isSwitchCliEnabled &&
         <TabPane tab={$t({ defaultMessage: 'MAC Address Table' })} key='macTable'>
           <SwitchMacAddressForm />
         </TabPane>
