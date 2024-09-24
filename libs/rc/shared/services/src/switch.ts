@@ -1181,6 +1181,16 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
+    cableTest: build.mutation<TroubleshootingResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const headers = customHeaders.v1
+        const req = createHttpRequest(SwitchRbacUrlsInfo.cableTest, params, headers)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
     macAddressTable: build.mutation<TroubleshootingResult, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const headers = enableRbac ? customHeaders.v1 : {}
@@ -1761,6 +1771,7 @@ export const {
   usePingMutation,
   useTraceRouteMutation,
   useIpRouteMutation,
+  useCableTestMutation,
   useMacAddressTableMutation,
   useGetTroubleshootingCleanQuery,
   useLazyGetTroubleshootingCleanQuery,
