@@ -20,7 +20,6 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   const templateBasePath = useConfigTemplateTenantLink(`venues/${params.venueId}/venue-details/`)
   const navigate = useNavigate()
   const { isTemplate } = useConfigTemplate()
-  const enabledServices = useIsSplitOn(Features.SERVICES)
   const enableProperty = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const { data: unitQuery } = useGetPropertyUnitListQuery({
     params: { venueId: params.venueId },
@@ -112,10 +111,7 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
           key='units'
         />
       }
-      {enabledServices ? <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Services' })}
-        key='services'
-      /> : null}
+      <Tabs.TabPane tab={$t({ defaultMessage: 'Services' })} key='services' />
       <Tabs.TabPane tab={$t({ defaultMessage: 'Timeline' })} key='timeline' />
     </Tabs>
   )
