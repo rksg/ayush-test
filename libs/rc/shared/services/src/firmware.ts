@@ -561,10 +561,12 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       providesTags: [{ type: 'EdgeFirmware', id: 'LATEST' }]
     }),
     getVenueEdgeFirmwareList: build.query<EdgeVenueFirmware[], RequestPayload>({
-      query: () => {
-        const req = createHttpRequest(FirmwareUrlsInfo.getVenueEdgeFirmwareList, undefined,v1Header)
+      query: ({ payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(FirmwareUrlsInfo.getVenueEdgeFirmwareList, undefined, v1Header)
         return {
-          ...req
+          ...req,
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'EdgeFirmware', id: 'LIST' }],

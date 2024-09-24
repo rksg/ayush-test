@@ -99,8 +99,8 @@ export function NetworkDetailForm () {
 
   const types = [
     { type: NetworkTypeEnum.PSK, disabled: false },
-    { type: NetworkTypeEnum.DPSK, disabled: !useIsSplitOn(Features.SERVICES) },
-    { type: NetworkTypeEnum.AAA, disabled: !useIsSplitOn(Features.POLICIES) },
+    { type: NetworkTypeEnum.DPSK, disabled: false },
+    { type: NetworkTypeEnum.AAA, disabled: false },
     { type: NetworkTypeEnum.HOTSPOT20,
       disabled: !useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE) || isTemplate },
     { type: NetworkTypeEnum.CAPTIVEPORTAL, disabled: !isPortalServiceEnabled },
