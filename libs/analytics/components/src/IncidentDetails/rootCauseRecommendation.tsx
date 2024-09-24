@@ -9,7 +9,7 @@ import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle
 import { TenantLink }                               from '@acx-ui/react-router-dom'
 import { encodeParameter }                          from '@acx-ui/utils'
 
-import { codes } from '../../IntentAI/config'
+import { codes } from '../IntentAI/config'
 
 import type { FormatXMLElementFn, PrimitiveType } from 'intl-messageformat'
 
