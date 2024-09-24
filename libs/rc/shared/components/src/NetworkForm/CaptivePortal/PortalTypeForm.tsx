@@ -112,6 +112,13 @@ function TypesForm () {
                 {GuestNetworkTypeDescription[GuestNetworkTypeEnum.WISPr]}
               </RadioDescription>
             </Radio>
+
+            <Radio value={GuestNetworkTypeEnum.AD_LDAP}>
+              {GuestNetworkTypeLabel[GuestNetworkTypeEnum.AD_LDAP]}
+              <RadioDescription>
+                {GuestNetworkTypeDescription[GuestNetworkTypeEnum.AD_LDAP]}
+              </RadioDescription>
+            </Radio>
           </Space>
         </Radio.Group>
       </Form.Item>
