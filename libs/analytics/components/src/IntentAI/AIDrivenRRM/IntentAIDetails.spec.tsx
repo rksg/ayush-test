@@ -73,7 +73,6 @@ describe('IntentAIDetails', () => {
     async function assertRenderCorrectly () {
       expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
       expect(await screen.findByTestId('IntentAIRRMGraph')).toBeVisible()
-      expect(await screen.findByTestId('DownloadRRMComparison')).toBeVisible()
       const details = await screen.findByTestId('Details')
       expect(await within(details).findAllByTestId('KPI')).toHaveLength(1)
     }
@@ -86,6 +85,7 @@ describe('IntentAIDetails', () => {
       )
 
       await assertRenderCorrectly()
+      expect(await screen.findByTestId('DownloadRRMComparison')).toBeVisible()
     })
 
     it('handles 5 GHz', async () => {
@@ -96,6 +96,7 @@ describe('IntentAIDetails', () => {
       )
 
       await assertRenderCorrectly()
+      expect(await screen.findByTestId('DownloadRRMComparison')).toBeVisible()
     })
 
     it('handles 6 GHz', async () => {
@@ -106,6 +107,7 @@ describe('IntentAIDetails', () => {
       )
 
       await assertRenderCorrectly()
+      expect(await screen.findByTestId('DownloadRRMComparison')).toBeVisible()
     })
 
     it('handles new rrm', async () => {
@@ -129,6 +131,7 @@ describe('IntentAIDetails', () => {
       )
 
       await assertRenderCorrectly()
+      expect(await screen.findByTestId('DownloadRRMComparison')).toBeVisible()
 
       expect(await screen.findByText('IntentAI ensures that only the existing channels configured for this network are utilized in the channel planning process.')).toBeVisible() // eslint-disable-line max-len
 
@@ -164,6 +167,7 @@ describe('IntentAIDetails', () => {
       )
 
       await assertRenderCorrectly()
+      expect(await screen.findByTestId('DownloadRRMComparison')).toBeVisible()
 
       expect(await screen.findByText('IntentAI ensures that only the existing channels configured for this network are utilized in the channel planning process.')).toBeVisible() // eslint-disable-line max-len
 
@@ -199,6 +203,7 @@ describe('IntentAIDetails', () => {
       )
 
       await assertRenderCorrectly()
+      expect(await screen.findByTestId('DownloadRRMComparison')).toBeVisible()
 
       expect(await screen.findByText('IntentAI ensures that only the existing channels configured for this network are utilized in the channel planning process.')).toBeVisible() // eslint-disable-line max-len
 
@@ -229,6 +234,8 @@ describe('IntentAIDetails', () => {
       )
 
       await assertRenderCorrectly()
+      expect(screen.queryByTestId('DownloadRRMComparison')).not.toBeInTheDocument()
+
       /* eslint-disable max-len */
       expect(await screen.findByText('When activated, this Intent takes over the automatic channel planning in the network.')).toBeVisible()
       expect(await screen.findByTestId('Benefits'))
