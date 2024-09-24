@@ -39,7 +39,7 @@ export const ScopeForm = () => {
       fixed: 'left'
     },
     {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       key: 'venueName',
       dataIndex: 'venueName',
       sorter: true,

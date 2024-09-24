@@ -50,7 +50,9 @@ export const policyTypeScopeMap: SvcPcyScopeMap<PolicyType>= {
   [PolicyType.DEVICE_POLICY]: ['wifi'],
   [PolicyType.VLAN_POOL]: ['wifi'],
   [PolicyType.CLIENT_ISOLATION]: ['wifi'],
-  [PolicyType.WIFI_OPERATOR]: ['wifi']
+  [PolicyType.SNMP_AGENT]: ['wifi'],
+  [PolicyType.WIFI_OPERATOR]: ['wifi'],
+  [PolicyType.IDENTITY_PROVIDER]: ['wifi']
 }
 
 export const policyOperScopeMap: SvcPcyOperMap<PolicyOperation> = {

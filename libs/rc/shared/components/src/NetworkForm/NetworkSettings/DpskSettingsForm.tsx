@@ -102,7 +102,6 @@ function SettingsForm () {
       form.setFieldValue('isCloudpathEnabled', false)
   }, [dpskWlanSecurity])
 
-  const disableAAA = !useIsSplitOn(Features.POLICIES)
   const isWpaDsae3Toggle = useIsSplitOn(Features.WIFI_EDA_WPA3_DSAE_TOGGLE)
   const isBetaDPSK3FeatureEnabled = useIsTierAllowed(TierFeatures.BETA_DPSK3)
 
@@ -144,10 +143,7 @@ function SettingsForm () {
               </Radio>
               <Radio
                 value={true}
-                disabled={
-                  (dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed)
-                    || editMode
-                    || disableAAA}>
+                disabled={dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed || editMode}>
                 { $t({ defaultMessage: 'Use RADIUS Server' }) }
               </Radio>
             </Space>

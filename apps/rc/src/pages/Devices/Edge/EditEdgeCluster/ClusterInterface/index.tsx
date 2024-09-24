@@ -98,7 +98,7 @@ export const ClusterInterface = (props: ClusterInterfaceProps) => {
       <CommUI.Mt15>
         {
           // eslint-disable-next-line max-len
-          $t({ defaultMessage: 'Cluster interface will be used as a communication channel between SmartEdges. Please select the cluster interfaces for all SmartEdges in this cluster:' })
+          $t({ defaultMessage: 'Cluster interface will be used as a communication channel between RUCKUS Edges. Please select the cluster interfaces for all RUCKUS Edges in this cluster:' })
         }
       </CommUI.Mt15>
       <StepsForm

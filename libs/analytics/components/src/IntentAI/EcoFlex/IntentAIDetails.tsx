@@ -1,36 +1,35 @@
-import { Typography }                 from 'antd'
-import { MessageDescriptor, useIntl } from 'react-intl'
+import { Typography }                                   from 'antd'
+import { FormattedMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import { Card, GridCol, GridRow } from '@acx-ui/components'
-import { getIntl }                from '@acx-ui/utils'
 
-import { DescriptionSection }  from '../../DescriptionSection'
-import { FixedAutoSizer }      from '../../DescriptionSection/styledComponents'
-import { useCommonFields }     from '../common/commonFields'
-import { DetailsSection }      from '../common/DetailsSection'
-import { IntentDetailsHeader } from '../common/IntentDetailsHeader'
-import { IntentIcon }          from '../common/IntentIcon'
-import { StatusTrail }         from '../common/StatusTrail'
-import { useIntentContext }    from '../IntentContext'
+import { DescriptionSection }   from '../../DescriptionSection'
+import { FixedAutoSizer }       from '../../DescriptionSection/styledComponents'
+import { useCommonFields }      from '../common/commonFields'
+import { DetailsSection }       from '../common/DetailsSection'
+import { IntentDetailsHeader }  from '../common/IntentDetailsHeader'
+import { IntentIcon }           from '../common/IntentIcon'
+import { richTextFormatValues } from '../common/richTextFormatValues'
+import { StatusTrail }          from '../common/StatusTrail'
+import { useIntentContext }     from '../IntentContext'
 
 import * as SideNotes from './IntentAIForm/SideNotes'
 
 export function createUseValuesText ({ action }: {
   action: {
-    active: MessageDescriptor,
-    inactive: MessageDescriptor
+    hasData: MessageDescriptor,
+    noData: MessageDescriptor
   }
 }) {
   return function useValuesText () {
-    const { $t } = getIntl()
     const { state } = useIntentContext()
 
-    const actionText = state === 'active'
-      ? action.active
-      : action.inactive
+    const actionText = state === 'no-data'
+      ? action.noData
+      : action.hasData
 
     return {
-      actionText: $t(actionText)
+      actionText: actionText
     }
   }
 }
@@ -53,7 +52,9 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
               <IntentIcon size='large' />
               <Typography.Paragraph
                 data-testid='Overview text'
-                children={valuesText.actionText} />
+                children={
+                  <FormattedMessage {...valuesText.actionText} values={richTextFormatValues}/>
+                }/>
               <DescriptionSection fields={fields}/>
               <br />
             </div>)}

@@ -47,8 +47,8 @@ export const EdgeHaSettingsForm = () => {
   const isFallbackFeatureEnabled = useIsEdgeFeatureReady(Features.EDGE_HA_AA_FALLBACK_TOGGLE)
 
   const fallbackEnableTooltipMsg = $t({
-    defaultMessage: `The first SmartEdge in the list is assigned as
-    the preferred SmartEdge. When this option is enabled,
+    defaultMessage: `The first RUCKUS Edge in the list is assigned as
+    the preferred RUCKUS Edge. When this option is enabled,
     clients (APs or clusters) attempt to connect to it according
     to the fallback schedule.`
   })
@@ -79,7 +79,7 @@ export const EdgeHaSettingsForm = () => {
               <StepsForm.FieldLabel width='150px'>
                 <Space size={3}>
                   <div>
-                    {$t({ defaultMessage: 'SmartEdge Fallback' })}
+                    {$t({ defaultMessage: 'RUCKUS Edge Fallback' })}
                   </div>
                   <Tooltip.Question
                     iconStyle={{ width: 16, height: 16, marginTop: '3px' }}
@@ -103,7 +103,7 @@ export const EdgeHaSettingsForm = () => {
                 <Form.Item
                   name={['fallbackSettings', 'schedule', 'type']}
                   // eslint-disable-next-line max-len
-                  label={$t({ defaultMessage: 'Fallback Schedule (based on local time zone of SmartEdge)' })}
+                  label={$t({ defaultMessage: 'Fallback Schedule (based on local time zone of RUCKUS Edge)' })}
                   rules={[{
                     required: true,
                     message: $t({ defaultMessage: 'Please select a Fallback Schedule' })
@@ -137,6 +137,7 @@ export const EdgeHaSettingsForm = () => {
                                   <TimePicker
                                     format='HH:mm'
                                     onClick={(e) => e.preventDefault()}
+                                    showNow={false}
                                   />
                                 }
                               />
@@ -184,6 +185,7 @@ export const EdgeHaSettingsForm = () => {
                                   <TimePicker
                                     format='HH:mm'
                                     onClick={(e) => e.preventDefault()}
+                                    showNow={false}
                                   />
                                 }
                               />
@@ -214,7 +216,13 @@ export const EdgeHaSettingsForm = () => {
                                     max: 24
                                   }
                                 ]}
-                                children={<InputNumber style={{ width: '60px' }} />}
+                                children={
+                                  <InputNumber
+                                    style={{ width: '60px' }}
+                                    min={1}
+                                    max={24}
+                                  />
+                                }
                               />
                               {$t({ defaultMessage: 'hours' })}
                             </Space>
