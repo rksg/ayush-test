@@ -27,7 +27,7 @@ import { SwitchScopes, WifiScopes }                                             
 import { filterByAccess, getShowWithoutRbacCheckKey, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 import { exportMessageMapping, noDataDisplay, handleBlobDownloadFile }                         from '@acx-ui/utils'
 
-import { getRootCauseAndRecommendations } from '../IncidentDetails/RootCauseRecommendation'
+import { getRootCauseAndRecommendations } from '../IncidentDetails/rootCauseRecommendation'
 import { useIncidentToggles }             from '../useIncidentToggles'
 
 import {

@@ -11,7 +11,7 @@ import {
   GridCol
 } from '@acx-ui/components'
 
-import { getRootCauseAndRecommendations, htmlValues, FormatMessageValue } from '../RootCauseRecommendation'
+import { getRootCauseAndRecommendations, htmlValues, FormatMessageValue } from '../rootCauseRecommendation'
 
 import * as UI from './styledComponents'
 
