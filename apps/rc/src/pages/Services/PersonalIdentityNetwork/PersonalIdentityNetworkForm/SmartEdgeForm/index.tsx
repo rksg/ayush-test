@@ -4,13 +4,12 @@ import { Col, Form, InputNumber, Row, Select, Space } from 'antd'
 import { FormattedMessage, useIntl }                  from 'react-intl'
 import { useNavigate, useParams }                     from 'react-router-dom'
 
-import { Alert, Button, StepsForm, useStepFormContext }         from '@acx-ui/components'
-import { AddEdgeDhcpServiceModal }                              from '@acx-ui/rc/components'
-import { useGetDhcpStatsQuery, useGetEdgeDhcpServiceQuery }     from '@acx-ui/rc/services'
-import { ServiceOperation, ServiceType, getServiceDetailsLink } from '@acx-ui/rc/utils'
-import { useTenantLink }                                        from '@acx-ui/react-router-dom'
+import { Alert, Button, StepsForm, useStepFormContext }                                          from '@acx-ui/components'
+import { AddEdgeDhcpServiceModal }                                                               from '@acx-ui/rc/components'
+import { useGetDhcpStatsQuery, useGetEdgeDhcpServiceQuery }                                      from '@acx-ui/rc/services'
+import { PersonalIdentityNetworkFormData, ServiceOperation, ServiceType, getServiceDetailsLink } from '@acx-ui/rc/utils'
+import { useTenantLink }                                                                         from '@acx-ui/react-router-dom'
 
-import { PersonalIdentityNetworkFormData }    from '..'
 import { PersonalIdentityNetworkFormContext } from '../PersonalIdentityNetworkFormContext'
 
 import { DhcpPoolTable }        from './DhcpPoolTable'

@@ -1,17 +1,19 @@
 import { ReactNode } from 'react'
 
 import { FormInstance }                        from 'antd'
-import _                                       from 'lodash'
+import { omit }                                from 'lodash'
 import { useIntl }                             from 'react-intl'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import { showActionModal, StepsForm } from '@acx-ui/components'
 import {
-  AccessSwitch,
   CatchErrorResponse,
+  CommonErrorsResult,
+  CommonResult,
+  CatchErrorDetails,
   getServiceListRoutePath,
   LocationExtended,
-  PersonalIdentityNetworks,
+  PersonalIdentityNetworkFormData,
   redirectPreviousPage
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
@@ -30,25 +32,6 @@ interface PersonalIdentityNetworkFormStep {
   content: ReactNode
 }
 
-export interface PersonalIdentityNetworkFormData extends PersonalIdentityNetworks {
-  venueId: string
-  venueName: string
-  personaGroupId: string
-  edgeClusterId: string
-  edgeName: string
-  dhcpId: string
-  dhcpName: string
-  poolId: string
-  poolName: string
-  tags: string[]
-  segments: number
-  devices: number
-  tunnelProfileName: string
-  networkNames: string[]
-  originalAccessSwitchInfos: AccessSwitch[]
-  dhcpRelay: boolean
-}
-
 export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormProps) => {
 
   const { $t } = useIntl()
@@ -63,10 +46,6 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
       id: formData.id,
       name: formData.name,
       vxlanTunnelProfileId: formData.vxlanTunnelProfileId,
-      // venueInfos: [{
-      //   venueId: formData.venueId,
-      //   personaGroupId: formData.personaGroupId
-      // }],
       edgeClusterInfos: [{
         edgeClusterId: formData.edgeClusterId,
         segments: formData.segments,
@@ -74,15 +53,29 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
         dhcpInfoId: formData.dhcpId,
         dhcpPoolId: formData.poolId
       }],
-      distributionSwitchInfos: formData.distributionSwitchInfos?.map(ds=>_.omit(
+      distributionSwitchInfos: formData.distributionSwitchInfos?.map(ds => omit(
         ds, ['accessSwitches', 'name'])),
-      accessSwitchInfos: formData.accessSwitchInfos?.map(as=>_.omit(
+      accessSwitchInfos: formData.accessSwitchInfos?.map(as => omit(
         as, ['name', 'familyId', 'firmwareVersion', 'model']))
     }
 
     try {
-      await props.onFinish({ params, payload: payload }).unwrap()
-      redirectPreviousPage(navigate, previousPath, linkToServices)
+      await new Promise(async (resolve, reject) => {
+        await props.onFinish(payload! as PersonalIdentityNetworkFormData, {
+          params, payload,
+          callback: (result: CommonResult[] | CommonErrorsResult<CatchErrorDetails> ) => {
+            // callback is after all RBAC related APIs sent
+            if (Array.isArray(result)) {
+              resolve(true)
+            } else {
+              reject(result)
+            }
+
+            redirectPreviousPage(navigate, previousPath, linkToServices)
+          }
+          // need to catch basic service profile failed
+        }).catch(reject)
+      })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
       const overwriteMsg = afterSubmitMessage(error as CatchErrorResponse,
@@ -118,7 +111,8 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
   }
 
   return (
-    <StepsForm editMode={props.editMode}
+    <StepsForm
+      editMode={props.editMode}
       form={props.form}
       onCancel={() => redirectPreviousPage(navigate, previousPath, linkToServices)}
       onFinish={handleFinish}

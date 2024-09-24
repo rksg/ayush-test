@@ -14,7 +14,7 @@ import {
   useGetPersonaGroupByIdQuery,
   useGetPropertyConfigsQuery,
   useGetTunnelProfileViewDataListQuery,
-  useVenueNetworkActivationsDataListQuery,
+  useVenueNetworkActivationsViewModelListQuery,
   useVenuesListQuery,
   useGetDhcpStatsQuery
 } from '@acx-ui/rc/services'
@@ -25,7 +25,8 @@ import {
   SwitchLite,
   TunnelTypeEnum,
   getTunnelProfileOptsWithDefault,
-  isDsaeOnboardingNetwork
+  isDsaeOnboardingNetwork,
+  NetworkTypeEnum
 } from '@acx-ui/rc/utils'
 
 export interface PersonalIdentityNetworkFormContextType {
@@ -160,8 +161,8 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
           isDpskLoading: isLoading || isFetching
         }
       }
-    }
-  )
+    })
+
   const clusterOptionsDefaultPayload = {
     fields: ['name', 'clusterId'],
     pageSize: 10000,
@@ -190,27 +191,32 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
       }
     }
   })
-  const { dpskNetworkList, isNetworkLoading } = useVenueNetworkActivationsDataListQuery({
+  const { dpskNetworkList, isNetworkLoading } = useVenueNetworkActivationsViewModelListQuery({
     params: { ...params },
     payload: {
       pageSize: 10000,
       sortField: 'name',
       sortOrder: 'ASC',
-      venueId: venueId
+      venueId: venueId,
+      fields: [
+        'id',
+        'name',
+        'type'
+      ]
     }
   }, {
     skip: !Boolean(venueId),
     selectFromResult: ({ data, isLoading }) => {
       return {
-        dpskNetworkList: data?.filter(item =>
-          item.type === 'dpsk' && !isDsaeOnboardingNetwork(item)),
+        dpskNetworkList: data?.data?.filter(item =>
+          item.nwSubType === NetworkTypeEnum.DPSK && !isDsaeOnboardingNetwork(item)),
         isNetworkLoading: isLoading
       }
     }
   })
+
   const networkIds = dpskNetworkList?.map(item => (item.id))
-  const { usedNetworkIds, isUsedNetworkIdsLoading } =
-  useGetNetworkSegmentationViewDataListQuery({
+  const { usedNetworkIds, isUsedNetworkIdsLoading } = useGetNetworkSegmentationViewDataListQuery({
     payload: {
       filters: { networkIds: networkIds }
     }
@@ -225,7 +231,7 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
     }
   })
   const networkOptions = dpskNetworkList?.filter(item => !usedNetworkIds?.includes(item.id ?? ''))
-    .filter(item => item.dpskServiceProfileId === dpskData?.id)
+    .filter(item => dpskData?.networkIds?.includes(item.id))
     .map(item => ({ label: item.name, value: item.id }))
   const { switchList, refetch: refetchSwitchesQuery } = useGetAvailableSwitchesQuery({
     params: { ...params, venueId }

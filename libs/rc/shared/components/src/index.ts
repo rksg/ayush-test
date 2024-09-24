@@ -214,6 +214,7 @@ export {
 export type {
   SdLanScopedNetworkVenuesData
 } from './EdgeSdLan/useEdgeSdLanActions'
+export { useEdgePinActions } from './EdgePersonalIdentityNetwork/useEdgePinActions'
 export { SdLanTopologyDiagram } from './EdgeSdLan/SdLanTopologyDiagram'
 export {
   useGetNetworkTunnelInfo,

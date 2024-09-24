@@ -13,12 +13,11 @@ import {
   DistributionSwitch,
   DistributionSwitchSaveData,
   networkWifiIpRegExp,
-  SwitchLite
+  SwitchLite,
+  PersonalIdentityNetworkFormData
 } from '@acx-ui/rc/utils'
 import { useParams }                   from '@acx-ui/react-router-dom'
 import { getIntl, validationMessages } from '@acx-ui/utils'
-
-import { PersonalIdentityNetworkFormData } from '..'
 
 const RequiredMark = styled.span`
   &:before {

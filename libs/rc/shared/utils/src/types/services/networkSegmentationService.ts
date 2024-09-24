@@ -24,6 +24,26 @@ export interface PersonalIdentityNetworksViewData {
   edgeAlarmSummary: EdgeAlarmSummary[]
 }
 
+export interface PersonalIdentityNetworkFormData extends PersonalIdentityNetworks {
+  networkIds: string[]
+  venueId: string
+  venueName: string
+  personaGroupId: string
+  edgeClusterId: string
+  edgeName: string
+  dhcpId: string
+  dhcpName: string
+  poolId: string
+  poolName: string
+  tags: string[]
+  segments: number
+  devices: number
+  tunnelProfileName: string
+  networkNames: string[]
+  originalAccessSwitchInfos: AccessSwitch[]
+  dhcpRelay: boolean
+}
+
 export interface VenueInfo {
   venueId: string
   venueName: string

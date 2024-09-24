@@ -56,7 +56,7 @@ describe('PersonalIdentityNetworkFormContext', () => {
       serviceId: 'testServiceId'
     }
 
-    services.useVenueNetworkActivationsDataListQuery = jest.fn().mockImplementation(() => {
+    services.useVenueNetworkActivationsViewModelListQuery = jest.fn().mockImplementation(() => {
       return { dpskNetworkList: mockDeepNetworkList.response, isLoading: false }
     })
 

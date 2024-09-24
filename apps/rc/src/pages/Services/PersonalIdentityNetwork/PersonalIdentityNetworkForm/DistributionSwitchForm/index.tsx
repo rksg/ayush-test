@@ -3,16 +3,14 @@ import { useContext, useEffect, useState } from 'react'
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { Alert, StepsForm, TableProps, useStepFormContext } from '@acx-ui/components'
-import { AccessSwitch, DistributionSwitch }                 from '@acx-ui/rc/utils'
+import { Alert, StepsForm, TableProps, useStepFormContext }                  from '@acx-ui/components'
+import { AccessSwitch, DistributionSwitch, PersonalIdentityNetworkFormData } from '@acx-ui/rc/utils'
 
-import { PersonalIdentityNetworkFormData }    from '..'
 import { PersonalIdentityNetworkFormContext } from '../PersonalIdentityNetworkFormContext'
 
 import { DistributionSwitchDrawer } from './DistributionSwitchDrawer'
 import { DistributionSwitchTable }  from './DistributionSwitchTable'
 import { StaticRouteModal }         from './StaticRouteModal'
-
 
 export function DistributionSwitchForm () {
   const { $t } = useIntl()
