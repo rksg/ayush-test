@@ -4,10 +4,10 @@ import { gql }                       from 'graphql-request'
 import moment, { Moment }            from 'moment-timezone'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { showToast }                  from '@acx-ui/components'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { intentAIApi }                from '@acx-ui/store'
-import { encodeParameter }            from '@acx-ui/utils'
+import { showToast }                                     from '@acx-ui/components'
+import { useNavigate, useNavigateToPath, useTenantLink } from '@acx-ui/react-router-dom'
+import { intentAIApi }                                   from '@acx-ui/store'
+import { encodeParameter }                               from '@acx-ui/utils'
 
 import { validateScheduleTiming }                 from './common/ScheduleTiming'
 import { aiFeaturesLabel, codes, Intent }         from './config'
@@ -90,6 +90,7 @@ export function createUseIntentTransition <Preferences> (
     const intentRef = useRef(intent)
     const basePath = useTenantLink('/intentAI')
     const navigate = useNavigate()
+    const navigateToTable = useNavigateToPath('/analytics/intentAI')
     const [doSubmit, response] = useIntentTransitionMutation()
 
     const submit = useCallback(async (values: FormValues<Preferences>) => {
@@ -137,6 +138,7 @@ export function createUseIntentTransition <Preferences> (
             }
           }
         })
+        navigateToTable()
       } else {
         showToast({ type: 'error', content: response.data.errorMsg })
       }
