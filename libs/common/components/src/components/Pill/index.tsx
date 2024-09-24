@@ -45,6 +45,12 @@ export function ColorPill ({ color, value }: ColorPillProps) {
   )
 }
 
+export function StatusPill ({ color, value }: ColorPillProps) {
+  return (
+    <UI.StatusPill color={color}>{value}</UI.StatusPill>
+  )
+}
+
 export function ProgressPill (
   props: { percent: number, formatter?: (percent: number|undefined) => string }
 ) {
