@@ -122,7 +122,7 @@ export const VariableList = styled(List)`
   }
 `
 
-export const TypeLabel = styled(Space)`
+export const VariableTypeLabel = styled(Space)`
   font-size: 11px;
   color: var(--acx-primary-white);
   border-radius: 20px;
@@ -147,6 +147,13 @@ export const CliVariableContent = styled('span')`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+`
+
+export const CustomizedSection = styled('div')`
+  background: var(--acx-neutrals-10);
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 20px;
 `
 
 export const CodeMirrorContainer = styled('div')`
@@ -182,11 +189,4 @@ export const Collapse = styled(AntCollapse)`
 
 export const ToggleWrapper = styled('div')`
   margin-bottom: 10px;
-`
-
-export const CustomizedSection = styled('div')`
-  background: var(--acx-neutrals-10);
-  padding: 12px;
-  border-radius: 4px;
-  margin-bottom: 20px;
 `

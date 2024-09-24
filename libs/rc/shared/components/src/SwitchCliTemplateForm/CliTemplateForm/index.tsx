@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { Form }                   from 'antd'
-import _                          from 'lodash'
-import { defineMessage, useIntl } from 'react-intl'
+import { Form }    from 'antd'
+import _           from 'lodash'
+import { useIntl } from 'react-intl'
 
 import {
   Loader,
@@ -32,28 +32,6 @@ import { CliStepConfiguration } from './CliStepConfiguration'
 import { CliStepNotice }        from './CliStepNotice'
 import { CliStepSummary }       from './CliStepSummary'
 import { CliStepSwitches }      from './CliStepSwitches'
-
-/* eslint-disable max-len */
-export const tooltip = {
-  cliEmpty: defineMessage({ defaultMessage: 'Please input CLI commands' }),
-  cliVariableInvalid: defineMessage({ defaultMessage: 'Please define variable(s) in CLI commands' }),
-  cliAttributeInvalid: defineMessage({ defaultMessage: 'Please define attribute(s) in CLI commands' }),
-  cliCommands: defineMessage({ defaultMessage: 'You can use any combination of the following options: type the commands, copy/paste the configuration from another file, use the examples on the right pane.' }),
-  cliVariablesReachMax: defineMessage({ defaultMessage: 'The variables had reach to the maximum total 200 entries.' }),
-  noticeInfo: defineMessage({ defaultMessage: 'Once the CLI Configuration profile is applied to a <venueSingular></venueSingular>, you will not be able to apply a regular switch configuration profile to the same <venueSingular></venueSingular>' }),
-  noticeDesp: defineMessage({ defaultMessage: 'It is the user\'s responsibility to ensure the validity and ordering of CLI commands are accurate. The recommendation is to get familiarized with {link} to avoid configuration failures' }),
-  variableName: defineMessage({ defaultMessage: 'Variable name may include letters and numbers. It must start with a letter.' }),
-  rangeStartValue: defineMessage({ defaultMessage: 'You may enter numbers between 0 and 65535. Start value must be lower than end value' }),
-  rangeEndValue: defineMessage({ defaultMessage: 'You may enter numbers between 0 and 65535. End value must be higher than start value' }),
-  stringValue: defineMessage({ defaultMessage: 'Special characters (other than space, $, -, . and _) are not allowed' })
-}
-/* eslint-enable max-len */
-
-export enum VariableType {
-  ADDRESS = 'ADDRESS',
-  RANGE = 'RANGE',
-  STRING = 'STRING'
-}
 
 export const cliTemplatesPayload = {
   fields: ['name', 'id', 'venueSwitches'],
@@ -291,11 +269,4 @@ function getDiffAssociatedSwitch (
 
 function hasVenueSwitches (venueSwitches: VenueSwitches) {
   return Object.values(venueSwitches ?? {}).flat()?.length > 0
-}
-
-export function getVariableSeparator (type: string) {
-  const t = type.toUpperCase()
-  return t === VariableType.RANGE
-    ? ':'
-    : (t === VariableType.ADDRESS ? '_' : '*')
 }

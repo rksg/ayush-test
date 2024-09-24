@@ -39,20 +39,20 @@ import {
   CliTemplateExample,
   CliTemplateVariable,
   SwitchViewModel,
+  SwitchCliMessages,
   transformTitleCase,
   whitespaceOnlyRegExp
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 import { getIntl }   from '@acx-ui/utils'
 
-import { CodeMirrorWidget }                                from '../../CodeMirrorWidget'
-import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../../ImportFileDrawer'
-import { CliVariableModal }                                from '../../SwitchCLI/CliVariableModal'
-import { CustomizedSettingsDrawer }                        from '../../SwitchCliProfileForm/CliProfileForm/CustomizedSettingsDrawer'
+import { CodeMirrorWidget }                                     from '../../CodeMirrorWidget'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType }      from '../../ImportFileDrawer'
+import { CliVariableModal }                                     from '../../SwitchCli/CliVariableModal'
+import { getVariableColor, getVariableSeparator, VariableType } from '../../SwitchCli/CliVariableUtils'
+import { CustomizedSettingsDrawer }                             from '../../SwitchCliProfileForm/CliProfileForm/CustomizedSettingsDrawer'
 
 import * as UI from './styledComponents'
-
-import { tooltip, getVariableSeparator, VariableType } from './'
 
 interface codeMirrorElement {
   current: {
@@ -350,7 +350,7 @@ export function CliStepConfiguration (props: {
           <Space style={{ display: 'flex', fontWeight: 600 }}>
             {$t({ defaultMessage: 'CLI commands' })}
             <Tooltip
-              title={$t(tooltip.cliCommands)}
+              title={$t(SwitchCliMessages.CLI_COMMANDS)}
               placement='bottom'
             >
               <UI.QuestionMarkIcon />
@@ -428,7 +428,7 @@ export function CliStepConfiguration (props: {
             <Space style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <Tooltip
                 title={variableList?.length >= maxVariableCount
-                  ? $t(tooltip.cliVariablesReachMax) : ''
+                  ? $t(SwitchCliMessages.CLI_VARIABLES_REACH_MAX) : ''
                 }
               >
                 <Space>
@@ -495,15 +495,15 @@ export function CliStepConfiguration (props: {
                           <Space style={{ fontWeight: 600, lineHeight: '20px' }}>{
                             variable.name
                           }</Space>
-                          <UI.TypeLabel style={{
+                          <UI.VariableTypeLabel style={{
                             backgroundColor: getVariableColor(variable.type)
                           }}>{
-                              transformTitleCase(variable.type)
-                            }</UI.TypeLabel>
+                              transformTitleCase(variable?.type || '')
+                            }</UI.VariableTypeLabel>
                         </Space>
                         : <Space size={0} split={<UI.Divider type='vertical' />}>
                           <Space style={{ fontWeight: 600 }}>{variable.name}</Space>
-                          {transformTitleCase(variable.type)}
+                          {transformTitleCase(variable?.type || '')}
                         </Space>
                     }
                     description={
@@ -515,7 +515,8 @@ export function CliStepConfiguration (props: {
                           setSwitchSettings,
                           setSwitchSettingType,
                           setSwitchSettingDrawerVisible,
-                          $t)
+                          $t
+                        )
                         : transformVariableValue(variable.type, variable.value)
                     }
                   />
@@ -758,16 +759,6 @@ function htmlDecode (code: string) {
   return div.innerText?.replace(/↵/g, '\n') || div?.textContent?.replace(/↵/g, '')
 }
 
-function getVariableColor (type: string) {
-  const variableType = type.toUpperCase()
-  const colorMap:{ [key:string]: string } = {
-    ADDRESS: 'var(--acx-semantics-green-40)',
-    RANGE: 'var(--acx-accents-blue-50)',
-    STRING: 'var(--acx-accents-orange-50)'
-  }
-  return colorMap[variableType]
-}
-
 function displayVariableValue (
   vtype: string,
   values: CliTemplateVariable,
@@ -852,7 +843,7 @@ function displayVariableValue (
       return <>
         <UI.VariableTitle>{ $t({ defaultMessage: 'String' }) }</UI.VariableTitle>
         <UI.VariableContent>
-          <Tooltip title={getSplitContent(values?.value, 25, $t)} dottedUnderline>
+          <Tooltip title={formatContentWithLimit(values?.value, 25, $t)} dottedUnderline>
             <UI.CliVariableContent>{
               values?.value.split(/\r\n|\r|\n/)?.[0]
             }</UI.CliVariableContent>
@@ -863,15 +854,20 @@ function displayVariableValue (
   }
 }
 
-function getSplitContent (content:string, maxLines: number, $t: IntlShape['$t']) { //TODO
-  const splitContent = content.split(/\r\n|\r|\n/)
-  const totalLength = splitContent?.length
-  const newContent = splitContent.slice(0, maxLines)
+function formatContentWithLimit (content: string, maxLines: number, $t: IntlShape['$t']) {
+  const lines = content.split(/\r\n|\r|\n/)
+  const lineCount = lines.length
 
-  return totalLength > maxLines
-    ? $t({ defaultMessage: '{content}{br}{br}and {lines} more lines...' }, {
-      content: newContent.join('\r\n'),
-      lines: totalLength - maxLines,
-      br: <br/>
-    }) : content
+  if (lineCount <= maxLines) {
+    return content
+  }
+
+  const truncatedContent = lines.slice(0, maxLines).join('\r\n')
+  return $t({
+    defaultMessage: '{content}{br}{br}and {lines} more lines...'
+  }, {
+    content: truncatedContent,
+    lines: lineCount - maxLines,
+    br: <br/>
+  })
 }

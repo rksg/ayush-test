@@ -2,8 +2,9 @@ import { Fragment } from 'react'
 
 import { Divider, Form, FormInstance, FormListFieldData, Input, Select, Space } from 'antd'
 import { RuleObject }                                                           from 'antd/lib/form'
+import _                                                                        from 'lodash'
 import { intersection, isArray }                                                from 'lodash'
-import { defineMessage, IntlShape }                                             from 'react-intl'
+import { IntlShape }                                                            from 'react-intl'
 
 import {
   Button,
@@ -12,13 +13,14 @@ import {
 import { DeleteOutlined, QuestionMarkCircleOutlined } from '@acx-ui/icons-new'
 import {
   cliIpAddressRegExp,
+  CliTemplateVariable,
   subnetMaskPrefixRegExp,
   specialCharactersWithNewLineRegExp,
   SwitchCliMessages,
   SwitchViewModel,
   IpUtilsService
 } from '@acx-ui/rc/utils'
-import { validationMessages } from '@acx-ui/utils'
+import { getIntl, validationMessages } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -36,21 +38,22 @@ export interface AllowedSwitchObjList {
   [model: string]: ExtendedSwitchViewModel[]
 }
 
-/* eslint-disable max-len */
-export const tooltip = {
-  // cliEmpty: defineMessage({ defaultMessage: 'Please input CLI commands' }),
-  // cliVariableInvalid: defineMessage({ defaultMessage: 'Please define variable(s) in CLI commands' }),
-  // cliAttributeInvalid: defineMessage({ defaultMessage: 'Please define attribute(s) in CLI commands' }),
-  // cliCommands: defineMessage({ defaultMessage: 'You can use any combination of the following options: type the commands, copy/paste the configuration from another file, use the examples on the right pane.' }),
-  // cliVariablesReachMax: defineMessage({ defaultMessage: 'The variables had reach to the maximum total 200 entries.' }),
-  // noticeInfo: defineMessage({ defaultMessage: 'Once the CLI Configuration profile is applied to a <venueSingular></venueSingular>, you will not be able to apply a regular switch configuration profile to the same <venueSingular></venueSingular>' }),
-  // noticeDesp: defineMessage({ defaultMessage: 'It is the user\'s responsibility to ensure the validity and ordering of CLI commands are accurate. The recommendation is to get familiarized with {link} to avoid configuration failures' }),
-  variableName: defineMessage({ defaultMessage: 'Variable name may include letters and numbers. It must start with a letter.' }),
-  rangeStartValue: defineMessage({ defaultMessage: 'You may enter numbers between 0 and 65535. Start value must be lower than end value' }),
-  rangeEndValue: defineMessage({ defaultMessage: 'You may enter numbers between 0 and 65535. End value must be higher than start value' }),
-  stringValue: defineMessage({ defaultMessage: 'Special characters (other than space, $, -, . and _) are not allowed' })
+export function getVariableSeparator (type: string) {
+  const t = type.toUpperCase()
+  return t === VariableType.RANGE
+    ? ':'
+    : (t === VariableType.ADDRESS ? '_' : '*')
 }
-/* eslint-enable max-len */
+
+export function getVariableColor (type: string) {
+  const variableType = type.toUpperCase()
+  const colorMap:{ [key:string]: string } = {
+    ADDRESS: 'var(--acx-semantics-green-40)',
+    RANGE: 'var(--acx-accents-blue-50)',
+    STRING: 'var(--acx-accents-orange-50)'
+  }
+  return colorMap[variableType]
+}
 
 export const getVariableTemplate = (type: string, form: FormInstance, $t: IntlShape['$t']) => {
   switch (type) {
@@ -103,7 +106,7 @@ export const getVariableTemplate = (type: string, form: FormInstance, $t: IntlSh
           label={<>
             {$t({ defaultMessage: 'Start Value' })}
             <Tooltip.Question
-              title={$t(tooltip.rangeStartValue)}
+              title={$t(SwitchCliMessages.VARIABLE_RANGE_START_RULE)}
               placement='bottom'
             />
           </>}
@@ -136,7 +139,7 @@ export const getVariableTemplate = (type: string, form: FormInstance, $t: IntlSh
           label={<>
             {$t({ defaultMessage: 'End Value' })}
             <Tooltip.Question
-              title={$t(tooltip.rangeEndValue)}
+              title={$t(SwitchCliMessages.VARIABLE_RANGE_END_RULE)}
               placement='bottom'
             />
           </>}
@@ -170,7 +173,7 @@ export const getVariableTemplate = (type: string, form: FormInstance, $t: IntlSh
         name='string'
         label={<>{$t({ defaultMessage: 'String' })}
           <Tooltip.Question
-            title={$t(tooltip.stringValue)}
+            title={$t(SwitchCliMessages.VARIABLE_STRING_RULE)}
             placement='bottom'
           />
         </>}
@@ -187,7 +190,7 @@ export const getVariableTemplate = (type: string, form: FormInstance, $t: IntlSh
 }
 
 const getRequiredMark
-= () => <Space style={{ color: 'var(--acx-accents-orange-50)' }}>*</Space>
+= () => <UI.RequiredMark>*</UI.RequiredMark>
 
 const getCustomizeFieldsText = (type: string, $t: IntlShape['$t']) => {
   switch (type) {
@@ -334,7 +337,7 @@ export const getCustomizeFields = (
                             >
                               <Tooltip
                                 title={s?.isApplied ?
-                                  $t(SwitchCliMessages.NOT_ALLOW_APPLY_PROFILE) : ''
+                                  $t(SwitchCliMessages.NOT_ALLOWED_APPLY_PROFILE) : ''
                                 }
                                 placement='top'
                               >
@@ -343,9 +346,6 @@ export const getCustomizeFields = (
                                     <div className='title'>{ name }</div>
                                     <div className='subtitle'>{ s.venueName }</div>
                                   </div>
-                                  {/* { s.isApplied && <div className='suffix'>{
-                                    $t({ defaultMessage: 'Applied' }) }</div>
-                                  } */}
                                 </Space>
                               </Tooltip>
                             </Select.Option>
@@ -369,31 +369,13 @@ export const getCustomizeFields = (
                   message: $t({ defaultMessage: 'Please enter Value' })
                 },
                 ...( type === VariableType.ADDRESS ? [{
-                  validator: () => {
-                    const requiredFields = ['ipAddressStart', 'ipAddressEnd', 'subMask']
-                    const hasAllValues = requiredFields.every(
-                      field => form.getFieldValue(field))
-                    const { ipAddressStart, ipAddressEnd, subMask }
-                      = form.getFieldsValue(requiredFields)
-
-                    if (hasAllValues) {
-                      return Promise.resolve()
-                    } else if (!ipAddressStart) {
-                      return Promise.reject($t(SwitchCliMessages.PLEASE_ENTER_START_IP))
-                    } else if (!ipAddressEnd) {
-                      return Promise.reject($t(SwitchCliMessages.PLEASE_ENTER_END_IP))
-                    } else if (!subMask) {
-                      return Promise.reject($t(SwitchCliMessages.PLEASE_ENTER_MASK))
-                    }
-                    return Promise.reject($t(SwitchCliMessages.PLEASE_ENTER_ADDRESS_VALUES))
-                  }
+                  validator: () => validateRequiredAddress(form)
                 }, {
-                  validator: (_:RuleObject, value:string) => validateIp(value, form),
+                  validator: (_:RuleObject, value:string) => validateValidIp(value, form),
                   message: $t({ defaultMessage: 'Please enter valid value' })
                 }, {
                   // eslint-disable-next-line max-len
-                  validator: (_:RuleObject, value:string) => validateDuplicateIp(value, index, form),
-                  message: $t({ defaultMessage: 'IP already exists' })
+                  validator: (_:RuleObject, value:string) => validateDuplicateIp(value, index, form)
                 }] : []),
                 ...( type === VariableType.RANGE ? [{
                   validator: (_:RuleObject, value:number) => {
@@ -401,9 +383,8 @@ export const getCustomizeFields = (
                     const isValid = validateInRange(value, form.getFieldValue('rangeStart'), form.getFieldValue('rangeEnd'))
                     return isValid
                       ? Promise.resolve()
-                      : Promise.reject($t(validationMessages.ipAddress)) ////
-                  },
-                  message: $t({ defaultMessage: 'Please enter valid value' })
+                      : Promise.reject($t({ defaultMessage: 'Please enter valid value' }))
+                  }
                 }] : [])
                 ]}
               >
@@ -434,6 +415,19 @@ export const getCustomizeFields = (
         </>
       )}
   </Form.List>
+}
+
+export const getCustomizedSwitchVenues = (
+  variables?: CliTemplateVariable[],
+  allowedSwitchList?: SwitchViewModel[]
+) => {
+  const customizedSwitches = _.uniq(variables
+    ?.flatMap(variable => variable?.switchVariables?.flatMap(s => s.serialNumbers) || [])
+  )
+  return _.uniq(allowedSwitchList
+    ?.filter(s => customizedSwitches.includes(s?.serialNumber || ''))
+    .map(s => s.venueId)
+  )
 }
 
 function getNetworkBitmap (ipArr: string, netmaskArr: string) {
@@ -479,11 +473,28 @@ function validateInRange (number: number, start: number, end: number) {
   return num >= rangeStart && num <= rangeEnd
 }
 
-function validateIp (ip: string, form: FormInstance) {
-  // 192.168.138.1
-  // 192.168.139.253
-  // 255.255.254.0
-  // 192.168.139.254
+function validateRequiredAddress (form: FormInstance) {
+  const { $t } = getIntl()
+  const requiredFields = ['ipAddressStart', 'ipAddressEnd', 'subMask']
+  const hasAllValues = requiredFields.every(
+    field => form.getFieldValue(field))
+  const { ipAddressStart, ipAddressEnd, subMask }
+    = form.getFieldsValue(requiredFields)
+
+  if (hasAllValues) {
+    return Promise.resolve()
+  } else if (!ipAddressStart) {
+    return Promise.reject($t(SwitchCliMessages.PLEASE_ENTER_START_IP))
+  } else if (!ipAddressEnd) {
+    return Promise.reject($t(SwitchCliMessages.PLEASE_ENTER_END_IP))
+  } else if (!subMask) {
+    return Promise.reject($t(SwitchCliMessages.PLEASE_ENTER_MASK))
+  }
+  return Promise.reject($t(SwitchCliMessages.PLEASE_ENTER_ADDRESS_VALUES))
+}
+
+function validateValidIp (ip: string, form: FormInstance) {
+  const { $t } = getIntl()
   const ipAddressStart = form.getFieldValue('ipAddressStart')
   const ipAddressEnd = form.getFieldValue('ipAddressEnd')
   const subMask = form.getFieldValue('subMask')
@@ -494,21 +505,20 @@ function validateIp (ip: string, form: FormInstance) {
   const isInSameSubnet = IpUtilsService.isInSameSubnet(ipAddressStart, subMask, ip)
   const isValid = isInSameSubnet && validateInRange(longIp, longIpAddressStart, longIpAddressEnd)
 
-  if (isValid) {
-    return Promise.resolve()
-  }
-  return Promise.reject()
+  return isValid
+    ? Promise.resolve()
+    : Promise.reject($t({ defaultMessage: 'Please enter valid value' }))
 }
 
 function validateDuplicateIp (ip: string, index: number, form: FormInstance) {
+  const { $t } = getIntl()
   const customizeIpList
     = form.getFieldValue('switchVariables')
       .filter((ip: { value: string }, i: number) => i !== index && ip?.value)
       .map((ip: { value: string }) => ip?.value)
   const isValid = !customizeIpList.includes(ip)
 
-  if (isValid) {
-    return Promise.resolve()
-  }
-  return Promise.reject()
+  return isValid
+    ? Promise.resolve()
+    : Promise.reject($t({ defaultMessage: 'IP already exists' }))
 }

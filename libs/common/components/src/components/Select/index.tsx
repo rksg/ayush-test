@@ -21,7 +21,7 @@ export function Select (props: SelectProps) {
     ...(props?.dropdownClassName?.split(' ') ?? []),
     isGroupingDropdown ? 'grouping-dropdown' : '',
     props?.mode === 'multiple' ? 'multiple-dropdown' : '',
-    props?.type === 'radio' ? 'radio-type' : ''
+    props?.type === 'radio' && !props?.mode ? 'radio-type' : ''
   ].filter(cls => cls).join(' ')
 
   const getGroupOptions = () => {

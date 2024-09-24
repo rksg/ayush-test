@@ -10,22 +10,20 @@ import {
   cliVariableNameRegExp,
   nameCannotStartWithNumberRegExp,
   SwitchViewModel,
-  Venue
+  Venue,
+  SwitchCliMessages
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
-import { getVariableSeparator } from '../SwitchCliTemplateForm/CliTemplateForm'
-import * as UI                  from '../SwitchCliTemplateForm/CliTemplateForm/styledComponents'
+import * as UI from '../SwitchCliTemplateForm/CliTemplateForm/styledComponents'
 
+import { getVariableSeparator } from './CliVariableUtils'
 import {
   AllowedSwitchObjList,
   getCustomizeFields,
   getVariableTemplate,
-  tooltip,
   VariableType
 } from './CliVariableUtils'
-
-
 
 interface variableFormData {
   name: string
@@ -73,11 +71,12 @@ export function CliVariableModal (props: {
 
   useEffect(() => {
     if (venueAppliedModels && allowedSwitchList && isCustomizedVariableEnabled) {
-      const switches = allowedSwitchList.map(s => { //TODO
+      const switches = allowedSwitchList.map(s => {
+        const isModalOverlap = venueAppliedModels?.[s.venueId]?.includes(s.model || '')
+          || !!intersection(venueAppliedModels?.[s.venueId], selectedModels)?.length
         return {
           ...s,
-          isApplied: venueAppliedModels?.[s.venueId]?.includes(s.model || '')
-            || !!intersection(venueAppliedModels?.[s.venueId], selectedModels)?.length || false
+          isApplied: isModalOverlap || false
         }
       }).filter(s => selectedModels?.includes(s.model || '')
       ).reduce((result, item) => {
@@ -110,7 +109,7 @@ export function CliVariableModal (props: {
       name='name'
       label={<>{$t({ defaultMessage: 'Variable Name' })}
         <Tooltip.Question
-          title={$t(tooltip.variableName)}
+          title={$t(SwitchCliMessages.VARIABLE_NAME_RULE)}
           placement='bottom'
         />
       </>}

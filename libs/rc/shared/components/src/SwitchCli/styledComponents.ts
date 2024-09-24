@@ -4,6 +4,10 @@ import 'codemirror/addon/hint/show-hint.css'
 
 import { Select as AcxSelect, Subtitle } from '@acx-ui/components'
 
+export const RequiredMark = styled(Space)`
+  color: var(--acx-accents-orange-50);
+`
+
 export const CustomizedSubtitle = styled(Subtitle)`
   display: flex;
   gap: 4px;

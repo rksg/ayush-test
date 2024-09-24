@@ -43,9 +43,10 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { usePathBasedOnConfigTemplate } from '../../configTemplates'
-import { CliStepConfiguration }         from '../../SwitchCliTemplateForm/CliTemplateForm/CliStepConfiguration'
-import { CliStepNotice }                from '../../SwitchCliTemplateForm/CliTemplateForm/CliStepNotice'
+import { usePathBasedOnConfigTemplate }            from '../../configTemplates'
+import { getCustomizedSwitchVenues, VariableType } from '../../SwitchCli/CliVariableUtils'
+import { CliStepConfiguration }                    from '../../SwitchCliTemplateForm/CliTemplateForm/CliStepConfiguration'
+import { CliStepNotice }                           from '../../SwitchCliTemplateForm/CliTemplateForm/CliStepNotice'
 
 import { CliStepModels }  from './CliStepModels'
 import { CliStepSummary } from './CliStepSummary'
@@ -73,6 +74,7 @@ const switchListPayload = {
     'syncedSwitchConfig', 'operationalWarning', 'venueName', 'deviceStatus'
   ],
   pageSize: 9999
+  // TODO
   // filters: {
   //   deviceStatus: [SwitchStatusEnum.NEVER_CONTACTED_CLOUD]
   // }
@@ -125,7 +127,10 @@ export function CliProfileForm () {
     useQueryFn: useGetSwitchConfigProfileQuery,
     useTemplateQueryFn: useGetSwitchConfigProfileTemplateQuery,
     skip: !editMode,
-    enableRbac: isSwitchRbacEnabled
+    enableRbac: isSwitchRbacEnabled,
+    extraQueryArgs: {
+      enableSwitchLevelCliProfile: isCustomizedVariableEnabled
+    }
   })
 
   const { data: switchList, isLoading: isSwitchLoading } = useGetSwitchListQuery({
@@ -149,13 +154,7 @@ export function CliProfileForm () {
 
   const transformSaveData = (data: CliConfiguration) => {
     const { name, cli, overwrite, variables } = data
-    // TODO
-    const customizedSwitches = _.uniq(variables
-      ?.flatMap(variable => variable.switchVariables?.flatMap(s => s.serialNumbers) || []))
-    const customizedSwitchVenues = _.uniq(allowedSwitchList
-      ?.filter(s => customizedSwitches.includes(s?.serialNumber || ''))
-      .map(s => s.venueId)
-    )
+    const customizedSwitchVenues = getCustomizedSwitchVenues(variables, allowedSwitchList)
 
     return {
       name,
@@ -196,7 +195,8 @@ export function CliProfileForm () {
           id: params.profileId,
           ...transformSaveData(data)
         },
-        enableRbac: rbacEnabled
+        enableRbac: rbacEnabled,
+        enableSwitchLevelCliProfile: isCustomizedVariableEnabled
       }).unwrap()
       await associateWithCliProfile(diffAssociatedSwitch)
       navigate(linkToProfiles, { replace: true })
@@ -211,7 +211,8 @@ export function CliProfileForm () {
       const hasAssociatedVenues = (data?.venues ?? [])?.length > 0
       await addSwitchConfigProfile({
         params, payload: transformSaveData(data),
-        enableRbac: rbacEnabled
+        enableRbac: rbacEnabled,
+        enableSwitchLevelCliProfile: isCustomizedVariableEnabled
       }).unwrap()
 
       if (rbacEnabled && hasAssociatedVenues) {
@@ -267,11 +268,30 @@ export function CliProfileForm () {
         return s.deviceStatus === SwitchStatusEnum.NEVER_CONTACTED_CLOUD
       }) as SwitchViewModel[]
 
+      // TODO: temp
+      const v = cliProfile?.venueCliTemplate?.variables?.map(v => {
+        return {
+          ...v,
+          type: v.hasOwnProperty('subMask')
+            ? VariableType.ADDRESS
+            : ((v.hasOwnProperty('rangeStart') && v?.rangeStart)
+              ? VariableType.RANGE : VariableType.STRING
+            ),
+          ...(v?.switchVariables ? {
+            switchVariables: v?.switchVariables.map(s => ({
+              ...s,
+              serialNumbers: v.hasOwnProperty('subMask') ? s.serialNumbers[0] : s.serialNumbers
+            }))
+          } : {})
+        }
+      }) ?? []
+
       const data = {
         ...cliProfile,
         cli: cliProfile?.venueCliTemplate?.cli,
         overwrite: cliProfile?.venueCliTemplate?.overwrite,
-        variables: cliProfile?.venueCliTemplate?.variables || [],
+        // variables: cliProfile?.venueCliTemplate?.variables || [],
+        variables: v, //
         models: cliProfile?.venueCliTemplate?.switchModels?.split(',')
       }
 

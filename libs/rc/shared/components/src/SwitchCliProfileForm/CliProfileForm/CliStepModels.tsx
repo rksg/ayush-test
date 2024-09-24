@@ -23,12 +23,6 @@ import { profilesPayload } from './'
 
 import type { CheckboxValueType } from 'antd/es/checkbox/Group'
 
-export enum VariableType {
-  ADDRESS = 'ADDRESS',
-  RANGE = 'RANGE',
-  STRING = 'STRING'
-}
-
 type IcxModel = Record<string, Record<string, string[][]>>
 
 interface IcxModelFamily {

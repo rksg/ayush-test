@@ -811,7 +811,6 @@ export interface CliTemplateVariable {
   ipAddressStart?: string
   ipAddressEnd?: string
   subMask?: string
-  // switches?: string[]
   switchVariables?: {
     serialNumbers: string[]
     value: string

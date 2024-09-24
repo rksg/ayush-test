@@ -1,16 +1,13 @@
 import { Form, Input, Col, Row, Space, Typography } from 'antd'
 import { FormattedMessage, useIntl }                from 'react-intl'
 
-import { cssStr, StepsForm }      from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { InformationSolid }       from '@acx-ui/icons'
-import { agreeRegExp }            from '@acx-ui/rc/utils'
-import { useParams }              from '@acx-ui/react-router-dom'
-
+import { cssStr, StepsForm }              from '@acx-ui/components'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
+import { InformationSolid }               from '@acx-ui/icons'
+import { agreeRegExp, SwitchCliMessages } from '@acx-ui/rc/utils'
+import { useParams }                      from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
-
-import { tooltip } from './'
 
 export function CliStepNotice () {
   const { $t } = useIntl()
@@ -39,7 +36,7 @@ export function CliStepNotice () {
       >
         <InformationSolid />
         <FormattedMessage
-          {...tooltip?.noticeInfo}
+          {...SwitchCliMessages?.NOTICE_INFO}
         />
       </Space>}
 
@@ -49,7 +46,7 @@ export function CliStepNotice () {
       >
         <UI.WarningTriangleSolidIcon />
         <FormattedMessage
-          {...tooltip?.noticeDesp}
+          {...SwitchCliMessages?.NOTICE_DESP}
           values={{
             link: <a
               className='link'

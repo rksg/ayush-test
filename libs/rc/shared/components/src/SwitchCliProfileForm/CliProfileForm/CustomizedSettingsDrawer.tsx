@@ -6,10 +6,10 @@ import {
   Tooltip
 } from '@acx-ui/components'
 
+import { VariableType }   from '../../SwitchCli/CliVariableUtils'
 import { SwitchSettings } from '../../SwitchCliTemplateForm/CliTemplateForm/CliStepConfiguration'
 import * as UI            from '../../SwitchCliTemplateForm/CliTemplateForm/styledComponents'
 
-import { VariableType } from './CliStepModels'
 
 export const CustomizedSettingsDrawer = (props: {
   type: string

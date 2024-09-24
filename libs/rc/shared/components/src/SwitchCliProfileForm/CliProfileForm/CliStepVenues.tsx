@@ -22,6 +22,8 @@ import {
   useTableQuery
 }            from '@acx-ui/rc/utils'
 
+import { getCustomizedSwitchVenues } from '../../SwitchCli/CliVariableUtils'
+
 import { cliFormMessages } from './'
 
 interface VenueExtend extends Venue {
@@ -35,6 +37,7 @@ export function CliStepVenues (props: {
 }) {
   const { $t } = useIntl()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isSwitchLevelCliProfileEnabled = useIsSplitOn(Features.SWITCH_LEVEL_CLI_PROFILE)
 
   const { isTemplate } = useConfigTemplate()
   const { form, initialValues } = useStepFormContext()
@@ -129,13 +132,9 @@ export function CliStepVenues (props: {
   }
 
   useEffect(() => {
-    const customizedSwitches = _.uniq(data?.variables
-      ?.flatMap(variable => variable.switchVariables?.flatMap(s => s.serialNumbers) || []))
-    const customizedSwitchVenues = _.uniq(props?.allowedSwitchList
-      ?.filter(s => customizedSwitches.includes(s?.serialNumber || ''))
-      .map(s => s.venueId)
+    const customizedSwitchVenues = getCustomizedSwitchVenues(
+      data?.variables, props?.allowedSwitchList
     )
-
     setCustomizedSwitchVenues(customizedSwitchVenues)
   }, [data?.variables, props?.allowedSwitchList])
 
@@ -208,6 +207,12 @@ export function CliStepVenues (props: {
             }),
             onChange: onChangeVenues
           }}
+          footer={() => isSwitchLevelCliProfileEnabled
+            ? <Typography.Text style={{ fontSize: cssStr('--acx-body-5-font-size') }}>{
+              // eslint-disable-next-line max-len
+              $t({ defaultMessage: '* Switches from this <venuePlural></venuePlural> were selected during variable customization in the previous step.' })
+            }</Typography.Text> : <></>
+          }
         />
       </Loader>
 
