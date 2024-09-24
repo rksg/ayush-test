@@ -240,7 +240,7 @@ const EdgeDhcpTable = () => {
     <>
       <PageHeader
         title={
-          $t({ defaultMessage: 'DHCP for SmartEdge ({count})' },
+          $t({ defaultMessage: 'DHCP for RUCKUS Edge ({count})' },
             { count: tableQuery.data?.totalCount })
         }
         breadcrumb={[

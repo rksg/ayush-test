@@ -58,6 +58,9 @@ describe('IntentAIForm', () => {
     const now = +new Date('2024-08-08T12:00:00.000Z')
     jest.spyOn(Date, 'now').mockReturnValue(now)
 
+    global.URL.createObjectURL = jest.fn().mockReturnValue('blob:csv-url')
+    global.URL.revokeObjectURL = jest.fn()
+
     mockGraphqlQuery(intentAIUrl, 'IntentAIRRMGraph', {
       data: { intent: mockedCRRMGraphs }
     })

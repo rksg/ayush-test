@@ -155,7 +155,7 @@ const EditEdge = () => {
         title={currentEdge?.name}
         breadcrumb={[
           {
-            text: $t({ defaultMessage: 'SmartEdges' }),
+            text: $t({ defaultMessage: 'RUCKUS Edges' }),
             link: '/devices/edge'
           }
         ]}

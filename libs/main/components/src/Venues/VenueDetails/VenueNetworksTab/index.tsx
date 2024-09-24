@@ -63,9 +63,9 @@ import {
   useConfigTemplateMutationFnSwitcher, useConfigTemplateTenantLink,
   KeyValue, VLANPoolViewModelType, Venue, EdgeMvSdLanViewData, EdgeSdLanViewDataP2
 } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { WifiScopes }                                        from '@acx-ui/types'
-import { filterByAccess, hasPermission }                     from '@acx-ui/user'
+import { TenantLink, useNavigate, useParams, useTenantLink }       from '@acx-ui/react-router-dom'
+import { WifiScopes }                                              from '@acx-ui/types'
+import { filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 
 import { NetworkTunnelButton } from './NetworkTunnelButton'
 
@@ -663,7 +663,7 @@ export function VenueNetworksTab () {
       <Table
         settingsId={settingsId}
         rowKey='id'
-        actions={filterByAccess(actions)}
+        actions={hasCrossVenuesPermission()? filterByAccess(actions): []}
         // rowSelection={{
         //   type: 'checkbox'
         // }}

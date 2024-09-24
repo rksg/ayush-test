@@ -74,7 +74,6 @@ export function UserConnectionForm () {
   const form = useFormInstance()
   const isSessionDurationEnable = useIsSplitOn(Features.SESSION_DURATION_TOGGLE)
   const { data, editMode, cloneMode } = useContext(NetworkFormContext)
-  const [isRetrievedData, setIsRetrievedData]=useState<boolean>(!editMode && !cloneMode)
   const [useDefaultSetting, setUseDefaultSetting]=useState<boolean>(true)
   const [maxGracePeriod, setMaxGracePeriod]=useState<number>(1440)
   const [checkDuration,
@@ -83,31 +82,34 @@ export function UserConnectionForm () {
     macCredentialsDurationUnit,
     userSessionTimeout
   ]=[useWatch(['wlan','bypassCPUsingMacAddressAuthentication']),
-    useWatch('userSessionTimeoutUnit'),
-    useWatch('lockoutPeriodUnit'),
-    useWatch('macCredentialsDurationUnit'),
-    useWatch(['guestPortal','userSessionTimeout'])
+    useWatch(['userConnection','userSessionTimeoutUnit']),
+    useWatch(['userConnection','lockoutPeriodUnit']),
+    useWatch(['userConnection','macCredentialsDurationUnit']),
+    useWatch(['userConnection','userSessionTimeout'])
   ]
   const guestType = data?.guestPortal?.guestNetworkType
   const isClickThrough = guestType === GuestNetworkTypeEnum.ClickThrough
   const isWispr = guestType === GuestNetworkTypeEnum.WISPr
+  const createMode = !editMode && !cloneMode
 
   useEffect(() => {
     if (!isNumber(userSessionTimeout)) return
     const gracePeriod = calGracePeriod(userSessionTimeoutUnit, userSessionTimeout)
     if (gracePeriod !== maxGracePeriod) {
-      setMaxGracePeriod(maxGracePeriod)
+      setMaxGracePeriod(gracePeriod)
     }
   }, [userSessionTimeoutUnit, userSessionTimeout, maxGracePeriod])
 
   useEffect(() => {
-    if ((editMode || cloneMode) && data && data.guestPortal && !isRetrievedData) {
-      const userSessionTimeoutUnitData = _.get(data, 'userSessionTimeoutUnit')
+    if ((editMode || cloneMode) && data && data.guestPortal) {
+      // eslint-disable-next-line max-len
+      const userSessionTimeoutUnitData = form.getFieldValue(['userConnection','userSessionTimeoutUnit'])
       const userSessionTimeoutData = _.get(data, 'guestPortal.userSessionTimeout')
-      const lockoutPeriodUnitData = _.get(data, 'lockoutPeriodUnit')
+      const lockoutPeriodUnitData = form.getFieldValue(['userConnection','lockoutPeriodUnit'])
       const lockoutPeriodEnabledData = _.get(data, 'guestPortal.lockoutPeriodEnabled')
       const lockoutPeriodData = _.get(data, 'guestPortal.lockoutPeriod')
-      const macCredentialsDurationUnitData = _.get(data, 'macCredentialsDurationUnit')
+      // eslint-disable-next-line max-len
+      const macCredentialsDurationUnitData = form.getFieldValue(['userConnection','macCredentialsDurationUnit'])
       const macCredentialsDurationData = _.get(data, 'guestPortal.macCredentialsDuration')
       const userSessionGracePeriodData = _.get(data, 'guestPortal.userSessionGracePeriod')
       /* eslint-disable max-len */
@@ -115,7 +117,6 @@ export function UserConnectionForm () {
       if (currentGracePeriod !== maxGracePeriod) {
         setMaxGracePeriod(currentGracePeriod)
       }
-
       form.setFieldValue(['guestPortal','userSessionGracePeriod'], userSessionGracePeriodData)
 
       if(lockoutPeriodEnabledData){
@@ -123,21 +124,26 @@ export function UserConnectionForm () {
 
         if (!userSessionTimeoutUnitData) {
           const [timeData, unit] = calCurrentDataAndUnit(userSessionTimeoutData, [UnitEnum.HOURS, UnitEnum.MINS])
-          form.setFieldValue(['guestPortal','userSessionTimeout'], timeData)
-          form.setFieldValue('userSessionTimeoutUnit', unit)
+          form.setFieldValue(['userConnection','userSessionTimeout'], timeData)
+          form.setFieldValue(['userConnection','userSessionTimeoutUnit'], unit)
         }
 
         if (!lockoutPeriodUnitData) {
           const [timeData, unit] = calCurrentDataAndUnit(lockoutPeriodData, [UnitEnum.DAYS, UnitEnum.HOURS, UnitEnum.HOURS])
-          form.setFieldValue(['guestPortal','lockoutPeriod'], timeData)
-          form.setFieldValue('lockoutPeriodUnit', unit)
+          form.setFieldValue(['userConnection','lockoutPeriod'], timeData)
+          form.setFieldValue(['userConnection','lockoutPeriodUnit'], unit)
+        }
+
+        // default
+        if (!macCredentialsDurationUnitData){
+          form.setFieldValue(['userConnection','macCredentialsDurationUnit'], UnitEnum.HOURS)
         }
 
       } else {
         if (!userSessionTimeoutUnitData) {
           const [timeData, unit] = calCurrentDataAndUnit(userSessionTimeoutData, [UnitEnum.DAYS, UnitEnum.HOURS, UnitEnum.MINS])
-          form.setFieldValue(['guestPortal','userSessionTimeout'], timeData)
-          form.setFieldValue('userSessionTimeoutUnit', unit)
+          form.setFieldValue(['userConnection','userSessionTimeout'], timeData)
+          form.setFieldValue(['userConnection', 'userSessionTimeoutUnit'], unit)
         }
 
         // Parsing the minutes to different time unit, backend will only return/receive duration as minutes without unit
@@ -155,21 +161,24 @@ export function UserConnectionForm () {
             duration = macCredentialsDurationData / oneHour
             durationUnit = UnitEnum.HOURS
           }
-          form.setFieldValue(['guestPortal','macCredentialsDuration'], duration)
-          form.setFieldValue('macCredentialsDurationUnit', durationUnit)
+          form.setFieldValue(['userConnection','macCredentialsDuration'], duration)
+          form.setFieldValue(['userConnection','macCredentialsDurationUnit'], durationUnit)
+        }
+        // default
+        if (!lockoutPeriodUnitData){
+          form.setFieldValue(['userConnection','lockoutPeriodUnit'], UnitEnum.HOURS)
         }
       }
-      setIsRetrievedData(true)
     }
-  }, [data?.guestPortal, isRetrievedData, isSessionDurationEnable])
+  }, [data, editMode, cloneMode, form, isSessionDurationEnable])
 
   /* eslint-enable max-len */
   const changeSettings=()=>{
     if(useDefaultSetting){
       if(userSessionTimeoutUnit === UnitEnum.DAYS){
-        const sessionTimeout = form.getFieldValue(['guestPortal','userSessionTimeout'])
-        form.setFieldValue('userSessionTimeoutUnit', UnitEnum.HOURS)
-        form.setFieldValue(['guestPortal','userSessionTimeout'], sessionTimeout*24)
+        const sessionTimeout = form.getFieldValue(['userConnection','userSessionTimeout'])
+        form.setFieldValue(['userConnection', 'userSessionTimeoutUnit'], UnitEnum.HOURS)
+        form.setFieldValue(['userConnection','userSessionTimeout'], sessionTimeout*24)
       }
     }
     form.setFieldValue(['guestPortal','lockoutPeriodEnabled'],useDefaultSetting)
@@ -253,9 +262,12 @@ export function UserConnectionForm () {
             placement='bottom' />
         </>}>
         <Space align='start'>
+          <Form.Item hidden
+            name={['guestPortal','userSessionTimeout']}
+            children={<InputNumber />}/>
           <Form.Item
             noStyle
-            name={['guestPortal','userSessionTimeout']}
+            name={['userConnection','userSessionTimeout']}
             validateTrigger='onChange'
             initialValue={useDefaultSetting? 1 :24}
             label={$t({ defaultMessage: 'User Session Timeout' })}
@@ -271,7 +283,9 @@ export function UserConnectionForm () {
               onChange={(value)=>setMaxGracePeriod(calGracePeriod(userSessionTimeoutUnit, value))}
             />
           </Form.Item>
-          <Form.Item noStyle name='userSessionTimeoutUnit' initialValue={UnitEnum.DAYS}>
+          <Form.Item noStyle
+            name={['userConnection','userSessionTimeoutUnit']}
+            initialValue={createMode? UnitEnum.DAYS : ''}>
             <Select data-testid='userSessionTimeoutUnit'
               style={{ minWidth: '100px' }}
               onChange={(value)=>setMaxGracePeriod(calGracePeriod(value, userSessionTimeout))}>
@@ -288,6 +302,8 @@ export function UserConnectionForm () {
           hidden
           name={['guestPortal','lockoutPeriodEnabled']}
           initialValue={false}
+          valuePropName='checked'
+          children={<Checkbox />}
         />
         <Form.Item label={<>
           {$t({ defaultMessage: 'After that time, don\'t allow to reconnect for' })}
@@ -297,9 +313,12 @@ export function UserConnectionForm () {
             placement='bottom' />
         </>}>
           <Space align='start'>
+            <Form.Item hidden
+              name={['guestPortal','lockoutPeriod']}
+              children={<InputNumber />}/>
             <Form.Item
               noStyle
-              name={['guestPortal','lockoutPeriod']}
+              name={['userConnection','lockoutPeriod']}
               initialValue={2}
               validateTrigger='onChange'
               label={$t({ defaultMessage: 'Lock-out period' })}
@@ -313,7 +332,9 @@ export function UserConnectionForm () {
                 max={lockoutMapping[lockoutPeriodUnit]}
                 style={{ width: '100px' }} />
             </Form.Item>
-            <Form.Item noStyle name='lockoutPeriodUnit' initialValue={UnitEnum.HOURS}>
+            <Form.Item noStyle
+              name={['userConnection','lockoutPeriodUnit']}
+              initialValue={createMode?UnitEnum.HOURS:''}>
               <Select data-testid='lockoutPeriodUnit' style={{ minWidth: '100px' }}>
                 <Option value={UnitEnum.DAYS}>{$t({ defaultMessage: 'Days' })}</Option>
                 <Option value={UnitEnum.HOURS}>{$t({ defaultMessage: 'Hours' })}</Option>
@@ -336,9 +357,12 @@ export function UserConnectionForm () {
               initialValue={true}
               children={<Checkbox disabled={editMode}/>}
             />
+            <Form.Item hidden
+              name={['guestPortal','macCredentialsDuration']}
+              children={<InputNumber />}/>
             <Form.Item
               noStyle
-              name={['guestPortal','macCredentialsDuration']}
+              name={['userConnection','macCredentialsDuration']}
               initialValue={4}
               validateTrigger='onChange'
               label={$t({ defaultMessage: 'Mac Credentials Duration' })}
@@ -353,7 +377,9 @@ export function UserConnectionForm () {
                 disabled={!checkDuration}
                 style={{ width: '100px' }} />
             </Form.Item>
-            <Form.Item noStyle name='macCredentialsDurationUnit' initialValue={UnitEnum.HOURS}>
+            <Form.Item noStyle
+              name={['userConnection','macCredentialsDurationUnit']}
+              initialValue={createMode?UnitEnum.HOURS:''}>
               <Select data-testid='macCredentialsDurationUnit'
                 style={{ minWidth: '100px' }}
                 disabled={!checkDuration}>
@@ -384,9 +410,9 @@ export function UserConnectionForm () {
           <Space align='start'>
             <Form.Item
               noStyle
-              initialValue={60}
               label={$t({ defaultMessage: 'User Session Grace Period' })}
               name={['guestPortal','userSessionGracePeriod']}
+              initialValue={60}
               validateTrigger='onChange'
               rules={[
                 { required: true },

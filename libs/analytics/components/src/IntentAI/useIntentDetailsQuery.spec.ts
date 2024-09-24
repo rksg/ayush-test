@@ -97,7 +97,7 @@ describe('getGraphKPIs', () => {
       }
     }, kpis)
     expect(result.value).toEqual('--')
-    expect(result.delta).toEqual({ trend: 'none', value: '0%' })
+    expect(result.delta).toBeUndefined()
     expect(result.footer).toEqual('')
   })
   it('handle beyond data retention', () => {

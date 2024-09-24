@@ -411,8 +411,8 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/devicePolicies/:templateId',
     newApi: true,
     defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1+json',
-      'Content-Type': 'application/vnd.ruckus.v1+json'
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
     }
   },
   delDevicePolicyRbac: {
@@ -939,6 +939,24 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   deactivateApplicationPolicyOnWifiNetwork: {
     method: 'delete',
     url: '/templates/wifiNetworks/:networkId/applicationPolicies/:applicationPolicyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  activateAccessControlProfileOnWifiNetwork: {
+    method: 'put',
+    url: '/templates/wifiNetworks/:networkId/accessControlProfiles/:accessControlProfileId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deactivateAccessControlProfileOnWifiNetwork: {
+    method: 'delete',
+    url: '/templates/wifiNetworks/:networkId/accessControlProfiles/:accessControlProfileId',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',

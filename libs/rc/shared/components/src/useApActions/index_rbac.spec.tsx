@@ -10,6 +10,7 @@ import {
   APGeneralFixtures,
   CommonRbacUrlsInfo,
   DHCPUrls,
+  SwitchRbacUrlsInfo,
   WifiRbacUrlsInfo,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
@@ -24,7 +25,7 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { dhcpApSetting, dhcpList, dhcpResponse } from './__tests__/fixtures'
+import { dhcpApSetting, dhcpList, dhcpResponse, dummySwitchClientList } from './__tests__/fixtures'
 
 import { useApActions } from '.'
 
@@ -84,6 +85,10 @@ describe('Test useApActions', () => {
       rest.get(
         WifiRbacUrlsInfo.getDhcpAp.url,
         (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        SwitchRbacUrlsInfo.getSwitchClientList.url,
+        (_req, res, ctx) => res(ctx.json(dummySwitchClientList))
       )
     )
     const { result } = renderHook(() => useApActions(), {
@@ -180,6 +185,10 @@ describe('Test useApActions', () => {
       rest.get(
         DHCPUrls.getDHCProfileDetail.url,
         (req, res, ctx) => res(ctx.json(dhcpResponse))
+      ),
+      rest.post(
+        SwitchRbacUrlsInfo.getSwitchClientList.url,
+        (_req, res, ctx) => res(ctx.json(dummySwitchClientList))
       )
     )
     const { result } = renderHook(() => useApActions(), {

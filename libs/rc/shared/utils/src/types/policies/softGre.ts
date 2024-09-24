@@ -49,4 +49,5 @@ export interface SoftGreOptionsData {
   isLockedOptions: boolean,
   gatewayIpMaps: Record<string, string[]>,
   gatewayIps: string[]
+  activationProfiles: string[]
 }

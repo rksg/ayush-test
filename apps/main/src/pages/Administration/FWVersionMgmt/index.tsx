@@ -156,9 +156,13 @@ const FWVersionMgmt = () => {
       visible: true
     },
     edgeFirmware: {
-      title: <UI.TabWithHint>{$t({ defaultMessage: 'SmartEdge Firmware' })}
-        {isEdgeFirmwareAvailable && <Tooltip children={<InformationSolid />}
-          title={$t({ defaultMessage: 'There are new SmartEdge firmware versions available' })} />}
+      title: <UI.TabWithHint>{$t({ defaultMessage: 'RUCKUS Edge Firmware' })}
+        {
+          isEdgeFirmwareAvailable && <Tooltip children={<InformationSolid />}
+            title={
+              $t({ defaultMessage: 'There are new RUCKUS Edge firmware versions available' })
+            } />
+        }
       </UI.TabWithHint>,
       content: <EdgeFirmware />,
       visible: isEdgeEnabled

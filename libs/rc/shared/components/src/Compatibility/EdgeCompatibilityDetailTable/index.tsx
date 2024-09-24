@@ -1,15 +1,17 @@
 import { useState } from 'react'
 
-import { sumBy }   from 'lodash'
-import moment      from 'moment'
-import { useIntl } from 'react-intl'
+import { Typography } from 'antd'
+import { sumBy }      from 'lodash'
+import moment         from 'moment'
+import { useIntl }    from 'react-intl'
 
-import { Table, TableProps }                                                                                                                                                                from '@acx-ui/components'
-import { useGetAvailableEdgeFirmwareVersionsQuery, useGetLatestEdgeFirmwareQuery, useGetVenueEdgeFirmwareListQuery, useUpdateEdgeFirmwareNowMutation, useUpdateEdgeVenueSchedulesMutation } from '@acx-ui/rc/services'
-import { EdgeFirmwareVersion, EdgeUpdateScheduleRequest, EdgeVenueFirmware, EntityCompatibility }                                                                                           from '@acx-ui/rc/utils'
-import { EdgeScopes }                                                                                                                                                                       from '@acx-ui/types'
-import { filterByAccess, hasPermission }                                                                                                                                                    from '@acx-ui/user'
-import { compareVersions }                                                                                                                                                                  from '@acx-ui/utils'
+import { Table, TableProps }                                                                                                                                                                                                                                                        from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                                                                                                                                                                                   from '@acx-ui/feature-toggle'
+import { useGetAvailableEdgeFirmwareVersionsQuery, useGetLatestEdgeFirmwareQuery, useGetVenueEdgeFirmwareListQuery, useStartEdgeFirmwareVenueUpdateNowMutation, useUpdateEdgeFirmwareNowMutation, useUpdateEdgeFirmwareVenueScheduleMutation, useUpdateEdgeVenueSchedulesMutation } from '@acx-ui/rc/services'
+import { EdgeFirmwareVersion, EdgeUpdateScheduleRequest, EdgeVenueFirmware, EntityCompatibility }                                                                                                                                                                                   from '@acx-ui/rc/utils'
+import { EdgeScopes }                                                                                                                                                                                                                                                               from '@acx-ui/types'
+import { filterByAccess, hasPermission }                                                                                                                                                                                                                                            from '@acx-ui/user'
+import { compareVersions }                                                                                                                                                                                                                                                          from '@acx-ui/utils'
 
 import { EdgeChangeScheduleDialog } from '../../EdgeFirmware/ChangeScheduleDialog'
 import { EdgeUpdateNowDialog }      from '../../EdgeFirmware/UpdateNowDialog'
@@ -35,7 +37,7 @@ const useColumns = () => {
     dataIndex: 'featureName',
     defaultSortOrder: 'ascend'
   }, {
-    title: $t({ defaultMessage: 'Incompatible SmartEdges' }),
+    title: $t({ defaultMessage: 'Incompatible RUCKUS Edges' }),
     key: 'incompatible',
     dataIndex: 'incompatible',
     align: 'center'
@@ -50,13 +52,19 @@ const useColumns = () => {
 export const EdgeCompatibilityDetailTable = (props: EdgeCompatibilityDetailTableProps) => {
   const { $t } = useIntl()
 
+  // eslint-disable-next-line max-len
+  const isBatchOperationEnable = useIsSplitOn(Features.EDGE_FIRMWARE_NOTIFICATION_BATCH_OPERATION_TOGGLE)
   const { data, requirementOnly = false, venueId } = props
+
   const [updateNowFwVer, setUpdateNowFwVer] = useState<string|undefined>()
   const [scheduleUpdateFwVer, setScheduleUpdateFwVer] = useState<string|undefined>()
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
 
   const [updateNow] = useUpdateEdgeFirmwareNowMutation()
   const [updateSchedule] = useUpdateEdgeVenueSchedulesMutation()
+  const [startEdgeFirmwareVenueUpdateNow] = useStartEdgeFirmwareVenueUpdateNowMutation()
+  const [updateEdgeFirmwareVenueSchedule] = useUpdateEdgeFirmwareVenueScheduleMutation()
+
   const { latestReleaseVersion } = useGetLatestEdgeFirmwareQuery({}, {
     skip: requirementOnly,
     selectFromResult: ({ data }) => ({
@@ -67,12 +75,12 @@ export const EdgeCompatibilityDetailTable = (props: EdgeCompatibilityDetailTable
     { skip: requirementOnly })
   const { venueFirmware } = useGetVenueEdgeFirmwareListQuery({
     payload: {
-      filter: { venueId }
+      filters: { venueId: [venueId] }
     }
   }, {
     skip: requirementOnly,
     selectFromResult: ({ data }) => {
-      return { venueFirmware: data?.[0] }
+      return { venueFirmware: data?.filter(fw => fw.id === venueId)?.[0] }
     }
   })
 
@@ -82,10 +90,21 @@ export const EdgeCompatibilityDetailTable = (props: EdgeCompatibilityDetailTable
     const payload = { version: data }
 
     try {
-      await updateNow({
-        params: { venueId },
-        payload
-      })
+      if (isBatchOperationEnable) {
+        await startEdgeFirmwareVenueUpdateNow({
+          payload: {
+            venueIds: [venueId!],
+            version: data,
+            state: 'UPDATE_NOW'
+          }
+        }).unwrap()
+      } else {
+        await updateNow({
+          params: { venueId },
+          payload
+        }).unwrap()
+      }
+
       setSelectedRowKeys([])
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -99,10 +118,22 @@ export const EdgeCompatibilityDetailTable = (props: EdgeCompatibilityDetailTable
     }
 
     try {
-      await updateSchedule({
-        params: { venueId },
-        payload
-      })
+      if (isBatchOperationEnable) {
+        await updateEdgeFirmwareVenueSchedule({
+          payload: {
+            venueIds: [venueId!],
+            date: payload.date,
+            time: payload.time,
+            version: payload.version
+          }
+        }).unwrap()
+      } else {
+        await updateSchedule({
+          params: { venueId },
+          payload
+        }).unwrap()
+      }
+
       setSelectedRowKeys([])
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -144,6 +175,12 @@ export const EdgeCompatibilityDetailTable = (props: EdgeCompatibilityDetailTable
   const showCheckbox = hasPermission({ scopes: [EdgeScopes.UPDATE] }) && !requirementOnly
 
   return <>
+    <Typography.Text>
+      {
+        // eslint-disable-next-line max-len
+        $t({ defaultMessage: '* Please note that all RUCKUS Edges in this <venueSingular></venueSingular> would be upgraded together.' })
+      }
+    </Typography.Text>
     <Table
       rowKey='featureName'
       columns={columns.filter(i => requirementOnly ? i.dataIndex !== 'incompatible' : true)}
@@ -175,6 +212,6 @@ const getFilteredScheduleVersions = (availableVersions?: EdgeFirmwareVersion[], 
   if (!availableVersions || !venueFirmware) return availableVersions
 
   return availableVersions.filter(availableVersion => {
-    return venueFirmware.versions.some(version => version.id === availableVersion.id)
+    return !venueFirmware.versions.some(version => version.id === availableVersion.id)
   })
 }
