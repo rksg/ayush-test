@@ -79,7 +79,7 @@ describe('VipCard', () => {
 
     formRef.current.submit()
     // eslint-disable-next-line max-len
-    expect(await screen.findByText('Please make sure you select an interface and configure the IP subnet for the SmartEdge(s).')).toBeVisible()
+    expect(await screen.findByText('Please make sure you select an interface and configure the IP subnet for the RUCKUS Edge(s).')).toBeVisible()
   })
 
   it('should be blocked when the config has invalid ip', async () => {

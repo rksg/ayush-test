@@ -9,7 +9,7 @@ export const messageMapping = {
     'not all features are available on all access points. You may upgrade your firmware from {apFwLink}'
   }),
   multipleFromEdge: defineMessage({ defaultMessage:
-    'The following features are not enabled on this SmartEdge due to <b>firmware incompatibility</b>. '+
+    'The following features are not enabled on this RUCKUS Edge due to <b>firmware incompatibility</b>. '+
     'Please see the minimum firmware versions required below. '+
     'You may upgrade your firmware from {edgeFwLink}'
   }),
@@ -19,16 +19,16 @@ export const messageMapping = {
     'Also note that not all features are available on all access points. You may upgrade your firmware from {apFwLink}'
   }),
   multipleFromVenueEdge: defineMessage({ defaultMessage:
-    'The following features are unavailable on certain SmartEdges '+
+    'The following features are unavailable on certain RUCKUS Edges '+
     'in this <venueSingular></venueSingular> due to <b>firmware incompatibility</b>. '+
-    'You can upgrade your SmartEdge firmware by selecting these features and choosing to update now or schedule an update below.'
+    'You can upgrade your RUCKUS Edge firmware by selecting these features and choosing to update now or schedule an update below.'
   }),
   singleApFeature: defineMessage({ defaultMessage:
     'To use the <b>{featureName}</b> feature, ensure that the access points '+
     'meet the minimum required version and AP model support list below. You may upgrade your firmware from {apFwLink}'
   }),
   singleEdgeFeature: defineMessage({ defaultMessage:
-    'To use the <b>{featureName}</b> feature completely, ensure that the SmartEdges '+
+    'To use the <b>{featureName}</b> feature completely, ensure that the RUCKUS Edges '+
     'meet the minimum required version and model support list below: {edgeFwLink}'
   }),
   singleFeatureCrossDeviceType: defineMessage({ defaultMessage:
@@ -46,7 +46,7 @@ export const messageMapping = {
     ' and AP model support list below. You may upgrade your firmware from {apFwLink}'
   }),
   singleFromVenueEdge: defineMessage({ defaultMessage:
-    'To use the <b>{featureName}</b>, ensure that the <venueSingular></venueSingular> firmware version for SmartEdges '+
+    'To use the <b>{featureName}</b>, ensure that the <venueSingular></venueSingular> firmware version for RUCKUS Edges '+
     'on the <venueSingular></venueSingular> (<b>{venueName}</b>) meet the minimum required version below. You may upgrade your firmware from {edgeFwLink}'
   })
 }

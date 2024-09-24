@@ -125,7 +125,7 @@ describe('PersonalIdentityNetworkForm - SmartEdgeForm', () => {
       })
 
     await user.selectOptions(
-      await screen.findByRole('combobox', { name: 'SmartEdge' }),
+      await screen.findByRole('combobox', { name: 'RUCKUS Edge' }),
       await screen.findByRole('option', { name: 'Smart Edge 1' })
     )
 
@@ -146,7 +146,7 @@ describe('PersonalIdentityNetworkForm - SmartEdgeForm', () => {
       })
 
     await user.selectOptions(
-      await screen.findByRole('combobox', { name: 'SmartEdge' }),
+      await screen.findByRole('combobox', { name: 'RUCKUS Edge' }),
       await screen.findByRole('option', { name: 'Smart Edge 1' })
     )
     const dhcpSelect = await screen.findByRole('combobox', { name: 'DHCP Service' })
@@ -179,7 +179,7 @@ describe('PersonalIdentityNetworkForm - SmartEdgeForm', () => {
       </Provider>,
       { route: { params, path: createNsgPath } })
     await user.selectOptions(
-      await screen.findByRole('combobox', { name: 'SmartEdge' }),
+      await screen.findByRole('combobox', { name: 'RUCKUS Edge' }),
       await screen.findByRole('option', { name: 'Smart Edge 1' })
     )
     const segmentsInput = await screen.findByRole('spinbutton', { name: 'Number of Segments' })
@@ -215,7 +215,7 @@ describe('PersonalIdentityNetworkForm - SmartEdgeForm', () => {
       </Provider>,
       { route: { params, path: createNsgPath } })
     await user.click((await screen.findAllByRole('button', { name: 'Add' }))[1])
-    await screen.findByText('Please enter SmartEdge')
+    await screen.findByText('Please enter RUCKUS Edge')
     await screen.findByText('Please enter Number of Segments')
     await screen.findByText('Please enter Number of devices per Segment')
     await screen.findByText('Please enter DHCP Service')
@@ -237,7 +237,7 @@ describe('PersonalIdentityNetworkForm - SmartEdgeForm', () => {
       </Provider>,
       { route: { params, path: editNsgPath } })
     await user.selectOptions(
-      await screen.findByRole('combobox', { name: 'SmartEdge' }),
+      await screen.findByRole('combobox', { name: 'RUCKUS Edge' }),
       await screen.findByRole('option', { name: 'Smart Edge 1' })
     )
     const dhcpSelect = await screen.findByRole('combobox', { name: 'DHCP Service' })

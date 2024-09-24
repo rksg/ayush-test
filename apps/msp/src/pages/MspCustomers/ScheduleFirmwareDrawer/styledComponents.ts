@@ -24,3 +24,10 @@ export const ChangeButton = styled(Button)`
   width: 80px !important;
   font-size: 13px;
 `
+export const VersionLabel2 = styled.div<{}>`
+ font-size: var(--acx-body-4-font-size);
+ display: grid;
+ grid-template-columns: 100px 280px;
+ align-items: baseline;
+ margin-top: 15px;
+`
