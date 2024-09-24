@@ -98,6 +98,7 @@ export const useEdgePinActions = () => {
 
         const reqResult = await handleAssociationDiff(serviceId!, originData, payload)
         callback?.([updateResult].concat(reqResult as CommonResult[]))
+        return Promise.resolve()
       }
     } catch(error) {
       callback?.(error as CommonErrorsResult<CatchErrorDetails>)
