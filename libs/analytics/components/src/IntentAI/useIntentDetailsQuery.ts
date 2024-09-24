@@ -53,7 +53,8 @@ export type Intent = {
     dataEndTime: string
     preferences?: {
       crrmFullOptimization: boolean;
-    },
+      excludedHours: Record<string, string[]>
+    }
   }
   sliceType: NodeType
   sliceValue: string

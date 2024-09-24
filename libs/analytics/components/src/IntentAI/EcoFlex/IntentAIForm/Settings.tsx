@@ -1,8 +1,6 @@
-import { useState } from 'react'
-
-import { Row, Col, Typography }          from 'antd'
-import Checkbox, { CheckboxChangeEvent } from 'antd/lib/checkbox'
-import { useIntl }                       from 'react-intl'
+import { Row, Col, Typography, Form } from 'antd'
+import Checkbox                       from 'antd/lib/checkbox'
+import { useIntl }                    from 'react-intl'
 
 import { StepsForm, useStepFormContext } from '@acx-ui/components'
 
@@ -15,9 +13,9 @@ const { Paragraph } = Typography
 export function Settings () {
   const { $t } = useIntl()
   const { form } = useStepFormContext<Intent>()
+  const enableExcludedHours = Form.useWatch('enableExcludedHours')
   const isEnabled = form.getFieldValue('preferences').enable
   const excludedHours = form.getFieldValue('preferences').excludedHours
-  const [checkedSchedule, setCheckedSchedule] = useState(excludedHours??false)
 
   const content = {
     // eslint-disable-next-line max-len
@@ -26,18 +24,22 @@ export function Settings () {
     option1: $t({ defaultMessage: 'Do not apply EcoFlexAI during the following time slots of the week' }),
     option2: $t({ defaultMessage: 'Do not apply EcoFlexAI to the following AP Groups / APs' })
   }
+
   return <Row gutter={20}>
     <Col span={15}>
       <StepsForm.Title children={$t({ defaultMessage: 'Settings' })} />
       <ScheduleTiming disabled={!isEnabled} />
       <StepsForm.Subtitle children={$t({ defaultMessage: 'Optional' })} />
       <Paragraph><span>{content.description}</span></Paragraph>
-      <Checkbox
-        onChange={(e: CheckboxChangeEvent) => setCheckedSchedule(e.target.checked)}
-        checked={checkedSchedule}
-        children={content.option1}
-      />
-      {checkedSchedule && <ScheduleWeekly
+      <Form.Item
+        name='enableExcludedHours'
+        valuePropName='checked'
+        noStyle>
+        <Checkbox
+          children={content.option1}
+        />
+      </Form.Item>
+      {enableExcludedHours && <ScheduleWeekly
         form={form}
         excludedHours={excludedHours} />}
     </Col>
