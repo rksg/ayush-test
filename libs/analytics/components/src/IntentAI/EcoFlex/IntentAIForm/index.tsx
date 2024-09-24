@@ -1,5 +1,6 @@
 import React from 'react'
 
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { StepsForm } from '@acx-ui/components'
@@ -33,30 +34,30 @@ function getFormDTO (values: FormValues<FormVal>): IntentTransitionPayload {
   } as IntentTransitionPayload
   if (isEnabled) {
     dto.metadata = {
+      ..._.pick(values, ['wlans']),
+      preferences: { ..._.pick(values, ['averagePowerPrice']), excludedHours },
       scheduledAt: getScheduledAt(values).utc().toISOString()
     }
   }
-  return { ...dto,
-    metadata: {
-      ...dto.metadata,
-      preferences: { enable: isEnabled, excludedHours }
-    }
-  }
+  return dto
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const useIntentTransition = createUseIntentTransition<FormVal>(getFormDTO as any)
 export const IntentAIForm: React.FC = () => {
   const { $t } = useIntl()
   const { submit } = useIntentTransition()
-  const { intent: { metadata } } = useIntentContext()
-
+  const { intent: { metadata: { preferences } } } = useIntentContext()
+  const averagePowerPrice = preferences?.averagePowerPrice
+    ? preferences.averagePowerPrice
+    : { currency: 'USD', value: 0.131 }
+  const excludedHours = preferences?.excludedHours
   // always enable = true, because only new, scheduled, active, applyscheduled can open wizard
   const initialValues = {
     ...useInitialValues(),
-    preferences: { enable: true, excludedHours: metadata?.preferences?.excludedHours },
-    enableExcludedHours: !!metadata?.preferences?.excludedHours
+    preferences: { enable: true, excludedHours },
+    averagePowerPrice,
+    enableExcludedHours: !!excludedHours
   }
-
   return (<>
     <IntentWizardHeader />
 
