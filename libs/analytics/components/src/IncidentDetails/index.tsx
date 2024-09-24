@@ -47,7 +47,6 @@ export const incidentDetailsMap = {
   'i-apserv-high-num-reboots': ApservHighNumReboots,
   'i-switch-poe-pd': SwitchPoePd,
   'i-switch-vlan-mismatch': SwitchVlanMismatch,
-  's-switch-tcp-syn-ddos': SwitchTcpSynDDoS,
   'p-channeldist-suboptimal-plan-24g': ChannelDist,
   'p-channeldist-suboptimal-plan-50g-outdoor': ChannelDist,
   'p-channeldist-suboptimal-plan-50g-indoor': ChannelDist,
@@ -63,7 +62,8 @@ export const incidentDetailsMap = {
   'p-airtime-rx-6(5)g-high': AirtimeRx,
   'p-airtime-tx-24g-high': AirtimeTx,
   'p-airtime-tx-5g-high': AirtimeTx,
-  'p-airtime-tx-6(5)g-high': AirtimeTx
+  'p-airtime-tx-6(5)g-high': AirtimeTx,
+  's-switch-tcp-syn-ddos': SwitchTcpSynDDoS
 }
 
 export function IncidentDetails () {

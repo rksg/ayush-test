@@ -36,7 +36,6 @@ const allIncidentCodes = [
   'i-apserv-continuous-reboots',
   'i-apserv-downtime-high',
   'i-switch-vlan-mismatch',
-  's-switch-tcp-syn-ddos',
   'i-switch-poe-pd',
   'i-apinfra-poe-low',
   'i-apinfra-wanthroughput-low',
@@ -48,7 +47,8 @@ const allIncidentCodes = [
   'p-airtime-rx-6(5)g-high',
   'p-airtime-tx-24g-high',
   'p-airtime-tx-5g-high',
-  'p-airtime-tx-6(5)g-high'
+  'p-airtime-tx-6(5)g-high',
+  's-switch-tcp-syn-ddos'
 ] as const
 
 const incidentsToggleMap: Record<
@@ -111,10 +111,10 @@ export const incidentCodes: IncidentCode[] = [
   'i-apserv-continuous-reboots',
   'i-apserv-downtime-high',
   'i-switch-vlan-mismatch',
-  's-switch-tcp-syn-ddos',
   'i-switch-poe-pd',
   'i-apinfra-poe-low',
-  'i-apinfra-wanthroughput-low'
+  'i-apinfra-wanthroughput-low',
+  's-switch-tcp-syn-ddos'
 ]
 
 export const [wiredIncidentCodes, wirelessIncidentCodes] = partition(
@@ -161,10 +161,10 @@ export const categoryCodeMap = {
       'i-apserv-continuous-reboots',
       'i-apserv-downtime-high',
       'i-switch-vlan-mismatch',
-      's-switch-tcp-syn-ddos',
       'i-switch-poe-pd',
       'i-apinfra-poe-low',
-      'i-apinfra-wanthroughput-low'
+      'i-apinfra-wanthroughput-low',
+      's-switch-tcp-syn-ddos'
     ] as IncidentCode[]
   },
   security: {
