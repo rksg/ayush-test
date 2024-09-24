@@ -3,14 +3,13 @@ import { useState, useEffect } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { GridCol, GridRow, SummaryCard }                                    from '@acx-ui/components'
+import { GridCol, GridRow, SummaryCard }                  from '@acx-ui/components'
 import { EnrollmentPortalLink, WorkflowPanel, PanelMode } from '@acx-ui/rc/components'
 import {
   useGetWorkflowByIdQuery,
   useLazySearchWorkflowListQuery
 } from '@acx-ui/rc/services'
 import { Workflow } from '@acx-ui/rc/utils'
-import { Space } from 'antd'
 
 
 

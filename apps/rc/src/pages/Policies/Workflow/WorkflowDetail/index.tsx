@@ -7,7 +7,7 @@ import WorkflowPageHeader         from './WorkflowPageHeader'
 export default function WorkflowDetails () {
 
   return <>
-    <WorkflowPageHeader />   
+    <WorkflowPageHeader />
     <WorkflowDetailOverview/>
   </>
 }
