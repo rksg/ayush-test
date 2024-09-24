@@ -1238,6 +1238,21 @@ const support6gSeparationChannels = {
   [ApRadioTypeEnum.RadioUpper5G]: validRadioChannels['5GUpperChannels']
 }
 
+jest.mock('./RadioSettingsContents', () => ({
+  ...jest.requireActual('./RadioSettingsContents'),
+  txPowerAdjustmentOptions: [
+    { label: 'Full', value: 'MAX' },
+    { label: 'txPowerOption', value: 'txPowerOption' }
+  ],
+  txPowerAdjustment6GOptions: [
+    { label: 'Full', value: 'MAX' },
+    { label: 'txPowerOption', value: 'txPowerOption' },
+    { label: 'txPower6gOption', value: 'txPower6gOption' }
+  ],
+  txPowerAdjustmentExtendedOptions: [{ label: 'txPowerExtendedOption',
+    value: 'txPowerExtendedOption' }]
+}))
+
 const resetToDefaultSpy = jest.fn()
 describe('SignaleRadioSettings component', () => {
   beforeEach(() => {
@@ -1569,4 +1584,76 @@ describe('SignaleRadioSettings component', () => {
     expect(noSupportInfoDiv).toEqual(expect.anything())
   })
 
+  // eslint-disable-next-line max-len
+  it('should show tx power extended options when AP version is larger than 7.1', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const radioType = ApRadioTypeEnum.Radio24G
+
+    render (
+      <Provider>
+        <Router>
+          <Form>
+            <SupportRadioChannelsContext.Provider value={{
+              bandwidthRadioOptions,
+              supportRadioChannels
+            }}>
+              <SingleRadioSettings
+                context='ap'
+                radioType={radioType}
+                isUseVenueSettings={false}
+                firmwareProps={{ firmware: '7.1.0.103.2' }}
+              />
+            </SupportRadioChannelsContext.Provider>
+          </Form>
+        </Router>
+      </Provider>
+    )
+
+    await screen.findByText('Channel selection method')
+
+    const channelSelect = await screen.findByRole('combobox', { name: /Channel selection/i })
+    expect(channelSelect).not.toHaveAttribute('disabled')
+
+    const transmitSelect = await screen.findByRole('combobox', { name: /Transmit Power/i })
+    await userEvent.click(transmitSelect)
+    expect(screen.getByTitle('txPowerOption')).not.toBeNull()
+    expect(screen.queryByTitle('txPower6gOption')).toBeNull()
+    expect(screen.getByTitle('txPowerExtendedOption')).not.toBeNull()
+  })
+
+  it('should not show tx power extended options when AP version is small than 7.1', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const radioType = ApRadioTypeEnum.Radio24G
+
+    render (
+      <Provider>
+        <Router>
+          <Form>
+            <SupportRadioChannelsContext.Provider value={{
+              bandwidthRadioOptions,
+              supportRadioChannels
+            }}>
+              <SingleRadioSettings
+                context='ap'
+                radioType={radioType}
+                isUseVenueSettings={false}
+                firmwareProps={{ firmware: '7.0.0.103.2' }}
+              />
+            </SupportRadioChannelsContext.Provider>
+          </Form>
+        </Router>
+      </Provider>
+    )
+
+    await screen.findByText('Channel selection method')
+
+    const channelSelect = await screen.findByRole('combobox', { name: /Channel selection/i })
+    expect(channelSelect).not.toHaveAttribute('disabled')
+
+    const transmitSelect = await screen.findByRole('combobox', { name: /Transmit Power/i })
+    await userEvent.click(transmitSelect)
+    expect(screen.getByTitle('txPowerOption')).not.toBeNull()
+    expect(screen.queryByTitle('txPower6gOption')).toBeNull()
+    expect(screen.queryByTitle('txPowerExtendedOption')).toBeNull()
+  })
 })

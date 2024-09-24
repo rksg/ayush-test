@@ -335,7 +335,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                       placement='topRight'
                       title={
                         // eslint-disable-next-line max-len
-                        $t({ defaultMessage: 'Utilized for SD-LAN service, the core port on this SmartEdge establishes tunnels for directing data traffic effectively' })
+                        $t({ defaultMessage: 'Utilized for SD-LAN service, the core port on this RUCKUS Edge establishes tunnels for directing data traffic effectively' })
                       }
                     >
                       <UI.StyledQuestionIcon />

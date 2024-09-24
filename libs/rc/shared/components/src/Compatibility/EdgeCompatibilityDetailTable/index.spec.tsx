@@ -15,13 +15,18 @@ import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 import { EdgeCompatibilityDetailTable } from '.'
 
 const { mockEdgeCompatibilitiesVenue } = EdgeCompatibilityFixtures
-const mockAvailableVersions = cloneDeep(EdgeFirmwareFixtures.mockAvailableVersions).slice(0, 1)
-mockAvailableVersions.forEach(item => {
-  item.id = '2.1.0.600'
-  item.name = '2.1.0.600'
-})
+const TEST_VERSION = '2.1.0.600'
+const NEXT_TEST_VERSION = '2.1.0.700'
+const mockAvailableVersions = cloneDeep(EdgeFirmwareFixtures.mockAvailableVersions).slice(0, 2)
+mockAvailableVersions[0].id = TEST_VERSION
+mockAvailableVersions[0].name = TEST_VERSION
+mockAvailableVersions[1].id = NEXT_TEST_VERSION
+mockAvailableVersions[1].name = NEXT_TEST_VERSION
+
 const mockedVenueFirmwareList = cloneDeep(EdgeFirmwareFixtures.mockedVenueFirmwareList)
 mockedVenueFirmwareList[0].id = 'mock_venue_id'
+mockedVenueFirmwareList[0].versions[0].id = TEST_VERSION
+mockedVenueFirmwareList[0].versions[0].name = TEST_VERSION
 
 jest.spyOn(Date, 'now').mockImplementation(() => {
   return new Date('2023-01-20T12:33:37.101+00:00').getTime()
@@ -76,7 +81,7 @@ describe('EdgeCompatibilityDetailTable', () => {
 
     const rows = await basicCheck()
     expect(rows.length).toBe(3) // including header
-    expect(screen.getByRole('columnheader', { name: 'Incompatible SmartEdges' })).toBeVisible()
+    expect(screen.getByRole('columnheader', { name: 'Incompatible RUCKUS Edges' })).toBeVisible()
 
     const row1 = screen.getByRole('row', { name: /SD-LAN 1 2.1.0.200/i })
     screen.getByRole('row', { name: /Tunnel Profile 2 2.1.0.400/i })
@@ -96,7 +101,7 @@ describe('EdgeCompatibilityDetailTable', () => {
 
     const rows = await basicCheck()
     expect(rows.length).toBe(3) // including header
-    expect(screen.getByRole('columnheader', { name: 'Incompatible SmartEdges' })).toBeVisible()
+    expect(screen.getByRole('columnheader', { name: 'Incompatible RUCKUS Edges' })).toBeVisible()
 
     const row1 = screen.getByRole('row', { name: /SD-LAN 1 2.1.0.200/i })
     screen.getByRole('row', { name: /Tunnel Profile 2 2.1.0.400/i })
@@ -123,7 +128,7 @@ describe('EdgeCompatibilityDetailTable', () => {
 
     const rows = await basicCheck()
     expect(rows.length).toBe(3) // including header
-    expect(screen.getByRole('columnheader', { name: 'Incompatible SmartEdges' })).toBeVisible()
+    expect(screen.getByRole('columnheader', { name: 'Incompatible RUCKUS Edges' })).toBeVisible()
 
     const row1 = screen.getByRole('row', { name: /SD-LAN 1 2.1.0.200/i })
     screen.getByRole('row', { name: /Tunnel Profile 2 2.1.0.400/i })
@@ -133,7 +138,7 @@ describe('EdgeCompatibilityDetailTable', () => {
     const nowDateStr = moment().add(2, 'days').format('YYYY-MM-DD')
     const nowDayStr = nowDateStr.split('-')[2]
     await userEvent.click(await screen.findByRole('radio',
-      { name: '2.1.0.600 (Release - Recommended) - 02/23/2023' }
+      { name: '2.1.0.700 (Release - Recommended) - 02/23/2023' }
     ))
     await userEvent.click(screen.getByPlaceholderText('Select date'))
     const cell = await screen.findByRole('cell', { name: new RegExp(nowDateStr) })
@@ -144,20 +149,24 @@ describe('EdgeCompatibilityDetailTable', () => {
     await waitFor(() => expect(mockedUpdateSchedule).toBeCalledWith({
       date: '2023-01-22',
       time: '00:00-02:00',
-      version: '2.1.0.600'
+      version: '2.1.0.700'
     }))
     await waitFor(() => expect(submitBtn).not.toBeVisible())
   })
 
   it('should not have action button when available version is lower', async () => {
+    const mockAvailableVersionsReq = jest.fn()
+    const tt = EdgeFirmwareFixtures.mockedVenueFirmwareList
     mockServer.use(
       rest.post(
         FirmwareUrlsInfo.getVenueEdgeFirmwareList.url,
-        (_req, res, ctx) => res(ctx.json(EdgeFirmwareFixtures.mockedVenueFirmwareList))
-      ),
+        (_req, res, ctx) => res(ctx.json(tt))),
       rest.get(
         FirmwareUrlsInfo.getAvailableEdgeFirmwareVersions.url,
-        (_req, res, ctx) => res(ctx.json(EdgeFirmwareFixtures.mockAvailableVersions))
+        (_req, res, ctx) => {
+          mockAvailableVersionsReq()
+          return res(ctx.json(EdgeFirmwareFixtures.mockAvailableVersions))
+        }
       )
     )
 
@@ -172,13 +181,13 @@ describe('EdgeCompatibilityDetailTable', () => {
 
     const rows = await basicCheck()
     expect(rows.length).toBe(3) // including header
-    expect(screen.getByRole('columnheader', { name: 'Incompatible SmartEdges' })).toBeVisible()
+    expect(screen.getByRole('columnheader', { name: 'Incompatible RUCKUS Edges' })).toBeVisible()
 
     const row1 = screen.getByRole('row', { name: /SD-LAN 1 2.1.0.200/i })
     screen.getByRole('row', { name: /Tunnel Profile 2 2.1.0.400/i })
     await userEvent.click(within(row1).getByRole('checkbox'))
-
-    expect(screen.queryByRole('button', { name: 'Update Version Now' })).toBeNull()
+    await screen.findByRole('button', { name: 'Update Version Now' })
+    expect(mockAvailableVersionsReq).toBeCalledTimes(2)
     expect(screen.queryByRole('button', { name: 'Schedule Version Update' })).toBeNull()
   })
 
@@ -196,7 +205,7 @@ describe('EdgeCompatibilityDetailTable', () => {
 
     const rows = await basicCheck()
     expect(rows.length).toBe(3) // including header
-    expect(screen.queryByRole('columnheader', { name: 'Incompatible SmartEdges' })).toBeNull()
+    expect(screen.queryByRole('columnheader', { name: 'Incompatible RUCKUS Edges' })).toBeNull()
 
     screen.getByRole('row', { name: /SD-LAN 2.1.0.200/i })
     screen.getByRole('row', { name: /Tunnel Profile 2.1.0.400/i })

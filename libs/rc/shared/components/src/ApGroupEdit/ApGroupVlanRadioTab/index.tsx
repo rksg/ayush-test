@@ -95,7 +95,7 @@ export function ApGroupVlanRadioTab () {
     const getApGroupNetworkData = async (venueId: string) => {
       if (isRbacEnabled) {
         const { data } = await getRbacApGroupNetworkList({
-          params: { venueId },
+          params: { venueId, apGroupId },
           payload: cloneDeep({
             ...defaultNewApGroupNetworkPayload,
             isTemplate: isTemplate,
