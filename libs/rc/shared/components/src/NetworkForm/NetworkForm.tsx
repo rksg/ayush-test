@@ -65,6 +65,7 @@ import { usePathBasedOnConfigTemplate } from '../configTemplates'
 import { useGetNetwork }                from '../NetworkDetails/services'
 import { useIsEdgeFeatureReady }        from '../useEdgeActions'
 
+import { APLDAPForm }              from './CaptivePortal/ApLdapForm'
 import { CloudpathForm }           from './CaptivePortal/CloudpathForm'
 import { GuestPassForm }           from './CaptivePortal/GuestPassForm'
 import { HostApprovalForm }        from './CaptivePortal/HostApprovalForm'
@@ -1110,7 +1111,8 @@ function isPortalWebRender (saveState: NetworkSaveData): boolean {
     GuestNetworkTypeEnum.ClickThrough,
     GuestNetworkTypeEnum.SelfSignIn,
     GuestNetworkTypeEnum.GuestPass,
-    GuestNetworkTypeEnum.HostApproval
+    GuestNetworkTypeEnum.HostApproval,
+    GuestNetworkTypeEnum.AD_LDAP
   ]
 
   // eslint-disable-next-line max-len
@@ -1133,6 +1135,8 @@ function pickOneCaptivePortalForm (saveState: NetworkSaveData) {
       return <GuestPassForm />
     case GuestNetworkTypeEnum.WISPr:
       return <WISPrForm />
+    case GuestNetworkTypeEnum.AD_LDAP:
+      return <APLDAPForm />
     default:
       // eslint-disable-next-line no-console
       console.error(`Unknown Network Type: ${saveState?.guestPortal?.guestNetworkType}`)
