@@ -46,11 +46,11 @@ import {
 import { useParams } from '@acx-ui/react-router-dom'
 import { getIntl }   from '@acx-ui/utils'
 
-import { CodeMirrorWidget }                                     from '../../CodeMirrorWidget'
-import { CsvSize, ImportFileDrawer, ImportFileDrawerType }      from '../../ImportFileDrawer'
-import { CliVariableModal }                                     from '../../SwitchCli/CliVariableModal'
-import { getVariableColor, getVariableSeparator, VariableType } from '../../SwitchCli/CliVariableUtils'
-import { CustomizedSettingsDrawer }                             from '../../SwitchCliProfileForm/CliProfileForm/CustomizedSettingsDrawer'
+import { CodeMirrorWidget }                                                             from '../../CodeMirrorWidget'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType }                              from '../../ImportFileDrawer'
+import { CliVariableModal }                                                             from '../../SwitchCli/CliVariableModal'
+import { formatContentWithLimit, getVariableColor, getVariableSeparator, VariableType } from '../../SwitchCli/CliVariableUtils'
+import { CustomizedSettingsDrawer }                                                     from '../../SwitchCliProfileForm/CliProfileForm/CustomizedSettingsDrawer'
 
 import * as UI from './styledComponents'
 
@@ -110,6 +110,7 @@ const cliTemplatesPayload = {
 
 export function CliStepConfiguration (props: {
   appliedModels?: Record<string, string[]>
+  allSwitchList?: SwitchViewModel[]
   allowedSwitchList?: SwitchViewModel[]
 }) {
   const { $t } = useIntl()
@@ -191,7 +192,7 @@ export function CliStepConfiguration (props: {
   useEffect(() => {
     const data = form?.getFieldsValue(true)
     if (data) {
-      const transformVariables = !isSwitchRbacEnabled
+      const transformVariables = !isSwitchRbacEnabled && !isCustomizedVariableEnabled
         ? data?.variables
         : data?.variables.map((variable: CliTemplateVariable) => {
           return {
@@ -511,7 +512,7 @@ export function CliStepConfiguration (props: {
                         ? displayVariableValue(
                           variable.type,
                           variable,
-                          props?.allowedSwitchList || [],
+                          props?.allSwitchList || [],
                           setSwitchSettings,
                           setSwitchSettingType,
                           setSwitchSettingDrawerVisible,
@@ -538,6 +539,7 @@ export function CliStepConfiguration (props: {
       isCustomizedVariableEnabled={isCustomizedVariableEnabled}
       venueAppliedModels={venueAppliedModels}
       selectedModels={selectedModels}
+      allSwitchList={props?.allSwitchList}
       allowedSwitchList={props?.allowedSwitchList}
     />}
 
@@ -762,7 +764,7 @@ function htmlDecode (code: string) {
 function displayVariableValue (
   vtype: string,
   values: CliTemplateVariable,
-  allowedSwitchList: SwitchViewModel[],
+  allSwitchList: SwitchViewModel[],
   setSwitchSettings: (data: SwitchSettings[]) => void,
   setSwitchSettingType: (data: string) => void,
   setSwitchSettingDrawerVisible: (visible: boolean) => void,
@@ -792,7 +794,7 @@ function displayVariableValue (
           }).flat()
 
           const settings = switchVariables?.map(switchVariable => {
-            const switchData = _.find(allowedSwitchList, (s) => {
+            const switchData = _.find(allSwitchList, (s) => {
               return s.serialNumber === switchVariable?.serialNumber
             })
             const hasSwitchName = switchData?.name !== switchData?.serialNumber
@@ -808,8 +810,6 @@ function displayVariableValue (
           setSwitchSettings(settings)
           setSwitchSettingType(type)
           setSwitchSettingDrawerVisible(true)
-          // setEditMode(true)
-          // setDrawerVisible(true)
         }}>
         { $t({ defaultMessage: '{count} Switch(es)' }, { count: switchCount }) }
       </Button>
@@ -852,22 +852,4 @@ function displayVariableValue (
         { customizedSwitches }
       </>
   }
-}
-
-function formatContentWithLimit (content: string, maxLines: number, $t: IntlShape['$t']) {
-  const lines = content.split(/\r\n|\r|\n/)
-  const lineCount = lines.length
-
-  if (lineCount <= maxLines) {
-    return content
-  }
-
-  const truncatedContent = lines.slice(0, maxLines).join('\r\n')
-  return $t({
-    defaultMessage: '{content}{br}{br}and {lines} more lines...'
-  }, {
-    content: truncatedContent,
-    lines: lineCount - maxLines,
-    br: <br/>
-  })
 }

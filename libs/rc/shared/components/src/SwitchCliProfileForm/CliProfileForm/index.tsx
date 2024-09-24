@@ -43,10 +43,10 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { usePathBasedOnConfigTemplate }            from '../../configTemplates'
-import { getCustomizedSwitchVenues, VariableType } from '../../SwitchCli/CliVariableUtils'
-import { CliStepConfiguration }                    from '../../SwitchCliTemplateForm/CliTemplateForm/CliStepConfiguration'
-import { CliStepNotice }                           from '../../SwitchCliTemplateForm/CliTemplateForm/CliStepNotice'
+import { usePathBasedOnConfigTemplate } from '../../configTemplates'
+import { getCustomizedSwitchVenues }    from '../../SwitchCli/CliVariableUtils'
+import { CliStepConfiguration }         from '../../SwitchCliTemplateForm/CliTemplateForm/CliStepConfiguration'
+import { CliStepNotice }                from '../../SwitchCliTemplateForm/CliTemplateForm/CliStepNotice'
 
 import { CliStepModels }  from './CliStepModels'
 import { CliStepSummary } from './CliStepSummary'
@@ -97,6 +97,7 @@ export function CliProfileForm () {
   const rbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isSwitchRbacEnabled
 
   const [appliedModels, setAppliedModels] = useState({} as unknown as Record<string, string[]>)
+  const [allSwitchList, setAllSwitchList] = useState([] as SwitchViewModel[])
   const [allowedSwitchList, setAllowedSwitchList] = useState([] as SwitchViewModel[])
 
   const [form] = Form.useForm()
@@ -263,20 +264,14 @@ export function CliProfileForm () {
 
   useEffect(() => {
     if (!isProfileLoading && !isSwitchLoading) {
-      const allowedSwitchList = switchList?.data?.filter(s => {
-        // TODO
-        return s.deviceStatus === SwitchStatusEnum.NEVER_CONTACTED_CLOUD
-      }) as SwitchViewModel[]
+      const allowedSwitchList = switchList?.data?.filter(s => (
+        s.deviceStatus === SwitchStatusEnum.NEVER_CONTACTED_CLOUD
+      )) as SwitchViewModel[]
 
       // TODO: temp
       const v = cliProfile?.venueCliTemplate?.variables?.map(v => {
         return {
           ...v,
-          type: v.hasOwnProperty('subMask')
-            ? VariableType.ADDRESS
-            : ((v.hasOwnProperty('rangeStart') && v?.rangeStart)
-              ? VariableType.RANGE : VariableType.STRING
-            ),
           ...(v?.switchVariables ? {
             switchVariables: v?.switchVariables.map(s => ({
               ...s,
@@ -299,6 +294,7 @@ export function CliProfileForm () {
         ...result, [v]: data.models
       }), {}) || {}
 
+      setAllSwitchList(switchList?.data as SwitchViewModel[])
       setAllowedSwitchList(allowedSwitchList)
       setAppliedModels(venueAppliedModels)
       form?.setFieldsValue(data)
@@ -358,6 +354,7 @@ export function CliProfileForm () {
           >
             <CliStepConfiguration
               appliedModels={appliedModels}
+              allSwitchList={allSwitchList}
               allowedSwitchList={allowedSwitchList}
             />
           </StepsForm.StepForm>

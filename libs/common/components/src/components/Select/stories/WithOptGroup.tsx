@@ -65,6 +65,7 @@ export function WithOptGroup () {
         {...defaultProps}
         mode='multiple'
         optionFilterProp='label'
+        defaultValue={[1]}
       >
         <Select.OptGroup
           key='group1'
@@ -73,6 +74,7 @@ export function WithOptGroup () {
             key={option.value}
             value={option.value}
             children={option.label}
+            disabled={option.value === 1}
           />)}
         />
         <Select.OptGroup

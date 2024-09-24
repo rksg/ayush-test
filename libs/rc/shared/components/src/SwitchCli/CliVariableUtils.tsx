@@ -30,12 +30,57 @@ export enum VariableType {
   STRING = 'STRING'
 }
 
+export interface variableFormData {
+  name: string
+  type: string
+  ipAddressStart?: string
+  ipAddressEnd?: string
+  subMask?: string
+  rangeStart?: number
+  rangeEnd?: number
+  string?:string
+}
+
 export interface ExtendedSwitchViewModel extends SwitchViewModel {
   isApplied: boolean
+  isConfigured?: boolean
 }
 
 export interface AllowedSwitchObjList {
   [model: string]: ExtendedSwitchViewModel[]
+}
+
+export const formatVariableValue = (data: variableFormData) => {
+  const separator = getVariableSeparator(data.type)
+
+  const fieldKeysByType: Record<VariableType, (keyof variableFormData)[]> = {
+    [VariableType.ADDRESS]: ['ipAddressStart', 'ipAddressEnd', 'subMask'],
+    [VariableType.RANGE]: ['rangeStart', 'rangeEnd'],
+    [VariableType.STRING]: ['string']
+  }
+
+  const selectedFields = fieldKeysByType[data.type as keyof typeof fieldKeysByType] || []
+  const values = selectedFields.map(key => data[key]).filter(Boolean)
+
+  return values.join(separator)
+}
+
+export function formatContentWithLimit (content: string, maxLines: number, $t: IntlShape['$t']) {
+  const lines = content.split(/\r\n|\r|\n/)
+  const lineCount = lines.length
+
+  if (lineCount <= maxLines) {
+    return content
+  }
+
+  const truncatedContent = lines.slice(0, maxLines).join('\r\n')
+  return $t({
+    defaultMessage: '{content}{br}{br}and {lines} more lines...'
+  }, {
+    content: truncatedContent,
+    lines: lineCount - maxLines,
+    br: <br/>
+  })
 }
 
 export function getVariableSeparator (type: string) {
@@ -330,7 +375,7 @@ export const getCustomizeFields = (
                               = hasSwitchName ? `${s.serialNumber} (${s.name})` : (s.name ?? '')
 
                             return <Select.Option
-                              disabled={s.isApplied}
+                              disabled={s.isApplied} // TODO
                               key={name}
                               value={s.serialNumber}
                               label={name}

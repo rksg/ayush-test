@@ -790,6 +790,11 @@
                   color: var(--acx-neutrals-40);
                 }
               }
+              &.ant-select-item-option-selected {
+                &:before {
+                  background: var(--acx-neutrals-40);
+                }
+              }
             }
           }
         }
@@ -837,6 +842,13 @@
               &-disabled {
                 &:before {
                   border-color: var(--acx-neutrals-40);
+                }
+                &.ant-select-item-option-selected {
+                  .ant-select-item-option-state {
+                    &:before {
+                      background: var(--acx-neutrals-40);
+                    }
+                  }
                 }
               }
             }

@@ -11,30 +11,20 @@ import {
   nameCannotStartWithNumberRegExp,
   SwitchViewModel,
   Venue,
-  SwitchCliMessages
+  SwitchCliMessages,
+  SwitchStatusEnum
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
 import * as UI from '../SwitchCliTemplateForm/CliTemplateForm/styledComponents'
 
-import { getVariableSeparator } from './CliVariableUtils'
+import { getVariableSeparator, variableFormData } from './CliVariableUtils'
 import {
   AllowedSwitchObjList,
   getCustomizeFields,
   getVariableTemplate,
   VariableType
 } from './CliVariableUtils'
-
-interface variableFormData {
-  name: string
-  type: string
-  ipAddressStart?: string
-  ipAddressEnd?: string
-  subMask?: string
-  rangeStart?: number
-  rangeEnd?: number
-  string?:string
-}
 
 export function CliVariableModal (props: {
   data?: CliTemplateVariable,
@@ -47,6 +37,7 @@ export function CliVariableModal (props: {
   isCustomizedVariableEnabled?: boolean
   venueAppliedModels?: Record<string, string[]>
   selectedModels?: string[]
+  allSwitchList?: SwitchViewModel[]
   allowedSwitchList?: SwitchViewModel[]
 }) {
   const { $t } = getIntl()
@@ -57,7 +48,8 @@ export function CliVariableModal (props: {
 
   const {
     data, editMode, modalvisible, setModalvisible, variableList, setVariableList,
-    isCustomizedVariableEnabled, venueAppliedModels, selectedModels, allowedSwitchList
+    isCustomizedVariableEnabled, venueAppliedModels, selectedModels,
+    allSwitchList, allowedSwitchList
   } = props
 
   const customizedRequiredFields = [
@@ -71,12 +63,28 @@ export function CliVariableModal (props: {
 
   useEffect(() => {
     if (venueAppliedModels && allowedSwitchList && isCustomizedVariableEnabled) {
-      const switches = allowedSwitchList.map(s => {
+      let configuredSwitchList = [] as SwitchViewModel[]
+      if (editMode) {
+        const appliedSerialNumbers = data?.switchVariables?.map(
+          switchVariable => switchVariable?.serialNumbers
+        ).flat()
+        configuredSwitchList = allSwitchList?.filter(s => {
+          return s.deviceStatus !== SwitchStatusEnum.NEVER_CONTACTED_CLOUD
+            && appliedSerialNumbers?.includes(s?.serialNumber || '')
+        }) as SwitchViewModel[]
+      }
+
+      // TODO
+      const switches = [
+        ...allowedSwitchList,
+        ...configuredSwitchList
+      ].map(s => {
         const isModalOverlap = venueAppliedModels?.[s.venueId]?.includes(s.model || '')
           || !!intersection(venueAppliedModels?.[s.venueId], selectedModels)?.length
         return {
           ...s,
-          isApplied: isModalOverlap || false
+          isApplied: isModalOverlap || false,
+          isConfigured: s.deviceStatus !== SwitchStatusEnum.NEVER_CONTACTED_CLOUD
         }
       }).filter(s => selectedModels?.includes(s.model || '')
       ).reduce((result, item) => {
