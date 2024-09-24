@@ -54,6 +54,7 @@ import * as UI            from '../styledComponents'
 
 import { ChoiceCustomerEnum, ChoiceScopeEnum } from './AddPrivilegeGroup'
 import { SelectCustomerDrawer }                from './SelectCustomerDrawer'
+import { SelectCustomerOnlyDrawer }            from './SelectCustomerOnlyDrawer'
 import { SelectVenuesDrawer }                  from './SelectVenuesDrawer'
 
 import { PrivilegeGroupSateProps } from '.'
@@ -134,6 +135,7 @@ export function EditPrivilegeGroup () {
   const [displayMspScope, setDisplayMspScope] = useState(false)
   const [disableNameChange, setDisableNameChange] = useState(false)
   const [groupNames, setGroupNames] = useState([] as RolesEnum[])
+  const [selectedRole, setCustomRole] = useState('')
 
   const navigate = useNavigate()
   const { action, groupId } = useParams()
@@ -183,6 +185,9 @@ export function EditPrivilegeGroup () {
 
   const setSelectedCustomers = (selected: MspEcWithVenue[]) => {
     setCustomers(selected)
+  }
+  const setSelectedRole = (selected: RolesEnum) => {
+    setCustomRole(selected)
   }
 
   const onScopeChange = (e: RadioChangeEvent) => {
@@ -534,7 +539,10 @@ export function EditPrivilegeGroup () {
                 <Input.TextArea rows={4} />
               }
             />
-            <CustomRoleSelector />
+            <CustomRoleSelector
+              isOnboardedMsp={isOnboardedMsp}
+              setSelected={setSelectedRole}
+            />
           </Col>
         </Row>
         <Row gutter={12}>
@@ -548,12 +556,20 @@ export function EditPrivilegeGroup () {
           setVisible={setSelectVenueDrawer}
           setSelected={setSelectedVenus}
         />}
-        {selectCustomerDrawer && <SelectCustomerDrawer
-          visible={selectCustomerDrawer}
-          selected={selectedCustomers}
-          setVisible={setSelectCustomerDrawer}
-          setSelected={setSelectedCustomers}
-        />}
+        {selectCustomerDrawer && (selectedRole === RolesEnum.PRIME_ADMIN
+          ? <SelectCustomerOnlyDrawer
+            visible={selectCustomerDrawer}
+            selected={selectedCustomers}
+            setVisible={setSelectCustomerDrawer}
+            setSelected={setSelectedCustomers}
+          />
+          : <SelectCustomerDrawer
+            visible={selectCustomerDrawer}
+            selected={selectedCustomers}
+            setVisible={setSelectCustomerDrawer}
+            setSelected={setSelectedCustomers}
+          />)
+        }
 
       </StepsForm.StepForm>
     </StepsForm>
