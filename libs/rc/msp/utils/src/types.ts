@@ -428,6 +428,11 @@ export interface UpgradeFirmwareVer {
   branches: string[]
 }
 
+export interface RecommendFirmwareUpgradeByApModel {
+  id?: string,
+  supportedApModels: string[]
+}
+
 export interface MspRecData {
   account_id?: string;
   name?: string;

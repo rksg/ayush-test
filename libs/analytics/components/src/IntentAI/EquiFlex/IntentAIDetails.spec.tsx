@@ -132,7 +132,7 @@ describe('IntentAIDetails', () => {
 
       expect(await screen.findByTestId('Overview text'))
         // eslint-disable-next-line max-len
-        .toHaveTextContent(/is currently enabled. This is a RF feature that is only available via RUCKUS AI,/)
+        .toHaveTextContent('Leverage EquiFlex, available only through IntentAI for intelligent handling of probe request/response and optimize management traffic in a dense network. For improved performance, this option will disable the Air Time Decongestion (ATD) feature if previously enabled for this network.')
     })
 
     it('handle active EquiFlex with currentValue is not enabled', async () => {
@@ -150,7 +150,7 @@ describe('IntentAIDetails', () => {
 
       expect(await screen.findByTestId('Overview text'))
         // eslint-disable-next-line max-len
-        .toHaveTextContent(/is currently not enabled. This is a RF feature that is only available via RUCKUS AI,/)
+        .toHaveTextContent('Leverage EquiFlex, available only through IntentAI for intelligent handling of probe request/response and optimize management traffic in a dense network. For improved performance, this option will disable the Air Time Decongestion (ATD) feature if previously enabled for this network.')
     })
 
     it('handle inactive EquiFlex', async () => {

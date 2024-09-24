@@ -83,7 +83,7 @@ describe('IntentAIDetails', () => {
 
       expect(await screen.findByTestId('Overview text'))
         // eslint-disable-next-line max-len
-        .toHaveTextContent(/Reduce energy footprint for efficiency and sustainability/)
+        .toHaveTextContent(/In this mode, based on the usage pattern PowerSave supported APs are switched to PowerSaving mode/)
     })
 
     it('handle inactive EquiFlex', async () => {

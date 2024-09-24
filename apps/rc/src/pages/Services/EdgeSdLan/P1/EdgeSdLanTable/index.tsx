@@ -139,7 +139,7 @@ const EdgeSdLanTable = () => {
       }
     },
     {
-      title: $t({ defaultMessage: 'SmartEdge' }),
+      title: $t({ defaultMessage: 'RUCKUS Edge' }),
       key: 'edgeId',
       dataIndex: 'edgeId',
       sorter: true,

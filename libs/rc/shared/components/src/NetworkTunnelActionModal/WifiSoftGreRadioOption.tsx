@@ -104,9 +104,9 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
 
   const gatewayIpValidator = async (value: string) => {
     let isValid = true
-    if (optionsDataQuery.data) {
-      const { id, gatewayIps } = optionsDataQuery.data
-      if (value !== id) {
+    if (value && optionsDataQuery.data) {
+      const { id, gatewayIps, activationProfiles } = optionsDataQuery.data
+      if (value !== id && !activationProfiles.includes(value)) {
         const [ gatewayIp1, gatewayIp2 ] = gatewayIpMapIds[value]
         if (gatewayIp1 && gatewayIps.includes(gatewayIp1)) isValid = false
         if (gatewayIp2 && gatewayIps.includes(gatewayIp2)) isValid = false
@@ -116,7 +116,7 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
     return isValid ? Promise.resolve() :
       Promise.reject(
         /* eslint-disable max-len */
-        $t({ defaultMessage: 'The gateway address of the selected SoftGRE tunnel profile already exists in another applied profile at the same venue. Please choose a different one.' })
+        $t({ defaultMessage: 'The gateway address of the selected SoftGRE tunnel profile already exists in another applied profile at the same <venueSingular></venueSingular>. Please choose a different one.' })
       )
   }
 
