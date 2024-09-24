@@ -38,7 +38,7 @@ const mockWlanData = {
 
 jest.mock('../../utils', () => ({
   ...jest.requireActual('../../utils'),
-  useNetworkVxLanTunnelProfileInfo: jest.fn().mockReturnValue({ enabldVxLan: false })
+  useNetworkVxLanTunnelProfileInfo: jest.fn().mockReturnValue({ enableVxLan: false })
 }))
 
 const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
