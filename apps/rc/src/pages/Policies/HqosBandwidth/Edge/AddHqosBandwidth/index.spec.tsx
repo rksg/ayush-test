@@ -11,12 +11,30 @@ import {
   screen,
   waitFor
 } from '@acx-ui/test-utils'
+import { RequestPayload } from '@acx-ui/types'
 
 import { HqosBandwidthFormModel } from '../HqosBandwidthForm'
 
 import AddEdgeHqosBandwidth from '.'
 
 const { click } = userEvent
+
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useCreateEdgeHqosProfileMutation: () => {
+    return [(req: RequestPayload) => {
+      return { unwrap: () => new Promise((resolve) => {
+        mockedAddFn(req.payload)
+        resolve(true)
+        setTimeout(() => {
+          (req.callback as Function)({
+            response: { id: 'mocked_hqos_id' }
+          })
+        }, 300)
+      }) }
+    }]
+  }
+}))
 
 const mockedNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
@@ -60,13 +78,6 @@ describe('Add Edge HQoS Profile', () => {
     mockedSubmitDataGen.mockReset()
 
     mockServer.use(
-      rest.post(
-        EdgeHqosProfilesUrls.addEdgeHqosProfile.url,
-        (req, res, ctx) => {
-          mockedAddFn(req.body)
-          return res(ctx.json({ response: { id: 't-qos-id' } }))
-        }
-      ),
       rest.put(
         EdgeHqosProfilesUrls.activateEdgeCluster.url,
         (req, res, ctx) => {

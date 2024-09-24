@@ -5,7 +5,7 @@
     "react-app/jest"
   ],
   "ignorePatterns": ["**/*"],
-  "plugins": ["align-import", "@nrwl/nx"],
+  "plugins": ["align-import", "@nrwl/nx", "custom"],
   "rules": {
     "align-import/align-import": 2,
     "comma-dangle": [2, "never"],
@@ -52,7 +52,8 @@
     "react/jsx-equals-spacing": [2, "never"],
     "react/jsx-max-props-per-line": [2, { "maximum": 1, "when": "multiline" }],
     "semi": [2, "never"],
-    "space-before-function-paren": [2, "always"]
+    "space-before-function-paren": [2, "always"],
+    "custom/enforce-venue-placeholder": 2
   },
   "overrides": [
     {
