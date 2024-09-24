@@ -281,7 +281,7 @@ describe('AssignMspLicense', () => {
         route: { params }
       })
 
-    expect(screen.getByText('Assign Subscription')).toBeVisible()
+    expect(screen.getByText('Assign Subscriptions')).toBeVisible()
     expect(screen.getByRole('heading', { name: 'Subscriptions' })).toBeVisible()
     expect(screen.getByRole('button', { name: 'Save' })).not.toBeDisabled()
     expect(screen.getByRole('button', { name: 'Cancel' })).not.toBeDisabled()
@@ -299,7 +299,7 @@ describe('AssignMspLicense', () => {
         route: { params }
       })
 
-    expect(screen.getByText('Assign Subscription')).toBeVisible()
+    expect(screen.getByText('Assign Subscriptions')).toBeVisible()
     expect(screen.getByRole('heading', { name: 'Subscriptions' })).toBeVisible()
     expect(screen.getByRole('button', { name: 'Save' })).not.toBeDisabled()
     expect(screen.getByRole('button', { name: 'Cancel' })).not.toBeDisabled()
@@ -317,7 +317,7 @@ describe('AssignMspLicense', () => {
         route: { params }
       })
 
-    expect(screen.getByText('Assign Subscription')).toBeVisible()
+    expect(screen.getByText('Assign Subscriptions')).toBeVisible()
     expect(screen.getByRole('heading', { name: 'Subscriptions' })).toBeVisible()
     expect(screen.getByText('Assigned Paid Device Subscriptions')).toBeVisible()
     expect(screen.queryByText('Assigned Wi-Fi Subscription')).toBeNull()
@@ -760,6 +760,8 @@ describe('AssignMspLicense', () => {
   })
   it('should save correctly for assigned trial device', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff !== Features.ENTITLEMENT_SEPARATE_SERVICEDATE_TOGGLE)
     services.useMspAssignmentSummaryQuery = jest.fn().mockImplementation(() => {
       return { data: devicesTrialAssignmentSummary }
     })
