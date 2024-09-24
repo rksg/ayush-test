@@ -225,7 +225,7 @@ export const ClientSteering = () => {
               (stickyClientSteeringDisable.isDisable === true && stickyClientSteeringDisable.isVenueLoadBalancingOn === false) ?
                 <Tooltip
                   title={$t({
-                    defaultMessage: 'Please turn on the load balancing at the venue level first, as it is required for this function to work.'
+                    defaultMessage: 'Please turn on the load balancing at the <venueSingular></venueSingular> level first, as it is required for this function to work.'
                   })}
                 >
                   <Switch

@@ -45,7 +45,7 @@ import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 import {
   aggregatedRbacNetworksVenueData,
-  aggregatedRbacVenueNetworksData,
+  aggregatedRbacVenueNetworksData, fetchRbacAccessControlPolicyNetwork, fetchRbacAccessControlSubPolicyNetwork,
   fetchRbacApGroupNetworkVenueList,
   fetchRbacNetworkVenueList,
   fetchRbacVenueNetworkList,
@@ -380,11 +380,39 @@ export const networkApi = baseNetworkApi.injectEndpoints({
             networkDeep
           } = await fetchRbacNetworkVenueList(arg, fetchWithBQ)
 
+          const {
+            error: accessControlPolicyNetworkError,
+            data: accessControlPolicyNetwork
+          } = await fetchRbacAccessControlPolicyNetwork(arg, fetchWithBQ)
+
+          const {
+            error: accessControlSubPolicyNetworkError,
+            data: accessControlSubPolicyNetwork
+          } = await fetchRbacAccessControlSubPolicyNetwork(arg, fetchWithBQ)
+
           if (networkVenuesListQueryError)
             return { error: networkVenuesListQueryError }
 
+          if (accessControlPolicyNetworkError)
+            return { error: accessControlPolicyNetworkError }
+
+          if (accessControlSubPolicyNetworkError)
+            return { error: accessControlSubPolicyNetworkError }
+
           if (networkDeep?.venues) {
             networkDeepData.venues = cloneDeep(networkDeep.venues)
+          }
+
+          if (accessControlPolicyNetwork?.data.length > 0 && networkDeepData.wlan?.advancedCustomization) {
+            networkDeepData.wlan.advancedCustomization.accessControlEnable = true
+            networkDeepData.wlan.advancedCustomization.accessControlProfileId = accessControlPolicyNetwork.data[0].id
+          }
+
+          if (!accessControlPolicyNetwork?.data.length && Object.keys(accessControlSubPolicyNetwork).length && networkDeepData.wlan?.advancedCustomization) {
+            networkDeepData.wlan.advancedCustomization = {
+              ...networkDeepData.wlan.advancedCustomization,
+              ...accessControlSubPolicyNetwork
+            }
           }
         }
 
