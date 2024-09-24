@@ -89,8 +89,11 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
     const allCustomers = data?.policyEntityDTOS?.length ?? 0
     return isOnboardedMsp ? <>
       <div>{$t({ defaultMessage: 'Own Account: {venueCount}' }, { venueCount })} </div>
-      <div>{$t({ defaultMessage: 'MSP Customers: {mspEcCount}' }, { mspEcCount:
-            allCustomers === 0 ? 'All Customers' : allCustomers+' customers' })} </div>
+      <div>{data.allCustomers === true
+        ? $t({ defaultMessage: 'MSP Customers: All Customers' })
+        : $t({ defaultMessage: 'MSP Customers: {mspEcCount} Customers' },
+          { mspEcCount: allCustomers })}
+      </div>
     </> : $t({ defaultMessage: '{venueCount}' }, { venueCount })
   }
 

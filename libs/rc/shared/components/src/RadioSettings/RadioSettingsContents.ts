@@ -30,6 +30,10 @@ export interface LPIButtonText {
   isAPOutdoor?: boolean
 }
 
+export interface FirmwareProps {
+  firmware?: string
+}
+
 export const channelSelectionMethodsOptions = [
   { label: defineMessage({ defaultMessage: 'ChannelFly' }), value: 'CHANNELFLY' },
   { label: defineMessage({ defaultMessage: 'Background Scanning' }), value: 'BACKGROUND_SCANNING' }
@@ -58,6 +62,22 @@ export const channelBandwidth5GOptions = channelBandwidth24GOptions.concat([
 export const channelBandwidth6GOptions = [
   ...channelBandwidth5GOptions,
   { label: '320 MHz', value: '320MHz' }
+]
+
+export const txPowerAdjustmentExtendedOptions = [
+  { label: '-11dB', value: '-11' },
+  { label: '-12dB', value: '-12' },
+  { label: '-13dB', value: '-13' },
+  { label: '-14dB', value: '-14' },
+  { label: '-15dB', value: '-15' },
+  { label: '-16dB', value: '-16' },
+  { label: '-17dB', value: '-17' },
+  { label: '-18dB', value: '-18' },
+  { label: '-19dB', value: '-19' },
+  { label: '-20dB', value: '-20' },
+  { label: '-21dB', value: '-21' },
+  { label: '-22dB', value: '-22' },
+  { label: '-23dB', value: '-23' }
 ]
 
 export const txPowerAdjustment6GOptions = [

@@ -83,22 +83,25 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
 
   const handleGetTwiliosIncomingPhoneNumbers = async () => {
     try {
-      await form.validateFields(['accountSid', 'authToken'])
-      const payload: NotificationSmsConfig = {
-        accountSid: form.getFieldValue('accountSid'),
-        authToken: form.getFieldValue('authToken')
+      if (providerType === SmsProviderType.TWILIO) {
+        await form.validateFields(['accountSid', 'authToken'])
+        const payload: NotificationSmsConfig = {
+          accountSid: form.getFieldValue('accountSid'),
+          authToken: form.getFieldValue('authToken')
+        }
+        const phoneList = await getTwiliosIncomingPhoneNumbers({
+          params: params, payload: payload })
+        const myNumber = phoneList.data?.incommingPhoneNumbers ?? []
+        setPhoneNumbers(myNumber)
+        setIsValidTwiliosNumber(myNumber.length > 0)
+        form.setFieldValue('phoneNumber', myNumber.length > 0
+          ? (isEditMode && twilioEditMethod === MessageMethod.PhoneNumber
+          && myNumber.includes(editData?.providerData.fromNumber ?? ''))
+            ? editData?.providerData.fromNumber ?? myNumber[0]
+            : myNumber[0]
+          : '')
+        form.validateFields(['phoneNumber'])
       }
-      const phoneList = await getTwiliosIncomingPhoneNumbers({
-        params: params, payload: payload })
-      const myNumber = phoneList.data?.incommingPhoneNumbers ?? []
-      setPhoneNumbers(myNumber)
-      setIsValidTwiliosNumber(myNumber.length > 0)
-      form.setFieldValue('phoneNumber', myNumber.length > 0
-        ? (isEditMode && twilioEditMethod === MessageMethod.PhoneNumber)
-          ? editData?.providerData.fromNumber ?? myNumber[0]
-          : myNumber[0]
-        : '')
-      form.validateFields(['phoneNumber'])
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -106,22 +109,25 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
 
   const handleGetTwiliosIncomingServices = async () => {
     try {
-      await form.validateFields(['accountSid', 'authToken'])
-      const payload: NotificationSmsConfig = {
-        accountSid: form.getFieldValue('accountSid'),
-        authToken: form.getFieldValue('authToken')
+      if (providerType === SmsProviderType.TWILIO) {
+        await form.validateFields(['accountSid', 'authToken'])
+        const payload: NotificationSmsConfig = {
+          accountSid: form.getFieldValue('accountSid'),
+          authToken: form.getFieldValue('authToken')
+        }
+        const servicesList = await getTwiliosIncomingServices({
+          params: params, payload: payload })
+        const myServices = servicesList.data?.messagingServiceResources ?? []
+        setMessagingServices(myServices)
+        setIsValidTwiliosService(myServices.length > 0)
+        form.setFieldValue('messagingService', myServices.length > 0
+          ? (isEditMode && twilioEditMethod === MessageMethod.MessagingService
+          && myServices.includes(editData?.providerData.fromNumber ?? ''))
+            ? editData?.providerData.fromNumber ?? myServices[0]
+            : myServices[0]
+          : '')
+        form.validateFields(['messagingService'])
       }
-      const servicesList = await getTwiliosIncomingServices({
-        params: params, payload: payload })
-      const myServices = servicesList.data?.messagingServiceResources ?? []
-      setMessagingServices(myServices)
-      setIsValidTwiliosService(myServices.length > 0)
-      form.setFieldValue('messagingService', myServices.length > 0
-        ? (isEditMode && twilioEditMethod === MessageMethod.MessagingService)
-          ? editData?.providerData.fromNumber ?? myServices[0]
-          : myServices[0]
-        : '')
-      form.validateFields(['messagingService'])
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -226,7 +232,12 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
             return Promise.resolve()}
           }
         ]}
-        children={<Input onBlur={handleGetTwiliosIncomingPhoneNumbers}/>}
+        children={<Input onBlur={() => {
+          handleGetTwiliosIncomingPhoneNumbers()
+          if (isSmsMessagingServiceEnabled) {
+            handleGetTwiliosIncomingServices()
+          }
+        }} />}
       />
       <Form.Item
         name='authToken'
@@ -245,7 +256,12 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
             return Promise.resolve()}
           }
         ]}
-        children={<PasswordInput onBlur={handleGetTwiliosIncomingPhoneNumbers}/>}
+        children={<PasswordInput onBlur={() => {
+          handleGetTwiliosIncomingPhoneNumbers()
+          if (isSmsMessagingServiceEnabled) {
+            handleGetTwiliosIncomingServices()
+          }
+        }} />}
       />
       {isSmsMessagingServiceEnabled && <>
         <Form.Item

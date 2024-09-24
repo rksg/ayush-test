@@ -54,7 +54,7 @@ describe('Edge SD-LAN Detail - DMZ', () => {
     expect(within(row).queryByTestId('CheckMark')).toBeValid()
   })
 
-  it('should display SmartEdges tab correctly', async () => {
+  it('should display RUCKUS Edges tab correctly', async () => {
     render(
       <Provider>
         <DmzSdLanDetailContent data={mockedSdLanData}/>
@@ -64,7 +64,7 @@ describe('Edge SD-LAN Detail - DMZ', () => {
     )
 
     expect(await screen.findByText('Instances')).toBeVisible()
-    const seTab = await screen.findByRole('tab', { name: /SmartEdges/i })
+    const seTab = await screen.findByRole('tab', { name: /RUCKUS Edges/i })
     await userEvent.click(seTab)
     expect(await screen.findByRole('row',
       { name: 'SE_Cluster 0 12 37' })).toBeVisible()
@@ -85,7 +85,7 @@ describe('Edge SD-LAN Detail - DMZ', () => {
 
     expect(await screen.findByText('Instances')).toBeVisible()
     await screen.findByRole('tab', { name: 'Networks(2)' })
-    await screen.findByRole('tab', { name: 'SmartEdges(2)' })
+    await screen.findByRole('tab', { name: 'RUCKUS Edges(2)' })
     expect(screen.getAllByText('--').length).toBe(1)
   })
 
@@ -101,7 +101,7 @@ describe('Edge SD-LAN Detail - DMZ', () => {
 
     expect(await screen.findByText('Instances')).toBeVisible()
     await screen.findByRole('tab', { name: 'Networks(2)' })
-    const edgesTable = await screen.findByRole('tab', { name: 'SmartEdges(2)' })
+    const edgesTable = await screen.findByRole('tab', { name: 'RUCKUS Edges(2)' })
     await userEvent.click(edgesTable)
     const dcCluster = await screen.findByRole('row', { name: /SE_Cluster 0/i })
     expect(dcCluster.textContent).toBe('SE_Cluster 01237')

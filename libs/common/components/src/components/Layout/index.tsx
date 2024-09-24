@@ -22,7 +22,9 @@ import {
   MLISA_BASE_PATH
 } from '@acx-ui/react-router-dom'
 
-import modifyVars from '../../theme/modify-vars'
+import modifyVars                from '../../theme/modify-vars'
+import { getTitleWithIndicator } from '../BetaIndicator'
+
 
 import { Content as ResponsiveContent } from './Responsive/content'
 import * as UI                          from './styledComponents'
@@ -53,6 +55,7 @@ type SubMenuType = Omit<RcSubMenuType, 'children' | 'key' | 'label'> & SideNavPr
 type MenuItemGroupType = Omit<RcMenuItemGroupType, 'children' | 'label'> & {
   label: string
   children?: ItemType[]
+  isBetaFeature?: boolean
 }
 
 export type ItemType = MenuItemType | SubMenuType | MenuItemGroupType | null
@@ -118,7 +121,7 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
       return {
         ...item,
         key: key,
-        label: item.label,
+        label: item?.isBetaFeature ? getTitleWithIndicator(item.label) : item.label,
         children: item.children?.map(child => getMenuItem(child, key))
       }
     }

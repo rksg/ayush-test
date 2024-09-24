@@ -145,12 +145,11 @@ export const MoreDetailsPieChart = ({
     : queryResults.data.slice(0, n)
   const total = pieData?.reduce((total, { value }) => total + value, 0)
   return (
-
     <Loader states={[queryResults]}>
       {Title}
-      <PieChartWrapper>
-        {pieData && pieData.length > 0 ?
-          <AutoSizer defaultHeight={150}>
+      {pieData && pieData.length > 0
+        ? <PieChartWrapper>
+          <AutoSizer>
             {({ width, height }) => (
               <DonutChart
                 data={pieData}
@@ -165,17 +164,18 @@ export const MoreDetailsPieChart = ({
                 showLegend
                 dataFormatter={tooltipFormatter(total, formatter('countFormat'))} />
             )}
-          </AutoSizer> :
-          <NoData />
-        }
-      </PieChartWrapper>
-      { hasOthers &&
-        <Space align='start' >
-          <InformationOutlined />
-          {$t({
-            defaultMessage: `Detailed breakup of all items beyond
-            Top {n} can be explored using Data Studio custom charts.` }, { n })}
-        </Space> }
+          </AutoSizer>
+        </PieChartWrapper>
+        : <NoData />
+      }
+      {hasOthers &&
+      <Space align='start' >
+        <InformationOutlined />
+        {$t({
+          defaultMessage: `Detailed breakup of all items beyond
+          Top {n} can be explored using Data Studio custom charts.` }, { n })}
+      </Space>}
     </Loader>
+
   )
 }

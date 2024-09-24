@@ -56,6 +56,7 @@ export interface DonutChartProps extends DonutChartOptionalProps,
   Omit<EChartsReactProps, 'option' | 'opts' | 'style'> {
   data: Array<DonutChartData>
   title?: string,
+  titleColor?: 'black' | 'white',
   subTitle?: string,
   subTitleBlockHeight?: number
   tooltipFormat?: MessageDescriptor
@@ -121,6 +122,7 @@ export function DonutChart ({
   const isEmpty = data.length === 0 || (data.length === 1 && data[0].name === '')
   const isSmall = props.size === 'small'
   const isCustomEmptyStatus = isEmpty && !!props.value
+  const isWhiteTitle = props.titleColor === 'white'
 
   if (data.length === 0) { // Adding empty data to show center label
     data.push({
@@ -155,7 +157,7 @@ export function DonutChart ({
   }
 
   const commonFontStyle = {
-    color: cssStr('--acx-primary-black'),
+    color: isWhiteTitle ? cssStr('--acx-primary-white') : cssStr('--acx-primary-black'),
     fontFamily: cssStr('--acx-neutral-brand-font')
   }
 

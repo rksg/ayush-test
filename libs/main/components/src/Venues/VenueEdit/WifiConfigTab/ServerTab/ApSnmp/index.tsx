@@ -13,6 +13,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   getPolicyRoutePath,
+  hasPolicyPermission,
   PolicyOperation,
   PolicyType,
   VenueApSnmpSettings
@@ -22,8 +23,6 @@ import {
   useNavigate,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { WifiScopes }                              from '@acx-ui/types'
-import { hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 
 import { VenueEditContext } from '../../..'
 
@@ -183,9 +182,8 @@ export function ApSnmp () {
           })}
           style={{ width: '200px' }}
         />
-        {(hasCrossVenuesPermission() &&
-          hasPermission({ scopes: [WifiScopes.CREATE] }) &&
-          (RetrievedVenueApSnmpAgentList?.data?.length as number) < 64) &&
+        {((RetrievedVenueApSnmpAgentList?.data?.length as number) < 64 &&
+          hasPolicyPermission({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.CREATE })) &&
           <Button
             data-testid='use-push'
             type='link'

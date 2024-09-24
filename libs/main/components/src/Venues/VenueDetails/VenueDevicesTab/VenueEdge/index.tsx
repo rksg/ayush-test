@@ -65,7 +65,7 @@ export const VenueEdge = () => {
           />
         }
         <TenantLink to='/devices/edge/add' key='add'>
-          <Button type='link'>{ $t({ defaultMessage: 'Add SmartEdge' }) }</Button>
+          <Button type='link'>{ $t({ defaultMessage: 'Add RUCKUS Edge' }) }</Button>
         </TenantLink>
       </SpaceWrapper>
     }
