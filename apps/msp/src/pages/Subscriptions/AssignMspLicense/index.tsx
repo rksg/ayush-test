@@ -189,7 +189,9 @@ export function AssignMspLicense () {
 
         isDeviceAgnosticEnabled ?
           form.setFieldsValue({
-            serviceExpirationDate: moment(apsw[0]?.dateExpires || moment().add(30,'days')),
+            serviceExpirationDate: moment(apsw[0]?.expirationDate || moment().add(30,'days')),
+            trialServiceExpirationDate: isSeparateServicedateEnabled
+              ? moment(apswTrial[0]?.expirationDate || moment().add(30,'days')) : '',
             apswLicenses: apswLic,
             apswTrialLicenses: apswTrialLic
           }) :
@@ -270,6 +272,9 @@ export function AssignMspLicense () {
         }
         // trial license assignment
         if (availableApswTrialLicense) {
+          const trialExpirationDate = isSeparateServicedateEnabled
+            ? EntitlementUtil.getServiceStartDate((ecFormData.trialServiceExpirationDate))
+            : EntitlementUtil.getServiceStartDate((ecFormData.serviceExpirationDate))
           const apswTrialAssignId =
             isEntitlementRbacApiEnabled ? getDeviceAssignmentId(EntitlementDeviceType.APSW, true)
               : getDeviceAssignmentId(EntitlementDeviceType.MSP_APSW, true)
@@ -278,7 +283,7 @@ export function AssignMspLicense () {
             quantityApswTrial > 0 ?
               updateAssignment.push({
                 startDate: today,
-                endDate: expirationDate,
+                endDate: trialExpirationDate,
                 quantity: quantityApswTrial,
                 assignmentId: apswTrialAssignId
               }) :
@@ -344,7 +349,7 @@ export function AssignMspLicense () {
         const updatePayload = isEntitlementRbacApiEnabled
           ? {
             quantity: updateAssignment[0].quantity,
-            expirationDate: expirationDate }
+            expirationDate: updateAssignment[0].endDate }
           : updateAssignment
         await updateMspSubscription({ params: { tenantId: tenantId, assignmentId: assignId },
           payload: updatePayload, enableRbac: isEntitlementRbacApiEnabled }).unwrap()
@@ -352,7 +357,7 @@ export function AssignMspLicense () {
           const assignId = updateAssignment[1].assignmentId.toString()
           const updatePayload = {
             quantity: updateAssignment[1].quantity,
-            expirationDate: expirationDate }
+            expirationDate: updateAssignment[1].endDate }
           await updateMspSubscription({ params: { tenantId: tenantId, assignmentId: assignId },
             payload: updatePayload, enableRbac: isEntitlementRbacApiEnabled }).unwrap()
         }
@@ -408,24 +413,29 @@ export function AssignMspLicense () {
 
   }
 
+  const getSelectExpirationDate = (value: string) => {
+    let expirationDate = moment().add(30,'days')
+    if (value === DateSelectionEnum.THIRTY_DAYS) {
+      expirationDate = moment().add(30,'days')
+    } else if (value === DateSelectionEnum.SIXTY_DAYS) {
+      expirationDate = moment().add(60,'days')
+    } else if (value === DateSelectionEnum.NINETY_DAYS) {
+      expirationDate = moment().add(90,'days')
+    } else if (value === DateSelectionEnum.ONE_YEAR) {
+      expirationDate = moment().add(1,'years')
+    } else if (value === DateSelectionEnum.THREE_YEARS) {
+      expirationDate = moment().add(3,'years')
+    } else if (value === DateSelectionEnum.FIVE_YEARS) {
+      expirationDate = moment().add(5,'years')
+    }
+    return expirationDate
+  }
+
   const onSelectChange = (value: string) => {
     if (value === DateSelectionEnum.CUSTOME_DATE) {
       setCustomeDate(true)
     } else {
-      let expirationDate = moment().add(30,'days')
-      if (value === DateSelectionEnum.THIRTY_DAYS) {
-        expirationDate = moment().add(30,'days')
-      } else if (value === DateSelectionEnum.SIXTY_DAYS) {
-        expirationDate = moment().add(60,'days')
-      } else if (value === DateSelectionEnum.NINETY_DAYS) {
-        expirationDate = moment().add(90,'days')
-      } else if (value === DateSelectionEnum.ONE_YEAR) {
-        expirationDate = moment().add(1,'years')
-      } else if (value === DateSelectionEnum.THREE_YEARS) {
-        expirationDate = moment().add(3,'years')
-      } else if (value === DateSelectionEnum.FIVE_YEARS) {
-        expirationDate = moment().add(5,'years')
-      }
+      const expirationDate = getSelectExpirationDate(value)
       form.setFieldsValue({
         serviceExpirationDate: expirationDate
       })
@@ -437,20 +447,7 @@ export function AssignMspLicense () {
     if (value === DateSelectionEnum.CUSTOME_DATE) {
       setCustomeTrialDate(true)
     } else {
-      let expirationDate = moment().add(30,'days')
-      if (value === DateSelectionEnum.THIRTY_DAYS) {
-        expirationDate = moment().add(30,'days')
-      } else if (value === DateSelectionEnum.SIXTY_DAYS) {
-        expirationDate = moment().add(60,'days')
-      } else if (value === DateSelectionEnum.NINETY_DAYS) {
-        expirationDate = moment().add(90,'days')
-      } else if (value === DateSelectionEnum.ONE_YEAR) {
-        expirationDate = moment().add(1,'years')
-      } else if (value === DateSelectionEnum.THREE_YEARS) {
-        expirationDate = moment().add(3,'years')
-      } else if (value === DateSelectionEnum.FIVE_YEARS) {
-        expirationDate = moment().add(5,'years')
-      }
+      const expirationDate = getSelectExpirationDate(value)
       form.setFieldsValue({
         trialServiceExpirationDate: expirationDate
       })
