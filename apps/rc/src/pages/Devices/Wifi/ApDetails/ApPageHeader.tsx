@@ -29,9 +29,9 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { RolesEnum, WifiScopes }                                             from '@acx-ui/types'
-import { hasCrossVenuesPermission, hasRoles, hasPermission, filterByAccess } from '@acx-ui/user'
-import { useDateFilter }                                                     from '@acx-ui/utils'
+import { RolesEnum, WifiScopes }                   from '@acx-ui/types'
+import { hasRoles, hasPermission, filterByAccess } from '@acx-ui/user'
+import { useDateFilter }                           from '@acx-ui/utils'
 
 import { useGetApCapabilities } from '../hooks'
 
