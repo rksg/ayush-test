@@ -8,7 +8,7 @@ import { CompareSlider }        from '../../../CompareSlider'
 import { Icon }                 from '../../common/IntentIcon'
 import { IntroSummary }         from '../../common/IntroSummary'
 import { richTextFormatValues } from '../../common/richTextFormatValues'
-import { aiFeatures }           from '../../config'
+import { AiFeatures }           from '../../config'
 import { useIntentContext }     from '../../IntentContext'
 import { useIntentAICRRMQuery } from '../RRMGraph/services'
 
@@ -41,7 +41,7 @@ export const SliderAfter = (props: { image: string }) => {
       <UI.LabelStyleAfter>
         <span>{($t({ defaultMessage: 'Forecast' }))}</span>
         <span>{($t({ defaultMessage: 'with' }))}</span>
-        <Icon feature={aiFeatures.RRM} size='xs' />
+        <Icon feature={AiFeatures.RRM} size='xs' />
       </UI.LabelStyleAfter>
       <img
         src={props.image}

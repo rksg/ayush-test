@@ -293,7 +293,7 @@ function SaveAsAcProfileButton (props: AcProfileModalProps) {
     setEmbeddedObject({
       l2AclPolicyId: l2AclEnable ? l2AclPolicyId : null,
       l3AclPolicyId: l3AclEnable ? l3AclPolicyId : null,
-      devicePolicyId: enableDeviceOs ? devicePolicyId: null,
+      devicePolicyId: enableDeviceOs || devicePolicyId ? devicePolicyId: null,
       applicationPolicyId: applicationPolicyEnable ? applicationPolicyId : null,
       uplinkLimit: uplinkLimit,
       downlinkLimit: downlinkLimit
