@@ -60,7 +60,7 @@ export const Priority: React.FC = () => {
             { required: true, message: $t({ defaultMessage: 'Currency value is required' }) },
             {
               pattern: /^([0-9]+(?:[\.][0-9]*)?|\.[0-9]+)$/,
-              message: $t({ defaultMessage: 'Only possitve numeric values allowed' })
+              message: $t({ defaultMessage: 'Only positve numeric values allowed' })
             }
           ]}
           children={<Input disabled={!isEnabled}/>}

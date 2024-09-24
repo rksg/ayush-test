@@ -44,7 +44,7 @@ export const IntentAIForm: React.FC = () => {
   const { intent: { metadata } } = useIntentContext()
   const averagePowerPrice = metadata.averagePowerPrice
     ? metadata.averagePowerPrice
-    : { currency: $t({ defaultMessage: 'USD' }), value: 0 }
+    : { currency: 'USD', value: 0.131 }
   // always enable = true, because only new, scheduled, active, applyscheduled can open wizard
   const initialValues = { ...useInitialValues(), preferences: { enable: true }, averagePowerPrice }
   return (<>
