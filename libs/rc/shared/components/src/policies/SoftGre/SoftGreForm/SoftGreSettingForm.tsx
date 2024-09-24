@@ -108,7 +108,7 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
     return isValid ? Promise.resolve() :
       Promise.reject(
         /* eslint-disable max-len */
-        $t({ defaultMessage: 'The gateway address of the selected SoftGRE tunnel profile already exists in another applied profile at the activation venues. Please enter a unique address.' })
+        $t({ defaultMessage: 'The gateway address of the selected SoftGRE tunnel profile already exists in another applied profile at the activation <venuePlural></venuePlural>. Please enter a unique address.' })
       )
   }
 

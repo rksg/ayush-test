@@ -4,7 +4,6 @@ import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { AnchorLayout, StepsFormLegacy } from '@acx-ui/components'
-import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import { redirectPreviousPage }          from '@acx-ui/rc/utils'
 import { useTenantLink }                 from '@acx-ui/react-router-dom'
 
@@ -37,15 +36,12 @@ export function NetworkControlTab () {
     setEditNetworkControlContextData
   } = useContext(ApEditContext)
 
-  const isServicesEnabled = useIsSplitOn(Features.SERVICES)
-
-
   const mPorxyTitle = $t({ defaultMessage: 'mDNS Proxy' })
   const apSnmpTitle = $t({ defaultMessage: 'AP SNMP' })
 
 
   const anchorItems = [
-    ...(isServicesEnabled? [{
+    {
       title: mPorxyTitle,
       content: (
         <>
@@ -55,7 +51,7 @@ export function NetworkControlTab () {
           <MdnsProxy />
         </>
       )
-    }] : []),
+    },
     {
       title: apSnmpTitle,
       content: (
