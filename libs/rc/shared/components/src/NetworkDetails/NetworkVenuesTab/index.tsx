@@ -12,7 +12,7 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import {
   useAddNetworkVenueMutation,
   useAddNetworkVenuesMutation,
@@ -29,7 +29,7 @@ import {
   useDeleteNetworkVenuesTemplateMutation,
   useScheduleSlotIndexMap,
   useGetVLANPoolPolicyViewModelListQuery,
-  useNewNetworkVenueTableQuery
+  useNewNetworkVenueTableQuery, useNetworkDetailHeaderQuery
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -75,8 +75,7 @@ import { useGetNetwork }         from '../services'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
-
-const defaultPayload = {
+const basePayload = {
   searchString: '',
   fields: [
     'name',
@@ -103,33 +102,15 @@ const defaultPayload = {
   searchTargetFields: ['name']
 }
 
+const defaultPayload = { ...basePayload }
+
 const defaultRbacPayload = {
-  searchString: '',
+  ...basePayload,
   fields: [
-    'name',
-    'id',
-    'description',
-    'city',
-    'country',
-    'networks',
-    'aggregatedApStatus',
-    'radios',
-    'aps',
-    'activated',
-    'vlan',
-    'scheduling',
-    'switches',
-    'switchClients',
-    'latitude',
-    'longitude',
-    'mesh',
-    'status',
-    'isOweMaster',
-    'owePairNetworkId',
+    ...basePayload.fields,
     'venueApGroups',
     'incompatible'
-  ],
-  searchTargetFields: ['name']
+  ]
 }
 
 const useNetworkVenueList = (props: { settingsId: string, networkId?: string } ) => {
@@ -213,6 +194,11 @@ export function NetworkVenuesTab () {
   const [systemNetwork, setSystemNetwork] = useState(false)
 
   const networkQuery = useGetNetwork()
+
+  const { data: networkDetailHeader } = useNetworkDetailHeaderQuery({
+    params: params,
+    payload: { isTemplate }
+  })
 
   const [
     addNetworkVenue,
@@ -714,7 +700,10 @@ export function NetworkVenuesTab () {
           networkId: payload.networkId
         },
         payload: {
-          ...payload,
+          ...{
+            oldPayload: oldData,
+            newPayload: payload
+          },
           isTemplate: isTemplate
         },
         enableRbac: resolvedRbacEnabled
@@ -812,7 +801,7 @@ export function NetworkVenuesTab () {
       { isLoading: false, isFetching: isDeleteNetworkUpdating }
     ]}>
       {
-        !networkQuery.data?.venues?.length &&
+        !networkDetailHeader?.activeVenueCount &&
         <Alert message={$t(notificationMessage)} type='info' showIcon closable />
       }
       <Table
@@ -864,7 +853,7 @@ export function NetworkVenuesTab () {
 function useGetVenueCityList () {
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isRbacEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
 
   const venueCityListTemplate = useGetVenueTemplateCityListQuery({
@@ -879,7 +868,7 @@ function useGetVenueCityList () {
 
   const venueCityList = useGetVenueCityListQuery({
     params,
-    enableRbac: isSwitchRbacEnabled
+    enableRbac: isRbacEnabled
   }, {
     selectFromResult: ({ data }) => ({
       cityFilterOptions: transformToCityListOptions(data)

@@ -35,7 +35,11 @@ import {
   SwitchRow,
   ApFirmwareBatchOperationType,
   ApFirmwareStartBatchOperationResult,
-  FirmwareType
+  FirmwareType,
+  EdgeFirmwareBatchOperationType,
+  EdgeFirmwareStartBatchOperationResult,
+  StartEdgeFirmwareVenueUpdateNowPayload,
+  UpdateEdgeFirmwareVenueSchedulePayload
 } from '@acx-ui/rc/utils'
 import { baseFirmwareApi }             from '@acx-ui/store'
 import { RequestPayload }              from '@acx-ui/types'
@@ -557,10 +561,12 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       providesTags: [{ type: 'EdgeFirmware', id: 'LATEST' }]
     }),
     getVenueEdgeFirmwareList: build.query<EdgeVenueFirmware[], RequestPayload>({
-      query: () => {
-        const req = createHttpRequest(FirmwareUrlsInfo.getVenueEdgeFirmwareList, undefined,v1Header)
+      query: ({ payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(FirmwareUrlsInfo.getVenueEdgeFirmwareList, undefined, v1Header)
         return {
-          ...req
+          ...req,
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'EdgeFirmware', id: 'LIST' }],
@@ -766,6 +772,59 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         return { data: { batchId } }
       },
       invalidatesTags: [{ type: 'Firmware', id: 'LIST' }]
+    }),
+    // eslint-disable-next-line max-len
+    startEdgeFirmwareVenueUpdateNow: build.mutation<{ batchId: string }, RequestPayload<StartEdgeFirmwareVenueUpdateNowPayload>>({
+      async queryFn (args, _queryApi, _extraOptions, fetchWithBQ) {
+        // eslint-disable-next-line max-len
+        const { data, error } = await getEdgeFirmwareBatchOperationResult(EdgeFirmwareBatchOperationType.UPDATE_NOW, fetchWithBQ)
+        if (error) return { error: error as FetchBaseQueryError }
+        const batchId = (data as EdgeFirmwareStartBatchOperationResult).response.batchId
+
+        const { venueIds, ...rest } = args.payload!
+        const requests = venueIds.map(venueId => ({
+          params: { venueId, batchId },
+          payload: { ...rest }
+        }))
+        await batchApi(FirmwareUrlsInfo.startEdgeFirmwareVenueUpdateNow, requests, fetchWithBQ)
+
+        return { data: { batchId } }
+      },
+      invalidatesTags: [{ type: 'EdgeFirmware', id: 'LIST' }]
+    }),
+    // eslint-disable-next-line max-len
+    updateEdgeFirmwareVenueSchedule: build.mutation<{ batchId: string }, RequestPayload<UpdateEdgeFirmwareVenueSchedulePayload>>({
+      async queryFn (args, _queryApi, _extraOptions, fetchWithBQ) {
+        // eslint-disable-next-line max-len
+        const { data, error } = await getEdgeFirmwareBatchOperationResult(EdgeFirmwareBatchOperationType.CHANGE_SCHEDULE, fetchWithBQ)
+        if (error) return { error: error as FetchBaseQueryError }
+        const batchId = (data as EdgeFirmwareStartBatchOperationResult).response.batchId
+
+        const { venueIds, ...rest } = args.payload!
+        const requests = venueIds.map(venueId => ({
+          params: { venueId, batchId },
+          payload: { ...rest }
+        }))
+        await batchApi(FirmwareUrlsInfo.updateEdgeFirmwareVenueSchedule, requests, fetchWithBQ)
+
+        return { data: { batchId } }
+      },
+      invalidatesTags: [{ type: 'EdgeFirmware', id: 'LIST' }]
+    }),
+    // eslint-disable-next-line max-len
+    skipEdgeFirmwareVenueSchedule: build.mutation<{ batchId: string }, RequestPayload<{ venueIds: string[] }>>({
+      async queryFn (args, _queryApi, _extraOptions, fetchWithBQ) {
+        // eslint-disable-next-line max-len
+        const { data, error } = await getEdgeFirmwareBatchOperationResult(EdgeFirmwareBatchOperationType.SKIP_SCHEDULE, fetchWithBQ)
+        if (error) return { error: error as FetchBaseQueryError }
+        const batchId = (data as EdgeFirmwareStartBatchOperationResult).response.batchId
+
+        const requests = args.payload!.venueIds.map(venueId => ({ params: { venueId, batchId } }))
+        await batchApi(FirmwareUrlsInfo.skipEdgeFirmwareVenueSchedule, requests, fetchWithBQ)
+
+        return { data: { batchId } }
+      },
+      invalidatesTags: [{ type: 'EdgeFirmware', id: 'LIST' }]
     })
   })
 })
@@ -833,7 +892,10 @@ export const {
   useUpdateVenueSchedulesPerApModelMutation,
   useSkipVenueSchedulesPerApModelMutation,
   useBatchSkipSwitchUpgradeSchedulesMutation,
-  useRetryFirmwareUpdateV1001Mutation
+  useRetryFirmwareUpdateV1001Mutation,
+  useStartEdgeFirmwareVenueUpdateNowMutation,
+  useUpdateEdgeFirmwareVenueScheduleMutation,
+  useSkipEdgeFirmwareVenueScheduleMutation
 } = firmwareApi
 
 async function getBatchOperationResult (
@@ -843,6 +905,17 @@ async function getBatchOperationResult (
 ) {
   return await fetchWithBQ({
     ...createHttpRequest(FirmwareUrlsInfo.startFirmwareBatchOperation),
+    body: JSON.stringify({ operationType })
+  })
+}
+
+async function getEdgeFirmwareBatchOperationResult (
+  operationType: EdgeFirmwareBatchOperationType,
+  // eslint-disable-next-line max-len
+  fetchWithBQ:(arg: string | FetchArgs) => MaybePromise<QueryReturnValue<unknown, FetchBaseQueryError, FetchBaseQueryMeta>>
+) {
+  return await fetchWithBQ({
+    ...createHttpRequest(FirmwareUrlsInfo.startEdgeFirmwareBatchOperation),
     body: JSON.stringify({ operationType })
   })
 }

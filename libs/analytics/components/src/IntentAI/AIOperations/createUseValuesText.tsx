@@ -4,7 +4,6 @@ import { incidentScope } from '@acx-ui/analytics/utils'
 
 import { richTextFormatValues } from '../common/richTextFormatValues'
 import { useIntentContext }     from '../IntentContext'
-import { Statuses }             from '../states'
 import { Intent }               from '../useIntentDetailsQuery'
 
 export function createUseValuesText<ValuesType = unknown> (
@@ -13,12 +12,12 @@ export function createUseValuesText<ValuesType = unknown> (
     action: MessageDescriptor
     reason: MessageDescriptor
     tradeoff: MessageDescriptor
-    inactive: MessageDescriptor
+    noData: MessageDescriptor
   },
   getValuesFn?: (intent: Intent) => ValuesType
 ) {
   return function useValuesText () {
-    const { intent } = useIntentContext()
+    const { intent, state } = useIntentContext()
     const values = {
       ...richTextFormatValues,
       currentValue: intent.currentValue,
@@ -26,8 +25,9 @@ export function createUseValuesText<ValuesType = unknown> (
       scope: incidentScope(intent),
       ...(getValuesFn && getValuesFn(intent))
     }
-    const summary = [ Statuses.paused, Statuses.na ]
-      .includes(intent.status as Statuses) ? config.inactive : config.action
+
+    const summary = state === 'no-data' ? config.noData : config.action
+
     return {
       actionText: <FormattedMessage {...config.action} values={values} />,
       reasonText: <FormattedMessage {...config.reason} values={values} />,

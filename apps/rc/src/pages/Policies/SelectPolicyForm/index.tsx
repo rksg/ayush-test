@@ -33,7 +33,6 @@ import { Path, useNavigate, useParams, useTenantLink } from '@acx-ui/react-route
 import { WifiScopes }                                  from '@acx-ui/types'
 import { hasPermission }                               from '@acx-ui/user'
 
-
 export default function SelectPolicyForm () {
   const { $t } = useIntl()
   const params = useParams()
@@ -44,6 +43,7 @@ export default function SelectPolicyForm () {
   const isEdgeEnabled = useIsEdgeReady()
   const macRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isWorkflowEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE)
   const isEdgeQosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
   const ApSnmpPolicyTotalCount = useGetApSnmpViewModelQuery({
     params,
@@ -129,12 +129,17 @@ export default function SelectPolicyForm () {
       disabled: !isCertificateTemplateEnabled
     },
     {
+      type: PolicyType.WORKFLOW,
+      categories: [RadioCardCategory.WIFI],
+      disabled: !isWorkflowEnabled
+    },
+    {
       type: PolicyType.SOFTGRE,
       categories: [RadioCardCategory.WIFI],
       disabled: !(isSoftGreEnabled && hasPermission({ scopes: [WifiScopes.CREATE] }))
     },
     {
-      type: PolicyType.QOS_BANDWIDTH,
+      type: PolicyType.HQOS_BANDWIDTH,
       categories: [RadioCardCategory.EDGE],
       disabled: !isEdgeQosEnabled
     }

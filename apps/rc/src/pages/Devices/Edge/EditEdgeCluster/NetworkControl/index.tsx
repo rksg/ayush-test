@@ -3,14 +3,14 @@ import { Col, Form, Row, Switch } from 'antd'
 import { useIntl }                from 'react-intl'
 
 
-import { Loader, StepsForm }                                                                                                                       from '@acx-ui/components'
-import { Features }                                                                                                                                from '@acx-ui/feature-toggle'
-import { EdgeDhcpSelectionForm, useEdgeDhcpActions, useIsEdgeFeatureReady }                                                                        from '@acx-ui/rc/components'
-import { useActivateQosOnEdgeClusterMutation, useDeactivateQosOnEdgeClusterMutation, useGetDhcpStatsQuery, useGetEdgeQosProfileViewDataListQuery } from '@acx-ui/rc/services'
-import { EdgeClusterStatus }                                                                                                                       from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }                                                                                                   from '@acx-ui/react-router-dom'
+import { Loader, StepsForm }                                                                                                                          from '@acx-ui/components'
+import { Features }                                                                                                                                   from '@acx-ui/feature-toggle'
+import { EdgeDhcpSelectionForm, useEdgeDhcpActions, useIsEdgeFeatureReady }                                                                           from '@acx-ui/rc/components'
+import { useActivateHqosOnEdgeClusterMutation, useDeactivateHqosOnEdgeClusterMutation, useGetDhcpStatsQuery, useGetEdgeHqosProfileViewDataListQuery } from '@acx-ui/rc/services'
+import { EdgeClusterStatus }                                                                                                                          from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                                                                                                      from '@acx-ui/react-router-dom'
 
-import EdgeQosProfileSelectionForm from '../../../../Policies/QosBandwidth/Edge/QosBandwidthSelectionForm'
+import EdgeQosProfileSelectionForm from '../../../../Policies/HqosBandwidth/Edge/HqosBandwidthSelectionForm'
 
 interface EdgeNetworkControlProps {
   currentClusterStatus?: EdgeClusterStatus
@@ -25,11 +25,11 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
   const [form] = Form.useForm()
 
   const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
-  const isEdgeQosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
+  const isEdgeHqosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
 
   const { activateEdgeDhcp, deactivateEdgeDhcp } = useEdgeDhcpActions()
-  const [activateEdgeQos] = useActivateQosOnEdgeClusterMutation()
-  const [deactivateEdgeQos] = useDeactivateQosOnEdgeClusterMutation()
+  const [activateEdgeQos] = useActivateHqosOnEdgeClusterMutation()
+  const [deactivateEdgeQos] = useDeactivateHqosOnEdgeClusterMutation()
   const { $t } = useIntl()
 
   const { currentDhcp, isDhcpLoading } = useGetDhcpStatsQuery({
@@ -48,7 +48,7 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
     })
   })
 
-  const { currentQos, isQosLoading } = useGetEdgeQosProfileViewDataListQuery({
+  const { currentQos, isQosLoading } = useGetEdgeHqosProfileViewDataListQuery({
     payload: {
       fields: [
         'id'
@@ -189,7 +189,7 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
           </Row>
           <Row gutter={20}>
             <Col span={7}>
-              {isEdgeQosEnabled &&
+              {isEdgeHqosEnabled &&
               <StepsForm.FieldLabel width='50%'>
                 {$t({ defaultMessage: 'Hierarchical QoS' })}
                 <Form.Item
@@ -200,7 +200,7 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
               </StepsForm.FieldLabel>
               }
               {
-                isEdgeQosEnabled &&
+                isEdgeHqosEnabled &&
                 <Form.Item
                   dependencies={['qosSwitch']}
                 >

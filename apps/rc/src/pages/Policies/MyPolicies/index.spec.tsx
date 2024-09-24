@@ -12,9 +12,10 @@ import {
   ApSnmpUrls,
   ClientIsolationUrls,
   ConnectionMeteringUrls,
-  EdgeQosProfilesUrls,
-  RogueApUrls, SoftGreUrls, SyslogUrls, VlanPoolRbacUrls, WifiUrlsInfo,
-  getSelectPolicyRoutePath
+  EdgeHqosProfilesUrls,
+  WorkflowUrls,
+  getSelectPolicyRoutePath,
+  RogueApUrls, SoftGreUrls, SyslogUrls, VlanPoolRbacUrls, WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -36,6 +37,15 @@ import MyPolicies from '.'
 const mockTableResult = {
   totalCount: 0,
   data: []
+}
+
+const mockNewTableResult = {
+  content: [],
+  paging: {
+    page: 0,
+    pageSize: 0,
+    totalCount: 0
+  }
 }
 
 jest.mock('@acx-ui/rc/components', () => ({
@@ -92,6 +102,10 @@ describe('MyPolicies', () => {
       rest.post(
         RogueApUrls.getEnhancedRoguePolicyList.url,
         (req, res, ctx) => res(ctx.json(mockedRogueApPoliciesList))
+      ),
+      rest.post(
+        WorkflowUrls.searchInProgressWorkflows.url.split('?')[0],
+        (req, res, ctx ) => res(ctx.json(mockNewTableResult))
       ),
       rest.post(
         RogueApUrls.getRoguePolicyListRbac.url,
@@ -198,13 +212,13 @@ describe('MyPolicies', () => {
     expect(await screen.findByText(accessControlTitle)).toBeVisible()
   })
 
-  it('should render edge qos bandwidth correctly', async () => {
+  it('should render edge hqos bandwidth correctly', async () => {
     jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff =>
       [Features.EDGE_QOS_TOGGLE, Features.EDGES_TOGGLE].includes(ff as Features))
 
     mockServer.use(
       rest.post(
-        EdgeQosProfilesUrls.getEdgeQosProfileViewDataList.url,
+        EdgeHqosProfilesUrls.getEdgeHqosProfileViewDataList.url,
         (_req, res, ctx) => res(ctx.json(mockedClientIsolationQueryData))
       ),
       rest.post(
@@ -228,7 +242,7 @@ describe('MyPolicies', () => {
       }
     )
 
-    const edgeQosBandwidthTitle = 'QoS Bandwidth (1)'
+    const edgeQosBandwidthTitle = 'HQoS Bandwidth (1)'
     expect(await screen.findByText(edgeQosBandwidthTitle)).toBeVisible()
   })
 })

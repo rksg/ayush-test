@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { Form, Typography }                         from 'antd'
+import { Form }                                     from 'antd'
 import _                                            from 'lodash'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
@@ -50,7 +50,7 @@ export const createBgScanTimer = (
 
   const options = {
     yes: {
-      title: defineMessage({ defaultMessage: 'Yes, apply the intent' }),
+      title: defineMessage({ defaultMessage: 'Yes, apply the recommendation' }),
       content: <FormattedMessage
         values={richTextFormatValues}
         defaultMessage={`
@@ -59,12 +59,12 @@ export const createBgScanTimer = (
       />
     },
     no: {
-      title: defineMessage({ defaultMessage: 'No, do not apply the intent' }),
+      title: defineMessage({ defaultMessage: 'No, do not apply the recommendation' }),
       content: <FormattedMessage
         values={richTextFormatValues}
         defaultMessage={`
-          <p>IntentAI will maintain the existing network configuration and will cease automated monitoring and change for this Intent.
-For manual control, you may directly change the network configurations.</p>
+          <p>IntentAI will maintain the existing network configuration and will cease automated monitoring and change for this Intent.</p>
+          <p>For manual control, you may directly change the network configurations.</p>
           <p>For automated monitoring and control, you can select the "Resume" action, after which IntentAI will resume overseeing the network for this Intent.</p>
       `} />
     }
@@ -93,6 +93,7 @@ For manual control, you may directly change the network configurations.</p>
   }).addStep({
     title: defineMessage({ defaultMessage: 'Introduction' }),
     SideNote: () => <Reason
+      reasonText={useValuesText().reasonText}
       resources={[{
         icon: 'video' as const,
         label: defineMessage({ defaultMessage: 'RUCKUS AI - AI Operations Demo' }),
@@ -117,7 +118,6 @@ For manual control, you may directly change the network configurations.</p>
       const { $t } = useIntl()
       const { intent } = useIntentContext()
       return <>
-        <Typography.Paragraph children={useValuesText().actionText} />
         <StepsForm.Subtitle children={$t({ defaultMessage: 'What is your primary network intent for <VenueSingular></VenueSingular>: {zone}' }, { zone: intent.sliceValue })} />
 
         <Form.Item name={['preferences','enable']}>

@@ -4,7 +4,7 @@ import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { Features, useIsTierAllowed }                                         from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                           from '@acx-ui/feature-toggle'
 import { DownloadOutlined }                                                   from '@acx-ui/icons'
 import {
   useDeletePersonasMutation,
@@ -32,12 +32,14 @@ const IdentitiesContext = createContext({} as {
 })
 
 function useColumns (
+  groupData: PersonaGroup | undefined,
   props: PersonaTableColProps,
   unitPool: Map<string, string>,
   venueId: string
 ) {
   const { $t } = useIntl()
   const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+  const isCertTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
 
   const personaGroupList = useSearchPersonaGroupListQuery({
     payload: {
@@ -92,6 +94,17 @@ function useColumns (
         align: 'center',
         ...props.deviceCount
       } as TableColumn<Persona>],
+    ...(props.certificateCount?.disable)
+      ? []
+      : (isCertTemplateEnabled && groupData?.certificateTemplateId)
+        ? [{
+          key: 'certificateCount',
+          dataIndex: 'certificateCount',
+          title: $t({ defaultMessage: 'Certificates' }),
+          align: 'center',
+          render: (_, row) => row.certificateCount ?? 0,
+          ...props.certificateCount
+        } as TableColumn<Persona>] : [],
     ...(props.identityId?.disable)
       ? []
       : [{
@@ -177,7 +190,6 @@ export function BasePersonaTable (props: PersonaTableProps) {
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const [venueId, setVenueId] = useState('')
   const [unitPool, setUnitPool] = useState(new Map())
-  const columns = useColumns(colProps, unitPool, venueId)
   const [uploadCsvDrawerVisible, setUploadCsvDrawerVisible] = useState(false)
   const [drawerState, setDrawerState] = useState({
     isEdit: false,
@@ -194,6 +206,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
   const [getUnitById] = useLazyGetPropertyUnitByIdQuery()
   const { setIdentitiesCount } = useContext(IdentitiesContext)
   const { customHeaders } = usePersonaAsyncHeaders()
+  const columns = useColumns(personaGroupQuery?.data, colProps, unitPool, venueId)
 
   const personaListQuery = usePersonaListQuery({ personaGroupId, settingsId })
 

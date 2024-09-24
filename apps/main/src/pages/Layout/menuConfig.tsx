@@ -29,6 +29,7 @@ import {
 } from '@acx-ui/icons'
 import { useIsEdgeReady } from '@acx-ui/rc/components'
 import {
+  getPolicyListRoutePath,
   getServiceCatalogRoutePath,
   getServiceListRoutePath,
   hasAdministratorTab
@@ -44,8 +45,6 @@ export function useMenuConfig () {
   const isAnltAdvTier = useIsTierAllowed('ANLT-ADV')
   const showConfigChange = useIsSplitOn(Features.CONFIG_CHANGE)
   const isEdgeEnabled = useIsEdgeReady()
-  const isServiceEnabled = useIsSplitOn(Features.SERVICES)
-  const isPolicyEnabled = useIsSplitOn(Features.POLICIES)
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
@@ -285,31 +284,29 @@ export function useMenuConfig () {
     ...(isEdgeEnabled ? [{
       uri: '/devices/edge',
       isActiveCheck: new RegExp('^/devices/edge'),
-      label: $t({ defaultMessage: 'SmartEdge' }),
+      label: $t({ defaultMessage: 'RUCKUS Edge' }),
       inactiveIcon: SmartEdgeOutlined,
       activeIcon: SmartEdgeSolid
     }] : []),
-    ...(isServiceEnabled || isPolicyEnabled ? [{
+    {
       label: $t({ defaultMessage: 'Network Control' }),
       inactiveIcon: ServicesOutlined,
       activeIcon: ServicesSolid,
       children: [
-        ...(isServiceEnabled ? [
-          {
-            uri: getServiceListRoutePath(true),
-            isActiveCheck: new RegExp('^(?=/services/)((?!catalog).)*$'),
-            label: $t({ defaultMessage: 'My Services' })
-          },
-          {
-            uri: getServiceCatalogRoutePath(true),
-            label: $t({ defaultMessage: 'Service Catalog' })
-          }
-        ] : []),
-        ...(isPolicyEnabled
-          ? [{ uri: '/policies', label: $t({ defaultMessage: 'Policies & Profiles' }) }]
-          : [])
+        {
+          uri: getServiceListRoutePath(true),
+          isActiveCheck: new RegExp('^(?=/services/)((?!catalog).)*$'),
+          label: $t({ defaultMessage: 'My Services' })
+        },
+        {
+          uri: getServiceCatalogRoutePath(true),
+          label: $t({ defaultMessage: 'Service Catalog' })
+        },
+        { uri: getPolicyListRoutePath(true),
+          label: $t({ defaultMessage: 'Policies & Profiles' })
+        }
       ]
-    }] : []),
+    },
     {
       label: $t({ defaultMessage: 'Business Insights' }),
       inactiveIcon: BulbOutlined,
@@ -401,7 +398,18 @@ export function useMenuConfig () {
       ]
     }
   ]
-  if (isGuestManager || isDPSKAdmin) { return [] }
+  if (isGuestManager) {
+    return [
+      {
+        label: $t({
+          defaultMessage: 'Guest Pass Credentials'
+        }),
+        inactiveIcon: AccountCircleOutlined,
+        activeIcon: AccountCircleSolid,
+        uri: '/users/guestsManager'
+      }
+    ]}
+  if (isDPSKAdmin) { return [] }
   if (isReportsAdmin) {
     return [
       {

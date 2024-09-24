@@ -29,7 +29,7 @@ export default function GuestManagerPage () {
 
   return <>
     <PageHeader
-      title={$t({ defaultMessage: 'Guest Management' })}
+      title={$t({ defaultMessage: 'Guest Pass Credentials' })}
     />
     <GuestsTable />
   </>

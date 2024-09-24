@@ -11,7 +11,8 @@ import {
   Tabs,
   StepsFormLegacy,
   StepsFormLegacyInstance,
-  AnchorContext
+  AnchorContext,
+  showActionModal
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import { ConvertPoeOutToFormData, LanPortPoeSettings, LanPortSettings } from '@acx-ui/rc/components'
@@ -22,13 +23,16 @@ import {
   useUpdateApLanPortsMutation,
   useResetApLanPortsMutation,
   useLazyGetDHCPProfileListViewModelQuery,
-  useGetDefaultApLanPortsQuery
+  useGetDefaultApLanPortsQuery,
+  useUpdateApEthernetPortsMutation
 } from '@acx-ui/rc/services'
 import {
   LanPort,
   WifiApSetting,
   CapabilitiesApModel,
-  VenueLanPorts
+  VenueLanPorts,
+  EditPortMessages,
+  isEqualLanPort
 } from '@acx-ui/rc/utils'
 import {
   useParams,
@@ -73,6 +77,7 @@ export function LanPorts () {
   const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const isResetLanPortEnabled = useIsSplitOn(Features.WIFI_RESET_AP_LAN_PORT_TOGGLE)
 
+
   const {
     editContextData,
     setEditContextData,
@@ -87,6 +92,7 @@ export function LanPorts () {
   const venueId = venueData?.id
   const { setReadyToScroll } = useContext(AnchorContext)
 
+  const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const supportTrunkPortUntaggedVlan = useIsSplitOn(Features.WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE)
 
   const formRef = useRef<StepsFormLegacyInstance<WifiApSetting>>()
@@ -103,6 +109,8 @@ export function LanPorts () {
 
   const [updateApCustomization, {
     isLoading: isApLanPortsUpdating }] = useUpdateApLanPortsMutation()
+  const [updateEthernetPortProfile, {
+    isLoading: isEthernetPortProfileUpdating }] = useUpdateApEthernetPortsMutation()
   const [resetApCustomization, {
     isLoading: isApLanPortsResetting }] = useResetApLanPortsMutation()
 
@@ -116,6 +124,7 @@ export function LanPorts () {
   const [formInitializing, setFormInitializing] = useState(true)
   const [lanData, setLanData] = useState([] as LanPort[])
   const [activeTabIndex, setActiveTabIndex] = useState(0)
+  const isResetClick = useRef(false)
 
   // TODO: rbac
   const isAllowUpdate = true // this.rbacService.isRoleAllowed('UpdateWifiApSetting');
@@ -196,39 +205,81 @@ export function LanPorts () {
       })
       setUseVenueSettings(values?.useVenueSettings)
 
-      const { lan, poeOut, useVenueSettings } = values
-
-      if (isUseWifiRbacApi) {
-        const payload: WifiApSetting = {
-          ...apLanPorts,
-          lanPorts: lan,
-          ...(poeOut && isObject(poeOut) &&
-              { poeOut: Object.values(poeOut).some(item => item === true) }),
-          useVenueSettings
-        }
-        await updateApCustomization({
-          params: { tenantId, serialNumber, venueId },
-          payload,
-          enableRbac: true
-        }).unwrap()
-      } else {
-        if (values?.useVenueSettings) {
-          await resetApCustomization({ params: { tenantId, serialNumber } }).unwrap()
-        } else {
-          const { lan, poeOut } = values
-          const payload: WifiApSetting = {
-            ...apLanPorts,
-            lanPorts: lan,
-            //...(poeMode && { poeMode: poeMode }), // ALTO AP config doesn't support PoeMode
-            ...(poeOut && isObject(poeOut) &&
-                { poeOut: Object.values(poeOut).some(item => item === true) }),
-            useVenueSettings: false
+      if (isResetLanPortEnabled && isResetClick.current && isResetLanPort(values)) {
+        showActionModal({
+          type: 'confirm',
+          width: 450,
+          title: $t({ defaultMessage: 'Reset Port Settings to Default' }),
+          content: $t(EditPortMessages.RESET_PORT_WARNING),
+          okText: $t({ defaultMessage: 'Continue' }),
+          onOk: async () => {
+            try {
+              processUpdateLanPorts(values)
+              isResetClick.current = false
+            } catch (error) {
+              console.log(error) // eslint-disable-line no-console
+            }
           }
-          await updateApCustomization({ params: { tenantId, serialNumber }, payload }).unwrap()
-        }
+        })
+      } else {
+        processUpdateLanPorts(values)
       }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
+    }
+  }
+
+  const isResetLanPort = (currentLans: WifiApSetting | undefined) => {
+    if (!currentLans) return false
+
+    const { lan, poeOut } = currentLans
+    const currentLanPorts: WifiApSetting = {
+      ...apLanPorts,
+      lanPorts: lan,
+      ...(poeOut && isObject(poeOut) &&
+          { poeOut: Object.values(poeOut).some(item => item === true) })
+    }
+
+    const eqOriginLan = isEqualLanPort(currentLanPorts!, apLanPortsData!)
+    if (eqOriginLan) return false
+
+    return isEqualLanPort(currentLanPorts!, defaultLanPorts!)
+  }
+
+  const processUpdateLanPorts = async (values: WifiApSetting) => {
+    const { lan, poeOut, useVenueSettings } = values
+
+    if (isUseWifiRbacApi || isEthernetPortProfileEnabled) {
+      const payload: WifiApSetting = {
+        ...apLanPorts,
+        lanPorts: lan,
+        ...(poeOut && isObject(poeOut) &&
+            { poeOut: Object.values(poeOut).some(item => item === true) }),
+        useVenueSettings
+      }
+
+      isEthernetPortProfileEnabled ? await updateEthernetPortProfile({
+        params: { venueId, serialNumber },
+        payload
+      }).unwrap() : await updateApCustomization({
+        params: { tenantId, serialNumber, venueId },
+        payload,
+        enableRbac: true
+      }).unwrap()
+    } else {
+      if (values?.useVenueSettings) {
+        await resetApCustomization({ params: { tenantId, serialNumber } }).unwrap()
+      } else {
+        const payload: WifiApSetting = {
+          ...apLanPorts,
+          lanPorts: lan,
+          //...(poeMode && { poeMode: poeMode }), // ALTO AP config doesn't support PoeMode
+          ...(poeOut && isObject(poeOut) &&
+              { poeOut: Object.values(poeOut).some(item => item === true) }),
+          useVenueSettings: false
+        }
+        await updateApCustomization({ params: { tenantId, serialNumber }, payload }).unwrap()
+      }
     }
   }
 
@@ -237,6 +288,7 @@ export function LanPorts () {
     setSelectedModel((apLanPorts?.useVenueSettings
       ? venueLanPorts : apLanPorts) as WifiApSetting)
 
+    isResetClick.current = false
     formRef?.current?.setFieldsValue({
       lan: apLanPorts?.lanPorts,
       useVenueSettings: apLanPorts?.useVenueSettings
@@ -283,6 +335,7 @@ export function LanPorts () {
         lan: defaultLanPortsFormData?.lanPorts,
         useVenueSettings: useVenueSettings
       })
+      isResetClick.current = true
       updateEditContext(formRef?.current as StepsFormLegacyInstance)
     }
   }
@@ -293,7 +346,7 @@ export function LanPorts () {
 
   return <Loader states={[{
     isLoading: formInitializing,
-    isFetching: isApLanPortsUpdating || isApLanPortsResetting
+    isFetching: isApLanPortsUpdating || isApLanPortsResetting || isEthernetPortProfileUpdating
   }]}>
     {selectedModel?.lanPorts
       ? <StepsFormLegacy

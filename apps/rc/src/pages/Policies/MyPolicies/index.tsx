@@ -1,11 +1,11 @@
 import { useState } from 'react'
 
 import { find }                      from 'lodash'
-import { useIntl, FormattedMessage } from 'react-intl'
+import { FormattedMessage, useIntl } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory }                                            from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }                                                                      from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady, useIsEdgeReady, ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType } from '@acx-ui/rc/components'
+import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsEdgeFeatureReady, useIsEdgeReady } from '@acx-ui/rc/components'
 import {
   useAdaptivePolicyListByQueryQuery,
   useEnhancedRoguePoliciesQuery,
@@ -13,17 +13,19 @@ import {
   useGetApSnmpViewModelQuery,
   useGetCertificateTemplatesQuery,
   useGetConnectionMeteringListQuery,
-  useGetEdgeQosProfileViewDataListQuery,
+  useGetEdgeHqosProfileViewDataListQuery,
   useGetEnhancedAccessControlProfileListQuery,
   useGetEnhancedClientIsolationListQuery,
+  useGetEthernetPortProfileViewDataListQuery,
   useGetIdentityProviderListQuery,
   useGetLbsServerProfileListQuery,
+  useGetSoftGreViewDataListQuery,
   useGetTunnelProfileViewDataListQuery,
   useGetVLANPoolPolicyViewModelListQuery,
+  useSearchInProgressWorkflowListQuery,
   useGetWifiOperatorListQuery,
   useMacRegListsQuery,
-  useSyslogPolicyListQuery,
-  useGetSoftGreViewDataListQuery
+  useSyslogPolicyListQuery
 } from '@acx-ui/rc/services'
 import {
   IncompatibilityFeatures,
@@ -83,16 +85,11 @@ export default function MyPolicies () {
           policies.filter(p => isPolicyCardEnabled(p, PolicyOperation.LIST)).map((policy, index) => {
             const title = <FormattedMessage
               defaultMessage={
-                '{name} ({count})<helpIcon></helpIcon>'
+                '{name} ({count})'
               }
               values={{
                 name: $t(policyTypeLabelMapping[policy.type]),
-                count: policy.totalCount ?? 0,
-                helpIcon: () => {
-                  return policy.helpIcon
-                    ? <span style={{ marginLeft: '5px' }}>{policy.helpIcon}</span>
-                    : ''
-                }
+                count: policy.totalCount ?? 0
               }}
             />
 
@@ -108,6 +105,11 @@ export default function MyPolicies () {
                   onClick={() => {
                     policy.listViewPath && navigate(policy.listViewPath)
                   }}
+                  helpIcon={
+                    policy.helpIcon
+                      ? <span style={{ marginLeft: '5px' }}>{policy.helpIcon}</span>
+                      : ''
+                  }
                 />
               </GridCol>
             )
@@ -141,10 +143,12 @@ function useCardData (): PolicyCardData[] {
   const isEdgeEnabled = useIsEdgeReady()
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isWorkflowEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE)
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  const isEdgeQosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
+  const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
+  const isEdgeHqosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
 
   return [
@@ -279,6 +283,16 @@ function useCardData (): PolicyCardData[] {
       disabled: !supportLbs
     },
     {
+      type: PolicyType.WORKFLOW,
+      categories: [RadioCardCategory.WIFI],
+      totalCount: useSearchInProgressWorkflowListQuery({
+        params: { ...params, excludeContent: 'true' }
+      }, { skip: !isWorkflowEnabled }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.LIST })),
+      disabled: !isWorkflowEnabled
+    },
+    {
       type: PolicyType.CERTIFICATE_TEMPLATE,
       categories: [RadioCardCategory.WIFI],
       // eslint-disable-next-line max-len
@@ -288,13 +302,22 @@ function useCardData (): PolicyCardData[] {
       disabled: !isCertificateTemplateEnabled
     },
     {
-      type: PolicyType.QOS_BANDWIDTH,
+      type: PolicyType.ETHERNET_PORT_PROFILE,
+      categories: [RadioCardCategory.WIFI],
+      // eslint-disable-next-line max-len
+      totalCount: useGetEthernetPortProfileViewDataListQuery({ payload: {} }, { skip: !isEthernetPortProfileEnabled }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ETHERNET_PORT_PROFILE, oper: PolicyOperation.LIST })),
+      disabled: !isEthernetPortProfileEnabled
+    },
+    {
+      type: PolicyType.HQOS_BANDWIDTH,
       categories: [RadioCardCategory.EDGE],
       // eslint-disable-next-line max-len
-      totalCount: useGetEdgeQosProfileViewDataListQuery({ params, payload: {} }, { skip: !isEdgeQosEnabled }).data?.totalCount,
+      totalCount: useGetEdgeHqosProfileViewDataListQuery({ params, payload: {} }, { skip: !isEdgeHqosEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
-      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.QOS_BANDWIDTH, oper: PolicyOperation.LIST })),
-      disabled: !isEdgeQosEnabled
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.HQOS_BANDWIDTH, oper: PolicyOperation.LIST })),
+      disabled: !isEdgeHqosEnabled
     },
     {
       type: PolicyType.SOFTGRE,

@@ -500,8 +500,7 @@ fieldset:disabled .ant-form .c8 > label {
                   >
                     <button
                       aria-checked="false"
-                      class="ant-switch ant-switch-disabled"
-                      disabled=""
+                      class="ant-switch"
                       id="enableVlanPooling"
                       role="switch"
                       type="button"
@@ -769,8 +768,7 @@ fieldset:disabled .ant-form .c8 > label {
                     >
                       <button
                         aria-checked="false"
-                        class="ant-switch ant-switch-disabled"
-                        disabled=""
+                        class="ant-switch"
                         id="wlan_advancedCustomization_wifiCallingEnabled"
                         role="switch"
                         type="button"

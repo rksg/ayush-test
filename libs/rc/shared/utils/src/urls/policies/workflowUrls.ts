@@ -1,0 +1,308 @@
+import { ApiInfo } from '@acx-ui/utils'
+
+
+const WorkflowBaseUrl = '/workflows'
+const WorkFlowActionDefinitionBaseUrl = '/workflowActionDefinitions'
+const WorkflowStepBaseUrl = WorkflowBaseUrl + '/:policyId/steps'
+const WorkflowSplitOptionsBaseUrl = WorkflowStepBaseUrl + '/:stepId/splitOptions'
+
+const WorkflowActionBaseUrl = '/enrollmentActions'
+const WorkflowActionTypeBaseUrl = '/enrollmentActions/actionTypes'
+
+const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
+const excludeContent = 'excludeContent=:excludeContent'
+
+type WorkflowBaseUrlType = 'searchWorkflows' | 'getWorkflowDetail'
+  | 'createWorkflow' | 'updateWorkflow' | 'deleteWorkflow'
+  | 'searchInProgressWorkflows' | 'getWorkflowUIConfig'
+  | 'updateWorkflowUIConfig' | 'resetWorkflowUIConfig' | 'getWorkflowUIConfigImage'
+
+type WorkflowActionUrlType = 'createAction' | 'patchAction'
+  | 'deleteAction' | 'getActionById' | 'getAllActionsByType'
+  | 'queryActions' | 'uploadFile' | 'deleteFile'
+
+type WorkflowStepUrlType = 'createWorkflowOption' | 'getWorkflowOptionById'
+  | 'getWorkflowOptionsByStepId' | 'createWorkflowStepUnderOption' | 'deleteSplitOptionById'
+  | 'createWorkflowChildStep' | 'createWorkflowStep' | 'deleteWorkflowStep'
+  | 'getWorkflowStepsById' | 'getWorkflowStepById'
+
+type WorkflowActionDefinitionUrlType = 'getWorkflowActionDefinitions'
+  | 'getWorkflowActionDefinitionById' | 'getWorkflowActionRequiredDefinitions'
+
+type WorkflowUrlType =
+  WorkflowBaseUrlType | WorkflowActionUrlType
+  | WorkflowStepUrlType | WorkflowActionDefinitionUrlType
+
+export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
+  /** Workflow endpoints */
+  searchInProgressWorkflows: {
+    method: 'post',
+    url: `${WorkflowBaseUrl}/query${paginationParams}&${excludeContent}`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  getWorkflowDetail: {
+    method: 'get',
+    url: `${WorkflowBaseUrl}/:id`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  createWorkflow: {
+    method: 'post',
+    url: `${WorkflowBaseUrl}`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  updateWorkflow: {
+    method: 'PATCH',
+    url: `${WorkflowBaseUrl}/:id`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deleteWorkflow: {
+    method: 'delete',
+    url: `${WorkflowBaseUrl}/:id`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  searchWorkflows: {
+    method: 'post',
+    url: `${WorkflowBaseUrl}/:id/versions/query${paginationParams}&${excludeContent}`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  getWorkflowUIConfig: {
+    method: 'get',
+    url: `${WorkflowBaseUrl}/:id/uiConfigurations`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  updateWorkflowUIConfig: {
+    method: 'post',
+    url: `${WorkflowBaseUrl}/:id/uiConfigurations`,
+    newApi: true
+  },
+  resetWorkflowUIConfig: {
+    method: 'delete',
+    url: `${WorkflowBaseUrl}/:id/uiConfigurations`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  getWorkflowUIConfigImage: {
+    method: 'get',
+    url: `${WorkflowBaseUrl}/:id/uiConfigurations/:imageType`
+  },
+
+  /** Workflow Action Definitions endpoints */
+  getWorkflowActionDefinitions: {
+    method: 'get',
+    url: `${WorkFlowActionDefinitionBaseUrl}${paginationParams}`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  getWorkflowActionDefinitionById: {
+    method: 'get',
+    url: `${WorkFlowActionDefinitionBaseUrl}/:definitionId`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  getWorkflowActionRequiredDefinitions: {
+    method: 'get',
+    url: `${WorkFlowActionDefinitionBaseUrl}/:definitionId/requiredPriorDefinitions`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+
+  /** Workflow Step API endpoints */
+  createWorkflowStep: {
+    method: 'post',
+    url: WorkflowStepBaseUrl,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  createWorkflowChildStep: {
+    method: 'post',
+    url: `${WorkflowStepBaseUrl}/:stepId/nextSteps`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deleteWorkflowStep: {
+    method: 'delete',
+    url: `${WorkflowStepBaseUrl}/:stepId`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  getWorkflowStepsById: {
+    method: 'get',
+    url: `${WorkflowStepBaseUrl}${paginationParams}`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  getWorkflowStepById: {
+    method: 'get',
+    url: `${WorkflowStepBaseUrl}/:stepId`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+
+  /** Workflow SplitStep API endpoints */
+  createWorkflowOption: {
+    method: 'post',
+    url: `${WorkflowSplitOptionsBaseUrl}`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  createWorkflowStepUnderOption: {
+    method: 'post',
+    url: `${WorkflowSplitOptionsBaseUrl}/:optionId/nextSteps`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  getWorkflowOptionById: {
+    method: 'get',
+    url: `${WorkflowSplitOptionsBaseUrl}/:optionId`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  getWorkflowOptionsByStepId: {
+    method: 'get',
+    url: WorkflowSplitOptionsBaseUrl,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deleteSplitOptionById: {
+    method: 'delete',
+    url: `${WorkflowSplitOptionsBaseUrl}/:optionId`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+
+  /** Workflow Enrollment Actions API endpoints */
+  createAction: {
+    method: 'post',
+    url: WorkflowActionBaseUrl,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  getActionById: {
+    method: 'get',
+    url: `${WorkflowActionBaseUrl}/:actionId`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  patchAction: {
+    method: 'PATCH',
+    url: `${WorkflowActionBaseUrl}/:actionId`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deleteAction: {
+    method: 'delete',
+    url: `${WorkflowActionBaseUrl}/:actionId`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  queryActions: {
+    method: 'post',
+    url: `${WorkflowActionBaseUrl}/query`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+
+  /** Workflow Enrollment Action Type API endpoints */
+  getAllActionsByType: {
+    method: 'get',
+    url: `${WorkflowActionTypeBaseUrl}/:actionType${paginationParams}`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  uploadFile: {
+    method: 'post',
+    url: `${WorkflowActionBaseUrl}/files`
+  },
+  deleteFile: {
+    method: 'delete',
+    url: `${WorkflowActionBaseUrl}/files`
+  }
+}

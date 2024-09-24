@@ -1,7 +1,5 @@
 import { render, screen } from '@acx-ui/test-utils'
 
-import { useIsEdgeFeatureReady } from '../../useEdgeActions'
-
 import { SdLanTopologyDiagram } from '.'
 
 jest.mock('antd', () => ({
@@ -57,57 +55,5 @@ describe('Edge SD-LAN Topology Diagram', () => {
     expect((await screen.findAllByTestId('antd-badge')).length).toBe(2)
     const img = screen.getByRole('img')
     expect(img.getAttribute('src')).toBe('EdgeSdLanDcVertical')
-  })
-
-  describe('multi venue FF is ON', () => {
-    beforeEach(() => {
-      jest.mocked(useIsEdgeFeatureReady).mockReturnValue(true)
-    })
-
-    it('should render DC topology correctly', async () => {
-      render(<SdLanTopologyDiagram
-        isGuestTunnelEnabled={false}
-        vertical={false}
-      />)
-
-      expect((await screen.findAllByTestId('antd-badge')).length).toBe(2)
-      const img = screen.getByRole('img')
-      expect(img.getAttribute('alt')).toBe('SD-LAN')
-      expect(img).toHaveAttribute('src', 'EdgeSdLanMvDcHorizontal')
-    })
-
-    it('should render DMZ topology correctly', async () => {
-      render(<SdLanTopologyDiagram
-        isGuestTunnelEnabled={true}
-        vertical={false}
-      />)
-
-      expect((await screen.findAllByTestId('antd-badge')).length).toBe(3)
-      const img = screen.getByRole('img')
-      expect(img.getAttribute('alt')).toBe('SD-LAN with DMZ')
-      expect(img).toHaveAttribute('src', 'EdgeSdLanMvDcDmzHorizontal')
-    })
-
-    it('should render vertical DMZ topology correctly', async () => {
-      render(<SdLanTopologyDiagram
-        isGuestTunnelEnabled={true}
-        vertical={true}
-      />)
-
-      expect((await screen.findAllByTestId('antd-badge')).length).toBe(3)
-      const img = screen.getByRole('img')
-      expect(img.getAttribute('src')).toBe('EdgeSdLanMvDcDmzVertical')
-    })
-
-    it('should render vertical DC topology correctly', async () => {
-      render(<SdLanTopologyDiagram
-        isGuestTunnelEnabled={false}
-        vertical={true}
-      />)
-
-      expect((await screen.findAllByTestId('antd-badge')).length).toBe(2)
-      const img = screen.getByRole('img')
-      expect(img.getAttribute('src')).toBe('EdgeSdLanMvDcVertical')
-    })
   })
 })

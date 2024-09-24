@@ -166,7 +166,7 @@ describe('Firmware Version Management', () => {
     await userEvent.click(await screen.findByRole('tab', { name: /Switch Firmware/ }))
     await screen.findByTestId('mocked-SwitchFirmware-table')
 
-    const edgeFirmwareTab = screen.getByRole('tab', { name: /SmartEdge Firmware/ })
+    const edgeFirmwareTab = screen.getByRole('tab', { name: /RUCKUS Edge Firmware/ })
     expect(await within(edgeFirmwareTab).findByTestId('InformationSolid')).toBeVisible()
   })
 

@@ -90,7 +90,7 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
         }
         return {
           ...req,
-          body: JSON.stringify(payload)
+          body: JSON.stringify(_.omit(payload, ['activations']))
         }
       },
       invalidatesTags: [{ type: 'SoftGre', id: 'LIST' }]
@@ -157,27 +157,56 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
     getSoftGreOptions: build.query<SoftGreOptionsData, RequestPayload>({
       queryFn: async ( { params, payload }, _api, _extraOptions, fetchWithBQ) => {
         const { venueId, networkId } = params as { venueId: string, networkId?: string }
+        const gatewayIps = new Set<string>()
+        const gatewayIpMaps:Record<string, string[]> = {}
+        const activationProfiles:string[] = []
+
         const softGreListReq = createHttpRequest(SoftGreUrls.getSoftGreViewDataList)
         const softGreListRes = await fetchWithBQ({
           ...softGreListReq,
           body: JSON.stringify(payload)
         })
         // eslint-disable-next-line max-len
-        if (softGreListRes.error) return { data: { options: [], isLockedOptions: false } as SoftGreOptionsData }
+        if (softGreListRes.error) return {
+          data: {
+            options: [],
+            isLockedOptions: true,
+            gatewayIps: Array.from(gatewayIps),
+            gatewayIpMaps,
+            activationProfiles
+          } as SoftGreOptionsData }
+
         let { data: listData } = softGreListRes.data as TableResult<SoftGreViewData>
 
         let venueTotal = 0
         let softGreProfileId = ''
 
         const options = listData?.map(item => {
+          const { id, primaryGatewayAddress, secondaryGatewayAddress } = item
           let isSame = false
+          gatewayIpMaps[id] = [primaryGatewayAddress, secondaryGatewayAddress ?? '']
+
           item.activations?.forEach(activation => {
             const isEqualVenue = activation.venueId === venueId
             if (isEqualVenue) {
+              activationProfiles.push(item.id)
+              let isOnlyAppliedCurrentNetwork = false
               isSame = activation.venueId === venueId
-              venueTotal += 1
               if (networkId && activation.wifiNetworkIds?.includes(networkId)) {
                 softGreProfileId = item.id
+                if (activation.wifiNetworkIds.length === 1) {
+                  isOnlyAppliedCurrentNetwork = true
+                } else {
+                  venueTotal += 1
+                }
+              } else {
+                venueTotal += 1
+              }
+              if (!isOnlyAppliedCurrentNetwork && primaryGatewayAddress) {
+                gatewayIps.add(primaryGatewayAddress)
+              }
+              if (!isOnlyAppliedCurrentNetwork && secondaryGatewayAddress) {
+                gatewayIps.add(secondaryGatewayAddress)
               }
             }
           })
@@ -187,12 +216,19 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
             label: item.name
           } as DefaultOptionType
         })
+        const commonData = {
+          gatewayIps: Array.from(gatewayIps),
+          gatewayIpMaps,
+          activationProfiles
+        }
+
         if (venueTotal >= 3) {
           return {
             data: {
               options: options,
               id: softGreProfileId,
-              isLockedOptions: true
+              isLockedOptions: true,
+              ...commonData
             } as SoftGreOptionsData
           }
         }
@@ -201,7 +237,8 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
             options: options.map((item) =>
               ({ value: item.value, label: item.label, disabled: false })) ,
             id: softGreProfileId,
-            isLockedOptions: false
+            isLockedOptions: false,
+            ...commonData
           } as SoftGreOptionsData
         }
       },

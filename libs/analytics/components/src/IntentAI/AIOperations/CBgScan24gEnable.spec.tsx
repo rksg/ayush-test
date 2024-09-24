@@ -6,9 +6,9 @@ import moment      from 'moment-timezone'
 import { intentAIApi, intentAIUrl, Provider, store }                              from '@acx-ui/store'
 import { mockGraphqlMutation, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
-import { useIntentContext } from '../IntentContext'
-import { Statuses }         from '../states'
-import { Intent }           from '../useIntentDetailsQuery'
+import { mockIntentContext } from '../__tests__/fixtures'
+import { Statuses }          from '../states'
+import { Intent }            from '../useIntentDetailsQuery'
 
 import { mocked }                                             from './__tests__/mockedCBgScanEnable'
 import { configuration, kpis, IntentAIDetails, IntentAIForm } from './CBgScan24gEnable'
@@ -69,7 +69,7 @@ afterEach((done) => {
 const mockIntentContextWith = (data: Partial<Intent> = {}) => {
   let intent = { ...mocked, code: 'c-bgscan24g-enable' }
   intent = _.merge({}, intent, data) as typeof intent
-  jest.mocked(useIntentContext).mockReturnValue({ intent, configuration, kpis })
+  mockIntentContext({ intent, configuration, kpis })
   return {
     params: { code: mocked.code, root: mocked.root, sliceId: mocked.sliceId }
   }
@@ -83,11 +83,11 @@ describe('IntentAIDetails', () => {
     expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
     expect(await screen.findByText('AI Operations')).toBeVisible()
     // eslint-disable-next-line max-len
-    expect(await screen.findByText('When activated, this AIOps Intent takes over the automatic configuration Background Scan Timer on 2.4 GHz radio in the network.')).toBeVisible()
+    expect(await screen.findByText('When activated, this AIOps Intent takes over the automatic configuration of auto channel selection mode and background scan capabilities on 2.4 GHz radio in the network.')).toBeVisible()
     expect(await screen.findByTestId('Details')).toBeVisible()
     expect(await screen.findByTestId('Configuration')).toBeVisible()
     expect(screen.queryByTestId('KPI')).not.toBeInTheDocument()
-    expect(await screen.findByTestId('Why the intent?')).toBeVisible()
+    expect(await screen.findByTestId('Why is the recommendation?')).toBeVisible()
     expect(await screen.findByTestId('Potential trade-off')).toBeVisible()
     expect(await screen.findByTestId('Status Trail')).toBeVisible()
   })
@@ -97,40 +97,44 @@ describe('IntentAIDetails', () => {
     expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
     expect(await screen.findByText('AI Operations')).toBeVisible()
     // eslint-disable-next-line max-len
-    expect(await screen.findByText(/2.4 GHz radio setting for Venue: APMEMv6 has "Auto Channel Selection" set as "TBD"/)).toBeVisible()
+    expect(await screen.findByText('IntentAI will activate background scanning and configure the auto channel selection mode to background scan for this network.')).toBeVisible()
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('IntentAI will continuously monitor these configurations.')).toBeVisible()
     expect(await screen.findByTestId('Details')).toBeVisible()
     expect(await screen.findByTestId('Configuration')).toBeVisible()
     expect(screen.queryByTestId('KPI')).not.toBeInTheDocument()
-    expect(await screen.findByTestId('Why the intent?')).toBeVisible()
+    expect(await screen.findByTestId('Why is the recommendation?')).toBeVisible()
     expect(await screen.findByTestId('Potential trade-off')).toBeVisible()
     expect(await screen.findByTestId('Status Trail')).toBeVisible()
   })
 })
 
 describe('IntentAIForm', () => {
-  it('should render when active', async () => {
-    const { params } = mockIntentContextWith({ status: Statuses.active })
+  it('handle schedule intent', async () => {
+    const { params } = mockIntentContextWith({ status: Statuses.new })
     render(<IntentAIForm />, { route: { params }, wrapper: Provider })
     const form = within(await screen.findByTestId('steps-form'))
     const actions = within(form.getByTestId('steps-form-actions'))
 
     expect(await screen.findByRole('heading', { name: 'Introduction' })).toBeVisible()
-    expect(screen.queryByText('Why the intent?')).not.toBeInTheDocument()
+    expect(await screen.findByText('Why is the recommendation?')).toBeVisible()
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Intent Priority' })).toBeVisible()
     expect(await screen.findByText('Potential trade-off')).toBeVisible()
-    const radioEnabled = screen.getByRole('radio', { name: 'Yes, apply the intent' })
+    const radioEnabled = screen.getByRole('radio', { name: 'Yes, apply the recommendation' })
     await click(radioEnabled)
     expect(radioEnabled).toBeChecked()
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Settings' })).toBeVisible()
-    await selectOptions(
-      await screen.findByRole('combobox', { name: 'Schedule Time' }),
-      '12:30 (UTC+08)'
-    )
-    expect(await screen.findByRole('combobox', { name: 'Schedule Time' })).toHaveValue('12.5')
+    const date = await screen.findByPlaceholderText('Select date')
+    await click(date)
+    await click(await screen.findByRole('cell', { name: '2024-08-13' }))
+    expect(date).toHaveValue('08/13/2024')
+    const time = await screen.findByPlaceholderText('Select time')
+    await selectOptions(time, '12:30 (UTC+08)')
+    expect(time).toHaveValue('12.5')
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Summary' })).toBeVisible()
@@ -140,25 +144,26 @@ describe('IntentAIForm', () => {
     expect(await screen.findByText(/has been updated/)).toBeVisible()
     expect(mockNavigate).toBeCalled()
   })
-  it('should render when paused', async () => {
-    const { params } = mockIntentContextWith({ status: Statuses.paused })
+  it('handle pause intent', async () => {
+    const { params } = mockIntentContextWith({ status: Statuses.new })
     render(<IntentAIForm />, { route: { params }, wrapper: Provider })
     const form = within(await screen.findByTestId('steps-form'))
     const actions = within(form.getByTestId('steps-form-actions'))
 
     expect(await screen.findByRole('heading', { name: 'Introduction' })).toBeVisible()
-    expect(screen.queryByText('Why the intent?')).not.toBeInTheDocument()
+    expect(await screen.findByText('Why is the recommendation?')).toBeVisible()
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Intent Priority' })).toBeVisible()
     expect(await screen.findByText('Potential trade-off')).toBeVisible()
-    const radioDisabled = screen.getByRole('radio', { name: 'No, do not apply the intent' })
+    const radioDisabled = screen.getByRole('radio', { name: 'No, do not apply the recommendation' })
     await click(radioDisabled)
     expect(radioDisabled).toBeChecked()
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Settings' })).toBeVisible()
-    expect(await screen.findByRole('combobox', { name: 'Schedule Time' })).toBeDisabled()
+    expect(await screen.findByPlaceholderText('Select date')).toBeDisabled()
+    expect(await screen.findByPlaceholderText('Select time')).toBeDisabled()
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Summary' })).toBeVisible()

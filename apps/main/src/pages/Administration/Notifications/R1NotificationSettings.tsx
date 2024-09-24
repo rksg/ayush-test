@@ -13,7 +13,7 @@ import { NotificationPreference }                                from '@acx-ui/r
 const labels = {
   DEVICE_AP_FIRMWARE: defineMessage({ defaultMessage: 'AP Firmware' }),
   DEVICE_SWITCH_FIRMWARE: defineMessage({ defaultMessage: 'Switch Firmware' }),
-  DEVICE_EDGE_FIRMWARE: defineMessage({ defaultMessage: 'SmartEdge Firmware' })
+  DEVICE_EDGE_FIRMWARE: defineMessage({ defaultMessage: 'RUCKUS Edge Firmware' })
 }
 
 const apiChanges = {
@@ -37,7 +37,7 @@ function OptionsList ({ preferences, setState }: {
   const { $t } = useIntl()
   const apiChangesNotificationEnabled =
     useIsSplitOn(Features.NOTIFICATION_CHANNEL_API_CHANGES_TOGGLE)
-  const labelsCombined = apiChangesNotificationEnabled ? { ...apiChanges, ...labels } : labels
+  const labelsCombined = apiChangesNotificationEnabled ? { ...labels, ...apiChanges } : labels
 
   return <>{Object.entries(labelsCombined).map(([key, label]) => <div key={key}>
     <Checkbox

@@ -6,16 +6,43 @@ import { useIntl } from 'react-intl'
 import {
   Subtitle
 } from '@acx-ui/components'
-import { useGetRecommandFirmwareUpgradeQuery } from '@acx-ui/msp/services'
-import { useParams }                           from '@acx-ui/react-router-dom'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import {
+  useGetFirmwareUpgradeByApModelQuery,
+  useGetRecommandFirmwareUpgradeQuery
+} from '@acx-ui/msp/services'
+import { RecommendFirmwareUpgradeByApModel } from '@acx-ui/msp/utils'
+import { useParams }                         from '@acx-ui/react-router-dom'
+
+import * as UI from './styledComponents'
+
+const compareVersions = (a?: string, b?: string): number => {
+  const v1 = (a || '').split('.')
+  const v2 = (b || '').split('.')
+  for (let i = 0; i < Math.min(v1.length, v2.length); i++) {
+    const res = Number(v1[i]) - Number(v2[i])
+    if (res !== 0) {
+      return res
+    }
+  }
+  return 0
+}
 
 export const RecommandFirmwareVersions = () => {
   const { $t } = useIntl()
 
   const [firmwareVersionsData, setRecommandFirmware] = useState([] as string[])
+  const [firmwareVersionsDataByApModel, setRecommandFirmwareByApModel] =
+    useState([] as RecommendFirmwareUpgradeByApModel[])
   const params = useParams()
+  const isApFirmwareUpgradeByModelEnabled =
+    useIsSplitOn(Features.AP_FIRMWARE_UPGRADE_BY_MODEL_TOGGLE)
 
-  const queryResults = useGetRecommandFirmwareUpgradeQuery({ params: params })
+  const queryResults = useGetRecommandFirmwareUpgradeQuery({ params: params },
+    { skip: isApFirmwareUpgradeByModelEnabled })
+
+  const queryResultsByApModel = useGetFirmwareUpgradeByApModelQuery({ params: params },
+    { skip: !isApFirmwareUpgradeByModelEnabled })
 
   useEffect(() => {
     if (queryResults?.data) {
@@ -24,16 +51,22 @@ export const RecommandFirmwareVersions = () => {
 
       setRecommandFirmware(firmwareVersions)
     }
-  }, [queryResults?.data])
+    if (queryResultsByApModel?.data) {
+      const firmware10AvailableVersions =
+        [...queryResultsByApModel?.data].sort((a, b) => compareVersions(b.id, a.id))
+      setRecommandFirmwareByApModel(firmware10AvailableVersions)
+    }
+
+  }, [queryResults?.data, queryResultsByApModel?.data])
 
   const contentFirmwareVersions =
     <Space size={18} direction='vertical'>
-      <Subtitle level={4}>
+      {!isApFirmwareUpgradeByModelEnabled && <Subtitle level={4}>
         {
           $t({ defaultMessage: 'Firmware Version: {versions}' },
             { versions: firmwareVersionsData.join(', ') })
         }
-      </Subtitle>
+      </Subtitle>}
 
       <h4>{$t({
         defaultMessage:
@@ -50,6 +83,19 @@ export const RecommandFirmwareVersions = () => {
         `Are you sure you want to upgrade the firmware version on devices 
         for selected customers?`
       })}</h4>
+
+      {isApFirmwareUpgradeByModelEnabled &&
+      <div>
+        <Subtitle level={4}>
+          {$t({ defaultMessage: 'Latest firmware version by AP Models:' })}
+        </Subtitle>
+        {firmwareVersionsDataByApModel.map(version =>
+          <UI.VersionLabel2>
+            <label style={{ fontWeight: 'bold' }}>{version.id+':'}</label>
+            <label>{[...version.supportedApModels].sort().join(', ')}</label>
+          </UI.VersionLabel2>
+        )}
+      </div>}
     </Space>
 
   return (
