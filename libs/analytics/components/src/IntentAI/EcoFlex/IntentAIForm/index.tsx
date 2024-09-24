@@ -62,8 +62,7 @@ export const IntentAIForm: React.FC = () => {
     <IntentWizardHeader />
 
     <StepsForm
-        submit(values)
-      }}
+      onFinish={async (values) => { submit(values) }}
       buttonLabel={{
         submit: $t({ defaultMessage: 'Apply' })
       }}
