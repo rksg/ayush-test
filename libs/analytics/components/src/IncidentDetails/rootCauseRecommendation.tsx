@@ -1,14 +1,15 @@
 /* eslint-disable max-len */
-import _                                    from 'lodash'
-import { defineMessage, MessageDescriptor } from 'react-intl'
-import { FormattedMessage }                 from 'react-intl'
+import _                                             from 'lodash'
+import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
+import { FormattedMessage }                          from 'react-intl'
 
-import { get }                    from '@acx-ui/config'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { TenantLink }             from '@acx-ui/react-router-dom'
+import { IncidentCode, Incident, IncidentMetadata } from '@acx-ui/analytics/utils'
+import { get }                                      from '@acx-ui/config'
+import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { TenantLink }                               from '@acx-ui/react-router-dom'
+import { encodeParameter }                          from '@acx-ui/utils'
 
-import { IncidentCode }               from './constants'
-import { Incident, IncidentMetadata } from './types/incidents'
+import { codes } from '../IntentAI/config'
 
 import type { FormatXMLElementFn, PrimitiveType } from 'intl-messageformat'
 
@@ -51,11 +52,19 @@ export const TenantLinkWrapper = ({ params, linkType }: {
     useIsSplitOn(Features.INTENT_AI_TOGGLE)
   ].some(Boolean)
   let path =''
+  const { $t } = useIntl()
   const intentData = linkType === 'crrm'
     ? params.crrm
     : params.aclb
   if (isIntentAIEnabled) {
-    path = `/intentAI${get('IS_MLISA_SA') ? `/${intentData!.root}` : ''}/${intentData!.sliceId}/${intentData!.code}`
+    const intentFilter = {
+      aiFeature: [(codes[intentData!.code].aiFeature)],
+      intent: [$t(codes[intentData!.code].intent)],
+      category: [$t(codes[intentData!.code].category)],
+      sliceValue: [intentData!.sliceId]
+    }
+    const encodedParameters = encodeParameter(intentFilter)
+    path = `/intentAI?intentTableFilters=${encodedParameters}`
   } else {
     const id = intentData?.intentId ?? params.recommendationId
     path = `/recommendations/${linkType}/${id}`
