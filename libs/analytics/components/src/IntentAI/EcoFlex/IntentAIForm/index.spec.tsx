@@ -123,7 +123,10 @@ describe('IntentAIForm', () => {
     const { params } = mockIntentContextWith({
       status: Statuses.new,
       metadata: {
-        averagePowerPrice: { currency: 'SGD', value: 0 },
+        preferences: {
+          averagePowerPrice: { currency: 'SGD', value: 0 },
+          crrmFullOptimization: true
+        },
         scheduledAt: '',
         dataEndTime: ''
       }
