@@ -1,6 +1,5 @@
 import React from 'react'
 
-import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { StepsForm } from '@acx-ui/components'
