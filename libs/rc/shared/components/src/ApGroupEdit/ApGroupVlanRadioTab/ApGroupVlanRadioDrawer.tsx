@@ -83,7 +83,8 @@ const IsSupport6g = (editData: Network) => {
   return IsNetworkSupport6g(network)
 }
 
-export function ApGroupVlanRadioDrawer ({ updateData }: { updateData: (data: Network) => void }) {
+// eslint-disable-next-line max-len
+export function ApGroupVlanRadioDrawer ({ updateData }: { updateData: (data: Network, oldData: Network) => void }) {
   const { $t } = useIntl()
 
   const { venueId, apGroupId,
@@ -217,7 +218,7 @@ export function ApGroupVlanRadioDrawer ({ updateData }: { updateData: (data: Net
         }
         newApGroup.radioTypes = radioTypes
       }
-      updateData(newData)
+      updateData(newData, editData)
       onClose()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
