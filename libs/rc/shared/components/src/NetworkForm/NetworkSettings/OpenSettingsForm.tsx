@@ -8,8 +8,8 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { StepsFormLegacy, Tooltip }                 from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { StepsFormLegacy, Tooltip }   from '@acx-ui/components'
+import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   MacAuthMacFormatEnum,
   macAuthMacFormatOptions,
@@ -161,7 +161,6 @@ function SettingsForm () {
     }
   },[data])
 
-  const disablePolicies = !useIsSplitOn(Features.POLICIES)
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   const macAuthOptions = Object.keys(macAuthMacFormatOptions).map((key =>
@@ -221,7 +220,7 @@ function SettingsForm () {
               children={<Switch
                 data-testid='mac-auth-switch'
                 onChange={onMacAuthChange}
-                disabled={editMode || disablePolicies}
+                disabled={editMode}
               />}
             />
           </UI.FieldLabel>

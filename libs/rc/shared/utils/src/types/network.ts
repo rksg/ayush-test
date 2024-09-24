@@ -130,6 +130,8 @@ export interface NetworkSaveData {
   enableDhcp?: boolean
   enableDeviceOs?: boolean
   wlan?: {
+    accessControlEnabled?: boolean
+    accessControlProfileId?: string
     ssid?: string
     vlanId?: number
     enable?: boolean

@@ -191,7 +191,7 @@ export const ClientSteering = () => {
 
 
   const stickyClientSteeringInfoMessage = defineMessage({
-    defaultMessage: 'Enabling this feature will help clients who have low SNR to transit to a better AP. This function requires that load balancing is enabled at the venue level and will disable the SmartRoam feature on the AP.'
+    defaultMessage: 'Enabling this feature will help clients who have low SNR to transit to a better AP. This function requires that load balancing is enabled at the <venueSingular></venueSingular> level and will disable the SmartRoam feature on the AP.'
   })
 
   return (<Loader states={[{
@@ -225,7 +225,7 @@ export const ClientSteering = () => {
               (stickyClientSteeringDisable.isDisable === true && stickyClientSteeringDisable.isVenueLoadBalancingOn === false) ?
                 <Tooltip
                   title={$t({
-                    defaultMessage: 'Please turn on the load balancing at the venue level first, as it is required for this function to work.'
+                    defaultMessage: 'Please turn on the load balancing at the <venueSingular></venueSingular> level first, as it is required for this function to work.'
                   })}
                 >
                   <Switch
