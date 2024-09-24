@@ -1,4 +1,5 @@
 import { gql } from 'graphql-request'
+import _       from 'lodash'
 
 import { Incident } from '@acx-ui/analytics/utils'
 import { dataApi }  from '@acx-ui/store'
@@ -47,7 +48,8 @@ export const impactedApi = dataApi.injectEndpoints({
       transformResponse: (response: Response<{ impactedSwitchDDoS: ImpactedSwitch[] }>) => {
         return response.incident.impactedSwitchDDoS
           .map(({ name, mac, serial, ports }) => {
-            return { name,mac, serial , portNumbers: ports.map(port=>port.portNumber).join(', ') }
+            return { name,mac, serial ,
+              portNumbers: _.uniq(ports.map(port=>port.portNumber)).join(', ') }
           })
       }
     }),

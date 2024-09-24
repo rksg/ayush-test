@@ -38,6 +38,10 @@ describe('ImpactedSwitchDDoS',()=>{
       {
         portNumber: '1/1/23',
         portMac: 'D4:C1:9E:14:C3:AF'
+      },
+      {
+        portNumber: '1/1/1',
+        portMac: 'D4:C1:9E:14:C3:99'
       }
     ]
   }
