@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useMemo, useRef } from 'react'
 
 import {
   Box,
@@ -100,8 +100,9 @@ const parseNonePrefixScheduler = (key:string, values: string[]) => {
 
 export function ScheduleCard (props: ScheduleCardProps) {
   const { $t } = useIntl()
-  const { scheduler, venue, disabled, form, fieldNamePath, lazyQuery: getTimezone, localTimeZone=false,
-    isShowTips=true, isShowTimezone=true, timelineLabelTop= true, intervalUnit, is12H=true, prefix=true } = props
+  const { scheduler, venue, disabled, form, fieldNamePath, lazyQuery: getTimezone,
+    localTimeZone=false, isShowTips=true, isShowTimezone=true, timelineLabelTop= true,
+    intervalUnit, is12H=true, prefix=true } = props
 
   const [scheduleList, setScheduleList] = useState<Schedule[]>([])
   const [checkedList, setCheckedList] = useState<CheckboxValueType[][]>([])
@@ -115,8 +116,8 @@ export function ScheduleCard (props: ScheduleCardProps) {
     timeZoneName: ''
   })
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const selectedItems = useRef<string[]>([])
   const intervalsCount = 24 * 60 / intervalUnit
-
   const arrCheckedList = [...checkedList]
   const arrCheckAll = [...checkAll]
   const arrIndeterminate = [...indeterminate]
@@ -124,7 +125,9 @@ export function ScheduleCard (props: ScheduleCardProps) {
   const initialValues = (scheduler: Scheduler) => {
     if (props.type === 'ALWAYS_ON') {
       for (let daykey in dayIndex) {
-        form.setFieldValue(fieldNamePath.concat(daykey), Array.from({ length: intervalsCount }, (_, i) => (prefix?`${daykey}_${i}`:`${i}`)))
+        form.setFieldValue(fieldNamePath.concat(daykey),
+          Array.from({ length: intervalsCount }, (_, i) => (prefix?`${daykey}_${i}`:`${i}`))
+        )
         arrCheckAll[dayIndex[daykey]] = true
         setCheckAll(arrCheckAll)
       }
@@ -142,8 +145,79 @@ export function ScheduleCard (props: ScheduleCardProps) {
       setCheckAll(arrCheckAll)
       setIndeterminate(arrIndeterminate)
     }
-
   }
+
+  const memoUniqSchedule = useMemo(() =>
+    (schedule: string[], handleItems: string[], daykey: string) => {
+      return _.uniq(_.xor(schedule, handleItems.filter((item: string) => item.indexOf(daykey) > -1))) || []
+    }, [])
+
+  const { DragSelection } = useSelectionContainer({
+    shouldStartSelecting: (target) => {
+      if (target instanceof HTMLElement) {
+        let el = target
+        while (el.parentElement && !el.dataset.disableselect) {
+          el = el.parentElement
+        }
+        return el.dataset.disableselect !== 'true'
+      }
+      return true
+    },
+    onSelectionChange: (box) => {
+      selectedItems.current = []
+      if(disabled){
+        return
+      }
+      const { scrollY, scrollX } = window
+      const scrollAwareBox: Box = {
+        ...box,
+        top: box.top + scrollY,
+        left: box.left + scrollX
+      }
+
+      for (let daykey in dayIndex) {
+        // eslint-disable-next-line no-loop-func
+        Array.from({ length: intervalsCount }, (_, i) => {
+          const itemKey = `${daykey}_${i}`
+          const item = document.getElementById(itemKey)
+          if(item){
+            const { left, top, width, height } = item.getBoundingClientRect()
+            const boxItem = { left: left + scrollX, top: top + scrollY, width, height }
+            if (boxesIntersect(scrollAwareBox, boxItem)) {
+              selectedItems.current.push(itemKey)
+            }
+          }
+          return null
+        })
+      }
+    },
+    onSelectionEnd: () => {
+      selectedItems.current = _.uniq(selectedItems.current)
+      for (let daykey in dayIndex) {
+        const daySchedule = form.getFieldValue(fieldNamePath.concat(daykey)) ?? []
+        // const schedule = daySchedule
+        const schedule = prefix ? daySchedule : parseNonePrefixScheduler(daykey, daySchedule)
+        if(selectedItems.current.filter((item: string) => item.indexOf(daykey) > -1)){
+          let uniqSchedule = memoUniqSchedule(schedule, selectedItems.current, daykey)
+          form.setFieldValue(fieldNamePath.concat(daykey),
+            uniqSchedule.map((item: string) => prefix?item:`${item.split('_')[1]}`)
+          )
+          if(uniqSchedule && uniqSchedule.length === intervalsCount){
+            arrCheckAll[dayIndex[daykey]] = true
+            arrIndeterminate[dayIndex[daykey]] = false
+          }else if(uniqSchedule && uniqSchedule.length > 0 && uniqSchedule.length < intervalsCount){
+            arrIndeterminate[dayIndex[daykey]] = true
+          }else{
+            arrCheckAll[dayIndex[daykey]] = false
+            arrIndeterminate[dayIndex[daykey]] = false
+          }
+        }
+      }
+      setCheckAll(arrCheckAll)
+      setIndeterminate(arrIndeterminate)
+    },
+    isEnabled: true
+  })
 
   useEffect(() => {
     const initTimeZone = async (venueLatitude: string, venueLongitude: string) => {
@@ -165,7 +239,10 @@ export function ScheduleCard (props: ScheduleCardProps) {
     if(venue || localTimeZone){
       setScheduleList(
         Object.keys(dayIndex).map((item: string) => {
-          return { key: item, value: Array.from({ length: intervalsCount }, (_, i) => (prefix?`${item}_${i}`:`${i}`)) }
+          return {
+            key: item,
+            value: Array.from({ length: intervalsCount }, (_, i) => (prefix?`${item}_${i}`:`${i}`))
+          }
         })
       )
 
@@ -176,12 +253,14 @@ export function ScheduleCard (props: ScheduleCardProps) {
       }
       _genTimeTicks()
     }
-  }, [form, venue, localTimeZone])
+  }, [form, venue, localTimeZone, intervalsCount])
 
   useEffect(() => {
     if (disabled || !scheduler) {
       for (let daykey in dayIndex) {
-        form.setFieldValue(fieldNamePath.concat(daykey), Array.from({ length: intervalsCount }, (_, i) => (prefix?`${daykey}_${i}`:`${i}`) ))
+        form.setFieldValue(fieldNamePath.concat(daykey),
+          Array.from({ length: intervalsCount }, (_, i) => (prefix?`${daykey}_${i}`:`${i}`) )
+        )
         arrCheckAll[dayIndex[daykey]] = true
         setCheckAll(arrCheckAll)
         arrIndeterminate[dayIndex[daykey]] = false
@@ -255,76 +334,6 @@ export function ScheduleCard (props: ScheduleCardProps) {
     arrIndeterminate[index] = false
     setIndeterminate(arrIndeterminate)
   }
-
-  let selectedItems: string[] = []
-  const memoUniqSchedule = useMemo(() =>
-    (schedule: string[], selectedItems: string[], daykey: string) => {
-      return _.uniq(_.xor(schedule, selectedItems.filter((item: string) => item.indexOf(daykey) > -1))) || []
-    }, [])
-
-  const { DragSelection } = useSelectionContainer({
-    shouldStartSelecting: (target) => {
-      if (target instanceof HTMLElement) {
-        let el = target
-        while (el.parentElement && !el.dataset.disableselect) {
-          el = el.parentElement
-        }
-        return el.dataset.disableselect !== 'true'
-      }
-      return true
-    },
-    onSelectionChange: (box) => {
-      selectedItems = []
-      if(disabled){
-        return
-      }
-      const scrollAwareBox: Box = {
-        ...box,
-        top: box.top + window.scrollY,
-        left: box.left + window.scrollX
-      }
-
-      for (let daykey in dayIndex) {
-        // eslint-disable-next-line no-loop-func
-        Array.from({ length: intervalsCount }, (_, i) => {
-          const itemKey = `${daykey}_${i}`
-          const item = document.getElementById(itemKey)
-          if(item){
-            const { left, top, width, height } = item.getBoundingClientRect()
-            const boxItem = { left, top, width, height }
-            if (boxesIntersect(scrollAwareBox, boxItem)) {
-              selectedItems.push(itemKey)
-            }
-          }
-          return null
-        })
-      }
-    },
-    onSelectionEnd: () => {
-      selectedItems = _.uniq(selectedItems)
-      for (let daykey in dayIndex) {
-        const daySchedule = form.getFieldValue(fieldNamePath.concat(daykey)) ?? []
-        // const schedule = daySchedule
-        const schedule = prefix ? daySchedule : parseNonePrefixScheduler(daykey, daySchedule)
-        if(selectedItems.filter((item: string) => item.indexOf(daykey) > -1)){
-          let uniqSchedule = memoUniqSchedule(schedule, selectedItems, daykey)
-          form.setFieldValue(fieldNamePath.concat(daykey), uniqSchedule.map((item: string) => prefix?item:`${item.split('_')[1]}`))
-          if(uniqSchedule && uniqSchedule.length === intervalsCount){
-            arrCheckAll[dayIndex[daykey]] = true
-            arrIndeterminate[dayIndex[daykey]] = false
-          }else if(uniqSchedule && uniqSchedule.length > 0 && uniqSchedule.length < intervalsCount){
-            arrIndeterminate[dayIndex[daykey]] = true
-          }else{
-            arrCheckAll[dayIndex[daykey]] = false
-            arrIndeterminate[dayIndex[daykey]] = false
-          }
-        }
-      }
-      setCheckAll(arrCheckAll)
-      setIndeterminate(arrIndeterminate)
-    },
-    isEnabled: true
-  })
 
   return (
     <>
