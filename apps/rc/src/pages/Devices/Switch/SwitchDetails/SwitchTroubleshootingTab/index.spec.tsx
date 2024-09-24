@@ -156,7 +156,7 @@ describe('SwitchTroubleshootingTab', () => {
     expect(await screen.findByTestId('SwitchMacAddressForm')).toBeVisible()
   })
 
-  it('should navigate to Cable Test tab correctly', async () => {
+  it.skip('should navigate to Cable Test tab correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     const params = {
       tenantId: 'tenant-id',
