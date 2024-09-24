@@ -328,7 +328,6 @@ interface NetworkTableProps {
 export function NetworkTable ({
   settingsId = 'network-table', tableQuery, selectable
 }: NetworkTableProps) {
-  const isServicesEnabled = useIsSplitOn(Features.SERVICES)
   const isWpaDsae3Toggle = useIsSplitOn(Features.WIFI_EDA_WPA3_DSAE_TOGGLE)
   const isBetaDPSK3FeatureEnabled = useIsTierAllowed(TierFeatures.BETA_DPSK3)
   const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
@@ -363,10 +362,6 @@ export function NetworkTable ({
     deleteNetwork, { isLoading: isDeleteNetworkUpdating }
   ] = useDeleteNetworkMutation()
   const [venuesList] = useLazyVenuesListQuery()
-
-  if(!isServicesEnabled){
-    disabledType.push(NetworkTypeEnum.CAPTIVEPORTAL)
-  }
 
   async function getAdvertisedVenuesStatus (selectedNetwork: Network) {
     const payload = { fields: ['name', 'status'], filters: { name: selectedNetwork.venues.names } }

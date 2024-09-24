@@ -148,8 +148,6 @@ describe('Network More settings - Network Control Tab', () => {
 
 
   it('after click Wifi calling', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SERVICES)
-
     render(
       <Provider>
         <Form>

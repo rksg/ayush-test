@@ -217,8 +217,8 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
                     content: <p data-testId='load-balancing-off-warning-text'>
                       {
                         $t({ defaultMessage: `Please be aware that disabling the load balancing \n
-                      functionality in this venue will also deactivate the sticky client steering \n
-                      function on all APs within the venue. Are you sure you want to disable it?` })
+                      functionality in this <venueSingular></venueSingular> will also deactivate the sticky client steering \n
+                      function on all APs within the <venueSingular></venueSingular>. Are you sure you want to disable it?` })
                       }
                     </p>,
                     okText: $t({ defaultMessage: 'Disable' }),
