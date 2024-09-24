@@ -19,7 +19,8 @@ export enum GuestNetworkTypeEnum {
   HostApproval = 'HostApproval',
   GuestPass = 'GuestPass',
   WISPr = 'WISPr',
-  Cloudpath = 'Cloudpath'
+  Cloudpath = 'Cloudpath',
+  AD_LDAP = 'Directory'
 }
 
 export enum WlanSecurityEnum {
