@@ -774,8 +774,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     addStackMember: build.mutation<{}, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.addStackMember, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.addStackMember, params, headers)
         return {
           ...req
           // body:
