@@ -30,7 +30,7 @@ function getFormDTO (values: FormValues<FormVal>): IntentTransitionPayload {
   } as IntentTransitionPayload
   if (isEnabled) {
     dto.metadata = {
-      ..._.pick(values, ['averagePowerPrice']),
+      preferences: _.pick(values, ['averagePowerPrice']),
       scheduledAt: getScheduledAt(values).utc().toISOString()
     }
   }
@@ -41,9 +41,9 @@ const useIntentTransition = createUseIntentTransition<FormVal>(getFormDTO as any
 export const IntentAIForm: React.FC = () => {
   const { $t } = useIntl()
   const { submit } = useIntentTransition()
-  const { intent: { metadata } } = useIntentContext()
-  const averagePowerPrice = metadata.averagePowerPrice
-    ? metadata.averagePowerPrice
+  const { intent: { metadata: { preferences } } } = useIntentContext()
+  const averagePowerPrice = preferences?.averagePowerPrice
+    ? preferences.averagePowerPrice
     : { currency: 'USD', value: 0.131 }
   // always enable = true, because only new, scheduled, active, applyscheduled can open wizard
   const initialValues = { ...useInitialValues(), preferences: { enable: true }, averagePowerPrice }
