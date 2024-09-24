@@ -8,7 +8,7 @@ import { AIDrivenRRM, AIOperation, EquiFlex }               from '@acx-ui/icons'
 import { TenantLink, useSearchParams }                      from '@acx-ui/react-router-dom'
 import { fixedEncodeURIComponent, type PathFilter }         from '@acx-ui/utils'
 
-import { aiFeatures }                                              from '../config'
+import { AiFeatures }                                              from '../config'
 import { HighlightItem, IntentHighlight, useIntentHighlightQuery } from '../services'
 import { DisplayStates }                                           from '../states'
 import { iconTooltips }                                            from '../Table'
@@ -24,7 +24,7 @@ type IntentAIWidgetProps = {
 type HighlightCardProps = HighlightItem & {
   title: string,
   icon: JSX.Element,
-  type: aiFeatures
+  type: AiFeatures
 }
 
 function HighlightCard (props: HighlightCardProps) {
@@ -83,7 +83,7 @@ function useHighlightList (data: IntentHighlight | undefined) {
       ...data.rrm,
       title: $t({ defaultMessage: 'AI-Driven RRM' }),
       icon: <AIDrivenRRM />,
-      type: aiFeatures.RRM
+      type: AiFeatures.RRM
     })
   }
   if (data?.probeflex) {
@@ -91,7 +91,7 @@ function useHighlightList (data: IntentHighlight | undefined) {
       ...data.probeflex,
       title: $t({ defaultMessage: 'EquiFlex' }),
       icon: <EquiFlex />,
-      type: aiFeatures.EquiFlex
+      type: AiFeatures.EquiFlex
     })
   }
   if (data?.ops) {
@@ -99,7 +99,7 @@ function useHighlightList (data: IntentHighlight | undefined) {
       ...data.ops,
       title: $t({ defaultMessage: 'AI Operations' }),
       icon: <AIOperation />,
-      type: aiFeatures.AIOps
+      type: AiFeatures.AIOps
     })
   }
   return highlightList

@@ -238,7 +238,10 @@ export const portlist = {
       portIdentifier: '1/1/1',
       id: 'c0-c5-20-aa-32-79_1-1-1',
       lagId: '0',
-      syncedSwitchConfig: false
+      syncedSwitchConfig: false,
+      status: 'Up',
+      portSpeedConfig: 'AUTO',
+      portConnectorType: 'COPPER'
     },
     {
       cloudPort: false,
@@ -461,3 +464,54 @@ export const vlanlist = {
   }]
 }
 
+export const troubleshootingResult_cableTest_isSyncing = {
+  requestId: '3d618952-4c53-4a81-a1a7-7d0f9b5e56fe',
+  response: {
+    troubleshootingType: 'cable-test',
+    latestResultResponseTime: '2024-09-18T10:49:03.670+00:00',
+    traceRouteTtl: 0,
+    syncing: true
+  }
+}
+
+export const troubleshootingResult_cableTest_result = {
+  requestId: '3d618952-4c53-4a81-a1a7-7d0f9b5e56fe',
+  response: {
+    troubleshootingType: 'cable-test',
+    latestResultResponseTime: '2024-09-18T10:49:19.260+00:00',
+    // eslint-disable-next-line max-len
+    result: '\nPort\tSpeed\tLocal pair\tRemote pair\tPair status\n----\t-----\t----------\t-----------\t-----------\n1/1/1     1G   \tPair A    \tPair B    \tterminated\n\t\tPair B    \t          \tunknown\n\t\tPair C    \tPair D    \tterminated\n\t\tPair D    \t          \topen\n\t\t\n',
+    traceRouteTtl: 0,
+    cableTestResult: {
+      port: 1/1/1,
+      speed: '1G',
+      overallStatus: 'Open',
+      pairAStatus: 'OK',
+      pairBStatus: 'Unknown',
+      pairCStatus: 'OK',
+      pairDStatus: 'Open'
+    },
+    syncing: false
+  }
+}
+
+export const troubleshootingResult_cableTest_emptyResult = {
+  requestId: '3d618952-4c53-4a81-a1a7-7d0f9b5e56fe',
+  response: {
+    latestResultResponseTime: '2023-01-09T03:39:04.114+00:00',
+    result: 'EMPTY_RESULT',
+    cableTestResult: { overallStatus: 'N/A' },
+    traceRouteTtl: 0,
+    syncing: false,
+    troubleshootingType: 'cable-test'
+  }
+}
+
+export const troubleshootingResult_cableTest_empty = {
+  requestId: '3d618952-4c53-4a81-a1a7-7d0f9b5e56fe',
+  response: {
+    traceRouteTtl: 0,
+    syncing: false,
+    troubleshootingType: 'cable-test'
+  }
+}
