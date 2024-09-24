@@ -29,7 +29,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
   const {
     clusterOptions,
     isClusterOptionsLoading,
-    dhcpProfiles,
+    dhcpList,
     dhcpOptions,
     isDhcpOptionsLoading
   } = useContext(PersonalIdentityNetworkFormContext)
@@ -90,6 +90,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
         form.setFieldValue('dhcpId', currentEdgeDhcp?.id)
       }
     }
+
     form.setFieldValue('dhcpRelay', dhcpRelay || currentEdgeDhcp?.dhcpRelay)
     setShouldDhcpDisabled(!isGetDhcpByEdgeIdFail)
 
@@ -117,7 +118,8 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
   }
 
   const onDhcpChange = (value: string) => {
-    const dhcpProfile = dhcpProfiles?.find(item => item.id === value)
+    const dhcpProfile = dhcpList?.find(item => item.id === value)
+
     form.setFieldsValue({
       poolId: undefined,
       dhcpRelay: dhcpProfile?.dhcpRelay === 'true'

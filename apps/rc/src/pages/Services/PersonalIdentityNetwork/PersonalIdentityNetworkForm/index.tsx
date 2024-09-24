@@ -61,7 +61,7 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
 
     try {
       await new Promise(async (resolve, reject) => {
-        await props.onFinish(payload! as PersonalIdentityNetworkFormData, {
+        const funcArgs = [{
           params, payload,
           callback: (result: CommonResult[] | CommonErrorsResult<CatchErrorDetails> ) => {
             // callback is after all RBAC related APIs sent
@@ -74,7 +74,10 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
             redirectPreviousPage(navigate, previousPath, linkToServices)
           }
           // need to catch basic service profile failed
-        }).catch(reject)
+        }] as unknown[]
+
+        if (props.editMode) funcArgs.unshift(payload! as PersonalIdentityNetworkFormData)
+        await props.onFinish.apply(null, funcArgs).catch(reject)
       })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console

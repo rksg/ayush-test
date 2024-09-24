@@ -58,12 +58,14 @@ const PersonalIdentityNetworkDetail = () => {
     const edgeClusterInfo = nsgViewData?.edgeClusterInfos[0]
     const targetPool = dhcpPools?.find(item => item.id === edgeClusterInfo?.dhcpPoolId)
     if(!edgeClusterInfo || !targetPool) return
+
     const dhcpConfigs = genDhcpConfigByNsgSetting(
       targetPool.poolStartIp,
       targetPool.poolEndIp,
       edgeClusterInfo.segments,
       edgeClusterInfo.devices
     )
+
     const keaConfig = new File(
       [dhcpConfigs.keaDhcpConfig],
       'kea-dhcp4.conf',

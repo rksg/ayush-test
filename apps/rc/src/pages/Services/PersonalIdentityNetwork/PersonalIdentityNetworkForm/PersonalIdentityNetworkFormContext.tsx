@@ -42,7 +42,7 @@ export interface PersonalIdentityNetworkFormContextType {
   isDpskLoading: boolean
   clusterOptions?: DefaultOptionType[]
   isClusterOptionsLoading: boolean
-  dhcpProfiles?: DhcpStats[]
+  dhcpList?: DhcpStats[]
   dhcpOptions?: DefaultOptionType[]
   isDhcpOptionsLoading: boolean
   tunnelProfileOptions?: DefaultOptionType[]
@@ -55,7 +55,6 @@ export interface PersonalIdentityNetworkFormContextType {
   getVenueName: (venueId: string) => string
   getClusterName: (edgeClusterId: string) => string
   getDhcpName: (dhcpId: string) => string
-  // getDhcpPoolName: (dhcpId: string, poolId: string) => string
   getTunnelProfileName: (tunnelId: string) => string
   getNetworksName: (networkIds: string[]) => (string | undefined)[]
 }
@@ -122,12 +121,12 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
     }
   )
 
-  const { dhcpProfiles, isDhcpOptionsLoading } = useGetDhcpStatsQuery({
+  const { dhcpList, isDhcpOptionsLoading } = useGetDhcpStatsQuery({
     payload: { pageSize: 10000 }
   }, {
     selectFromResult: ({ data, isLoading }) => {
       return {
-        dhcpProfiles: data?.data,
+        dhcpList: data?.data,
         isDhcpOptionsLoading: isLoading
       }
     }
@@ -255,7 +254,7 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
   }
 
   const getDhcpName = (value: string) => {
-    return find(dhcpProfiles, { id: value })?.serviceName ?? ''
+    return find(dhcpList, { id: value })?.serviceName ?? ''
   }
 
   const getTunnelProfileName = (value: string) => {
@@ -282,8 +281,8 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
         isDpskLoading,
         clusterOptions,
         isClusterOptionsLoading,
-        dhcpProfiles,
-        dhcpOptions: dhcpProfiles?.map(item => ({ label: item.serviceName, value: item.id })),
+        dhcpList,
+        dhcpOptions: dhcpList?.map(item => ({ label: item.serviceName, value: item.id })),
         isDhcpOptionsLoading,
         tunnelProfileOptions,
         isTunnelLoading,

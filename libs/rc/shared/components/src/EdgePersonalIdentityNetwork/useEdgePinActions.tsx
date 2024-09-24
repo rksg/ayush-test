@@ -68,7 +68,7 @@ export const useEdgePinActions = () => {
           const reqResult = await handleAssociationDiff(serviceId!,
             undefined,
             payload)
-          callback?.(reqResult)
+          callback?.([response].concat(reqResult as CommonResult[]))
         } catch(error) {
           callback?.(error as CommonErrorsResult<CatchErrorDetails>)
         }
@@ -84,30 +84,24 @@ export const useEdgePinActions = () => {
     const { payload, callback } = req
     const serviceId = payload.id
 
-    if (isEqual(
-      omit(originData, 'networkIds'),
-      omit(payload, 'networkIds')
-    )) {
-      try {
+    try {
+      const isProfileNoChange = isEqual(omit(originData, 'networkIds'), omit(payload, 'networkIds'))
+
+      if (isProfileNoChange) {
         const reqResult = await handleAssociationDiff(serviceId!, originData, payload)
         callback?.(reqResult)
-        return Promise.resolve()
-      } catch(error) {
-        return Promise.reject(error as CommonErrorsResult<CatchErrorDetails>)
-      }
-    } else {
-      try {
+      } else {
         const updateResult = await updatePin({
           params: { serviceId },
           payload
         }).unwrap()
+
         const reqResult = await handleAssociationDiff(serviceId!, originData, payload)
         callback?.([updateResult].concat(reqResult as CommonResult[]))
-        return Promise.resolve()
-      } catch(error) {
-        callback?.(error as CommonErrorsResult<CatchErrorDetails>)
-        return Promise.reject(error as CommonErrorsResult<CatchErrorDetails>)
       }
+    } catch(error) {
+      callback?.(error as CommonErrorsResult<CatchErrorDetails>)
+      return Promise.reject(error as CommonErrorsResult<CatchErrorDetails>)
     }
   }
 

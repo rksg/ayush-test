@@ -41,7 +41,6 @@ const getNetworkSegmentationPayload = {
     'networkIds',
     'venueInfoIds',
     'venueInfos',
-    'edgeInfoIds',
     'edgeClusterInfos',
     'distributionSwitchInfoIds',
     'distributionSwitchInfos',
@@ -94,15 +93,6 @@ const PersonalIdentityNetworkTable = () => {
     deleteNetworkSegmentationGroup,
     { isLoading: isNetworkSegmentationGroupDeleting }
   ] = useDeleteNetworkSegmentationGroupMutation()
-
-  // const { venueOptions = [] } = useVenuesListQuery(
-  //   { payload: venueOptionsDefaultPayload }, {
-  //     selectFromResult: ({ data }) => {
-  //       return {
-  //         venueOptions: data?.data.map(item => ({ value: item.name, key: item.id }))
-  //       }
-  //     }
-  //   })
 
   const { clusterOptions = [] } = useGetEdgeClusterListQuery(
     { payload: clusterOptionsDefaultPayload },

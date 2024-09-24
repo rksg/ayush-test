@@ -210,7 +210,7 @@ describe('useEdgePinActions', () => {
         serviceId,
         wifiNetworkId: 'network_1'
       })
-      expect(mockedCBFn).toBeCalledTimes(0)
+      expect(mockedCBFn).toBeCalledTimes(1)
       expect(mockedReq).toBeCalledWith({
         serviceId,
         wifiNetworkId: 'network_3'
