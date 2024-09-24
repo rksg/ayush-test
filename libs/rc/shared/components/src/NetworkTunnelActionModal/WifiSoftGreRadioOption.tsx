@@ -116,7 +116,7 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
     return isValid ? Promise.resolve() :
       Promise.reject(
         /* eslint-disable max-len */
-        $t({ defaultMessage: 'The gateway address of the selected SoftGRE tunnel profile already exists in another applied profile at the same venue. Please choose a different one.' })
+        $t({ defaultMessage: 'The gateway address of the selected SoftGRE tunnel profile already exists in another applied profile at the same <venueSingular></venueSingular>. Please choose a different one.' })
       )
   }
 
