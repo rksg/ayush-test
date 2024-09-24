@@ -2,11 +2,11 @@ import userEvent       from '@testing-library/user-event'
 import { Form, Modal } from 'antd'
 import { rest }        from 'msw'
 
-import { StepsForm }                                          from '@acx-ui/components'
-import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
-import { switchApi, venueApi }                                from '@acx-ui/rc/services'
-import { CommonUrlsInfo, SwitchUrlsInfo, SwitchRbacUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                    from '@acx-ui/store'
+import { StepsForm }                                                            from '@acx-ui/components'
+import { Features, useIsSplitOn }                                               from '@acx-ui/feature-toggle'
+import { switchApi, venueApi }                                                  from '@acx-ui/rc/services'
+import { CommonUrlsInfo, SwitchUrlsInfo, SwitchRbacUrlsInfo, SwitchStatusEnum } from '@acx-ui/rc/utils'
+import { Provider, store }                                                      from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -553,6 +553,96 @@ describe('Cli Profile Form', () => {
         expect(mockedUpdate).toHaveBeenCalledTimes(1)
         expect(mockedDisassociate).toHaveBeenCalledTimes(1)
         expect(mockedAssociate).toHaveBeenCalledTimes(0)
+      })
+    })
+  })
+
+  describe('CLI profile', () => {
+    describe('Edit mode', () => {
+      const params = {
+        tenantId: 'tenant-id',
+        action: 'edit',
+        configType: 'profiles',
+        profileId: '4515bc6524544cc79303cc6a6443f6c4'
+      }
+
+      beforeEach(() => {
+        mockServer.use(
+          rest.post(SwitchUrlsInfo.getSwitchList.url,
+            (_, res, ctx) => res(ctx.json({
+              data: [{
+                serialNumber: 'FMF3250Q06R',
+                model: 'ICX7150-C08P',
+                name: 'FMF3250Q06R',
+                deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
+                venueName: 'My-Venue',
+                tenantId: 'tenant-id'
+              }, {
+                serialNumber: 'FMF3250Q07R',
+                model: 'ICX7150-C08P',
+                name: 'ICX7150-C08P Switch',
+                deviceStatus: SwitchStatusEnum.OPERATIONAL,
+                venueName: 'My-Venue',
+                tenantId: 'tenant-id'
+              }] }))
+          ),
+          rest.get(SwitchUrlsInfo.getSwitchConfigProfile.url,
+            (_, res, ctx) => res(ctx.json({
+              ...cliProfile,
+              venueCliTemplate: {
+                ...cliProfile.venueCliTemplate,
+                variables: [{
+                  name: 'test', type: 'RANGE', rangeStart: '3', rangeEnd: '4',
+                  switchVariables: [{ serialNumbers: ['FMF3250Q06R'], value: '3' }]
+                }]
+              }
+            }))
+          )
+        )
+      })
+
+      it('should update correctly', async () => {
+        jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_LEVEL_CLI_PROFILE)
+        render(<Provider><CliProfileForm /></Provider>, {
+          route: { params, path: '/:tenantId/networks/wired/:configType/cli/:profileId/:action' }
+        })
+
+        await waitFor(() => {
+          expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+        })
+        expect(await screen.findByText('Edit CLI Configuration Profile')).toBeVisible()
+        expect(screen.queryByText(/Once the CLI Configuration profile/)).toBeNull()
+
+        await userEvent.click(await screen.findByRole('button', { name: 'CLI Configuration' }))
+
+        await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+        await waitFor(() => expect(mockedUpdate).toBeCalled())
+        expect(mockedUpdate).toHaveBeenCalledTimes(1)
+        expect(mockedAssociate).toHaveBeenCalledTimes(0)
+        expect(mockedDisassociate).toHaveBeenCalledTimes(0)
+      })
+
+      it('should render switch own settings drawer correctly', async () => {
+        jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_LEVEL_CLI_PROFILE)
+        render(<Provider><CliProfileForm /></Provider>, {
+          route: { params, path: '/:tenantId/networks/wired/:configType/cli/:profileId/:action' }
+        })
+
+        await waitFor(() => {
+          expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+        })
+        expect(await screen.findByText('Edit CLI Configuration Profile')).toBeVisible()
+
+        await userEvent.click(await screen.findByRole('button', { name: 'CLI Configuration' }))
+        await userEvent.click(await screen.findByRole('tab', { name: 'Variables' }))
+
+        expect(await screen.findByText('Switches with their own settings')).toBeVisible()
+        await userEvent.click(await screen.findByRole('button', { name: '1 Switch(es)' }))
+
+        const dialog = await screen.findByRole('dialog')
+        expect(await within(dialog).findByText('Switches with their own settings')).toBeVisible()
+        expect(await within(dialog).findByText('FMF3250Q06R')).toBeVisible()
+        expect(await within(dialog).findByText('My-Venue')).toBeVisible()
       })
     })
   })

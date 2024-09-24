@@ -234,10 +234,10 @@ export const getVariableTemplate = (type: string, form: FormInstance, $t: IntlSh
   }
 }
 
-const getRequiredMark
+export const getRequiredMark
 = () => <UI.RequiredMark>*</UI.RequiredMark>
 
-const getCustomizeFieldsText = (type: string, $t: IntlShape['$t']) => {
+export const getCustomizeFieldsText = (type: string, $t: IntlShape['$t']) => {
   switch (type) {
     case VariableType.ADDRESS:
       return <UI.CustomizedSubtitle level={5}>
@@ -275,7 +275,7 @@ const getCustomizeFieldsText = (type: string, $t: IntlShape['$t']) => {
   }
 }
 
-const getCustomizeButtonDisabled = (
+export const getCustomizeButtonDisabled = (
   type: string,
   fields: FormListFieldData[],
   requiredFields: string[]
@@ -475,7 +475,7 @@ export const getCustomizedSwitchVenues = (
   )
 }
 
-function getNetworkBitmap (ipArr: string, netmaskArr: string) {
+export function getNetworkBitmap (ipArr: string, netmaskArr: string) {
   let network = []
   for (let i = 0; i < ipArr.length; i++) {
     network[i] = parseInt(ipArr[i], 2) & parseInt(netmaskArr[i], 2)
@@ -484,7 +484,7 @@ function getNetworkBitmap (ipArr: string, netmaskArr: string) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function ipv4ToBitmap (ipv4: any) {
+export function ipv4ToBitmap (ipv4: any) {
   const ipv4List = ipv4.split('.')
   let bitmap = ''
   for (let i = 0; i < ipv4List.length; i++) {
@@ -511,14 +511,14 @@ function validateSubnetmaskOverlap (form: FormInstance) {
   return true
 }
 
-function validateInRange (number: number, start: number, end: number) {
+export function validateInRange (number: number, start: number, end: number) {
   const num = Number(number)
   const rangeStart = Number(start)
   const rangeEnd = Number(end)
   return num >= rangeStart && num <= rangeEnd
 }
 
-function validateRequiredAddress (form: FormInstance) {
+export function validateRequiredAddress (form: FormInstance) {
   const { $t } = getIntl()
   const requiredFields = ['ipAddressStart', 'ipAddressEnd', 'subMask']
   const hasAllValues = requiredFields.every(
@@ -538,7 +538,7 @@ function validateRequiredAddress (form: FormInstance) {
   return Promise.reject($t(SwitchCliMessages.PLEASE_ENTER_ADDRESS_VALUES))
 }
 
-function validateValidIp (ip: string, form: FormInstance) {
+export function validateValidIp (ip: string, form: FormInstance) {
   const { $t } = getIntl()
   const ipAddressStart = form.getFieldValue('ipAddressStart')
   const ipAddressEnd = form.getFieldValue('ipAddressEnd')
@@ -555,7 +555,7 @@ function validateValidIp (ip: string, form: FormInstance) {
     : Promise.reject($t({ defaultMessage: 'Please enter valid value' }))
 }
 
-function validateDuplicateIp (ip: string, index: number, form: FormInstance) {
+export function validateDuplicateIp (ip: string, index: number, form: FormInstance) {
   const { $t } = getIntl()
   const customizeIpList
     = form.getFieldValue('switchVariables')
