@@ -211,6 +211,7 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     // only exist in v1(RBAC version)
     getVenueTemplateMesh: build.query<Mesh, RequestPayload>({
       query: ({ params, isWifiMeshIndependents56GEnable }) => {
+        // eslint-disable-next-line max-len
         const customHeaders = GetApiVersionHeader(isWifiMeshIndependents56GEnable? ApiVersionEnum.v1_1 :ApiVersionEnum.v1)
         return {
           ...createHttpRequest(VenueConfigTemplateUrlsInfo.getVenueMeshRbac, params, customHeaders)
