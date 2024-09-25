@@ -122,10 +122,13 @@ export function AccessPointLED () {
       hasError: tableData?.filter(item => !item.model).length > 0,
       setData: setTableData
     })
-    setEditAdvancedContextData({
-      ...editAdvancedContextData,
-      updateAccessPointLED: handleUpdateSetting
-    })
+    // Avoid initial render
+    if (editContextData?.oldData && !isEqual(editContextData?.oldData, tableData)) {
+      setEditAdvancedContextData({
+        ...editAdvancedContextData,
+        updateAccessPointLED: handleUpdateSetting
+      })
+    }
   }, [tableData])
 
   const columns: TableProps<VenueLed>['columns'] = [{
