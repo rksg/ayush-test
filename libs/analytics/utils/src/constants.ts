@@ -9,7 +9,8 @@ export const productNames = get('IS_MLISA_SA')
   : { smartZone: 'RUCKUS One' }
 
 export enum IncidentToggle {
-  AirtimeIncidents = 'airtime-incidents'
+  AirtimeIncidents = 'airtime-incidents',
+  SecurityDDoSIncidents = 'security-ddos-incidents',
 }
 
 export type IncidentsToggleFilter = {
@@ -68,6 +69,10 @@ const incidentsToggleMap: Record<
       'p-airtime-tx-5g-high',
       'p-airtime-tx-6(5)g-high'
     ]
+  },
+  [IncidentToggle.SecurityDDoSIncidents]: {
+    categories: ['all', 'security'],
+    code: ['s-switch-tcp-syn-ddos']
   }
 }
 
@@ -80,6 +85,7 @@ export function incidentsToggle (payload: {
   if (payload.code) codes = payload.code
 
   const keys = Object.keys(payload.toggles ?? {}) as IncidentToggle[]
+
   return keys.reduce((code, k) => {
     if (!payload.toggles![k]) return code
     const map = incidentsToggleMap[k]
@@ -113,8 +119,7 @@ export const incidentCodes: IncidentCode[] = [
   'i-switch-vlan-mismatch',
   'i-switch-poe-pd',
   'i-apinfra-poe-low',
-  'i-apinfra-wanthroughput-low',
-  's-switch-tcp-syn-ddos'
+  'i-apinfra-wanthroughput-low'
 ]
 
 export const [wiredIncidentCodes, wirelessIncidentCodes] = partition(
@@ -122,13 +127,13 @@ export const [wiredIncidentCodes, wirelessIncidentCodes] = partition(
   code => code.includes('switch')
 )
 
-export type CategoryOption = 'connection' | 'performance' | 'infrastructure'
+export type CategoryOption = 'connection' | 'performance' | 'infrastructure' | 'security'
 export const categoryOptions = [
   { value: 'connection', label: defineMessage({ defaultMessage: 'Connection' }) },
   { value: 'performance', label: defineMessage({ defaultMessage: 'Performance' }) },
   { value: 'infrastructure', label: defineMessage({ defaultMessage: 'Infrastructure' }) }
 ]
-export type CategoryTab = 'overview' | CategoryOption
+export type CategoryTab = 'overview' | Omit<CategoryOption,'security'>
 export const categoryTabs = [
   { value: 'overview', label: defineMessage({ defaultMessage: 'Overview' }) },
   ...categoryOptions

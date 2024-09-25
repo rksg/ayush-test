@@ -6,6 +6,10 @@ export function useIncidentToggles () {
     [IncidentToggle.AirtimeIncidents]: [
       useIsSplitOn(Features.INCIDENTS_AIRTIME_TOGGLE),
       useIsSplitOn(Features.RUCKUS_AI_INCIDENTS_AIRTIME_TOGGLE)
+    ].some(Boolean),
+    [IncidentToggle.SecurityDDoSIncidents]: [
+      useIsSplitOn(Features.INCIDENTS_SWITCH_DDOS_TOGGLE),
+      useIsSplitOn(Features.RUCKUS_AI_INCIDENTS_SWITCH_DDOS_TOGGLE)
     ].some(Boolean)
   }
 }
