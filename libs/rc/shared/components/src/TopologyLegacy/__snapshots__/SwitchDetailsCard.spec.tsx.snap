@@ -29,24 +29,37 @@ exports[`Topology Switch Card should render orrectly 1`] = `
 }
 
 .c2 svg path {
-  stroke: var(--acx-primary-black);
+  color: var(--acx-primary-black);
+}
+
+.c2.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c2.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c2.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
 }
 
 .c2.ant-btn-primary svg path {
-  stroke: var(--acx-primary-white) !important;
-  fill: var(--acx-primary-white) !important;
+  color: var(--acx-primary-white) !important;
 }
 
 .c2[disabled] svg path,
 .c2.ant-btn-disabled svg path {
-  stroke: var(--acx-primary-white);
+  color: var(--acx-primary-white);
 }
 
+.c2[disabled].ant-btn-link svg path,
+.c2.ant-btn-disabled.ant-btn-link svg path,
 .c2[disabled].ant-btn-default svg path,
 .c2.ant-btn-disabled.ant-btn-default svg path,
 .c2[disabled].ant-btn-primary svg path,
 .c2.ant-btn-disabled.ant-btn-primary svg path {
-  stroke: var(--acx-neutrals-40);
+  color: var(--acx-neutrals-40);
 }
 
 .c0 {
@@ -131,6 +144,26 @@ exports[`Topology Switch Card should render orrectly 1`] = `
   padding-bottom: var(--acx-descriptions-space);
 }
 
+.c5 .ant-descriptions-item .ant-descriptions-item-label,
+.c5 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c5 .ant-descriptions-item .ant-descriptions-item-label {
+  color: var(--acx-neutrals-60);
+}
+
+.c5 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c5 .ant-descriptions-item .ant-descriptions-item-content {
+  color: var(--acx-primary-black);
+}
+
 .c5 .ant-descriptions-item .ant-descriptions-item-container {
   -webkit-align-items: baseline;
   -webkit-box-align: baseline;
@@ -138,15 +171,8 @@ exports[`Topology Switch Card should render orrectly 1`] = `
   align-items: baseline;
 }
 
-.c5 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-label,
-.c5 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-content {
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
-}
-
 .c5 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-label {
   width: 50%;
-  color: var(--acx-neutrals-60);
 }
 
 .c5 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-content {

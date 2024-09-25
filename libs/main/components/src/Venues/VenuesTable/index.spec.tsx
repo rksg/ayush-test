@@ -1,10 +1,11 @@
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import userEvent     from '@testing-library/user-event'
+import { cloneDeep } from 'lodash'
+import { rest }      from 'msw'
 
-import { useIsSplitOn, Features }       from '@acx-ui/feature-toggle'
-import { venueApi }                     from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }              from '@acx-ui/store'
+import { useIsSplitOn, Features }                                                from '@acx-ui/feature-toggle'
+import { venueApi }                                                              from '@acx-ui/rc/services'
+import { CommonUrlsInfo, EdgeCompatibilityFixtures, EdgeUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                       from '@acx-ui/store'
 import {
   act,
   mockServer,
@@ -29,6 +30,7 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+const { mockEdgeCompatibilitiesVenue } = EdgeCompatibilityFixtures
 
 describe('Venues Table', () => {
   let params: { tenantId: string }
@@ -134,7 +136,7 @@ describe('Venues Table', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByText('My-Venue')).toBeVisible()
-    expect(await screen.findByRole('columnheader', { name: 'SmartEdges' })).toBeVisible()
+    expect(await screen.findByRole('columnheader', { name: 'RUCKUS Edges' })).toBeVisible()
   })
 
   it('should not have edge column when feature flag off', async () => {
@@ -149,7 +151,7 @@ describe('Venues Table', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByText('My-Venue')).toBeVisible()
-    expect(screen.queryByRole('columnheader', { name: 'SmartEdges' })).toBeFalsy()
+    expect(screen.queryByRole('columnheader', { name: 'RUCKUS Edges' })).toBeFalsy()
   })
 
   it('should have correct edge device quantity', async () => {
@@ -183,7 +185,7 @@ describe('Venues Table', () => {
   })
 
   it('should have ap compatibilies correct', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
+    // jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
 
     render(
       <Provider>
@@ -195,6 +197,38 @@ describe('Venues Table', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const row = await screen.findByRole('row', { name: /My-Venue/i })
+    const icon = await within(row).findByTestId('InformationSolid')
+    expect(icon).toBeVisible()
+  })
+
+  it('should have edge compatibilies correct', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      [Features.EDGES_TOGGLE, Features.EDGE_COMPATIBILITY_CHECK_TOGGLE].includes(ff as Features))
+    const mockVenuelist = cloneDeep(venuelist)
+    mockVenuelist.data[0].id = mockEdgeCompatibilitiesVenue.compatibilities[0].id
+    mockVenuelist.data[0].name = 'Test-Edge-Compatibility'
+
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (_req, res, ctx) => res(ctx.json(mockVenuelist))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getVenueEdgeCompatibilities.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeCompatibilitiesVenue))
+      )
+    )
+
+    render(
+      <Provider>
+        <VenuesTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/venues' }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const row = await screen.findByRole('row', { name: /Test-Edge-Compatibility/i })
     const icon = await within(row).findByTestId('InformationSolid')
     expect(icon).toBeVisible()
   })

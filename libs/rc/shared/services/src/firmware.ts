@@ -35,7 +35,11 @@ import {
   SwitchRow,
   ApFirmwareBatchOperationType,
   ApFirmwareStartBatchOperationResult,
-  FirmwareType
+  FirmwareType,
+  EdgeFirmwareBatchOperationType,
+  EdgeFirmwareStartBatchOperationResult,
+  StartEdgeFirmwareVenueUpdateNowPayload,
+  UpdateEdgeFirmwareVenueSchedulePayload
 } from '@acx-ui/rc/utils'
 import { baseFirmwareApi }             from '@acx-ui/store'
 import { RequestPayload }              from '@acx-ui/types'
@@ -50,11 +54,6 @@ const v1Header = {
 const v1_1Header = {
   'Content-Type': 'application/vnd.ruckus.v1.1+json',
   'Accept': 'application/vnd.ruckus.v1.1+json'
-}
-
-const v1_2Header = {
-  'Content-Type': 'application/vnd.ruckus.v1.2+json',
-  'Accept': 'application/vnd.ruckus.v1.2+json'
 }
 
 export const firmwareApi = baseFirmwareApi.injectEndpoints({
@@ -257,10 +256,10 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
-    batchUpdateSwitchVenueSchedulesV1002: build.mutation<void, RequestPayload[]>({
+    batchUpdateSwitchVenueSchedulesV1001: build.mutation<void, RequestPayload[]>({
       async queryFn (requests, _queryApi, _extraOptions, fetchWithBQ) {
         return batchApi(
-          FirmwareRbacUrlsInfo.updateSwitchVenueSchedules, requests, fetchWithBQ, v1_2Header
+          FirmwareRbacUrlsInfo.updateSwitchVenueSchedules, requests, fetchWithBQ, v1_1Header
         )
       },
       invalidatesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
@@ -276,10 +275,10 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
-    getSwitchLatestFirmwareListV1002: build.query<SwitchFirmwareVersion1002[], RequestPayload>({
+    getSwitchLatestFirmwareListV1001: build.query<SwitchFirmwareVersion1002[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(
-          FirmwareRbacUrlsInfo.getSwitchLatestFirmwareList, params, v1_2Header)
+          FirmwareRbacUrlsInfo.getSwitchLatestFirmwareList, params, v1_1Header)
         return {
           ...req
         }
@@ -298,10 +297,10 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
 
-    getSwitchDefaultFirmwareListV1002: build.query<SwitchFirmwareVersion1002[], RequestPayload>({
+    getSwitchDefaultFirmwareListV1001: build.query<SwitchFirmwareVersion1002[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(
-          FirmwareRbacUrlsInfo.getSwitchDefaultFirmwareList, params, v1_2Header)
+          FirmwareRbacUrlsInfo.getSwitchDefaultFirmwareList, params, v1_1Header)
         return {
           ...req
         }
@@ -318,9 +317,9 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
     // eslint-disable-next-line max-len
-    getSwitchVenueVersionListV1002: build.query<TableResult<FirmwareSwitchVenueV1002>, RequestPayload>({
+    getSwitchVenueVersionListV1001: build.query<TableResult<FirmwareSwitchVenueV1002>, RequestPayload>({
       query: ({ params, payload }) => {
-        const headers = v1_2Header
+        const headers = v1_1Header
         // eslint-disable-next-line max-len
         const queryString = payload as { searchString: string, filters: { filterModelVersion: string[] } }
         const request =
@@ -425,10 +424,10 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
-    getSwitchAvailableFirmwareListV1002: build.query<SwitchFirmwareVersion1002[], RequestPayload>({
+    getSwitchAvailableFirmwareListV1001: build.query<SwitchFirmwareVersion1002[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(
-          FirmwareRbacUrlsInfo.getSwitchAvailableFirmwareList, params, v1_2Header)
+          FirmwareRbacUrlsInfo.getSwitchAvailableFirmwareList, params, v1_1Header)
         return {
           ...req
         }
@@ -446,10 +445,10 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
-    getSwitchCurrentVersionsV1002: build.query<CurrentVersionsV1002, RequestPayload>({
+    getSwitchCurrentVersionsV1001: build.query<CurrentVersionsV1002, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(
-          FirmwareRbacUrlsInfo.getSwitchCurrentVersions, params, v1_2Header)
+          FirmwareRbacUrlsInfo.getSwitchCurrentVersions, params, v1_1Header)
         return {
           ...req
         }
@@ -503,9 +502,9 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         } as unknown as TableResult<SwitchFirmware>
       }
     }),
-    getSwitchFirmwareListV1002: build.query<TableResult<SwitchFirmwareV1002>, RequestPayload>({
+    getSwitchFirmwareListV1001: build.query<TableResult<SwitchFirmwareV1002>, RequestPayload>({
       query: ({ params, payload }) => {
-        const headers = v1_2Header
+        const headers = v1_1Header
         const req = createHttpRequest(FirmwareRbacUrlsInfo.getSwitchFirmwareList, params, headers)
         return {
           ...req,
@@ -543,7 +542,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'SwitchFirmware', id: 'LIST' }, { type: 'SwitchFirmware', id: 'PREDOWNLOAD' }]
     }),
-    retryFirmwareUpdateV1002: build.mutation<SwitchRow, RequestPayload>({
+    retryFirmwareUpdateV1001: build.mutation<SwitchRow, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(SwitchRbacUrlsInfo.retryFirmwareUpdate, params)
         return {
@@ -562,10 +561,12 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       providesTags: [{ type: 'EdgeFirmware', id: 'LATEST' }]
     }),
     getVenueEdgeFirmwareList: build.query<EdgeVenueFirmware[], RequestPayload>({
-      query: () => {
-        const req = createHttpRequest(FirmwareUrlsInfo.getVenueEdgeFirmwareList, undefined,v1Header)
+      query: ({ payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(FirmwareUrlsInfo.getVenueEdgeFirmwareList, undefined, v1Header)
         return {
-          ...req
+          ...req,
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'EdgeFirmware', id: 'LIST' }],
@@ -771,6 +772,59 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         return { data: { batchId } }
       },
       invalidatesTags: [{ type: 'Firmware', id: 'LIST' }]
+    }),
+    // eslint-disable-next-line max-len
+    startEdgeFirmwareVenueUpdateNow: build.mutation<{ batchId: string }, RequestPayload<StartEdgeFirmwareVenueUpdateNowPayload>>({
+      async queryFn (args, _queryApi, _extraOptions, fetchWithBQ) {
+        // eslint-disable-next-line max-len
+        const { data, error } = await getEdgeFirmwareBatchOperationResult(EdgeFirmwareBatchOperationType.UPDATE_NOW, fetchWithBQ)
+        if (error) return { error: error as FetchBaseQueryError }
+        const batchId = (data as EdgeFirmwareStartBatchOperationResult).response.batchId
+
+        const { venueIds, ...rest } = args.payload!
+        const requests = venueIds.map(venueId => ({
+          params: { venueId, batchId },
+          payload: { ...rest }
+        }))
+        await batchApi(FirmwareUrlsInfo.startEdgeFirmwareVenueUpdateNow, requests, fetchWithBQ)
+
+        return { data: { batchId } }
+      },
+      invalidatesTags: [{ type: 'EdgeFirmware', id: 'LIST' }]
+    }),
+    // eslint-disable-next-line max-len
+    updateEdgeFirmwareVenueSchedule: build.mutation<{ batchId: string }, RequestPayload<UpdateEdgeFirmwareVenueSchedulePayload>>({
+      async queryFn (args, _queryApi, _extraOptions, fetchWithBQ) {
+        // eslint-disable-next-line max-len
+        const { data, error } = await getEdgeFirmwareBatchOperationResult(EdgeFirmwareBatchOperationType.CHANGE_SCHEDULE, fetchWithBQ)
+        if (error) return { error: error as FetchBaseQueryError }
+        const batchId = (data as EdgeFirmwareStartBatchOperationResult).response.batchId
+
+        const { venueIds, ...rest } = args.payload!
+        const requests = venueIds.map(venueId => ({
+          params: { venueId, batchId },
+          payload: { ...rest }
+        }))
+        await batchApi(FirmwareUrlsInfo.updateEdgeFirmwareVenueSchedule, requests, fetchWithBQ)
+
+        return { data: { batchId } }
+      },
+      invalidatesTags: [{ type: 'EdgeFirmware', id: 'LIST' }]
+    }),
+    // eslint-disable-next-line max-len
+    skipEdgeFirmwareVenueSchedule: build.mutation<{ batchId: string }, RequestPayload<{ venueIds: string[] }>>({
+      async queryFn (args, _queryApi, _extraOptions, fetchWithBQ) {
+        // eslint-disable-next-line max-len
+        const { data, error } = await getEdgeFirmwareBatchOperationResult(EdgeFirmwareBatchOperationType.SKIP_SCHEDULE, fetchWithBQ)
+        if (error) return { error: error as FetchBaseQueryError }
+        const batchId = (data as EdgeFirmwareStartBatchOperationResult).response.batchId
+
+        const requests = args.payload!.venueIds.map(venueId => ({ params: { venueId, batchId } }))
+        await batchApi(FirmwareUrlsInfo.skipEdgeFirmwareVenueSchedule, requests, fetchWithBQ)
+
+        return { data: { batchId } }
+      },
+      invalidatesTags: [{ type: 'EdgeFirmware', id: 'LIST' }]
     })
   })
 })
@@ -793,24 +847,24 @@ export const {
   useSkipSwitchUpgradeSchedulesMutation,
   useUpdateSwitchVenueSchedulesMutation,
   useBatchUpdateSwitchVenueSchedulesMutation,
-  useBatchUpdateSwitchVenueSchedulesV1002Mutation,
+  useBatchUpdateSwitchVenueSchedulesV1001Mutation,
   useGetSwitchLatestFirmwareListQuery,
   useLazyGetSwitchLatestFirmwareListQuery,
-  useGetSwitchLatestFirmwareListV1002Query,
-  useLazyGetSwitchLatestFirmwareListV1002Query,
+  useGetSwitchLatestFirmwareListV1001Query,
+  useLazyGetSwitchLatestFirmwareListV1001Query,
   useGetSwitchDefaultFirmwareListQuery,
   useLazyGetSwitchDefaultFirmwareListQuery,
-  useGetSwitchDefaultFirmwareListV1002Query,
-  useLazyGetSwitchDefaultFirmwareListV1002Query,
+  useGetSwitchDefaultFirmwareListV1001Query,
+  useLazyGetSwitchDefaultFirmwareListV1001Query,
   useGetSwitchFirmwareVersionIdListQuery,
   useGetSwitchVenueVersionListQuery,
   useLazyGetSwitchVenueVersionListQuery,
-  useGetSwitchVenueVersionListV1002Query,
-  useLazyGetSwitchVenueVersionListV1002Query,
+  useGetSwitchVenueVersionListV1001Query,
+  useLazyGetSwitchVenueVersionListV1001Query,
   useGetSwitchAvailableFirmwareListQuery,
-  useGetSwitchAvailableFirmwareListV1002Query,
+  useGetSwitchAvailableFirmwareListV1001Query,
   useGetSwitchCurrentVersionsQuery,
-  useGetSwitchCurrentVersionsV1002Query,
+  useGetSwitchCurrentVersionsV1001Query,
   useGetSwitcDefaultVersionsQuery,
   useGetSwitchFirmwarePredownloadQuery,
   useUpdateSwitchFirmwarePredownloadMutation,
@@ -825,8 +879,8 @@ export const {
   useLazyGetVenueEdgeFirmwareListQuery,
   useGetSwitchFirmwareListQuery,
   useLazyGetSwitchFirmwareListQuery,
-  useGetSwitchFirmwareListV1002Query,
-  useLazyGetSwitchFirmwareListV1002Query,
+  useGetSwitchFirmwareListV1001Query,
+  useLazyGetSwitchFirmwareListV1001Query,
   useGetSwitchFirmwareStatusListQuery,
   useLazyGetSwitchFirmwareStatusListQuery,
   useGetScheduledFirmwareQuery,
@@ -838,7 +892,10 @@ export const {
   useUpdateVenueSchedulesPerApModelMutation,
   useSkipVenueSchedulesPerApModelMutation,
   useBatchSkipSwitchUpgradeSchedulesMutation,
-  useRetryFirmwareUpdateV1002Mutation
+  useRetryFirmwareUpdateV1001Mutation,
+  useStartEdgeFirmwareVenueUpdateNowMutation,
+  useUpdateEdgeFirmwareVenueScheduleMutation,
+  useSkipEdgeFirmwareVenueScheduleMutation
 } = firmwareApi
 
 async function getBatchOperationResult (
@@ -848,6 +905,17 @@ async function getBatchOperationResult (
 ) {
   return await fetchWithBQ({
     ...createHttpRequest(FirmwareUrlsInfo.startFirmwareBatchOperation),
+    body: JSON.stringify({ operationType })
+  })
+}
+
+async function getEdgeFirmwareBatchOperationResult (
+  operationType: EdgeFirmwareBatchOperationType,
+  // eslint-disable-next-line max-len
+  fetchWithBQ:(arg: string | FetchArgs) => MaybePromise<QueryReturnValue<unknown, FetchBaseQueryError, FetchBaseQueryMeta>>
+) {
+  return await fetchWithBQ({
+    ...createHttpRequest(FirmwareUrlsInfo.startEdgeFirmwareBatchOperation),
     body: JSON.stringify({ operationType })
   })
 }

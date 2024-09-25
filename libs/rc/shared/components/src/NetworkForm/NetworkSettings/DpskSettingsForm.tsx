@@ -21,7 +21,9 @@ import {
   transformAdvancedDpskExpirationText,
   useConfigTemplateQueryFnSwitcher,
   TableResult,
-  hasDpskAccess
+  hasServicePermission,
+  ServiceType,
+  ServiceOperation
 } from '@acx-ui/rc/utils'
 
 import { DpskForm }       from '../../services/DpskForm/DpskForm'
@@ -100,7 +102,6 @@ function SettingsForm () {
       form.setFieldValue('isCloudpathEnabled', false)
   }, [dpskWlanSecurity])
 
-  const disableAAA = !useIsSplitOn(Features.POLICIES)
   const isWpaDsae3Toggle = useIsSplitOn(Features.WIFI_EDA_WPA3_DSAE_TOGGLE)
   const isBetaDPSK3FeatureEnabled = useIsTierAllowed(TierFeatures.BETA_DPSK3)
 
@@ -142,10 +143,7 @@ function SettingsForm () {
               </Radio>
               <Radio
                 value={true}
-                disabled={
-                  (dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed)
-                    || editMode
-                    || disableAAA}>
+                disabled={dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed || editMode}>
                 { $t({ defaultMessage: 'Use RADIUS Server' }) }
               </Radio>
             </Space>
@@ -172,6 +170,9 @@ function DpskServiceSelector () {
   })
 
   const dpskServiceProfileId = useWatch('dpskServiceProfileId')
+  const hasAddDpskPermission = hasServicePermission({
+    type: ServiceType.DPSK, oper: ServiceOperation.CREATE
+  })
 
   const findService = (serviceId: string) => {
     return dpskList?.data.find((dpsk: DpskSaveData) => dpsk.id === serviceId)
@@ -216,7 +217,7 @@ function DpskServiceSelector () {
         >
         </Select>
       </Form.Item>
-      { hasDpskAccess() && <Button
+      { hasAddDpskPermission && <Button
         type='link'
         style={{ marginBottom: '16px' }}
         onClick={() => setDpskModalVisible(true)}

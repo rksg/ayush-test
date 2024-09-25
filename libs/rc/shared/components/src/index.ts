@@ -214,6 +214,7 @@ export {
 export type {
   SdLanScopedNetworkVenuesData
 } from './EdgeSdLan/useEdgeSdLanActions'
+export { useEdgePinActions } from './EdgePersonalIdentityNetwork/useEdgePinActions'
 export { SdLanTopologyDiagram } from './EdgeSdLan/SdLanTopologyDiagram'
 export {
   useGetNetworkTunnelInfo,
@@ -227,7 +228,6 @@ export * from './NetworkTunnelActionModal'
 export { showSdLanGuestFwdConflictModal } from './EdgeSdLan/SdLanGuestFwdConflictModal'
 export {
   ApCompatibilityType,
-  ApCompatibilityQueryTypes,
   InCompatibilityFeatures,
   retrievedCompatibilitiesOptions,
   ApCompatibilityFeature,
@@ -238,7 +238,7 @@ export {
   EdgeCompatibilityDrawer,
   EdgeCompatibilityType,
   CompatibilityWarningCircleIcon,
-  EdgeSdLanDetailCompatibilityDrawer,
+  EdgeDetailCompatibilityDrawer,
   CompatibleAlertBanner
 } from './Compatibility'
 export { EdgeClusterCommonForm } from './EdgeFormItem/EdgeClusterCommonForm'
@@ -262,6 +262,14 @@ export {
   transformApiDataToFormListData
 } from './EdgeFormItem/EdgePortsGeneralBase/utils'
 export { EdgeStaticRouteTable } from './EdgeStaticRouteTable'
+export {
+  EdgeChangeScheduleDialog
+} from './EdgeFirmware/ChangeScheduleDialog'
+export type { EdgeChangeScheduleDialogProps } from './EdgeFirmware/ChangeScheduleDialog'
+export {
+  EdgeUpdateNowDialog
+} from './EdgeFirmware/UpdateNowDialog'
+export type { EdgeUpdateApNowDialogProps } from './EdgeFirmware/UpdateNowDialog'
 
 export * from './services'
 export * from './policies'
@@ -280,6 +288,8 @@ export * from './NetworkDetails'
 export * from './users'
 export * from './configTemplates'
 export * from './EdgeCluster'
+export * from './WorkflowForm'
+export * from './EnrollmentPortalDesignModal'
 export * from './SwitchBlinkLEDsDrawer'
 export { ConfigurationProfileForm } from './SwitchRegularProfileForm'
 export * from './SwitchCliProfileForm'
@@ -289,4 +299,6 @@ export {
 } from './useRwgActions'
 export * from './SwitchLagDrawer/SwitchLagModal'
 export { isOperationalSwitchPort, isStackPort } from './SwitchPortTable'
+export * from './EnrollmentPortalLink'
+export * from './WorkflowActionPreviewModal'
 export { TrafficClassSettingsTable } from './EdgeQos/TrafficClassSettingsTable'

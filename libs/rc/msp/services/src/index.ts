@@ -33,7 +33,8 @@ import {
   AvailableMspRecCustomers,
   MspEcWithVenue,
   MspRbacUrlsInfo,
-  MspCompliances
+  MspCompliances,
+  RecommendFirmwareUpgradeByApModel
 } from '@acx-ui/msp/utils'
 import {
   TableResult,
@@ -452,6 +453,17 @@ export const mspApi = baseMspApi.injectEndpoints({
       },
       providesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
+    mspRbacEcAssignmentHistory: build.query<TableResult<MspAssignmentHistory>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const mspecAssignmentHistoryReq =
+          createHttpRequest(MspRbacUrlsInfo.getMspEcAssignmentHistory, params)
+        return {
+          ...mspecAssignmentHistoryReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
     addCustomer: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const mspUrlsInfo = getMspUrls(enableRbac)
@@ -853,6 +865,17 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       }
     }),
+    getFirmwareUpgradeByApModel: build.query<RecommendFirmwareUpgradeByApModel[],
+      RequestPayload>({
+        query: ({ params, payload }) => {
+          const req = createHttpRequest(MspRbacUrlsInfo.getFirmwareUpgradeByApModel,
+            params)
+          return {
+            ...req,
+            body: payload
+          }
+        }
+      }),
     mspEcFirmwareUpgradeSchedules: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(MspUrlsInfo.mspEcFirmwareUpgradeSchedules, params)
@@ -1043,6 +1066,7 @@ export const {
   useMspEcAdminListQuery,
   useMspAssignmentHistoryQuery,
   useMspRbacAssignmentHistoryQuery,
+  useMspRbacEcAssignmentHistoryQuery,
   useAddCustomerMutation,
   useUpdateCustomerMutation,
   useUpdateMspEcDelegatedAdminsMutation,
@@ -1079,6 +1103,7 @@ export const {
   useDeleteMspAggregationsMutation,
   useGetMspEcAlarmListQuery,
   useGetRecommandFirmwareUpgradeQuery,
+  useGetFirmwareUpgradeByApModelQuery,
   useMspEcFirmwareUpgradeSchedulesMutation,
   useGetAvailableMspRecCustomersQuery,
   useAddRecCustomerMutation,

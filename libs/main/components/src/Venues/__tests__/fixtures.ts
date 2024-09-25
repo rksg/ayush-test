@@ -28,7 +28,9 @@ import {
   RfBandUsageEnum,
   BssMinimumPhyRateEnum,
   PhyTypeConstraintEnum,
-  ManagementFrameMinimumPhyRateEnum
+  ManagementFrameMinimumPhyRateEnum,
+  MtuTypeEnum,
+  SoftGreViewData
 } from '@acx-ui/rc/utils'
 
 export const successResponse = {
@@ -319,6 +321,55 @@ export const venueLanPorts = [{
   poeMode: 'Auto',
   poeOut: false
 }]
+
+export const mockEthProfiles = {
+  fields: [
+    'id',
+    'name',
+    'type',
+    'untagId',
+    'vlanMembers',
+    'isDefault',
+    'venueIds',
+    'venueActivations'
+  ],
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      id: 'ed4b396d848e465d8044064ff3da9d33',
+      name: 'Default Trunk',
+      type: 'TRUNK',
+      untagId: 1,
+      vlanMembers: '1-4094',
+      isDefault: true,
+      venueIds: ['venue-id'],
+      venueActivations: [
+        {
+          venueId: 'venue-id',
+          apModel: 'T750',
+          portId: 1
+        }
+      ]
+    },
+    {
+      id: 'd17d0b68b34249ff85376ebfaa8a87d5',
+      name: 'Default Access',
+      type: 'ACCESS',
+      untagId: 1,
+      vlanMembers: '1',
+      isDefault: true,
+      venueIds: ['venue-id'],
+      venueActivations: [
+        {
+          venueId: 'venue-id',
+          apModel: 'T750',
+          portId: 2
+        }
+      ]
+    }
+  ]
+}
 
 export const venueSetting = {
   tenantId: '15a04f095a8f4a96acaf17e921e8a6df',
@@ -3513,4 +3564,77 @@ export const mockedRogueApPolicyRbac = {
     }
   ],
   id: '6015cbb1000f419bb08a04bc6c8fe70c'
+}
+
+export const mockSoftGreTable = {
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      id: '0d89c0f5596c4689900fb7f5f53a0859',
+      name: 'softGreProfileName1',
+      mtuType: MtuTypeEnum.MANUAL,
+      mtuSize: 1450,
+      disassociateClientEnabled: false,
+      primaryGatewayAddress: '128.0.0.1',
+      secondaryGatewayAddress: '128.0.0.0',
+      keepAliveInterval: 100,
+      keepAliveRetryTimes: 8,
+      activations: [
+        {
+          venueId: 'venueId-1',
+          wifiNetworkIds: ['network_1', 'network_2', 'd556bb683e4248b7a911fdb40c307aa5']
+        }
+      ]
+    },
+    {
+      id: '75aa5131892d44a6a85a623dd3e524ed',
+      name: 'softGreProfileName2',
+      mtuType: MtuTypeEnum.AUTO,
+      disassociateClientEnabled: true,
+      primaryGatewayAddress: '128.0.0.3',
+      keepAliveInterval: 10,
+      keepAliveRetryTimes: 5,
+      activations: [
+        {
+          venueId: 'venueId-1',
+          wifiNetworkIds: ['network_4', 'network_5']
+        }
+      ]
+    },
+    {
+      id: 'softGreProfileName3-id',
+      name: 'softGreProfileName3',
+      mtuType: MtuTypeEnum.MANUAL,
+      mtuSize: 1450,
+      disassociateClientEnabled: false,
+      primaryGatewayAddress: '128.0.0.4',
+      secondaryGatewayAddress: '128.0.0.5',
+      keepAliveInterval: 100,
+      keepAliveRetryTimes: 8,
+      activations: [
+        {
+          venueId: 'venueId-1',
+          wifiNetworkIds: ['network_6']
+        }
+      ]
+    },
+    {
+      id: 'softGreProfileName4-id',
+      name: 'softGreProfileName4',
+      mtuType: MtuTypeEnum.MANUAL,
+      mtuSize: 1450,
+      disassociateClientEnabled: false,
+      primaryGatewayAddress: '128.0.0.4',
+      secondaryGatewayAddress: '128.0.0.5',
+      keepAliveInterval: 100,
+      keepAliveRetryTimes: 8,
+      activations: [
+        {
+          venueId: 'venueId-2',
+          wifiNetworkIds: ['network_6']
+        }
+      ]
+    }
+  ] as SoftGreViewData[]
 }

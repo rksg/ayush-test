@@ -1,6 +1,7 @@
 import React from 'react'
 
-import { Popover } from 'antd'
+import { Popover }          from 'antd'
+import { TooltipPlacement } from 'antd/es/tooltip'
 
 import { Tooltip } from '@acx-ui/components'
 
@@ -11,14 +12,20 @@ export interface DescriptionRowProps {
   tooltip?: string
   popover?: string
   children: React.ReactNode,
-  onClick?: () => void
+  onClick?: () => void,
+  tooltipPlacement?: TooltipPlacement
 }
 
-export const DescriptionRow: React.FC<DescriptionRowProps> = (props) => {
+export const DescriptionRow: React.FC<Omit<DescriptionRowProps, 'label'>> = (props) => {
   let textContent = <TextContent onClick={props.onClick}>{props.children}</TextContent>
-  if (props.tooltip) { textContent = <Tooltip title={props.tooltip} dottedUnderline={true}>
-    {textContent}
-  </Tooltip> }
+  if (props.tooltip) {
+    textContent = <Tooltip
+      title={props.tooltip}
+      dottedUnderline={true}
+      placement={props.tooltipPlacement ?? 'top'}
+    >
+      {textContent}
+    </Tooltip> }
   if (props.popover) {
     textContent = (<PopoverWrapper>
       <PopoverGlobalStyle />

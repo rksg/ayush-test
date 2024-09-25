@@ -12,7 +12,9 @@ import {
 } from '@acx-ui/rc/services'
 import {
   ServiceOperation, ServiceType,
+  filterByAccessForServicePolicyMutation,
   genDhcpConfigByNsgSetting,
+  getScopeKeyByService,
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath
@@ -42,8 +44,8 @@ const PersonalIdentityNetworkDetail = () => {
     }
   })
   const { dhcpRelay, dhcpPools } = useGetEdgeDhcpServiceQuery(
-    { params: { id: nsgViewData?.edgeInfos[0].dhcpInfoId } },{
-      skip: !!!nsgViewData?.edgeInfos[0],
+    { params: { id: nsgViewData?.edgeClusterInfos[0].dhcpInfoId } },{
+      skip: !!!nsgViewData?.edgeClusterInfos[0],
       selectFromResult: ({ data }) => {
         return {
           dhcpRelay: data?.dhcpRelay,
@@ -53,15 +55,17 @@ const PersonalIdentityNetworkDetail = () => {
     })
 
   const handleDownloadConfigs = () => {
-    const edgeInfo = nsgViewData?.edgeInfos[0]
-    const targetPool = dhcpPools?.find(item => item.id === edgeInfo?.dhcpPoolId)
-    if(!edgeInfo || !targetPool) return
+    const edgeClusterInfo = nsgViewData?.edgeClusterInfos[0]
+    const targetPool = dhcpPools?.find(item => item.id === edgeClusterInfo?.dhcpPoolId)
+    if(!edgeClusterInfo || !targetPool) return
+
     const dhcpConfigs = genDhcpConfigByNsgSetting(
       targetPool.poolStartIp,
       targetPool.poolEndIp,
-      edgeInfo.segments,
-      edgeInfo.devices
+      edgeClusterInfo.segments,
+      edgeClusterInfo.devices
     )
+
     const keaConfig = new File(
       [dhcpConfigs.keaDhcpConfig],
       'kea-dhcp4.conf',
@@ -107,14 +111,18 @@ const PersonalIdentityNetworkDetail = () => {
         extra={[...(dhcpRelay ? [
           <Alert style={{ margin: 'auto' }} message={warningMsg} type='info' showIcon />
         ] : []),
-        <TenantLink state={{ from: location }}
-          to={getServiceDetailsLink({
-            type: ServiceType.NETWORK_SEGMENTATION,
-            oper: ServiceOperation.EDIT,
-            serviceId: params.serviceId! })}
-          key='edit'>
-          <Button type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
-        </TenantLink>
+        ...filterByAccessForServicePolicyMutation([
+          <TenantLink state={{ from: location }}
+            to={getServiceDetailsLink({
+              type: ServiceType.NETWORK_SEGMENTATION,
+              oper: ServiceOperation.EDIT,
+              serviceId: params.serviceId! })}
+            key='edit'
+            scopeKey={getScopeKeyByService(ServiceType.NETWORK_SEGMENTATION, ServiceOperation.EDIT)}
+          >
+            <Button type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
+          </TenantLink>
+        ])
         ]}
       />
       <Space direction='vertical' size={30}>

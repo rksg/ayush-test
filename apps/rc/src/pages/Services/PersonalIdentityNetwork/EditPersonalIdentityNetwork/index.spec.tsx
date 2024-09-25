@@ -16,10 +16,8 @@ import {
   screen,
   waitFor
 } from '@acx-ui/test-utils'
+import { RequestPayload } from '@acx-ui/types'
 
-import {
-  mockNsgData
-} from '../__tests__/fixtures'
 import { afterSubmitMessage } from '../PersonalIdentityNetworkForm'
 
 import EditNetworkSegmentation from '.'
@@ -50,6 +48,20 @@ jest.mock('../PersonalIdentityNetworkForm/PersonalIdentityNetworkFormContext', (
     <div data-testid='PersonalIdentityNetworkFormDataProvider' children={children} />
 }))
 
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  useEdgePinActions: () => ({
+    editPin: (req: RequestPayload) => new Promise((resolve) => {
+      resolve(true)
+      setTimeout(() => {
+        (req.callback as Function)([{
+          response: { id: 'mocked_service_id' }
+        }])
+      }, 300)
+    })
+  })
+}))
+
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -57,7 +69,7 @@ jest.mock('react-router-dom', () => ({
 }))
 
 const updateNsgPath = '/:tenantId/t/services/personalIdentityNetwork/:serviceId/edit'
-const { mockNsgSwitchInfoData } = EdgeNSGFixtures
+const { mockNsgSwitchInfoData, mockNsgData } = EdgeNSGFixtures
 
 describe('Edit PersonalIdentityNetwork', () => {
   let params: { tenantId: string, serviceId: string }
@@ -70,8 +82,8 @@ describe('Edit PersonalIdentityNetwork', () => {
     mockServer.use(
       rest.put(
         NetworkSegmentationUrls.updateNetworkSegmentationGroup.url,
-        (req, res, ctx) => res(ctx.status(202))
-      )
+        (_req, res, ctx) => res(ctx.status(202)))
+
     )
   })
 
@@ -99,7 +111,7 @@ describe('Edit PersonalIdentityNetwork', () => {
       })
     // step 1
     await screen.findByTestId('GeneralSettingsForm')
-    await user.click(await screen.findByText('SmartEdge'))
+    await user.click(await screen.findByText('RUCKUS Edge'))
     // step 2
     await screen.findByTestId('SmartEdgeForm')
     await user.click(await screen.findByText('Wireless Network'))

@@ -2,6 +2,7 @@ import { FormInstance } from 'antd'
 import { rest }         from 'msw'
 
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { softGreApi }                                             from '@acx-ui/rc/services'
 import {
   ClientIsolationUrls,
   ConfigTemplateType,
@@ -17,12 +18,14 @@ import {
   WifiRbacUrlsInfo,
   ServicesConfigTemplateUrlsInfo,
   ConfigTemplateContext,
-  AaaUrls
+  AaaUrls,
+  NetworkVenue,
+  SoftGreUrls
 } from '@acx-ui/rc/utils'
-import { Provider }                        from '@acx-ui/store'
+import { Provider, store }                 from '@acx-ui/store'
 import { mockServer, renderHook, waitFor } from '@acx-ui/test-utils'
 
-import { hasAccountingRadius, hasAuthRadius, hasVxLanTunnelProfile, useClientIsolationActivations, useNetworkVxLanTunnelProfileInfo, useRadiusServer, useServicePolicyEnabledWithConfigTemplate, useWifiCalling, getDefaultMloOptions } from './utils'
+import { hasAccountingRadius, hasAuthRadius, hasVxLanTunnelProfile, useClientIsolationActivations, useNetworkVxLanTunnelProfileInfo, useRadiusServer, useServicePolicyEnabledWithConfigTemplate, useWifiCalling, getDefaultMloOptions, useUpdateSoftGreActivations } from './utils'
 
 const mockedUseConfigTemplate = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
@@ -300,9 +303,7 @@ describe('Network utils test', () => {
     })
 
     it('should return false if neither policy nor service config template', () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff =>
-        ff === Features.SERVICES || ff === Features.POLICIES || ff === Features.CONFIG_TEMPLATE
-      )
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.CONFIG_TEMPLATE)
       // eslint-disable-next-line max-len
       jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.CONFIG_TEMPLATE)
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
@@ -314,9 +315,7 @@ describe('Network utils test', () => {
     })
 
     it('should return true if policy config template and policy enabled', () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff =>
-        ff === Features.SERVICES || ff === Features.POLICIES || ff === Features.CONFIG_TEMPLATE
-      )
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.CONFIG_TEMPLATE)
       // eslint-disable-next-line max-len
       jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.CONFIG_TEMPLATE)
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
@@ -328,9 +327,7 @@ describe('Network utils test', () => {
     })
 
     it('should return true if service config template and service enabled', () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff =>
-        ff === Features.SERVICES || ff === Features.POLICIES || ff === Features.CONFIG_TEMPLATE
-      )
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.CONFIG_TEMPLATE)
       // eslint-disable-next-line max-len
       jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.CONFIG_TEMPLATE)
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
@@ -342,9 +339,7 @@ describe('Network utils test', () => {
     })
 
     it('should return true if it is not a config template', () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff =>
-        ff === Features.SERVICES || ff === Features.POLICIES || ff === Features.CONFIG_TEMPLATE
-      )
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.CONFIG_TEMPLATE)
       // eslint-disable-next-line max-len
       jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.CONFIG_TEMPLATE)
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
@@ -771,6 +766,71 @@ describe('Network utils test', () => {
       }
       const actual = getDefaultMloOptions(wifi7Mlo3LinkFlag)
       expect(actual).toEqual(defaultWithFFon)
+    })
+  })
+
+  describe('useUpdateSoftGreActivations', () => {
+    const networkId = 'network-id'
+    const mockedActivateSoftGre = jest.fn()
+    const mockedDeactivateSoftGre = jest.fn()
+
+    beforeEach(() => {
+      store.dispatch(softGreApi.util.resetApiState())
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      mockedActivateSoftGre.mockClear()
+      mockedDeactivateSoftGre.mockClear()
+      mockServer.use(
+        rest.put(
+          SoftGreUrls.activateSoftGre.url,
+          (_, res, ctx) => {
+            mockedActivateSoftGre()
+            return res(ctx.status(202))
+          }),
+        rest.delete(
+          SoftGreUrls.dectivateSoftGre.url,
+          (_, res, ctx) => {
+            mockedDeactivateSoftGre()
+            return res(ctx.status(202))
+          })
+      )}
+    )
+
+    it('useUpdateSoftGreActivations(create/edit)', async () => {
+      const profileId = 'profile-id'
+      const profileName = 'profileName'
+      const updates = {
+        venue_1: { newProfileId: profileId, newProfileName: profileName, oldProfileId: '' },
+        venue_2: { newProfileId: '', newProfileName: '', oldProfileId: profileId }
+      }
+      const activatedVenues = [{ venueId: 'venue_1' }, { venueId: 'venue_2' }] as NetworkVenue[]
+
+      const { result } = renderHook(() => useUpdateSoftGreActivations(),
+        { route: { params: { networkId: 'networkId' } }, wrapper: Provider })
+
+      // eslint-disable-next-line max-len
+      await result.current(networkId, updates, activatedVenues, false)
+
+      expect(mockedActivateSoftGre).toBeCalledTimes(1)
+      expect(mockedDeactivateSoftGre).toBeCalledTimes(1)
+    })
+
+    it('useUpdateSoftGreActivations(clone)', async () => {
+      const profileId = 'profile-id'
+      const profileName = 'profileName'
+      const updates = {
+        venue_1: { newProfileId: profileId, newProfileName: profileName, oldProfileId: '' },
+        venue_2: { newProfileId: '', newProfileName: '', oldProfileId: profileId }
+      }
+      const activatedVenues = [{ venueId: 'venue_1' }, { venueId: 'venue_2' }] as NetworkVenue[]
+
+      const { result } = renderHook(() => useUpdateSoftGreActivations(),
+        { route: { params: { networkId: 'networkId' } }, wrapper: Provider })
+
+      // eslint-disable-next-line max-len
+      await result.current(networkId, updates, activatedVenues, true)
+
+      expect(mockedActivateSoftGre).toBeCalledTimes(1)
+      expect(mockedDeactivateSoftGre).not.toBeCalled()
     })
   })
 })

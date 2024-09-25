@@ -8,14 +8,14 @@ import {
   EdgeMvSdLanViewData,
   ServiceOperation,
   ServiceType,
+  filterByAccessForServicePolicyMutation,
+  getScopeKeyByService,
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { EdgeScopes }            from '@acx-ui/types'
-import { filterByAccess }        from '@acx-ui/user'
 
 import { CompatibilityCheck }    from './CompatibilityCheck'
 import { DcSdLanDetailContent }  from './DcSdLanDetailContent'
@@ -37,6 +37,24 @@ export const defaultSdLanApTablePayload = {
   ]
 }
 
+const defaultSdLanPayload = {
+  fields: [
+    'id', 'name',
+    'edgeClusterId', 'edgeClusterName',
+    'tunnelProfileId', 'tunnelProfileName',
+    'isGuestTunnelEnabled',
+    'guestEdgeClusterId', 'guestEdgeClusterName',
+    'guestTunnelProfileId', 'guestTunnelProfileName',
+    'edgeAlarmSummary',
+    'vlans', 'vlanNum', 'vxlanTunnelNum',
+    'guestVlanNum', 'guestVxlanTunnelNum', 'guestVlans',
+    'tunneledWlans',
+    'tunneledGuestWlans',
+    'edgeClusterTunnelInfo',
+    'guestEdgeClusterTunnelInfo'
+  ]
+}
+
 const EdgeSdLanDetail = () => {
   const isEdgeCompatibilityEnabled = useIsSplitOn(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
@@ -45,6 +63,7 @@ const EdgeSdLanDetail = () => {
 
   const { edgeSdLanData, isLoading, isFetching } = useGetEdgeMvSdLanViewDataListQuery(
     { payload: {
+      ...defaultSdLanPayload,
       filters: { id: [params.serviceId] }
     } },
     {
@@ -74,9 +93,9 @@ const EdgeSdLanDetail = () => {
             })
           }
         ]}
-        extra={filterByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink
-            scopeKey={[EdgeScopes.UPDATE]}
+            scopeKey={getScopeKeyByService(ServiceType.EDGE_SD_LAN, ServiceOperation.EDIT)}
             to={getServiceDetailsLink({
               type: ServiceType.EDGE_SD_LAN,
               oper: ServiceOperation.EDIT,
@@ -96,8 +115,7 @@ const EdgeSdLanDetail = () => {
               serviceId={params.serviceId}
             />
           </Col>
-        </Row>
-        }
+        </Row>}
         {isDMZEnabled
           ? <DmzSdLanDetailContent data={edgeSdLanData} />
           : <DcSdLanDetailContent data={edgeSdLanData} />

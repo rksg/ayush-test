@@ -1,7 +1,7 @@
 import { Divider, Form, Row, Space } from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { ApCompatibility, CompatibilityDeviceEnum, IncompatibilityFeatures, getCompatibilityDeviceTypeDisplayName, getCompatibilityFeatureDisplayName } from '@acx-ui/rc/utils'
+import { ApCompatibility, CompatibilityDeviceEnum, IncompatibilityFeatures, getCompatibilityDeviceTypeDisplayName } from '@acx-ui/rc/utils'
 
 import { CompatibilityItem }           from './CompatibilityItem'
 import { messageMapping }              from './messageMapping'
@@ -27,7 +27,7 @@ export const FeatureCrossDeviceTypeCompatibility = (props: FeatureCrossDeviceTyp
   const deviceTypesString = $t({
     defaultMessage: '{hasEdge} {hasAnd} {hasAp}' },
   {
-    hasEdge: (hasEdge ? $t({ defaultMessage: 'SmartEdges' }) : ''),
+    hasEdge: (hasEdge ? $t({ defaultMessage: 'RUCKUS Edges' }) : ''),
     hasAnd: (isAllHas ? $t({ defaultMessage: 'and' }) : ''),
     hasAp: (hasAp ? $t({ defaultMessage: 'access points' }) : '')
   })
@@ -36,10 +36,12 @@ export const FeatureCrossDeviceTypeCompatibility = (props: FeatureCrossDeviceTyp
     {...messageMapping.singleFeatureCrossDeviceType}
     values={{
       b: (txt) => <b>{txt}</b>,
-      featureName: getCompatibilityFeatureDisplayName(others.featureName),
+      featureName: others.featureName,
       deviceTypes: deviceTypesString
     }}
   />
+
+  const isCrossDeviceType = deviceTypes.length > 1
 
   return <>
     <Form.Item>
@@ -52,11 +54,12 @@ export const FeatureCrossDeviceTypeCompatibility = (props: FeatureCrossDeviceTyp
         const firmwareLink = getFirmwareLinkByDeviceType(typeName as CompatibilityDeviceEnum)
 
         return hasValidData && <div key={typeName}>
-          <Row>
+          { isCrossDeviceType && <Row>
             <StyledDeviceTypeTitle>
               {getCompatibilityDeviceTypeDisplayName(typeName as CompatibilityDeviceEnum)}
             </StyledDeviceTypeTitle>
           </Row>
+          }
           <CompatibilityItem
             description=''
             data={typeData.incompatibleFeatures ?? []}

@@ -10,17 +10,17 @@ import { StepsFormLegacy }                      from '@acx-ui/components'
 import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
 import {
   useGetAccessControlProfileQuery,
+  useGetAccessControlProfileTemplateQuery,
   useGetEnhancedAccessControlProfileListQuery
 } from '@acx-ui/rc/services'
 import {
-  useGetAccessControlProfileTemplateListQuery,
-  useGetAccessControlProfileTemplateQuery
+  useGetAccessControlProfileTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
   AccessControlInfoType,
-  AclEmbeddedObject,
-  useConfigTemplate,
-  useConfigTemplateQueryFnSwitcher, useTableQuery
+  AclEmbeddedObject, EnhancedAccessControlInfoType,
+  useConfigTemplate, useConfigTemplateQueryFnSwitcher,
+  useTableQuery
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -42,41 +42,30 @@ export const AccessControlSettingForm = (props: AccessControlSettingFormProps) =
   } = props
   const form = Form.useFormInstance()
 
-  const { isTemplate } = useConfigTemplate()
+  const data = useGetAclPolicyInstance(editMode)
 
-  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
-  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : enableRbac
-
-  const { data } = useConfigTemplateQueryFnSwitcher({
-    useQueryFn: useGetAccessControlProfileQuery,
-    useTemplateQueryFn: useGetAccessControlProfileTemplateQuery,
-    skip: !editMode,
-    enableRbac: resolvedRbacEnabled
-  })
-
-  const aclProfileList : AccessControlInfoType[] = GetAclPolicyListInstance(editMode)
+  const aclProfileList : AccessControlInfoType[] = useGetAclPolicyListInstance(editMode)
 
   useEffect(() => {
     if (data) {
       form.setFieldValue('oldPayload', data)
       form.setFieldValue('policyName', data.name)
       form.setFieldValue('description', get(data, 'description'))
-      if (get(data, 'l2AclPolicy')) {
+      if (get(data, 'l2AclPolicyId')) {
         form.setFieldValue('enableLayer2', true)
-        form.setFieldValue('l2AclPolicyId', data.l2AclPolicy?.id)
+        form.setFieldValue('l2AclPolicyId', data.l2AclPolicyId)
       }
-      if (get(data, 'l3AclPolicy')) {
+      if (get(data, 'l3AclPolicyId')) {
         form.setFieldValue('enableLayer3', true)
-        form.setFieldValue('l3AclPolicyId', data.l3AclPolicy?.id)
+        form.setFieldValue('l3AclPolicyId', data.l3AclPolicyId)
       }
-      if (get(data, 'devicePolicy')) {
+      if (get(data, 'devicePolicyId')) {
         form.setFieldValue('enableDeviceOs', true)
-        form.setFieldValue('devicePolicyId', data.devicePolicy?.id)
+        form.setFieldValue('devicePolicyId', data.devicePolicyId)
       }
-      if (get(data, 'applicationPolicy')) {
+      if (get(data, 'applicationPolicyId')) {
         form.setFieldValue('enableApplications', true)
-        form.setFieldValue('applicationPolicyId', data.applicationPolicy?.id)
+        form.setFieldValue('applicationPolicyId', data.applicationPolicyId)
       }
       if (get(data, 'rateLimiting')) {
         const rateLimiting = get(data, 'rateLimiting')
@@ -170,7 +159,7 @@ export const AccessControlSettingForm = (props: AccessControlSettingFormProps) =
   )
 }
 
-const GetAclPolicyListInstance = (editMode: boolean) => {
+const useGetAclPolicyListInstance = (editMode: boolean) => {
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
 
@@ -198,4 +187,63 @@ const GetAclPolicyListInstance = (editMode: boolean) => {
   const useAclPolicyList = nonTableQuery?.data?.data as AccessControlInfoType[]
 
   return isTemplate ? useAclPolicyTemplateList : (useAclPolicyList ?? [])
+}
+
+const useGetAclPolicyInstance = (editMode: boolean) => {
+  const params = useParams()
+  const { isTemplate } = useConfigTemplate()
+
+  const isServiceRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const enableRbac = isTemplate ? isConfigTemplateRbacEnabled : isServiceRbacEnabled
+
+  const defaultPayload = {
+    filters: { id: [params.policyId] },
+    searchString: '',
+    fields: [],
+    page: 1
+  }
+
+  const tableQuery = useTableQuery({
+    useQuery: useGetEnhancedAccessControlProfileListQuery,
+    defaultPayload,
+    enableRbac,
+    option: {
+      skip: !editMode || isTemplate
+    }
+  })
+
+  const { data } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetAccessControlProfileQuery,
+    useTemplateQueryFn: useGetAccessControlProfileTemplateQuery,
+    enableRbac: enableRbac
+  })
+
+  const aclPolicyData = tableQuery?.data?.data[0]
+
+  const aclPolicyDataWithExtra = {
+    ...aclPolicyData,
+    description: data?.description || '',
+    rateLimiting: data?.rateLimiting
+  }
+
+  const templateTableQuery = useTableQuery({
+    useQuery: useGetAccessControlProfileTemplateListQuery,
+    defaultPayload,
+    enableRbac,
+    option: {
+      skip: !editMode || !isTemplate
+    }
+  })
+
+  const aclTemplatePolicyData = templateTableQuery?.data?.data[0]
+
+  const aclTemplatePolicyDataWithExtra = {
+    ...aclTemplatePolicyData,
+    description: data?.description || '',
+    rateLimiting: data?.rateLimiting
+  }
+
+  // eslint-disable-next-line max-len
+  return ((isTemplate ? aclTemplatePolicyDataWithExtra : aclPolicyDataWithExtra) || {}) as EnhancedAccessControlInfoType
 }

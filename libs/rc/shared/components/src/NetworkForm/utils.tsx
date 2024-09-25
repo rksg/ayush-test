@@ -5,7 +5,7 @@ import { FormInstance }            from 'antd'
 import _, { cloneDeep, findIndex } from 'lodash'
 import { Params }                  from 'react-router-dom'
 
-import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ActionItem,
   comparePayload,
@@ -57,7 +57,9 @@ import {
   useActivateDeviceTemplateOnWifiNetworkMutation,
   useDeactivateApplicationPolicyTemplateOnWifiNetworkMutation,
   useActivateApplicationPolicyTemplateOnWifiNetworkMutation,
-  useGetEnhancedVlanPoolPolicyTemplateListQuery
+  useGetEnhancedVlanPoolPolicyTemplateListQuery,
+  useActivateSoftGreMutation,
+  useDectivateSoftGreMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -79,7 +81,8 @@ import {
   NetworkRadiusSettings,
   EdgeMvSdLanViewData,
   NetworkTunnelSdLanAction,
-  VLANPoolViewModelType
+  VLANPoolViewModelType,
+  NetworkTunnelSoftGreAction
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -198,8 +201,6 @@ export const useNetworkVxLanTunnelProfileInfo =
 
 // eslint-disable-next-line max-len
 export function useServicePolicyEnabledWithConfigTemplate (configTemplateType: ConfigTemplateType): boolean {
-  const isPolicyEnabled = useIsSplitOn(Features.POLICIES)
-  const isServiceEnabled = useIsSplitOn(Features.SERVICES)
   const isPolicyConfigTemplate = configTemplatePolicyTypeMap[configTemplateType]
   const isServiceConfigTemplate = configTemplateServiceTypeMap[configTemplateType]
   const { isTemplate } = useConfigTemplate()
@@ -208,19 +209,15 @@ export function useServicePolicyEnabledWithConfigTemplate (configTemplateType: C
 
   if (!isPolicyConfigTemplate && !isServiceConfigTemplate) return false
 
-  if (isPolicyConfigTemplate) {
-    return isPolicyEnabled && result
-  }
-
-  if (isServiceConfigTemplate) {
-    return isServiceEnabled && result
+  if (isPolicyConfigTemplate || isServiceConfigTemplate) {
+    return result
   }
 
   return false
 }
 
 // eslint-disable-next-line max-len
-export function deriveFieldsFromServerData (data: NetworkSaveData): NetworkSaveData {
+export function deriveRadiusFieldsFromServerData (data: NetworkSaveData): NetworkSaveData {
   return {
     ...data,
     isCloudpathEnabled: data.authRadius ? true : false,
@@ -304,7 +301,7 @@ export function useRadiusServer () {
 
 
   // eslint-disable-next-line max-len
-  const updateProfile = async (saveData: NetworkSaveData, oldSaveData?: NetworkSaveData | null, networkId?: string) => {
+  const updateProfile = async (saveData: NetworkSaveData, networkId?: string) => {
     if (!resolvedRbacEnabled || !networkId) return Promise.resolve()
 
     const mutations: Promise<CommonResult>[] = []
@@ -313,7 +310,7 @@ export function useRadiusServer () {
     const radiusServerIdKeys: Extract<keyof NetworkSaveData, 'authRadiusId' | 'accountingRadiusId'>[] = ['authRadiusId', 'accountingRadiusId']
     radiusServerIdKeys.forEach(radiusKey => {
       const radiusValue = saveData[radiusKey]
-      const oldRadiusValue = oldSaveData?.[radiusKey]
+      const oldRadiusValue = radiusServerConfigurations?.[radiusKey]
 
       if ((radiusValue ?? '') !== (oldRadiusValue ?? '')) {
         const mutationTrigger = radiusValue ? activateRadiusServer : deactivateRadiusServer
@@ -340,9 +337,9 @@ export function useRadiusServer () {
   }
 
   // eslint-disable-next-line max-len
-  const updateRadiusServer = async (saveData: NetworkSaveData, oldSaveData?: NetworkSaveData | null, networkId?: string) => {
+  const updateRadiusServer = async (saveData: NetworkSaveData, networkId?: string) => {
     return Promise.all([
-      updateProfile(saveData, oldSaveData, networkId),
+      updateProfile(saveData, networkId),
       updateSettings(saveData, networkId)
     ])
   }
@@ -378,7 +375,7 @@ export function useClientIsolationActivations (shouldSkipMode: boolean,
     const venueData = saveState?.venues?.map(v => ({ ...v,
       clientIsolationAllowlistId: venueClientIsolationMap.get(v.venueId!) }))
     const fullNetworkSaveData = { ...saveState, venues: venueData }
-    const resolvedNetworkSaveData = deriveFieldsFromServerData(fullNetworkSaveData)
+    const resolvedNetworkSaveData = deriveRadiusFieldsFromServerData(fullNetworkSaveData)
 
     form.setFieldsValue({
       ...resolvedNetworkSaveData
@@ -691,34 +688,33 @@ export function useAccessControlActivation () {
 
   const filterForAccessControlComparison = (data: NetworkSaveData) => {
     let object = {} as Record<string, unknown>
-    if (data.wlan?.advancedCustomization?.hasOwnProperty('l2AclPolicyId')
-      && data.wlan?.advancedCustomization.l2AclEnable) {
-      object['l2AclPolicyId'] = data.wlan.advancedCustomization.l2AclPolicyId
-    }
-
-    if (data.wlan?.advancedCustomization?.hasOwnProperty('l3AclPolicyId')
-      && data.wlan?.advancedCustomization.l3AclEnable) {
-      object['l3AclPolicyId'] = data.wlan.advancedCustomization.l3AclPolicyId
-    }
-
-    if (data.wlan?.advancedCustomization?.hasOwnProperty('devicePolicyId')
-      && data.enableDeviceOs) {
-      object['devicePolicyId'] = data.wlan.advancedCustomization.devicePolicyId
-    }
-
-    if (data.wlan?.advancedCustomization?.hasOwnProperty('applicationPolicyId')
-      && data.wlan?.advancedCustomization?.applicationPolicyEnable) {
-      object['applicationPolicyId'] = data.wlan.advancedCustomization.applicationPolicyId
-    }
-
-    if (data.wlan?.advancedCustomization?.hasOwnProperty('accessControlProfileId')
-      && data.wlan?.advancedCustomization.accessControlEnable) {
-      // eslint-disable-next-line max-len
+    if (data.wlan?.advancedCustomization?.accessControlEnable) {
       object['accessControlProfileId'] = data.wlan.advancedCustomization.accessControlProfileId
+    } else {
+      if (data.wlan?.advancedCustomization?.hasOwnProperty('l2AclPolicyId')
+        && data.wlan?.advancedCustomization.l2AclEnable) {
+        object['l2AclPolicyId'] = data.wlan.advancedCustomization.l2AclPolicyId
+      }
+
+      if (data.wlan?.advancedCustomization?.hasOwnProperty('l3AclPolicyId')
+        && data.wlan?.advancedCustomization.l3AclEnable) {
+        object['l3AclPolicyId'] = data.wlan.advancedCustomization.l3AclPolicyId
+      }
+
+      if (data.wlan?.advancedCustomization?.hasOwnProperty('devicePolicyId')
+        && data.wlan?.advancedCustomization.enableDeviceOs) {
+        object['devicePolicyId'] = data.wlan.advancedCustomization.devicePolicyId
+      }
+
+      if (data.wlan?.advancedCustomization?.hasOwnProperty('applicationPolicyId')
+        && data.wlan?.advancedCustomization?.applicationPolicyEnable) {
+        object['applicationPolicyId'] = data.wlan.advancedCustomization.applicationPolicyId
+      }
     }
 
     return object
   }
+
 
   // eslint-disable-next-line max-len
   const itemProcessFn = (currentPayload: Record<string, unknown>, oldPayload: Record<string, unknown>, key: string, id: string) => {
@@ -829,6 +825,32 @@ export const useUpdateEdgeSdLanActivations = () => {
   return updateEdgeSdLanActivations
 }
 
+export const useUpdateSoftGreActivations = () => {
+  const [ activateSoftGre ] = useActivateSoftGreMutation()
+  const [ dectivateSoftGre ] = useDectivateSoftGreMutation()
+
+  // eslint-disable-next-line max-len
+  const updateSoftGreActivations = async (networkId: string, updates: NetworkTunnelSoftGreAction, activatedVenues: NetworkVenue[], cloneMode: boolean) => {
+    const actions = Object.keys(updates).filter(venueId => {
+      return _.find(activatedVenues, { venueId })
+    }).map((venueId) => {
+      // eslint-disable-next-line max-len
+      const action = updates[venueId]
+      if (!cloneMode && !action.newProfileId && action.oldProfileId) {
+        return dectivateSoftGre({ params: { venueId, networkId, policyId: action.oldProfileId } })
+      } else if (action.newProfileId && action.newProfileId !== action.oldProfileId) {
+        return activateSoftGre({ params: { venueId, networkId, policyId: action.newProfileId } })
+      }
+      return Promise.resolve()
+    })
+
+    return await Promise.all(actions)
+  }
+
+  return updateSoftGreActivations
+}
+
+
 export const getNetworkTunnelSdLanUpdateData = (
   modalFormValues: NetworkTunnelActionForm,
   sdLanAssociationUpdates: NetworkTunnelSdLanAction[],
@@ -843,7 +865,7 @@ export const getNetworkTunnelSdLanUpdateData = (
   const sdLanTunneled = formTunnelType === NetworkTunnelTypeEnum.SdLan
   const sdLanTunnelGuest = modalFormValues.sdLan?.isGuestTunnelEnabled
 
-  const tunnelTypeInitVal = getNetworkTunnelType(tunnelModalProps.network, venueSdLanInfo)
+  const tunnelTypeInitVal = getNetworkTunnelType(tunnelModalProps.network, [], venueSdLanInfo)
   const isFwdGuest = sdLanTunneled ? sdLanTunnelGuest : false
   let isNeedUpdate: boolean = false
 

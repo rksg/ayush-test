@@ -29,24 +29,37 @@ exports[`DpskSettingsForm should render DPSK form successfully 1`] = `
 }
 
 .c1 svg path {
-  stroke: var(--acx-primary-black);
+  color: var(--acx-primary-black);
+}
+
+.c1.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c1.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c1.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
 }
 
 .c1.ant-btn-primary svg path {
-  stroke: var(--acx-primary-white) !important;
-  fill: var(--acx-primary-white) !important;
+  color: var(--acx-primary-white) !important;
 }
 
 .c1[disabled] svg path,
 .c1.ant-btn-disabled svg path {
-  stroke: var(--acx-primary-white);
+  color: var(--acx-primary-white);
 }
 
+.c1[disabled].ant-btn-link svg path,
+.c1.ant-btn-disabled.ant-btn-link svg path,
 .c1[disabled].ant-btn-default svg path,
 .c1.ant-btn-disabled.ant-btn-default svg path,
 .c1[disabled].ant-btn-primary svg path,
 .c1.ant-btn-disabled.ant-btn-primary svg path {
-  stroke: var(--acx-neutrals-40);
+  color: var(--acx-neutrals-40);
 }
 
 .c0 {
@@ -242,14 +255,13 @@ exports[`DpskSettingsForm should render DPSK form successfully 1`] = `
                               class="ant-space-item"
                             >
                               <label
-                                class="ant-radio-wrapper ant-radio-wrapper-disabled ant-radio-wrapper-in-form-item"
+                                class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
                               >
                                 <span
-                                  class="ant-radio ant-radio-disabled"
+                                  class="ant-radio"
                                 >
                                   <input
                                     class="ant-radio-input"
-                                    disabled=""
                                     type="radio"
                                     value="true"
                                   />

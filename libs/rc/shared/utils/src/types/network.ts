@@ -130,6 +130,8 @@ export interface NetworkSaveData {
   enableDhcp?: boolean
   enableDeviceOs?: boolean
   wlan?: {
+    accessControlEnabled?: boolean
+    accessControlProfileId?: string
     ssid?: string
     vlanId?: number
     enable?: boolean
@@ -174,7 +176,8 @@ export interface NetworkSaveData {
   useCertificateTemplate?: boolean
   certificateTemplateId?: string
   accountingInterimUpdates?: number
-  sdLanAssociationUpdate?: NetworkTunnelSdLanAction[]
+  sdLanAssociationUpdate?: NetworkTunnelSdLanAction[],
+  softGreAssociationUpdate?: NetworkTunnelSoftGreAction
 }
 
 export enum MaxRateEnum {
@@ -258,4 +261,12 @@ export interface NetworkTunnelSdLanAction {
   guestEnabled: boolean, // forward guest traffic
   enabled: boolean,      // is local breakout
   venueSdLanInfo?: EdgeMvSdLanViewData
+}
+
+export interface NetworkTunnelSoftGreAction {
+  [name:string]: {
+    newProfileId: string,
+    newProfileName: string,
+    oldProfileId: string
+  }
 }

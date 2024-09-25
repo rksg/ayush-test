@@ -1,7 +1,27 @@
 import { NetworkPath } from '@acx-ui/utils'
 
-import { aiFeatures }     from '../config'
-import { AIFeatureProps } from '../Table'
+import { AiFeatures }                                  from '../config'
+import { IntentConfigurationConfig, useIntentContext } from '../IntentContext'
+import { Statuses }                                    from '../states'
+import { AIFeatureProps }                              from '../Table'
+import { Intent, IntentKPIConfig, intentState }        from '../useIntentDetailsQuery'
+import { isDataRetained }                              from '../utils'
+
+export const mockIntentContext = (config: {
+  intent: Intent
+  kpis?: IntentKPIConfig[],
+  configuration?: IntentConfigurationConfig
+}) => {
+  const context: ReturnType<typeof useIntentContext> = {
+    configuration: config.configuration,
+    intent: config.intent,
+    kpis: config.kpis ?? [],
+    state: intentState(config.intent),
+    isDataRetained: isDataRetained(config.intent.metadata.dataEndTime)
+  }
+  jest.mocked(useIntentContext).mockReturnValue(context)
+  return context
+}
 
 //Refer to libs/analytics/components/src/Recommendations/__tests__/fixtures.ts
 export const notEnoughLicenses = {
@@ -97,7 +117,7 @@ export const mockAIDrivenRow = {
   trigger: 'daily'
 }
 
-export const mockAirflexRows = [
+export const mockEquiFlexRows = [
   {
     id: '16',
     code: 'c-probeflex-24g',
@@ -283,19 +303,28 @@ export const intentListWithAllStatus = {
       ...intentStatus,
       status: 'scheduled',
       statusReason: '',
-      displayStatus: 'scheduled'
+      displayStatus: 'scheduled',
+      metadata: {
+        scheduledAt: '2023-06-17T00:00:00.000Z'
+      }
     },
     {
       ...intentStatus,
       status: 'scheduled',
       statusReason: 'one-click',
-      displayStatus: 'scheduled-one-click'
+      displayStatus: 'scheduled-one-click',
+      metadata: {
+        scheduledAt: '2023-06-17T00:00:00.000Z'
+      }
     },
     {
       ...intentStatus,
       status: 'applyscheduled',
       statusReason: '',
-      displayStatus: 'applyscheduled'
+      displayStatus: 'applyscheduled',
+      metadata: {
+        scheduledAt: '2023-06-17T00:00:00.000Z'
+      }
     },
     {
       ...intentStatus,
@@ -425,7 +454,7 @@ export const intentHighlights = {
       new: 4,
       active: 8
     },
-    airflex: {
+    probeflex: {
       new: 5,
       active: 10
     },
@@ -442,7 +471,7 @@ export const intentHighlightsWithZeroActive = {
       new: 4,
       active: 0
     },
-    airflex: {
+    probeflex: {
       new: 5,
       active: 0
     },
@@ -467,9 +496,9 @@ export const intentHighlightsWithRRM = {
   }
 }
 
-export const intentHighlightsWithAirflex = {
+export const intentHighlightsWithEquiFlex = {
   highlights: {
-    airflex: {
+    probeflex: {
       new: 5,
       active: 10
     }
@@ -487,28 +516,41 @@ export const intentHighlightsWithOperations = {
 
 export const aiFeatureWithRRM = {
   code: 'c-crrm-channel5g-auto',
-  aiFeature: aiFeatures.RRM,
+  aiFeature: AiFeatures.RRM,
   root: 'root1',
-  sliceId: 'sliceId1'
+  sliceId: 'sliceId1',
+  status: Statuses.active
 } as AIFeatureProps
 
-export const aiFeatureWithAirFlexAI = {
+export const aiFeatureWithEquiFlex = {
   code: 'c-probeflex-6g',
-  aiFeature: aiFeatures.AirFlexAI,
+  aiFeature: AiFeatures.EquiFlex,
   root: 'root2',
-  sliceId: 'sliceId2'
+  sliceId: 'sliceId2',
+  status: Statuses.active
+} as AIFeatureProps
+
+export const aiFeatureWithEquiFlexWithNewStatus = {
+  code: 'c-probeflex-6g',
+  aiFeature: AiFeatures.EquiFlex,
+  root: 'root2',
+  sliceId: 'sliceId2',
+  status: Statuses.new
 } as AIFeatureProps
 
 export const aiFeatureWithAIOps = {
   code: 'c-bgscan24g-enable',
-  aiFeature: aiFeatures.AIOps,
+  aiFeature: AiFeatures.AIOps,
   root: 'root3',
-  sliceId: 'sliceId3'
+  sliceId: 'sliceId3',
+  status: Statuses.active
 } as AIFeatureProps
 
-export const aiFeatureWithEcoFlexAI = {
-  code: 'eco-flex-code',  //EcoFlexAI code is not defined
-  aiFeature: aiFeatures.EcoFlexAI,
+export const aiFeatureWithEcoFlex = {
+  code: 'i-ecoflex',
+  aiFeature: AiFeatures.EcoFlex,
   root: 'root4',
-  sliceId: 'sliceId4'
+  sliceId: 'sliceId4',
+  status: Statuses.active
 } as AIFeatureProps
+

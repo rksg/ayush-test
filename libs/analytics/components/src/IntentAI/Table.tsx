@@ -5,15 +5,16 @@ import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 import { Loader, TableProps, Table, Tooltip }                                                  from '@acx-ui/components'
 import { get }                                                                                 from '@acx-ui/config'
 import { DateFormatEnum, formatter }                                                           from '@acx-ui/formatter'
-import { AIDrivenRRM, AIOperation, AirFlexAI, EcoFlexAI }                                      from '@acx-ui/icons'
+import { AIDrivenRRM, AIOperation, EquiFlex, EcoFlexAI }                                       from '@acx-ui/icons'
 import { useNavigate, useTenantLink, TenantLink }                                              from '@acx-ui/react-router-dom'
+import { WifiScopes }                                                                          from '@acx-ui/types'
 import { filterByAccess, getShowWithoutRbacCheckKey, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 import { noDataDisplay, PathFilter, useEncodedParameter }                                      from '@acx-ui/utils'
 
 import { Icon }                                        from './common/IntentIcon'
-import { aiFeatures, codes, IntentListItem }           from './config'
+import { AiFeatures, codes, IntentListItem }           from './config'
 import { useIntentAITableQuery }                       from './services'
-import { DisplayStates }                               from './states'
+import { DisplayStates, Statuses }                     from './states'
 import * as UI                                         from './styledComponents'
 import { IntentAIDateTimePicker, useIntentAIActions }  from './useIntentAIActions'
 import { Actions, getDefaultTime, isVisibledByAction } from './utils'
@@ -50,7 +51,7 @@ const IconTooltip = (props: IconTooltipProps) => {
 }
 
 export const iconTooltips = {
-  [aiFeatures.RRM]: <IconTooltip
+  [AiFeatures.RRM]: <IconTooltip
     icon={<AIDrivenRRM />}
     title={defineMessage({ defaultMessage: 'AI-Driven RRM' })}
     subTitleLeft={defineMessage({ defaultMessage: 'Throughput' })}
@@ -60,9 +61,9 @@ export const iconTooltips = {
       defaultMessage: `Choose between a network with maximum throughput,
       allowing some interference, or one with minimal interference, for high client density.` })}
   />,
-  [aiFeatures.AirFlexAI]: <IconTooltip
-    icon={<AirFlexAI />}
-    title={defineMessage({ defaultMessage: 'AirFlexAI' })}
+  [AiFeatures.EquiFlex]: <IconTooltip
+    icon={<EquiFlex />}
+    title={defineMessage({ defaultMessage: 'EquiFlex' })}
     subTitleLeft={defineMessage({ defaultMessage: 'Time to Connect' })}
     subTitleMiddle={defineMessage({ defaultMessage: 'vs' })}
     subTitleRight={defineMessage({ defaultMessage: 'Client Density' })}
@@ -70,7 +71,7 @@ export const iconTooltips = {
       defaultMessage: `Choose between fine-tuning your wireless LAN for extremely high client
       density environment or focus on keeping faster client time to connect.` })}
   />,
-  [aiFeatures.AIOps]: <IconTooltip
+  [AiFeatures.AIOps]: <IconTooltip
     icon={<AIOperation />}
     title={defineMessage({ defaultMessage: 'AI Operations' })}
     subTitleLeft={defineMessage({ defaultMessage: 'Optimize Network' })}
@@ -80,9 +81,9 @@ export const iconTooltips = {
       defaultMessage: `Proactively monitor and tune network performance with RUCKUS AI's
       dynamic recommendations to enhance KPIs and user experience.` })}
   />,
-  [aiFeatures.EcoFlexAI]: <IconTooltip
+  [AiFeatures.EcoFlex]: <IconTooltip
     icon={<EcoFlexAI />}
-    title={defineMessage({ defaultMessage: 'EcoFlexAI' })}
+    title={defineMessage({ defaultMessage: 'EcoFlex' })}
     subTitleLeft={defineMessage({ defaultMessage: 'Energy Footprint' })}
     subTitleMiddle={defineMessage({ defaultMessage: 'vs' })}
     subTitleRight={defineMessage({ defaultMessage: 'Mission Criticality' })}
@@ -97,6 +98,7 @@ export type AIFeatureProps = {
   aiFeature: string
   root: string
   sliceId: string
+  status: Statuses
 }
 
 export const AIFeature = (props: AIFeatureProps): JSX.Element => {
@@ -108,12 +110,15 @@ export const AIFeature = (props: AIFeatureProps): JSX.Element => {
     >
       <Icon feature={codes[props.code].aiFeature} />
     </Tooltip>
-    <TenantLink to={get('IS_MLISA_SA')
-      ? `/analytics/intentAI/${props.root}/${props.sliceId}/${props.code}`
-      : `/analytics/intentAI/${props.sliceId}/${props.code}`
-    }>
-      <span>{props.aiFeature}</span>
-    </TenantLink>
+    {props.status === Statuses.new
+      ? <span>{props.aiFeature}</span>
+      : <TenantLink to={get('IS_MLISA_SA')
+        ? `/analytics/intentAI/${props.root}/${props.sliceId}/${props.code}`
+        : `/analytics/intentAI/${props.sliceId}/${props.code}`
+      }>
+        <span>{props.aiFeature}</span>
+      </TenantLink>
+    }
   </UI.FeatureIcon>)
 }
 
@@ -205,7 +210,9 @@ export function IntentAITable (
 
   const intentTableFilters = useEncodedParameter<Filters>('intentTableFilters')
   const selectedFilters = intentTableFilters.read() || {}
-  const { aiFeatures = [], categories = [], statuses = [], zones = [] } = filterOptions?.data || {}
+  const {
+    aiFeatures = [], categories = [], statuses = [], zones = [], intents = []
+  } = filterOptions?.data || {}
   const data = queryResults?.data?.intents
   const columns: TableProps<IntentListItem>['columns'] = [
     {
@@ -217,13 +224,19 @@ export function IntentAITable (
       filteredValue: selectedFilters.aiFeatures,
       filterSearch: true,
       filterPlaceholder: $t({ defaultMessage: 'All AI Features' }),
-      render: (_: ReactNode, row: IntentListItem) => <AIFeature {...row} />
+      render: (_: ReactNode, row: IntentListItem) => <AIFeature {...row} />,
+      filterableWidth: 175
     },
     {
       title: $t({ defaultMessage: 'Intent' }),
       width: 250,
       dataIndex: 'intent',
-      key: 'intent'
+      key: 'intent',
+      filterable: intents,
+      filteredValue: selectedFilters.intents,
+      filterSearch: true,
+      filterPlaceholder: $t({ defaultMessage: 'All Intents' }),
+      filterableWidth: 240
     },
     {
       title: $t({ defaultMessage: 'Category' }),
@@ -233,7 +246,8 @@ export function IntentAITable (
       filterable: categories,
       filteredValue: selectedFilters.categories,
       filterSearch: true,
-      filterPlaceholder: $t({ defaultMessage: 'All Categories' })
+      filterPlaceholder: $t({ defaultMessage: 'All Categories' }),
+      filterableWidth: 175
     },
     {
       title: get('IS_MLISA_SA')
@@ -300,7 +314,7 @@ export function IntentAITable (
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
         rowSelection={hasCrossVenuesPermission() &&
-          hasPermission({ permission: 'WRITE_INTENT_AI' }) && {
+          hasPermission({ permission: 'WRITE_INTENT_AI', scopes: [WifiScopes.UPDATE] }) && {
           type: 'checkbox',
           selectedRowKeys,
           onChange: (_, selRows) => setSelectedRows(selRows)

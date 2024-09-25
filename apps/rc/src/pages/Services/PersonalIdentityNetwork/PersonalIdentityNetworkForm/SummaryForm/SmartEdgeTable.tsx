@@ -21,7 +21,7 @@ export const SmartEdgeTable = (props: SmartEdgeTableProps) => {
 
   const columns: TableProps<SmartEdgeTableData>['columns'] = [
     {
-      title: $t({ defaultMessage: 'SmartEdge' }),
+      title: $t({ defaultMessage: 'RUCKUS Edge' }),
       key: 'edgeName',
       dataIndex: 'edgeName'
     },

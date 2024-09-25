@@ -5,7 +5,7 @@ import { isEqual }                                           from 'lodash'
 
 import { Button, Loader, StepsFormLegacy, StepsFormLegacyInstance }     from '@acx-ui/components'
 import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
-import { ConfigurationOutlined }                                        from '@acx-ui/icons'
+import { DeleteOutlined, ConfigurationOutlined }                        from '@acx-ui/icons-new'
 import { useConfigTemplateVisibilityMap, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
 import {
   useConfigProfilesQuery,
@@ -32,11 +32,11 @@ import { getIntl }                from '@acx-ui/utils'
 
 import { VenueEditContext, EditContext } from '../../index'
 
-import { CliProfileDetailModal }                       from './CliProfileDetailModal'
-import { ConfigProfileModal }                          from './ConfigProfileModal'
-import { RegularProfileDetailModal }                   from './RegularProfileDetailModal'
-import { ButtonWrapper, DeleteOutlinedIcon, RowStyle } from './styledComponents'
-import { SyslogServerModal }                           from './SyslogServerModal'
+import { CliProfileDetailModal }     from './CliProfileDetailModal'
+import { ConfigProfileModal }        from './ConfigProfileModal'
+import { RegularProfileDetailModal } from './RegularProfileDetailModal'
+import { ButtonWrapper, RowStyle }   from './styledComponents'
+import { SyslogServerModal }         from './SyslogServerModal'
 
 export interface FormState {
   changeModalvisible: boolean,
@@ -99,6 +99,7 @@ export function GeneralSettingForm () {
   const [formState, setFormState] = useState<FormState>(defaultState)
   const [formData, setFormData] = useState<VenueSwitchConfiguration>(defaultFormData)
   const selectedProfiles = getProfilesByKeys(formState.configProfiles, formData.profileId)
+  const isCliProfile = getProfilesByType(selectedProfiles, ProfileTypeEnum.CLI).length > 0
 
   useEffect(() => {
     // set default data when switching sub tab
@@ -114,6 +115,23 @@ export function GeneralSettingForm () {
       setData: setFormData
     })
   }, [navigate])
+
+  useEffect(() => {
+    if (isCliProfile && venueSwitchSetting?.isSuccess) {
+      const { data } = venueSwitchSetting
+      setFormData({
+        ...formData,
+        dns: data?.dns ?? [],
+        syslogEnabled: data?.syslogEnabled ?? false,
+        syslogPrimaryServer: data?.syslogPrimaryServer || '',
+        syslogSecondaryServer: data?.syslogSecondaryServer || ''
+      })
+      formRef?.current?.setFieldsValue({
+        dns: data?.dns ?? []
+      })
+    }
+
+  }, [isCliProfile])
 
   useEffect(() => {
     if (venueSwitchSetting?.isSuccess) {
@@ -278,13 +296,13 @@ export function GeneralSettingForm () {
               <Form.Item
                 label={$t({ defaultMessage: 'DNS' })}
                 children={<Space direction='vertical' style={{ width: '100%' }}>
-                  <Tooltip title={formState?.cliApplied ? $t(VenueMessages.CLI_APPLIED) : ''}>
+                  <Tooltip title={isCliProfile? $t(VenueMessages.CLI_APPLIED) : ''}>
                     <Space direction='vertical' style={{ width: '100%' }}>
                       <Button
                         type='link'
                         size='small'
                         style={{ float: 'right' }}
-                        disabled={formData?.dns?.length === 4 || formState?.cliApplied}
+                        disabled={formData?.dns?.length === 4 || isCliProfile}
                         onClick={() => {
                           setFormData({ ...formData, dns: [...(formData?.dns ?? []), ''] })
                         }}>{$t({ defaultMessage: 'Add IP Address' })}
@@ -308,9 +326,12 @@ export function GeneralSettingForm () {
                       children={
                         <Input
                           size='small'
-                          disabled={formState?.cliApplied}
+                          disabled={isCliProfile}
                           suffix={
-                            !formState?.cliApplied && <DeleteOutlinedIcon
+                            !isCliProfile && <DeleteOutlined
+                              style={{ cursor: 'pointer' }}
+                              color='var(--acx-accents-blue-50)'
+                              size='sm'
                               role='deleteBtn'
                               onClick={() => {
                                 const dns = formRef?.current?.getFieldsValue()?.dns
@@ -330,20 +351,21 @@ export function GeneralSettingForm () {
                 valuePropName='checked'
                 initialValue={formData.syslogEnabled}
                 children={<Space>
-                  <Tooltip title={formState?.cliApplied ? $t(VenueMessages.CLI_APPLIED) : ''}>
+                  <Tooltip title={isCliProfile ? $t(VenueMessages.CLI_APPLIED) : ''}>
                     <Switch
                       defaultChecked={formData.syslogEnabled}
                       checked={formData.syslogEnabled}
-                      disabled={formState?.cliApplied}
+                      disabled={isCliProfile}
                       onClick={(checked, event) => {
                         event.stopPropagation()
                         handleSyslogServer(checked)
                       }}
                     />
                   </Tooltip>
-                  <Button ghost
+                  <Button
+                    ghost
                     role='configBtn'
-                    icon={<ConfigurationOutlined />}
+                    icon={<ConfigurationOutlined size='sm' />}
                     onClick={() => {
                       setFormState({
                         ...formState,

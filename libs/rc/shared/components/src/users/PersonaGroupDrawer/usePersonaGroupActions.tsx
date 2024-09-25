@@ -1,6 +1,7 @@
 import {
-  AsyncCommonResponse,
+  CommonAsyncResponse,
   useAddPersonaGroupMutation,
+  useAssociateIdentityGroupWithCertificateTemplateMutation,
   useAssociateIdentityGroupWithDpskMutation,
   useAssociateIdentityGroupWithMacRegistrationMutation,
   useUpdatePersonaGroupMutation
@@ -18,9 +19,10 @@ export function usePersonaGroupAction () {
   const [updatePersonaGroup] = useUpdatePersonaGroupMutation()
   const [associateDpsk] = useAssociateIdentityGroupWithDpskMutation()
   const [associateMacReg] = useAssociateIdentityGroupWithMacRegistrationMutation()
+  const [associateCertTemplate] = useAssociateIdentityGroupWithCertificateTemplateMutation()
 
   const createPersonaGroupMutation = async (submittedData: PersonaGroup, callback?: Function) => {
-    const { dpskPoolId, macRegistrationPoolId, ...groupData } = submittedData
+    const { dpskPoolId, macRegistrationPoolId, certificateTemplateId, ...groupData } = submittedData
 
     const associateDpskCallback = (groupId: string) => {
       if (dpskPoolId) {
@@ -36,25 +38,36 @@ export function usePersonaGroupAction () {
         })
       }
     }
+    const associateCertificateTemplateCallback = (groupId: string) => {
+      if (certificateTemplateId) {
+        associateCertTemplate({
+          params: { groupId, templateId: certificateTemplateId }
+        })
+      }
+    }
 
     return await addPersonaGroup({
       payload: { ...(isAsync ? groupData : submittedData) },
       customHeaders,
-      callback: (response: AsyncCommonResponse) => {
+      callback: (response: CommonAsyncResponse) => {
         callback?.(response)
         if (response.id && isAsync) {
           associateDpskCallback(response.id)
           associateMacRegistrationCallback(response.id)
+          associateCertificateTemplateCallback(response.id)
         }
       }
     }).unwrap()
+      .then(result => {
+        if(!isAsync) callback?.(result)
+      })
   }
 
   const updatePersonaGroupMutation
   = async (groupId: string, patchData?: Partial<PersonaGroup>) => {
     if (!patchData || Object.keys(patchData).length === 0) return
 
-    const { dpskPoolId, macRegistrationPoolId, ...groupData } = patchData
+    const { dpskPoolId, macRegistrationPoolId, certificateTemplateId, ...groupData } = patchData
     const associationPromises = []
 
     if (isAsync) {
@@ -72,6 +85,15 @@ export function usePersonaGroupAction () {
           params: {
             groupId,
             poolId: dpskPoolId
+          }
+        }))
+      }
+
+      if (certificateTemplateId) {
+        associationPromises.push(associateCertTemplate({
+          params: {
+            groupId,
+            templateId: certificateTemplateId
           }
         }))
       }

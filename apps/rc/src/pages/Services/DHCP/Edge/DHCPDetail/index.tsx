@@ -2,12 +2,11 @@
 import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
-import { Button, Card, Loader, PageHeader, SummaryCard, Table, TableProps }                                                                              from '@acx-ui/components'
-import { EdgeServiceStatusLight, useIsEdgeReady }                                                                                                        from '@acx-ui/rc/components'
-import { useGetDhcpStatsQuery, useGetDhcpUeSummaryStatsQuery }                                                                                           from '@acx-ui/rc/services'
-import { DhcpUeSummaryStats, ServiceOperation, ServiceType, defaultSort, getServiceDetailsLink, getServiceListRoutePath, getServiceRoutePath, sortProp } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                                                                                                         from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                                                                                                from '@acx-ui/user'
+import { Button, Card, Loader, PageHeader, SummaryCard, Table, TableProps }                                                                                                                                            from '@acx-ui/components'
+import { EdgeServiceStatusLight, useIsEdgeReady }                                                                                                                                                                      from '@acx-ui/rc/components'
+import { useGetDhcpStatsQuery, useGetDhcpUeSummaryStatsQuery }                                                                                                                                                         from '@acx-ui/rc/services'
+import { DhcpUeSummaryStats, ServiceOperation, ServiceType, defaultSort, filterByAccessForServicePolicyMutation, getScopeKeyByService, getServiceDetailsLink, getServiceListRoutePath, getServiceRoutePath, sortProp } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                                                                                                                                                                                       from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
@@ -60,7 +59,7 @@ const EdgeDHCPDetail = () => {
 
   const columns: TableProps<DhcpUeSummaryStats>['columns'] = [
     {
-      title: $t({ defaultMessage: 'SmartEdge' }),
+      title: $t({ defaultMessage: 'RUCKUS Edge' }),
       key: 'edgeName',
       dataIndex: 'edgeName',
       sorter: { compare: sortProp('edgeName', defaultSort) },
@@ -164,20 +163,22 @@ const EdgeDHCPDetail = () => {
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
           {
-            text: $t({ defaultMessage: 'DHCP for SmartEdge' }),
+            text: $t({ defaultMessage: 'DHCP for RUCKUS Edge' }),
             link: getServiceRoutePath({
               type: ServiceType.EDGE_DHCP,
               oper: ServiceOperation.LIST
             })
           }
         ]}
-        extra={filterByAccess([
-          // eslint-disable-next-line max-len
-          <TenantLink to={getServiceDetailsLink({
-            type: ServiceType.EDGE_DHCP,
-            oper: ServiceOperation.EDIT,
-            serviceId: params.serviceId!
-          })}>
+        extra={filterByAccessForServicePolicyMutation([
+          <TenantLink
+            to={getServiceDetailsLink({
+              type: ServiceType.EDGE_DHCP,
+              oper: ServiceOperation.EDIT,
+              serviceId: params.serviceId!
+            })}
+            scopeKey={getScopeKeyByService(ServiceType.EDGE_DHCP, ServiceOperation.EDIT)}
+          >
             <Button type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
         ])}

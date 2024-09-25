@@ -19,7 +19,7 @@ export const FeatureItem = (props: FeatureItemProps) => {
 
   return <UI.StyledWrapper>
     {isMultiple &&
-      <Form.Item>
+      <Form.Item noStyle>
         <UI.StyledFeatureName>
           {getCompatibilityFeatureDisplayName(data.featureName as IncompatibilityFeatures)}
         </UI.StyledFeatureName>
@@ -50,7 +50,7 @@ export const FeatureItem = (props: FeatureItemProps) => {
             defaultMessage: 'Incompatible Access Points (Currently)'
           })
           : $t({
-            defaultMessage: 'Incompatible SmartEdges (Currently)'
+            defaultMessage: 'Incompatible RUCKUS Edges (Currently)'
           })}
         style={UI.detailStyle}
         className='ApCompatibilityDrawerFormItem'

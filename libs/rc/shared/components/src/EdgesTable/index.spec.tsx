@@ -1,9 +1,11 @@
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import userEvent     from '@testing-library/user-event'
+import { cloneDeep } from 'lodash'
+import { rest }      from 'msw'
 
-import { edgeApi, venueApi }            from '@acx-ui/rc/services'
-import { CommonUrlsInfo, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }              from '@acx-ui/store'
+import { Features }                                                from '@acx-ui/feature-toggle'
+import { edgeApi, venueApi }                                       from '@acx-ui/rc/services'
+import { CommonUrlsInfo, EdgeCompatibilityFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                         from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -17,6 +19,12 @@ import { useIsEdgeFeatureReady } from '../useEdgeActions'
 import { mockEdgeList } from './__tests__/fixtures'
 
 import { EdgesTable } from '.'
+
+// eslint-disable-next-line max-len
+const mockEdgeCompatibilitiesVenue = cloneDeep(EdgeCompatibilityFixtures.mockEdgeCompatibilitiesVenue)
+// mockEdgeList.data[4] is operational
+mockEdgeCompatibilitiesVenue.compatibilities[0].id = mockEdgeList.data[4].serialNumber
+mockEdgeCompatibilitiesVenue.compatibilities[1].id = mockEdgeList.data[1].serialNumber
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -274,7 +282,7 @@ describe('Edge Table', () => {
     await user.click(within(rows[2]).getByRole('checkbox'))
     await user.click(screen.getAllByRole('button', { name: 'Delete' })[0])
     const dialog = await screen.findByRole('dialog')
-    expect(within(dialog).getByText('Delete "2 SmartEdges"?')).toBeVisible()
+    expect(within(dialog).getByText('Delete "2 RUCKUS Edges"?')).toBeVisible()
 
     await user.click(within(dialog).getByRole('button', { name: 'Delete' }))
     await waitFor(() => expect(mockedDeleteApi).toBeCalledTimes(2))
@@ -304,7 +312,9 @@ describe('Edge Table', () => {
   })
 
   it('should shutdown the selected SmartEdge', async () => {
-    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(true)
+    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff =>
+      ff === Features.EDGE_GRACEFUL_SHUTDOWN_TOGGLE)
+
     const user = userEvent.setup()
     render(
       <Provider>
@@ -352,5 +362,44 @@ describe('Edge Table', () => {
     await user.click(within(row6).getByRole('checkbox'))
     expect(screen.queryByText('Reboot')).toBeNull()
     expect(screen.queryByText('Reset & Recover')).toBeNull()
+  })
+
+  it('should show incopatible warning', async () => {
+    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff =>
+      [Features.EDGE_COMPATIBILITY_CHECK_TOGGLE].includes(ff as Features))
+
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getVenueEdgeCompatibilities.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeCompatibilitiesVenue))
+      )
+    )
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <EdgesTable
+          rowSelection={{ type: 'checkbox' }}
+          tableQuery={{ defaultPayload: {
+            fields: [
+              'name', 'deviceStatus', 'type', 'model', 'serialNumber', 'ip',
+              'ports', 'firmwareVersion', 'incompatible'
+            ],
+            filters: { venueId: ['mockVenueId']
+            } } }}
+          incompatibleCheck
+        />
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/edge' }
+      })
+
+    await screen.findByRole('cell', { name: 'Smart Edge 5' })
+    const row1 = screen.getByRole('row', { name: /Smart Edge 5 / })
+    await user.click(screen.getByTestId('SettingsOutlined'))
+    await userEvent.click(await screen.findByText('Feature Compatibility'))
+
+    const btn = await within(row1).findByRole('button', { name: 'Partially incompatible' })
+    await user.click(btn)
+    const dialog = await screen.findByRole('dialog')
+    within(dialog).getByText('Incompatibility Details: Smart Edge 5')
   })
 })

@@ -2,14 +2,16 @@
 import { useIntl } from 'react-intl'
 
 import { Button, Loader, PageHeader, showActionModal, Table, TableProps } from '@acx-ui/components'
-import { EdgeServiceStatusLight, useEdgeDhcpActions }                     from '@acx-ui/rc/components'
+import { EdgeServiceStatusLight, useEdgeDhcpActions, SimpleListTooltip }  from '@acx-ui/rc/components'
 import {
   useDeleteEdgeDhcpServicesMutation,
   useGetDhcpStatsQuery,
-  useGetEdgeListQuery
+  useGetEdgeClusterListQuery
 } from '@acx-ui/rc/services'
 import {
   DhcpStats,
+  filterByAccessForServicePolicyMutation,
+  getScopeKeyByService,
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath,
@@ -18,7 +20,6 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }              from '@acx-ui/user'
 
 
 const EdgeDhcpTable = () => {
@@ -26,14 +27,12 @@ const EdgeDhcpTable = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
-
   const getDhcpStatsPayload = {
     fields: [
       'id',
       'serviceName',
       'dhcpPoolNum',
-      'edgeNum',
-      'venueNum',
+      'edgeClusterIds',
       'health',
       'targetVersion',
       'currentVersion',
@@ -54,21 +53,22 @@ const EdgeDhcpTable = () => {
     },
     pagination: { settingsId }
   })
-  const edgeOptionsDefaultPayload = {
-    fields: ['name', 'serialNumber'],
+  const edgeClusterOptionsDefaultPayload = {
+    fields: ['name', 'clusterId'],
     pageSize: 10000,
     sortField: 'name',
     sortOrder: 'ASC'
   }
-  const { edgeOptions = [] } = useGetEdgeListQuery(
-    { payload: edgeOptionsDefaultPayload },
+  const { edgeClusterOptions = [] } = useGetEdgeClusterListQuery(
+    { payload: edgeClusterOptionsDefaultPayload },
     {
       selectFromResult: ({ data }) => {
-        return {
-          edgeOptions: data?.data.map(item => ({ value: item.name, key: item.serialNumber }))
-        }
+        const mappedData = data?.data?.map(item => ({ key: item.clusterId, value: item.name }))
+
+        return { edgeClusterOptions: mappedData }
       }
-    })
+    }
+  )
   const [deleteDhcp, { isLoading: isDeleteDhcpUpdating }] = useDeleteEdgeDhcpServicesMutation()
   const { upgradeEdgeDhcp, isEdgeDhcpUpgrading } = useEdgeDhcpActions()
 
@@ -115,20 +115,22 @@ const EdgeDhcpTable = () => {
       sorter: true
     },
     {
-      title: $t({ defaultMessage: 'SmartEdges' }),
+      title: $t({ defaultMessage: 'Clusters' }),
       align: 'center',
-      key: 'edgeNum',
-      dataIndex: 'edgeNum',
-      filterable: edgeOptions,
-      filterKey: 'edgeIds',
-      sorter: true
-    },
-    {
-      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
-      align: 'center',
-      key: 'venueNum',
-      dataIndex: 'venueNum',
-      sorter: true
+      key: 'edgeClusterIds',
+      dataIndex: 'edgeClusterIds',
+      filterable: edgeClusterOptions,
+      filterKey: 'edgeClusterIds',
+      sorter: true,
+      render: (_, row) =>{
+        if (!row.edgeClusterIds?.length) return 0
+        const edgeClusterIds = row.edgeClusterIds
+        const tooltipItems = edgeClusterOptions
+          .filter(v => v.key && edgeClusterIds!.includes(v.key))
+          .map(v => v.value)
+          .filter((item): item is string => item !== undefined)
+        return <SimpleListTooltip items={tooltipItems} displayText={edgeClusterIds.length} />
+      }
     },
     {
       title: $t({ defaultMessage: 'Health' }),
@@ -136,7 +138,7 @@ const EdgeDhcpTable = () => {
       dataIndex: 'edgeAlarmSummary',
       sorter: true,
       render: (data, row) =>
-        (row?.edgeNum ?? 0) ?
+        (row?.edgeClusterIds?.length ?? 0) ?
           <EdgeServiceStatusLight data={row.edgeAlarmSummary} /> :
           '--'
     },
@@ -175,6 +177,7 @@ const EdgeDhcpTable = () => {
 
   const rowActions: TableProps<DhcpStats>['rowActions'] = [
     {
+      scopeKey: getScopeKeyByService(ServiceType.EDGE_DHCP, ServiceOperation.EDIT),
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -190,6 +193,7 @@ const EdgeDhcpTable = () => {
       }
     },
     {
+      scopeKey: getScopeKeyByService(ServiceType.EDGE_DHCP, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         showActionModal({
@@ -208,6 +212,7 @@ const EdgeDhcpTable = () => {
       }
     },
     {
+      scopeKey: getScopeKeyByService(ServiceType.EDGE_DHCP, ServiceOperation.EDIT),
       visible: (selectedRows) => isUpdateAvailable(selectedRows[0]),
       label: $t({ defaultMessage: 'Update Now' }),
       onClick: (rows, clearSelection) => {
@@ -229,20 +234,24 @@ const EdgeDhcpTable = () => {
     }
   ]
 
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+
   return (
     <>
       <PageHeader
         title={
-          $t({ defaultMessage: 'DHCP for SmartEdge ({count})' },
+          $t({ defaultMessage: 'DHCP for RUCKUS Edge ({count})' },
             { count: tableQuery.data?.totalCount })
         }
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
-        extra={filterByAccess([
-          // eslint-disable-next-line max-len
-          <TenantLink to={getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.CREATE })}>
+        extra={filterByAccessForServicePolicyMutation([
+          <TenantLink
+            to={getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.CREATE })}
+            scopeKey={getScopeKeyByService(ServiceType.EDGE_DHCP, ServiceOperation.CREATE)}
+          >
             <Button type='primary'>{$t({ defaultMessage: 'Add DHCP Service' })}</Button>
           </TenantLink>
         ])}
@@ -255,8 +264,8 @@ const EdgeDhcpTable = () => {
           settingsId={settingsId}
           rowKey='id'
           columns={columns}
-          rowSelection={hasAccess() && { type: 'radio' }}
-          rowActions={filterByAccess(rowActions)}
+          rowSelection={allowedRowActions.length > 0 && { type: 'radio' }}
+          rowActions={allowedRowActions}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}

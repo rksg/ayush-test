@@ -65,6 +65,7 @@ export function MspCustomers () {
   const isAssignMultipleEcEnabled =
     useIsSplitOn(Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS) && isPrimeAdmin && !isDelegationMode()
   const MAX_ALLOWED_SELECTED_EC = 200
+  const MAX_ALLOWED_SELECTED_EC_FIRMWARE_UPGRADE = 100
 
   const {
     state
@@ -79,6 +80,8 @@ export function MspCustomers () {
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
   const createEcWithTierEnabled = useIsSplitOn(Features.MSP_EC_CREATE_WITH_TIER)
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
+  const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
+  const isvViewModelTpLoginEnabled = useIsSplitOn(Features.VIEWMODEL_TP_LOGIN_ADMIN_COUNT)
 
   const [ecTenantId, setTenantId] = useState('')
   const [selectedTenantType, setTenantType] = useState(AccountType.MSP_INTEGRATOR)
@@ -217,6 +220,10 @@ export function MspCustomers () {
   }
 
   function useColumns (mspEcAlarmList?: MspEcAlarmList, isSupportTier?: boolean) {
+    const mspAdminCountIndex = isvViewModelTpLoginEnabled ?
+      (tenantType === AccountType.MSP_INTEGRATOR ? 'mspIntegratorAdminCount'
+        : (tenantType === AccountType.MSP_INSTALLER ? 'mspInstallerAdminCount'
+          : 'mspAdminCount' )) : 'mspAdminCount'
 
     const columns: TableProps<MspEc>['columns'] = [
       {
@@ -261,9 +268,9 @@ export function MspCustomers () {
       {
         title: $t({ defaultMessage: '{adminCountHeader}' }, { adminCountHeader:
             mspUtils.transformAdminCountHeader(tenantType) }),
-        dataIndex: 'mspAdminCount',
+        dataIndex: mspAdminCountIndex,
         align: 'center',
-        key: 'mspAdminCount',
+        key: mspAdminCountIndex,
         sorter: true,
         width: 140,
         onCell: (data) => {
@@ -355,7 +362,8 @@ export function MspCustomers () {
         }
       }]),
       {
-        title: $t({ defaultMessage: 'Installed Devices' }),
+        title: isvSmartEdgeEnabled ? $t({ defaultMessage: 'Used Licenses' })
+          : $t({ defaultMessage: 'Installed Devices' }),
         dataIndex: 'apswLicenseInstalled',
         key: 'apswLicenseInstalled',
         align: 'center',
@@ -366,7 +374,8 @@ export function MspCustomers () {
         }
       },
       {
-        title: $t({ defaultMessage: 'Assigned Device Subscriptions' }),
+        title: isvSmartEdgeEnabled ? $t({ defaultMessage: 'Assigned Licenses' })
+          : $t({ defaultMessage: 'Assigned Device Subscriptions' }) ,
         dataIndex: 'apswLicense',
         key: 'apswLicense',
         align: 'center',
@@ -508,7 +517,7 @@ export function MspCustomers () {
           const len = selectedRows.length
           const validRows = selectedRows.filter(en => en.status === 'Active')
           return (isUpgradeMultipleEcEnabled && validRows.length > 0 &&
-                  len >= 1 && len <= MAX_ALLOWED_SELECTED_EC)
+                  len >= 1 && len <= MAX_ALLOWED_SELECTED_EC_FIRMWARE_UPGRADE)
         },
         onClick: (selectedRows) => {
           const selectedEcIds = selectedRows.map(item => item.id)
@@ -687,7 +696,7 @@ export function MspCustomers () {
           const len = selectedRows.length
           const validRows = selectedRows.filter(en => en.status === 'Active')
           return (isUpgradeMultipleEcEnabled && validRows.length > 0 &&
-                  len >= 1 && len <= MAX_ALLOWED_SELECTED_EC)
+                  len >= 1 && len <= MAX_ALLOWED_SELECTED_EC_FIRMWARE_UPGRADE)
         },
         onClick: (selectedRows) => {
           const selectedEcIds = selectedRows.map(item => item.id)

@@ -271,19 +271,27 @@ exports[`Test Details should render AirtimeB correctly 1`] = `
   padding-bottom: 0;
 }
 
-.c3 .ant-descriptions-item-label {
+.c3 .ant-descriptions-item .ant-descriptions-item-label,
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-label {
   color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content {
+.c3 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
   color: var(--acx-primary-black);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content .ant-badge-status-dot {
+.c3 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
   top: -1px;
 }
 
@@ -1041,19 +1049,27 @@ exports[`Test Details should render AirtimeB correctly 2`] = `
   padding-bottom: 0;
 }
 
-.c3 .ant-descriptions-item-label {
+.c3 .ant-descriptions-item .ant-descriptions-item-label,
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-label {
   color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content {
+.c3 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
   color: var(--acx-primary-black);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content .ant-badge-status-dot {
+.c3 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
   top: -1px;
 }
 
@@ -1811,19 +1827,27 @@ exports[`Test Details should render AirtimeB correctly 3`] = `
   padding-bottom: 0;
 }
 
-.c3 .ant-descriptions-item-label {
+.c3 .ant-descriptions-item .ant-descriptions-item-label,
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-label {
   color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content {
+.c3 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
   color: var(--acx-primary-black);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content .ant-badge-status-dot {
+.c3 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
   top: -1px;
 }
 
@@ -2621,19 +2645,27 @@ exports[`Test Details should render AirtimeRx correctly 1`] = `
   padding-bottom: 0;
 }
 
-.c3 .ant-descriptions-item-label {
+.c3 .ant-descriptions-item .ant-descriptions-item-label,
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-label {
   color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content {
+.c3 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
   color: var(--acx-primary-black);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content .ant-badge-status-dot {
+.c3 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
   top: -1px;
 }
 
@@ -3386,19 +3418,27 @@ exports[`Test Details should render AirtimeRx correctly 2`] = `
   padding-bottom: 0;
 }
 
-.c3 .ant-descriptions-item-label {
+.c3 .ant-descriptions-item .ant-descriptions-item-label,
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-label {
   color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content {
+.c3 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
   color: var(--acx-primary-black);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content .ant-badge-status-dot {
+.c3 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
   top: -1px;
 }
 
@@ -4151,19 +4191,27 @@ exports[`Test Details should render AirtimeRx correctly 3`] = `
   padding-bottom: 0;
 }
 
-.c3 .ant-descriptions-item-label {
+.c3 .ant-descriptions-item .ant-descriptions-item-label,
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-label {
   color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content {
+.c3 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
   color: var(--acx-primary-black);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content .ant-badge-status-dot {
+.c3 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
   top: -1px;
 }
 
@@ -4956,19 +5004,27 @@ exports[`Test Details should render AirtimeTx correctly 1`] = `
   padding-bottom: 0;
 }
 
-.c3 .ant-descriptions-item-label {
+.c3 .ant-descriptions-item .ant-descriptions-item-label,
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-label {
   color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content {
+.c3 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
   color: var(--acx-primary-black);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content .ant-badge-status-dot {
+.c3 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
   top: -1px;
 }
 
@@ -5726,19 +5782,27 @@ exports[`Test Details should render AirtimeTx correctly 2`] = `
   padding-bottom: 0;
 }
 
-.c3 .ant-descriptions-item-label {
+.c3 .ant-descriptions-item .ant-descriptions-item-label,
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-label {
   color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content {
+.c3 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
   color: var(--acx-primary-black);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content .ant-badge-status-dot {
+.c3 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
   top: -1px;
 }
 
@@ -6496,19 +6560,27 @@ exports[`Test Details should render AirtimeTx correctly 3`] = `
   padding-bottom: 0;
 }
 
-.c3 .ant-descriptions-item-label {
+.c3 .ant-descriptions-item .ant-descriptions-item-label,
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-label {
   color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content {
+.c3 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
   color: var(--acx-primary-black);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content .ant-badge-status-dot {
+.c3 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
   top: -1px;
 }
 
@@ -7306,19 +7378,27 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
   padding-bottom: 0;
 }
 
-.c3 .ant-descriptions-item-label {
+.c3 .ant-descriptions-item .ant-descriptions-item-label,
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-label {
   color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content {
+.c3 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
   color: var(--acx-primary-black);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content .ant-badge-status-dot {
+.c3 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
   top: -1px;
 }
 
@@ -8039,19 +8119,27 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
   padding-bottom: 0;
 }
 
-.c3 .ant-descriptions-item-label {
+.c3 .ant-descriptions-item .ant-descriptions-item-label,
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-label {
   color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content {
+.c3 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
   color: var(--acx-primary-black);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content .ant-badge-status-dot {
+.c3 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
   top: -1px;
 }
 
@@ -8772,19 +8860,27 @@ exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
   padding-bottom: 0;
 }
 
-.c3 .ant-descriptions-item-label {
+.c3 .ant-descriptions-item .ant-descriptions-item-label,
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-label {
   color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content {
+.c3 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
   color: var(--acx-primary-black);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content .ant-badge-status-dot {
+.c3 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
   top: -1px;
 }
 
@@ -9545,19 +9641,27 @@ exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
   padding-bottom: 0;
 }
 
-.c3 .ant-descriptions-item-label {
+.c3 .ant-descriptions-item .ant-descriptions-item-label,
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-label {
   color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content {
+.c3 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
   color: var(--acx-primary-black);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content .ant-badge-status-dot {
+.c3 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
   top: -1px;
 }
 
@@ -10278,19 +10382,27 @@ exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
   padding-bottom: 0;
 }
 
-.c3 .ant-descriptions-item-label {
+.c3 .ant-descriptions-item .ant-descriptions-item-label,
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-label {
   color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content {
+.c3 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
   color: var(--acx-primary-black);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content .ant-badge-status-dot {
+.c3 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
   top: -1px;
 }
 
@@ -11054,19 +11166,27 @@ exports[`Test Details should render ChannelDist correctly 1`] = `
   padding-bottom: 0;
 }
 
-.c3 .ant-descriptions-item-label {
+.c3 .ant-descriptions-item .ant-descriptions-item-label,
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-label {
   color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content {
+.c3 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
   color: var(--acx-primary-black);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content .ant-badge-status-dot {
+.c3 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
   top: -1px;
 }
 
@@ -11798,19 +11918,27 @@ exports[`Test Details should render ChannelDist correctly 2`] = `
   padding-bottom: 0;
 }
 
-.c3 .ant-descriptions-item-label {
+.c3 .ant-descriptions-item .ant-descriptions-item-label,
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-label {
   color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content {
+.c3 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
   color: var(--acx-primary-black);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content .ant-badge-status-dot {
+.c3 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
   top: -1px;
 }
 
@@ -12530,19 +12658,27 @@ exports[`Test Details should render CovClientrssiLow correctly 1`] = `
   padding-bottom: 0;
 }
 
-.c3 .ant-descriptions-item-label {
+.c3 .ant-descriptions-item .ant-descriptions-item-label,
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-label {
   color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content {
+.c3 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
   color: var(--acx-primary-black);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content .ant-badge-status-dot {
+.c3 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
   top: -1px;
 }
 
@@ -13278,19 +13414,27 @@ exports[`Test Details should render FailureTemplate correctly 1`] = `
   padding-bottom: 0;
 }
 
-.c3 .ant-descriptions-item-label {
+.c3 .ant-descriptions-item .ant-descriptions-item-label,
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-label {
   color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content {
+.c3 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
   color: var(--acx-primary-black);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content .ant-badge-status-dot {
+.c3 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
   top: -1px;
 }
 
@@ -14014,19 +14158,27 @@ exports[`Test Details should render FailureTemplate correctly 2`] = `
   padding-bottom: 0;
 }
 
-.c3 .ant-descriptions-item-label {
+.c3 .ant-descriptions-item .ant-descriptions-item-label,
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-label {
   color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content {
+.c3 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
   color: var(--acx-primary-black);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content .ant-badge-status-dot {
+.c3 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
   top: -1px;
 }
 
@@ -14750,19 +14902,27 @@ exports[`Test Details should render FailureTemplate correctly 3`] = `
   padding-bottom: 0;
 }
 
-.c3 .ant-descriptions-item-label {
+.c3 .ant-descriptions-item .ant-descriptions-item-label,
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-label {
   color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content {
+.c3 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
   color: var(--acx-primary-black);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content .ant-badge-status-dot {
+.c3 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
   top: -1px;
 }
 
@@ -15486,19 +15646,27 @@ exports[`Test Details should render FailureTemplate correctly 4`] = `
   padding-bottom: 0;
 }
 
-.c3 .ant-descriptions-item-label {
+.c3 .ant-descriptions-item .ant-descriptions-item-label,
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-label {
   color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content {
+.c3 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
   color: var(--acx-primary-black);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content .ant-badge-status-dot {
+.c3 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
   top: -1px;
 }
 
@@ -16222,19 +16390,27 @@ exports[`Test Details should render FailureTemplate correctly 5`] = `
   padding-bottom: 0;
 }
 
-.c3 .ant-descriptions-item-label {
+.c3 .ant-descriptions-item .ant-descriptions-item-label,
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-label {
   color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content {
+.c3 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
   color: var(--acx-primary-black);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content .ant-badge-status-dot {
+.c3 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
   top: -1px;
 }
 
@@ -16942,19 +17118,27 @@ exports[`Test Details should render LoadSzCpuLoad correctly 1`] = `
   padding-bottom: 0;
 }
 
-.c3 .ant-descriptions-item-label {
+.c3 .ant-descriptions-item .ant-descriptions-item-label,
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-label {
   color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content {
+.c3 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
   color: var(--acx-primary-black);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content .ant-badge-status-dot {
+.c3 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
   top: -1px;
 }
 
@@ -17565,19 +17749,27 @@ exports[`Test Details should render NetSzNetLatency correctly 1`] = `
   padding-bottom: 0;
 }
 
-.c3 .ant-descriptions-item-label {
+.c3 .ant-descriptions-item .ant-descriptions-item-label,
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-label {
   color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content {
+.c3 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
   color: var(--acx-primary-black);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content .ant-badge-status-dot {
+.c3 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
   top: -1px;
 }
 
@@ -18188,19 +18380,27 @@ exports[`Test Details should render NetTime correctly 1`] = `
   padding-bottom: 0;
 }
 
-.c3 .ant-descriptions-item-label {
+.c3 .ant-descriptions-item .ant-descriptions-item-label,
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-label {
   color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content {
+.c3 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
   color: var(--acx-primary-black);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content .ant-badge-status-dot {
+.c3 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
   top: -1px;
 }
 
@@ -18811,19 +19011,27 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
   padding-bottom: 0;
 }
 
-.c3 .ant-descriptions-item-label {
+.c3 .ant-descriptions-item .ant-descriptions-item-label,
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-label {
   color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content {
+.c3 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
   color: var(--acx-primary-black);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content .ant-badge-status-dot {
+.c3 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
   top: -1px;
 }
 
@@ -19464,19 +19672,27 @@ exports[`Test Details should render SwitchPoePd correctly 1`] = `
   padding-bottom: 0;
 }
 
-.c3 .ant-descriptions-item-label {
+.c3 .ant-descriptions-item .ant-descriptions-item-label,
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-label {
   color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content {
+.c3 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
   color: var(--acx-primary-black);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content .ant-badge-status-dot {
+.c3 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
   top: -1px;
 }
 
@@ -20766,19 +20982,27 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
   padding-bottom: 0;
 }
 
-.c3 .ant-descriptions-item-label {
+.c3 .ant-descriptions-item .ant-descriptions-item-label,
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-label {
   color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content {
+.c3 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
   color: var(--acx-primary-black);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content .ant-badge-status-dot {
+.c3 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
   top: -1px;
 }
 
@@ -21431,19 +21655,27 @@ exports[`Test Details should render Ttc correctly 1`] = `
   padding-bottom: 0;
 }
 
-.c3 .ant-descriptions-item-label {
+.c3 .ant-descriptions-item .ant-descriptions-item-label,
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-label {
   color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content {
+.c3 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c3 .ant-descriptions-item .ant-descriptions-item-content {
   color: var(--acx-primary-black);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
 }
 
-.c3 .ant-descriptions-item-content .ant-badge-status-dot {
+.c3 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
   top: -1px;
 }
 

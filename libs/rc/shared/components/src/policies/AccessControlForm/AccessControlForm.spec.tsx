@@ -230,7 +230,7 @@ describe('AccessControlForm Component', () => {
 
     expect(header).toBeInTheDocument()
 
-    await screen.findByDisplayValue('acl-test')
+    await screen.findByDisplayValue(enhancedAccessControlList.data[0].name)
 
     await userEvent.clear(screen.getByRole('textbox', {
       name: /policy name/i

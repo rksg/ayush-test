@@ -3324,24 +3324,37 @@ exports[`Table component should render multi select table and render action butt
 }
 
 .c2 svg path {
-  stroke: var(--acx-primary-black);
+  color: var(--acx-primary-black);
+}
+
+.c2.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c2.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c2.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
 }
 
 .c2.ant-btn-primary svg path {
-  stroke: var(--acx-primary-white) !important;
-  fill: var(--acx-primary-white) !important;
+  color: var(--acx-primary-white) !important;
 }
 
 .c2[disabled] svg path,
 .c2.ant-btn-disabled svg path {
-  stroke: var(--acx-primary-white);
+  color: var(--acx-primary-white);
 }
 
+.c2[disabled].ant-btn-link svg path,
+.c2.ant-btn-disabled.ant-btn-link svg path,
 .c2[disabled].ant-btn-default svg path,
 .c2.ant-btn-disabled.ant-btn-default svg path,
 .c2[disabled].ant-btn-primary svg path,
 .c2.ant-btn-disabled.ant-btn-primary svg path {
-  stroke: var(--acx-neutrals-40);
+  color: var(--acx-neutrals-40);
 }
 
 .c4 {
@@ -4747,6 +4760,636 @@ exports[`Table component should render multi select table and render action butt
                                 </span>
                               </label>
                             </td>
+                            <td
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              title="Will Smith"
+                            >
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                Will Smith
+                              </span>
+                            </td>
+                            <td
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                            >
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                45
+                              </span>
+                            </td>
+                            <td
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              title="address"
+                            >
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                address
+                              </span>
+                            </td>
+                            <td
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              style="position: sticky; right: 0px;"
+                            />
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Table component should render table with Beta indicator correctly 1`] = `
+<DocumentFragment>
+  .c2 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  width: 16px;
+  height: 16px;
+}
+
+.c2 svg {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  width: 16px !important;
+  height: 16px !important;
+  margin: 0 !important;
+  color: var(--acx-accents-orange-50);
+}
+
+.c1 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 4px !important;
+}
+
+.c1 svg {
+  position: relative;
+  top: -4px;
+}
+
+.c3 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 3px;
+}
+
+.c0 .ant-pro-table {
+  --acx-table-cell-horizontal-space: 8px;
+}
+
+.c0 .ant-pro-table .ant-pro-card .ant-pro-card-body {
+  padding: 0px;
+}
+
+.c0 .ant-pro-table .ant-table .parent-row-data,
+.c0 .ant-pro-table .ant-table .parent-row-data .ant-table-cell-row-hover,
+.c0 .ant-pro-table .ant-table .parent-row-data .ant-table-cell-fix-right,
+.c0 .ant-pro-table .ant-table .parent-row-data .ant-table-cell-fix-left,
+.c0 .ant-pro-table .ant-table .parent-row-data .ant-table-column-sort {
+  background-color: var(--acx-neutrals-20) !important;
+  overflow: visible !important;
+}
+
+.c0 .ant-pro-table .ant-table .parent-row-data .ant-table-cell-with-append .ant-table-row-expand-icon {
+  display: none;
+}
+
+.c0 .ant-pro-table .ant-table .ant-table-cell-with-append .indent-level-2 {
+  padding-left: 10px !important;
+}
+
+.c0 .ant-pro-table .ant-table-cell-fix-left {
+  border-bottom: 1px solid var(--acx-neutrals-30) !important;
+}
+
+.c0 .ant-pro-table .ant-table-thead > tr:first-child > th {
+  padding-top: 12px;
+  font-size: var(--acx-subtitle-4-font-size);
+  line-height: var(--acx-subtitle-4-line-height);
+  font-weight: var(--acx-subtitle-4-font-weight);
+}
+
+.c0 .ant-pro-table .ant-table-thead > tr:not(:first-child) > th {
+  padding-top: 6px;
+  font-size: var(--acx-subtitle-5-font-size);
+  line-height: var(--acx-subtitle-5-line-height);
+  font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
+}
+
+.c0 .ant-pro-table .ant-table-thead > tr:last-child > th,
+.c0 .ant-pro-table .ant-table-thead > tr:first-child > th[rowspan] {
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--acx-neutrals-30);
+}
+
+.c0 .ant-pro-table .ant-table-thead > tr > th {
+  border-bottom: 0;
+  padding: 0px var(--acx-table-cell-horizontal-space);
+}
+
+.c0 .ant-pro-table .ant-table-thead > tr > th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
+  width: 0px;
+}
+
+.c0 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: left;
+  -webkit-justify-content: left;
+  -ms-flex-pack: left;
+  justify-content: left;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c0 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-title {
+  -webkit-flex: unset;
+  -ms-flex: unset;
+  flex: unset;
+}
+
+.c0 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter {
+  --icon-size: 11px;
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  margin: 0;
+}
+
+.c0 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter-up,
+.c0 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter-down {
+  visibility: hidden;
+  width: 0;
+}
+
+.c0 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter-up.active,
+.c0 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter-down.active {
+  visibility: visible;
+  width: unset;
+  margin-left: calc(var(--icon-size) / 2);
+}
+
+.c0 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter-up {
+  margin-bottom: calc(var(--icon-size) / -2);
+}
+
+.c0 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter-down {
+  margin-top: calc(var(--icon-size) / -2);
+}
+
+.c0 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter .anticon svg {
+  fill: var(--acx-primary-black);
+}
+
+.c0 .ant-pro-table .ant-table-thead > tr > th[style*="text-align: center"] .ant-table-column-sorters {
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+.c0 .ant-pro-table .ant-table-thead > tr > th[style*="text-align: right"] .ant-table-column-sorters {
+  -webkit-box-pack: right;
+  -webkit-justify-content: right;
+  -ms-flex-pack: right;
+  justify-content: right;
+}
+
+.c0 .ant-pro-table .ant-table-tbody > tr > td {
+  border-bottom: 1px solid var(--acx-neutrals-30);
+  padding: 14px var(--acx-table-cell-horizontal-space);
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c0 .ant-pro-table .ant-table-tbody > tr > td a {
+  font-size: unset;
+}
+
+.c0 .ant-pro-table .ant-table-tbody > tr > td .ant-badge.ant-badge-status:not(.acx-chart-tooltip) {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: left;
+  -webkit-justify-content: left;
+  -ms-flex-pack: left;
+  justify-content: left;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c0 .ant-pro-table .ant-table-tbody > tr > td .ant-badge.ant-badge-status:not(.acx-chart-tooltip) .ant-badge-status-dot {
+  -webkit-flex-shrink: 0;
+  -ms-flex-negative: 0;
+  flex-shrink: 0;
+}
+
+.c0 .ant-pro-table .ant-table-thead > tr:last-child > th:not(.ant-table-selection-column):not(.ant-table-cell-fix-right):hover,.c0 .ant-pro-table .ant-table-thead > tr:first-child > th[rowspan]:not(.ant-table-selection-column):not(.ant-table-cell-fix-right):hover {
+  background: var(--acx-accents-orange-10);
+}
+
+.c0 .ant-pro-table .ant-table-thead > tr > th {
+  -webkit-user-select: none;
+}
+
+.c0 .ant-pro-table .ant-table-tbody > tr > td.ant-table-cell-ellipsis a span.ant-typography {
+  color: inherit;
+  -webkit-text-decoration: inherit;
+  text-decoration: inherit;
+}
+
+.c0 .ant-pro-table .ant-table-tbody > tr > td.ant-table-cell-ellipsis .ant-btn.ant-btn-link:not(.ant-btn-icon-only) {
+  width: 100%;
+  max-width: -webkit-fit-content;
+  max-width: -moz-fit-content;
+  max-width: fit-content;
+}
+
+.c0 .ant-pro-table .ant-table-tbody > tr > td.ant-table-cell-ellipsis .ant-btn.ant-btn-link:not(.ant-btn-icon-only) span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.c0 .ant-pro-table .ant-table-tbody > tr > td.ant-table-cell-ellipsis .ant-badge-status .ant-badge-status-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.c0 .ant-pro-table .ant-pro-card-body {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c0 .ant-pro-table-list-toolbar {
+  -webkit-order: 2;
+  -ms-flex-order: 2;
+  order: 2;
+  height: 45px;
+  pointer-events: none;
+  z-index: 4;
+  overflow: visible;
+}
+
+.c0 .ant-pro-table-list-toolbar-container {
+  padding: 0;
+  position: relative;
+  height: 100%;
+}
+
+.c0 .ant-pro-table-list-toolbar-setting-item {
+  pointer-events: all;
+}
+
+.c0 .ant-pro-table-list-toolbar-setting-item svg {
+  margin-top: 3px;
+}
+
+.c0 .ant-pro-table-alert {
+  -webkit-order: 1;
+  -ms-flex-order: 1;
+  order: 1;
+  margin: 0px;
+  z-index: 4;
+  overflow: visible;
+}
+
+.c0 .ant-pro-table-alert .ant-alert {
+  height: 36px;
+  background-color: var(--acx-accents-blue-10);
+  border: var(--acx-accents-blue-10);
+  padding: 10px 16px;
+}
+
+.c0 .ant-pro-table-alert .ant-alert .ant-pro-table-alert-info {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c0 .ant-pro-table .ant-table-wrapper {
+  -webkit-order: 3;
+  -ms-flex-order: 3;
+  order: 3;
+  margin-top: -45px;
+}
+
+.c0 .ant-pro-table .ant-pagination {
+  position: relative;
+  z-index: 4;
+  background-color: var(--acx-primary-white);
+  padding: 16px 0;
+  margin: unset;
+}
+
+<div
+    class="c0"
+    style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 0;"
+  >
+    <div
+      class="ant-pro-table"
+    >
+      <div
+        class="ant-pro-card"
+      >
+        <div
+          class="ant-pro-card-body"
+          style="padding-top: 0px;"
+        >
+          <div
+            class="ant-pro-table-list-toolbar"
+          />
+          <div
+            class="ant-table-wrapper"
+          >
+            <div
+              class="ant-spin-nested-loading"
+            >
+              <div
+                class="ant-spin-container"
+              >
+                <div
+                  class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
+                >
+                  <div
+                    class="ant-table-container"
+                  >
+                    <div
+                      class="ant-table-content"
+                      style="overflow-x: auto; overflow-y: hidden;"
+                    >
+                      <table
+                        style="width: 392px; min-width: 100%; table-layout: fixed;"
+                      >
+                        <colgroup>
+                          <col
+                            style="width: 120px;"
+                          />
+                          <col
+                            style="width: 120px;"
+                          />
+                          <col
+                            style="width: 120px;"
+                          />
+                          <col
+                            style="width: 32px;"
+                          />
+                        </colgroup>
+                        <thead
+                          class="ant-table-thead"
+                        >
+                          <tr>
+                            <th
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              data-testid="react-resizable"
+                            >
+                              <div
+                                class=""
+                              />
+                              <div
+                                class="ant-space ant-space-horizontal ant-space-align-center c1"
+                              >
+                                <div
+                                  class="ant-space-item"
+                                  style="margin-right: 8px;"
+                                >
+                                  Name
+                                </div>
+                                <div
+                                  class="ant-space-item"
+                                >
+                                  <div
+                                    class="ant-space ant-space-horizontal ant-space-align-center c2"
+                                  >
+                                    <div
+                                      class="ant-space-item"
+                                    >
+                                      <svg
+                                        data-testid="RocketOutlined"
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </th>
+                            <th
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              data-testid="react-resizable"
+                            >
+                              <div
+                                class=""
+                              />
+                              <span
+                                class="c3"
+                              >
+                                Age
+                                <svg
+                                  class=""
+                                  data-testid="InformationOutlined"
+                                />
+                              </span>
+                            </th>
+                            <th
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              data-testid="react-resizable"
+                            >
+                              <div
+                                class=""
+                              />
+                              Address
+                            </th>
+                            <th
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              data-testid="react-resizable"
+                              style="position: sticky; right: 0px;"
+                            >
+                              <div
+                                class=""
+                              />
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody
+                          class="ant-table-tbody"
+                        >
+                          <tr
+                            aria-hidden="true"
+                            class="ant-table-measure-row"
+                            style="height: 0px; font-size: 0px;"
+                          >
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                          </tr>
+                          <tr
+                            class="ant-table-row ant-table-row-level-0"
+                            data-row-key="1"
+                          >
+                            <td
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              title="John Doe"
+                            >
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                John Doe
+                              </span>
+                            </td>
+                            <td
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                            >
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                32
+                              </span>
+                            </td>
+                            <td
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              title="sample address"
+                            >
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                sample address
+                              </span>
+                            </td>
+                            <td
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              style="position: sticky; right: 0px;"
+                            />
+                          </tr>
+                          <tr
+                            class="ant-table-row ant-table-row-level-0"
+                            data-row-key="2"
+                          >
+                            <td
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              title="Jane Doe"
+                            >
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                Jane Doe
+                              </span>
+                            </td>
+                            <td
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                            >
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                33
+                              </span>
+                            </td>
+                            <td
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              title="new address"
+                            >
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                new address
+                              </span>
+                            </td>
+                            <td
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              style="position: sticky; right: 0px;"
+                            />
+                          </tr>
+                          <tr
+                            class="ant-table-row ant-table-row-level-0"
+                            data-row-key="3"
+                          >
                             <td
                               class="ant-table-cell ant-table-cell-ellipsis"
                               title="Will Smith"

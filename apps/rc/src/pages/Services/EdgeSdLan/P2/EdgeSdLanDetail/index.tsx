@@ -5,22 +5,42 @@ import { useGetEdgeSdLanP2ViewDataListQuery } from '@acx-ui/rc/services'
 import {
   ServiceOperation,
   ServiceType,
+  filterByAccessForServicePolicyMutation,
+  getScopeKeyByService,
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { EdgeScopes }            from '@acx-ui/types'
-import { filterByAccess }        from '@acx-ui/user'
 
 import { DcSdLanDetailContent }  from './DcSdLanDetailContent'
 import { DmzSdLanDetailContent } from './DmzSdLanDetailContent'
+
+const defaultSdLanPayload = {
+  fields: [
+    'id', 'name',
+    'venueId', 'venueName',
+    'edgeClusterId', 'edgeClusterName',
+    'tunnelProfileId', 'tunnelProfileName',
+    'isGuestTunnelEnabled',
+    'guestEdgeClusterId', 'guestEdgeClusterName',
+    'guestTunnelProfileId', 'guestTunnelProfileName',
+    'edgeAlarmSummary',
+    'vlans', 'vlanNum', 'vxlanTunnelNum',
+    'guestVlanNum', 'guestVxlanTunnelNum', 'guestVlans',
+    'networkIds', 'networkInfos',
+    'guestNetworkIds', 'guestNetworkInfos',
+    'edgeClusterTunnelInfo',
+    'guestEdgeClusterTunnelInfo'
+  ]
+}
 
 const EdgeSdLanDetail = () => {
   const { $t } = useIntl()
   const params = useParams()
   const { edgeSdLanData, isLoading, isFetching } = useGetEdgeSdLanP2ViewDataListQuery(
     { payload: {
+      ...defaultSdLanPayload,
       filters: { id: [params.serviceId] }
     } },
     {
@@ -50,9 +70,9 @@ const EdgeSdLanDetail = () => {
             })
           }
         ]}
-        extra={filterByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink
-            scopeKey={[EdgeScopes.UPDATE]}
+            scopeKey={getScopeKeyByService(ServiceType.EDGE_SD_LAN, ServiceOperation.EDIT)}
             to={getServiceDetailsLink({
               type: ServiceType.EDGE_SD_LAN,
               oper: ServiceOperation.EDIT,

@@ -84,6 +84,12 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
   //   oldUrl: '/api/entitlement-assign/tenant/:tenantId/assignment/summary',
   //   newApi: true
   // },
+  getMspEcAssignmentHistory: {
+    method: 'post',
+    url: '/tenants/:tenantId/entitlements/assignments/query',
+    oldUrl: '/assignments',
+    newApi: true
+  },
   getMspAssignmentHistory: {
     method: 'post',
     url: '/tenants/self/entitlements/assignments/query',
@@ -331,6 +337,11 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
   //   url: '/apFirmwares?status=default',
   //   newApi: true
   // },
+  getFirmwareUpgradeByApModel: {
+    method: 'get',
+    url: '/apModelFirmwares?status=greenfieldFirmware',
+    newApi: true
+  },
   mspEcFirmwareUpgradeSchedules: {
     method: 'post',
     url: '/tenants/firmwareUpgradeSchedules',

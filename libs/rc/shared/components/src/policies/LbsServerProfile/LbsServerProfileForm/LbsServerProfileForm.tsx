@@ -86,8 +86,9 @@ export const LbsServerProfileForm = (props: LbsServerProfileFormProps) => {
       payload.lbsServerVenueName === o.lbsServerVenueName && payload.serverAddress === o.server.split(':')[0])
 
     if (isDuplicated) {
-      // eslint-disable-next-line max-len
-      const errorMessage = $t({ defaultMessage: 'The LBS Server <VenueSingular></VenueSingular> Name and Server Address are duplicates of another profile' })
+      // Not support VenueSingular for Hospitality Vertical
+      // eslint-disable-next-line max-len, custom/enforce-venue-placeholder
+      const errorMessage = $t({ defaultMessage: 'The LBS Server Venue Name and Server Address are duplicates of another profile' })
       showActionModal({
         type: 'error',
         content: errorMessage

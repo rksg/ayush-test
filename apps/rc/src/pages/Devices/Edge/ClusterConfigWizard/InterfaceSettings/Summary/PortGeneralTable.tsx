@@ -52,7 +52,7 @@ export const PortGeneralTable = (props: PortGeneralTableProps) => {
 
   const columns: TableProps<PortGeneralTableData>['columns'] = [
     {
-      title: $t({ defaultMessage: 'SmartEdge' }),
+      title: $t({ defaultMessage: 'RUCKUS Edge' }),
       key: 'edgeName',
       dataIndex: 'edgeName'
     },
