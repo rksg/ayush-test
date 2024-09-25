@@ -1,9 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { MspUrlsInfo }                                 from '@acx-ui/msp/utils'
-import { Provider }                                    from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
+import { MspUrlsInfo }                                                            from '@acx-ui/msp/utils'
+import { configTemplateApi }                                                      from '@acx-ui/rc/services'
+import { Provider, store }                                                        from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import { mockedConfigTemplate, mockedMSPCustomers } from './__tests__/fixtures'
 
@@ -11,6 +12,8 @@ import { SelectedCustomersIndicator, ShowDriftsDrawer } from '.'
 
 describe('ShowDriftsDrawer', () => {
   beforeEach(() => {
+    store.dispatch(configTemplateApi.util.resetApiState())
+
     mockServer.use(
       rest.post(
         MspUrlsInfo.getMspCustomersList.url,
@@ -75,6 +78,29 @@ describe('ShowDriftsDrawer', () => {
         expect(within(instanceElement).getByRole('checkbox')).toBeChecked()
       }
     })
+  })
+
+  it('filter out the instances when the search bar is used', async () => {
+    render(<Provider>
+      <ShowDriftsDrawer setVisible={jest.fn()} selectedTemplate={mockedConfigTemplate} />
+    </Provider>)
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    expect(
+      screen.queryAllByRole('button', { name: /Configurations in/i }).length
+    ).toBe(mockedMSPCustomers.data.length)
+
+    const searchInput = await screen.findByRole('combobox')
+
+    const targetInstance = mockedMSPCustomers.data[0]
+
+    await userEvent.click(searchInput)
+    await userEvent.click(await screen.findByText(targetInstance.name))
+
+    expect(
+      screen.queryAllByRole('button', { name: /Configurations in/i }).length
+    ).toBe(1)
   })
 
   describe('SelectedCustomersIndicator', () => {

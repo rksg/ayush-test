@@ -395,7 +395,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
               WifiNetwork: {
                 '/wlan/advancedCustomization/qosMirroringEnabled': {
                   template: true,
-                  instance: false
+                  instance: null
                 },
                 '/wlan/ssid': {
                   template: 'raymond-test-int',
@@ -412,7 +412,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
                   instance: 'dc2146381a874d04a824bdd8c7bb991d'
                 },
                 '/idName': {
-                  template: 'radius-template-name',
+                  template: '',
                   instance: 'radius-server-name'
                 }
               }

@@ -146,6 +146,9 @@ function Toolbar (props: ToolbarProps) {
         placeholder={$t({ defaultMessage: 'All Customers' })}
         allowClear
         showSearch
+        filterOption={(input, option) =>
+          (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+        }
         onChange={onInstanceFilterSelect}
         options={customerOptions.map(i => ({ label: i.name, value: i.id }))}
       />
