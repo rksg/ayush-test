@@ -1155,10 +1155,10 @@ export const rootCauseRecommendationMap = {
   'tcp-syn-ddos': {
     DEFAULT: {
       rootCauses: defineMessage({
-        defaultMessage: '<p>TCP SYN DDoS - Root Cause - TBD</p>'
+        defaultMessage: '<p>This incident could be potentially triggered due to a TCP-SYN Denial of Service attack. This occurs due to a flood of SYN requests, which can result in excessive half open connections at your servers which will exhaust resources and render it unresponsive to normal requests.</p>'
       }),
       recommendations: defineMessage({
-        defaultMessage: '<p>TCP SYN DDoS - Recommendations - TBD</p>'
+        defaultMessage: '<p>Use/configure TCP SYN DDoS protection on the ICX to ensure the network is secure from security threats and remains operational despite the attacks. Please do note that such attacks can be distributed with flood requests coming in from different sources so blocking by a single source may not always be effective.</p>'
       })
     }
   },

@@ -357,10 +357,10 @@ export const incidentInformation: Record<IncidentCode, IncidentInformation> = {
     category: defineMessage({ defaultMessage: 'Security' }),
     subCategory: defineMessage({ defaultMessage: 'TCP-SYN DDoS' }),
     shortDescription: defineMessage({
-      defaultMessage: 'TCP SYN DDoS Attack found in {scope}'
+      defaultMessage: 'TCP SYN DDoS attack found in {scope}'
     }),
     longDescription: defineMessage({
-      defaultMessage: 'TCP SYN DDoS Attack found in {scope}.'
+      defaultMessage: 'TCP SYN DDoS attack found in {scope}.'
     }),
     incidentType: 'switch'
   }

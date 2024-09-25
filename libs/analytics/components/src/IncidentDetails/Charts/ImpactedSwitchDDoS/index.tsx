@@ -80,7 +80,6 @@ function ImpactedSwitchTable (props: {
 }) {
   const { $t } = useIntl()
   const rows = props.data
-  // const rows = [...props.data,...props.data,...props.data,...props.data,...props.data]
 
   const columns: TableProps<ImpactedSwitchPortRow>['columns'] = useMemo(()=>[{
     key: 'name',
