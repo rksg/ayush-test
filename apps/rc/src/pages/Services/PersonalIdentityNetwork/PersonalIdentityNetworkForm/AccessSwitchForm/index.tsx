@@ -12,10 +12,8 @@ import {
   TableProps,
   useStepFormContext
 } from '@acx-ui/components'
-import { AccessSwitchTable, AccessSwitchTableDataType } from '@acx-ui/rc/components'
-import { AccessSwitch, DistributionSwitch }             from '@acx-ui/rc/utils'
-
-import { PersonalIdentityNetworkFormData } from '..'
+import { AccessSwitchTable, AccessSwitchTableDataType }                      from '@acx-ui/rc/components'
+import { AccessSwitch, DistributionSwitch, PersonalIdentityNetworkFormData } from '@acx-ui/rc/utils'
 
 import { AccessSwitchDrawer } from './AccessSwitchDrawer'
 

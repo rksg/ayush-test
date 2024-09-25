@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
 import { rest } from 'msw'
 
-import { Tabs }                                                               from '@acx-ui/components'
-import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
-import { EdgeDhcpUrls, EdgeSdLanUrls, EdgeUrlsInfo, NetworkSegmentationUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                           from '@acx-ui/store'
+import { Tabs }                                                                                                     from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                   from '@acx-ui/feature-toggle'
+import { EdgeDhcpUrls, EdgeGeneralFixtures, EdgeNSGFixtures, EdgeSdLanUrls, EdgeUrlsInfo, NetworkSegmentationUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                 from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -12,8 +12,10 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
-
 import { VenueServicesTab } from '.'
+
+const { mockEdgeClusterList } = EdgeGeneralFixtures
+const { mockNsgStatsList } = EdgeNSGFixtures
 
 jest.spyOn(Tabs, 'TabPane').mockImplementation((props) => {
   return <div data-testid={`rc-tabpane-${props.tab}`}>{props.children}</div>
@@ -147,10 +149,7 @@ describe('Venue service tab', () => {
           }
         ]
       }
-      const mockNsgList = {
-        totalCount: 1,
-        data: [{ id: 'testNsg' }]
-      }
+
       beforeEach(() => {
         mockServer.use(
           rest.post(
@@ -164,7 +163,7 @@ describe('Venue service tab', () => {
             NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
             (_req, res, ctx) => {
               mockedGetNsgListFn()
-              return res(ctx.json(mockNsgList))
+              return res(ctx.json(mockNsgStatsList))
             }
           ),
           rest.post(
@@ -183,6 +182,10 @@ describe('Venue service tab', () => {
                 name: 'mocked_sdLan_1'
               }] }))
             }
+          ),
+          rest.post(
+            EdgeUrlsInfo.getEdgeClusterStatusList.url,
+            (_req, res, ctx) => res(ctx.json(mockEdgeClusterList))
           )
         )
       })

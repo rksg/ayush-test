@@ -22,7 +22,7 @@ export const StaticRouteModal = (props: { edgeId: string, edgeName: string }) =>
     data: staticRouteData,
     isFetching: isStaticRouteDataFetching
   }= useGetStaticRoutesQuery({
-    params: { serialNumber: edgeId }
+    params: { edgeClusterId: edgeId }
   })
   const [
     updateStaticRoutes,
