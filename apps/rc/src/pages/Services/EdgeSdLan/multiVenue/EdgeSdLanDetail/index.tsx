@@ -37,6 +37,24 @@ export const defaultSdLanApTablePayload = {
   ]
 }
 
+const defaultSdLanPayload = {
+  fields: [
+    'id', 'name',
+    'edgeClusterId', 'edgeClusterName',
+    'tunnelProfileId', 'tunnelProfileName',
+    'isGuestTunnelEnabled',
+    'guestEdgeClusterId', 'guestEdgeClusterName',
+    'guestTunnelProfileId', 'guestTunnelProfileName',
+    'edgeAlarmSummary',
+    'vlans', 'vlanNum', 'vxlanTunnelNum',
+    'guestVlanNum', 'guestVxlanTunnelNum', 'guestVlans',
+    'tunneledWlans',
+    'tunneledGuestWlans',
+    'edgeClusterTunnelInfo',
+    'guestEdgeClusterTunnelInfo'
+  ]
+}
+
 const EdgeSdLanDetail = () => {
   const isEdgeCompatibilityEnabled = useIsSplitOn(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
@@ -45,6 +63,7 @@ const EdgeSdLanDetail = () => {
 
   const { edgeSdLanData, isLoading, isFetching } = useGetEdgeMvSdLanViewDataListQuery(
     { payload: {
+      ...defaultSdLanPayload,
       filters: { id: [params.serviceId] }
     } },
     {

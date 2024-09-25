@@ -4,6 +4,8 @@ import { rest }  from 'msw'
 import { edgeApi, networkApi, nsgApi, switchApi, venueApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
+  EdgeGeneralFixtures,
+  EdgeNSGFixtures,
   EdgeUrlsInfo,
   getServiceDetailsLink,
   getServiceListRoutePath,
@@ -21,15 +23,15 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  mockEdgeData,
   mockedNetworkOptions,
-  mockedSwitchOptions,
-  mockNsgStatsList
+  mockedSwitchOptions
 } from '../__tests__/fixtures'
 
 import NetworkSegmentationTable from '.'
 
 const { mockVenueOptions } = VenueFixtures
+const { mockEdgeClusterList } = EdgeGeneralFixtures
+const { mockNsgStatsList } = EdgeNSGFixtures
 
 const mockedUsedNavigate = jest.fn()
 const mockUseLocationValue = {
@@ -63,23 +65,23 @@ describe('PersonalIdentityNetworkTable', () => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
-        (req, res, ctx) => res(ctx.json(mockVenueOptions))
+        (_req, res, ctx) => res(ctx.json(mockVenueOptions))
       ),
       rest.post(
-        EdgeUrlsInfo.getEdgeList.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeData))
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeClusterList))
       ),
       rest.post(
         NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
-        (req, res, ctx) => res(ctx.json(mockNsgStatsList))
+        (_req, res, ctx) => res(ctx.json(mockNsgStatsList))
       ),
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
-        (req, res, ctx) => res(ctx.json(mockedNetworkOptions))
+        (_req, res, ctx) => res(ctx.json(mockedNetworkOptions))
       ),
       rest.post(
         SwitchUrlsInfo.getSwitchList.url,
-        (req, res, ctx) => res(ctx.json(mockedSwitchOptions))
+        (_req, res, ctx) => res(ctx.json(mockedSwitchOptions))
       )
     )
   })
@@ -96,8 +98,8 @@ describe('PersonalIdentityNetworkTable', () => {
     const rows = await screen.findAllByRole('row', { name: /nsg/i })
     expect(rows.length).toBe(2)
 
-    expect(rows[0]).toHaveTextContent(/sg1\s*MockVenue1\s*SmartEdge1\s*1\s*0\s*Poor\s*No/)
-    expect(rows[1]).toHaveTextContent(/nsg2\s*1\s*0\s*Unknown\s*No/)
+    expect(rows[0]).toHaveTextContent(/nsg1\s*Edge1\s*1\s*0\s*Poor\s*No/)
+    expect(rows[1]).toHaveTextContent(/nsg2\s*Edge2\s*1\s*0\s*Unknown\s*No/)
   })
 
 
@@ -142,24 +144,9 @@ describe('PersonalIdentityNetworkTable', () => {
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     const smartEdgeLink = await screen.findByRole('link',
-      { name: 'SmartEdge1' }) as HTMLAnchorElement
+      { name: 'Edge1' }) as HTMLAnchorElement
     expect(smartEdgeLink.href)
       .toContain(`/${params.tenantId}/t/devices/edge/0000000001/details/overview`)
-  })
-
-  it('venue detail page link should be correct', async () => {
-    render(
-      <Provider>
-        <NetworkSegmentationTable />
-      </Provider>, {
-        route: { params, path: tablePath }
-      })
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-
-    const venue1List = await screen.findAllByRole('link', { name: 'MockVenue1' })
-    const venue1Link = venue1List[0] as HTMLAnchorElement
-    expect(venue1Link.href)
-      .toContain(`/${params.tenantId}/t/venues/mock_venue_1/venue-details/overview`)
   })
 
   it('should go edit page', async () => {
@@ -211,7 +198,7 @@ describe('PersonalIdentityNetworkTable', () => {
     mockServer.use(
       rest.delete(
         NetworkSegmentationUrls.deleteNetworkSegmentationGroup.url,
-        (req, res, ctx) => {
+        (_req, res, ctx) => {
           mockedDeleteNetworkSegmentationGroup()
           return res(ctx.status(202))}
       )

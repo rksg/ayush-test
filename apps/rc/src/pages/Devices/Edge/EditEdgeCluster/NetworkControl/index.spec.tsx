@@ -204,7 +204,7 @@ describe('Edge Cluster Network Control Tab', () => {
           path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab'
         }
       })
-    expect(await screen.findByText('TestDHCP-1')).toBeVisible()
+    expect(await screen.findByText('TestDhcp-1')).toBeVisible()
     expect(await screen.findByText('Test-QoS-1')).toBeVisible()
   })
 
@@ -248,9 +248,9 @@ describe('Edge Cluster Network Control Tab', () => {
           path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab'
         }
       })
-    expect(await screen.findByText('TestDHCP-1')).toBeVisible()
+    expect(await screen.findByText('TestDhcp-1')).toBeVisible()
     await userEvent.selectOptions(await screen.findByRole('combobox'),
-      await screen.findByRole('option', { name: 'TestDHCP-2' })
+      await screen.findByRole('option', { name: 'TestDhcp-2' })
     )
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
     expect(mockedActivateEdgeDhcp).toBeCalledWith(
@@ -313,7 +313,7 @@ describe('Edge Cluster Network Control Tab', () => {
           path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab'
         }
       })
-    expect(await screen.findByText('TestDHCP-1')).toBeVisible()
+    expect(await screen.findByText('TestDhcp-1')).toBeVisible()
     const switchBtn = screen.getAllByRole('switch')[0]
     expect(switchBtn).toBeChecked()
     await userEvent.click(switchBtn)
