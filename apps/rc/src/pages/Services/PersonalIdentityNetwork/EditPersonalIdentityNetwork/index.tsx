@@ -26,7 +26,8 @@ const EditPersonalIdentityNetwork = () => {
 
   const {
     data: nsgData,
-    isLoading: isNsgDataLoading
+    isLoading: isNsgDataLoading,
+    isFetching: isNsgDataFetching
   } = useGetNetworkSegmentationGroupByIdQuery({ params })
   const tablePath = getServiceRoutePath(
     { type: ServiceType.NETWORK_SEGMENTATION, oper: ServiceOperation.LIST })
@@ -86,7 +87,7 @@ const EditPersonalIdentityNetwork = () => {
       <PersonalIdentityNetworkFormDataProvider
         venueId={nsgData?.venueInfos[0].venueId}
       >
-        <Loader states={[{ isLoading: isNsgDataLoading }]}>
+        <Loader states={[{ isLoading: isNsgDataLoading || isNsgDataFetching }]}>
           <PersonalIdentityNetworkForm
             form={form}
             steps={steps}
