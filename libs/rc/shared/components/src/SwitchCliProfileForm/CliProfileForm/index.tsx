@@ -87,6 +87,7 @@ export function CliProfileForm () {
   const isCustomizedVariableEnabled = !isTemplate && isSwitchLevelCliProfileEnabled && params?.configType === 'profiles' //TODO
 
   const rbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isSwitchRbacEnabled
+  const associateEnabled = isCustomizedVariableEnabled || rbacEnabled
 
   const [appliedModels, setAppliedModels] = useState({} as unknown as Record<string, string[]>)
   const [allSwitchList, setAllSwitchList] = useState([] as SwitchViewModel[])
@@ -208,7 +209,7 @@ export function CliProfileForm () {
         enableSwitchLevelCliProfile: isCustomizedVariableEnabled
       }).unwrap()
 
-      if (rbacEnabled && hasAssociatedVenues) {
+      if (associateEnabled && hasAssociatedVenues) {
         const { data: cliProfiles } = await getProfiles({
           params, payload: profilesPayload, enableRbac: true
         }).unwrap()
@@ -230,7 +231,7 @@ export function CliProfileForm () {
     const profileId = params.profileId || cliProfileId
     const hasAssociatedVenues = venues.length > 0
 
-    if (rbacEnabled && hasAssociatedVenues && profileId) {
+    if (associateEnabled && hasAssociatedVenues && profileId) {
       const requests = venues.map((key: string)=> ({
         params: { venueId: key, profileId }
       }))
@@ -245,7 +246,7 @@ export function CliProfileForm () {
     callBack?: () => void
   ) => {
     const hasDisassociatedVenues = venues.length > 0
-    if (rbacEnabled && hasDisassociatedVenues) {
+    if (associateEnabled && hasDisassociatedVenues) {
       const requests = venues.map((key: string)=> ({
         params: { venueId: key, profileId: params.profileId }
       }))
