@@ -210,7 +210,7 @@ describe('useIntentAIActions', () => {
             status: Statuses.new,
             metadata: {
               scheduledAt: '2024-07-21T04:45:00.000Z',
-              wlans: [{ name: 'i4', ssid: 's4' },{ name: 'i5', ssid: 's5' },{ name: 'i6', ssid: 's6' }]
+              wlans: r1Wlans
             }
           }]
         })
@@ -316,7 +316,7 @@ describe('useIntentAIActions', () => {
           status: Statuses.new,
           metadata: {
             scheduledAt: '2024-07-21T04:45:00.000Z',
-            wlans: [{ name: 'i4', ssid: 's4' },{ name: 'i5', ssid: 's5' },{ name: 'i6', ssid: 's6' }]
+            wlans: r1Wlans
           }
         }]
 
@@ -522,7 +522,7 @@ describe('useIntentAIActions', () => {
           displayStatus: DisplayStates.active,
           status: Statuses.active,
           statusTrail,
-          metadata: { algorithmData: { isCrrmFullOptimization: false } }
+          metadata: {}
         },{
           id: '17',
           displayStatus: DisplayStates.active,

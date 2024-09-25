@@ -149,7 +149,7 @@ export function useIntentAIActions () {
     }
     const venueId = row.idPath.filter(({ type }) => type === 'zone')?.[0].name
     const wlans = await venueRadioActiveNetworks(getR1WlanPayload(venueId, row.code)).unwrap()
-    return wlans.map(wlan => ({ name: wlan.id, ssid: wlan.ssid })) // wlan name is id in config ds
+    return wlans
   }
 
   const doAllOptimize = async (rows:IntentListItem[], scheduledAt:string) => {
