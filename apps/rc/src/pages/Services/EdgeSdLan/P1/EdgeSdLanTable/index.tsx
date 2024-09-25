@@ -61,7 +61,21 @@ const EdgeSdLanTable = () => {
   const settingsId = 'services-edge-sd-lan-table'
   const tableQuery = useTableQuery({
     useQuery: useGetEdgeSdLanViewDataListQuery,
-    defaultPayload: {},
+    defaultPayload: {
+      fields: [
+        'id',
+        'name',
+        'venueId',
+        'venueName',
+        'tunnelProfileId',
+        'tunnelProfileName',
+        'edgeId',
+        'edgeName',
+        'networkIds',
+        'networkInfos',
+        'edgeAlarmSummary'
+      ]
+    },
     sorter: {
       sortField: 'name',
       sortOrder: 'ASC'

@@ -100,6 +100,7 @@ export function VenueServicesTab () {
         'guestEdgeClusterId',
         'guestEdgeClusterName',
         'isGuestTunnelEnabled',
+        'edgeAlarmSummary',
         ...(isEdgeSdLanMvEnabled
           ? ['tunneledWlans', 'tunneledGuestWlans']
           : ['networkIds', 'guestNetworkIds', 'networkInfos'])
