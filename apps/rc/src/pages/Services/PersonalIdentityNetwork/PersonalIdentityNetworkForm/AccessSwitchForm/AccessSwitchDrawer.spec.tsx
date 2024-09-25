@@ -6,11 +6,11 @@ import { EdgeNSGFixtures, NetworkSegmentationUrls, SwitchUrlsInfo } from '@acx-u
 import { Provider, store }                                          from '@acx-ui/store'
 import { mockServer, render, screen, waitFor }                      from '@acx-ui/test-utils'
 
-import { mockNsgData, switchPortList, switchVlanUnion, switchLagList, webAuthList } from '../../__tests__/fixtures'
+import { switchPortList, switchVlanUnion, switchLagList, webAuthList } from '../../__tests__/fixtures'
 
 import { AccessSwitchDrawer } from './AccessSwitchDrawer'
 
-const { mockNsgSwitchInfoData } = EdgeNSGFixtures
+const { mockNsgSwitchInfoData, mockNsgData } = EdgeNSGFixtures
 
 type MockSelectProps = React.PropsWithChildren<{
   onChange?: (value: string) => void
