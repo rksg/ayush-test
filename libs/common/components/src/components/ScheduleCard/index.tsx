@@ -192,6 +192,7 @@ export function ScheduleCard (props: ScheduleCardProps) {
       }
     },
     onSelectionEnd: () => {
+      if (selectedItems.current.length === 0) return
       selectedItems.current = _.uniq(selectedItems.current)
       for (let daykey in dayIndex) {
         const daySchedule = form.getFieldValue(fieldNamePath.concat(daykey)) ?? []
@@ -215,6 +216,7 @@ export function ScheduleCard (props: ScheduleCardProps) {
       }
       setCheckAll(arrCheckAll)
       setIndeterminate(arrIndeterminate)
+      selectedItems.current = []
     },
     isEnabled: true
   })
@@ -309,7 +311,7 @@ export function ScheduleCard (props: ScheduleCardProps) {
   }
 
   const onChange = (list: CheckboxValueType[], key:string) => {
-    let index = dayIndex[key]
+    const index = dayIndex[key]
     const arrCheckedList = [...checkedList]
     arrCheckedList[index] = list
     setCheckedList(arrCheckedList)
@@ -350,13 +352,13 @@ export function ScheduleCard (props: ScheduleCardProps) {
             {transformTimezoneDifference(timezone.dstOffset+timezone.rawOffset)} ({timezone.timeZoneName})
           </b>
         </>)}
-        style={{ pointerEvents: ( disabled ? 'none' : 'auto' ), opacity: ( disabled ? '0.5' : '1.0' ) }}
+        style={{ pointerEvents: ( disabled ? 'none' : 'auto' ), opacity: ( disabled ? '0.5' : '1.0' ) , minWidth: (intervalUnit === 15 ? '1165px' : '610px') }}
       >
         <Spin spinning={props.loading}>
           <div className='selectable-area'>
             {scheduleList && scheduleList.map((item, i) => (
-              <Row gutter={24} key={`row2_${item.key}_${i}`}>
-                <Col span={intervalUnit === 15?2:4} key={`col2_${item.key}_${i}`}>
+              <Row key={`row2_${item.key}_${i}`} wrap={false}>
+                <Col flex={intervalUnit === 15 ? '103px' : '60px'} key={`col2_${item.key}_${i}`}>
                   <Checkbox
                     data-testid={`checkbox_${item.key}`}
                     indeterminate={indeterminate[i]}
@@ -369,9 +371,9 @@ export function ScheduleCard (props: ScheduleCardProps) {
                   />
                   <UI.DaySpan>{$t({ defaultMessage: '{day}' }, { day: item.key })}</UI.DaySpan>
                 </Col>
-                <Col span={intervalUnit === 15?22:20} key={`col2_${item.key}`}>
+                <Col flex='auto' key={`col2_${item.key}`}>
                   { timelineLabelTop && i === 0 &&
-                          <div style={{ width: '100%', height: '25px', marginLeft: intervalUnit === 15 ? '-30px' : '15px' }}>
+                          <div style={{ width: '100%', height: '25px', marginLeft: intervalUnit === 15 ? '-30px' : '-2px' }}>
                             {timeTicks.map((item: string, i: number) => {
                               return (
                                 <UI.Timetick intervalunit={intervalUnit} key={`timetick_${i}`}>{item}</UI.Timetick>
@@ -413,7 +415,7 @@ export function ScheduleCard (props: ScheduleCardProps) {
                   />
                   <DragSelection />
                   { !timelineLabelTop && i === scheduleList.length -1 &&
-                          <div style={{ width: '100%', height: '25px', marginLeft: intervalUnit === 15 ? '-30px' : '0px' }}>
+                          <div style={{ width: '100%', height: '25px', marginLeft: intervalUnit === 15 ? '-30px' : '-2px' }}>
                             {timeTicks.map((item: string, i: number) => {
                               return (
                                 <UI.Timetick intervalunit={intervalUnit} key={`timetick_${i}`}>{item}</UI.Timetick>
@@ -423,7 +425,7 @@ export function ScheduleCard (props: ScheduleCardProps) {
                   }
                   {localTimeZone && i === scheduleList.length -1 &&
                   <div style={{ width: '100%', height: '25px' }}>
-                    <UI.LocalTimeZone intervalunit={intervalUnit} key={'localtime'}>
+                    <UI.LocalTimeZone key={'schedule_localtime'}>
                       {$t({ defaultMessage: 'Local time ({timeOffset})' },
                         { timeOffset: transformTimezoneDifference(timezone.dstOffset+timezone.rawOffset) })}
                     </UI.LocalTimeZone>

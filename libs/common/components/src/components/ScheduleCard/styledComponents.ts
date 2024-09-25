@@ -108,13 +108,19 @@ const timeTickWidth = '80px'
 const timeTickWidthUnit60 = '60px'
 const marginLeftChildSecond = `
   &:nth-child(2) {
-    margin-left: 15px;
+    margin-left: 13px;
+  }
+  &:last-child {
+    width: 60px;
   }
 `
 
 const marginLeftChildSecondUnit60 = `
   &:nth-child(2) {
-    margin-left: -5px;
+    margin-left: -3px;
+  }
+  &:last-child {
+    width: 20px;
   }
 `
 
@@ -128,15 +134,13 @@ ${(props) => `
   ${props.intervalunit===15?marginLeftChildSecond:marginLeftChildSecondUnit60}
 `}`
 
-export const LocalTimeZone = styled.div<{ intervalunit: number }>`
-${(props) => `
-  width: 100%;
-  height: 15px;
-  color: var(--acx-neutrals-60);
-  margin-left: 160px;
-  font-size: 12px;
-  ${props.intervalunit===15?marginLeftChildSecond:marginLeftChildSecondUnit60}
-`}`
+export const LocalTimeZone = styled.div`
+width: 100%;
+height: 15px;
+color: var(--acx-neutrals-60);
+margin-left: 160px;
+font-size: 12px;
+`
 
 const timetickborderWidth = '20px'
 const timetickborderWidthUnit60 = '40px'

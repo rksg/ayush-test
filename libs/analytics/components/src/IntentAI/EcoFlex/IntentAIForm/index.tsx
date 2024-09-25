@@ -34,7 +34,6 @@ function getFormDTO (values: FormValues<FormVal>): IntentTransitionPayload {
   } as IntentTransitionPayload
   if (isEnabled) {
     dto.metadata = {
-      ..._.pick(values, ['wlans']),
       preferences: { ..._.pick(values, ['averagePowerPrice']), excludedHours },
       scheduledAt: getScheduledAt(values).utc().toISOString()
     }
