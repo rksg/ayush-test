@@ -5,7 +5,7 @@ import { omit }                                from 'lodash'
 import { useIntl }                             from 'react-intl'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
-import { showActionModal, StepsForm } from '@acx-ui/components'
+import { showActionModal, StepsForm, useStepFormContext } from '@acx-ui/components'
 import {
   CatchErrorResponse,
   CommonErrorsResult,
@@ -38,6 +38,7 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
   const params = useParams()
   const navigate = useNavigate()
   const location = useLocation()
+  const { initialValues: formInitialValues } = useStepFormContext()
   const linkToServices = useTenantLink(getServiceListRoutePath(true))
   const previousPath = (location as LocationExtended)?.state?.from?.pathname
 
@@ -76,7 +77,7 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
           // need to catch basic service profile failed
         }] as unknown[]
 
-        if (props.editMode) funcArgs.unshift(payload! as PersonalIdentityNetworkFormData)
+        if (props.editMode) funcArgs.unshift(formInitialValues! as PersonalIdentityNetworkFormData)
         await props.onFinish.apply(null, funcArgs).catch(reject)
       })
     } catch (error) {

@@ -81,14 +81,15 @@ export const useEdgePinActions = () => {
     callback?: (res: (CommonResult[]
       | CommonErrorsResult<CatchErrorDetails>)) => void
   }) => {
-    const { payload, callback } = req
-    const serviceId = payload.id
+    const { callback } = req
+    const { id: serviceId, ...payload } = req.payload
 
     try {
       const isProfileNoChange = isEqual(omit(originData, 'networkIds'), omit(payload, 'networkIds'))
 
       if (isProfileNoChange) {
-        const reqResult = await handleAssociationDiff(serviceId!, originData, payload)
+        // eslint-disable-next-line max-len
+        const reqResult = await handleAssociationDiff(serviceId!, originData, payload as PersonalIdentityNetworkFormData)
         callback?.(reqResult)
       } else {
         const updateResult = await updatePin({
@@ -96,7 +97,9 @@ export const useEdgePinActions = () => {
           payload
         }).unwrap()
 
-        const reqResult = await handleAssociationDiff(serviceId!, originData, payload)
+
+        // eslint-disable-next-line max-len
+        const reqResult = await handleAssociationDiff(serviceId!, originData, payload as PersonalIdentityNetworkFormData)
         callback?.([updateResult].concat(reqResult as CommonResult[]))
         return Promise.resolve()
       }

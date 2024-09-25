@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useMemo } from 'react'
 
 import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
@@ -31,24 +31,22 @@ const EditPersonalIdentityNetwork = () => {
   const tablePath = getServiceRoutePath(
     { type: ServiceType.NETWORK_SEGMENTATION, oper: ServiceOperation.LIST })
 
-  useEffect(() => {
-    if(nsgData) {
-      form.resetFields()
-      form.setFieldsValue({
-        name: nsgData.name,
-        venueId: nsgData.venueInfos[0]?.venueId,
-        edgeClusterId: nsgData.edgeClusterInfos[0]?.edgeClusterId,
-        segments: nsgData.edgeClusterInfos[0]?.segments,
-        devices: nsgData.edgeClusterInfos[0]?.devices,
-        dhcpId: nsgData.edgeClusterInfos[0]?.dhcpInfoId,
-        poolId: nsgData.edgeClusterInfos[0]?.dhcpPoolId,
-        vxlanTunnelProfileId: nsgData.vxlanTunnelProfileId,
-        distributionSwitchInfos: nsgData.distributionSwitchInfos,
-        accessSwitchInfos: nsgData.accessSwitchInfos,
-        originalDistributionSwitchInfos: nsgData.distributionSwitchInfos,
-        originalAccessSwitchInfos: nsgData.accessSwitchInfos,
-        personaGroupId: nsgData.venueInfos[0]?.personaGroupId
-      })
+  const initFormValues = useMemo(() => {
+    return {
+      id: nsgData?.id,
+      name: nsgData?.name,
+      venueId: nsgData?.venueInfos[0]?.venueId,
+      edgeClusterId: nsgData?.edgeClusterInfos[0]?.edgeClusterId,
+      segments: nsgData?.edgeClusterInfos[0]?.segments,
+      devices: nsgData?.edgeClusterInfos[0]?.devices,
+      dhcpId: nsgData?.edgeClusterInfos[0]?.dhcpInfoId,
+      poolId: nsgData?.edgeClusterInfos[0]?.dhcpPoolId,
+      vxlanTunnelProfileId: nsgData?.vxlanTunnelProfileId,
+      distributionSwitchInfos: nsgData?.distributionSwitchInfos,
+      accessSwitchInfos: nsgData?.accessSwitchInfos,
+      originalDistributionSwitchInfos: nsgData?.distributionSwitchInfos,
+      originalAccessSwitchInfos: nsgData?.accessSwitchInfos,
+      personaGroupId: nsgData?.venueInfos[0]?.personaGroupId
     }
   }, [nsgData])
 
@@ -94,6 +92,7 @@ const EditPersonalIdentityNetwork = () => {
             steps={steps}
             onFinish={editPin}
             editMode
+            initialValues={initFormValues}
           />
         </Loader>
       </PersonalIdentityNetworkFormDataProvider>
