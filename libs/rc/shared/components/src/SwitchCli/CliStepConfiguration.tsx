@@ -15,8 +15,8 @@ import {
   Switch,
   Typography
 } from 'antd'
-import _                                        from 'lodash'
-import { useIntl, FormattedMessage, IntlShape } from 'react-intl'
+import _                             from 'lodash'
+import { useIntl, FormattedMessage } from 'react-intl'
 import 'codemirror/addon/hint/show-hint.js'
 
 import {
@@ -46,13 +46,13 @@ import {
 import { useParams } from '@acx-ui/react-router-dom'
 import { getIntl }   from '@acx-ui/utils'
 
-import { CodeMirrorWidget }                                                             from '../../CodeMirrorWidget'
-import { CsvSize, ImportFileDrawer, ImportFileDrawerType }                              from '../../ImportFileDrawer'
-import { CliVariableModal }                                                             from '../../SwitchCli/CliVariableModal'
-import { formatContentWithLimit, getVariableColor, getVariableSeparator, VariableType } from '../../SwitchCli/CliVariableUtils'
-import { CustomizedSettingsDrawer }                                                     from '../../SwitchCliProfileForm/CliProfileForm/CustomizedSettingsDrawer'
+import { CodeMirrorWidget }                                from '../CodeMirrorWidget'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../ImportFileDrawer'
 
-import * as UI from './styledComponents'
+import { CliVariableModal }                                                             from './CliVariableModal'
+import { formatContentWithLimit, getVariableColor, getVariableSeparator, VariableType } from './CliVariableUtils'
+import { CustomizedSettingsDrawer }                                                     from './CustomizedSettingsDrawer'
+import * as UI                                                                          from './styledComponents'
 
 interface codeMirrorElement {
   current: {
@@ -515,8 +515,7 @@ export function CliStepConfiguration (props: {
                           props?.allSwitchList || [],
                           setSwitchSettings,
                           setSwitchSettingType,
-                          setSwitchSettingDrawerVisible,
-                          $t
+                          setSwitchSettingDrawerVisible
                         )
                         : transformVariableValue(variable.type, variable.value)
                     }
@@ -767,9 +766,9 @@ function displayVariableValue (
   allSwitchList: SwitchViewModel[],
   setSwitchSettings: (data: SwitchSettings[]) => void,
   setSwitchSettingType: (data: string) => void,
-  setSwitchSettingDrawerVisible: (visible: boolean) => void,
-  $t: IntlShape['$t']
+  setSwitchSettingDrawerVisible: (visible: boolean) => void
 ) {
+  const { $t } = getIntl()
   const type = vtype.toUpperCase()
   const switchCount = values?.switchVariables?.map(s => s.serialNumbers).flat()?.length
 
@@ -843,7 +842,7 @@ function displayVariableValue (
       return <>
         <UI.VariableTitle>{ $t({ defaultMessage: 'String' }) }</UI.VariableTitle>
         <UI.VariableContent>
-          <Tooltip title={formatContentWithLimit(values?.value, 25, $t)} dottedUnderline>
+          <Tooltip title={formatContentWithLimit(values?.value, 25)} dottedUnderline>
             <UI.CliVariableContent>{
               values?.value.split(/\r\n|\r|\n/)?.[0]
             }</UI.CliVariableContent>

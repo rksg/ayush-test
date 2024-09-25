@@ -6,9 +6,9 @@ import {
   Tooltip
 } from '@acx-ui/components'
 
-import { VariableType }   from '../../SwitchCli/CliVariableUtils'
-import { SwitchSettings } from '../../SwitchCliTemplateForm/CliTemplateForm/CliStepConfiguration'
-import * as UI            from '../../SwitchCliTemplateForm/CliTemplateForm/styledComponents'
+import { SwitchSettings } from './CliStepConfiguration'
+import { VariableType }   from './CliVariableUtils'
+import * as UI            from './styledComponents'
 
 
 export const CustomizedSettingsDrawer = (props: {

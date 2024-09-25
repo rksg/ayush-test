@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { Form }                   from 'antd'
-import _, { isArray }             from 'lodash'
-import { defineMessage, useIntl } from 'react-intl'
+import { Form }       from 'antd'
+import _, { isArray } from 'lodash'
+import { useIntl }    from 'react-intl'
 
 import {
   Loader,
@@ -44,21 +44,13 @@ import {
 } from '@acx-ui/react-router-dom'
 
 import { usePathBasedOnConfigTemplate } from '../../configTemplates'
+import { CliStepConfiguration }         from '../../SwitchCli/CliStepConfiguration'
+import { CliStepNotice }                from '../../SwitchCli/CliStepNotice'
 import { getCustomizedSwitchVenues }    from '../../SwitchCli/CliVariableUtils'
-import { CliStepConfiguration }         from '../../SwitchCliTemplateForm/CliTemplateForm/CliStepConfiguration'
-import { CliStepNotice }                from '../../SwitchCliTemplateForm/CliTemplateForm/CliStepNotice'
 
 import { CliStepModels }  from './CliStepModels'
 import { CliStepSummary } from './CliStepSummary'
 import { CliStepVenues }  from './CliStepVenues'
-
-/* eslint-disable max-len */
-export const cliFormMessages = {
-  OVERLAPPING_MODELS_TOOLTIP: defineMessage({ defaultMessage: 'A CLI configuration profile with overlapping switch models has been applied to this <venueSingular></venueSingular> so it cannot be selected.' }),
-  VENUE_STEP_DESP: defineMessage({ defaultMessage: 'The configuration will be applied to all switches of the selected models, as well as any switch that will be added to the <venueSingular></venueSingular> in the future' }),
-  PRE_SELECT_VENUE_FOR_CUSTOMIZED: defineMessage({ defaultMessage: 'Cannot unselect this <venueSingular></venueSingular> because some of it\'s switches have custom variables assigned from the previous step' })
-}
-/* eslint-enable max-len */
 
 export const profilesPayload = {
   filterType: null,

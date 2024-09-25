@@ -65,7 +65,8 @@ export const formatVariableValue = (data: variableFormData) => {
   return values.join(separator)
 }
 
-export function formatContentWithLimit (content: string, maxLines: number, $t: IntlShape['$t']) {
+export function formatContentWithLimit (content: string, maxLines: number) {
+  const { $t } = getIntl()
   const lines = content.split(/\r\n|\r|\n/)
   const lineCount = lines.length
 
@@ -100,7 +101,8 @@ export function getVariableColor (type: string) {
   return colorMap[variableType]
 }
 
-export const getVariableTemplate = (type: string, form: FormInstance, $t: IntlShape['$t']) => {
+export const getVariableTemplate = (type: string, form: FormInstance) => {
+  const { $t } = getIntl()
   switch (type) {
     case VariableType.ADDRESS:
       return <>
@@ -234,10 +236,10 @@ export const getVariableTemplate = (type: string, form: FormInstance, $t: IntlSh
   }
 }
 
-export const getRequiredMark
-= () => <UI.RequiredMark>*</UI.RequiredMark>
+export const getRequiredMark = () => <UI.RequiredMark>*</UI.RequiredMark>
 
-export const getCustomizeFieldsText = (type: string, $t: IntlShape['$t']) => {
+export const getCustomizeFieldsText = (type: string) => {
+  const { $t } = getIntl()
   switch (type) {
     case VariableType.ADDRESS:
       return <UI.CustomizedSubtitle level={5}>
@@ -322,7 +324,7 @@ export const getCustomizeFields = (
                 </Tooltip>
               </UI.CustomizedSubtitle>
               <Space> </Space>
-              { getCustomizeFieldsText(type, $t) }
+              { getCustomizeFieldsText(type) }
               <Space> </Space>
             </>}
             {fields.map(({ key, name, ...restField }, index) => (<Fragment key={key}>
@@ -355,6 +357,7 @@ export const getCustomizeFields = (
                 }]}
                 children={
                   <UI.Select
+                    data-testid={`customized-select-${key}`}
                     showSearch
                     showArrow={false}
                     className={type === VariableType.STRING ? 'string-type' : ''}
@@ -433,7 +436,10 @@ export const getCustomizeFields = (
                 }] : [])
                 ]}
               >
-                { type === VariableType.STRING ? <Input.TextArea /> : <Input /> }
+                { type === VariableType.STRING
+                  ? <Input.TextArea data-testid={`customized-textarea-${key}`} />
+                  : <Input data-testid={`customized-input-${key}`} />
+                }
               </Form.Item>
               <Button
                 key={`delete${key}`}
@@ -521,21 +527,17 @@ export function validateInRange (number: number, start: number, end: number) {
 export function validateRequiredAddress (form: FormInstance) {
   const { $t } = getIntl()
   const requiredFields = ['ipAddressStart', 'ipAddressEnd', 'subMask']
-  const hasAllValues = requiredFields.every(
-    field => form.getFieldValue(field))
   const { ipAddressStart, ipAddressEnd, subMask }
     = form.getFieldsValue(requiredFields)
 
-  if (hasAllValues) {
-    return Promise.resolve()
-  } else if (!ipAddressStart) {
+  if (!ipAddressStart) {
     return Promise.reject($t(SwitchCliMessages.PLEASE_ENTER_START_IP))
   } else if (!ipAddressEnd) {
     return Promise.reject($t(SwitchCliMessages.PLEASE_ENTER_END_IP))
   } else if (!subMask) {
     return Promise.reject($t(SwitchCliMessages.PLEASE_ENTER_MASK))
   }
-  return Promise.reject($t(SwitchCliMessages.PLEASE_ENTER_ADDRESS_VALUES))
+  return Promise.resolve()
 }
 
 export function validateValidIp (ip: string, form: FormInstance) {

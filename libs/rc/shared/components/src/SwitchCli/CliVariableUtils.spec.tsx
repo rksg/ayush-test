@@ -1,8 +1,5 @@
 /* eslint-disable max-len */
-import React from 'react'
-
 import { Form, FormListFieldData } from 'antd'
-import { MessageDescriptor }       from 'react-intl'
 
 import { render, renderHook, screen } from '@acx-ui/test-utils'
 
@@ -50,44 +47,15 @@ describe('Test formatVariableValue function', () => {
 
 describe('Test formatContentWithLimit function', () => {
   it('should render correctly', () => {
-    const $t = jest.fn()
     const content = 'Line 1\nLine 2'
-    const result = formatContentWithLimit(content, 3, $t)
+    const result = formatContentWithLimit(content, 3)
     expect(result).toBe(content)
-    expect($t).not.toHaveBeenCalled()
   })
 
   it('should render correctly when line count exceeds maxLines', () => {
-    const $t = jest.fn().mockImplementation((message, values) => {
-      const { content, lines, br } = values
-      const brString = React.isValidElement(br) ? '<br/>' : ''
-      return `${content}${brString}${brString}and ${lines} more lines...`
-    })
-
     const content = 'Line 1\nLine 2\nLine 3\nLine 4'
-    const result = formatContentWithLimit(content, 2, $t)
-
-    expect(result).toBe('Line 1\r\nLine 2<br/><br/>and 2 more lines...')
-    expect($t).toHaveBeenCalledWith(
-      expect.objectContaining({
-        defaultMessage: expect.any(Array)
-      }),
-      {
-        content: 'Line 1\r\nLine 2',
-        lines: 2,
-        br: <br />
-      }
-    )
-
-    const expectedMessageArray = [
-      { type: 1, value: 'content' },
-      { type: 1, value: 'br' },
-      { type: 1, value: 'br' },
-      { type: 0, value: 'and ' },
-      { type: 1, value: 'lines' },
-      { type: 0, value: ' more lines...' }
-    ]
-    expect($t.mock.calls[0][0].defaultMessage).toEqual(expectedMessageArray)
+    const result = formatContentWithLimit(content, 2)
+    expect(result).toContain('and 2 more lines...')
   })
 })
 
@@ -115,20 +83,17 @@ describe('Test getRequiredMark function', () => {
 
 describe('Test getCustomizeFieldsText function', () => {
   it('should render type=VariableType.ADDRESS correctly', async () => {
-    const $t = (params: MessageDescriptor) => (params.defaultMessage?.[0] as { value: string }).value
-    render(<>{ getCustomizeFieldsText(VariableType.ADDRESS, $t) }</>)
+    render(<>{ getCustomizeFieldsText(VariableType.ADDRESS) }</>)
     expect(await screen.findByText('IP Address')).toBeVisible()
     expect(await screen.findByTestId('QuestionMarkCircleOutlined')).toBeVisible()
   })
   it('should render type=VariableType.RANGE correctly', async () => {
-    const $t = (params: MessageDescriptor) => (params.defaultMessage?.[0] as { value: string }).value
-    render(<>{ getCustomizeFieldsText(VariableType.RANGE, $t) }</>)
+    render(<>{ getCustomizeFieldsText(VariableType.RANGE) }</>)
     expect(await screen.findByText('Value')).toBeVisible()
     expect(await screen.findByTestId('QuestionMarkCircleOutlined')).toBeVisible()
   })
   it('should render type=VariableType.STRING correctly', async () => {
-    const $t = (params: MessageDescriptor) => (params.defaultMessage?.[0] as { value: string }).value
-    render(<>{ getCustomizeFieldsText(VariableType.STRING, $t) }</>)
+    render(<>{ getCustomizeFieldsText(VariableType.STRING) }</>)
     expect(await screen.findByText('String')).toBeVisible()
     expect(await screen.findByTestId('QuestionMarkCircleOutlined')).toBeVisible()
   })
@@ -142,6 +107,7 @@ describe('Test getCustomizeButtonDisabled function', () => {
 
     expect(getCustomizeButtonDisabled(type, fields, requiredFields)).toBe(false)
     expect(getCustomizeButtonDisabled(type, [{ name: 1, key: 1 }], requiredFields)).toBe(false)
+    expect(getCustomizeButtonDisabled('', fields, requiredFields)).toBe(true)
   })
   it('should render type=VariableType.RANGE correctly', async () => {
     const type = VariableType.RANGE
@@ -229,7 +195,7 @@ describe('Test validateRequiredAddress function', () => {
     })
     await expect(validateRequiredAddress(formRef.current)).resolves.toBeUndefined()
   })
-  it('should reject correctly', async () => {
+  it('should reject correctly when the End IP Address is empty', async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
       return form
@@ -240,6 +206,30 @@ describe('Test validateRequiredAddress function', () => {
       subMask: '255.255.254.0'
     })
     await expect(validateRequiredAddress(formRef.current)).rejects.toEqual('Please enter End IP Address first')
+  })
+  it('should reject correctly when the Start IP Address is empty', async () => {
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+    formRef.current.setFieldsValue({
+      ipAddressStart: '',
+      ipAddressEnd: '',
+      subMask: '255.255.254.0'
+    })
+    await expect(validateRequiredAddress(formRef.current)).rejects.toEqual('Please enter Start IP Address first')
+  })
+  it('should reject correctly when the Network Mask is empty', async () => {
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+    formRef.current.setFieldsValue({
+      ipAddressStart: '1.1.1.1',
+      ipAddressEnd: '1.1.1.10',
+      subMask: ''
+    })
+    await expect(validateRequiredAddress(formRef.current)).rejects.toEqual('Please enter Network Mask first')
   })
 })
 

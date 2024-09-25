@@ -126,7 +126,10 @@ export const SwitchCliMessages = {
   PLEASE_ENTER_START_IP: defineMessage({ defaultMessage: 'Please enter Start IP Address first' }),
   PLEASE_ENTER_END_IP: defineMessage({ defaultMessage: 'Please enter End IP Address first' }),
   PLEASE_ENTER_MASK: defineMessage({ defaultMessage: 'Please enter Network Mask first' }),
-  PLEASE_ENTER_ADDRESS_VALUES: defineMessage({ defaultMessage: 'Please enter Start IP Address, End IP Address and Network Mask first' })
+  PLEASE_ENTER_ADDRESS_VALUES: defineMessage({ defaultMessage: 'Please enter Start IP Address, End IP Address and Network Mask first' }),
+  OVERLAPPING_MODELS_TOOLTIP: defineMessage({ defaultMessage: 'A CLI configuration profile with overlapping switch models has been applied to this <venueSingular></venueSingular> so it cannot be selected.' }),
+  VENUE_STEP_DESP: defineMessage({ defaultMessage: 'The configuration will be applied to all switches of the selected models, as well as any switch that will be added to the <venueSingular></venueSingular> in the future' }),
+  PRE_SELECT_VENUE_FOR_CUSTOMIZED: defineMessage({ defaultMessage: 'Cannot unselect this <venueSingular></venueSingular> because some of it\'s switches have custom variables assigned from the previous step' })
 }
 
 /* eslint-disable max-len */

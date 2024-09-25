@@ -15,6 +15,7 @@ import {
 import {
   CliConfiguration,
   CliFamilyModels,
+  SwitchCliMessages,
   SwitchViewModel,
   Venue,
   useConfigTemplate,
@@ -23,8 +24,6 @@ import {
 }            from '@acx-ui/rc/utils'
 
 import { getCustomizedSwitchVenues } from '../../SwitchCli/CliVariableUtils'
-
-import { cliFormMessages } from './'
 
 interface VenueExtend extends Venue {
   models: string[],
@@ -125,8 +124,8 @@ export function CliStepVenues (props: {
         models: venueApplyModels,
         inactiveRow: isModelOverlap || customizedSwitchVenues?.includes(venue.id),
         inactiveTooltip: isModelOverlap
-          ? $t(cliFormMessages.OVERLAPPING_MODELS_TOOLTIP)
-          : $t(cliFormMessages.PRE_SELECT_VENUE_FOR_CUSTOMIZED)
+          ? $t(SwitchCliMessages.OVERLAPPING_MODELS_TOOLTIP)
+          : $t(SwitchCliMessages.PRE_SELECT_VENUE_FOR_CUSTOMIZED)
       }
     })
   }
@@ -176,7 +175,7 @@ export function CliStepVenues (props: {
         display: 'block', margin: '4px 0 12px',
         fontSize: cssStr('--acx-body-3-font-size')
       }}>
-        {$t(cliFormMessages.VENUE_STEP_DESP)}
+        {$t(SwitchCliMessages.VENUE_STEP_DESP)}
       </Typography.Text>
       <Form.Item
         hidden={true}

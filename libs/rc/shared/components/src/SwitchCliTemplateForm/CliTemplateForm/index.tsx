@@ -28,10 +28,11 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { CliStepConfiguration } from './CliStepConfiguration'
-import { CliStepNotice }        from './CliStepNotice'
-import { CliStepSummary }       from './CliStepSummary'
-import { CliStepSwitches }      from './CliStepSwitches'
+import { CliStepConfiguration } from '../../SwitchCli/CliStepConfiguration'
+import { CliStepNotice }        from '../../SwitchCli/CliStepNotice'
+
+import { CliStepSummary }  from './CliStepSummary'
+import { CliStepSwitches } from './CliStepSwitches'
 
 export const cliTemplatesPayload = {
   fields: ['name', 'id', 'venueSwitches'],

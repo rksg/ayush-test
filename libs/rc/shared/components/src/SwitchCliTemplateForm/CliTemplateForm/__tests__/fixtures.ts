@@ -1,4 +1,4 @@
-import { maxVariableCount } from '../CliStepConfiguration'
+import { maxVariableCount } from '../../../SwitchCli/CliStepConfiguration'
 
 export const venues = [
   { id: 'a98653366d2240b9ae370e48fab3a9a1', name: 'My-Venue', operationalSwitches: 2 },

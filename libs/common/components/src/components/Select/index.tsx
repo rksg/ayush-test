@@ -39,8 +39,8 @@ export function Select (props: SelectProps) {
       : options?.map(opt => ({
         label: <span>{opt?.label}</span>,
         ...(opt.options ? { options: opt.options } : null),
-        ...(opt.value ? { value: opt.value } : null),
-        ...(opt.disabled ? { disabled: opt.disabled } : null)
+        ...(opt.value ? { value: opt.value } : null)
+        //...(opt.disabled ? { disabled: opt.disabled } : null)
       }))
   }
 

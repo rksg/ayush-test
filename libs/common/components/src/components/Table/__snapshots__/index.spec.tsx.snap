@@ -953,6 +953,11 @@ exports[`Table component renders nested table 1`] = `
   text-overflow: ellipsis;
 }
 
+.c0 .ant-pro-table .ant-table-footer {
+  background: transparent;
+  padding: 8px 0;
+}
+
 .c0 .ant-pro-table .ant-pro-card-body {
   display: -webkit-box;
   display: -webkit-flex;
@@ -1655,6 +1660,11 @@ exports[`Table component renders stickyPagination table 1`] = `
   text-overflow: ellipsis;
 }
 
+.c0 .ant-pro-table .ant-table-footer {
+  background: transparent;
+  padding: 8px 0;
+}
+
 .c0 .ant-pro-table .ant-pro-card-body {
   display: -webkit-box;
   display: -webkit-flex;
@@ -2261,6 +2271,11 @@ exports[`Table component should render correctly 1`] = `
   text-overflow: ellipsis;
 }
 
+.c0 .ant-pro-table .ant-table-footer {
+  background: transparent;
+  padding: 8px 0;
+}
+
 .c0 .ant-pro-table .ant-pro-card-body {
   display: -webkit-box;
   display: -webkit-flex;
@@ -2828,6 +2843,11 @@ exports[`Table component should render multi select table and render action butt
 .c0 .ant-pro-table .ant-table-tbody > tr > td.ant-table-cell-ellipsis .ant-badge-status .ant-badge-status-text {
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.c0 .ant-pro-table .ant-table-footer {
+  background: transparent;
+  padding: 8px 0;
 }
 
 .c0 .ant-pro-table .ant-pro-card-body {
@@ -3570,6 +3590,11 @@ exports[`Table component should render multi select table and render action butt
 .c0 .ant-pro-table .ant-table-tbody > tr > td.ant-table-cell-ellipsis .ant-badge-status .ant-badge-status-text {
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.c0 .ant-pro-table .ant-table-footer {
+  background: transparent;
+  padding: 8px 0;
 }
 
 .c0 .ant-pro-table .ant-pro-card-body {
@@ -4350,6 +4375,11 @@ exports[`Table component should render multi select table and render action butt
   text-overflow: ellipsis;
 }
 
+.c0 .ant-pro-table .ant-table-footer {
+  background: transparent;
+  padding: 8px 0;
+}
+
 .c0 .ant-pro-table .ant-pro-card-body {
   display: -webkit-box;
   display: -webkit-flex;
@@ -5054,6 +5084,11 @@ exports[`Table component should render table with Beta indicator correctly 1`] =
 .c0 .ant-pro-table .ant-table-tbody > tr > td.ant-table-cell-ellipsis .ant-badge-status .ant-badge-status-text {
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.c0 .ant-pro-table .ant-table-footer {
+  background: transparent;
+  padding: 8px 0;
 }
 
 .c0 .ant-pro-table .ant-pro-card-body {
