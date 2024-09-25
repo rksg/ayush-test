@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 
-import { Button }  from 'antd'
+import { Button, Steps }  from 'antd'
 import { useIntl } from 'react-intl'
 
 
@@ -11,6 +11,7 @@ import { ReactComponent as Logo } from './assets/gptDog.svg'
 import BasicInformationPage       from './BasicInformationPage'
 import * as UI                    from './styledComponents'
 import VerticalPage               from './VerticalPage'
+import GptWizard from './GptWizard'
 
 export default function RuckusGptButton () {
   const [visible, setVisible] = useState(false)
@@ -18,6 +19,13 @@ export default function RuckusGptButton () {
 
   const [step, setStep] = useState('vertical' as String)
 
+  const mockResponse_step2 = {
+    requestId: '567ce50233af4e47a7354d2c47b3a8e6',
+    actionType: 'WLAN',
+    payload: '[{"SSID Name":"Guest","SSID Type":"aaa"},{"SSID Name":"Staff","SSID Type":"dpsk"}]'
+  }
+
+  const [currentStep, setCurrentStep] = useState(0 as number)
 
   return <div>
     <UI.ButtonSolid
@@ -27,7 +35,16 @@ export default function RuckusGptButton () {
       }}
     />
     <UI.GptModal
-      title={
+      title={step === 'wizard' ? <Steps current={currentStep}>
+        {[
+          { key: 'step1' },
+          {  key: 'step2' },
+          { key: 'step3' },
+          {  key: 'step4' }
+        ].map((item) => (
+          <Steps.Step key={item.key}  />
+        ))}
+      </Steps> :
         <div style={{ display: 'flex', padding: '20px 20px 0px 20px' }}>
           <div style={{
             display: 'flex',
@@ -59,8 +76,17 @@ export default function RuckusGptButton () {
         </div>}
       visible={true}//{visible}
       footer={<>
-        {step === 'basic' &&
-          <Button key='back' onClick={() => { setStep('vertical') }}>
+        {step !== 'vertical' &&
+          <Button key='back'
+            onClick={
+              () => {
+                if (step === 'basic') {
+                  setStep('vertical')
+                } else if (step === 'wizard') {
+                  setStep('basic')
+                }
+              }
+            }>
             {$t({ defaultMessage: 'Back' })}
           </Button>}
 
@@ -69,8 +95,8 @@ export default function RuckusGptButton () {
           onClick={() => {
             if (step === 'vertical') {
               setStep('basic')
-            } else {
-              // setStep('wizard')
+            } else if (step === 'basic') {
+              setStep('wizard')
             }
           }}>
           {$t({ defaultMessage: 'Next' })}
@@ -81,9 +107,16 @@ export default function RuckusGptButton () {
       onCancel={() => setVisible(false)}
       children={
         <>
-
-          {step === 'vertical' && <VerticalPage/>}
-          {step === 'basic' && <BasicInformationPage/>}
+          {step === 'vertical' && <VerticalPage />}
+          {step === 'basic' && <BasicInformationPage />}
+          {step === 'wizard' && <GptWizard
+            requestId={mockResponse_step2.requestId}
+            actionType={mockResponse_step2.actionType}
+            description={'test'}
+            payload={mockResponse_step2.payload}
+            currentStep={currentStep}
+            setCurrentStep={setCurrentStep}
+          />}
         </>
       }
     />

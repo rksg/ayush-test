@@ -1,3 +1,4 @@
+import { StepsForm } from '@ant-design/pro-form'
 import {
   Button as AntButton,
   Modal
@@ -41,6 +42,10 @@ export const GptModal = styled(Modal)`
       background: none;
       text-align: center;
     }
+    .ant-modal-body {
+      max-height: calc(80vh - 50px);
+      overflow-y: auto;
+    }
   }
 `
 
@@ -65,4 +70,12 @@ export const VirticalBox = styled.div`
     height: 150px;
     border-radius: 8px;
   }
+`
+
+export const GptStepsForm = styled(StepsForm)`
+ button {
+  position: absolute;
+  right: 100px;
+ }
+
 `
