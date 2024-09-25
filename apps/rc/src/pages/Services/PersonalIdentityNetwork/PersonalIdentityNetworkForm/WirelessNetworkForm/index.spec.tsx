@@ -2,21 +2,25 @@
 
 import userEvent from '@testing-library/user-event'
 
-import { StepsForm } from '@acx-ui/components'
-import { Provider }  from '@acx-ui/store'
+import { StepsForm }       from '@acx-ui/components'
+import { EdgeNSGFixtures } from '@acx-ui/rc/utils'
+import { Provider }        from '@acx-ui/store'
 import {
   render,
   screen
 } from '@acx-ui/test-utils'
 
 import {
-  mockContextData,
-  mockNetworkGroup,
-  mockNsgStatsList
+  mockContextData
 } from '../../__tests__/fixtures'
 import { PersonalIdentityNetworkFormContext } from '../PersonalIdentityNetworkFormContext'
 
 import { WirelessNetworkForm } from '.'
+
+const {
+  mockNetworkGroup,
+  mockNsgStatsList
+} = EdgeNSGFixtures
 
 const tenantId = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 const mockedUsedNavigate = jest.fn()
