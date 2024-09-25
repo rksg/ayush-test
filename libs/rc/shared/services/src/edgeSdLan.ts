@@ -239,6 +239,9 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
           const sdLanStatusQuery = await fetchWithBQ({
             ...sdLanStatusReq,
             body: {
+              fields: [
+                'networkIds', 'guestNetworkIds', 'guestEdgeClusterId', 'guestTunnelProfileId'
+              ],
               filters: { id: [params!.serviceId] }
             }
           })
