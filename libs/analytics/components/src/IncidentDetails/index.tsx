@@ -62,7 +62,7 @@ export const incidentDetailsMap = {
   'p-airtime-tx-24g-high': AirtimeTx,
   'p-airtime-tx-5g-high': AirtimeTx,
   'p-airtime-tx-6(5)g-high': AirtimeTx,
-  's-switch-tcp-syn-ddos' : null
+  's-switch-tcp-syn-ddos': null
 }
 
 export function IncidentDetails () {
