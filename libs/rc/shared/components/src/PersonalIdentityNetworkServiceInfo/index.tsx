@@ -5,6 +5,7 @@ import { Loader, Tooltip, SummaryCard } from '@acx-ui/components'
 import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
   useApListQuery,
+  useGetEdgeClusterListQuery,
   useGetEdgeDhcpServiceQuery,
   useGetNetworkSegmentationGroupByIdQuery,
   useGetNetworkSegmentationViewDataListQuery,
@@ -13,6 +14,7 @@ import {
 } from '@acx-ui/rc/services'
 import { PolicyOperation, PolicyType, ServiceOperation, ServiceType, getPolicyDetailsLink, getServiceDetailsLink } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                                                                                   from '@acx-ui/react-router-dom'
+import { noDataDisplay }                                                                                           from '@acx-ui/utils'
 
 import { EdgeServiceStatusLight } from '../EdgeServiceStatusLight'
 import { defaultApPayload }       from '../PersonalIdentityNetworkDetailTableGroup/ApsTable'
@@ -55,6 +57,7 @@ export const PersonalIdentityNetworkServiceInfo = styled((
   } = useGetNetworkSegmentationGroupByIdQuery({
     params: { serviceId: nsgId }
   })
+
   const apListQuery = useApListQuery({
     payload: {
       ...defaultApPayload,
@@ -65,9 +68,24 @@ export const PersonalIdentityNetworkServiceInfo = styled((
 
   // TODO if nsg es index is refactored, remove below scope
   /*Temp*/
+  const { clusterName } = useGetEdgeClusterListQuery(
+    { params, payload: {
+      fields: ['name', 'clusterId'],
+      pageSize: 1,
+      filters: { clusterId: [nsgViewData?.edgeClusterInfos[0].edgeClusterId] }
+    } },
+    {
+      skip: !Boolean(nsgViewData?.edgeClusterInfos[0].edgeClusterId),
+      selectFromResult: ({ data }) => {
+        return {
+          clusterName: data?.data[0]?.name
+        }
+      }
+    })
+
   const { dhcpName, dhcpId, dhcpPools, isLoading: isDhcpLoading } = useGetEdgeDhcpServiceQuery(
-    { params: { id: nsgViewData?.edgeInfos[0].dhcpInfoId } },{
-      skip: !!!nsgViewData?.edgeInfos[0],
+    { params: { id: nsgViewData?.edgeClusterInfos[0].dhcpInfoId } },{
+      skip: !!!nsgViewData?.edgeClusterInfos[0],
       selectFromResult: ({ data, isLoading }) => {
         return {
           dhcpName: data?.serviceName,
@@ -109,9 +127,9 @@ export const PersonalIdentityNetworkServiceInfo = styled((
     },
     {
       title: $t({ defaultMessage: 'Service Health' }),
-      content: () => ((nsgViewData?.edgeInfos?.length)
+      content: () => ((nsgViewData?.edgeClusterInfos?.length)
         ? <EdgeServiceStatusLight data={nsgViewData.edgeAlarmSummary} />
-        : '--'
+        : noDataDisplay
       )
     },
     {
@@ -136,31 +154,31 @@ export const PersonalIdentityNetworkServiceInfo = styled((
       )
     },
     {
-      title: $t({ defaultMessage: 'RUCKUS Edge' }),
+      title: $t({ defaultMessage: 'Cluster' }),
       content: () => {
-        const edgeInfo = nsgViewData?.edgeInfos?.[0]
+        const edgeInfo = nsgViewData?.edgeClusterInfos?.[0]
         return (
           <TenantLink
-            to={`/devices/edge/${edgeInfo?.edgeId}/details/overview`}
+            to={`/devices/edge/${edgeInfo?.edgeClusterId}/details/overview`}
           >
-            {edgeInfo?.edgeName}
+            {clusterName}
           </TenantLink>
         )
       }
     },
     {
       title: $t({ defaultMessage: 'Number of Segments' }),
-      content: nsgViewData?.edgeInfos[0]?.segments
+      content: nsgViewData?.edgeClusterInfos[0]?.segments
     },
     {
       title: $t({ defaultMessage: 'Number of devices per segment' }),
-      content: nsgViewData?.edgeInfos[0]?.devices
+      content: nsgViewData?.edgeClusterInfos[0]?.devices
     },
     {
       title: $t({ defaultMessage: 'DHCP Service (Pool)' }),
       content: () => {
         if(dhcpName) {
-          const dhcpPoolId = nsgViewData?.edgeInfos[0]?.dhcpPoolId
+          const dhcpPoolId = nsgViewData?.edgeClusterInfos[0]?.dhcpPoolId
           const dhcpPool = dhcpPools?.find(item => item.id === dhcpPoolId)
           return (
             <TenantLink to={getServiceDetailsLink({

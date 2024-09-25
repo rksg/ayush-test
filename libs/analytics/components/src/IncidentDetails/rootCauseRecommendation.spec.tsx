@@ -2,12 +2,12 @@ import _                                   from 'lodash'
 import { FormattedMessage, defineMessage } from 'react-intl'
 import { MemoryRouter }                    from 'react-router-dom'
 
-import { get }            from '@acx-ui/config'
-import { useIsSplitOn }   from '@acx-ui/feature-toggle'
-import { render, screen } from '@acx-ui/test-utils'
+import { IncidentCode, fakeIncident } from '@acx-ui/analytics/utils'
+import { get }                        from '@acx-ui/config'
+import { useIsSplitOn }               from '@acx-ui/feature-toggle'
+import { render, screen }             from '@acx-ui/test-utils'
+import { encodeParameter }            from '@acx-ui/utils'
 
-import { IncidentCode } from './constants'
-import { fakeIncident } from './fakeIncident'
 import {
   getRootCauseAndRecommendations,
   codeToFailureTypeMap,
@@ -83,11 +83,18 @@ describe('TenantLinkWrapper', () => {
         <TenantLinkWrapper params={newParams} linkType='crrm' />
       </MemoryRouter>
     )
+    const mockedIntentFilter = {
+      aiFeature: ['AI-Driven RRM'],
+      intent: ['Client Density vs Throughput for 2.4 GHz radio'],
+      category: ['Wi-Fi Experience'],
+      sliceValue: [baseParams.crrm!.sliceId]
+    }
+    const encodedParameters = encodeParameter(mockedIntentFilter)
+    const path = `/intentAI?intentTableFilters=${encodedParameters}`.replace(/%20/g, '+')
 
     expect(screen.getByRole('link', { name: /Explore more/i })
       .getAttribute('href'))
-      .toContain(
-        `/intentAI/${baseParams.crrm!.root}/${baseParams.crrm!.sliceId}/${baseParams.crrm!.code}`)
+      .toContain(path)
 
   })
   it('renders the correct link when Intent AI is enabled for R1', () => {
@@ -100,10 +107,18 @@ describe('TenantLinkWrapper', () => {
         <TenantLinkWrapper params={newParams} linkType='aiOps' />
       </MemoryRouter>
     )
+    const mockedIntentFilter = {
+      aiFeature: ['AI Operations'],
+      intent: ['Distributed Wi-Fi Load vs Client Stability'],
+      category: ['Wi-Fi Experience'],
+      sliceValue: [baseParams.aclb!.sliceId]
+    }
+    const encodedParameters = encodeParameter(mockedIntentFilter)
+    const path = `/intentAI?intentTableFilters=${encodedParameters}`.replace(/%20/g, '+')
 
     expect(screen.getByRole('link', { name: /Explore more/i })
       .getAttribute('href'))
-      .toContain(`/intentAI/${baseParams.aclb!.sliceId}/${baseParams.aclb!.code}`)
+      .toContain(path)
 
   })
 
