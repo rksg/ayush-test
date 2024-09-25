@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { Space }                                     from 'antd'
+import { Space } from 'antd'
 import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
-import AutoSizer                                     from 'react-virtualized-auto-sizer'
+import AutoSizer from 'react-virtualized-auto-sizer'
 
 import { getSelectedNodePath, mapCodeToReason } from '@acx-ui/analytics/utils'
 import {
@@ -13,9 +13,9 @@ import {
   NoData,
   qualitativeColorSet
 } from '@acx-ui/components'
-import { get }                  from '@acx-ui/config'
-import { formatter }            from '@acx-ui/formatter'
-import { InformationOutlined }  from '@acx-ui/icons'
+import { get } from '@acx-ui/config'
+import { formatter } from '@acx-ui/formatter'
+import { InformationOutlined } from '@acx-ui/icons'
 import { NodesFilter, getIntl } from '@acx-ui/utils'
 import type { AnalyticsFilter } from '@acx-ui/utils'
 
@@ -27,7 +27,7 @@ import {
   showTopNPieChartResult
 } from './config'
 import { ImpactedEntities, usePieChartQuery } from './services'
-import * as UI                                from './styledComponents'
+import * as UI from './styledComponents'
 
 const topCount = 5
 
@@ -38,14 +38,14 @@ type PieChartData = {
   color: string
 }
 
-type TabKeyType = 'wlans'|'nodes'|'events' | 'osManufacturers'
+type TabKeyType = 'wlans' | 'nodes' | 'events' | 'osManufacturers'
 type NodeData = {
   key: string
   value: number
   name?: string | null
 }
-function getTopPieChartData (nodeData: NodeData[])
-: PieChartData[] {
+function getTopPieChartData(nodeData: NodeData[])
+  : PieChartData[] {
   const colors = qualitativeColorSet()
   return nodeData
     .map((val, index) => ({
@@ -78,31 +78,35 @@ export const transformData = (
 
     return { nodes, wlans, events, osManufacturers: osManufacturersData }
   }
-  return { nodes: [], wlans: [],events: [], osManufacturers: [] }
+  return { nodes: [], wlans: [], events: [], osManufacturers: [] }
 }
 
 
-export function pieNodeMap (filter: NodesFilter): MessageDescriptor {
+export function pieNodeMap(filter: NodesFilter): MessageDescriptor {
   const isMLISA = get('IS_MLISA_SA')
   const node = getSelectedNodePath(filter)
   switch (node[node.length - 1].type) {
     case 'zone':
-      return defineMessage({ defaultMessage: `{ count, plural,
+      return defineMessage({
+        defaultMessage: `{ count, plural,
         one {AP Group}
         other {AP Groups}
       }` })
     case 'apGroup':
-      return defineMessage({ defaultMessage: `{ count, plural,
+      return defineMessage({
+        defaultMessage: `{ count, plural,
         one {AP}
         other {APs}
       }` })
     default:
       return !isMLISA ?
-        defineMessage({ defaultMessage: `{ count, plural,
+        defineMessage({
+          defaultMessage: `{ count, plural,
         one {<VenueSingular></VenueSingular>}
         other {<VenuePlural></VenuePlural>}
       }` })
-        : defineMessage({ defaultMessage: `{ count, plural,
+        : defineMessage({
+          defaultMessage: `{ count, plural,
         one {Zone}
         other {Zones}
       }` })
@@ -124,15 +128,15 @@ export const tooltipFormatter = (
   total: number,
   dataFormatter: (value: unknown, tz?: string | undefined) => string
 ) => (value: unknown) =>
-  `${formatter('percentFormat')(value as number / total)}(${dataFormatter(value)})`
+    `${formatter('percentFormat')(value as number / total)}(${dataFormatter(value)})`
 
-function getHealthPieChart (
+function getHealthPieChart(
   data: { key: string; value: number; name: string; color: string }[],
   dataFormatter: (value: unknown, tz?: string | undefined) => string
 ) {
 
   let tops = data.slice(0, topCount)
-  if(data.slice(topCount)[0]?.key === 'Others') {
+  if (data.slice(topCount)[0]?.key === 'Others') {
     tops.push({
       ...data.slice(topCount)[0],
       key: getIntl().$t({ defaultMessage: 'Others' })
@@ -240,12 +244,13 @@ export const HealthPieChart = ({
           />
         </div>
       </UI.HealthPieChartWrapper>
-      { (tabsList.find((tab) => tab.key === chartKey)?.data.length || 0) > topCount &&
-      <Space align='start'>
-        <InformationOutlined />
-        {$t({ defaultMessage: `Detailed breakup of all items beyond
+      {(tabsList.find((tab) => tab.key === chartKey)?.data.length || 0) > topCount &&
+        <Space align='start'>
+          <InformationOutlined />
+          {$t({
+            defaultMessage: `Detailed breakup of all items beyond
           Top 5 can be explored using Data Studio custom charts.` })}
-      </Space> }
+        </Space>}
     </Loader>
   )
 }

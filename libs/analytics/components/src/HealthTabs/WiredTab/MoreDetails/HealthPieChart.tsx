@@ -1,13 +1,13 @@
-import { Space }                     from 'antd'
+import { Space } from 'antd'
 import { useIntl, FormattedMessage } from 'react-intl'
-import AutoSizer                     from 'react-virtualized-auto-sizer'
+import AutoSizer from 'react-virtualized-auto-sizer'
 
 import { DonutChart, NoData, qualitativeColorSet, Loader } from '@acx-ui/components'
-import { get }                                             from '@acx-ui/config'
-import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
-import { formatter }                                       from '@acx-ui/formatter'
-import { InformationOutlined }                             from '@acx-ui/icons'
-import { AnalyticsFilter }                                 from '@acx-ui/utils'
+import { get } from '@acx-ui/config'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { formatter } from '@acx-ui/formatter'
+import { InformationOutlined } from '@acx-ui/icons'
+import { AnalyticsFilter } from '@acx-ui/utils'
 
 import { showTopNPieChartResult } from '../../../Health/HealthDrillDown/config'
 
@@ -17,7 +17,7 @@ import {
   TopNByPortCongestionResult, TopNByStormPortCountResult,
   showTopNTableResult
 } from './config'
-import { usePieChartDataQuery }                 from './services'
+import { usePieChartDataQuery } from './services'
 import { PieChartTitle, HealthPieChartWrapper } from './styledComponents'
 
 type PieChartData = {
@@ -27,15 +27,15 @@ type PieChartData = {
   color: string
 }
 
-export function transformData (
+export function transformData(
   type: WidgetType,
   data: TopNByCPUUsageResult[] | TopNByDHCPFailureResult[] |
-  TopNByPortCongestionResult[] | TopNByStormPortCountResult[]
+    TopNByPortCongestionResult[] | TopNByStormPortCountResult[]
 ): PieChartData[] {
   const colors = qualitativeColorSet()
   let value: number
   return data.map((val, index: number) => {
-    switch(type){
+    switch (type) {
       case 'cpuUsage':
         value = (val as TopNByCPUUsageResult).cpuUtilization
         break
@@ -62,7 +62,7 @@ export const getPieData = (data: PieChartResult, type: WidgetType) => {
   if (!data) return []
 
   let transformedData: PieChartData[] = []
-  switch(type){
+  switch (type) {
     case 'cpuUsage':
       transformedData = transformData(type, data.topNSwitchesByCpuUsage)
       break
@@ -83,13 +83,13 @@ export const tooltipFormatter = (
   total: number,
   dataFormatter: (value: unknown, tz?: string | undefined) => string
 ) => (value: unknown) =>
-  `${formatter('percentFormat')(value as number / total)} (${dataFormatter(value)})`
+    `${formatter('percentFormat')(value as number / total)} (${dataFormatter(value)})`
 
 export const MoreDetailsPieChart = ({
   filters,
   queryType,
   title
-} : { filters: AnalyticsFilter, queryType: WidgetType, title: string }) => {
+}: { filters: AnalyticsFilter, queryType: WidgetType, title: string }) => {
   const enableWithOthers = [
     useIsSplitOn(Features.HEALTH_WIRED_TOPN_WITH_OTHERS),
     get('IS_MLISA_SA')
@@ -114,7 +114,7 @@ export const MoreDetailsPieChart = ({
 
   const totalCount = enableWithOthers
     ? queryResults?.data?.length
-    : queryResults?.data?.filter(({ mac })=> mac !== 'Others').length
+    : queryResults?.data?.filter(({ mac }) => mac !== 'Others').length
   const showTopNResult = enableWithOthers ? showTopNPieChartResult : showTopNTableResult
   const Title = <PieChartTitle>
     <FormattedMessage
@@ -132,15 +132,16 @@ export const MoreDetailsPieChart = ({
   </PieChartTitle>
 
   const hasOthers = enableWithOthers
-    ? queryResults?.data?.find(({ mac })=> mac === 'Others')
+    ? queryResults?.data?.find(({ mac }) => mac === 'Others')
     : false
   const pieData = enableWithOthers
     ? (hasOthers
-      ? [ ...queryResults.data.slice(0, queryResults.data.length -1 ),
-        { ...queryResults.data.slice(-1)[0],
-          name: $t({ defaultMessage: 'Others' }),
-          mac: undefined
-        } ]
+      ? [...queryResults.data.slice(0, queryResults.data.length - 1),
+      {
+        ...queryResults.data.slice(-1)[0],
+        name: $t({ defaultMessage: 'Others' }),
+        mac: undefined
+      }]
       : queryResults.data) as PieChartData[]
     : queryResults.data.slice(0, n)
   const total = pieData?.reduce((total, { value }) => total + value, 0)
@@ -159,6 +160,10 @@ export const MoreDetailsPieChart = ({
                   legend='name'
                   size={'x-large'}
                   showTotal={false}
+                  labelTextStyle={{
+                    overflow: 'truncate',
+                    width: 170
+                  }}
                   showLegend
                   dataFormatter={tooltipFormatter(total, formatter('countFormat'))} />
               )}
@@ -169,12 +174,12 @@ export const MoreDetailsPieChart = ({
         </div>
       </HealthPieChartWrapper>
       {hasOthers &&
-      <Space align='start' >
-        <InformationOutlined />
-        {$t({
-          defaultMessage: `Detailed breakup of all items beyond
+        <Space align='start' >
+          <InformationOutlined />
+          {$t({
+            defaultMessage: `Detailed breakup of all items beyond
           Top {n} can be explored using Data Studio custom charts.` }, { n })}
-      </Space>}
+        </Space>}
     </Loader>
   )
 }

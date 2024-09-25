@@ -1,14 +1,14 @@
 import { Typography } from 'antd'
-import { useIntl }    from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import { Drawer, GridCol, GridRow } from '@acx-ui/components'
-import { AnalyticsFilter }          from '@acx-ui/utils'
+import { AnalyticsFilter } from '@acx-ui/utils'
 
-import { WidgetType }            from './config'
-import { MoreDetailsPieChart }   from './HealthPieChart'
-import { ImpactedClientsTable }  from './ImpactedClientsTable'
+import { WidgetType } from './config'
+import { MoreDetailsPieChart } from './HealthPieChart'
+import { ImpactedClientsTable } from './ImpactedClientsTable'
 import { ImpactedSwitchesTable } from './ImpactedSwitchesTable'
-import * as UI                   from './styledComponents'
+import * as UI from './styledComponents'
 
 export interface MoreDetailsDrawerProps {
   visible: boolean
@@ -77,18 +77,16 @@ export const MoreDetailsDrawer = (props: MoreDetailsDrawerProps) => {
                 <MoreDetailsPieChart
                   filters={filters}
                   queryType={type}
-                  title={pieTitle}/>
+                  title={pieTitle} />
               </GridCol>
-              <GridCol col={{ span: 15 }}
-                key={`table-${type}`}
-                style={{ height, overflow: 'auto' }}>
+              <GridCol col={{ span: 15 }}>
                 {
                   (type === 'dhcpFailure' || type === 'cpuUsage') &&
-                      <ImpactedSwitchesTable filters={filters} queryType={type}/>
+                  <ImpactedSwitchesTable filters={filters} queryType={type} />
                 }
                 {
                   (type === 'portStorm' || type === 'congestion') &&
-                      <ImpactedClientsTable filters={filters} queryType={type}/>
+                  <ImpactedClientsTable filters={filters} queryType={type} />
                 }
               </GridCol>
             </GridRow>
