@@ -107,7 +107,7 @@ describe('DisplayMessageSettings', () => {
     expect(await screen.findByText('Please enter Page Body Text')).toBeVisible()
   })
 
-  it('should validate whitespace only entries', async () => {
+  it('should validate no leading or trailing spaces allowed', async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
       return form
@@ -134,14 +134,14 @@ describe('DisplayMessageSettings', () => {
 
     formRef.current.validateFields()
 
-    expect(await screen.findByText('Whitespace chars only are not allowed')).toBeVisible()
+    expect(await screen.findByText('No leading or trailing spaces allowed')).toBeVisible()
 
     await userEvent.type(pageTitleInput, 'a real value')
     await userEvent.type(pageBodyInput, '  ')
 
     formRef.current.validateFields()
 
-    expect(await screen.findByText('Whitespace chars only are not allowed')).toBeVisible()
+    expect(await screen.findByText('No leading or trailing spaces allowed')).toBeVisible()
   })
 
 
