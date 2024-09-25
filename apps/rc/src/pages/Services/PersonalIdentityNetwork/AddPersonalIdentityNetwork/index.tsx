@@ -29,7 +29,7 @@ const AddPersonalIdentityNetwork = () => {
       content: <GeneralSettingsForm />
     },
     {
-      title: $t({ defaultMessage: 'SmartEdge' }),
+      title: $t({ defaultMessage: 'RUCKUS Edge' }),
       content: <SmartEdgeForm />
     },
     {

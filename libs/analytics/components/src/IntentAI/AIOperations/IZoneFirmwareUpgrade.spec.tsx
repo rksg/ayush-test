@@ -87,7 +87,7 @@ describe('IntentAIDetails', () => {
     expect(await screen.findByTestId('Details')).toBeVisible()
     expect(await screen.findByTestId('Configuration')).toBeVisible()
     expect(await screen.findByTestId('KPI')).toBeVisible()
-    expect(await screen.findByTestId('Why the intent?')).toBeVisible()
+    expect(await screen.findByTestId('Why is the recommendation?')).toBeVisible()
     expect(await screen.findByTestId('Potential trade-off')).toBeVisible()
     expect(await screen.findByTestId('Status Trail')).toBeVisible()
   })
@@ -119,11 +119,13 @@ describe('IntentAIDetails', () => {
     expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
     expect(await screen.findByText('AI Operations')).toBeVisible()
     // eslint-disable-next-line max-len
-    expect(await screen.findByText('Venue: weiguo-mesh is running with older AP firmware version . It is recommended to upgrade zone to the latest available AP firmware version.')).toBeVisible()
+    expect(await screen.findByText('IntentAI will upgrade the Zone firmware ensuring the network remains secure and up-to-date with the latest features. This change will enhance protection against cyber threats and enabling access to new functionalities for improved performance and management.')).toBeVisible()
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('IntentAI will continuously monitor these configurations.')).toBeVisible()
     expect(await screen.findByTestId('Details')).toBeVisible()
     expect(await screen.findByTestId('Configuration')).toBeVisible()
     expect(await screen.findByTestId('KPI')).toBeVisible()
-    expect(await screen.findByTestId('Why the intent?')).toBeVisible()
+    expect(await screen.findByTestId('Why is the recommendation?')).toBeVisible()
     expect(await screen.findByTestId('Potential trade-off')).toBeVisible()
     expect(await screen.findByTestId('Status Trail')).toBeVisible()
 
@@ -131,6 +133,18 @@ describe('IntentAIDetails', () => {
     expect(await screen.findByRole('tooltip', { hidden: true }))
       // eslint-disable-next-line max-len
       .toHaveTextContent('Latest available AP firmware version will be used when this intent is applied.')
+    expect(screen.queryByText('Scheduled Date')).not.toBeInTheDocument()
+  })
+  it('should render with scheduled date', async () => {
+    const { params } = mockIntentContextWith({
+      ...mocked,
+      status: Statuses.scheduled,
+      metadata: { scheduledAt: '2022-01-01T00:00:00.000Z', dataEndTime: '2022-01-01T00:00:00.000Z' }
+    })
+    render(<IntentAIDetails />, { route: { params }, wrapper: Provider })
+    expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
+    expect(await screen.findByText('AI Operations')).toBeVisible()
+    expect(await screen.findByText('Scheduled Date')).toBeVisible()
   })
 })
 
@@ -142,12 +156,12 @@ describe('IntentAIForm', () => {
     const actions = within(form.getByTestId('steps-form-actions'))
 
     expect(await screen.findByRole('heading', { name: 'Introduction' })).toBeVisible()
-    expect((await screen.findAllByText('Why the intent?')).length).toEqual(1)
+    expect((await screen.findAllByText('Why is the recommendation?')).length).toEqual(1)
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Intent Priority' })).toBeVisible()
     expect(await screen.findByText('Potential trade-off')).toBeVisible()
-    const radioEnabled = screen.getByRole('radio', { name: 'Yes, apply the intent' })
+    const radioEnabled = screen.getByRole('radio', { name: 'Yes, apply the recommendation' })
     await click(radioEnabled)
     expect(radioEnabled).toBeChecked()
     await click(actions.getByRole('button', { name: 'Next' }))
@@ -176,12 +190,12 @@ describe('IntentAIForm', () => {
     const actions = within(form.getByTestId('steps-form-actions'))
 
     expect(await screen.findByRole('heading', { name: 'Introduction' })).toBeVisible()
-    expect((await screen.findAllByText('Why the intent?')).length).toEqual(1)
+    expect((await screen.findAllByText('Why is the recommendation?')).length).toEqual(1)
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Intent Priority' })).toBeVisible()
     expect(await screen.findByText('Potential trade-off')).toBeVisible()
-    const radioDisabled = screen.getByRole('radio', { name: 'No, do not apply the intent' })
+    const radioDisabled = screen.getByRole('radio', { name: 'No, do not apply the recommendation' })
     await click(radioDisabled)
     expect(radioDisabled).toBeChecked()
     await click(actions.getByRole('button', { name: 'Next' }))

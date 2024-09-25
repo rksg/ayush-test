@@ -56,7 +56,7 @@ export const StaticRouteModal = (props: { edgeId: string, edgeName: string }) =>
     </Button>
     <Modal
       title={edgeName}
-      subTitle={$t({ defaultMessage: 'SmartEdge' })}
+      subTitle={$t({ defaultMessage: 'RUCKUS Edge' })}
       visible={visible}
       destroyOnClose={true}
       type={ModalType.ModalStepsForm}

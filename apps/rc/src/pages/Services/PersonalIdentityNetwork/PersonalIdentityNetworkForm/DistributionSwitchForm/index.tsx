@@ -117,7 +117,8 @@ export function DistributionSwitchForm () {
       onClose={()=>setOpenDrawer(false)} />
     { distributionSwitchInfos && distributionSwitchInfos.length > 0 && <Alert type='info'
       message={$t({ defaultMessage:
-        'Attention Required: Please ensure to configure {staticRoute} on SmartEdge ({edgeName}) ' +
+        // eslint-disable-next-line max-len
+        'Attention Required: Please ensure to configure {staticRoute} on RUCKUS Edge ({edgeName}) ' +
         'for the distribution switch’s loopback IP addresses to establish the connection.' }, {
         // eslint-disable-next-line max-len
         staticRoute: <StaticRouteModal edgeId={edgeClusterId} edgeName={getClusterName(edgeClusterId)} />,

@@ -156,13 +156,12 @@ export const ImpactedClientsTable = ({
     <Loader states={[impactedClients, impactedSwitches]}>
       <ChartTitle>
         <FormattedMessage
-          defaultMessage={`<b>{count}</b> Impacted {totalCount, plural,
-            one {Uplink Port}
-            other {Uplink Ports}
-          }`}
+          defaultMessage={`<b>{count}</b> Impacted {portType} 
+            {totalCount, plural, one {Port} other {Ports}}`}
           values={{
             count: showTopNTableResult($t, totalCount, topImpactedSwitchesLimit),
             totalCount,
+            portType: queryType === 'portStorm' ? 'Storm': 'Uplink',
             b: (chunk) => <b>{chunk}</b>
           }}
         />

@@ -6,7 +6,7 @@ import { rest }      from 'msw'
 import { venueApi, edgeApi }                                                                                                                      from '@acx-ui/rc/services'
 import { CommonUrlsInfo, EdgeUrlsInfo, WifiUrlsInfo, IncompatibilityFeatures, EdgeCompatibilityFixtures, FirmwareUrlsInfo, EdgeFirmwareFixtures } from '@acx-ui/rc/utils'
 import { Provider, store }                                                                                                                        from '@acx-ui/store'
-import { act, mockServer, render, screen, within }                                                                                                from '@acx-ui/test-utils'
+import { act, mockServer, render, screen, waitForElementToBeRemoved, within }                                                                     from '@acx-ui/test-utils'
 
 import { CompatibilityItemProps } from '../CompatibilityDrawer/CompatibilityItem'
 import { FeatureItemProps }       from '../CompatibilityDrawer/CompatibilityItem/FeatureItem'
@@ -147,7 +147,7 @@ describe('EdgeCompatibilityDrawer', () => {
 
     const edgeBlock = compatibilityDevices[0]
     expect(within(edgeBlock).getByText('2.1.0.200')).toBeValid()
-    within(edgeBlock).getByText(/Incompatible SmartEdges/)
+    within(edgeBlock).getByText(/Incompatible RUCKUS Edges/)
     expect(within(edgeBlock).getByText('5 / 14')).toBeValid()
 
     const wifiBlock = compatibilityDevices[1]
@@ -180,7 +180,7 @@ describe('EdgeCompatibilityDrawer', () => {
 
     const compatibilityDevices = await screen.findAllByTestId('CompatibilityItem')
     expect(screen.getByText('SD-LAN')).toBeValid()
-    expect(screen.getByText('SmartEdge')).toBeValid()
+    expect(screen.getByText('RUCKUS Edge')).toBeValid()
     expect(screen.getByText('Wi-Fi')).toBeValid()
 
     expect(compatibilityDevices.length).toBe(2)
@@ -210,7 +210,7 @@ describe('EdgeCompatibilityDrawer', () => {
         route: { params: { tenantId, featureName }, path: '/:tenantId' }
       })
 
-    const descriptions = await screen.findAllByText(/The following features are unavailable on certain SmartEdges in this venue due /)
+    const descriptions = await screen.findAllByText(/The following features are unavailable on certain RUCKUS Edges in this venue due /)
     expect(descriptions.length).toBe(1)
 
     const sdlanRow = screen.getByRole('row', { name: /SD-LAN/ })
@@ -236,6 +236,7 @@ describe('EdgeCompatibilityDrawer', () => {
         <EdgeCompatibilityDrawer
           visible={true}
           title='venue edge incompatible'
+          type={EdgeCompatibilityType.DEVICE}
           venueId={venueId}
           edgeId={'001001001'}
           onClose={mockedCloseDrawer}
@@ -244,7 +245,7 @@ describe('EdgeCompatibilityDrawer', () => {
         route: { params: { tenantId, featureName }, path: '/:tenantId' }
       })
 
-    expect(await screen.findByText(/The following features are not enabled on this SmartEdge /)).toBeInTheDocument()
+    expect(await screen.findByText(/The following features are not enabled on this RUCKUS Edge /)).toBeInTheDocument()
 
     const sdlanRow = screen.getByRole('row', { name: /SD-LAN/ })
     expect(sdlanRow).toBeVisible()
@@ -254,5 +255,61 @@ describe('EdgeCompatibilityDrawer', () => {
     expect(within(tunnelProfileRow).getByText('2.1.0.400')).toBeValid()
     await userEvent.click(screen.getByTestId('CloseSymbol'))
     expect(mockedCloseDrawer).toBeCalledTimes(1)
+  })
+
+  it('should change query payload when props changed', async () => {
+    const mockeReq = jest.fn()
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getVenueEdgeCompatibilities.url,
+        (req, res, ctx) => {
+          mockeReq(req.body)
+          return res(ctx.json({ compatibilities: mockEdgeCompatibilitiesVenue.compatibilities.slice(0, 1) }))
+        })
+    )
+
+    const { rerender } = render(
+      <Provider>
+        <EdgeCompatibilityDrawer
+          visible={true}
+          title='venue edge incompatible'
+          type={EdgeCompatibilityType.DEVICE}
+          venueId={venueId}
+          edgeId={'001001001'}
+          onClose={jest.fn()}
+        />
+      </Provider>, {
+        route: { params: { tenantId, featureName }, path: '/:tenantId' }
+      })
+
+    expect(await screen.findByText(/The following features are not enabled on this RUCKUS Edge /)).toBeInTheDocument()
+    const sdlanRow = screen.getByRole('row', { name: /SD-LAN/ })
+    expect(sdlanRow).toBeVisible()
+    expect(within(sdlanRow).getByText('2.1.0.200')).toBeValid()
+    const tunnelProfileRow = screen.getByRole('row', { name: /Tunnel Profile/ })
+    expect(within(tunnelProfileRow).getByText('2.1.0.400')).toBeValid()
+
+    rerender(
+      <Provider>
+        <EdgeCompatibilityDrawer
+          visible={true}
+          title='venue edge incompatible: Edge2'
+          type={EdgeCompatibilityType.DEVICE}
+          venueId={venueId}
+          edgeId={'001002222'}
+          onClose={mockedCloseDrawer}
+        />
+      </Provider>)
+
+    expect(await screen.findByText('venue edge incompatible: Edge2')).toBeInTheDocument()
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(mockeReq).toBeCalledTimes(2)
+    expect(mockeReq).toHaveBeenNthCalledWith(2, {
+      filters: {
+        edgeIds: ['001002222'],
+        venueIds: ['mock_venue_id']
+      }
+    })
+    screen.getByRole('row', { name: /SD-LAN/ })
   })
 })

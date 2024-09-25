@@ -97,7 +97,7 @@ export const SummaryForm = () => {
       </Col>
     </Row>
     <Subtitle level={4}>
-      { $t({ defaultMessage: 'SmartEdge' }) }
+      { $t({ defaultMessage: 'RUCKUS Edge' }) }
     </Subtitle>
     <Form.Item>
       <SmartEdgeTable data={smartEdgeData} />

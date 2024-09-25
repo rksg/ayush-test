@@ -181,7 +181,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
       />
       <Row gutter={20}>
         <Col span={8}>
-          <StepsForm.Title>{$t({ defaultMessage: 'SmartEdge Settings' })}</StepsForm.Title>
+          <StepsForm.Title>{$t({ defaultMessage: 'RUCKUS Edge Settings' })}</StepsForm.Title>
           <Form.Item
             name='edgeClusterId'
             label={$t({ defaultMessage: 'Cluster' })}

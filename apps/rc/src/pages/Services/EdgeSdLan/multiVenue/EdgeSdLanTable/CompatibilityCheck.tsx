@@ -28,11 +28,11 @@ export const CompatibilityCheck = (props: CompatibilityCheckProps) => {
     // eslint-disable-next-line max-len
       title={$t({
         defaultMessage: `This SD-LAN is not able to be brought up
-        on some {edgeInfo} {hasAnd} {apInfo} due to thier firmware incompatibility.` },
+        on some {edgeInfo} {hasAnd} {apInfo} due to their firmware incompatibility.` },
       {
         edgeInfo: (edgeIncompatible
         // eslint-disable-next-line max-len
-          ? $t({ defaultMessage: '{edgeCount, plural, one {SmartEdge} other {SmartEdges}}' }, { edgeCount: edgeIncompatibleCount })
+          ? $t({ defaultMessage: '{edgeCount, plural, one {RUCKUS Edge} other {RUCKUS Edges}}' }, { edgeCount: edgeIncompatibleCount })
           : ''),
         hasAnd: ((edgeIncompatible && apIncompatible) ? $t({ defaultMessage: 'and' }) : ''),
         apInfo: (apIncompatible

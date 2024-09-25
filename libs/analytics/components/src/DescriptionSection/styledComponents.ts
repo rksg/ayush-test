@@ -5,6 +5,7 @@ import {
 import AutoSizer                          from 'react-virtualized-auto-sizer'
 import styled, { css, createGlobalStyle } from 'styled-components/macro'
 
+import { descriptionsItemLabelAndContent } from '@acx-ui/components'
 
 export const withUrlStyle = css`
   cursor: pointer;
@@ -28,16 +29,11 @@ export const Descriptions = styled(AntDescriptions)<DescriptionsProps>`
   .ant-descriptions-row > th {
     padding-bottom: 0;
   }
-  .ant-descriptions-item-label {
-    color: var(--acx-neutrals-60);
-    font-size: var(--acx-body-4-font-size);
-    line-height: var(--acx-body-4-line-height);
-  }
-  .ant-descriptions-item-content {
-    color: var(--acx-primary-black);
-    font-size: var(--acx-body-4-font-size);
-    line-height: var(--acx-body-4-line-height);
-    .ant-badge-status-dot { top: -1px; }
+  .ant-descriptions-item {
+    ${descriptionsItemLabelAndContent}
+    .ant-descriptions-item-content {
+      .ant-badge-status-dot { top: -1px; }
+    }
   }
 `
 
@@ -53,8 +49,8 @@ export const PopoverGlobalStyle = createGlobalStyle`
 
     &-arrow {
 
-      &-content { 
-        box-shadow: none; 
+      &-content {
+        box-shadow: none;
         background-color: var(--acx-primary-black);
         // Use linear gradient to mix box shadow of popover inner
         --antd-arrow-background-color: linear-gradient(

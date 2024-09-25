@@ -58,6 +58,9 @@ describe('IntentAIForm', () => {
     const now = +new Date('2024-08-08T12:00:00.000Z')
     jest.spyOn(Date, 'now').mockReturnValue(now)
 
+    global.URL.createObjectURL = jest.fn().mockReturnValue('blob:csv-url')
+    global.URL.revokeObjectURL = jest.fn()
+
     mockGraphqlQuery(intentAIUrl, 'IntentAIRRMGraph', {
       data: { intent: mockedCRRMGraphs }
     })
@@ -108,10 +111,10 @@ describe('IntentAIForm', () => {
     // Step 3
     await screen.findAllByRole('heading', { name: 'Settings' })
     await selectOptions(
-      await screen.findByRole('combobox', { name: 'Schedule Time' }),
+      await screen.findByPlaceholderText('Select time'),
       '12:30 (UTC+08)'
     )
-    expect(await screen.findByRole('combobox', { name: 'Schedule Time' })).toHaveValue('12.5')
+    expect(await screen.findByPlaceholderText('Select time')).toHaveValue('12.5')
     await click(actions.getByRole('button', { name: 'Next' }))
 
     // Step 4

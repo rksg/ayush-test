@@ -58,7 +58,7 @@ const EditPersonalIdentityNetwork = () => {
       content: <GeneralSettingsForm editMode />
     },
     {
-      title: $t({ defaultMessage: 'SmartEdge' }),
+      title: $t({ defaultMessage: 'RUCKUS Edge' }),
       content: <SmartEdgeForm editMode />
     },
     {

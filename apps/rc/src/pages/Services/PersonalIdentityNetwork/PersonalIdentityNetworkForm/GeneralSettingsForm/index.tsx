@@ -101,7 +101,7 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
               name='venueId'
               label={
                 <>{/* eslint-disable-next-line max-len */}
-                  {$t({ defaultMessage: '<VenueSingular></VenueSingular> with SmartEdge deployed' })}
+                  {$t({ defaultMessage: '<VenueSingular></VenueSingular> with RUCKUS Edge deployed' })}
                   <Tooltip.Question
                     title={$t({ defaultMessage: `
                     To enable the property management for a <venueSingular></venueSingular>,
