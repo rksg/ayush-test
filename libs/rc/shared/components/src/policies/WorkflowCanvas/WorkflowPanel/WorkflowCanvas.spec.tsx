@@ -1,8 +1,8 @@
 import { ReactFlowProvider } from 'reactflow'
 
 import { ActionNodeDisplay, WorkflowPanelMode } from '@acx-ui/rc/utils'
-import { Provider }          from '@acx-ui/store'
-import { render, screen }    from '@acx-ui/test-utils'
+import { Provider }                             from '@acx-ui/store'
+import { render, screen }                       from '@acx-ui/test-utils'
 
 import { mockInitialNodes, mockInitialEdges, setupLocalReactFlow, $t } from './__tests__/fixtures'
 import WorkflowCanvas                                                  from './WorkflowCanvas'
