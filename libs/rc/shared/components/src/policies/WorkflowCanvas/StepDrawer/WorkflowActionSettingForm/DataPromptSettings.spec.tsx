@@ -119,7 +119,7 @@ describe('DataPromptSettings', () => {
     )
     expect(screen.queryByTestId('field0')).toBeVisible()
     expect(screen.queryByTestId('field1')).toBeVisible()
-    await formRef.current.validateFields()
+    formRef.current.submit()
     expect(await screen.findByText('Please enter title')).toBeVisible()
     expect(await screen.findByText('Please enter messageHtml')).toBeVisible()
     const nodes = await screen.findAllByText('Field type already selected')
@@ -147,7 +147,7 @@ describe('DataPromptSettings', () => {
     const labelInput = await screen.findByRole('textbox', { name: /Label/ })
     expect(labelInput).toHaveValue('')
 
-    await formRef.current.validateFields()
+    formRef.current.submit()
     expect(await screen.findByText('Please enter title')).toBeVisible()
     expect(await screen.findByText('Please enter messageHtml')).toBeVisible()
     expect(await screen.findByText('Please enter Label')).toBeVisible()
@@ -175,14 +175,14 @@ describe('DataPromptSettings', () => {
 
     await userEvent.type(pageTitleInput, '  ')
 
-    await formRef.current.validateFields()
+    formRef.current.submit()
 
     expect(await screen.findByText('No leading or trailing spaces allowed')).toBeVisible()
 
     await userEvent.type(pageTitleInput, 'a real value')
     await userEvent.type(pageBodyInput, '  ')
 
-    await formRef.current.validateFields()
+    formRef.current.submit()
 
     expect(await screen.findByText('No leading or trailing spaces allowed')).toBeVisible()
   })
@@ -223,7 +223,7 @@ describe('DataPromptSettings', () => {
       + '##########Longer Than 1000 Characters ###################################################'
       + '###########################')
 
-    await formRef.current.validateFields()
+    formRef.current.submit()
 
     expect(await screen.findByText('title must be up to 100 characters')).toBeVisible()
     expect(await screen.findByText('messageHtml must be up to 1000 characters')).toBeVisible()

@@ -190,7 +190,7 @@ describe('AupSettings', () => {
       '##########Longer Than 1000 Characters ###################################################' +
       '###########################')
 
-    await formRef.current.validateFields()
+    formRef.current.submit()
 
     expect(await screen.findByText('Title must be up to 100 characters')).toBeVisible()
     expect(await screen.findByText('Message must be up to 1000 characters')).toBeVisible()
@@ -251,14 +251,14 @@ describe('AupSettings', () => {
 
     await userEvent.type(pageTitleInput, '  ')
 
-    await formRef.current.validateFields()
+    formRef.current.submit()
 
     expect(await screen.findByText('No leading or trailing spaces allowed')).toBeVisible()
 
     await userEvent.type(pageTitleInput, 'a real value')
     await userEvent.type(pageBodyInput, '  ')
 
-    await formRef.current.validateFields()
+    formRef.current.submit()
 
     expect(await screen.findByText('No leading or trailing spaces allowed')).toBeVisible()
   })
