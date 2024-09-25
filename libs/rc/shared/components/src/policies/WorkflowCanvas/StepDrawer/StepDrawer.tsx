@@ -91,12 +91,13 @@ export default function StepDrawer (props: StepDrawerProps) {
       isEdit
         ? actionData && await patchActionMutation(actionData, formContent).then(onClose)
         : await new Promise((resolve) => {
-          const onFinish = () => {
+          const onSuccess = () => {
             onClose()
             resolve(true)
           }
+          const onFailed = () => resolve(true)
 
-          createStep(policyId, actionType, formContent, priorNode?.id, onFinish)
+          createStep(policyId, actionType, formContent, priorNode?.id, onSuccess, onFailed)
         })
     } catch (ignore) {
 

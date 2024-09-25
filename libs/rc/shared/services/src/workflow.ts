@@ -1,33 +1,34 @@
-
 import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import { MaybePromise }                            from '@reduxjs/toolkit/dist/query/tsHelpers'
 import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 import _                                           from 'lodash'
 
 import {
+  ActionBase,
+  ActionType,
+  ApiVersionEnum,
+  CommonResult,
   createNewTableHttpRequest,
+  FileDto,
+  GenericActionData,
+  GetApiVersionHeader,
+  ImageUrl,
+  NewAPITableResult,
+  NewTableResult,
+  onActivityMessageReceived,
+  onSocketActivityChanged,
+  RequestFormData,
+  SplitOption,
   TableChangePayload,
+  TableResult,
   transferNewResToTableResult,
   transferToNewTablePaginationParams,
-  Workflow,
-  WorkflowUrls,
-  NewAPITableResult,
-  TableResult,
-  onSocketActivityChanged,
-  onActivityMessageReceived,
-  UIConfiguration,
-  WorkflowActionDefinition,
-  NewTableResult,
-  ActionType,
-  WorkflowStep,
-  SplitOption,
-  GenericActionData,
   TxStatus,
-  ActionBase,
-  GetApiVersionHeader,
-  ApiVersionEnum,
-  ImageUrl, RequestFormData, FileDto,
-  CommonResult
+  UIConfiguration,
+  Workflow,
+  WorkflowActionDefinition,
+  WorkflowStep,
+  WorkflowUrls
 } from '@acx-ui/rc/utils'
 import { baseWorkflowApi }             from '@acx-ui/store'
 import { RequestPayload }              from '@acx-ui/types'
@@ -455,7 +456,7 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
         }
       } }),
     // eslint-disable-next-line max-len
-    createAction: build.mutation<CommonAsyncResponse, RequestPayload & { callback?: (response: CommonAsyncResponse) => void }>({
+    createAction: build.mutation<CommonAsyncResponse, RequestPayload & { callback?: (response: CommonAsyncResponse) => void, failedCallback?: () => void }>({
       query: commonQueryFn(WorkflowUrls.createAction),
       invalidatesTags: [{ type: 'Action', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
@@ -464,11 +465,16 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
             const response = await api.cacheDataLoaded
 
             if (response.data.requestId === msg.requestId
-              && msg.status === TxStatus.SUCCESS
               && msg.useCase === 'CREATE_WORKFLOW_ACTION') {
-              requestArgs.callback?.(response.data)
+              if (msg.status === TxStatus.SUCCESS) {
+                requestArgs.callback?.(response.data)
+              } else {
+                requestArgs?.failedCallback?.()
+              }
             }
-          } catch {}
+          } catch {
+            requestArgs?.failedCallback?.()
+          }
         })
       }
     }),

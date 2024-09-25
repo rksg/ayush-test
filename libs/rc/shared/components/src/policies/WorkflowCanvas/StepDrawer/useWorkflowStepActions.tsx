@@ -45,7 +45,8 @@ export function useWorkflowStepActions () {
     actionType: ActionType,
     formData: GenericActionData,
     priorNodeId?: string,
-    onClose?: () => void
+    onSuccess?: () => void,
+    onFailed?: () => void
   ) => {
 
     return await createAction({
@@ -53,9 +54,13 @@ export function useWorkflowStepActions () {
       callback: async (response: CommonAsyncResponse) => {
         if (response.id) {
           await createStepCallback(policyId, actionType, response.id, priorNodeId)
-          onClose?.()
+          onSuccess?.()
         }
-      } }).unwrap()
+      },
+      failedCallback: onFailed
+    })
+      .unwrap()
+      .catch(onFailed)
   }
 
   const findDiff = (originalObject: GenericActionData, updatedObject: GenericActionData) => {
