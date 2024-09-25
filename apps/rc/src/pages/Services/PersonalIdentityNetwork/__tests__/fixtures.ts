@@ -1,6 +1,5 @@
 import {
   EdgeDHCPFixtures,
-  EdgeDhcpPool,
   EdgeGeneralFixtures,
   EdgeNSGFixtures,
   EdgeTunnelProfileFixtures,
@@ -73,147 +72,147 @@ export const mockVenueNetworkData = {
   ]
 }
 
-export const mockNetworkSaveData = {
-  fields: ['venueId', 'networkId'],
-  totalCount: 1,
-  page: 1,
-  data: [
-    { networkId: '1', venueId: 'testVenueId1' }
-  ]
-}
+// export const mockNetworkSaveData = {
+//   fields: ['venueId', 'networkId'],
+//   totalCount: 1,
+//   page: 1,
+//   data: [
+//     { networkId: '1', venueId: 'testVenueId1' }
+//   ]
+// }
 
-export const mockNetworkGroup = {
-  requestId: '1234',
-  response: [
-    { networkId: '1' },
-    { networkId: '2' },
-    { networkId: '3' }
-  ]
-}
+// export const mockNetworkGroup = {
+//   requestId: '1234',
+//   response: [
+//     { networkId: '1' },
+//     { networkId: '2' },
+//     { networkId: '3' }
+//   ]
+// }
 
-export const mockNsgStatsList = {
-  fields: [
-    'venueInfos',
-    'edgeInfos',
-    'networkIds',
-    'name',
-    'id',
-    'tags',
-    'edgeAlarmSummary'
-  ],
-  totalCount: 2,
-  page: 1,
-  data: [
-    {
-      id: '1',
-      name: 'nsg1',
-      networkIds: [
-        '2'
-      ],
-      venueInfos: [
-        {
-          id: '7a5474bf-be4a-4207-b808-e3aaa8be7a3e',
-          venueId: 'mock_venue_1',
-          venueName: 'MockVenue1',
-          personaGroupId: 'per-444'
-        }
-      ],
-      edgeInfos: [
-        {
-          id: '5e5a85d5-1540-4aab-86c4-a8d8b9f3e28b',
-          edgeId: '0000000001',
-          edgeName: 'SmartEdge1',
-          segments: 1,
-          devices: 1,
-          dhcpInfoId: 'ee61bd6e-c637-4177-b070-0ded060af3bd',
-          dhcpPoolId: '1',
-          vniRange: ''
-        }
-      ],
-      edgeAlarmSummary: [
-        {
-          edgeId: '0000000001',
-          severitySummary: {
-            critical: 1
-          },
-          totalCount: 1
-        }
-      ]
-    },
-    {
-      id: '2',
-      name: 'nsg2',
-      networkIds: [
-        '3'
-      ],
-      venueInfos: [
-        {
-          id: '7a5474bf-be4a-4207-b808-e3aaa8be7a3e',
-          venueId: 'mock_venue_2',
-          personaGroupId: 'per-444'
-        }
-      ],
-      edgeInfos: [
-        {
-          id: '5e5a85d5-1540-4aab-86c4-a8d8b9f3e28b',
-          edgeId: '0000000002',
-          segments: 10,
-          devices: 10,
-          dhcpInfoId: 'ee61bd6e-c637-4177-b070-0ded060af3bd',
-          dhcpPoolId: '6a408e31-30a0-4ac1-a672-76b666f57d6e',
-          vniRange: ''
-        }
-      ]
-    }
-  ]
-}
+// export const mockNsgStatsList = {
+//   fields: [
+//     'venueInfos',
+//     'edgeInfos',
+//     'networkIds',
+//     'name',
+//     'id',
+//     'tags',
+//     'edgeAlarmSummary'
+//   ],
+//   totalCount: 2,
+//   page: 1,
+//   data: [
+//     {
+//       id: '1',
+//       name: 'nsg1',
+//       networkIds: [
+//         '2'
+//       ],
+//       venueInfos: [
+//         {
+//           id: '7a5474bf-be4a-4207-b808-e3aaa8be7a3e',
+//           venueId: 'mock_venue_1',
+//           venueName: 'MockVenue1',
+//           personaGroupId: 'per-444'
+//         }
+//       ],
+//       edgeInfos: [
+//         {
+//           id: '5e5a85d5-1540-4aab-86c4-a8d8b9f3e28b',
+//           edgeId: '0000000001',
+//           edgeName: 'SmartEdge1',
+//           segments: 1,
+//           devices: 1,
+//           dhcpInfoId: 'ee61bd6e-c637-4177-b070-0ded060af3bd',
+//           dhcpPoolId: '1',
+//           vniRange: ''
+//         }
+//       ],
+//       edgeAlarmSummary: [
+//         {
+//           edgeId: '0000000001',
+//           severitySummary: {
+//             critical: 1
+//           },
+//           totalCount: 1
+//         }
+//       ]
+//     },
+//     {
+//       id: '2',
+//       name: 'nsg2',
+//       networkIds: [
+//         '3'
+//       ],
+//       venueInfos: [
+//         {
+//           id: '7a5474bf-be4a-4207-b808-e3aaa8be7a3e',
+//           venueId: 'mock_venue_2',
+//           personaGroupId: 'per-444'
+//         }
+//       ],
+//       edgeInfos: [
+//         {
+//           id: '5e5a85d5-1540-4aab-86c4-a8d8b9f3e28b',
+//           edgeId: '0000000002',
+//           segments: 10,
+//           devices: 10,
+//           dhcpInfoId: 'ee61bd6e-c637-4177-b070-0ded060af3bd',
+//           dhcpPoolId: '6a408e31-30a0-4ac1-a672-76b666f57d6e',
+//           vniRange: ''
+//         }
+//       ]
+//     }
+//   ]
+// }
 
-export const mockNsgData = {
-  id: '2599f95d-86a2-470c-9679-e739de054ba1',
-  name: 'RLTestNsg-1',
-  vxlanTunnelProfileId: 'test123',
-  venueInfos: [
-    {
-      venueId: 'mock_venue_1',
-      personaId: ''
-    }
-  ],
-  edgeInfos: [
-    {
-      edgeId: '0000000001',
-      segments: 10,
-      devices: 10,
-      dhcpInfoId: '1',
-      dhcpPoolId: '1'
-    }
-  ],
-  networkIds: ['1', '2'],
-  distributionSwitchInfos: [
-    {
-      id: 'c8:03:f5:3a:95:c6',
-      siteName: '964fe8920291194e208b6d22370c2cc82c',
-      loopbackInterfaceId: '12',
-      loopbackInterfaceIp: '1.2.3.4',
-      loopbackInterfaceSubnetMask: '255.255.255.0',
-      vlans: '23',
-      siteKeepAlive: '5',
-      siteRetry: '3'
-    }
-  ],
-  accessSwitchInfos: [
-    {
-      id: 'c0:c5:20:aa:35:fd',
-      templateId: '723250a97f3a4c3780e70c83c5b095ba',
-      webAuthPageType: 'TEMPLATE',
-      vlanId: '111',
-      webAuthPasswordLabel: 'password-Ken-0209',
-      webAuthCustomTitle: 'title-Ken-0209',
-      webAuthCustomTop: 'top-Ken-0209',
-      webAuthCustomLoginButton: 'login-Ken-0209',
-      webAuthCustomBottom: 'bottom-Ken-0209'
-    }
-  ]
-}
+// export const mockNsgData = {
+//   id: '2599f95d-86a2-470c-9679-e739de054ba1',
+//   name: 'RLTestNsg-1',
+//   vxlanTunnelProfileId: 'test123',
+//   venueInfos: [
+//     {
+//       venueId: 'mock_venue_1',
+//       personaId: ''
+//     }
+//   ],
+//   edgeClusterInfos: [
+//     {
+//       edgeClusterId: '0000000001',
+//       segments: 10,
+//       devices: 10,
+//       dhcpInfoId: '1',
+//       dhcpPoolId: '1'
+//     }
+//   ],
+//   networkIds: ['1', '2'],
+//   distributionSwitchInfos: [
+//     {
+//       id: 'c8:03:f5:3a:95:c6',
+//       siteName: '964fe8920291194e208b6d22370c2cc82c',
+//       loopbackInterfaceId: '12',
+//       loopbackInterfaceIp: '1.2.3.4',
+//       loopbackInterfaceSubnetMask: '255.255.255.0',
+//       vlans: '23',
+//       siteKeepAlive: '5',
+//       siteRetry: '3'
+//     }
+//   ],
+//   accessSwitchInfos: [
+//     {
+//       id: 'c0:c5:20:aa:35:fd',
+//       templateId: '723250a97f3a4c3780e70c83c5b095ba',
+//       webAuthPageType: 'TEMPLATE',
+//       vlanId: '111',
+//       webAuthPasswordLabel: 'password-Ken-0209',
+//       webAuthCustomTitle: 'title-Ken-0209',
+//       webAuthCustomTop: 'top-Ken-0209',
+//       webAuthCustomLoginButton: 'login-Ken-0209',
+//       webAuthCustomBottom: 'bottom-Ken-0209'
+//     }
+//   ]
+// }
 
 export const webAuthList = [{
   id: '723250a97f3a4c3780e70c83c5b095ba',
@@ -459,8 +458,8 @@ const {
   mockNsgSwitchInfoData,
   mockDeepNetworkList
 } = EdgeNSGFixtures
-const { mockEdgeList } = EdgeGeneralFixtures
-const { mockEdgeDhcpDataList } = EdgeDHCPFixtures
+const { mockEdgeClusterList } = EdgeGeneralFixtures
+const { mockDhcpStatsData } = EdgeDHCPFixtures
 const { mockedTunnelProfileViewData } = EdgeTunnelProfileFixtures
 
 export const mockContextData = {
@@ -474,14 +473,13 @@ export const mockContextData = {
   isPersonaGroupLoading: false,
   dpskData: mockDpsk,
   isDpskLoading: false,
-  edgeOptions: mockEdgeList.data.map(item => ({ label: item.name, value: item.serialNumber })),
-  isEdgeOptionsLoading: false,
-  dhcpProfles: mockEdgeDhcpDataList.content,
-  dhcpOptions: mockEdgeDhcpDataList.content.map(item =>
+  // eslint-disable-next-line max-len
+  clusterOptions: mockEdgeClusterList.data.map(item => ({ label: item.name, value: item.clusterId })),
+  isClusterOptionsLoading: false,
+  dhcpList: mockDhcpStatsData.data,
+  dhcpOptions: mockDhcpStatsData.data.map(item =>
     ({ label: item.serviceName, value: item.id })),
   isDhcpOptionsLoading: false,
-  poolMap: mockEdgeDhcpDataList.content.reduce((acc, item) =>
-    ({ ...acc, [item.id]: item.dhcpPools }), {}) as { [key: string]: EdgeDhcpPool[] },
   tunnelProfileOptions: mockedTunnelProfileViewData.data.map(item =>
     ({ label: item.name, value: item.id })),
   isTunnelLoading: false,
@@ -493,9 +491,8 @@ export const mockContextData = {
   ],
   refetchSwitchesQuery: jest.fn(),
   getVenueName: jest.fn(),
-  getEdgeName: jest.fn(),
+  getClusterName: jest.fn(),
   getDhcpName: jest.fn(),
-  getDhcpPoolName: jest.fn(),
   getTunnelProfileName: jest.fn(),
   getNetworksName: jest.fn()
 }

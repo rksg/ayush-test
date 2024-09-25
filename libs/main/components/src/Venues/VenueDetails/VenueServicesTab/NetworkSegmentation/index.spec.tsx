@@ -1,12 +1,11 @@
 import { rest } from 'msw'
 
-import { NetworkSegmentationUrls }    from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
-
-import { mockedNsgStatsList } from './__tests__/fixtures'
+import { EdgeNSGFixtures, NetworkSegmentationUrls } from '@acx-ui/rc/utils'
+import { Provider }                                 from '@acx-ui/store'
+import { mockServer, render, screen }               from '@acx-ui/test-utils'
 
 import { NetworkSegmentation } from '.'
+const { mockNsgStatsList } = EdgeNSGFixtures
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
@@ -27,7 +26,7 @@ describe('VenueServicesTab - NetworkSegmentation(has data)', () =>{
     mockServer.use(
       rest.post(
         NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
-        (req, res, ctx) => res(ctx.json(mockedNsgStatsList))
+        (req, res, ctx) => res(ctx.json(mockNsgStatsList))
       )
     )
   })
