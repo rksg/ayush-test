@@ -117,7 +117,6 @@ export const codeToFailureTypeMap: Record<IncidentCode, string> = {
   'i-apserv-continuous-reboots': 'ap-reboot',
   'i-apserv-downtime-high': 'ap-sz-conn-failure',
   'i-switch-vlan-mismatch': 'vlan-mismatch',
-  's-switch-tcp-syn-ddos': 'tcp-syn-ddos',
   'i-switch-poe-pd': 'poe-pd',
   'i-apinfra-poe-low': 'ap-poe-low',
   'i-apinfra-wanthroughput-low': 'ap-wanthroughput-low',
