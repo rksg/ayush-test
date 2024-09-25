@@ -20060,7 +20060,7 @@ exports[`Test Details should render SwitchTcpSynDDoS correctly 1`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          TCP SYN DDoS Attack found in Venue: GRP2
+          TCP SYN DDoS attack found in Venue: GRP2
         </span>
       </div>
     </div>
