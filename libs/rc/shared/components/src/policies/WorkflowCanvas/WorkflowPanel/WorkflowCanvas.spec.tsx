@@ -1,13 +1,11 @@
 import { ReactFlowProvider } from 'reactflow'
 
-import { ActionNodeDisplay } from '@acx-ui/rc/utils'
+import { ActionNodeDisplay, WorkflowPanelMode } from '@acx-ui/rc/utils'
 import { Provider }          from '@acx-ui/store'
 import { render, screen }    from '@acx-ui/test-utils'
 
 import { mockInitialNodes, mockInitialEdges, setupLocalReactFlow, $t } from './__tests__/fixtures'
 import WorkflowCanvas                                                  from './WorkflowCanvas'
-
-import { PanelMode } from './index'
 
 
 describe('Workflow Canvas', () => {
@@ -21,11 +19,11 @@ describe('Workflow Canvas', () => {
     expect(await screen.findByText($t(ActionNodeDisplay.DISPLAY_MESSAGE))).toBeInTheDocument()
   }
 
-  it('should render canvas in Default mode correctly', async () => {
+  it('should render canvas in Edit mode correctly', async () => {
     render(<Provider>
       <ReactFlowProvider>
         <WorkflowCanvas
-          mode={PanelMode.Default}
+          mode={WorkflowPanelMode.Edit}
           initialNodes={mockInitialNodes}
           initialEdges={mockInitialEdges}
         />
@@ -38,11 +36,11 @@ describe('Workflow Canvas', () => {
     expect(screen.queryByText(/Active Workflow Design/i)).not.toBeInTheDocument() // Check the <Panel />
   })
 
-  it('should render canvas in Edit mode correctly', async () => {
+  it('should render canvas in Design mode correctly', async () => {
     render(<Provider>
       <ReactFlowProvider>
         <WorkflowCanvas
-          mode={PanelMode.Edit}
+          mode={WorkflowPanelMode.Design}
           initialNodes={mockInitialNodes}
           initialEdges={mockInitialEdges}
         />
@@ -55,11 +53,11 @@ describe('Workflow Canvas', () => {
     expect(screen.queryByText(/Active Workflow Design/i)).not.toBeInTheDocument() // Check the <Panel />
   })
 
-  it('should render canvas in View mode correctly', async () => {
+  it('should render canvas in Default mode correctly', async () => {
     render(<Provider>
       <ReactFlowProvider>
         <WorkflowCanvas
-          mode={PanelMode.View}
+          mode={WorkflowPanelMode.Default}
           initialNodes={mockInitialNodes}
           initialEdges={mockInitialEdges}
         />
