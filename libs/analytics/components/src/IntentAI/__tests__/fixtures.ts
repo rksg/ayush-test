@@ -1,6 +1,6 @@
 import { NetworkPath } from '@acx-ui/utils'
 
-import { aiFeatures }                                  from '../config'
+import { AiFeatures }                                  from '../config'
 import { IntentConfigurationConfig, useIntentContext } from '../IntentContext'
 import { Statuses }                                    from '../states'
 import { AIFeatureProps }                              from '../Table'
@@ -516,7 +516,7 @@ export const intentHighlightsWithOperations = {
 
 export const aiFeatureWithRRM = {
   code: 'c-crrm-channel5g-auto',
-  aiFeature: aiFeatures.RRM,
+  aiFeature: AiFeatures.RRM,
   root: 'root1',
   sliceId: 'sliceId1',
   status: Statuses.active
@@ -524,7 +524,7 @@ export const aiFeatureWithRRM = {
 
 export const aiFeatureWithEquiFlex = {
   code: 'c-probeflex-6g',
-  aiFeature: aiFeatures.EquiFlex,
+  aiFeature: AiFeatures.EquiFlex,
   root: 'root2',
   sliceId: 'sliceId2',
   status: Statuses.active
@@ -532,7 +532,7 @@ export const aiFeatureWithEquiFlex = {
 
 export const aiFeatureWithEquiFlexWithNewStatus = {
   code: 'c-probeflex-6g',
-  aiFeature: aiFeatures.EquiFlex,
+  aiFeature: AiFeatures.EquiFlex,
   root: 'root2',
   sliceId: 'sliceId2',
   status: Statuses.new
@@ -540,7 +540,7 @@ export const aiFeatureWithEquiFlexWithNewStatus = {
 
 export const aiFeatureWithAIOps = {
   code: 'c-bgscan24g-enable',
-  aiFeature: aiFeatures.AIOps,
+  aiFeature: AiFeatures.AIOps,
   root: 'root3',
   sliceId: 'sliceId3',
   status: Statuses.active
@@ -548,7 +548,7 @@ export const aiFeatureWithAIOps = {
 
 export const aiFeatureWithEcoFlex = {
   code: 'i-ecoflex',
-  aiFeature: aiFeatures.EcoFlex,
+  aiFeature: AiFeatures.EcoFlex,
   root: 'root4',
   sliceId: 'sliceId4',
   status: Statuses.active
