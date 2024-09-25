@@ -9,7 +9,7 @@ import { formatter }                                     from '@acx-ui/formatter
 import { CompareSlider }    from '../../../CompareSlider'
 import { Icon }             from '../../common/IntentIcon'
 import { IntroSummary }     from '../../common/IntroSummary'
-import { aiFeatures }       from '../../config'
+import { AiFeatures }       from '../../config'
 import { useIntentContext } from '../../IntentContext'
 
 import * as SideNotes from './SideNotes'
@@ -104,7 +104,7 @@ export const SliderAfter = () => {
         <span>{($t({ defaultMessage: 'Energy' }))}</span>
         <span>{($t({ defaultMessage: 'footprint' }))}</span>
         <span>{($t({ defaultMessage: 'with' }))}</span>
-        <Icon feature={aiFeatures.EcoFlex} size='xs' />
+        <Icon feature={AiFeatures.EcoFlex} size='xs' />
       </UI.LabelStyleAfter>
     </UI.SliderAfter>
   )

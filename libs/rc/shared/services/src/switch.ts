@@ -779,8 +779,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     addStackMember: build.mutation<{}, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.addStackMember, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.addStackMember, params, headers)
         return {
           ...req
           // body:
@@ -1178,6 +1180,16 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const headers = enableRbac ? customHeaders.v1 : {}
         const switchUrls = getSwitchUrls(enableRbac)
         const req = createHttpRequest(switchUrls.ipRoute, params, headers)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    cableTest: build.mutation<TroubleshootingResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const headers = customHeaders.v1
+        const req = createHttpRequest(SwitchRbacUrlsInfo.cableTest, params, headers)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -1768,6 +1780,7 @@ export const {
   usePingMutation,
   useTraceRouteMutation,
   useIpRouteMutation,
+  useCableTestMutation,
   useMacAddressTableMutation,
   useGetTroubleshootingCleanQuery,
   useLazyGetTroubleshootingCleanQuery,
