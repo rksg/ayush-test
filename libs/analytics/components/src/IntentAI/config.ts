@@ -42,7 +42,7 @@ export type IntentListItem = Intent & {
   }
 }
 
-export enum aiFeatures {
+export enum AiFeatures {
   RRM = 'AI-Driven RRM',
   EquiFlex = 'EquiFlex',
   AIOps = 'AI Operations',
@@ -50,10 +50,10 @@ export enum aiFeatures {
 }
 
 export const aiFeaturesLabel = {
-  [aiFeatures.RRM]: defineMessage({ defaultMessage: 'AI-Driven RRM' }),
-  [aiFeatures.EquiFlex]: defineMessage({ defaultMessage: 'EquiFlex' }),
-  [aiFeatures.AIOps]: defineMessage({ defaultMessage: 'AI Operations' }),
-  [aiFeatures.EcoFlex]: defineMessage({ defaultMessage: 'EcoFlex' })
+  [AiFeatures.RRM]: defineMessage({ defaultMessage: 'AI-Driven RRM' }),
+  [AiFeatures.EquiFlex]: defineMessage({ defaultMessage: 'EquiFlex' }),
+  [AiFeatures.AIOps]: defineMessage({ defaultMessage: 'AI Operations' }),
+  [AiFeatures.EcoFlex]: defineMessage({ defaultMessage: 'EcoFlex' })
 }
 
 type CodeInfo = {
@@ -82,15 +82,15 @@ export const states = {
   },
   [DisplayStates.scheduled]: {
     text: defineMessage({ defaultMessage: 'Scheduled' }),
-    tooltip: defineMessage({ defaultMessage: 'The change recommendation has been scheduled via the user action "Optimize".' }) //TODO: initiated by the user {userName}
+    tooltip: defineMessage({ defaultMessage: 'The change recommendation has been scheduled for {scheduledAt}, via the user action "Optimize".' }) //TODO: initiated by the user {userName}
   },
   [DisplayStates.scheduledOneClick]: {
     text: defineMessage({ defaultMessage: 'Scheduled' }),
-    tooltip: defineMessage({ defaultMessage: 'The change recommendation has been scheduled via the user action "1-Click Optimize".' }) //TODO: initiated by the user {userName}
+    tooltip: defineMessage({ defaultMessage: 'The change recommendation has been scheduled for {scheduledAt}, via the user action "1-Click Optimize".' }) //TODO: initiated by the user {userName}
   },
   [DisplayStates.applyScheduled]: {
     text: defineMessage({ defaultMessage: 'Scheduled' }),
-    tooltip: defineMessage({ defaultMessage: 'The change recommendation has been automatically scheduled by IntentAI.' })
+    tooltip: defineMessage({ defaultMessage: 'The change recommendation has been automatically scheduled for {scheduledAt}, by IntentAI.' })
   },
   [DisplayStates.applyScheduleInProgress]: {
     text: defineMessage({ defaultMessage: 'Apply In Progress' }),
@@ -199,102 +199,102 @@ export const failureCodes = {
 //For original codes, please refer to libs/analytics/components/src/Recommendations/config.ts
 export const codes = {
   'c-bgscan24g-enable': {
-    aiFeature: aiFeatures.AIOps,
+    aiFeature: AiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Dynamic vs Static Channel capability on 2.4 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-bgscan5g-enable': {
-    aiFeature: aiFeatures.AIOps,
+    aiFeature: AiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Dynamic vs Static Channel capability on 5 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-bgscan24g-timer': {
-    aiFeature: aiFeatures.AIOps,
+    aiFeature: AiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Network Efficiency vs Stability on 2.4 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-bgscan5g-timer': {
-    aiFeature: aiFeatures.AIOps,
+    aiFeature: AiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Network Efficiency vs Stability on 5 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-bgscan6g-timer': {
-    aiFeature: aiFeatures.AIOps,
+    aiFeature: AiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Network Efficiency vs Stability on 6 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-dfschannels-enable': {
-    aiFeature: aiFeatures.AIOps,
+    aiFeature: AiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Expanded Radar channels vs Limited Channel options' }),
     category: categories['Wi-Fi Experience']
   },
   'c-dfschannels-disable': {
-    aiFeature: aiFeatures.AIOps,
+    aiFeature: AiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Radar Interference vs Optimal Channel availability' }),
     category: categories['Wi-Fi Experience']
   },
   'c-bandbalancing-enable': {
-    aiFeature: aiFeatures.AIOps,
+    aiFeature: AiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Client Performance vs Compatibility' }),
     category: categories['Wi-Fi Experience']
   },
   'c-bandbalancing-enable-below-61': {
-    aiFeature: aiFeatures.AIOps,
+    aiFeature: AiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Client Performance vs Compatibility' }),
     category: categories['Wi-Fi Experience']
   },
   'c-bandbalancing-proactive': {
-    aiFeature: aiFeatures.AIOps,
+    aiFeature: AiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Client Distribution vs Compatibility' }),
     category: categories['Wi-Fi Experience']
   },
   'c-aclb-enable': {
-    aiFeature: aiFeatures.AIOps,
+    aiFeature: AiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Distributed Wi-Fi Load vs Client Stability' }),
     category: categories['Wi-Fi Experience']
   },
   'i-zonefirmware-upgrade': {
-    aiFeature: aiFeatures.AIOps,
+    aiFeature: AiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Secure AP firmware vs Client Device Compatibility' }),
     category: categories.Infrastructure
   },
   'c-txpower-same': {
-    aiFeature: aiFeatures.AIOps,
+    aiFeature: AiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Optimize for 5 GHz Radio vs Longer range with 2.4 GHz' }),
     category: categories['Wi-Fi Experience']
   },
   'c-crrm-channel24g-auto': {
-    aiFeature: aiFeatures.RRM,
+    aiFeature: AiFeatures.RRM,
     intent: defineMessage({ defaultMessage: 'Client Density vs Throughput for 2.4 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-crrm-channel5g-auto': {
-    aiFeature: aiFeatures.RRM,
+    aiFeature: AiFeatures.RRM,
     intent: defineMessage({ defaultMessage: 'Client Density vs Throughput for 5 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-crrm-channel6g-auto': {
-    aiFeature: aiFeatures.RRM,
+    aiFeature: AiFeatures.RRM,
     intent: defineMessage({ defaultMessage: 'Client Density vs Throughput for 6 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-probeflex-24g': {
-    aiFeature: aiFeatures.EquiFlex,
+    aiFeature: AiFeatures.EquiFlex,
     intent: defineMessage({ defaultMessage: 'Time to Connect vs Client Density for 2.4 GHz' }),
     category: categories['Wi-Fi Experience']
   },
   'c-probeflex-5g': {
-    aiFeature: aiFeatures.EquiFlex,
+    aiFeature: AiFeatures.EquiFlex,
     intent: defineMessage({ defaultMessage: 'Time to Connect vs Client Density for 5 GHz' }),
     category: categories['Wi-Fi Experience']
   },
   'c-probeflex-6g': {
-    aiFeature: aiFeatures.EquiFlex,
+    aiFeature: AiFeatures.EquiFlex,
     intent: defineMessage({ defaultMessage: 'Time to Connect vs Client Density for 6 GHz' }),
     category: categories['Wi-Fi Experience']
   },
   'i-ecoflex': {
-    aiFeature: aiFeatures.EcoFlex,
+    aiFeature: AiFeatures.EcoFlex,
     intent: defineMessage({ defaultMessage: 'Energy Footprint vs Mission Criticality' }),
     category: categories.Sustainability
   }

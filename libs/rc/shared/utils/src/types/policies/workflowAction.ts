@@ -26,18 +26,17 @@ export interface AupAction extends ActionBase {
   title: string, // max:100
   messageHtml: string, // max = 1000
 
-  checkboxText: string, // max = 100
-  backButtonText: string, // max = 20
-  continueButtonText: string, // max = 20
-  bottomLabel: string, // max = 1000
+  checkboxText?: string, // max = 100
+  backButtonText?: string, // max = 20
+  continueButtonText?: string, // max = 20
+  bottomLabel?: string, // max = 1000
   checkboxDefaultState?: boolean,
   checkboxHighlightColor?: string,
 
-  useAupFile?: boolean,
+  useAupFile: boolean,
   aupFileLocation?: string,
-
-  useContentFile?: boolean,
-  contentFileLocation?: string
+  aupFileName?: string,
+  aupPlainText?: string
 }
 
 export interface DpskAction extends ActionBase {
@@ -96,6 +95,20 @@ export type GenericActionData =
   DisplayMessageActionContext &
   DpskActionContext &
   MacRegActionContext
+
+export enum FileType {
+  AUP_FILE = 'AUP_FILE'
+}
+
+export interface FileDto{
+  url: string
+  type: FileType
+}
+
+export interface FileContext {
+  name?: string;
+  type: FileType;
+}
 
 export interface GenericActionPreviewProps<T> {
   data?: T,

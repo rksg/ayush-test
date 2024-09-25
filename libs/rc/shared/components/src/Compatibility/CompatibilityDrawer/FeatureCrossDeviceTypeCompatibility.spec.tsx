@@ -55,11 +55,11 @@ describe('FeatureCrossDeviceTypeCompatibility', () => {
     expect(description).toHaveTextContent('SD-LAN feature completely')
     const compatibilityItems = await screen.findAllByTestId('CompatibilityItem')
     expect(compatibilityItems.length).toBe(2)
-    screen.getByText('SmartEdge')
+    screen.getByText('RUCKUS Edge')
     screen.getByText('Wi-Fi')
 
     expect(screen.getByRole('link', { name: /AP Firmware/ })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /SmartEdge Firmware/ })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /RUCKUS Edge Firmware/ })).toBeInTheDocument()
 
     const wifiBlock = compatibilityItems[0]
     const features = within(wifiBlock).getAllByTestId('FeatureItem')
@@ -73,6 +73,6 @@ describe('FeatureCrossDeviceTypeCompatibility', () => {
     expect(features2.length).toBe(1)
     within(features2[0]).getByText(/Minimum required version/)
     within(features2[0]).getByText('2.1.0.200')
-    within(features2[0]).getByText('Incompatible SmartEdges (Currently)')
+    within(features2[0]).getByText('Incompatible RUCKUS Edges (Currently)')
   })
 })

@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
+import { useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { SWITCH_TYPE }    from '@acx-ui/rc/utils'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
@@ -45,9 +46,11 @@ jest.mock('./switchPingForm', () => ({
 jest.mock('./switchTraceRouteForm', () => ({
   SwitchTraceRouteForm: () => <div data-testid='SwitchTraceRouteForm'></div>
 }))
+jest.mock('./switchCableTestForm', () => ({
+  SwitchCableTestForm: () => <div data-testid='SwitchCableTestForm'></div>
+}))
 
 describe('SwitchTroubleshootingTab', () => {
-
   it('should navigate to ping tab correctly', async () => {
     const params = {
       tenantId: 'tenant-id',
@@ -151,6 +154,31 @@ describe('SwitchTroubleshootingTab', () => {
       }
     })
     expect(await screen.findByTestId('SwitchMacAddressForm')).toBeVisible()
+  })
+
+  it.skip('should navigate to Cable Test tab correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const params = {
+      tenantId: 'tenant-id',
+      switchId: 'switchId',
+      serialNumber: 'serialNumber',
+      activeSubTab: 'cableTest'
+    }
+    render(<Provider>
+      <SwitchDetailsContext.Provider value={{
+        switchDetailsContextData,
+        setSwitchDetailsContextData: jest.fn()
+      }}>
+        <SwitchTroubleshootingTab />
+      </SwitchDetailsContext.Provider>
+    </Provider>, {
+      route: {
+        params,
+        // eslint-disable-next-line max-len
+        path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/troubleshooting/:activeSubTab'
+      }
+    })
+    expect(await screen.findByTestId('SwitchCableTestForm')).toBeVisible()
   })
 })
 

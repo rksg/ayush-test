@@ -147,7 +147,7 @@ describe('EdgeCompatibilityDrawer', () => {
 
     const edgeBlock = compatibilityDevices[0]
     expect(within(edgeBlock).getByText('2.1.0.200')).toBeValid()
-    within(edgeBlock).getByText(/Incompatible SmartEdges/)
+    within(edgeBlock).getByText(/Incompatible RUCKUS Edges/)
     expect(within(edgeBlock).getByText('5 / 14')).toBeValid()
 
     const wifiBlock = compatibilityDevices[1]
@@ -180,7 +180,7 @@ describe('EdgeCompatibilityDrawer', () => {
 
     const compatibilityDevices = await screen.findAllByTestId('CompatibilityItem')
     expect(screen.getByText('SD-LAN')).toBeValid()
-    expect(screen.getByText('SmartEdge')).toBeValid()
+    expect(screen.getByText('RUCKUS Edge')).toBeValid()
     expect(screen.getByText('Wi-Fi')).toBeValid()
 
     expect(compatibilityDevices.length).toBe(2)
@@ -210,7 +210,7 @@ describe('EdgeCompatibilityDrawer', () => {
         route: { params: { tenantId, featureName }, path: '/:tenantId' }
       })
 
-    const descriptions = await screen.findAllByText(/The following features are unavailable on certain SmartEdges in this venue due /)
+    const descriptions = await screen.findAllByText(/The following features are unavailable on certain RUCKUS Edges in this venue due /)
     expect(descriptions.length).toBe(1)
 
     const sdlanRow = screen.getByRole('row', { name: /SD-LAN/ })
@@ -245,7 +245,7 @@ describe('EdgeCompatibilityDrawer', () => {
         route: { params: { tenantId, featureName }, path: '/:tenantId' }
       })
 
-    expect(await screen.findByText(/The following features are not enabled on this SmartEdge /)).toBeInTheDocument()
+    expect(await screen.findByText(/The following features are not enabled on this RUCKUS Edge /)).toBeInTheDocument()
 
     const sdlanRow = screen.getByRole('row', { name: /SD-LAN/ })
     expect(sdlanRow).toBeVisible()
@@ -282,7 +282,7 @@ describe('EdgeCompatibilityDrawer', () => {
         route: { params: { tenantId, featureName }, path: '/:tenantId' }
       })
 
-    expect(await screen.findByText(/The following features are not enabled on this SmartEdge /)).toBeInTheDocument()
+    expect(await screen.findByText(/The following features are not enabled on this RUCKUS Edge /)).toBeInTheDocument()
     const sdlanRow = screen.getByRole('row', { name: /SD-LAN/ })
     expect(sdlanRow).toBeVisible()
     expect(within(sdlanRow).getByText('2.1.0.200')).toBeValid()

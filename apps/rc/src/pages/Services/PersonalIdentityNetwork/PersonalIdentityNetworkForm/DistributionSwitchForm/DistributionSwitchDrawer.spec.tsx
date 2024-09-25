@@ -10,11 +10,9 @@ import {
   screen, waitFor, within
 } from '@acx-ui/test-utils'
 
-import { mockNsgData } from '../../__tests__/fixtures'
-
 import { DistributionSwitchDrawer } from './DistributionSwitchDrawer'
 
-const { mockNsgSwitchInfoData } = EdgeNSGFixtures
+const { mockNsgSwitchInfoData, mockNsgData } = EdgeNSGFixtures
 
 describe('DistributionSwitchDrawer', () => {
   const params = {
@@ -61,7 +59,7 @@ describe('DistributionSwitchDrawer', () => {
     })
     formRef.current.setFieldsValue({
       venueId: mockNsgData.venueInfos[0].venueId,
-      edgeId: mockNsgData.edgeInfos[0].edgeId,
+      edgeClusterId: mockNsgData.edgeClusterInfos[0].edgeClusterId,
       distributionSwitchInfos: mockNsgSwitchInfoData.distributionSwitches,
       originalDistributionSwitchInfos: mockNsgSwitchInfoData.distributionSwitches,
       accessSwitchInfos: mockNsgSwitchInfoData.accessSwitches,

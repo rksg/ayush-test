@@ -251,7 +251,7 @@ describe('Edge centrailized forwarding form: settings', () => {
     const icon = await within(formBody).findByTestId('loadingIcon')
     await waitForElementToBeRemoved(icon)
 
-    await screen.findByText('SmartEdge')
+    await screen.findByText('RUCKUS Edge')
     await waitFor(() => {
       expect(mockedReqEdgesList).toBeCalledWith({
         fields: ['name', 'serialNumber', 'venueId', 'clusterId'],
@@ -308,7 +308,7 @@ describe('Edge centrailized forwarding form: settings', () => {
       expect(within(formBody).queryByTestId('rc-CorePortFormItem')).toBeNull()
 
       await userEvent.selectOptions(
-        await within(formBody).findByRole('combobox', { name: 'SmartEdge' }),
+        await within(formBody).findByRole('combobox', { name: 'RUCKUS Edge' }),
         '0000000002')
 
       expect(mockedSetFieldValue).toBeCalledWith('edgeName', 'Smart Edge 2')
@@ -343,7 +343,7 @@ const checkBasicAddSettings = async () => {
 
   // select edge
   await userEvent.selectOptions(
-    await within(formBody).findByRole('combobox', { name: 'SmartEdge' }),
+    await within(formBody).findByRole('combobox', { name: 'RUCKUS Edge' }),
     '0000000002')
 
   // ensure related data to set into form

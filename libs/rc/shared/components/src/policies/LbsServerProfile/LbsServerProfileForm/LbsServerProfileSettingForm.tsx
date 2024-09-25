@@ -56,6 +56,7 @@ const LbsServerProfileSettingForm = ( props: { list : TableResult<LbsServerProfi
         <Form.Item
           name='lbsServerVenueName'
           // Not support VenueSingular for Hospitality Vertical
+          // eslint-disable-next-line custom/enforce-venue-placeholder
           label={$t({ defaultMessage: 'LBS Server Venue Name' })}
           rules={[
             { required: true },

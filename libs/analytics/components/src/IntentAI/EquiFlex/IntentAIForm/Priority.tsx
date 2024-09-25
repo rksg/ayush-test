@@ -1,13 +1,14 @@
 /* eslint-disable max-len */
 
-import { Row, Col, Form }         from 'antd'
-import { NamePath }               from 'antd/lib/form/interface'
-import { useIntl, defineMessage } from 'react-intl'
+import { Row, Col, Form }                           from 'antd'
+import { NamePath }                                 from 'antd/lib/form/interface'
+import { useIntl, defineMessage, FormattedMessage } from 'react-intl'
 
 import { StepsForm } from '@acx-ui/components'
 
-import { TradeOff }         from '../../../TradeOff'
-import { useIntentContext } from '../../IntentContext'
+import { TradeOff }             from '../../../TradeOff'
+import { richTextFormatValues } from '../../common/richTextFormatValues'
+import { useIntentContext }     from '../../IntentContext'
 
 import * as SideNotes from './SideNotes'
 
@@ -24,8 +25,11 @@ export function Priority () {
       children: $t({ defaultMessage: 'Reduce Management traffic in dense network' }),
       columns: [
         $t({ defaultMessage: 'Reduce Management traffic in dense network' }),
-        $t({ defaultMessage: `Leverage EquiFlex, available only through IntentAI for intelligent handling of probe request/response and optimize management traffic in a dense network.
-        For improved performance, this option will disable the Air Time Decongestion (ATD) feature if previously enabled for this network.` })
+        <FormattedMessage {...defineMessage({ defaultMessage: `
+          <p>Leverage <b><i>EquiFlex</i></b>, available only through IntentAI for intelligent handling of probe request/response and optimize management traffic in a dense network.</p>
+          <p>For improved performance, this option will disable the Air Time Decongestion (ATD) feature if previously enabled for this network.</p>
+        ` })}
+        values={richTextFormatValues} />
       ]
     },
     {
@@ -34,8 +38,11 @@ export function Priority () {
       children: $t({ defaultMessage: 'Standard Management traffic in a sparse network' }),
       columns: [
         $t({ defaultMessage: 'Standard Management traffic in a sparse network' }),
-        $t({ defaultMessage: `This option will disable EquiFlex feature and the network shall continue using current configuration if any for handling probe request/response in the network.
-        For manual control, you may directly change the network configurations.` })
+        <FormattedMessage {...defineMessage({ defaultMessage: `
+          <p>This option will disable <b><i>EquiFlex</i></b> feature and the network shall continue using current configuration if any for handling probe request/response in the network.</p>
+          <p>For manual control, you may directly change the network configurations.</p>
+        ` })}
+        values={richTextFormatValues} />
       ]
     }
   ]
