@@ -6,8 +6,8 @@ import { useIntl }             from 'react-intl'
 
 import { Collapse, Loader }                 from '@acx-ui/components'
 import { CollapseActive, CollapseInactive } from '@acx-ui/icons'
+import { useLazyGetDriftDataQuery }         from '@acx-ui/rc/services'
 
-import { mockedDriftResponse }                        from './__tests__/fixtures'
 import { DriftComparisonSet, DriftComparisonSetData } from './DriftComparisonSet'
 import * as UI                                        from './styledComponents'
 import { transformDriftResponse }                     from './utils'
@@ -25,7 +25,7 @@ export interface DriftInstanceProps {
 export function DriftInstance (props: DriftInstanceProps) {
   const { $t } = useIntl()
   const { instanceName, instanceId, selected = false, updateSelection, disalbed = false } = props
-  const [ trigger, { isLoading } ] = useLazyGetDriftData()
+  const [ getDriftData, { isLoading: isLoadingDriftData } ] = useLazyGetDriftDataQuery()
   const [ checked, setChecked ] = useState(selected)
   const [ driftData, setDriftData ] = useState<DriftComparisonSetData[]>([])
 
@@ -37,7 +37,9 @@ export function DriftInstance (props: DriftInstanceProps) {
   const onCollapseChange = (key: string | string[]) => {
     if (!key || key.length === 0) return
 
-    trigger(instanceId).then(data => setDriftData(data))
+    getDriftData({ params: { instanceId } }).then(result => {
+      setDriftData(transformDriftResponse(result.data))
+    })
   }
 
   useEffect(() => {
@@ -74,28 +76,9 @@ export function DriftInstance (props: DriftInstanceProps) {
     expandIcon={({ isActive }) => isActive ? <CollapseActive /> : <CollapseInactive />}
   >
     <Collapse.Panel header={header} key={instanceId}>
-      <Loader states={[{ isLoading }]}>
+      <Loader states={[{ isLoading: isLoadingDriftData }]}>
         {driftData.map((set, index) => <DriftComparisonSet key={index} {...set} />)}
       </Loader>
     </Collapse.Panel>
   </UI.DriftInstanceCollapse>
-}
-
-// eslint-disable-next-line max-len
-function useLazyGetDriftData (): [ (instanceId: string) => Promise<DriftComparisonSetData[]>, { isLoading: boolean } ] {
-  const [ isLoading, setIsLoading ] = useState(false)
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const trigger = (instanceId: string) => {
-    setIsLoading(true)
-
-    return new Promise<DriftComparisonSetData[]>(resolve => {
-      setTimeout(() => {
-        setIsLoading(false)
-        resolve(transformDriftResponse(mockedDriftResponse))
-      }, 1500)
-    })
-  }
-
-  return [ trigger, { isLoading } ]
 }

@@ -1,8 +1,9 @@
-/* eslint-disable max-len */
 import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/dist/query/react'
-import { cloneDeep }                               from 'lodash'
+/* eslint-disable max-len */
+import { cloneDeep } from 'lodash'
 
+import { MspEc, MspUrlsInfo }     from '@acx-ui/msp/utils'
 import {
   AAAPolicyType,
   AAAViewModalType,
@@ -17,7 +18,8 @@ import {
   onActivityMessageReceived,
   onSocketActivityChanged,
   transformNetwork,
-  NetworkRadiusSettings
+  NetworkRadiusSettings,
+  TemplateInstanceDriftResponse
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
@@ -44,7 +46,6 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, useCasesToRefreshTemplateList, () => {
-            // eslint-disable-next-line max-len
             api.dispatch(configTemplateApi.util.invalidateTags([{ type: 'ConfigTemplate', id: 'LIST' }]))
           })
         })
@@ -56,14 +57,13 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
         ConfigTemplateUrlsInfo.applyConfigTemplate,
         ConfigTemplateUrlsInfo.applyConfigTemplateRbac
       ),
-      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }]
+      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'ConfigTemplate', id: 'DRIFT' }]
     }),
     addNetworkTemplate: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(
         ConfigTemplateUrlsInfo.addNetworkTemplate,
         ConfigTemplateUrlsInfo.addNetworkTemplateRbac
       ),
-      // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'NetworkTemplate', id: 'LIST' }]
     }),
     updateNetworkTemplate: build.mutation<CommonResult, RequestPayload>({
@@ -71,7 +71,6 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
         ConfigTemplateUrlsInfo.updateNetworkTemplate,
         ConfigTemplateUrlsInfo.updateNetworkTemplateRbac
       ),
-      // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'NetworkTemplate', id: 'LIST' }]
     }),
     getNetworkDeepTemplate: build.query<NetworkSaveData | null, RequestPayload>({
@@ -120,7 +119,6 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
         ConfigTemplateUrlsInfo.deleteNetworkTemplate,
         ConfigTemplateUrlsInfo.deleteNetworkTemplateRbac
       ),
-      // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'NetworkTemplate', id: 'LIST' }]
     }),
     getNetworkTemplateList: build.query<TableResult<Network>, RequestPayload>({
@@ -152,14 +150,12 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, useCasesToRefreshNetworkTemplateList, () => {
-            // eslint-disable-next-line max-len
             api.dispatch(configTemplateApi.util.invalidateTags([{ type: 'NetworkTemplate', id: 'LIST' }]))
           })
         })
       },
       extraOptions: { maxRetries: 5 }
     }),
-    // eslint-disable-next-line max-len
     addAAAPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.addAAAPolicyTemplate, ConfigTemplateUrlsInfo.addAAAPolicyTemplateRbac),
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'AAATemplate', id: 'LIST' }]
@@ -182,7 +178,6 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, useCasesToRefreshRadiusServerTemplateList, () => {
-            // eslint-disable-next-line max-len
             api.dispatch(configTemplateApi.util.invalidateTags([{ type: 'AAATemplate', id: 'LIST' }]))
           })
         })
@@ -323,6 +318,111 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
         })
       },
       invalidatesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }]
+    }),
+    getDriftInstances: build.query<Array<{ id: string, name: string }>, RequestPayload>({
+      async queryFn ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) {
+        const resolvedPayload = payload as { filters?: Record<string, string[]> }
+
+        // const driftInstanceIdsRes = await fetchWithBQ({
+        //   ...createHttpRequest(MspUrlsInfo.getMspCustomersList, params),
+        //   body: JSON.stringify({
+        //     fields: ['id'],
+        //     filters: {
+        //       ...resolvedPayload.filters,
+        //       id: [
+        //         'a48e45a0331b4c7cac85965e3a72021e',
+        //         '20bbe08b90124a26983e6ef811127e6f',
+        //         '1969e24ce9af4348833968096ff6cb47',
+        //         '12a7eb7ac51444ed944c5c8f53526cd5',
+        //         '2c89c84b71ad49398f2ef03ce16c410f',
+        //         'a80624a0549440868a846626084f57c9',
+        //         'd50450cf66824aaeb45a14e0e594e2de',
+        //         'df9d828032274e8f8f6af84736bca3f8',
+        //         'ed956445cbcf4db0b032ebf88ac4bf34',
+        //         '884b986f9dfe4f8598bd5b2c463c1620'
+        //       ]
+        //     }
+        //   })
+        // })
+
+        // if (driftInstanceIdsRes.error) {
+        //   return { error: driftInstanceIdsRes.error as FetchBaseQueryError }
+        // }
+
+        // const instanceIds = (driftInstanceIdsRes.data as TableResult<MspEc>).data.map(i => i.id)
+        const instanceIds = [
+          'a48e45a0331b4c7cac85965e3a72021e',
+          '20bbe08b90124a26983e6ef811127e6f',
+          '1969e24ce9af4348833968096ff6cb47',
+          '12a7eb7ac51444ed944c5c8f53526cd5',
+          '2c89c84b71ad49398f2ef03ce16c410f',
+          'a80624a0549440868a846626084f57c9',
+          'd50450cf66824aaeb45a14e0e594e2de',
+          'df9d828032274e8f8f6af84736bca3f8',
+          'ed956445cbcf4db0b032ebf88ac4bf34',
+          '884b986f9dfe4f8598bd5b2c463c1620'
+        ]
+
+        const driftInstancesRes = await fetchWithBQ({
+          ...createHttpRequest(MspUrlsInfo.getMspCustomersList, params),
+          body: JSON.stringify({
+            fields: ['id', 'name'],
+            sortField: 'name',
+            sortOrder: 'ASC',
+            filters: {
+              ...resolvedPayload.filters,
+              id: instanceIds
+            },
+            page: 1,
+            pageSize: 1000
+          })
+        })
+
+        if (driftInstancesRes.error) {
+          return { error: driftInstancesRes.error as FetchBaseQueryError }
+        }
+
+        return { data: (driftInstancesRes.data as TableResult<MspEc>).data }
+      },
+      providesTags: [{ type: 'ConfigTemplate', id: 'DRIFT' }]
+    }),
+    getDriftData: build.query<TemplateInstanceDriftResponse, RequestPayload>({
+      // async queryFn ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) {
+      async queryFn () {
+        const result = await new Promise((resolve) => {
+          setTimeout(() => {
+            resolve({
+              WifiNetwork: {
+                '/wlan/advancedCustomization/qosMirroringEnabled': {
+                  template: true,
+                  instance: false
+                },
+                '/wlan/ssid': {
+                  template: 'raymond-test-int',
+                  instance: 'nms-raymond-test-int.'
+                },
+                '/name': {
+                  template: 'raymond-test-int',
+                  instance: 'nms-raymond-test-int.'
+                }
+              },
+              RadiusOnWifiNetwork: {
+                '/id': {
+                  template: 'ef3644beccdf48ccb4e8cf3ed296070f',
+                  instance: 'dc2146381a874d04a824bdd8c7bb991d'
+                },
+                '/idName': {
+                  template: 'radius-template-name',
+                  instance: 'radius-server-name'
+                }
+              }
+            })
+          }, 1500)
+        })
+
+        return { data: result as TemplateInstanceDriftResponse }
+      },
+      providesTags: [{ type: 'ConfigTemplate', id: 'DRIFT' }]
     })
   })
 })
@@ -349,5 +449,7 @@ export const {
   useDeleteNetworkVenueTemplateMutation,
   useDeleteNetworkVenuesTemplateMutation,
   useUpdateNetworkVenueTemplateMutation,
-  useAddNetworkVenueTemplatesMutation
+  useAddNetworkVenueTemplatesMutation,
+  useGetDriftInstancesQuery,
+  useLazyGetDriftDataQuery
 } = configTemplateApi

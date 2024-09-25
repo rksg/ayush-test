@@ -11,6 +11,45 @@ export const mockedConfigTemplate = {
   lastApplied: 1690598405000
 }
 
+export const mockedMSPCustomers = {
+  totalCount: 2,
+  page: 1,
+  data: [{
+    id: '2242a683a7594d7896385cfef1fe1234',
+    name: 'Customer1',
+    entitlements: [
+      {
+        expirationDateTs: '1680134399000',
+        consumed: '0',
+        quantity: '1',
+        entitlementDeviceType: 'DVCNWTYPE_SWITCH',
+        tenantId: '2242a683a7594d7896385cfef1fe1234',
+        type: 'entitlement',
+        expirationDate: '2023-03-29T23:59:59Z',
+        entitlementDeviceSubType: 'ICX71',
+        toBeRemovedQuantity: 0
+      },
+      // eslint-disable-next-line max-len
+      { expirationDateTs: '1680134399000',consumed: '2',quantity: '2',entitlementDeviceType: 'DVCNWTYPE_WIFI',
+        // eslint-disable-next-line max-len
+        tenantId: '2242a683a7594d7896385cfef1fe1234',type: 'entitlement',expirationDate: '2023-03-29T23:59:59Z',toBeRemovedQuantity: 2 }
+    ],
+    wifiLicenses: 2,
+    switchLicenses: 1
+  },
+  { id: '350f3089a8e34509a2913c550faf1234',
+    name: 'Customer2',
+    entitlements: [
+      // eslint-disable-next-line max-len
+      { expirationDateTs: '1680134399000',consumed: '0',quantity: '2',entitlementDeviceType: 'DVCNWTYPE_WIFI',tenantId: '350f3089a8e34509a2913c550faf1234',type: 'entitlement',expirationDate: '2023-03-29T23:59:59Z',toBeRemovedQuantity: 0 },
+      // eslint-disable-next-line max-len
+      { expirationDateTs: '1680134399000',consumed: '0',quantity: '2',entitlementDeviceType: 'DVCNWTYPE_SWITCH',tenantId: '350f3089a8e34509a2913c550faf1234',type: 'entitlement',expirationDate: '2023-03-29T23:59:59Z',entitlementDeviceSubType: 'ICX71',toBeRemovedQuantity: 0 }
+    ],
+    wifiLicenses: 2,
+    switchLicenses: 2
+  }]
+}
+
 export const mockedDriftResponse: TemplateInstanceDriftResponse = {
   WifiNetwork: {
     '/wlan/advancedCustomization/qosMirroringEnabled': {
@@ -36,35 +75,4 @@ export const mockedDriftResponse: TemplateInstanceDriftResponse = {
       instance: 'radius-server-name'
     }
   }
-}
-
-const maxInstances = 18
-const customerNames = [
-  'Edu Hotels',
-  'Campus Resorts',
-  'Premier Lodges',
-  'Health Group',
-  'Wellness Retreats',
-  'Care Hospitals',
-  'Scholar Inn',
-  'Graduate Services',
-  'Learning Lodges',
-  'Care Facilities',
-  'Wellness Hotels',
-  'Stay Centers',
-  'Campus Suites',
-  'Future Lodging',
-  'Healing Hotels',
-  'Study & Care',
-  'Health Lodges',
-  'Life Retreats'
-]
-
-export let mockedData: Array<{ id: string, name: string }> = []
-
-for (let i = 0; i < maxInstances; i++) {
-  mockedData.push({
-    id: `id_${Math.floor(Math.random() * 100000)}`,
-    name: customerNames[i]
-  })
 }

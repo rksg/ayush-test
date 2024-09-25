@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { Checkbox, Col, List, Row, Select, Space } from 'antd'
 import { CheckboxChangeEvent }                     from 'antd/lib/checkbox'
@@ -6,13 +6,15 @@ import { useIntl }                                 from 'react-intl'
 
 import {
   Button,
-  Drawer
+  Drawer,
+  Loader
 } from '@acx-ui/components'
-import { ConfigTemplate } from '@acx-ui/rc/utils'
+import { useGetDriftInstancesQuery } from '@acx-ui/rc/services'
+import { ConfigTemplate }            from '@acx-ui/rc/utils'
 
 import { MAX_SYNC_EC_TENANTS } from '../../constants'
+import { useEcFilters }        from '../templateUtils'
 
-import { mockedData }    from './__tests__/fixtures'
 import { DriftInstance } from './DriftInstance'
 
 interface ShowDriftsDrawerProps {
@@ -23,8 +25,17 @@ interface ShowDriftsDrawerProps {
 export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
   const { $t } = useIntl()
   const [ selectedInstances, setSelectedInstances ] = useState<Array<string>>([])
-  const { setVisible } = props
-  const { driftInstances = [], applyFilter } = useGetDriftInstances(mockedData.map(i => i.id))
+  const [ selectedFilterValue, setSelectedFilterValue ] = useState<string | undefined>()
+  const { setVisible, selectedTemplate } = props
+  // eslint-disable-next-line max-len
+  const { data: driftInstances = [], isLoading: isDriftInstancesLoading } = useGetDriftInstancesQuery({
+    params: {
+      templateId: selectedTemplate.id
+    },
+    payload: {
+      filters: { ...useEcFilters() }
+    }
+  })
 
   const hasReachedTheMaxRecord = (): boolean => {
     return selectedInstances.length >= MAX_SYNC_EC_TENANTS
@@ -51,7 +62,7 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
   }
 
   const onInstanceFilterSelect = (value: string | undefined) => {
-    applyFilter(value)
+    setSelectedFilterValue(value)
   }
 
   const getSyncAllInstances = () => {
@@ -83,37 +94,44 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
       <Space direction='vertical' size='small'>
         {/* eslint-disable-next-line max-len */}
         <p>{ $t({ defaultMessage: 'During sync all configurations in the selected template overwrite the corresponding configuration in the associated customers.' }) }</p>
-        {/* eslint-disable-next-line max-len */}
-        <Toolbar onSyncAllChange={onSyncAllChange} onInstanceFilterSelect={onInstanceFilterSelect} />
+        <Toolbar
+          customerOptions={driftInstances}
+          onSyncAllChange={onSyncAllChange}
+          onInstanceFilterSelect={onInstanceFilterSelect}
+        />
         <SelectedCustomersIndicator selectedCount={selectedInstances.length} />
       </Space>
-      <List
-        split={false}
-        pagination={{ position: 'bottom' }}
-        dataSource={driftInstances}
-        renderItem={(instance) => (
-          <List.Item style={{ padding: '0' }}>
-            <DriftInstance
-              instanceName={instance.name}
-              instanceId={instance.id}
-              updateSelection={onInstanceSelecte}
-              selected={selectedInstances.includes(instance.id)}
-              disalbed={hasReachedTheMaxRecord()}
-            />
-          </List.Item>
-        )}
-      />
+      <Loader states={[{ isLoading: isDriftInstancesLoading }]}>
+        <List
+          split={false}
+          pagination={{ position: 'bottom' }}
+          // eslint-disable-next-line max-len
+          dataSource={driftInstances.filter(ins => selectedFilterValue ? ins.id === selectedFilterValue : true)}
+          renderItem={(instance) => (
+            <List.Item style={{ padding: '0' }}>
+              <DriftInstance
+                instanceName={instance.name}
+                instanceId={instance.id}
+                updateSelection={onInstanceSelecte}
+                selected={selectedInstances.includes(instance.id)}
+                disalbed={hasReachedTheMaxRecord()}
+              />
+            </List.Item>
+          )}
+        />
+      </Loader>
     </Drawer>
   )
 }
 
 interface ToolbarProps {
+  customerOptions: Array<{ name: string, id: string }>
   onSyncAllChange: (e: CheckboxChangeEvent) => void
   onInstanceFilterSelect: (value: string | undefined) => void
 }
 
 function Toolbar (props: ToolbarProps) {
-  const { onSyncAllChange, onInstanceFilterSelect } = props
+  const { customerOptions, onSyncAllChange, onInstanceFilterSelect } = props
   const { $t } = useIntl()
 
   return <Row justify='space-between' align='middle' style={{ paddingLeft: '16px' }}>
@@ -129,7 +147,7 @@ function Toolbar (props: ToolbarProps) {
         allowClear
         showSearch
         onChange={onInstanceFilterSelect}
-        options={mockedData.map(i => ({ label: i.name, value: i.id }))}
+        options={customerOptions.map(i => ({ label: i.name, value: i.id }))}
       />
     </Col>
   </Row>
@@ -148,31 +166,4 @@ export function SelectedCustomersIndicator (props: { selectedCount: number }) {
   }}>
     { $t({ defaultMessage: '{num} selected' }, { num: selectedCount }) }
   </div>
-}
-
-function useGetDriftInstances (instanceIds: string[]) {
-  const [ driftInstances, setDriftInstances ] = useState<Array<{ id: string, name: string }>>()
-
-  const applyFilter = (instanceId: string | undefined) => {
-    if (instanceId) {
-      setDriftInstances(mockedData.filter(i => i.id === instanceId))
-    } else {
-      setDriftInstances(mockedData)
-    }
-  }
-
-  useEffect(() => {
-    setTimeout(() => {
-      setDriftInstances(
-        mockedData
-          .filter(i => instanceIds.includes(i.id))
-          .map(i => ({ id: i.id, name: i.name }))
-      )
-    }, 1000)
-  }, [])
-
-  return {
-    driftInstances,
-    applyFilter
-  }
 }

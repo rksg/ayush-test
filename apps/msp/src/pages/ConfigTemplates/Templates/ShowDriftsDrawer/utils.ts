@@ -3,7 +3,9 @@ import { TemplateInstanceDriftPair, TemplateInstanceDriftRecord, TemplateInstanc
 import { DriftComparisonData }    from './DriftComparison'
 import { DriftComparisonSetData } from './DriftComparisonSet'
 // eslint-disable-next-line max-len
-export function transformDriftResponse (data: TemplateInstanceDriftResponse): DriftComparisonSetData[] {
+export function transformDriftResponse (data: TemplateInstanceDriftResponse | undefined): DriftComparisonSetData[] {
+  if (!data) return []
+
   return Object.entries(data).map(([ category, items ]) => ({
     category,
     driftItems: convertDriftRecord(items)

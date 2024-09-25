@@ -41,7 +41,7 @@ describe('ShowDriftsDrawer utils', () => {
     })
 
     it('should return an empty array if the input is empty', () => {
-      expect(transformDriftResponse({})).toEqual([])
+      expect(transformDriftResponse(undefined)).toEqual([])
     })
   })
 
