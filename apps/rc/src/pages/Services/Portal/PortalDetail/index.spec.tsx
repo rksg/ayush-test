@@ -11,8 +11,8 @@ import {
   waitFor,
   within
 } from '@acx-ui/test-utils'
-import { WifiScopes }                     from '@acx-ui/types'
-import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import { RolesEnum, WifiScopes }                          from '@acx-ui/types'
+import { CustomRoleType, getUserProfile, setUserProfile } from '@acx-ui/user'
 
 
 import { mockList, mockDetailResult, mockDetailChangeResult, mockedPortalList } from './__tests__/fixtures'
@@ -110,15 +110,17 @@ describe('Portal Detail Page', () => {
   })
 
   describe('ABAC permission', () => {
-    xit('should dispaly with custom scopeKeys', async () => {
+    it('should dispaly with custom scopeKeys', async () => {
       setUserProfile({
         profile: {
-          ...getUserProfile().profile
+          ...getUserProfile().profile,
+          customRoleType: CustomRoleType.SYSTEM,
+          customRoleName: RolesEnum.ADMINISTRATOR
         },
         allowedOperations: [],
         abacEnabled: true,
-        isCustomRole: true,
-        scopes: [WifiScopes.UPDATE]
+        isCustomRole: false,
+        hasAllVenues: true
       })
 
       render(<Provider><PortalServiceDetail /></Provider>, {

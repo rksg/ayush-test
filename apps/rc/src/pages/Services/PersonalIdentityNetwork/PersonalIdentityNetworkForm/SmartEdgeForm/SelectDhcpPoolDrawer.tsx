@@ -4,10 +4,10 @@ import { Col, Divider, Form, Row } from 'antd'
 import _                           from 'lodash'
 import { useIntl }                 from 'react-intl'
 
-import { Button, Drawer, StepsFormLegacy, Subtitle } from '@acx-ui/components'
-import { PoolDrawer }                                from '@acx-ui/rc/components'
-import { usePatchEdgeDhcpServiceMutation }           from '@acx-ui/rc/services'
-import { EdgeDhcpPool }                              from '@acx-ui/rc/utils'
+import { Button, Drawer, StepsFormLegacy, Subtitle, Loader } from '@acx-ui/components'
+import { PoolDrawer }                                        from '@acx-ui/rc/components'
+import { usePatchEdgeDhcpServiceMutation }                   from '@acx-ui/rc/services'
+import { EdgeDhcpPool }                                      from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 
@@ -19,12 +19,13 @@ interface SelectDhcpPoolDrawerProps {
   pools?: EdgeDhcpPool[]
   data?: string
   isRelayOn: boolean
+  isLoading?: boolean
 }
 
 export const SelectDhcpPoolDrawer = (props: SelectDhcpPoolDrawerProps) => {
 
   const { $t } = useIntl()
-  const { visible, setVisible, selectPool, pools, data, isRelayOn } = props
+  const { visible, setVisible, selectPool, pools, data, isRelayOn, isLoading = false } = props
   const [poolDrawerVisible, setPoolDrawerVisible] = useState(false)
   const [patchEdgeDhcpService] = usePatchEdgeDhcpServiceMutation()
   const [formRef] = Form.useForm()
@@ -60,39 +61,41 @@ export const SelectDhcpPoolDrawer = (props: SelectDhcpPoolDrawerProps) => {
         />
       </Col>
     </Row>
-    <Form.Item
-      name='poolId'
-      rules={[
-        {
-          required: true,
-          message: $t({ defaultMessage: 'Please select a DHCP pool' })
-        }
-      ]}
-    >
-      <UI.RadioGroup
-        options={
-          pools?.map(item => ({
-            label: <>
-              <Subtitle level={4}>{item.poolName}</Subtitle>
-              <StepsFormLegacy.FieldLabel width='100px'>
-                {$t({ defaultMessage: 'Subnet Mask:' })}
-                <UI.RadioDescription
-                  children={item.subnetMask}
-                />
-              </StepsFormLegacy.FieldLabel>
-              <StepsFormLegacy.FieldLabel width='100px'>
-                {$t({ defaultMessage: 'Pool Range:' })}
-                <UI.RadioDescription
-                  children={`${item.poolStartIp} - ${item.poolEndIp}`}
-                />
-              </StepsFormLegacy.FieldLabel>
-              <Divider />
-            </>,
-            value: item.id
-          })) || []
-        }
-      />
-    </Form.Item>
+    <Loader states={[{ isLoading }]}>
+      <Form.Item
+        name='poolId'
+        rules={[
+          {
+            required: true,
+            message: $t({ defaultMessage: 'Please select a DHCP pool' })
+          }
+        ]}
+      >
+        <UI.RadioGroup
+          options={
+            pools?.map(item => ({
+              label: <>
+                <Subtitle level={4}>{item.poolName}</Subtitle>
+                <StepsFormLegacy.FieldLabel width='100px'>
+                  {$t({ defaultMessage: 'Subnet Mask:' })}
+                  <UI.RadioDescription
+                    children={item.subnetMask}
+                  />
+                </StepsFormLegacy.FieldLabel>
+                <StepsFormLegacy.FieldLabel width='100px'>
+                  {$t({ defaultMessage: 'Pool Range:' })}
+                  <UI.RadioDescription
+                    children={`${item.poolStartIp} - ${item.poolEndIp}`}
+                  />
+                </StepsFormLegacy.FieldLabel>
+                <Divider />
+              </>,
+              value: item.id
+            })) || []
+          }
+        />
+      </Form.Item>
+    </Loader>
   </Form>
 
   const footer = (
