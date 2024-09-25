@@ -19,14 +19,12 @@ describe('ethernetPortProfileUtils', () => {
         {
           label: 'Access',
           value: EthernetPortType.ACCESS
-        },
-        {
-          label: 'Selective Trunk',
-          value: EthernetPortType.SELECTIVE_TRUNK
-        },
-        {
+        }, {
           label: 'Trunk',
           value: EthernetPortType.TRUNK
+        }, {
+          label: 'Selective Trunk',
+          value: EthernetPortType.SELECTIVE_TRUNK
         }
       ])
     })
