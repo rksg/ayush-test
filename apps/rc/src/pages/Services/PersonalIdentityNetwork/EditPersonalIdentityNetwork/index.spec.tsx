@@ -51,7 +51,7 @@ jest.mock('../PersonalIdentityNetworkForm/PersonalIdentityNetworkFormContext', (
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   useEdgePinActions: () => ({
-    editPin: (req: RequestPayload) => new Promise((resolve) => {
+    editPin: (_originData: unknown, req: RequestPayload) => new Promise((resolve) => {
       resolve(true)
       setTimeout(() => {
         (req.callback as Function)([{
