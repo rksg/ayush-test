@@ -7,6 +7,6 @@ export const baseVenueApi = createApi({
   reducerPath: 'venueApi',
   tagTypes: ['Venue', 'Device', 'VenueFloorPlan', 'AAA', 'ExternalAntenna', 'VenueRadio',
     'PropertyConfigs', 'PropertyUnit', 'RWG'],
-  refetchOnMountOrArgChange: true,
+  keepUnusedDataFor: 0,
   endpoints: () => ({})
 })
