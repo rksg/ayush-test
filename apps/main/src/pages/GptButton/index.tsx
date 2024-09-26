@@ -35,16 +35,23 @@ export default function RuckusGptButton () {
       }}
     />
     <UI.GptModal
-      title={step === 'wizard' ? <Steps current={currentStep}>
-        {[
-          { key: 'step1' },
-          {  key: 'step2' },
-          { key: 'step3' },
-          {  key: 'step4' }
-        ].map((item) => (
-          <Steps.Step key={item.key}  />
-        ))}
-      </Steps> :
+      title={step === 'wizard' ?
+        <div
+          style={{ width: '250px' }}>
+          <UI.GptStep
+            current={currentStep}
+            percent={100} size="small"
+            type="default">
+            {[
+              { key: 'step1' },
+              { key: 'step2' },
+              { key: 'step3' },
+              { key: 'step4' }
+            ].map((item) => (
+              <Steps.Step key={item.key} />
+            ))}
+          </UI.GptStep>
+        </div> :
         <div style={{ display: 'flex', padding: '20px 20px 0px 20px' }}>
           <div style={{
             display: 'flex',
@@ -74,7 +81,7 @@ export default function RuckusGptButton () {
             >Please answer the following questions for optimal network recommendations.</div>
           </div>
         </div>}
-      visible={true}//{visible}
+      visible={visible}
       footer={<>
         {step !== 'vertical' &&
           <Button key='back'
