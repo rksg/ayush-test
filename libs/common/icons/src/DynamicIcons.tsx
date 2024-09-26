@@ -2,7 +2,7 @@ import * as SmIcons from './icons/16px'
 import * as MdIcons from './icons/24px'
 import * as LgIcons from './icons/32px'
 
-type Size = 'sm' | 'md' | 'lg'
+export type Size = 'sm' | 'md' | 'lg'
 type IconMap = Record<string, React.FC<React.SVGProps<SVGSVGElement>>>
 
 const IconLibraries: Record<Size, IconMap> = {
