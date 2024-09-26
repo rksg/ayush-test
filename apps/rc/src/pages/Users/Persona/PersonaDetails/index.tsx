@@ -20,7 +20,7 @@ import {
   usePersonaAsyncHeaders
 } from '@acx-ui/rc/components'
 import {
-  useAllocatePersonaVniMutation,
+  useAllocatePersonaVniMutation, useGetCertificateAuthorityQuery,
   useGetCertificatesByIdentityIdQuery,
   useGetCertificateTemplateQuery,
   useGetPersonaByIdQuery,
@@ -86,6 +86,15 @@ function PersonaDetails () {
     option: {
       skip: !isCertTemplateEnabled || !personaGroupData?.certificateTemplateId || !personaId
     } })
+
+  const { privateKeyBase64 } = useGetCertificateAuthorityQuery(
+    { params: { caId: certTemplateData?.onboard?.certificateAuthorityId } },
+    {
+      skip: !certTemplateData?.onboard?.certificateAuthorityId,
+      selectFromResult: ({ data }) => ({
+        privateKeyBase64: data?.privateKeyBase64
+      })
+    })
 
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const [getConnectionMeteringById] = useLazyGetConnectionMeteringByIdQuery()
@@ -361,9 +370,10 @@ function PersonaDetails () {
               )}
             >
               <CertificateTable
-                showGenerateCert={false}
+                showGenerateCert={!!privateKeyBase64}
                 templateData={certTemplateData}
                 tableQuery={certTableQuery}
+                specificIdentity={personaId}
               />
             </Tabs.TabPane>
           }

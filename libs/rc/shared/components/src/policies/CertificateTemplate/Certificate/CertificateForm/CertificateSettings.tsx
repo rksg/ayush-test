@@ -1,15 +1,19 @@
 import { Col, Divider, Form, Input, Row, Select } from 'antd'
 import { useIntl }                                from 'react-intl'
 
-import { useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery } from '@acx-ui/rc/services'
-import { CertificateTemplate }                                                from '@acx-ui/rc/utils'
+import {
+  useGetCertificateAuthoritiesQuery,
+  useGetCertificateTemplatesQuery, useGetPersonaGroupByIdQuery
+} from '@acx-ui/rc/services'
+import { CertificateTemplate } from '@acx-ui/rc/utils'
 
 import { MAX_CERTIFICATE_PER_TENANT }                         from '../../constants'
 import { certificateDescription, onboardSettingsDescription } from '../../contentsMap'
 import { Description }                                        from '../../styledComponents'
 
 export default function CertificateSettings (
-  { templateData }: { templateData?: CertificateTemplate }) {
+  // eslint-disable-next-line max-len
+  { templateData, specificIdentity }: { templateData?: CertificateTemplate, specificIdentity?: string }) {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const csrType = Form.useWatch('csrType', form)
@@ -41,6 +45,11 @@ export default function CertificateSettings (
       })
   })
 
+  const { data: personaGroupData } = useGetPersonaGroupByIdQuery(
+    { params: { groupId: templateData?.identityGroupId } },
+    { skip: !templateData?.identityGroupId }
+  )
+
   const csrSourceOptions = [
     { label: $t({ defaultMessage: 'Auto-Generate CSR' }), value: 'generate' },
     { label: $t({ defaultMessage: 'Copy & Paste CSR' }), value: 'copy' }
@@ -63,6 +72,25 @@ export default function CertificateSettings (
 
   return (
     <>
+      {templateData?.identityGroupId && <Row>
+        <Col span={10}>
+          <Form.Item
+            name='identityId'
+            label={$t({ defaultMessage: 'Identity' })}
+            hidden={!!specificIdentity}
+            rules={[{
+              required: true
+            }]}
+          >
+            <Select
+              placeholder={$t({ defaultMessage: 'Choose ...' })}
+              options={
+                // eslint-disable-next-line max-len
+                personaGroupData?.identities?.map(identity => ({ value: identity.id, label: identity.name }))}
+            />
+          </Form.Item>
+        </Col>
+      </Row>}
       {!templateData && <Row>
         <Col span={10}>
           <Form.Item

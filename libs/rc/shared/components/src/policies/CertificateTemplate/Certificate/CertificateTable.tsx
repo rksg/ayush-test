@@ -7,7 +7,7 @@ import { RawIntlProvider, useIntl } from 'react-intl'
 import { Button, Drawer, Loader, Table, TableProps } from '@acx-ui/components'
 import {
   useEditCertificateMutation,
-  useGenerateCertificateMutation,
+  useGenerateCertificateToIdentityMutation,
   useSearchPersonaListQuery
 } from '@acx-ui/rc/services'
 import { TableQuery, Certificate, CertificateCategoryType, CertificateStatusType, CertificateTemplate, EXPIRATION_DATE_FORMAT, EXPIRATION_TIME_FORMAT, EnrollmentType, FILTER, PolicyOperation, PolicyType, SEARCH, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy } from '@acx-ui/rc/utils'
@@ -23,9 +23,10 @@ import RevokeForm                                              from './RevokeFor
 
 
 export function CertificateTable (
-  { templateData, showGenerateCert = false, tableQuery }: {
+  { templateData, showGenerateCert = false, tableQuery, specificIdentity }: {
     templateData?: CertificateTemplate, showGenerateCert?: boolean,
-    tableQuery: TableQuery<Certificate, RequestPayload, unknown>
+    tableQuery: TableQuery<Certificate, RequestPayload, unknown>,
+    specificIdentity?: string
 }) {
   const { $t } = useIntl()
   const [certificateForm] = Form.useForm()
@@ -49,13 +50,15 @@ export function CertificateTable (
   }, [tableQuery.data])
 
   const [editCertificate] = useEditCertificateMutation()
-  const [generateCertificate] = useGenerateCertificateMutation()
+  const [generateCertificate] = useGenerateCertificateToIdentityMutation()
 
   const filterOptions = [
     { key: 'VALID', label: $t({ defaultMessage: 'Valid Certificates' }), value: 'VALID' },
     { key: 'REVOKED', label: $t({ defaultMessage: 'Revoked Certificates' }), value: 'REVOKED' },
     { key: 'EXPIRED', label: $t({ defaultMessage: 'Expired Certificates' }), value: 'EXPIRED' }
   ]
+
+  certificateForm.setFieldValue('identityId', specificIdentity)
 
   const columns: TableProps<Certificate>['columns'] = [
     {
@@ -244,7 +247,7 @@ export function CertificateTable (
   }
 
   const actionButtons = [
-    ...(templateData && showGenerateCert ? [{
+    ...(templateData && showGenerateCert && templateData.identityGroupId ? [{
       scopeKey: getScopeKeyByPolicy(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.CREATE),
       label: $t({ defaultMessage: 'Generate Certificate' }),
       onClick: () => {
@@ -289,10 +292,10 @@ export function CertificateTable (
             onSave={async () => {
               try {
                 await certificateForm.validateFields()
-                const { certificateTemplateId, csrType,
+                const { identityId, certificateTemplateId, csrType,
                   csrString, description, ...variables } = certificateForm.getFieldsValue()
                 await generateCertificate({
-                  params: { templateId: templateData?.id },
+                  params: { templateId: templateData?.id, personaId: identityId },
                   payload: { csrString, description, variableValues: { ...variables } }
                 })
                 setCertificateDrawerOpen(false)
@@ -303,7 +306,7 @@ export function CertificateTable (
         }
       >
         <Form layout='vertical' form={certificateForm}>
-          <CertificateSettings templateData={templateData} />
+          <CertificateSettings templateData={templateData} specificIdentity={specificIdentity} />
         </Form>
       </Drawer >
     </>
