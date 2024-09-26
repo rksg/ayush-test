@@ -5,10 +5,10 @@ import { useIntl } from 'react-intl'
 
 import { StepsForm } from '@acx-ui/components'
 import {
-  ApLanPortTypeEnum,
   EhternetPortSettings,
   EthernetPortAuthType,
   EthernetPortProfileViewData,
+  EthernetPortType,
   checkVlanMember,
   getEthernetPortTypeString,
   validateVlanId
@@ -31,7 +31,7 @@ const EthernetPortProfileInput = (props:EthernetPortProfileInputProps) => {
   const currentUntagId = Form.useWatch( ['lan', currentIndex, 'untagId'] ,form)
 
   useEffect(()=>{
-    if (currentEthernetPortData?.type === ApLanPortTypeEnum.ACCESS) {
+    if (currentEthernetPortData?.type === EthernetPortType.ACCESS) {
       form.setFieldValue(['lan', currentIndex, 'vlanMembers'], currentUntagId)
     }
   }, [currentUntagId])
@@ -65,7 +65,8 @@ const EthernetPortProfileInput = (props:EthernetPortProfileInputProps) => {
     <EthernetPortProfileOverwriteItem
       title='VLAN Members'
       defaultValue={currentEthernetPortData?.vlanMembers.toString() ?? ''}
-      isEditable={isEditable &&(currentEthernetPortData?.type === ApLanPortTypeEnum.GENERAL)}
+      isEditable={isEditable &&
+        (currentEthernetPortData?.type === EthernetPortType.SELECTIVE_TRUNK)}
       fieldName={['lan', currentIndex, 'vlanMembers']}
       rules={[
         { validator: (_, value) => checkVlanMember(value) }

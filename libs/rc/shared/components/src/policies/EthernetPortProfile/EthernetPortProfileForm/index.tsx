@@ -8,7 +8,6 @@ import { useLocation, useNavigate }                                             
 import { PageHeader, PasswordInput, StepsForm, Subtitle, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
 import {
-  ApLanPortTypeEnum,
   LocationExtended,
   PolicyOperation,
   PolicyType,
@@ -23,7 +22,8 @@ import {
   EthernetPortProfileFormType,
   getEthernetPortTypeOptions,
   getEthernetPortAuthTypeOptions,
-  getEthernetPortCredentialTypeOptions
+  getEthernetPortCredentialTypeOptions,
+  EthernetPortType
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -96,13 +96,13 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
   // }
 
   const portTypeAndAuthTypeMapping = {
-    [EthernetPortAuthType.SUPPLICANT]: [ApLanPortTypeEnum.TRUNK],
+    [EthernetPortAuthType.SUPPLICANT]: [EthernetPortType.TRUNK],
     [EthernetPortAuthType.PORT_BASED]: [
-      ApLanPortTypeEnum.TRUNK,
-      ApLanPortTypeEnum.ACCESS,
-      ApLanPortTypeEnum.GENERAL
+      EthernetPortType.TRUNK,
+      EthernetPortType.ACCESS,
+      EthernetPortType.SELECTIVE_TRUNK
     ],
-    [EthernetPortAuthType.MAC_BASED]: [ApLanPortTypeEnum.ACCESS]
+    [EthernetPortAuthType.MAC_BASED]: [EthernetPortType.ACCESS]
   }
 
   const authTypeRoleOptionsArray = getEthernetPortAuthTypeOptions()
@@ -112,8 +112,8 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
     })
 
 
-  const onPortTypeChanged = (currentPortType:ApLanPortTypeEnum) => {
-    if(currentPortType === ApLanPortTypeEnum.TRUNK) {
+  const onPortTypeChanged = (currentPortType:EthernetPortType) => {
+    if(currentPortType === EthernetPortType.TRUNK) {
       formRef.setFieldsValue({
         untagId: 1,
         vlanMembers: '1-4094',
@@ -121,20 +121,20 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
       })
     }
 
-    if(currentPortType === ApLanPortTypeEnum.ACCESS) {
+    if(currentPortType === EthernetPortType.ACCESS) {
       formRef.setFieldsValue({
         vlanMembers: untagId,
         authTypeRole: EthernetPortAuthType.PORT_BASED
       })
     }
 
-    // if(currentPortType === ApLanPortTypeEnum.GENERAL) {
-    //   formRef.setFieldValue('authTypeRole', EthernetPortAuthType.PORT_BASED)
-    // }
+    if(currentPortType === EthernetPortType.SELECTIVE_TRUNK) {
+      formRef.setFieldValue('authTypeRole', EthernetPortAuthType.PORT_BASED)
+    }
   }
 
   useEffect(()=>{
-    if(portType === ApLanPortTypeEnum.TRUNK) {
+    if(portType === EthernetPortType.TRUNK) {
       formRef.setFieldsValue({
         untagId: 1,
         vlanMembers: '1-4094',
@@ -142,20 +142,20 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
       })
     }
 
-    if(portType === ApLanPortTypeEnum.ACCESS) {
+    if(portType === EthernetPortType.ACCESS) {
       formRef.setFieldsValue({
         vlanMembers: untagId,
         authTypeRole: EthernetPortAuthType.PORT_BASED
       })
     }
 
-    if(portType === ApLanPortTypeEnum.GENERAL) {
+    if(portType === EthernetPortType.SELECTIVE_TRUNK) {
       formRef.setFieldValue('authTypeRole', EthernetPortAuthType.PORT_BASED)
     }
   }, [portType])
 
   useEffect(()=>{
-    if(portType === ApLanPortTypeEnum.ACCESS) {
+    if(portType === EthernetPortType.ACCESS) {
       formRef.setFieldValue('vlanMembers', untagId)
     }
   }, [untagId])
@@ -215,7 +215,7 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
                   />
                 </>
                 }
-                initialValue={ApLanPortTypeEnum.TRUNK}
+                initialValue={EthernetPortType.TRUNK}
 
               >
                 <Select
@@ -273,8 +273,8 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
               >
                 <Input
                   disabled={
-                    // portType === ApLanPortTypeEnum.TRUNK ||
-                    portType === ApLanPortTypeEnum.ACCESS
+                    portType === EthernetPortType.TRUNK ||
+                    portType === EthernetPortType.ACCESS
                   }
                 />
               </Form.Item>
@@ -301,7 +301,7 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
                     {$t({ defaultMessage: '802.1X Role' })}
                     <Tooltip.Question
                       title={
-                        (portType === ApLanPortTypeEnum.TRUNK) ?
+                        (portType === EthernetPortType.TRUNK) ?
                           $t(EthernetPortProfileMessages.AUTH_TYPE_ROLE_TRUNK):
                           $t(EthernetPortProfileMessages.AUTH_TYPE_ROLE_ACCESS)
                       }

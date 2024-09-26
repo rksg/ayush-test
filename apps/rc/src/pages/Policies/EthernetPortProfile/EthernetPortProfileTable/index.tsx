@@ -13,6 +13,7 @@ import {
   AAAViewModalType,
   EthernetPortProfileViewData,
   getEthernetPortAuthTypeString,
+  getEthernetPortTypeString,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
@@ -102,7 +103,10 @@ const EthernetPortProfileTable = () => {
       title: $t({ defaultMessage: 'Port Type' }),
       key: 'type',
       dataIndex: 'type',
-      sorter: true
+      sorter: true,
+      render: (_, { type }) => {
+        return getEthernetPortTypeString(type)
+      }
     },
     {
       title: $t({ defaultMessage: 'VLAN Untag' }),
@@ -221,7 +225,7 @@ const EthernetPortProfileTable = () => {
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Policy' }),
+            entityName: $t({ defaultMessage: 'Profile' }),
             entityValue: rows.length === 1 ? rows[0].name : undefined,
             numOfEntities: rows.length
           },
