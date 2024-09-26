@@ -374,4 +374,21 @@ describe('Test', () => {
       })
     })
   })
+  describe('Feature Flag Off', () => {
+    test('it should not render anything for SwitchTcpSynDDoS', () => {
+      const test = {
+        component: SwitchTcpSynDDoS,
+        fakeIncident: fakeIncidentDDoS,
+        hasNetworkImpact: false,
+        hasTimeSeries: true,
+        charts: ['impactedSwitchDDoSTable','impactedSwitchDDoSDonut']
+      }
+      jest.mocked(useIsSplitOn).mockReturnValue(false)
+        const params = { incidentId: test.fakeIncident.id }
+        const { asFragment } = render(<Provider>
+          <test.component {...test.fakeIncident} />
+        </Provider>, { route: { params } })
+      expect(asFragment()).toMatchSnapshot()
+    })
+  })
 })

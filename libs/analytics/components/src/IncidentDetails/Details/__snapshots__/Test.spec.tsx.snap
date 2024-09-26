@@ -22130,3 +22130,5 @@ exports[`Test Details should render Ttc correctly 1`] = `
   </div>
 </DocumentFragment>
 `;
+
+exports[`Test Feature Flag Off it should not render anything for SwitchTcpSynDDoS 1`] = `<DocumentFragment />`;
