@@ -2,11 +2,9 @@ import { Dispatch, SetStateAction } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Modal, ModalType, useStepFormContext } from '@acx-ui/components'
-import { NetworkForm }                          from '@acx-ui/rc/components'
-import { NetworkTypeEnum }                      from '@acx-ui/rc/utils'
-
-import { PersonalIdentityNetworkFormData } from '..'
+import { Modal, ModalType, useStepFormContext }             from '@acx-ui/components'
+import { NetworkForm }                                      from '@acx-ui/rc/components'
+import { NetworkTypeEnum, PersonalIdentityNetworkFormData } from '@acx-ui/rc/utils'
 
 interface AddDpskModalProps {
   visible: boolean
