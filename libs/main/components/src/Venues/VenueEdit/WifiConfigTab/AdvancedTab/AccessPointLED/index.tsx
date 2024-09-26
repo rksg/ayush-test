@@ -122,6 +122,13 @@ export function AccessPointLED () {
       hasError: tableData?.filter(item => !item.model).length > 0,
       setData: setTableData
     })
+    // Avoid initial render
+    if (editContextData?.oldData && !isEqual(editContextData?.oldData, tableData)) {
+      setEditAdvancedContextData({
+        ...editAdvancedContextData,
+        updateAccessPointLED: handleUpdateSetting
+      })
+    }
   }, [tableData])
 
   const columns: TableProps<VenueLed>['columns'] = [{
@@ -173,10 +180,6 @@ export function AccessPointLED () {
 
   const handleAdd = () => {
     setTableData([...tableData, { ledEnabled: true, model: '', key: '', manual: true }])
-    setEditAdvancedContextData({
-      ...editAdvancedContextData,
-      updateAccessPointLED: handleUpdateSetting
-    })
   }
   const handleDelete = (model: string) => {
     const models = selectedModels.filter((item) => item !== model)
@@ -185,10 +188,6 @@ export function AccessPointLED () {
     setModelOptions(supportModelOptions.filter(item =>
       models.indexOf(item.value) === -1)
     )
-    setEditAdvancedContextData({
-      ...editAdvancedContextData,
-      updateAccessPointLED: handleUpdateSetting
-    })
   }
   const handleChange = (model: string) => {
     const models = [...selectedModels, model]
@@ -207,10 +206,6 @@ export function AccessPointLED () {
       ...modelOptions.filter(item =>
         models.indexOf(item.value) === -1
       )])
-    setEditAdvancedContextData({
-      ...editAdvancedContextData,
-      updateAccessPointLED: handleUpdateSetting
-    })
   }
 
   const handleUpdateSetting = async () => {
