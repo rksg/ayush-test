@@ -1,7 +1,8 @@
 import { unitOfTime } from 'moment-timezone'
 
-import type { Incident }    from '@acx-ui/analytics/utils'
-import { GridRow, GridCol } from '@acx-ui/components'
+import type { Incident }          from '@acx-ui/analytics/utils'
+import { GridRow, GridCol }       from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 import { FixedAutoSizer }                                   from '../../DescriptionSection/styledComponents'
 import { ImpactedSwitchDDoSDonut, ImpactedSwitchDDoSTable } from '../Charts/ImpactedSwitchDDoS'
@@ -11,7 +12,6 @@ import { TimeSeries }                                       from '../TimeSeries'
 import { TimeSeriesChartTypes }                             from '../TimeSeries/config'
 
 import { IncidentHeader } from './IncidentHeader'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 export const SwitchTcpSynDDoS = (incident: Incident) => {
   const attributeList = [

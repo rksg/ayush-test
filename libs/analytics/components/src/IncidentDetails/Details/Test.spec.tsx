@@ -384,10 +384,10 @@ describe('Test', () => {
         charts: ['impactedSwitchDDoSTable','impactedSwitchDDoSDonut']
       }
       jest.mocked(useIsSplitOn).mockReturnValue(false)
-        const params = { incidentId: test.fakeIncident.id }
-        const { asFragment } = render(<Provider>
-          <test.component {...test.fakeIncident} />
-        </Provider>, { route: { params } })
+      const params = { incidentId: test.fakeIncident.id }
+      const { asFragment } = render(<Provider>
+        <test.component {...test.fakeIncident} />
+      </Provider>, { route: { params } })
       expect(asFragment()).toMatchSnapshot()
     })
   })
