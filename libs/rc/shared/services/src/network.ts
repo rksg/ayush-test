@@ -346,6 +346,11 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         const networkQuery = await fetchWithBQ(
           createHttpRequest(urlsInfo.getNetwork, params, apiCustomHeader)
         )
+
+        if ((networkQuery as QueryReturnValue<NetworkSaveData, FetchBaseQueryError, FetchBaseQueryMeta>).data?.wlan?.advancedCustomization?.devicePolicyId) {
+          (networkQuery as QueryReturnValue<NetworkSaveData, FetchBaseQueryError, FetchBaseQueryMeta>).data!.wlan!.advancedCustomization!.enableDeviceOs = true
+        }
+
         return networkQuery as QueryReturnValue<NetworkSaveData,
         FetchBaseQueryError,
         FetchBaseQueryMeta>

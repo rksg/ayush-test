@@ -46,14 +46,14 @@ export const PersonalIdentityNetworkDetails = (props: PersonalIdentityNetworkDet
       return {
         nsgViewData,
         venueInfo: nsgViewData?.venueInfos?.[0],
-        dhcpPoolId: nsgViewData?.edgeInfos[0]?.dhcpPoolId,
+        dhcpPoolId: nsgViewData?.edgeClusterInfos[0]?.dhcpPoolId,
         isNsgViewDataLoading: isLoading
       }
     }
   })
   const { dhcpName, dhcpId, dhcpPool, isLoading: isDhcpLoading } = useGetEdgeDhcpServiceQuery(
-    { params: { id: nsgViewData?.edgeInfos[0].dhcpInfoId } },{
-      skip: !!!nsgViewData?.edgeInfos[0],
+    { params: { id: nsgViewData?.edgeClusterInfos[0].dhcpInfoId } },{
+      skip: !!!nsgViewData?.edgeClusterInfos[0],
       selectFromResult: ({ data, isLoading }) => {
         return {
           dhcpName: data?.serviceName,
@@ -105,11 +105,11 @@ export const PersonalIdentityNetworkDetails = (props: PersonalIdentityNetworkDet
       />
       <Form.Item
         label={$t({ defaultMessage: 'Number of Segments' })}
-        children={nsgViewData?.edgeInfos[0]?.segments}
+        children={nsgViewData?.edgeClusterInfos[0]?.segments}
       />
       <Form.Item
         label={$t({ defaultMessage: 'Number of devices per segment' })}
-        children={nsgViewData?.edgeInfos[0]?.devices}
+        children={nsgViewData?.edgeClusterInfos[0]?.devices}
       />
       <Form.Item
         label={$t({ defaultMessage: 'DHCP Service' })}

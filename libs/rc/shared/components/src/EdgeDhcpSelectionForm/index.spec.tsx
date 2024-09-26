@@ -97,7 +97,7 @@ describe('EdgeDhcpSelectionForm', () => {
         </StepsForm>
       </Provider>, { route: { params } }
     )
-    expect(await screen.findByText('TestDHCP-1')).toBeVisible()
+    expect(await screen.findByText('TestDhcp-1')).toBeVisible()
     expect(await screen.findByText('PoolTest1')).toBeVisible()
   })
 })
