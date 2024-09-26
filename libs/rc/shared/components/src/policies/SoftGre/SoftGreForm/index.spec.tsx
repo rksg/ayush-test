@@ -154,6 +154,7 @@ describe('SoftGreForm', () => {
 
   describe('EditSoftGre', () => {
     const updateFn = jest.fn()
+    const getListFn = jest.fn()
     beforeEach(() => {
       store.dispatch(softGreApi.util.resetApiState())
 
@@ -171,7 +172,10 @@ describe('SoftGreForm', () => {
         ),
         rest.post(
           SoftGreUrls.getSoftGreViewDataList.url,
-          (_, res, ctx) => res(ctx.json(mockSoftGreTable.data))
+          (_, res, ctx) => {
+            getListFn()
+            return res(ctx.json(mockSoftGreTable.data))
+          }
         )
       )
     })
@@ -182,7 +186,9 @@ describe('SoftGreForm', () => {
         <Provider>
           <SoftGreForm editMode={true} />
         </Provider>,
-        { route: { path: editViewPath, params } }
+        { route: { path: editViewPath,
+          params: { ...params, policyId: '0d89c0f5596c4689900fb7f5f53a0859' } }
+        }
       )
 
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -195,12 +201,19 @@ describe('SoftGreForm', () => {
       await user.clear(profileNameField)
       await user.type(profileNameField, 'testEditSoftGre')
 
-      // eslint-disable-next-line max-len
       const primaryGatewayField = await screen.findByLabelText(/Tunnel Primary Gateway Address/i)
       await user.clear(primaryGatewayField)
       await user.type(primaryGatewayField, '128.0.0.3')
+      expect(await screen.findByText(/Please enter a unique address./)).toBeVisible()
 
+      getListFn.mockReset()
+      await user.clear(primaryGatewayField)
+      await user.type(primaryGatewayField, '128.0.0.4')
+      await waitFor(() => expect(getListFn).toHaveBeenCalledTimes(1))
+      // eslint-disable-next-line max-len
+      expect(screen.queryByText(/Please enter a unique address./)).toBeNull()
       await user.click(await screen.findByRole('button', { name: 'Apply' }))
+
       await waitFor(() => expect(updateFn).toHaveBeenCalledTimes(1))
       await waitFor(() => {
         expect(updateFn).toHaveBeenCalledWith(expect.objectContaining({
@@ -211,7 +224,7 @@ describe('SoftGreForm', () => {
           keepAliveRetryTimes: 8,
           mtuSize: 1450,
           disassociateClientEnabled: false,
-          primaryGatewayAddress: '128.0.0.3'
+          primaryGatewayAddress: '128.0.0.4'
         }))
       })
       await waitFor(() => expect(mockedUseNavigate).toHaveBeenCalledWith({

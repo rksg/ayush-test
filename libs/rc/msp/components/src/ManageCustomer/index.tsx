@@ -305,7 +305,7 @@ export function ManageCustomer () {
         }
         const assigned = isEntitlementRbacApiEnabled ? licenseAssignment
           : licenseAssignment.filter(en => en.mspEcTenantId === mspEcTenantId)
-        setAssignedLicense(licenseAssignment)
+        setAssignedLicense(assigned)
         const wifi = assigned.filter(en =>
           en.deviceType === EntitlementDeviceType.MSP_WIFI && en.status === 'VALID')
         const wLic = wifi.length > 0 ? wifi[0].quantity : 0
@@ -580,29 +580,16 @@ export function ManageCustomer () {
 
       const licAssignment = []
       if (isTrialEditMode) {
-        const quantityWifi = _.isString(ecFormData.wifiLicense)
-          ? parseInt(ecFormData.wifiLicense, 10) : ecFormData.wifiLicense
-        licAssignment.push({
-          quantity: quantityWifi,
-          action: AssignActionEnum.ADD,
-          isTrial: serviceTypeSelected === ServiceType.EXTENDED_TRIAL,
-          deviceType: EntitlementDeviceType.MSP_WIFI
-        })
-        const quantitySwitch = _.isString(ecFormData.switchLicense)
-          ? parseInt(ecFormData.switchLicense, 10) : ecFormData.switchLicense
-        licAssignment.push({
-          quantity: quantitySwitch,
-          action: AssignActionEnum.ADD,
-          isTrial: false,
-          deviceType: EntitlementDeviceType.MSP_SWITCH
-        })
         if (isDeviceAgnosticEnabled) {
           const quantityApsw = _.isString(ecFormData.apswLicense)
             ? parseInt(ecFormData.apswLicense, 10) : ecFormData.apswLicense
+          const quantityApswTrial = _.isString(ecFormData.apswTrialLicense)
+            ? parseInt(ecFormData.apswTrialLicense, 10) : ecFormData.apswTrialLicense
           licAssignment.push({
-            quantity: quantityApsw,
+            quantity: serviceTypeSelected === ServiceType.EXTENDED_TRIAL
+              ? quantityApswTrial : quantityApsw,
             action: AssignActionEnum.ADD,
-            isTrial: false,
+            isTrial: serviceTypeSelected === ServiceType.EXTENDED_TRIAL,
             deviceType: EntitlementDeviceType.MSP_APSW
           })
         }
@@ -664,7 +651,7 @@ export function ManageCustomer () {
               quantity: quantityApsw,
               assignmentId: apswAssignId,
               action: actionApsw,
-              isTrial: serviceTypeSelected === ServiceType.EXTENDED_TRIAL,
+              isTrial: actionApsw === AssignActionEnum.ADD ? true : undefined,
               deviceType: EntitlementDeviceType.MSP_APSW
             })
           }
@@ -792,6 +779,9 @@ export function ManageCustomer () {
     if (startDate) {
       setSubscriptionStartDate(moment(startDate))
       setTrialMode(false)
+      formRef.current?.setFieldsValue({
+        apswTrialLicense: 0
+      })
     }
   }
 
@@ -845,7 +835,7 @@ export function ManageCustomer () {
       ? assignedLicense.filter(en => en.licenseType === deviceType && en.status === 'VALID' &&
         en.isTrial === isTrial)
       : assignedLicense.filter(en => en.deviceType === deviceType && en.status === 'VALID' &&
-        en.trialAssignment === isTrial)
+        en.trialAssignment === isTrial && en.ownAssignment === false)
     return license.length > 0 ? license[0].id : 0
 
   }
@@ -1432,7 +1422,7 @@ export function ManageCustomer () {
             <label>{intl.$t({ defaultMessage: '25 devices' })}</label>
           </UI.FieldLabel2>
           {isEdgeEnabled && <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
-            <label>{intl.$t({ defaultMessage: 'SmartEdge Subscription' })}</label>
+            <label>{intl.$t({ defaultMessage: 'RUCKUS Edge Subscription' })}</label>
             <label>{intl.$t({ defaultMessage: '25 devices' })}</label>
           </UI.FieldLabel2>}
         </div>}
@@ -1688,7 +1678,7 @@ export function ManageCustomer () {
             <Paragraph>{switchAssigned}</Paragraph>
           </Form.Item>
           {isEdgeEnabled && <Form.Item style={{ marginTop: '-22px' }}
-            label={intl.$t({ defaultMessage: 'SmartEdge Subscriptions' })}
+            label={intl.$t({ defaultMessage: 'RUCKUS Edge Subscriptions' })}
           >
             <Paragraph>25</Paragraph>
           </Form.Item>}

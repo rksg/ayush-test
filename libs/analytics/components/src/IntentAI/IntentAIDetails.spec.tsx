@@ -12,20 +12,14 @@ import { mocked as mockedCDfschannelsDisable }         from './AIOperations/__te
 import { mocked as mockedCDfschannelsEnable }          from './AIOperations/__tests__/mockedCDfschannelsEnable'
 import { mocked as mockedCTxpowerSame }                from './AIOperations/__tests__/mockedCTxpowerSame'
 import { mocked as mockedIZoneFirmwareUpgrade }        from './AIOperations/__tests__/mockedIZoneFirmwareUpgrade'
+import { mockedIntentEcoFlex }                         from './EcoFlex/__tests__/fixtures'
+import { mockedIntentEquiFlex }                        from './EquiFlex/__tests__/fixtures'
 import { IntentAIDetails }                             from './IntentAIDetails'
 import { Intent }                                      from './useIntentDetailsQuery'
 
-jest.mock('./AIDrivenRRM/CCrrmChannel24gAuto', () => ({
+jest.mock('./AIDrivenRRM/CCrrmChannelAuto', () => ({
   kpis: [],
-  IntentAIDetails: () => <div data-testid='c-crrm-channel24g-auto-IntentAIDetails'/>
-}))
-jest.mock('./AIDrivenRRM/CCrrmChannel5gAuto', () => ({
-  kpis: [],
-  IntentAIDetails: () => <div data-testid='c-crrm-channel5g-auto-IntentAIDetails'/>
-}))
-jest.mock('./AIDrivenRRM/CCrrmChannel6gAuto', () => ({
-  kpis: [],
-  IntentAIDetails: () => <div data-testid='c-crrm-channel6g-auto-IntentAIDetails'/>
+  IntentAIDetails: () => <div data-testid='c-crrm-channel-auto-IntentAIDetails'/>
 }))
 
 jest.mock('./AIOperations/IZoneFirmwareUpgrade', () => ({
@@ -78,6 +72,35 @@ jest.mock('./AIOperations/CBgScan6gTimer', () => ({
   IntentAIDetails: () => <div data-testid='c-bgscan6g-timer-IntentAIDetails'/>
 }))
 
+const doCRRMTest = async (codes: string[], intent: Intent) => {
+  for (const code of codes) {
+    const { unmount } = render(<IntentAIDetails />, {
+      route: { params: { code, root: intent.root, sliceId: intent.sliceId } },
+      wrapper: Provider
+    })
+    expect(await screen.findByTestId('c-crrm-channel-auto-IntentAIDetails')).toBeVisible()
+    unmount()
+  }
+}
+
+jest.mock('./EquiFlex/CProbeFlex24g.tsx', () => ({
+  kpis: [],
+  IntentAIDetails: () => <div data-testid='c-probeflex-24g-IntentAIDetails'/>
+}))
+jest.mock('./EquiFlex/CProbeFlex5g.tsx', () => ({
+  kpis: [],
+  IntentAIDetails: () => <div data-testid='c-probeflex-5g-IntentAIDetails'/>
+}))
+jest.mock('./EquiFlex/CProbeFlex6g.tsx', () => ({
+  kpis: [],
+  IntentAIDetails: () => <div data-testid='c-probeflex-6g-IntentAIDetails'/>
+}))
+
+jest.mock('./EcoFlex/IEcoFlex.tsx', () => ({
+  kpis: [],
+  IntentAIDetails: () => <div data-testid='i-ecoflex-IntentAIDetails'/>
+}))
+
 const doTest = async (codes: string[], intent: Intent) => {
   for (const code of codes) {
     const { unmount } = render(<IntentAIDetails />, {
@@ -92,7 +115,7 @@ describe('IntentAIDetails', () => {
   it('should render for AIDrivenRRM', async () => {
     mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent: mockedIntentCRRM } })
     const codes = ['c-crrm-channel24g-auto', 'c-crrm-channel5g-auto', 'c-crrm-channel6g-auto']
-    await doTest(codes, mockedIntentCRRM)
+    await doCRRMTest(codes, mockedIntentCRRM)
   })
   const CBandbalancingEnable = () => require('./AIOperations/CBandbalancingEnable')
 
@@ -158,5 +181,21 @@ describe('IntentAIDetails', () => {
       mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
       await doTest([intent.code], intent)
     })
+  })
+
+  it('should render for EquiFlex', async () => {
+    mockGraphqlQuery(intentAIUrl, 'IntentDetails', {
+      data: { intent: mockedIntentEquiFlex }
+    })
+    const codes = ['c-probeflex-24g', 'c-probeflex-5g', 'c-probeflex-6g']
+    await doTest(codes, mockedIntentEquiFlex)
+  })
+
+  it('should render for EcoFlex', async () => {
+    mockGraphqlQuery(intentAIUrl, 'IntentDetails', {
+      data: { intent: mockedIntentEcoFlex }
+    })
+    const codes = ['i-ecoflex']
+    await doTest(codes, mockedIntentEcoFlex)
   })
 })

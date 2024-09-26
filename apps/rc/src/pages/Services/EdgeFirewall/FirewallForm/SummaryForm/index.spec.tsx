@@ -43,7 +43,7 @@ describe('Summary form', () => {
     expect((aclResult.parentNode as HTMLDivElement).textContent)
       .toBe('Stateful ACLOFF')
 
-    expect(screen.getByText('SmartEdge (0)')).not.toBeNull()
+    expect(screen.getByText('RUCKUS Edge (0)')).not.toBeNull()
   })
 
   it('should correctly display statefulACL rule summary', async () => {
@@ -74,7 +74,7 @@ describe('Summary form', () => {
     expect((aclResult.parentNode as HTMLDivElement).textContent)
       .toBe('Stateful ACLON (1 ACL)')
 
-    expect(screen.getByText('SmartEdge (1)')).not.toBeNull()
+    expect(screen.getByText('RUCKUS Edge (1)')).not.toBeNull()
     expect(screen.getByText('Smart Edge 3')).not.toBeNull()
   })
 })

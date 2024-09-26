@@ -9,7 +9,6 @@ import {
 import { useIntl } from 'react-intl'
 
 import { GridCol, GridRow, StepsFormLegacy }     from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { GuestNetworkTypeEnum, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 import { GuestNetworkTypeDescription, GuestNetworkTypeLabel } from '../contentsMap'
@@ -59,7 +58,7 @@ function TypesForm () {
       form.setFieldValue(['guestPortal', 'guestNetworkType'], GuestNetworkTypeEnum.GuestPass)
     }
   },[createType])
-  const disableAAA = !useIsSplitOn(Features.POLICIES)
+
   return (
     <>
       <StepsFormLegacy.Title>{intl.$t({ defaultMessage: 'Portal Type' })}</StepsFormLegacy.Title>
@@ -86,7 +85,7 @@ function TypesForm () {
               </RadioDescription>
             </Radio>
 
-            <Radio value={GuestNetworkTypeEnum.Cloudpath} disabled={disableAAA}>
+            <Radio value={GuestNetworkTypeEnum.Cloudpath}>
               {GuestNetworkTypeLabel[GuestNetworkTypeEnum.Cloudpath]}
               <RadioDescription>
                 {GuestNetworkTypeDescription[GuestNetworkTypeEnum.Cloudpath]}
@@ -107,7 +106,7 @@ function TypesForm () {
               </RadioDescription>
             </Radio>
 
-            <Radio value={GuestNetworkTypeEnum.WISPr} disabled={disableAAA}>
+            <Radio value={GuestNetworkTypeEnum.WISPr}>
               {GuestNetworkTypeLabel[GuestNetworkTypeEnum.WISPr]}
               <RadioDescription>
                 {GuestNetworkTypeDescription[GuestNetworkTypeEnum.WISPr]}

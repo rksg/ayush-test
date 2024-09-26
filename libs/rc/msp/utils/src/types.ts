@@ -211,6 +211,7 @@ export interface MspAssignmentHistory {
   mspTenantId: string;
   trialAssignment: boolean;
   status: string;
+  ownAssignment?: boolean;
   // RBAC
   licenseType?: string;
   effectiveDate?: string;
@@ -425,6 +426,11 @@ export interface UpgradeFirmwareVer {
   name: string,
   defaultApFirmware: string,
   branches: string[]
+}
+
+export interface RecommendFirmwareUpgradeByApModel {
+  id?: string,
+  supportedApModels: string[]
 }
 
 export interface MspRecData {

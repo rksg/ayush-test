@@ -44,7 +44,7 @@ export function VenueDevicesTab () {
     },
     ...(isEdgeEnabled
       ? [{
-        label: $t({ defaultMessage: 'SmartEdge' }),
+        label: $t({ defaultMessage: 'RUCKUS Edge' }),
         value: 'edge',
         children: <VenueEdge />
       }]: []),

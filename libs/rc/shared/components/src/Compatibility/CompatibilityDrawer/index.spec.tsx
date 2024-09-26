@@ -186,7 +186,7 @@ describe('CompatibilityDrawer', () => {
 
     const tabs = await screen.findAllByRole('tab')
     expect(tabs[0]).toHaveTextContent('Wi-Fi')
-    expect(tabs[1]).toHaveTextContent('SmartEdge')
+    expect(tabs[1]).toHaveTextContent('RUCKUS Edge')
 
     // check wifi tab
     let compatibilityItems = await screen.findAllByTestId('CompatibilityItem')
@@ -197,7 +197,7 @@ describe('CompatibilityDrawer', () => {
     expect(wifiFeatures.length).toBe(1)
 
     // check edge tab
-    await userEvent.click(screen.getByRole('tab', { name: 'SmartEdge' }))
+    await userEvent.click(screen.getByRole('tab', { name: 'RUCKUS Edge' }))
     compatibilityItems = await screen.findAllByTestId('CompatibilityItem')
     // tabpane already rendered will exist.
     expect(compatibilityItems.length).toBe(2)
@@ -205,7 +205,7 @@ describe('CompatibilityDrawer', () => {
     within(edge).getByText('SD-LAN')
     const edgeFeatures = within(edge).getAllByTestId('FeatureItem')
     expect(edgeFeatures.length).toBe(1)
-    expect(screen.queryByRole('link', { name: /SmartEdge Firmware/ })).toBeNull()
+    expect(screen.queryByRole('link', { name: /RUCKUS Edge Firmware/ })).toBeNull()
   })
 
   it('should display correctly - venue device table > incompatible column', async () => {

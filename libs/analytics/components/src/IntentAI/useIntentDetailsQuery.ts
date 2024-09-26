@@ -4,14 +4,14 @@ import _                     from 'lodash'
 import moment                from 'moment-timezone'
 import { MessageDescriptor } from 'react-intl'
 
-import { kpiDelta, TrendTypeEnum }              from '@acx-ui/analytics/utils'
-import { formatter }                            from '@acx-ui/formatter'
-import { useParams }                            from '@acx-ui/react-router-dom'
-import { intentAIApi }                          from '@acx-ui/store'
-import { NetworkPath, noDataDisplay, NodeType } from '@acx-ui/utils'
+import { kpiDelta, TrendTypeEnum }                       from '@acx-ui/analytics/utils'
+import { formatter }                                     from '@acx-ui/formatter'
+import { useParams }                                     from '@acx-ui/react-router-dom'
+import { intentAIApi }                                   from '@acx-ui/store'
+import { getIntl, NetworkPath, noDataDisplay, NodeType } from '@acx-ui/utils'
 
-import { DisplayStates, Statuses, StatusReasons } from './states'
-import { IntentWlan }                             from './utils'
+import { DisplayStates, Statuses, StatusReasons }        from './states'
+import { dataRetentionText, IntentWlan, isDataRetained } from './utils'
 
 export type IntentKPIConfig = {
   key: string;
@@ -51,6 +51,13 @@ export type Intent = {
     scheduledAt: string
     wlans?: IntentWlan[]
     dataEndTime: string
+    preferences?: {
+      crrmFullOptimization: boolean;
+      averagePowerPrice?: {
+        currency: string
+        value: number
+      }
+    }
   }
   sliceType: NodeType
   sliceValue: string
@@ -62,9 +69,6 @@ export type Intent = {
     createdAt?: string
   }>
   updatedAt: string
-  preferences?: {
-    crrmFullOptimization: boolean;
-  },
   currentValue: IntentConfigurationValue
   recommendedValue: IntentConfigurationValue
 } & Partial<IntentKpi>
@@ -81,6 +85,19 @@ export const useIntentParams = () => {
     root: Intent['root']
     sliceId: Intent['sliceId']
     code: string
+  }
+}
+
+export function intentState (intent: Intent) {
+  switch (intent.status) {
+    case Statuses.paused:
+    case Statuses.na:
+      return 'no-data'
+    case Statuses.new:
+    case Statuses.scheduled:
+      return 'inactive'
+    default:
+      return 'active'
   }
 }
 
@@ -102,12 +119,12 @@ const kpiHelper = (kpis: IntentDetailsQueryPayload['kpis']) => {
     .trim()
 }
 
-export function getKpiData (intent: Intent, config: IntentKPIConfig) {
+export function getKPIData (intent: Intent, config: IntentKPIConfig) {
   const key = `kpi_${_.snakeCase(config.key)}` as `kpi_${string}`
   const kpi = intent[key] as IntentKpi[`kpi_${string}`]
   return {
-    data: _.get(kpi, 'data.result', null),
-    compareData: _.get(kpi, 'compareData.result', null)
+    data: kpi.data,
+    compareData: kpi.compareData
   }
 }
 
@@ -115,23 +132,43 @@ export function getGraphKPIs (
   intent: Intent,
   kpis: IntentKPIConfig[]
 ) {
-  return kpis.map((kpi) => {
-    const { data, compareData } = getKpiData(intent, kpi)
-    const valueAccessor = kpi.valueAccessor || ((value) => value[0])
-    const delta: { value: string; trend: TrendTypeEnum } | undefined = compareData
-      ? kpiDelta(
-        valueAccessor(_.castArray(compareData)),
-        valueAccessor(_.castArray(data as number | number[])),
-        kpi.deltaSign,
-        kpi.valueFormatter || kpi.format
-      ) as { value: string; trend: TrendTypeEnum }
-      : undefined
+  const { $t } = getIntl()
+  const state = intentState(intent)
 
-    return {
+  return kpis.map((kpi) => {
+    const ret = {
       ..._.pick(kpi, ['key', 'label']),
-      value: data ? kpi.format(data) : noDataDisplay,
-      delta: data ? delta : undefined
+      value: noDataDisplay,
+      delta: undefined,
+      footer: ''
+    } as {
+      key: string
+      label: MessageDescriptor
+      value: string
+      footer: string
+      delta: { value: string; trend: TrendTypeEnum } | undefined
     }
+
+    if (!isDataRetained(intent.metadata.dataEndTime)) {
+      ret.footer = $t(dataRetentionText)
+    } else if (state !== 'no-data') {
+      const result = getKPIData(intent, kpi)
+      ret.value = kpi.format(_.get(result, ['data', 'result'], null))
+
+      const valueAccessor = kpi.valueAccessor || ((value) => value[0])
+      const values = [
+        valueAccessor(_.castArray(result.compareData?.result)),
+        valueAccessor(_.castArray(result.data?.result))
+      ]
+      if (values.every(Number.isFinite)) {
+        const format = kpi.valueFormatter || kpi.format
+        ret.delta = kpiDelta(values[0], values[1], kpi.deltaSign, format) as {
+          value: string
+          trend: TrendTypeEnum
+        }
+      }
+    }
+    return ret
   })
 }
 
@@ -156,7 +193,7 @@ export const api = intentAIApi.injectEndpoints({
               path { type name }
               statusTrail { status statusReason displayStatus createdAt }
               ${kpiHelper(kpis)}
-              currentValue recommendedValue
+              ${!code.includes('ecoflex') ? 'currentValue recommendedValue' : ''}
             }
           }
         `,

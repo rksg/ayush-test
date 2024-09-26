@@ -19,7 +19,8 @@ export const ScopeForm = () => {
         'name',
         'clusterId',
         'venueId',
-        'venueName'
+        'venueName',
+        'activeAps'
       ]
     },
     sorter: {
@@ -38,7 +39,7 @@ export const ScopeForm = () => {
       fixed: 'left'
     },
     {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       key: 'venueName',
       dataIndex: 'venueName',
       sorter: true,
@@ -47,8 +48,8 @@ export const ScopeForm = () => {
     },
     {
       title: $t({ defaultMessage: 'APs' }),
-      key: 'activeAp',
-      dataIndex: 'activeAp',
+      key: 'activeAps',
+      dataIndex: 'activeAps',
       fixed: 'left',
       width: 50
     },

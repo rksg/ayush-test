@@ -130,28 +130,9 @@ describe('ServiceCard', () => {
         ...getUserProfile(),
         abacEnabled: true,
         isCustomRole: true,
-        scopes: [WifiScopes.READ, WifiScopes.UPDATE, WifiScopes.CREATE]
-      })
-
-      const { rerender } = render(
-        <ServiceCard
-          serviceType={ServiceType.MDNS_PROXY}
-          categories={[RadioCardCategory.WIFI]}
-          type={'button'}
-        />, {
-          route: { params, path }
-        }
-      )
-
-      expect(await screen.findByRole('button', { name: 'Add' })).toBeInTheDocument()
-
-      setUserProfile({
-        ...getUserProfile(),
-        abacEnabled: true,
-        isCustomRole: true,
         scopes: [WifiScopes.READ, WifiScopes.UPDATE]
       })
-      rerender(
+      render(
         <ServiceCard
           serviceType={ServiceType.MDNS_PROXY}
           categories={[RadioCardCategory.WIFI]}

@@ -282,7 +282,7 @@ describe('Edge Table', () => {
     await user.click(within(rows[2]).getByRole('checkbox'))
     await user.click(screen.getAllByRole('button', { name: 'Delete' })[0])
     const dialog = await screen.findByRole('dialog')
-    expect(within(dialog).getByText('Delete "2 SmartEdges"?')).toBeVisible()
+    expect(within(dialog).getByText('Delete "2 RUCKUS Edges"?')).toBeVisible()
 
     await user.click(within(dialog).getByRole('button', { name: 'Delete' }))
     await waitFor(() => expect(mockedDeleteApi).toBeCalledTimes(2))

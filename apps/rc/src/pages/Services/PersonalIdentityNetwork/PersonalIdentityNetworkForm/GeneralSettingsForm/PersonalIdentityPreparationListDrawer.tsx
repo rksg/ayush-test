@@ -4,7 +4,7 @@ import { Drawer }    from '@acx-ui/components'
 import { useParams } from '@acx-ui/react-router-dom'
 
 
-import WithApAndSwitchDiagram from '../../../../../assets/images/personal-identity-diagrams/personal-identity-with-ap-and-switch.png'
+import WithApAndSwitchDiagram from '../../../../../assets/images/personal-identity-diagrams/personal-identity-with-ap-and-switch.svg'
 
 import { MessageMapping } from './MessageMapping'
 import * as UI            from './styledComponents'

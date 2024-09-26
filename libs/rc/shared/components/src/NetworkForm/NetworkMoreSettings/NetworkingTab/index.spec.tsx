@@ -38,7 +38,7 @@ const mockWlanData = {
 
 jest.mock('../../utils', () => ({
   ...jest.requireActual('../../utils'),
-  useNetworkVxLanTunnelProfileInfo: jest.fn().mockReturnValue({ enabldVxLan: false })
+  useNetworkVxLanTunnelProfileInfo: jest.fn().mockReturnValue({ enableVxLan: false })
 }))
 
 const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
@@ -229,6 +229,9 @@ describe('NetworkMoreSettings', () => {
         await userEvent.click(enableFastRoaming)
 
         expect(screen.getByTestId('over-the-ds-full-block')).toBeVisible()
+
+        await userEvent.click(screen.getByTestId('over-the-ds-input'))
+
         expect(screen.getByTestId('reassociation-timeout-full-block')).toBeVisible()
 
         await userEvent.type(screen.getByTestId('reassociation-timeout-input'), '300')

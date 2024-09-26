@@ -29,7 +29,9 @@ import {
   VenueSettings,
   VenueSwitchConfiguration,
   onActivityMessageReceived,
-  onSocketActivityChanged
+  onSocketActivityChanged,
+  GetApiVersionHeader,
+  ApiVersionEnum
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
@@ -208,9 +210,11 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     // only exist in v1(RBAC version)
     getVenueTemplateMesh: build.query<Mesh, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, isWifiMeshIndependents56GEnable }) => {
+        // eslint-disable-next-line max-len
+        const customHeaders = GetApiVersionHeader(isWifiMeshIndependents56GEnable? ApiVersionEnum.v1_1 :ApiVersionEnum.v1)
         return {
-          ...createHttpRequest(VenueConfigTemplateUrlsInfo.getVenueMeshRbac, params)
+          ...createHttpRequest(VenueConfigTemplateUrlsInfo.getVenueMeshRbac, params, customHeaders)
         }
       },
       providesTags: [{ type: 'VenueTemplate', id: 'VENUE_MESH_SETTINGS' }],
@@ -445,7 +449,18 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       query: commonQueryFn(
         VenueConfigTemplateUrlsInfo.getVenueSwitchSetting,
         VenueConfigTemplateUrlsInfo.getVenueSwitchSettingRbac
-      )
+      ),
+      providesTags: [{ type: 'VenueTemplate', id: 'SWITCH_SETTING' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'UpdateVenueTemplateSwitchSetting'
+          ], () => {
+            // eslint-disable-next-line max-len
+            api.dispatch(venueConfigTemplateApi.util.invalidateTags([{ type: 'VenueTemplate', id: 'SWITCH_SETTING' }]))
+          })
+        })
+      }
     }),
     updateVenueTemplateSwitchSetting: build.mutation<Venue, RequestPayload>({
       query: commonQueryFn(

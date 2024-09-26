@@ -9,6 +9,7 @@ export interface RequestPayload {
   filter: NodesFilter
   start: string
   end: string
+  isSwitchHealth10010eEnabled: boolean
 }
 
 export interface WiredSummaryResult {
@@ -21,12 +22,14 @@ export interface WiredSummaryResult {
   portCount: number
   uplinkPortCount: number
   congestedPortCount: number
+  nonStackPortCount: number
 }
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     wiredSummaryData: build.query<WiredSummaryResult, RequestPayload>({
-      query: payload => {
+      query: (payload) => {
+        const { isSwitchHealth10010eEnabled, ...restPayload } = payload
         return ({
           document: gql`
           query WiredSummaryQuery(
@@ -49,11 +52,12 @@ export const api = dataApi.injectEndpoints({
                 uplinkPortCount
                 congestedPortCount
                 stormPortCount
+                ${isSwitchHealth10010eEnabled ? 'nonStackPortCount' : ''}
               }
             }
           }`,
           variables: {
-            ...payload,
+            ...restPayload,
             path: getSelectedNodePath(payload.filter),
             enableSwitchFirmwareFilter: true
           }

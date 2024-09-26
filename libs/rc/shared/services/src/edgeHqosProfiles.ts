@@ -1,8 +1,8 @@
 
 import {
   CommonResult,
-  EdgeHqosProfilesUrls,
   EdgeHqosConfig,
+  EdgeHqosProfilesUrls,
   EdgeHqosViewData,
   TableResult,
   onActivityMessageReceived,
@@ -12,8 +12,16 @@ import { baseEdgeHqosProfilesApi } from '@acx-ui/store'
 import { RequestPayload }          from '@acx-ui/types'
 import { createHttpRequest }       from '@acx-ui/utils'
 
-import { serviceApi } from './service'
+import { serviceApi }                     from './service'
+import { handleCallbackWhenActivityDone } from './utils'
 
+enum EdgeHqosActivityEnum {
+  ADD = 'Create HQoS',
+  UPDATE = 'Update HQoS',
+  DELETE = 'Delete HQoS',
+  ACTIVATE = 'Activate HQoS',
+  DEACTIVATE = 'Deactivate HQoS',
+}
 
 export const edgeHqosProfilesApi = baseEdgeHqosProfilesApi.injectEndpoints({
   endpoints: (build) => ({
@@ -25,7 +33,16 @@ export const edgeHqosProfilesApi = baseEdgeHqosProfilesApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'EdgeHqosProfiles', id: 'LIST' }]
+      invalidatesTags: [{ type: 'EdgeHqosProfiles', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          await handleCallbackWhenActivityDone(api, msg,
+            EdgeHqosActivityEnum.ADD,
+            requestArgs.callback,
+            requestArgs.failedCallback
+          )
+        })
+      }
     }),
     deleteEdgeHqosProfile: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -70,11 +87,11 @@ export const edgeHqosProfilesApi = baseEdgeHqosProfilesApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'Create HQoS',
-            'Update HQoS',
-            'Delete HQoS',
-            'Activate HQoS',
-            'Deactivate HQoS'
+            EdgeHqosActivityEnum.ADD,
+            EdgeHqosActivityEnum.UPDATE,
+            EdgeHqosActivityEnum.DELETE,
+            EdgeHqosActivityEnum.ACTIVATE,
+            EdgeHqosActivityEnum.DEACTIVATE
           ], () => {
             api.dispatch(serviceApi.util.invalidateTags([
               { type: 'Service', id: 'LIST' }

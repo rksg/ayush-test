@@ -39,7 +39,7 @@ export const HaDisplayForm = (props: HaDisplayFormProps) => {
         isEdgeHaAaFallbackOn &&
         <>
           <Form.Item
-            label={$t({ defaultMessage: 'SmartEdge Fallback' })}
+            label={$t({ defaultMessage: 'RUCKUS Edge Fallback' })}
           >
             {
               fallbackEnable ?
