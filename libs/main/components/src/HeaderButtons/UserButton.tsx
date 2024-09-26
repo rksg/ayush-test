@@ -40,7 +40,7 @@ const UserButton = () => {
           key: 'user-profile',
           label: <TenantLink
             state={{ from: location.pathname }}
-            to='/userprofile/'>{$t({ defaultMessage: 'User Profile' })}
+            to='/userprofile/settings'>{$t({ defaultMessage: 'User Profile' })}
           </TenantLink>
         }]),
         {
