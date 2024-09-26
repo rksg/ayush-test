@@ -20,7 +20,6 @@ export const getDefaultTime = () => {
 }
 
 export type IntentWlan = {
-  id: string
   name: string
   ssid: string
 }

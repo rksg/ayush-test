@@ -48,7 +48,7 @@ function useWlanRecords (originalWlans: IntentWlan[] | undefined, skip: boolean)
     payload: {
       deep: true,
       fields: ['id', 'name', 'ssid'],
-      filters: { id: originalWlans?.map(wlan => wlan.id) },
+      filters: { id: originalWlans?.map(wlan => wlan.name) },
       sortField: 'name',
       sortOrder: 'ASC',
       page: 1,

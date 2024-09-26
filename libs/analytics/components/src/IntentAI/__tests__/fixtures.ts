@@ -98,7 +98,7 @@ export const mockAIDrivenRow = {
   updatedAt: '2023-06-16T06:05:02.839Z',
   sliceType: 'zone',
   sliceValue: 'zone-1',
-  metadata: {},
+  metadata: { algorithmData: { isCrrmFullOptimization: false } },
   path: [
     { type: 'system', name: 'vsz612' },
     { type: 'zone', name: 'EDU-MeshZone_S12348' }
@@ -107,6 +107,7 @@ export const mockAIDrivenRow = {
     { type: 'system', name: 'e6b60f6a-d5eb-4e46-b9d9-10ce752181c8' },
     { type: 'zone', name: 'EDU-MeshZone_S12348' }
   ] as NetworkPath,
+  preferences: { crrmFullOptimization: true },
   statusTrail: [
     { status: 'new' },
     { status: 'applyscheduled' },
