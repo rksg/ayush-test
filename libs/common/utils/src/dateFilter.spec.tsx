@@ -5,7 +5,7 @@ import { renderHook, render } from '@acx-ui/test-utils'
 
 import { useDateFilter }                                             from './dateFilter'
 import { defaultRanges, DateRange, getDateRangeFilter, resetRanges } from './dateUtil'
-import { fixedEncodeURIComponent }                                   from './encodedParameter'
+import { fixedEncodeURIComponent }                                   from './encodeParameter'
 
 const original = Date.now
 describe('useDateFilter', () => {

@@ -7,7 +7,7 @@ import { renderHook, render } from '@acx-ui/test-utils'
 
 import { useDashboardFilter }      from './dashboardFilter'
 import { resetRanges }             from './dateUtil'
-import { fixedEncodeURIComponent } from './encodedParameter'
+import { fixedEncodeURIComponent } from './encodeParameter'
 
 const original = Date.now
 describe('useDashboardFilter', () => {
