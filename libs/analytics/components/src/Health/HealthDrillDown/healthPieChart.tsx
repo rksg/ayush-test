@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { Space } from 'antd'
+import { Space }                                     from 'antd'
 import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
-import AutoSizer from 'react-virtualized-auto-sizer'
+import AutoSizer                                     from 'react-virtualized-auto-sizer'
 
 import { getSelectedNodePath, mapCodeToReason } from '@acx-ui/analytics/utils'
 import {
@@ -13,9 +13,9 @@ import {
   NoData,
   qualitativeColorSet
 } from '@acx-ui/components'
-import { get } from '@acx-ui/config'
-import { formatter } from '@acx-ui/formatter'
-import { InformationOutlined } from '@acx-ui/icons'
+import { get }                  from '@acx-ui/config'
+import { formatter }            from '@acx-ui/formatter'
+import { InformationOutlined }  from '@acx-ui/icons'
 import { NodesFilter, getIntl } from '@acx-ui/utils'
 import type { AnalyticsFilter } from '@acx-ui/utils'
 
@@ -27,7 +27,7 @@ import {
   showTopNPieChartResult
 } from './config'
 import { ImpactedEntities, usePieChartQuery } from './services'
-import * as UI from './styledComponents'
+import * as UI                                from './styledComponents'
 
 const topCount = 5
 
@@ -44,7 +44,7 @@ type NodeData = {
   value: number
   name?: string | null
 }
-function getTopPieChartData(nodeData: NodeData[])
+function getTopPieChartData (nodeData: NodeData[])
   : PieChartData[] {
   const colors = qualitativeColorSet()
   return nodeData
@@ -82,7 +82,7 @@ export const transformData = (
 }
 
 
-export function pieNodeMap(filter: NodesFilter): MessageDescriptor {
+export function pieNodeMap (filter: NodesFilter): MessageDescriptor {
   const isMLISA = get('IS_MLISA_SA')
   const node = getSelectedNodePath(filter)
   switch (node[node.length - 1].type) {
@@ -128,9 +128,9 @@ export const tooltipFormatter = (
   total: number,
   dataFormatter: (value: unknown, tz?: string | undefined) => string
 ) => (value: unknown) =>
-    `${formatter('percentFormat')(value as number / total)}(${dataFormatter(value)})`
+  `${formatter('percentFormat')(value as number / total)}(${dataFormatter(value)})`
 
-function getHealthPieChart(
+function getHealthPieChart (
   data: { key: string; value: number; name: string; color: string }[],
   dataFormatter: (value: unknown, tz?: string | undefined) => string
 ) {

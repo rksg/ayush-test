@@ -1,13 +1,13 @@
-import { Space } from 'antd'
+import { Space }                     from 'antd'
 import { useIntl, FormattedMessage } from 'react-intl'
-import AutoSizer from 'react-virtualized-auto-sizer'
+import AutoSizer                     from 'react-virtualized-auto-sizer'
 
 import { DonutChart, NoData, qualitativeColorSet, Loader } from '@acx-ui/components'
-import { get } from '@acx-ui/config'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { formatter } from '@acx-ui/formatter'
-import { InformationOutlined } from '@acx-ui/icons'
-import { AnalyticsFilter } from '@acx-ui/utils'
+import { get }                                             from '@acx-ui/config'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { formatter }                                       from '@acx-ui/formatter'
+import { InformationOutlined }                             from '@acx-ui/icons'
+import { AnalyticsFilter }                                 from '@acx-ui/utils'
 
 import { showTopNPieChartResult } from '../../../Health/HealthDrillDown/config'
 
@@ -17,7 +17,7 @@ import {
   TopNByPortCongestionResult, TopNByStormPortCountResult,
   showTopNTableResult
 } from './config'
-import { usePieChartDataQuery } from './services'
+import { usePieChartDataQuery }                 from './services'
 import { PieChartTitle, HealthPieChartWrapper } from './styledComponents'
 
 type PieChartData = {
@@ -27,7 +27,7 @@ type PieChartData = {
   color: string
 }
 
-export function transformData(
+export function transformData (
   type: WidgetType,
   data: TopNByCPUUsageResult[] | TopNByDHCPFailureResult[] |
     TopNByPortCongestionResult[] | TopNByStormPortCountResult[]
@@ -83,7 +83,7 @@ export const tooltipFormatter = (
   total: number,
   dataFormatter: (value: unknown, tz?: string | undefined) => string
 ) => (value: unknown) =>
-    `${formatter('percentFormat')(value as number / total)} (${dataFormatter(value)})`
+  `${formatter('percentFormat')(value as number / total)} (${dataFormatter(value)})`
 
 export const MoreDetailsPieChart = ({
   filters,
@@ -137,11 +137,11 @@ export const MoreDetailsPieChart = ({
   const pieData = enableWithOthers
     ? (hasOthers
       ? [...queryResults.data.slice(0, queryResults.data.length - 1),
-      {
-        ...queryResults.data.slice(-1)[0],
-        name: $t({ defaultMessage: 'Others' }),
-        mac: undefined
-      }]
+        {
+          ...queryResults.data.slice(-1)[0],
+          name: $t({ defaultMessage: 'Others' }),
+          mac: undefined
+        }]
       : queryResults.data) as PieChartData[]
     : queryResults.data.slice(0, n)
   const total = pieData?.reduce((total, { value }) => total + value, 0)

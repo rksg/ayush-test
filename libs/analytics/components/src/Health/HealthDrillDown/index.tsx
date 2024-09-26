@@ -3,8 +3,8 @@ import { useState } from 'react'
 import { isNull } from 'lodash'
 
 import { GridCol, GridRow, Loader, cssStr } from '@acx-ui/components'
-import { formatter } from '@acx-ui/formatter'
-import type { AnalyticsFilter } from '@acx-ui/utils'
+import { formatter }                        from '@acx-ui/formatter'
+import type { AnalyticsFilter }             from '@acx-ui/utils'
 
 import {
   Stages,
@@ -13,11 +13,11 @@ import {
   CONNECTIONFAILURE,
   TTC
 } from './config'
-import { FunnelChart } from './funnelChart'
-import { HealthPieChart } from './healthPieChart'
-import { ImpactedClientsTable } from './impactedClientTable'
+import { FunnelChart }                                       from './funnelChart'
+import { HealthPieChart }                                    from './healthPieChart'
+import { ImpactedClientsTable }                              from './impactedClientTable'
 import { useTtcDrilldownQuery, useConnectionDrilldownQuery } from './services'
-import { Point, Separator } from './styledComponents'
+import { Point, Separator }                                  from './styledComponents'
 
 const HealthDrillDown = (props: {
   filters: AnalyticsFilter;

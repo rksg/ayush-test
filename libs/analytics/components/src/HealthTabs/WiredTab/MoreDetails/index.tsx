@@ -1,14 +1,14 @@
 import { Typography } from 'antd'
-import { useIntl } from 'react-intl'
+import { useIntl }    from 'react-intl'
 
 import { Drawer, GridCol, GridRow } from '@acx-ui/components'
-import { AnalyticsFilter } from '@acx-ui/utils'
+import { AnalyticsFilter }          from '@acx-ui/utils'
 
-import { WidgetType } from './config'
-import { MoreDetailsPieChart } from './HealthPieChart'
-import { ImpactedClientsTable } from './ImpactedClientsTable'
+import { WidgetType }            from './config'
+import { MoreDetailsPieChart }   from './HealthPieChart'
+import { ImpactedClientsTable }  from './ImpactedClientsTable'
 import { ImpactedSwitchesTable } from './ImpactedSwitchesTable'
-import * as UI from './styledComponents'
+import * as UI                   from './styledComponents'
 
 export interface MoreDetailsDrawerProps {
   visible: boolean
