@@ -16,7 +16,7 @@ import type { TimeSeriesChartProps } from '../types'
 const switchDDoSAttackQuery = (incident: Incident) => gql`
   ddosAttackOnPortTimeSeries: timeSeries(granularity: $granularity) {
     time
-    ddos: impactedPortsByDDoS(filter: {code: "${incident.code}"})
+    ddos: impactedPortsByDDoS(code: "${incident.code}")
   }
 `
 

@@ -11,6 +11,7 @@ import { TimeSeries }                                       from '../TimeSeries'
 import { TimeSeriesChartTypes }                             from '../TimeSeries/config'
 
 import { IncidentHeader } from './IncidentHeader'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 export const SwitchTcpSynDDoS = (incident: Incident) => {
   const attributeList = [
@@ -32,7 +33,12 @@ export const SwitchTcpSynDDoS = (incident: Incident) => {
     back: { value: 1, unit: 'second' as unitOfTime.Base }
   }
 
-  return <>
+  const isEnabled = [
+    useIsSplitOn(Features.INCIDENTS_SWITCH_DDOS_TOGGLE),
+    useIsSplitOn(Features.RUCKUS_AI_INCIDENTS_SWITCH_DDOS_TOGGLE)
+  ].some(Boolean)
+
+  return isEnabled ? <>
     <IncidentHeader incident={incident} />
     <GridRow>
       <GridCol col={{ span: 4 }}>
@@ -60,5 +66,5 @@ export const SwitchTcpSynDDoS = (incident: Incident) => {
         <ImpactedSwitchDDoSTable incident={incident} />
       </GridCol>
     </GridRow>
-  </>
+  </> : null
 }
