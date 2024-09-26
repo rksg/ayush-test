@@ -166,7 +166,7 @@ export function CliVariableModal (props: {
         ? <UI.CustomizedSection>
           { getVariableTemplate(VariableType.ADDRESS, form) }
           { getCustomizeFields(
-            switchList, VariableType.ADDRESS, customizedRequiredFields, form, $t)
+            switchList, VariableType.ADDRESS, customizedRequiredFields, form)
           }
         </UI.CustomizedSection>
         : getVariableTemplate(VariableType.ADDRESS, form)
@@ -177,7 +177,7 @@ export function CliVariableModal (props: {
         ? <UI.CustomizedSection>
           { getVariableTemplate(VariableType.RANGE, form) }
           { getCustomizeFields(
-            switchList, VariableType.RANGE, customizedRequiredFields, form, $t)
+            switchList, VariableType.RANGE, customizedRequiredFields, form)
           }
         </UI.CustomizedSection>
         : getVariableTemplate(VariableType.RANGE, form)
@@ -186,9 +186,9 @@ export function CliVariableModal (props: {
     {selectType === VariableType.STRING && (
       isCustomizedVariableEnabled
         ? <UI.CustomizedSection>
-          { getVariableTemplate(VariableType.STRING, form) }
+          { getVariableTemplate(VariableType.STRING, form, isCustomizedVariableEnabled) }
           { getCustomizeFields(
-            switchList, VariableType.STRING, customizedRequiredFields, form, $t)
+            switchList, VariableType.STRING, customizedRequiredFields, form)
           }
         </UI.CustomizedSection>
         : getVariableTemplate(VariableType.STRING, form)

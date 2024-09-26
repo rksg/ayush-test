@@ -49,10 +49,10 @@ import { getIntl }   from '@acx-ui/utils'
 import { CodeMirrorWidget }                                from '../CodeMirrorWidget'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../ImportFileDrawer'
 
-import { CliVariableModal }                                                             from './CliVariableModal'
-import { formatContentWithLimit, getVariableColor, getVariableSeparator, VariableType } from './CliVariableUtils'
-import { CustomizedSettingsDrawer }                                                     from './CustomizedSettingsDrawer'
-import * as UI                                                                          from './styledComponents'
+import { CliVariableModal }                                                                        from './CliVariableModal'
+import { formatContentWithLimit, getVariableColor, getVariableSeparator, MAX_LINES, VariableType } from './CliVariableUtils'
+import { CustomizedSettingsDrawer }                                                                from './CustomizedSettingsDrawer'
+import * as UI                                                                                     from './styledComponents'
 
 interface codeMirrorElement {
   current: {
@@ -492,16 +492,7 @@ export function CliStepConfiguration (props: {
                   <List.Item.Meta
                     title={
                       isSwitchLevelCliProfileEnabled
-                        ? <Space size={4}>
-                          <Space style={{ fontWeight: 600, lineHeight: '20px' }}>{
-                            variable.name
-                          }</Space>
-                          <UI.VariableTypeLabel style={{
-                            backgroundColor: getVariableColor(variable.type)
-                          }}>{
-                              transformTitleCase(variable?.type || '')
-                            }</UI.VariableTypeLabel>
-                        </Space>
+                        ? renderVariableTitle(variable)
                         : <Space size={0} split={<UI.Divider type='vertical' />}>
                           <Space style={{ fontWeight: 600 }}>{variable.name}</Space>
                           {transformTitleCase(variable?.type || '')}
@@ -509,8 +500,7 @@ export function CliStepConfiguration (props: {
                     }
                     description={
                       isSwitchLevelCliProfileEnabled
-                        ? displayVariableValue(
-                          variable.type,
+                        ? renderVariableValue(
                           variable,
                           props?.allSwitchList || [],
                           setSwitchSettings,
@@ -760,17 +750,34 @@ function htmlDecode (code: string) {
   return div.innerText?.replace(/↵/g, '\n') || div?.textContent?.replace(/↵/g, '')
 }
 
-function displayVariableValue (
-  vtype: string,
-  values: CliTemplateVariable,
+function renderVariableTitle (
+  variable: CliTemplateVariable
+) {
+  const variableType = variable?.type || ''
+  const variableColor = getVariableColor(variableType)
+
+  return <Space size={4}>
+    <Space style={{ fontWeight: 600, lineHeight: '20px' }}>{
+      variable.name
+    }</Space>
+    <UI.VariableTypeLabel style={{
+      backgroundColor: variableColor
+    }}>{
+        transformTitleCase(variableType)
+      }</UI.VariableTypeLabel>
+  </Space>
+}
+
+function renderVariableValue (
+  variable: CliTemplateVariable,
   allSwitchList: SwitchViewModel[],
   setSwitchSettings: (data: SwitchSettings[]) => void,
   setSwitchSettingType: (data: string) => void,
   setSwitchSettingDrawerVisible: (visible: boolean) => void
 ) {
   const { $t } = getIntl()
-  const type = vtype.toUpperCase()
-  const switchCount = values?.switchVariables?.map(s => s.serialNumbers).flat()?.length
+  const type = variable?.type?.toUpperCase()
+  const switchCount = variable?.switchVariables?.map(s => s.serialNumbers).flat()?.length
 
   const customizedSwitches = !!switchCount && <>
     <UI.VariableTitle>{
@@ -779,9 +786,8 @@ function displayVariableValue (
     <UI.VariableContent>
       <Button type='link'
         size='small'
-        // key='switches'
         onClick={() => {
-          const switchVariables = values?.switchVariables?.map((switchVariable)=> {
+          const switchVariables = variable?.switchVariables?.map((switchVariable)=> {
             if (Array.isArray(switchVariable.serialNumbers)) {
               return switchVariable.serialNumbers.map(s => ({
                 serialNumber: s, value: switchVariable.value
@@ -821,11 +827,11 @@ function displayVariableValue (
         <UI.VariableTitle>{ $t({ defaultMessage: 'Start - End IP Address' }) }</UI.VariableTitle>
         <UI.VariableContent>{
           $t({ defaultMessage: '{start} - {end}' }, {
-            start: values?.ipAddressStart, end: values?.ipAddressEnd
+            start: variable?.ipAddressStart, end: variable?.ipAddressEnd
           })
         }</UI.VariableContent>
         <UI.VariableTitle>{ $t({ defaultMessage: 'Network Mask' }) }</UI.VariableTitle>
-        <UI.VariableContent>{ values?.subMask }</UI.VariableContent>
+        <UI.VariableContent>{ variable?.subMask }</UI.VariableContent>
         { customizedSwitches }
       </>
     case VariableType.RANGE:
@@ -833,7 +839,7 @@ function displayVariableValue (
         <UI.VariableTitle>{ $t({ defaultMessage: 'Start - End Value' }) }</UI.VariableTitle>
         <UI.VariableContent>{
           $t({ defaultMessage: '{start} - {end}' }, {
-            start: values?.rangeStart, end: values?.rangeEnd
+            start: variable?.rangeStart, end: variable?.rangeEnd
           })
         }</UI.VariableContent>
         { customizedSwitches }
@@ -842,9 +848,9 @@ function displayVariableValue (
       return <>
         <UI.VariableTitle>{ $t({ defaultMessage: 'String' }) }</UI.VariableTitle>
         <UI.VariableContent>
-          <Tooltip title={formatContentWithLimit(values?.value, 25)} dottedUnderline>
+          <Tooltip title={formatContentWithLimit(variable?.value, MAX_LINES)} dottedUnderline>
             <UI.CliVariableContent>{
-              values?.value.split(/\r\n|\r|\n/)?.[0]
+              variable?.value.split(/\r\n|\r|\n/)?.[0]
             }</UI.CliVariableContent>
           </Tooltip>
         </UI.VariableContent>

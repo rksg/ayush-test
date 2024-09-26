@@ -4,7 +4,6 @@ import { Divider, Form, FormInstance, FormListFieldData, Input, Select, Space } 
 import { RuleObject }                                                           from 'antd/lib/form'
 import _                                                                        from 'lodash'
 import { intersection, isArray }                                                from 'lodash'
-import { IntlShape }                                                            from 'react-intl'
 
 import {
   Button,
@@ -15,6 +14,7 @@ import {
   cliIpAddressRegExp,
   CliTemplateVariable,
   subnetMaskPrefixRegExp,
+  specialCharactersRegExp,
   specialCharactersWithNewLineRegExp,
   SwitchCliMessages,
   SwitchViewModel,
@@ -23,6 +23,10 @@ import {
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
+
+export const MAX_LENGTH_OF_STRING = 20
+export const MAX_LENGTH_OF_CUSTOMIZED_STRING = 10000
+export const MAX_LINES = 25
 
 export enum VariableType {
   ADDRESS = 'ADDRESS',
@@ -101,7 +105,11 @@ export function getVariableColor (type: string) {
   return colorMap[variableType]
 }
 
-export const getVariableTemplate = (type: string, form: FormInstance) => {
+export const getVariableTemplate = (
+  type: string,
+  form: FormInstance,
+  isCustomizedVariableEnabled?: boolean
+) => {
   const { $t } = getIntl()
   switch (type) {
     case VariableType.ADDRESS:
@@ -227,10 +235,16 @@ export const getVariableTemplate = (type: string, form: FormInstance) => {
         rules={[
           { required: true,
             message: $t({ defaultMessage: 'Please enter String' }) },
-          { validator: (_, value) => specialCharactersWithNewLineRegExp(value) }
+          { validator: (_, value) => isCustomizedVariableEnabled
+            ? specialCharactersWithNewLineRegExp(value)
+            : specialCharactersRegExp(value)
+          }
         ]}
         validateFirst
-        children={<Input.TextArea data-testid='string' />} //maxLength={20}
+        children={isCustomizedVariableEnabled
+          ? <Input.TextArea data-testid='string' maxLength={MAX_LENGTH_OF_CUSTOMIZED_STRING} />
+          : <Input data-testid='string' maxLength={MAX_LENGTH_OF_STRING} />
+        }
         validateTrigger={'onBlur'}
       />
   }
@@ -303,9 +317,9 @@ export const getCustomizeFields = (
   switchList: AllowedSwitchObjList,
   type: string,
   customizedRequiredFields: string[],
-  form: FormInstance,
-  $t: IntlShape['$t']
+  form: FormInstance
 ) => {
+  const { $t } = getIntl()
   return <Form.List name='switchVariables'>
     {
       (fields, { add, remove }) => (
@@ -437,7 +451,10 @@ export const getCustomizeFields = (
                 ]}
               >
                 { type === VariableType.STRING
-                  ? <Input.TextArea data-testid={`customized-textarea-${key}`} />
+                  ? <Input.TextArea
+                    data-testid={`customized-textarea-${key}`}
+                    maxLength={MAX_LENGTH_OF_CUSTOMIZED_STRING}
+                  />
                   : <Input data-testid={`customized-input-${key}`} />
                 }
               </Form.Item>
