@@ -260,16 +260,23 @@ export function CliProfileForm () {
       const allowedSwitchList = switchList?.data?.filter(s => (
         s.deviceStatus === SwitchStatusEnum.NEVER_CONTACTED_CLOUD
       )) as SwitchViewModel[]
-
-      // TODO: temp
-      const v = cliProfile?.venueCliTemplate?.variables?.map(v => {
+      // TODO
+      const allSwitchSerialNumbers = switchList?.data?.map(s => s.serialNumber)
+      const variables = cliProfile?.venueCliTemplate?.variables?.map(v => {
         return {
           ...v,
           ...(v?.switchVariables ? {
-            switchVariables: v?.switchVariables.map(s => ({
-              ...s,
-              serialNumbers: v.hasOwnProperty('subMask') ? s.serialNumbers[0] : s.serialNumbers
-            }))
+            switchVariables: v?.switchVariables.map(s => {
+              // remove non-existent exist switch from the settings
+              const validSerialNumbers = _.intersection(s.serialNumbers, allSwitchSerialNumbers)
+              const serialNumbers
+                = v.hasOwnProperty('subMask') ? validSerialNumbers[0] : validSerialNumbers
+
+              return !!validSerialNumbers?.length ? {
+                ...s,
+                serialNumbers
+              } : false
+            }).filter(s => s)
           } : {})
         }
       }) ?? []
@@ -278,8 +285,7 @@ export function CliProfileForm () {
         ...cliProfile,
         cli: cliProfile?.venueCliTemplate?.cli,
         overwrite: cliProfile?.venueCliTemplate?.overwrite,
-        // variables: cliProfile?.venueCliTemplate?.variables || [],
-        variables: v, //
+        variables,
         models: cliProfile?.venueCliTemplate?.switchModels?.split(',')
       }
 
