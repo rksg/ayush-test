@@ -435,11 +435,11 @@ describe('Network utils test', () => {
             return res(ctx.json({
               data: [
                 {
-                  id: 'mock-radius-server-id',
+                  id: 'mock-auth-radius-server-id',
                   type: 'AUTHENTICATION'
                 },
                 {
-                  id: 'mock-radius-server-id',
+                  id: 'mock-acct-radius-server-id',
                   type: 'ACCOUNTING'
                 }]
             }))}
@@ -548,13 +548,17 @@ describe('Network utils test', () => {
       const updateRadius = result.current.updateRadiusServer
 
       await updateRadius(
-        { authRadiusId: 'new-radius-id' },
-        { authRadiusId: 'old-radius-id' },
+        {
+          enableAccountingProxy: false,
+          enableAuthProxy: false,
+          authRadiusId: 'new-auth-radius-id',
+          accountingRadiusId: 'new-acct-radius-id'
+        },
         'new-networkId'
       )
 
       await waitFor(() => expect(spyUpdateRadiusSettingsFn).toHaveBeenCalledTimes(1))
-      await waitFor(() => expect(spyActivateRadiusFn).toHaveBeenCalledTimes(1))
+      await waitFor(() => expect(spyActivateRadiusFn).toHaveBeenCalledTimes(2))
       await waitFor(() => expect(spyDeactivateRadiusFn).toHaveBeenCalledTimes(0))
     })
   })
