@@ -16,3 +16,5 @@ export const noDataDisplay = '--' as const
 
 export const TABLE_QUERY_POLLING_INTERVAL = 30_000
 export const TABLE_QUERY_LONG_POLLING_INTERVAL = 300_000
+
+export const APT_QUERY_CACHE_TIME = 3 // 3 seconds

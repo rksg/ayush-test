@@ -5,6 +5,7 @@ import { defineMessage } from 'react-intl'
 
 import { limitRange }                                          from '@acx-ui/analytics/utils'
 import { GridRow, GridCol, Loader, StatsCard, StatsCardProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
 import { formatter }                                           from '@acx-ui/formatter'
 import type { AnalyticsFilter }                                from '@acx-ui/utils'
 import { noDataDisplay }                                       from '@acx-ui/utils'
@@ -16,10 +17,15 @@ import { useWiredSummaryDataQuery } from './services'
 
 export const SummaryBoxes = ( props: { filters: AnalyticsFilter, noSwitches?: boolean }) => {
   const { filters, noSwitches = false } = props
+  const isSwitchHealth10010eEnabled = [
+    useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_10010E_TOGGLE),
+    useIsSplitOn(Features.SWITCH_HEALTH_10010E_TOGGLE)
+  ].some(Boolean)
   const payload = {
     filter: filters.filter,
     start: filters.startDate,
-    end: filters.endDate
+    end: filters.endDate,
+    isSwitchHealth10010eEnabled
   }
   const { data: summaryData, ...summaryQueryState } = useWiredSummaryDataQuery(payload)
 
@@ -68,7 +74,7 @@ export const SummaryBoxes = ( props: { filters: AnalyticsFilter, noSwitches?: bo
         title: defineMessage({ defaultMessage: 'Multicast Storm Ports' }),
         value: formatValue(
           summaryData?.stormPortCount,
-          summaryData?.nonStackPortCount,
+          isSwitchHealth10010eEnabled? summaryData?.nonStackPortCount: summaryData?.portCount,
           noSwitches)
       }],
       onClick: () => { moreDetails('portStorm') }
