@@ -40,7 +40,7 @@ describe('Intent services', () => {
 > zone-1 (Venue)`,
         status: Statuses.active,
         statusLabel: 'Active',
-        statusTooltip: 'IntentAI is active on the Venue zone-1.'
+        statusTooltip: 'IntentAI is active on Venue zone-1.'
       },
       {
         ...intentListResult.intents.data[1],
@@ -586,7 +586,7 @@ describe('Intent services', () => {
           ...expectedCommonResult,
           status: Statuses.active,
           statusLabel: 'Active',
-          statusTooltip: 'IntentAI is active on the Venue zone-1.'
+          statusTooltip: 'IntentAI is active on Venue zone-1.'
         },
         {
           ...intentListWithAllStatus.intents.data[6],
