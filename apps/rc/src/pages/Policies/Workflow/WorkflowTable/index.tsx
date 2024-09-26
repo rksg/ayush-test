@@ -198,7 +198,7 @@ export default function WorkflowTable () {
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
     const payload = {
       ...tableQuery.payload,
-      name: customSearch?.searchString ?? ''
+      filters: customSearch?.searchString ? { name: customSearch?.searchString } : undefined
     }
     tableQuery.setPayload(payload)
   }
