@@ -3,9 +3,9 @@ import { rest }  from 'msw'
 
 import {
   AaaUrls,
-  ApLanPortTypeEnum,
   EthernetPortAuthType,
   EthernetPortProfileUrls,
+  EthernetPortType,
   PolicyOperation,
   PolicyType,
   getEthernetPortAuthTypeString,
@@ -151,7 +151,7 @@ describe('AddEthernetPortProfile', () => {
     const typeCombo = await screen.findByRole('combobox', { name: 'Port Type' })
     await user.click(typeCombo)
     await user.click(
-      await screen.findByText(getEthernetPortTypeString(ApLanPortTypeEnum.ACCESS))
+      await screen.findByText(getEthernetPortTypeString(EthernetPortType.ACCESS))
     )
 
     await user.click(screen.getByRole('switch', { name: '802.1X Authentication' }))
@@ -246,7 +246,7 @@ describe('AddEthernetPortProfile', () => {
     const typeCombo = await screen.findByRole('combobox', { name: 'Port Type' })
     await user.click(typeCombo)
     await user.click(
-      await screen.findByText(getEthernetPortTypeString(ApLanPortTypeEnum.ACCESS))
+      await screen.findByText(getEthernetPortTypeString(EthernetPortType.ACCESS))
     )
 
     const vlanUntagIdField = screen.getByRole('spinbutton', { name: 'VLAN Untag ID' })
