@@ -98,7 +98,7 @@ export const states = {
   },
   [DisplayStates.active]: {
     text: defineMessage({ defaultMessage: 'Active' }),
-    tooltip: defineMessage({ defaultMessage: 'IntentAI is active and has successfully applied the changes to the <VenueSingular></VenueSingular> {zoneName}.' }) //TODO: The new configuration is: {newConfig}.
+    tooltip: defineMessage({ defaultMessage: 'IntentAI is active on the <VenueSingular></VenueSingular> {zoneName}.' }) //TODO: The new configuration is: {newConfig}.
   },
   [DisplayStates.pausedApplyFailed]: {
     text: defineMessage({ defaultMessage: 'Paused, Applied Failed' }),
