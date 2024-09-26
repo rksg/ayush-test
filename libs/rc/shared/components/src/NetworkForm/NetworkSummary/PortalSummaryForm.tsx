@@ -133,8 +133,7 @@ export function PortalSummaryForm (props: {
           $t({ defaultMessage: 'Original URL request' })}
       />
       }
-      {summaryData.guestPortal?.guestNetworkType===GuestNetworkTypeEnum.WISPr&&
-       summaryData.wlan?.wlanSecurity !== WlanSecurityEnum.WPA3 &&
+      {summaryData.wlan?.wlanSecurity !== WlanSecurityEnum.WPA3 &&
        summaryData.wlan?.wlanSecurity !== WlanSecurityEnum.WEP &&
        summaryData.wlan?.wlanSecurity !== WlanSecurityEnum.None &&
        summaryData.wlan?.passphrase &&
@@ -150,8 +149,7 @@ export function PortalSummaryForm (props: {
           />}
         />
       }
-      {summaryData.guestPortal?.guestNetworkType===GuestNetworkTypeEnum.WISPr&&(
-        summaryData.wlan?.wlanSecurity === WlanSecurityEnum.WPA3 ||
+      {(summaryData.wlan?.wlanSecurity === WlanSecurityEnum.WPA3 ||
         summaryData.wlan?.wlanSecurity === WlanSecurityEnum.WPA23Mixed) &&
         summaryData.wlan?.saePassphrase &&
         <Form.Item
@@ -177,8 +175,7 @@ export function PortalSummaryForm (props: {
           />}
         />
       }
-      {summaryData.guestPortal?.guestNetworkType===GuestNetworkTypeEnum.WISPr&&
-       summaryData.wlan?.wlanSecurity === WlanSecurityEnum.None &&
+      {summaryData.wlan?.wlanSecurity === WlanSecurityEnum.None &&
         <Form.Item
           label={$t({ defaultMessage: 'Pre-Shared Key(PSK):' })}
           children={$t({ defaultMessage: 'No' })}
