@@ -32,7 +32,9 @@ jest.mock('@acx-ui/rc/components', () => ({
   useEdgeDhcpActions: () => ({
     activateEdgeDhcp: mockedActivateEdgeDhcp,
     deactivateEdgeDhcp: mockedDeactivateEdgeDhcp
-  })
+  }),
+  ApCompatibilityToolTip: () => <div data-testid='ApCompatibilityToolTip' />,
+  EdgeCompatibilityDrawer: () => <div data-testid='EdgeCompatibilityDrawer' />
 }))
 
 type MockSelectProps = React.PropsWithChildren<{
@@ -380,4 +382,18 @@ describe('Edge Cluster Network Control Tab', () => {
     expect(switchBtn[1]).not.toBeDisabled()
   })
 
+  it('should show compatibility component', async () => {
+    render(
+      <Provider>
+        <EdgeNetworkControl
+          currentClusterStatus={mockEdgeClusterList.data[0] as EdgeClusterStatus} />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab'
+        }
+      })
+    expect(await screen.findByTestId('ApCompatibilityToolTip')).toBeVisible()
+    expect(await screen.findByTestId('EdgeCompatibilityDrawer')).toBeVisible()
+  })
 })

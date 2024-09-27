@@ -67,7 +67,7 @@ describe('HQoS Settings Form', () => {
       expect(rows.length).toBe(2)
     })
 
-    expect(await screen.findByText(/Remaining:100%/i)).toBeVisible()
+    expect(await screen.findByText(/Remaining:14%/i)).toBeVisible()
   })
 
   it('validate bandwidth value range return error', async () => {
@@ -84,7 +84,8 @@ describe('HQoS Settings Form', () => {
       expect(bandwidthElems.length).toBe(2)
     })
 
-    await userEvent.type(bandwidthElems[0], '1000')
+    await userEvent.clear(bandwidthElems[0])
+    await userEvent.type(bandwidthElems[0], '0')
     const waringSolid = await within(rows[0]).findByTestId('WarningCircleSolid')
     expect(waringSolid).toBeVisible()
 
