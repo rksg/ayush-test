@@ -72,7 +72,6 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
               reject(result)
             }
 
-            redirectPreviousPage(navigate, previousPath, linkToServices)
           }
           // need to catch basic service profile failed
         }] as unknown[]
@@ -80,6 +79,8 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
         if (props.editMode) funcArgs.unshift(formInitialValues! as PersonalIdentityNetworkFormData)
         await props.onFinish.apply(null, funcArgs).catch(reject)
       })
+
+      redirectPreviousPage(navigate, previousPath, linkToServices)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
       const overwriteMsg = afterSubmitMessage(error as CatchErrorResponse,
@@ -111,6 +112,8 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
           }
         })
       }
+
+      redirectPreviousPage(navigate, previousPath, linkToServices)
     }
   }
 

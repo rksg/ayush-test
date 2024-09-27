@@ -36,11 +36,13 @@ export const edgeHqosProfilesApi = baseEdgeHqosProfilesApi.injectEndpoints({
       invalidatesTags: [{ type: 'EdgeHqosProfiles', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
-          await handleCallbackWhenActivityDone(api, msg,
-            EdgeHqosActivityEnum.ADD,
-            requestArgs.callback,
-            requestArgs.failedCallback
-          )
+          await handleCallbackWhenActivityDone({
+            api,
+            activityData: msg,
+            useCase: EdgeHqosActivityEnum.ADD,
+            callback: requestArgs.callback,
+            failedCallback: requestArgs.failedCallback
+          })
         })
       }
     }),
