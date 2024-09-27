@@ -155,7 +155,7 @@ const PersonalIdentityNetworkTable = () => {
       render: (_, row) => {
         const edgeInfo = row.edgeClusterInfos[0]
         return (
-          <TenantLink to={`/devices/edge/${edgeInfo?.edgeClusterId}/details/overview`}>
+          <TenantLink to={`/devices/edge/cluster/${edgeInfo?.edgeClusterId}/edit/cluster-details`}>
             {edgeInfo?.edgeClusterName}
           </TenantLink>
         )
