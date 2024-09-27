@@ -146,7 +146,7 @@ describe('PersonalIdentityNetworkTable', () => {
     const smartEdgeLink = await screen.findByRole('link',
       { name: 'Edge1' }) as HTMLAnchorElement
     expect(smartEdgeLink.href)
-      .toContain(`/${params.tenantId}/t/devices/edge/0000000001/details/overview`)
+      .toContain(`/${params.tenantId}/t/devices/edge/cluster/0000000001/edit/cluster-details`)
   })
 
   it('should go edit page', async () => {

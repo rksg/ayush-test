@@ -1,9 +1,10 @@
-import { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
 import { Alert, StepsForm, TableProps, useStepFormContext }                  from '@acx-ui/components'
+import { useGetEdgeListQuery }                                               from '@acx-ui/rc/services'
 import { AccessSwitch, DistributionSwitch, PersonalIdentityNetworkFormData } from '@acx-ui/rc/utils'
 
 import { PersonalIdentityNetworkFormContext } from '../PersonalIdentityNetworkFormContext'
@@ -17,8 +18,7 @@ export function DistributionSwitchForm () {
   const { form } = useStepFormContext<PersonalIdentityNetworkFormData>()
   const {
     switchList,
-    refetchSwitchesQuery,
-    getClusterName
+    refetchSwitchesQuery
   } = useContext(PersonalIdentityNetworkFormContext)
   const [openDrawer, setOpenDrawer] = useState(false)
   const [selected, setSelected] = useState<DistributionSwitch>()
@@ -26,6 +26,15 @@ export function DistributionSwitchForm () {
     form.getFieldValue('distributionSwitchInfos')
   const accessSwitchInfos = form.getFieldValue('accessSwitchInfos') as AccessSwitch []
   const edgeClusterId = form.getFieldValue('edgeClusterId') as string
+  const venueId = form.getFieldValue('venueId') as string
+
+  const { data: edgeList } = useGetEdgeListQuery({
+    payload: {
+      fields: ['serialNumber', 'name'],
+      filters: { clusterId: [edgeClusterId] }
+    } }, {
+    skip: !edgeClusterId
+  })
 
   useEffect(()=>{
     if (distributionSwitchInfos) {
@@ -116,15 +125,25 @@ export function DistributionSwitchForm () {
       onSaveDS={handleSaveDS}
       onClose={()=>setOpenDrawer(false)} />
     { distributionSwitchInfos && distributionSwitchInfos.length > 0 && <Alert type='info'
-      message={$t({ defaultMessage:
-        // eslint-disable-next-line max-len
-        'Attention Required: Please ensure to configure {staticRoute} on RUCKUS Edge ({edgeName}) ' +
-        'for the distribution switch’s loopback IP addresses to establish the connection.' }, {
-        // eslint-disable-next-line max-len
-        staticRoute: <StaticRouteModal edgeId={edgeClusterId} edgeName={getClusterName(edgeClusterId)} />,
-        edgeName: getClusterName(edgeClusterId)
-      })}
       showIcon
+      message={$t({ defaultMessage:
+        `Attention Required: Please ensure to configure Static Route on RUCKUS Edge {edgeNames}
+         for the distribution switch’s loopback IP addresses to establish the connection.` }, {
+        edgeNames: <>{
+          (edgeList?.data || []).map((edge, index) =>
+            <React.Fragment key={edge.serialNumber}>
+              {index !== 0 && ', '}
+              <StaticRouteModal
+                edgeClusterId={edgeClusterId}
+                edgeId={edge.serialNumber}
+                edgeName={edge.name}
+                venueId={venueId}>
+                {edge.name}
+              </StaticRouteModal>
+            </React.Fragment>
+          )
+        }</>
+      })}
     /> }
   </>)
 }
