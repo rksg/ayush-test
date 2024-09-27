@@ -1,11 +1,11 @@
-import { ApLanPortTypeEnum, Radius }                        from '../../models'
-import { EthernetPortAuthType, EthernetPortSupplicantType } from '../../models/EthernetPortProfileEnum'
+import { Radius }                                                             from '../../models'
+import { EthernetPortAuthType, EthernetPortSupplicantType, EthernetPortType } from '../../models/EthernetPortProfileEnum'
 
 export interface EthernetPortProfileViewData {
     id: string
     name: string
     isDefault: boolean
-    type: ApLanPortTypeEnum
+    type: EthernetPortType
     untagId: number
     vlanMembers: string
     authType: EthernetPortAuthType
@@ -27,7 +27,7 @@ export interface EthernetPortProfile {
     id: string
     name: string
     isDefault: boolean
-    type: ApLanPortTypeEnum
+    type: EthernetPortType
     untagId: number
     vlanMembers: string
     authType: EthernetPortAuthType
