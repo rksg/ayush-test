@@ -159,7 +159,7 @@ export const PersonalIdentityNetworkServiceInfo = styled((
         const edgeInfo = nsgViewData?.edgeClusterInfos?.[0]
         return (
           <TenantLink
-            to={`/devices/edge/${edgeInfo?.edgeClusterId}/details/overview`}
+            to={`/devices/edge/cluster/${edgeInfo?.edgeClusterId}/edit/cluster-details`}
           >
             {clusterName}
           </TenantLink>
