@@ -7,11 +7,10 @@ import { Checkbox, Col, Form, Row, Select, Space } from 'antd'
 import { CheckboxValueType }                       from 'antd/lib/checkbox/Group'
 import { useIntl }                                 from 'react-intl'
 
-import { Button, Loader, StepsForm, useStepFormContext } from '@acx-ui/components'
-import { TunnelProfileAddModal }                         from '@acx-ui/rc/components'
-import { TunnelProfileFormType, TunnelTypeEnum }         from '@acx-ui/rc/utils'
+import { Button, Loader, StepsForm, useStepFormContext }                          from '@acx-ui/components'
+import { TunnelProfileAddModal }                                                  from '@acx-ui/rc/components'
+import { TunnelProfileFormType, TunnelTypeEnum, PersonalIdentityNetworkFormData } from '@acx-ui/rc/utils'
 
-import { PersonalIdentityNetworkFormData }    from '..'
 import { PersonalIdentityNetworkFormContext } from '../PersonalIdentityNetworkFormContext'
 
 import { AddDpskModal } from './AddDpskModal'
@@ -30,7 +29,6 @@ export const WirelessNetworkForm = () => {
   } = useContext(PersonalIdentityNetworkFormContext)
   const [dpskModalVisible, setDpskModalVisible] = useState(false)
   const venueId = form.getFieldValue('venueId')
-
 
   const onNetworkChange = (values: CheckboxValueType[]) => {
     form.setFieldValue('networkNames', values.map(item =>

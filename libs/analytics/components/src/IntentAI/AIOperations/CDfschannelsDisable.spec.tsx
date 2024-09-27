@@ -97,17 +97,9 @@ describe('IntentAIDetails', () => {
     expect(await screen.findByTestId('Configuration')).toBeVisible()
     const kpiElements = await screen.findAllByTestId('KPI')
     kpiElements.forEach(element => expect(element).toBeVisible())
-    expect(await screen.findByTestId('Why the intent?')).toBeVisible()
+    expect(await screen.findByTestId('Why is the recommendation?')).toBeVisible()
     expect(await screen.findByTestId('Potential trade-off')).toBeVisible()
     expect(await screen.findByTestId('Status Trail')).toBeVisible()
-  })
-
-  it('should show different action based on environment', async () => {
-    process.env.NX_IS_MLISA_SA = 'false'
-    const { params } = mockIntentContextWith({ status: Statuses.new })
-    render(<IntentAIDetails />, { route: { params }, wrapper: Provider })
-    // eslint-disable-next-line max-len
-    expect(await screen.findByText('There is a significant high detection of DFS Radar signals in the Zone: AlphaNet_5_1, it is recommended to disable DFS Channels on this Venue.')).toBeVisible()
   })
 
   it('should render', async () => {
@@ -116,12 +108,14 @@ describe('IntentAIDetails', () => {
     expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
     expect(await screen.findByText('AI Operations')).toBeVisible()
     // eslint-disable-next-line max-len
-    expect(await screen.findByText('There is a significant high detection of DFS Radar signals in the Venue: AlphaNet_5_1, it is recommended to disable DFS Channels on this Venue.')).toBeVisible()
+    expect(await screen.findByText('IntentAI will disable DFS Radar channels for this network, ensuring stable and predictable Wi-Fi performance by avoiding interference with radar systems and preventing the disruptions caused by mandatory channel switching.')).toBeVisible()
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('IntentAI will continuously monitor these configurations.')).toBeVisible()
     expect(await screen.findByTestId('Details')).toBeVisible()
     expect(await screen.findByTestId('Configuration')).toBeVisible()
     const kpiElements = await screen.findAllByTestId('KPI')
     kpiElements.forEach(element => expect(element).toBeVisible())
-    expect(await screen.findByTestId('Why the intent?')).toBeVisible()
+    expect(await screen.findByTestId('Why is the recommendation?')).toBeVisible()
     expect(await screen.findByTestId('Potential trade-off')).toBeVisible()
     expect(await screen.findByTestId('Status Trail')).toBeVisible()
   })
@@ -135,12 +129,12 @@ describe('IntentAIForm', () => {
     const actions = within(form.getByTestId('steps-form-actions'))
 
     expect(await screen.findByRole('heading', { name: 'Introduction' })).toBeVisible()
-    expect((await screen.findAllByText('Why the intent?')).length).toEqual(1)
+    expect((await screen.findAllByText('Why is the recommendation?')).length).toEqual(1)
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Intent Priority' })).toBeVisible()
     expect(await screen.findByText('Potential trade-off')).toBeVisible()
-    const radioEnabled = screen.getByRole('radio', { name: 'Yes, apply the intent' })
+    const radioEnabled = screen.getByRole('radio', { name: 'Yes, apply the recommendation' })
     await click(radioEnabled)
     expect(radioEnabled).toBeChecked()
     await click(actions.getByRole('button', { name: 'Next' }))
@@ -169,12 +163,12 @@ describe('IntentAIForm', () => {
     const actions = within(form.getByTestId('steps-form-actions'))
 
     expect(await screen.findByRole('heading', { name: 'Introduction' })).toBeVisible()
-    expect((await screen.findAllByText('Why the intent?')).length).toEqual(1)
+    expect((await screen.findAllByText('Why is the recommendation?')).length).toEqual(1)
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Intent Priority' })).toBeVisible()
     expect(await screen.findByText('Potential trade-off')).toBeVisible()
-    const radioDisabled = screen.getByRole('radio', { name: 'No, do not apply the intent' })
+    const radioDisabled = screen.getByRole('radio', { name: 'No, do not apply the recommendation' })
     await click(radioDisabled)
     expect(radioDisabled).toBeChecked()
     await click(actions.getByRole('button', { name: 'Next' }))

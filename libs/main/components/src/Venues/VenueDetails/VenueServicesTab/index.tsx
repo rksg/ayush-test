@@ -100,6 +100,7 @@ export function VenueServicesTab () {
         'guestEdgeClusterId',
         'guestEdgeClusterName',
         'isGuestTunnelEnabled',
+        'edgeAlarmSummary',
         ...(isEdgeSdLanMvEnabled
           ? ['tunneledWlans', 'tunneledGuestWlans']
           : ['networkIds', 'guestNetworkIds', 'networkInfos'])
@@ -129,7 +130,7 @@ export function VenueServicesTab () {
             {
               isEdgeHaReady && isEdgeDhcpHaReady &&
             <Tabs.TabPane
-              tab={$t({ defaultMessage: 'SmartEdge' })}
+              tab={$t({ defaultMessage: 'RUCKUS Edge' })}
               key={'smartEdge'}
               disabled={!hasEdgeDhcp}
             >

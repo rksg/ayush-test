@@ -17,7 +17,7 @@ import {
   DisplayMessageActionContext,
   UIConfiguration,
   StepType,
-  WorkflowStep
+  WorkflowStep, WorkflowPanelMode
 } from '../../types'
 
 export const WorkflowStepsEmptyCount = 2
@@ -100,17 +100,15 @@ export const AupActionDefaultValue: {
   checkboxHighlightColor: 'FCFFB3',
   checkboxDefaultState: true,
 
-  useAupFile: false,
-  useContentFile: false
-  // contentFileLocation: 'fakeContentFileLocation',
+  useAupFile: false
 }
 
 export const DataPromptActionDefaultValue: {
   [key in keyof DataPromptActionContext]: MessageDescriptor | boolean | string | DataPromptVariable[]
 } = {
-  title: defineMessage({ defaultMessage: 'Default Display Message Title' }),
+  title: '',
   displayTitle: true,
-  messageHtml: defineMessage({ defaultMessage: 'Default Display Message Body' }),
+  messageHtml: '',
   displayMessageHtml: true,
   backButtonText: 'Back',
   continueButtonText: 'Continue',
@@ -122,8 +120,8 @@ export const DataPromptActionDefaultValue: {
 export const DisplayMessageActionDefaultValue: {
   [key in keyof DisplayMessageActionContext]: MessageDescriptor | string | boolean
 } = {
-  title: defineMessage({ defaultMessage: 'Default Display Message Title' }),
-  messageHtml: defineMessage({ defaultMessage: 'Default Display Message Body' }),
+  title: '',
+  messageHtml: '',
   backButtonText: 'Back',
   continueButtonText: 'Continue',
   displayBackButton: true,
@@ -140,6 +138,7 @@ export const ActionDefaultValueMap: Record<ActionType, object> = {
 /* eslint-enable max-len */
 
 export const composeNext = (
+  mode: WorkflowPanelMode,
   stepId: string, stepMap: Map<string, WorkflowStep>,
   nodes: Node<WorkflowStep, ActionType>[], edges: Edge[],
   currentX: number, currentY: number,
@@ -168,7 +167,8 @@ export const composeNext = (
     data: {
       ...step,
       isStart,
-      isEnd: nextStep?.type === StepType.End
+      isEnd: nextStep?.type === StepType.End,
+      mode
     },
 
     hidden: type === StepType.End || (type === StepType.Start && stepMap.size !== 2),
@@ -186,14 +186,16 @@ export const composeNext = (
       deletable: false
     })
 
-    composeNext(nextStepId, stepMap, nodes, edges,
+    composeNext(mode, nextStepId, stepMap, nodes, edges,
       currentX, currentY + SPACE_OF_NODES, type === StepType.Start)
   }
 }
 
 
-export function toReactFlowData (steps: WorkflowStep[])
-  : { nodes: Node[], edges: Edge[] } {
+export function toReactFlowData (
+  steps: WorkflowStep[],
+  mode: WorkflowPanelMode = WorkflowPanelMode.Default
+): { nodes: Node[], edges: Edge[] } {
   const nodes: Node<WorkflowStep, ActionType>[] = []
   const edges: Edge[] = []
   const START_X = 100
@@ -207,7 +209,7 @@ export function toReactFlowData (steps: WorkflowStep[])
   const stepMap = toStepMap(steps)
 
   if (firstStep) {
-    composeNext(firstStep.id, stepMap, nodes, edges,
+    composeNext(mode, firstStep.id, stepMap, nodes, edges,
       START_X, START_Y, firstStep.type === StepType.Start)
   }
 

@@ -62,6 +62,6 @@ describe('Edge SD-LAN Detail - DC', () => {
     expect(screen.getByText('Instances')).toBeVisible()
     expect(screen.getByRole('tab', { name: 'Venues(2)' })).toBeVisible()
     expect(screen.getByRole('tab', { name: 'AP(2)' })).toBeVisible()
-    expect(screen.getByRole('tab', { name: 'SmartEdges(1)' })).toBeVisible()
+    expect(screen.getByRole('tab', { name: 'RUCKUS Edges(1)' })).toBeVisible()
   })
 })

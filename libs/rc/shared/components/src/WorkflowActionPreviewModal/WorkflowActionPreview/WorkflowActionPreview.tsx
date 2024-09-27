@@ -14,12 +14,13 @@ import {
 } from '@acx-ui/rc/services'
 import {
   ActionType,
-  UIConfiguration,
-  WorkflowStep,
   DefaultUIConfiguration,
+  GenericActionData,
   toReactFlowData,
-  GenericActionData
+  UIConfiguration,
+  WorkflowStep
 } from '@acx-ui/rc/utils'
+import { hasCrossVenuesPermission } from '@acx-ui/user'
 
 import { EnrollmentPortalDesignModal } from '../../EnrollmentPortalDesignModal'
 import { ActionNavigationDrawer }      from '../ActionNavigationDrawer'
@@ -27,14 +28,15 @@ import * as UI                         from '../styledComponents'
 
 import { DpskActionPreview } from './DpskActionPreview'
 
-import { AupPreview, DataPromptPreview, DisplayMessagePreview } from './index'
+import { AupPreview, DataPromptPreview, DisplayMessagePreview, MacRegActionPreview } from './index'
+
 
 const previewMap = {
   [ActionType.AUP]: AupPreview,
   [ActionType.DATA_PROMPT]: DataPromptPreview,
   [ActionType.DISPLAY_MESSAGE]: DisplayMessagePreview ,
   [ActionType.DPSK]: DpskActionPreview,
-  [ActionType.MAC_REG]: AupPreview // TODO: FIXME - change to mac reg preview
+  [ActionType.MAC_REG]: MacRegActionPreview
 }
 
 export interface WorkflowActionPreviewProps {
@@ -174,6 +176,7 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
                   setMarked({ desk: false, tablet: false, mobile: true })
                 }}/>
             </div>
+
             <div
               style={{
                 flex: '0 0 513px',
@@ -182,17 +185,19 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
                 paddingRight: 80,
                 paddingTop: 4
               }}>
-              <div>
-                <UI.Button type='default'
-                  size='small'
-                  style={{ fontSize: '14px' }}
-                  onClick={()=>{
-                    setNavigatorVisible(false)
-                    setPortalVisible(true)
-                  }}>
-                  {$t({ defaultMessage: 'Portal Design' })}
-                </UI.Button>
-              </div>
+              {hasCrossVenuesPermission({ needGlobalPermission: true }) &&
+                <div>
+                  <UI.Button type='default'
+                    size='small'
+                    style={{ fontSize: '14px' }}
+                    onClick={() => {
+                      setNavigatorVisible(false)
+                      setPortalVisible(true)
+                    }}>
+                    {$t({ defaultMessage: 'Portal Design' })}
+                  </UI.Button>
+                </div>
+              }
             </div>
           </div>
         </UI.LayoutHeader>

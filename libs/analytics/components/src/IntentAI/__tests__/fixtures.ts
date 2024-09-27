@@ -1,6 +1,6 @@
 import { NetworkPath } from '@acx-ui/utils'
 
-import { aiFeatures }                                  from '../config'
+import { AiFeatures }                                  from '../config'
 import { IntentConfigurationConfig, useIntentContext } from '../IntentContext'
 import { Statuses }                                    from '../states'
 import { AIFeatureProps }                              from '../Table'
@@ -303,19 +303,28 @@ export const intentListWithAllStatus = {
       ...intentStatus,
       status: 'scheduled',
       statusReason: '',
-      displayStatus: 'scheduled'
+      displayStatus: 'scheduled',
+      metadata: {
+        scheduledAt: '2023-06-17T00:00:00.000Z'
+      }
     },
     {
       ...intentStatus,
       status: 'scheduled',
       statusReason: 'one-click',
-      displayStatus: 'scheduled-one-click'
+      displayStatus: 'scheduled-one-click',
+      metadata: {
+        scheduledAt: '2023-06-17T00:00:00.000Z'
+      }
     },
     {
       ...intentStatus,
       status: 'applyscheduled',
       statusReason: '',
-      displayStatus: 'applyscheduled'
+      displayStatus: 'applyscheduled',
+      metadata: {
+        scheduledAt: '2023-06-17T00:00:00.000Z'
+      }
     },
     {
       ...intentStatus,
@@ -507,7 +516,7 @@ export const intentHighlightsWithOperations = {
 
 export const aiFeatureWithRRM = {
   code: 'c-crrm-channel5g-auto',
-  aiFeature: aiFeatures.RRM,
+  aiFeature: AiFeatures.RRM,
   root: 'root1',
   sliceId: 'sliceId1',
   status: Statuses.active
@@ -515,7 +524,7 @@ export const aiFeatureWithRRM = {
 
 export const aiFeatureWithEquiFlex = {
   code: 'c-probeflex-6g',
-  aiFeature: aiFeatures.EquiFlex,
+  aiFeature: AiFeatures.EquiFlex,
   root: 'root2',
   sliceId: 'sliceId2',
   status: Statuses.active
@@ -523,7 +532,7 @@ export const aiFeatureWithEquiFlex = {
 
 export const aiFeatureWithEquiFlexWithNewStatus = {
   code: 'c-probeflex-6g',
-  aiFeature: aiFeatures.EquiFlex,
+  aiFeature: AiFeatures.EquiFlex,
   root: 'root2',
   sliceId: 'sliceId2',
   status: Statuses.new
@@ -531,15 +540,15 @@ export const aiFeatureWithEquiFlexWithNewStatus = {
 
 export const aiFeatureWithAIOps = {
   code: 'c-bgscan24g-enable',
-  aiFeature: aiFeatures.AIOps,
+  aiFeature: AiFeatures.AIOps,
   root: 'root3',
   sliceId: 'sliceId3',
   status: Statuses.active
 } as AIFeatureProps
 
-export const aiFeatureWithEcoFlexAI = {
-  code: 'eco-flex-code',  //EcoFlexAI code is not defined
-  aiFeature: aiFeatures.EcoFlexAI,
+export const aiFeatureWithEcoFlex = {
+  code: 'i-ecoflex',
+  aiFeature: AiFeatures.EcoFlex,
   root: 'root4',
   sliceId: 'sliceId4',
   status: Statuses.active

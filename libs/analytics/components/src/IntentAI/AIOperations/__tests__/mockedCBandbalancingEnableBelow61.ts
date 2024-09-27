@@ -6,6 +6,7 @@ export const mocked = {
   code: 'c-bandbalancing-enable-below-61',
   sliceId: '506b0a29-1cd6-4ad8-bc5f-f17374595b81',
   status: 'na',
+  displayStatus: 'na',
   metadata: { failures: ['no-aps'] },
   sliceType: 'zone',
   sliceValue: 'Vani',

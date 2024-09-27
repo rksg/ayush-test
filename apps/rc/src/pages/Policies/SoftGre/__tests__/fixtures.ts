@@ -1,7 +1,7 @@
 import { MtuTypeEnum, SoftGreViewData  } from '@acx-ui/rc/utils'
 
 export const mockSoftGreTable = {
-  totalCount: 2,
+  totalCount: 4,
   page: 1,
   data: [
     {
@@ -49,6 +49,15 @@ export const mockSoftGreTable = {
           venueId: '0e2f68ab79154ffea64aa52c5cc48826'
         }
       ]
+    },
+    {
+      id: 'softGreProfileName4-id',
+      name: 'softGreProfileName4',
+      mtuType: MtuTypeEnum.AUTO,
+      disassociateClientEnabled: true,
+      primaryGatewayAddress: '128.0.0.3',
+      keepAliveInterval: 10,
+      keepAliveRetryTimes: 5
     }
   ] as SoftGreViewData[]
 }

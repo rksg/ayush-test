@@ -123,7 +123,7 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
               <div>
                 <FwDescription>
                   {$t({ defaultMessage:
-                    '<VenueSingular></VenueSingular> firmware version for SmartEdge:'
+                    '<VenueSingular></VenueSingular> firmware version for RUCKUS Edge:'
                   })}
                 </FwDescription> <FwVersion>{getVenueFirmware(venueId)}</FwVersion>
               </div>
@@ -143,14 +143,14 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
                 extra={isEdgeHaAaEnabled ?
                   $t({
                     // eslint-disable-next-line max-len
-                    defaultMessage: 'If no cluster is chosen, it automatically sets up an {haMode} HA mode cluster using SmartEdge’s name by default. HA mode defaults are based on the <venueSingular></venueSingular>\'s firmware version.'
+                    defaultMessage: 'If no cluster is chosen, it automatically sets up an {haMode} HA mode cluster using RUCKUS Edge’s name by default. HA mode defaults are based on the <venueSingular></venueSingular>\'s firmware version.'
                   }, {
                     haMode: isAaSupportedByVenue() ?
                       <b>{$t({ defaultMessage: 'active-active' })}</b> :
                       <b>{$t({ defaultMessage: 'active-standby' })}</b>
                   }) :
                   // eslint-disable-next-line max-len
-                  $t({ defaultMessage: 'If no cluster is chosen, it automatically sets up a default cluster using SmartEdge’s name by default.' })
+                  $t({ defaultMessage: 'If no cluster is chosen, it automatically sets up a default cluster using RUCKUS Edge’s name by default.' })
                 }
               >
                 <Select options={[
@@ -184,7 +184,7 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
         <Col span={23}>
           <Form.Item
             name='name'
-            label={$t({ defaultMessage: 'SmartEdge Name' })}
+            label={$t({ defaultMessage: 'RUCKUS Edge Name' })}
             rules={[
               { required: true },
               { max: 64 }
@@ -224,7 +224,7 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
       {showOtpMessage ?
         <Alert message={
           $t({ defaultMessage: `The one-time-password (OTP) will be automatically sent to
-          your email address or via SMS for verification when you add a virtual SmartEdge.
+          your email address or via SMS for verification when you add a virtual RUCKUS Edge.
           The password will expire in 10 minutes and you must complete the authentication
           process before using it.` })
         }

@@ -1,20 +1,19 @@
-import { Typography }                from 'antd'
-import moment                        from 'moment-timezone'
-import { FormattedMessage, useIntl } from 'react-intl'
+import { Typography } from 'antd'
+import { useIntl }    from 'react-intl'
 
-import { Card, Descriptions, GridCol, GridRow } from '@acx-ui/components'
-import { DateFormatEnum, formatter }            from '@acx-ui/formatter'
+import { Card, GridCol, GridRow } from '@acx-ui/components'
 
-import { FixedAutoSizer }      from '../../DescriptionSection/styledComponents'
-import { DetailsSection }      from '../common/DetailsSection'
-import { getIntentStatus }     from '../common/getIntentStatus'
-import { IntentDetailsHeader } from '../common/IntentDetailsHeader'
-import { IntentIcon }          from '../common/IntentIcon'
-import { KpiCard }             from '../common/KpiCard'
-import { StatusTrail }         from '../common/StatusTrail'
-import { codes }               from '../config'
-import { useIntentContext }    from '../IntentContext'
-import { getGraphKPIs }        from '../useIntentDetailsQuery'
+import { DescriptionSection }   from '../../DescriptionSection'
+import { FixedAutoSizer }       from '../../DescriptionSection/styledComponents'
+import { useCommonFields }      from '../common/commonFields'
+import { DetailsSection }       from '../common/DetailsSection'
+import { IntentDetailsHeader }  from '../common/IntentDetailsHeader'
+import { IntentDetailsSidebar } from '../common/IntentDetailsSidebar'
+import { IntentIcon }           from '../common/IntentIcon'
+import { KpiCard }              from '../common/KpiCard'
+import { StatusTrail }          from '../common/StatusTrail'
+import { useIntentContext }     from '../IntentContext'
+import { getGraphKPIs }         from '../useIntentDetailsQuery'
 
 import { ConfigurationCard }   from './ConfigurationCard'
 import { createUseValuesText } from './createUseValuesText'
@@ -28,76 +27,61 @@ export function createIntentAIDetails (
     const { $t } = useIntl()
     const { intent, kpis } = useIntentContext()
     const valuesText = useValuesText()
+    const fields = [
+      ...useCommonFields(intent),
+      ...options.showImpactedAPs
+        ? [ { label: $t({ defaultMessage: 'AP Impact Count' }), children: <ImpactedAPCount /> } ]
+        : []
+    ]
 
     return <>
       <IntentDetailsHeader />
       <GridRow>
         <GridCol col={{ span: 6, xxl: 4 }}>
           <FixedAutoSizer>
-            {({ width }) => (<div style={{ width }}>
+            {({ width }) => (<IntentDetailsSidebar style={{ width }}>
               <IntentIcon size='large' />
               <Typography.Paragraph children={valuesText.summary} />
-              <Descriptions noSpace>
-                <Descriptions.Item
-                  label={$t({ defaultMessage: 'Intent' })}
-                  children={$t(codes[intent.code].intent)}
-                />
-                <Descriptions.Item
-                  label={$t({ defaultMessage: 'Category' })}
-                  children={$t(codes[intent.code].category)}
-                />
-                <Descriptions.Item
-                  label={<FormattedMessage defaultMessage='<VenueSingular></VenueSingular>' />}
-                  children={intent.sliceValue}
-                />
-                <Descriptions.Item
-                  label={$t({ defaultMessage: 'Status' })}
-                  children={getIntentStatus(intent.displayStatus)}
-                />
-                <Descriptions.Item
-                  label={$t({ defaultMessage: 'Date' })}
-                  children={formatter(DateFormatEnum.DateTimeFormat)(moment(intent.updatedAt))}
-                />
-                {options.showImpactedAPs ? <Descriptions.Item
-                  label={$t({ defaultMessage: 'AP Impact Count' })}
-                  children={<ImpactedAPCount />} /> : null}
-              </Descriptions>
-            </div>)}
+              <DescriptionSection fields={fields}/>
+            </IntentDetailsSidebar>)}
           </FixedAutoSizer>
         </GridCol>
         <GridCol col={{ span: 18, xxl: 20 }}>
           <DetailsSection data-testid='Details'>
             <DetailsSection.Title children={$t({ defaultMessage: 'Details' })} />
-            <GridRow>
-              <GridCol data-testid='Configuration' col={{ span: 12 }}>
-                <ConfigurationCard />
-              </GridCol>
-              {getGraphKPIs(intent, kpis).map(kpi => (
-                <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
-                  <KpiCard kpi={kpi} />
+            <DetailsSection.Details>
+              <GridRow>
+                <GridCol data-testid='Configuration' col={{ span: 12 }}>
+                  <ConfigurationCard />
                 </GridCol>
-              ))}
-            </GridRow>
+                {getGraphKPIs(intent, kpis).map(kpi => (
+                  <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
+                    <KpiCard kpi={kpi} />
+                  </GridCol>
+                ))}
+              </GridRow>
+            </DetailsSection.Details>
           </DetailsSection>
 
           <GridRow>
             <GridCol col={{ span: 12 }}>
-              <DetailsSection data-testid='Why the intent?'>
-                <DetailsSection.Title children={$t({ defaultMessage: 'Why the intent?' })} />
-                <Card>{valuesText.reasonText}</Card>
+              <DetailsSection data-testid='Why is the recommendation?'>
+                <DetailsSection.Title
+                  children={$t({ defaultMessage: 'Why is the recommendation?' })} />
+                <DetailsSection.Details children={<Card>{valuesText.reasonText}</Card>} />
               </DetailsSection>
             </GridCol>
             <GridCol col={{ span: 12 }}>
               <DetailsSection data-testid='Potential trade-off'>
                 <DetailsSection.Title children={$t({ defaultMessage: 'Potential trade-off' })} />
-                <Card>{valuesText.tradeoffText}</Card>
+                <DetailsSection.Details children={<Card>{valuesText.tradeoffText}</Card>} />
               </DetailsSection>
             </GridCol>
           </GridRow>
 
           <DetailsSection data-testid='Status Trail'>
             <DetailsSection.Title children={$t({ defaultMessage: 'Status Trail' })} />
-            <StatusTrail />
+            <DetailsSection.Details children={<StatusTrail />} />
           </DetailsSection>
         </GridCol>
       </GridRow>

@@ -51,6 +51,13 @@ export type Intent = {
     scheduledAt: string
     wlans?: IntentWlan[]
     dataEndTime: string
+    preferences?: {
+      crrmFullOptimization: boolean;
+      averagePowerPrice?: {
+        currency: string
+        value: number
+      }
+    }
   }
   sliceType: NodeType
   sliceValue: string
@@ -62,9 +69,6 @@ export type Intent = {
     createdAt?: string
   }>
   updatedAt: string
-  preferences?: {
-    crrmFullOptimization: boolean;
-  },
   currentValue: IntentConfigurationValue
   recommendedValue: IntentConfigurationValue
 } & Partial<IntentKpi>
@@ -147,9 +151,7 @@ export function getGraphKPIs (
 
     if (!isDataRetained(intent.metadata.dataEndTime)) {
       ret.footer = $t(dataRetentionText)
-    } else if (state === 'no-data') {
-      ret.delta = { trend: TrendTypeEnum.None, value: '0%' }
-    } else {
+    } else if (state !== 'no-data') {
       const result = getKPIData(intent, kpi)
       ret.value = kpi.format(_.get(result, ['data', 'result'], null))
 
@@ -166,7 +168,6 @@ export function getGraphKPIs (
         }
       }
     }
-
     return ret
   })
 }
@@ -192,7 +193,7 @@ export const api = intentAIApi.injectEndpoints({
               path { type name }
               statusTrail { status statusReason displayStatus createdAt }
               ${kpiHelper(kpis)}
-              currentValue recommendedValue
+              ${!code.includes('ecoflex') ? 'currentValue recommendedValue' : ''}
             }
           }
         `,

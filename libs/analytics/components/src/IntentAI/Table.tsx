@@ -12,7 +12,7 @@ import { filterByAccess, getShowWithoutRbacCheckKey, hasCrossVenuesPermission, h
 import { noDataDisplay, PathFilter, useEncodedParameter }                                      from '@acx-ui/utils'
 
 import { Icon }                                        from './common/IntentIcon'
-import { aiFeatures, codes, IntentListItem }           from './config'
+import { AiFeatures, codes, IntentListItem }           from './config'
 import { useIntentAITableQuery }                       from './services'
 import { DisplayStates, Statuses }                     from './states'
 import * as UI                                         from './styledComponents'
@@ -51,7 +51,7 @@ const IconTooltip = (props: IconTooltipProps) => {
 }
 
 export const iconTooltips = {
-  [aiFeatures.RRM]: <IconTooltip
+  [AiFeatures.RRM]: <IconTooltip
     icon={<AIDrivenRRM />}
     title={defineMessage({ defaultMessage: 'AI-Driven RRM' })}
     subTitleLeft={defineMessage({ defaultMessage: 'Throughput' })}
@@ -61,7 +61,7 @@ export const iconTooltips = {
       defaultMessage: `Choose between a network with maximum throughput,
       allowing some interference, or one with minimal interference, for high client density.` })}
   />,
-  [aiFeatures.EquiFlex]: <IconTooltip
+  [AiFeatures.EquiFlex]: <IconTooltip
     icon={<EquiFlex />}
     title={defineMessage({ defaultMessage: 'EquiFlex' })}
     subTitleLeft={defineMessage({ defaultMessage: 'Time to Connect' })}
@@ -71,7 +71,7 @@ export const iconTooltips = {
       defaultMessage: `Choose between fine-tuning your wireless LAN for extremely high client
       density environment or focus on keeping faster client time to connect.` })}
   />,
-  [aiFeatures.AIOps]: <IconTooltip
+  [AiFeatures.AIOps]: <IconTooltip
     icon={<AIOperation />}
     title={defineMessage({ defaultMessage: 'AI Operations' })}
     subTitleLeft={defineMessage({ defaultMessage: 'Optimize Network' })}
@@ -81,9 +81,9 @@ export const iconTooltips = {
       defaultMessage: `Proactively monitor and tune network performance with RUCKUS AI's
       dynamic recommendations to enhance KPIs and user experience.` })}
   />,
-  [aiFeatures.EcoFlexAI]: <IconTooltip
+  [AiFeatures.EcoFlex]: <IconTooltip
     icon={<EcoFlexAI />}
-    title={defineMessage({ defaultMessage: 'EcoFlexAI' })}
+    title={defineMessage({ defaultMessage: 'EcoFlex' })}
     subTitleLeft={defineMessage({ defaultMessage: 'Energy Footprint' })}
     subTitleMiddle={defineMessage({ defaultMessage: 'vs' })}
     subTitleRight={defineMessage({ defaultMessage: 'Mission Criticality' })}
@@ -236,7 +236,7 @@ export function IntentAITable (
       filteredValue: selectedFilters.intents,
       filterSearch: true,
       filterPlaceholder: $t({ defaultMessage: 'All Intents' }),
-      filterableWidth: 300
+      filterableWidth: 240
     },
     {
       title: $t({ defaultMessage: 'Category' }),

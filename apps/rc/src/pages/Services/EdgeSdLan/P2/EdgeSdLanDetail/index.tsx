@@ -16,11 +16,31 @@ import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { DcSdLanDetailContent }  from './DcSdLanDetailContent'
 import { DmzSdLanDetailContent } from './DmzSdLanDetailContent'
 
+const defaultSdLanPayload = {
+  fields: [
+    'id', 'name',
+    'venueId', 'venueName',
+    'edgeClusterId', 'edgeClusterName',
+    'tunnelProfileId', 'tunnelProfileName',
+    'isGuestTunnelEnabled',
+    'guestEdgeClusterId', 'guestEdgeClusterName',
+    'guestTunnelProfileId', 'guestTunnelProfileName',
+    'edgeAlarmSummary',
+    'vlans', 'vlanNum', 'vxlanTunnelNum',
+    'guestVlanNum', 'guestVxlanTunnelNum', 'guestVlans',
+    'networkIds', 'networkInfos',
+    'guestNetworkIds', 'guestNetworkInfos',
+    'edgeClusterTunnelInfo',
+    'guestEdgeClusterTunnelInfo'
+  ]
+}
+
 const EdgeSdLanDetail = () => {
   const { $t } = useIntl()
   const params = useParams()
   const { edgeSdLanData, isLoading, isFetching } = useGetEdgeSdLanP2ViewDataListQuery(
     { payload: {
+      ...defaultSdLanPayload,
       filters: { id: [params.serviceId] }
     } },
     {
