@@ -14,11 +14,11 @@ import {
 } from '@acx-ui/rc/services'
 import {
   ActionType,
-  UIConfiguration,
-  WorkflowStep,
   DefaultUIConfiguration,
+  GenericActionData,
   toReactFlowData,
-  GenericActionData
+  UIConfiguration,
+  WorkflowStep
 } from '@acx-ui/rc/utils'
 import { hasCrossVenuesPermission } from '@acx-ui/user'
 

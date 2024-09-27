@@ -4,7 +4,8 @@ export function Basic () {
   return <>
     <div>
       <p style={{ fontWeight: 600 }}>Icon only:</p>
-      <BetaIndicator />
+      size=sm <BetaIndicator />
+      size=md <BetaIndicator size='md' />
     </div>
     <br></br>
     <div>
