@@ -68,14 +68,25 @@ describe('ShowDriftsDrawer', () => {
       <ShowDriftsDrawer setVisible={jest.fn()} selectedTemplate={mockedConfigTemplate} />
     </Provider>)
 
-    // eslint-disable-next-line max-len
-    await userEvent.click(await screen.findByRole('checkbox', { name: /Sync all drifts for all customers/i }))
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
+    // Check all instances
+    await userEvent.click(screen.getByRole('checkbox', { name: /Sync all drifts/i }))
     await waitFor(() => {
       const allInstanceElements = screen.queryAllByRole('button', { name: /Configurations in/i })
 
       for (const instanceElement of allInstanceElements) {
         expect(within(instanceElement).getByRole('checkbox')).toBeChecked()
+      }
+    })
+
+    // Uncheck all instances
+    await userEvent.click(screen.getByRole('checkbox', { name: /Sync all drifts/i }))
+    await waitFor(() => {
+      const allInstanceElements = screen.queryAllByRole('button', { name: /Configurations in/i })
+
+      for (const instanceElement of allInstanceElements) {
+        expect(within(instanceElement).getByRole('checkbox')).not.toBeChecked()
       }
     })
   })

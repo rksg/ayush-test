@@ -16,9 +16,7 @@ describe('DriftInstance Component', () => {
   const defaultProps: DriftInstanceProps = {
     instanceName: 'Test Instance',
     instanceId: '12345',
-    updateSelection: mockUpdateSelection,
-    selected: false,
-    disalbed: false
+    updateSelection: mockUpdateSelection
   }
 
   beforeEach(() => {
