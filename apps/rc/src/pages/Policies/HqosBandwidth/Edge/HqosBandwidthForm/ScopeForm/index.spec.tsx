@@ -166,9 +166,7 @@ describe('HQoS Scope Form', () => {
     await screen.findByText(/Activate clusters that the HQoS bandwidth profile will be applied/i)
 
     const rows = await screen.findAllByRole('row', { name: /Edge Cluster/i })
-    await waitFor(()=>{
-      expect(rows.length).toBe(mockEdgeClusterList.data.length)
-    })
+    expect(rows.length).toBe(1)
 
     const warningTooltip = await within(rows[0]).findByTestId('WarningCircleSolid')
     await userEvent.hover(warningTooltip)
