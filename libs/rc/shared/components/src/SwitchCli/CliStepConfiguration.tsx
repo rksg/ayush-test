@@ -505,7 +505,8 @@ export function CliStepConfiguration (props: {
                           props?.allSwitchList || [],
                           setSwitchSettings,
                           setSwitchSettingType,
-                          setSwitchSettingDrawerVisible
+                          setSwitchSettingDrawerVisible,
+                          isSwitchRbacEnabled || isCustomizedVariableEnabled
                         )
                         : transformVariableValue(variable.type, variable.value)
                     }
@@ -750,6 +751,33 @@ function htmlDecode (code: string) {
   return div.innerText?.replace(/↵/g, '\n') || div?.textContent?.replace(/↵/g, '')
 }
 
+// TODO: remove after RBAC enabled
+function convertVariableToV11Format (variable: CliTemplateVariable): CliTemplateVariable {
+  const separator = getVariableSeparator(variable.type)
+  const [value1, value2, value3] = variable?.value?.split(separator) || []
+
+  switch (variable.type) {
+    case VariableType.ADDRESS:
+      return {
+        ...variable,
+        ipAddressStart: value1,
+        ipAddressEnd: value2,
+        subMask: value3
+      }
+    case VariableType.RANGE:
+      return {
+        ...variable,
+        rangeStart: Number(value1),
+        rangeEnd: Number(value2)
+      }
+    default:
+      return {
+        ...variable,
+        value: value1
+      }
+  }
+}
+
 function renderVariableTitle (
   variable: CliTemplateVariable
 ) {
@@ -773,11 +801,15 @@ function renderVariableValue (
   allSwitchList: SwitchViewModel[],
   setSwitchSettings: (data: SwitchSettings[]) => void,
   setSwitchSettingType: (data: string) => void,
-  setSwitchSettingDrawerVisible: (visible: boolean) => void
+  setSwitchSettingDrawerVisible: (visible: boolean) => void,
+  isNewTypeVariableEnabled?: boolean
 ) {
   const { $t } = getIntl()
   const type = variable?.type?.toUpperCase()
   const switchCount = variable?.switchVariables?.map(s => s.serialNumbers).flat()?.length
+  // TODO: remove after RBAC enabled
+  const convertedVariable
+    = isNewTypeVariableEnabled ? variable : convertVariableToV11Format(variable)
 
   const customizedSwitches = !!switchCount && <>
     <UI.VariableTitle>{
@@ -787,16 +819,17 @@ function renderVariableValue (
       <Button type='link'
         size='small'
         onClick={() => {
-          const switchVariables = variable?.switchVariables?.map((switchVariable)=> {
-            if (Array.isArray(switchVariable.serialNumbers)) {
-              return switchVariable.serialNumbers.map(s => ({
-                serialNumber: s, value: switchVariable.value
-              }))
-            }
-            return {
-              serialNumber: switchVariable.serialNumbers, value: switchVariable.value
-            }
-          }).flat()
+          const switchVariables
+            = convertedVariable?.switchVariables?.map((switchVariable)=> {
+              if (Array.isArray(switchVariable.serialNumbers)) {
+                return switchVariable.serialNumbers.map(s => ({
+                  serialNumber: s, value: switchVariable.value
+                }))
+              }
+              return {
+                serialNumber: switchVariable.serialNumbers, value: switchVariable.value
+              }
+            }).flat()
 
           const settings = switchVariables?.map(switchVariable => {
             const switchData = _.find(allSwitchList, (s) => {
@@ -827,11 +860,11 @@ function renderVariableValue (
         <UI.VariableTitle>{ $t({ defaultMessage: 'Start - End IP Address' }) }</UI.VariableTitle>
         <UI.VariableContent>{
           $t({ defaultMessage: '{start} - {end}' }, {
-            start: variable?.ipAddressStart, end: variable?.ipAddressEnd
+            start: convertedVariable?.ipAddressStart, end: convertedVariable?.ipAddressEnd
           })
         }</UI.VariableContent>
         <UI.VariableTitle>{ $t({ defaultMessage: 'Network Mask' }) }</UI.VariableTitle>
-        <UI.VariableContent>{ variable?.subMask }</UI.VariableContent>
+        <UI.VariableContent>{ convertedVariable?.subMask }</UI.VariableContent>
         { customizedSwitches }
       </>
     case VariableType.RANGE:
@@ -839,7 +872,7 @@ function renderVariableValue (
         <UI.VariableTitle>{ $t({ defaultMessage: 'Start - End Value' }) }</UI.VariableTitle>
         <UI.VariableContent>{
           $t({ defaultMessage: '{start} - {end}' }, {
-            start: variable?.rangeStart, end: variable?.rangeEnd
+            start: convertedVariable?.rangeStart, end: convertedVariable?.rangeEnd
           })
         }</UI.VariableContent>
         { customizedSwitches }
@@ -848,9 +881,12 @@ function renderVariableValue (
       return <>
         <UI.VariableTitle>{ $t({ defaultMessage: 'String' }) }</UI.VariableTitle>
         <UI.VariableContent>
-          <Tooltip title={formatContentWithLimit(variable?.value, MAX_LINES)} dottedUnderline>
+          <Tooltip title={
+            formatContentWithLimit(convertedVariable?.value, MAX_LINES)
+          }
+          dottedUnderline>
             <UI.CliVariableContent>{
-              variable?.value.split(/\r\n|\r|\n/)?.[0]
+              convertedVariable?.value.split(/\r\n|\r|\n/)?.[0]
             }</UI.CliVariableContent>
           </Tooltip>
         </UI.VariableContent>
