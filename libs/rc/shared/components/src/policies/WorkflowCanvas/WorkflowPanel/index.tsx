@@ -14,7 +14,7 @@ import {
   useGetWorkflowStepsByIdQuery,
   useLazyGetWorkflowActionRequiredDefinitionsQuery
 } from '@acx-ui/rc/services'
-import { ActionType, toReactFlowData } from '@acx-ui/rc/utils'
+import { ActionType, toReactFlowData, WorkflowPanelMode } from '@acx-ui/rc/utils'
 
 import ActionLibraryDrawer from '../ActionLibraryDrawer'
 import StepDrawer          from '../StepDrawer/StepDrawer'
@@ -28,15 +28,9 @@ export enum PanelType {
   NoCard = 'noCard'
 }
 
-export enum PanelMode {
-  Default = 'default',
-  Edit = 'edit',
-  View = 'view'
-}
-
 interface WorkflowPanelProps {
   workflowId: string,
-  mode?: PanelMode,
+  mode?: WorkflowPanelMode,
   type?: PanelType
 }
 
@@ -116,7 +110,7 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
     const {
       nodes: inputNodes,
       edges: inputEdges
-    } = toReactFlowData(stepsData?.content)
+    } = toReactFlowData(stepsData?.content, mode)
     setNodes(inputNodes)
     setEdges(inputEdges)
   }, [stepsData])
