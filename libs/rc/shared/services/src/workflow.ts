@@ -456,7 +456,7 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
         }
       } }),
     // eslint-disable-next-line max-len
-    createAction: build.mutation<CommonAsyncResponse, RequestPayload & { callback?: (response: CommonAsyncResponse) => void, failedCallback?: () => void }>({
+    createAction: build.mutation<CommonAsyncResponse, RequestPayload & { onSuccess?: (response: CommonAsyncResponse) => void, onError?: () => void }>({
       query: commonQueryFn(WorkflowUrls.createAction),
       invalidatesTags: [{ type: 'Action', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
@@ -467,13 +467,13 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
             if (response.data.requestId === msg.requestId
               && msg.useCase === 'CREATE_WORKFLOW_ACTION') {
               if (msg.status === TxStatus.SUCCESS) {
-                requestArgs.callback?.(response.data)
+                requestArgs.onSuccess?.(response.data)
               } else {
-                requestArgs?.failedCallback?.()
+                requestArgs?.onError?.()
               }
             }
           } catch {
-            requestArgs?.failedCallback?.()
+            requestArgs?.onError?.()
           }
         })
       }

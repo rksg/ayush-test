@@ -95,9 +95,9 @@ export default function StepDrawer (props: StepDrawerProps) {
             onClose()
             resolve(true)
           }
-          const onFailed = () => resolve(true)
+          const onError = () => resolve(true)
 
-          createStep(policyId, actionType, formContent, priorNode?.id, onSuccess, onFailed)
+          createStep(policyId, actionType, formContent, priorNode?.id, onSuccess, onError)
         })
     } catch (ignore) {
 
