@@ -155,6 +155,10 @@ function getHealthPieChart (
             size={'x-large'}
             showLegend
             showTotal={false}
+            labelTextStyle={{
+              overflow: 'truncate',
+              width: 140
+            }}
             dataFormatter={tooltipFormatter(total, dataFormatter)}
           />
         )}
