@@ -7,7 +7,7 @@ import { RawIntlProvider, useIntl } from 'react-intl'
 import { Button, Drawer, Loader, Table, TableProps } from '@acx-ui/components'
 import {
   useEditCertificateMutation,
-  useGenerateCertificateToIdentityMutation,
+  useGenerateCertificateToIdentityMutation, useGetCertificateAuthorityQuery,
   useSearchPersonaListQuery
 } from '@acx-ui/rc/services'
 import { TableQuery, Certificate, CertificateCategoryType, CertificateStatusType, CertificateTemplate, EXPIRATION_DATE_FORMAT, EXPIRATION_TIME_FORMAT, EnrollmentType, FILTER, PolicyOperation, PolicyType, SEARCH, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy } from '@acx-ui/rc/utils'
@@ -39,6 +39,15 @@ export function CertificateTable (
     { payload: { ids: [...new Set(tableQuery.data?.data?.map(d => d.identityId))] } },
     { skip: !tableQuery.data })
 
+  const { privateKeyBase64 } = useGetCertificateAuthorityQuery(
+    { params: { caId: templateData?.onboard?.certificateAuthorityId } },
+    {
+      skip: !templateData?.onboard?.certificateAuthorityId,
+      selectFromResult: ({ data }) => ({
+        privateKeyBase64: data?.privateKeyBase64
+      })
+    })
+
   useEffect(() => {
     tableQuery.data?.data?.filter((item) =>
       item.id === detailId).map((item) => {
@@ -57,8 +66,6 @@ export function CertificateTable (
     { key: 'REVOKED', label: $t({ defaultMessage: 'Revoked Certificates' }), value: 'REVOKED' },
     { key: 'EXPIRED', label: $t({ defaultMessage: 'Expired Certificates' }), value: 'EXPIRED' }
   ]
-
-  certificateForm.setFieldValue('identityId', specificIdentity)
 
   const columns: TableProps<Certificate>['columns'] = [
     {
@@ -247,7 +254,7 @@ export function CertificateTable (
   }
 
   const actionButtons = [
-    ...(templateData && showGenerateCert && templateData.identityGroupId ? [{
+    ...(templateData && showGenerateCert && templateData.identityGroupId && !!privateKeyBase64 ? [{
       scopeKey: getScopeKeyByPolicy(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.CREATE),
       label: $t({ defaultMessage: 'Generate Certificate' }),
       onClick: () => {
@@ -295,7 +302,8 @@ export function CertificateTable (
                 const { identityId, certificateTemplateId, csrType,
                   csrString, description, ...variables } = certificateForm.getFieldsValue()
                 await generateCertificate({
-                  params: { templateId: templateData?.id, personaId: identityId },
+                  // eslint-disable-next-line max-len
+                  params: { templateId: templateData?.id, personaId: specificIdentity ?? identityId },
                   payload: { csrString, description, variableValues: { ...variables } }
                 })
                 setCertificateDrawerOpen(false)

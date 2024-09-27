@@ -49,14 +49,6 @@ export default function CertificateTemplateDetail () {
         identityGroupName: data?.name || certificateTemplateData?.identityGroupId
       })
     })
-  const { privateKeyBase64 } = useGetCertificateAuthorityQuery(
-    { params: { caId: certificateTemplateData?.onboard?.certificateAuthorityId } },
-    {
-      skip: !certificateTemplateData?.onboard?.certificateAuthorityId,
-      selectFromResult: ({ data }) => ({
-        privateKeyBase64: data?.privateKeyBase64
-      })
-    })
   const certificateTableQuery = useTableQuery({
     useQuery: useGetSpecificTemplateCertificatesQuery,
     defaultPayload: {},
@@ -95,7 +87,7 @@ export default function CertificateTemplateDetail () {
     [TabKeyType.CERTIFICATE]: <CertificateTable
       tableQuery={certificateTableQuery}
       templateData={certificateTemplateData}
-      showGenerateCert={!!privateKeyBase64} />,
+      showGenerateCert={true} />,
     [TabKeyType.SCEP]: <ScepTable templateId={certificateTemplateData?.id}/>,
     [TabKeyType.CHROMEBOOK]: <ChromebookTab data={certificateTemplateData} />
   }

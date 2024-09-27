@@ -2,11 +2,15 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { AlgorithmType, CertificateUrls } from '@acx-ui/rc/utils'
-import { Provider }                       from '@acx-ui/store'
-import { mockServer, render, screen }     from '@acx-ui/test-utils'
+import { AlgorithmType, CertificateUrls, PersonaUrls } from '@acx-ui/rc/utils'
+import { Provider }                                    from '@acx-ui/store'
+import { mockServer, render, screen }                  from '@acx-ui/test-utils'
 
-import { certificateAuthorityList, certificateTemplateList } from '../../__test__/fixtures'
+import {
+  certificateAuthorityList,
+  certificateTemplateList,
+  mockPersonaGroupWithIdentity
+} from '../../__test__/fixtures'
 
 import CertificateSettings from './CertificateSettings'
 
@@ -20,6 +24,10 @@ describe('CertificateSettings', () => {
       rest.post(
         CertificateUrls.getCAs.url,
         (req, res, ctx) => res(ctx.json(certificateAuthorityList))
+      ),
+      rest.get(
+        PersonaUrls.getPersonaGroupById.url,
+        (req, res, ctx) => res(ctx.json(mockPersonaGroupWithIdentity))
       )
     )
   })
@@ -37,6 +45,7 @@ describe('CertificateSettings', () => {
     render(<Provider><Form><CertificateSettings/></Form></Provider>)
 
     expect(screen.getByTitle('Certificate Template')).toBeVisible()
+    expect(screen.getByTitle('Identity')).toBeVisible()
     expect(screen.getByTitle('CSR Source')).toBeVisible()
     expect(screen.getByTitle('Description')).toBeVisible()
     expect(screen.getByTitle('Auto-Generate CSR')).toBeVisible()
@@ -61,6 +70,13 @@ describe('CertificateSettings', () => {
   it('should not render Certificate Template select when specificTemplate is true', () => {
     render(<Provider><Form>
       <CertificateSettings templateData={certificateTemplate} /></Form></Provider>)
+    const certificateTemplateSelect = screen.queryByLabelText('Certificate Template')
+    expect(certificateTemplateSelect).toBeNull()
+  })
+
+  it('should not render Certificate Template and identity select when specificTemplate is true', () => {
+    render(<Provider><Form>
+      <CertificateSettings templateData={certificateTemplate} specificIdentity={'identity_id'}/></Form></Provider>)
     const certificateTemplateSelect = screen.queryByLabelText('Certificate Template')
     expect(certificateTemplateSelect).toBeNull()
   })
