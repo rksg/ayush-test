@@ -367,7 +367,7 @@ export default function GptWizard(props: {
                       lineHeight: '20px',
                       fontSize: '10px',
                       fontWeight: '600',
-                      margin: '5px'
+                      margin: '7px 5px 5px 5px;'
                     }}>
                       {index + 1}
                     </div>
@@ -375,7 +375,8 @@ export default function GptWizard(props: {
                   <div >
 
                     <ProFormText
-                      label='Network name'
+                      width={200}
+                      label='Network Name'
                       name={['step1payload', index, 'SSID Name']}
                       initialValue={item['SSID Name']}
                     />
@@ -395,6 +396,7 @@ export default function GptWizard(props: {
 
 
                       }}
+                      width={200}
                       label='Network Objective'
                       name={['step1payload', index, 'SSID Objective']} // 设置 name 对应原始数据结构
                       initialValue={item['SSID Objective']}

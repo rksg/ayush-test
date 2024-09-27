@@ -35,6 +35,7 @@ export default function RuckusGptButton () {
       }}
     />
     <UI.GptModal
+      titleType={step === 'wizard' ? 'wizard' : 'default'}
       title={step === 'wizard' ?
         <div
           style={{ width: '250px' }}>
