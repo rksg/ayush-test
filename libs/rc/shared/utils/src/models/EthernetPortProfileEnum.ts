@@ -1,3 +1,9 @@
+export enum EthernetPortType {
+    ACCESS = 'ACCESS',
+    TRUNK = 'TRUNK',
+    SELECTIVE_TRUNK = 'SELECTIVE_TRUNK'
+}
+
 export enum EthernetPortAuthType {
     DISABLED= 'DISABLED',
     SUPPLICANT= 'SUPPLICANT',

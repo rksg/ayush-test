@@ -98,7 +98,7 @@ export const mockAIDrivenRow = {
   updatedAt: '2023-06-16T06:05:02.839Z',
   sliceType: 'zone',
   sliceValue: 'zone-1',
-  metadata: { algorithmData: { isCrrmFullOptimization: false } },
+  metadata: {},
   path: [
     { type: 'system', name: 'vsz612' },
     { type: 'zone', name: 'EDU-MeshZone_S12348' }
