@@ -48,7 +48,7 @@ export default function WlanSelection ({ disabled }: { disabled: boolean }) {
       sortOrder: 'ASC',
       pageSize: 10_000
     }
-  }, { skip: isMlisa || disabled })
+  }, { skip: isMlisa })
   const wlansQuery = isMlisa ? raiQuery : r1Networks
   useEffect(() => {
     let wlansData: Wlan[]
@@ -71,7 +71,7 @@ export default function WlanSelection ({ disabled }: { disabled: boolean }) {
         wlansData = available
       }
       setWlans(wlansData)
-      form.setFieldValue('wlans', wlansData.filter(wlan => !wlan.excluded))
+      form.setFieldValue('wlans', wlansData.filter(wlan => !(wlan.excluded ?? false)))
     }
   }, [wlansQuery.data, isMlisa])
   return<Loader states={[wlansQuery]} style={{ height: '72px' }}>
@@ -92,7 +92,8 @@ export default function WlanSelection ({ disabled }: { disabled: boolean }) {
         showSearch={false}
         style={{ width: '100%', margin: '0 auto 10px auto' }}
         onChange={(ids: string[]) => {
-          const updatedList = wlans.map(wlan => ({ ...wlan, excluded: !ids.includes(wlan.id!) }))
+          const updatedList = wlans.map(wlan =>
+            ({ ...wlan, excluded: ids.length > 0 && !ids.includes(wlan.id!) }))
           setWlans(updatedList)
           form.setFieldValue('wlans', updatedList.filter(wlan => !wlan.excluded))
         }}
