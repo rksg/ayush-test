@@ -49,10 +49,17 @@ import { getIntl }   from '@acx-ui/utils'
 import { CodeMirrorWidget }                                from '../CodeMirrorWidget'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../ImportFileDrawer'
 
-import { CliVariableModal }                                                                        from './CliVariableModal'
-import { formatContentWithLimit, getVariableColor, getVariableSeparator, MAX_LINES, VariableType } from './CliVariableUtils'
-import { CustomizedSettingsDrawer }                                                                from './CustomizedSettingsDrawer'
-import * as UI                                                                                     from './styledComponents'
+import { CliVariableModal } from './CliVariableModal'
+import {
+  getVariableSeparator,
+  renderVariableTitle,
+  renderVariableValue,
+  VariableType
+} from './CliVariableUtils'
+import { CustomizedSettingsDrawer } from './CustomizedSettingsDrawer'
+import * as UI                      from './styledComponents'
+
+import { SwitchSettings } from './'
 
 interface codeMirrorElement {
   current: {
@@ -93,12 +100,6 @@ const cliExamplesTooltip = <FormattedMessage
     strong: (text) => <strong>{text}</strong>
   }}
 />
-
-export interface SwitchSettings {
-  name: string,
-  value: string,
-  venueName: string
-}
 
 export const maxVariableCount = 200
 const cliTemplatesPayload = {
@@ -751,146 +752,3 @@ function htmlDecode (code: string) {
   return div.innerText?.replace(/↵/g, '\n') || div?.textContent?.replace(/↵/g, '')
 }
 
-// TODO: remove after RBAC enabled
-function convertVariableToV11Format (variable: CliTemplateVariable): CliTemplateVariable {
-  const separator = getVariableSeparator(variable.type)
-  const [value1, value2, value3] = variable?.value?.split(separator) || []
-
-  switch (variable.type) {
-    case VariableType.ADDRESS:
-      return {
-        ...variable,
-        ipAddressStart: value1,
-        ipAddressEnd: value2,
-        subMask: value3
-      }
-    case VariableType.RANGE:
-      return {
-        ...variable,
-        rangeStart: Number(value1),
-        rangeEnd: Number(value2)
-      }
-    default:
-      return {
-        ...variable,
-        value: value1
-      }
-  }
-}
-
-function renderVariableTitle (
-  variable: CliTemplateVariable
-) {
-  const variableType = variable?.type || ''
-  const variableColor = getVariableColor(variableType)
-
-  return <Space size={4}>
-    <Space style={{ fontWeight: 600, lineHeight: '20px' }}>{
-      variable.name
-    }</Space>
-    <UI.VariableTypeLabel style={{
-      backgroundColor: variableColor
-    }}>{
-        transformTitleCase(variableType)
-      }</UI.VariableTypeLabel>
-  </Space>
-}
-
-function renderVariableValue (
-  variable: CliTemplateVariable,
-  allSwitchList: SwitchViewModel[],
-  setSwitchSettings: (data: SwitchSettings[]) => void,
-  setSwitchSettingType: (data: string) => void,
-  setSwitchSettingDrawerVisible: (visible: boolean) => void,
-  isNewTypeVariableEnabled?: boolean
-) {
-  const { $t } = getIntl()
-  const type = variable?.type?.toUpperCase()
-  const switchCount = variable?.switchVariables?.map(s => s.serialNumbers).flat()?.length
-  // TODO: remove after RBAC enabled
-  const convertedVariable
-    = isNewTypeVariableEnabled ? variable : convertVariableToV11Format(variable)
-
-  const customizedSwitches = !!switchCount && <>
-    <UI.VariableTitle>{
-      $t({ defaultMessage: 'Switches with their own settings' })
-    }</UI.VariableTitle>
-    <UI.VariableContent>
-      <Button type='link'
-        size='small'
-        onClick={() => {
-          const switchVariables
-            = convertedVariable?.switchVariables?.map((switchVariable)=> {
-              if (Array.isArray(switchVariable.serialNumbers)) {
-                return switchVariable.serialNumbers.map(s => ({
-                  serialNumber: s, value: switchVariable.value
-                }))
-              }
-              return {
-                serialNumber: switchVariable.serialNumbers, value: switchVariable.value
-              }
-            }).flat()
-
-          const settings = switchVariables?.map(switchVariable => {
-            const switchData = _.find(allSwitchList, (s) => {
-              return s.serialNumber === switchVariable?.serialNumber
-            })
-            const hasSwitchName = switchData?.name !== switchData?.serialNumber
-            const name = hasSwitchName
-              ? `${switchData?.serialNumber} (${switchData?.name})` : switchData?.name
-            return {
-              ...switchData,
-              ...switchVariable,
-              name
-            }
-          }) as SwitchSettings[]
-
-          setSwitchSettings(settings)
-          setSwitchSettingType(type)
-          setSwitchSettingDrawerVisible(true)
-        }}>
-        { $t({ defaultMessage: '{count} Switch(es)' }, { count: switchCount }) }
-      </Button>
-    </UI.VariableContent>
-  </>
-
-  switch (type) {
-    case VariableType.ADDRESS:
-      return <>
-        <UI.VariableTitle>{ $t({ defaultMessage: 'Start - End IP Address' }) }</UI.VariableTitle>
-        <UI.VariableContent>{
-          $t({ defaultMessage: '{start} - {end}' }, {
-            start: convertedVariable?.ipAddressStart, end: convertedVariable?.ipAddressEnd
-          })
-        }</UI.VariableContent>
-        <UI.VariableTitle>{ $t({ defaultMessage: 'Network Mask' }) }</UI.VariableTitle>
-        <UI.VariableContent>{ convertedVariable?.subMask }</UI.VariableContent>
-        { customizedSwitches }
-      </>
-    case VariableType.RANGE:
-      return <>
-        <UI.VariableTitle>{ $t({ defaultMessage: 'Start - End Value' }) }</UI.VariableTitle>
-        <UI.VariableContent>{
-          $t({ defaultMessage: '{start} - {end}' }, {
-            start: convertedVariable?.rangeStart, end: convertedVariable?.rangeEnd
-          })
-        }</UI.VariableContent>
-        { customizedSwitches }
-      </>
-    default:
-      return <>
-        <UI.VariableTitle>{ $t({ defaultMessage: 'String' }) }</UI.VariableTitle>
-        <UI.VariableContent>
-          <Tooltip title={
-            formatContentWithLimit(convertedVariable?.value, MAX_LINES)
-          }
-          dottedUnderline>
-            <UI.CliVariableContent>{
-              convertedVariable?.value.split(/\r\n|\r|\n/)?.[0]
-            }</UI.CliVariableContent>
-          </Tooltip>
-        </UI.VariableContent>
-        { customizedSwitches }
-      </>
-  }
-}

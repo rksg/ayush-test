@@ -567,7 +567,7 @@ describe('Cli Profile Form', () => {
     })
   })
 
-  describe('CLI profile', () => {
+  describe('Switch level CLI profile', () => {
     describe('Edit mode', () => {
       const params = {
         tenantId: 'tenant-id',
@@ -597,7 +597,7 @@ describe('Cli Profile Form', () => {
               }, {
                 serialNumber: 'FMF3250Q06R',
                 model: 'ICX7150-C08P',
-                name: 'FMF3250Q06R',
+                name: 'FMF3250Q06R - REAL',
                 deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
                 venueName: 'My-Venue',
                 tenantId: 'tenant-id'
@@ -608,7 +608,8 @@ describe('Cli Profile Form', () => {
                 deviceStatus: SwitchStatusEnum.OPERATIONAL,
                 venueName: 'My-Venue',
                 tenantId: 'tenant-id'
-              }] }))
+              }]
+            }))
           ),
           rest.get(SwitchUrlsInfo.getSwitchConfigProfile.url,
             (_, res, ctx) => res(ctx.json({
@@ -668,7 +669,37 @@ describe('Cli Profile Form', () => {
         expect(mockedDisassociate).toHaveBeenCalledTimes(0)
       })
 
-      it('should render switch own settings drawer correctly', async () => {
+      it('should render switch settings drawer correctly', async () => {
+        jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_LEVEL_CLI_PROFILE)
+        render(<Provider><CliProfileForm /></Provider>, {
+          route: { params, path: '/:tenantId/networks/wired/:configType/cli/:profileId/:action' }
+        })
+
+        await waitFor(() => {
+          expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+        })
+        expect(await screen.findByText('Edit CLI Configuration Profile')).toBeVisible()
+
+        await userEvent.click(await screen.findByRole('button', { name: 'CLI Configuration' }))
+        await userEvent.click(await screen.findByRole('tab', { name: 'Variables' }))
+        expect(await screen.findAllByText('Switches with their own settings')).toHaveLength(3)
+
+        // range variable
+        await userEvent.click(await screen.findByRole('button', { name: '2 Switch(es)' }))
+        let dialog = await screen.findByRole('dialog')
+        let rows = await within(dialog).findAllByRole('row')
+        expect(rows).toHaveLength(3)
+        const closeButton = screen.queryByRole('button', { name: 'Close' })
+        await userEvent.click(closeButton!)
+
+        // string variable
+        await userEvent.click(await screen.findByRole('button', { name: '3 Switch(es)' }))
+        dialog = await screen.findByRole('dialog')
+        rows = await within(dialog).findAllByRole('row')
+        expect(rows).toHaveLength(4)
+      })
+
+      it('should close switch settings drawer correctly', async () => {
         jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_LEVEL_CLI_PROFILE)
         render(<Provider><CliProfileForm /></Provider>, {
           route: { params, path: '/:tenantId/networks/wired/:configType/cli/:profileId/:action' }
@@ -687,16 +718,13 @@ describe('Cli Profile Form', () => {
         await userEvent.click(await screen.findByRole('button', { name: '1 Switch(es)' }))
         let dialog = await screen.findByRole('dialog')
         expect(await within(dialog).findByText('Switches with their own settings')).toBeVisible()
-        expect(await within(dialog).findByText('FMF3250Q06R')).toBeVisible()
+        expect(await within(dialog).findByText('FMF3250Q06R (FMF3250Q06R - REAL)')).toBeVisible()
         expect(await within(dialog).findByText('My-Venue')).toBeVisible()
         const closeButton = screen.queryByRole('button', { name: 'Close' })
         await userEvent.click(closeButton!)
-
-        // string variable
-        await userEvent.click(await screen.findByRole('button', { name: '3 Switch(es)' }))
-        dialog = await screen.findByRole('dialog')
-        const rows = await within(dialog).findAllByRole('row')
-        expect(rows).toHaveLength(4)
+        await waitFor(async () => {
+          expect(screen.queryByText('FMF3250Q06R (FMF3250Q06R - REAL)')).toBeNull()
+        })
       })
 
       it('should render edit variable modal correctly', async () => {
@@ -756,6 +784,24 @@ describe('Cli Profile Form', () => {
         // const combobox = await within(dialog).findAllByRole('combobox')
         // await userEvent.click(combobox[0]) // customized select
         // await userEvent.selectOptions(combobox[0], 'FMF3250Q05R')
+      })
+
+      it('should render messages correctly', async () => {
+        jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_LEVEL_CLI_PROFILE)
+        render(<Provider><CliProfileForm /></Provider>, {
+          route: { params, path: '/:tenantId/networks/wired/:configType/cli/:profileId/:action' }
+        })
+
+        await waitFor(() => {
+          expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+        })
+        expect(await screen.findByText('Edit CLI Configuration Profile')).toBeVisible()
+
+        await userEvent.click(await screen.findByRole('button', { name: 'Venues' }))
+        await screen.findByRole('heading', { level: 3, name: 'Venues' })
+        expect(await screen.findByText(
+          /were selected during variable customization in the previous step/
+        )).toBeVisible()
       })
     })
   })

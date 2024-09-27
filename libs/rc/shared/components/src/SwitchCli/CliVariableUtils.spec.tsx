@@ -1,7 +1,13 @@
 /* eslint-disable max-len */
+import userEvent                   from '@testing-library/user-event'
 import { Form, FormListFieldData } from 'antd'
 
+import {
+  CliTemplateVariable,
+  SwitchStatusEnum
+} from '@acx-ui/rc/utils'
 import { render, renderHook, screen } from '@acx-ui/test-utils'
+
 
 import {
   formatVariableValue,
@@ -13,6 +19,8 @@ import {
   getVariableColor,
   getVariableSeparator,
   ipv4ToBitmap,
+  renderVariableTitle,
+  renderVariableValue,
   VariableType,
   validateDuplicateIp,
   validateInRange,
@@ -126,7 +134,6 @@ describe('Test getCustomizeButtonDisabled function', () => {
     expect(getCustomizeButtonDisabled(type, [{ name: 1, key: 1 }], requiredFields)).toBe(false)
   })
 })
-
 
 describe('Test getNetworkBitmap function', () => {
   it('should render correctly', async () => {
@@ -256,3 +263,140 @@ describe('Test validateDuplicateIp function', () => {
   })
 })
 
+describe('Test renderVariableTitle function', () => {
+  it('should render correctly', async () => {
+    const [range, ip, string] = [{
+      name: 'testRange',
+      rangeEnd: 98,
+      rangeStart: 88,
+      type: 'RANGE'
+    }, {
+      ipAddressEnd: '1.1.1.10',
+      ipAddressStart: '1.1.1.1',
+      name: 'testIp',
+      subMask: '255.255.254.0',
+      type: 'ADDRESS'
+    }, {
+      name: 'testString',
+      type: 'STRING',
+      value: 'test-string'
+    }] as CliTemplateVariable[]
+
+    const { asFragment } = render(<>
+      { renderVariableTitle(range!) }
+      { renderVariableTitle(ip!) }
+      { renderVariableTitle(string!) }
+    </>)
+
+    expect(asFragment()).toMatchSnapshot()
+  })
+})
+
+describe('Test renderVariableValue function', () => {
+  it('should render correctly with the new variable format', async () => {
+    const setVisible = jest.fn()
+    const [range, ip, string] = [{
+      name: 'testRange',
+      rangeEnd: 98,
+      rangeStart: 88,
+      type: 'RANGE',
+      switchVariables: [
+        { serialNumbers: ['FMF3250Q05R'], value: '1.1.1.1' },
+        { serialNumbers: ['FMF3250Q06R'], value: '1.1.1.10' }
+      ]
+    }, {
+      ipAddressEnd: '1.1.1.10',
+      ipAddressStart: '1.1.1.1',
+      name: 'testIp',
+      subMask: '255.255.254.0',
+      type: 'ADDRESS'
+    }, {
+      name: 'testString',
+      type: 'STRING',
+      value: 'test-string',
+      switchVariables: [
+        { serialNumbers: ['FMF3250Q06R'], value: '1.1.1.10' }
+      ]
+    }] as CliTemplateVariable[]
+
+    const switchList = [{
+      serialNumber: 'FMF3250Q04R',
+      model: 'ICX7150-C08P',
+      name: 'FMF3250Q04R',
+      deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
+      venueName: 'My-Venue',
+      tenantId: 'tenant-id'
+    }, {
+      serialNumber: 'FMF3250Q05R',
+      model: 'ICX7150-C08P',
+      name: 'FMF3250Q05R',
+      deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
+      venueName: 'My-Venue',
+      tenantId: 'tenant-id'
+    }, {
+      serialNumber: 'FMF3250Q06R',
+      model: 'ICX7150-C08P',
+      name: 'FMF3250Q06R - REAL',
+      deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
+      venueName: 'My-Venue',
+      tenantId: 'tenant-id'
+    }]
+
+    const { asFragment } = render(<>
+      { renderVariableValue(range!, switchList!, jest.fn(), jest.fn(), setVisible, true) }
+      { renderVariableValue(ip!, switchList!, jest.fn(), jest.fn(), setVisible, true) }
+      { renderVariableValue(string!, switchList!, jest.fn(), jest.fn(), setVisible, true) }
+    </>)
+
+    expect(asFragment()).toMatchSnapshot()
+    await userEvent.click(await screen.findByRole('button', { name: '2 Switch(es)' }))
+    expect(setVisible).toBeCalled()
+  })
+
+  it('should render correctly with the old variable format', async () => {
+    const [range, ip, string] = [{
+      name: 'testRange',
+      value: '25:127',
+      type: 'RANGE'
+    }, {
+      name: 'testIp',
+      type: 'ADDRESS',
+      value: '1.1.1.1_1.1.1.10_255.255.255.0'
+    }, {
+      name: 'testString',
+      type: 'STRING',
+      value: 'test string'
+    }] as CliTemplateVariable[]
+
+    const switchList = [{
+      serialNumber: 'FMF3250Q04R',
+      model: 'ICX7150-C08P',
+      name: 'FMF3250Q04R',
+      deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
+      venueName: 'My-Venue',
+      tenantId: 'tenant-id'
+    }, {
+      serialNumber: 'FMF3250Q05R',
+      model: 'ICX7150-C08P',
+      name: 'FMF3250Q05R',
+      deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
+      venueName: 'My-Venue',
+      tenantId: 'tenant-id'
+    }, {
+      serialNumber: 'FMF3250Q06R',
+      model: 'ICX7150-C08P',
+      name: 'FMF3250Q06R - REAL',
+      deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
+      venueName: 'My-Venue',
+      tenantId: 'tenant-id'
+    }]
+
+    const { asFragment } = render(<>
+      { renderVariableValue(range!, switchList!, jest.fn(), jest.fn(), jest.fn(), false) }
+      { renderVariableValue(ip!, switchList!, jest.fn(), jest.fn(), jest.fn(), false) }
+      { renderVariableValue(string!, switchList!, jest.fn(), jest.fn(), jest.fn(), false) }
+    </>)
+
+    expect(asFragment()).toMatchSnapshot()
+  })
+})
