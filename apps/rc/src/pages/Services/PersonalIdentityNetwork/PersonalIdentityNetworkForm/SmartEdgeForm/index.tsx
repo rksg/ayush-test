@@ -75,7 +75,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
       selectFromResult: ({ data, isFetching }) => {
         return {
           currentEdgeDhcp: data?.data[0],
-          currentEdgeDhcpIsRelay: data?.data[0].dhcpRelay === 'true',
+          currentEdgeDhcpIsRelay: data?.data[0]?.dhcpRelay === 'true',
           isGetDhcpByEdgeIdFail: (data?.totalCount ?? 0) < 1,
           isGetDhcpByEdgeIdFetching: isFetching
         }
