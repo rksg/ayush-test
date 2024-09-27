@@ -1,12 +1,11 @@
 /* eslint-disable max-len */
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query/fetchBaseQuery'
-import { findIndex }           from 'lodash'
+import { findIndex } from 'lodash'
 
 import {
   Filter
 } from '@acx-ui/components'
 import {
-  EdgeSdLanApCompatibilitiesResponse,
   ClusterNetworkSettings,
   CommonResult,
   EdgeAllPortTrafficData,
@@ -26,8 +25,10 @@ import {
   EdgePortTypeEnum,
   EdgePortWithStatus,
   EdgeResourceUtilizationData,
+  EdgeSdLanApCompatibilitiesResponse,
   EdgeSerialNumber,
   EdgeService,
+  EdgeServiceCompatibilitiesResponse,
   EdgeStaticRouteConfig,
   EdgeStatus,
   EdgeSubInterface,
@@ -41,7 +42,6 @@ import {
   PingEdge,
   SEARCH,
   SORTER,
-  EdgeSdLanCompatibilitiesResponse,
   TableResult,
   TraceRouteEdge,
   VenueEdgeCompatibilitiesResponse,
@@ -50,8 +50,8 @@ import {
   onActivityMessageReceived,
   onSocketActivityChanged
 } from '@acx-ui/rc/utils'
-import { baseEdgeApi }                         from '@acx-ui/store'
-import { RequestPayload }                      from '@acx-ui/types'
+import { baseEdgeApi } from '@acx-ui/store'
+import { RequestPayload } from '@acx-ui/types'
 import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 import { isPayloadHasField } from './utils'
@@ -918,7 +918,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       },
       providesTags: [{ type: 'Edge', id: 'VENUE_COMPATIBILITY' }]
     }),
-    getSdLanEdgeCompatibilities: build.query<EdgeSdLanCompatibilitiesResponse, RequestPayload>({
+    getSdLanEdgeCompatibilities: build.query<EdgeServiceCompatibilitiesResponse, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(EdgeUrlsInfo.getSdLanEdgeCompatibilities, params)
         return {
@@ -1009,6 +1009,16 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           })
         })
       }
+    }),
+    getHqosEdgeCompatibilities: build.query<EdgeServiceCompatibilitiesResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getHqosEdgeCompatibilities, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'HQOS_EDGE_COMPATIBILITY' }]
     })
   })
 })
@@ -1143,5 +1153,6 @@ export const {
   useGetSdLanEdgeCompatibilitiesQuery,
   useLazyGetSdLanEdgeCompatibilitiesQuery,
   useGetSdLanApCompatibilitiesQuery,
-  useLazyGetSdLanApCompatibilitiesQuery
+  useLazyGetSdLanApCompatibilitiesQuery,
+  useGetHqosEdgeCompatibilitiesQuery
 } = edgeApi

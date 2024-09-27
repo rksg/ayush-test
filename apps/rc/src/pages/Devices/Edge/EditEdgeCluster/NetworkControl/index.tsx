@@ -1,13 +1,15 @@
 
-import { Col, Form, Row, Switch } from 'antd'
-import { useIntl }                from 'react-intl'
+import { useState } from 'react'
+
+import { Col, Form, Row, Space, Switch } from 'antd'
+import { useIntl }                       from 'react-intl'
 
 
 import { Loader, StepsForm }                                                                                                                          from '@acx-ui/components'
 import { Features }                                                                                                                                   from '@acx-ui/feature-toggle'
-import { EdgeDhcpSelectionForm, useEdgeDhcpActions, useIsEdgeFeatureReady }                                                                           from '@acx-ui/rc/components'
+import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, EdgeDhcpSelectionForm, useEdgeDhcpActions, useIsEdgeFeatureReady }   from '@acx-ui/rc/components'
 import { useActivateHqosOnEdgeClusterMutation, useDeactivateHqosOnEdgeClusterMutation, useGetDhcpStatsQuery, useGetEdgeHqosProfileViewDataListQuery } from '@acx-ui/rc/services'
-import { EdgeClusterStatus }                                                                                                                          from '@acx-ui/rc/utils'
+import { EdgeClusterStatus, IncompatibilityFeatures }                                                                                                 from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }                                                                                                      from '@acx-ui/react-router-dom'
 
 import EdgeQosProfileSelectionForm from '../../../../Policies/HqosBandwidth/Edge/HqosBandwidthSelectionForm'
@@ -23,9 +25,11 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
   const { clusterId } = params
   const linkToEdgeList = useTenantLink('/devices/edge')
   const [form] = Form.useForm()
+  const [edgeFeatureName, setEdgeFeatureName] = useState<IncompatibilityFeatures | undefined>()
 
   const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
   const isEdgeHqosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
+  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
   const { activateEdgeDhcp, deactivateEdgeDhcp } = useEdgeDhcpActions()
   const [activateEdgeQos] = useActivateHqosOnEdgeClusterMutation()
@@ -191,7 +195,17 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
             <Col span={7}>
               {isEdgeHqosEnabled &&
               <StepsForm.FieldLabel width='50%'>
-                {$t({ defaultMessage: 'Hierarchical QoS' })}
+                <Space>
+                  {$t({ defaultMessage: 'Hierarchical QoS' })}
+                  {
+                    isEdgeCompatibilityEnabled &&
+                    <ApCompatibilityToolTip
+                      title=''
+                      visible
+                      onClick={() => setEdgeFeatureName(IncompatibilityFeatures.HQOS)}
+                    />
+                  }
+                </Space>
                 <Form.Item
                   name='qosSwitch'
                   valuePropName='checked'
@@ -214,6 +228,13 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
         </StepsForm.StepForm>
 
       </StepsForm>
+      {isEdgeCompatibilityEnabled && <EdgeCompatibilityDrawer
+        visible={!!edgeFeatureName}
+        type={EdgeCompatibilityType.ALONE}
+        title={$t({ defaultMessage: 'Compatibility Requirement' })}
+        featureName={edgeFeatureName}
+        onClose={() => setEdgeFeatureName(undefined)}
+      />}
     </Loader>
   )
 }

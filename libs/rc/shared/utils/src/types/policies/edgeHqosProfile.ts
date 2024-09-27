@@ -32,42 +32,58 @@ const defaultTrafficClassListData:TrafficClassSetting[] = [
   {
     trafficClass: EdgeHqosTrafficClass.VIDEO,
     priority: EdgeHqosTrafficClassPriority.HIGH,
-    priorityScheduling: false
+    priorityScheduling: true,
+    maxBandwidth: 100,
+    minBandwidth:15
   },
   {
     trafficClass: EdgeHqosTrafficClass.VIDEO,
     priority: EdgeHqosTrafficClassPriority.LOW,
-    priorityScheduling: false
+    priorityScheduling: false,
+    maxBandwidth: 100,
+    minBandwidth:5
   },
   {
     trafficClass: EdgeHqosTrafficClass.VOICE,
     priority: EdgeHqosTrafficClassPriority.HIGH,
-    priorityScheduling: false
+    priorityScheduling: true,
+    maxBandwidth: 100,
+    minBandwidth:25
   },
   {
     trafficClass: EdgeHqosTrafficClass.VOICE,
     priority: EdgeHqosTrafficClassPriority.LOW,
-    priorityScheduling: false
+    priorityScheduling: false,
+    maxBandwidth: 100,
+    minBandwidth:5
   },
   {
     trafficClass: EdgeHqosTrafficClass.BEST_EFFORT,
     priority: EdgeHqosTrafficClassPriority.HIGH,
-    priorityScheduling: false
+    priorityScheduling: false,
+    maxBandwidth: 100,
+    minBandwidth:20
   },
   {
     trafficClass: EdgeHqosTrafficClass.BEST_EFFORT,
     priority: EdgeHqosTrafficClassPriority.LOW,
-    priorityScheduling: false
+    priorityScheduling: false,
+    maxBandwidth: 100,
+    minBandwidth:5
   },
   {
     trafficClass: EdgeHqosTrafficClass.BACKGROUND,
     priority: EdgeHqosTrafficClassPriority.HIGH,
-    priorityScheduling: false
+    priorityScheduling: false,
+    maxBandwidth: 100,
+    minBandwidth:10
   },
   {
     trafficClass: EdgeHqosTrafficClass.BACKGROUND,
     priority: EdgeHqosTrafficClassPriority.LOW,
-    priorityScheduling: false
+    priorityScheduling: false,
+    maxBandwidth: 100,
+    minBandwidth:1
   }
 ]
 
