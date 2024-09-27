@@ -250,6 +250,7 @@ export default function WorkflowTable () {
       />
       {previewVisible && previewId &&
       <WorkflowActionPreviewModal
+        disablePortalDesign
         workflowId={previewId}
         onClose={()=>{
           setPreviewVisible(false)
