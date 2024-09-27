@@ -3,9 +3,8 @@ import { useEffect, useState } from 'react'
 import { Col, Form, Row, Typography, Checkbox, Tooltip } from 'antd'
 import { useIntl }                                       from 'react-intl'
 
-import { Loader, showActionModal }                            from '@acx-ui/components'
+import { BetaIndicator, Loader, showActionModal }             from '@acx-ui/components'
 import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
-import { RocketOutlined }                                     from '@acx-ui/icons-new'
 import { SpaceWrapper }                                       from '@acx-ui/rc/components'
 import { useUserProfileContext, useToggleBetaStatusMutation } from '@acx-ui/user'
 
@@ -15,21 +14,6 @@ import { R1FeatureListDrawer } from './R1FeatureListDrawer'
 import * as UI                 from './styledComponents'
 
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
-
-type Size = 'sm' | 'md' | 'lg'
-type IconProps = {
-  size?: Size;
-  color?: string;
-  style?: React.CSSProperties;
-} & React.SVGProps<SVGSVGElement>
-
-export function BetaIndicator ({
-  size
-}: IconProps) {
-  return <UI.IconWrapper>
-    <RocketOutlined size={size} />
-  </UI.IconWrapper>
-}
 
 /* eslint-disable-next-line */
 export interface EnableR1BetaFeaturesProps {

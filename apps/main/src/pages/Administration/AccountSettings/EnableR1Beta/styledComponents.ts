@@ -1,6 +1,5 @@
 import {
   Checkbox as AntCheckbox,
-  Space,
   Switch,
   Typography
 } from 'antd'
@@ -153,14 +152,6 @@ export const EarlyAccessFeatureSwitch = styled(Switch)`
   }
   .ant-switch-handle::before {
     background: var(--acx-primary-white) !important;
-  }
-`
-export const IconWrapper = styled(Space)`
-  display: flex;
-  svg {
-    display: flex;
-    margin: 0 !important;
-    color: var(--acx-accents-orange-50);
   }
 `
 export const IconCheckboxWrapper = styled(SpaceWrapper)`
