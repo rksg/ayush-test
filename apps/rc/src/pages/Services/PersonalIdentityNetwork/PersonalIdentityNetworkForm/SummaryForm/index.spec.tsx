@@ -54,12 +54,10 @@ jest.mock('antd', () => {
 const mockedFinishFn = jest.fn()
 const mockedGetVenueName = jest.fn()
 mockedGetVenueName.mockReturnValue('venueName')
-const mockedGetEdgeName = jest.fn()
-mockedGetEdgeName.mockReturnValue('edgeName')
+const mockedGetClusterName = jest.fn()
+mockedGetClusterName.mockReturnValue('edgeClusterName')
 const mockedGetDhcpName = jest.fn()
 mockedGetDhcpName.mockReturnValue('dhcpName')
-const mockedGetDhcpPoolName = jest.fn()
-mockedGetDhcpPoolName.mockReturnValue('dhcpPoolName')
 const mockedGetTunnelProfileName = jest.fn()
 mockedGetTunnelProfileName.mockReturnValue('tunnelProfileName')
 const mockedGetNetworksName = jest.fn()
@@ -78,7 +76,7 @@ describe('PersonalIdentityNetworkForm - SummaryForm', () => {
     mockServer.use(
       rest.post(
         NetworkSegmentationUrls.getWebAuthTemplateList.url,
-        (req, res, ctx) => res(ctx.json({ data: webAuthList }))
+        (_req, res, ctx) => res(ctx.json({ data: webAuthList }))
       )
     )
   })
@@ -89,11 +87,12 @@ describe('PersonalIdentityNetworkForm - SummaryForm', () => {
       form.setFieldsValue({
         name: 'testNsgName',
         venueId: 'venueId',
-        edgeId: 'edgeId',
+        edgeClusterId: 'edgeId',
         segments: 10,
         devices: 10,
         dhcpId: 'dhcpId',
         poolId: 'poolId',
+        poolName: 'DHCP_Pool',
         vxlanTunnelProfileId: 'vxlanTunnelProfileId',
         networkIds: ['testDpsk1', 'testDpsk2'],
         distributionSwitchInfos: mockNsgSwitchInfoData.distributionSwitches,
@@ -108,9 +107,8 @@ describe('PersonalIdentityNetworkForm - SummaryForm', () => {
           value={{
             ...mockContextData,
             getVenueName: mockedGetVenueName,
-            getEdgeName: mockedGetEdgeName,
+            getClusterName: mockedGetClusterName,
             getDhcpName: mockedGetDhcpName,
-            getDhcpPoolName: mockedGetDhcpPoolName,
             getTunnelProfileName: mockedGetTunnelProfileName,
             getNetworksName: mockedGetNetworksName
           }}
@@ -125,14 +123,13 @@ describe('PersonalIdentityNetworkForm - SummaryForm', () => {
       { route: { params, path: createNsgPath } })
     expect(await screen.findByText('testNsgName')).toBeVisible()
     expect(mockedGetVenueName).toBeCalledWith('venueId')
-    expect(mockedGetEdgeName).toBeCalledWith('edgeId')
+    expect(mockedGetClusterName).toBeCalledWith('edgeId')
     expect(mockedGetDhcpName).toBeCalledWith('dhcpId')
-    expect(mockedGetDhcpPoolName).toBeCalledWith('dhcpId', 'poolId')
     expect(mockedGetTunnelProfileName).toBeCalledWith('vxlanTunnelProfileId')
     expect(await screen.findByText('venueName')).toBeVisible()
-    expect(await screen.findByText('edgeName')).toBeVisible()
+    expect(await screen.findByText('edgeClusterName')).toBeVisible()
     expect(await screen.findByText('dhcpName')).toBeVisible()
-    expect(await screen.findByText('dhcpPoolName')).toBeVisible()
+    expect(await screen.findByText('DHCP_Pool')).toBeVisible()
     expect(await screen.findByText('tunnelProfileName')).toBeVisible()
     expect(await screen.findByText('network 1')).toBeVisible()
     expect(await screen.findByText('network 2')).toBeVisible()

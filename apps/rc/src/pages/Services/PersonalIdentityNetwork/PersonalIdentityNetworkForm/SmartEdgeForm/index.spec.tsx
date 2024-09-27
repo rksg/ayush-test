@@ -2,7 +2,8 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { StepsForm }    from '@acx-ui/components'
+import { StepsForm }        from '@acx-ui/components'
+import { EdgeDHCPFixtures } from '@acx-ui/rc/utils'
 import {
   EdgeDhcpPool,
   EdgeDhcpUrls,
@@ -85,6 +86,8 @@ const createNsgPath = '/:tenantId/t/' + getServiceRoutePath({
 })
 const editNsgPath = '/:tenantId/t/services/personalIdentityNetwork/:serviceId/edit'
 
+const { mockEdgeDhcpDataList } = EdgeDHCPFixtures
+
 describe('PersonalIdentityNetworkForm - SmartEdgeForm', () => {
   let params: { tenantId: string, serviceId: string }
   beforeEach(() => {
@@ -94,17 +97,18 @@ describe('PersonalIdentityNetworkForm - SmartEdgeForm', () => {
     }
 
     mockServer.use(
+      rest.get(
+        EdgeDhcpUrls.getDhcp.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeDhcpDataList.content[0]))),
       rest.post(
         EdgeDhcpUrls.getDhcpStats.url,
-        (req, res, ctx) => res(ctx.json({
+        (_req, res, ctx) => res(ctx.json({
           data: [],
           totalCount: 0
-        }))
-      ),
+        }))),
       rest.patch(
         EdgeDhcpUrls.patchDhcpService.url,
-        (req, res, ctx) => res(ctx.status(202))
-      )
+        (_req, res, ctx) => res(ctx.status(202)))
     )
   })
 
@@ -125,8 +129,8 @@ describe('PersonalIdentityNetworkForm - SmartEdgeForm', () => {
       })
 
     await user.selectOptions(
-      await screen.findByRole('combobox', { name: 'RUCKUS Edge' }),
-      await screen.findByRole('option', { name: 'Smart Edge 1' })
+      await screen.findByRole('combobox', { name: 'Cluster' }),
+      await screen.findByRole('option', { name: 'Edge Cluster 1' })
     )
 
     expect(await screen.findByRole('button', { name: 'Add' })).toBeVisible()
@@ -146,10 +150,10 @@ describe('PersonalIdentityNetworkForm - SmartEdgeForm', () => {
       })
 
     await user.selectOptions(
-      await screen.findByRole('combobox', { name: 'RUCKUS Edge' }),
-      await screen.findByRole('option', { name: 'Smart Edge 1' })
+      await screen.findByRole('combobox', { name: 'Cluster' }),
+      await screen.findByRole('option', { name: 'Edge Cluster 1' })
     )
-    const dhcpSelect = await screen.findByRole('combobox', { name: 'DHCP Service' })
+    const dhcpSelect = screen.getByRole('combobox', { name: 'DHCP Service' })
     await waitFor(() => expect(dhcpSelect).not.toBeDisabled())
     await user.selectOptions(
       dhcpSelect,
@@ -179,14 +183,14 @@ describe('PersonalIdentityNetworkForm - SmartEdgeForm', () => {
       </Provider>,
       { route: { params, path: createNsgPath } })
     await user.selectOptions(
-      await screen.findByRole('combobox', { name: 'RUCKUS Edge' }),
-      await screen.findByRole('option', { name: 'Smart Edge 1' })
+      await screen.findByRole('combobox', { name: 'Cluster' }),
+      await screen.findByRole('option', { name: 'Edge Cluster 1' })
     )
-    const segmentsInput = await screen.findByRole('spinbutton', { name: 'Number of Segments' })
+    const segmentsInput = screen.getByRole('spinbutton', { name: 'Number of Segments' })
     await user.type(segmentsInput, '10')
-    const devicesInput = await screen.findByRole('spinbutton', { name: 'Number of devices per Segment' })
+    const devicesInput = screen.getByRole('spinbutton', { name: 'Number of devices per Segment' })
     await user.type(devicesInput, '10')
-    const dhcpSelect = await screen.findByRole('combobox', { name: 'DHCP Service' })
+    const dhcpSelect = screen.getByRole('combobox', { name: 'DHCP Service' })
     await waitFor(() => expect(dhcpSelect).not.toBeDisabled())
     await user.selectOptions(
       dhcpSelect,
@@ -215,7 +219,7 @@ describe('PersonalIdentityNetworkForm - SmartEdgeForm', () => {
       </Provider>,
       { route: { params, path: createNsgPath } })
     await user.click((await screen.findAllByRole('button', { name: 'Add' }))[1])
-    await screen.findByText('Please enter RUCKUS Edge')
+    await screen.findByText('Please select Cluster')
     await screen.findByText('Please enter Number of Segments')
     await screen.findByText('Please enter Number of devices per Segment')
     await screen.findByText('Please enter DHCP Service')
@@ -237,10 +241,10 @@ describe('PersonalIdentityNetworkForm - SmartEdgeForm', () => {
       </Provider>,
       { route: { params, path: editNsgPath } })
     await user.selectOptions(
-      await screen.findByRole('combobox', { name: 'RUCKUS Edge' }),
-      await screen.findByRole('option', { name: 'Smart Edge 1' })
+      await screen.findByRole('combobox', { name: 'Cluster' }),
+      await screen.findByRole('option', { name: 'Edge Cluster 1' })
     )
-    const dhcpSelect = await screen.findByRole('combobox', { name: 'DHCP Service' })
+    const dhcpSelect = screen.getByRole('combobox', { name: 'DHCP Service' })
     await waitFor(() => expect(dhcpSelect).not.toBeDisabled())
     await user.selectOptions(
       dhcpSelect,

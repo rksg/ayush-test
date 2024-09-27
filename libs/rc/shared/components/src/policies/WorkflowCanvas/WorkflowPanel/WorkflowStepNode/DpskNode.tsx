@@ -6,7 +6,7 @@ import { DpskActionTypeIcon }   from '@acx-ui/icons'
 import { useGetActionByIdQuery,
   useGetDpskQuery,
   useGetPersonaGroupByIdQuery } from '@acx-ui/rc/services'
-import { ActionNodeDisplay, WorkflowStep } from '@acx-ui/rc/utils'
+import { ActionNodeDisplay, WorkflowPanelMode, WorkflowStep } from '@acx-ui/rc/utils'
 
 import BaseStepNode       from './BaseStepNode'
 import BasicActionContent from './BasicActionContent'
@@ -14,22 +14,27 @@ import * as UI            from './styledComponents'
 
 export function DpskNode (props: NodeProps<WorkflowStep>) {
   const { $t } = useIntl()
+  const isDesignMode = props.data.mode === WorkflowPanelMode.Design
 
-  const { data } = useGetActionByIdQuery({ params: { actionId: props.data.enrollmentActionId } })
+  const { data } = useGetActionByIdQuery(
+    { params: { actionId: props.data.enrollmentActionId } },
+    { skip: !isDesignMode })
 
   const { data: dpskData } =
-    useGetDpskQuery({ params: { serviceId: data?.dpskPoolId } }, { skip: !data?.dpskPoolId })
+    useGetDpskQuery({ params: { serviceId: data?.dpskPoolId } },
+      { skip: !isDesignMode || !data?.dpskPoolId })
   const { data: identityGroupData } =
     useGetPersonaGroupByIdQuery(
-      { params: { groupId: data?.identityGroupId } }, { skip: !data?.identityGroupId })
+      { params: { groupId: data?.identityGroupId } },
+      { skip: !isDesignMode || !data?.identityGroupId })
 
   return (
     <BaseStepNode {...{ ...props }}>
       <BasicActionContent
         icon={<DpskActionTypeIcon />}
         title={$t(ActionNodeDisplay.DPSK)}
-        content={
-          <UI.Popover
+        content={isDesignMode
+          ? <UI.Popover
             content={
               <Space direction='vertical' size={6}>
                 <UI.PopoverTitle>
@@ -52,7 +57,7 @@ export function DpskNode (props: NodeProps<WorkflowStep>) {
             color='var(--acx-primary-black)'
           >
             {$t({ defaultMessage: 'Details' })}
-          </UI.Popover>
+          </UI.Popover> : undefined
         }
       />
     </BaseStepNode>
