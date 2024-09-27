@@ -105,12 +105,7 @@ export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
     navigator.clipboard.writeText(copyString)
   }
 
-  const SupportedRoles = [
-    RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR,
-    RolesEnum.GUEST_MANAGER, RolesEnum.READ_ONLY]
-
-  const rolesList = getRoles().filter(role =>
-    SupportedRoles.includes(role.value as RolesEnum)).map((item) => ({
+  const rolesList = getRoles().map((item) => ({
     label: $t(item.label),
     value: item.value
   }))
