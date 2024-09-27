@@ -3,9 +3,9 @@ import { useState } from 'react'
 import { find, sumBy } from 'lodash'
 import { useIntl }     from 'react-intl'
 
-import { CompatibleAlertBanner, EdgeDetailCompatibilityDrawer }                                                                                                                      from '@acx-ui/rc/components'
-import { useGetHqosEdgeCompatibilitiesQuery }                                                                                                                                        from '@acx-ui/rc/services'
-import { ACX_UI_EDGE_COMPATIBILITY_NOTE_HIDDEN_KEY, ApCompatibility, CompatibilityDeviceEnum, EdgeServiceCompatibility, getFeaturesIncompatibleDetailData, IncompatibilityFeatures } from '@acx-ui/rc/utils'
+import { CompatibleAlertBanner, EdgeDetailCompatibilityDrawer }                                                                                            from '@acx-ui/rc/components'
+import { useGetHqosEdgeCompatibilitiesQuery }                                                                                                              from '@acx-ui/rc/services'
+import { ACX_UI_EDGE_COMPATIBILITY_NOTE_HIDDEN_KEY, ApCompatibility, CompatibilityDeviceEnum, getFeaturesIncompatibleDetailData, IncompatibilityFeatures } from '@acx-ui/rc/utils'
 
 
 export const CompatibilityCheck = ({ policyId }: { policyId: string }) => {

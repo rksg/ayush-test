@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query/fetchBaseQuery'
-import { findIndex } from 'lodash'
+import { findIndex }           from 'lodash'
 
 import {
   Filter
@@ -50,8 +50,8 @@ import {
   onActivityMessageReceived,
   onSocketActivityChanged
 } from '@acx-ui/rc/utils'
-import { baseEdgeApi } from '@acx-ui/store'
-import { RequestPayload } from '@acx-ui/types'
+import { baseEdgeApi }                         from '@acx-ui/store'
+import { RequestPayload }                      from '@acx-ui/types'
 import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 import { isPayloadHasField } from './utils'
