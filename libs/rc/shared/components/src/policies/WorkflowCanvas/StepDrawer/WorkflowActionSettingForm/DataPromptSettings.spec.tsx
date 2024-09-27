@@ -93,7 +93,7 @@ describe('DataPromptSettings', () => {
     expect(screen.queryByText('Field 2')).toBeFalsy()
     const addFieldButton = screen.getByRole('button', { name: 'Add Field' })
     expect(addFieldButton).toBeVisible()
-    userEvent.click(addFieldButton)
+    await userEvent.click(addFieldButton)
     const field1 = await screen.findByTestId('field1')
     expect(field1).toBeTruthy()
     expect(within(field1).getByText('Field 2')).toBeVisible()
@@ -119,7 +119,7 @@ describe('DataPromptSettings', () => {
     )
     expect(screen.queryByTestId('field0')).toBeVisible()
     expect(screen.queryByTestId('field1')).toBeVisible()
-    formRef.current.validateFields()
+    formRef.current.submit()
     expect(await screen.findByText('Please enter title')).toBeVisible()
     expect(await screen.findByText('Please enter messageHtml')).toBeVisible()
     const nodes = await screen.findAllByText('Field type already selected')
@@ -147,13 +147,13 @@ describe('DataPromptSettings', () => {
     const labelInput = await screen.findByRole('textbox', { name: /Label/ })
     expect(labelInput).toHaveValue('')
 
-    formRef.current.validateFields()
+    formRef.current.submit()
     expect(await screen.findByText('Please enter title')).toBeVisible()
     expect(await screen.findByText('Please enter messageHtml')).toBeVisible()
     expect(await screen.findByText('Please enter Label')).toBeVisible()
   })
 
-  it('should validate whitespace only entries', async () => {
+  it('should validate no leading or trailing spaces allowed', async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
       return form
@@ -175,16 +175,16 @@ describe('DataPromptSettings', () => {
 
     await userEvent.type(pageTitleInput, '  ')
 
-    formRef.current.validateFields()
+    formRef.current.submit()
 
-    expect(await screen.findByText('Whitespace chars only are not allowed')).toBeVisible()
+    expect(await screen.findByText('No leading or trailing spaces allowed')).toBeVisible()
 
     await userEvent.type(pageTitleInput, 'a real value')
     await userEvent.type(pageBodyInput, '  ')
 
-    formRef.current.validateFields()
+    formRef.current.submit()
 
-    expect(await screen.findByText('Whitespace chars only are not allowed')).toBeVisible()
+    expect(await screen.findByText('No leading or trailing spaces allowed')).toBeVisible()
   })
 
   it('should validate values that are too long', async () => {
@@ -223,7 +223,7 @@ describe('DataPromptSettings', () => {
       + '##########Longer Than 1000 Characters ###################################################'
       + '###########################')
 
-    formRef.current.validateFields()
+    formRef.current.submit()
 
     expect(await screen.findByText('title must be up to 100 characters')).toBeVisible()
     expect(await screen.findByText('messageHtml must be up to 1000 characters')).toBeVisible()
