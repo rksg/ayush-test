@@ -1,4 +1,4 @@
-import { AAAPolicyType, ApLanPortTypeEnum, EthernetPortAuthType, EthernetPortProfile, EthernetPortSupplicantType, TableResult } from '@acx-ui/rc/utils'
+import { AAAPolicyType, EthernetPortAuthType, EthernetPortProfile, EthernetPortSupplicantType, EthernetPortType, TableResult } from '@acx-ui/rc/utils'
 
 export const mockedTenantId = '__Tenant_ID__'
 export const mockedPolicyId = '__Policy_ID__'
@@ -49,8 +49,7 @@ export const dummyEthernetPortProfileTrunk = {
   // authType: 'DISABLED',
   authType: EthernetPortAuthType.DISABLED,
   description: 'dummy',
-  // type: 'TRUNK',
-  type: ApLanPortTypeEnum.TRUNK,
+  type: EthernetPortType.TRUNK,
   untagId: 1,
   vlanMembers: '1-4094',
   isDefault: false,
@@ -61,16 +60,13 @@ export const dummyEthernetPortProfileTrunk = {
 export const dummyEthernetPortProfileTrunkSupplicant = {
   id: mockEthernetPortProfileId2,
   name: mockEthernetPortProfileId2,
-  // authType: 'DISABLED',
   authType: EthernetPortAuthType.DISABLED,
   description: 'dummy',
-  // type: 'TRUNK',
-  type: ApLanPortTypeEnum.TRUNK,
+  type: EthernetPortType.TRUNK,
   untagId: 1,
   vlanMembers: '1-4094',
   isDefault: false,
   SupplicantAuthenticationOptions: {
-    // type: 'MAC_AUTH'
     type: EthernetPortSupplicantType.MAC_AUTH
   }
 }
@@ -78,10 +74,8 @@ export const dummyEthernetPortProfileTrunkSupplicant = {
 export const dummyEthernetPortProfileAccessPortBased = {
   id: mockEthernetPortProfileId3,
   name: mockEthernetPortProfileId3,
-  // authType: 'PORT_BASED_AUTHENTICATOR',
   authType: EthernetPortAuthType.PORT_BASED,
-  // type: 'ACCESS',
-  type: ApLanPortTypeEnum.ACCESS,
+  type: EthernetPortType.ACCESS,
   bypassMacAddressAuthentication: true,
   description: undefined,
   enableAccountingProxy: true,
@@ -103,7 +97,7 @@ export const dummyDefaultEthernetPortProfileTrunk = {
   authType: EthernetPortAuthType.DISABLED,
   description: 'default trunk',
   // type: 'TRUNK',
-  type: ApLanPortTypeEnum.TRUNK,
+  type: EthernetPortType.TRUNK,
   untagId: 1,
   vlanMembers: '1-4094',
   isDefault: true,

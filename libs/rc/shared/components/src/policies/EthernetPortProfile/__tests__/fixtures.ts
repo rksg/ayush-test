@@ -1,4 +1,4 @@
-import { AAAPolicyType, ApLanPortTypeEnum, EthernetPortAuthType, EthernetPortProfile, EthernetPortSupplicantType, TableResult } from '@acx-ui/rc/utils'
+import { AAAPolicyType, EthernetPortAuthType, EthernetPortProfile, EthernetPortSupplicantType, EthernetPortType, TableResult } from '@acx-ui/rc/utils'
 
 export const mockedTenantId = '__Tenant_ID__'
 export const mockedPolicyId = '__Policy_ID__'
@@ -148,7 +148,7 @@ export const dummyEthernetPortProfileTrunk = {
   authType: EthernetPortAuthType.DISABLED,
   description: 'dummy',
   // type: 'TRUNK',
-  type: ApLanPortTypeEnum.TRUNK,
+  type: EthernetPortType.TRUNK,
   untagId: 1,
   vlanMembers: '1-4094',
   isDefault: false,
@@ -159,11 +159,9 @@ export const dummyEthernetPortProfileTrunk = {
 export const dummyEthernetPortProfileTrunkSupplicant = {
   id: mockEthernetPortProfileId2,
   name: mockEthernetPortProfileId2,
-  // authType: 'DISABLED',
   authType: EthernetPortAuthType.SUPPLICANT,
   description: 'dummy',
-  // type: 'TRUNK',
-  type: ApLanPortTypeEnum.TRUNK,
+  type: EthernetPortType.TRUNK,
   untagId: 1,
   vlanMembers: '1-4094',
   isDefault: false,
@@ -177,7 +175,7 @@ export const dummyEthernetPortProfileAccessPortBased = {
   id: mockEthernetPortProfileId3,
   name: mockEthernetPortProfileId3,
   authType: EthernetPortAuthType.PORT_BASED,
-  type: ApLanPortTypeEnum.ACCESS,
+  type: EthernetPortType.ACCESS,
   enableAccountingProxy: true,
   accountingService: true,
   enableAuthProxy: true,
@@ -193,11 +191,9 @@ export const dummyEthernetPortProfileAccessPortBased = {
 export const dummyDefaultEthernetPortProfileTrunk = {
   id: mockDefaultTrunkProfileId,
   name: 'Default Trunk',
-  // authType: 'DISABLED',
   authType: EthernetPortAuthType.DISABLED,
   description: 'default trunk',
-  // type: 'TRUNK',
-  type: ApLanPortTypeEnum.TRUNK,
+  type: EthernetPortType.TRUNK,
   untagId: 1,
   vlanMembers: '1-4094',
   isDefault: true,
@@ -209,7 +205,7 @@ export const dummyEthernetPortProfileAccess = {
   id: mockEthernetPortProfileId6,
   name: mockEthernetPortProfileId6,
   authType: EthernetPortAuthType.DISABLED,
-  type: ApLanPortTypeEnum.ACCESS,
+  type: EthernetPortType.ACCESS,
   isDefault: false,
   untagId: 1,
   vlanMembers: '1',
