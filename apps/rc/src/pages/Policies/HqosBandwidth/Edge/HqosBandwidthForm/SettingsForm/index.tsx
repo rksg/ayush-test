@@ -8,16 +8,6 @@ import { EdgeHqosViewData, TrafficClassSetting, priorityToDisplay, servicePolicy
 
 import * as UI from '../../styledComponents'
 
-const checkBandwidthMinAndMaxValue = (bandwidth?: number) => {
-  if(bandwidth === undefined || bandwidth === null) {
-    return true
-  }
-  if(bandwidth <= 0 || bandwidth > 100) {
-    return false
-  }
-  return true
-}
-
 const checkMinAndMaxBandwidthCompare = (minBandwidth?: number, maxBandwidth?: number) => {
   if(!minBandwidth || !maxBandwidth) {
     return true
@@ -51,20 +41,31 @@ export const SettingsForm = () => {
   const { initialValues } = useStepFormContext<EdgeHqosViewData>()
   const formTrafficClassSettings = Form.useWatch('trafficClassSettings', form)
 
-  const bandwidthMinAndMaxErrMsg =
+  const minBandwidthRangeErrMsg =
+  $t({ defaultMessage: 'This value should be between 0 and 100' })
+  const maxBandwidthRangeErrMsg =
   $t({ defaultMessage: 'This value should be between 1 and 100' })
+  const prioritySchedulingRangeErrMsg =
+  // eslint-disable-next-line max-len
+  $t({ defaultMessage: 'If you want to set this traffic class to priority scheduling, the value must be greater than or equal to 1' })
   const guaranteedBandwidthSumErrMsg =
   $t({ defaultMessage: 'Total guaranteed bandwidth across all classes must NOT exceed 100%' })
   const bandwidthRangeCompareErrMsg =
   $t({ defaultMessage: 'Max bandwidth must exceed minimal guaranteed bandwidth.' })
 
   const validateMinBandwidth = (index:number, minBandwidth?: number) => {
-    if(minBandwidth === undefined) {
+    if(minBandwidth === undefined || minBandwidth === null) {
       return Promise.resolve()
     }
 
-    if(!checkBandwidthMinAndMaxValue(minBandwidth)) {
-      return Promise.reject(bandwidthMinAndMaxErrMsg)
+    if(minBandwidth < 0 || minBandwidth > 100) {
+      return Promise.reject(minBandwidthRangeErrMsg)
+    }
+    if(
+      form.getFieldValue(['trafficClassSettings', index, 'priorityScheduling']) &&
+      minBandwidth < 1
+    ) {
+      return Promise.reject(prioritySchedulingRangeErrMsg)
     }
     const trafficClassSettings = form.getFieldValue('trafficClassSettings')
     const trafficClassArray = Object.values(trafficClassSettings) as TrafficClassSetting[]
@@ -84,12 +85,12 @@ export const SettingsForm = () => {
   }
 
   const validateMaxBandwidth = (index:number, maxBandwidth?: number) => {
-    if(maxBandwidth === undefined) {
+    if(maxBandwidth === undefined || maxBandwidth === null) {
       return Promise.resolve()
     }
 
-    if(!checkBandwidthMinAndMaxValue(maxBandwidth)) {
-      return Promise.reject(bandwidthMinAndMaxErrMsg)
+    if(maxBandwidth <= 0 || maxBandwidth > 100) {
+      return Promise.reject(maxBandwidthRangeErrMsg)
     }
     const trafficClassSettings = form.getFieldValue('trafficClassSettings')
     const trafficClassArray = Object.values(trafficClassSettings) as TrafficClassSetting[]
@@ -154,9 +155,12 @@ export const SettingsForm = () => {
               name={['trafficClassSettings', index, 'minBandwidth']}
               noStyle
               rules={[
+                // eslint-disable-next-line max-len
+                { required: true, message: $t({ defaultMessage: 'Please enter Guaranteed Bandwidth' }) },
                 { validator: (_, value) => validateMinBandwidth(index, value) }
               ]}
-              children={<InputNumber style={{ width: '60px' }}/>}
+              children={<InputNumber style={{ width: '70px' }} min={0} max={100} />}
+              validateFirst
             />
             <span> % </span>
             <Form.Item noStyle
@@ -189,9 +193,11 @@ export const SettingsForm = () => {
               name={['trafficClassSettings', index, 'maxBandwidth']}
               noStyle
               rules={[
+                { required: true, message: $t({ defaultMessage: 'Please enter Max Bandwidth' }) },
                 { validator: (_, value) => validateMaxBandwidth(index, value) }
               ]}
-              children={<InputNumber style={{ width: '60px' }} />}
+              children={<InputNumber style={{ width: '70px' }} min={1} max={100} />}
+              validateFirst
             />
             <span> % </span>
             <Form.Item noStyle
