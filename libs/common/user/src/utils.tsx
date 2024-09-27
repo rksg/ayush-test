@@ -2,9 +2,25 @@ import _ from 'lodash'
 
 import { TenantNavigate } from '@acx-ui/react-router-dom'
 
-import { UserSettingsUIModel, UserSettingsValuePath } from './types'
+import { FeatureAPIResults, UserSettingsUIModel, UserSettingsValuePath } from './types'
 
 export const USER_SETTINGS_SEP_CHAR = '$'
+
+// for testing/integration only
+export let mockedBetaFeatures: FeatureAPIResults[] = [
+  {
+    key: 'BETA-DPSK3',
+    enabled: true
+  },
+  {
+    key: 'PLCY-EDGE',
+    enabled: false
+  },
+  {
+    key: 'SAMPLE',
+    enabled: true
+  }
+]
 
 export const getUserSettingsByPath = (
   settings: UserSettingsUIModel,
@@ -35,4 +51,9 @@ export function goToNotFound () {
 
 export function goToNoPermission () {
   return <TenantNavigate replace to='/no-permissions' />
+}
+
+// for testing/integration only
+export function updateMockedBetaFeatures (betaFeature: FeatureAPIResults[]) {
+  mockedBetaFeatures = betaFeature
 }

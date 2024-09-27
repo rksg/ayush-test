@@ -15,21 +15,7 @@ import {
 } from './services'
 import { FeatureAPIResults, UserProfile }      from './types'
 import { setUserProfile, hasRoles, hasAccess } from './userProfile'
-
-const fakeFeatures: FeatureAPIResults[] = [
-  {
-    key: 'BETA-DPSK3',
-    enabled: true
-  },
-  {
-    key: 'PLCY-EDGE',
-    enabled: false
-  },
-  {
-    key: 'SAMPLE',
-    enabled: true
-  }
-]
+import { mockedBetaFeatures }                  from './utils'
 
 export interface UserProfileContextProps {
   data: UserProfile | undefined
@@ -107,7 +93,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
     .filter((id): id is string => id !== undefined)) || []
 
   // const { data: betaFeatures } = useGetBetaFeatureListQuery({ params })
-  const betaFeatures = fakeFeatures
+  const betaFeatures = mockedBetaFeatures
   const betaFeaturesList: FeatureAPIResults[] = (betaFeatures?.filter((feature):
     feature is FeatureAPIResults => feature !== undefined)) || []
 

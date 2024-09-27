@@ -2,15 +2,16 @@ import { useEffect, useState } from 'react'
 
 import { Typography } from 'antd'
 import { useIntl }    from 'react-intl'
-import { useParams }  from 'react-router-dom'
+// import { useParams }  from 'react-router-dom'
 
 import { BetaIndicator, Button, Drawer, showActionModal } from '@acx-ui/components'
 import { BetaListDetails }                                from '@acx-ui/feature-toggle'
 import {
   Feature,
   FeatureAPIResults,
+  updateMockedBetaFeatures,
   useToggleBetaStatusMutation,
-  useUpdateBetaFeatureListMutation,
+  // useUpdateBetaFeatureListMutation,
   useUserProfileContext
 } from '@acx-ui/user'
 
@@ -30,12 +31,12 @@ function R1FeatureListDrawer (
 ) {
   const { $t } = useIntl()
   const { visible, setVisible, editMode } = props
-  const params = useParams()
+  // const params = useParams()
   const [resetField, setResetField] = useState(false)
   const [featureList, setFeatureList] = useState<Feature[]>([])
   const [toggleBetaStatus ] = useToggleBetaStatusMutation()
   const { betaFeaturesList } = useUserProfileContext()
-  const [updateBetaFeatures] = useUpdateBetaFeatureListMutation()
+  // const [updateBetaFeatures] = useUpdateBetaFeatureListMutation()
 
   const onSave = async () => {
     onClose()
@@ -45,7 +46,8 @@ function R1FeatureListDrawer (
           enable: true + ''
         }
       }).unwrap()
-      await updateBetaFeatures({ params, payload: featureList as FeatureAPIResults[] }).unwrap()
+      // await updateBetaFeatures({ params, payload: featureList as FeatureAPIResults[] }).unwrap()
+      updateMockedBetaFeatures(featureList as FeatureAPIResults[])
       // eslint-disable-next-line no-console
       console.log(featureList)
     } catch (error) {
