@@ -4,7 +4,7 @@ import { storiesOf } from '@storybook/react'
 
 import { TrendTypeEnum } from '@acx-ui/analytics/utils'
 
-import { TrendPill, SeverityPill, ColorPill, ProgressPill } from '.'
+import { TrendPill, SeverityPill, ColorPill, ProgressPill, StatusPill } from '.'
 
 storiesOf('Pill', module)
   .add('Trend', () => <>
@@ -21,6 +21,11 @@ storiesOf('Pill', module)
   .add('Color', () => <>
     <p><ColorPill color='red' value='Red' /></p>
     <p><ColorPill color='blue' value='Blue' /></p>
+  </>)
+  .add('Status', () => <>
+    <p><StatusPill color='red' value='Shorted' /></p>
+    <p><StatusPill color='yellow' value='Abnormal' /></p>
+    <p><StatusPill color='green' value='OK' /></p>
   </>)
   .add('Progress', () => {
     const formatter = (percent: number|undefined) => `${percent}% success`

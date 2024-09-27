@@ -4,6 +4,7 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 export enum Features {
   ABAC_POLICIES_TOGGLE = 'abac-policies-toggle',
   ALLOWED_OPERATIONS_TOGGLE = 'allowed-operations-toggle',
+  AP_FIRMWARE_UPGRADE_BY_MODEL_TOGGLE = 'ap-fw-mgmt-upgrade-by-model',
   AP_GPS = 'ap-gps-toggle',
   AP_GROUP_TOGGLE = 'wifi-eda-ap-group-table-toggle',
   AP_MANAGEMENT_VLAN_AP_LEVEL_TOGGLE = 'wifi-ap-mgmt-vlan-ap-level-toggle',
@@ -11,6 +12,7 @@ export enum Features {
   AP_UPTIME_TOGGLE = 'ap-uptime-toggle',
   APP_INSIGHTS = 'acx-ui-app-insights-toggle',
   ASSIGN_MULTI_EC_TO_MSP_ADMINS = 'mspservice-assign-multi-ec-to-multi-msp-admin',
+  AP_TX_POWER_TOGGLE = 'ap-tx-power-toggle',
   BETA_BUTTON = 'acx-ui-beta-button-toggle',
   CLOUDMOTE_SERVICE = 'cloudmote-service-enabled',
   CLOUDPATH_ASYNC_API_TOGGLE = 'acx-ui-cloudpath-async-api-toggle',
@@ -65,6 +67,7 @@ export enum Features {
   IDM_APPLICATION_KEY_TOGGLE = 'ptenant-application-key-toggle',
   IDM_DECOUPLING = 'ptenant-admin-authentication-enabled',
   INCIDENTS_AIRTIME_TOGGLE = 'acx-ui-incidents-airtime-toggle',
+  INCIDENTS_SWITCH_DDOS_TOGGLE = 'acx-ui-tcp-syn-ddos-toggle',
   LICENSE_BANNER = 'acx-ui-license-banner',
   LINKEDIN_OIDC_TOGGLE = 'guest-linkedin-openid-connect-toggle',
   LOGIN_SSO_SIGNATURE_TOGGLE = 'login-sso-saml-signature',
@@ -94,7 +97,6 @@ export enum Features {
   NUVO_SMS_GRACE_PERIOD_TOGGLE = 'nuvo-sms-grace-period',
   NUVO_SMS_MESSAGING_SERVICE_TOGGLE = 'nuvo-messaging-service-toggle',
   PLM_FF = 'ACX-PLM-FF',
-  POLICIES = 'acx-ui-policies',
   PTENANT_RBAC_DPSK_ROLE_INTRODUCTION = 'ptenant-rbac-dpsk-role-introduction',
   PTENANT_RBAC_API = 'acx-ui-rbac-api-ptenant-toggle',
   RADIO6G_RATE_CONTROL = 'radio6g-rate-control-toggle',
@@ -106,10 +108,10 @@ export enum Features {
   RUCKUS_AI_CRRM_PARTIAL = 'ruckus-ai-recommendations-crrm-partial-toggle',
   RUCKUS_AI_INCIDENTS_AIRTIME_TOGGLE = 'ruckus-ai-incidents-airtime-toggle',
   RUCKUS_AI_SWITCH_HEALTH_TOGGLE = 'ruckus-ai-switch-health-toggle',
+  RUCKUS_AI_INCIDENTS_SWITCH_DDOS_TOGGLE = 'ruckus-ai-tcp-syn-ddos-toggle',
   HEALTH_WIRED_TOPN_WITH_OTHERS = 'acx-ui-health-wired-topn-with-others-toggle',
   RUCKUS_AI_SWITCH_HEALTH_10010E_TOGGLE = 'ruckus-ai-switch-health-10010e-toggle',
   RUCKUS_WAN_GATEWAY_UI_SHOW = 'ruckus-wan-gateway-ui-show',
-  SERVICES = 'acx-ui-services',
   SSO = 'ADMN-SSO',
   SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE = 'acx-ui-support-to-msp-dashboard-toggle',
   SUPPORT_SWITCH_TWO_VERSION_UPGRADE = 'removable-ff',
@@ -130,6 +132,7 @@ export enum Features {
   SWITCH_FIRMWARE_V1002_TOGGLE= 'switch-firmware-management-for-10010d-toggle',
   SWITCH_PROFILE_ONBOARD_ONLY= 'switch-config-profile-onboarding-only-toggle',
   SWITCH_NTP_SERVER = 'switch-consumer-apply-ntp-server-toggle',
+  SWITCH_CABLE_TEST = 'switch-cable-testing-toggle',
   SWITCH_SUPPORT_ICX8200AV= 'switch-support-icx8200av-toggle',
   TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs',
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
@@ -182,6 +185,9 @@ export enum Features {
   WIFI_SMART_MONITOR_DISABLE_WLAN_TOGGLE = 'wifi-smart-monitor-disable-wlan-toggle',
   SWITCH_ICX7850_48C_SUPPORT_PORT_SPEED_TOGGLE = 'switch-consumer-icx7850-48c-support-port-speed-toggle',
   WIFI_AP_STICKY_CLIENT_STEERING_TOGGLE = 'wifi-ap-sticky-client-steering-toggle',
+  WIFI_CAPTIVE_PORTAL_PSK = 'wifi-captive-portal-psk',
+  WIFI_CAPTIVE_PORTAL_OWE = 'wifi-captive-portal-owe',
+  WIFI_WLAN_DEPRECATE_WPA = 'wifi-wlan-deprecate-wpa',
   WIFI_OVER_THE_DS_FT_SUPPORT_TOGGLE = 'wifi-over-the-ds-ft-support-toggle'
 }
 
@@ -207,6 +213,6 @@ interface BetaList {
 export const BetaListDetails:BetaList[] = [
   { key: TierFeatures.BETA_DPSK3, description: defineMessage({ defaultMessage: 'DPSK3: Dynamic Preshared Keys working with WPA3-DSAE. Users connect their devices to a WPA2/WPA3 network with DPSK and are automatically moved to the WPA3 WLAN, allowing DPSK operation with WiFi 6e or WiFi7. DPSK3 allows the customer to take advantage of the flexibility of DPSK with the security of WPA3.' }), status: true },
   { key: TierFeatures.AP_70, description: defineMessage({ defaultMessage: 'AP-70: Wi-Fi 7 - Wi-Fi 7 UI configuration available for early adopters and customers provided with advance units of the R770. Contact your reseller for more information on availability of the new R770!' }), status: true },
-  { key: TierFeatures.SMART_EDGES, description: defineMessage({ defaultMessage: 'SmartEdge: RUCKUS SmartEdge is a platfrom to run RUCKUS services on. Network administrators can utilize SD-LAN service or Personal Identity Networking service on a SmartEdge. SD-LAN provides WLAN tunnelling using VXLAN. This will provide end users a seamless roaming experience across a network. The Personal Identity Networking service provides individual networks for users which is typically used in a multi-dwelling facility.' }), status: true },
+  { key: TierFeatures.SMART_EDGES, description: defineMessage({ defaultMessage: 'RUCKUS Edge: RUCKUS Edge is a platfrom to run RUCKUS services on. Network administrators can utilize SD-LAN service or Personal Identity Networking service on a RUCKUS Edge. SD-LAN provides WLAN tunnelling using VXLAN. This will provide end users a seamless roaming experience across a network. The Personal Identity Networking service provides individual networks for users which is typically used in a multi-dwelling facility.' }), status: true },
   { key: TierFeatures.CONFIG_TEMPLATE, description: defineMessage({ defaultMessage: 'Config Template: It allows MSP users to create templates for networks, <venuePlural></venuePlural>, services, and policies. These templates can then be applied to multiple customers, providing a centralized and efficient solution for managing RUCKUS brand network equipment across properties.' }), status: true }
 ]

@@ -27,15 +27,14 @@ import {
   useConfigTemplateQueryFnSwitcher,
   TableResult,
   VenueSyslogSettingType,
-  useConfigTemplateMutationFnSwitcher
+  useConfigTemplateMutationFnSwitcher,
+  hasPolicyPermission
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,
   useParams
 } from '@acx-ui/react-router-dom'
-import { WifiScopes }                              from '@acx-ui/types'
-import { hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 
 import { VenueEditContext } from '../../..'
 import * as UI              from '../../styledComponents'
@@ -207,8 +206,7 @@ export function Syslog () {
               })}
               style={{ width: '200px' }}
             />
-            { hasCrossVenuesPermission() &&
-              hasPermission({ scopes: [WifiScopes.CREATE] }) &&
+            { hasPolicyPermission({ type: PolicyType.SYSLOG, oper: PolicyOperation.CREATE }) &&
             <Button type='link'
               style={{ marginLeft: '20px' }}
               onClick={async () => {

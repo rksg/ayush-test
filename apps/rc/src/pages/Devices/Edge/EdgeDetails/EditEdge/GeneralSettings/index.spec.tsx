@@ -93,10 +93,10 @@ describe('EditEdge - GeneralSettings', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/general-settings' }
       })
-    const edgeNameInput = await screen.findByRole('textbox', { name: 'SmartEdge Name' })
+    const edgeNameInput = await screen.findByRole('textbox', { name: 'RUCKUS Edge Name' })
     fireEvent.change(edgeNameInput, { target: { value: '' } })
     await user.click(screen.getByRole('button', { name: 'Apply' }))
-    await screen.findByText('Please enter SmartEdge Name')
+    await screen.findByText('Please enter RUCKUS Edge Name')
   })
 
   it('should update edge general settings successfully', async () => {
@@ -113,7 +113,7 @@ describe('EditEdge - GeneralSettings', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/general-settings' }
       })
-    const edgeNameInput = await screen.findByRole('textbox', { name: 'SmartEdge Name' })
+    const edgeNameInput = await screen.findByRole('textbox', { name: 'RUCKUS Edge Name' })
     fireEvent.change(edgeNameInput, { target: { value: 'edge_name_test' } })
     const applyButton = screen.getByRole('button', { name: 'Apply' })
     await user.click(applyButton)
@@ -185,7 +185,7 @@ describe('EditEdge general settings api fail', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/general-settings' }
       })
-    const edgeNameInput = await screen.findByRole('textbox', { name: 'SmartEdge Name' })
+    const edgeNameInput = await screen.findByRole('textbox', { name: 'RUCKUS Edge Name' })
     await user.type(edgeNameInput, 'edge_name_test')
     const serialNumberInput = screen.getByRole('textbox',
       { name: 'Serial Number' })

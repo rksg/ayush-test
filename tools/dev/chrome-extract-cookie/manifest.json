@@ -15,7 +15,9 @@
     "storage",
     "cookies",
     "nativeMessaging",
-    "notifications",
+    "notifications"
+  ],
+  "host_permissions": [
     "https://*.ruckuswireless.com/",
     "http://*.ruckuswireless.com/",
     "https://ruckus.cloud/",
@@ -28,10 +30,7 @@
     "https://local.mlisa.io/"
   ],
   "background": {
-    "scripts": [
-      "background.js"
-    ],
-    "persistent": false
+    "service_worker": "background.js"
   },
   "content_scripts": [{
       "matches": [
@@ -49,9 +48,9 @@
           "content/target.js"
       ]
   }],
-  "browser_action": {
+  "action": {
     "default_icon": "concept-128x128.png",
     "default_title": "Click the icon to copy cookies from configured domain to localhost. Default is set to devalto. Domain can be changed in options"
   },
-  "manifest_version": 2
+  "manifest_version": 3
 }

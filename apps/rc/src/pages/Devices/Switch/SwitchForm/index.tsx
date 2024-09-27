@@ -324,11 +324,17 @@ export function SwitchForm () {
     } else if (switchRole === MEMEBER_TYPE.MEMBER) {
       const params = {
         tenantId,
+        venueId: values.venueId,
         stackSerialNumber: formRef.current?.getFieldValue('existingStack'),
-        newStackMemberSerialNumber: serialNumber
+        newStackMemberSerialNumber: serialNumber,
+        switchId: formRef.current?.getFieldValue('existingStack'),
+        memberId: serialNumber
       }
       try {
-        await addStackMember({ params }).unwrap()
+        await addStackMember({
+          params,
+          enableRbac: isSwitchRbacEnabled
+        }).unwrap()
         navigate(`${basePath.pathname}/switch`, { replace: true })
       } catch (error) {
         console.log(error) // eslint-disable-line no-console

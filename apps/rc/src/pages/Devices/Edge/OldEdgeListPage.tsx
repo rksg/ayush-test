@@ -11,7 +11,7 @@ export const OldEdgeListPage = () => {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'SmartEdge' })}
+        title={$t({ defaultMessage: 'RUCKUS Edge' })}
         extra={filterByAccess([
           <TenantLink to='/devices/edge/add'>
             <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>

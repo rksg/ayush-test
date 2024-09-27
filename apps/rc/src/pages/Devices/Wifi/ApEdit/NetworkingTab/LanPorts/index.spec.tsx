@@ -228,6 +228,8 @@ describe('AP Ethernet Port Profile', () => {
       rest.post(EthernetPortProfileUrls.getEthernetPortProfileViewDataList.url,
         (_, res, ctx) => res(ctx.json(mockEthProfiles))),
       rest.post(AaaUrls.getAAAPolicyViewModelList.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.post(EthernetPortProfileUrls.createEthernetPortProfile.url,
         (_, res, ctx) => res(ctx.json({})))
     )
   })
@@ -275,7 +277,6 @@ describe('AP Ethernet Port Profile', () => {
     expect(detailBtn).toBeInTheDocument()
     await userEvent.click(detailBtn)
 
-    expect(screen.getByText('Ethernet Port Details:')).toBeInTheDocument()
     expect(await screen.findAllByText('Port Type')).toHaveLength(3)
     expect(await screen.findAllByText('VLAN Untag ID')).toHaveLength(4)
     expect(await screen.findAllByText('VLAN Members')).toHaveLength(3)

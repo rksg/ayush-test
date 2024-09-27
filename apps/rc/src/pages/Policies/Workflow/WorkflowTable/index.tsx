@@ -25,14 +25,15 @@ import {
   FILTER,
   SEARCH,
   Workflow,
-  WorkflowDetailsTabKey
+  WorkflowDetailsTabKey,
+  filterByAccessForServicePolicyMutation,
+  getScopeKeyByPolicy
 } from '@acx-ui/rc/utils'
 import {
   TenantLink,
   useNavigate,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
 function useColumns (workflowMap: Map<string, Workflow>) {
   const { $t } = useIntl()
 
@@ -138,6 +139,7 @@ export default function WorkflowTable () {
 
   const rowActions: TableProps<Workflow>['rowActions'] = [
     {
+      scopeKey: getScopeKeyByPolicy(PolicyType.WORKFLOW, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([data],clearSelection) => {
         navigate({
@@ -153,6 +155,7 @@ export default function WorkflowTable () {
       visible: (selectedItems => selectedItems.length === 1)
     },
     {
+      scopeKey: getScopeKeyByPolicy(PolicyType.WORKFLOW, PolicyOperation.DETAIL),
       label: $t({ defaultMessage: 'Preview' }),
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       onClick: ([data], clearSelection) => {
@@ -163,6 +166,7 @@ export default function WorkflowTable () {
       visible: (selectedItems => selectedItems.length === 1)
     },
     {
+      scopeKey: getScopeKeyByPolicy(PolicyType.WORKFLOW, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedItems, clearSelection) => {
         doProfileDelete(selectedItems,
@@ -189,10 +193,12 @@ export default function WorkflowTable () {
     }
   ]
 
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
     const payload = {
       ...tableQuery.payload,
-      name: customSearch?.searchString ?? ''
+      filters: customSearch?.searchString ? { name: customSearch?.searchString } : undefined
     }
     tableQuery.setPayload(payload)
   }
@@ -216,8 +222,9 @@ export default function WorkflowTable () {
             { count: tableQuery.data?.totalCount }
           )
         }
-        extra={filterByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink
+            scopeKey={getScopeKeyByPolicy(PolicyType.WORKFLOW, PolicyOperation.CREATE)}
             to={getPolicyRoutePath({
               type: PolicyType.WORKFLOW,
               oper: PolicyOperation.CREATE
@@ -233,13 +240,13 @@ export default function WorkflowTable () {
         settingsId={settingsId}
         enableApiFilter
         columns={useColumns(workflowMap)}
-        rowActions={rowActions}
+        rowActions={allowedRowActions}
         onFilterChange={handleFilterChange}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'
-        rowSelection={{ type: 'checkbox' }}
+        rowSelection={allowedRowActions.length > 0 && { type: 'checkbox' }}
       />
       {previewVisible && previewId &&
       <WorkflowActionPreviewModal

@@ -201,8 +201,6 @@ export const useNetworkVxLanTunnelProfileInfo =
 
 // eslint-disable-next-line max-len
 export function useServicePolicyEnabledWithConfigTemplate (configTemplateType: ConfigTemplateType): boolean {
-  const isPolicyEnabled = useIsSplitOn(Features.POLICIES)
-  const isServiceEnabled = useIsSplitOn(Features.SERVICES)
   const isPolicyConfigTemplate = configTemplatePolicyTypeMap[configTemplateType]
   const isServiceConfigTemplate = configTemplateServiceTypeMap[configTemplateType]
   const { isTemplate } = useConfigTemplate()
@@ -211,12 +209,8 @@ export function useServicePolicyEnabledWithConfigTemplate (configTemplateType: C
 
   if (!isPolicyConfigTemplate && !isServiceConfigTemplate) return false
 
-  if (isPolicyConfigTemplate) {
-    return isPolicyEnabled && result
-  }
-
-  if (isServiceConfigTemplate) {
-    return isServiceEnabled && result
+  if (isPolicyConfigTemplate || isServiceConfigTemplate) {
+    return result
   }
 
   return false
@@ -315,14 +309,17 @@ export function useRadiusServer () {
     // eslint-disable-next-line max-len
     const radiusServerIdKeys: Extract<keyof NetworkSaveData, 'authRadiusId' | 'accountingRadiusId'>[] = ['authRadiusId', 'accountingRadiusId']
     radiusServerIdKeys.forEach(radiusKey => {
-      const radiusValue = saveData[radiusKey]
-      const oldRadiusValue = radiusServerConfigurations?.[radiusKey]
+      const newRadiusId = saveData[radiusKey]
+      const oldRadiusId = radiusServerConfigurations?.[radiusKey]
 
-      if ((radiusValue ?? '') !== (oldRadiusValue ?? '')) {
-        const mutationTrigger = radiusValue ? activateRadiusServer : deactivateRadiusServer
-        mutations.push(mutationTrigger({
-          params: { networkId, radiusId: radiusValue ?? oldRadiusValue as string }
-        }).unwrap())
+      const isRadiusIdChanged = (newRadiusId ?? '') !== (oldRadiusId ?? '')
+      const isDifferentNetwork = saveData.id !== networkId
+
+      if (isRadiusIdChanged || isDifferentNetwork) {
+        const mutationTrigger = newRadiusId ? activateRadiusServer : deactivateRadiusServer
+        const radiusIdToUse = newRadiusId ?? oldRadiusId as string
+
+        mutations.push(mutationTrigger({ params: { networkId, radiusId: radiusIdToUse } }).unwrap())
       }
     })
 
@@ -694,34 +691,33 @@ export function useAccessControlActivation () {
 
   const filterForAccessControlComparison = (data: NetworkSaveData) => {
     let object = {} as Record<string, unknown>
-    if (data.wlan?.advancedCustomization?.hasOwnProperty('l2AclPolicyId')
-      && data.wlan?.advancedCustomization.l2AclEnable) {
-      object['l2AclPolicyId'] = data.wlan.advancedCustomization.l2AclPolicyId
-    }
-
-    if (data.wlan?.advancedCustomization?.hasOwnProperty('l3AclPolicyId')
-      && data.wlan?.advancedCustomization.l3AclEnable) {
-      object['l3AclPolicyId'] = data.wlan.advancedCustomization.l3AclPolicyId
-    }
-
-    if (data.wlan?.advancedCustomization?.hasOwnProperty('devicePolicyId')
-      && data.enableDeviceOs) {
-      object['devicePolicyId'] = data.wlan.advancedCustomization.devicePolicyId
-    }
-
-    if (data.wlan?.advancedCustomization?.hasOwnProperty('applicationPolicyId')
-      && data.wlan?.advancedCustomization?.applicationPolicyEnable) {
-      object['applicationPolicyId'] = data.wlan.advancedCustomization.applicationPolicyId
-    }
-
-    if (data.wlan?.advancedCustomization?.hasOwnProperty('accessControlProfileId')
-      && data.wlan?.advancedCustomization.accessControlEnable) {
-      // eslint-disable-next-line max-len
+    if (data.wlan?.advancedCustomization?.accessControlEnable) {
       object['accessControlProfileId'] = data.wlan.advancedCustomization.accessControlProfileId
+    } else {
+      if (data.wlan?.advancedCustomization?.hasOwnProperty('l2AclPolicyId')
+        && data.wlan?.advancedCustomization.l2AclEnable) {
+        object['l2AclPolicyId'] = data.wlan.advancedCustomization.l2AclPolicyId
+      }
+
+      if (data.wlan?.advancedCustomization?.hasOwnProperty('l3AclPolicyId')
+        && data.wlan?.advancedCustomization.l3AclEnable) {
+        object['l3AclPolicyId'] = data.wlan.advancedCustomization.l3AclPolicyId
+      }
+
+      if (data.wlan?.advancedCustomization?.hasOwnProperty('devicePolicyId')
+        && data.wlan?.advancedCustomization.enableDeviceOs) {
+        object['devicePolicyId'] = data.wlan.advancedCustomization.devicePolicyId
+      }
+
+      if (data.wlan?.advancedCustomization?.hasOwnProperty('applicationPolicyId')
+        && data.wlan?.advancedCustomization?.applicationPolicyEnable) {
+        object['applicationPolicyId'] = data.wlan.advancedCustomization.applicationPolicyId
+      }
     }
 
     return object
   }
+
 
   // eslint-disable-next-line max-len
   const itemProcessFn = (currentPayload: Record<string, unknown>, oldPayload: Record<string, unknown>, key: string, id: string) => {

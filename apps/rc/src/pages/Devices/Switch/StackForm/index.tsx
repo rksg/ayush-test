@@ -264,7 +264,7 @@ export function StackForm () {
           switchDetail.deviceStatus as SwitchStatusEnum, switchDetail.syncedSwitchConfig)
       )
 
-      const switchFw = switchData?.firmwareVersion || switchDetail?.firmwareVersion
+      const switchFw = switchDetail?.firmware || switchData?.firmwareVersion
       const venueId = switchData?.venueId || switchDetail?.venueId || ''
       if (isSwitchFirmwareV1002Enabled && venuesListV1002) {
         const venueVersions = venuesListV1002.data?.find(

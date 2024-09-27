@@ -1,17 +1,19 @@
 import { ReactNode } from 'react'
 
 import { FormInstance }                        from 'antd'
-import _                                       from 'lodash'
+import { omit }                                from 'lodash'
 import { useIntl }                             from 'react-intl'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
-import { showActionModal, StepsForm } from '@acx-ui/components'
+import { showActionModal, StepsForm, useStepFormContext } from '@acx-ui/components'
 import {
-  AccessSwitch,
   CatchErrorResponse,
+  CommonErrorsResult,
+  CommonResult,
+  CatchErrorDetails,
   getServiceListRoutePath,
   LocationExtended,
-  NetworkSegmentationGroup,
+  PersonalIdentityNetworkFormData,
   redirectPreviousPage
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
@@ -30,31 +32,13 @@ interface PersonalIdentityNetworkFormStep {
   content: ReactNode
 }
 
-export interface PersonalIdentityNetworkFormData extends NetworkSegmentationGroup {
-  venueId: string
-  venueName: string
-  personaGroupId: string
-  edgeId: string
-  edgeName: string
-  dhcpId: string
-  dhcpName: string
-  poolId: string
-  poolName: string
-  tags: string[]
-  segments: number
-  devices: number
-  tunnelProfileName: string
-  networkNames: string[]
-  originalAccessSwitchInfos: AccessSwitch[]
-  dhcpRelay: boolean
-}
-
 export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormProps) => {
 
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
   const location = useLocation()
+  const { initialValues: formInitialValues } = useStepFormContext()
   const linkToServices = useTenantLink(getServiceListRoutePath(true))
   const previousPath = (location as LocationExtended)?.state?.from?.pathname
 
@@ -63,27 +47,39 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
       id: formData.id,
       name: formData.name,
       vxlanTunnelProfileId: formData.vxlanTunnelProfileId,
-      venueInfos: [{
-        venueId: formData.venueId,
-        personaGroupId: formData.personaGroupId
-      }],
-      edgeInfos: [{
-        edgeId: formData.edgeId,
+      edgeClusterInfos: [{
+        edgeClusterId: formData.edgeClusterId,
         segments: formData.segments,
         devices: formData.devices,
         dhcpInfoId: formData.dhcpId,
         dhcpPoolId: formData.poolId
       }],
-      networkIds: formData.networkIds,
-      distributionSwitchInfos: formData.distributionSwitchInfos?.map(ds=>_.omit(
+      distributionSwitchInfos: formData.distributionSwitchInfos?.map(ds => omit(
         ds, ['accessSwitches', 'name'])),
-      accessSwitchInfos: formData.accessSwitchInfos?.map(as=>_.omit(
-        as, ['name', 'familyId', 'firmwareVersion', 'model'])),
-      forceOverwriteReboot: formData.forceOverwriteReboot || false
+      accessSwitchInfos: formData.accessSwitchInfos?.map(as => omit(
+        as, ['name', 'familyId', 'firmwareVersion', 'model']))
     }
+
     try {
-      await props.onFinish({ params, payload: payload }).unwrap()
-      redirectPreviousPage(navigate, previousPath, linkToServices)
+      await new Promise(async (resolve, reject) => {
+        const funcArgs = [{
+          params, payload,
+          callback: (result: CommonResult[] | CommonErrorsResult<CatchErrorDetails> ) => {
+            // callback is after all RBAC related APIs sent
+            if (Array.isArray(result)) {
+              resolve(true)
+            } else {
+              reject(result)
+            }
+
+            redirectPreviousPage(navigate, previousPath, linkToServices)
+          }
+          // need to catch basic service profile failed
+        }] as unknown[]
+
+        if (props.editMode) funcArgs.unshift(formInitialValues! as PersonalIdentityNetworkFormData)
+        await props.onFinish.apply(null, funcArgs).catch(reject)
+      })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
       const overwriteMsg = afterSubmitMessage(error as CatchErrorResponse,
@@ -98,7 +94,6 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
           okText: $t({ defaultMessage: 'Yes' }),
           cancelText: $t({ defaultMessage: 'No' }),
           onOk: async () => {
-            formData.forceOverwriteReboot = true
             handleFinish(formData)
           },
           onCancel: async () => {}
@@ -120,7 +115,8 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
   }
 
   return (
-    <StepsForm editMode={props.editMode}
+    <StepsForm
+      editMode={props.editMode}
       form={props.form}
       onCancel={() => redirectPreviousPage(navigate, previousPath, linkToServices)}
       onFinish={handleFinish}
