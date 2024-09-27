@@ -5,7 +5,7 @@ import { useIntl }     from 'react-intl'
 
 import { Button, GridCol, GridRow, Loader }                                       from '@acx-ui/components'
 import { useGetWorkflowStepsByIdQuery, useLazySearchInProgressWorkflowListQuery } from '@acx-ui/rc/services'
-import { checkObjectNotExists, WorkflowStepsEmptyCount }                          from '@acx-ui/rc/utils'
+import { checkObjectNotExists, WorkflowPanelMode, WorkflowStepsEmptyCount }       from '@acx-ui/rc/utils'
 
 import { WorkflowDesigner } from '../../policies/WorkflowCanvas/WorkflowDesigner'
 import { WorkflowPanel }    from '../../policies/WorkflowCanvas/WorkflowPanel'
@@ -90,7 +90,7 @@ export function WorkflowSettingForm (props: { policyId?: string }) {
           <div style={{ height: '60vh' }}>
             <Loader states={[{ ...stepsState }]}>
               {policyId && !emptySteps
-                ? <WorkflowPanel workflowId={policyId} />
+                ? <WorkflowPanel workflowId={policyId} mode={WorkflowPanelMode.Edit} />
                 : <UI.EmptyButton onClick={openWorkflowDesigner}>
                   {$t({ defaultMessage: 'Start designing the workflow' })}
                 </UI.EmptyButton>
