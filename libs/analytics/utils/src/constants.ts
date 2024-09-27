@@ -10,7 +10,7 @@ export const productNames = get('IS_MLISA_SA')
 
 export enum IncidentToggle {
   AirtimeIncidents = 'airtime-incidents',
-  SecurityDDoSIncidents = 'security-ddos-incidents',
+  SwitchDDoSIncidents = 'switch-ddos-incidents',
 }
 
 export type IncidentsToggleFilter = {
@@ -70,7 +70,7 @@ const incidentsToggleMap: Record<
       'p-airtime-tx-6(5)g-high'
     ]
   },
-  [IncidentToggle.SecurityDDoSIncidents]: {
+  [IncidentToggle.SwitchDDoSIncidents]: {
     categories: ['all', 'security'],
     code: ['s-switch-tcp-syn-ddos']
   }
