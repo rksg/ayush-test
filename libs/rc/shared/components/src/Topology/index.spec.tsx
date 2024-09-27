@@ -18,6 +18,13 @@ jest.mock('@acx-ui/analytics/components', () => ({
   useIncidentsBySeverityQuery: () => ([])
 }))
 
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useLazyGetSwitchVlanUnionByVenueQuery: () => [() => ({
+    unwrap: () => vlansPortList
+  })]
+}))
+
 const fields = [
   'deviceType',
   'venueName',
@@ -334,10 +341,6 @@ describe('Topology', () => {
         (req, res, ctx) => {return res(ctx.json(graphData))}),
       rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
         (_, res, ctx) => res(ctx.json(editStackDetail))),
-      rest.get(
-        SwitchUrlsInfo.getSwitchVlanUnionByVenue.url,
-        (req, res, ctx) => res(ctx.json(vlansPortList))
-      ),
       rest.post(
         CommonUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json({ data: [editApDetail], totalCount: 0 })))

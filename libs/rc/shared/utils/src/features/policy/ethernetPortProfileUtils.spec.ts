@@ -1,4 +1,4 @@
-import { ApLanPortTypeEnum, EthernetPortAuthType } from '../../models'
+import { EthernetPortAuthType, EthernetPortType } from '../../models'
 
 import { getEthernetPortAuthTypeOptions, getEthernetPortAuthTypeString, getEthernetPortTypeOptions, getEthernetPortTypeString } from './ethernetPortProfileUtils'
 
@@ -18,15 +18,13 @@ describe('ethernetPortProfileUtils', () => {
       expect(getEthernetPortTypeOptions()).toStrictEqual([
         {
           label: 'Access',
-          value: ApLanPortTypeEnum.ACCESS
-        },
-        {
-          label: 'General',
-          value: ApLanPortTypeEnum.GENERAL
-        },
-        {
+          value: EthernetPortType.ACCESS
+        }, {
           label: 'Trunk',
-          value: ApLanPortTypeEnum.TRUNK
+          value: EthernetPortType.TRUNK
+        }, {
+          label: 'Selective Trunk',
+          value: EthernetPortType.SELECTIVE_TRUNK
         }
       ])
     })
@@ -34,8 +32,8 @@ describe('ethernetPortProfileUtils', () => {
 
   describe('getEthernetPortTypeString', ()=> {
     it('should return the PortType string by inputType', () => {
-      expect(getEthernetPortTypeString(ApLanPortTypeEnum.ACCESS)).toBe('Access')
-      expect(getEthernetPortTypeString(ApLanPortTypeEnum.TRUNK)).toBe('Trunk')
+      expect(getEthernetPortTypeString(EthernetPortType.ACCESS)).toBe('Access')
+      expect(getEthernetPortTypeString(EthernetPortType.TRUNK)).toBe('Trunk')
       expect(getEthernetPortTypeString()).toBe('')
     })
   })
