@@ -25,7 +25,8 @@ export const ScopeForm = () => {
         'clusterId',
         'venueId',
         'venueName',
-        'activeAps'
+        'activeAps',
+        'edgeList'
       ]
     },
     sorter: {
@@ -34,7 +35,9 @@ export const ScopeForm = () => {
     }
   })
 
-  const clusterIds = tableQuery.data?.data?.map(item => item.clusterId)
+  const edgeClusterList = tableQuery.data?.data?.filter(c =>
+    c.edgeList?.find(e => e.cpuCores !== undefined && e.cpuCores >= 4))
+  const clusterIds = edgeClusterList?.map(item => item.clusterId)
   const { clusterNodesMap = {} } = useGetEdgeListQuery({
     payload: {
       fields: [
@@ -163,7 +166,7 @@ export const ScopeForm = () => {
         </UI.FieldText>
         <Table
           columns={columns}
-          dataSource={tableQuery.data?.data}
+          dataSource={edgeClusterList}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='clusterId'
