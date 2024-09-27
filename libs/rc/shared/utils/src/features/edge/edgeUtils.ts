@@ -1,6 +1,6 @@
-import { DefaultOptionType }      from 'antd/lib/select'
+import { DefaultOptionType }             from 'antd/lib/select'
 import _, { difference, flatMap, sumBy } from 'lodash'
-import { IntlShape }              from 'react-intl'
+import { IntlShape }                     from 'react-intl'
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
@@ -427,10 +427,12 @@ export const isInterfaceInVRRPSetting = (
       port.portName.toLowerCase() === interfaceName.toLowerCase())))
 }
 
+// eslint-disable-next-line max-len
 const getTotalScopedCount = (clusterCompatibilities: EntityCompatibility[] | VenueSdLanApCompatibility[]) => {
   return sumBy(clusterCompatibilities as Record<string, unknown>[], 'total')
 }
 
+// eslint-disable-next-line max-len
 export const getFeaturesIncompatibleDetailData = (compatibleData: EdgeServiceCompatibility | EdgeSdLanApCompatibility) => {
   const isEdgePerspective = compatibleData.hasOwnProperty('clusterEdgeCompatibilities')
 
@@ -457,6 +459,7 @@ export const getFeaturesIncompatibleDetailData = (compatibleData: EdgeServiceCom
           } as ApCompatibility
         }
 
+        // eslint-disable-next-line max-len
         resultMapping[featureName].incompatible += sumBy(feature.incompatibleDevices, (d) => d.count)
 
 
@@ -485,6 +488,7 @@ export const getFeaturesIncompatibleDetailData = (compatibleData: EdgeServiceCom
           } as ApCompatibility
         }
 
+        // eslint-disable-next-line max-len
         resultMapping[featureName].incompatible += sumBy(feature.incompatibleDevices, (d) => d.count)
         resultMapping[featureName].incompatibleFeatures![0].incompatibleDevices = [
           { count: resultMapping[featureName].incompatible } as ApIncompatibleDevice]
