@@ -22,7 +22,7 @@ jest.mock('@acx-ui/rc/services', () => ({
         resolve(true)
 
         setTimeout(() => {
-          (req.callback as Function)({ id: 'mocked_id' })
+          (req.onSuccess as Function)({ id: 'mocked_id' })
         }, 100)})
       }
     }]

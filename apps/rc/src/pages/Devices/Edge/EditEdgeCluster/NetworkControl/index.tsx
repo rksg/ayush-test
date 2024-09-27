@@ -1,9 +1,9 @@
 
-import { Col, Form, Row, Switch } from 'antd'
-import { useIntl }                from 'react-intl'
+import { Col, Form, Row, Space, Switch } from 'antd'
+import { useIntl }                       from 'react-intl'
 
 
-import { Loader, StepsForm }                                                                                                                          from '@acx-ui/components'
+import { Loader, StepsForm, Tooltip }                                                                                                                 from '@acx-ui/components'
 import { Features }                                                                                                                                   from '@acx-ui/feature-toggle'
 import { EdgeDhcpSelectionForm, useEdgeDhcpActions, useIsEdgeFeatureReady }                                                                           from '@acx-ui/rc/components'
 import { useActivateHqosOnEdgeClusterMutation, useDeactivateHqosOnEdgeClusterMutation, useGetDhcpStatsQuery, useGetEdgeHqosProfileViewDataListQuery } from '@acx-ui/rc/services'
@@ -31,6 +31,9 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
   const [activateEdgeQos] = useActivateHqosOnEdgeClusterMutation()
   const [deactivateEdgeQos] = useDeactivateHqosOnEdgeClusterMutation()
   const { $t } = useIntl()
+
+  const edgeCpuCores = currentClusterStatus?.edgeList?.map(e => e.cpuCores)[0]
+  const hqosReadOnly = (edgeCpuCores===undefined || edgeCpuCores < 4) ? true : false
 
   const { currentDhcp, isDhcpLoading } = useGetDhcpStatsQuery({
     payload: {
@@ -63,7 +66,6 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
       isQosLoading: isLoading
     })
   })
-
   const handleApply = async () => {
     await handleApplyDhcp()
     await handleApplyQos()
@@ -192,11 +194,22 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
               {isEdgeHqosEnabled &&
               <StepsForm.FieldLabel width='50%'>
                 {$t({ defaultMessage: 'Hierarchical QoS' })}
-                <Form.Item
-                  name='qosSwitch'
-                  valuePropName='checked'
-                  children={<Switch />}
-                />
+                <Space>
+                  <Form.Item noStyle
+                    name='qosSwitch'
+                    valuePropName='checked'
+                  >
+                    <Switch disabled={hqosReadOnly} />
+                  </Form.Item>
+                  {hqosReadOnly && <Tooltip.Question
+                    title={
+                      $t({ defaultMessage: `
+                                Insufficient CPU cores have been detected on this cluster` })
+                    }
+                    placement='right'
+                    iconStyle={{ width: 16, height: 16, marginTop: 4 }}
+                  />}
+                </Space>
               </StepsForm.FieldLabel>
               }
               {
