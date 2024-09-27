@@ -9,7 +9,9 @@ import {
   NetworkSegmentationUrls,
   PersonaUrls,
   TunnelProfileUrls,
-  EdgeUrlsInfo } from '@acx-ui/rc/utils'
+  EdgeUrlsInfo,
+  PropertyUrlsInfo
+} from '@acx-ui/rc/utils'
 import { Provider }                                              from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -57,6 +59,10 @@ describe('NetworkSegmentationServiceInfo', () => {
       rest.get(
         PersonaUrls.getPersonaGroupById.url,
         (_req, res, ctx) => res(ctx.json(mockedPersonaGroup))
+      ),
+      rest.get(
+        PropertyUrlsInfo.getPropertyConfigs.url,
+        (req, res, ctx) => res(ctx.json({}))
       ),
       rest.get(
         TunnelProfileUrls.getTunnelProfile.url,
