@@ -190,7 +190,7 @@ describe('AupSettings', () => {
       '##########Longer Than 1000 Characters ###################################################' +
       '###########################')
 
-    formRef.current.validateFields()
+    formRef.current.submit()
 
     expect(await screen.findByText('Title must be up to 100 characters')).toBeVisible()
     expect(await screen.findByText('Message must be up to 1000 characters')).toBeVisible()
@@ -226,7 +226,7 @@ describe('AupSettings', () => {
     expect(await screen.findByText('Message')).toBeVisible()
   })
 
-  it('should validate whitespace only entries', async () => {
+  it('should validate no leading or trailing whitespace allowed', async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
       return form
@@ -251,16 +251,16 @@ describe('AupSettings', () => {
 
     await userEvent.type(pageTitleInput, '  ')
 
-    formRef.current.validateFields()
+    formRef.current.submit()
 
-    expect(await screen.findByText('Whitespace chars only are not allowed')).toBeVisible()
+    expect(await screen.findByText('No leading or trailing spaces allowed')).toBeVisible()
 
     await userEvent.type(pageTitleInput, 'a real value')
     await userEvent.type(pageBodyInput, '  ')
 
-    formRef.current.validateFields()
+    formRef.current.submit()
 
-    expect(await screen.findByText('Whitespace chars only are not allowed')).toBeVisible()
+    expect(await screen.findByText('No leading or trailing spaces allowed')).toBeVisible()
   })
 
 
@@ -328,7 +328,7 @@ describe('AupSettings', () => {
     const file = new File(['hello'], 'hello.pdf', { type: 'application/pdf' })
     Object.defineProperty(file, 'size', { value: 1024 * 1024 * 11 })
     const testfile = screen.getByTestId('aupPolicy')
-    userEvent.upload(testfile, file)
+    await userEvent.upload(testfile, file)
     expect(await screen.findByText('File size (11 MB) is too big.')).toBeVisible()
   })
 
@@ -353,7 +353,7 @@ describe('AupSettings', () => {
     expect(dragFile).toBeInTheDocument()
     const file = new File(['hello'], 'hello.pdf', { type: 'application/pdf' })
     const testfile = screen.getByTestId('aupPolicy')
-    userEvent.upload(testfile, file)
+    await userEvent.upload(testfile, file)
     await waitFor(() => expect(uploadFile).toHaveBeenCalled())
     expect(await screen.findByText('hello.pdf')).toBeVisible()
   })
