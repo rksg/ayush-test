@@ -60,8 +60,9 @@ export default function WlanSelection ({ disabled }: { disabled: boolean }) {
       available = wlansQuery.data as typeof r1Networks.data
     }
     if (available?.length) {
-      if (savedWlans?.length) {
-        const saved = savedWlans.map(({ id }) => id)
+      const formData = form.getFieldValue('wlans') as Wlan[]
+      if (formData?.length) {
+        const saved = formData.map(({ id }) => id)
         wlansData = available.map(wlan => ({
           ...wlan,
           excluded: !saved.includes(isMlisa ? wlan.name : wlan.id)
@@ -72,7 +73,7 @@ export default function WlanSelection ({ disabled }: { disabled: boolean }) {
       setWlans(wlansData)
       form.setFieldValue('wlans', wlansData.filter(wlan => !wlan.excluded))
     }
-  }, [r1Networks.data, code, isMlisa, savedWlans, venueId, wlansQuery])
+  }, [wlansQuery.data, isMlisa])
   return<Loader states={[wlansQuery]} style={{ height: '72px' }}>
     <Form.Item
       label={$t({ defaultMessage: 'Networks' })}
