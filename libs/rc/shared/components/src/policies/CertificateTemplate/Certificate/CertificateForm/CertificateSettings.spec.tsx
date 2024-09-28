@@ -74,8 +74,10 @@ describe('CertificateSettings', () => {
     expect(certificateTemplateSelect).toBeNull()
   })
 
+  // eslint-disable-next-line max-len
   it('should not render Certificate Template and identity select when specificTemplate is true', () => {
     render(<Provider><Form>
+      {/* eslint-disable-next-line max-len */}
       <CertificateSettings templateData={certificateTemplate} specificIdentity={'identity_id'}/></Form></Provider>)
     const certificateTemplateSelect = screen.queryByLabelText('Certificate Template')
     expect(certificateTemplateSelect).toBeNull()
