@@ -19,7 +19,7 @@ const genClassText =
   }
 
 const genBandWidthText = (bandwidth?: number) => {
-  return bandwidth ? bandwidth + '%' : ''
+  return bandwidth !== undefined || bandwidth !== null ? bandwidth + '%' : ''
 }
 
 interface TrafficClassSettingsProps {

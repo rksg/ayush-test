@@ -8,6 +8,7 @@ import { nsgApi }           from '@acx-ui/rc/services'
 import {
   DistributionSwitch,
   EdgeNSGFixtures,
+  EdgeUrlsInfo,
   NetworkSegmentationUrls
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
@@ -72,6 +73,10 @@ describe('PersonalIdentityNetworkForm - DistributionSwitchForm', () => {
       rest.post(
         NetworkSegmentationUrls.validateDistributionSwitchInfo.url,
         (req, res, ctx) => res(ctx.json({ response: { valid: true } }))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeList.url,
+        (req, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
   })
