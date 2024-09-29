@@ -709,7 +709,7 @@ export function AssignMspLicense () {
         </UI.FieldLabel2>
 
         <UI.FieldLabeServiceDate width='275px' style={{ marginTop: '10px' }}>
-          <label>{intl.$t({ defaultMessage: 'Tial Licenses Expiration Date' })}</label>
+          <label>{intl.$t({ defaultMessage: 'Trial Licenses Expiration Date' })}</label>
           <Form.Item
             name='trialExpirationDateSelection'
             label=''
