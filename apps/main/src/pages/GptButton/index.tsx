@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 
-import { Button, Steps }  from 'antd'
+import { Button, Form, Steps }  from 'antd'
 import { useIntl } from 'react-intl'
 
 
@@ -12,6 +12,7 @@ import BasicInformationPage       from './BasicInformationPage'
 import * as UI                    from './styledComponents'
 import VerticalPage               from './VerticalPage'
 import GptWizard from './GptWizard'
+import { useStartConversationsMutation } from '@acx-ui/rc/services'
 
 export default function RuckusGptButton () {
   const [visible, setVisible] = useState(false)
@@ -26,6 +27,11 @@ export default function RuckusGptButton () {
   }
 
   const [currentStep, setCurrentStep] = useState(0 as number)
+  const [basicFormRef] = Form.useForm()
+
+  const [startConversations] = useStartConversationsMutation()
+
+
 
   return <div>
     <UI.ButtonSolid
@@ -100,11 +106,40 @@ export default function RuckusGptButton () {
 
         <Button key='next'
           type='primary'
-          onClick={() => {
+          onClick={async () => {
+            let venyeType = ''  // need use async method
             if (step === 'vertical') {
-              setStep('basic')
+              basicFormRef.validateFields().then(() => {
+                const result = basicFormRef.getFieldsValue()
+                venyeType = result.venueType === 'OTHER' ? result.othersValue : result.venueType
+                setStep('basic')
+              }).catch(() => {
+                return
+              })
+
             } else if (step === 'basic') {
-              setStep('wizard')
+              basicFormRef.validateFields().then(
+
+                async () => {
+                  const result = basicFormRef.getFieldsValue()
+                  await startConversations({
+                    payload: {
+                      venueName: result.venueName,
+                      numberOfAp: result.numberOfAp,
+                      numberOfSwitch: result.numberOfSwitch,
+                      venyeType,
+                      description: result.description
+                    }
+                  }).unwrap()
+
+                  setStep('wizard')
+                }
+
+              ).catch(() => {
+                return
+              }
+              )
+
             }
           }}>
           {$t({ defaultMessage: 'Next' })}
@@ -115,8 +150,12 @@ export default function RuckusGptButton () {
       onCancel={() => setVisible(false)}
       children={
         <>
-          {step === 'vertical' && <VerticalPage />}
-          {step === 'basic' && <BasicInformationPage />}
+          <Form form={basicFormRef}
+            layout={'vertical'}
+            labelAlign='left'>
+            {step === 'vertical' && <VerticalPage />}
+            {step === 'basic' && <BasicInformationPage />}
+          </Form>
           {step === 'wizard' && <GptWizard
             requestId={mockResponse_step2.requestId}
             actionType={mockResponse_step2.actionType}
