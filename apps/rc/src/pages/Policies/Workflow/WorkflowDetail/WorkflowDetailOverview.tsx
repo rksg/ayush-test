@@ -3,13 +3,13 @@ import { useState, useEffect } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { SummaryCard }                                    from '@acx-ui/components'
-import { EnrollmentPortalLink, WorkflowPanel, PanelMode } from '@acx-ui/rc/components'
+import { SummaryCard }                         from '@acx-ui/components'
+import { EnrollmentPortalLink, WorkflowPanel } from '@acx-ui/rc/components'
 import {
   useGetWorkflowByIdQuery,
   useLazySearchWorkflowListQuery
 } from '@acx-ui/rc/services'
-import { Workflow } from '@acx-ui/rc/utils'
+import { Workflow, WorkflowPanelMode } from '@acx-ui/rc/utils'
 
 
 
@@ -72,7 +72,7 @@ export function WorkflowDetailOverview () {
       />
       <WorkflowPanel
         workflowId={data?.id!!}
-        mode={PanelMode.View}
+        mode={WorkflowPanelMode.Default}
       />
     </>
   )

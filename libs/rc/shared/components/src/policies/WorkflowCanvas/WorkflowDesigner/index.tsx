@@ -3,14 +3,14 @@ import { useState } from 'react'
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button }                                    from '@acx-ui/components'
-import { BrushSolid, EyeOpenOutlined, EyeOpenSolid } from '@acx-ui/icons'
-import { useGetWorkflowStepsByIdQuery }              from '@acx-ui/rc/services'
-import { WorkflowStepsEmptyCount }                   from '@acx-ui/rc/utils'
+import { Button }                                     from '@acx-ui/components'
+import { BrushSolid, EyeOpenOutlined, EyeOpenSolid }  from '@acx-ui/icons'
+import { useGetWorkflowStepsByIdQuery }               from '@acx-ui/rc/services'
+import { WorkflowPanelMode, WorkflowStepsEmptyCount } from '@acx-ui/rc/utils'
 
-import { EnrollmentPortalDesignModal }         from '../../../EnrollmentPortalDesignModal'
-import { WorkflowActionPreviewModal }          from '../../../WorkflowActionPreviewModal'
-import { PanelType, PanelMode, WorkflowPanel } from '../WorkflowPanel'
+import { EnrollmentPortalDesignModal } from '../../../EnrollmentPortalDesignModal'
+import { WorkflowActionPreviewModal }  from '../../../WorkflowActionPreviewModal'
+import { PanelType, WorkflowPanel }    from '../WorkflowPanel'
 
 import * as UI from './styledComponents'
 
@@ -70,7 +70,7 @@ export function WorkflowDesigner (props: WorkflowDesignerProps) {
       <WorkflowPanel
         workflowId={workflowId}
         type={PanelType.NoCard}
-        mode={PanelMode.Edit}
+        mode={WorkflowPanelMode.Design}
       />
     </UI.Drawer>
 
