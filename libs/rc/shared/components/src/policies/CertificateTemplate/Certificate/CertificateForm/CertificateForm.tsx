@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { PageHeader, StepsForm }                                                                        from '@acx-ui/components'
-import { useGenerateCertificateMutation }                                                               from '@acx-ui/rc/services'
+import { useGenerateCertificateToIdentityMutation }                                                     from '@acx-ui/rc/services'
 import { getPolicyListRoutePath, getPolicyRoutePath, PolicyType, PolicyOperation, CertificateFormData } from '@acx-ui/rc/utils'
 import { useTenantLink, useNavigate }                                                                   from '@acx-ui/react-router-dom'
 
@@ -14,7 +14,7 @@ import CertificateSettings from './CertificateSettings'
 export function CertificateForm () {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const [generateCertificate] = useGenerateCertificateMutation()
+  const [generateCertificate] = useGenerateCertificateToIdentityMutation()
   const linkToList = useTenantLink(getPolicyRoutePath({
     type: PolicyType.CERTIFICATE,
     oper: PolicyOperation.LIST
@@ -24,7 +24,8 @@ export function CertificateForm () {
   const handleFinish = async (formData: CertificateFormData) => {
     const { certificateTemplateId, csrType, csrString, description, ...variables } = formData
     await generateCertificate({
-      params: { templateId: formData.certificateTemplateId },
+      // eslint-disable-next-line max-len
+      params: { templateId: formData.certificateTemplateId, personaId: formData.identityId },
       payload: { csrString, description, variableValues: { ...variables } }
     })
     navigate(linkToList, { replace: true })

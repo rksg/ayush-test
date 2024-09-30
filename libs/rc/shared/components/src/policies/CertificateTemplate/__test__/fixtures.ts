@@ -1,4 +1,4 @@
-import { AlgorithmType, KeyUsageType, UsageType } from '@acx-ui/rc/utils'
+import { AlgorithmType, KeyUsageType, Persona, PersonaGroup, UsageType } from '@acx-ui/rc/utils'
 
 /* eslint-disable max-len */
 export const certificateAuthorityList =
@@ -554,4 +554,20 @@ export const certificateAuthority =
     KeyUsageType.CRL_SIGN
   ]
 
+}
+
+export const mockPersonaGroupWithIdentity: PersonaGroup = {
+  id: 'persona-group-id-1',
+  name: 'Class A',
+  description: '',
+  macRegistrationPoolId: 'mac-id-1',
+  dpskPoolId: 'dpsk-pool-2',
+  propertyId: 'propertyId-100',
+  certificateTemplateId: 'cert-template-1',
+  identities: [
+    {
+      id: 'b1d533e6-15b6-4168-8f5c-418198a7e3e7',
+      groupId: 'persona-group-id-1',
+      name: 'testccc-123'
+    }] as Persona[]
 }
