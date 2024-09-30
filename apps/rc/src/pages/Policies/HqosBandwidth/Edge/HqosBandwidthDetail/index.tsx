@@ -1,7 +1,8 @@
-import { Card, Space, Typography } from 'antd'
-import { useIntl }                 from 'react-intl'
+import { Card, Col, Row, Space, Typography } from 'antd'
+import { useIntl }                           from 'react-intl'
 
 import { Button, Loader, PageHeader, SummaryCard, Tooltip, cssStr }                                                        from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                          from '@acx-ui/feature-toggle'
 import { TrafficClassSettingsTable }                                                                                       from '@acx-ui/rc/components'
 import { useGetEdgeHqosProfileViewDataListQuery }                                                                          from '@acx-ui/rc/services'
 import { EdgeHqosViewData, PolicyOperation, PolicyType, getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath } from '@acx-ui/rc/utils'
@@ -11,11 +12,13 @@ import { filterByAccess }                                                       
 
 import * as UI from '../styledComponents'
 
-import { EdgeClusterTable } from './EdgeClusterTable'
+import { CompatibilityCheck } from './CompatibilityCheck'
+import { EdgeClusterTable }   from './EdgeClusterTable'
 
 const EdgeHqosBandwidthDetail = () => {
   const { $t } = useIntl()
   const params = useParams()
+  const isEdgeCompatibilityEnabled = useIsSplitOn(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
   const { qosViewData, isLoading } = useGetEdgeHqosProfileViewDataListQuery(
     { payload: {
@@ -88,6 +91,14 @@ const EdgeHqosBandwidthDetail = () => {
         isLoading: false
       }
     ]}>
+      {
+        (isEdgeCompatibilityEnabled && !!params.policyId) &&
+          <Row>
+            <Col span={24}>
+              <CompatibilityCheck policyId={params.policyId} />
+            </Col>
+          </Row>
+      }
       <UI.ToolTipStyle/>
       <Space direction='vertical' size={30}>
         <SummaryCard data={qosInfo} colPerRow={6} />

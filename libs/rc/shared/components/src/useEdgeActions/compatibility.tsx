@@ -1,34 +1,34 @@
 /* eslint-disable max-len */
-import { useState, useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
-import { get, sumBy } from 'lodash'
+import { get } from 'lodash'
 
 import {
-  useLazyGetSdLanEdgeCompatibilitiesQuery,
-  useLazyGetSdLanApCompatibilitiesQuery,
-  useLazyGetEdgeFeatureSetsQuery,
   useLazyGetApFeatureSetsQuery,
+  useLazyGetEdgeFeatureSetsQuery,
+  useLazyGetSdLanApCompatibilitiesQuery,
+  useLazyGetSdLanEdgeCompatibilitiesQuery,
   useLazyGetVenueEdgeCompatibilitiesQuery
-}   from '@acx-ui/rc/services'
+} from '@acx-ui/rc/services'
 import {
   ApCompatibility,
-  EdgeSdLanApCompatibilitiesResponse,
-  EdgeSdLanCompatibilitiesResponse,
-  IncompatibilityFeatures,
-  isApRelatedEdgeFeature,
-  CompatibilityDeviceEnum,
-  EdgeSdLanApCompatibility,
-  EdgeSdLanCompatibility,
   ApIncompatibleDevice,
   ApIncompatibleFeature,
+  CompatibilityDeviceEnum,
+  EdgeSdLanApCompatibilitiesResponse,
+  EdgeSdLanApCompatibility,
+  EdgeServiceCompatibilitiesResponse,
+  EdgeServiceCompatibility,
   EntityCompatibility,
-  VenueSdLanApCompatibility
+  getFeaturesIncompatibleDetailData,
+  IncompatibilityFeatures,
+  isApRelatedEdgeFeature
 } from '@acx-ui/rc/utils'
 
 import { EdgeCompatibilityDrawerProps, EdgeCompatibilityType } from '../Compatibility/EdgeCompatibilityDrawer'
 
 export const useEdgeSdLanCompatibilityData = (serviceIds: string[], skip: boolean = false) => {
-  const [data, setData] = useState<Record<string, EdgeSdLanCompatibility[] | EdgeSdLanApCompatibility[]> | undefined>(undefined)
+  const [data, setData] = useState<Record<string, EdgeServiceCompatibility[] | EdgeSdLanApCompatibility[]> | undefined>(undefined)
 
   const [getSdLanEdgeCompatibilities] = useLazyGetSdLanEdgeCompatibilitiesQuery()
   const [getSdLanApCompatibilities] = useLazyGetSdLanApCompatibilitiesQuery()
@@ -40,11 +40,11 @@ export const useEdgeSdLanCompatibilityData = (serviceIds: string[], skip: boolea
         getSdLanApCompatibilities({ payload: { filters: { serviceIds: ids } } }).unwrap()
       ])
 
-      const deviceTypeResultMap: Record<string, EdgeSdLanCompatibility[] | EdgeSdLanApCompatibility[]> = {}
+      const deviceTypeResultMap: Record<string, EdgeServiceCompatibility[] | EdgeSdLanApCompatibility[]> = {}
       result.forEach((resultItem, index) => {
         if (resultItem.status === 'fulfilled') {
           if(index === 0) {
-            deviceTypeResultMap[CompatibilityDeviceEnum.EDGE] = (resultItem.value as EdgeSdLanCompatibilitiesResponse).compatibilities
+            deviceTypeResultMap[CompatibilityDeviceEnum.EDGE] = (resultItem.value as EdgeServiceCompatibilitiesResponse).compatibilities
           } else {
             deviceTypeResultMap[CompatibilityDeviceEnum.AP] = (resultItem.value as EdgeSdLanApCompatibilitiesResponse).compatibilities
           }
@@ -64,73 +64,6 @@ export const useEdgeSdLanCompatibilityData = (serviceIds: string[], skip: boolea
   }, [serviceIds, skip])
 
   return data
-}
-
-const getTotalScopedCount = (clusterCompatibilities: EntityCompatibility[] | VenueSdLanApCompatibility[]) => {
-  return sumBy(clusterCompatibilities as Record<string, unknown>[], 'total')
-}
-export const getFeaturesIncompatibleDetailData = (compatibleData: EdgeSdLanCompatibility | EdgeSdLanApCompatibility) => {
-  const isEdgePerspective = compatibleData.hasOwnProperty('clusterEdgeCompatibilities')
-
-  const resultMapping : Record<string, ApCompatibility> = {}
-
-  if (isEdgePerspective) {
-    const data = (compatibleData as EdgeSdLanCompatibility).clusterEdgeCompatibilities
-    const totalScoped = getTotalScopedCount(data)
-
-    data.forEach(clusterCompatibilities => {
-      clusterCompatibilities.incompatibleFeatures?.forEach(feature => {
-        const featureName = feature.featureRequirement.featureName
-
-        if (!resultMapping[featureName]) {
-          resultMapping[featureName] = {
-            id: `edge_incompatible_details_${featureName}`,
-            incompatibleFeatures: [{
-              featureName,
-              requiredFw: feature.featureRequirement.requiredFw
-            }],
-            incompatible: 0,
-            // `total` should beyound features
-            total: totalScoped
-          } as ApCompatibility
-        }
-
-        resultMapping[featureName].incompatible += sumBy(feature.incompatibleDevices, (d) => d.count)
-
-
-        resultMapping[featureName].incompatibleFeatures![0].incompatibleDevices = [
-          { count: resultMapping[featureName].incompatible } as ApIncompatibleDevice]
-      })
-    })
-  } else {
-    const data = (compatibleData as EdgeSdLanApCompatibility).venueSdLanApCompatibilities
-    const totalScoped = getTotalScopedCount(data)
-
-    data.forEach(item => {
-      item.incompatibleFeatures?.forEach(feature => {
-        const featureName = feature.featureName
-
-        if (!resultMapping[featureName]) {
-          resultMapping[featureName] = {
-            id: `ap_incompatible_details_${featureName}`,
-            incompatibleFeatures: [{
-              featureName,
-              requiredFw: feature.requiredFw,
-              supportedModelFamilies: feature.supportedModelFamilies
-            }],
-            incompatible: 0,
-            total: totalScoped
-          } as ApCompatibility
-        }
-
-        resultMapping[featureName].incompatible += sumBy(feature.incompatibleDevices, (d) => d.count)
-        resultMapping[featureName].incompatibleFeatures![0].incompatibleDevices = [
-          { count: resultMapping[featureName].incompatible } as ApIncompatibleDevice]
-      })
-    })
-  }
-
-  return resultMapping
 }
 
 export const useEdgeSdLanDetailsCompatibilitiesData = (serviceId: string, skip: boolean = false) => {
@@ -153,7 +86,7 @@ export const useEdgeSdLanDetailsCompatibilitiesData = (serviceId: string, skip: 
       result.forEach((resultItem, index) => {
         if (resultItem.status === 'fulfilled') {
           if(index === 0) {
-            const details = getFeaturesIncompatibleDetailData((resultItem.value as EdgeSdLanCompatibilitiesResponse).compatibilities[0])
+            const details = getFeaturesIncompatibleDetailData((resultItem.value as EdgeServiceCompatibilitiesResponse).compatibilities[0])
             deviceTypeResultMap[CompatibilityDeviceEnum.EDGE] = details
           } else {
             const details = getFeaturesIncompatibleDetailData((resultItem.value as EdgeSdLanApCompatibilitiesResponse).compatibilities[0])
