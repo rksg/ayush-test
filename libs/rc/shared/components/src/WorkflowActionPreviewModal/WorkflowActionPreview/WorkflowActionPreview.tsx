@@ -17,6 +17,7 @@ import {
   DefaultUIConfiguration,
   GenericActionData,
   toReactFlowData,
+  ActionTypeTitle,
   UIConfiguration,
   WorkflowStep
 } from '@acx-ui/rc/utils'
@@ -62,6 +63,7 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
   const configurationQuery = useGetUIConfigurationQuery({ params: { id: workflowId } })
   const [getUIConfigLogoImage] = useLazyGetUIConfigurationLogoImageQuery()
   const [getUIConfigBackgroundImage] = useLazyGetUIConfigurationBackgroundImageQuery()
+  const showNavigator = !step && ! actionData
   const fetchImage = async (imageType: string) => {
     if (imageType === 'logoImages')
       return getUIConfigLogoImage({ params: { id: workflowId } } ).unwrap()
@@ -106,7 +108,6 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
 
   useEffect(() => {
     if (!stepsData ) return
-
     const { nodes } = toReactFlowData(stepsData?.content)
     setNodes(nodes as Node<WorkflowStep, ActionType>[])
     setStepMap(new Map<string, WorkflowStep>(stepsData?.content.map(v => [v.id, v])))
@@ -114,21 +115,38 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
   }, [stepsData])
 
   useEffect(() => {
-    if (step) {
-      setNodes([{
-        id: step.id,
-        type: step.actionType,
-        position: { x: 0, y: 0 },
-        data: {
-          ...step,
-          isStart: false,
-          isEnd: false
-        }
-      }])
-      setStepMap(map => map.set(step.id, step))
-    }
-
+    if (!step) return
+    setNodes([{
+      id: step.id,
+      type: step.actionType,
+      position: { x: 0, y: 0 },
+      data: {
+        ...step,
+        isStart: false,
+        isEnd: false
+      }
+    }])
+    setStepMap(map => map.set(step.id, step))
   }, [step])
+
+  useEffect(()=> {
+    if (!actionData) return
+    let workflowStep = {
+      id: actionData.id,
+      actionType: actionData.actionType,
+      enrollmentActionId: '',
+      isStart: false,
+      isEnd: false
+    }
+    setNodes([{
+      id: actionData.id,
+      type: actionData.actionType,
+      position: { x: 0, y: 0 },
+      data: workflowStep
+    }])
+    setStepMap(map => map.set(workflowStep.id, workflowStep))
+    setSelectedStepId(workflowStep.id)
+  }, [actionData])
 
   return (
     <Loader states={[stepQuery, configurationQuery]}>
@@ -141,20 +159,19 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
                 {$t({ defaultMessage: 'Action Preview:' })}
               </div>
               <div style={{ fontSize: 16, color: 'var(--acx-primary-black)', marginLeft: '4px' }}>
-                {$t({ defaultMessage: `{
-                    type, select,
-                    AUP {Acceptable Use Policy (AUP)}
-                    DATA_PROMPT {Display a Form}
-                    DISPLAY_MESSAGE {Custom Message}
-                    other {}
-                  }` }, {
-                  type: stepMap.get(selectedStepId ?? '')?.actionType ?? actionData?.actionType
-                })}
+                {
+                  (stepMap.get(selectedStepId ?? '')?.actionType ?? actionData?.actionType) ?
+                  // eslint-disable-next-line max-len
+                    $t(ActionTypeTitle[stepMap.get(selectedStepId ?? '')?.actionType ?? actionData?.actionType!]) : undefined
+                }
               </div>
-              <div style={{ marginLeft: '8px' }}
-                onClick={()=>setNavigatorVisible(!navigatorVisible)}>
-                <ListSolid/>
-              </div>
+              {
+                showNavigator &&
+                <div style={{ marginLeft: '8px' }}
+                  onClick={()=>setNavigatorVisible(!navigatorVisible)}>
+                  <ListSolid/>
+                </div>
+              }
             </div>
             <div style={{ flex: 'auto', textAlign: 'center' }}>
               <UI.DesktopOutlined $marked={marked.desk}
