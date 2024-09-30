@@ -160,12 +160,13 @@ async function testWlanSecuritySettings (guestNetworkType: GuestNetworkTypeEnum)
     expect(wpa3).toBeInTheDocument()
     expect(mixedMode).toBeInTheDocument()
     const wpa = screen.queryAllByTitle('WPA')
-    const wep = screen.queryAllByTitle('WEP')
+    const wep = screen.queryAllByTitle('WEP (Unsafe)')
     expect(wpa2).toBeInTheDocument()
     expect(wpa3).toBeInTheDocument()
     if (guestNetworkType === GuestNetworkTypeEnum.WISPr) {
       expect(wpa[0]).toBeInTheDocument()
       expect(wep[0]).toBeInTheDocument()
+      expect(wep[0]).toHaveClass('ant-select-item-option-disabled')
     } else {
       expect(wpa.length).toBe(0)
       expect(wep.length).toBe(0)
@@ -191,12 +192,26 @@ function testNoWlanSecuritySettings (guestNetworkType: GuestNetworkTypeEnum) {
       const defaultNetworkSecurity = (await screen.findAllByTitle('None'))[0]
       expect(defaultNetworkSecurity).toBeInTheDocument()
       await userEvent.click(defaultNetworkSecurity)
-      expect(
-        (await screen.findAllByTitle('Pre-Share Key (PSK)'))[0]
-      ).toBeInTheDocument()
+      const pskNetworkSecurity = (
+        await screen.findAllByTitle('Pre-Share Key (PSK)')
+      )[0]
+      expect(pskNetworkSecurity).toBeInTheDocument()
       expect(
         (await screen.findAllByTitle('OWE encryption'))[0]
       ).toBeInTheDocument()
+      await userEvent.click(pskNetworkSecurity)
+      const wpa2 = (await screen.findAllByTitle('WPA2 (Recommended)'))[0]
+      expect(wpa2).toBeInTheDocument()
+      await userEvent.click(wpa2)
+      const wpa3 = (await screen.findAllByTitle('WPA3'))[0]
+      const mixedMode = (await screen.findAllByTitle('WPA2/WPA3 mixed mode'))[0]
+      expect(wpa3).toBeInTheDocument()
+      expect(mixedMode).toBeInTheDocument()
+      const wpa = (await screen.findAllByTitle('WPA'))[0]
+      const wep = (await screen.findAllByTitle('WEP'))[0]
+      expect(wpa).toBeInTheDocument()
+      expect(wep).toBeInTheDocument()
+      expect(wep).not.toHaveClass('ant-select-item-option-disabled')
     } else {
       expect(secureNetwork).not.toBeInTheDocument()
       expect(screen.queryAllByTitle('Pre-Share Key (PSK)').length).toBe(0)
@@ -214,14 +229,32 @@ function testWlanSecuritySettingsOnlyPSK (guestNetworkType: GuestNetworkTypeEnum
     const defaultNetworkSecurity = (await screen.findAllByTitle('None'))[0]
     expect(defaultNetworkSecurity).toBeInTheDocument()
     await userEvent.click(defaultNetworkSecurity)
-    expect(
-      (await screen.findAllByTitle('Pre-Share Key (PSK)'))[0]
-    ).toBeInTheDocument()
+    const pskNetworkSecurity = (
+      await screen.findAllByTitle('Pre-Share Key (PSK)')
+    )[0]
     const oweNetworkSecurity = screen.queryAllByTitle('OWE encryption')
+    expect(pskNetworkSecurity).toBeInTheDocument()
+    await userEvent.click(pskNetworkSecurity)
+    const wpa2 = (await screen.findAllByTitle('WPA2 (Recommended)'))[0]
+    expect(wpa2).toBeInTheDocument()
+    await userEvent.click(wpa2)
+    const wpa3 = (await screen.findAllByTitle('WPA3'))[0]
+    const mixedMode = (await screen.findAllByTitle('WPA2/WPA3 mixed mode'))[0]
+    expect(wpa3).toBeInTheDocument()
+    expect(mixedMode).toBeInTheDocument()
+    const wpa = screen.queryAllByTitle('WPA')
+    const wep = screen.queryAllByTitle('WEP')
+    expect(wpa2).toBeInTheDocument()
+    expect(wpa3).toBeInTheDocument()
     if (guestNetworkType === GuestNetworkTypeEnum.WISPr) {
       expect(oweNetworkSecurity[0]).toBeInTheDocument()
+      expect(wpa[0]).toBeInTheDocument()
+      expect(wep[0]).toBeInTheDocument()
+      expect(wep[0]).not.toHaveClass('ant-select-item-option-disabled')
     } else {
       expect(oweNetworkSecurity.length).toBe(0)
+      expect(wpa.length).toBe(0)
+      expect(wep.length).toBe(0)
     }
     cleanup()
   })()
