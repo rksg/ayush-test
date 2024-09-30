@@ -119,6 +119,7 @@ describe('IntentAIForm', () => {
 
     await click(actions.getByRole('button', { name: 'Next' }))
     expect((await screen.findAllByText('Summary')).length).toEqual(2)
+    expect(await screen.findByText('Hours not applied for EcoFlex')).toBeVisible()
     await click(actions.getByRole('button', { name: 'Apply' }))
 
     expect(await screen.findByText(/has been updated/)).toBeVisible()
