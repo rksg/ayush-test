@@ -13,8 +13,8 @@ import {
   showActionModal,
   Button
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
-import { DateFormatEnum, userDateTimeFormat }                                        from '@acx-ui/formatter'
+import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
+import { DateFormatEnum, userDateTimeFormat }                                       from '@acx-ui/formatter'
 import {
   renderConfigTemplateDetailsComponent,
   useAccessControlSubPolicyVisible,
