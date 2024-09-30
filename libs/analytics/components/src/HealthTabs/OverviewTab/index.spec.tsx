@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom'
 
 import { get }                             from '@acx-ui/config'
+import { useIsSplitOn }                    from '@acx-ui/feature-toggle'
 import { Provider }                        from '@acx-ui/store'
 import { render }                          from '@acx-ui/test-utils'
 import { DateRange, type AnalyticsFilter } from '@acx-ui/utils'
@@ -28,8 +29,20 @@ describe('OverviewTab', () => {
     const { asFragment }=render(<Provider><OverviewTab /></Provider>, { route: { params } })
     expect(asFragment()).toMatchSnapshot()
   })
+  it('should render correctly when 10010e FF is enabled', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValueOnce(true)
+    const { asFragment }=render(<Provider><OverviewTab /></Provider>, { route: { params } })
+    expect(asFragment()).toMatchSnapshot()
+  })
   it('should render correctly when IS_MLISA_SA', async () => {
     mockGet.mockReturnValue('true')
+    const { asFragment }=render(<Provider><OverviewTab /></Provider>, { route: { params } })
+    expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('should render correctly when IS_MLISA_SA and 10010e FF enabled', async () => {
+    mockGet.mockReturnValue('true')
+    jest.mocked(useIsSplitOn).mockReturnValueOnce(true)
     const { asFragment }=render(<Provider><OverviewTab /></Provider>, { route: { params } })
     expect(asFragment()).toMatchSnapshot()
   })
