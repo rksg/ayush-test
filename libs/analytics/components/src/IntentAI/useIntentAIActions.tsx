@@ -145,16 +145,14 @@ export function useIntentAIActions () {
       link: {
         text: 'View',
         onClick: () => {
-          const statusLabelList = new Set()
-          data.forEach((item) => {
+          const statusLabelList = data.map((item) => {
             const { status, statusReason } = getTransitionStatus(action, item)
-            const statusLabel = [status,statusReason].filter((val)=>val).join('-')
-            statusLabelList.add(statusLabel)
+            return [status, statusReason].filter(Boolean).join('-')
           })
           const currentFilter = intentTableFilters.read() || {}
           const newFilter = {
             ...currentFilter,
-            statusLabel: Array.from(statusLabelList)
+            statusLabel: [...new Set(statusLabelList)]
           }
           intentTableFilters.write(newFilter as Filters)
         }
