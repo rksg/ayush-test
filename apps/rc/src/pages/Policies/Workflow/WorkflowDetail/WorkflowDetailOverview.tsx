@@ -9,7 +9,7 @@ import {
   useGetWorkflowByIdQuery,
   useLazySearchWorkflowListQuery
 } from '@acx-ui/rc/services'
-import { Workflow, WorkflowPanelMode } from '@acx-ui/rc/utils'
+import { Workflow } from '@acx-ui/rc/utils'
 
 
 
