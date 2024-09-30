@@ -359,6 +359,7 @@ export function EditPortDrawer ({
         !isVerGEVer(switchDetail?.firmware, '10020b', false))) {
           portSpeed = portSpeed.filter(item => !item.includes('FIVE_G'))
             .filter(item => !item.includes('TEN_G_FULL_'))
+          setPortSpeedOptions(portSpeed)
         }
       }
 
