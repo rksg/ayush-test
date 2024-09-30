@@ -1,8 +1,8 @@
 import { useState } from 'react'
 
-import { useConfigTemplate }           from '@acx-ui/rc/utils'
-import { useParams }                   from '@acx-ui/react-router-dom'
-import {goToNotFound, hasPermission, hasRaiPermission} from '@acx-ui/user'
+import { useConfigTemplate }              from '@acx-ui/rc/utils'
+import { useParams }                      from '@acx-ui/react-router-dom'
+import { goToNotFound, hasRaiPermission } from '@acx-ui/user'
 
 import { NetworkApsTab }       from './NetworkApsTab'
 import { NetworkClientsTab }   from './NetworkClientsTab'
