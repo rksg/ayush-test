@@ -6,7 +6,8 @@ import { v4 as uuidv4 } from 'uuid'
 
 import {
   StepsForm,
-  Loader } from '@acx-ui/components'
+  Loader,
+  Modal } from '@acx-ui/components'
 import {
   useGetWorkflowByIdQuery,
   useAddWorkflowMutation,
@@ -39,7 +40,9 @@ export interface WorkflowFormProps {
   mode: WorkflowFormMode
 }
 
-export interface WorkflowFormField extends Workflow {}
+export interface WorkflowFormField extends Workflow {
+  workflowValid: boolean
+}
 
 export function WorkflowForm (props: WorkflowFormProps) {
   const { $t } = useIntl()
@@ -144,8 +147,13 @@ export function WorkflowForm (props: WorkflowFormProps) {
 
   const onSubmit = async (shouldPublish: boolean) => {
     try {
-      // eslint-disable-next-line max-len
-      await handleUpdateWorkflow(originData.current, form.getFieldsValue(), shouldPublish, () => navigate(linkToPolicies, { replace: true }))
+      const workflowValidValue = form.getFieldValue('workflowValid')
+      if(!workflowValidValue) {
+        setWorkflowModalOpen(true)
+      } else {
+        // eslint-disable-next-line max-len
+        await handleUpdateWorkflow(originData.current, form.getFieldsValue(), shouldPublish, () => navigate(linkToPolicies, { replace: true }))
+      }
     } catch (error) {}
   }
 
@@ -170,6 +178,8 @@ export function WorkflowForm (props: WorkflowFormProps) {
         onSubmit(true)
       }
     }
+
+  const [isWorkflowModalOpen, setWorkflowModalOpen] = useState(false)
 
   return (
     <StepsForm<WorkflowFormField>
@@ -196,6 +206,15 @@ export function WorkflowForm (props: WorkflowFormProps) {
           isFetching: isUpdating
         }]}>
           <WorkflowSettingForm policyId={isEdit? policyId : originData.current?.id}/>
+          <Modal visible={isWorkflowModalOpen}
+            title={$t({ defaultMessage: 'Workflow Cannot Be Published' })}
+            onOk={() => setWorkflowModalOpen(false)}
+            onCancel={() => setWorkflowModalOpen(false)}
+            cancelButtonProps={{ style: { display: 'none' } }}>
+              // eslint
+            {$t({ defaultMessage: "The workflow cannot be published in it's " +
+                'current form, please correct all validation errors.' })}
+          </Modal>
         </Loader>
       </StepsForm.StepForm>
     </StepsForm>)
