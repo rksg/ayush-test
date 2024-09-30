@@ -1,4 +1,4 @@
-import { Typography, Space } from 'antd'
+import { Typography } from 'antd'
 
 import { DisplayMessageAction, GenericActionPreviewProps } from '@acx-ui/rc/utils'
 
@@ -11,13 +11,7 @@ export function DisplayMessagePreview (props: GenericActionPreviewProps<DisplayM
 
   return <ContentPreview
     title={data?.title}
-    body={
-      <Space direction='vertical'
-        align='center'>
-        <br/>
-        <Text >{data?.messageHtml}</Text>
-      </Space>
-    }
+    body={<Text >{data?.messageHtml}</Text>}
     {...rest}
   />
 }

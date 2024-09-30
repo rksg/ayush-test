@@ -67,18 +67,10 @@ const EditEdgeHqosBandwidth = () => {
 
   const isChangedTrafficClassSettings =
    (req: TrafficClassSetting[], db: TrafficClassSetting[]) => {
-     const diffPriorityScheduling = _.differenceBy(
-       req, db, 'priorityScheduling')
-     const diffMaxBandwidth = _.differenceBy(
-       req, db, 'maxBandwidth')
-     const diffMinBandwidth = _.differenceBy(
-       req, db, 'minBandwidth')
-     if (diffPriorityScheduling.length>0
-      || diffMaxBandwidth.length>0
-      || diffMinBandwidth.length>0) {
-       return true
-     }
-     return false
+     // eslint-disable-next-line max-len
+     const sortedReq = _.sortBy(req, ['trafficClass', 'priority']).map(item => _(item).omitBy(_.isUndefined).omitBy(_.isNull).value())
+     const sortedDb = _.sortBy(db, ['trafficClass', 'priority'])
+     return !_.isEqual(sortedReq, sortedDb)
    }
 
   const updateQosConfig = async (reqConfig: HqosBandwidthFormModel, dbConfig: EdgeHqosViewData)=> {

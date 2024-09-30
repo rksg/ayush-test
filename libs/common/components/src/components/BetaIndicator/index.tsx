@@ -1,11 +1,13 @@
-import { RocketOutlined } from '@acx-ui/icons-new'
+import { RocketOutlined, Size } from '@acx-ui/icons-new'
 
 import * as UI from './styledComponents'
 
-export function BetaIndicator () {
-  return <UI.IconWrapper>
-    <RocketOutlined size='sm' />
-  </UI.IconWrapper>
+export function BetaIndicator ({ size = 'sm' }: { size?: Size }) {
+  return (
+    <UI.IconWrapper $size={size}>
+      <RocketOutlined size={size} />
+    </UI.IconWrapper>
+  )
 }
 
 export function getTitleWithIndicator (title: string, isMultiLinesText?: boolean) {
