@@ -1,11 +1,16 @@
+import { useMemo } from 'react'
+
+import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Button, cssStr, Loader, PageHeader, showActionModal, Table, TableProps, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
 import { TrafficClassSettingsTable }                                                       from '@acx-ui/rc/components'
 import {
   useDeleteEdgeHqosProfileMutation,
   useGetEdgeClusterListQuery,
-  useGetEdgeHqosProfileViewDataListQuery
+  useGetEdgeHqosProfileViewDataListQuery,
+  useGetHqosEdgeCompatibilitiesQuery
 } from '@acx-ui/rc/services'
 import {
   EdgeHqosViewData,
@@ -22,11 +27,14 @@ import { filterByAccess, hasPermission }          from '@acx-ui/user'
 
 import * as UI from '../styledComponents'
 
-const EdgeHqosBandwidthTable = () => {
+import { CompatibilityCheck } from './CompatibilityCheck'
 
+
+const EdgeHqosBandwidthTable = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
+  const isEdgeCompatibilityEnabled = useIsSplitOn(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
   const getQosViewDataPayload = {
     fields: [
@@ -77,6 +85,20 @@ const EdgeHqosBandwidthTable = () => {
 
   const [deleteQos, { isLoading: isDeleteQosUpdating }] = useDeleteEdgeHqosProfileMutation()
 
+  const currentServiceIds = useMemo(
+    () => tableQuery.data?.data?.map(i => i.id!) ?? [],
+    [tableQuery.data?.data])
+
+  const { hqosCompatibilityData = [] } = useGetHqosEdgeCompatibilitiesQuery({
+    payload: { filters: { serviceIds: currentServiceIds } } }, {
+    skip: !isEdgeCompatibilityEnabled || !currentServiceIds.length,
+    selectFromResult: ({ data }) => {
+      return {
+        hqosCompatibilityData: data?.compatibilities
+      }
+    }
+  })
+
   const columns: TableProps<EdgeHqosViewData>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
@@ -88,14 +110,20 @@ const EdgeHqosBandwidthTable = () => {
       searchable: true,
       render: function (_, row) {
         return (
-          <TenantLink
-            to={getPolicyDetailsLink({
-              type: PolicyType.HQOS_BANDWIDTH,
-              oper: PolicyOperation.DETAIL,
-              policyId: row.id!
-            })}>
-            {row.name}
-          </TenantLink>
+          <Space>
+            <TenantLink
+              to={getPolicyDetailsLink({
+                type: PolicyType.HQOS_BANDWIDTH,
+                oper: PolicyOperation.DETAIL,
+                policyId: row.id!
+              })}>
+              {row.name}
+            </TenantLink>
+            {isEdgeCompatibilityEnabled && <CompatibilityCheck
+              serviceId={row.id!}
+              compatibilityData={hqosCompatibilityData}
+            />}
+          </Space>
         )
       }
     },

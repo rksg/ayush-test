@@ -10,6 +10,7 @@ import { intentAIApi }       from '@acx-ui/store'
 
 import { validateScheduleTiming }                 from './common/ScheduleTiming'
 import { aiFeaturesLabel, codes, Intent }         from './config'
+import { Wlan }                                   from './EquiFlex/IntentAIForm/WlanSelection'
 import { useIntentContext }                       from './IntentContext'
 import { DisplayStates, Statuses, StatusReasons } from './states'
 import { IntentWlan }                             from './utils'
@@ -28,6 +29,7 @@ export type FormValues <Preferences> = {
   displayStatus?: DisplayStates
   preferences?: Preferences
   settings: SettingsType
+  wlans?: Wlan[]
 }
 
 export type IntentTransitionPayload <Preferences = unknown> = {
