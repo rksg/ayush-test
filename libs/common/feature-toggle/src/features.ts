@@ -188,7 +188,7 @@ export enum Features {
   WIFI_CAPTIVE_PORTAL_OWE = 'wifi-captive-portal-owe',
   WIFI_WLAN_DEPRECATE_WEP = 'wifi-wlan-deprecate-wpa',
   WIFI_OVER_THE_DS_FT_SUPPORT_TOGGLE = 'wifi-over-the-ds-ft-support-toggle',
-  ENTITLEMENT_LICENSE_COMPLIANCE_PHASE2_TOGGLE= 'entitlement-license-compliance-phase2-toggle'
+  ENTITLEMENT_LICENSE_COMPLIANCE_PHASE2_TOGGLE = 'entitlement-license-compliance-phase2-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

@@ -1,8 +1,8 @@
 import { DatePicker, Form, Input, Radio, Space } from 'antd'
+import moment                                    from 'moment'
+import { useIntl }                               from 'react-intl'
 
 import { Button } from '@acx-ui/components'
-import moment from 'moment'
-import { useIntl } from 'react-intl'
 
 export default function MaxPeriod () {
   const { $t } = useIntl()

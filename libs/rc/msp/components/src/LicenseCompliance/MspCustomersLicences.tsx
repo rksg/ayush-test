@@ -1,12 +1,12 @@
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps }                               from '@acx-ui/components'
-import { DateFormatEnum, formatter }                               from '@acx-ui/formatter'
-import { useMspCustomerListQuery }                                 from '@acx-ui/msp/services'
-import { ComplianceMspCustomersDevicesTypes, MspEc, MspEcAccountType, MSPUtils }                       from '@acx-ui/msp/utils'
-import { EntitlementUtil, FILTER, GROUPBY, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
-import { noDataDisplay }                                           from '@acx-ui/utils'
+import { Loader, Table, TableProps }                                             from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                             from '@acx-ui/formatter'
+import { useMspCustomerListQuery }                                               from '@acx-ui/msp/services'
+import { ComplianceMspCustomersDevicesTypes, MspEc, MspEcAccountType, MSPUtils } from '@acx-ui/msp/utils'
+import { EntitlementUtil, FILTER, GROUPBY, SEARCH, useTableQuery }               from '@acx-ui/rc/utils'
+import { noDataDisplay }                                                         from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
