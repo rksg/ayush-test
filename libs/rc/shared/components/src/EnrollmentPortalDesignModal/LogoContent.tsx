@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Upload } from 'antd'
 import { RcFile } from 'antd/lib/upload'
 
-import { UIConfiguration } from '@acx-ui/rc/utils'
+import { getLogoImageSize, LogoSize, UIConfiguration } from '@acx-ui/rc/utils'
 
 import * as Utils  from './commonUtils'
 import RuckusCloud from './images/RuckusCloud.svg'
@@ -12,24 +12,40 @@ import * as UI     from './styledComponents'
 export interface LogoContentProps {
   value: UIConfiguration
   onLogoChange: (v: string, f: RcFile)=>void
-  onRatioChange: (v:number)=>void
+  onSizeChange: (v:LogoSize)=>void
   onDisabled: () => void
 }
 
 interface WidgetProps {
   value: UIConfiguration
   onLogoChange: (v: string, f: RcFile)=>void
-  onRatioChange: (v:number)=>void
+  onSizeChange: (v:LogoSize)=>void
   onDisabled: () => void
 }
 
 function Widget (props: WidgetProps) {
-  const { onLogoChange, onRatioChange, onDisabled, value } = props
-  const maxRatio = 2.25
-  const minRatio = 1
-  const currentRatio = value.uiStyleSchema.logoRatio ?? 1
-  const showPlus = currentRatio < maxRatio
-  const showMinus = currentRatio > minRatio
+  const { onLogoChange, onSizeChange, onDisabled, value } = props
+  const maxSize:LogoSize = 'LARGE'
+  const minSize:LogoSize = 'SMALL'
+  const currentSize = value.uiStyleSchema.logoSize
+  const showPlus = currentSize !== maxSize
+  const showMinus = currentSize !== minSize
+
+  const getChangedSize = (current:LogoSize, direction: 'PLUS' | 'MINUS' ): LogoSize => {
+    if (direction === 'PLUS') {
+      if (current === 'SMALL')
+        return 'MEDIUM'
+      else if (current === 'MEDIUM')
+        return 'LARGE'
+    } else if (direction === 'MINUS') {
+      if (current === 'LARGE')
+        return 'MEDIUM'
+      else if (current === 'MEDIUM')
+        return 'SMALL'
+    }
+    return current
+  }
+
   return <div style={{ marginTop: -6 }}
     onClick={(e)=>{e.stopPropagation()}}
   >
@@ -52,13 +68,13 @@ function Widget (props: WidgetProps) {
     {<UI.PlusOutlined $showPlus={showPlus}
       title='plusen'
       onClick={(e)=>{
-        showPlus ? onRatioChange(currentRatio * 1.5):
+        showPlus ? onSizeChange(getChangedSize(currentSize, 'PLUS')):
           e.preventDefault()
       }}/>}
     {<UI.MinusOutlined $showMinus={showMinus}
       title='minusen'
       onClick={(e) => {
-        showMinus ? onRatioChange(currentRatio / 1.5):
+        showMinus ? onSizeChange(getChangedSize(currentSize, 'MINUS')):
           e.preventDefault()
       }}/>}
     {value.logoImage &&<UI.EyeSlashSolid
@@ -73,12 +89,12 @@ export function LogoContent (props: LogoContentProps) {
   const [cursor, setCursor] = useState('none')
   const [outline, setOutline] = useState('none')
   const [clicked, setClicked] = useState(false)
-  const { value, onLogoChange, onRatioChange, onDisabled } = props
+  const { value, onLogoChange, onSizeChange, onDisabled } = props
   return(<PopOver visible={clicked}
     onVisibleChange={(v)=> setClicked(v)}
     content={<Widget
       onLogoChange={onLogoChange}
-      onRatioChange={onRatioChange}
+      onSizeChange={onSizeChange}
       onDisabled={onDisabled}
       value={value}/>}
     placement='leftTop'
@@ -90,8 +106,8 @@ export function LogoContent (props: LogoContentProps) {
     <UI.Img
       src={value.logoImage ?? RuckusCloud}
       style={{
-        height: 105 * (value.uiStyleSchema.logoRatio ?? 1),
-        width: 156 * (value.uiStyleSchema.logoRatio ?? 1),
+        height: getLogoImageSize(value.uiStyleSchema.logoSize),
+        width: getLogoImageSize(value.uiStyleSchema.logoSize),
         cursor: cursor,
         outline: outline,
         maxHeight: '425',
