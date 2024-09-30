@@ -353,10 +353,13 @@ export function EditPortDrawer ({
       let portSpeed = getPortSpeed(selectedPorts)
       if (!isSwitch785048CPortSpeedEnabled &&
         selectedPorts.every(port => port.switchModel === 'ICX7850-48C') &&
-        switchDetail?.firmware &&
-        !isVerGEVer(switchDetail?.firmware, '10010e', false)) {
-        portSpeed = portSpeed.filter(item => !item.includes('FIVE_G'))
-          .filter(item => !item.includes('TEN_G_FULL_'))
+        switchDetail?.firmware) {
+        if(!isVerGEVer(switchDetail?.firmware , '10010f', false) ||
+        (isVerGEVer(switchDetail?.firmware, '10020', false) &&
+        !isVerGEVer(switchDetail?.firmware, '10020b', false))) {
+          portSpeed = portSpeed.filter(item => !item.includes('FIVE_G'))
+            .filter(item => !item.includes('TEN_G_FULL_'))
+        }
       }
 
       const defaultVlans = switchesDefaultVlan

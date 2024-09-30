@@ -1,6 +1,5 @@
 import React from 'react'
 
-import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { StepsForm } from '@acx-ui/components'
@@ -9,12 +8,13 @@ import { IntentWizardHeader }                                                   
 import { getScheduledAt }                                                                   from '../../common/ScheduleTiming'
 import { useIntentContext }                                                                 from '../../IntentContext'
 import { createUseIntentTransition, FormValues, IntentTransitionPayload, useInitialValues } from '../../useIntentTransition'
-import { Actions, getTransitionStatus, TransitionIntentItem }                               from '../../utils'
+import { Actions, getTransitionStatus, IntentWlan, TransitionIntentItem }                   from '../../utils'
 
 import { Introduction } from './Introduction'
 import { Priority }     from './Priority'
 import { Settings }     from './Settings'
 import { Summary }      from './Summary'
+import { Wlan }         from './WlanSelection'
 
 type FormVal = { enable: boolean }
 function getFormDTO (values: FormValues<FormVal>): IntentTransitionPayload {
@@ -23,14 +23,19 @@ function getFormDTO (values: FormValues<FormVal>): IntentTransitionPayload {
     isEnabled ? Actions.Optimize : Actions.Pause,
     values as TransitionIntentItem
   )
+  const buildWlans = (wlans: Wlan[]):IntentWlan[] =>
+    wlans.map(wlan => ({ name: wlan.id!, ssid: wlan.ssid }))
+
   const dto = {
     id: values.id,
     status,
     statusReason
   } as IntentTransitionPayload
+  const wlans = buildWlans(values.wlans ?? [])
+
   if (isEnabled) {
     dto.metadata = {
-      ..._.pick(values, ['wlans']),
+      wlans,
       scheduledAt: getScheduledAt(values).utc().toISOString()
     }
   }
@@ -44,7 +49,10 @@ export const IntentAIForm: React.FC = () => {
   const { intent: { metadata } } = useIntentContext()
   const wlans = metadata.wlans ? metadata.wlans : []
   // always enable = true, because only new, scheduled, active, applyscheduled can open wizard
-  const initialValues = { ...useInitialValues(), preferences: { enable: true }, wlans }
+  const initialValues = { ...useInitialValues(),
+    preferences: { enable: true },
+    wlans: wlans.map(wlan => ({ ...wlan, id: wlan.name }))
+  }
   return (<>
     <IntentWizardHeader />
 

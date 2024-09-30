@@ -66,6 +66,13 @@ export default function MyPolicies () {
         onClick={() => setEdgeFeatureName(IncompatibilityFeatures.TUNNEL_PROFILE)}
       />
       : undefined
+    find(policies, { type: PolicyType.HQOS_BANDWIDTH })!.helpIcon = isEdgeCompatibilityEnabled
+      ? <ApCompatibilityToolTip
+        title=''
+        visible
+        onClick={() => setEdgeFeatureName(IncompatibilityFeatures.HQOS)}
+      />
+      : undefined
   }
 
   return (

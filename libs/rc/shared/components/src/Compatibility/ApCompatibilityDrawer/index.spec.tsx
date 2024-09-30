@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
-import userEvent          from '@testing-library/user-event'
-import { cloneDeep, get } from 'lodash'
-import { rest }           from 'msw'
+import userEvent     from '@testing-library/user-event'
+import { cloneDeep } from 'lodash'
+import { rest }      from 'msw'
 
 import { venueApi, networkApi, apApi }                                        from '@acx-ui/rc/services'
 import { WifiUrlsInfo, CommonUrlsInfo, IncompatibilityFeatures }              from '@acx-ui/rc/utils'
@@ -38,6 +38,7 @@ jest.mock('../CompatibilityDrawer/CompatibilityItem/FeatureItem', () => {
     </div>
   }
 })
+const services = require('@acx-ui/rc/services')
 
 describe('ApGeneralCompatibilityDrawer', () => {
   const venueId = '8caa8f5e01494b5499fa156a6c565138'
@@ -61,9 +62,6 @@ describe('ApGeneralCompatibilityDrawer', () => {
 
     mockServer.use(
       rest.post(
-        WifiUrlsInfo.getApCompatibilitiesVenue.url,
-        (_, res, ctx) => res(ctx.json(mockApCompatibilitiesVenue))),
-      rest.post(
         WifiUrlsInfo.getApCompatibilitiesNetwork.url,
         (_, res, ctx) => res(ctx.json(mockApCompatibilitiesNetwork))),
       rest.get(
@@ -81,12 +79,9 @@ describe('ApGeneralCompatibilityDrawer', () => {
     )
   })
   it('should fetch and display render venue correctly', async () => {
-    mockServer.use(
-      rest.post(
-        WifiUrlsInfo.getApCompatibilitiesVenue.url,
-        (_, res, ctx) => res(ctx.json({ apCompatibilities: mockApCompatibilitiesVenue.apCompatibilities.slice(1, 2) })))
-    )
-
+    services.useLazyGetApCompatibilitiesVenueQuery = () => [() => ({
+      unwrap: () => ({ apCompatibilities: mockApCompatibilitiesVenue.apCompatibilities.slice(1, 2) })
+    })]
     render(
       <Provider>
         <ApGeneralCompatibilityDrawer
@@ -119,6 +114,9 @@ describe('ApGeneralCompatibilityDrawer', () => {
   })
 
   it('should fetch and display render network correctly', async () => {
+    services.useLazyGetApCompatibilitiesVenueQuery = () => [() => ({
+      unwrap: () => ({ apCompatibilities: mockApCompatibilitiesVenue.apCompatibilities.slice(1, 2) })
+    })]
     render(
       <Provider>
         <ApGeneralCompatibilityDrawer
@@ -139,6 +137,9 @@ describe('ApGeneralCompatibilityDrawer', () => {
   })
 
   it('should fetch and display render alone correctly', async () => {
+    services.useLazyGetApCompatibilitiesVenueQuery = () => [() => ({
+      unwrap: () => ({ apCompatibilities: mockApCompatibilitiesVenue.apCompatibilities.slice(1, 2) })
+    })]
     render(
       <Provider>
         <ApGeneralCompatibilityDrawer
@@ -160,6 +161,9 @@ describe('ApGeneralCompatibilityDrawer', () => {
 
   it('should direct display render correctly(Devices of Venue banner) with given data', async () => {
     mockedCloseDrawer.mockClear()
+    services.useLazyGetApCompatibilitiesVenueQuery = () => [() => ({
+      unwrap: () => ({ apCompatibilities: mockApCompatibilitiesVenue.apCompatibilities.slice(1, 2) })
+    })]
     render(
       <Provider>
         <ApGeneralCompatibilityDrawer
@@ -185,12 +189,9 @@ describe('ApGeneralCompatibilityDrawer', () => {
   it('should direct display render correctly(Device of Venue)', async () => {
     const apName = 'AP-Test'
     mockedCloseDrawer.mockClear()
-    mockServer.use(
-      rest.post(
-        WifiUrlsInfo.getApCompatibilitiesVenue.url,
-        (_, res, ctx) => res(ctx.json({ apCompatibilities: mockApCompatibilitiesVenue.apCompatibilities.slice(0, 1) })))
-    )
-
+    services.useLazyGetApCompatibilitiesVenueQuery = () => [() => ({
+      unwrap: () => ({ apCompatibilities: mockApCompatibilitiesVenue.apCompatibilities.slice(0, 1) })
+    })]
     render(
       <Provider>
         <ApGeneralCompatibilityDrawer
@@ -221,14 +222,13 @@ describe('ApGeneralCompatibilityDrawer', () => {
   it('should change query payload when props changed', async () => {
     const apName = 'AP-Test'
     const mockeReq = jest.fn()
-    mockServer.use(
-      rest.post(
-        WifiUrlsInfo.getApCompatibilitiesVenue.url,
-        (req, res, ctx) => {
-          mockeReq(req.body)
-          return res(ctx.json({ apCompatibilities: mockApCompatibilitiesVenue.apCompatibilities.slice(0, 1) }))
-        })
-    )
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    services.useLazyGetApCompatibilitiesVenueQuery = () => [(req:any) => ({
+      unwrap: () => {
+        mockeReq(req.payload)
+        return { apCompatibilities: mockApCompatibilitiesVenue.apCompatibilities.slice(0, 1) }
+      }
+    })]
 
     const { rerender } = render(
       <Provider>
@@ -293,21 +293,19 @@ describe('ApGeneralCompatibilityDrawer', () => {
     const mockData = cloneDeep(mockApCompatibilitiesVenue)
     mockData.apCompatibilities[0].incompatibleFeatures![0].featureName = IncompatibilityFeatures.SD_LAN
     mockData.apCompatibilities[1].incompatibleFeatures![0].featureName = IncompatibilityFeatures.TUNNEL_PROFILE
-
-    mockServer.use(
-      rest.post(
-        WifiUrlsInfo.getApCompatibilitiesVenue.url,
-        (req, res, ctx) => {
-          const payload = get(req.body, 'featureName')
-          let returnVal
-          if (payload === IncompatibilityFeatures.TUNNEL_PROFILE) {
-            returnVal = mockData.apCompatibilities.slice(1, 2)
-          } else {
-            returnVal = mockData.apCompatibilities.slice(0, 1)
-          }
-          return res(ctx.json({ apCompatibilities: returnVal }))
-        })
-    )
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    services.useLazyGetApCompatibilitiesVenueQuery = () => [(req:any) => ({
+      unwrap: () => {
+        const payload = req.payload.featureName
+        let returnVal
+        if (payload === IncompatibilityFeatures.TUNNEL_PROFILE) {
+          returnVal = mockData.apCompatibilities.slice(1, 2)
+        } else {
+          returnVal = mockData.apCompatibilities.slice(0, 1)
+        }
+        return { apCompatibilities: returnVal }
+      }
+    })]
 
     render(
       <Provider>

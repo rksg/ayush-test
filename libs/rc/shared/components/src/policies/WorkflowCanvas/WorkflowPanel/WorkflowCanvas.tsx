@@ -17,7 +17,7 @@ import ReactFlow, {
   useReactFlow
 } from 'reactflow'
 
-import { ActionType } from '@acx-ui/rc/utils'
+import { ActionType, WorkflowPanelMode } from '@acx-ui/rc/utils'
 
 import {
   AupNode,
@@ -28,7 +28,6 @@ import {
   StartNode
 } from './WorkflowStepNode'
 
-import { PanelMode } from './index'
 
 
 const nodeTypes: NodeTypes = {
@@ -41,14 +40,14 @@ const nodeTypes: NodeTypes = {
 }
 
 interface WorkflowProps {
-  mode?: PanelMode,
+  mode?: WorkflowPanelMode,
   initialNodes?: Node[],
   initialEdges?: Edge[]
 }
 
 export default function WorkflowCanvas (props: WorkflowProps) {
-  const { mode = PanelMode.Default } = props
-  const isEditMode = mode === PanelMode.Edit
+  const { mode = WorkflowPanelMode.Default } = props
+  const isDesignMode = mode === WorkflowPanelMode.Design
   const reactFlowInstance = useReactFlow()
   const { $t } = useIntl()
   const [nodes, setNodes, onNodesChange] = useNodesState(props?.initialNodes ?? [])
@@ -87,10 +86,10 @@ export default function WorkflowCanvas (props: WorkflowProps) {
       nodesConnectable={false}
       minZoom={0.1}
       attributionPosition={'bottom-left'}
-      elementsSelectable={isEditMode}
-      style={{ background: isEditMode ? 'var(--acx-neutrals-15)' : '' }}
+      elementsSelectable={isDesignMode}
+      style={{ background: isDesignMode ? 'var(--acx-neutrals-15)' : '' }}
     >
-      { isEditMode &&
+      { isDesignMode &&
         <>
           <Controls
             fitViewOptions={{ maxZoom: 1 }}
@@ -103,7 +102,7 @@ export default function WorkflowCanvas (props: WorkflowProps) {
         </>
       }
 
-      { mode === PanelMode.View &&
+      { mode === WorkflowPanelMode.Default &&
         <Panel position={'top-left'} style={{ fontWeight: 600 }}>
           {$t({ defaultMessage: 'Active Workflow Design' })}
         </Panel>
