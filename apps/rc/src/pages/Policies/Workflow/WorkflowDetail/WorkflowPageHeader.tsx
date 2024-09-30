@@ -89,6 +89,7 @@ function WorkflowPageHeader () {
       />
       {visible &&
       <WorkflowActionPreviewModal
+        disablePortalDesign
         workflowId={published?.id ?? data?.id!!}
         onClose={()=>setVisible(false)}/>}
     </>
