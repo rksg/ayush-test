@@ -18,5 +18,6 @@ export enum IncompatibilityFeatures {
   TRUNK_PORT_VLAN_UNTAG_ID = 'Trunk Port VLAN Untag Id',
   SD_LAN = 'SD-LAN',
   TUNNEL_PROFILE = 'Tunnel Profile',
-  HA_AA = 'HA-AA'
+  HA_AA = 'HA-AA',
+  HQOS = 'HQoS'
 }
