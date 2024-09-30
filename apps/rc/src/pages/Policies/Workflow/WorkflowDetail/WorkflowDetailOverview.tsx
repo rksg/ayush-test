@@ -4,12 +4,12 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { GridCol, GridRow, SummaryCard }                  from '@acx-ui/components'
-import { EnrollmentPortalLink, WorkflowPanel, PanelMode } from '@acx-ui/rc/components'
+import { EnrollmentPortalLink, WorkflowPanel} from '@acx-ui/rc/components'
 import {
   useGetWorkflowByIdQuery,
   useLazySearchWorkflowListQuery
 } from '@acx-ui/rc/services'
-import { Workflow } from '@acx-ui/rc/utils'
+import { Workflow, WorkflowPanelMode  } from '@acx-ui/rc/utils'
 
 
 
@@ -78,7 +78,7 @@ export function WorkflowDetailOverview () {
         <GridCol col={{ span: 24 }}>
           <WorkflowPanel
             workflowId={data?.id!!}
-            mode={PanelMode.View}
+            mode={WorkflowPanelMode.Default}
           />
         </GridCol>
       </GridRow>
