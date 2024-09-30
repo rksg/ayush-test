@@ -71,7 +71,7 @@ export default function WlanSelection ({ disabled }: { disabled: boolean }) {
         wlansData = available
       }
       setWlans(wlansData)
-      form.setFieldValue('wlans', wlansData.filter(wlan => !(wlan.excluded ?? false)))
+      form.setFieldValue('wlans', wlansData.filter(wlan => !wlan.excluded))
     }
   }, [wlansQuery.data, isMlisa])
   return<Loader states={[wlansQuery]} style={{ height: '72px' }}>
