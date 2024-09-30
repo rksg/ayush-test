@@ -9,12 +9,13 @@ import { richTextFormatValues } from '../../common/richTextFormatValues'
 import { ScheduleTiming }       from '../../common/ScheduleTiming'
 import { Intent }               from '../../useIntentDetailsQuery'
 
-const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'sun']
+const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
 export function Summary () {
   const { $t } = useIntl()
   const { form } = useStepFormContext<Intent>()
   const isEnabled = form.getFieldValue('preferences').enable
+  const enableExcludedHours = form.getFieldValue('enableExcludedHours')
   const excludedHours = form.getFieldValue('preferences').excludedHours
   return <Row gutter={20}>
     <Col span={16}>
@@ -22,7 +23,7 @@ export function Summary () {
 
       {isEnabled
         ? <><ScheduleTiming.FieldSummary />
-          {excludedHours && <Form.Item
+          {enableExcludedHours && <Form.Item
             label={$t({ defaultMessage: 'Hours not applied for EcoFlex' })}
           >
             {DAYS.map(day => {
