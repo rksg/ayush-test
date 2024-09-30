@@ -3,9 +3,9 @@ import { useState } from 'react'
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { Button, GridCol, GridRow, Loader }                                       from '@acx-ui/components'
-import { useGetWorkflowStepsByIdQuery, useLazySearchInProgressWorkflowListQuery } from '@acx-ui/rc/services'
-import { checkObjectNotExists, WorkflowPanelMode, WorkflowStepsEmptyCount }       from '@acx-ui/rc/utils'
+import { Button, GridCol, GridRow, Loader }                                                           from '@acx-ui/components'
+import { useGetWorkflowStepsByIdQuery, useLazySearchInProgressWorkflowListQuery }                     from '@acx-ui/rc/services'
+import { checkObjectNotExists, WorkflowPanelMode, WorkflowStepsEmptyCount, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
 
 import { WorkflowDesigner } from '../../policies/WorkflowCanvas/WorkflowDesigner'
 import { WorkflowPanel }    from '../../policies/WorkflowCanvas/WorkflowPanel'
@@ -58,6 +58,7 @@ export function WorkflowSettingForm (props: { policyId?: string }) {
                 { required: true },
                 { min: 2 },
                 { max: 64 },
+                { validator: (_, value) => trailingNorLeadingSpaces(value) },
                 { validator: (_, value) => nameValidator(value) }
               ]
             }

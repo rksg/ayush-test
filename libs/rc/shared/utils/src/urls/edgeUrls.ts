@@ -333,5 +333,10 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/venues/edgeCompatibilities/query',
     newApi: true
+  },
+  getHqosEdgeCompatibilities: {
+    method: 'post',
+    url: '/edgeHqosProfiles/edgeCompatibilities/query',
+    newApi: true
   }
 }

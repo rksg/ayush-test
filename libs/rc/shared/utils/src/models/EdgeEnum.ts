@@ -114,7 +114,8 @@ export enum ClusterHaLoadDistributionEnum {
 export enum EdgeFeatureEnum {
   SD_LAN = 'SD-LAN',
   TUNNEL_PROFILE = 'Tunnel Profile',
-  HA_AA = 'HA-AA'
+  HA_AA = 'HA-AA',
+  HQOS = 'HQoS'
 }
 
 export enum CompatibilityEntityTypeEnum {

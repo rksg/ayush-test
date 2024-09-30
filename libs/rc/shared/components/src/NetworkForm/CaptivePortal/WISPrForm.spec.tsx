@@ -84,6 +84,7 @@ describe('CaptiveNetworkForm-WISPr', () => {
 
     it('should test WISPr network successfully', async () => {
       jest.mocked(useIsSplitOn).mockImplementation((splitName) =>
+        splitName !== Features.WIFI_WLAN_DEPRECATE_WEP &&
         splitName !== Features.WIFI_RBAC_API)
       render(
         <Provider>
