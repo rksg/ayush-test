@@ -207,9 +207,9 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
           style={{ height: '750px' }}>
           <UI.LayoutView $type={screen}
             style={{
-              backgroundImage: 'url("'+ UIConfig?.backgroundImage+'")',
-              backgroundColor: UIConfig.uiColorSchema?.backgroundColor,
-              backgroundSize: 'contain'
+              backgroundImage: UIConfig.backgroundImage ?
+                'url("'+ UIConfig?.backgroundImage+'")' : undefined,
+              backgroundColor: UIConfig.uiColorSchema?.backgroundColor
             }}>
             <CommonPreviewContainer
               ui={UIConfig}
