@@ -1,5 +1,9 @@
 import styled, { createGlobalStyle } from 'styled-components/macro'
 
+import { Alert as UIAlert } from '@acx-ui/components'
+
+import bannerImg from '../../../assets/banner_bkg.png'
+
 export const IntentAITableStyle = createGlobalStyle`
   .intentai-table {
     .ant-picker-suffix {
@@ -46,6 +50,33 @@ export const FeatureTooltip = styled.div`
   svg {
     height: 40px;
     width: 40px;
+  }
+  .br-size {
+    display: block; 
+    margin-bottom: 0.5em; 
+  }
+`
+
+export const AlertNote = styled(UIAlert)`
+  &.ant-alert-info {
+    border-radius: 10px;
+    background-color: var(--acx-accents-blue-10);
+    border: 1px solid var(--acx-accents-blue-10);
+    background-image: url(${bannerImg});
+    background-size: cover;
+  }
+`
+
+export const Banner = styled.div`
+  font-family: var(--acx-neutral-brand-font);
+  font-size: var(--acx-body-4-font-size);
+  font-weight: var(--acx-body-4-font-weight);
+  line-height: var(--acx-body-4-line-height);
+  .title {
+    font-family: var(--acx-accent-brand-font);
+    font-size: var(--acx-headline-2-font-size);
+    line-height: var(--acx-headline-2-line-height);
+    font-weight: bolder;
   }
   .br-size {
     display: block; 
