@@ -19,7 +19,7 @@ type WorkflowBaseUrlType = 'searchWorkflows' | 'getWorkflowDetail'
 
 type WorkflowActionUrlType = 'createAction' | 'patchAction'
   | 'deleteAction' | 'getActionById' | 'getAllActionsByType'
-  | 'queryActions' | 'uploadFile' | 'deleteFile'
+  | 'queryActions' | 'uploadFile' | 'deleteFile' | 'getFile'
 
 type WorkflowStepUrlType = 'createWorkflowOption' | 'getWorkflowOptionById'
   | 'getWorkflowOptionsByStepId' | 'createWorkflowStepUnderOption' | 'deleteSplitOptionById'
@@ -303,6 +303,10 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
   },
   deleteFile: {
     method: 'delete',
-    url: `${WorkflowActionBaseUrl}/files`
+    url: `${WorkflowActionBaseUrl}/files/:fileId`
+  },
+  getFile: {
+    method: 'get',
+    url: `${WorkflowActionBaseUrl}/files/:fileId`
   }
 }
