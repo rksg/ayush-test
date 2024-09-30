@@ -95,18 +95,20 @@ export default function CertificateSettings (
         </Col>
       </Row>
       {csrType === 'copy' &&
-        <Row>
+        <>
           <Description>{$t(onboardSettingsDescription.KEY_LENGTH)}</Description>
-          <Col span={10}>
-            <Form.Item
-              name='csrString'
-              label={$t({ defaultMessage: 'Certificate Signing Request' })}
-              rules={[{ required: true }]}
-            >
-              <Input.TextArea rows={5} />
-            </Form.Item>
-          </Col>
-        </Row>
+          <Row>
+            <Col span={10}>
+              <Form.Item
+                name='csrString'
+                label={$t({ defaultMessage: 'Certificate Signing Request' })}
+                rules={[{ required: true }]}
+              >
+                <Input.TextArea rows={5} />
+              </Form.Item>
+            </Col>
+          </Row>
+        </>
       }
       <Divider />
       <Description>{$t(certificateDescription.INFORMATION)}</Description>

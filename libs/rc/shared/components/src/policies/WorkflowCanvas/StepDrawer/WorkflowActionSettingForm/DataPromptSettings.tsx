@@ -3,9 +3,9 @@ import React, { useState } from 'react'
 import { Divider, Form, Input, Select, Switch } from 'antd'
 import { MessageDescriptor, useIntl }           from 'react-intl'
 
-import { Button }                                               from '@acx-ui/components'
-import { DeleteOutlined, DeleteOutlinedDisabledIcon }           from '@acx-ui/icons'
-import { ActionType, DataPromptVariable, whitespaceOnlyRegExp } from '@acx-ui/rc/utils'
+import { Button }                                                   from '@acx-ui/components'
+import { DeleteOutlined, DeleteOutlinedDisabledIcon }               from '@acx-ui/icons'
+import { ActionType, DataPromptVariable, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
 
 import { CommonActionSettings } from './CommonActionSettings'
 import { FieldLabel }           from './styledComponents'
@@ -69,7 +69,7 @@ function DataPromptField () {
                     { required: true },
                     { min: 3 },
                     { max: 50 },
-                    { validator: (_, value) => whitespaceOnlyRegExp(value) }
+                    { validator: (_, value) => trailingNorLeadingSpaces(value) }
                   ]}
                 >
                   <Input />
@@ -127,7 +127,7 @@ export function DataPromptSettings () {
             { required: true },
             { min: 1 },
             { max: 100 },
-            { validator: (_, value) => whitespaceOnlyRegExp(value) }
+            { validator: (_, value) => trailingNorLeadingSpaces(value) }
           ]}
         >
           <Input placeholder={$t({ defaultMessage: 'Type your title here...' })}
@@ -152,7 +152,7 @@ export function DataPromptSettings () {
             { required: true },
             { min: 1 },
             { max: 1000 },
-            { validator: (_, value) => whitespaceOnlyRegExp(value) }
+            { validator: (_, value) => trailingNorLeadingSpaces(value) }
           ]}
         >
           <Input.TextArea rows={8}

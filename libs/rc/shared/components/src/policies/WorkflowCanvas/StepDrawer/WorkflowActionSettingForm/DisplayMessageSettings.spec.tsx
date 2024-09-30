@@ -71,7 +71,7 @@ describe('DisplayMessageSettings', () => {
       + '##########Longer Than 1000 Characters ###################################################'
       + '###########################')
 
-    formRef.current.validateFields()
+    formRef.current.submit()
 
     expect(await screen.findByText('Page Title must be up to 100 characters')).toBeVisible()
     expect(await screen.findByText('Page Body Text must be up to 1000 characters')).toBeVisible()
@@ -101,13 +101,13 @@ describe('DisplayMessageSettings', () => {
     const generatedName = formRef.current.getFieldValue('name')
     expect(generatedName.split('-')[0]).toBe(ActionType.DISPLAY_MESSAGE)
 
-    formRef.current.validateFields()
+    formRef.current.submit()
 
     expect(await screen.findByText('Please enter Page Title')).toBeVisible()
     expect(await screen.findByText('Please enter Page Body Text')).toBeVisible()
   })
 
-  it('should validate whitespace only entries', async () => {
+  it('should validate no leading or trailing spaces allowed', async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
       return form
@@ -132,16 +132,16 @@ describe('DisplayMessageSettings', () => {
 
     await userEvent.type(pageTitleInput, '  ')
 
-    formRef.current.validateFields()
+    formRef.current.submit()
 
-    expect(await screen.findByText('Whitespace chars only are not allowed')).toBeVisible()
+    expect(await screen.findByText('No leading or trailing spaces allowed')).toBeVisible()
 
     await userEvent.type(pageTitleInput, 'a real value')
     await userEvent.type(pageBodyInput, '  ')
 
-    formRef.current.validateFields()
+    formRef.current.submit()
 
-    expect(await screen.findByText('Whitespace chars only are not allowed')).toBeVisible()
+    expect(await screen.findByText('No leading or trailing spaces allowed')).toBeVisible()
   })
 
 
