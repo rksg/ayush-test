@@ -43,6 +43,15 @@ export function ImpactedSwitchDDoSDonut ({ incident }: ChartProps) {
   const response = useImpactedSwitchDDoSAndTotalSwitchCountQuery({ id },
     { skip: druidRolledup })
 
+  const impactedSwitchCount = response.data?.impactedCount ?? 0
+  const totalSwitchCount = response.data?.totalCount ?? 0
+
+  const title=$t({ defaultMessage: 'Total Switch{plural}' },
+    { plural: totalSwitchCount > 1 ? 'es' : '' })
+  const subtitle = $t({
+    defaultMessage: 'This incident impacted {impactedSwitchCount} switch{plural}' },
+  { impactedSwitchCount, plural: impactedSwitchCount > 1 ? 'es' : '' })
+
   const transformData = (data:{ impactedCount:number,totalCount:number })=>{
     return [
       { value: data.impactedCount,
@@ -63,6 +72,8 @@ export function ImpactedSwitchDDoSDonut ({ incident }: ChartProps) {
             <DonutChart
               style={{ width, height }}
               showLegend={false}
+              title={title}
+              subTitle={subtitle}
               legend='name-value'
               dataFormatter={(v) => $t(intlFormats.countFormat, { value: v as number })}
               data={transformData(response.data!)}/>
@@ -86,7 +97,7 @@ function ImpactedSwitchTable (props: {
     dataIndex: 'name',
     title: $t({ defaultMessage: 'Switch Name' }),
     render: (_, { mac, name },__,highlightFn) =>
-      <TenantLink to={`devices/switch/${mac}/serial/details/incidents`}>
+      <TenantLink to={`devices/switch/${mac}/serial/details/reports`}>
         {highlightFn(name)}
       </TenantLink>,
     fixed: 'left',

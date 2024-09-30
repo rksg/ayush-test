@@ -20702,7 +20702,7 @@ exports[`Test Details should render SwitchTcpSynDDoS correctly 1`] = `
       </div>
     </div>
     <div
-      class="ant-col ant-col-16 c0"
+      class="ant-col ant-col-15 ant-col-offset-1 c0"
       style="padding: 10px 10px 10px 10px;"
     >
       <div
