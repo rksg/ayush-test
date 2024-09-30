@@ -191,14 +191,27 @@ export const nsgApi = baseNsgApi.injectEndpoints({
     }),
     getNetworkSegmentationGroupById: build.query<PersonalIdentityNetworks, RequestPayload>({
       async queryFn ({ params }, _queryApi, _extraOptions, fetchWithBQ) {
-        const pinRequest = createHttpRequest(
-          NetworkSegmentationUrls.getNetworkSegmentationGroupById, params)
+        const pinRequest = createHttpRequest(NetworkSegmentationUrls.getNetworkSegmentationGroupById, params)
         const pinQuery = await fetchWithBQ(pinRequest)
         const pinData = pinQuery.data as PersonalIdentityNetworks
 
+        // append network data
+        const pinViewmodelReq = createHttpRequest(NetworkSegmentationUrls.getNetworkSegmentationStatsList)
+        const pinViewmodelQuery = await fetchWithBQ({
+          ...pinViewmodelReq,
+          body: {
+            fields: ['id', 'networkIds'],
+            filters: { id: [params?.serviceId!] }
+          }
+        })
+
+        const pinViewmodel = pinViewmodelQuery.data as TableResult<PersonalIdentityNetworksViewData>
+        if (pinViewmodel)
+          pinData.networkIds = pinViewmodel.data[0]?.networkIds
+
         let pinSwitch
         // fetch venue id & name
-        const edgeClusterId = pinData?.edgeClusterInfos.map(edge => edge.edgeClusterId)
+        const edgeClusterId = pinData?.edgeClusterInfos?.map(edge => edge.edgeClusterId)
         if (edgeClusterId) {
           const clusterReq = createHttpRequest(EdgeUrlsInfo.getEdgeClusterStatusList)
           const edgeClusterQuery = await fetchWithBQ({
