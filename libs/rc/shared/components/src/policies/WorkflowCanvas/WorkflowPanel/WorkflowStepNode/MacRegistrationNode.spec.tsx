@@ -3,9 +3,9 @@ import userEvent             from '@testing-library/user-event'
 import { rest }              from 'msw'
 import { ReactFlowProvider } from 'reactflow'
 
-import { serviceApi }                                    from '@acx-ui/rc/services'
-import { MacRegListUrlsInfo, PersonaUrls, WorkflowUrls } from '@acx-ui/rc/utils'
-import { Provider, store }                               from '@acx-ui/store'
+import { serviceApi }                                                       from '@acx-ui/rc/services'
+import { MacRegListUrlsInfo, PersonaUrls, WorkflowPanelMode, WorkflowUrls } from '@acx-ui/rc/utils'
+import { Provider, store }                                                  from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -52,7 +52,11 @@ describe('MacRegistrationNode', () => {
       <Provider>
         <ReactFlowProvider>
           <MacRegistrationNode id='test-id'
-            data={{ id: 'test-id', enrollmentActionId: enrollmentActionIdWithoutData }}
+            data={{
+              id: 'test-id',
+              enrollmentActionId: enrollmentActionIdWithoutData,
+              mode: WorkflowPanelMode.Design
+            }}
             selected={false}
             type={''}
             zIndex={0}
@@ -86,7 +90,11 @@ describe('MacRegistrationNode', () => {
       <Provider>
         <ReactFlowProvider>
           <MacRegistrationNode id='test-id'
-            data={{ id: 'test-id', enrollmentActionId: enrollmentActionIdWithData }}
+            data={{
+              id: 'test-id',
+              enrollmentActionId: enrollmentActionIdWithData,
+              mode: WorkflowPanelMode.Design
+            }}
             selected={false}
             type={''}
             zIndex={0}
@@ -107,6 +115,30 @@ describe('MacRegistrationNode', () => {
     const popover = await screen.findByRole('tooltip')
     expect(popover)
       .toHaveTextContent('Identity GroupMy Identity Group for TestingMac Registration ListNone')
+  })
+
+  it('should not render Details in Default panel mode', () => {
+    render(
+      <Provider>
+        <ReactFlowProvider>
+          <MacRegistrationNode id='test-id'
+            data={{
+              id: 'test-id',
+              enrollmentActionId: enrollmentActionIdWithData,
+              mode: WorkflowPanelMode.Default
+            }}
+            selected={false}
+            type={''}
+            zIndex={0}
+            isConnectable={false}
+            xPos={0}
+            yPos={0}
+            dragging={false}/>
+        </ReactFlowProvider>
+      </Provider>
+    )
+
+    expect(screen.queryByText(/Details/i)).toBeNull()
   })
 
 })

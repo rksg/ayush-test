@@ -71,15 +71,6 @@ function useColumns (workflowMap: Map<string, Workflow>) {
       })
     },
     {
-      key: 'identityGroup',
-      title: $t({ defaultMessage: 'IdentityGroup' }),
-      dataIndex: 'identityGroup',
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      render: (_, _row) => {
-        return undefined
-      }
-    },
-    {
       key: 'url',
       title: $t({ defaultMessage: 'URL' }),
       dataIndex: 'url',
@@ -198,7 +189,7 @@ export default function WorkflowTable () {
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
     const payload = {
       ...tableQuery.payload,
-      name: customSearch?.searchString ?? ''
+      filters: customSearch?.searchString ? { name: customSearch?.searchString } : undefined
     }
     tableQuery.setPayload(payload)
   }

@@ -1,8 +1,6 @@
 import { cloneDeep } from 'lodash'
 
-import { EdgeCompatibilityFixtures, IncompatibilityFeatures } from '@acx-ui/rc/utils'
-
-import { getFeaturesIncompatibleDetailData } from './compatibility'
+import { EdgeCompatibilityFixtures, getFeaturesIncompatibleDetailData, IncompatibilityFeatures } from '@acx-ui/rc/utils'
 
 const { mockEdgeSdLanCompatibilities, mockEdgeSdLanApCompatibilites } = EdgeCompatibilityFixtures
 

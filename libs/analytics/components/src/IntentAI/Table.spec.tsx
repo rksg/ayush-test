@@ -3,17 +3,17 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
-import { Tooltip }        from '@acx-ui/components'
-import { get }            from '@acx-ui/config'
-import { TenantLink }     from '@acx-ui/react-router-dom'
-import { render, screen } from '@acx-ui/test-utils'
+import { Tooltip }                   from '@acx-ui/components'
+import { get }                       from '@acx-ui/config'
+import { TenantLink }                from '@acx-ui/react-router-dom'
+import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
 import { aiFeatureWithAIOps, aiFeatureWithEquiFlex, aiFeatureWithEquiFlexWithNewStatus, aiFeatureWithEcoFlex, aiFeatureWithRRM, mockAIDrivenRow } from './__tests__/fixtures'
 import { Icon }                                                                                                                                   from './common/IntentIcon'
 import { AiFeatures }                                                                                                                             from './config'
 import { DisplayStates, Statuses }                                                                                                                from './states'
 import * as UI                                                                                                                                    from './styledComponents'
-import { AIFeature, iconTooltips }                                                                                                                from './Table'
+import { AIFeature, Banner, iconTooltips }                                                                                                        from './Table'
 import { Actions, isVisibledByAction }                                                                                                            from './utils'
 
 jest.mock('@acx-ui/config', () => ({
@@ -211,5 +211,22 @@ describe('AIFeature component', () => {
   it('should trigger click tooltip for R1', async () => {
     render(iconTooltips[AiFeatures.RRM])
     await userEvent.click(await screen.findByTestId('featureTooltip'))
+  })
+})
+
+describe('Banner Component', () => {
+  it('should open the documentation link when the button is clicked', () => {
+    const openSpy = jest.spyOn(window, 'open').mockImplementation(() => {return null})
+
+    render(<Banner />)
+
+    const button = screen.getByRole('button', { name: /Learn More/i })
+    fireEvent.click(button)
+    expect(openSpy).toHaveBeenCalledWith(
+      'https://docs.commscope.com/bundle/ruckusai-userguide/page/GUID-CAAC695C-6740-499D-8C42-AB521CEE65F6.html',
+      '_blank'
+    )
+
+    openSpy.mockRestore()
   })
 })

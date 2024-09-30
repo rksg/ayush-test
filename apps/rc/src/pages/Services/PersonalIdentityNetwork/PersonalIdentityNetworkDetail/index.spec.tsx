@@ -1,13 +1,22 @@
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import userEvent     from '@testing-library/user-event'
+import { cloneDeep } from 'lodash'
+import { rest }      from 'msw'
 
-import { EdgeDHCPFixtures, EdgeDhcpUrls, getServiceRoutePath, NetworkSegmentationUrls, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                    from '@acx-ui/store'
-import { mockServer, render, screen }                                                                                  from '@acx-ui/test-utils'
+import {
+  EdgeDHCPFixtures,
+  EdgeDhcpUrls,
+  EdgeNSGFixtures,
+  getServiceRoutePath,
+  NetworkSegmentationUrls,
+  ServiceOperation,
+  ServiceType } from '@acx-ui/rc/utils'
+import { Provider }                   from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { mockNsgStatsList } from '../__tests__/fixtures'
+// import { mockNsgStatsList } from '../__tests__/fixtures'
 
 import NetworkSegmentationDetail from '.'
+const { mockNsgStatsList } = EdgeNSGFixtures
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
@@ -31,7 +40,9 @@ jest.mock('jszip', () => (class JSZip {
 const mockedSaveAs = jest.fn()
 jest.mock('file-saver', ()=>({ saveAs: () => mockedSaveAs() }))
 
-const { mockEdgeDhcpDataList } = EdgeDHCPFixtures
+const mockEdgeDhcpDataList = cloneDeep(EdgeDHCPFixtures.mockEdgeDhcpDataList)
+// eslint-disable-next-line max-len
+mockEdgeDhcpDataList.content[0].dhcpPools[0].id = mockNsgStatsList.data[0].edgeClusterInfos[0].dhcpPoolId
 
 describe('NsgDetail', () => {
   let params: { tenantId: string, serviceId: string }
@@ -48,11 +59,11 @@ describe('NsgDetail', () => {
     mockServer.use(
       rest.post(
         NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
-        (req, res, ctx) => res(ctx.json(mockNsgStatsList))
+        (_req, res, ctx) => res(ctx.json(mockNsgStatsList))
       ),
       rest.get(
         EdgeDhcpUrls.getDhcp.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeDhcpDataList.content[0]))
+        (_req, res, ctx) => res(ctx.json(mockEdgeDhcpDataList.content[0]))
       )
     )
   })

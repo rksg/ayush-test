@@ -2,17 +2,14 @@
 import { ReactNode } from 'react'
 
 import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
 
-import { NetworkSegmentationUrls } from '@acx-ui/rc/utils'
-import { Provider }                from '@acx-ui/store'
+import { Provider } from '@acx-ui/store'
 import {
-  mockServer,
   render,
   screen,
   waitFor
 } from '@acx-ui/test-utils'
-
+import { RequestPayload } from '@acx-ui/types'
 
 import AddNetworkSegmentation from '.'
 
@@ -45,6 +42,19 @@ jest.mock('../PersonalIdentityNetworkForm/PersonalIdentityNetworkFormContext', (
   PersonalIdentityNetworkFormDataProvider: ({ children }: { children: ReactNode }) =>
     <div data-testid='PersonalIdentityNetworkFormDataProvider' children={children} />
 }))
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  useEdgePinActions: () => ({
+    addPin: (req: RequestPayload) => new Promise((resolve) => {
+      resolve(true)
+      setTimeout(() => {
+        (req.callback as Function)([{
+          response: { id: 'mocked_service_id' }
+        }])
+      }, 300)
+    })
+  })
+}))
 
 const createNsgPath = '/:tenantId/services/personalIdentityNetwork/create'
 
@@ -55,12 +65,6 @@ describe('Add PersonalIdentityNetwork', () => {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       serviceId: 'testServiceId'
     }
-    mockServer.use(
-      rest.post(
-        NetworkSegmentationUrls.createNetworkSegmentationGroup.url,
-        (req, res, ctx) => res(ctx.status(202))
-      )
-    )
   })
 
   it('should create networkSegmentation successfully', async () => {
