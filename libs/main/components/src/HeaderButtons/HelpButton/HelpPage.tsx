@@ -2,9 +2,8 @@ import { useState, useEffect, useCallback } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, Drawer }                                 from '@acx-ui/components'
-import { DOCS_HOME_URL, fetchDocsURLMapping, getDocsURL } from '@acx-ui/rc/utils'
-import { useLocation }                                    from '@acx-ui/react-router-dom'
+import { Button, Drawer }                                                          from '@acx-ui/components'
+import { DOCS_HOME_URL, fetchDocsURLMapping, getDocsURL, useHelpPageLinkBasePath } from '@acx-ui/rc/utils'
 
 import { EmptyDescription } from './styledComponents'
 
@@ -34,12 +33,10 @@ export default function HelpPage (props: {
   setIsModalOpen: (isModalOpen: boolean) => void
 }) {
   const { $t } = useIntl()
-  const location = useLocation()
+  const { isMspUser, basePath } = useHelpPageLinkBasePath()
   const [helpDesc, setHelpDesc] = useState<string>()
   const [helpUrl, setHelpUrl] = useState<string|null>()
-  const [, tenantType, pathname] = location.pathname.match(/^\/[a-f0-9]{32}\/(v|t)\/(.+)$/) || []
-  const basePath = pathname?.replaceAll(/([A-Z0-9]{11,})|([0-9a-fA-F]{1,2}[:]){5}([0-9a-fA-F]{1,2})|([a-f-\d]{32,36}|[A-F-\d]{32,36})|([a-zA-Z0-9+\=]{84})|\d+/g, '*') // eslint-disable-line max-len
-  const isMspUser = tenantType === 'v'
+
   const showError = useCallback(() => {
     setHelpDesc($t({ defaultMessage: 'The content is not available.' }))
     setHelpUrl(null)

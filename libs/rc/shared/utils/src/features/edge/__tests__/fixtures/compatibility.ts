@@ -1,5 +1,5 @@
-import { CompatibilityEntityTypeEnum }                                                                                             from '../../../../models/EdgeEnum'
-import { EdgeFeatureSets, EdgeSdLanCompatibilitiesResponse, EdgeSdLanApCompatibilitiesResponse, VenueEdgeCompatibilitiesResponse } from '../../../../types/edge'
+import { CompatibilityEntityTypeEnum }                                                                                               from '../../../../models/EdgeEnum'
+import { EdgeFeatureSets, EdgeServiceCompatibilitiesResponse, EdgeSdLanApCompatibilitiesResponse, VenueEdgeCompatibilitiesResponse } from '../../../../types/edge'
 
 export const mockEdgeFeatureCompatibilities: EdgeFeatureSets = {
   featureSets: [
@@ -11,10 +11,15 @@ export const mockEdgeFeatureCompatibilities: EdgeFeatureSets = {
       featureName: 'Tunnel Profile',
       requiredFw: '2.1.0.700'
     }
+    ,
+    {
+      featureName: 'HQoS',
+      requiredFw: '2.1.0.700'
+    }
   ]
 }
 
-export const mockEdgeSdLanCompatibilities: EdgeSdLanCompatibilitiesResponse = {
+export const mockEdgeSdLanCompatibilities: EdgeServiceCompatibilitiesResponse = {
   compatibilities: [
     {
       serviceId: 'sdLanService-1',
@@ -142,6 +147,36 @@ export const mockEdgeSdLanCompatibilities: EdgeSdLanCompatibilitiesResponse = {
         }
       ]
     }  // end of service-2
+  ]
+}
+
+export const mockEdgeHqosCompatibilities: EdgeServiceCompatibilitiesResponse = {
+  compatibilities: [
+    {
+      serviceId: 'testPolicyId',
+      clusterEdgeCompatibilities: [
+        {
+          identityType: CompatibilityEntityTypeEnum.CLUSTER,
+          id: 'edgeCluster-1',
+          incompatibleFeatures: [
+            {
+              featureRequirement: {
+                featureName: 'HQoS',
+                requiredFw: '2.1.0.200'
+              },
+              incompatibleDevices: [
+                {
+                  firmware: '2.1.0.100',
+                  count: 1
+                }
+              ]
+            }
+          ],
+          total: 6,
+          incompatible: 1
+        }
+      ]
+    }
   ]
 }
 

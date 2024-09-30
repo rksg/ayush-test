@@ -180,7 +180,7 @@ function hasGenericPermission<T extends SvcPcyAllowedType, U extends SvcPcyAllow
 
   // eslint-disable-next-line max-len
   if ([ServiceOperation.LIST, ServiceOperation.DETAIL, PolicyOperation.LIST, PolicyOperation.DETAIL].includes(oper as unknown as SvcPcyAllowedOper)) {
-    return hasPermission({ scopes: scopeKeys, roles })
+    return true // Always allow users to access the view page
   }
 
   if (specialCheckFn && specialCheckFn()) {
