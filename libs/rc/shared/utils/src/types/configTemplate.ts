@@ -27,6 +27,11 @@ export enum AccessControlPolicyForTemplateCheckType {
   APPLICATION_POLICY = 'APPLICATION_POLICY'
 }
 
+export enum ConfigTemplateDriftType {
+  DRIFT_DETECTED = 'driftDetected',
+  IN_SYNC = 'inSync'
+}
+
 export interface ConfigTemplate {
   id?: string,
   name: string,
@@ -35,7 +40,8 @@ export interface ConfigTemplate {
   appliedOnTenants?: string[],
   type: ConfigTemplateType,
   lastModified: number,
-  lastApplied: number
+  lastApplied: number,
+  driftStatus?: ConfigTemplateDriftType
 }
 
 export interface ApplyConfigTemplatePaylod {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { ReactNode, useState } from 'react'
 
 import { MutationTrigger }    from '@reduxjs/toolkit/dist/query/react/buildHooks'
 import { MutationDefinition } from '@reduxjs/toolkit/query'
@@ -13,8 +13,8 @@ import {
   showActionModal,
   Button
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
-import { DateFormatEnum, userDateTimeFormat }                                       from '@acx-ui/formatter'
+import { Features, useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
+import { DateFormatEnum, userDateTimeFormat }                                        from '@acx-ui/formatter'
 import {
   renderConfigTemplateDetailsComponent,
   useAccessControlSubPolicyVisible,
@@ -53,11 +53,12 @@ import {
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }               from '@acx-ui/user'
 
-import { AppliedToTenantDrawer }      from './AppliedToTenantDrawer'
-import { ApplyTemplateDrawer }        from './ApplyTemplateDrawer'
-import { ShowDriftsDrawer }           from './ShowDriftsDrawer'
-import { getConfigTemplateTypeLabel } from './templateUtils'
-import { useAddTemplateMenuProps }    from './useAddTemplateMenuProps'
+import { AppliedToTenantDrawer }           from './AppliedToTenantDrawer'
+import { ApplyTemplateDrawer }             from './ApplyTemplateDrawer'
+import { ShowDriftsDrawer }                from './ShowDriftsDrawer'
+import { configTemplateDriftTypeLabelMap } from './ShowDriftsDrawer/contents'
+import { getConfigTemplateTypeLabel }      from './templateUtils'
+import { useAddTemplateMenuProps }         from './useAddTemplateMenuProps'
 
 export function ConfigTemplateList () {
   const { $t } = useIntl()
@@ -72,6 +73,7 @@ export function ConfigTemplateList () {
   // eslint-disable-next-line max-len
   const [ accessControlSubPolicyVisible, setAccessControlSubPolicyVisible ] = useAccessControlSubPolicyVisible()
   const enableRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const driftsEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_DRIFTS)
 
   const tableQuery = useTableQuery({
     useQuery: useGetConfigTemplateListQuery,
@@ -109,6 +111,7 @@ export function ConfigTemplateList () {
       }
     },
     {
+      visible: driftsEnabled,
       label: $t({ defaultMessage: 'Show Drifts' }),
       onClick: (rows: ConfigTemplate[]) => {
         setSelectedTemplates(rows)
@@ -201,6 +204,7 @@ function useColumns (props: TemplateColumnProps) {
     setAccessControlSubPolicyVisible
   } = props
   const dateFormat = userDateTimeFormat(DateFormatEnum.DateTimeFormatWithSeconds)
+  const driftsEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_DRIFTS)
 
   const typeFilterOptions = Object.entries(ConfigTemplateType).map((type =>
     ({ key: type[1], value: getConfigTemplateTypeLabel(type[1]) })
@@ -287,6 +291,15 @@ function useColumns (props: TemplateColumnProps) {
         return moment(row.lastModified).format(dateFormat)
       }
     },
+    ...(driftsEnabled ? [{
+      key: 'driftStatus',
+      title: $t({ defaultMessage: 'Drift Status' }),
+      dataIndex: 'driftStatus',
+      sorter: true,
+      render: function (_: ReactNode, row: ConfigTemplate) {
+        return row.driftStatus ? $t(configTemplateDriftTypeLabelMap[row.driftStatus]) : ''
+      }
+    }] : []),
     {
       key: 'lastApplied',
       title: $t({ defaultMessage: 'Last Applied' }),
