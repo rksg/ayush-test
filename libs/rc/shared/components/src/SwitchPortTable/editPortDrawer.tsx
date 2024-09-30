@@ -350,10 +350,21 @@ export function EditPortDrawer ({
       const vlanUsedByVe = veRouted?.filter(v => v?.portNumber)
         ?.[0]?.portNumber?.split('-')?.[2] || ''
 
+      let portSpeed = getPortSpeed(selectedPorts)
+      if (!isSwitch785048CPortSpeedEnabled &&
+        selectedPorts.some(port => port.switchModel === 'ICX7850-48C') &&
+        switchDetail?.firmware) {
+        if(!isVerGEVer(switchDetail?.firmware , '10010f', false) ||
+        (isVerGEVer(switchDetail?.firmware, '10020', false) &&
+        !isVerGEVer(switchDetail?.firmware, '10020b', false))) {
+          portSpeed = portSpeed.filter(item => !item.includes('FIVE_G'))
+            .filter(item => !item.includes('TEN_G_FULL_'))
+        }
+      }
+
       const defaultVlans = switchesDefaultVlan
         ? _.uniq(Object.values(switchesDefaultVlan)?.map(v => v?.defaultVlanId.toString()))
         : []
-      const portSpeed = getPortSpeed(selectedPorts)
       const defaultVlan = defaultVlans?.length > 1 ? '' : defaultVlans?.[0]
       const profileDefaultVlan = switchProfile?.[0]?.vlans
         ?.find((item) => item?.vlanName === SWITCH_DEFAULT_VLAN_NAME)?.vlanId ?? 1
@@ -366,6 +377,7 @@ export function EditPortDrawer ({
       setVlanUsedByVe(vlanUsedByVe)
 
       setAclsOptions(getAclOptions(aclUnion))
+      setPortSpeedOptions(portSpeed)
       setPoeClassOptions(getPoeClass(selectedPorts))
       setVlansOptions(getVlanOptions(switchVlans as SwitchVlanUnion, defaultVlan, voiceVlan))
 
@@ -385,19 +397,6 @@ export function EditPortDrawer ({
     if (!isSwitchDetailLoading && !isSwitchDataLoading && !isDefaultVlanLoading && switchDetail?.venueId) {
       resetFields()
       setData()
-
-      let portSpeed = getPortSpeed(selectedPorts)
-      if (!isSwitch785048CPortSpeedEnabled &&
-        selectedPorts.every(port => port.switchModel === 'ICX7850-48C') &&
-        switchDetail?.firmware) {
-        if(!isVerGEVer(switchDetail?.firmware , '10010f', false) ||
-        (isVerGEVer(switchDetail?.firmware, '10020', false) &&
-        !isVerGEVer(switchDetail?.firmware, '10020b', false))) {
-          portSpeed = portSpeed.filter(item => !item.includes('FIVE_G'))
-            .filter(item => !item.includes('TEN_G_FULL_'))
-        }
-      }
-      setPortSpeedOptions(portSpeed)
     }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps, max-len
