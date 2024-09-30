@@ -113,7 +113,7 @@ export const getSeriesData = (
         moment(record.end).valueOf(),
         { ...record, icon: '' }
       ])
-    const category = key as keyof typeof categoryCodeMap
+    const category = key as keyof Omit<typeof categoryCodeMap,'security'>
     const code = categoryCodeMap[category].codes
     return data
       .filter((record) => incidentsToggle({ code, toggles }, category)

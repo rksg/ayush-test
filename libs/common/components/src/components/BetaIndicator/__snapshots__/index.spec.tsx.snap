@@ -1,0 +1,64 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BetaIndicator should render correctly 1`] = `
+<DocumentFragment>
+  .c0 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  width: 16px;
+  height: 16px;
+}
+
+.c0 svg {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  margin: 0 !important;
+  color: var(--acx-accents-orange-50);
+}
+
+<div
+    class="ant-space ant-space-horizontal ant-space-align-center c0"
+  >
+    <div
+      class="ant-space-item"
+    >
+      <svg
+        data-testid="RocketOutlined"
+      />
+    </div>
+  </div>
+  .c0 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  width: 24px;
+  height: 24px;
+}
+
+.c0 svg {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  margin: 0 !important;
+  color: var(--acx-accents-orange-50);
+}
+
+<div
+    class="ant-space ant-space-horizontal ant-space-align-center c0"
+  >
+    <div
+      class="ant-space-item"
+    >
+      <svg
+        data-testid="RocketOutlined"
+      />
+    </div>
+  </div>
+</DocumentFragment>
+`;
