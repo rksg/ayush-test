@@ -380,8 +380,9 @@ export function PersonaGroupTable () {
         {
           label: $t({ defaultMessage: 'Delete' }),
           disabled: (([selectedItem]) =>
-            (selectedItem && selectedItem.identityCount)
-              ? selectedItem.identityCount > 0 : false
+            selectedItem
+              ? (selectedItem.identityCount ?? 0) > 0 || !!selectedItem.certificateTemplateId
+              : false
           ),
           onClick: ([selectedRow], clearSelection) => {
             doDelete(selectedRow, clearSelection)
