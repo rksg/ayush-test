@@ -44,6 +44,7 @@ function useColumns (workflowMap: Map<string, Workflow>) {
       dataIndex: 'name',
       sorter: true,
       searchable: true,
+      fixed: 'left',
       render: function (_, row) {
         return (
           <TenantLink
