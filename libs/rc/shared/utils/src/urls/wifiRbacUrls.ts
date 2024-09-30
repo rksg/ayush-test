@@ -729,6 +729,18 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/wifiNetworks/:networkId/apCompatibilities/query',
     newApi: true
   },
+  // replace the getApCompatibilitiesVenue
+  getVenueApCompatibilities: {
+    method: 'post',
+    url: '/venues/apCompatibilities/query',
+    newApi: true
+  },
+  // replace the getApCompatibilitiesNetwork
+  getNetworkApCompatibilities: {
+    method: 'post',
+    url: '/wifiNetworks/apCompatibilities/query',
+    newApi: true
+  },
   activateCertificateTemplate: {
     method: 'PUT',
     newApi: true,

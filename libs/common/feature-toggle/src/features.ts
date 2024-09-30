@@ -187,7 +187,8 @@ export enum Features {
   WIFI_CAPTIVE_PORTAL_PSK = 'wifi-captive-portal-psk',
   WIFI_CAPTIVE_PORTAL_OWE = 'wifi-captive-portal-owe',
   WIFI_WLAN_DEPRECATE_WPA = 'wifi-wlan-deprecate-wpa',
-  WIFI_OVER_THE_DS_FT_SUPPORT_TOGGLE = 'wifi-over-the-ds-ft-support-toggle'
+  WIFI_OVER_THE_DS_FT_SUPPORT_TOGGLE = 'wifi-over-the-ds-ft-support-toggle',
+  WIFI_COMPATIBILITY_BY_MODEL = 'wifi-compatibility-check-by-model-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

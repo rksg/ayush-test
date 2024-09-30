@@ -45,7 +45,8 @@ import {
   useScheduleSlotIndexMap,
   useGetVLANPoolPolicyViewModelListQuery,
   useNewVenueNetworkTableQuery,
-  useVenuesListQuery
+  useVenuesListQuery,
+  useEnhanceVenueNetworkTableQuery
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -120,6 +121,7 @@ const useVenueNetworkList = (props: { settingsId: string, venueId?: string } ) =
   const { settingsId, venueId } = props
   const { isTemplate } = useConfigTemplate()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
 
@@ -130,7 +132,7 @@ const useVenueNetworkList = (props: { settingsId: string, venueId?: string } ) =
       isTemplate: isTemplate
     },
     pagination: { settingsId },
-    option: { skip: resolvedRbacEnabled }
+    option: { skip: isApCompatibilitiesByModel || resolvedRbacEnabled }
   })
 
   const rbacTableQuery = useTableQuery({
@@ -140,10 +142,21 @@ const useVenueNetworkList = (props: { settingsId: string, venueId?: string } ) =
       isTemplate: isTemplate
     },
     pagination: { settingsId },
-    option: { skip: !resolvedRbacEnabled || !venueId }
+    option: { skip: isApCompatibilitiesByModel || !resolvedRbacEnabled || !venueId }
   })
 
-  return resolvedRbacEnabled ? rbacTableQuery : nonRbacTableQuery
+  const enhancedRbacTableQuery = useTableQuery({
+    useQuery: useEnhanceVenueNetworkTableQuery,
+    defaultPayload: {
+      ...defaultRbacPayload,
+      isTemplate: isTemplate
+    },
+    pagination: { settingsId },
+    option: { skip: !isApCompatibilitiesByModel || !resolvedRbacEnabled || !venueId }
+  })
+
+  return isApCompatibilitiesByModel ? enhancedRbacTableQuery
+    : (resolvedRbacEnabled ? rbacTableQuery : nonRbacTableQuery)
 }
 
 const defaultArray: NetworkExtended[] = []

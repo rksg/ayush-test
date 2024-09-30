@@ -846,7 +846,45 @@ export interface ApIncompatibleFeature extends ApFeatureSet{
 }
 
 export interface ApIncompatibleDevice {
-	firmware: string,
-	model: string,
-	count: number
+  firmware: string,
+  model: string,
+  count: number
+}
+
+export type ApRequirement = {
+  firmware: string,
+  models: string[]
+}
+
+export enum IncompatibleFeatureTypeEnum {
+  WIFI = 'WIFI',
+  SWITCH = 'SWITCH',
+  EDGE = 'EDGE'
+}
+
+export enum IncompatibleFeatureLevelEnum {
+  VENUE = 'VENUE',
+  WIFI_NETWORK = 'WIFI_NETWORK'
+}
+
+export type IncompatibleFeature = {
+  featureName: string,
+  featureType?: IncompatibleFeatureTypeEnum,
+  featureLevel?: IncompatibleFeatureLevelEnum,
+  featureGroup?: string,
+  incompatibleDevices?: ApIncompatibleDevice[],
+  requirements?: ApRequirement[]
+}
+
+export type Compatibility = {
+  id: string,
+  incompatible: number,
+  incompatibleFeatures?: IncompatibleFeature[],
+  total: number
+}
+
+export type CompatibilityResponse = {
+  compatibilities: Compatibility[],
+  page: number,
+  totalCount: number
 }
