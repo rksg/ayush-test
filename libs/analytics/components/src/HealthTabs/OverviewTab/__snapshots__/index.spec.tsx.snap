@@ -103,6 +103,109 @@ exports[`OverviewTab should render correctly 1`] = `
 </DocumentFragment>
 `;
 
+exports[`OverviewTab should render correctly when 10010e FF is enabled 1`] = `
+<DocumentFragment>
+  .c2.ant-alert {
+  font-size: var(--acx-body-4-font-size);
+  padding: 10px 15px;
+  margin-bottom: var(--acx-content-vertical-space);
+}
+
+.c2.ant-alert svg {
+  font-size: var(--acx-body-3-font-size);
+}
+
+.c2 .ant-alert-close-icon .anticon-close {
+  color: var(--acx-primary-black);
+}
+
+.c2.ant-alert-info {
+  background-color: var(--acx-accents-orange-10);
+  border: 1px solid var(--acx-accents-orange-25);
+}
+
+.c2.ant-alert-info svg.ant-alert-icon path:nth-child(-n+2) {
+  color: var(--acx-accents-orange-50);
+}
+
+.c0 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.c1 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  min-width: 0;
+}
+
+<div
+    class="ant-row "
+    style="margin: -10px -10px -10px -10px;"
+  >
+    <div
+      class="ant-col ant-col-24 c0"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="c1"
+        style="min-height: 105px;"
+      >
+        <div
+          class="ant-alert ant-alert-info c2"
+          data-show="true"
+          role="alert"
+        >
+          <svg
+            class="ant-alert-icon"
+            data-testid="InformationSolid"
+          />
+          <div
+            class="ant-alert-content"
+          >
+            <div
+              class="ant-alert-message"
+            >
+              Data is displayed for switches with firmware version 
+              <b>
+                10.0.10f
+              </b>
+               or above.
+            </div>
+          </div>
+        </div>
+        <div>
+          Mocked SummaryBoxes
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-24 c0"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="c1"
+        style="min-height: 320px;"
+      >
+        <div>
+          Mocked ConnectedClientsOverTime
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
 exports[`OverviewTab should render correctly when IS_MLISA_SA 1`] = `
 <DocumentFragment>
   .c2.ant-alert {
@@ -179,6 +282,113 @@ exports[`OverviewTab should render correctly when IS_MLISA_SA 1`] = `
               Data is displayed for switches with firmware version 
               <b>
                 10.0.10d
+              </b>
+               and SmartZone version 
+              <b>
+                7.x
+              </b>
+               or above.
+            </div>
+          </div>
+        </div>
+        <div>
+          Mocked SummaryBoxes
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-24 c0"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="c1"
+        style="min-height: 320px;"
+      >
+        <div>
+          Mocked ConnectedClientsOverTime
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`OverviewTab should render correctly when IS_MLISA_SA and 10010e FF enabled 1`] = `
+<DocumentFragment>
+  .c2.ant-alert {
+  font-size: var(--acx-body-4-font-size);
+  padding: 10px 15px;
+  margin-bottom: var(--acx-content-vertical-space);
+}
+
+.c2.ant-alert svg {
+  font-size: var(--acx-body-3-font-size);
+}
+
+.c2 .ant-alert-close-icon .anticon-close {
+  color: var(--acx-primary-black);
+}
+
+.c2.ant-alert-info {
+  background-color: var(--acx-accents-orange-10);
+  border: 1px solid var(--acx-accents-orange-25);
+}
+
+.c2.ant-alert-info svg.ant-alert-icon path:nth-child(-n+2) {
+  color: var(--acx-accents-orange-50);
+}
+
+.c0 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.c1 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  min-width: 0;
+}
+
+<div
+    class="ant-row "
+    style="margin: -10px -10px -10px -10px;"
+  >
+    <div
+      class="ant-col ant-col-24 c0"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="c1"
+        style="min-height: 105px;"
+      >
+        <div
+          class="ant-alert ant-alert-info c2"
+          data-show="true"
+          role="alert"
+        >
+          <svg
+            class="ant-alert-icon"
+            data-testid="InformationSolid"
+          />
+          <div
+            class="ant-alert-content"
+          >
+            <div
+              class="ant-alert-message"
+            >
+              Data is displayed for switches with firmware version 
+              <b>
+                10.0.10f
               </b>
                and SmartZone version 
               <b>

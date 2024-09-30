@@ -44,6 +44,7 @@ function useColumns (workflowMap: Map<string, Workflow>) {
       dataIndex: 'name',
       sorter: true,
       searchable: true,
+      fixed: 'left',
       render: function (_, row) {
         return (
           <TenantLink
@@ -69,15 +70,6 @@ function useColumns (workflowMap: Map<string, Workflow>) {
       }` }, {
         status: workflowMap.get(row.id!)?.publishedDetails?.status
       })
-    },
-    {
-      key: 'identityGroup',
-      title: $t({ defaultMessage: 'IdentityGroup' }),
-      dataIndex: 'identityGroup',
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      render: (_, _row) => {
-        return undefined
-      }
     },
     {
       key: 'url',

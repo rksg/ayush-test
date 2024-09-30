@@ -13,10 +13,15 @@ import {
 } from './types'
 
 export const getRoles = () => {
+  const SupportedRoles = [
+    RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR,
+    RolesEnum.GUEST_MANAGER, RolesEnum.DPSK_ADMIN,
+    RolesEnum.READ_ONLY]
+
   return Object.keys(roleDisplayText).map(roleKey => ({
     label: roleDisplayText[roleKey as RolesEnum],
     value: roleKey
-  }))
+  })).filter(role => SupportedRoles.includes(role.value as RolesEnum))
 }
 
 export const getDelegetionStatusIntlString = (status: AdministrationDelegationStatus) => {

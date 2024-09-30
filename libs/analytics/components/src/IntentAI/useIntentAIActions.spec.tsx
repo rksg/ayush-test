@@ -29,9 +29,9 @@ const mockedIntentWlansQuery = jest.fn()
 const mockedVenueRadioActiveNetworksQuery = jest.fn()
 
 const raiWlans = [
-  { id: 'i1', name: 'n1', ssid: 's1' },
-  { id: 'i2', name: 'n2', ssid: 's2' },
-  { id: 'i3', name: 'n3', ssid: 's3' }]
+  { name: 'n1', ssid: 's1' },
+  { name: 'n2', ssid: 's2' },
+  { name: 'n3', ssid: 's3' }]
 
 const r1Wlans = [
   { id: 'i4', name: 'n4', ssid: 's4' },
@@ -77,7 +77,6 @@ describe('useIntentAIActions', () => {
     mockedTransitionIntent.mockReturnValue(Promise.resolve({ data: resp }))
     mockedIntentWlansQuery.mockReturnValue({ unwrap: () => Promise.resolve(raiWlans) })
     mockedVenueRadioActiveNetworksQuery.mockReturnValue({ unwrap: () => Promise.resolve(r1Wlans) })
-    mockedTransitionIntent.mockReturnValue(Promise.resolve({ data: resp }))
     mockGraphqlMutation(intentAIUrl, 'TransitionIntent', { data: resp })
     jest.spyOn(Date, 'now').mockReturnValue(now)
   })
@@ -404,7 +403,7 @@ describe('useIntentAIActions', () => {
             status: Statuses.new,
             metadata: {
               scheduledAt: '2024-07-21T04:45:00.000Z',
-              wlans: [{ id: 'n1', name: 'n1', ssid: 's1' },{ id: 'n2', name: 'n2', ssid: 's2' },{ id: 'n3', name: 'n3', ssid: 's3' }]
+              wlans: [{ name: 'n1', ssid: 's1' },{ name: 'n2', ssid: 's2' },{ name: 'n3', ssid: 's3' }]
             }
           }]
         })
@@ -522,7 +521,7 @@ describe('useIntentAIActions', () => {
           displayStatus: DisplayStates.active,
           status: Statuses.active,
           statusTrail,
-          metadata: { algorithmData: { isCrrmFullOptimization: false } }
+          metadata: {}
         },{
           id: '17',
           displayStatus: DisplayStates.active,
