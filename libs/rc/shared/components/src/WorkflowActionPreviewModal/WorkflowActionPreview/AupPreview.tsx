@@ -16,7 +16,7 @@ export function AupPreview (props: GenericActionPreviewProps<AupAction>) {
   const { data, ...rest } = props
   useEffect(() => {
     getFile()
-  }, [])
+  }, [data?.aupFileLocation])
 
   const [getFileUrl] = useLazyGetFileQuery()
   const [fileUrl, setfileUrl] = useState('')
@@ -54,9 +54,9 @@ export function AupPreview (props: GenericActionPreviewProps<AupAction>) {
           >
             <Checkbox data-testid='acceptAup'>
               {data?.useAupFile ?
-                <Text>I agree to the <Link href={fileUrl}>
+                <Text>{$t({ defaultMessage: 'I agree to the' })+' '}<Link href={fileUrl}>
                   {$t({ defaultMessage: 'Terms & Conditions' })}</Link></Text> :
-                <Text>I agree to the <Link onClick={showModal}>
+                <Text>{$t({ defaultMessage: 'I agree to the' })+' '}<Link onClick={showModal}>
                   {$t({ defaultMessage: 'Terms & Conditions' })}</Link></Text>}
             </Checkbox>
           </FormItem>
@@ -64,7 +64,7 @@ export function AupPreview (props: GenericActionPreviewProps<AupAction>) {
             visible={isModalOpen}
             closable={false}
             footer={<Button type='primary' onClick={handleClose}>
-          Close
+              {$t({ defaultMessage: 'Close' })}
             </Button>}>
             <span dangerouslySetInnerHTML={{ __html: data?.aupPlainText || '' }} />
           </Modal></GridCol></GridRow>
