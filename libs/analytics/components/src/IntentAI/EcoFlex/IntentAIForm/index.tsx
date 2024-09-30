@@ -7,6 +7,7 @@ import { StepsForm } from '@acx-ui/components'
 
 import { IntentWizardHeader }                                                               from '../../common/IntentWizardHeader'
 import { getScheduledAt }                                                                   from '../../common/ScheduleTiming'
+import { parseExcludedHours, buildExcludedHours }                                           from '../../common/ScheduleWeekly'
 import { useIntentContext }                                                                 from '../../IntentContext'
 import { createUseIntentTransition, FormValues, IntentTransitionPayload, useInitialValues } from '../../useIntentTransition'
 import { Actions, getTransitionStatus, TransitionIntentItem }                               from '../../utils'
@@ -22,7 +23,7 @@ type FormVal = {
 function getFormDTO (values: FormValues<FormVal>): IntentTransitionPayload {
   const isEnabled = values.preferences?.enable
   // eslint-disable-next-line max-len
-  const excludedHours = values.preferences?.enableExcludedHours ? values.preferences?.excludedHours : undefined
+  const excludedHours = values.preferences?.enableExcludedHours ? parseExcludedHours(values.preferences?.excludedHours) : undefined
   const { status, statusReason } = getTransitionStatus(
     isEnabled ? Actions.Optimize : Actions.Pause,
     values as TransitionIntentItem
@@ -49,7 +50,7 @@ export const IntentAIForm: React.FC = () => {
   const averagePowerPrice = preferences?.averagePowerPrice
     ? preferences.averagePowerPrice
     : { currency: 'USD', value: 0.131 }
-  const excludedHours = preferences?.excludedHours
+  const excludedHours = buildExcludedHours(preferences?.excludedHours)
   // always enable = true, because only new, scheduled, active, applyscheduled can open wizard
   const initialValues = {
     ...useInitialValues(),

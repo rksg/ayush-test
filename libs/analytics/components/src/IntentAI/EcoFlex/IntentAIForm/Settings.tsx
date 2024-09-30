@@ -21,8 +21,8 @@ export function Settings () {
     // eslint-disable-next-line max-len
     description: $t({ defaultMessage: 'You may direct RUCKUS AI to exclude certain time slots and/or specific APs from being moved to reduced power mode.' }),
     // eslint-disable-next-line max-len
-    option1: $t({ defaultMessage: 'Do not apply EcoFlexAI during the following time slots of the week' }),
-    option2: $t({ defaultMessage: 'Do not apply EcoFlexAI to the following AP Groups / APs' })
+    option1: $t({ defaultMessage: 'Do not apply EcoFlex during the following time slots of the week' }),
+    option2: $t({ defaultMessage: 'Do not apply EcoFlex to the following AP Groups / APs' })
   }
 
   return <Row gutter={20}>
@@ -33,15 +33,17 @@ export function Settings () {
       <Paragraph><span>{content.description}</span></Paragraph>
       <Form.Item
         name='enableExcludedHours'
-        valuePropName='checked'
-        noStyle>
+        valuePropName='checked'>
         <Checkbox
           children={content.option1}
+          disabled={!isEnabled}
         />
       </Form.Item>
       {enableExcludedHours && <ScheduleWeekly
         form={form}
-        excludedHours={excludedHours} />}
+        excludedHours={excludedHours}
+        readonly={!isEnabled}
+      />}
     </Col>
 
   </Row>

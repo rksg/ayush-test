@@ -53,7 +53,7 @@ export type Intent = {
     dataEndTime: string
     preferences?: {
       crrmFullOptimization: boolean;
-      excludedHours?: Record<string, string[]>
+      excludedHours?: Record<string, number[]>
       averagePowerPrice?: {
         currency: string
         value: number

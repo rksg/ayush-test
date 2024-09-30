@@ -157,6 +157,10 @@ describe('IntentAIForm', () => {
 
     expect(await screen.findByPlaceholderText('Select date')).toBeDisabled()
     expect(await screen.findByPlaceholderText('Select time')).toBeDisabled()
+
+    const scheduleEnabled = screen.getByRole('checkbox', { name: /following time slots of the week/ })
+    expect(scheduleEnabled).toBeDisabled()
+
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Summary' })).toBeVisible()

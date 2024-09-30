@@ -2,9 +2,9 @@ import { Intent } from '../../useIntentDetailsQuery'
 
 export const mocked = {
   id: '2c392d0a-124f-4183-b5c4-529d6571f540',
-  root: '6f931c53-21eb-4727-b2ad-e23b43d98846',
+  root: '33707ef3-b8c7-4e70-ab76-8e551343acb4',
   code: 'i-ecoflex',
-  sliceId: '0e2f68ab79154ffea64aa52c5cc48826',
+  sliceId: 'bedbebbd-1a8d-4615-a468-d54b85323ca3',
   status: 'new',
   sliceType: 'Yakubpur-MH',
   sliceValue: 'My-Venue',

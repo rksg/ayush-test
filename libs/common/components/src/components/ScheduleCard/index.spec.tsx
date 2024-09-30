@@ -223,7 +223,7 @@ describe('ScheduleCard', () => {
     })
   })
 
-  describe('intervalUnit-15 > RAI', () => {
+  describe('intervalUnit-60 > R1', () => {
     const props = {
       loading: false,
       isShowTimezone: false,
@@ -250,6 +250,25 @@ describe('ScheduleCard', () => {
           </Form>
         </Provider>)
       expect(await screen.findByText(/Local time/)).toBeVisible()
+      // eslint-disable-next-line max-len
+      expect(formRef.current.getFieldsValue()).toEqual({ scheduler: scheduleResultRAI })
+    })
+
+    it('should render schedule readonly mode successfully (CUSTOM)', async () => {
+      const { result: formRef } = renderHook(() => {
+        return Form.useForm()[0]
+      })
+      render(
+        <Provider>
+          <Form form={formRef.current} onFinish={onApply}>
+            <ScheduleCard {...props} form={formRef.current} disabled={false} readonly />
+          </Form>
+        </Provider>)
+      expect(await screen.findByText(/Local time/)).toBeVisible()
+      const scheduleCheckbox = await screen.findByTestId('checkbox_tue')
+      expect(scheduleCheckbox).toBeVisible()
+      expect(scheduleCheckbox).toBeChecked()
+      expect(scheduleCheckbox).toBeDisabled()
       // eslint-disable-next-line max-len
       expect(formRef.current.getFieldsValue()).toEqual({ scheduler: scheduleResultRAI })
     })

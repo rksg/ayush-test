@@ -41,9 +41,10 @@ const BasicCard = () => {
   )
 }
 
-const OneHourAndLocalTimeZoneCard = () => {
+const LocalTimeZoneCard = () => {
   const [form] = Form.useForm()
   const [values, setValues] = React.useState({})
+  const [readonly, setReadonly] = React.useState(false)
   const props = {
     loading: false,
     isShowTimezone: false,
@@ -62,13 +63,18 @@ const OneHourAndLocalTimeZoneCard = () => {
       <Form form={form}
         layout='horizontal'
         size='small'>
-        <ScheduleCard {...props} form={form} disabled={false} />
+        <ScheduleCard {...props} form={form} disabled={false} readonly={readonly} />
       </Form>
 
+      <Button type='primary'
+        onClick={() => { setReadonly(!readonly) }}>
+        {`Set ${readonly?'Edit':'ReadOnly'} Mode`
+        }</Button>
       <Button type='primary'
         onClick={() => {
           setValues(form.getFieldsValue())
         }}>Apply</Button>
+
       {`form value: 
       ${JSON.stringify(values)}`}
     </>
@@ -77,6 +83,6 @@ const OneHourAndLocalTimeZoneCard = () => {
 
 storiesOf('ScheduleCard', module)
   .add('default', BasicCard)
-  .add('OneHourAndLocalTimeZone', OneHourAndLocalTimeZoneCard)
+  .add('LocalTimeZoneCard', LocalTimeZoneCard)
 
 export {}
