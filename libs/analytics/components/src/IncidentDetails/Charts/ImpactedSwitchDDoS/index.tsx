@@ -49,7 +49,7 @@ export function ImpactedSwitchDDoSDonut ({ incident }: ChartProps) {
         name: 'Impacted Switches',
         color: cssStr('--acx-semantics-red-50') },
       { value: (data.totalCount - data.impactedCount), // Math.ceil(data.impactedCount * 0.3),
-        name: 'Unimpacted Switches',
+        name: 'Non-impacted Switches',
         color: cssStr('--acx-semantics-green-50') }
     ]
   }

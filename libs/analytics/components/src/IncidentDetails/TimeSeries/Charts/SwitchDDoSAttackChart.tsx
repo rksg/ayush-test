@@ -20,15 +20,6 @@ const switchDDoSAttackQuery = (incident: Incident) => gql`
   }
 `
 
-// function transformResponse (_record: Incident, response: Record<string, TimeSeriesData>) {
-//   const { ddosAttackOnPortTimeSeries: data } = response
-//   let time = data.time as TimeStamp[]
-//   return {
-//     ...response,
-//     ddosAttackOnPortTimeSeries: { ...data, time }
-//   }
-// }
-
 export const SwitchDDoSAttackChart = (props: TimeSeriesChartProps) => {
   const { $t } = useIntl()
 
