@@ -10,6 +10,7 @@ import { useTenantLink }          from '@acx-ui/react-router-dom'
 
 import { SwitchDetailsContext } from '..'
 
+import { SwitchCableTestForm }  from './switchCableTestForm'
 import { SwitchIpRouteForm }    from './switchIpRouteForm'
 import { SwitchMacAddressForm } from './switchMacAddressForm'
 import { SwitchPingForm }       from './switchPingForm'
@@ -25,6 +26,7 @@ export function SwitchTroubleshootingTab () {
   // eslint-disable-next-line max-len
   const basePath = useTenantLink(`/devices/switch/${switchId}/${serialNumber}/details/troubleshooting/`)
   const isSwitchCliEnabled = useIsSplitOn(Features.SWITCH_CLI_MODE)
+  const isCableTestEnabled = useIsSplitOn(Features.SWITCH_CABLE_TEST)
 
   const onTabChange = (tab: string) => {
     navigate({
@@ -40,9 +42,7 @@ export function SwitchTroubleshootingTab () {
   const isSupportRouter = switchDetailsContextData.switchDetailHeader?.switchType ?
     isRouter(switchDetailsContextData.switchDetailHeader.switchType) : false
 
-
-
-  const isSupportMacAddress = function () {
+  const isSupportCLIMode = function () {
     if(switchDetailsContextData.switchDetailHeader?.firmware){
       const fwVersion = switchDetailsContextData.switchDetailHeader?.firmware
       /*
@@ -78,9 +78,15 @@ export function SwitchTroubleshootingTab () {
         </TabPane>
       }
       {
-        isSupportMacAddress() && isSwitchCliEnabled &&
+        isSupportCLIMode() && isSwitchCliEnabled &&
         <TabPane tab={$t({ defaultMessage: 'MAC Address Table' })} key='macTable'>
           <SwitchMacAddressForm />
+        </TabPane>
+      }
+      {
+        isSupportCLIMode() && isCableTestEnabled &&
+        <TabPane tab={$t({ defaultMessage: 'Cable Test' })} key='cableTest'>
+          <SwitchCableTestForm/>
         </TabPane>
       }
     </Tabs>

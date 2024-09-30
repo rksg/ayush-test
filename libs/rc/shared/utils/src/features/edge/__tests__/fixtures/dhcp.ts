@@ -38,7 +38,7 @@ export const mockDhcpStatsData = {
     {
       tenantId: '1ecc2d7cf9d2342fdb31ae0e24958fcac',
       id: '1',
-      serviceName: 'TestDHCP-1',
+      serviceName: 'TestDhcp-1',
       serviceType: 'DHCP',
       dhcpRelay: 'true',
       dhcpPoolNum: 3,
@@ -53,7 +53,7 @@ export const mockDhcpStatsData = {
     {
       tenantId: '1ecc2d7cf9d2342fdb31ae0e24958fcac',
       id: '2',
-      serviceName: 'TestDHCP-2',
+      serviceName: 'TestDhcp-2',
       serviceType: 'DHCP',
       dhcpRelay: 'false',
       dhcpPoolNum: 3,
@@ -67,7 +67,7 @@ export const mockDhcpStatsData = {
     },{
       tenantId: '1ecc2d7cf9d2342fdb31ae0e24958fcac',
       id: '3',
-      serviceName: 'TestDHCP-3',
+      serviceName: 'TestDhcp-3',
       serviceType: 'DHCP',
       dhcpRelay: 'false',
       dhcpPoolNum: 3,

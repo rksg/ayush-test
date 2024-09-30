@@ -13,12 +13,6 @@ export { default as incidentSeverities } from './incidentSeverities.json'
 export * from './kpiHelper'
 export { disconnectClientEvents } from './mapping/clientDisconnectEventsMap'
 export {
-  getRootCauseAndRecommendations,
-  codeToFailureTypeMap,
-  htmlValues
-} from './rootCauseRecommendation'
-export type { FormatMessageValue } from './rootCauseRecommendation'
-export {
   clientEventDescription,
   mapDisconnectCode,
   mapDisconnectCodeToReason,

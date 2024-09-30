@@ -4,6 +4,7 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 export enum Features {
   ABAC_POLICIES_TOGGLE = 'abac-policies-toggle',
   ALLOWED_OPERATIONS_TOGGLE = 'allowed-operations-toggle',
+  AP_FIRMWARE_UPGRADE_BY_MODEL_TOGGLE = 'ap-fw-mgmt-upgrade-by-model',
   AP_GPS = 'ap-gps-toggle',
   AP_GROUP_TOGGLE = 'wifi-eda-ap-group-table-toggle',
   AP_MANAGEMENT_VLAN_AP_LEVEL_TOGGLE = 'wifi-ap-mgmt-vlan-ap-level-toggle',
@@ -66,6 +67,7 @@ export enum Features {
   IDM_APPLICATION_KEY_TOGGLE = 'ptenant-application-key-toggle',
   IDM_DECOUPLING = 'ptenant-admin-authentication-enabled',
   INCIDENTS_AIRTIME_TOGGLE = 'acx-ui-incidents-airtime-toggle',
+  INCIDENTS_SWITCH_DDOS_TOGGLE = 'acx-ui-tcp-syn-ddos-toggle',
   LICENSE_BANNER = 'acx-ui-license-banner',
   LINKEDIN_OIDC_TOGGLE = 'guest-linkedin-openid-connect-toggle',
   LOGIN_SSO_SIGNATURE_TOGGLE = 'login-sso-saml-signature',
@@ -95,7 +97,6 @@ export enum Features {
   NUVO_SMS_GRACE_PERIOD_TOGGLE = 'nuvo-sms-grace-period',
   NUVO_SMS_MESSAGING_SERVICE_TOGGLE = 'nuvo-messaging-service-toggle',
   PLM_FF = 'ACX-PLM-FF',
-  POLICIES = 'acx-ui-policies',
   PTENANT_RBAC_DPSK_ROLE_INTRODUCTION = 'ptenant-rbac-dpsk-role-introduction',
   PTENANT_RBAC_API = 'acx-ui-rbac-api-ptenant-toggle',
   RADIO6G_RATE_CONTROL = 'radio6g-rate-control-toggle',
@@ -107,10 +108,10 @@ export enum Features {
   RUCKUS_AI_CRRM_PARTIAL = 'ruckus-ai-recommendations-crrm-partial-toggle',
   RUCKUS_AI_INCIDENTS_AIRTIME_TOGGLE = 'ruckus-ai-incidents-airtime-toggle',
   RUCKUS_AI_SWITCH_HEALTH_TOGGLE = 'ruckus-ai-switch-health-toggle',
+  RUCKUS_AI_INCIDENTS_SWITCH_DDOS_TOGGLE = 'ruckus-ai-tcp-syn-ddos-toggle',
   HEALTH_WIRED_TOPN_WITH_OTHERS = 'acx-ui-health-wired-topn-with-others-toggle',
   RUCKUS_AI_SWITCH_HEALTH_10010E_TOGGLE = 'ruckus-ai-switch-health-10010e-toggle',
   RUCKUS_WAN_GATEWAY_UI_SHOW = 'ruckus-wan-gateway-ui-show',
-  SERVICES = 'acx-ui-services',
   SSO = 'ADMN-SSO',
   SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE = 'acx-ui-support-to-msp-dashboard-toggle',
   SUPPORT_SWITCH_TWO_VERSION_UPGRADE = 'removable-ff',
@@ -131,6 +132,7 @@ export enum Features {
   SWITCH_FIRMWARE_V1002_TOGGLE= 'switch-firmware-management-for-10010d-toggle',
   SWITCH_PROFILE_ONBOARD_ONLY= 'switch-config-profile-onboarding-only-toggle',
   SWITCH_NTP_SERVER = 'switch-consumer-apply-ntp-server-toggle',
+  SWITCH_CABLE_TEST = 'switch-cable-testing-toggle',
   TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs',
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
   VENUE_AP_MANAGEMENT_VLAN_TOGGLE = 'wifi-venue-ap-mgmt-vlan-toggle',
@@ -182,6 +184,9 @@ export enum Features {
   WIFI_SMART_MONITOR_DISABLE_WLAN_TOGGLE = 'wifi-smart-monitor-disable-wlan-toggle',
   SWITCH_ICX7850_48C_SUPPORT_PORT_SPEED_TOGGLE = 'switch-consumer-icx7850-48c-support-port-speed-toggle',
   WIFI_AP_STICKY_CLIENT_STEERING_TOGGLE = 'wifi-ap-sticky-client-steering-toggle',
+  WIFI_CAPTIVE_PORTAL_PSK = 'wifi-captive-portal-psk',
+  WIFI_CAPTIVE_PORTAL_OWE = 'wifi-captive-portal-owe',
+  WIFI_WLAN_DEPRECATE_WPA = 'wifi-wlan-deprecate-wpa',
   WIFI_OVER_THE_DS_FT_SUPPORT_TOGGLE = 'wifi-over-the-ds-ft-support-toggle'
 }
 

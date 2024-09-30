@@ -201,8 +201,6 @@ export const useNetworkVxLanTunnelProfileInfo =
 
 // eslint-disable-next-line max-len
 export function useServicePolicyEnabledWithConfigTemplate (configTemplateType: ConfigTemplateType): boolean {
-  const isPolicyEnabled = useIsSplitOn(Features.POLICIES)
-  const isServiceEnabled = useIsSplitOn(Features.SERVICES)
   const isPolicyConfigTemplate = configTemplatePolicyTypeMap[configTemplateType]
   const isServiceConfigTemplate = configTemplateServiceTypeMap[configTemplateType]
   const { isTemplate } = useConfigTemplate()
@@ -211,12 +209,8 @@ export function useServicePolicyEnabledWithConfigTemplate (configTemplateType: C
 
   if (!isPolicyConfigTemplate && !isServiceConfigTemplate) return false
 
-  if (isPolicyConfigTemplate) {
-    return isPolicyEnabled && result
-  }
-
-  if (isServiceConfigTemplate) {
-    return isServiceEnabled && result
+  if (isPolicyConfigTemplate || isServiceConfigTemplate) {
+    return result
   }
 
   return false
@@ -315,14 +309,17 @@ export function useRadiusServer () {
     // eslint-disable-next-line max-len
     const radiusServerIdKeys: Extract<keyof NetworkSaveData, 'authRadiusId' | 'accountingRadiusId'>[] = ['authRadiusId', 'accountingRadiusId']
     radiusServerIdKeys.forEach(radiusKey => {
-      const radiusValue = saveData[radiusKey]
-      const oldRadiusValue = radiusServerConfigurations?.[radiusKey]
+      const newRadiusId = saveData[radiusKey]
+      const oldRadiusId = radiusServerConfigurations?.[radiusKey]
 
-      if ((radiusValue ?? '') !== (oldRadiusValue ?? '')) {
-        const mutationTrigger = radiusValue ? activateRadiusServer : deactivateRadiusServer
-        mutations.push(mutationTrigger({
-          params: { networkId, radiusId: radiusValue ?? oldRadiusValue as string }
-        }).unwrap())
+      const isRadiusIdChanged = (newRadiusId ?? '') !== (oldRadiusId ?? '')
+      const isDifferentNetwork = saveData.id !== networkId
+
+      if (isRadiusIdChanged || isDifferentNetwork) {
+        const mutationTrigger = newRadiusId ? activateRadiusServer : deactivateRadiusServer
+        const radiusIdToUse = newRadiusId ?? oldRadiusId as string
+
+        mutations.push(mutationTrigger({ params: { networkId, radiusId: radiusIdToUse } }).unwrap())
       }
     })
 
