@@ -22,11 +22,23 @@ import { noDataDisplay }         from '@acx-ui/utils'
 import { NetworkTable } from './NetworkTable'
 import * as UI          from './styledComponents'
 
+const defaultSdLanPayload = {
+  fields: [
+    'id', 'name',
+    'venueId', 'venueName',
+    'edgeId', 'edgeName',
+    'tunnelProfileId', 'tunnelProfileName',
+    'edgeAlarmSummary',
+    'networkIds'
+  ]
+}
+
 const EdgeSdLanDetail = () => {
   const { $t } = useIntl()
   const params = useParams()
   const { edgeSdLanData, isLoading } = useGetEdgeSdLanViewDataListQuery(
     { payload: {
+      ...defaultSdLanPayload,
       filters: { id: [params.serviceId] }
     } },
     {

@@ -3,9 +3,9 @@ import userEvent             from '@testing-library/user-event'
 import { rest }              from 'msw'
 import { ReactFlowProvider } from 'reactflow'
 
-import { serviceApi }                          from '@acx-ui/rc/services'
-import { DpskUrls, PersonaUrls, WorkflowUrls } from '@acx-ui/rc/utils'
-import { Provider, store }                     from '@acx-ui/store'
+import { serviceApi }                                             from '@acx-ui/rc/services'
+import { DpskUrls, PersonaUrls, WorkflowPanelMode, WorkflowUrls } from '@acx-ui/rc/utils'
+import { Provider, store }                                        from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -52,7 +52,11 @@ describe('DpskNode', () => {
       <Provider>
         <ReactFlowProvider>
           <DpskNode id='test-id'
-            data={{ id: 'test-id', enrollmentActionId: enrollmentActionIdWithoutData }}
+            data={{
+              id: 'test-id',
+              enrollmentActionId: enrollmentActionIdWithoutData,
+              mode: WorkflowPanelMode.Design
+            }}
             selected={false}
             type={''}
             zIndex={0}
@@ -88,7 +92,11 @@ describe('DpskNode', () => {
       <Provider>
         <ReactFlowProvider>
           <DpskNode id='test-id'
-            data={{ id: 'test-id', enrollmentActionId: enrollmentActionIdWithData }}
+            data={{
+              id: 'test-id',
+              enrollmentActionId: enrollmentActionIdWithData,
+              mode: WorkflowPanelMode.Design
+            }}
             selected={false}
             type={''}
             zIndex={0}
@@ -114,6 +122,30 @@ describe('DpskNode', () => {
     expect(popover).toHaveTextContent(mockedDpskData.name)
     expect(popover).toHaveTextContent('Identity Group')
     expect(popover).toHaveTextContent(mockedIdentityGroupData.name)
+  })
+
+  it('should not render Details in Default panel mode', () => {
+    render(
+      <Provider>
+        <ReactFlowProvider>
+          <DpskNode id='test-id'
+            data={{
+              id: 'test-id',
+              enrollmentActionId: enrollmentActionIdWithoutData,
+              mode: WorkflowPanelMode.Default
+            }}
+            selected={false}
+            type={''}
+            zIndex={0}
+            isConnectable={false}
+            xPos={0}
+            yPos={0}
+            dragging={false}/>
+        </ReactFlowProvider>
+      </Provider>
+    )
+
+    expect(screen.queryByText('Details')).toBeNull()
   })
 
 })

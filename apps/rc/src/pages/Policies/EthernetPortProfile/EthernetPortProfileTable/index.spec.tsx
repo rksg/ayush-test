@@ -166,7 +166,7 @@ describe('EthernetPortProfileTable', ()=>{
     await user.click(screen.getByRole('button', { name: 'Delete' }))
     const dialog = await screen.findByRole('dialog')
     await within(dialog).findByText('Delete "ethernetPortProfile_1"?')
-    await user.click(within(dialog).getByRole('button', { name: 'Delete Policy' }))
+    await user.click(within(dialog).getByRole('button', { name: 'Delete Profile' }))
     await waitFor(() => {
       expect(mockedSingleDeleteApi).toBeCalledTimes(1)
     })
@@ -188,8 +188,8 @@ describe('EthernetPortProfileTable', ()=>{
     await user.click(within(row[1]).getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Delete' }))
     const dialog = await screen.findByRole('dialog')
-    await within(dialog).findByText('Delete "2 Policy"?')
-    await user.click(within(dialog).getByRole('button', { name: 'Delete Policy' }))
+    await within(dialog).findByText('Delete "2 Profile"?')
+    await user.click(within(dialog).getByRole('button', { name: 'Delete Profile' }))
     await waitFor(() => {
       expect(mockedSingleDeleteApi).toBeCalledTimes(2)
     })

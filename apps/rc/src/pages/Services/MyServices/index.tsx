@@ -84,7 +84,7 @@ export default function MyServices () {
       type: ServiceType.EDGE_SD_LAN,
       categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
       totalCount: useGetEdgeSdLanP2ViewDataListQuery({
-        params, payload: { ...defaultPayload }
+        params, payload: { fields: ['id', 'edgeClusterId'] }
       },{
         skip: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
       }).data?.totalCount,

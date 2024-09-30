@@ -187,7 +187,7 @@ export function useIntentAIActions () {
   const fetchWlans = async (row: IntentListItem) => {
     if (isMlisa) {
       const wlans = await recommendationWlans(row).unwrap()
-      return wlans.map(wlan => ({ ...wlan, id: wlan.name }))
+      return wlans
     }
     const venueId = row.idPath.filter(({ type }) => type === 'zone')?.[0].name
     const wlans = await venueRadioActiveNetworks(getR1WlanPayload(venueId, row.code)).unwrap()

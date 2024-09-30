@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect } from 'react'
 
 import { gql }                       from 'graphql-request'
 import moment, { Moment }            from 'moment-timezone'
@@ -11,6 +11,7 @@ import { encodeParameter }                               from '@acx-ui/utils'
 
 import { validateScheduleTiming }                 from './common/ScheduleTiming'
 import { aiFeaturesLabel, codes, Intent }         from './config'
+import { Wlan }                                   from './EquiFlex/IntentAIForm/WlanSelection'
 import { useIntentContext }                       from './IntentContext'
 import { DisplayStates, Statuses, StatusReasons } from './states'
 import { IntentWlan }                             from './utils'
@@ -29,6 +30,7 @@ export type FormValues <Preferences> = {
   displayStatus?: DisplayStates
   preferences?: Preferences
   settings: SettingsType
+  wlans?: Wlan[]
 }
 
 export type IntentTransitionPayload <Preferences = unknown> = {
