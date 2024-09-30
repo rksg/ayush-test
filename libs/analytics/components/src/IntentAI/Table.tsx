@@ -2,10 +2,10 @@ import { ReactNode, useCallback, useRef, useState } from 'react'
 
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
-import { Loader, TableProps, Table, Tooltip }                                                  from '@acx-ui/components'
+import { Loader, TableProps, Table, Tooltip, Button }                                          from '@acx-ui/components'
 import { get }                                                                                 from '@acx-ui/config'
 import { DateFormatEnum, formatter }                                                           from '@acx-ui/formatter'
-import { AIDrivenRRM, AIOperation, EquiFlex, EcoFlexAI }                                       from '@acx-ui/icons'
+import { AIDrivenRRM, AIOperation, EquiFlex, EcoFlexAI, ChatbotLink }                          from '@acx-ui/icons'
 import { useNavigate, useTenantLink, TenantLink }                                              from '@acx-ui/react-router-dom'
 import { WifiScopes }                                                                          from '@acx-ui/types'
 import { filterByAccess, getShowWithoutRbacCheckKey, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
@@ -120,6 +120,32 @@ export const AIFeature = (props: AIFeatureProps): JSX.Element => {
       </TenantLink>
     }
   </UI.FeatureIcon>)
+}
+
+export function Banner () {
+  const { $t } = useIntl()
+  const bannerTitle = $t({ defaultMessage: 'Revolutionize your Network Optimization' })
+  const subTitle1 = $t({
+    defaultMessage: `Automates configuration, 
+    monitors tasks based on your network intents, and optimizes your network`
+  })
+  const subTitle2 = $t({
+    defaultMessage: 'performance with IntentAI\'s advanced AI and ML technologies.'
+  })
+  return (<UI.Banner>
+    <b className='title'>{bannerTitle}</b> <span className='br-size'></span>
+    {subTitle1} <span className='br-size'></span>
+    {subTitle2} <span className='br-size'></span>
+    <Button
+      style={{ marginTop: '15px' }}
+      onClick={() => {
+        //TODO: change to dynamic doc mapping
+        // eslint-disable-next-line max-len
+        window.open('https://docs.commscope.com/bundle/ruckusai-userguide/page/GUID-CAAC695C-6740-499D-8C42-AB521CEE65F6.html', '_blank')
+      }}>
+      <b>{$t({ defaultMessage: 'Learn More' })}</b>{<ChatbotLink />}
+    </Button>
+  </UI.Banner>)
 }
 
 export function IntentAITable (
@@ -302,7 +328,12 @@ export function IntentAITable (
   ]
   return (
     <Loader states={[queryResults]}>
-      <UI.IntentAITableStyle/>
+      <UI.IntentAITableStyle />
+      <UI.AlertNote
+        data-testid='intent-ai-alert-note'
+        message={Banner()}
+        type='info'
+      />
       <Table<IntentListItem>
         key={JSON.stringify(selectedFilters)}
         className='intentai-table'
