@@ -17,8 +17,8 @@ import {
   Tooltip,
   PasswordInput
 } from '@acx-ui/components'
-import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { InformationSolid }           from '@acx-ui/icons'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { InformationSolid }                         from '@acx-ui/icons'
 import {
   ManagementFrameProtectionEnum,
   PskWlanSecurityEnum,
@@ -130,9 +130,13 @@ function SettingsForm () {
       }
     </>)
   }
-
+  const isDeprecateWep = useIsSplitOn(Features.WIFI_WLAN_DEPRECATE_WEP)
   const securityOptions = Object.keys(PskWlanSecurityEnum).map((key =>
-    <Option key={key}>{ PskWlanSecurityEnum[key as keyof typeof PskWlanSecurityEnum] }</Option>
+    <Option key={key} disabled={isDeprecateWep && key === 'WEP'}>
+      {isDeprecateWep && key === 'WEP' ?
+        `${PskWlanSecurityEnum[key as keyof typeof PskWlanSecurityEnum]} (Unsafe)`
+        : PskWlanSecurityEnum[key as keyof typeof PskWlanSecurityEnum]}
+    </Option>
   ))
   const frameOptions = Object.keys(ManagementFrameProtectionEnum).map((key =>
     <Option key={key}>
