@@ -1,7 +1,7 @@
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { ActionType, whitespaceOnlyRegExp } from '@acx-ui/rc/utils'
+import { ActionType, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
 
 import { CommonActionSettings } from './CommonActionSettings'
 
@@ -19,7 +19,7 @@ export function DisplayMessageSetting () {
         { required: true },
         { min: 1 },
         { max: 100 },
-        { validator: (_, value) => whitespaceOnlyRegExp(value) }
+        { validator: (_, value) => trailingNorLeadingSpaces(value) }
       ]}
     >
       <Input placeholder={$t({ defaultMessage: 'Type your title here...' })}/>
@@ -32,7 +32,7 @@ export function DisplayMessageSetting () {
         { required: true },
         { min: 1 },
         { max: 1000 },
-        { validator: (_, value) => whitespaceOnlyRegExp(value) }
+        { validator: (_, value) => trailingNorLeadingSpaces(value) }
       ]}
     >
       <Input.TextArea rows={8} placeholder={$t({ defaultMessage: 'Type your message here...' })}/>

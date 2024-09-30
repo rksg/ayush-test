@@ -394,12 +394,12 @@ export interface VenueEdgeCompatibilitiesResponse {
   compatibilities: EntityCompatibility[]
 }
 
-export interface EdgeSdLanCompatibility {
+export interface EdgeServiceCompatibility {
   serviceId: string
   clusterEdgeCompatibilities: EntityCompatibility[]
 }
-export interface EdgeSdLanCompatibilitiesResponse {
-  compatibilities: EdgeSdLanCompatibility[]
+export interface EdgeServiceCompatibilitiesResponse {
+  compatibilities: EdgeServiceCompatibility[]
 }
 
 export type VenueSdLanApCompatibility = Omit<ApCompatibility, 'id'> & {
