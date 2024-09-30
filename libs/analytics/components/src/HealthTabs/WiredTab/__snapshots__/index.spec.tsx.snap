@@ -351,6 +351,357 @@ h5.c5.ant-typography {
 </DocumentFragment>
 `;
 
+exports[`WiredTab should render correctly when 10010e FF is enabled 1`] = `
+<DocumentFragment>
+  .c2.ant-alert {
+  font-size: var(--acx-body-4-font-size);
+  padding: 10px 15px;
+  margin-bottom: var(--acx-content-vertical-space);
+}
+
+.c2.ant-alert svg {
+  font-size: var(--acx-body-3-font-size);
+}
+
+.c2 .ant-alert-close-icon .anticon-close {
+  color: var(--acx-primary-black);
+}
+
+.c2.ant-alert-info {
+  background-color: var(--acx-accents-orange-10);
+  border: 1px solid var(--acx-accents-orange-25);
+}
+
+.c2.ant-alert-info svg.ant-alert-icon path:nth-child(-n+2) {
+  color: var(--acx-accents-orange-50);
+}
+
+h1.c5.ant-typography {
+  line-height: var(--acx-subtitle-1-line-height);
+  font-size: var(--acx-subtitle-1-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-1-font-weight);
+}
+
+h2.c5.ant-typography {
+  line-height: var(--acx-subtitle-2-line-height);
+  font-size: var(--acx-subtitle-2-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-2-font-weight);
+}
+
+h3.c5.ant-typography {
+  line-height: var(--acx-subtitle-3-line-height);
+  font-size: var(--acx-subtitle-3-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-3-font-weight);
+}
+
+h4.c5.ant-typography {
+  line-height: var(--acx-subtitle-4-line-height);
+  font-size: var(--acx-subtitle-4-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-4-font-weight);
+}
+
+h5.c5.ant-typography {
+  line-height: var(--acx-subtitle-5-line-height);
+  font-size: var(--acx-subtitle-5-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-5-font-weight);
+}
+
+.c0 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.c1 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  min-width: 0;
+}
+
+.c3.ant-tabs-top > .ant-tabs-nav {
+  border-bottom: 1px solid var(--acx-neutrals-30);
+}
+
+.c3.ant-tabs-top > .ant-tabs-nav:before {
+  border: 0;
+}
+
+.c3.ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-ink-bar {
+  height: 3px;
+}
+
+.c3.ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-tab {
+  padding: 16px 8px 11px;
+}
+
+.c3.ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  font-size: var(--acx-subtitle-4-font-size);
+  font-weight: var(--acx-subtitle-4-font-weight);
+  line-height: var(--acx-subtitle-4-line-height);
+  text-shadow: none;
+}
+
+.c3.ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-tab + .ant-tabs-tab {
+  margin-left: 20px;
+}
+
+.c6 {
+  padding: 16px 0px 11px;
+  border-bottom: 1px solid var(--acx-neutrals-30);
+}
+
+.c4 {
+  margin-right: -20px;
+}
+
+<div
+    class="ant-row "
+    style="margin: -10px -10px -10px -10px;"
+  >
+    <div
+      class="ant-col ant-col-24 c0"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="c1"
+        style="min-height: 105px;"
+      >
+        <div
+          class="ant-alert ant-alert-info c2"
+          data-show="true"
+          role="alert"
+        >
+          <svg
+            class="ant-alert-icon"
+            data-testid="InformationSolid"
+          />
+          <div
+            class="ant-alert-content"
+          >
+            <div
+              class="ant-alert-message"
+            >
+              Data is displayed for switches with firmware version 
+              <b>
+                10.0.10f
+              </b>
+               or above.
+            </div>
+          </div>
+        </div>
+        <div>
+          Mocked SummaryBoxes
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-16 c0"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="c1"
+      >
+        <div
+          class="ant-tabs ant-tabs-top c3 c4"
+        >
+          <div
+            class="ant-tabs-nav"
+            role="tablist"
+          >
+            <div
+              class="ant-tabs-nav-wrap"
+            >
+              <div
+                class="ant-tabs-nav-list"
+                style="transform: translate(0px, 0px);"
+              >
+                <div
+                  class="ant-tabs-tab ant-tabs-tab-active"
+                >
+                  <div
+                    aria-controls="rc-tabs-test-panel-overview"
+                    aria-selected="true"
+                    class="ant-tabs-tab-btn"
+                    id="rc-tabs-test-tab-overview"
+                    role="tab"
+                    tabindex="0"
+                  >
+                    Overview
+                  </div>
+                </div>
+                <div
+                  class="ant-tabs-tab"
+                >
+                  <div
+                    aria-controls="rc-tabs-test-panel-connection"
+                    aria-selected="false"
+                    class="ant-tabs-tab-btn"
+                    id="rc-tabs-test-tab-connection"
+                    role="tab"
+                    tabindex="0"
+                  >
+                    Connection
+                  </div>
+                </div>
+                <div
+                  class="ant-tabs-tab"
+                >
+                  <div
+                    aria-controls="rc-tabs-test-panel-performance"
+                    aria-selected="false"
+                    class="ant-tabs-tab-btn"
+                    id="rc-tabs-test-tab-performance"
+                    role="tab"
+                    tabindex="0"
+                  >
+                    Performance
+                  </div>
+                </div>
+                <div
+                  class="ant-tabs-tab"
+                >
+                  <div
+                    aria-controls="rc-tabs-test-panel-infrastructure"
+                    aria-selected="false"
+                    class="ant-tabs-tab-btn"
+                    id="rc-tabs-test-tab-infrastructure"
+                    role="tab"
+                    tabindex="0"
+                  >
+                    Infrastructure
+                  </div>
+                </div>
+                <div
+                  class="ant-tabs-ink-bar ant-tabs-ink-bar-animated"
+                />
+              </div>
+            </div>
+            <div
+              class="ant-tabs-nav-operations ant-tabs-nav-operations-hidden"
+            >
+              <button
+                aria-controls="rc-tabs-test-more-popup"
+                aria-expanded="false"
+                aria-haspopup="listbox"
+                aria-hidden="true"
+                class="ant-tabs-nav-more"
+                id="rc-tabs-test-more"
+                style="visibility: hidden; order: 1;"
+                tabindex="-1"
+                type="button"
+              >
+                <span
+                  aria-label="ellipsis"
+                  class="anticon anticon-ellipsis"
+                  role="img"
+                >
+                  <svg
+                    aria-hidden="true"
+                    data-icon="ellipsis"
+                    fill="currentColor"
+                    focusable="false"
+                    height="1em"
+                    viewBox="64 64 896 896"
+                    width="1em"
+                  >
+                    <path
+                      d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"
+                    />
+                  </svg>
+                </span>
+              </button>
+            </div>
+          </div>
+          <div
+            class="ant-tabs-content-holder"
+          >
+            <div
+              class="ant-tabs-content ant-tabs-content-top"
+            >
+              <div
+                aria-hidden="false"
+                aria-labelledby="rc-tabs-test-tab-overview"
+                class="ant-tabs-tabpane ant-tabs-tabpane-active"
+                id="rc-tabs-test-panel-overview"
+                role="tabpanel"
+                tabindex="0"
+              />
+              <div
+                aria-hidden="true"
+                aria-labelledby="rc-tabs-test-tab-connection"
+                class="ant-tabs-tabpane"
+                id="rc-tabs-test-panel-connection"
+                role="tabpanel"
+                style="display: none;"
+                tabindex="-1"
+              />
+              <div
+                aria-hidden="true"
+                aria-labelledby="rc-tabs-test-tab-performance"
+                class="ant-tabs-tabpane"
+                id="rc-tabs-test-panel-performance"
+                role="tabpanel"
+                style="display: none;"
+                tabindex="-1"
+              />
+              <div
+                aria-hidden="true"
+                aria-labelledby="rc-tabs-test-tab-infrastructure"
+                class="ant-tabs-tabpane"
+                id="rc-tabs-test-panel-infrastructure"
+                role="tabpanel"
+                style="display: none;"
+                tabindex="-1"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-8 c0"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="c1"
+      >
+        <h4
+          class="ant-typography c5 c6"
+        >
+          Customized SLA Threshold
+        </h4>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-24 c0"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="c1"
+      >
+        <div>
+          Kpi Section
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
 exports[`WiredTab should render correctly when IS_MLISA_SA 1`] = `
 <DocumentFragment>
   .c2.ant-alert {
@@ -498,6 +849,361 @@ h5.c5.ant-typography {
               Data is displayed for switches with firmware version 
               <b>
                 10.0.10d
+              </b>
+               and SmartZone version 
+              <b>
+                7.x
+              </b>
+               or above.
+            </div>
+          </div>
+        </div>
+        <div>
+          Mocked SummaryBoxes
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-16 c0"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="c1"
+      >
+        <div
+          class="ant-tabs ant-tabs-top c3 c4"
+        >
+          <div
+            class="ant-tabs-nav"
+            role="tablist"
+          >
+            <div
+              class="ant-tabs-nav-wrap"
+            >
+              <div
+                class="ant-tabs-nav-list"
+                style="transform: translate(0px, 0px);"
+              >
+                <div
+                  class="ant-tabs-tab ant-tabs-tab-active"
+                >
+                  <div
+                    aria-controls="rc-tabs-test-panel-overview"
+                    aria-selected="true"
+                    class="ant-tabs-tab-btn"
+                    id="rc-tabs-test-tab-overview"
+                    role="tab"
+                    tabindex="0"
+                  >
+                    Overview
+                  </div>
+                </div>
+                <div
+                  class="ant-tabs-tab"
+                >
+                  <div
+                    aria-controls="rc-tabs-test-panel-connection"
+                    aria-selected="false"
+                    class="ant-tabs-tab-btn"
+                    id="rc-tabs-test-tab-connection"
+                    role="tab"
+                    tabindex="0"
+                  >
+                    Connection
+                  </div>
+                </div>
+                <div
+                  class="ant-tabs-tab"
+                >
+                  <div
+                    aria-controls="rc-tabs-test-panel-performance"
+                    aria-selected="false"
+                    class="ant-tabs-tab-btn"
+                    id="rc-tabs-test-tab-performance"
+                    role="tab"
+                    tabindex="0"
+                  >
+                    Performance
+                  </div>
+                </div>
+                <div
+                  class="ant-tabs-tab"
+                >
+                  <div
+                    aria-controls="rc-tabs-test-panel-infrastructure"
+                    aria-selected="false"
+                    class="ant-tabs-tab-btn"
+                    id="rc-tabs-test-tab-infrastructure"
+                    role="tab"
+                    tabindex="0"
+                  >
+                    Infrastructure
+                  </div>
+                </div>
+                <div
+                  class="ant-tabs-ink-bar ant-tabs-ink-bar-animated"
+                />
+              </div>
+            </div>
+            <div
+              class="ant-tabs-nav-operations ant-tabs-nav-operations-hidden"
+            >
+              <button
+                aria-controls="rc-tabs-test-more-popup"
+                aria-expanded="false"
+                aria-haspopup="listbox"
+                aria-hidden="true"
+                class="ant-tabs-nav-more"
+                id="rc-tabs-test-more"
+                style="visibility: hidden; order: 1;"
+                tabindex="-1"
+                type="button"
+              >
+                <span
+                  aria-label="ellipsis"
+                  class="anticon anticon-ellipsis"
+                  role="img"
+                >
+                  <svg
+                    aria-hidden="true"
+                    data-icon="ellipsis"
+                    fill="currentColor"
+                    focusable="false"
+                    height="1em"
+                    viewBox="64 64 896 896"
+                    width="1em"
+                  >
+                    <path
+                      d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"
+                    />
+                  </svg>
+                </span>
+              </button>
+            </div>
+          </div>
+          <div
+            class="ant-tabs-content-holder"
+          >
+            <div
+              class="ant-tabs-content ant-tabs-content-top"
+            >
+              <div
+                aria-hidden="false"
+                aria-labelledby="rc-tabs-test-tab-overview"
+                class="ant-tabs-tabpane ant-tabs-tabpane-active"
+                id="rc-tabs-test-panel-overview"
+                role="tabpanel"
+                tabindex="0"
+              />
+              <div
+                aria-hidden="true"
+                aria-labelledby="rc-tabs-test-tab-connection"
+                class="ant-tabs-tabpane"
+                id="rc-tabs-test-panel-connection"
+                role="tabpanel"
+                style="display: none;"
+                tabindex="-1"
+              />
+              <div
+                aria-hidden="true"
+                aria-labelledby="rc-tabs-test-tab-performance"
+                class="ant-tabs-tabpane"
+                id="rc-tabs-test-panel-performance"
+                role="tabpanel"
+                style="display: none;"
+                tabindex="-1"
+              />
+              <div
+                aria-hidden="true"
+                aria-labelledby="rc-tabs-test-tab-infrastructure"
+                class="ant-tabs-tabpane"
+                id="rc-tabs-test-panel-infrastructure"
+                role="tabpanel"
+                style="display: none;"
+                tabindex="-1"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-8 c0"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="c1"
+      >
+        <h4
+          class="ant-typography c5 c6"
+        >
+          Customized SLA Threshold
+        </h4>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-24 c0"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="c1"
+      >
+        <div>
+          Kpi Section
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`WiredTab should render correctly when IS_MLISA_SA and 10010e FF enabled 1`] = `
+<DocumentFragment>
+  .c2.ant-alert {
+  font-size: var(--acx-body-4-font-size);
+  padding: 10px 15px;
+  margin-bottom: var(--acx-content-vertical-space);
+}
+
+.c2.ant-alert svg {
+  font-size: var(--acx-body-3-font-size);
+}
+
+.c2 .ant-alert-close-icon .anticon-close {
+  color: var(--acx-primary-black);
+}
+
+.c2.ant-alert-info {
+  background-color: var(--acx-accents-orange-10);
+  border: 1px solid var(--acx-accents-orange-25);
+}
+
+.c2.ant-alert-info svg.ant-alert-icon path:nth-child(-n+2) {
+  color: var(--acx-accents-orange-50);
+}
+
+h1.c5.ant-typography {
+  line-height: var(--acx-subtitle-1-line-height);
+  font-size: var(--acx-subtitle-1-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-1-font-weight);
+}
+
+h2.c5.ant-typography {
+  line-height: var(--acx-subtitle-2-line-height);
+  font-size: var(--acx-subtitle-2-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-2-font-weight);
+}
+
+h3.c5.ant-typography {
+  line-height: var(--acx-subtitle-3-line-height);
+  font-size: var(--acx-subtitle-3-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-3-font-weight);
+}
+
+h4.c5.ant-typography {
+  line-height: var(--acx-subtitle-4-line-height);
+  font-size: var(--acx-subtitle-4-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-4-font-weight);
+}
+
+h5.c5.ant-typography {
+  line-height: var(--acx-subtitle-5-line-height);
+  font-size: var(--acx-subtitle-5-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-5-font-weight);
+}
+
+.c0 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.c1 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  min-width: 0;
+}
+
+.c3.ant-tabs-top > .ant-tabs-nav {
+  border-bottom: 1px solid var(--acx-neutrals-30);
+}
+
+.c3.ant-tabs-top > .ant-tabs-nav:before {
+  border: 0;
+}
+
+.c3.ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-ink-bar {
+  height: 3px;
+}
+
+.c3.ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-tab {
+  padding: 16px 8px 11px;
+}
+
+.c3.ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  font-size: var(--acx-subtitle-4-font-size);
+  font-weight: var(--acx-subtitle-4-font-weight);
+  line-height: var(--acx-subtitle-4-line-height);
+  text-shadow: none;
+}
+
+.c3.ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-tab + .ant-tabs-tab {
+  margin-left: 20px;
+}
+
+.c6 {
+  padding: 16px 0px 11px;
+  border-bottom: 1px solid var(--acx-neutrals-30);
+}
+
+.c4 {
+  margin-right: -20px;
+}
+
+<div
+    class="ant-row "
+    style="margin: -10px -10px -10px -10px;"
+  >
+    <div
+      class="ant-col ant-col-24 c0"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="c1"
+        style="min-height: 105px;"
+      >
+        <div
+          class="ant-alert ant-alert-info c2"
+          data-show="true"
+          role="alert"
+        >
+          <svg
+            class="ant-alert-icon"
+            data-testid="InformationSolid"
+          />
+          <div
+            class="ant-alert-content"
+          >
+            <div
+              class="ant-alert-message"
+            >
+              Data is displayed for switches with firmware version 
+              <b>
+                10.0.10f
               </b>
                and SmartZone version 
               <b>
