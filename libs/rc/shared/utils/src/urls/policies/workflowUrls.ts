@@ -299,14 +299,29 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
   },
   uploadFile: {
     method: 'post',
-    url: `${WorkflowActionBaseUrl}/configs`
+    url: `${WorkflowActionBaseUrl}/configs`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   deleteFile: {
     method: 'delete',
-    url: `${WorkflowActionBaseUrl}/configs/:fileId`
+    url: `${WorkflowActionBaseUrl}/configs/:fileId`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getFile: {
     method: 'get',
-    url: `${WorkflowActionBaseUrl}/configs/:fileId`
+    url: `${WorkflowActionBaseUrl}/configs/:fileId`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }
