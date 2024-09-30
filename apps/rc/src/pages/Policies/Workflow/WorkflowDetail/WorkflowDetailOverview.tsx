@@ -4,12 +4,12 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { GridCol, GridRow, SummaryCard }                  from '@acx-ui/components'
-import { EnrollmentPortalLink, WorkflowPanel} from '@acx-ui/rc/components'
+import { EnrollmentPortalLink, WorkflowPanel } from '@acx-ui/rc/components'
 import {
   useGetWorkflowByIdQuery,
   useLazySearchWorkflowListQuery
 } from '@acx-ui/rc/services'
-import { Workflow, WorkflowPanelMode  } from '@acx-ui/rc/utils'
+import { Workflow, WorkflowPanelMode } from '@acx-ui/rc/utils'
 
 
 
