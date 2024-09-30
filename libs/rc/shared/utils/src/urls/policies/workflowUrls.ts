@@ -299,14 +299,14 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
   },
   uploadFile: {
     method: 'post',
-    url: `${WorkflowActionBaseUrl}/files`
+    url: `${WorkflowActionBaseUrl}/configs`
   },
   deleteFile: {
     method: 'delete',
-    url: `${WorkflowActionBaseUrl}/files/:fileId`
+    url: `${WorkflowActionBaseUrl}/configs/:fileId`
   },
   getFile: {
     method: 'get',
-    url: `${WorkflowActionBaseUrl}/files/:fileId`
+    url: `${WorkflowActionBaseUrl}/configs/:fileId`
   }
 }
