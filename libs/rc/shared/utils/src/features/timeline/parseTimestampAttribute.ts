@@ -6,10 +6,10 @@ export function parseTimestampAttribute<Data> (data: Data) {
   let parseData = {} as Data
   for (const key in data) {
     if (_.endsWith(key, 'Timestamp')) {
-      const value = data[key];
-      (parseData as any)[key] = formatter(
+      const value = data[key]
+      parseData[key] = formatter(
         DateFormatEnum.DateTimeFormatWithSeconds
-      )(new Date(Number(value)).toISOString()) as string
+      )(new Date(Number(value)).toISOString())
     } else {
       parseData[key] = data[key]
     }
