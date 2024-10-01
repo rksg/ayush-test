@@ -63,4 +63,36 @@ describe('ScepDrawer', () => {
     await userEvent.click(screen.getByText('Save'))
     await waitFor(() => expect(mockedEdit).toBeCalledTimes(1))
   })
+
+  it('should handle InputNumber min and max values correctly', async () => {
+    render(<Provider><ScepDrawer visible={true} onClose={() => {}}/></Provider>)
+
+    const inputNumber = screen.getByLabelText('Day of Access')
+
+    // Test minimum value
+    await userEvent.clear(inputNumber)
+    await userEvent.type(inputNumber, '-1')
+    expect(inputNumber).toHaveValue('-1')
+
+    // Test maximum value
+    await userEvent.clear(inputNumber)
+    await userEvent.type(inputNumber, '365')
+    expect(inputNumber).toHaveValue('365')
+
+    // Test value below minimum
+    await userEvent.clear(inputNumber)
+    await userEvent.type(inputNumber, '-1')
+    expect(inputNumber).toHaveValue('-1')
+    inputNumber.focus()
+    await userEvent.type(inputNumber, '{arrowdown}')
+    expect(inputNumber).not.toHaveValue('-2')
+
+    // Test value above maximum
+    await userEvent.clear(inputNumber)
+    await userEvent.type(inputNumber, '365')
+    expect(inputNumber).toHaveValue('365')
+    inputNumber.focus()
+    await userEvent.type(inputNumber, '{arrowup}')
+    expect(inputNumber).not.toHaveValue('366')
+  })
 })
