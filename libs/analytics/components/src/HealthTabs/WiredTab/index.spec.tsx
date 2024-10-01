@@ -1,13 +1,15 @@
 import '@testing-library/jest-dom'
 
-import { get }      from '@acx-ui/config'
-import { Provider } from '@acx-ui/store'
+import { get }          from '@acx-ui/config'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Provider }     from '@acx-ui/store'
 import {
   fireEvent,
   render,
   screen
 } from '@acx-ui/test-utils'
 import { DateRange, type AnalyticsFilter } from '@acx-ui/utils'
+
 
 import { WiredTab } from '.'
 
@@ -34,8 +36,22 @@ describe('WiredTab', () => {
     const { asFragment }=render(<Provider><WiredTab /></Provider>, { route: { params } })
     expect(asFragment()).toMatchSnapshot()
   })
+
+  it('should render correctly when 10010e FF is enabled', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValueOnce(true)
+    const { asFragment }=render(<Provider><WiredTab /></Provider>, { route: { params } })
+    expect(asFragment()).toMatchSnapshot()
+  })
+
   it('should render correctly when IS_MLISA_SA', async () => {
     mockGet.mockReturnValue('true')
+    const { asFragment }=render(<Provider><WiredTab /></Provider>, { route: { params } })
+    expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('should render correctly when IS_MLISA_SA and 10010e FF enabled', async () => {
+    mockGet.mockReturnValue('true')
+    jest.mocked(useIsSplitOn).mockReturnValueOnce(true)
     const { asFragment }=render(<Provider><WiredTab /></Provider>, { route: { params } })
     expect(asFragment()).toMatchSnapshot()
   })

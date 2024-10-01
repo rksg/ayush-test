@@ -2,17 +2,17 @@ import { ReactNode, useCallback, useRef, useState } from 'react'
 
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
-import { Loader, TableProps, Table, Tooltip }                                                  from '@acx-ui/components'
+import { Loader, TableProps, Table, Tooltip, Button }                                          from '@acx-ui/components'
 import { get }                                                                                 from '@acx-ui/config'
 import { DateFormatEnum, formatter }                                                           from '@acx-ui/formatter'
-import { AIDrivenRRM, AIOperation, EquiFlex, EcoFlexAI }                                       from '@acx-ui/icons'
+import { AIDrivenRRM, AIOperation, EquiFlex, EcoFlexAI, ChatbotLink }                          from '@acx-ui/icons'
 import { useNavigate, useTenantLink, TenantLink }                                              from '@acx-ui/react-router-dom'
 import { WifiScopes }                                                                          from '@acx-ui/types'
 import { filterByAccess, getShowWithoutRbacCheckKey, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 import { noDataDisplay, PathFilter, useEncodedParameter }                                      from '@acx-ui/utils'
 
 import { Icon }                                        from './common/IntentIcon'
-import { aiFeatures, codes, IntentListItem }           from './config'
+import { AiFeatures, codes, IntentListItem }           from './config'
 import { useIntentAITableQuery }                       from './services'
 import { DisplayStates, Statuses }                     from './states'
 import * as UI                                         from './styledComponents'
@@ -51,7 +51,7 @@ const IconTooltip = (props: IconTooltipProps) => {
 }
 
 export const iconTooltips = {
-  [aiFeatures.RRM]: <IconTooltip
+  [AiFeatures.RRM]: <IconTooltip
     icon={<AIDrivenRRM />}
     title={defineMessage({ defaultMessage: 'AI-Driven RRM' })}
     subTitleLeft={defineMessage({ defaultMessage: 'Throughput' })}
@@ -61,7 +61,7 @@ export const iconTooltips = {
       defaultMessage: `Choose between a network with maximum throughput,
       allowing some interference, or one with minimal interference, for high client density.` })}
   />,
-  [aiFeatures.EquiFlex]: <IconTooltip
+  [AiFeatures.EquiFlex]: <IconTooltip
     icon={<EquiFlex />}
     title={defineMessage({ defaultMessage: 'EquiFlex' })}
     subTitleLeft={defineMessage({ defaultMessage: 'Time to Connect' })}
@@ -71,7 +71,7 @@ export const iconTooltips = {
       defaultMessage: `Choose between fine-tuning your wireless LAN for extremely high client
       density environment or focus on keeping faster client time to connect.` })}
   />,
-  [aiFeatures.AIOps]: <IconTooltip
+  [AiFeatures.AIOps]: <IconTooltip
     icon={<AIOperation />}
     title={defineMessage({ defaultMessage: 'AI Operations' })}
     subTitleLeft={defineMessage({ defaultMessage: 'Optimize Network' })}
@@ -81,7 +81,7 @@ export const iconTooltips = {
       defaultMessage: `Proactively monitor and tune network performance with RUCKUS AI's
       dynamic recommendations to enhance KPIs and user experience.` })}
   />,
-  [aiFeatures.EcoFlex]: <IconTooltip
+  [AiFeatures.EcoFlex]: <IconTooltip
     icon={<EcoFlexAI />}
     title={defineMessage({ defaultMessage: 'EcoFlex' })}
     subTitleLeft={defineMessage({ defaultMessage: 'Energy Footprint' })}
@@ -120,6 +120,32 @@ export const AIFeature = (props: AIFeatureProps): JSX.Element => {
       </TenantLink>
     }
   </UI.FeatureIcon>)
+}
+
+export function Banner () {
+  const { $t } = useIntl()
+  const bannerTitle = $t({ defaultMessage: 'Revolutionize your Network Optimization' })
+  const subTitle1 = $t({
+    defaultMessage: `Automates configuration, 
+    monitors tasks based on your network intents, and optimizes your network`
+  })
+  const subTitle2 = $t({
+    defaultMessage: 'performance with IntentAI\'s advanced AI and ML technologies.'
+  })
+  return (<UI.Banner>
+    <b className='title'>{bannerTitle}</b> <span className='br-size'></span>
+    {subTitle1} <span className='br-size'></span>
+    {subTitle2} <span className='br-size'></span>
+    <Button
+      style={{ marginTop: '15px' }}
+      onClick={() => {
+        //TODO: change to dynamic doc mapping
+        // eslint-disable-next-line max-len
+        window.open('https://docs.commscope.com/bundle/ruckusai-userguide/page/GUID-CAAC695C-6740-499D-8C42-AB521CEE65F6.html', '_blank')
+      }}>
+      <b>{$t({ defaultMessage: 'Learn More' })}</b>{<ChatbotLink />}
+    </Button>
+  </UI.Banner>)
 }
 
 export function IntentAITable (
@@ -303,7 +329,12 @@ export function IntentAITable (
 
   return (
     <Loader states={[queryResults]}>
-      <UI.IntentAITableStyle/>
+      <UI.IntentAITableStyle />
+      <UI.AlertNote
+        data-testid='intent-ai-alert-note'
+        message={Banner()}
+        type='info'
+      />
       <Table<IntentListItem>
         className='intentai-table'
         data-testid='intentAI'

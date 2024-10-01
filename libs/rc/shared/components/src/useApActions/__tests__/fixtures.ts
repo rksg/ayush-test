@@ -93,3 +93,24 @@ export const dhcpResponse: DHCPSaveData = {
     dhcpOptions: [] as DHCPOption[]
   }] as DHCPPool[]
 }
+
+export const dummySwitchClientList = {
+  fields: [
+    'clientMac',
+    'switchId',
+    'switchName',
+    'switchSerialNumber',
+    'switchPort'
+  ],
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      clientMac: '34:20:E3:1C:EA:C0',
+      switchId: 'c0:c5:20:b2:10:d5',
+      switchName: 'L2-R',
+      switchPort: '1/1/4',
+      switchSerialNumber: 'FMF3250Q06J'
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+import { useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
 import { BrowserRouter as Router }                                                from '@acx-ui/react-router-dom'
 import { Provider, store, dataApiURL }                                            from '@acx-ui/store'
 import { render, waitForElementToBeRemoved, screen, mockGraphqlQuery, fireEvent } from '@acx-ui/test-utils'
@@ -26,6 +27,19 @@ describe('Wired SummaryBoxes', () => {
   })
   it('should render correctly', async () => {
     mockGraphqlQuery(dataApiURL, 'WiredSummaryQuery', { data: wiredSummaryDataFixture })
+
+    const { asFragment } = render(
+      <Router><Provider><SummaryBoxes
+        filters={filters}
+      /></Provider></Router>
+    )
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('should render correctly when 10010e FF is enabled', async () => {
+    mockGraphqlQuery(dataApiURL, 'WiredSummaryQuery', { data: wiredSummaryDataFixture })
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     const { asFragment } = render(
       <Router><Provider><SummaryBoxes

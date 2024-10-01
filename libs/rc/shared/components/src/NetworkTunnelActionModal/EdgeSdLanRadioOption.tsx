@@ -12,6 +12,7 @@ import {
   ServiceType,
   VLANPoolViewModelType,
   getServiceDetailsLink,
+  getServiceRoutePath,
   useHelpPageLink
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
@@ -38,7 +39,11 @@ interface SdLanRadioOptionProps {
 
 export const EdgeSdLanRadioOption = (props: SdLanRadioOptionProps) => {
   const { $t } = useIntl()
-  const helpUrl = useHelpPageLink()
+  const addSdLanPageLink = getServiceRoutePath({
+    type: ServiceType.EDGE_SD_LAN,
+    oper: ServiceOperation.CREATE
+  })
+  const helpUrl = useHelpPageLink(addSdLanPageLink)
   const form = Form.useFormInstance()
 
   const {
