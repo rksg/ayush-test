@@ -52,6 +52,7 @@ export enum Features {
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
   ENTITLEMENT_LICENSE_COMPLIANCE_TOGGLE= 'entitlement-license-compliance-toggle',
   ENTITLEMENT_RBAC_API = 'acx-ui-rbac-api-entitlement-toggle',
+  ENTITLEMENT_SEPARATE_SERVICEDATE_TOGGLE = 'entitlement-separate-trial-date-toggle',
   ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE = 'entitlement-virtual-smart-edge-toggle',
   EOL_AP_2022_12_PHASE_2_TOGGLE = 'eol-ap-2022-12-phase-2-toggle',
   ETHERNET_PORT_PROFILE_TOGGLE = 'acx-ui-ethernet-toggle',
@@ -186,7 +187,7 @@ export enum Features {
   WIFI_AP_STICKY_CLIENT_STEERING_TOGGLE = 'wifi-ap-sticky-client-steering-toggle',
   WIFI_CAPTIVE_PORTAL_PSK = 'wifi-captive-portal-psk',
   WIFI_CAPTIVE_PORTAL_OWE = 'wifi-captive-portal-owe',
-  WIFI_WLAN_DEPRECATE_WPA = 'wifi-wlan-deprecate-wpa',
+  WIFI_WLAN_DEPRECATE_WEP = 'wifi-wlan-deprecate-wpa',
   WIFI_OVER_THE_DS_FT_SUPPORT_TOGGLE = 'wifi-over-the-ds-ft-support-toggle'
 }
 

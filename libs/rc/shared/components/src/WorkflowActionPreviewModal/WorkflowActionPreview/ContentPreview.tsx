@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { PoweredBy, WiFi4EuBanner }                from '@acx-ui/icons'
-import { DefaultUIConfiguration, UIConfiguration } from '@acx-ui/rc/utils'
+import { PoweredBy, WiFi4EuBanner }                                  from '@acx-ui/icons'
+import { DefaultUIConfiguration, getLogoImageSize, UIConfiguration } from '@acx-ui/rc/utils'
 
 import { StepNavigation } from './StepNavigation'
 import * as UI            from './styledComponent'
@@ -38,10 +38,8 @@ export function ContentPreview (props: ContentPreviewProps) {
       {uiConfiguration?.logoImage &&
         <img
           style={{
-            height: 105 * (uiStyleSchema.logoRatio
-              ?? DefaultUIConfiguration.uiStyleSchema.logoRatio),
-            width: 105 * (uiStyleSchema.logoRatio
-              ?? DefaultUIConfiguration.uiStyleSchema.logoRatio),
+            height: getLogoImageSize(uiStyleSchema.logoSize),
+            width: getLogoImageSize(uiStyleSchema.logoSize),
             margin: '24px'
           }}
           src={uiConfiguration?.logoImage}
@@ -50,9 +48,9 @@ export function ContentPreview (props: ContentPreviewProps) {
       }
       <UI.Title
         style={{
-          fontSize: `${uiStyleSchema.titleFontSize}px`,
-          letterSpacing: `${uiStyleSchema.titleFontSize * 0.03}px`,
-          lineHeight: `${uiStyleSchema.titleFontSize * 1.2}px`,
+          fontSize: `${uiStyleSchema.headerFontSize}px`,
+          letterSpacing: `${uiStyleSchema.headerFontSize * 0.03}px`,
+          lineHeight: `${uiStyleSchema.headerFontSize * 1.2}px`,
           color: uiColorSchema.fontHeaderColor
         }}
       >
