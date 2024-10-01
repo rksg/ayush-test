@@ -767,4 +767,37 @@ export const fakeIncidentAirtimeTx = fakeIncident(fakeAirtimeTx)
 export const fakeIncidentAirtimeTxWithSameTime = fakeIncident({
   ...fakeAirtimeTx, impactedStart: '2024-01-24T00:00:00.000Z' })
 
-
+export const fakeIncidentDDoS = fakeIncident({
+  severity: 0.75,
+  startTime: '2022-09-30T07:00:00.000Z',
+  endTime: '2022-10-05T01:00:00.000Z',
+  code: 's-switch-tcp-syn-ddos',
+  sliceType: 'switchGroup',
+  sliceValue: 'GRP2',
+  id: '9bce5e7b-7959-44da-8dc6-b176456a2bfd',
+  path: [
+    {
+      type: 'switchGroup',
+      name: 'GRP2'
+    }
+  ],
+  metadata: {
+    dominant: {},
+    rootCauseChecks: {
+      checks: [],
+      params: {}
+    }
+  },
+  clientCount: -1,
+  impactedClientCount: -1,
+  isMuted: false,
+  mutedBy: null,
+  mutedAt: null,
+  slaThreshold: null,
+  currentSlaThreshold: null,
+  apCount: -1,
+  impactedApCount: -1,
+  switchCount: 1,
+  vlanCount: -1,
+  connectedPowerDeviceCount: -1
+})
