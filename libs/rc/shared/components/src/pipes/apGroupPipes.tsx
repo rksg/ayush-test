@@ -114,11 +114,11 @@ export const transformVLAN = (
           isCustom: true
         })
       } else {
-        const vlan = getVlanString({
+        const vlan = getVlanString(currentVenue.vlanPoolId ? {
           id: currentVenue.vlanPoolId,
           name: currentVenue.vlanPoolName ?? '',
           vlanMembers: currentVenue.vlanMembers ?? []
-        }, network?.wlan?.vlanId)
+        } : null, network?.wlan?.vlanId)
         displayText = vlan.vlanText
       }
 
@@ -128,11 +128,11 @@ export const transformVLAN = (
       tooltipTitle = (network && apGroupTooltip('vlan', currentVenue, network, vlanPoolingNameMap)) || displayText
     }
   } else {
-    const vlan = getVlanString({
+    const vlan = getVlanString(currentVenue.vlanPoolId ? {
       id: currentVenue.vlanPoolId,
       name: currentVenue.vlanPoolName ?? '',
       vlanMembers: currentVenue.vlanMembers ?? []
-    }, network?.wlan?.vlanId)
+    }: null, network?.wlan?.vlanId)
     displayText = vlan.vlanText
     tooltipTitle = displayText
   }

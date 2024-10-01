@@ -149,11 +149,11 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
     }
   }, [form, prevOpen, open])
 
-  const defaultVlanString = getVlanString({
+  const defaultVlanString = getVlanString(networkVenue?.vlanPoolId ? {
     id: networkVenue?.vlanPoolId,
     name: networkVenue?.vlanPoolName ?? '',
     vlanMembers: networkVenue?.vlanMembers ?? []
-  }, wlan?.vlanId)
+  } : null, wlan?.vlanId)
 
   const networkApGroupsQuery = useNetworkApGroupsInstance()
 
