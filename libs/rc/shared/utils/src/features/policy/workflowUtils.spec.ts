@@ -2,7 +2,7 @@ import { Edge, Node } from 'reactflow'
 
 import { renderHook } from '@acx-ui/test-utils'
 
-import { ActionType, WorkflowStep } from '../../types'
+import { ActionType, WorkflowPanelMode, WorkflowStep } from '../../types'
 
 import {
   AupActionDefaultValue,
@@ -112,6 +112,7 @@ describe('WorkflowUtils', () => {
     const targetNodes: Node<WorkflowStep, ActionType>[] = []
     const targetEdges: Edge[] = []
     composeNext(
+      WorkflowPanelMode.Default,
       findFirstStep(mockReverseOrderSteps)?.id!,
       toStepMap(mockReverseOrderSteps),
       targetNodes, targetEdges, 0, 0
@@ -129,6 +130,7 @@ describe('WorkflowUtils', () => {
     ]
     const targetEdges: Edge[] = [{ } as Edge]
     composeNext(
+      WorkflowPanelMode.Default,
       'step-unknown-id',
       new Map(),
       targetNodes, targetEdges, 0, 0
@@ -145,12 +147,13 @@ describe('WorkflowUtils', () => {
 
   it('should handle toReactFlowData correctly', () => {
     const expectedNodesOrders = mockReverseOrderSteps.map(s => s.id)
-    const result = toReactFlowData(mockReverseOrderSteps)
+    const result = toReactFlowData(mockReverseOrderSteps, WorkflowPanelMode.Design)
 
     expect(result.nodes).toHaveLength(3)
     // Make sure the ordering of Nodes
     result.nodes.forEach(node => {
       expect(node.id).toBe(expectedNodesOrders.pop())
+      expect(node.data.mode).toBe(WorkflowPanelMode.Design)
     })
     expect(result.nodes.map(n => n.type))
       .toEqual([ActionType.AUP, ActionType.DISPLAY_MESSAGE, ActionType.DATA_PROMPT])

@@ -56,3 +56,8 @@ export function transVenuesForNetwork (venueApGroups: WifiNetwork['venueApGroups
     ids: venueApGroups.map(v => v.venueId)
   }
 }
+
+export function formatMacAddress (macAddress: string): string {
+  const replaceMacAddress = macAddress.replace(/[^a-z0-9]/gi, '')
+  return replaceMacAddress?.match(/.{1,2}/g)?.join(':') ?? ''
+}

@@ -1,8 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { edgeApi, edgeHqosProfilesApi } from '@acx-ui/rc/services'
 import {
+  EdgeCompatibilityFixtures,
   EdgeGeneralFixtures,
   EdgeHqosProfileFixtures,
   EdgeHqosProfilesUrls,
@@ -26,11 +28,30 @@ import HqosBandwidthTable from '.'
 
 const { mockEdgeClusterList } = EdgeGeneralFixtures
 const { mockEdgeHqosProfileStatusList } = EdgeHqosProfileFixtures
+const { mockEdgeHqosCompatibilities } = EdgeCompatibilityFixtures
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  ApCompatibilityToolTip: () => <div data-testid='ApCompatibilityToolTip' />
+}))
+
+const modifiedMockEdgeHqosProfileStatusList = {
+  ...mockEdgeHqosCompatibilities,
+  data: mockEdgeHqosProfileStatusList.data.map((item, index) => {
+    if(index === 1) {
+      return {
+        ...item,
+        id: 'testPolicyId'
+      }
+    }
+    return item
+  })
+}
 
 describe('HqosBandwidthTable', () => {
   let params: { tenantId: string }
@@ -39,6 +60,7 @@ describe('HqosBandwidthTable', () => {
     oper: PolicyOperation.LIST
   })
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
@@ -48,7 +70,7 @@ describe('HqosBandwidthTable', () => {
     mockServer.use(
       rest.post(
         EdgeHqosProfilesUrls.getEdgeHqosProfileViewDataList.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeHqosProfileStatusList))
+        (req, res, ctx) => res(ctx.json(modifiedMockEdgeHqosProfileStatusList))
       ),
       rest.delete(
         EdgeHqosProfilesUrls.deleteEdgeHqosProfile.url,
@@ -57,6 +79,10 @@ describe('HqosBandwidthTable', () => {
       rest.post(
         EdgeUrlsInfo.getEdgeClusterStatusList.url,
         (req, res, ctx) => res(ctx.json(mockEdgeClusterList))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getHqosEdgeCompatibilities.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeHqosCompatibilities))
       )
     )
   })
@@ -71,6 +97,7 @@ describe('HqosBandwidthTable', () => {
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const row = await screen.findAllByRole('row', { name: /Test-QoS-/i })
     expect(row.length).toBe(2)
+    expect(await screen.findByTestId('ApCompatibilityToolTip')).toBeVisible()
   })
 
   it('should render breadcrumb correctly', async () => {
