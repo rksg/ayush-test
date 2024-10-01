@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { useSearchParams } from 'react-router-dom'
 
-import { fixedEncodeURIComponent } from './encodeParameter'
+import { fixedEncodeURIComponent } from './encodeURIComponent'
 
 export function useEncodedParameter<ValueType> (name: string) {
   const [search, setSearch] = useSearchParams()

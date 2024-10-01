@@ -1,4 +1,4 @@
-import { fixedEncodeURIComponent, encodeParameter } from './encodeParameter'
+import { fixedEncodeURIComponent, encodeParameter } from './encodeURIComponent'
 
 describe('fixedEncodeURIComponent', () => {
   it('Should return encoded string', () => {
