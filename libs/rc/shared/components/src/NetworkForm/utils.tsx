@@ -491,7 +491,7 @@ export function useVlanPool () {
     if (!vlanPool && !originalPoolId) return
     if (originalPoolId && !vlanPool) await deactivateVlanPool(networkId, originalPoolId)
     // eslint-disable-next-line max-len
-    if (vlanPool && originalPoolId !== vlanPool.id) await activateVlanPool(vlanPool, networkId, vlanPool.id)
+    if ((vlanPool && originalPoolId !== vlanPool.id) || vlanPool) await activateVlanPool(vlanPool, networkId, vlanPool.id)
   }
 
   return {

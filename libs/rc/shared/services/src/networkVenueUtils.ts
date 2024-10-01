@@ -901,7 +901,7 @@ export const fetchRbacNetworkVenueList = async (queryArgs: RequestPayload<{ isTe
           }
         })
 
-        const networkVlanPoolId = networkVlanPoolList?.data?.find(vlanPool => vlanPool.wifiNetworkIds?.includes(networkId))?.id
+        const networkVlanPool = networkVlanPoolList?.data?.find(vlanPool => vlanPool.wifiNetworkIds?.includes(networkId))
 
         return {
           ...defaultNetworkVenue,
@@ -909,7 +909,11 @@ export const fetchRbacNetworkVenueList = async (queryArgs: RequestPayload<{ isTe
           ...(venueApGroups && { apGroups: venueApGroups }),
           networkId,
           venueId,
-          ...(networkVlanPoolId && { vlanPoolId: networkVlanPoolId })
+          ...(networkVlanPool && {
+            vlanPoolId: networkVlanPool.id,
+            vlanPoolName: networkVlanPool.name,
+            vlanMembers: networkVlanPool.vlanMembers
+          })
         }
 
       })
