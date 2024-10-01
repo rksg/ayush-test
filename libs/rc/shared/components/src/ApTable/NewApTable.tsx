@@ -343,13 +343,13 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       sorter: true,
       render: (_: ReactNode, { meshRole }) => transformMeshRole(meshRole as APMeshRole)
     }, {
-      key: 'clients',
+      key: 'clientCount',
       title: $t({ defaultMessage: 'Clients' }),
-      dataIndex: 'clients',
+      dataIndex: 'clientCount',
       align: 'center',
       render: (_: ReactNode, row: NewAPModelExtended) => {
         return <TenantLink to={`/devices/wifi/${row.serialNumber}/details/clients`}>
-          {transformDisplayNumber(row.clients)}
+          {transformDisplayNumber(row.clientCount)}
         </TenantLink>
       }
     },

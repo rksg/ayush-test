@@ -65,7 +65,7 @@ describe('servicePolicyAbacUtils', () => {
 
     // eslint-disable-next-line max-len
     expect(getScopeKeyByService(ServiceType.NETWORK_SEGMENTATION, ServiceOperation.EDIT).sort())
-      .toEqual<ScopeKeys>([WifiScopes.UPDATE, SwitchScopes.UPDATE, EdgeScopes.UPDATE].sort())
+      .toEqual<ScopeKeys>([SwitchScopes.UPDATE, EdgeScopes.UPDATE].sort())
   })
 
   describe('policyTypeScopeMap', () => { // Test for a combination of all policy types and operations to ensure they are all covered
