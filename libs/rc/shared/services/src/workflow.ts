@@ -28,7 +28,8 @@ import {
   Workflow,
   WorkflowActionDefinition,
   WorkflowStep,
-  WorkflowUrls
+  WorkflowUrls,
+  FileDownloadResponse
 } from '@acx-ui/rc/utils'
 import { baseWorkflowApi }             from '@acx-ui/store'
 import { RequestPayload }              from '@acx-ui/types'
@@ -444,17 +445,22 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
       query: ({ params, payload }) => {
         return {
           ...createHttpRequest(WorkflowUrls.uploadFile, params,
-            { 'Content-Type': undefined, 'Accept': '*/*' }),
+            { 'Content-Type': undefined }),
           body: payload
         }
       } }),
-    deleteFile: build.mutation<void, RequestPayload>({
-      query: ({ params, payload }) => {
+    deleteFile: build.mutation({
+      query: ({ params }) => {
         return {
-          ...createHttpRequest(WorkflowUrls.deleteFile, params),
-          body: JSON.stringify(payload)
+          ...createHttpRequest(WorkflowUrls.deleteFile, params)
         }
-      } }),
+      }
+    }),
+    getFile: build.query<FileDownloadResponse, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(WorkflowUrls.getFile, params)
+      }
+    }),
     // eslint-disable-next-line max-len
     createAction: build.mutation<CommonAsyncResponse, RequestPayload & { onSuccess?: (response: CommonAsyncResponse) => void, onError?: () => void }>({
       query: commonQueryFn(WorkflowUrls.createAction),
@@ -591,5 +597,6 @@ export const {
   usePatchActionMutation,
   useDeleteActionByIdMutation,
   useUploadFileMutation,
-  useDeleteFileMutation
+  useDeleteFileMutation,
+  useLazyGetFileQuery
 } = workflowApi

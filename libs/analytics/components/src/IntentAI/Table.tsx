@@ -11,6 +11,8 @@ import { WifiScopes }                                                           
 import { filterByAccess, getShowWithoutRbacCheckKey, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 import { noDataDisplay, PathFilter, useEncodedParameter }                                      from '@acx-ui/utils'
 
+import bannerImg from '../../../assets/banner_bkg.png'
+
 import { Icon }                                        from './common/IntentIcon'
 import { AiFeatures, codes, IntentListItem }           from './config'
 import { useIntentAITableQuery }                       from './services'
@@ -126,26 +128,29 @@ export function Banner () {
   const { $t } = useIntl()
   const bannerTitle = $t({ defaultMessage: 'Revolutionize your Network Optimization' })
   const subTitle1 = $t({
-    defaultMessage: `Automates configuration, 
-    monitors tasks based on your network intents, and optimizes your network`
+    defaultMessage: `Automate configuration and
+    monitoring tasks aligned with your network priorities, while enhancing`
   })
   const subTitle2 = $t({
-    defaultMessage: 'performance with IntentAI\'s advanced AI and ML technologies.'
+    defaultMessage: 'performance through IntentAI\'s advanced AI/ML technologies.'
   })
-  return (<UI.Banner>
-    <b className='title'>{bannerTitle}</b> <span className='br-size'></span>
-    {subTitle1} <span className='br-size'></span>
-    {subTitle2} <span className='br-size'></span>
-    <Button
-      style={{ marginTop: '15px' }}
-      onClick={() => {
-        //TODO: change to dynamic doc mapping
-        // eslint-disable-next-line max-len
-        window.open('https://docs.commscope.com/bundle/ruckusai-userguide/page/GUID-CAAC695C-6740-499D-8C42-AB521CEE65F6.html', '_blank')
-      }}>
-      <b>{$t({ defaultMessage: 'Learn More' })}</b>{<ChatbotLink />}
-    </Button>
-  </UI.Banner>)
+  return (<UI.BannerWrapper>
+    <UI.BannerBG src={bannerImg}/>
+    <UI.Banner>
+      <b className='title'>{bannerTitle}</b> <span className='br-size'></span>
+      {subTitle1} <span className='br-size'></span>
+      {subTitle2} <span className='br-size'></span>
+      <Button
+        style={{ marginTop: '15px' }}
+        onClick={() => {
+          //TODO: change to dynamic doc mapping
+          // eslint-disable-next-line max-len
+          window.open('https://docs.commscope.com/bundle/ruckusai-userguide/page/GUID-CAAC695C-6740-499D-8C42-AB521CEE65F6.html', '_blank')
+        }}>
+        <b>{$t({ defaultMessage: 'Learn More' })}</b>{<ChatbotLink />}
+      </Button>
+    </UI.Banner>
+  </UI.BannerWrapper>)
 }
 
 export function IntentAITable (
