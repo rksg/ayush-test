@@ -2,10 +2,10 @@ import { Typography }                          from 'antd'
 import _                                       from 'lodash'
 import { FormattedMessage, MessageDescriptor } from 'react-intl'
 
-import { Table, TableHighlightFnArgs, Tooltip } from '@acx-ui/components'
-import { Event, replaceStrings, parseTimestampAttribute }                from '@acx-ui/rc/utils'
-import { TenantLink, generatePath }             from '@acx-ui/react-router-dom'
-import { getIntl, noDataDisplay }               from '@acx-ui/utils'
+import { Table, TableHighlightFnArgs, Tooltip }           from '@acx-ui/components'
+import { Event, replaceStrings, parseTimestampAttribute } from '@acx-ui/rc/utils'
+import { TenantLink, generatePath }                       from '@acx-ui/react-router-dom'
+import { getIntl, noDataDisplay }                         from '@acx-ui/utils'
 
 import { typeMapping } from './mapping'
 
