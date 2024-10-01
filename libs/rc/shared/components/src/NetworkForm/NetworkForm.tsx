@@ -721,11 +721,11 @@ export function NetworkForm (props:{
   }
 
   const processAddData = function (data: NetworkSaveData) {
-    const dataWlan = handleWlanAdvanced3MLO(data, wifi7Mlo3LinkFlag)
-    const saveData = handleGuestMoreSetting(dataWlan)
-    const payload = updateClientIsolationAllowlist(
+    const processWlanAdvanced3MLO = (data: NetworkSaveData) => handleWlanAdvanced3MLO(data, wifi7Mlo3LinkFlag)
+    const processGuestMoreSetting = (data: NetworkSaveData) => handleGuestMoreSetting(data)
+    const processClientIsolationAllowlist = (data: NetworkSaveData) => updateClientIsolationAllowlist(
       // omit id to handle clone
-      omit(saveData,
+      omit(data,
         ['id',
           'networkSecurity',
           'enableOwe',
@@ -741,7 +741,24 @@ export function NetworkForm (props:{
           ...(enableServiceRbac) ? ['dpskServiceId', 'macRegistrationPoolId'] : [],
           ...(isUseWifiRbacApi) ? ['portalServiceProfileId'] : []
         ]))
-    return payload
+    const processRemoveServicePolicyProfileId = (data: NetworkSaveData) => {
+      return omit(data, [
+        'wlan.advancedCustomization.l2AclPolicyId',
+        'wlan.advancedCustomization.l3AclPolicyId',
+        'wlan.advancedCustomization.devicePolicyId',
+        'wlan.advancedCustomization.applicationPolicyId',
+        'wlan.advancedCustomization.accessControlProfileId',
+        'wlan.advancedCustomization.vlanPool',
+        'wlan.advancedCustomization.wifiCallingIds'
+      ])
+    }
+    const processFns = [
+      processWlanAdvanced3MLO,
+      processGuestMoreSetting,
+      processClientIsolationAllowlist,
+      ...(enableServiceRbac) ? [processRemoveServicePolicyProfileId] : []
+    ]
+    return processFns.reduce((tempData, processFn) => processFn(tempData), data)
   }
   const handleAddNetwork = async (formData: NetworkSaveData) => {
     try {
@@ -750,47 +767,50 @@ export function NetworkForm (props:{
       // eslint-disable-next-line max-len
       const networkResponse = await addNetworkInstance({ params, payload, enableRbac: resolvedRbacEnabled }).unwrap()
       const networkId = networkResponse?.response?.id
+
+      const allRequests = []
       if (isUseWifiRbacApi) {
-        await activatePortal(networkId, formData.portalServiceProfileId)
+        allRequests.push(activatePortal(networkId, formData.portalServiceProfileId))
       }
-      await addHotspot20NetworkActivations(saveState, networkId)
-      await updateVlanPoolActivation(networkId, saveState.wlan?.advancedCustomization?.vlanPool)
+      allRequests.push(addHotspot20NetworkActivations(saveState, networkId))
+      allRequests.push(updateVlanPoolActivation(networkId, saveState.wlan?.advancedCustomization?.vlanPool))
       if (formData.type !== NetworkTypeEnum.HOTSPOT20) {
-        await updateRadiusServer(saveState, networkId)
+        allRequests.push(updateRadiusServer(saveState, networkId))
       }
-      await updateWifiCallingActivation(networkId, saveState)
-      await updateAccessControl(saveState, data)
+      allRequests.push(updateWifiCallingActivation(networkId, saveState))
+      allRequests.push(updateAccessControl(saveState, data, networkId))
       // eslint-disable-next-line max-len
-      await activateCertificateTemplate(saveState.certificateTemplateId, networkId)
+      allRequests.push(activateCertificateTemplate(saveState.certificateTemplateId, networkId))
       if (enableServiceRbac) {
-        await activateDpskPool(saveState.dpskServiceProfileId, networkId)
-        await activateMacRegistrationPool(saveState.wlan?.macRegistrationListId, networkId)
+        allRequests.push(activateDpskPool(saveState.dpskServiceProfileId, networkId))
+        allRequests.push(activateMacRegistrationPool(saveState.wlan?.macRegistrationListId, networkId))
       }
       if (networkResponse?.response && payload.venues) {
         // @ts-ignore
         const network: Network = networkResponse.response
         if (resolvedRbacEnabled) {
-          await handleRbacNetworkVenues(network.id, payload.venues)
+          allRequests.push(handleRbacNetworkVenues(network.id, payload.venues))
         } else {
-          await handleNetworkVenues(network.id, payload.venues)
+          allRequests.push(handleNetworkVenues(network.id, payload.venues))
         }
       }
-      await updateClientIsolationActivations(payload, null, networkId)
+      allRequests.push(updateClientIsolationActivations(payload, null, networkId))
 
       // Tunnel Activation/Deactivation
       if (!isTemplate && networkId && payload.venues) {
         // eslint-disable-next-line max-len
         if (isEdgeSdLanMvEnabled && formData['sdLanAssociationUpdate']) {
         // eslint-disable-next-line max-len
-          await updateEdgeSdLanActivations(networkId, formData['sdLanAssociationUpdate'] as NetworkTunnelSdLanAction[], payload.venues)
+          allRequests.push(updateEdgeSdLanActivations(networkId, formData['sdLanAssociationUpdate'] as NetworkTunnelSdLanAction[], payload.venues))
         }
 
         if (isSoftGreEnabled && formData['softGreAssociationUpdate']) {
         // eslint-disable-next-line max-len
-          await updateSoftGreActivations(networkId, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode)
+          allRequests.push(updateSoftGreActivations(networkId, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode))
         }
       }
 
+      await Promise.allSettled(allRequests)
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -890,7 +910,7 @@ export function NetworkForm (props:{
       allRequests.push(updateWifiCallingActivation(payload.id, formData))
       // eslint-disable-next-line max-len
       allRequests.push(updateVlanPoolActivation(payload.id, formData.wlan?.advancedCustomization?.vlanPool, vlanPoolId))
-      allRequests.push(updateAccessControl(formData, data))
+      allRequests.push(updateAccessControl(formData, data, payload.id))
       if (payload.id && (payload.venues || data?.venues)) {
         if (resolvedRbacEnabled) {
           allRequests.push(handleRbacNetworkVenues(payload.id, payload.venues, data?.venues))

@@ -782,7 +782,7 @@ export function useAccessControlActivation () {
     ])
   }
 
-  const updateAccessControl = async (formData: NetworkSaveData, data?: NetworkSaveData | null) => {
+  const updateAccessControl = async (formData: NetworkSaveData, data?: NetworkSaveData | null, networkId?: string) => {
     if (!enableServicePolicyRbac || !networkId) return Promise.resolve()
 
     const comparisonResult = comparePayload(
