@@ -18,8 +18,8 @@ const config: UIConfiguration = {
     buttonColor: 'var(--acx-accents-orange-50)'
   },
   uiStyleSchema: {
-    logoRatio: 1,
-    titleFontSize: 16,
+    logoSize: 'MEDIUM',
+    headerFontSize: 16,
     logoImageFileName: 'logo',
     backgroundImageName: 'bgImage'
   },

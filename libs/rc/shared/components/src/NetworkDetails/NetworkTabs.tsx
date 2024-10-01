@@ -4,7 +4,7 @@ import { Tabs }                                  from '@acx-ui/components'
 import { useNetworkDetailHeaderQuery }           from '@acx-ui/rc/services'
 import { useConfigTemplate }                     from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { hasAccess }                             from '@acx-ui/user'
+import { hasRaiPermission }                      from '@acx-ui/user'
 
 function NetworkTabs () {
   const { $t } = useIntl()
@@ -46,7 +46,7 @@ function NetworkTabs () {
         tab={$t({ defaultMessage: 'Overview' })}
         key='overview'
       />
-      { hasAccess() && <Tabs.TabPane
+      { hasRaiPermission('READ_INCIDENTS') && <Tabs.TabPane
         tab={$t({ defaultMessage: 'Incidents' })}
         key='incidents'
       />

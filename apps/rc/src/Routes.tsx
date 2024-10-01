@@ -290,7 +290,7 @@ function DeviceRoutes () {
       <Route path='devices/edge/:serialNumber/details/:activeTab/:activeSubTab'
         element={<EdgeDetails />} />
       <Route path='devices/edge/cluster/:clusterId/edit/:activeTab'
-        element={<AuthRoute scopes={[EdgeScopes.UPDATE]}>
+        element={<AuthRoute scopes={[EdgeScopes.READ, EdgeScopes.UPDATE]}>
           <EditEdgeCluster />
         </AuthRoute>} />
       <Route path='devices/edge/cluster/:clusterId/configure'

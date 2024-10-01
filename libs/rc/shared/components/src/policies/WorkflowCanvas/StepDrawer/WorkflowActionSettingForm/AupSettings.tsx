@@ -4,9 +4,14 @@ import { Form, Input, Button, Upload, Space, Typography } from 'antd'
 import { RcFile }                                         from 'antd/lib/upload'
 import { useIntl }                                        from 'react-intl'
 
-import { formatter }                                                        from '@acx-ui/formatter'
-import { useUploadFileMutation, useDeleteFileMutation }                     from '@acx-ui/rc/services'
-import { ActionType, FileContext, FileDto, FileType, whitespaceOnlyRegExp } from '@acx-ui/rc/utils'
+import { formatter }                                    from '@acx-ui/formatter'
+import { useUploadFileMutation, useDeleteFileMutation } from '@acx-ui/rc/services'
+import {
+  ActionType,
+  FileContext,
+  FileType,
+  trailingNorLeadingSpaces
+} from '@acx-ui/rc/utils'
 
 import { CommonActionSettings } from './CommonActionSettings'
 
@@ -73,13 +78,7 @@ export function AupSettings () {
   const fileDelete = async () => {
     const fileToDelete:string = formInstance.getFieldValue('aupFileLocation')
     if (null !== fileToDelete && '' !== fileToDelete && fileToDelete !== undefined) {
-      const fileDto: FileDto = {
-        url: fileToDelete,
-        type: FileType.AUP_FILE
-      }
-      await deleteFile({
-        payload: fileDto
-      })
+      await deleteFile({ params: { fileId: fileToDelete } })
     }
   }
 
@@ -94,7 +93,7 @@ export function AupSettings () {
         { required: true },
         { min: 1 },
         { max: 100 },
-        { validator: (_, value) => whitespaceOnlyRegExp(value) }
+        { validator: (_, value) => trailingNorLeadingSpaces(value) }
       ]}
     >
       <Input/>
@@ -107,7 +106,7 @@ export function AupSettings () {
         { required: true },
         { min: 1 },
         { max: 1000 },
-        { validator: (_, value) => whitespaceOnlyRegExp(value) }
+        { validator: (_, value) => trailingNorLeadingSpaces(value) }
       ]}
     >
       <Input.TextArea rows={8}/>
@@ -195,7 +194,9 @@ export function AupSettings () {
         name={'aupPlainText'}
         label={$t({ defaultMessage: 'Policy Content' })}
         rules={[
-          { required: true }
+          { required: true },
+          { max: 1000 },
+          { validator: (_, value) => trailingNorLeadingSpaces(value) }
         ]}
         extra={<Button
           type='link'

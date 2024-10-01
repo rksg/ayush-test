@@ -1420,8 +1420,6 @@ exports[`PageHeader should render tabs with Beta indicator (only one tab) 1`] = 
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  width: 16px !important;
-  height: 16px !important;
   margin: 0 !important;
   color: var(--acx-accents-orange-50);
 }
@@ -1762,8 +1760,6 @@ exports[`PageHeader should render tabs with Beta indicator (special case) 1`] = 
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  width: 16px !important;
-  height: 16px !important;
   margin: 0 !important;
   color: var(--acx-accents-orange-50);
 }
@@ -2173,8 +2169,6 @@ exports[`PageHeader should render tabs with Beta indicator 1`] = `
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  width: 16px !important;
-  height: 16px !important;
   margin: 0 !important;
   color: var(--acx-accents-orange-50);
 }
