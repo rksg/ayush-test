@@ -67,7 +67,7 @@ export const useKpiThresholdsQuery = (
 export default function KpiSections (props: { tab: CategoryTab, filters: AnalyticsFilter }) {
   const { tab, filters } = props
   const { filter } = filters
-  const { kpis } = kpisForTab(isMLISA)[tab]
+  const { kpis } = kpisForTab(isMLISA)[tab as keyof typeof kpisForTab]
   const { useFetchThresholdPermissionQuery } = healthApi
   const { thresholds, kpiThresholdsQueryResults } = useKpiThresholdsQuery({ filters })
   const thresholdPermissionQuery = useFetchThresholdPermissionQuery({ filter })
