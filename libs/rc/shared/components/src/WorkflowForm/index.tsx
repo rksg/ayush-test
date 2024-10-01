@@ -211,8 +211,7 @@ export function WorkflowForm (props: WorkflowFormProps) {
             onOk={() => setWorkflowModalOpen(false)}
             onCancel={() => setWorkflowModalOpen(false)}
             cancelButtonProps={{ style: { display: 'none' } }}>
-              // eslint
-            {$t({ defaultMessage: "The workflow cannot be published in it's " +
+            {$t({ defaultMessage: 'The workflow cannot be published in its ' +
                 'current form, please correct all validation errors.' })}
           </Modal>
         </Loader>

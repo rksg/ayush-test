@@ -49,7 +49,11 @@ export function WorkflowSettingForm (props: { policyId?: string }) {
 
   const [validateWorkflowRequest] = useUpdateWorkflowIgnoreErrorsMutation()
   const [publicationError, setPublicationError] = useState('')
-  useEffect(() => {validateWorkflow()}, [])
+  useEffect(() => {
+    if(policyId){
+      validateWorkflow()
+    }
+  }, [])
 
   const validateWorkflow = async function () {
 
@@ -127,7 +131,7 @@ export function WorkflowSettingForm (props: { policyId?: string }) {
               {$t({ defaultMessage: 'Workflow cannot be published due to the following error: ' })
               + ' ' + publicationError}
             </Typography.Text>}
-          <FormItem hidden name='workflowValid'><Checkbox value={false}/></FormItem>
+          <FormItem hidden name='workflowValid'><Checkbox checked={false}/></FormItem>
         </GridCol>
       </GridRow>
       <GridRow>
