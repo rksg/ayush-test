@@ -361,9 +361,10 @@ function PersonaDetails () {
               )}
             >
               <CertificateTable
-                showGenerateCert={false}
+                showGenerateCert={true}
                 templateData={certTemplateData}
                 tableQuery={certTableQuery}
+                specificIdentity={personaId}
               />
             </Tabs.TabPane>
           }

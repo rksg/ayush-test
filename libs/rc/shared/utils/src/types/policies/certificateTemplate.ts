@@ -230,6 +230,7 @@ export interface CertificateFormData {
   description?: string
   certificateTemplateId: string
   csrType: string
+  identityId: string
 }
 
 export interface ScepKeyData {

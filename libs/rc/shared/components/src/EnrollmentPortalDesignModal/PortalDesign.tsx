@@ -294,8 +294,9 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
             }}
           />}
           <UI.LayoutView $type={screen}
-            style={{ backgroundImage: 'url("'+ value.backgroundImage+'")',
-              backgroundColor: value.uiColorSchema.backgroundColor }}>
+            style={{ backgroundImage: value.backgroundImage ?
+              'url("'+ value.backgroundImage+'")' : undefined,
+            backgroundColor: value.uiColorSchema.backgroundColor }}>
             <div>
               <UI.LayoutViewContent
                 $isbg={value?.backgroundImage !== undefined ? true : false}
@@ -310,15 +311,15 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
                   }}
                   onLogoChange={(url, file)=>
                     setValue({ ...value, logoImage: url, logoFile: file })}
-                  onRatioChange={(v)=> setValue({ ...value,
-                    uiStyleSchema: { ...value.uiStyleSchema, logoRatio: v } })}
+                  onSizeChange={(v)=> setValue({ ...value,
+                    uiStyleSchema: { ...value.uiStyleSchema, logoSize: v } })}
                 />}
                 <div style={{ marginTop: 10 }}>
                   <TitleContent value={value}
                     onColorChange={(v)=> setValue({ ...value,
                       uiColorSchema: { ...value.uiColorSchema, fontHeaderColor: v } })}
                     onSizeChange={(v)=> setValue({ ...value,
-                      uiStyleSchema: { ...value.uiStyleSchema, titleFontSize: v } })}
+                      uiStyleSchema: { ...value.uiStyleSchema, headerFontSize: v } })}
                   />
                 </div>
                 <div style={{ marginTop: 10 }}>
