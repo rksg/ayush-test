@@ -5,7 +5,7 @@ import { Loader, Table, TableProps }                                            
 import { DateFormatEnum, formatter }                                             from '@acx-ui/formatter'
 import { useMspCustomerListQuery }                                               from '@acx-ui/msp/services'
 import { ComplianceMspCustomersDevicesTypes, MspEc, MspEcAccountType, MSPUtils } from '@acx-ui/msp/utils'
-import { EntitlementUtil, FILTER, GROUPBY, SEARCH, useTableQuery }               from '@acx-ui/rc/utils'
+import { EntitlementUtil, useTableQuery }                                        from '@acx-ui/rc/utils'
 import { noDataDisplay }                                                         from '@acx-ui/utils'
 
 import * as UI from './styledComponents'

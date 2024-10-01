@@ -1,9 +1,8 @@
 import { useState } from 'react'
 
 import { Col, DatePickerProps, Form, Radio, Row, Space, Typography } from 'antd'
-import { RangePickerProps }                    from 'antd/lib/date-picker'
-import moment                                  from 'moment'
-import { useIntl }                             from 'react-intl'
+import moment                                                        from 'moment'
+import { useIntl }                                                   from 'react-intl'
 
 import { Button, DatePicker } from '@acx-ui/components'
 
@@ -11,10 +10,6 @@ export default function MaxLicenses () {
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const [ selectedDate, setSelectedDate ] = useState(moment().endOf('day'))
-
-  const disabledDate: RangePickerProps['disabledDate'] = (current) => {
-    return current && (current < selectedDate || current > selectedDate)
-  }
 
   const onDateChange: DatePickerProps['onChange'] = (dateString: moment.Moment | null) => {
     if (dateString) {
@@ -69,7 +64,7 @@ export default function MaxLicenses () {
         type='default'>{ $t({ defaultMessage: 'CALCULATE' }) }</Button>}/>
     </Form>
     <Row style={{
-          alignItems: 'baseline'
+      alignItems: 'baseline'
     }}>
       <Col style={{
         marginRight: '4px'

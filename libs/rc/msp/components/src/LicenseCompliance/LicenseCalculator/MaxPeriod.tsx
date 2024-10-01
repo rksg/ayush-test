@@ -1,6 +1,6 @@
 import { Col, DatePicker, Form, Input, Radio, Row, Space, Typography } from 'antd'
-import moment                                    from 'moment'
-import { useIntl }                               from 'react-intl'
+import moment                                                          from 'moment'
+import { useIntl }                                                     from 'react-intl'
 
 import { Button } from '@acx-ui/components'
 
@@ -43,7 +43,7 @@ export default function MaxPeriod () {
         children={<Button type='default'>CALCULATE</Button>}/>
     </Form>
     <Row style={{
-          alignItems: 'baseline'
+      alignItems: 'baseline'
     }}>
       <Col style={{
         marginRight: '4px'
