@@ -7,7 +7,8 @@ import { DOCS_HOME_URL, getDocsMappingURL, getDocsURL, useHelpPageLink } from '.
 const mockedUrlMappingData = {
   'dashboard': 'GUID-A338E06B-7FD9-4492-B1B2-D43841D704F1.html',
   'administration/accountSettings': 'GUID-95DB93A0-D295-4D31-8F53-47659D019295.html',
-  'venues': 'GUID-800174C7-D49A-4C02-BCEB-CE0D9581BABA.html'
+  'venues': 'GUID-800174C7-D49A-4C02-BCEB-CE0D9581BABA.html',
+  'services/mdnsProxy/create': 'GUID-20E6C35F-37B8-4224-B621-EBF712C3A734.html'
 }
 
 describe('HelpPage URL', () => {
@@ -28,6 +29,28 @@ describe('HelpPage URL', () => {
     await waitFor(() =>
       // eslint-disable-next-line max-len
       expect(result.current).toBe(DOCS_HOME_URL+'/ruckusone/userguide/'+mockedUrlMappingData.dashboard)
+    )
+  })
+
+  it('should correctly return corresponding link URL corresponding to given target', async () => {
+    mockServer.use(
+      rest.get(getDocsMappingURL(false), (_, res, ctx) =>
+        res(ctx.json(mockedUrlMappingData))
+      ))
+
+    const addMdnsPagePath = 'services/mdnsProxy/create'
+    const { result } = renderHook(() => {
+      return useHelpPageLink(addMdnsPagePath)
+    }, {
+      route: {
+        path: '/a5804cffcefd408c8d36aca5bd112838/t/dashboard',
+        wrapRoutes: false
+      }
+    })
+
+    await waitFor(() =>
+      // eslint-disable-next-line max-len
+      expect(result.current).toBe(DOCS_HOME_URL+'/ruckusone/userguide/'+mockedUrlMappingData['services/mdnsProxy/create'])
     )
   })
 

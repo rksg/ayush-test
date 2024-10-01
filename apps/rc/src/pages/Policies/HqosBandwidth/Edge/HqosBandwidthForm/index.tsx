@@ -43,7 +43,7 @@ const HqosBandwidthForm = (props: EdgeHqosFormProps) => {
   const isEditMode = Boolean(editData)
 
   const handleFinish = async (formData: HqosBandwidthFormModel) => {
-    onFinish(formData)
+    await onFinish(formData)
   }
 
   const defaultQosData:EdgeHqosViewData = {

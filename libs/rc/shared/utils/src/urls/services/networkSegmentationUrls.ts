@@ -83,5 +83,15 @@ export const NetworkSegmentationUrls: { [key: string]: ApiInfo } = {
     method: 'put',
     newApi: true,
     url: '/personalIdentityNetworks/:serviceId'
+  },
+  activatePinNetwork: {
+    method: 'put',
+    newApi: true,
+    url: '/personalIdentityNetworks/:serviceId/wifiNetworks/:wifiNetworkId'
+  },
+  deactivatePinNetwork: {
+    method: 'delete',
+    newApi: true,
+    url: '/personalIdentityNetworks/:serviceId/wifiNetworks/:wifiNetworkId'
   }
 }

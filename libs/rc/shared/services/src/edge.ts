@@ -6,7 +6,6 @@ import {
   Filter
 } from '@acx-ui/components'
 import {
-  EdgeSdLanApCompatibilitiesResponse,
   ClusterNetworkSettings,
   CommonResult,
   EdgeAllPortTrafficData,
@@ -26,8 +25,10 @@ import {
   EdgePortTypeEnum,
   EdgePortWithStatus,
   EdgeResourceUtilizationData,
+  EdgeSdLanApCompatibilitiesResponse,
   EdgeSerialNumber,
   EdgeService,
+  EdgeServiceCompatibilitiesResponse,
   EdgeStaticRouteConfig,
   EdgeStatus,
   EdgeSubInterface,
@@ -41,7 +42,6 @@ import {
   PingEdge,
   SEARCH,
   SORTER,
-  EdgeSdLanCompatibilitiesResponse,
   TableResult,
   TraceRouteEdge,
   VenueEdgeCompatibilitiesResponse,
@@ -918,7 +918,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       },
       providesTags: [{ type: 'Edge', id: 'VENUE_COMPATIBILITY' }]
     }),
-    getSdLanEdgeCompatibilities: build.query<EdgeSdLanCompatibilitiesResponse, RequestPayload>({
+    getSdLanEdgeCompatibilities: build.query<EdgeServiceCompatibilitiesResponse, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(EdgeUrlsInfo.getSdLanEdgeCompatibilities, params)
         return {
@@ -977,7 +977,13 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           const tmp = [] as (EdgePortStatus | EdgeLagStatus)[]
           const params = { serialNumber: edgeId }
           const edgePortListReq = createHttpRequest(EdgeUrlsInfo.getEdgePortStatusList, params)
-          const edgePortList = await fetchWithBQ({ ...edgePortListReq, body: {} })
+          const edgePortList = await fetchWithBQ({
+            ...edgePortListReq,
+            body: {
+              sortField: 'sortIdx',
+              sortOrder: 'ASC'
+            }
+          })
           tmp.push(...((edgePortList.data as TableResult<EdgePortStatus>).data))
 
           const edgeLagListReq = createHttpRequest(EdgeUrlsInfo.getEdgeLagStatusList, params)
@@ -1003,6 +1009,16 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           })
         })
       }
+    }),
+    getHqosEdgeCompatibilities: build.query<EdgeServiceCompatibilitiesResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getHqosEdgeCompatibilities, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'HQOS_EDGE_COMPATIBILITY' }]
     })
   })
 })
@@ -1137,5 +1153,6 @@ export const {
   useGetSdLanEdgeCompatibilitiesQuery,
   useLazyGetSdLanEdgeCompatibilitiesQuery,
   useGetSdLanApCompatibilitiesQuery,
-  useLazyGetSdLanApCompatibilitiesQuery
+  useLazyGetSdLanApCompatibilitiesQuery,
+  useGetHqosEdgeCompatibilitiesQuery
 } = edgeApi

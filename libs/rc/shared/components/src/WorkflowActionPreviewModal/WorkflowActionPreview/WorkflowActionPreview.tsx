@@ -14,12 +14,13 @@ import {
 } from '@acx-ui/rc/services'
 import {
   ActionType,
-  UIConfiguration,
-  WorkflowStep,
   DefaultUIConfiguration,
+  GenericActionData,
   toReactFlowData,
-  GenericActionData
+  UIConfiguration,
+  WorkflowStep
 } from '@acx-ui/rc/utils'
+import { hasCrossVenuesPermission } from '@acx-ui/user'
 
 import { EnrollmentPortalDesignModal } from '../../EnrollmentPortalDesignModal'
 import { ActionNavigationDrawer }      from '../ActionNavigationDrawer'
@@ -42,6 +43,7 @@ export interface WorkflowActionPreviewProps {
   workflowId: string
   step?: WorkflowStep,
   actionData?: GenericActionData
+  disablePortalDesign?: boolean
 }
 export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
   const [marked, setMarked] = useState({
@@ -51,7 +53,7 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
   })
   const [screen, setScreen] = useState('desk')
   const { $t } = useIntl()
-  const { workflowId, step, actionData } = props
+  const { workflowId, step, actionData, disablePortalDesign } = props
   const [selectedStepId, setSelectedStepId] = useState(step?.id)
   const [stepMap, setStepMap] = useState(new Map<string, WorkflowStep>())
   const [UIConfig, setUIConfig] = useState<UIConfiguration>(DefaultUIConfiguration)
@@ -175,6 +177,7 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
                   setMarked({ desk: false, tablet: false, mobile: true })
                 }}/>
             </div>
+
             <div
               style={{
                 flex: '0 0 513px',
@@ -183,17 +186,19 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
                 paddingRight: 80,
                 paddingTop: 4
               }}>
-              <div>
-                <UI.Button type='default'
-                  size='small'
-                  style={{ fontSize: '14px' }}
-                  onClick={()=>{
-                    setNavigatorVisible(false)
-                    setPortalVisible(true)
-                  }}>
-                  {$t({ defaultMessage: 'Portal Design' })}
-                </UI.Button>
-              </div>
+              {hasCrossVenuesPermission({ needGlobalPermission: true }) && !disablePortalDesign &&
+                <div>
+                  <UI.Button type='default'
+                    size='small'
+                    style={{ fontSize: '14px' }}
+                    onClick={() => {
+                      setNavigatorVisible(false)
+                      setPortalVisible(true)
+                    }}>
+                    {$t({ defaultMessage: 'Portal Design' })}
+                  </UI.Button>
+                </div>
+              }
             </div>
           </div>
         </UI.LayoutHeader>
@@ -202,9 +207,9 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
           style={{ height: '750px' }}>
           <UI.LayoutView $type={screen}
             style={{
-              backgroundImage: 'url("'+ UIConfig?.backgroundImage+'")',
-              backgroundColor: UIConfig.uiColorSchema?.backgroundColor,
-              backgroundSize: 'contain'
+              backgroundImage: UIConfig.backgroundImage ?
+                'url("'+ UIConfig?.backgroundImage+'")' : undefined,
+              backgroundColor: UIConfig.uiColorSchema?.backgroundColor
             }}>
             <CommonPreviewContainer
               ui={UIConfig}

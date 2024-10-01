@@ -22,10 +22,10 @@ import {
   WlanSecurityEnum,
   WifiNetwork
 } from '@acx-ui/rc/utils'
-import { TenantLink, useTenantLink }                from '@acx-ui/react-router-dom'
-import { RequestPayload, WifiScopes }               from '@acx-ui/types'
-import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
-import { getIntl, noDataDisplay }                   from '@acx-ui/utils'
+import { TenantLink, useTenantLink }                               from '@acx-ui/react-router-dom'
+import { RequestPayload, WifiScopes }                              from '@acx-ui/types'
+import { filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
+import { getIntl, noDataDisplay }                                  from '@acx-ui/utils'
 
 
 const disabledType: NetworkTypeEnum[] = []
@@ -328,7 +328,6 @@ interface NetworkTableProps {
 export function NetworkTable ({
   settingsId = 'network-table', tableQuery, selectable
 }: NetworkTableProps) {
-  const isServicesEnabled = useIsSplitOn(Features.SERVICES)
   const isWpaDsae3Toggle = useIsSplitOn(Features.WIFI_EDA_WPA3_DSAE_TOGGLE)
   const isBetaDPSK3FeatureEnabled = useIsTierAllowed(TierFeatures.BETA_DPSK3)
   const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
@@ -363,10 +362,6 @@ export function NetworkTable ({
     deleteNetwork, { isLoading: isDeleteNetworkUpdating }
   ] = useDeleteNetworkMutation()
   const [venuesList] = useLazyVenuesListQuery()
-
-  if(!isServicesEnabled){
-    disabledType.push(NetworkTypeEnum.CAPTIVEPORTAL)
-  }
 
   async function getAdvertisedVenuesStatus (selectedNetwork: Network) {
     const payload = { fields: ['name', 'status'], filters: { name: selectedNetwork.venues.names } }
@@ -444,6 +439,9 @@ export function NetworkTable ({
     expandedRowKeys
   }
 
+  const showRowSelection = (selectable
+    && hasCrossVenuesPermission()
+    && hasPermission({ scopes: [WifiScopes.CREATE, WifiScopes.UPDATE, WifiScopes.DELETE] }) )
 
   return (
     <Loader states={[
@@ -464,8 +462,9 @@ export function NetworkTable ({
         }
         expandable={expandable}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={(hasCrossVenuesPermission() && selectable) ? { type: 'radio',
-          ...rowSelection } : undefined}
+        rowSelection={showRowSelection && {
+          type: 'radio',
+          ...rowSelection }}
         actions={isBetaDPSK3FeatureEnabled && isWpaDsae3Toggle && showOnboardNetworkToggle ? [{
           key: 'toggleOnboardNetworks',
           label: expandOnBoaroardingNetworks

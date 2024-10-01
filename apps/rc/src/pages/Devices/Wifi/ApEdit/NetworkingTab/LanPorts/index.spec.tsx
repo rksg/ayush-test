@@ -228,6 +228,8 @@ describe('AP Ethernet Port Profile', () => {
       rest.post(EthernetPortProfileUrls.getEthernetPortProfileViewDataList.url,
         (_, res, ctx) => res(ctx.json(mockEthProfiles))),
       rest.post(AaaUrls.getAAAPolicyViewModelList.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.post(EthernetPortProfileUrls.createEthernetPortProfile.url,
         (_, res, ctx) => res(ctx.json({})))
     )
   })

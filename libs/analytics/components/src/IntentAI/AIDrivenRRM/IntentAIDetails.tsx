@@ -77,7 +77,7 @@ export function createIntentAIDetails () {
 
   return function IntentAIDetails () {
     const { $t } = useIntl()
-    const { intent, kpis, isDataRetained: hasData } = useIntentContext()
+    const { intent, kpis, isDataRetained: hasData, state } = useIntentContext()
     const valuesText = useValuesText()
 
     const [summaryUrlBefore, setSummaryUrlBefore] = useState<string>('')
@@ -102,7 +102,7 @@ export function createIntentAIDetails () {
                 children={<FormattedMessage {...valuesText.summaryText} values={richTextFormatValues} />}/>
               <DescriptionSection fields={fields}/>
               <br />
-              {hasData
+              {hasData && state !== 'no-data'
                 ? <DownloadRRMComparison title={$t({ defaultMessage: 'RRM comparison' })} />
                 : null}
             </IntentDetailsSidebar>)}
@@ -125,11 +125,13 @@ export function createIntentAIDetails () {
           <DetailsSection data-testid='Key Performance Indications'>
             <DetailsSection.Title
               children={$t({ defaultMessage: 'Key Performance Indications' })} />
-            <DetailsSection.Details children={<IntentAIRRMGraph
-              crrmData={crrmData}
-              summaryUrlBefore={summaryUrlBefore}
-              summaryUrlAfter={summaryUrlAfter}
-            />} />
+            <DetailsSection.Details children={
+              <IntentAIRRMGraph
+                crrmData={crrmData}
+                summaryUrlBefore={summaryUrlBefore}
+                summaryUrlAfter={summaryUrlAfter}
+              />
+            }/>
           </DetailsSection>
 
           <GridRow>

@@ -1,4 +1,5 @@
 import { Row }     from 'antd'
+import { find }    from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
@@ -9,15 +10,14 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { EdgeServiceStatusLight } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
+import { EdgeServiceStatusLight, CountAndNamesTooltip } from '@acx-ui/rc/components'
 import {
   useDeleteNetworkSegmentationGroupMutation,
-  useGetEdgeListQuery,
+  useGetEdgeClusterListQuery,
   useGetNetworkSegmentationViewDataListQuery,
   useNetworkListQuery,
   useSwitchListQuery,
-  useVenuesListQuery,
   useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -26,12 +26,13 @@ import {
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath,
-  NetworkSegmentationGroupViewData,
+  PersonalIdentityNetworksViewData,
   ServiceOperation,
   ServiceType,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { noDataDisplay }                                       from '@acx-ui/utils'
 
 const getNetworkSegmentationPayload = {
   fields: [
@@ -41,22 +42,15 @@ const getNetworkSegmentationPayload = {
     'networkIds',
     'venueInfoIds',
     'venueInfos',
-    'edgeInfoIds',
-    'edgeInfos',
+    'edgeClusterInfos',
     'distributionSwitchInfoIds',
     'distributionSwitchInfos',
     'accessSwitchInfos',
     'edgeAlarmSummary'
   ]
 }
-const venueOptionsDefaultPayload = {
-  fields: ['name', 'id'],
-  pageSize: 10000,
-  sortField: 'name',
-  sortOrder: 'ASC'
-}
-const edgeOptionsDefaultPayload = {
-  fields: ['name', 'serialNumber'],
+const clusterOptionsDefaultPayload = {
+  fields: ['name', 'clusterId'],
   pageSize: 10000,
   sortField: 'name',
   sortOrder: 'ASC'
@@ -101,21 +95,12 @@ const PersonalIdentityNetworkTable = () => {
     { isLoading: isNetworkSegmentationGroupDeleting }
   ] = useDeleteNetworkSegmentationGroupMutation()
 
-  const { venueOptions = [] } = useVenuesListQuery(
-    { payload: venueOptionsDefaultPayload }, {
-      selectFromResult: ({ data }) => {
-        return {
-          venueOptions: data?.data.map(item => ({ value: item.name, key: item.id }))
-        }
-      }
-    })
-
-  const { edgeOptions = [] } = useGetEdgeListQuery(
-    { payload: edgeOptionsDefaultPayload },
+  const { clusterOptions = [] } = useGetEdgeClusterListQuery(
+    { payload: clusterOptionsDefaultPayload },
     {
       selectFromResult: ({ data }) => {
         return {
-          edgeOptions: data?.data.map(item => ({ value: item.name, key: item.serialNumber }))
+          clusterOptions: data?.data.map(item => ({ value: item.name, key: item.clusterId }))
         }
       }
     })
@@ -139,7 +124,7 @@ const PersonalIdentityNetworkTable = () => {
       })
     })
 
-  const columns: TableProps<NetworkSegmentationGroupViewData>['columns'] = [
+  const columns: TableProps<PersonalIdentityNetworksViewData>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
       key: 'name',
@@ -162,33 +147,17 @@ const PersonalIdentityNetworkTable = () => {
       }
     },
     {
-      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
-      key: 'venue',
-      dataIndex: 'venueInfos',
-      sorter: true,
-      filterable: venueOptions,
-      filterKey: 'venueInfoIds',
-      render: (_, row) => {
-        const venueInfo = row.venueInfos[0]
-        return (
-          <TenantLink to={`/venues/${venueInfo?.venueId}/venue-details/overview`}>
-            {venueInfo?.venueName}
-          </TenantLink>
-        )
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'RUCKUS Edge' }),
+      title: $t({ defaultMessage: 'Cluster' }),
       key: 'edge',
-      dataIndex: 'edgeInfos',
+      dataIndex: 'edgeClusterInfos',
       sorter: true,
-      filterable: edgeOptions,
-      filterKey: 'edgeInfoIds',
+      filterable: clusterOptions,
+      filterKey: 'edgeClusterInfoIds',
       render: (_, row) => {
-        const edgeInfo = row.edgeInfos[0]
+        const edgeInfo = row.edgeClusterInfos[0]
         return (
-          <TenantLink to={`/devices/edge/${edgeInfo?.edgeId}/details/overview`}>
-            {edgeInfo?.edgeName}
+          <TenantLink to={`/devices/edge/cluster/${edgeInfo?.edgeClusterId}/edit/cluster-details`}>
+            {edgeInfo?.edgeClusterName}
           </TenantLink>
         )
       }
@@ -201,7 +170,12 @@ const PersonalIdentityNetworkTable = () => {
       filterable: networkOptions,
       filterKey: 'networkIds',
       render: (_, row) => {
-        return (row.networkIds?.length)
+        return <CountAndNamesTooltip data={{
+          count: row.networkIds?.length,
+          names: row.networkIds
+            ?.map(networkId => find(networkOptions, { key: networkId })?.value)
+            .filter(n => n) as string[]
+        }}/>
       }
     },
     {
@@ -212,7 +186,15 @@ const PersonalIdentityNetworkTable = () => {
       filterable: switchOptions,
       filterKey: 'distributionSwitchInfoIds',
       render: (_, row) => {
-        return (row.distributionSwitchInfos?.length || 0) + (row.accessSwitchInfos?.length || 0)
+        const switchIds = (row.distributionSwitchInfos?.map(s => s.id) ?? [])
+        switchIds.push(...(row.accessSwitchInfos?.map(s => s.id) ?? []))
+
+        return <CountAndNamesTooltip data={{
+          count: switchIds.length,
+          names: switchIds
+            .map(switchId => find(switchOptions, { key: switchId })?.value)
+            .filter(n => n) as string[]
+        }}/>
       }
     },
     {
@@ -220,12 +202,12 @@ const PersonalIdentityNetworkTable = () => {
       key: 'edgeAlarmSummary',
       dataIndex: 'edgeAlarmSummary',
       align: 'center',
-      render: (data, row) =>
-        (row?.edgeInfos?.length)
+      render: (_, row) =>
+        (row?.edgeClusterInfos?.length)
           ? <Row justify='center'>
             <EdgeServiceStatusLight data={row.edgeAlarmSummary} />
           </Row>
-          : '--'
+          : noDataDisplay
     },
     {
       title: $t({ defaultMessage: 'Update Available' }),
@@ -235,22 +217,23 @@ const PersonalIdentityNetworkTable = () => {
       render: () => {
         return $t({ defaultMessage: 'No' })
       }
-    },
-    {
-      title: $t({ defaultMessage: 'Service Version' }),
-      key: 'serviceVersion',
-      dataIndex: 'edgeInfos',
-      sorter: true,
-      render: (_, row) => {
-        const edgeInfo = row.edgeInfos[0]
-        return (
-          edgeInfo?.serviceVersion
-        )
-      }
+    // },
+    // {
+    //   title: $t({ defaultMessage: 'Service Version' }),
+    //   key: 'serviceVersion',
+    //   dataIndex: 'edgeClusterInfos',
+    //   sorter: true,
+    //   render: () => {
+    //     // const edgeInfo = row.edgeClusterInfos[0]
+    //     // TODO:
+    //     return (
+    //       ''// edgeInfo?.serviceVersion
+    //     )
+    //   }
     }
   ]
 
-  const rowActions: TableProps<NetworkSegmentationGroupViewData>['rowActions'] = [
+  const rowActions: TableProps<PersonalIdentityNetworksViewData>['rowActions'] = [
     {
       scopeKey: getScopeKeyByService(ServiceType.NETWORK_SEGMENTATION, ServiceOperation.EDIT),
       visible: (selectedRows) => selectedRows.length === 1,

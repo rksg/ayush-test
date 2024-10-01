@@ -78,6 +78,11 @@ describe('IntentAITabContent', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
   })
 
+  afterEach(() => {
+    jest.clearAllMocks()
+    jest.restoreAllMocks()
+  })
+
   it('should render loader and empty table', async () => {
     mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
       data: { intents: { data: [] } }

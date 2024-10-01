@@ -19,9 +19,9 @@ import {
   useGetSwitchRoutedListQuery,
   useSwitchPortlistQuery,
   useStackMemberListQuery,
-  useAddSwitchesVlansMutation,
   useDeleteSwitchVlanMutation,
-  useUpdateSwitchVlanMutation
+  useUpdateSwitchVlanMutation,
+  useAddSwitchVlansMutation
 }                            from '@acx-ui/rc/services'
 import {
   Vlan,
@@ -76,7 +76,7 @@ export function SwitchOverviewVLANs (props: {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
 
-  const [addSwitchesVlans] = useAddSwitchesVlansMutation()
+  const [addSwitchesVlans] = useAddSwitchVlansMutation()
   const [updateSwitchVlan] = useUpdateSwitchVlanMutation()
   const [deleteSwitchVlan] = useDeleteSwitchVlanMutation()
 
@@ -191,7 +191,7 @@ export function SwitchOverviewVLANs (props: {
       try {
         await addSwitchesVlans({
           params: { tenantId, switchId, venueId: switchDetail?.venueId },
-          payload: [payload]
+          payload: payload
         }).unwrap()
       } catch (error) {
         console.log(error) // eslint-disable-line no-console

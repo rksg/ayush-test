@@ -4,14 +4,14 @@ import { cloneDeep }              from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { Loader, StepsFormLegacy }                from '@acx-ui/components'
-import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { Loader, StepsFormLegacy }                                               from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                from '@acx-ui/feature-toggle'
 import {
   useGetVLANPoolPolicyViewModelListQuery,
   useLazyApGroupNetworkListV2Query,
   useLazyNewApGroupNetworkListQuery,
   useUpdateNetworkVenuesMutation, useUpdateNetworkVenueTemplateMutation,
-  useGetEnhancedVlanPoolPolicyTemplateListQuery
+  useGetEnhancedVlanPoolPolicyTemplateListQuery, useUpdateNetworkVenueMutation
 } from '@acx-ui/rc/services'
 import {
   KeyValue,
@@ -58,6 +58,8 @@ export function ApGroupVlanRadioTab () {
   const { tenantId, apGroupId = '' } = useParams()
 
   const updateDataRef = useRef<NetworkVenue[]>([])
+  const oldDataRef = useRef<NetworkVenue[]>([])
+  const networkDataRef = useRef<string[]>([])
 
   const navigate = useNavigate()
   const basePath = usePathBasedOnConfigTemplate('/devices/', '')
@@ -69,6 +71,11 @@ export function ApGroupVlanRadioTab () {
   const [getRbacApGroupNetworkList] = useLazyNewApGroupNetworkListQuery()
   const [updateNetworkVenues] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useUpdateNetworkVenuesMutation,
+    useTemplateMutationFn: useUpdateNetworkVenueTemplateMutation
+  })
+
+  const [updateNetworkVenue] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateNetworkVenueMutation,
     useTemplateMutationFn: useUpdateNetworkVenueTemplateMutation
   })
 
@@ -125,12 +132,31 @@ export function ApGroupVlanRadioTab () {
 
   const handleUpdateAllApGroupVlanRadio = async () => {
     const updateData = updateDataRef.current
+    const updateOldData = oldDataRef.current
+    const networkIds = networkDataRef.current
 
     if (updateData.length > 0) {
-      await updateNetworkVenues({
-        payload: updateData,
-        enableRbac: isRbacEnabled
-      }).unwrap()
+      if (isRbacEnabled) {
+        const allReqs = updateData.map((data, idx) => {
+          return updateNetworkVenue({
+            params: {
+              tenantId: tenantId,
+              venueId: venueId,
+              networkId: networkIds[idx]
+            },
+            payload: {
+              oldPayload: updateOldData[idx],
+              newPayload: data
+            },
+            enableRbac: isRbacEnabled
+          }).unwrap()
+        })
+        await Promise.allSettled(allReqs)
+      } else {
+        await updateNetworkVenues({
+          payload: updateData
+        }).unwrap()
+      }
     }
 
     setEditContextData({
@@ -140,17 +166,26 @@ export function ApGroupVlanRadioTab () {
     })
   }
 
-  const handleUpdateApGroupVlanRadio = (editData: Network) => {
+  const handleUpdateApGroupVlanRadio = (editData: Network, oldData: Network) => {
     const editNetworkVenue = cloneDeep(getCurrentVenue(editData, venueId!)!)
+    const oldNetworkVenue = cloneDeep(getCurrentVenue(oldData, venueId!)!)
     const updateData = cloneDeep(updateDataRef.current)
+    const updateOldData = cloneDeep(oldDataRef.current)
+    const networkIdsData = cloneDeep(networkDataRef.current)
 
     const findIdx = updateData.findIndex(d => (d.id === editNetworkVenue.id))
     if (findIdx === -1) {
       updateData.push(editNetworkVenue)
+      updateOldData.push(oldNetworkVenue)
+      networkIdsData.push(editData.id)
     } else {
       updateData.splice(findIdx, 1, editNetworkVenue)
+      updateOldData.splice(findIdx, 1, oldNetworkVenue)
+      networkIdsData.splice(findIdx, 1, editData.id)
     }
     updateDataRef.current = updateData
+    oldDataRef.current = updateOldData
+    networkDataRef.current = networkIdsData
 
     setTableData(
       tableData?.map(data => {

@@ -65,7 +65,7 @@ describe('PersonalIdentityNetworkForm - AccessSwitchForm', () => {
 
     formRef.current.setFieldsValue({
       venueId: 'venueId',
-      edgeId: 'edgeId',
+      edgeClusterId: 'edgeId',
       distributionSwitchInfos: mockNsgSwitchInfoData.distributionSwitches,
       accessSwitchInfos: mockNsgSwitchInfoData.accessSwitches
     })
@@ -97,7 +97,7 @@ describe('PersonalIdentityNetworkForm - AccessSwitchForm', () => {
 
     formRef.current.setFieldsValue({
       venueId: 'venueId',
-      edgeId: 'edgeId',
+      edgeClusterId: 'edgeId',
       distributionSwitchInfos: mockNsgSwitchInfoData.distributionSwitches,
       accessSwitchInfos: [{
         id: mockNsgSwitchInfoData.accessSwitches[0].id,

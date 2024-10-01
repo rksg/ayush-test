@@ -5,6 +5,17 @@ import { TrendTypeEnum, incidentSeverities } from '@acx-ui/analytics/utils'
 
 import { IncidentSeverities } from '.'
 
+const getStatusColor = ({ color }: {
+  color: string
+}) => {
+  const status = {
+    red: 'var(--acx-semantics-red-50)',
+    green: 'var(--acx-semantics-green-50)',
+    yellow: 'var(--acx-semantics-yellow-50)'
+  } as { [key: string]: string }
+  return status[color] || status.green
+}
+
 const pillColor = ({ type, color }: {
   type: TrendTypeEnum | IncidentSeverities | 'color',
   color?: string
@@ -32,6 +43,18 @@ export const Pill = styled.span`
   line-height: var(--acx-subtitle-6-line-height);
   ${textStyle}
   font-weight: var(--acx-subtitle-6-font-weight-bold);
+`
+
+export const StatusPill = styled.span`
+  display: inline-block;
+  border-radius: 20px;
+  padding: 3px 8px;
+  background-color: ${getStatusColor};
+  line-height: 14px;
+  font-size: var(--acx-subtitle-5-font-size);
+  color: var(--acx-primary-white);
+  min-width: 50px;
+  text-align: center;
 `
 
 export const Progress = styled(AntProgress)`

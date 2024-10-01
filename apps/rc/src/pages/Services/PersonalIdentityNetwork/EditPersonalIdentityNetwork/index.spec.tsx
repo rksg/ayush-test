@@ -16,13 +16,13 @@ import {
   screen,
   waitFor
 } from '@acx-ui/test-utils'
+import { RequestPayload } from '@acx-ui/types'
 
-import {
-  mockNsgData
-} from '../__tests__/fixtures'
 import { afterSubmitMessage } from '../PersonalIdentityNetworkForm'
 
 import EditNetworkSegmentation from '.'
+
+const { mockNsgSwitchInfoData, mockNsgData, mockNsgStatsList } = EdgeNSGFixtures
 
 jest.mock('../PersonalIdentityNetworkForm/GeneralSettingsForm', () => ({
   GeneralSettingsForm: () => <div data-testid='GeneralSettingsForm' />
@@ -42,12 +42,27 @@ jest.mock('../PersonalIdentityNetworkForm/AccessSwitchForm', () => ({
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   // mock API response due to all form steps are mocked
-  useGetNetworkSegmentationGroupByIdQuery: () => ({ data: mockNsgData, isLoading: false })
+  useGetNetworkSegmentationGroupByIdQuery: () => ({ data: mockNsgData, isLoading: false }),
+  useGetNetworkSegmentationViewDataListQuery: () => ({ data: mockNsgStatsList, isLoading: false })
 }))
 jest.mock('../PersonalIdentityNetworkForm/PersonalIdentityNetworkFormContext', () => ({
   ...jest.requireActual('../PersonalIdentityNetworkForm/PersonalIdentityNetworkFormContext'),
   PersonalIdentityNetworkFormDataProvider: ({ children }: { children: ReactNode }) =>
     <div data-testid='PersonalIdentityNetworkFormDataProvider' children={children} />
+}))
+
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  useEdgePinActions: () => ({
+    editPin: (_originData: unknown, req: RequestPayload) => new Promise((resolve) => {
+      resolve(true)
+      setTimeout(() => {
+        (req.callback as Function)([{
+          response: { id: 'mocked_service_id' }
+        }])
+      }, 300)
+    })
+  })
 }))
 
 const mockedUsedNavigate = jest.fn()
@@ -57,7 +72,6 @@ jest.mock('react-router-dom', () => ({
 }))
 
 const updateNsgPath = '/:tenantId/t/services/personalIdentityNetwork/:serviceId/edit'
-const { mockNsgSwitchInfoData } = EdgeNSGFixtures
 
 describe('Edit PersonalIdentityNetwork', () => {
   let params: { tenantId: string, serviceId: string }
@@ -70,8 +84,8 @@ describe('Edit PersonalIdentityNetwork', () => {
     mockServer.use(
       rest.put(
         NetworkSegmentationUrls.updateNetworkSegmentationGroup.url,
-        (req, res, ctx) => res(ctx.status(202))
-      )
+        (_req, res, ctx) => res(ctx.status(202)))
+
     )
   })
 
