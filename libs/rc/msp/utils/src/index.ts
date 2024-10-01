@@ -216,28 +216,22 @@ export const MSPUtils = () => {
   const getConfiguredDevices = (deviceType: ComplianceMspCustomersDevicesTypes,
     entitlements: DelegationEntitlementRecord[]) => {
     entitlements = entitlements ?? []
-    let configuredDevices = 0
 
     switch(deviceType) {
       case ComplianceMspCustomersDevicesTypes.AP:
-        configuredDevices = entitlements.reduce((sum, en:DelegationEntitlementRecord) =>
+        return entitlements.reduce((sum, en:DelegationEntitlementRecord) =>
           sum + (en.wifiDeviceCount || 0), 0)
-        break
       case ComplianceMspCustomersDevicesTypes.SWITCH:
-        configuredDevices = entitlements.reduce((sum, en:DelegationEntitlementRecord) =>
+        return entitlements.reduce((sum, en:DelegationEntitlementRecord) =>
           sum + (en.switchDeviceCount || 0), 0)
-        break
       case ComplianceMspCustomersDevicesTypes.EDGE:
-        configuredDevices = entitlements.reduce((sum, en:DelegationEntitlementRecord) =>
+        return entitlements.reduce((sum, en:DelegationEntitlementRecord) =>
           sum + (en.edgeDeviceCount || 0), 0)
-        break
       case ComplianceMspCustomersDevicesTypes.RWG:
-        configuredDevices = entitlements.reduce((sum, en:DelegationEntitlementRecord) =>
+        return entitlements.reduce((sum, en:DelegationEntitlementRecord) =>
           sum + (en.rwgDeviceCount || 0), 0)
-        break
+      default: return 0
     }
-
-    return configuredDevices
   }
 
   return {

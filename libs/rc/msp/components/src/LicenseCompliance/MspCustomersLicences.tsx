@@ -47,16 +47,6 @@ export default function MspCustomersLicences () {
   { key: MspEcAccountType.PAID,
     value: 'MSP ECs in Paid Mode' }]
 
-  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH, groupBy?: GROUPBY) => {
-
-    if (customFilters && customFilters.status?.includes(MspEcAccountType.EXTENDED_TRIAL)) {
-      customFilters.status=['Active']
-      customFilters.accountType=[MspEcAccountType.EXTENDED_TRIAL]
-    }
-
-    tableQuery.handleFilterChange(customFilters, customSearch, groupBy)
-  }
-
   const columns: TableProps<MspEc>['columns'] = [
     {
       title: $t({ defaultMessage: 'Customer Name' }),
@@ -105,7 +95,7 @@ export default function MspCustomersLicences () {
       dataIndex: 'apswLicense',
       key: 'apswLicense',
       align: 'center',
-      sorter: true,
+      sorter: false,
       width: 230,
       render: function (data: React.ReactNode, row: MspEc) {
         return mspUtils.transformDeviceEntitlement(row.entitlements)
@@ -116,7 +106,7 @@ export default function MspCustomersLicences () {
       dataIndex: 'apswLicenseInstalled',
       key: 'apswLicenseInstalled',
       align: 'center',
-      sorter: true,
+      sorter: false,
       width: 140,
       render: function (_: React.ReactNode, row: MspEc) {
         return mspUtils.transformInstalledDevice(row.entitlements)
@@ -127,7 +117,7 @@ export default function MspCustomersLicences () {
       dataIndex: 'wifiDeviceCount',
       key: 'wifiDeviceCount',
       align: 'center',
-      sorter: true,
+      sorter: false,
       width: 140,
       render: function (_: React.ReactNode, row: MspEc) {
         return mspUtils.getConfiguredDevices(ComplianceMspCustomersDevicesTypes.AP,
@@ -139,7 +129,7 @@ export default function MspCustomersLicences () {
       dataIndex: 'switchDeviceCount',
       key: 'switchDeviceCount',
       align: 'center',
-      sorter: true,
+      sorter: false,
       width: 140,
       render: function (_: React.ReactNode, row: MspEc) {
         return mspUtils.getConfiguredDevices(ComplianceMspCustomersDevicesTypes.SWITCH,
@@ -151,7 +141,7 @@ export default function MspCustomersLicences () {
       dataIndex: 'edgeDeviceCount',
       key: 'edgeDeviceCount',
       align: 'center',
-      sorter: true,
+      sorter: false,
       width: 140,
       render: function (_: React.ReactNode, row: MspEc) {
         return mspUtils.getConfiguredDevices(ComplianceMspCustomersDevicesTypes.EDGE,
@@ -163,7 +153,7 @@ export default function MspCustomersLicences () {
       dataIndex: 'rwgDeviceCount',
       key: 'rwgDeviceCount',
       align: 'center',
-      sorter: true,
+      sorter: false,
       width: 140,
       render: function (_: React.ReactNode, row: MspEc) {
         return mspUtils.getConfiguredDevices(ComplianceMspCustomersDevicesTypes.RWG,
@@ -177,7 +167,7 @@ export default function MspCustomersLicences () {
       dataSource={tableQuery.data?.data}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
-      onFilterChange={handleFilterChange}
+      onFilterChange={tableQuery.handleFilterChange}
       settingsId='msp-applied-template-table'
       rowKey='id'
       enableApiFilter={true}

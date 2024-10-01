@@ -1,4 +1,4 @@
-import { DatePicker, Form, Input, Radio, Space } from 'antd'
+import { Col, DatePicker, Form, Input, Radio, Row, Space, Typography } from 'antd'
 import moment                                    from 'moment'
 import { useIntl }                               from 'react-intl'
 
@@ -42,5 +42,19 @@ export default function MaxPeriod () {
         style={{ display: 'inline-block', width: '80px', margin: '0 6px' }}
         children={<Button type='default'>CALCULATE</Button>}/>
     </Form>
+    <Row style={{
+          alignItems: 'baseline'
+    }}>
+      <Col style={{
+        marginRight: '4px'
+      }}>
+        <Typography.Text>
+          { $t({ defaultMessage: 'End Date:' }) }
+        </Typography.Text>
+      </Col>
+      <Col>
+        <Typography.Title> 05/12/2025 </Typography.Title>
+      </Col>
+    </Row>
   </div>
 }

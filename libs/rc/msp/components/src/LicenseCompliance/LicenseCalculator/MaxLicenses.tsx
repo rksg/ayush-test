@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { DatePickerProps, Form, Radio, Space } from 'antd'
+import { Col, DatePickerProps, Form, Radio, Row, Space, Typography } from 'antd'
 import { RangePickerProps }                    from 'antd/lib/date-picker'
 import moment                                  from 'moment'
 import { useIntl }                             from 'react-intl'
@@ -17,8 +17,12 @@ export default function MaxLicenses () {
   }
 
   const onDateChange: DatePickerProps['onChange'] = (dateString: moment.Moment | null) => {
-    if (dateString)
+    if (dateString) {
       setSelectedDate(dateString)
+      if (dateString.isBefore(moment(selectedDate).add(1, 'days'))) {
+        form.setFieldValue('endDate', moment(selectedDate).add(1, 'days'))
+      }
+    }
   }
   return <div>
     <Form
@@ -44,9 +48,8 @@ export default function MaxLicenses () {
           allowClear={false}
           onChange={onDateChange}
           disabledDate={(current) => {
-            return current && current < selectedDate
+            return current && current < moment().add(1, 'day')
           }}
-          style={{ marginLeft: '4px' }}
         />}/>
       <Form.Item
         name={'endDate'}
@@ -54,8 +57,7 @@ export default function MaxLicenses () {
         style={{ display: 'inline-block', width: '80px', margin: '0 6px' }}
         children={<DatePicker
           allowClear={false}
-          disabledDate={disabledDate}
-          style={{ marginLeft: '4px' }}
+          disabledDate={(date) => date.isBefore(moment(selectedDate).add(1, 'days'))}
         />}/>
       <Form.Item
         name={'calculate'}
@@ -66,5 +68,19 @@ export default function MaxLicenses () {
         }}
         type='default'>{ $t({ defaultMessage: 'CALCULATE' }) }</Button>}/>
     </Form>
+    <Row style={{
+          alignItems: 'baseline'
+    }}>
+      <Col style={{
+        marginRight: '4px'
+      }}>
+        <Typography.Text>
+          { $t({ defaultMessage: 'Available Licenses:' }) }
+        </Typography.Text>
+      </Col>
+      <Col>
+        <Typography.Title> 34 </Typography.Title>
+      </Col>
+    </Row>
   </div>
 }

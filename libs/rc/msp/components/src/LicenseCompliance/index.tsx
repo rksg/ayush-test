@@ -118,7 +118,9 @@ export const LicenseCompliance = (props: ComplianceProps) => {
         footerContent={<div style={{
           display: 'flex',
           flexDirection: 'row',
-          justifyContent: 'end'
+          justifyContent: 'end',
+          borderTop: '1px solid #02a7f0',
+          paddingTop: '8px'
         }}>
           <span>{$t({ defaultMessage: 'To view currently available licenses timeline, ' })}</span>
           <Button
