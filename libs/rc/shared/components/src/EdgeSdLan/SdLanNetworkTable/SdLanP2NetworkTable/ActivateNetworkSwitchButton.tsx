@@ -1,10 +1,10 @@
-import { Switch, Tooltip } from 'antd'
-import _                   from 'lodash'
-import { useIntl }         from 'react-intl'
+import { Switch, Tooltip }                           from 'antd'
+import { cloneDeep, findIndex, omit, remove, union } from 'lodash'
+import { useIntl }                                   from 'react-intl'
 
-import { Network }       from '@acx-ui/rc/utils'
-import { EdgeScopes }    from '@acx-ui/types'
-import { hasPermission } from '@acx-ui/user'
+import { Network, ServiceOperation, ServiceType, hasServicePermission } from '@acx-ui/rc/utils'
+import { EdgeScopes }                                                   from '@acx-ui/types'
+import { hasPermission }                                                from '@acx-ui/user'
 
 export interface ActivateNetworkSwitchButtonP2Props {
     row: Network,
@@ -23,23 +23,26 @@ export interface ActivateNetworkSwitchButtonP2Props {
 export const ActivateNetworkSwitchButtonP2 = (props: ActivateNetworkSwitchButtonP2Props) => {
   const { $t } = useIntl()
   const { fieldName, row, activated, disabled, onChange } = props
-  const isActivated = _.findIndex(activated, i => i === row.id) !== -1
-  const isPermiited = hasPermission({
+  const isActivated = findIndex(activated, i => i === row.id) !== -1
+  // eslint-disable-next-line max-len
+  const hasServiceOpsPermission = hasServicePermission({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.EDIT })
+   || hasServicePermission({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.CREATE })
+  const isPermiited = hasServiceOpsPermission && hasPermission({
     scopes: [EdgeScopes.CREATE, EdgeScopes.UPDATE]
   })
-  let newSelected = _.cloneDeep(activated)
+  let newSelected = cloneDeep(activated)
 
   const switchComponent = <Switch
     checked={isActivated}
     disabled={!!disabled || !isPermiited}
     onChange={(checked: boolean) => {
       if (checked) {
-        newSelected = _.union(newSelected, [row.id!])
+        newSelected = union(newSelected, [row.id!])
       } else {
-        _.remove(newSelected, i => i === row.id)
+        remove(newSelected, i => i === row.id)
       }
 
-      onChange?.(fieldName, _.omit(row, 'children'), checked, newSelected)
+      onChange?.(fieldName, omit(row, 'children'), checked, newSelected)
     }}
   />
 

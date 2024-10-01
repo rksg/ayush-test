@@ -5,6 +5,7 @@ export interface PersonalIdentityNetworks {
   vxlanTunnelProfileId: string
   venueInfos: VenueInfo[]
   edgeClusterInfos: EdgeClusterInfos[]
+  networkIds: string[]
   distributionSwitchInfos: DistributionSwitch[]
   accessSwitchInfos: AccessSwitch[]
 }
