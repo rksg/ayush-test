@@ -312,7 +312,9 @@ export function useRadiusServer () {
       const newRadiusId = saveData[radiusKey]
       const oldRadiusId = radiusServerConfigurations?.[radiusKey]
 
-      const isRadiusIdChanged = (newRadiusId ?? '') !== (oldRadiusId ?? '')
+      if (!newRadiusId && !oldRadiusId) return
+
+      const isRadiusIdChanged = newRadiusId !== oldRadiusId
       const isDifferentNetwork = saveData.id !== networkId
 
       if (isRadiusIdChanged || isDifferentNetwork) {

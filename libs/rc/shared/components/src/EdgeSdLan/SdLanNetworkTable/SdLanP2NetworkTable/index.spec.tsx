@@ -301,13 +301,18 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
         ...getUserProfile().profile
       },
       abacEnabled: true,
-      isCustomRole: true,
+      isCustomRole: false,
       scopes: [EdgeScopes.READ, SwitchScopes.READ, WifiScopes.READ]
     }
 
     it('should not grey out when user has UPDATE', async () => {
       setUserProfile({
         ...mockedCustomRoleUserProfile,
+        profile: {
+          ...getUserProfile().profile,
+          roles: ['ADMIN']
+        },
+        hasAllVenues: true,
         scopes: [EdgeScopes.READ, EdgeScopes.UPDATE, SwitchScopes.READ, WifiScopes.READ]
       })
 
