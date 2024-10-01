@@ -3,6 +3,7 @@ import { rest } from 'msw'
 
 import { get }   from '@acx-ui/config'
 import {
+  CommonRbacUrlsInfo,
   CommonUrlsInfo,
   ConfigTemplateUrlsInfo,
   WifiUrlsInfo
@@ -89,7 +90,7 @@ describe('NetworkDetails', () => {
         (_, res, ctx) => res(ctx.json(network))
       ),
       rest.get(
-        CommonUrlsInfo.getNetworksDetailHeader.url,
+        CommonRbacUrlsInfo.getNetworksDetailHeader.url,
         (_, res, ctx) => res(ctx.json(networkDetailHeaderData))
       ),
       rest.post(
