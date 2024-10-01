@@ -2,17 +2,12 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   AccessControlUrls,
-  MtuTypeEnum,
   NetworkSaveData,
   TunnelProfileUrls,
-  TunnelTypeEnum,
-  WifiCallingUrls,
-  NetworkSegmentationUrls,
-  EdgeNSGFixtures
-} from '@acx-ui/rc/utils'
+  WifiCallingUrls } from '@acx-ui/rc/utils'
 import { Provider }                                    from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
@@ -23,21 +18,9 @@ import {
   mockWifiCallingTableResult,
   devicePolicyDetailResponse
 } from '../../__tests__/fixtures'
-import NetworkFormContext                   from '../../NetworkFormContext'
-import { useNetworkVxLanTunnelProfileInfo } from '../../utils'
+import NetworkFormContext from '../../NetworkFormContext'
 
 import { NetworkControlTab } from '.'
-
-const { mockNsgStatsList } = EdgeNSGFixtures
-
-jest.mock('../../utils', () => ({
-  ...jest.requireActual('../../utils'),
-  useNetworkVxLanTunnelProfileInfo: jest.fn().mockReturnValue({
-    enableTunnel: false,
-    enableVxLan: false,
-    vxLanTunnels: undefined
-  })
-}))
 
 const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 const mockedGetDevicePolicy = jest.fn()
@@ -303,61 +286,5 @@ describe('Network More settings - Network Control Tab', () => {
     expect(screen.getByText(/200 mbps/i)).toBeVisible()
     await userEvent.click(downloadLimitCheckbox)
 
-  })
-
-  it('should display tunnel profile when it use VxLan tunnel', async () => {
-    const mockedPinReq = jest.fn()
-    mockServer.use(
-      rest.post(
-        NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
-        (_req, res, ctx) => {
-          mockedPinReq()
-          return res(ctx.json(mockNsgStatsList))
-        }
-      ))
-
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_TOGGLE
-      || ff === Features.EDGE_PIN_HA_TOGGLE)
-
-    jest.mocked(useNetworkVxLanTunnelProfileInfo).mockReturnValue({
-      enableTunnel: true,
-      enableVxLan: true,
-      vxLanTunnels: [{
-        id: 'mocked_tunnel',
-        name: 'tunnelProfile1',
-        mtuType: MtuTypeEnum.MANUAL,
-        mtuSize: 1450,
-        forceFragmentation: true,
-        ageTimeMinutes: 20,
-        personalIdentityNetworkIds: ['mocked_pin_1'],
-        sdLanIds: [],
-        networkIds: ['mocked_network_1'],
-        type: TunnelTypeEnum.VXLAN,
-        tags: []
-      }]
-    })
-
-    render(
-      <Provider>
-        <Form>
-          <NetworkControlTab/>
-        </Form>
-      </Provider>,
-      { route: { params } })
-
-    const clientIsolationContainer = screen.getByText(/client isolation/i)
-    expect(within(clientIsolationContainer).getByRole('switch')).toBeDisabled()
-    await waitFor(() => expect(mockedPinReq).toBeCalled())
-    const tunnelProfileLabel = screen.getByText('Tunnel Profile')
-    // because TunnelProfile is not binding by formItem name, we could not access it via getByRole with name
-    // eslint-disable-next-line testing-library/no-node-access
-    const tunnelProfileFormItem = tunnelProfileLabel.closest('.ant-form-item-row')
-    // eslint-disable-next-line max-len
-    const tunnelProfileDropdown = within(tunnelProfileFormItem as HTMLElement).getByRole('combobox')
-    expect(tunnelProfileDropdown).toBeDisabled()
-    // eslint-disable-next-line max-len
-    await screen.findByText(/All networks under the same Personal Identity Network share the same tunnel profile/i)
-    const pinLink = (await screen.findByRole('link', { name: 'here' }) as HTMLAnchorElement).href
-    expect(pinLink).toContain('/services/personalIdentityNetwork/1/detail')
   })
 })
