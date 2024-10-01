@@ -114,39 +114,37 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
     setSelectedStepId(nodes.find(node => node.type !== 'START' as ActionType)?.data.id)
   }, [stepsData])
 
-  useEffect(() => {
-    if (!step) return
-    setNodes([{
-      id: step.id,
-      type: step.actionType,
-      position: { x: 0, y: 0 },
-      data: {
-        ...step,
+  useEffect(()=>{
+    if (step) {
+      setNodes([{
+        id: step.id,
+        type: step.actionType,
+        position: { x: 0, y: 0 },
+        data: {
+          ...step,
+          isStart: false,
+          isEnd: false
+        }
+      }])
+      setStepMap(map => map.set(step.id, step))
+    } else if (actionData) {
+      let workflowStep = {
+        id: actionData.id,
+        actionType: actionData.actionType,
+        enrollmentActionId: '',
         isStart: false,
         isEnd: false
       }
-    }])
-    setStepMap(map => map.set(step.id, step))
-  }, [step])
-
-  useEffect(()=> {
-    if (!actionData) return
-    let workflowStep = {
-      id: actionData.id,
-      actionType: actionData.actionType,
-      enrollmentActionId: '',
-      isStart: false,
-      isEnd: false
+      setNodes([{
+        id: actionData.id,
+        type: actionData.actionType,
+        position: { x: 0, y: 0 },
+        data: workflowStep
+      }])
+      setStepMap(map => map.set(workflowStep.id, workflowStep))
+      setSelectedStepId(workflowStep.id)
     }
-    setNodes([{
-      id: actionData.id,
-      type: actionData.actionType,
-      position: { x: 0, y: 0 },
-      data: workflowStep
-    }])
-    setStepMap(map => map.set(workflowStep.id, workflowStep))
-    setSelectedStepId(workflowStep.id)
-  }, [actionData])
+  }, [step, actionData])
 
   return (
     <Loader states={[stepQuery, configurationQuery]}>
