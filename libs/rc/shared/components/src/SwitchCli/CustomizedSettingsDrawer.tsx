@@ -6,10 +6,10 @@ import {
   Tooltip
 } from '@acx-ui/components'
 
-import { SwitchSettings } from './CliStepConfiguration'
-import { VariableType }   from './CliVariableUtils'
-import * as UI            from './styledComponents'
+import { formatContentWithLimit, MAX_LINES, MAX_CONTENT_LENGTH, VariableType } from './CliVariableUtils'
+import * as UI                                                                 from './styledComponents'
 
+import { SwitchSettings } from './'
 
 export const CustomizedSettingsDrawer = (props: {
   type: string
@@ -36,7 +36,10 @@ export const CustomizedSettingsDrawer = (props: {
     render: (data: React.ReactNode) => {
       return type !== VariableType.STRING
         ? data
-        : <Tooltip title={data} dottedUnderline>
+        : <Tooltip title={
+          formatContentWithLimit(data as string, MAX_LINES, MAX_CONTENT_LENGTH)
+        }
+        dottedUnderline>
           <UI.CliVariableContent style={{ maxWidth: '180px' }}>{ data }</UI.CliVariableContent>
         </Tooltip>
     }
