@@ -99,7 +99,6 @@ export const onSelectionEnd = (fieldNamePath:string[], prefix:boolean,items:stri
   const selectedItems = _.uniq(items)
   for (let daykey in dayIndex) {
     const daySchedule = form.getFieldValue(fieldNamePath.concat(daykey)) ?? []
-    // const schedule = daySchedule
     const schedule = prefix ? daySchedule : parseNonePrefixScheduler(daykey, daySchedule)
     if(selectedItems.filter((item: string) => item.indexOf(daykey) > -1)){
       let uniqSchedule = memoUniqSchedule(schedule, selectedItems, daykey)

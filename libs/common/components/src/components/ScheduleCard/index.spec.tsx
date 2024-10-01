@@ -19,7 +19,8 @@ import {
   mockedCustom,
   scheduleResultR1,
   scheduleResultRAI,
-  scheduleResultAlwaysOn
+  scheduleResultAlwaysOn,
+  mondayScheduleNo0
 } from './__tests__/fixtures'
 
 import { parseNetworkVenueScheduler, ScheduleCard } from './index'
@@ -67,12 +68,6 @@ describe('ScheduleCard', () => {
 
       expect(await screen.findByRole('button', { name: 'See tips' })).toBeVisible()
       expect(await screen.findByText('TestTitle')).toBeVisible()
-      const mondayTimeSlot9 = await screen.findByTestId('mon_0')
-      const mondayTimeSlot95 = await screen.findByTestId('mon_95')
-
-      fireEvent.mouseDown(mondayTimeSlot9)
-      fireEvent.mouseMove(mondayTimeSlot95)
-      fireEvent.mouseUp(mondayTimeSlot95)
       expect(formRef.current.getFieldsValue()).toEqual({ scheduler: scheduleResultAlwaysOn })
     })
 
@@ -118,7 +113,7 @@ describe('ScheduleCard', () => {
       const { result: formRef } = renderHook(() => {
         return Form.useForm()[0]
       })
-      const scheduler = { ...mockedCustom, tue: [] } as Scheduler
+      const scheduler = { ...mockedCustom, tue: [], mon: ['mon_0'] } as Scheduler
       render(
         <Provider>
           <Form form={formRef.current} onFinish={onApply}>
@@ -129,11 +124,12 @@ describe('ScheduleCard', () => {
               disabled={false} />
           </Form>
         </Provider>)
-
-      const scheduleCheckboxMon = await screen.findByTestId('checkbox_mon')
-      expect(scheduleCheckboxMon).toBeChecked()
-      await userEvent.click(scheduleCheckboxMon)
-      expect(scheduleCheckboxMon).not.toBeChecked()
+      const scheduleCheckboxMon0 = await screen.findByTestId('mon_0')
+      await userEvent.click(scheduleCheckboxMon0)
+      const scheduleCheckboxWed = await screen.findByTestId('checkbox_wed')
+      expect(scheduleCheckboxWed).toBeChecked()
+      await userEvent.click(scheduleCheckboxWed)
+      expect(scheduleCheckboxWed).not.toBeChecked()
       const scheduleCheckboxTue = await screen.findByTestId('checkbox_tue')
       expect(scheduleCheckboxTue).not.toBeChecked()
       await userEvent.click(scheduleCheckboxTue)
@@ -141,7 +137,7 @@ describe('ScheduleCard', () => {
       expect(formRef.current.getFieldsValue()).toEqual({
         scheduler: {
           ...mockedCustom,
-          mon: []
+          mon: [], wed: []
         }
       })
     })
@@ -163,7 +159,7 @@ describe('ScheduleCard', () => {
       const { result: formRef } = renderHook(() => {
         return Form.useForm()[0]
       })
-      const scheduler = { ...scheduleResultAlwaysOn, mon: ['mon_0', 'mon_1', 'mon_2', 'mon_10'] }
+      const scheduler = { ...scheduleResultAlwaysOn, mon: [...mondayScheduleNo0] }
       render(
         <Provider>
           <Form form={formRef.current} onFinish={onApply}>
@@ -180,20 +176,15 @@ describe('ScheduleCard', () => {
       await userEvent.click(scheduleCheckboxTue)
       expect(scheduleCheckboxTue).not.toBeChecked()
 
-      const mondayTimeSlot9 = await screen.findByTestId('mon_0')
-      const mondayTimeSlot95 = await screen.findByTestId('mon_95')
-
-      fireEvent.mouseDown(mondayTimeSlot9)
-      fireEvent.mouseMove(mondayTimeSlot95)
-      fireEvent.mouseUp(mondayTimeSlot95)
+      const scheduleCheckboxMon0 = await screen.findByTestId('mon_0')
+      await userEvent.click(scheduleCheckboxMon0)
 
       await userEvent.click(scheduleCheckboxTue)
       expect(scheduleCheckboxTue).toBeChecked()
 
       expect(formRef.current.getFieldsValue()).toEqual({
         scheduler: {
-          ...scheduleResultAlwaysOn,
-          mon: ['mon_0', 'mon_1', 'mon_2', 'mon_10']
+          ...scheduleResultAlwaysOn
         }
       })
     })

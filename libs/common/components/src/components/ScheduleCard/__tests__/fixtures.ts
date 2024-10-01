@@ -128,6 +128,25 @@ export const scheduleResultR1 = {
   sat: []
 }
 
+export const mondayScheduleNo0 = [
+  'mon_1', 'mon_2', 'mon_3', 'mon_4', 'mon_5',
+  'mon_6', 'mon_7', 'mon_8', 'mon_9', 'mon_10', 'mon_11',
+  'mon_12', 'mon_13', 'mon_14', 'mon_15', 'mon_16', 'mon_17',
+  'mon_18', 'mon_19', 'mon_20', 'mon_21', 'mon_22', 'mon_23',
+  'mon_24', 'mon_25', 'mon_26', 'mon_27', 'mon_28', 'mon_29',
+  'mon_30', 'mon_31', 'mon_32', 'mon_33', 'mon_34', 'mon_35',
+  'mon_36', 'mon_37', 'mon_38', 'mon_39', 'mon_40', 'mon_41',
+  'mon_42', 'mon_43', 'mon_44', 'mon_45', 'mon_46', 'mon_47',
+  'mon_48', 'mon_49', 'mon_50', 'mon_51', 'mon_52', 'mon_53',
+  'mon_54', 'mon_55', 'mon_56', 'mon_57', 'mon_58', 'mon_59',
+  'mon_60', 'mon_61', 'mon_62', 'mon_63', 'mon_64', 'mon_65',
+  'mon_66', 'mon_67', 'mon_68', 'mon_69', 'mon_70', 'mon_71',
+  'mon_72', 'mon_73', 'mon_74', 'mon_75', 'mon_76', 'mon_77',
+  'mon_78', 'mon_79', 'mon_80', 'mon_81', 'mon_82', 'mon_83',
+  'mon_84', 'mon_85', 'mon_86', 'mon_87', 'mon_88', 'mon_89',
+  'mon_90', 'mon_91', 'mon_92', 'mon_93', 'mon_94', 'mon_95'
+]
+
 export const scheduleResultAlwaysOn = {
   sun: [
     'sun_0', 'sun_1', 'sun_2', 'sun_3', 'sun_4', 'sun_5',
@@ -148,22 +167,7 @@ export const scheduleResultAlwaysOn = {
     'sun_90', 'sun_91', 'sun_92', 'sun_93', 'sun_94', 'sun_95'
   ],
   mon: [
-    'mon_0', 'mon_1', 'mon_2', 'mon_3', 'mon_4', 'mon_5',
-    'mon_6', 'mon_7', 'mon_8', 'mon_9', 'mon_10', 'mon_11',
-    'mon_12', 'mon_13', 'mon_14', 'mon_15', 'mon_16', 'mon_17',
-    'mon_18', 'mon_19', 'mon_20', 'mon_21', 'mon_22', 'mon_23',
-    'mon_24', 'mon_25', 'mon_26', 'mon_27', 'mon_28', 'mon_29',
-    'mon_30', 'mon_31', 'mon_32', 'mon_33', 'mon_34', 'mon_35',
-    'mon_36', 'mon_37', 'mon_38', 'mon_39', 'mon_40', 'mon_41',
-    'mon_42', 'mon_43', 'mon_44', 'mon_45', 'mon_46', 'mon_47',
-    'mon_48', 'mon_49', 'mon_50', 'mon_51', 'mon_52', 'mon_53',
-    'mon_54', 'mon_55', 'mon_56', 'mon_57', 'mon_58', 'mon_59',
-    'mon_60', 'mon_61', 'mon_62', 'mon_63', 'mon_64', 'mon_65',
-    'mon_66', 'mon_67', 'mon_68', 'mon_69', 'mon_70', 'mon_71',
-    'mon_72', 'mon_73', 'mon_74', 'mon_75', 'mon_76', 'mon_77',
-    'mon_78', 'mon_79', 'mon_80', 'mon_81', 'mon_82', 'mon_83',
-    'mon_84', 'mon_85', 'mon_86', 'mon_87', 'mon_88', 'mon_89',
-    'mon_90', 'mon_91', 'mon_92', 'mon_93', 'mon_94', 'mon_95'
+    'mon_0', ...mondayScheduleNo0
   ],
   tue: [
     'tue_0', 'tue_1', 'tue_2', 'tue_3', 'tue_4', 'tue_5',

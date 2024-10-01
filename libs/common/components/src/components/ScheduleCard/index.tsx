@@ -228,6 +228,15 @@ export function ScheduleCard (props: ScheduleCardProps) {
     arrCheckedList[index] = list
     setCheckedList(arrCheckedList)
 
+    const arrCheckAll = [...checkAll]
+    if (list.length === 0) {
+      arrCheckAll[index] = false
+      setCheckAll(arrCheckAll)
+    } else if(list.length === intervalsCount){
+      arrCheckAll[index] = true
+      setCheckAll(arrCheckAll)
+    }
+
     const arrIndeterminate = [...indeterminate]
     arrIndeterminate[index] = !!arrCheckedList[index].length && arrCheckedList[index].length < intervalsCount
     setIndeterminate(arrIndeterminate)

@@ -65,6 +65,17 @@ describe('ScheduleCard-utils', () => {
       onSelectionChange(box, false, selectedItems, intervalsCount)
       expect(selectedItems.current).toContain('mon_0')
     })
+
+    it('should update selectedItems based on selection box (disable)', () => {
+      const selectedItems: MutableRefObject<string[]> = { current: [] }
+      const box = { top: 0, left: 0, width: 100, height: 100 }
+      const intervalsCount = 24
+      // eslint-disable-next-line max-len
+      document.body.innerHTML = '<div id="mon_0" style="position:absolute; top:10px; left:10px; width:50px; height:50px;"></div>'
+
+      onSelectionChange(box, true, selectedItems, intervalsCount)
+      expect(selectedItems.current).toEqual([])
+    })
   })
 
   describe('parseNonePrefixScheduler', () => {
@@ -93,6 +104,35 @@ describe('ScheduleCard-utils', () => {
       expect(form.setFieldValue).toHaveBeenCalledWith(['schedule', 'mon'], ['mon_1', 'mon_2'])
       expect(updatedCheckAll[0]).toBe(false)
       expect(updatedIndeterminate[0]).toBe(true)
+    })
+
+    it('should update form values and check states correctly (no prefix)', () => {
+      const formData = [
+        '3', '4', '5',
+        '6', '7', '8', '9', '10', '11',
+        '12', '13', '14', '15', '16', '17',
+        '18', '19', '20', '21', '22', '23']
+      const form: Partial<FormInstance> = {
+        getFieldValue: jest.fn().mockImplementation((field) => {
+          if (field[1] === 'mon') {
+            return formData
+          }
+          return []
+        }),
+        setFieldValue: jest.fn()
+      }
+      const fieldNamePath = ['schedule']
+      const prefix = false
+      const items = ['mon_0','mon_1', 'mon_2']
+      const intervalsCount = 24
+      const arrCheckAll = [false, false, false, false, false, false, false]
+      const arrIndeterminate = [true, false, false, false, false, false, false]
+
+      // eslint-disable-next-line max-len
+      const [updatedCheckAll, updatedIndeterminate] = onSelectionEnd(fieldNamePath, prefix, items, intervalsCount, form as FormInstance, arrCheckAll, arrIndeterminate)
+
+      expect(updatedCheckAll[0]).toBe(true)
+      expect(updatedIndeterminate[0]).toBe(false)
     })
   })
 })
