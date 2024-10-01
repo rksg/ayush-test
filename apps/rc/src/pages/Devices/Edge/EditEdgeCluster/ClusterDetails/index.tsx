@@ -6,6 +6,8 @@ import { EdgeClusterSettingForm, EdgeClusterSettingFormType } from '@acx-ui/rc/c
 import { usePatchEdgeClusterMutation }                        from '@acx-ui/rc/services'
 import { EdgeClusterStatus }                                  from '@acx-ui/rc/utils'
 import { useTenantLink }                                      from '@acx-ui/react-router-dom'
+import { EdgeScopes }                                         from '@acx-ui/types'
+import { hasPermission }                                      from '@acx-ui/user'
 
 interface ClusterDetailsProps {
   currentClusterStatus?: EdgeClusterStatus
@@ -42,11 +44,13 @@ export const ClusterDetails = (props: ClusterDetailsProps) => {
     navigate(clusterListPage)
   }
 
+  const hasUpdatePermission = hasPermission({ scopes: [EdgeScopes.UPDATE] })
+
   return (
     <StepsForm
       onFinish={handleFinish}
       onCancel={handleCancel}
-      buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
+      buttonLabel={{ submit: hasUpdatePermission ? $t({ defaultMessage: 'Apply' }) : '' }}
     >
       <StepsForm.StepForm>
         <EdgeClusterSettingForm
