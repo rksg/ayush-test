@@ -1,8 +1,8 @@
 import { useState } from 'react'
 
-import { useConfigTemplate } from '@acx-ui/rc/utils'
-import { useParams }         from '@acx-ui/react-router-dom'
-import { goToNotFound }      from '@acx-ui/user'
+import { useConfigTemplate }              from '@acx-ui/rc/utils'
+import { useParams }                      from '@acx-ui/react-router-dom'
+import { goToNotFound, hasRaiPermission } from '@acx-ui/user'
 
 import { NetworkApsTab }       from './NetworkApsTab'
 import { NetworkClientsTab }   from './NetworkClientsTab'
@@ -28,7 +28,7 @@ export function NetworkDetails () {
       venues: NetworkVenuesTab,
       services: NetworkServicesTab,
       timeline: NetworkTimelineTab,
-      incidents: NetworkIncidentsTab,
+      incidents: () => hasRaiPermission('READ_INCIDENTS') ? <NetworkIncidentsTab/> : null,
       clients: NetworkClientsTab
     }
   }
