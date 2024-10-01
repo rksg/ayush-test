@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
 import {
+  CommonRbacUrlsInfo,
   CommonUrlsInfo,
   ConfigTemplateUrlsInfo,
   WifiUrlsInfo
@@ -85,7 +86,7 @@ describe('NetworkDetails', () => {
         (_, res, ctx) => res(ctx.json(network))
       ),
       rest.get(
-        CommonUrlsInfo.getNetworksDetailHeader.url,
+        CommonRbacUrlsInfo.getNetworksDetailHeader.url,
         (_, res, ctx) => res(ctx.json(networkDetailHeaderData))
       ),
       rest.post(

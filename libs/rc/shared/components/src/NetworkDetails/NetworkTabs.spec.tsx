@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
 import { useIsSplitOn }                                   from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo }                                 from '@acx-ui/rc/utils'
+import { CommonRbacUrlsInfo }                             from '@acx-ui/rc/utils'
 import { generatePath }                                   from '@acx-ui/react-router-dom'
 import { Provider }                                       from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, fireEvent } from '@acx-ui/test-utils'
@@ -13,7 +13,7 @@ import { networkDetailHeaderData } from './__tests__/fixtures'
 import NetworkTabs                 from './NetworkTabs'
 
 const params = { networkId: 'network-id', tenantId: 'tenant-id' }
-const url = generatePath(CommonUrlsInfo.getNetworksDetailHeader.url, params)
+const url = generatePath(CommonRbacUrlsInfo.getNetworksDetailHeader.url, params)
 const mockedUsedNavigate = jest.fn()
 
 jest.mock('react-router-dom', () => ({
