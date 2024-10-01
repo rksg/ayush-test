@@ -5,10 +5,10 @@ import { useIntl } from 'react-intl'
 import { PageHeader, Tabs }           from '@acx-ui/components'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
+import { DevelopersTabs }      from '../Developers'
 import { useOnboardedSystems } from '../OnboardedSystems'
 import { Support }             from '../Support'
 import { useUsers }            from '../Users'
-import { useWebhooks }         from '../Webhooks'
 
 export enum AccountManagementTabEnum {
   ONBOARDED_SYSTEMS = 'onboarded',
@@ -18,7 +18,8 @@ export enum AccountManagementTabEnum {
   RESOURCE_GROUPS = 'resourceGroups',
   LICENSES = 'license',
   SCHEDULES = 'schedules',
-  WEBHOOKS = 'webhooks'
+  WEBHOOKS = 'webhooks',
+  DEVELOPERS = 'developers'
 }
 
 interface Tab {
@@ -71,13 +72,14 @@ const useTabs = (): Tab[] => {
     title: $t({ defaultMessage: 'Schedules' }),
     url: '/analytics/admin/schedules'
   }
-  const webhooksTab = {
-    key: AccountManagementTabEnum.WEBHOOKS,
-    ...useWebhooks()
+  const developersTabs = {
+    key: AccountManagementTabEnum.DEVELOPERS,
+    title: $t({ defaultMessage: 'Developers' }),
+    component: <DevelopersTabs />
   }
   return [
     onboardedSystemsTab, usersTab, labelsTab, resourceGroupsTab, supportTab,
-    licenseTab, schedulesTab, webhooksTab
+    licenseTab, schedulesTab, developersTabs
   ]
 }
 
