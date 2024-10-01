@@ -168,8 +168,7 @@ export const categoryCodeMap = {
       'i-switch-vlan-mismatch',
       'i-switch-poe-pd',
       'i-apinfra-poe-low',
-      'i-apinfra-wanthroughput-low',
-      's-switch-tcp-syn-ddos'
+      'i-apinfra-wanthroughput-low'
     ] as IncidentCode[]
   },
   security: {

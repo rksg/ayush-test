@@ -29,6 +29,7 @@ const EditPersonalIdentityNetwork = () => {
     isLoading: isNsgDataLoading,
     isFetching: isNsgDataFetching
   } = useGetNetworkSegmentationGroupByIdQuery({ params })
+
   const tablePath = getServiceRoutePath(
     { type: ServiceType.NETWORK_SEGMENTATION, oper: ServiceOperation.LIST })
 
@@ -43,6 +44,7 @@ const EditPersonalIdentityNetwork = () => {
       dhcpId: nsgData?.edgeClusterInfos[0]?.dhcpInfoId,
       poolId: nsgData?.edgeClusterInfos[0]?.dhcpPoolId,
       vxlanTunnelProfileId: nsgData?.vxlanTunnelProfileId,
+      networkIds: nsgData?.networkIds,
       distributionSwitchInfos: nsgData?.distributionSwitchInfos,
       accessSwitchInfos: nsgData?.accessSwitchInfos,
       originalDistributionSwitchInfos: nsgData?.distributionSwitchInfos,

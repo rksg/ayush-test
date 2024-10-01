@@ -30,9 +30,11 @@ export interface UIColorSchema {
   buttonFontColor: string
 }
 
+export type LogoSize = 'SMALL' | 'MEDIUM' | 'LARGE'
+
 export interface UIStyleSchema {
-  logoRatio: number
-  titleFontSize: number
+  logoSize: LogoSize
+  headerFontSize: number
   logoImageFileName?: string
   backgroundImageName?: string
 }
