@@ -1,8 +1,8 @@
 import { rest } from 'msw'
 
-import { CommonUrlsInfo, ConfigTemplateUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                             from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }                  from '@acx-ui/test-utils'
+import { CommonRbacUrlsInfo, ConfigTemplateUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                 from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }                      from '@acx-ui/test-utils'
 
 import { networkDetailHeaderData } from './__tests__/fixtures'
 import NetworkPageHeader           from './NetworkPageHeader'
@@ -25,7 +25,7 @@ describe('NetworkPageHeader', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getNetworksDetailHeader.url,
+        CommonRbacUrlsInfo.getNetworksDetailHeader.url,
         (_, res, ctx) => res(ctx.json(networkDetailHeaderData))
       ),
       rest.get(WifiUrlsInfo.getNetwork.url,

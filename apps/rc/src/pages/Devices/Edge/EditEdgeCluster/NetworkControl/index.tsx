@@ -1,9 +1,7 @@
-
 import { useState } from 'react'
 
 import { Col, Form, Row, Space, Switch } from 'antd'
 import { useIntl }                       from 'react-intl'
-
 
 import { Loader, StepsForm, Tooltip }                                                                                                                 from '@acx-ui/components'
 import { Features }                                                                                                                                   from '@acx-ui/feature-toggle'
@@ -11,8 +9,11 @@ import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType,
 import { useActivateHqosOnEdgeClusterMutation, useDeactivateHqosOnEdgeClusterMutation, useGetDhcpStatsQuery, useGetEdgeHqosProfileViewDataListQuery } from '@acx-ui/rc/services'
 import { EdgeClusterStatus, IncompatibilityFeatures }                                                                                                 from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }                                                                                                      from '@acx-ui/react-router-dom'
+import { EdgeScopes }                                                                                                                                 from '@acx-ui/types'
+import { hasPermission }                                                                                                                              from '@acx-ui/user'
 
 import EdgeQosProfileSelectionForm from '../../../../Policies/HqosBandwidth/Edge/HqosBandwidthSelectionForm'
+
 
 interface EdgeNetworkControlProps {
   currentClusterStatus?: EdgeClusterStatus
@@ -157,6 +158,8 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
     }
   }
 
+  const hasUpdatePermission = hasPermission({ scopes: [EdgeScopes.UPDATE] })
+
   return (
     <Loader states={[{ isLoading: isQosLoading || isDhcpLoading }]}>
       <StepsForm
@@ -164,6 +167,7 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
         form={form}
         onFinish={handleApply}
         onCancel={() => navigate(linkToEdgeList)}
+        buttonLabel={{ submit: hasUpdatePermission ? $t({ defaultMessage: 'Apply' }) : '' }}
         initialValues={{
           dhcpSwitch: Boolean(currentDhcp), dhcpId: currentDhcp?.id,
           qosSwitch: Boolean(currentQos), qosId: currentQos?.id }}
