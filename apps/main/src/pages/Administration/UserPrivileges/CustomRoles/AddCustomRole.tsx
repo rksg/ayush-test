@@ -117,6 +117,13 @@ export function AddCustomRole () {
       form.setFieldValue('name', isClone ? (location?.name + ' - copy') : location?.name)
       form.setFieldValue('description', location?.description)
     }
+    if (location && location?.scopes && (isEditMode || isClone)) {
+      const scopes = location.scopes
+      scopes.map(s => form.setFieldValue(s, true))
+    }
+    form.setFieldValue(WifiScopes.READ, true)
+    form.setFieldValue(SwitchScopes.READ, true)
+    form.setFieldValue(EdgeScopes.READ, true)
   }, [form, location])
 
   const CustomRoleForm = () => {
@@ -199,16 +206,6 @@ export function AddCustomRole () {
   }
 
   const PermissionsTechForm = () => {
-    useEffect(() => {
-      if (location && location?.scopes && (isEditMode || isClone)) {
-        const scopes = location.scopes
-        scopes.map(s => form.setFieldValue(s, true))
-      }
-      form.setFieldValue(WifiScopes.READ, true)
-      form.setFieldValue(SwitchScopes.READ, true)
-      form.setFieldValue(EdgeScopes.READ, true)
-    }, [form, location])
-
     return <div >
       <UI.FieldLabelPermission width='270'>
         <label></label>

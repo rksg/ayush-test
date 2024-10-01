@@ -27,8 +27,8 @@ import { baseNsgApi }                          from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
 import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
-import { serviceApi }        from './service'
-import { isPayloadHasField } from './utils'
+import { serviceApi }                                        from './service'
+import { handleCallbackWhenActivityDone, isPayloadHasField } from './utils'
 
 const customHeaders = {
   v1: {
@@ -39,6 +39,14 @@ const customHeaders = {
     'Content-Type': 'application/vnd.ruckus.v1.1+json',
     'Accept': 'application/vnd.ruckus.v1.1+json'
   }
+}
+
+enum EdgePinActivityEnum {
+  ADD = 'Create PIN',
+  UPDATE = 'Update PIN',
+  DELETE = 'Delete PIN',
+  ACTIVATE_NETWORK = 'Activate network',
+  DEACTIVATE_NETWORK = 'Deactivate network',
 }
 
 const getNsgUrls = (enableRbac?: boolean | unknown) => {
@@ -57,7 +65,19 @@ export const nsgApi = baseNsgApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Networksegmentation', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Networksegmentation', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          await handleCallbackWhenActivityDone({
+            api,
+            activityData: msg,
+            useCase: EdgePinActivityEnum.ADD,
+            stepName: 'Add PIN',
+            callback: requestArgs.callback,
+            failedCallback: requestArgs.failedCallback
+          })
+        })
+      }
     }),
     getNetworkSegmentationViewDataList: build.query<TableResult<PersonalIdentityNetworksViewData>, RequestPayload>({
       async queryFn ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) {
@@ -116,9 +136,11 @@ export const nsgApi = baseNsgApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'Add Network Segmentation Group',
-            'Update Network Segmentation Group',
-            'Delete Network Segmentation Group'
+            EdgePinActivityEnum.ADD,
+            EdgePinActivityEnum.UPDATE,
+            EdgePinActivityEnum.DELETE,
+            EdgePinActivityEnum.ACTIVATE_NETWORK,
+            EdgePinActivityEnum.DEACTIVATE_NETWORK
           ], () => {
             api.dispatch(serviceApi.util.invalidateTags([
               { type: 'Service', id: 'LIST' }
@@ -154,18 +176,42 @@ export const nsgApi = baseNsgApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Networksegmentation', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Networksegmentation', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          await handleCallbackWhenActivityDone({
+            api,
+            activityData: msg,
+            useCase: EdgePinActivityEnum.UPDATE,
+            callback: requestArgs.callback,
+            failedCallback: requestArgs.failedCallback
+          })
+        })
+      }
     }),
     getNetworkSegmentationGroupById: build.query<PersonalIdentityNetworks, RequestPayload>({
       async queryFn ({ params }, _queryApi, _extraOptions, fetchWithBQ) {
-        const pinRequest = createHttpRequest(
-          NetworkSegmentationUrls.getNetworkSegmentationGroupById, params)
+        const pinRequest = createHttpRequest(NetworkSegmentationUrls.getNetworkSegmentationGroupById, params)
         const pinQuery = await fetchWithBQ(pinRequest)
         const pinData = pinQuery.data as PersonalIdentityNetworks
 
+        // append network data
+        const pinViewmodelReq = createHttpRequest(NetworkSegmentationUrls.getNetworkSegmentationStatsList)
+        const pinViewmodelQuery = await fetchWithBQ({
+          ...pinViewmodelReq,
+          body: {
+            fields: ['id', 'networkIds'],
+            filters: { id: [params?.serviceId!] }
+          }
+        })
+
+        const pinViewmodel = pinViewmodelQuery.data as TableResult<PersonalIdentityNetworksViewData>
+        if (pinViewmodel)
+          pinData.networkIds = pinViewmodel.data[0]?.networkIds
+
         let pinSwitch
         // fetch venue id & name
-        const edgeClusterId = pinData?.edgeClusterInfos.map(edge => edge.edgeClusterId)
+        const edgeClusterId = pinData?.edgeClusterInfos?.map(edge => edge.edgeClusterId)
         if (edgeClusterId) {
           const clusterReq = createHttpRequest(EdgeUrlsInfo.getEdgeClusterStatusList)
           const edgeClusterQuery = await fetchWithBQ({
