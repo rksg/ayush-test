@@ -1,19 +1,19 @@
 import { find, sumBy } from 'lodash'
 import { useIntl }     from 'react-intl'
 
-import { ApCompatibilityToolTip, CompatibilityWarningCircleIcon }                    from '@acx-ui/rc/components'
-import { CompatibilityDeviceEnum, EdgeSdLanApCompatibility, EdgeSdLanCompatibility } from '@acx-ui/rc/utils'
+import { ApCompatibilityToolTip, CompatibilityWarningCircleIcon }                      from '@acx-ui/rc/components'
+import { CompatibilityDeviceEnum, EdgeSdLanApCompatibility, EdgeServiceCompatibility } from '@acx-ui/rc/utils'
 
 interface CompatibilityCheckProps {
   serviceId: string,
-  sdLanCompatibilityData?: Record<string, EdgeSdLanCompatibility[] | EdgeSdLanApCompatibility[]>
+  sdLanCompatibilityData?: Record<string, EdgeServiceCompatibility[] | EdgeSdLanApCompatibility[]>
 }
 export const CompatibilityCheck = (props: CompatibilityCheckProps) => {
   const { $t } = useIntl()
   const { serviceId, sdLanCompatibilityData } = props
 
   // eslint-disable-next-line max-len
-  const edgeIncompatibleData = (find(sdLanCompatibilityData?.[CompatibilityDeviceEnum.EDGE], { serviceId }) as EdgeSdLanCompatibility)?.clusterEdgeCompatibilities
+  const edgeIncompatibleData = (find(sdLanCompatibilityData?.[CompatibilityDeviceEnum.EDGE], { serviceId }) as EdgeServiceCompatibility)?.clusterEdgeCompatibilities
   const edgeIncompatibleCount = sumBy(edgeIncompatibleData, (data) => data.incompatible)
   const edgeIncompatible = edgeIncompatibleCount > 0
   // eslint-disable-next-line max-len

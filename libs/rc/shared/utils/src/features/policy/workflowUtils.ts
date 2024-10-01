@@ -17,7 +17,9 @@ import {
   DisplayMessageActionContext,
   UIConfiguration,
   StepType,
-  WorkflowStep
+  WorkflowStep,
+  LogoSize,
+  WorkflowPanelMode
 } from '../../types'
 
 export const WorkflowStepsEmptyCount = 2
@@ -138,6 +140,7 @@ export const ActionDefaultValueMap: Record<ActionType, object> = {
 /* eslint-enable max-len */
 
 export const composeNext = (
+  mode: WorkflowPanelMode,
   stepId: string, stepMap: Map<string, WorkflowStep>,
   nodes: Node<WorkflowStep, ActionType>[], edges: Edge[],
   currentX: number, currentY: number,
@@ -166,7 +169,8 @@ export const composeNext = (
     data: {
       ...step,
       isStart,
-      isEnd: nextStep?.type === StepType.End
+      isEnd: nextStep?.type === StepType.End,
+      mode
     },
 
     hidden: type === StepType.End || (type === StepType.Start && stepMap.size !== 2),
@@ -184,14 +188,16 @@ export const composeNext = (
       deletable: false
     })
 
-    composeNext(nextStepId, stepMap, nodes, edges,
+    composeNext(mode, nextStepId, stepMap, nodes, edges,
       currentX, currentY + SPACE_OF_NODES, type === StepType.Start)
   }
 }
 
 
-export function toReactFlowData (steps: WorkflowStep[])
-  : { nodes: Node[], edges: Edge[] } {
+export function toReactFlowData (
+  steps: WorkflowStep[],
+  mode: WorkflowPanelMode = WorkflowPanelMode.Default
+): { nodes: Node[], edges: Edge[] } {
   const nodes: Node<WorkflowStep, ActionType>[] = []
   const edges: Edge[] = []
   const START_X = 100
@@ -205,7 +211,7 @@ export function toReactFlowData (steps: WorkflowStep[])
   const stepMap = toStepMap(steps)
 
   if (firstStep) {
-    composeNext(firstStep.id, stepMap, nodes, edges,
+    composeNext(mode, firstStep.id, stepMap, nodes, edges,
       START_X, START_Y, firstStep.type === StepType.Start)
   }
 
@@ -223,9 +229,15 @@ export const DefaultUIConfiguration : UIConfiguration = {
     buttonColor: 'var(--acx-accents-orange-50)'
   },
   uiStyleSchema: {
-    logoRatio: 1,
-    titleFontSize: 16
+    logoSize: 'MEDIUM',
+    headerFontSize: 16
   },
   welcomeName: '',
   welcomeTitle: ''
+}
+
+export function getLogoImageSize (size: LogoSize):number {
+  if (size === 'SMALL') return 105
+  else if (size ==='LARGE') return 105 * 2.25
+  return 105 * 1.5
 }

@@ -41,23 +41,32 @@ export const fetchDocsURLMapping = async (
   return result[mapKey as keyof typeof result]
 }
 
-export const useHelpPageLink = () => {
+export const useHelpPageLinkBasePath = (targetPathname?: string) => {
   const location = useLocation()
-  const [helpUrl, setHelpUrl] = useState<string|undefined>(undefined)
   const [, tenantType, pathname] = location.pathname.match(/^\/[a-f0-9]{32}\/(v|t)\/(.+)$/) || []
-  const isMspPage = tenantType === 'v'
-  const basePath = pathname?.replaceAll(/([A-Z0-9]{11,})|([0-9a-fA-F]{1,2}[:]){5}([0-9a-fA-F]{1,2})|([a-f-\d]{32,36}|[A-F-\d]{32,36})|([a-zA-Z0-9+\=]{84})|\d+/g, '*') // eslint-disable-line max-len
+  const basePath = (targetPathname || pathname)?.replaceAll(/([A-Z0-9]{11,})|([0-9a-fA-F]{1,2}[:]){5}([0-9a-fA-F]{1,2})|([a-f-\d]{32,36}|[A-F-\d]{32,36})|([a-zA-Z0-9+\=]{84})|\d+/g, '*') // eslint-disable-line max-len
+  const isMspUser = tenantType === 'v'
+
+  return {
+    isMspUser,
+    basePath
+  }
+}
+
+export const useHelpPageLink = (targetPathname?: string) => {
+  const { isMspUser, basePath } = useHelpPageLinkBasePath(targetPathname)
+  const [helpUrl, setHelpUrl] = useState<string|undefined>(undefined)
 
   useEffect(() => {
     (async () => {
-      const indexPageUrl = isMspPage
+      const indexPageUrl = isMspUser
         ? `${DOCS_HOME_URL}/ruckusone/mspguide/index.html`
         : `${DOCS_HOME_URL}/ruckusone/userguide/index.html`
 
-      const mappingRs = await fetchDocsURLMapping(basePath, () => {}, isMspPage)
-      setHelpUrl(mappingRs ? getDocsURL(isMspPage)+mappingRs : indexPageUrl)
+      const mappingRs = await fetchDocsURLMapping(basePath, () => {}, isMspUser)
+      setHelpUrl(mappingRs ? getDocsURL(isMspUser)+mappingRs : indexPageUrl)
     })()
-  }, [basePath, isMspPage])
+  }, [basePath, isMspUser])
 
   return helpUrl
 }

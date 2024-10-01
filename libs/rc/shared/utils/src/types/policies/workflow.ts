@@ -30,9 +30,11 @@ export interface UIColorSchema {
   buttonFontColor: string
 }
 
+export type LogoSize = 'SMALL' | 'MEDIUM' | 'LARGE'
+
 export interface UIStyleSchema {
-  logoRatio: number
-  titleFontSize: number
+  logoSize: LogoSize
+  headerFontSize: number
   logoImageFileName?: string
   backgroundImageName?: string
 }
@@ -64,11 +66,17 @@ export enum StepType {
   End = 'endStepDto'
 }
 
+export enum WorkflowPanelMode {
+  Default = 'default',
+  Design = 'design',
+  Edit = 'edit'
+}
+
 // Only for Canvas used
 interface StepState {
   isStart?: boolean,
-  isEnd?: boolean
-
+  isEnd?: boolean,
+  mode?: WorkflowPanelMode
 }
 
 interface BaseStep extends StepState {

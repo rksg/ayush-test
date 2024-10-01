@@ -12,9 +12,13 @@ interface StaticRouteModalFormType {
   routes: EdgeStaticRoute[]
 }
 
-// TODO: need to add the clusterInfo for getting/updaying StaticRoutes when PIN support HA
-export const StaticRouteModal = (props: { edgeId: string, edgeName: string }) => {
-  const { edgeId, edgeName } = props
+export const StaticRouteModal = (props: React.PropsWithChildren<{
+  edgeId: string,
+  edgeClusterId: string,
+  edgeName: string,
+  venueId: string
+}>) => {
+  const { edgeId, edgeClusterId, edgeName, venueId } = props
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const [form] = Form.useForm()
@@ -22,7 +26,7 @@ export const StaticRouteModal = (props: { edgeId: string, edgeName: string }) =>
     data: staticRouteData,
     isFetching: isStaticRouteDataFetching
   }= useGetStaticRoutesQuery({
-    params: { edgeClusterId: edgeId }
+    params: { venueId, edgeClusterId, serialNumber: edgeId }
   })
   const [
     updateStaticRoutes,
@@ -40,7 +44,7 @@ export const StaticRouteModal = (props: { edgeId: string, edgeName: string }) =>
   const handleFinish = async (value: StaticRouteModalFormType) => {
     try {
       await updateStaticRoutes({
-        params: { serialNumber: edgeId },
+        params: { venueId, edgeClusterId, serialNumber: edgeId },
         payload: value
       }).unwrap()
 
@@ -52,7 +56,7 @@ export const StaticRouteModal = (props: { edgeId: string, edgeName: string }) =>
 
   return <>
     <Button type='link' size='small' onClick={() => setVisible(true)}>
-      {$t({ defaultMessage: 'Static Route' })}
+      {props.children}
     </Button>
     <Modal
       title={edgeName}
