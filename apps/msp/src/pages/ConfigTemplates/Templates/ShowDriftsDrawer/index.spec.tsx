@@ -3,10 +3,11 @@ import { rest }  from 'msw'
 
 import { MspUrlsInfo }                                                            from '@acx-ui/msp/utils'
 import { configTemplateApi }                                                      from '@acx-ui/rc/services'
+import { ConfigTemplateUrlsInfo }                                                 from '@acx-ui/rc/utils'
 import { Provider, store }                                                        from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
-import { mockedConfigTemplate, mockedMSPCustomers } from './__tests__/fixtures'
+import { mockedConfigTemplate, mockedDriftTenants, mockedMSPCustomers } from './__tests__/fixtures'
 
 import { SelectedCustomersIndicator, ShowDriftsDrawer } from '.'
 
@@ -15,6 +16,10 @@ describe('ShowDriftsDrawer', () => {
     store.dispatch(configTemplateApi.util.resetApiState())
 
     mockServer.use(
+      rest.get(
+        ConfigTemplateUrlsInfo.getDriftTenants.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(mockedDriftTenants))
+      ),
       rest.post(
         MspUrlsInfo.getMspCustomersList.url,
         (req, res, ctx) => res(ctx.json(mockedMSPCustomers))
@@ -57,6 +62,8 @@ describe('ShowDriftsDrawer', () => {
     render(<Provider>
       <ShowDriftsDrawer setVisible={mockSetVisible} selectedTemplate={mockedConfigTemplate} />
     </Provider>)
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     await userEvent.click(await screen.findByRole('button', { name: /Cancel/i }))
 
@@ -106,12 +113,47 @@ describe('ShowDriftsDrawer', () => {
 
     const targetInstance = mockedMSPCustomers.data[0]
 
-    await userEvent.click(searchInput)
+    await userEvent.type(searchInput, targetInstance.name.slice(0, 3))
     await userEvent.click(await screen.findByText(targetInstance.name))
 
     expect(
       screen.queryAllByRole('button', { name: /Configurations in/i }).length
     ).toBe(1)
+  })
+
+  it('should call the sync API when the sync button is clicked', async () => {
+    const mockPatchDriftReportFn = jest.fn()
+
+    mockServer.use(
+      rest.patch(
+        ConfigTemplateUrlsInfo.patchDriftReport.url,
+        (req, res, ctx) => {
+          mockPatchDriftReportFn()
+          return res(ctx.json({ requestId: '123456789' }))
+        }
+      )
+    )
+
+    render(<Provider>
+      <ShowDriftsDrawer setVisible={jest.fn()} selectedTemplate={mockedConfigTemplate} />
+    </Provider>)
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    await userEvent.click(screen.getByRole('checkbox', { name: /Sync all drifts/i }))
+    await waitFor(() => {
+      const allInstanceElements = screen.queryAllByRole('button', { name: /Configurations in/i })
+
+      for (const instanceElement of allInstanceElements) {
+        expect(within(instanceElement).getByRole('checkbox')).toBeChecked()
+      }
+    })
+
+    await userEvent.click(screen.getByRole('button', { name: 'Sync' }))
+
+    await waitFor(() => {
+      expect(mockPatchDriftReportFn).toHaveBeenCalledTimes(mockedDriftTenants.data.length)
+    })
   })
 
   describe('SelectedCustomersIndicator', () => {
@@ -125,13 +167,5 @@ describe('ShowDriftsDrawer', () => {
       // eslint-disable-next-line testing-library/no-node-access
       expect(container.firstChild).toBeNull()
     })
-  })
-
-  xit('should call the sync API when the sync button is clicked', async () => {
-    render(<Provider>
-      <ShowDriftsDrawer setVisible={jest.fn()} selectedTemplate={mockedConfigTemplate} />
-    </Provider>)
-    const syncButton = await screen.findByRole('button', { name: 'Sync' })
-    await userEvent.click(syncButton)
   })
 })

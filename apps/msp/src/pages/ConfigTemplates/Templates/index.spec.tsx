@@ -1,7 +1,8 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { MspUrlsInfo }          from '@acx-ui/msp/utils'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { MspUrlsInfo }            from '@acx-ui/msp/utils'
 import {
   AdministrationUrlsInfo, CONFIG_TEMPLATE_PATH_PREFIX, ConfigTemplateContext,
   ConfigTemplateType, ConfigTemplateUrlsInfo, PoliciesConfigTemplateUrlsInfo,
@@ -11,6 +12,8 @@ import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within 
 
 import { ConfigTemplateTabKey }                                                                        from '..'
 import { mockVenueTemplateList, mockedConfigTemplateList, mockedMSPCustomerList, mockedVenueTemplate } from '../__tests__/fixtures'
+
+import { ShowDriftsDrawerProps } from './ShowDriftsDrawer'
 
 import { ConfigTemplateList } from '.'
 
@@ -25,6 +28,13 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate,
   useLocation: () => mockedLocation
+}))
+
+jest.mock('./ShowDriftsDrawer', () => ({
+  ...jest.requireActual('./ShowDriftsDrawer'),
+  ShowDriftsDrawer: (props: ShowDriftsDrawerProps) => {
+    return <div data-testid='ShowDriftsDrawer'>{props.selectedTemplate.name}</div>
+  }
 }))
 
 describe('ConfigTemplateList component', () => {
@@ -380,5 +390,27 @@ describe('ConfigTemplateList component', () => {
     expect(await within(detailsDrawer).findByDisplayValue(mockedL2AclTemplate.name)).toBeInTheDocument()
     await userEvent.click(within(detailsDrawer).getByRole('button', { name: 'Cancel' }))
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
+  })
+
+  it('should show drift', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.CONFIG_TEMPLATE_DRIFTS)
+
+    render(
+      <Provider>
+        <ConfigTemplateList />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
+    const targetTemplate = mockedConfigTemplateList.data[0]
+    const row = await screen.findByRole('row', { name: new RegExp(targetTemplate.name) })
+    await userEvent.click(within(row).getByRole('radio'))
+
+    await userEvent.click(screen.getByRole('button', { name: /Show Drifts/ }))
+
+    expect(await screen.findByTestId('ShowDriftsDrawer')).toBeInTheDocument()
   })
 })

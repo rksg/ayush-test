@@ -1,74 +1,13 @@
-import { TemplateInstanceDriftResponse } from '@acx-ui/rc/utils'
-
-import { DriftComparisonSetData } from './DriftComparisonSet'
 import {
-  transformDriftResponse,
-  convertDriftRecord,
   filterDriftRecord,
   convertDriftName
 } from './utils'
 
 describe('ShowDriftsDrawer utils', () => {
-  describe('transformDriftResponse', () => {
-    it('should transform the drift response into an array of DriftComparisonSetData', () => {
-      const data: TemplateInstanceDriftResponse = {
-        category1: {
-          driftRecord1: { template: 'templateVal', instance: 'instanceVal' },
-          driftRecord2: { template: 'templateVal2', instance: 'instanceVal2' }
-        },
-        category2: {
-          driftRecord3: { template: 'templateVal3', instance: 'instanceVal3' }
-        }
-      }
-
-      const expected: DriftComparisonSetData[] = [
-        {
-          category: 'category1',
-          driftItems: [
-            { name: 'driftRecord1', values: { template: 'templateVal', instance: 'instanceVal' } },
-            { name: 'driftRecord2', values: { template: 'templateVal2', instance: 'instanceVal2' } }
-          ]
-        },
-        {
-          category: 'category2',
-          driftItems: [
-            { name: 'driftRecord3', values: { template: 'templateVal3', instance: 'instanceVal3' } }
-          ]
-        }
-      ]
-
-      expect(transformDriftResponse(data)).toEqual(expected)
-    })
-
-    it('should return an empty array if the input is empty', () => {
-      expect(transformDriftResponse(undefined)).toEqual([])
-    })
-  })
-
-  describe('convertDriftRecord', () => {
-    it('should convert a drift record into an array of DriftComparisonData', () => {
-      const record = {
-        driftRecord1: { template: 'templateValue', instance: 'instanceValue' },
-        driftRecord2: { template: 'templateValue2', instance: 'instanceValue2' }
-      }
-
-      const expected = [
-        { name: 'driftRecord1', values: { template: 'templateValue', instance: 'instanceValue' } },
-        { name: 'driftRecord2', values: { template: 'templateValue2', instance: 'instanceValue2' } }
-      ]
-
-      expect(convertDriftRecord(record)).toEqual(expected)
-    })
-
-    it('should return an empty array if the input is empty', () => {
-      expect(convertDriftRecord({})).toEqual([])
-    })
-  })
-
   describe('filterDriftRecord', () => {
     it('should filter out drift records with names ending with "id" and uuid values', () => {
       const name = 'driftRecordId'
-      const values = { template: '178d47bcae9540aba4bce725c6c47c8f', instance: '' }
+      const values = { template: '178d47bcae9540aba4bce725c6c47c8f', instance: null }
 
       expect(filterDriftRecord(name, values)).toBe(false)
     })

@@ -1,22 +1,14 @@
 import { Col, Row } from 'antd'
 
-import { TemplateInstanceDriftValue } from '@acx-ui/rc/utils'
+import { ConfigTemplateDriftRecord, ConfigTemplateDriftValueType } from '@acx-ui/rc/utils'
 
-export interface DriftComparisonData {
-  name: string
-  values: {
-    template: TemplateInstanceDriftValue
-    instance: TemplateInstanceDriftValue
-  }
-}
-
-export function DriftComparison (props: DriftComparisonData) {
-  const { name, values } = props
-  const { template, instance } = values
+export function DriftComparison (props: ConfigTemplateDriftRecord) {
+  const { path, data } = props
+  const { template, instance } = data
   const { templateValueBgColor, instanceValueBgColor } = getItemBgColor(template, instance)
 
   return <div>
-    <div style={{ fontWeight: '600' }}>{name}</div>
+    <div style={{ fontWeight: '600' }}>{path}</div>
     <Row style={{ marginBottom: '12px' }}>
       <Col span={12} style={{ backgroundColor: templateValueBgColor }}>
         {convertDriftDisplayValue(template)}
@@ -28,14 +20,14 @@ export function DriftComparison (props: DriftComparisonData) {
   </div>
 }
 
-export function convertDriftDisplayValue (value: TemplateInstanceDriftValue): string {
+export function convertDriftDisplayValue (value: ConfigTemplateDriftValueType): string {
   if (isEmpty(value)) return ''
 
   return value!.toString()
 }
 
 function getItemBgColor (
-  templateValue: TemplateInstanceDriftValue, instanceValue: TemplateInstanceDriftValue
+  templateValue: ConfigTemplateDriftValueType, instanceValue: ConfigTemplateDriftValueType
 ): { templateValueBgColor: string, instanceValueBgColor: string } {
 
   if (templateValue && isEmpty(instanceValue)) {
@@ -56,6 +48,6 @@ function getItemBgColor (
   }
 }
 
-function isEmpty (value: TemplateInstanceDriftValue): boolean {
+function isEmpty (value: ConfigTemplateDriftValueType): boolean {
   return value === null || value === undefined || value === ''
 }

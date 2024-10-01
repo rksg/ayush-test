@@ -3,7 +3,7 @@ import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/dist/q
 /* eslint-disable max-len */
 import { cloneDeep } from 'lodash'
 
-import { MspEc, MspUrlsInfo }     from '@acx-ui/msp/utils'
+import { MspEc, MspUrlsInfo }    from '@acx-ui/msp/utils'
 import {
   AAAPolicyType,
   AAAViewModalType,
@@ -19,11 +19,11 @@ import {
   onSocketActivityChanged,
   transformNetwork,
   NetworkRadiusSettings,
-  TemplateInstanceDriftResponse
+  ConfigTemplateDriftsResponse
 } from '@acx-ui/rc/utils'
-import { baseConfigTemplateApi } from '@acx-ui/store'
-import { RequestPayload }        from '@acx-ui/types'
-import { createHttpRequest }     from '@acx-ui/utils'
+import { baseConfigTemplateApi }       from '@acx-ui/store'
+import { RequestPayload }              from '@acx-ui/types'
+import { batchApi, createHttpRequest } from '@acx-ui/utils'
 
 import { networkApi }                                      from '../network'
 import { fetchRbacNetworkVenueList, updateNetworkVenueFn } from '../networkVenueUtils'
@@ -323,45 +323,15 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       async queryFn ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) {
         const resolvedPayload = payload as { filters?: Record<string, string[]> }
 
-        // const driftInstanceIdsRes = await fetchWithBQ({
-        //   ...createHttpRequest(MspUrlsInfo.getMspCustomersList, params),
-        //   body: JSON.stringify({
-        //     fields: ['id'],
-        //     filters: {
-        //       ...resolvedPayload.filters,
-        //       id: [
-        //         'a48e45a0331b4c7cac85965e3a72021e',
-        //         '20bbe08b90124a26983e6ef811127e6f',
-        //         '1969e24ce9af4348833968096ff6cb47',
-        //         '12a7eb7ac51444ed944c5c8f53526cd5',
-        //         '2c89c84b71ad49398f2ef03ce16c410f',
-        //         'a80624a0549440868a846626084f57c9',
-        //         'd50450cf66824aaeb45a14e0e594e2de',
-        //         'df9d828032274e8f8f6af84736bca3f8',
-        //         'ed956445cbcf4db0b032ebf88ac4bf34',
-        //         '884b986f9dfe4f8598bd5b2c463c1620'
-        //       ]
-        //     }
-        //   })
-        // })
+        const driftInstanceIdsRes = await fetchWithBQ({
+          ...createHttpRequest(ConfigTemplateUrlsInfo.getDriftTenants, params)
+        })
 
-        // if (driftInstanceIdsRes.error) {
-        //   return { error: driftInstanceIdsRes.error as FetchBaseQueryError }
-        // }
+        if (driftInstanceIdsRes.error) {
+          return { error: driftInstanceIdsRes.error as FetchBaseQueryError }
+        }
 
-        // const instanceIds = (driftInstanceIdsRes.data as TableResult<MspEc>).data.map(i => i.id)
-        const instanceIds = [
-          'a48e45a0331b4c7cac85965e3a72021e',
-          '20bbe08b90124a26983e6ef811127e6f',
-          '1969e24ce9af4348833968096ff6cb47',
-          '12a7eb7ac51444ed944c5c8f53526cd5',
-          '2c89c84b71ad49398f2ef03ce16c410f',
-          'a80624a0549440868a846626084f57c9',
-          'd50450cf66824aaeb45a14e0e594e2de',
-          'df9d828032274e8f8f6af84736bca3f8',
-          'ed956445cbcf4db0b032ebf88ac4bf34',
-          '884b986f9dfe4f8598bd5b2c463c1620'
-        ]
+        const instanceIds = (driftInstanceIdsRes.data as TableResult<{ tenantId: string }>).data.map(item => item.tenantId)
 
         const driftInstancesRes = await fetchWithBQ({
           ...createHttpRequest(MspUrlsInfo.getMspCustomersList, params),
@@ -386,43 +356,19 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       },
       providesTags: [{ type: 'ConfigTemplate', id: 'DRIFT' }]
     }),
-    getDriftData: build.query<TemplateInstanceDriftResponse, RequestPayload>({
-      // async queryFn ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) {
-      async queryFn () {
-        const result = await new Promise((resolve) => {
-          setTimeout(() => {
-            resolve({
-              WifiNetwork: {
-                '/wlan/advancedCustomization/qosMirroringEnabled': {
-                  template: true,
-                  instance: null
-                },
-                '/wlan/ssid': {
-                  template: 'raymond-test-int',
-                  instance: 'nms-raymond-test-int.'
-                },
-                '/name': {
-                  template: 'raymond-test-int',
-                  instance: 'nms-raymond-test-int.'
-                }
-              },
-              RadiusOnWifiNetwork: {
-                '/id': {
-                  template: 'ef3644beccdf48ccb4e8cf3ed296070f',
-                  instance: 'dc2146381a874d04a824bdd8c7bb991d'
-                },
-                '/idName': {
-                  template: '',
-                  instance: 'radius-server-name'
-                }
-              }
-            })
-          }, 1500)
-        })
-
-        return { data: result as TemplateInstanceDriftResponse }
-      },
+    getDriftReport: build.query<ConfigTemplateDriftsResponse, RequestPayload>({
+      query: commonQueryFn(ConfigTemplateUrlsInfo.getDriftReport),
       providesTags: [{ type: 'ConfigTemplate', id: 'DRIFT' }]
+    }),
+    patchDriftReport: build.mutation<CommonResult, RequestPayload<{ templateId: string, tenantIds: string[] }>>({
+      async queryFn (args, _queryApi, _extraOptions, fetchWithBQ) {
+        const { payload } = args
+        const requests = payload!.tenantIds.map(tenantId => ({
+          params: { templateId: payload!.templateId, tenantId }
+        }))
+        return batchApi(ConfigTemplateUrlsInfo.patchDriftReport, requests, fetchWithBQ)
+      },
+      invalidatesTags: [{ type: 'ConfigTemplate', id: 'DRIFT' }]
     })
   })
 })
@@ -451,5 +397,6 @@ export const {
   useUpdateNetworkVenueTemplateMutation,
   useAddNetworkVenueTemplatesMutation,
   useGetDriftInstancesQuery,
-  useLazyGetDriftDataQuery
+  useLazyGetDriftReportQuery,
+  usePatchDriftReportMutation
 } = configTemplateApi

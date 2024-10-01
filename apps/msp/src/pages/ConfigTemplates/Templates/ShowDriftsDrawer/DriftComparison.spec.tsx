@@ -1,27 +1,28 @@
-import { render, screen } from '@acx-ui/test-utils'
+import { ConfigTemplateDriftRecord } from '@acx-ui/rc/utils'
+import { render, screen }            from '@acx-ui/test-utils'
 
-import { convertDriftDisplayValue, DriftComparison, DriftComparisonData } from './DriftComparison'
+import { convertDriftDisplayValue, DriftComparison } from './DriftComparison'
 
 describe('DriftComparison', () => {
-  const mockData: DriftComparisonData = {
-    name: 'Test Name',
-    values: {
+  const mockData: ConfigTemplateDriftRecord = {
+    path: 'WifiNetwork',
+    data: {
       template: 'template value',
       instance: 'instance value'
     }
   }
 
-  const mockEmptyTemplateData: DriftComparisonData = {
-    name: 'Empty Template',
-    values: {
+  const mockEmptyTemplateData: ConfigTemplateDriftRecord = {
+    path: 'Empty Template',
+    data: {
       template: '',
       instance: 'instance value'
     }
   }
 
-  const mockEmptyInstanceData: DriftComparisonData = {
-    name: 'Empty Instance',
-    values: {
+  const mockEmptyInstanceData: ConfigTemplateDriftRecord = {
+    path: 'Empty Instance',
+    data: {
       template: 'template value',
       instance: ''
     }
@@ -29,7 +30,7 @@ describe('DriftComparison', () => {
 
   it('renders the component with the correct data', () => {
     render(<DriftComparison {...mockData} />)
-    expect(screen.getByText('Test Name')).toBeInTheDocument()
+    expect(screen.getByText('WifiNetwork')).toBeInTheDocument()
     expect(screen.getByText('template value')).toBeInTheDocument()
     expect(screen.getByText('instance value')).toBeInTheDocument()
   })

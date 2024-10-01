@@ -6,15 +6,16 @@ import { useIntl }             from 'react-intl'
 
 import { Collapse, Loader }                 from '@acx-ui/components'
 import { CollapseActive, CollapseInactive } from '@acx-ui/icons'
-import { useLazyGetDriftDataQuery }         from '@acx-ui/rc/services'
+import { useLazyGetDriftReportQuery }       from '@acx-ui/rc/services'
+import { ConfigTemplateDriftSet }           from '@acx-ui/rc/utils'
 
-import { DriftComparisonSet, DriftComparisonSetData } from './DriftComparisonSet'
-import * as UI                                        from './styledComponents'
-import { transformDriftResponse }                     from './utils'
+import { DriftComparisonSet } from './DriftComparisonSet'
+import * as UI                from './styledComponents'
 
 
 
 export interface DriftInstanceProps {
+  templateId: string
   instanceName: string
   instanceId: string
   updateSelection: (id: string, selected: boolean) => void
@@ -24,10 +25,11 @@ export interface DriftInstanceProps {
 
 export function DriftInstance (props: DriftInstanceProps) {
   const { $t } = useIntl()
-  const { instanceName, instanceId, selected = false, updateSelection, disalbed = false } = props
-  const [ getDriftData, { isLoading: isLoadingDriftData } ] = useLazyGetDriftDataQuery()
+  // eslint-disable-next-line max-len
+  const { templateId, instanceName, instanceId, selected = false, updateSelection, disalbed = false } = props
+  const [ getDriftReport, { isLoading: isLoadingDriftData } ] = useLazyGetDriftReportQuery()
   const [ checked, setChecked ] = useState(selected)
-  const [ driftData, setDriftData ] = useState<DriftComparisonSetData[]>([])
+  const [ driftData, setDriftData ] = useState<ConfigTemplateDriftSet[]>([])
 
   const onCheckboxChange = (checked: boolean) => {
     setChecked(checked)
@@ -35,11 +37,11 @@ export function DriftInstance (props: DriftInstanceProps) {
   }
 
   const onCollapseChange = (key: string | string[]) => {
-    if (!key || key.length === 0) return
-
-    getDriftData({ params: { instanceId } }).then(result => {
-      setDriftData(transformDriftResponse(result.data))
-    })
+    if (key && key.length > 0) {
+      getDriftReport({ params: { templateId, tenantId: instanceId } }).then(result => {
+        setDriftData(result.data ?? [])
+      })
+    }
   }
 
   useEffect(() => {

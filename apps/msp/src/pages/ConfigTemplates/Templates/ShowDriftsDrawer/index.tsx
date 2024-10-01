@@ -9,15 +9,15 @@ import {
   Drawer,
   Loader
 } from '@acx-ui/components'
-import { useGetDriftInstancesQuery } from '@acx-ui/rc/services'
-import { ConfigTemplate }            from '@acx-ui/rc/utils'
+import { useGetDriftInstancesQuery, usePatchDriftReportMutation } from '@acx-ui/rc/services'
+import { ConfigTemplate }                                         from '@acx-ui/rc/utils'
 
 import { MAX_SYNC_EC_TENANTS } from '../../constants'
 import { useEcFilters }        from '../templateUtils'
 
 import { DriftInstance } from './DriftInstance'
 
-interface ShowDriftsDrawerProps {
+export interface ShowDriftsDrawerProps {
   setVisible: (visible: boolean) => void
   selectedTemplate: ConfigTemplate
 }
@@ -30,12 +30,13 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
   // eslint-disable-next-line max-len
   const { data: driftInstances = [], isLoading: isDriftInstancesLoading } = useGetDriftInstancesQuery({
     params: {
-      templateId: selectedTemplate.id
+      templateId: selectedTemplate.id!
     },
     payload: {
       filters: { ...useEcFilters() }
     }
   })
+  const [ patchDriftReport ] = usePatchDriftReportMutation()
 
   const hasReachedTheMaxRecord = (): boolean => {
     return selectedInstances.length >= MAX_SYNC_EC_TENANTS
@@ -45,8 +46,18 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
     setVisible(false)
   }
 
-  const onSync = () => {
-
+  const onSync = async () => {
+    try {
+      await patchDriftReport({
+        payload: {
+          templateId: selectedTemplate.id!,
+          tenantIds: selectedInstances
+        }
+      }).unwrap()
+      onClose()
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
   }
 
   const onInstanceSelecte = (id: string, selected: boolean) => {
@@ -110,6 +121,7 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
           renderItem={(instance) => (
             <List.Item style={{ padding: '0' }}>
               <DriftInstance
+                templateId={selectedTemplate.id!}
                 instanceName={instance.name}
                 instanceId={instance.id}
                 updateSelection={onInstanceSelecte}

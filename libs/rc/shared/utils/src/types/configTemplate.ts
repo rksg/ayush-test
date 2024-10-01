@@ -48,30 +48,60 @@ export interface ApplyConfigTemplatePaylod {
   overrides: Array<{ [key in string]: string | number | boolean | [] }>
 }
 
-export type TemplateInstanceDriftValue = string | number | boolean | null | undefined
+export type ConfigTemplateDriftValueType = string | number | boolean | null | undefined
 
 // eslint-disable-next-line max-len
-export type TemplateInstanceDriftPair = { template: TemplateInstanceDriftValue, instance: TemplateInstanceDriftValue }
+export type ConfigTemplateDriftPair = { template: ConfigTemplateDriftValueType, instance: ConfigTemplateDriftValueType }
 
-export type TemplateInstanceDriftRecord = Record<string, TemplateInstanceDriftPair>
+export type ConfigTemplateDriftRecord = {
+  path: string,
+  data: ConfigTemplateDriftPair
+}
 
-// TemplateInstanceDriftResponse type example:
-// {
-//   WifiNetwork: {
-//     '/wlan/advancedCustomization/qosMirroringEnabled': {
-//       template: true,
-//       instance: false
-//     }
+export type ConfigTemplateDriftSet = {
+  diffName: string,
+  diffData: ConfigTemplateDriftRecord[]
+}
+
+// ----- ConfigTemplateDriftsResponse example -----
+// [
+//   {
+//     diffName: 'WifiNetwork',
+//     diffData: [
+//       {
+//         path: '/wlan/advancedCustomization/qosMirroringEnabled',
+//         data: {
+//           template: true,
+//           instance: false
+//         }
+//       },
+//       {
+//         path: '/wlan/ssid',
+//         data: {
+//           template: 'test-int',
+//           instance: 'nms-test-int'
+//         }
+//       }
+//     ]
 //   },
-//   RadiusOnWifiNetwork: {
-//     '/id': {
-//       template: 'radius-template-id',
-//       instance: 'radius-server-id'
-//     },
-//     '/idName': {
-//       template: 'radius-template-name',
-//       instance: 'radius-server-name'
-//     }
+//   {
+//     diffName: 'RadiusOnWifiNetwork',
+//     diffData: [
+//       {
+//         path: '/id',
+//         data: {
+//           template: 'radius-template-id',
+//           instance: 'radius-server-id'
+//         }
+//       },
+//       {
+//         path: '/idName',
+//         data: {
+//           template: 'radius-template-name',
+//           instance: 'radius-server-name'
+//         }
+//       }
+//     ]
 //   }
-// }
-export type TemplateInstanceDriftResponse = Record<string, TemplateInstanceDriftRecord>
+// ]
+export type ConfigTemplateDriftsResponse = ConfigTemplateDriftSet[]

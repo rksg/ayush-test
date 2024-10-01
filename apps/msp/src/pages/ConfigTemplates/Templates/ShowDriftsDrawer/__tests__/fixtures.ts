@@ -1,4 +1,4 @@
-import { ConfigTemplateType, TemplateInstanceDriftResponse } from '@acx-ui/rc/utils'
+import { ConfigTemplateType, ConfigTemplateDriftsResponse } from '@acx-ui/rc/utils'
 
 export const mockedConfigTemplate = {
   id: '1',
@@ -9,6 +9,16 @@ export const mockedConfigTemplate = {
   type: ConfigTemplateType.NETWORK,
   lastModified: 1690598400000,
   lastApplied: 1690598405000
+}
+
+export const mockedDriftTenants = {
+  page: 1,
+  totalCount: 2,
+  data: [{
+    tenantId: '2242a683a7594d7896385cfef1fe1234'
+  }, {
+    tenantId: '350f3089a8e34509a2913c550faf1234'
+  }]
 }
 
 export const mockedMSPCustomers = {
@@ -50,29 +60,50 @@ export const mockedMSPCustomers = {
   }]
 }
 
-export const mockedDriftResponse: TemplateInstanceDriftResponse = {
-  WifiNetwork: {
-    '/wlan/advancedCustomization/qosMirroringEnabled': {
-      template: true,
-      instance: false
-    },
-    '/wlan/ssid': {
-      template: 'raymond-test-int',
-      instance: 'nms-raymond-test-int.'
-    },
-    '/name': {
-      template: 'raymond-test-int',
-      instance: 'nms-raymond-test-int.'
-    }
+export const mockedDriftResponse: ConfigTemplateDriftsResponse = [
+  {
+    diffName: 'WifiNetwork',
+    diffData: [
+      {
+        path: '/wlan/advancedCustomization/qosMirroringEnabled',
+        data: {
+          template: true,
+          instance: false
+        }
+      },
+      {
+        path: '/wlan/ssid',
+        data: {
+          template: 'test-int',
+          instance: 'nms-test-int'
+        }
+      },
+      {
+        path: '/name',
+        data: {
+          template: 'raymond-test-int',
+          instance: 'nms-raymond-test-int'
+        }
+      }
+    ]
   },
-  RadiusOnWifiNetwork: {
-    '/id': {
-      template: 'ef3644beccdf48ccb4e8cf3ed296070f',
-      instance: 'dc2146381a874d04a824bdd8c7bb991d'
-    },
-    '/idName': {
-      template: 'radius-template-name',
-      instance: 'radius-server-name'
-    }
+  {
+    diffName: 'RadiusOnWifiNetwork',
+    diffData: [
+      {
+        path: '/id',
+        data: {
+          template: 'ef3644beccdf48ccb4e8cf3ed296070f',
+          instance: 'dc2146381a874d04a824bdd8c7bb991d'
+        }
+      },
+      {
+        path: '/idName',
+        data: {
+          template: 'radius-template-name',
+          instance: 'radius-server-name'
+        }
+      }
+    ]
   }
-}
+]

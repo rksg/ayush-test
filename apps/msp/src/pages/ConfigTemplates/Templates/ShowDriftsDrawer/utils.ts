@@ -1,29 +1,14 @@
-import { TemplateInstanceDriftPair, TemplateInstanceDriftRecord, TemplateInstanceDriftResponse, TemplateInstanceDriftValue } from '@acx-ui/rc/utils'
+import { ConfigTemplateDriftPair, ConfigTemplateDriftValueType } from '@acx-ui/rc/utils'
 
-import { DriftComparisonData }    from './DriftComparison'
-import { DriftComparisonSetData } from './DriftComparisonSet'
-// eslint-disable-next-line max-len
-export function transformDriftResponse (data: TemplateInstanceDriftResponse | undefined): DriftComparisonSetData[] {
-  if (!data) return []
+export function filterDriftRecord (name: string, values: ConfigTemplateDriftPair): boolean {
+  if (name.toLowerCase().endsWith('id')) {
+    return !isUuidValue(values.template) && !isUuidValue(values.instance)
+  }
 
-  return Object.entries(data).map(([ category, items ]) => ({
-    category,
-    driftItems: convertDriftRecord(items)
-  }))
+  return true
 }
 
-export function convertDriftRecord (record: TemplateInstanceDriftRecord): DriftComparisonData[] {
-  return Object.entries(record)
-    .filter(([ name, values ]) => filterDriftRecord(name, values))
-    .map(([ name, values ]) => ({ name: convertDriftName(name), values }))
-}
-
-export function filterDriftRecord (name: string, values: TemplateInstanceDriftPair): boolean {
-  if (!name.toLowerCase().endsWith('id')) return true
-  return !isUuidValue(values.template) && !isUuidValue(values.instance)
-}
-
-function isUuidValue (value: TemplateInstanceDriftValue): boolean {
+function isUuidValue (value: ConfigTemplateDriftValueType): boolean {
   return /^[0-9a-fA-F]{32}$/.test((value ?? '').toString())
 }
 

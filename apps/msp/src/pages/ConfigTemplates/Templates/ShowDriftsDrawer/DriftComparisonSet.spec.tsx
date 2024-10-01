@@ -1,20 +1,20 @@
 import userEvent from '@testing-library/user-event'
 
-import { render, screen } from '@acx-ui/test-utils'
+import { ConfigTemplateDriftRecord, ConfigTemplateDriftSet } from '@acx-ui/rc/utils'
+import { render, screen }                                    from '@acx-ui/test-utils'
 
-import { DriftComparisonData }                        from './DriftComparison'
-import { DriftComparisonSet, DriftComparisonSetData } from './DriftComparisonSet'
+import { DriftComparisonSet } from './DriftComparisonSet'
 
 jest.mock('./DriftComparison', () => ({
-  DriftComparison: ({ name }: DriftComparisonData) => <div>{name}</div>
+  DriftComparison: ({ path }: ConfigTemplateDriftRecord) => <div>{path}</div>
 }))
 
 describe('DriftComparisonSet', () => {
-  const mockData: DriftComparisonSetData = {
-    category: 'Test Category',
-    driftItems: [
-      { name: 'Item 1', values: { template: 'template1', instance: 'instance1' } },
-      { name: 'Item 2', values: { template: 'template2', instance: 'instance2' } }
+  const mockData: ConfigTemplateDriftSet = {
+    diffName: 'Test Category',
+    diffData: [
+      { path: 'Item 1', data: { template: 'template1', instance: 'instance1' } },
+      { path: 'Item 2', data: { template: 'template2', instance: 'instance2' } }
     ]
   }
 

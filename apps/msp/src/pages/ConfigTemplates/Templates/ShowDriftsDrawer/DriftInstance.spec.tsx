@@ -1,19 +1,23 @@
 import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { Provider }                                           from '@acx-ui/store'
-import { render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { configTemplateApi }                                              from '@acx-ui/rc/services'
+import { ConfigTemplateDriftSet, ConfigTemplateUrlsInfo }                 from '@acx-ui/rc/utils'
+import { Provider, store }                                                from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { DriftComparisonSetData }            from './DriftComparisonSet'
+import { mockedDriftResponse }               from './__tests__/fixtures'
 import { DriftInstance, DriftInstanceProps } from './DriftInstance'
 
 
 jest.mock('./DriftComparisonSet', () => ({
-  DriftComparisonSet: ({ category }: DriftComparisonSetData) => <div>{category}</div>
+  DriftComparisonSet: ({ diffName }: ConfigTemplateDriftSet) => <div>{diffName}</div>
 }))
 
 describe('DriftInstance Component', () => {
   const mockUpdateSelection = jest.fn()
   const defaultProps: DriftInstanceProps = {
+    templateId: '12345',
     instanceName: 'Test Instance',
     instanceId: '12345',
     updateSelection: mockUpdateSelection
@@ -21,6 +25,15 @@ describe('DriftInstance Component', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
+
+    store.dispatch(configTemplateApi.util.resetApiState())
+
+    mockServer.use(
+      rest.get(
+        ConfigTemplateUrlsInfo.getDriftReport.url,
+        (req, res, ctx) => res(ctx.json(mockedDriftResponse))
+      )
+    )
   })
 
   it('renders the checkbox with the correct initial checked state', async () => {
@@ -52,7 +65,7 @@ describe('DriftInstance Component', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    expect(await screen.findByText('WifiNetwork')).toBeInTheDocument()
+    expect(await screen.findByText(mockedDriftResponse[0].diffName)).toBeInTheDocument()
   })
 
   it('disables the checkbox when disabled prop is true', () => {
