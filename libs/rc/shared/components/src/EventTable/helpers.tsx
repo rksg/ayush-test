@@ -3,7 +3,7 @@ import _                                       from 'lodash'
 import { FormattedMessage, MessageDescriptor } from 'react-intl'
 
 import { Table, TableHighlightFnArgs, Tooltip } from '@acx-ui/components'
-import { Event, replaceStrings }                from '@acx-ui/rc/utils'
+import { Event, replaceStrings, parseTimestampAttribute }                from '@acx-ui/rc/utils'
 import { TenantLink, generatePath }             from '@acx-ui/react-router-dom'
 import { getIntl, noDataDisplay }               from '@acx-ui/utils'
 
@@ -139,14 +139,15 @@ export const getSource = (data: Event, highlightFn?: TableHighlightFnArgs) => {
 }
 
 export const getDescription = (data: Event, highlightFn?: TableHighlightFnArgs) => {
+  const parseData = parseTimestampAttribute(data)
   try {
-    let message = String(data.message && JSON.parse(data.message).message_template)
+    let message = String(parseData.message && JSON.parse(parseData.message).message_template)
       // escape ' by replacing with ''
       .replaceAll("'", "''")
       // escape < { by replacing with '<' or '{'
       .replaceAll(/([<{])/g, "'$1'")
 
-    const template = replaceStrings(message, data, (key) => `<entity>${key}</entity>`)
+    const template = replaceStrings(message, parseData, (key) => `<entity>${key}</entity>`)
     const highlighted = (highlightFn
       ? highlightFn(template, (key) => `<b>${key}</b>`)
       : template) as string
@@ -160,14 +161,14 @@ export const getDescription = (data: Event, highlightFn?: TableHighlightFnArgs) 
       values={{
         entity: (chunks) => <EntityLink
           entityKey={String(chunks[0]) as keyof Event}
-          data={data}
+          data={parseData}
           highlightFn={highlightFn}
         />,
         b: (chunks) => <Table.Highlighter>{chunks}</Table.Highlighter>
       }}
     />
   } catch {
-    return data.message
+    return parseData.message
   }
 }
 
