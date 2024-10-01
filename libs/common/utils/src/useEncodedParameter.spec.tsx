@@ -1,7 +1,7 @@
 import { BrowserRouter, MemoryRouter } from '@acx-ui/react-router-dom'
 import { renderHook }                  from '@acx-ui/test-utils'
 
-import { useEncodedParameter } from './encodedParameter'
+import { useEncodedParameter } from './useEncodedParameter'
 
 describe('useEncodedParameter', () => {
   it('reads and writes search parameters', () => {
