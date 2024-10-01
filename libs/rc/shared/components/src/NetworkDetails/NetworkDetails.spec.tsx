@@ -1,16 +1,16 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
+import { get }   from '@acx-ui/config'
 import {
   CommonRbacUrlsInfo,
   CommonUrlsInfo,
   ConfigTemplateUrlsInfo,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider }                       from '@acx-ui/store'
-import { mockServer, render, screen }     from '@acx-ui/test-utils'
-import { RolesEnum }                      from '@acx-ui/types'
-import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import { Provider }                          from '@acx-ui/store'
+import { mockServer, render, screen }        from '@acx-ui/test-utils'
+import { RaiPermissions, setRaiPermissions } from '@acx-ui/user'
 
 import { networkDetailHeaderData } from './__tests__/fixtures'
 import { NetworkDetails }          from './NetworkDetails'
@@ -69,6 +69,10 @@ const mockedVenuesResult = {
     name: 'My Venue'
   }]
 }
+const mockGet = get as jest.Mock
+jest.mock('@acx-ui/config', () => ({
+  get: jest.fn()
+}))
 
 describe('NetworkDetails', () => {
   beforeEach(() => {
@@ -124,11 +128,9 @@ describe('NetworkDetails', () => {
     expect(screen.getAllByRole('tab')).toHaveLength(6)
   })
 
-  it('should hide incidents when role is READ_ONLY', async () => {
-    setUserProfile({
-      allowedOperations: [],
-      profile: { ...getUserProfile().profile, roles: [RolesEnum.READ_ONLY] }
-    })
+  it('should hide incidents when READ_INCIDENTS permission is false', async () => {
+    mockGet.mockReturnValue('true')
+    setRaiPermissions({ READ_INCIDENTS: false } as RaiPermissions)
     const params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       networkId: '373377b0cb6e46ea8982b1c80aabe1fa',
