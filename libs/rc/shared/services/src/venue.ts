@@ -102,9 +102,9 @@ import {
   EthernetPortProfileUrls,
   EthernetPortProfileViewData
 } from '@acx-ui/rc/utils'
-import { baseVenueApi }                                  from '@acx-ui/store'
-import { RequestPayload }                                from '@acx-ui/types'
-import { batchApi, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
+import { baseVenueApi }                                                        from '@acx-ui/store'
+import { RequestPayload }                                                      from '@acx-ui/types'
+import { APT_QUERY_CACHE_TIME, batchApi, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 import { getNewApViewmodelPayloadFromOld, fetchAppendApPositions } from './apUtils'
 import { fetchRbacAllApGroupNetworkVenueList }                     from './networkVenueUtils'
@@ -148,7 +148,6 @@ export const venueApi = baseVenueApi.injectEndpoints({
           body: payload
         }
       },
-      keepUnusedDataFor: 0,
       providesTags: [{ type: 'Venue', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -211,7 +210,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ? { data: aggregatedList }
           : { error: venueListQuery.error as FetchBaseQueryError }
       },
-      keepUnusedDataFor: 0,
+      keepUnusedDataFor: APT_QUERY_CACHE_TIME,
       providesTags: [{ type: 'Venue', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -289,7 +288,6 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...venueDetailReq
         }
       },
-      keepUnusedDataFor: 0,
       providesTags: [{ type: 'Venue', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -1678,7 +1676,6 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...req
         }
       },
-      keepUnusedDataFor: 0,
       providesTags: [{ type: 'PropertyConfigs', id: 'ID' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -1798,7 +1795,6 @@ export const venueApi = baseVenueApi.injectEndpoints({
           })
         })
       },
-      keepUnusedDataFor: 0,
       providesTags: [{ type: 'PropertyUnit', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),

@@ -46,6 +46,7 @@ export const WlanSecurityFormItems = () => {
     isGuestNetworkTypeWISPr()
   const isCaptivePortalOweEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_OWE) ||
     isGuestNetworkTypeWISPr()
+  const isDeprecateWep = useIsSplitOn(Features.WIFI_WLAN_DEPRECATE_WEP)
 
   useEffect(() => {
     const transNetworkSecurity =
@@ -127,7 +128,10 @@ export const WlanSecurityFormItems = () => {
   const securityOptions = Object.keys(PskWlanSecurityEnum).filter(key => {
     return isGuestNetworkTypeWISPr() || (key !== 'WPAPersonal' && key !== 'WEP')
   }).map((key =>
-    <Select.Option key={key}>{PskWlanSecurityEnum[key as keyof typeof PskWlanSecurityEnum]}
+    <Select.Option key={key} disabled={isDeprecateWep && key === 'WEP'}>
+      {isDeprecateWep && key === 'WEP' ?
+        `${PskWlanSecurityEnum[key as keyof typeof PskWlanSecurityEnum]} (Unsafe)`
+        : PskWlanSecurityEnum[key as keyof typeof PskWlanSecurityEnum]}
     </Select.Option>
   ))
   const onProtocolChange = (value: WlanSecurityEnum) => {
