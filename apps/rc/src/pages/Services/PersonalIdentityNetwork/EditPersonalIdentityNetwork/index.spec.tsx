@@ -22,6 +22,8 @@ import { afterSubmitMessage } from '../PersonalIdentityNetworkForm'
 
 import EditNetworkSegmentation from '.'
 
+const { mockNsgSwitchInfoData, mockNsgData, mockNsgStatsList } = EdgeNSGFixtures
+
 jest.mock('../PersonalIdentityNetworkForm/GeneralSettingsForm', () => ({
   GeneralSettingsForm: () => <div data-testid='GeneralSettingsForm' />
 }))
@@ -40,7 +42,8 @@ jest.mock('../PersonalIdentityNetworkForm/AccessSwitchForm', () => ({
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   // mock API response due to all form steps are mocked
-  useGetNetworkSegmentationGroupByIdQuery: () => ({ data: mockNsgData, isLoading: false })
+  useGetNetworkSegmentationGroupByIdQuery: () => ({ data: mockNsgData, isLoading: false }),
+  useGetNetworkSegmentationViewDataListQuery: () => ({ data: mockNsgStatsList, isLoading: false })
 }))
 jest.mock('../PersonalIdentityNetworkForm/PersonalIdentityNetworkFormContext', () => ({
   ...jest.requireActual('../PersonalIdentityNetworkForm/PersonalIdentityNetworkFormContext'),
@@ -69,7 +72,6 @@ jest.mock('react-router-dom', () => ({
 }))
 
 const updateNsgPath = '/:tenantId/t/services/personalIdentityNetwork/:serviceId/edit'
-const { mockNsgSwitchInfoData, mockNsgData } = EdgeNSGFixtures
 
 describe('Edit PersonalIdentityNetwork', () => {
   let params: { tenantId: string, serviceId: string }

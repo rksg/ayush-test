@@ -108,7 +108,7 @@ const CheckboxGroup = ({ wlanData, mloEnabled, wifi7Enabled } :
             .filter(value => value === true)
             .length
           if (mloEnabled && numberOfSelected < MUST_SELECTED) {
-            return Promise.reject($t({ defaultMessage: 'Please select two radios' }))
+            return Promise.reject($t({ defaultMessage: 'Please select at least two radios' }))
           }
 
           return Promise.resolve()}

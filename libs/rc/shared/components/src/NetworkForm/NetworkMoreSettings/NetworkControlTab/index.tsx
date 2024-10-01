@@ -1,35 +1,26 @@
 /* eslint-disable max-len */
 import { createContext, useContext, useEffect, useState } from 'react'
 
-import { Checkbox, Form, InputNumber, Select, Space, Switch } from 'antd'
-import _                                                      from 'lodash'
-import { useIntl }                                            from 'react-intl'
+import { Checkbox, Form, InputNumber, Switch } from 'antd'
+import { useIntl }                             from 'react-intl'
 
-import { StepsForm }                                                                        from '@acx-ui/components'
-import { Features }                                                                         from '@acx-ui/feature-toggle'
-import { useGetNetworkSegmentationViewDataListQuery, useGetTunnelProfileViewDataListQuery } from '@acx-ui/rc/services'
+import { StepsForm }   from '@acx-ui/components'
 import {
   DnsProxyContextType,
   DnsProxyRule,
-  ServiceOperation,
-  ServiceType,
   WifiCallingSetting,
   WifiCallingSettingContextType,
-  getServiceDetailsLink,
-  TunnelTypeEnum,
   ConfigTemplateType } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
 
-import { useIsEdgeFeatureReady, useIsEdgeReady }                                       from '../../../useEdgeActions'
-import NetworkFormContext                                                              from '../../NetworkFormContext'
-import { useNetworkVxLanTunnelProfileInfo, useServicePolicyEnabledWithConfigTemplate } from '../../utils'
-import { AccessControlForm }                                                           from '../AccessControlForm'
-import ClientIsolationForm                                                             from '../ClientIsolation/ClientIsolationForm'
-import { DhcpOption82Form }                                                            from '../DhcpOption82Form'
-import { DnsProxyModal }                                                               from '../DnsProxyModal'
-import * as UI                                                                         from '../styledComponents'
-import { WifiCallingSettingModal }                                                     from '../WifiCallingSettingModal'
-import WifiCallingSettingTable                                                         from '../WifiCallingSettingTable'
+import NetworkFormContext                            from '../../NetworkFormContext'
+import { useServicePolicyEnabledWithConfigTemplate } from '../../utils'
+import { AccessControlForm }                         from '../AccessControlForm'
+import ClientIsolationForm                           from '../ClientIsolation/ClientIsolationForm'
+import { DhcpOption82Form }                          from '../DhcpOption82Form'
+import { DnsProxyModal }                             from '../DnsProxyModal'
+import * as UI                                       from '../styledComponents'
+import { WifiCallingSettingModal }                   from '../WifiCallingSettingModal'
+import WifiCallingSettingTable                       from '../WifiCallingSettingTable'
 
 
 export const DnsProxyContext = createContext({} as DnsProxyContextType)
@@ -45,7 +36,6 @@ export function NetworkControlTab () {
 
   const labelWidth = '250px'
 
-  const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isWifiCallingSupported = useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.WIFI_CALLING)
 
   const form = Form.useFormInstance()
@@ -92,48 +82,6 @@ export function NetworkControlTab () {
     }
     return Promise.resolve()
   }
-
-  const { enableTunnel, enableVxLan, vxLanTunnels } = useNetworkVxLanTunnelProfileInfo(data)
-  const isEdgeEnabled = useIsEdgeReady()
-  const tunnelProfileDefaultPayload = {
-    fields: ['name', 'id', 'type'],
-    pageSize: 10000,
-    sortField: 'name',
-    sortOrder: 'ASC'
-  }
-
-  const { tunnelOptions = [], isLoading: isTunnelLoading } = useGetTunnelProfileViewDataListQuery({
-    payload: tunnelProfileDefaultPayload
-  }, {
-    skip: !isEdgeEnabled || !enableTunnel,
-    selectFromResult: ({ data, isLoading }) => {
-      return {
-        tunnelOptions: data?.data
-          .filter(item =>
-          // due to 'type' might be empty(=== TunnelTypeEnum.VXLAN)
-            (!enableVxLan && item.type === TunnelTypeEnum.VLAN_VXLAN)
-          || (enableVxLan && item.type !== TunnelTypeEnum.VLAN_VXLAN))
-          .map(item => ({ label: item.name, value: item.id })),
-        isLoading
-      }
-    }
-  })
-
-  const tunnelProfileId = _.get(vxLanTunnels, ['0', 'id'])
-  const {
-    nsgId
-  } = useGetNetworkSegmentationViewDataListQuery({
-    payload: {
-      filters: { vxlanTunnelProfileId: [ tunnelProfileId ] }
-    }
-  }, {
-    skip: !!!tunnelProfileId || !!!isEdgeEnabled || !isEdgePinReady,
-    selectFromResult: ({ data }) => {
-      return {
-        nsgId: _.get(data?.data.filter(item => item.networkIds.length > 0), ['0', 'id'])
-      }
-    }
-  })
 
   return (
     <>
@@ -286,51 +234,6 @@ export function NetworkControlTab () {
       <DhcpOption82Form labelWidth={'240px'} />
 
       <AccessControlForm/>
-
-      { enableVxLan &&
-      <Form.Item
-        label={$t({ defaultMessage: 'Tunnel Profile' })}
-        children={
-          <Select
-            value={tunnelProfileId}
-            loading={isTunnelLoading}
-            options={tunnelOptions}
-            disabled={true}
-          />
-        }
-      />
-      }
-
-      { enableVxLan &&
-        <Space size={1}>
-          <UI.InfoIcon />
-          <UI.Description>
-            {
-              $t({
-                defaultMessage: `All networks under the same Personal Identity Network
-                share the same tunnel profile. Go `
-              })
-            }
-            &nbsp;
-            <Space size={1}></Space>
-            { nsgId && isEdgePinReady &&
-            <TenantLink to={getServiceDetailsLink({
-              type: ServiceType.NETWORK_SEGMENTATION,
-              oper: ServiceOperation.DETAIL,
-              serviceId: nsgId!
-            })}>
-              { $t({ defaultMessage: 'here' }) }
-            </TenantLink>
-            }
-            &nbsp;
-            {
-              $t({
-                defaultMessage: 'to change'
-              })
-            }
-          </UI.Description>
-        </Space>
-      }
     </>
   )
 }

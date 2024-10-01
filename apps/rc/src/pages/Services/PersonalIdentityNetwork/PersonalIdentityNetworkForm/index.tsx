@@ -5,7 +5,7 @@ import { omit }                                from 'lodash'
 import { useIntl }                             from 'react-intl'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
-import { showActionModal, StepsForm, useStepFormContext } from '@acx-ui/components'
+import { showActionModal, StepsForm } from '@acx-ui/components'
 import {
   CatchErrorResponse,
   CommonErrorsResult,
@@ -38,7 +38,7 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
   const params = useParams()
   const navigate = useNavigate()
   const location = useLocation()
-  const { initialValues: formInitialValues } = useStepFormContext()
+  const { initialValues: formInitialValues } = props
   const linkToServices = useTenantLink(getServiceListRoutePath(true))
   const previousPath = (location as LocationExtended)?.state?.from?.pathname
 
@@ -54,6 +54,7 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
         dhcpInfoId: formData.dhcpId,
         dhcpPoolId: formData.poolId
       }],
+      networkIds: formData.networkIds,
       distributionSwitchInfos: formData.distributionSwitchInfos?.map(ds => omit(
         ds, ['accessSwitches', 'name'])),
       accessSwitchInfos: formData.accessSwitchInfos?.map(as => omit(
@@ -72,7 +73,6 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
               reject(result)
             }
 
-            redirectPreviousPage(navigate, previousPath, linkToServices)
           }
           // need to catch basic service profile failed
         }] as unknown[]
@@ -80,6 +80,8 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
         if (props.editMode) funcArgs.unshift(formInitialValues! as PersonalIdentityNetworkFormData)
         await props.onFinish.apply(null, funcArgs).catch(reject)
       })
+
+      redirectPreviousPage(navigate, previousPath, linkToServices)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
       const overwriteMsg = afterSubmitMessage(error as CatchErrorResponse,
@@ -111,6 +113,8 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
           }
         })
       }
+
+      redirectPreviousPage(navigate, previousPath, linkToServices)
     }
   }
 
@@ -120,7 +124,7 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
       form={props.form}
       onCancel={() => redirectPreviousPage(navigate, previousPath, linkToServices)}
       onFinish={handleFinish}
-      initialValues={props.initialValues}
+      initialValues={formInitialValues}
     >
       {
         props.steps.map((item, index) =>

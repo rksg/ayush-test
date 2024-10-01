@@ -37,11 +37,25 @@ export const PreviewContainer = styled.div<({ hasBackgroundImage: boolean })>`
 
 export const Title = styled.div`
   font-weight: 600;
-  padding-bottom: 4px;
+  padding: inherit;
+  width: inherit;
+
+  ${({ style })=> `color: ${style?.color}`};
+
+  .ant-typography {
+    ${({ style })=> `color: ${style?.color}`};
+  }
 `
 
 export const Body = styled.div`
-  padding: 20px 0;
+  padding: 24px 8px;
+  width: inherit;
+
+  ${({ style })=> `color: ${style?.color}`};
+
+  .ant-typography {
+    ${({ style })=> `color: ${style?.color}`};
+  }
 `
 
 export const PoweredByContainer = styled.div`
