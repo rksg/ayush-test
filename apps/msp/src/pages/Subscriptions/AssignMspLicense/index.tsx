@@ -45,6 +45,7 @@ import * as UI from '../styledComponent'
 interface SubscriptionAssignmentForm {
   startDate: string
   serviceExpirationDate: string
+  trialServiceExpirationDate: string
   wifiLicenses?: number
   switchLicenses?: number
   apswLicenses?: number
@@ -120,6 +121,7 @@ export function AssignMspLicense () {
   const [availableApswTrialLicense, setAvailableApswTrialLicense] = useState(0)
   const [assignedLicense, setAssignedLicense] = useState([] as MspAssignmentHistory[])
   const [customDate, setCustomeDate] = useState(true)
+  const [customTrialDate, setCustomeTrialDate] = useState(true)
   const [subscriptionStartDate, setSubscriptionStartDate] = useState<moment.Moment>()
   // const [subscriptionEndDate, setSubscriptionEndDate] = useState<moment.Moment>()
 
@@ -127,6 +129,8 @@ export function AssignMspLicense () {
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
   const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
+  const isSeparateServicedateEnabled =
+    useIsSplitOn(Features.ENTITLEMENT_SEPARATE_SERVICEDATE_TOGGLE)
 
   const { data: licenseSummary } = useMspAssignmentSummaryQuery({ params: useParams() })
   const { data: assignment } =
@@ -185,7 +189,9 @@ export function AssignMspLicense () {
 
         isDeviceAgnosticEnabled ?
           form.setFieldsValue({
-            serviceExpirationDate: moment(apsw[0]?.dateExpires || moment().add(30,'days')),
+            serviceExpirationDate: moment(apsw[0]?.expirationDate || moment().add(30,'days')),
+            trialServiceExpirationDate: isSeparateServicedateEnabled
+              ? moment(apswTrial[0]?.expirationDate || moment().add(30,'days')) : '',
             apswLicenses: apswLic,
             apswTrialLicenses: apswTrialLic
           }) :
@@ -266,6 +272,9 @@ export function AssignMspLicense () {
         }
         // trial license assignment
         if (availableApswTrialLicense) {
+          const trialExpirationDate = isSeparateServicedateEnabled
+            ? EntitlementUtil.getServiceStartDate((ecFormData.trialServiceExpirationDate))
+            : EntitlementUtil.getServiceStartDate((ecFormData.serviceExpirationDate))
           const apswTrialAssignId =
             isEntitlementRbacApiEnabled ? getDeviceAssignmentId(EntitlementDeviceType.APSW, true)
               : getDeviceAssignmentId(EntitlementDeviceType.MSP_APSW, true)
@@ -274,7 +283,7 @@ export function AssignMspLicense () {
             quantityApswTrial > 0 ?
               updateAssignment.push({
                 startDate: today,
-                endDate: expirationDate,
+                endDate: trialExpirationDate,
                 quantity: quantityApswTrial,
                 assignmentId: apswTrialAssignId
               }) :
@@ -340,7 +349,7 @@ export function AssignMspLicense () {
         const updatePayload = isEntitlementRbacApiEnabled
           ? {
             quantity: updateAssignment[0].quantity,
-            expirationDate: expirationDate }
+            expirationDate: updateAssignment[0].endDate }
           : updateAssignment
         await updateMspSubscription({ params: { tenantId: tenantId, assignmentId: assignId },
           payload: updatePayload, enableRbac: isEntitlementRbacApiEnabled }).unwrap()
@@ -348,7 +357,7 @@ export function AssignMspLicense () {
           const assignId = updateAssignment[1].assignmentId.toString()
           const updatePayload = {
             quantity: updateAssignment[1].quantity,
-            expirationDate: expirationDate }
+            expirationDate: updateAssignment[1].endDate }
           await updateMspSubscription({ params: { tenantId: tenantId, assignmentId: assignId },
             payload: updatePayload, enableRbac: isEntitlementRbacApiEnabled }).unwrap()
         }
@@ -404,28 +413,45 @@ export function AssignMspLicense () {
 
   }
 
+  const getSelectExpirationDate = (value: string) => {
+    let expirationDate = moment().add(30,'days')
+    if (value === DateSelectionEnum.THIRTY_DAYS) {
+      expirationDate = moment().add(30,'days')
+    } else if (value === DateSelectionEnum.SIXTY_DAYS) {
+      expirationDate = moment().add(60,'days')
+    } else if (value === DateSelectionEnum.NINETY_DAYS) {
+      expirationDate = moment().add(90,'days')
+    } else if (value === DateSelectionEnum.ONE_YEAR) {
+      expirationDate = moment().add(1,'years')
+    } else if (value === DateSelectionEnum.THREE_YEARS) {
+      expirationDate = moment().add(3,'years')
+    } else if (value === DateSelectionEnum.FIVE_YEARS) {
+      expirationDate = moment().add(5,'years')
+    }
+    return expirationDate
+  }
+
   const onSelectChange = (value: string) => {
     if (value === DateSelectionEnum.CUSTOME_DATE) {
       setCustomeDate(true)
     } else {
-      let expirationDate = moment().add(30,'days')
-      if (value === DateSelectionEnum.THIRTY_DAYS) {
-        expirationDate = moment().add(30,'days')
-      } else if (value === DateSelectionEnum.SIXTY_DAYS) {
-        expirationDate = moment().add(60,'days')
-      } else if (value === DateSelectionEnum.NINETY_DAYS) {
-        expirationDate = moment().add(90,'days')
-      } else if (value === DateSelectionEnum.ONE_YEAR) {
-        expirationDate = moment().add(1,'years')
-      } else if (value === DateSelectionEnum.THREE_YEARS) {
-        expirationDate = moment().add(3,'years')
-      } else if (value === DateSelectionEnum.FIVE_YEARS) {
-        expirationDate = moment().add(5,'years')
-      }
+      const expirationDate = getSelectExpirationDate(value)
       form.setFieldsValue({
         serviceExpirationDate: expirationDate
       })
       setCustomeDate(false)
+    }
+  }
+
+  const onTrialSelectChange = (value: string) => {
+    if (value === DateSelectionEnum.CUSTOME_DATE) {
+      setCustomeTrialDate(true)
+    } else {
+      const expirationDate = getSelectExpirationDate(value)
+      form.setFieldsValue({
+        trialServiceExpirationDate: expirationDate
+      })
+      setCustomeTrialDate(false)
     }
   }
 
@@ -580,10 +606,154 @@ export function AssignMspLicense () {
     </div>
   }
 
+  const EditSeparateCustomerSubscriptionForm = () => {
+    return <>
+      {(availableApswLicense > 0) && <div>
+        <Subtitle level={4}>
+          { intl.$t({ defaultMessage: 'Paid Subscriptions' }) }</Subtitle>
+        <UI.FieldLabelSubs2 width='315px'>
+          <label>{intl.$t({ defaultMessage: 'Assigned Device Networking' })}</label>
+          <Form.Item
+            name='apswLicenses'
+            label=''
+            initialValue={0}
+            rules={[
+              { required: true,
+                message: intl.$t({ defaultMessage: 'Please enter device subscription' })
+              },
+              { validator: (_, value) => fieldValidator(value, availableApswLicense) }
+            ]}
+            children={<InputNumber/>}
+            style={{ paddingRight: '20px' }}
+          />
+          <label>
+            {intl.$t({ defaultMessage: 'paid licenses out of {availableApswLicense} available' }, {
+              availableApswLicense: availableApswLicense })}
+          </label>
+        </UI.FieldLabelSubs2>
+
+        <UI.FieldLabel2 width='275px'>
+          <label>{intl.$t({ defaultMessage: 'Subscription Start Date' })}</label>
+          <label>{formatter(DateFormatEnum.DateFormat)(subscriptionStartDate)}</label>
+        </UI.FieldLabel2>
+
+        <UI.FieldLabeServiceDate width='275px' style={{ marginTop: '10px' }}>
+          <label>{intl.$t({ defaultMessage: 'Paid Licenses Expiration Date' })}</label>
+          <Form.Item
+            name='expirationDateSelection'
+            label=''
+            rules={[{ required: true } ]}
+            initialValue={DateSelectionEnum.CUSTOME_DATE}
+            children={
+              <Select onChange={onSelectChange}>
+                {
+                  Object.entries(DateSelectionEnum).map(([label, value]) => (
+                    <Option key={label} value={value}>{intl.$t(dateDisplayText[value])}</Option>
+                  ))
+                }
+              </Select>
+            }
+          />
+          <Form.Item
+            name='serviceExpirationDate'
+            label=''
+            rules={[
+              { required: true,
+                message: intl.$t({ defaultMessage: 'Please select expiration date' })
+              }
+            ]}
+            children={
+              <DatePicker
+                format={formatter(DateFormatEnum.DateFormat)}
+                disabled={!customDate}
+                disabledDate={(current) => {
+                  return current && current < moment().endOf('day')
+                }}
+                style={{ marginLeft: '4px' }}
+              />
+            }
+          />
+        </UI.FieldLabeServiceDate>
+      </div>}
+
+      {availableApswTrialLicense > 0 && <div style={{ marginTop: '25px' }}>
+        <Subtitle level={4}>
+          { intl.$t({ defaultMessage: 'Trial Subscriptions' }) }</Subtitle>
+        <UI.FieldLabelSubs2 width='315px'>
+          <label>{intl.$t({ defaultMessage: 'Assigned Device Networking' })}</label>
+          <Form.Item
+            name='apswTrialLicenses'
+            label=''
+            initialValue={0}
+            rules={[
+              { required: true,
+                message: intl.$t({ defaultMessage: 'Please enter device trial subscription' })
+              },
+              { validator: (_, value) => fieldValidator(value, availableApswTrialLicense) }
+            ]}
+            children={<InputNumber/>}
+            style={{ paddingRight: '20px' }}
+          />
+          <label>
+            {
+            // eslint-disable-next-line max-len
+              intl.$t({ defaultMessage: 'trial licenses out of {availableApswTrialLicense} available' }, {
+                availableApswTrialLicense: availableApswTrialLicense })
+            }
+          </label>
+        </UI.FieldLabelSubs2>
+
+        <UI.FieldLabel2 width='275px'>
+          <label>{intl.$t({ defaultMessage: 'Subscription Start Date' })}</label>
+          <label>{formatter(DateFormatEnum.DateFormat)(subscriptionStartDate)}</label>
+        </UI.FieldLabel2>
+
+        <UI.FieldLabeServiceDate width='275px' style={{ marginTop: '10px' }}>
+          <label>{intl.$t({ defaultMessage: 'Trial Licenses Expiration Date' })}</label>
+          <Form.Item
+            name='trialExpirationDateSelection'
+            label=''
+            rules={[{ required: true } ]}
+            initialValue={DateSelectionEnum.CUSTOME_DATE}
+            children={
+              <Select onChange={onTrialSelectChange}>
+                {
+                  Object.entries(DateSelectionEnum).map(([label, value]) => (
+                    <Option key={label} value={value}>{intl.$t(dateDisplayText[value])}</Option>
+                  ))
+                }
+              </Select>
+            }
+          />
+          <Form.Item
+            name='trialServiceExpirationDate'
+            label=''
+            rules={[
+              { required: true,
+                message: intl.$t({ defaultMessage: 'Please select expiration date' })
+              }
+            ]}
+            children={
+              <DatePicker
+                format={formatter(DateFormatEnum.DateFormat)}
+                disabled={!customTrialDate}
+                disabledDate={(current) => {
+                  return current && current < moment().endOf('day')
+                }}
+                style={{ marginLeft: '4px' }}
+              />
+            }
+          />
+        </UI.FieldLabeServiceDate>
+      </div>}
+
+    </>
+  }
+
   return (
     <>
       <PageHeader
-        title={intl.$t({ defaultMessage: 'Assign Subscription' })}
+        title={intl.$t({ defaultMessage: 'Assign Subscriptions' })}
         breadcrumb={[
           { text: intl.$t({ defaultMessage: ' Subscriptions' }),
             link: '/msplicenses', tenantType: 'v' }
@@ -596,7 +766,8 @@ export function AssignMspLicense () {
         buttonLabel={{ submit: intl.$t({ defaultMessage: 'Save' }) }}
       >
         <StepsForm.StepForm>
-          <EditCustomerSubscriptionForm></EditCustomerSubscriptionForm>
+          {isSeparateServicedateEnabled ? <EditSeparateCustomerSubscriptionForm/>
+            : <EditCustomerSubscriptionForm/>}
         </StepsForm.StepForm>
 
       </StepsForm>
