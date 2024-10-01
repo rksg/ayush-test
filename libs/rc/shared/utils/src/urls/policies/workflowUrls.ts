@@ -19,7 +19,7 @@ type WorkflowBaseUrlType = 'searchWorkflows' | 'getWorkflowDetail'
 
 type WorkflowActionUrlType = 'createAction' | 'patchAction'
   | 'deleteAction' | 'getActionById' | 'getAllActionsByType'
-  | 'queryActions' | 'uploadFile' | 'deleteFile'
+  | 'queryActions' | 'uploadFile' | 'deleteFile' | 'getFile'
 
 type WorkflowStepUrlType = 'createWorkflowOption' | 'getWorkflowOptionById'
   | 'getWorkflowOptionsByStepId' | 'createWorkflowStepUnderOption' | 'deleteSplitOptionById'
@@ -299,10 +299,29 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
   },
   uploadFile: {
     method: 'post',
-    url: `${WorkflowActionBaseUrl}/files`
+    url: `${WorkflowActionBaseUrl}/files`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   deleteFile: {
     method: 'delete',
-    url: `${WorkflowActionBaseUrl}/files`
+    url: `${WorkflowActionBaseUrl}/files/:fileId`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  getFile: {
+    method: 'get',
+    url: `${WorkflowActionBaseUrl}/files/:fileId`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }
