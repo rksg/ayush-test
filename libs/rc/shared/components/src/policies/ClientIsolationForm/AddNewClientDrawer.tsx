@@ -3,10 +3,10 @@ import { useEffect } from 'react'
 import { Form, FormInstance, Input } from 'antd'
 import { useIntl }                   from 'react-intl'
 
-import { Drawer }                  from '@acx-ui/components'
+import { Drawer }               from '@acx-ui/components'
 import {
   ClientIsolationClient,
-  colonSeparatedMacAddressRegExp
+  MacRegistrationFilterRegExp
 } from '@acx-ui/rc/utils'
 
 export interface AddNewClientDrawerProps {
@@ -118,7 +118,7 @@ function AddNewClientForm (props: AddNewClientFormProps) {
         name='mac'
         rules={[
           { required: true },
-          { validator: (_, value) => colonSeparatedMacAddressRegExp(value) },
+          { validator: (_, value) => MacRegistrationFilterRegExp(value) },
           { validator: () => macDuplicationValidator() }
         ]}
         children={<Input />}
