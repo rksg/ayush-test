@@ -144,16 +144,17 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
         })
       }
     }),
-    updateWorkflowIgnoreErrors: build.mutation<CommonAsyncResponse, RequestPayload<Workflow> 
+    updateWorkflowIgnoreErrors: build.mutation<CommonAsyncResponse, RequestPayload<Workflow>
       & { callback?: () => void }>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WorkflowUrls.updateWorkflow, params, { ...ignoreErrorModal })
-        return {
-          ...req,
-          body: JSON.stringify(payload)
+        query: ({ params, payload }) => {
+          const req =
+            createHttpRequest(WorkflowUrls.updateWorkflow, params, { ...ignoreErrorModal })
+          return {
+            ...req,
+            body: JSON.stringify(payload)
+          }
         }
-      }
-    }),
+      }),
     searchWorkflowList: build.query<TableResult<Workflow>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createNewTableHttpRequest({

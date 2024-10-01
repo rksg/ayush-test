@@ -148,7 +148,7 @@ export function WorkflowForm (props: WorkflowFormProps) {
   const onSubmit = async (shouldPublish: boolean) => {
     try {
       const workflowValidValue = form.getFieldValue('workflowValid')
-      if(!workflowValidValue) {
+      if(shouldPublish && !workflowValidValue) {
         setWorkflowModalOpen(true)
       } else {
         // eslint-disable-next-line max-len
