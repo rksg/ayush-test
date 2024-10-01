@@ -16,7 +16,7 @@ export function AupPreview (props: GenericActionPreviewProps<AupAction>) {
   const { data, ...rest } = props
   useEffect(() => {
     getFile()
-  }, [data?.aupFileLocation])
+  }, [])
 
   const [getFileUrl] = useLazyGetFileQuery()
   const [fileUrl, setfileUrl] = useState('')
