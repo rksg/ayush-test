@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any, max-len */
 import { useEffect, useMemo, useState } from 'react'
 
 import { FormInstance }            from 'antd'
@@ -613,7 +613,6 @@ export function useAccessControlActivation () {
     useMutationFn: useDeactivateAccessControlProfileOnWifiNetworkMutation,
     useTemplateMutationFn: useDeactivateAccessControlProfileTemplateOnWifiNetworkMutation
   })
-  const { networkId } = useParams()
 
   const accessControlWifiActionMap = {
     l2AclPolicyId: {

@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars, max-len */
 import { useEffect, useRef, useState, createContext } from 'react'
 
-import { MutationDefinition }                                            from '@reduxjs/toolkit/query'
 import { Form }                                                          from 'antd'
 import { get, isEqual, isNil, isNull, isUndefined, merge, omit, omitBy } from 'lodash'
 import { defineMessage, useIntl }                                        from 'react-intl'
@@ -723,6 +722,7 @@ export function NetworkForm (props:{
   const processAddData = function (data: NetworkSaveData) {
     const processWlanAdvanced3MLO = (data: NetworkSaveData) => handleWlanAdvanced3MLO(data, wifi7Mlo3LinkFlag)
     const processGuestMoreSetting = (data: NetworkSaveData) => handleGuestMoreSetting(data)
+    // eslint-disable-next-line max-len
     const processClientIsolationAllowlist = (data: NetworkSaveData) => updateClientIsolationAllowlist(
       // omit id to handle clone
       omit(data,
