@@ -10,10 +10,11 @@ export interface WorkflowActionPreviewModalProps {
   step?: WorkflowStep,
   actionData?: GenericActionData,
   onClose?: ()=>void
+  disablePortalDesign?: boolean
 }
 
 export function WorkflowActionPreviewModal (props: WorkflowActionPreviewModalProps) {
-  const { workflowId, onClose, step, actionData } = props
+  const { workflowId, onClose, step, actionData, disablePortalDesign } = props
   return (
     <Modal
       destroyOnClose={true}
@@ -31,7 +32,11 @@ export function WorkflowActionPreviewModal (props: WorkflowActionPreviewModalPro
         onClose?.()
       }}
     >
-      <WorkflowActionPreview workflowId={workflowId} step={step} actionData={actionData}/>
+      <WorkflowActionPreview
+        workflowId={workflowId}
+        step={step}
+        actionData={actionData}
+        disablePortalDesign={disablePortalDesign}/>
     </Modal>
   )
 }

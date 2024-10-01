@@ -43,6 +43,7 @@ export interface WorkflowActionPreviewProps {
   workflowId: string
   step?: WorkflowStep,
   actionData?: GenericActionData
+  disablePortalDesign?: boolean
 }
 export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
   const [marked, setMarked] = useState({
@@ -52,7 +53,7 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
   })
   const [screen, setScreen] = useState('desk')
   const { $t } = useIntl()
-  const { workflowId, step, actionData } = props
+  const { workflowId, step, actionData, disablePortalDesign } = props
   const [selectedStepId, setSelectedStepId] = useState(step?.id)
   const [stepMap, setStepMap] = useState(new Map<string, WorkflowStep>())
   const [UIConfig, setUIConfig] = useState<UIConfiguration>(DefaultUIConfiguration)
@@ -185,7 +186,7 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
                 paddingRight: 80,
                 paddingTop: 4
               }}>
-              {hasCrossVenuesPermission({ needGlobalPermission: true }) &&
+              {hasCrossVenuesPermission({ needGlobalPermission: true }) && !disablePortalDesign &&
                 <div>
                   <UI.Button type='default'
                     size='small'
@@ -206,9 +207,9 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
           style={{ height: '750px' }}>
           <UI.LayoutView $type={screen}
             style={{
-              backgroundImage: 'url("'+ UIConfig?.backgroundImage+'")',
-              backgroundColor: UIConfig.uiColorSchema?.backgroundColor,
-              backgroundSize: 'contain'
+              backgroundImage: UIConfig.backgroundImage ?
+                'url("'+ UIConfig?.backgroundImage+'")' : undefined,
+              backgroundColor: UIConfig.uiColorSchema?.backgroundColor
             }}>
             <CommonPreviewContainer
               ui={UIConfig}
