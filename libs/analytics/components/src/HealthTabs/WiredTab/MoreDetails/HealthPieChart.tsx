@@ -1,6 +1,5 @@
 import { Space }                     from 'antd'
 import { useIntl, FormattedMessage } from 'react-intl'
-import AutoSizer                     from 'react-virtualized-auto-sizer'
 
 import { DonutChart, NoData, qualitativeColorSet, Loader } from '@acx-ui/components'
 import { get }                                             from '@acx-ui/config'
@@ -9,6 +8,7 @@ import { formatter }                                       from '@acx-ui/formatt
 import { InformationOutlined }                             from '@acx-ui/icons'
 import { AnalyticsFilter }                                 from '@acx-ui/utils'
 
+import { FixedAutoSizer }         from '../../../DescriptionSection/styledComponents'
 import { showTopNPieChartResult } from '../../../Health/HealthDrillDown/config'
 
 import {
@@ -17,8 +17,8 @@ import {
   TopNByPortCongestionResult, TopNByStormPortCountResult,
   showTopNTableResult
 } from './config'
-import { usePieChartDataQuery }                 from './services'
-import { PieChartTitle, HealthPieChartWrapper } from './styledComponents'
+import { usePieChartDataQuery } from './services'
+import { PieChartTitle }        from './styledComponents'
 
 type PieChartData = {
   mac: string
@@ -116,7 +116,7 @@ export const MoreDetailsPieChart = ({
     ? queryResults?.data?.length
     : queryResults?.data?.filter(({ mac }) => mac !== 'Others').length
   const showTopNResult = enableWithOthers ? showTopNPieChartResult : showTopNTableResult
-  const Title = <PieChartTitle>
+  const heading = <PieChartTitle>
     <FormattedMessage
       defaultMessage={`<b>{count}</b> {title} {totalCount, plural,
       one {Switch}
@@ -147,39 +147,28 @@ export const MoreDetailsPieChart = ({
   const total = pieData?.reduce((total, { value }) => total + value, 0)
   return (
     <Loader states={[queryResults]}>
-      <HealthPieChartWrapper>
-        {Title}
-        <div style={{ height: 260, minWidth: 430 }}>
-          {pieData && pieData.length > 0
-            ?
-            <AutoSizer defaultHeight={150}>
-              {({ width, height }) => (
-                <DonutChart
-                  data={pieData}
-                  style={{ height, width }}
-                  legend='name'
-                  size={'x-large'}
-                  showTotal={false}
-                  labelTextStyle={{
-                    overflow: 'truncate',
-                    width: 170
-                  }}
-                  showLegend
-                  dataFormatter={tooltipFormatter(total, formatter('countFormat'))} />
-              )}
-            </AutoSizer>
-
-            : <NoData />
-          }
+      <FixedAutoSizer>{({ width, height }) =>
+        <div style={{ width, height }}>
+          {heading}
+          {pieData && pieData.length > 0 ? <DonutChart
+            data={pieData}
+            style={{ width, height: Math.max(width * 0.5, 190) }} // min height 190px to have space to show "Others"
+            legend='name'
+            size={'x-large'}
+            showTotal={false}
+            labelTextStyle={{ overflow: 'truncate', width: width * 0.5 }} // 50% of width
+            showLegend
+            dataFormatter={tooltipFormatter(total, formatter('countFormat'))}
+          /> : <NoData />}
+          {hasOthers &&
+            <Space align='start' style={{ width }}>
+              <InformationOutlined />
+              {$t({
+                defaultMessage: `Detailed breakup of all items beyond
+              Top {n} can be explored using Data Studio custom charts.` }, { n })}
+            </Space>}
         </div>
-      </HealthPieChartWrapper>
-      {hasOthers &&
-        <Space align='start' >
-          <InformationOutlined />
-          {$t({
-            defaultMessage: `Detailed breakup of all items beyond
-          Top {n} can be explored using Data Studio custom charts.` }, { n })}
-        </Space>}
+      }</FixedAutoSizer>
     </Loader>
   )
 }

@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 
 import { Space }                                     from 'antd'
 import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
-import AutoSizer                                     from 'react-virtualized-auto-sizer'
 
 import { getSelectedNodePath, mapCodeToReason } from '@acx-ui/analytics/utils'
 import {
@@ -132,7 +131,8 @@ export const tooltipFormatter = (
 
 function getHealthPieChart (
   data: { key: string; value: number; name: string; color: string }[],
-  dataFormatter: (value: unknown, tz?: string | undefined) => string
+  dataFormatter: (value: unknown, tz?: string | undefined) => string,
+  size: { width: number; height: number }
 ) {
 
   let tops = data.slice(0, topCount)
@@ -145,34 +145,27 @@ function getHealthPieChart (
 
   const total = tops.reduce((total, { value }) => value + total, 0)
   return (
-    data.length > 0
-      ? <AutoSizer defaultHeight={150}>
-        {({ width, height }) => (
-          <DonutChart
-            data={tops}
-            style={{ height, width }}
-            legend='name'
-            size={'x-large'}
-            showLegend
-            showTotal={false}
-            labelTextStyle={{
-              overflow: 'truncate',
-              width: 140
-            }}
-            dataFormatter={tooltipFormatter(total, dataFormatter)}
-          />
-        )}
-      </AutoSizer>
-      : <NoData />
+    data.length > 0 ? <DonutChart
+      data={tops}
+      style={{ width: size.width, height: Math.max(size.width * 0.5, 190) }} // min height 190px to have space to show "Others"
+      legend='name'
+      size={'x-large'}
+      showLegend
+      showTotal={false}
+      labelTextStyle={{ overflow: 'truncate', width: size.width * 0.5 }} // 50% of width
+      dataFormatter={tooltipFormatter(total, dataFormatter)}
+    /> : <NoData />
   )
 }
 
 export const HealthPieChart = ({
+  size,
   filters,
   queryType,
   selectedStage,
   valueFormatter
 }: {
+  size: { width: number; height: number }
   filters: AnalyticsFilter
   queryType: DrilldownSelection
   selectedStage: Stages
@@ -210,7 +203,7 @@ export const HealthPieChart = ({
     .map(({ key, data }) => ({
       label: titleMap[key as TabKeyType],
       value: key,
-      children: getHealthPieChart(data, valueFormatter)
+      children: getHealthPieChart(data, valueFormatter, size)
     }))
   const count = showTopNPieChartResult(
     $t,
@@ -221,33 +214,29 @@ export const HealthPieChart = ({
   useEffect(() => { setChartKey(tabDetails?.[0]?.value as TabKeyType) }, [tabDetails.length])
 
   return (
-    <Loader states={[queryResults]}>
-      <UI.HealthPieChartWrapper>
-        <UI.PieChartTitle>
-          <b>{$t(stageLabels[selectedStage])}</b>{' '}
-          {chartKey === 'events'
-            ? $t(
-              { defaultMessage: '{count} {title}' },
-              { count, title: titleMap[chartKey] }
-            )
-            : $t(
-              { defaultMessage: '{count} Impacted {title}' },
-              { count, title: titleMap[chartKey] }
-            )}
-        </UI.PieChartTitle>
-        <div style={{ height: 260, minWidth: 430 }}>
-          <ContentSwitcher
-            key={selectedStage}
-            value={chartKey}
-            defaultValue={'wlans'}
-            tabDetails={tabDetails}
-            align='left'
-            size='small'
-            onChange={key => setChartKey(key as TabKeyType)}
-            noPadding
-          />
-        </div>
-      </UI.HealthPieChartWrapper>
+    <Loader states={[queryResults]} style={size}>
+      <UI.PieChartTitle>
+        <b>{$t(stageLabels[selectedStage])}</b>{' '}
+        {chartKey === 'events'
+          ? $t(
+            { defaultMessage: '{count} {title}' },
+            { count, title: titleMap[chartKey] }
+          )
+          : $t(
+            { defaultMessage: '{count} Impacted {title}' },
+            { count, title: titleMap[chartKey] }
+          )}
+      </UI.PieChartTitle>
+      <ContentSwitcher
+        key={selectedStage}
+        value={chartKey}
+        defaultValue={'wlans'}
+        tabDetails={tabDetails}
+        align='left'
+        size='small'
+        onChange={key => setChartKey(key as TabKeyType)}
+        noPadding
+      />
       {(tabsList.find((tab) => tab.key === chartKey)?.data.length || 0) > topCount &&
         <Space align='start'>
           <InformationOutlined />

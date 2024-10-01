@@ -15,7 +15,6 @@ export const PieChartTitle = styled.div`
   padding-bottom: 10px;
 `
 export const HealthPieChartWrapper = styled.div`
-  height: 100%;
   .ant-card-body {
     height: 100%
   }

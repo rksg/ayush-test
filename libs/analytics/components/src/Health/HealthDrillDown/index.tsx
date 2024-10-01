@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import { isNull } from 'lodash'
+import AutoSizer  from 'react-virtualized-auto-sizer'
 
 import { GridCol, GridRow, Loader, cssStr } from '@acx-ui/components'
 import { formatter }                        from '@acx-ui/formatter'
@@ -96,7 +97,6 @@ const HealthDrillDown = (props: {
   const isConnectionFailure = drilldownSelection === CONNECTIONFAILURE
   const funnelChartData = isConnectionFailure ? connectionFailureResults : ttcResults
   const format = formatter(isConnectionFailure ? 'countFormat' : 'durationFormat')
-  const height = '355px'
   return drilldownSelection ? (
     <GridRow>
       <GridCol col={{ span: 24 }}>
@@ -119,13 +119,16 @@ const HealthDrillDown = (props: {
           <GridCol col={{ span: 24 }} style={{ height: '15px' }}>
             <Separator><Point $xPos={xPos} /></Separator>
           </GridCol>
-          <GridCol col={{ span: 9 }} style={{ height }}>
-            <HealthPieChart
-              filters={filters}
-              queryType={drilldownSelection}
-              selectedStage={selectedStage}
-              valueFormatter={format}
-            />
+          <GridCol col={{ span: 9 }}>
+            <AutoSizer>{(size) =>
+              <HealthPieChart
+                size={size}
+                filters={filters}
+                queryType={drilldownSelection}
+                selectedStage={selectedStage}
+                valueFormatter={format}
+              />
+            }</AutoSizer>
           </GridCol>
           <GridCol col={{ span: 15 }}>
             <ImpactedClientsTable filters={filters}

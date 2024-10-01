@@ -1,5 +1,6 @@
 import { Typography } from 'antd'
 import { useIntl }    from 'react-intl'
+import AutoSizer      from 'react-virtualized-auto-sizer'
 
 import { Drawer, GridCol, GridRow } from '@acx-ui/components'
 import { AnalyticsFilter }          from '@acx-ui/utils'
@@ -56,7 +57,6 @@ export const MoreDetailsDrawer = (props: MoreDetailsDrawerProps) => {
     }
   ]
   const { title, pieTitle, type } = mapping.filter(item => item.type === widget)[0]
-  const height = '355px'
   return (
     <Drawer
       title={
@@ -69,11 +69,11 @@ export const MoreDetailsDrawer = (props: MoreDetailsDrawerProps) => {
       width={'80%'}
       visible={visible}
       onClose={onClose}
-      children={
-        <GridRow>
-          <GridCol col={{ span: 24 }} key={`drawer-${type}`} style={{ height: 220, minWidth: 380 }}>
+      children={<AutoSizer>{(size) =>
+        <GridRow style={size}>
+          <GridCol col={{ span: 24 }} key={`drawer-${type}`}>
             <GridRow style={{ paddingTop: 10 }}>
-              <GridCol col={{ span: 9 }} key={`pie-${type}`} style={{ height }}>
+              <GridCol col={{ span: 9 }} key={`pie-${type}`}>
                 <MoreDetailsPieChart
                   filters={filters}
                   queryType={type}
@@ -92,7 +92,7 @@ export const MoreDetailsDrawer = (props: MoreDetailsDrawerProps) => {
             </GridRow>
           </GridCol>
         </GridRow>
-      }
+      }</AutoSizer>}
     />
   )
 }
