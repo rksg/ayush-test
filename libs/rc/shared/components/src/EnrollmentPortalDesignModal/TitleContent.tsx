@@ -74,7 +74,7 @@ export function TitleContent (props: TitleProps) {
   return (
     <PopOver content={<Widget
       color={value.uiColorSchema.fontHeaderColor}
-      size={value.uiStyleSchema.titleFontSize}
+      size={value.uiStyleSchema.headerFontSize}
       onColorChange={onColorChange}
       onSizeChange={onSizeChange}/>}
     visible={clicked}
@@ -87,7 +87,7 @@ export function TitleContent (props: TitleProps) {
         value={$t({ defaultMessage: 'Title text style' })}
         placeholder='titletext'
         style={{
-          fontSize: value.uiStyleSchema.titleFontSize,
+          fontSize: value.uiStyleSchema.headerFontSize,
           color: value.uiColorSchema.fontHeaderColor,
           cursor: cursor,
           outline: outline,

@@ -90,7 +90,7 @@ export const RecommandFirmwareVersions = () => {
           {$t({ defaultMessage: 'Latest firmware version by AP Models:' })}
         </Subtitle>
         {firmwareVersionsDataByApModel.map(version =>
-          <UI.VersionLabel2>
+          <UI.VersionLabel2 key={version.id}>
             <label style={{ fontWeight: 'bold' }}>{version.id+':'}</label>
             <label>{[...version.supportedApModels].sort().join(', ')}</label>
           </UI.VersionLabel2>
