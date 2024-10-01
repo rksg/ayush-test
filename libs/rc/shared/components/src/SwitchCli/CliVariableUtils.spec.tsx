@@ -8,7 +8,6 @@ import {
 } from '@acx-ui/rc/utils'
 import { render, renderHook, screen } from '@acx-ui/test-utils'
 
-
 import {
   formatVariableValue,
   formatContentWithLimit,
@@ -293,6 +292,29 @@ describe('Test renderVariableTitle function', () => {
 })
 
 describe('Test renderVariableValue function', () => {
+  const switchList = [{
+    serialNumber: 'FMF3250Q04R',
+    model: 'ICX7150-C08P',
+    name: 'FMF3250Q04R',
+    deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
+    venueName: 'My-Venue',
+    tenantId: 'tenant-id'
+  }, {
+    serialNumber: 'FMF3250Q05R',
+    model: 'ICX7150-C08P',
+    name: 'FMF3250Q05R',
+    deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
+    venueName: 'My-Venue',
+    tenantId: 'tenant-id'
+  }, {
+    serialNumber: 'FMF3250Q06R',
+    model: 'ICX7150-C08P',
+    name: 'FMF3250Q06R - REAL',
+    deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
+    venueName: 'My-Venue',
+    tenantId: 'tenant-id'
+  }]
+
   it('should render correctly with the new variable format', async () => {
     const setVisible = jest.fn()
     const [range, ip, string] = [{
@@ -319,33 +341,10 @@ describe('Test renderVariableValue function', () => {
       ]
     }] as CliTemplateVariable[]
 
-    const switchList = [{
-      serialNumber: 'FMF3250Q04R',
-      model: 'ICX7150-C08P',
-      name: 'FMF3250Q04R',
-      deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
-      venueName: 'My-Venue',
-      tenantId: 'tenant-id'
-    }, {
-      serialNumber: 'FMF3250Q05R',
-      model: 'ICX7150-C08P',
-      name: 'FMF3250Q05R',
-      deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
-      venueName: 'My-Venue',
-      tenantId: 'tenant-id'
-    }, {
-      serialNumber: 'FMF3250Q06R',
-      model: 'ICX7150-C08P',
-      name: 'FMF3250Q06R - REAL',
-      deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
-      venueName: 'My-Venue',
-      tenantId: 'tenant-id'
-    }]
-
     const { asFragment } = render(<>
-      { renderVariableValue(range!, switchList!, jest.fn(), jest.fn(), setVisible, true) }
-      { renderVariableValue(ip!, switchList!, jest.fn(), jest.fn(), setVisible, true) }
-      { renderVariableValue(string!, switchList!, jest.fn(), jest.fn(), setVisible, true) }
+      { renderVariableValue(range!, switchList, jest.fn(), jest.fn(), setVisible, true) }
+      { renderVariableValue(ip!, switchList, jest.fn(), jest.fn(), setVisible, true) }
+      { renderVariableValue(string!, switchList, jest.fn(), jest.fn(), setVisible, true) }
     </>)
 
     expect(asFragment()).toMatchSnapshot()
@@ -368,33 +367,10 @@ describe('Test renderVariableValue function', () => {
       value: 'test string'
     }] as CliTemplateVariable[]
 
-    const switchList = [{
-      serialNumber: 'FMF3250Q04R',
-      model: 'ICX7150-C08P',
-      name: 'FMF3250Q04R',
-      deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
-      venueName: 'My-Venue',
-      tenantId: 'tenant-id'
-    }, {
-      serialNumber: 'FMF3250Q05R',
-      model: 'ICX7150-C08P',
-      name: 'FMF3250Q05R',
-      deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
-      venueName: 'My-Venue',
-      tenantId: 'tenant-id'
-    }, {
-      serialNumber: 'FMF3250Q06R',
-      model: 'ICX7150-C08P',
-      name: 'FMF3250Q06R - REAL',
-      deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
-      venueName: 'My-Venue',
-      tenantId: 'tenant-id'
-    }]
-
     const { asFragment } = render(<>
-      { renderVariableValue(range!, switchList!, jest.fn(), jest.fn(), jest.fn(), false) }
-      { renderVariableValue(ip!, switchList!, jest.fn(), jest.fn(), jest.fn(), false) }
-      { renderVariableValue(string!, switchList!, jest.fn(), jest.fn(), jest.fn(), false) }
+      { renderVariableValue(range!, switchList, jest.fn(), jest.fn(), jest.fn(), false) }
+      { renderVariableValue(ip!, switchList, jest.fn(), jest.fn(), jest.fn(), false) }
+      { renderVariableValue(string!, switchList, jest.fn(), jest.fn(), jest.fn(), false) }
     </>)
 
     expect(asFragment()).toMatchSnapshot()

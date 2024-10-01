@@ -52,6 +52,7 @@ import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../ImportFileDr
 import { CliVariableModal } from './CliVariableModal'
 import {
   getVariableSeparator,
+  MAX_VARIABLE_COUNT,
   renderVariableTitle,
   renderVariableValue,
   VariableType
@@ -101,7 +102,6 @@ const cliExamplesTooltip = <FormattedMessage
   }}
 />
 
-export const maxVariableCount = 200
 const cliTemplatesPayload = {
   fields: ['name', 'id', 'venueSwitches'],
   pageSize: 9999,
@@ -429,7 +429,7 @@ export function CliStepConfiguration (props: {
           <Tabs.TabPane tab={$t({ defaultMessage: 'Variables' })} key='variables'>
             <Space style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <Tooltip
-                title={variableList?.length >= maxVariableCount
+                title={variableList?.length >= MAX_VARIABLE_COUNT
                   ? $t(SwitchCliMessages.CLI_VARIABLES_REACH_MAX) : ''
                 }
               >
@@ -437,7 +437,7 @@ export function CliStepConfiguration (props: {
                   <Button type='link'
                     data-testid='add-variable-btn'
                     size='small'
-                    disabled={variableList?.length >= maxVariableCount}
+                    disabled={variableList?.length >= MAX_VARIABLE_COUNT}
                     onClick={() => {
                       setVariableModalvisible(true)
                       setVariableModalEditMode(false)

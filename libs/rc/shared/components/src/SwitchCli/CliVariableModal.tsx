@@ -22,7 +22,7 @@ import { getVariableSeparator, variableFormData } from './CliVariableUtils'
 import {
   AllowedSwitchObjList,
   getCustomizeFields,
-  getVariableTemplate,
+  getVariableFields,
   VariableType
 } from './CliVariableUtils'
 
@@ -139,7 +139,6 @@ export function CliVariableModal (props: {
       label={$t({ defaultMessage: 'Variable Type' })}
       initialValue={selectType}
       rules={[{ required: true }]}
-
       children={<Select
         data-testid='variable-type'
         value={selectType}
@@ -164,34 +163,34 @@ export function CliVariableModal (props: {
     {selectType === VariableType.ADDRESS && (
       isCustomizedVariableEnabled
         ? <UI.CustomizedSection>
-          { getVariableTemplate(VariableType.ADDRESS, form) }
+          { getVariableFields(VariableType.ADDRESS, form) }
           { getCustomizeFields(
             switchList, VariableType.ADDRESS, customizedRequiredFields, form)
           }
         </UI.CustomizedSection>
-        : getVariableTemplate(VariableType.ADDRESS, form)
+        : getVariableFields(VariableType.ADDRESS, form)
     )}
 
     {selectType === VariableType.RANGE && (
       isCustomizedVariableEnabled
         ? <UI.CustomizedSection>
-          { getVariableTemplate(VariableType.RANGE, form) }
+          { getVariableFields(VariableType.RANGE, form) }
           { getCustomizeFields(
             switchList, VariableType.RANGE, customizedRequiredFields, form)
           }
         </UI.CustomizedSection>
-        : getVariableTemplate(VariableType.RANGE, form)
+        : getVariableFields(VariableType.RANGE, form)
     )}
 
     {selectType === VariableType.STRING && (
       isCustomizedVariableEnabled
         ? <UI.CustomizedSection>
-          { getVariableTemplate(VariableType.STRING, form, isCustomizedVariableEnabled) }
+          { getVariableFields(VariableType.STRING, form, isCustomizedVariableEnabled) }
           { getCustomizeFields(
             switchList, VariableType.STRING, customizedRequiredFields, form)
           }
         </UI.CustomizedSection>
-        : getVariableTemplate(VariableType.STRING, form)
+        : getVariableFields(VariableType.STRING, form)
     )}
   </Form>
 

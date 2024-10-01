@@ -149,6 +149,15 @@ export function CliProfileForm () {
   const transformSaveData = (data: CliConfiguration) => {
     const { name, cli, overwrite, variables } = data
     const customizedSwitchVenues = getCustomizedSwitchVenues(variables, allowedSwitchList)
+    const transformedVariables = variables?.map(v => ({
+      ...v,
+      ...(v?.switchVariables ? {
+        switchVariables: v?.switchVariables.map(s => ({
+          ...s,
+          serialNumbers: isArray(s.serialNumbers) ? s.serialNumbers : [s.serialNumbers]
+        }))
+      } : {})
+    }))
 
     return {
       name,
@@ -159,15 +168,7 @@ export function CliProfileForm () {
         name,
         cli,
         overwrite,
-        variables: variables?.map(v => ({
-          ...v,
-          ...(v?.switchVariables ? {
-            switchVariables: v?.switchVariables.map(s => ({
-              ...s,
-              serialNumbers: isArray(s.serialNumbers) ? s.serialNumbers : [s.serialNumbers]
-            }))
-          } : {})
-        }))
+        variables: transformedVariables
       },
       venues: _.uniq([
         ...( data?.venues || []),

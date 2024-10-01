@@ -745,12 +745,54 @@ describe('Cli Profile Form', () => {
         await userEvent.click(await screen.findByRole('tab', { name: 'Variables' }))
         await screen.findAllByText(/iptest/)
         const editVarBtns = await screen.findAllByTestId('edit-var-btn')
-        await userEvent.click(editVarBtns[0])
+        await userEvent.click(editVarBtns[0]) // IP address
         await userEvent.click(await screen.findByRole('menuitem', { name: 'Edit' }))
 
         const dialog = await screen.findByRole('dialog')
         await screen.findByText('Edit Variable')
+        expect(within(dialog).queryByRole('button', { name: 'Customize' })).toBeNull()
+        expect(await within(dialog).findAllByText(/IP Address/)).toHaveLength(4)
+
         await userEvent.click(await within(dialog).findByRole('button', { name: 'Cancel' }))
+        await waitFor(() => {
+          expect(dialog).not.toBeVisible()
+        })
+      })
+
+      it('should edit custom variable correctly', async () => {
+        jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_LEVEL_CLI_PROFILE)
+        render(<Provider><CliProfileForm /></Provider>, {
+          route: { params, path: '/:tenantId/networks/wired/:configType/cli/:profileId/:action' }
+        })
+
+        await waitFor(() => {
+          expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+        })
+        expect(await screen.findByText('Edit CLI Configuration Profile')).toBeVisible()
+
+        await userEvent.click(await screen.findByRole('button', { name: 'CLI Configuration' }))
+        await screen.findByText('CLI commands')
+
+        // open edit variable modal
+        await userEvent.click(await screen.findByRole('tab', { name: 'Variables' }))
+        await screen.findAllByText(/iptest/)
+        const editVarBtns = await screen.findAllByTestId('edit-var-btn')
+        await userEvent.click(editVarBtns[1]) // Range
+        await userEvent.click(await screen.findByRole('menuitem', { name: 'Edit' }))
+
+        const dialog = await screen.findByRole('dialog')
+        await screen.findByText('Edit Variable')
+        expect(within(dialog).queryByRole('button', { name: 'Customize' })).toBeNull()
+
+        const customizedForm = await within(dialog).findByTestId('customized-form')
+        const customizedInput = await within(customizedForm).findByTestId('customized-input-0')
+        await userEvent.clear(customizedInput)
+        await userEvent.type(customizedInput, '4')
+        await userEvent.click(await within(dialog).findByRole('button', { name: 'OK' }))
+
+        await waitFor(() => {
+          expect(dialog).not.toBeVisible()
+        })
       })
 
       it('should customize variable correctly', async () => {
@@ -771,19 +813,28 @@ describe('Cli Profile Form', () => {
         await userEvent.click(await screen.findByRole('tab', { name: 'Variables' }))
         await screen.findAllByText(/iptest/)
         const editVarBtns = await screen.findAllByTestId('edit-var-btn')
-        await userEvent.click(editVarBtns[2])
+        await userEvent.click(editVarBtns[2]) // String
         await userEvent.click(await screen.findByRole('menuitem', { name: 'Edit' }))
 
         const dialog = await screen.findByRole('dialog')
         await screen.findByText('Edit Variable')
         expect(await within(dialog).findByRole('button', { name: 'Customize' })).toBeVisible()
         await userEvent.click(await within(dialog).findByRole('button', { name: 'Customize' }))
-        await await within(dialog).findByText('Add Switch')
+        expect(await within(dialog).findByText('Add Switch')).toBeVisible()
 
-        // TODO
-        // const combobox = await within(dialog).findAllByRole('combobox')
-        // await userEvent.click(combobox[0]) // customized select
-        // await userEvent.selectOptions(combobox[0], 'FMF3250Q05R')
+        const customizedForm = await within(dialog).findByTestId('customized-form')
+        const customizedSelect = await within(customizedForm).findAllByTestId('rc-Select')
+        await userEvent.click(customizedSelect[0])
+
+        await userEvent.click(await within(dialog).findByRole('button', { name: 'OK' }))
+        expect(await within(dialog).findByText('Please enter Switch')).toBeVisible()
+        await userEvent.click(await within(dialog).findByRole('deleteBtn'))
+        await userEvent.click(await within(dialog).findByRole('button', { name: 'Cancel' }))
+
+        await waitFor(() => {
+          expect(dialog).not.toBeVisible()
+        })
+        expect(await screen.findAllByRole('button', { name: '1 Switch(es)' })).toHaveLength(1)
       })
 
       it('should render messages correctly', async () => {

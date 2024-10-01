@@ -45,7 +45,7 @@ export const CustomizedSettingsDrawer = (props: {
     }
   },
   {
-    title: 'Venue',
+    title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
     dataIndex: 'venueName',
     key: 'venueName'
   }]

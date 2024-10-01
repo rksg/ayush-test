@@ -1,4 +1,4 @@
-import { maxVariableCount } from '../../../SwitchCli/CliStepConfiguration'
+import { MAX_VARIABLE_COUNT } from '../../../SwitchCli/CliVariableUtils'
 
 export const venues = [
   { id: 'a98653366d2240b9ae370e48fab3a9a1', name: 'My-Venue', operationalSwitches: 2 },
@@ -96,7 +96,7 @@ export const cliTemplate = {
 
 export const cliTemplateWith200Variables = {
   ...cliTemplate,
-  variables: Array.from({ length: maxVariableCount }, (_, i) => {
+  variables: Array.from({ length: MAX_VARIABLE_COUNT }, (_, i) => {
     return { name: `v${i+1}`, type: 'STRING', value: 'aaaa' }
   })
 }

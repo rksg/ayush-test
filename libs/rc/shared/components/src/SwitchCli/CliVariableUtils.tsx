@@ -27,6 +27,7 @@ import * as UI from './styledComponents'
 
 import { SwitchSettings } from './'
 
+export const MAX_VARIABLE_COUNT = 200
 export const MAX_LENGTH_OF_STRING = 20
 export const MAX_LENGTH_OF_CUSTOMIZED_STRING = 10000
 export const MAX_LINES = 25
@@ -117,7 +118,7 @@ export function getVariableColor (type: string) {
   return colorMap[variableType]
 }
 
-export const getVariableTemplate = (
+export const getVariableFields = (
   type: string,
   form: FormInstance,
   isCustomizedVariableEnabled?: boolean
@@ -315,7 +316,7 @@ export const getCustomizeButtonDisabled = (
 
   switch (type) {
     case VariableType.ADDRESS:
-      return !allRequiredFieldsFilled(requiredFields.slice(0,3))
+      return !allRequiredFieldsFilled(requiredFields.slice(0, 3))
     case VariableType.RANGE:
       return !allRequiredFieldsFilled(requiredFields.slice(3, 5))
     case VariableType.STRING:
@@ -337,7 +338,7 @@ export const getCustomizeFields = (
       (fields, { add, remove }) => (
         <>
           {!!fields?.length && <Divider />}
-          <UI.CustomizedFields>
+          <UI.CustomizedFields data-testid='customized-form'>
             {!!fields?.length && <>
               <UI.CustomizedSubtitle level={5}>
                 { $t({ defaultMessage: 'Switch' }) }
