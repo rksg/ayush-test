@@ -9,14 +9,11 @@ import { richTextFormatValues } from '../../common/richTextFormatValues'
 import { ScheduleTiming }       from '../../common/ScheduleTiming'
 import { Intent }               from '../../useIntentDetailsQuery'
 
-const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-
 export function Summary () {
   const { $t } = useIntl()
   const { form } = useStepFormContext<Intent>()
   const isEnabled = form.getFieldValue('preferences').enable
   const enableExcludedHours = form.getFieldValue('enableExcludedHours')
-  const excludedHours = form.getFieldValue('preferences').excludedHours
   return <Row gutter={20}>
     <Col span={16}>
       <StepsForm.Title children={$t({ defaultMessage: 'Summary' })} />
@@ -26,12 +23,7 @@ export function Summary () {
           {enableExcludedHours && <Form.Item
             label={$t({ defaultMessage: 'Hours not applied for EcoFlex' })}
           >
-            {DAYS.map(day => {
-              const hours = excludedHours[day.toLowerCase()]
-              return <div key={`${day}_summary`}>
-                {day}: {hours.join(', ')}
-              </div>
-            })}
+            {$t({ defaultMessage: 'PowerSave will not be triggered during specific hours set in the Settings.' })}
           </Form.Item>
           }
         </>
