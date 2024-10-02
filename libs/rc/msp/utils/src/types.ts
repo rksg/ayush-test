@@ -536,8 +536,8 @@ export enum MspEcAccountType {
 }
 
 export interface LicenseAttentionNotes {
-  attentionNotes: {
+  data: {
     summary?: string,
-    details?: string[]
+    details?: string
   }[]
 }

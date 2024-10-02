@@ -4,10 +4,10 @@ import _                    from 'lodash'
 import { useIntl }          from 'react-intl'
 import { FormattedMessage } from 'react-intl'
 
-import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                      from '@acx-ui/formatter'
-import { useGetMspEntitlementBannersQuery }               from '@acx-ui/msp/services'
-import { useEntitlementBannersQuery, useGetBannersQuery } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                                               from '@acx-ui/formatter'
+import { useGetEntitlementsAttentionNotesQuery, useGetMspEntitlementBannersQuery } from '@acx-ui/msp/services'
+import { useEntitlementBannersQuery, useGetBannersQuery }                          from '@acx-ui/rc/services'
 import {
   LicenseBannerTypeEnum,
   EntitlementBanner,
@@ -25,26 +25,6 @@ import {
   MSPLicenseBannerDescMapping } from './contentsMap'
 import useViewport from './hooks/useViewport'
 import * as UI     from './styledComponents'
-
-const fakeAttentionNotes =
-{
-  attentionNotes: [
-    {
-      // eslint-disable-next-line max-len
-      summary: 'On January 1st, 2025, RUCKUS One will stop adding 5% courtesy licenses to the MSP subscriptions',
-      details: [
-        `As of this date, MSP subscriptions with a starting date before Jan 1st, 
-        2025 will continue to carry their courtesy 5% until their expiration`,
-        `All MSP subscriptions starting on January 1st, 
-        2025 or after will not receive the 5% courtesy licenses`
-      ]
-    },
-    {
-      // eslint-disable-next-line max-len
-      summary: 'On March 1, 2025 RUCKUS One will start enforcing subscription expiration policy, which may have an impact on your network operation.'
-    }
-  ]
-}
 
 const MAX_VIEWPORT_CHANGE = 1510
 const getBulbIcon = (expireType:LicenseBannerTypeEnum | undefined) => {
@@ -108,15 +88,31 @@ export function LicenseBanner (props: BannerProps) {
 
   const isFFEnabled = useIsSplitOn(Features.LICENSE_BANNER)
   const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
+  const isComplianceNotesEnabled = useIsSplitOn(Features.ENTITLEMENT_COMPLIANCE_NOTES_TOGGLE)
 
   const [expireList, setExpireList] = useState<ExpireInfo[]>([])
 
   const params = useParams()
+  const notesPayload = {
+    page: 1,
+    pageSize: 20,
+    fields: ['summary', 'details'],
+    sortField: 'status',
+    sortOrder: 'DESC',
+    filters: {
+      type: ['STOP_COURTESY'],
+      tenantType: ['MSP', 'ALL'],
+      status: ['VALID'],
+      licenseCheck: true
+    }
+  }
 
   const { data: bannerData } = useEntitlementBannersQuery({ params },
     { skip: isMSPUser || isEntitlementRbacApiEnabled })
   const { data: mspBannerData } = useGetMspEntitlementBannersQuery({ params },
     { skip: !isMSPUser || isEntitlementRbacApiEnabled })
+  const { data: queryData } = useGetEntitlementsAttentionNotesQuery(
+    { params, payload: notesPayload }, { skip: !isComplianceNotesEnabled })
 
   const recPayload = {
     filters: {
@@ -194,7 +190,7 @@ export function LicenseBanner (props: BannerProps) {
     const isCritical = _.some(expireList, (expireInfo)=>{
       return getIsExpired(expireInfo)
     })
-    const attentionNotes = !_.isEmpty(fakeAttentionNotes?.attentionNotes)
+    const attentionNotes = !_.isEmpty(queryData?.data)
     const expandBtn = <UI.LicenseWarningBtn
       data-testid='arrowBtn'
       isCritical={isCritical}
@@ -255,7 +251,7 @@ export function LicenseBanner (props: BannerProps) {
 
   const licenseRender = ()=>{
     if(expireList && expireList.length===1 && width>MAX_VIEWPORT_CHANGE
-      && _.isEmpty(fakeAttentionNotes?.attentionNotes)){
+      && _.isEmpty(queryData?.data)){
       const expireInfo = _.first(expireList)
 
       const isExpired = expireInfo && getIsExpired(expireInfo)
@@ -296,7 +292,7 @@ export function LicenseBanner (props: BannerProps) {
     ? <UI.LicenseWrapper>
       {licenseRender()}
     </UI.LicenseWrapper>
-    : !_.isEmpty(fakeAttentionNotes?.attentionNotes)
+    : !_.isEmpty(queryData?.data)
       ? <UI.LicenseWrapper>
         {notesRender()}
       </UI.LicenseWrapper>
