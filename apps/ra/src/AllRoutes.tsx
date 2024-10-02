@@ -183,19 +183,15 @@ function AllRoutes () {
           )}
         />
         <Route path='developers'
-          element={check('READ_WEBHOOKS',
-            <AccountManagement tab={AccountManagementTabEnum.DEVELOPERS}/>
-          )}
+          element={<AccountManagement tab={AccountManagementTabEnum.DEVELOPERS}/>}
         >
           <Route path='webhooks'
             element={check('READ_WEBHOOKS',
-              <AccountManagement tab={AccountManagementTabEnum.DEVELOPERS}/>
+              <AccountManagement tab={AccountManagementTabEnum.WEBHOOKS}/>
             )}
           />
-          <Route path='application%20tokens'
-            element={check('READ_WEBHOOKS',
-              <AccountManagement tab={AccountManagementTabEnum.DEVELOPERS}/>
-            )}
+          <Route path='applicationTokens'
+            element={<AccountManagement tab={AccountManagementTabEnum.APPLICATION_TOKENS}/>}
           />
         </Route>
         <Route path='webhooks'

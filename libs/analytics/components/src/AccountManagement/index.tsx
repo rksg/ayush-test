@@ -21,7 +21,8 @@ export enum AccountManagementTabEnum {
   LICENSES = 'license',
   SCHEDULES = 'schedules',
   WEBHOOKS = 'webhooks',
-  DEVELOPERS = 'developers'
+  APPLICATION_TOKENS = 'applicationTokens',
+  DEVELOPERS = 'developers/applicationTokens'
 }
 
 interface Tab {
@@ -83,8 +84,8 @@ const useTabs = (): Tab[] => {
     key: AccountManagementTabEnum.WEBHOOKS,
     ...useWebhooks()
   }
-  // const isJwtEnabled = useIsSplitOn(Features.RUCKUS_AI_JWT_TOGGLE)
-  const isJwtEnabled = true
+  const isJwtEnabled = useIsSplitOn(Features.RUCKUS_AI_JWT_TOGGLE)
+  console.log('JWT', isJwtEnabled)
   return [
     onboardedSystemsTab, usersTab, labelsTab, resourceGroupsTab, supportTab,
     licenseTab, schedulesTab, isJwtEnabled ? developersTab : webhooksTab

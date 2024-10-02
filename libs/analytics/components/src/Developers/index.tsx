@@ -11,7 +11,7 @@ export function DevelopersTab () {
   const location = useLocation()
   const navigate = useNavigate()
   const { activeSubTab } = useParams()
-  const basePath = useTenantLink('/analytics/admin/developers/')
+  const basePath = useTenantLink('/analytics/admin/developers')
 
   const onTabChange = (tab: string) => {
     navigate({
@@ -29,10 +29,10 @@ export function DevelopersTab () {
     onChange={onTabChange}
     destroyInactiveTabPane
     activeKey={activeSubTab}
-    defaultActiveKey='application tokens'
+    defaultActiveKey='applicationTokens'
     type='card'
   >
-    <Tabs.TabPane tab={applicationTokenTitle} key='application tokens'>
+    <Tabs.TabPane tab={applicationTokenTitle} key='applicationTokens'>
       {applicationTokenComponent}
     </Tabs.TabPane>
     <Tabs.TabPane tab={webhookTitle} key='webhooks'>
