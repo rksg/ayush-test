@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 
 import { useDateFilter }       from './dateFilter'
-import { useEncodedParameter } from './encodedParameter'
 import { generateVenueFilter } from './filters'
+import { useEncodedParameter } from './useEncodedParameter'
 
 import type { DateFilter }  from './dateFilter'
 import type { NodesFilter } from './types/networkFilter'
