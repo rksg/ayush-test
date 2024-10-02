@@ -1,19 +1,17 @@
-import _ from 'lodash'
-
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
-export function parseTimestampAttribute<Data> (data: Data) {
-  let parseData = {} as Data
-  for (const key in data) {
-    if (_.endsWith(key, 'Timestamp')) {
-      const value = data[key]
+import { EventBase } from '../..'
+
+export function parseTimestampAttribute (data: Event) {
+  const parseData: Event = { ...data }
+  const timestampKeys: (keyof EventBase)[] = ['turnOnTimestamp', 'turnOffTimestamp']
+  timestampKeys.forEach(key => {
+    const timestampValue = parseData[key]
+    if(timestampValue) {
       parseData[key] = formatter(
-        DateFormatEnum.DateTimeFormatWithSeconds
-      )(new Date(Number(value)).toISOString()) as unknown as Data[typeof key]
-    } else {
-      parseData[key] = data[key]
+        DateFormatEnum.DateTimeFormatWithSeconds)(new Date(Number(timestampValue)).toISOString())
     }
-  }
+  })
 
   return parseData
 }
