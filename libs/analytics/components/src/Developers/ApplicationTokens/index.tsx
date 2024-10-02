@@ -17,11 +17,12 @@ import { SwitchScopes, WifiScopes }                                from '@acx-ui
 import { filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 
 import { useDeleteWebhookMutation, useWebhooksQuery, useResourceGroups, handleError } from './services'
-import { WebhookForm }                                                                from './WebhookForm'
+import { ApplicationTokenForm }                                                                from './ApplicationTokenForm'
 
-import type { Webhook, ExtendedWebhook } from './services'
+import type { ApplicationToken, Webhook, ExtendedWebhook } from './services'
+import { applicationTokens, webhooks } from './__fixtures__'
 
-type WebhookTableProps = TableProps<ExtendedWebhook>
+type ApplicationTokenTableProps = TableProps<ApplicationToken>
 
 const useWebhooksData = (selectedId?: Webhook['id'] | null) => {
   const rg = useResourceGroups()
@@ -51,26 +52,26 @@ export const useApplicationTokens = () => {
   // null      = no webhook selected
   const [selectedId, setSelectedId] = useState<string | undefined | null>(null)
 
-  const { webhook, webhooks, states } = useWebhooksData(selectedId)
+  const { webhook, states } = useWebhooksData(selectedId)
 
   const [doDelete, response] = useDeleteWebhookMutation()
 
-  const [count, setCount] = useState(webhooks?.length || 0)
-  useEffect(() => setCount(webhooks?.length || 0), [webhooks?.length])
+  const [count, setCount] = useState(applicationTokens?.length || 0)
+  useEffect(() => setCount(applicationTokens?.length || 0), [applicationTokens?.length])
 
   const title = defineMessage({
     defaultMessage: 'Application Tokens {count, select, null {} other {({count})}}',
-    description: 'Translation string - Webhooks'
+    description: 'Translation string - Application Tokens'
   })
 
   useEffect(() => {
     if (response.isSuccess) {
-      showToast({ type: 'success', content: $t({ defaultMessage: 'Webhook was deleted' }) })
+      showToast({ type: 'success', content: $t({ defaultMessage: 'Application token was deleted' }) })
     }
     if (response.isError) {
       handleError(
         response.error as FetchBaseQueryError,
-        $t({ defaultMessage: 'Failed to delete webhook' })
+        $t({ defaultMessage: 'Failed to delete application token' })
       )
     }
 
@@ -79,38 +80,27 @@ export const useApplicationTokens = () => {
     if (isEnded) response.reset()
   }, [$t, response])
 
-  const columns: WebhookTableProps['columns'] = [{
+  const columns: ApplicationTokenTableProps['columns'] = [{
     key: 'name',
     dataIndex: 'name',
     searchable: true,
     title: $t({ defaultMessage: 'Name' }),
     sorter: { compare: sortProp('name', defaultSort) }
   }, {
-    key: 'callbackUrl',
-    dataIndex: 'callbackUrl',
+    key: 'clientId',
+    dataIndex: 'clientId',
     searchable: true,
-    title: $t({ defaultMessage: 'URL' }),
-    width: 300,
-    sorter: { compare: sortProp('callbackUrl', defaultSort) }
-  }, ...(get('IS_MLISA_SA') ? [{
-    key: 'resourceGroup',
-    dataIndex: 'resourceGroup',
+    title: $t({ defaultMessage: 'Client ID' }),
+    sorter: { compare: sortProp('clientId', defaultSort) }
+  }, {
+    key: 'clientSecret',
+    dataIndex: 'clientSecret',
     searchable: true,
-    title: $t({ defaultMessage: 'Resource Group' }),
-    sorter: { compare: sortProp('resourceGroup', defaultSort) }
-  }] : []), {
-    key: 'status',
-    dataIndex: 'status',
-    filterKey: 'enabledStr',
-    filterable: [
-      { key: 'true', value: $t({ defaultMessage: 'Enabled' }) },
-      { key: 'false', value: $t({ defaultMessage: 'Disabled' }) }
-    ],
-    title: $t({ defaultMessage: 'Status' }),
-    sorter: { compare: sortProp('enabled', defaultSort) }
+    title: $t({ defaultMessage: 'Client Secret' }),
+    sorter: { compare: sortProp('clientSecret', defaultSort) }
   }]
 
-  const rowActions: WebhookTableProps['rowActions'] = [{
+  const rowActions: ApplicationTokenTableProps['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     scopeKey: [WifiScopes.UPDATE, SwitchScopes.UPDATE],
     onClick: ([webhook]) => setSelectedId(webhook.id)
@@ -120,37 +110,37 @@ export const useApplicationTokens = () => {
     onClick: ([webhook]) => showActionModal({
       type: 'confirm',
       title: $t({ defaultMessage: 'Delete "{name}"?' }, { name: webhook.name }),
-      content: $t({ defaultMessage: 'Are you sure you want to delete this webhook?' }),
+      content: $t({ defaultMessage: 'Are you sure you want to delete this application token?' }),
       onOk: () => doDelete(webhook.id)
     })
   }]
 
-  const actions: WebhookTableProps['actions'] = [{
-    label: $t({ defaultMessage: 'Create Webhook' }),
+  const actions: ApplicationTokenTableProps['actions'] = [{
+    label: $t({ defaultMessage: 'Create Application Token' }),
     scopeKey: [WifiScopes.CREATE, SwitchScopes.CREATE],
     onClick: () => setSelectedId(undefined)
   }]
 
   const component = <Loader states={states}>
-    <WebhookForm
+    <ApplicationTokenForm
       webhook={webhook}
       onClose={() => setSelectedId(null)}
     />
-    <Table<ExtendedWebhook>
+    <Table<ApplicationToken>
       rowKey='id'
-      settingsId='webhooks-table'
+      settingsId='application-tokens-table'
       columns={columns}
-      dataSource={webhooks}
+      dataSource={applicationTokens}
       searchableWidth={450}
       actions={hasCrossVenuesPermission() ? filterByAccess(actions) : []}
       rowActions={filterByAccess(rowActions)}
       rowSelection={hasCrossVenuesPermission() &&
-        hasPermission({ permission: 'WRITE_WEBHOOKS' }) && {
+      {
         type: 'radio',
         selectedRowKeys: selectedId ? [selectedId] : []
       }}
       onDisplayRowChange={
-        useCallback((dataSource: ExtendedWebhook[]) => setCount(dataSource.length), [])
+        useCallback((dataSource: ApplicationToken[]) => setCount(dataSource.length), [])
       }
     />
   </Loader>

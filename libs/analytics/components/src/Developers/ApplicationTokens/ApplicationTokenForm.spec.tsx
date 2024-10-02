@@ -7,8 +7,8 @@ import { notificationApi, Provider, rbacApi, store } from '@acx-ui/store'
 import { mockServer, render, screen, waitFor }       from '@acx-ui/test-utils'
 
 import { webhooks, mockResourceGroups, webhooksUrl, resourceGroups } from './__fixtures__'
+import { ApplicationTokenForm, resourceGroupFilterOption }           from './ApplicationTokenForm'
 import { WebhookDto, webhookDtoKeys }                                from './services'
-import { WebhookForm, resourceGroupFilterOption }                    from './WebhookForm'
 
 const { click, selectOptions, type, clear } = userEvent
 
@@ -39,7 +39,7 @@ jest.mock('antd', () => {
   return { ...components, Select }
 })
 
-describe('WebhookForm', () => {
+describe('ApplicationTokenForm', () => {
   const renderCreateAndFillIn = async (isRAI = true) => {
     const dto: WebhookDto = {
       name: 'Webhook Name',
@@ -51,7 +51,7 @@ describe('WebhookForm', () => {
     }
 
     const onClose = jest.fn()
-    render(<WebhookForm {...{ onClose }} />, { wrapper: Provider })
+    render(<ApplicationTokenForm {...{ onClose }} />, { wrapper: Provider })
 
     // ensure name field visible before trigger validation
     const name = await screen.findByRole('textbox', { name: 'Name' })
@@ -99,7 +99,7 @@ describe('WebhookForm', () => {
     }
 
     const onClose = jest.fn()
-    render(<WebhookForm {...{ onClose, webhook }} />, { wrapper: Provider })
+    render(<ApplicationTokenForm {...{ onClose, webhook }} />, { wrapper: Provider })
 
     // ensure name field visible before trigger validation
     const [name, webhookUrl, secret] = [
@@ -304,14 +304,14 @@ describe('WebhookForm', () => {
     const name = 'Send Sample Incident'
     it('disabled when required field empty', async () => {
       const onClose = jest.fn()
-      render(<WebhookForm {...{ onClose }} />, { wrapper: Provider })
+      render(<ApplicationTokenForm {...{ onClose }} />, { wrapper: Provider })
 
       expect(await screen.findByRole('button', { name })).toBeDisabled()
     })
     it('send sample and render details', async () => {
       const [payloadSpy, onClose] = [jest.fn(), jest.fn()]
 
-      render(<WebhookForm {...{ onClose, webhook }} />, { wrapper: Provider })
+      render(<ApplicationTokenForm {...{ onClose, webhook }} />, { wrapper: Provider })
 
       const status = 200
       const data = '<html>\n  <body>\n    <h1>Code Details</h1>\n  </body>\n</html>'
@@ -335,7 +335,7 @@ describe('WebhookForm', () => {
     it('send sample and render details (object)', async () => {
       const [payloadSpy, onClose] = [jest.fn(), jest.fn()]
 
-      render(<WebhookForm {...{ onClose, webhook }} />, { wrapper: Provider })
+      render(<ApplicationTokenForm {...{ onClose, webhook }} />, { wrapper: Provider })
 
       const status = 200
       const data = { abc: 1, message: 'message' }
@@ -359,7 +359,7 @@ describe('WebhookForm', () => {
     it('handle RTKQuery error', async () => {
       const [payloadSpy, onClose] = [jest.fn(), jest.fn()]
 
-      render(<WebhookForm {...{ onClose, webhook }} />, { wrapper: Provider })
+      render(<ApplicationTokenForm {...{ onClose, webhook }} />, { wrapper: Provider })
 
       mockServer.use(
         rest.post(webhooksUrl('send-sample-incident'), (req, res) => {
@@ -377,7 +377,7 @@ describe('WebhookForm', () => {
     it('handle API error', async () => {
       const [payloadSpy, onClose] = [jest.fn(), jest.fn()]
 
-      render(<WebhookForm {...{ onClose, webhook }} />, { wrapper: Provider })
+      render(<ApplicationTokenForm {...{ onClose, webhook }} />, { wrapper: Provider })
 
       const [status, error] = [500, 'Error from API']
       mockServer.use(

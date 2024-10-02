@@ -62,7 +62,8 @@ export function useMenuConfig () {
     useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
   ].some(Boolean)
   const isIntentAIEnabled = useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_TOGGLE)
-  const isJwtEnabled = useIsSplitOn(Features.RUCKUS_AI_JWT_TOGGLE)
+  // const isJwtEnabled = useIsSplitOn(Features.RUCKUS_AI_JWT_TOGGLE)
+  const isJwtEnabled = true
   const aiAnalyticsMenu = [{
     permission: 'READ_INCIDENTS',
     uri: '/incidents',

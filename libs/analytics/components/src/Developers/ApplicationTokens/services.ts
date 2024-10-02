@@ -12,6 +12,15 @@ type Response <Data> = {
   data: Data
 }
 
+export type ApplicationToken = {
+  id: string
+  name: string
+  clientId: string
+  clientSecret: string
+  grantTypes: string[]
+  accessTokenTtl: number
+}
+
 export type Webhook = {
   id: string
   name: string

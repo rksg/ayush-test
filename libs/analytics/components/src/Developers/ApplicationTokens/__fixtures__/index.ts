@@ -29,12 +29,24 @@ export const webhooks = Array(10).fill(null).map((_, index) => ({
   id: `00000000-0000-0000-0000-00000000000${index}`,
   name: `webhook-${index}`,
   resourceGroupId: `00000000-0000-0000-0000-00000000000${index % 2}`,
+  resourceGroup: `Group-${index % 2}`,
+  status: '',
+  enabledStr: '',
   callbackUrl: callbackUrls[index % callbackUrls.length],
   eventTypes,
   secret: 'abc124',
   enabled: Boolean(index % 2),
   createdAt: '2024-03-22T00:00:00.000Z',
   updatedAt: '2024-03-22T00:00:00.000Z'
+}))
+
+export const applicationTokens = Array(10).fill(null).map((_, index) => ({
+  id: `00000000-0000-0000-0000-00000000000${index}`,
+  name: `token-${index}`,
+  clientId: `00000000-0000-0000-0000-00000000000${index % 2}`,
+  clientSecret: `00000000-0000-0000-0000-00000000000${index % 2}`,
+  grantTypes: ['client_credentials'],
+  accessTokenTtl: index
 }))
 
 export const mockResourceGroups = () => rest.get(

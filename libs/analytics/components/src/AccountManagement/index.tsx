@@ -84,8 +84,8 @@ const useTabs = (): Tab[] => {
     key: AccountManagementTabEnum.WEBHOOKS,
     ...useWebhooks()
   }
-  const isJwtEnabled = useIsSplitOn(Features.RUCKUS_AI_JWT_TOGGLE)
-  console.log('JWT', isJwtEnabled)
+  // const isJwtEnabled = useIsSplitOn(Features.RUCKUS_AI_JWT_TOGGLE)
+  const isJwtEnabled = true
   return [
     onboardedSystemsTab, usersTab, labelsTab, resourceGroupsTab, supportTab,
     licenseTab, schedulesTab, isJwtEnabled ? developersTab : webhooksTab
