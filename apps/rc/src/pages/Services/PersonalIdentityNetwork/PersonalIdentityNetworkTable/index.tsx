@@ -1,4 +1,5 @@
 import { Row }     from 'antd'
+import { find }    from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
@@ -9,8 +10,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { EdgeServiceStatusLight } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
+import { EdgeServiceStatusLight, CountAndNamesTooltip } from '@acx-ui/rc/components'
 import {
   useDeleteNetworkSegmentationGroupMutation,
   useGetEdgeClusterListQuery,
@@ -155,7 +156,7 @@ const PersonalIdentityNetworkTable = () => {
       render: (_, row) => {
         const edgeInfo = row.edgeClusterInfos[0]
         return (
-          <TenantLink to={`/devices/edge/${edgeInfo?.edgeClusterId}/details/overview`}>
+          <TenantLink to={`/devices/edge/cluster/${edgeInfo?.edgeClusterId}/edit/cluster-details`}>
             {edgeInfo?.edgeClusterName}
           </TenantLink>
         )
@@ -169,12 +170,12 @@ const PersonalIdentityNetworkTable = () => {
       filterable: networkOptions,
       filterKey: 'networkIds',
       render: (_, row) => {
-        // TODO: use CountAndName
-        // return <CountAndNamesTooltip data={{
-        //   count: row.networkIds?.length,
-        //   names: []
-        // }}/>
-        return (row.networkIds?.length)
+        return <CountAndNamesTooltip data={{
+          count: row.networkIds?.length,
+          names: row.networkIds
+            ?.map(networkId => find(networkOptions, { key: networkId })?.value)
+            .filter(n => n) as string[]
+        }}/>
       }
     },
     {
@@ -185,7 +186,15 @@ const PersonalIdentityNetworkTable = () => {
       filterable: switchOptions,
       filterKey: 'distributionSwitchInfoIds',
       render: (_, row) => {
-        return (row.distributionSwitchInfos?.length || 0) + (row.accessSwitchInfos?.length || 0)
+        const switchIds = (row.distributionSwitchInfos?.map(s => s.id) ?? [])
+        switchIds.push(...(row.accessSwitchInfos?.map(s => s.id) ?? []))
+
+        return <CountAndNamesTooltip data={{
+          count: switchIds.length,
+          names: switchIds
+            .map(switchId => find(switchOptions, { key: switchId })?.value)
+            .filter(n => n) as string[]
+        }}/>
       }
     },
     {

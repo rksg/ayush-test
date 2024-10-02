@@ -304,7 +304,7 @@ describe('test MLO_3LINK FF functions and components', () => {
       expect(checkboxElement[2]).toBeDisabled()
 
       await userEvent.click(checkboxElement[0])
-      expect(await screen.findByText('Please select two radios')).toBeVisible()
+      expect(await screen.findByText('Please select at least two radios')).toBeVisible()
       expect(checkboxElement[0]).not.toBeChecked()
       expect(checkboxElement[1]).toBeChecked()
       expect(checkboxElement[2]).not.toBeChecked()
@@ -552,7 +552,7 @@ describe('test MLO_3LINK FF functions and components', () => {
 
       await userEvent.click(checkboxElement[0])
       await userEvent.click(checkboxElement[2])
-      expect(await screen.findByText('Please select two radios')).toBeVisible()
+      expect(await screen.findByText('Please select at least two radios')).toBeVisible()
       expect(checkboxElement[0]).not.toBeChecked()
       expect(checkboxElement[1]).toBeChecked()
       expect(checkboxElement[2]).not.toBeChecked()

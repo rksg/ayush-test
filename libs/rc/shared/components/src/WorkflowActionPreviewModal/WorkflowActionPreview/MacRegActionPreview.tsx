@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback  } from 'react'
 import { Form, Input, List, Row, Space, Typography } from 'antd'
 import { useIntl }                                   from 'react-intl'
 
+import { GridCol, GridRow }                                                     from '@acx-ui/components'
 import { useLazyGetMacRegListQuery,useLazyNetworkListQuery }                    from '@acx-ui/rc/services'
 import { GenericActionPreviewProps, MacRegAction, MacRegistrationFilterRegExp } from '@acx-ui/rc/utils'
 
@@ -63,21 +64,23 @@ function MacRegActionInputPreview (props: { data?: MacRegOnboardedVariables , on
   const { data , onMacAddressChange } = props
 
   return (
-    <Space direction='vertical' align='center'>
-      <br/>
-      <br/>
-      <Form layout='vertical' style={{ width: '250px' }} initialValues={data}>
-        <Form.Item
-          label={$t({ defaultMessage: 'Enter the MAC address of your device here' })}
-          name={'macAddress'}
-          rules={[{ required: true },
-            { validator: (_, value) => MacRegistrationFilterRegExp(value) }
-          ]}
-        >
-          <Input onChange={(e)=>onMacAddressChange(e.currentTarget?.value)}/>
-        </Form.Item>
-      </Form>
-    </Space>
+    <GridRow justify={'center'} align={'middle'}>
+      <GridCol col={{ span: 24 }} style={{ alignItems: 'center' }}>
+        <br/>
+        <br/>
+        <Form layout='vertical' style={{ width: '250px' }} initialValues={data}>
+          <Form.Item
+            label={$t({ defaultMessage: 'Enter the MAC address of your device here' })}
+            name={'macAddress'}
+            rules={[{ required: true },
+              { validator: (_, value) => MacRegistrationFilterRegExp(value) }
+            ]}
+          >
+            <Input onChange={(e)=>onMacAddressChange(e.currentTarget?.value)}/>
+          </Form.Item>
+        </Form>
+      </GridCol>
+    </GridRow>
   )
 }
 

@@ -10,7 +10,7 @@
  * QuestionMarkCircleOutlined, QuestionMarkCircleSolid, WarningTriangleOutlined, WarningTriangleSolid
  *
  */
-import { Icons } from './DynamicIcons'
+import { Icons, Size as DynamicSize } from './DynamicIcons'
 
 export const {
   AIOutlined,
@@ -260,3 +260,5 @@ export const {
   WorldOutlined,
   WorldSolid
 } = Icons
+
+export type Size = DynamicSize

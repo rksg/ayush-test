@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any, max-len */
 import { useEffect, useMemo, useState } from 'react'
 
 import { FormInstance }            from 'antd'
@@ -309,14 +309,19 @@ export function useRadiusServer () {
     // eslint-disable-next-line max-len
     const radiusServerIdKeys: Extract<keyof NetworkSaveData, 'authRadiusId' | 'accountingRadiusId'>[] = ['authRadiusId', 'accountingRadiusId']
     radiusServerIdKeys.forEach(radiusKey => {
-      const radiusValue = saveData[radiusKey]
-      const oldRadiusValue = radiusServerConfigurations?.[radiusKey]
+      const newRadiusId = saveData[radiusKey]
+      const oldRadiusId = radiusServerConfigurations?.[radiusKey]
 
-      if ((radiusValue ?? '') !== (oldRadiusValue ?? '')) {
-        const mutationTrigger = radiusValue ? activateRadiusServer : deactivateRadiusServer
-        mutations.push(mutationTrigger({
-          params: { networkId, radiusId: radiusValue ?? oldRadiusValue as string }
-        }).unwrap())
+      if (!newRadiusId && !oldRadiusId) return
+
+      const isRadiusIdChanged = newRadiusId !== oldRadiusId
+      const isDifferentNetwork = saveData.id !== networkId
+
+      if (isRadiusIdChanged || isDifferentNetwork) {
+        const mutationTrigger = newRadiusId ? activateRadiusServer : deactivateRadiusServer
+        const radiusIdToUse = newRadiusId ?? oldRadiusId as string
+
+        mutations.push(mutationTrigger({ params: { networkId, radiusId: radiusIdToUse } }).unwrap())
       }
     })
 
@@ -610,7 +615,6 @@ export function useAccessControlActivation () {
     useMutationFn: useDeactivateAccessControlProfileOnWifiNetworkMutation,
     useTemplateMutationFn: useDeactivateAccessControlProfileTemplateOnWifiNetworkMutation
   })
-  const { networkId } = useParams()
 
   const accessControlWifiActionMap = {
     l2AclPolicyId: {
@@ -779,7 +783,7 @@ export function useAccessControlActivation () {
     ])
   }
 
-  const updateAccessControl = async (formData: NetworkSaveData, data?: NetworkSaveData | null) => {
+  const updateAccessControl = async (formData: NetworkSaveData, data?: NetworkSaveData | null, networkId?: string) => {
     if (!enableServicePolicyRbac || !networkId) return Promise.resolve()
 
     const comparisonResult = comparePayload(
