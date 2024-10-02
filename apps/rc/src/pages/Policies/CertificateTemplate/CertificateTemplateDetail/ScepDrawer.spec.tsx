@@ -33,7 +33,7 @@ describe('ScepDrawer', () => {
     expect(screen.getByLabelText('Blocked Subnets')).toBeInTheDocument()
 
     await fireEvent.click(screen.getByText('Configuration Information'))
-    expect(screen.getByLabelText('Day of Access')).toBeInTheDocument()
+    expect(screen.getByLabelText('Days of Access')).toBeInTheDocument()
     expect(screen.getByLabelText('Common Name #1 Mapping')).toBeInTheDocument()
     expect(screen.getByLabelText('Common Name #2 Mapping')).toBeInTheDocument()
     expect(screen.getByLabelText('Common Name #3 Mapping')).toBeInTheDocument()
@@ -62,5 +62,37 @@ describe('ScepDrawer', () => {
       onClose={()=>{}}/></Provider>)
     await userEvent.click(screen.getByText('Save'))
     await waitFor(() => expect(mockedEdit).toBeCalledTimes(1))
+  })
+
+  it('should handle InputNumber min and max values correctly', async () => {
+    render(<Provider><ScepDrawer visible={true} onClose={() => {}}/></Provider>)
+
+    const inputNumber = screen.getByLabelText('Days of Access')
+
+    // Test minimum value
+    await userEvent.clear(inputNumber)
+    await userEvent.type(inputNumber, '-1')
+    expect(inputNumber).toHaveValue('-1')
+
+    // Test maximum value
+    await userEvent.clear(inputNumber)
+    await userEvent.type(inputNumber, '365')
+    expect(inputNumber).toHaveValue('365')
+
+    // Test value below minimum
+    await userEvent.clear(inputNumber)
+    await userEvent.type(inputNumber, '-1')
+    expect(inputNumber).toHaveValue('-1')
+    inputNumber.focus()
+    await userEvent.type(inputNumber, '{arrowdown}')
+    expect(inputNumber).not.toHaveValue('-2')
+
+    // Test value above maximum
+    await userEvent.clear(inputNumber)
+    await userEvent.type(inputNumber, '365')
+    expect(inputNumber).toHaveValue('365')
+    inputNumber.focus()
+    await userEvent.type(inputNumber, '{arrowup}')
+    expect(inputNumber).not.toHaveValue('366')
   })
 })
