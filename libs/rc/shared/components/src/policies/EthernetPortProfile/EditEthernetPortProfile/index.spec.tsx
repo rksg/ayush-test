@@ -4,11 +4,9 @@ import { rest }  from 'msw'
 import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import { ethernetPortProfileApi, policyApi } from '@acx-ui/rc/services'
 import { AaaUrls,
-  EthernetPortAuthType,
   EthernetPortProfileUrls,
   PolicyOperation,
   PolicyType,
-  getEthernetPortAuthTypeString,
   getPolicyRoutePath } from '@acx-ui/rc/utils'
 import { Provider, store }                     from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
