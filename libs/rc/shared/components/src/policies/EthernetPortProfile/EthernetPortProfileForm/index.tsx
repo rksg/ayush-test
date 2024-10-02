@@ -312,9 +312,8 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
                 >
                   <Select
                     options={authTypeRoleOptionsArray}
-                    disabled={isEditMode} 
-                  >
-                  </Select>
+                    disabled={isEditMode}
+                  />
                 </Form.Item>
               </Col>
             </Row>
