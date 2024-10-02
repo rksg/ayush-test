@@ -6,6 +6,7 @@ import { Loader, TableProps, Table, Tooltip, Button }                           
 import { get }                                                                                 from '@acx-ui/config'
 import { DateFormatEnum, formatter }                                                           from '@acx-ui/formatter'
 import { AIDrivenRRM, AIOperation, EquiFlex, EcoFlexAI, ChatbotLink }                          from '@acx-ui/icons'
+import { useHelpPageLink }                                                                     from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink, TenantLink }                                              from '@acx-ui/react-router-dom'
 import { WifiScopes }                                                                          from '@acx-ui/types'
 import { filterByAccess, getShowWithoutRbacCheckKey, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
@@ -126,6 +127,7 @@ export const AIFeature = (props: AIFeatureProps): JSX.Element => {
 
 export function Banner () {
   const { $t } = useIntl()
+  const helpUrl = useHelpPageLink(undefined, true)
   const bannerTitle = $t({ defaultMessage: 'Revolutionize your Network Optimization' })
   const subTitle1 = $t({
     defaultMessage: `Automate configuration and
@@ -143,9 +145,7 @@ export function Banner () {
       <Button
         style={{ marginTop: '15px' }}
         onClick={() => {
-          //TODO: change to dynamic doc mapping
-          // eslint-disable-next-line max-len
-          window.open('https://docs.commscope.com/bundle/ruckusai-userguide/page/GUID-CAAC695C-6740-499D-8C42-AB521CEE65F6.html', '_blank')
+          window.open(helpUrl, '_blank')
         }}>
         <b>{$t({ defaultMessage: 'Learn More' })}</b>{<ChatbotLink />}
       </Button>

@@ -21,6 +21,11 @@ jest.mock('@acx-ui/config', () => ({
 }))
 const mockGet = jest.mocked(get)
 
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useHelpPageLink: () => 'https://docs.cloud.ruckuswireless.com/RUCKUS-AI/userguide/GUID-CAAC695C-6740-499D-8C42-AB521CEE65F6.html'
+}))
+
 describe('AIFeature component', () => {
 
   beforeEach(() => {
@@ -218,12 +223,17 @@ describe('Banner Component', () => {
   it('should open the documentation link when the button is clicked', () => {
     const openSpy = jest.spyOn(window, 'open').mockImplementation(() => {return null})
 
-    render(<Banner />)
+    render(<Banner />, {
+      route: {
+        path: '/1d4c01e03b9540f29a3ebac62d56c8fb/t/analytics/intentAI',
+        wrapRoutes: false
+      }
+    })
 
     const button = screen.getByRole('button', { name: /Learn More/i })
     fireEvent.click(button)
     expect(openSpy).toHaveBeenCalledWith(
-      'https://docs.commscope.com/bundle/ruckusai-userguide/page/GUID-CAAC695C-6740-499D-8C42-AB521CEE65F6.html',
+      'https://docs.cloud.ruckuswireless.com/RUCKUS-AI/userguide/GUID-CAAC695C-6740-499D-8C42-AB521CEE65F6.html',
       '_blank'
     )
 

@@ -150,6 +150,76 @@ describe('HelpPage URL', () => {
       await waitFor(() => expect(result.current).toBe(expectedMspDefaultVal))
     })
   })
+
+  describe('RAI case', () => {
+    const mockedRAIUrlMappingData = {
+      'analytics/intentAI': 'GUID-CAAC695C-6740-499D-8C42-AB521CEE65F6.html'
+    }
+
+    const expectedRAIDefaultVal = DOCS_HOME_URL+'/RUCKUS-AI/userguide/index.html'
+
+    it('should correctly return corresponding link URL', async () => {
+      mockServer.use(
+        rest.get(getDocsMappingURL(false, true), (_, res, ctx) =>
+          res(ctx.json(mockedRAIUrlMappingData))
+        ))
+      const { result } = renderHook(() => {
+        return useHelpPageLink(undefined, true)
+      }, {
+        route: {
+          path: '/1d4c01e03b9540f29a3ebac62d56c8fb/t/analytics/intentAI',
+          wrapRoutes: false
+        }
+      })
+
+      await waitFor(() =>
+        // eslint-disable-next-line max-len
+        expect(result.current).toBe(DOCS_HOME_URL+'/RUCKUS-AI/userguide/'+mockedRAIUrlMappingData['analytics/intentAI'])
+      )
+    })
+
+    it('should correctly return corresponding link URL corresponding to given target', async () => {
+      mockServer.use(
+        rest.get(getDocsMappingURL(false, true), (_, res, ctx) =>
+          res(ctx.json(mockedRAIUrlMappingData))
+        ))
+
+      const intentAIPagePath = 'analytics/intentAI'
+      const { result } = renderHook(() => {
+        return useHelpPageLink(intentAIPagePath, true)
+      }, {
+        route: {
+          path: '/1d4c01e03b9540f29a3ebac62d56c8fb/t/dashboard',
+          wrapRoutes: false
+        }
+      })
+
+      await waitFor(() =>
+      // eslint-disable-next-line max-len
+        expect(result.current).toBe(DOCS_HOME_URL+'/RUCKUS-AI/userguide/'+mockedRAIUrlMappingData['analytics/intentAI'])
+      )
+    })
+
+    it('should use default when mapping not found', async () => {
+      mockServer.use(
+        rest.get(getDocsMappingURL(false, true), (_, res, ctx) =>
+          res(ctx.json({
+            empty: ''
+          }))
+        ))
+
+      const { result } = renderHook(() => {
+        return useHelpPageLink(undefined, true)
+      }, {
+        route: {
+          path: '/1d4c01e03b9540f29a3ebac62d56c8fb/t/not-found',
+          wrapRoutes: false
+        }
+      })
+
+      await waitFor(() => expect(result.current).toBe(expectedRAIDefaultVal))
+    })
+  })
 })
 
 
@@ -183,5 +253,15 @@ describe('HelpPage Component URLs', () => {
     const docURL = getDocsURL(isMspPage)
     expect(docURL).not.toBeNull()
     expect(docURL).toBe('/docs/ruckusone/mspguide/')
+  })
+
+  it('should return correct URL for RAI', async () => {
+    const isMspPage = false, isRAI = true
+    const mappingURL = getDocsMappingURL(isMspPage, isRAI)
+    expect(mappingURL).not.toBeNull()
+    expect(mappingURL).toBe('/docs/RUCKUS-AI/userguide/mapfile/doc-mapper.json')
+    const docURL = getDocsURL(isMspPage, isRAI)
+    expect(docURL).not.toBeNull()
+    expect(docURL).toBe('/docs/RUCKUS-AI/userguide/')
   })
 })

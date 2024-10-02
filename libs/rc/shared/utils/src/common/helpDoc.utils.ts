@@ -5,26 +5,32 @@ import { useLocation } from '@acx-ui/react-router-dom'
 export const DOCS_HOME_URL = 'https://docs.cloud.ruckuswireless.com'
 
 //for Local test, use '/docs/ruckusone/userguide/mapfile/doc-mapper.json'
-export const getDocsMappingURL = (isMspUser:boolean) =>
+export const getDocsMappingURL = (isMspUser:boolean, isRAI:boolean = false) =>
   process.env['NODE_ENV'] === 'development'
-    // eslint-disable-next-line max-len
-    ? isMspUser ? '/docs/ruckusone/mspguide/mapfile/doc-mapper.json':'/docs/ruckusone/userguide/mapfile/doc-mapper.json'
-    // eslint-disable-next-line max-len
-    : isMspUser ? 'https://docs.cloud.ruckuswireless.com/ruckusone/mspguide/mapfile/doc-mapper.json' : 'https://docs.cloud.ruckuswireless.com/ruckusone/userguide/mapfile/doc-mapper.json'
+    ? isRAI ? '/docs/RUCKUS-AI/userguide/mapfile/doc-mapper.json'
+      : isMspUser ? '/docs/ruckusone/mspguide/mapfile/doc-mapper.json'
+        : '/docs/ruckusone/userguide/mapfile/doc-mapper.json'
+    : isRAI ? 'https://docs.cloud.ruckuswireless.com/RUCKUS-AI/userguide/mapfile/doc-mapper.json'
+      : isMspUser ? 'https://docs.cloud.ruckuswireless.com/ruckusone/mspguide/mapfile/doc-mapper.json'  //eslint-disable-line max-len
+        : 'https://docs.cloud.ruckuswireless.com/ruckusone/userguide/mapfile/doc-mapper.json'
 
 // for local test, use '/docs/ruckusone/userguide/'
-export const getDocsURL = (isMspUser:boolean) =>
+export const getDocsURL = (isMspUser:boolean, isRAI:boolean = false) =>
   process.env['NODE_ENV'] === 'development'
-    ? isMspUser ? '/docs/ruckusone/mspguide/':'/docs/ruckusone/userguide/'
-    // eslint-disable-next-line max-len
-    : isMspUser ? 'https://docs.cloud.ruckuswireless.com/ruckusone/mspguide/':'https://docs.cloud.ruckuswireless.com/ruckusone/userguide/'
+    ? isRAI ? '/docs/RUCKUS-AI/userguide/'
+      : isMspUser ? '/docs/ruckusone/mspguide/'
+        : '/docs/ruckusone/userguide/'
+    : isRAI ? 'https://docs.cloud.ruckuswireless.com/RUCKUS-AI/userguide/'
+      : isMspUser ? 'https://docs.cloud.ruckuswireless.com/ruckusone/mspguide/'
+        : 'https://docs.cloud.ruckuswireless.com/ruckusone/userguide/'
 
 export const fetchDocsURLMapping = async (
   basePath: string,
   showError: () => void,
-  isMspUser:boolean
+  isMspUser: boolean,
+  isRAI: boolean = false
 ) => {
-  let result = await fetch(getDocsMappingURL(isMspUser), {
+  let result = await fetch(getDocsMappingURL(isMspUser, isRAI), {
     method: 'GET',
     headers: {
       Accept: 'application/json'
@@ -53,20 +59,21 @@ export const useHelpPageLinkBasePath = (targetPathname?: string) => {
   }
 }
 
-export const useHelpPageLink = (targetPathname?: string) => {
+export const useHelpPageLink = (targetPathname?: string, isRAI:boolean = false) => {
   const { isMspUser, basePath } = useHelpPageLinkBasePath(targetPathname)
   const [helpUrl, setHelpUrl] = useState<string|undefined>(undefined)
 
   useEffect(() => {
     (async () => {
-      const indexPageUrl = isMspUser
-        ? `${DOCS_HOME_URL}/ruckusone/mspguide/index.html`
-        : `${DOCS_HOME_URL}/ruckusone/userguide/index.html`
+      const indexPageUrl = isRAI ? `${DOCS_HOME_URL}/RUCKUS-AI/userguide/index.html`
+        : isMspUser
+          ? `${DOCS_HOME_URL}/ruckusone/mspguide/index.html`
+          : `${DOCS_HOME_URL}/ruckusone/userguide/index.html`
 
-      const mappingRs = await fetchDocsURLMapping(basePath, () => {}, isMspUser)
-      setHelpUrl(mappingRs ? getDocsURL(isMspUser)+mappingRs : indexPageUrl)
+      const mappingRs = await fetchDocsURLMapping(basePath, () => {}, isMspUser, isRAI)
+      setHelpUrl(mappingRs ? getDocsURL(isMspUser, isRAI)+mappingRs : indexPageUrl)
     })()
-  }, [basePath, isMspUser])
+  }, [basePath, isMspUser, isRAI])
 
   return helpUrl
 }
