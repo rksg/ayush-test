@@ -89,22 +89,18 @@ export const ImpactedClientsTable = ({
           {row.switchName}
         </TenantLink>
       ),
-      disable: true,
       sorter: { compare: sortProp('switchName', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Local Port' }),
       dataIndex: 'localPortName',
       key: 'localPortName',
-      width: 160,
-      disable: true,
       sorter: { compare: sortProp('localPortName', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Switch MAC' }),
       dataIndex: 'switchId',
       key: 'switchId',
-      show: false,
       sorter: { compare: sortProp('switchId', defaultSort) }
     },
     {
@@ -123,22 +119,17 @@ export const ImpactedClientsTable = ({
       title: $t({ defaultMessage: 'Device Port' }),
       dataIndex: 'devicePort',
       key: 'devicePort',
-      width: 160,
-      show: false,
       sorter: { compare: sortProp('devicePort', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Device Port MAC' }),
       dataIndex: 'devicePortMac',
       key: 'devicePortMac',
-      width: 150,
-      show: false,
       sorter: { compare: sortProp('devicePortMac', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Device Port Type' }),
       dataIndex: 'devicePortType',
-      width: 150,
       key: 'devicePortType',
       sorter: { compare: sortProp('devicePortType', defaultSort) }
     }
