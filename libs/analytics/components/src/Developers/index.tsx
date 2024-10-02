@@ -6,7 +6,7 @@ import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/reac
 import { useApplicationTokens } from './ApplicationTokens'
 import { useWebhooks }          from './Webhooks'
 
-export function DevelopersTabs () {
+export function DevelopersTab () {
   // const { $t } = useIntl()
   const location = useLocation()
   const navigate = useNavigate()

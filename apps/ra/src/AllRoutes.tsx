@@ -198,6 +198,11 @@ function AllRoutes () {
             )}
           />
         </Route>
+        <Route path='webhooks'
+          element={check('READ_WEBHOOKS',
+            <AccountManagement tab={AccountManagementTabEnum.WEBHOOKS}/>
+          )}
+        />
       </Route>
       <Route path='health' element={check('READ_HEALTH')}>
         <Route index={true} element={<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />} />

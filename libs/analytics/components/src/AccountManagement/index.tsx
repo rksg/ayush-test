@@ -3,9 +3,11 @@ import { createContext } from 'react'
 import { useIntl } from 'react-intl'
 
 import { PageHeader, Tabs }           from '@acx-ui/components'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { DevelopersTabs }      from '../Developers'
+import { DevelopersTab }       from '../Developers'
+import { useWebhooks }         from '../Developers/Webhooks'
 import { useOnboardedSystems } from '../OnboardedSystems'
 import { Support }             from '../Support'
 import { useUsers }            from '../Users'
@@ -72,14 +74,20 @@ const useTabs = (): Tab[] => {
     title: $t({ defaultMessage: 'Schedules' }),
     url: '/analytics/admin/schedules'
   }
-  const developersTabs = {
+  const developersTab = {
     key: AccountManagementTabEnum.DEVELOPERS,
     title: $t({ defaultMessage: 'Developers' }),
-    component: <DevelopersTabs />
+    component: <DevelopersTab />
   }
+  const webhooksTab = {
+    key: AccountManagementTabEnum.WEBHOOKS,
+    ...useWebhooks()
+  }
+  // const isJwtEnabled = useIsSplitOn(Features.RUCKUS_AI_JWT_TOGGLE)
+  const isJwtEnabled = true
   return [
     onboardedSystemsTab, usersTab, labelsTab, resourceGroupsTab, supportTab,
-    licenseTab, schedulesTab, developersTabs
+    licenseTab, schedulesTab, isJwtEnabled ? developersTab : webhooksTab
   ]
 }
 
