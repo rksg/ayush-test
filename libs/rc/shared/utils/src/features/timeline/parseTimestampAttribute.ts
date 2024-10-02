@@ -9,7 +9,7 @@ export function parseTimestampAttribute<Data> (data: Data) {
       const value = data[key]
       parseData[key] = formatter(
         DateFormatEnum.DateTimeFormatWithSeconds
-      )(new Date(Number(value)).toISOString())
+      )(new Date(Number(value)).toISOString()) as unknown as Data[typeof key]
     } else {
       parseData[key] = data[key]
     }
