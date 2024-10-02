@@ -47,6 +47,9 @@ export default function ScepDrawer
   }
 
   useEffect(() => {
+    if (!visible) {
+      return
+    }
     form.resetFields()
     const { expirationDate, ...rest } = scepData || {}
     const initialValues = scepData ? { ...rest, expirationDate: moment(expirationDate) } : {
@@ -61,8 +64,7 @@ export default function ScepDrawer
       expirationDate: moment().add(2, 'months')
     }
     form.setFieldsValue(initialValues)
-
-  }, [scepData])
+  }, [visible])
 
   return (
     <Drawer
@@ -205,7 +207,7 @@ export default function ScepDrawer
                 label={$t({ defaultMessage: 'Days of Access' })}
                 rules={[{ required: true }]}
               >
-                <InputNumber min={-1} max={365}/>
+                <InputNumber min={0} max={365}/>
               </Form.Item>
               <Description style={{ marginTop: 38, marginLeft: 10, display: 'inline-block' }}>
                 {$t({ defaultMessage: 'Days' })}
