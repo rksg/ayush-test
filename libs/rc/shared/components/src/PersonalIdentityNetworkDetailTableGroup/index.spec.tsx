@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { apApi, nsgApi, personaApi }                             from '@acx-ui/rc/services'
-import { CommonUrlsInfo, NetworkSegmentationUrls, PersonaUrls }  from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, EdgePinUrls, PersonaUrls }              from '@acx-ui/rc/utils'
 import { Provider, store }                                       from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -37,7 +37,7 @@ describe('NetworkSegmentationDetailTableGroup', () => {
 
     mockServer.use(
       rest.get(
-        NetworkSegmentationUrls.getNetworkSegmentationGroupById.url,
+        EdgePinUrls.getEdgePinById.url,
         (_req, res, ctx) => res(ctx.json(mockedNsgData))
       ),
       rest.get(
@@ -45,7 +45,7 @@ describe('NetworkSegmentationDetailTableGroup', () => {
         (req, res, ctx) => res(ctx.json({}))
       ),
       rest.post(
-        NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
+        EdgePinUrls.getEdgePinStatsList.url,
         (_req, res, ctx) => res(ctx.json(mockedNsgStatsList))
       ),
       rest.post(
@@ -57,7 +57,7 @@ describe('NetworkSegmentationDetailTableGroup', () => {
         (_req, res, ctx) => res(ctx.json(mockedPersonaList))
       ),
       rest.get(
-        NetworkSegmentationUrls.getSwitchInfoByNSGId.url,
+        EdgePinUrls.getSwitchInfoByNSGId.url,
         (_req, res, ctx) => res(ctx.json(mockedNsgSwitchInfoData))
       )
     )

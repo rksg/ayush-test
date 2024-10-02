@@ -27,7 +27,7 @@ import {
   useLazyGetConnectionMeteringByIdQuery,
   useLazyGetDpskQuery,
   useLazyGetMacRegListQuery,
-  useLazyGetNetworkSegmentationGroupByIdQuery,
+  useLazyGetEdgePinByIdQuery,
   useLazyGetPersonaGroupByIdQuery,
   useLazyGetPropertyUnitByIdQuery,
   useUpdatePersonaMutation
@@ -68,7 +68,7 @@ function PersonaDetails () {
   const [getPersonaGroupById] = useLazyGetPersonaGroupByIdQuery()
   const [getMacRegistrationById] = useLazyGetMacRegListQuery()
   const [getDpskPoolById] = useLazyGetDpskQuery()
-  const [getNsgById] = useLazyGetNetworkSegmentationGroupByIdQuery()
+  const [getNsgById] = useLazyGetEdgePinByIdQuery()
   const [getUnitById] = useLazyGetPropertyUnitByIdQuery()
   const personaDetailsQuery = useGetPersonaByIdQuery({
     params: { groupId: personaGroupId, id: personaId }

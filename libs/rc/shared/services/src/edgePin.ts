@@ -8,8 +8,8 @@ import {
   DistributionSwitch,
   PersonalIdentityNetworks,
   PersonalIdentityNetworksViewData,
-  NetworkSegmentationUrls,
-  NetworkSegmentationRbacUrls,
+  EdgePinUrls,
+  EdgePinRbacUrls,
   NewTableResult,
   onActivityMessageReceived,
   onSocketActivityChanged,
@@ -49,15 +49,15 @@ enum EdgePinActivityEnum {
   DEACTIVATE_NETWORK = 'Deactivate network',
 }
 
-const getNsgUrls = (enableRbac?: boolean | unknown) => {
-  return enableRbac ? NetworkSegmentationRbacUrls : NetworkSegmentationUrls
+const getEdgePinUrls = (enableRbac?: boolean | unknown) => {
+  return enableRbac ? EdgePinRbacUrls : EdgePinUrls
 }
 
 export const nsgApi = baseNsgApi.injectEndpoints({
   endpoints: (build) => ({
-    createNetworkSegmentationGroup: build.mutation<CommonResult, RequestPayload>({
+    createEdgePin: build.mutation<CommonResult, RequestPayload>({
       query: ({ payload }) => {
-        const req = createHttpRequest(NetworkSegmentationUrls.createNetworkSegmentationGroup, undefined, {
+        const req = createHttpRequest(EdgePinUrls.createEdgePin, undefined, {
           ...ignoreErrorModal
         })
         return {
@@ -79,9 +79,9 @@ export const nsgApi = baseNsgApi.injectEndpoints({
         })
       }
     }),
-    getNetworkSegmentationViewDataList: build.query<TableResult<PersonalIdentityNetworksViewData>, RequestPayload>({
+    getEdgePinViewDataList: build.query<TableResult<PersonalIdentityNetworksViewData>, RequestPayload>({
       async queryFn ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) {
-        const pinRequest = createHttpRequest(NetworkSegmentationUrls.getNetworkSegmentationStatsList, params)
+        const pinRequest = createHttpRequest(EdgePinUrls.getEdgePinStatsList, params)
         const pinQuery = await fetchWithBQ({
           ...pinRequest,
           body: payload
@@ -153,19 +153,19 @@ export const nsgApi = baseNsgApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-    deleteNetworkSegmentationGroup: build.mutation<CommonResult, RequestPayload>({
+    deleteEdgePin: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(NetworkSegmentationUrls.deleteNetworkSegmentationGroup, params)
+        const req = createHttpRequest(EdgePinUrls.deleteEdgePin, params)
         return {
           ...req
         }
       },
       invalidatesTags: [{ type: 'Networksegmentation', id: 'LIST' }]
     }),
-    updateNetworkSegmentationGroup: build.mutation<CommonResult, RequestPayload>({
+    updateEdgePin: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
-          NetworkSegmentationUrls.updateNetworkSegmentationGroup,
+          EdgePinUrls.updateEdgePin,
           params,
           {
             ...ignoreErrorModal
@@ -189,14 +189,14 @@ export const nsgApi = baseNsgApi.injectEndpoints({
         })
       }
     }),
-    getNetworkSegmentationGroupById: build.query<PersonalIdentityNetworks, RequestPayload>({
+    getEdgePinById: build.query<PersonalIdentityNetworks, RequestPayload>({
       async queryFn ({ params }, _queryApi, _extraOptions, fetchWithBQ) {
-        const pinRequest = createHttpRequest(NetworkSegmentationUrls.getNetworkSegmentationGroupById, params)
+        const pinRequest = createHttpRequest(EdgePinUrls.getEdgePinById, params)
         const pinQuery = await fetchWithBQ(pinRequest)
         const pinData = pinQuery.data as PersonalIdentityNetworks
 
         // append network data
-        const pinViewmodelReq = createHttpRequest(NetworkSegmentationUrls.getNetworkSegmentationStatsList)
+        const pinViewmodelReq = createHttpRequest(EdgePinUrls.getEdgePinStatsList)
         const pinViewmodelQuery = await fetchWithBQ({
           ...pinViewmodelReq,
           body: {
@@ -243,7 +243,7 @@ export const nsgApi = baseNsgApi.injectEndpoints({
           }]
 
           const pinSwitchRequest = createHttpRequest(
-            NetworkSegmentationUrls.getSwitchInfoByNSGId, {
+            EdgePinUrls.getSwitchInfoByNSGId, {
               ...params,
               venueId
             })
@@ -260,10 +260,10 @@ export const nsgApi = baseNsgApi.injectEndpoints({
       }
     }),
     // eslint-disable-next-line max-len
-    getNetworkSegmentationGroupList: build.query<TableResult<PersonalIdentityNetworks>, RequestPayload>({
+    getEdgePinList: build.query<TableResult<PersonalIdentityNetworks>, RequestPayload>({
       query: ({ params }) => {
         const req =
-          createHttpRequest(NetworkSegmentationUrls.getNetworkSegmentationGroupList, params)
+          createHttpRequest(EdgePinUrls.getEdgePinList, params)
         return {
           ...req
         }
@@ -276,7 +276,7 @@ export const nsgApi = baseNsgApi.injectEndpoints({
     getWebAuthTemplate: build.query<WebAuthTemplate, RequestPayload>({
       query: ({ params, enableRbac }) => {
         const headers = enableRbac ? customHeaders.v1001 : {}
-        const nsgUrls = getNsgUrls(enableRbac)
+        const nsgUrls = getEdgePinUrls(enableRbac)
         const req = createHttpRequest( nsgUrls.getWebAuthTemplate, params, headers)
         return {
           ...req
@@ -288,7 +288,7 @@ export const nsgApi = baseNsgApi.injectEndpoints({
     }, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const headers = enableRbac ? customHeaders.v1001 : {}
-        const nsgUrls = getNsgUrls(enableRbac)
+        const nsgUrls = getEdgePinUrls(enableRbac)
         const req = createHttpRequest( nsgUrls.getWebAuthTemplateSwitches, params, headers)
         return {
           ...req,
@@ -299,7 +299,7 @@ export const nsgApi = baseNsgApi.injectEndpoints({
     webAuthTemplateList: build.query<TableResult<WebAuthTemplateTableData>, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const headers = enableRbac ? customHeaders.v1001 : {}
-        const nsgUrls = getNsgUrls(enableRbac)
+        const nsgUrls = getEdgePinUrls(enableRbac)
         const req = createHttpRequest( nsgUrls.getWebAuthTemplateList, params, headers)
         return {
           ...req,
@@ -312,7 +312,7 @@ export const nsgApi = baseNsgApi.injectEndpoints({
     createWebAuthTemplate: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const headers = enableRbac ? customHeaders.v1001 : {}
-        const nsgUrls = getNsgUrls(enableRbac)
+        const nsgUrls = getEdgePinUrls(enableRbac)
         const req = createHttpRequest( nsgUrls.addWebAuthTemplate, params, headers)
         return {
           ...req,
@@ -324,7 +324,7 @@ export const nsgApi = baseNsgApi.injectEndpoints({
     updateWebAuthTemplate: build.mutation<WebAuthTemplate, RequestPayload<WebAuthTemplate>>({
       query: ({ params, payload, enableRbac }) => {
         const headers = enableRbac ? customHeaders.v1001 : {}
-        const nsgUrls = getNsgUrls(enableRbac)
+        const nsgUrls = getEdgePinUrls(enableRbac)
         const req = createHttpRequest( nsgUrls.updateWebAuthTemplate, params, headers)
         return {
           ...req,
@@ -336,7 +336,7 @@ export const nsgApi = baseNsgApi.injectEndpoints({
     deleteWebAuthTemplate: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, enableRbac }) => {
         const headers = enableRbac ? customHeaders.v1001 : {}
-        const nsgUrls = getNsgUrls(enableRbac)
+        const nsgUrls = getEdgePinUrls(enableRbac)
         const req = createHttpRequest( nsgUrls.deleteWebAuthTemplate, params, headers)
         return {
           ...req
@@ -348,7 +348,7 @@ export const nsgApi = baseNsgApi.injectEndpoints({
       switchViewList: SwitchLite[]
     }, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest( NetworkSegmentationUrls.getAvailableSwitches, params)
+        const req = createHttpRequest( EdgePinUrls.getAvailableSwitches, params)
         return {
           ...req
         }
@@ -356,7 +356,7 @@ export const nsgApi = baseNsgApi.injectEndpoints({
     }),
     validateDistributionSwitchInfo: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(NetworkSegmentationUrls.validateDistributionSwitchInfo,params)
+        const req = createHttpRequest(EdgePinUrls.validateDistributionSwitchInfo,params)
         return {
           ...req,
           body: payload
@@ -365,25 +365,25 @@ export const nsgApi = baseNsgApi.injectEndpoints({
     }),
     validateAccessSwitchInfo: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(NetworkSegmentationUrls.validateAccessSwitchInfo, params)
+        const req = createHttpRequest(EdgePinUrls.validateAccessSwitchInfo, params)
         return {
           ...req,
           body: payload
         }
       }
     }),
-    activatePinNetwork: build.mutation<CommonResult, RequestPayload>({
+    activateEdgePinNetwork: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(NetworkSegmentationUrls.activatePinNetwork, params)
+        const req = createHttpRequest(EdgePinUrls.activatePinNetwork, params)
         return {
           ...req,
           body: payload
         }
       }
     }),
-    deactivatePinNetwork: build.mutation<CommonResult, RequestPayload>({
+    deactivateEdgePinNetwork: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(NetworkSegmentationUrls.deactivatePinNetwork, params)
+        const req = createHttpRequest(EdgePinUrls.deactivatePinNetwork, params)
         return {
           ...req,
           body: payload
@@ -453,13 +453,13 @@ export const aggregatePersonaId = (
 }
 
 export const {
-  useCreateNetworkSegmentationGroupMutation,
-  useGetNetworkSegmentationViewDataListQuery,
-  useDeleteNetworkSegmentationGroupMutation,
-  useUpdateNetworkSegmentationGroupMutation,
-  useLazyGetNetworkSegmentationGroupByIdQuery,
-  useGetNetworkSegmentationGroupByIdQuery,
-  useGetNetworkSegmentationGroupListQuery,
+  useCreateEdgePinMutation,
+  useGetEdgePinViewDataListQuery,
+  useDeleteEdgePinMutation,
+  useUpdateEdgePinMutation,
+  useLazyGetEdgePinByIdQuery,
+  useGetEdgePinByIdQuery,
+  useGetEdgePinListQuery,
   useGetWebAuthTemplateQuery,
   useGetWebAuthTemplateSwitchesQuery,
   useLazyGetWebAuthTemplateQuery,
@@ -470,6 +470,6 @@ export const {
   useGetAvailableSwitchesQuery,
   useValidateDistributionSwitchInfoMutation,
   useValidateAccessSwitchInfoMutation,
-  useActivatePinNetworkMutation,
-  useDeactivatePinNetworkMutation
+  useActivateEdgePinNetworkMutation,
+  useDeactivateEdgePinNetworkMutation
 } = nsgApi

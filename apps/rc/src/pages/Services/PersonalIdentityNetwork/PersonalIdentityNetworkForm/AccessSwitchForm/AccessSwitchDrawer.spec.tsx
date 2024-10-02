@@ -1,16 +1,16 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { nsgApi }                                                   from '@acx-ui/rc/services'
-import { EdgeNSGFixtures, NetworkSegmentationUrls, SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                          from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }                      from '@acx-ui/test-utils'
+import { nsgApi }                                       from '@acx-ui/rc/services'
+import { EdgePinFixtures, EdgePinUrls, SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                              from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }          from '@acx-ui/test-utils'
 
 import { switchPortList, switchVlanUnion, switchLagList, webAuthList } from '../../__tests__/fixtures'
 
 import { AccessSwitchDrawer } from './AccessSwitchDrawer'
 
-const { mockNsgSwitchInfoData, mockNsgData } = EdgeNSGFixtures
+const { mockNsgSwitchInfoData, mockNsgData } = EdgePinFixtures
 
 type MockSelectProps = React.PropsWithChildren<{
   onChange?: (value: string) => void
@@ -60,15 +60,15 @@ describe('AccessSwitchDrawer', () => {
         (req, res, ctx) => res(ctx.json(switchLagList))
       ),
       rest.get(
-        NetworkSegmentationUrls.getWebAuthTemplate.url,
+        EdgePinUrls.getWebAuthTemplate.url,
         (req, res, ctx) => res(ctx.json({ ...webAuthList[0] }))
       ),
       rest.post(
-        NetworkSegmentationUrls.getWebAuthTemplateList.url,
+        EdgePinUrls.getWebAuthTemplateList.url,
         (req, res, ctx) => res(ctx.json({ data: webAuthList }))
       ),
       rest.post(
-        NetworkSegmentationUrls.validateAccessSwitchInfo.url,
+        EdgePinUrls.validateAccessSwitchInfo.url,
         (req, res, ctx) => res(ctx.json({ response: { valid: true } }))
       )
     )

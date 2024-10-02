@@ -5,12 +5,12 @@ import { edgeApi, networkApi, nsgApi, switchApi, venueApi } from '@acx-ui/rc/ser
 import {
   CommonUrlsInfo,
   EdgeGeneralFixtures,
-  EdgeNSGFixtures,
+  EdgePinFixtures,
   EdgeUrlsInfo,
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath,
-  NetworkSegmentationUrls,
+  EdgePinUrls,
   ServiceOperation,
   ServiceType,
   SwitchUrlsInfo,
@@ -27,11 +27,11 @@ import {
   mockedSwitchOptions
 } from '../__tests__/fixtures'
 
-import NetworkSegmentationTable from '.'
+import PersonalIdentityNetworkTable from '.'
 
 const { mockVenueOptions } = VenueFixtures
 const { mockEdgeClusterList } = EdgeGeneralFixtures
-const { mockNsgStatsList } = EdgeNSGFixtures
+const { mockNsgStatsList } = EdgePinFixtures
 
 const mockedUsedNavigate = jest.fn()
 const mockUseLocationValue = {
@@ -72,7 +72,7 @@ describe('PersonalIdentityNetworkTable', () => {
         (_req, res, ctx) => res(ctx.json(mockEdgeClusterList))
       ),
       rest.post(
-        NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
+        EdgePinUrls.getEdgePinStatsList.url,
         (_req, res, ctx) => res(ctx.json(mockNsgStatsList))
       ),
       rest.post(
@@ -89,7 +89,7 @@ describe('PersonalIdentityNetworkTable', () => {
   it('should create NetworkSegmentationList successfully', async () => {
     render(
       <Provider>
-        <NetworkSegmentationTable />
+        <PersonalIdentityNetworkTable />
       </Provider>, {
         route: { params, path: tablePath }
       })
@@ -104,7 +104,7 @@ describe('PersonalIdentityNetworkTable', () => {
 
 
   it('should render breadcrumb correctly', async () => {
-    render(<NetworkSegmentationTable />, {
+    render(<PersonalIdentityNetworkTable />, {
       wrapper: Provider,
       route: { params, path: tablePath }
     })
@@ -118,7 +118,7 @@ describe('PersonalIdentityNetworkTable', () => {
   it('nsg detail page link should be correct', async () => {
     render(
       <Provider>
-        <NetworkSegmentationTable />
+        <PersonalIdentityNetworkTable />
       </Provider>, {
         route: { params, path: tablePath }
       })
@@ -137,7 +137,7 @@ describe('PersonalIdentityNetworkTable', () => {
   it('edge detail page link should be correct', async () => {
     render(
       <Provider>
-        <NetworkSegmentationTable />
+        <PersonalIdentityNetworkTable />
       </Provider>, {
         route: { params, path: tablePath }
       })
@@ -153,7 +153,7 @@ describe('PersonalIdentityNetworkTable', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <NetworkSegmentationTable />
+        <PersonalIdentityNetworkTable />
       </Provider>, {
         route: { params, path: tablePath }
       })
@@ -179,7 +179,7 @@ describe('PersonalIdentityNetworkTable', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <NetworkSegmentationTable />
+        <PersonalIdentityNetworkTable />
       </Provider>, {
         route: { params, path: tablePath }
       })
@@ -194,18 +194,18 @@ describe('PersonalIdentityNetworkTable', () => {
 
   it('should delete selected row', async () => {
     const user = userEvent.setup()
-    const mockedDeleteNetworkSegmentationGroup = jest.fn()
+    const mockedDeleteEdgePin = jest.fn()
     mockServer.use(
       rest.delete(
-        NetworkSegmentationUrls.deleteNetworkSegmentationGroup.url,
+        EdgePinUrls.deleteEdgePin.url,
         (_req, res, ctx) => {
-          mockedDeleteNetworkSegmentationGroup()
+          mockedDeleteEdgePin()
           return res(ctx.status(202))}
       )
     )
     render(
       <Provider>
-        <NetworkSegmentationTable />
+        <PersonalIdentityNetworkTable />
       </Provider>, {
         route: { params, path: tablePath }
       })
@@ -217,7 +217,7 @@ describe('PersonalIdentityNetworkTable', () => {
     await screen.findByText('Delete "nsg1"?')
     await user.click((await screen.findAllByRole('button', { name: 'Delete' }))[1])
     await waitFor(() => {
-      expect(mockedDeleteNetworkSegmentationGroup).toBeCalled()
+      expect(mockedDeleteEdgePin).toBeCalled()
     })
   })
 })

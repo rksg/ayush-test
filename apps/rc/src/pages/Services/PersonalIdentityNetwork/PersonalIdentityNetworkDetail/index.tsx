@@ -8,7 +8,7 @@ import { Alert, Button, Card, PageHeader }                                      
 import { PersonalIdentityNetworkDetailTableGroup, PersonalIdentityNetworkServiceInfo } from '@acx-ui/rc/components'
 import {
   useGetEdgeDhcpServiceQuery,
-  useGetNetworkSegmentationViewDataListQuery
+  useGetEdgePinViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
   ServiceOperation, ServiceType,
@@ -32,7 +32,7 @@ const PersonalIdentityNetworkDetail = () => {
 
   const {
     nsgViewData
-  } = useGetNetworkSegmentationViewDataListQuery({
+  } = useGetEdgePinViewDataListQuery({
     payload: {
       filters: { id: [params.serviceId] }
     }

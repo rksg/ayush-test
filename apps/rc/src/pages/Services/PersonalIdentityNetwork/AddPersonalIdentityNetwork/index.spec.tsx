@@ -11,7 +11,7 @@ import {
 } from '@acx-ui/test-utils'
 import { RequestPayload } from '@acx-ui/types'
 
-import AddNetworkSegmentation from '.'
+import AddPersonalIdentityNetwork from '.'
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -69,7 +69,7 @@ describe('Add PersonalIdentityNetwork', () => {
 
   it('should create networkSegmentation successfully', async () => {
     const user = userEvent.setup()
-    render(<AddNetworkSegmentation />, {
+    render(<AddPersonalIdentityNetwork />, {
       wrapper: Provider,
       route: { params, path: createNsgPath }
     })
@@ -99,7 +99,7 @@ describe('Add PersonalIdentityNetwork', () => {
   })
 
   it('should render breadcrumb correctly', async () => {
-    render(<AddNetworkSegmentation />, {
+    render(<AddPersonalIdentityNetwork />, {
       wrapper: Provider,
       route: { params, path: createNsgPath }
     })

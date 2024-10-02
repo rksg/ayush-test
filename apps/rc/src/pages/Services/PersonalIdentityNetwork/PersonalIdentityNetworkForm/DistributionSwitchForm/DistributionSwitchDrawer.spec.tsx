@@ -2,9 +2,9 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { StepsForm }                                from '@acx-ui/components'
-import { EdgeNSGFixtures, NetworkSegmentationUrls } from '@acx-ui/rc/utils'
-import { Provider }                                 from '@acx-ui/store'
+import { StepsForm }                    from '@acx-ui/components'
+import { EdgePinFixtures, EdgePinUrls } from '@acx-ui/rc/utils'
+import { Provider }                     from '@acx-ui/store'
 import {
   mockServer, render, renderHook,
   screen, waitFor, within
@@ -12,7 +12,7 @@ import {
 
 import { DistributionSwitchDrawer } from './DistributionSwitchDrawer'
 
-const { mockNsgSwitchInfoData, mockNsgData } = EdgeNSGFixtures
+const { mockNsgSwitchInfoData, mockNsgData } = EdgePinFixtures
 
 describe('DistributionSwitchDrawer', () => {
   const params = {
@@ -48,7 +48,7 @@ describe('DistributionSwitchDrawer', () => {
 
     mockServer.use(
       rest.post(
-        NetworkSegmentationUrls.validateDistributionSwitchInfo.url,
+        EdgePinUrls.validateDistributionSwitchInfo.url,
         (req, res, ctx) => res(ctx.json({ valid: true }))
       )
     )

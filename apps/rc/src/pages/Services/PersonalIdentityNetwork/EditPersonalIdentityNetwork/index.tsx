@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom'
 
 import { Loader, PageHeader }                                                          from '@acx-ui/components'
 import { useEdgePinActions }                                                           from '@acx-ui/rc/components'
-import { useGetNetworkSegmentationGroupByIdQuery }                                     from '@acx-ui/rc/services'
+import { useGetEdgePinByIdQuery }                                                      from '@acx-ui/rc/services'
 import { ServiceOperation, ServiceType, getServiceListRoutePath, getServiceRoutePath } from '@acx-ui/rc/utils'
 
 import { PersonalIdentityNetworkForm }             from '../PersonalIdentityNetworkForm'
@@ -28,7 +28,7 @@ const EditPersonalIdentityNetwork = () => {
     data: nsgData,
     isLoading: isNsgDataLoading,
     isFetching: isNsgDataFetching
-  } = useGetNetworkSegmentationGroupByIdQuery({ params })
+  } = useGetEdgePinByIdQuery({ params })
 
   const tablePath = getServiceRoutePath(
     { type: ServiceType.NETWORK_SEGMENTATION, oper: ServiceOperation.LIST })

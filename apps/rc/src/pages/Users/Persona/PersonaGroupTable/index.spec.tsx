@@ -7,7 +7,7 @@ import {
   MacRegListUrlsInfo,
   DpskUrls,
   CommonUrlsInfo,
-  NetworkSegmentationUrls,
+  EdgePinUrls,
   PropertyUrlsInfo,
   DistributionSwitch,
   AccessSwitch,
@@ -145,15 +145,15 @@ describe('Persona Group Table', () => {
         (req, res, ctx) => res(ctx.json( { data: [] }))
       ),
       rest.get(
-        NetworkSegmentationUrls.getNetworkSegmentationGroupById.url,
+        EdgePinUrls.getEdgePinById.url,
         (req, res, ctx) => res(ctx.json(mockNsgData))
       ),
       rest.get(
-        NetworkSegmentationUrls.getSwitchInfoByNSGId.url,
+        EdgePinUrls.getSwitchInfoByNSGId.url,
         (req, res, ctx) => res(ctx.json(mockNsgSwitchInfoData))
       ),
       rest.post(
-        NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
+        EdgePinUrls.getEdgePinStatsList.url,
         // just for filterable options generation
         (req, res, ctx) => res(ctx.json({ data: [{ id: 'nsg-id-1', name: 'nsg-name-1' }] }))
       ),

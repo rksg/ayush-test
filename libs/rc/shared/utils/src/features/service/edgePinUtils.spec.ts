@@ -1,4 +1,4 @@
-import { genDhcpConfigByNsgSetting } from './networkSegmentationUtils'
+import { genDhcpConfigByNsgSetting } from './edgePinUtils'
 
 describe('Network Segmentation Utils', () => {
 

@@ -11,7 +11,7 @@ import {
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
-  NetworkSegmentationUrls,
+  EdgePinUrls,
   PolicyOperation,
   PolicyType,
   TunnelProfileUrls
@@ -77,7 +77,7 @@ describe('TunnelProfileList', () => {
         (_, res, ctx) => res(ctx.json(mockedTunnelProfileViewData))
       ),
       rest.post(
-        NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
+        EdgePinUrls.getEdgePinStatsList.url,
         (_, res, ctx) => res(ctx.json(mockedNsgOptions))
       ),
       rest.post(

@@ -2,11 +2,11 @@ import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, Tabs }                                                                                                              from '@acx-ui/components'
-import { Features }                                                                                                                  from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady, useIsEdgeReady }                                                                                     from '@acx-ui/rc/components'
-import { useGetDhcpStatsQuery, useGetEdgeListQuery, useGetEdgeSdLanP2ViewDataListQuery, useGetNetworkSegmentationViewDataListQuery } from '@acx-ui/rc/services'
-import { EdgeStatus, PolicyType, ServiceType, useConfigTemplate }                                                                    from '@acx-ui/rc/utils'
+import { Loader, Tabs }                                                                                                  from '@acx-ui/components'
+import { Features }                                                                                                      from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady, useIsEdgeReady }                                                                         from '@acx-ui/rc/components'
+import { useGetDhcpStatsQuery, useGetEdgeListQuery, useGetEdgeSdLanP2ViewDataListQuery, useGetEdgePinViewDataListQuery } from '@acx-ui/rc/services'
+import { EdgeStatus, PolicyType, ServiceType, useConfigTemplate }                                                        from '@acx-ui/rc/utils'
 
 
 import ClientIsolationAllowList from './ClientIsolationAllowList'
@@ -14,7 +14,7 @@ import DHCPInstance             from './DHCPInstance'
 import EdgeDhcpTab              from './DHCPInstance/Edge'
 import EdgeFirewall             from './Firewall'
 import MdnsProxyInstances       from './MdnsProxyInstances'
-import { NetworkSegmentation }  from './NetworkSegmentation'
+import { EdgePin }              from './Pin'
 import EdgeSdLan                from './SdLan'
 import { VenueRogueAps }        from './VenueRogueAps'
 
@@ -70,7 +70,7 @@ export function VenueServicesTab () {
     })
   const {
     hasNsg, isGetNsgLoading
-  } = useGetNetworkSegmentationViewDataListQuery({
+  } = useGetEdgePinViewDataListQuery({
     payload: {
       filters: { venueInfoIds: [venueId] }
     }
@@ -145,7 +145,7 @@ export function VenueServicesTab () {
             tab={$t({ defaultMessage: 'Personal Identity Network' })}
             key={ServiceType.NETWORK_SEGMENTATION}
           >
-            <NetworkSegmentation />
+            <EdgePin />
           </Tabs.TabPane>
         }
         {

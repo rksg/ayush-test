@@ -1,7 +1,7 @@
 import {
   EdgeDHCPFixtures,
   EdgeGeneralFixtures,
-  EdgeNSGFixtures,
+  EdgePinFixtures,
   EdgeTunnelProfileFixtures,
   NewTablePageable,
   VenueFixtures
@@ -457,7 +457,7 @@ const {
   mockDpsk,
   mockNsgSwitchInfoData,
   mockDeepNetworkList
-} = EdgeNSGFixtures
+} = EdgePinFixtures
 const { mockEdgeClusterList } = EdgeGeneralFixtures
 const { mockDhcpStatsData } = EdgeDHCPFixtures
 const { mockedTunnelProfileViewData } = EdgeTunnelProfileFixtures

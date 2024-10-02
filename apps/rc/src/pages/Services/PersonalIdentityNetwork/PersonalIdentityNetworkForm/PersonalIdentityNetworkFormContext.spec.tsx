@@ -8,10 +8,10 @@ import {
   EdgeDHCPFixtures,
   EdgeDhcpUrls,
   EdgeGeneralFixtures,
-  EdgeNSGFixtures,
+  EdgePinFixtures,
   EdgeTunnelProfileFixtures,
   EdgeUrlsInfo,
-  NetworkSegmentationUrls,
+  EdgePinUrls,
   PersonaUrls,
   PropertyUrlsInfo,
   TunnelProfileUrls,
@@ -38,7 +38,7 @@ const {
   mockDeepNetworkList,
   mockNsgStatsList,
   mockNsgSwitchInfoData
-} = EdgeNSGFixtures
+} = EdgePinFixtures
 const { mockEdgeClusterList } = EdgeGeneralFixtures
 const { mockedTunnelProfileViewData } = EdgeTunnelProfileFixtures
 const { mockDhcpStatsData } = EdgeDHCPFixtures
@@ -87,11 +87,11 @@ describe('PersonalIdentityNetworkFormContext', () => {
         (_req, res, ctx) => res(ctx.json(pinTunnelData))
       ),
       rest.post(
-        NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
+        EdgePinUrls.getEdgePinStatsList.url,
         (_req, res, ctx) => res(ctx.json(mockNsgStatsList))
       ),
       rest.get(
-        NetworkSegmentationUrls.getAvailableSwitches.url,
+        EdgePinUrls.getAvailableSwitches.url,
         (_req, res, ctx) => {
           return res(ctx.json({ switchViewList: [
             ...mockNsgSwitchInfoData.distributionSwitches,

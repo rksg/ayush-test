@@ -5,7 +5,7 @@ import { Loader, Subtitle }                        from '@acx-ui/components'
 import { PersonalIdentityNetworkDetailTableGroup } from '@acx-ui/rc/components'
 import {
   useGetEdgeDhcpServiceQuery,
-  useGetNetworkSegmentationViewDataListQuery,
+  useGetEdgePinViewDataListQuery,
   useGetPersonaGroupByIdQuery,
   useGetTunnelProfileByIdQuery
 } from '@acx-ui/rc/services'
@@ -35,7 +35,7 @@ export const PersonalIdentityNetworkDetails = (props: PersonalIdentityNetworkDet
     venueInfo,
     dhcpPoolId,
     isNsgViewDataLoading
-  } = useGetNetworkSegmentationViewDataListQuery({
+  } = useGetEdgePinViewDataListQuery({
     payload: {
       filters: { id: [serviceData.serviceId] }
     }

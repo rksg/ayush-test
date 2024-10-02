@@ -10,7 +10,7 @@ import {
   useGetAvailableSwitchesQuery,
   useGetDpskQuery,
   useGetEdgeClusterListQuery,
-  useGetNetworkSegmentationViewDataListQuery,
+  useGetEdgePinViewDataListQuery,
   useGetPersonaGroupByIdQuery,
   useGetPropertyConfigsQuery,
   useGetTunnelProfileViewDataListQuery,
@@ -215,7 +215,7 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
   })
 
   const networkIds = dpskNetworkList?.map(item => (item.id))
-  const { usedNetworkIds, isUsedNetworkIdsLoading } = useGetNetworkSegmentationViewDataListQuery({
+  const { usedNetworkIds, isUsedNetworkIdsLoading } = useGetEdgePinViewDataListQuery({
     payload: {
       filters: { networkIds: networkIds }
     }

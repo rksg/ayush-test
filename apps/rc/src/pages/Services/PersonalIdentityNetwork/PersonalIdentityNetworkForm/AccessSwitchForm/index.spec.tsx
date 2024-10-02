@@ -3,9 +3,9 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { StepsForm }                                from '@acx-ui/components'
-import { EdgeNSGFixtures, NetworkSegmentationUrls } from '@acx-ui/rc/utils'
-import { Provider }                                 from '@acx-ui/store'
+import { StepsForm }                    from '@acx-ui/components'
+import { EdgePinFixtures, EdgePinUrls } from '@acx-ui/rc/utils'
+import { Provider }                     from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -22,7 +22,7 @@ import {
 import { AccessSwitchForm } from './'
 
 const updateNsgPath = '/:tenantId/services/personalIdentityNetwork/:serviceId/edit'
-const { mockNsgSwitchInfoData } = EdgeNSGFixtures
+const { mockNsgSwitchInfoData } = EdgePinFixtures
 
 type MockDrawerProps = React.PropsWithChildren<{
   open: boolean
@@ -50,7 +50,7 @@ describe('PersonalIdentityNetworkForm - AccessSwitchForm', () => {
 
     mockServer.use(
       rest.post(
-        NetworkSegmentationUrls.getWebAuthTemplateList.url,
+        EdgePinUrls.getWebAuthTemplateList.url,
         (req, res, ctx) => res(ctx.json({ data: webAuthList }))
       )
     )

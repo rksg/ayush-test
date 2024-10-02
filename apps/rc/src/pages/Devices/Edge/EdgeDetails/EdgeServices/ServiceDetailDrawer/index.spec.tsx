@@ -11,11 +11,11 @@ import {
   EdgeFirewallFixtures,
   EdgeFirewallUrls,
   EdgeGeneralFixtures,
-  EdgeNSGFixtures,
+  EdgePinFixtures,
   EdgeSdLanFixtures,
   EdgeSdLanUrls,
   EdgeUrlsInfo,
-  NetworkSegmentationUrls,
+  EdgePinUrls,
   PersonaUrls,
   TunnelProfileUrls
 } from '@acx-ui/rc/utils'
@@ -43,7 +43,7 @@ const {
 const { mockedSdLanDataList, mockedSdLanDataListP2, mockedMvSdLanDataList } = EdgeSdLanFixtures
 const { mockFirewallData } = EdgeFirewallFixtures
 const { mockDhcpStatsData, mockEdgeDhcpDataList } = EdgeDHCPFixtures
-const mockNsgStatsList = cloneDeep(EdgeNSGFixtures.mockNsgStatsList)
+const mockNsgStatsList = cloneDeep(EdgePinFixtures.mockNsgStatsList)
 mockNsgStatsList.data[0].edgeClusterInfos[0].segments = 10
 mockNsgStatsList.data[0].edgeClusterInfos[0].devices = 10
 
@@ -83,7 +83,7 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
         (_req, res, ctx) => res(ctx.json(mockFirewallData))
       ),
       rest.post(
-        NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
+        EdgePinUrls.getEdgePinStatsList.url,
         (_req, res, ctx) => res(ctx.json(mockNsgStatsList))
       ),
       rest.get(

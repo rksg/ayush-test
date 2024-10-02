@@ -4,16 +4,16 @@ import { useParams } from 'react-router-dom'
 
 import { Loader }                                                                      from '@acx-ui/components'
 import { PersonalIdentityNetworkDetailTableGroup, PersonalIdentityNetworkServiceInfo } from '@acx-ui/rc/components'
-import { useGetNetworkSegmentationViewDataListQuery }                                  from '@acx-ui/rc/services'
+import { useGetEdgePinViewDataListQuery }                                              from '@acx-ui/rc/services'
 
-export const NetworkSegmentation = () => {
+export const EdgePin = () => {
 
   const { venueId } = useParams()
 
   const {
     nsgId,
     isNsgViewDataLoading
-  } = useGetNetworkSegmentationViewDataListQuery({
+  } = useGetEdgePinViewDataListQuery({
     payload: {
       filters: { venueInfoIds: [venueId] }
     }

@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
 import { rest } from 'msw'
 
-import { Tabs }                                                                                                     from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                   from '@acx-ui/feature-toggle'
-import { EdgeDhcpUrls, EdgeGeneralFixtures, EdgeNSGFixtures, EdgeSdLanUrls, EdgeUrlsInfo, NetworkSegmentationUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                 from '@acx-ui/store'
+import { Tabs }                                                                                         from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                       from '@acx-ui/feature-toggle'
+import { EdgeDhcpUrls, EdgeGeneralFixtures, EdgePinFixtures, EdgeSdLanUrls, EdgeUrlsInfo, EdgePinUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                                                     from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -15,7 +15,7 @@ import {
 import { VenueServicesTab } from '.'
 
 const { mockEdgeClusterList } = EdgeGeneralFixtures
-const { mockNsgStatsList } = EdgeNSGFixtures
+const { mockNsgStatsList } = EdgePinFixtures
 
 jest.spyOn(Tabs, 'TabPane').mockImplementation((props) => {
   return <div data-testid={`rc-tabpane-${props.tab}`}>{props.children}</div>
@@ -40,8 +40,8 @@ jest.mock('./MdnsProxyInstances', () => ({
   default: () => <div data-testid='MdnsProxyInstances' />,
   __esModule: true
 }))
-jest.mock('./NetworkSegmentation', () => ({
-  NetworkSegmentation: () => (<div data-testid='NetworkSegmentation' />)
+jest.mock('./Pin', () => ({
+  EdgePin: () => (<div data-testid='EdgePin' />)
 }))
 jest.mock('./VenueRogueAps', () => ({
   VenueRogueAps: () => (<div data-testid='VenueRogueAps' />)
@@ -106,7 +106,7 @@ describe('Venue service tab', () => {
             }
           ),
           rest.post(
-            NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
+            EdgePinUrls.getEdgePinStatsList.url,
             (_req, res, ctx) => {
               mockedGetNsgListFn()
               return res(ctx.json(mockNoData))
@@ -160,7 +160,7 @@ describe('Venue service tab', () => {
             }
           ),
           rest.post(
-            NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
+            EdgePinUrls.getEdgePinStatsList.url,
             (_req, res, ctx) => {
               mockedGetNsgListFn()
               return res(ctx.json(mockNsgStatsList))

@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Tabs }                                                                                        from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                              from '@acx-ui/feature-toggle'
-import { useApListQuery, useGetNetworkSegmentationGroupByIdQuery, useGetNetworkSegmentationViewDataListQuery } from '@acx-ui/rc/services'
-import { Persona, TableQuery, useTableQuery }                                                                  from '@acx-ui/rc/utils'
+import { Loader, Tabs }                                                           from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
+import { useApListQuery, useGetEdgePinByIdQuery, useGetEdgePinViewDataListQuery } from '@acx-ui/rc/services'
+import { Persona, TableQuery, useTableQuery }                                     from '@acx-ui/rc/utils'
 
 import { usePersonaListQuery } from '../usePersonaListQuery'
 
@@ -31,13 +31,13 @@ export const PersonalIdentityNetworkDetailTableGroup = (
   const {
     data: nsgData,
     isLoading: isNsgDataLoading
-  } = useGetNetworkSegmentationGroupByIdQuery({
+  } = useGetEdgePinByIdQuery({
     params: { serviceId: nsgId }
   })
   const {
     nsgViewData,
     isNsgViewDataLoading
-  } = useGetNetworkSegmentationViewDataListQuery({
+  } = useGetEdgePinViewDataListQuery({
     payload: {
       filters: { id: [nsgId] }
     }

@@ -3,10 +3,10 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { StepsForm }        from '@acx-ui/components'
+import { StepsForm } from '@acx-ui/components'
 import {
-  EdgeNSGFixtures,
-  NetworkSegmentationUrls
+  EdgePinFixtures,
+  EdgePinUrls
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -63,7 +63,7 @@ mockedGetTunnelProfileName.mockReturnValue('tunnelProfileName')
 const mockedGetNetworksName = jest.fn()
 mockedGetNetworksName.mockReturnValue(['network 1', 'network 2'])
 const createNsgPath = '/:tenantId/services/personalIdentityNetwork/create'
-const { mockNsgSwitchInfoData } = EdgeNSGFixtures
+const { mockNsgSwitchInfoData } = EdgePinFixtures
 
 describe('PersonalIdentityNetworkForm - SummaryForm', () => {
   let params: { tenantId: string, serviceId: string }
@@ -75,7 +75,7 @@ describe('PersonalIdentityNetworkForm - SummaryForm', () => {
 
     mockServer.use(
       rest.post(
-        NetworkSegmentationUrls.getWebAuthTemplateList.url,
+        EdgePinUrls.getWebAuthTemplateList.url,
         (_req, res, ctx) => res(ctx.json({ data: webAuthList }))
       )
     )

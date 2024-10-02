@@ -5,9 +5,9 @@ import { nsgApi }   from '@acx-ui/rc/services'
 import {
   CommonErrorsResult,
   CatchErrorDetails,
-  NetworkSegmentationUrls,
+  EdgePinUrls,
   PersonalIdentityNetworkFormData,
-  EdgeNSGFixtures
+  EdgePinFixtures
 } from '@acx-ui/rc/utils'
 import { Provider, store }                 from '@acx-ui/store'
 import { mockServer, renderHook, waitFor } from '@acx-ui/test-utils'
@@ -15,7 +15,7 @@ import { RequestPayload }                  from '@acx-ui/types'
 
 import { useEdgePinActions } from './useEdgePinActions'
 
-const { mockNsgData } = EdgeNSGFixtures
+const { mockNsgData } = EdgePinFixtures
 
 const mockedCallback = jest.fn()
 const mockedUpdateReq = jest.fn()
@@ -24,7 +24,7 @@ const mockedDeactivateNetworkReq = jest.fn()
 
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
-  useCreateNetworkSegmentationGroupMutation: () => {
+  useCreateEdgePinMutation: () => {
     return [(req: RequestPayload) => {
       return { unwrap: () => new Promise((resolve) => {
         resolve(true)
@@ -49,21 +49,21 @@ describe('useEdgePinActions', () => {
 
     mockServer.use(
       rest.put(
-        NetworkSegmentationUrls.updateNetworkSegmentationGroup.url,
+        EdgePinUrls.updateEdgePin.url,
         (req, res, ctx) => {
           mockedUpdateReq(req.body)
           return res(ctx.status(202))
         }
       ),
       rest.delete(
-        NetworkSegmentationUrls.deactivatePinNetwork.url,
+        EdgePinUrls.deactivatePinNetwork.url,
         (req, res, ctx) => {
           mockedDeactivateNetworkReq(req.params)
           return res(ctx.status(202))
         }
       ),
       rest.put(
-        NetworkSegmentationUrls.activatePinNetwork.url,
+        EdgePinUrls.activatePinNetwork.url,
         (req, res, ctx) => {
           mockedActivateNetworkReq(req.params)
           return res(ctx.status(202))
@@ -172,7 +172,7 @@ describe('useEdgePinActions', () => {
       const mockedReq = jest.fn()
       mockServer.use(
         rest.put(
-          NetworkSegmentationUrls.activatePinNetwork.url,
+          EdgePinUrls.activatePinNetwork.url,
           (req, res, ctx) => {
             mockedReq(req.params)
             return res(ctx.status(403), ctx.json({
@@ -221,7 +221,7 @@ describe('useEdgePinActions', () => {
       const mockedCBFn = jest.fn()
       mockServer.use(
         rest.put(
-          NetworkSegmentationUrls.updateNetworkSegmentationGroup.url,
+          EdgePinUrls.updateEdgePin.url,
           (_req, res, ctx) => {
             return res(ctx.text('test rename failed'), ctx.status(500))
           }

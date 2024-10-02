@@ -5,18 +5,16 @@ import { rest }      from 'msw'
 import {
   EdgeDHCPFixtures,
   EdgeDhcpUrls,
-  EdgeNSGFixtures,
+  EdgePinFixtures,
   getServiceRoutePath,
-  NetworkSegmentationUrls,
+  EdgePinUrls,
   ServiceOperation,
   ServiceType } from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-// import { mockNsgStatsList } from '../__tests__/fixtures'
-
-import NetworkSegmentationDetail from '.'
-const { mockNsgStatsList } = EdgeNSGFixtures
+import PersonalIdentityNetworkDetail from '.'
+const { mockNsgStatsList } = EdgePinFixtures
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
@@ -58,7 +56,7 @@ describe('NsgDetail', () => {
 
     mockServer.use(
       rest.post(
-        NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
+        EdgePinUrls.getEdgePinStatsList.url,
         (_req, res, ctx) => res(ctx.json(mockNsgStatsList))
       ),
       rest.get(
@@ -71,7 +69,7 @@ describe('NsgDetail', () => {
   it('Should render detail page successfully', async () => {
     render(
       <Provider>
-        <NetworkSegmentationDetail />
+        <PersonalIdentityNetworkDetail />
       </Provider>, {
         route: { params, path: detailPath }
       })
@@ -81,7 +79,7 @@ describe('NsgDetail', () => {
   })
 
   it('should render breadcrumb correctly', async () => {
-    render(<NetworkSegmentationDetail />, {
+    render(<PersonalIdentityNetworkDetail />, {
       wrapper: Provider,
       route: { params, path: detailPath }
     })
@@ -98,7 +96,7 @@ describe('NsgDetail', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <NetworkSegmentationDetail />
+        <PersonalIdentityNetworkDetail />
       </Provider>, {
         route: { params, path: detailPath }
       })

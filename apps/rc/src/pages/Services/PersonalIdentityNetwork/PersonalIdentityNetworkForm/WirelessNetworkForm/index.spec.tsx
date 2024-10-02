@@ -3,7 +3,7 @@
 import userEvent from '@testing-library/user-event'
 
 import { StepsForm }       from '@acx-ui/components'
-import { EdgeNSGFixtures } from '@acx-ui/rc/utils'
+import { EdgePinFixtures } from '@acx-ui/rc/utils'
 import { Provider }        from '@acx-ui/store'
 import {
   render,
@@ -20,7 +20,7 @@ import { WirelessNetworkForm } from '.'
 const {
   mockNetworkGroup,
   mockNsgStatsList
-} = EdgeNSGFixtures
+} = EdgePinFixtures
 
 const tenantId = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 const mockedUsedNavigate = jest.fn()

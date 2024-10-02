@@ -1,11 +1,11 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                                                                  from '@acx-ui/feature-toggle'
-import { edgeSdLanApi, nsgApi, tunnelProfileApi }                                                                  from '@acx-ui/rc/services'
-import { EdgeSdLanFixtures, EdgeSdLanUrls, EdgeTunnelProfileFixtures, NetworkSegmentationUrls, TunnelProfileUrls } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                         from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved }                                          from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
+import { edgeSdLanApi, nsgApi, tunnelProfileApi }                                                      from '@acx-ui/rc/services'
+import { EdgeSdLanFixtures, EdgeSdLanUrls, EdgeTunnelProfileFixtures, EdgePinUrls, TunnelProfileUrls } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                             from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved }                              from '@acx-ui/test-utils'
 
 import EditTunnelProfile from '.'
 
@@ -163,7 +163,7 @@ describe('EditTunnelProfile', () => {
           }
         ),
         rest.post(
-          NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
+          EdgePinUrls.getEdgePinStatsList.url,
           (_, res, ctx) => {
             mockedReqNSG()
             return res(ctx.json(mockNsgList))

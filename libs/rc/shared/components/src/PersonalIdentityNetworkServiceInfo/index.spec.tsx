@@ -5,8 +5,8 @@ import {
   EdgeDHCPFixtures,
   EdgeDhcpUrls,
   EdgeGeneralFixtures,
-  EdgeNSGFixtures,
-  NetworkSegmentationUrls,
+  EdgePinFixtures,
+  EdgePinUrls,
   PersonaUrls,
   TunnelProfileUrls,
   EdgeUrlsInfo,
@@ -24,7 +24,7 @@ import {
 
 import { PersonalIdentityNetworkServiceInfo } from '.'
 
-const { mockNsgStatsList, mockNsgData } = EdgeNSGFixtures
+const { mockNsgStatsList, mockNsgData } = EdgePinFixtures
 const { mockEdgeClusterList } = EdgeGeneralFixtures
 const { mockEdgeDhcpDataList } = EdgeDHCPFixtures
 
@@ -33,11 +33,11 @@ describe('NetworkSegmentationServiceInfo', () => {
   beforeEach(() => {
     mockServer.use(
       rest.get(
-        NetworkSegmentationUrls.getNetworkSegmentationGroupById.url,
+        EdgePinUrls.getEdgePinById.url,
         (_req, res, ctx) => res(ctx.json(mockNsgData))
       ),
       rest.post(
-        NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
+        EdgePinUrls.getEdgePinStatsList.url,
         (_req, res, ctx) => res(ctx.json(mockNsgStatsList))
       ),
       rest.post(
@@ -49,7 +49,7 @@ describe('NetworkSegmentationServiceInfo', () => {
         (_req, res, ctx) => res(ctx.json(mockedApList))
       ),
       rest.get(
-        NetworkSegmentationUrls.getSwitchInfoByNSGId.url,
+        EdgePinUrls.getSwitchInfoByNSGId.url,
         (_req, res, ctx) => res(ctx.json(mockedNsgSwitchInfoData))
       ),
       rest.get(

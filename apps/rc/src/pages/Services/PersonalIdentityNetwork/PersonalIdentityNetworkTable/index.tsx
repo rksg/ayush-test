@@ -13,9 +13,9 @@ import {
 import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { EdgeServiceStatusLight, CountAndNamesTooltip } from '@acx-ui/rc/components'
 import {
-  useDeleteNetworkSegmentationGroupMutation,
+  useDeleteEdgePinMutation,
   useGetEdgeClusterListQuery,
-  useGetNetworkSegmentationViewDataListQuery,
+  useGetEdgePinViewDataListQuery,
   useNetworkListQuery,
   useSwitchListQuery,
   useWifiNetworkListQuery
@@ -34,7 +34,7 @@ import {
 import { TenantLink, useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { noDataDisplay }                                       from '@acx-ui/utils'
 
-const getNetworkSegmentationPayload = {
+const getEdgePinPayload = {
   fields: [
     'id',
     'name',
@@ -79,8 +79,8 @@ const PersonalIdentityNetworkTable = () => {
   const basePath = useTenantLink('')
   const settingsId = 'services-network-segmentation-table'
   const tableQuery = useTableQuery({
-    useQuery: useGetNetworkSegmentationViewDataListQuery,
-    defaultPayload: getNetworkSegmentationPayload,
+    useQuery: useGetEdgePinViewDataListQuery,
+    defaultPayload: getEdgePinPayload,
     sorter: {
       sortField: 'name',
       sortOrder: 'ASC'
@@ -91,9 +91,9 @@ const PersonalIdentityNetworkTable = () => {
     pagination: { settingsId }
   })
   const [
-    deleteNetworkSegmentationGroup,
-    { isLoading: isNetworkSegmentationGroupDeleting }
-  ] = useDeleteNetworkSegmentationGroupMutation()
+    deleteEdgePin,
+    { isLoading: isPinDeleting }
+  ] = useDeleteEdgePinMutation()
 
   const { clusterOptions = [] } = useGetEdgeClusterListQuery(
     { payload: clusterOptionsDefaultPayload },
@@ -265,7 +265,7 @@ const PersonalIdentityNetworkTable = () => {
           },
           okText: $t({ defaultMessage: 'Delete' }),
           onOk: () => {
-            deleteNetworkSegmentationGroup({ params: { serviceId: rows[0].id } })
+            deleteEdgePin({ params: { serviceId: rows[0].id } })
               .then(clearSelection)
           }
         })
@@ -302,7 +302,7 @@ const PersonalIdentityNetworkTable = () => {
       />
       <Loader states={[
         tableQuery,
-        { isLoading: false, isFetching: isNetworkSegmentationGroupDeleting }
+        { isLoading: false, isFetching: isPinDeleting }
       ]}>
         <Table
           settingsId={settingsId}

@@ -22,13 +22,13 @@ import {
   useDeletePersonaGroupMutation,
   useGetCertificateTemplatesQuery,
   useGetEnhancedDpskListQuery,
-  useGetNetworkSegmentationViewDataListQuery,
+  useGetEdgePinViewDataListQuery,
   useGetQueriablePropertyConfigsQuery,
   useLazyDownloadPersonaGroupsQuery,
   useLazyGetCertificateTemplateQuery,
   useLazyGetDpskQuery,
   useLazyGetMacRegListQuery,
-  useLazyGetNetworkSegmentationGroupByIdQuery,
+  useLazyGetEdgePinByIdQuery,
   useLazyVenuesListQuery,
   useSearchMacRegListsQuery,
   useSearchPersonaGroupListQuery
@@ -76,7 +76,7 @@ function useColumns (
     payload: { sortField: 'name', sortOrder: 'ASC', page: 1, pageSize: 10000 }
   })
   const { data: macList } = useSearchMacRegListsQuery({ payload: macRegSearchDefaultPayload })
-  const { data: nsgList } = useGetNetworkSegmentationViewDataListQuery(
+  const { data: nsgList } = useGetEdgePinViewDataListQuery(
     {
       payload: {
         page: 1,
@@ -233,7 +233,7 @@ export function PersonaGroupTable () {
   const [getCertTemplate] = useLazyGetCertificateTemplateQuery()
   const [getDpskById] = useLazyGetDpskQuery()
   const [getMacRegistrationById] = useLazyGetMacRegListQuery()
-  const [getNsgById] = useLazyGetNetworkSegmentationGroupByIdQuery()
+  const [getNsgById] = useLazyGetEdgePinByIdQuery()
   const [downloadCsv] = useLazyDownloadPersonaGroupsQuery()
   const [
     deletePersonaGroup,

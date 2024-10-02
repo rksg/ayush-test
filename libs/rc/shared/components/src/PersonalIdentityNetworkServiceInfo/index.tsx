@@ -7,8 +7,8 @@ import {
   useApListQuery,
   useGetEdgeClusterListQuery,
   useGetEdgeDhcpServiceQuery,
-  useGetNetworkSegmentationGroupByIdQuery,
-  useGetNetworkSegmentationViewDataListQuery,
+  useGetEdgePinByIdQuery,
+  useGetEdgePinViewDataListQuery,
   useGetPersonaGroupByIdQuery,
   useGetTunnelProfileByIdQuery
 } from '@acx-ui/rc/services'
@@ -39,7 +39,7 @@ export const PersonalIdentityNetworkServiceInfo = styled((
   const {
     nsgViewData,
     isNsgViewDataLoading
-  } = useGetNetworkSegmentationViewDataListQuery({
+  } = useGetEdgePinViewDataListQuery({
     payload: {
       filters: { id: [nsgId] }
     }
@@ -54,7 +54,7 @@ export const PersonalIdentityNetworkServiceInfo = styled((
   const {
     data: nsgData,
     isLoading: isNsgDataLoading
-  } = useGetNetworkSegmentationGroupByIdQuery({
+  } = useGetEdgePinByIdQuery({
     params: { serviceId: nsgId }
   })
 

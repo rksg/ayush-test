@@ -3,13 +3,13 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { StepsForm }        from '@acx-ui/components'
-import { nsgApi }           from '@acx-ui/rc/services'
+import { StepsForm } from '@acx-ui/components'
+import { nsgApi }    from '@acx-ui/rc/services'
 import {
   DistributionSwitch,
-  EdgeNSGFixtures,
+  EdgePinFixtures,
   EdgeUrlsInfo,
-  NetworkSegmentationUrls
+  EdgePinUrls
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -30,7 +30,7 @@ import { DistributionSwitchForm } from './'
 
 const createNsgPath = '/:tenantId/services/personalIdentityNetwork/create'
 const updateNsgPath = '/:tenantId/services/personalIdentityNetwork/:serviceId/edit'
-const { mockNsgSwitchInfoData } = EdgeNSGFixtures
+const { mockNsgSwitchInfoData } = EdgePinFixtures
 
 type MockDrawerProps = React.PropsWithChildren<{
   open: boolean
@@ -71,7 +71,7 @@ describe('PersonalIdentityNetworkForm - DistributionSwitchForm', () => {
 
     mockServer.use(
       rest.post(
-        NetworkSegmentationUrls.validateDistributionSwitchInfo.url,
+        EdgePinUrls.validateDistributionSwitchInfo.url,
         (req, res, ctx) => res(ctx.json({ response: { valid: true } }))
       ),
       rest.post(

@@ -2,10 +2,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { StepsForm }                         from '@acx-ui/components'
-import { nsgApi }                            from '@acx-ui/rc/services'
+import { StepsForm }             from '@acx-ui/components'
+import { nsgApi }                from '@acx-ui/rc/services'
 import {
-  EdgeNSGFixtures, NetworkSegmentationUrls
+  EdgePinFixtures, EdgePinUrls
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -50,7 +50,7 @@ jest.mock('./PersonalIdentityDiagram', () => ({
 }))
 
 const createNsgPath = '/:tenantId/services/personalIdentityNetwork/create'
-const { mockNsgStatsList } = EdgeNSGFixtures
+const { mockNsgStatsList } = EdgePinFixtures
 
 describe('PersonalIdentityNetworkForm - GeneralSettingsForm', () => {
   store.dispatch(nsgApi.util.resetApiState())
@@ -63,7 +63,7 @@ describe('PersonalIdentityNetworkForm - GeneralSettingsForm', () => {
 
     mockServer.use(
       rest.post(
-        NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
+        EdgePinUrls.getEdgePinStatsList.url,
         (req, res, ctx) => res(ctx.json(mockNsgStatsList))
       )
     )

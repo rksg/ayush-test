@@ -6,8 +6,8 @@ import { rest }  from 'msw'
 
 import {
   CatchErrorResponse,
-  EdgeNSGFixtures,
-  NetworkSegmentationUrls
+  EdgePinFixtures,
+  EdgePinUrls
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -20,9 +20,9 @@ import { RequestPayload } from '@acx-ui/types'
 
 import { afterSubmitMessage } from '../PersonalIdentityNetworkForm'
 
-import EditNetworkSegmentation from '.'
+import EditPersonalIdentityNetwork from '.'
 
-const { mockNsgSwitchInfoData, mockNsgData, mockNsgStatsList } = EdgeNSGFixtures
+const { mockNsgSwitchInfoData, mockNsgData, mockNsgStatsList } = EdgePinFixtures
 
 jest.mock('../PersonalIdentityNetworkForm/GeneralSettingsForm', () => ({
   GeneralSettingsForm: () => <div data-testid='GeneralSettingsForm' />
@@ -42,8 +42,8 @@ jest.mock('../PersonalIdentityNetworkForm/AccessSwitchForm', () => ({
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   // mock API response due to all form steps are mocked
-  useGetNetworkSegmentationGroupByIdQuery: () => ({ data: mockNsgData, isLoading: false }),
-  useGetNetworkSegmentationViewDataListQuery: () => ({ data: mockNsgStatsList, isLoading: false })
+  useGetEdgePinByIdQuery: () => ({ data: mockNsgData, isLoading: false }),
+  useGetEdgePinViewDataListQuery: () => ({ data: mockNsgStatsList, isLoading: false })
 }))
 jest.mock('../PersonalIdentityNetworkForm/PersonalIdentityNetworkFormContext', () => ({
   ...jest.requireActual('../PersonalIdentityNetworkForm/PersonalIdentityNetworkFormContext'),
@@ -83,7 +83,7 @@ describe('Edit PersonalIdentityNetwork', () => {
 
     mockServer.use(
       rest.put(
-        NetworkSegmentationUrls.updateNetworkSegmentationGroup.url,
+        EdgePinUrls.updateEdgePin.url,
         (_req, res, ctx) => res(ctx.status(202)))
 
     )
@@ -91,7 +91,7 @@ describe('Edit PersonalIdentityNetwork', () => {
 
   it('cancel and go back to device list', async () => {
     const user = userEvent.setup()
-    render(<EditNetworkSegmentation />, {
+    render(<EditPersonalIdentityNetwork />, {
       wrapper: Provider,
       route: { params, path: updateNsgPath }
     })
@@ -107,7 +107,7 @@ describe('Edit PersonalIdentityNetwork', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <EditNetworkSegmentation />
+        <EditPersonalIdentityNetwork />
       </Provider>, {
         route: { params, path: updateNsgPath }
       })
@@ -134,7 +134,7 @@ describe('Edit PersonalIdentityNetwork', () => {
   })
 
   it('should render breadcrumb correctly', async () => {
-    render(<EditNetworkSegmentation />, {
+    render(<EditPersonalIdentityNetwork />, {
       wrapper: Provider,
       route: { params, path: updateNsgPath }
     })

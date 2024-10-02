@@ -1,11 +1,11 @@
 import { rest } from 'msw'
 
-import { EdgeNSGFixtures, NetworkSegmentationUrls } from '@acx-ui/rc/utils'
-import { Provider }                                 from '@acx-ui/store'
-import { mockServer, render, screen }               from '@acx-ui/test-utils'
+import { EdgePinFixtures, EdgePinUrls } from '@acx-ui/rc/utils'
+import { Provider }                     from '@acx-ui/store'
+import { mockServer, render, screen }   from '@acx-ui/test-utils'
 
-import { NetworkSegmentation } from '.'
-const { mockNsgStatsList } = EdgeNSGFixtures
+import { EdgePin } from '.'
+const { mockNsgStatsList } = EdgePinFixtures
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
@@ -15,7 +15,7 @@ jest.mock('@acx-ui/rc/components', () => ({
     <div data-testid='PersonalIdentityNetworkDetailTableGroup' />
 }))
 
-describe('VenueServicesTab - NetworkSegmentation(has data)', () =>{
+describe('VenueServicesTab - EdgePin(has data)', () =>{
   let params: { tenantId: string, venueId: string }
   beforeEach(() => {
     params = {
@@ -25,7 +25,7 @@ describe('VenueServicesTab - NetworkSegmentation(has data)', () =>{
 
     mockServer.use(
       rest.post(
-        NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
+        EdgePinUrls.getEdgePinStatsList.url,
         (req, res, ctx) => res(ctx.json(mockNsgStatsList))
       )
     )
@@ -34,7 +34,7 @@ describe('VenueServicesTab - NetworkSegmentation(has data)', () =>{
   it('Should render VenueServicesTab - NetworkSegmentation successfully', async () => {
     render(
       <Provider>
-        <NetworkSegmentation />
+        <EdgePin />
       </Provider>, {
         route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/services' }
       })

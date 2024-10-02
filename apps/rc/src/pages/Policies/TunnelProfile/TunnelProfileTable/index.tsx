@@ -6,7 +6,7 @@ import { useIsEdgeFeatureReady }                                                
 import {
   useDeleteTunnelProfileMutation,
   useGetEdgeSdLanViewDataListQuery,
-  useGetNetworkSegmentationViewDataListQuery,
+  useGetEdgePinViewDataListQuery,
   useGetTunnelProfileViewDataListQuery,
   useNetworkListQuery,
   useWifiNetworkListQuery
@@ -51,7 +51,7 @@ const TunnelProfileTable = () => {
       searchTargetFields: ['name']
     }
   })
-  const { nsgOptions } = useGetNetworkSegmentationViewDataListQuery({
+  const { nsgOptions } = useGetEdgePinViewDataListQuery({
     payload: {
       fields: ['name', 'id'],
       sortField: 'name',

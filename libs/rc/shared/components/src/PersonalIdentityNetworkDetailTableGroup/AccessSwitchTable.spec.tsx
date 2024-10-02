@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { NetworkSegmentationUrls }    from '@acx-ui/rc/utils'
+import { EdgePinUrls }                from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
@@ -13,7 +13,7 @@ describe('NetworkSegmentationDetailTableGroup - AccessSwitchTable', () => {
   beforeEach(() => {
     mockServer.use(
       rest.post(
-        NetworkSegmentationUrls.getWebAuthTemplateList.url,
+        EdgePinUrls.getWebAuthTemplateList.url,
         (req, res, ctx) => res(ctx.json({ data: webAuthList }))
       )
     )
