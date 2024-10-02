@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   AaaUrls,
   EthernetPortAuthType,
@@ -14,7 +15,6 @@ import {
 import { Provider }                            from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
-
 import {
   dummyRadiusServiceList,
   dummyAuthRadius,
@@ -23,7 +23,7 @@ import {
   mockEthernetPortProfileId } from '../__tests__/fixtures'
 
 import { AddEthernetPortProfile } from '.'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+
 
 
 

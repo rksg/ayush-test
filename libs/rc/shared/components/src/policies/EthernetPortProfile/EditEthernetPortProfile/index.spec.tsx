@@ -3,7 +3,8 @@ import { rest }  from 'msw'
 
 import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import { ethernetPortProfileApi, policyApi } from '@acx-ui/rc/services'
-import { AaaUrls,
+import { 
+  AaaUrls,
   EthernetPortProfileUrls,
   PolicyOperation,
   PolicyType,
@@ -200,8 +201,6 @@ describe('EditEthernetPortProfile', () => {
       </Provider>
       , { route: { path: editViewPath, params } }
     )
-    // await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    // const authServerCombo = screen.getByRole('combobox', { name: 'Authentication Server' })
     const authServerCombo = await screen.findByText(mockAuthRadiusName)
     await user.click(authServerCombo)
     await user.click(await screen.findByText(mockAuthRadiusName2))
