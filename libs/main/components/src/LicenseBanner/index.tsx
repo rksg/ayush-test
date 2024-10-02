@@ -7,6 +7,7 @@ import { FormattedMessage } from 'react-intl'
 import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                               from '@acx-ui/formatter'
 import { useGetEntitlementsAttentionNotesQuery, useGetMspEntitlementBannersQuery } from '@acx-ui/msp/services'
+import { MspAttentionNotesPayload }                                                from '@acx-ui/msp/utils'
 import { useEntitlementBannersQuery, useGetBannersQuery }                          from '@acx-ui/rc/services'
 import {
   LicenseBannerTypeEnum,
@@ -93,26 +94,13 @@ export function LicenseBanner (props: BannerProps) {
   const [expireList, setExpireList] = useState<ExpireInfo[]>([])
 
   const params = useParams()
-  const notesPayload = {
-    page: 1,
-    pageSize: 20,
-    fields: ['summary', 'details'],
-    sortField: 'status',
-    sortOrder: 'DESC',
-    filters: {
-      type: ['STOP_COURTESY'],
-      tenantType: ['MSP', 'ALL'],
-      status: ['VALID'],
-      licenseCheck: true
-    }
-  }
 
   const { data: bannerData } = useEntitlementBannersQuery({ params },
     { skip: isMSPUser || isEntitlementRbacApiEnabled })
   const { data: mspBannerData } = useGetMspEntitlementBannersQuery({ params },
     { skip: !isMSPUser || isEntitlementRbacApiEnabled })
   const { data: queryData } = useGetEntitlementsAttentionNotesQuery(
-    { params, payload: notesPayload }, { skip: !isComplianceNotesEnabled })
+    { params, payload: MspAttentionNotesPayload }, { skip: !isComplianceNotesEnabled })
 
   const recPayload = {
     filters: {

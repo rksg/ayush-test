@@ -541,3 +541,17 @@ export interface LicenseAttentionNotes {
     details?: string
   }[]
 }
+
+export const MspAttentionNotesPayload = {
+  page: 1,
+  pageSize: 20,
+  fields: ['summary', 'details'],
+  sortField: 'status',
+  sortOrder: 'DESC',
+  filters: {
+    type: ['STOP_COURTESY'],
+    tenantType: ['MSP', 'ALL'],
+    status: ['VALID'],
+    licenseCheck: true
+  }
+}

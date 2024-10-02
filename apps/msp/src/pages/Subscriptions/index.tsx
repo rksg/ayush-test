@@ -28,9 +28,10 @@ import {
   useMspEntitlementListQuery,
   useMspAssignmentSummaryQuery,
   useMspEntitlementSummaryQuery,
-  useRefreshMspEntitlementMutation
+  useRefreshMspEntitlementMutation,
+  useGetEntitlementsAttentionNotesQuery
 } from '@acx-ui/msp/services'
-import { MspAssignmentSummary, MspEntitlementSummary }                                           from '@acx-ui/msp/utils'
+import { MspAssignmentSummary, MspAttentionNotesPayload, MspEntitlementSummary }                 from '@acx-ui/msp/utils'
 import { SpaceWrapper, MspSubscriptionUtilizationWidget }                                        from '@acx-ui/rc/components'
 import { useGetTenantDetailsQuery, useRbacEntitlementListQuery, useRbacEntitlementSummaryQuery } from '@acx-ui/rc/services'
 import {
@@ -102,26 +103,6 @@ const entitlementListPayload = {
   }
 }
 
-const fakeAttentionNotes =
-{
-  attentionNotes: [
-    {
-      // eslint-disable-next-line max-len
-      summary: 'On January 1st, 2025, RUCKUS One will stop adding 5% courtesy licenses to the MSP subscriptions',
-      details: [
-        `As of this date, MSP subscriptions with a starting date before Jan 1st, 
-        2025 will continue to carry their courtesy 5% until their expiration`,
-        `All MSP subscriptions starting on January 1st, 
-        2025 or after will not receive the 5% courtesy licenses`
-      ]
-    },
-    {
-      // eslint-disable-next-line max-len
-      summary: 'On March 1, 2025 RUCKUS One will start enforcing subscription expiration policy, which may have an impact on your network operation.'
-    }
-  ]
-}
-
 export function Subscriptions () {
   const { $t } = useIntl()
   const navigate = useNavigate()
@@ -138,6 +119,10 @@ export function Subscriptions () {
   const isComplianceEnabled = useIsSplitOn(Features.ENTITLEMENT_LICENSE_COMPLIANCE_TOGGLE)
   const showCompliance = isvSmartEdgeEnabled && isComplianceEnabled
   const isExtendedTrialToggleEnabled = useIsSplitOn(Features.ENTITLEMENT_EXTENDED_TRIAL_TOGGLE)
+  const isComplianceNotesEnabled = useIsSplitOn(Features.ENTITLEMENT_COMPLIANCE_NOTES_TOGGLE)
+
+  const { data: queryData } = useGetEntitlementsAttentionNotesQuery(
+    { payload: MspAttentionNotesPayload }, { skip: !isComplianceNotesEnabled })
 
   const {
     state
@@ -157,8 +142,8 @@ export function Subscriptions () {
   ] = useRefreshMspEntitlementMutation()
 
   useEffect(() => {
-    setHasAttentionNotes(!_.isEmpty(fakeAttentionNotes?.attentionNotes))
-  }, [fakeAttentionNotes])
+    setHasAttentionNotes(!_.isEmpty(queryData?.data))
+  }, [queryData])
 
   const getCourtesyTooltip = (total: number, courtesy: number) => {
     const purchased = total-courtesy

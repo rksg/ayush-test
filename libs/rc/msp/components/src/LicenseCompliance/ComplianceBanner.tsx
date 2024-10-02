@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom'
 import { cssNumber }                             from '@acx-ui/components'
 import { InformationSolid }                      from '@acx-ui/icons'
 import { useGetEntitlementsAttentionNotesQuery } from '@acx-ui/msp/services'
+import { MspAttentionNotesPayload }              from '@acx-ui/msp/utils'
 
 import * as UI from './styledComponents'
 
@@ -39,21 +40,8 @@ export const ComplianceBanner = () => {
   const params = useParams()
   const [ shownMoreNotesInBanner, setShownMoreNotesInBanner ] = useState(false)
 
-  const notesPayload = {
-    page: 1,
-    pageSize: 20,
-    fields: ['summary', 'details'],
-    sortField: 'status',
-    sortOrder: 'DESC',
-    filters: {
-      type: ['STOP_COURTESY'],
-      tenantType: ['MSP', 'ALL'],
-      status: ['VALID'],
-      licenseCheck: true
-    }
-  }
   const { data: queryData } = useGetEntitlementsAttentionNotesQuery(
-    { params, payload: notesPayload })
+    { params, payload: MspAttentionNotesPayload })
 
   return (
     <UI.BannerComplianceNotes>
