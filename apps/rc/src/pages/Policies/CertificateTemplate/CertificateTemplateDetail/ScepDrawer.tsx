@@ -54,7 +54,7 @@ export default function ScepDrawer
       challengePasswordType: ChallengePasswordType.NONE,
       challengePassword: '',
       allowedSubnets: '*',
-      overrideDays: 0,
+      overrideDays: 10,
       cnValue1: ScepKeyCommonNameType.USERNAME,
       cnValue2: ScepKeyCommonNameType.IGNORE,
       cnValue3: ScepKeyCommonNameType.IGNORE,
@@ -202,10 +202,10 @@ export default function ScepDrawer
               <Form.Item
                 style={{ marginTop: 8, display: 'inline-block' }}
                 name='overrideDays'
-                label={$t({ defaultMessage: 'Day of Access' })}
+                label={$t({ defaultMessage: 'Days of Access' })}
                 rules={[{ required: true }]}
               >
-                <InputNumber min={0}/>
+                <InputNumber min={-1} max={365}/>
               </Form.Item>
               <Description style={{ marginTop: 38, marginLeft: 10, display: 'inline-block' }}>
                 {$t({ defaultMessage: 'Days' })}

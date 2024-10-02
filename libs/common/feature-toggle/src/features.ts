@@ -52,7 +52,8 @@ export enum Features {
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
   ENTITLEMENT_LICENSE_COMPLIANCE_TOGGLE= 'entitlement-license-compliance-toggle',
-  ENTITLEMENT_RBAC_API = 'acx-ui-rbac-api-entitlement-toggle',
+  ENTITLEMENT_RBAC_API = 'abac-policies-toggle',
+  ENTITLEMENT_SEPARATE_SERVICEDATE_TOGGLE = 'entitlement-separate-trial-date-toggle',
   ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE = 'entitlement-virtual-smart-edge-toggle',
   EOL_AP_2022_12_PHASE_2_TOGGLE = 'eol-ap-2022-12-phase-2-toggle',
   ETHERNET_PORT_PROFILE_TOGGLE = 'acx-ui-ethernet-toggle',
@@ -99,7 +100,7 @@ export enum Features {
   NUVO_SMS_MESSAGING_SERVICE_TOGGLE = 'nuvo-messaging-service-toggle',
   PLM_FF = 'ACX-PLM-FF',
   PTENANT_RBAC_DPSK_ROLE_INTRODUCTION = 'ptenant-rbac-dpsk-role-introduction',
-  PTENANT_RBAC_API = 'acx-ui-rbac-api-ptenant-toggle',
+  PTENANT_RBAC_API = 'abac-policies-toggle',
   RADIO6G_RATE_CONTROL = 'radio6g-rate-control-toggle',
   RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
   REC_TO_MSP_CONVERSION_TOGGLE = 'acx-rec-to-msp-conversion-toggle',
@@ -177,6 +178,7 @@ export enum Features {
   INTENT_AI_TOGGLE = 'acx-ui-intent-ai-toggle',
   SWITCH_CLI_MODE = 'switch-consumer-cli-mode-toggle',
   RBAC_CONFIG_TEMPLATE_TOGGLE = 'acx-ui-rbac-config-template-toggle',
+  RBAC_IMPLICIT_P1 = 'RBAC-IMPLICIT-P1',
   WIFI_EDA_WIFI7_MLO_3LINK_TOGGLE='wifi-eda-wifi7-mlo-3link-toggle',
   WIFI_MESH_CONFIGURATION_FOR_5G_6G_ONLY = 'wifi-mesh-configuration-for-5g-6g-only-toggle',
   SWITCH_AP_PORT_HYPERLINK ='switch-ap-port-hyperlink-toggle',
@@ -187,7 +189,7 @@ export enum Features {
   WIFI_AP_STICKY_CLIENT_STEERING_TOGGLE = 'wifi-ap-sticky-client-steering-toggle',
   WIFI_CAPTIVE_PORTAL_PSK = 'wifi-captive-portal-psk',
   WIFI_CAPTIVE_PORTAL_OWE = 'wifi-captive-portal-owe',
-  WIFI_WLAN_DEPRECATE_WPA = 'wifi-wlan-deprecate-wpa',
+  WIFI_WLAN_DEPRECATE_WEP = 'wifi-wlan-deprecate-wpa',
   WIFI_OVER_THE_DS_FT_SUPPORT_TOGGLE = 'wifi-over-the-ds-ft-support-toggle'
 }
 

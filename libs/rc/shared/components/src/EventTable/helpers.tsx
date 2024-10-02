@@ -151,12 +151,17 @@ export const getDescription = (data: Event, highlightFn?: TableHighlightFnArgs) 
       ? highlightFn(template, (key) => `<b>${key}</b>`)
       : template) as string
 
+    const cleanedHighlighted = highlighted.replace(/<entity>(.*?)<\/entity>/g, (match, p1) => {
+      const cleanedContent = p1.replace(/<\/?b>/g, '')
+      return `<entity>${cleanedContent}</entity>`
+    })
+
     // rename to prevent it being parse by extraction process
     const FormatMessage = FormattedMessage
 
     return <FormatMessage
       id='events-description-template'
-      defaultMessage={highlighted}
+      defaultMessage={cleanedHighlighted}
       values={{
         entity: (chunks) => <EntityLink
           entityKey={String(chunks[0]) as keyof Event}
