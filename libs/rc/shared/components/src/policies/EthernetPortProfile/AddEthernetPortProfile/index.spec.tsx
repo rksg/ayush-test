@@ -20,8 +20,7 @@ import {
   dummyAuthRadius,
   mockAccuntingRadiusName,
   mockAuthRadiusName,
-  mockEthernetPortProfileId, 
-  mockEthernetPortProfileId6} from '../__tests__/fixtures'
+  mockEthernetPortProfileId} from '../__tests__/fixtures'
 
 import { AddEthernetPortProfile } from '.'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
