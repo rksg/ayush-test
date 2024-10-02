@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any, max-len */
 import { useEffect, useMemo, useState } from 'react'
 
 import { FormInstance }            from 'antd'
@@ -615,7 +615,6 @@ export function useAccessControlActivation () {
     useMutationFn: useDeactivateAccessControlProfileOnWifiNetworkMutation,
     useTemplateMutationFn: useDeactivateAccessControlProfileTemplateOnWifiNetworkMutation
   })
-  const { networkId } = useParams()
 
   const accessControlWifiActionMap = {
     l2AclPolicyId: {
@@ -784,7 +783,7 @@ export function useAccessControlActivation () {
     ])
   }
 
-  const updateAccessControl = async (formData: NetworkSaveData, data?: NetworkSaveData | null) => {
+  const updateAccessControl = async (formData: NetworkSaveData, data?: NetworkSaveData | null, networkId?: string) => {
     if (!enableServicePolicyRbac || !networkId) return Promise.resolve()
 
     const comparisonResult = comparePayload(
