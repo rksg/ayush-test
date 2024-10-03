@@ -4,7 +4,7 @@ import { MaybePromise }                                       from '@reduxjs/too
 import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 import { omit, reduce }                                       from 'lodash'
 
-import { Filter }     from '@acx-ui/components'
+import { Filter }      from '@acx-ui/components'
 import {
   AFCInfo,
   AFCPowerMode,
@@ -83,7 +83,8 @@ import {
   ApStickyClientSteering,
   SwitchRbacUrlsInfo,
   SwitchClient,
-  SwitchInformation
+  SwitchInformation,
+  FeatureSetResponse
 } from '@acx-ui/rc/utils'
 import { baseApApi }      from '@acx-ui/store'
 import { RequestPayload } from '@acx-ui/types'
@@ -1455,6 +1456,21 @@ export const apApi = baseApApi.injectEndpoints({
       },
       providesTags: [{ type: 'Ap', id: 'ApFeatureSets' }]
     }),
+    // repace the getApFeatureSets
+    getEnhanceApFeatureSets: build.query<FeatureSetResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const apiCustomHeader = {
+          ...GetApiVersionHeader(ApiVersionEnum.v1),
+          ...ignoreErrorModal
+        }
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApFeatureSets, params, apiCustomHeader)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'ApFeatureSets' }]
+    }),
     getApStickyClientSteering: build.query<ApStickyClientSteering, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiRbacUrlsInfo.getApStickyClientSteering, params)
@@ -1582,6 +1598,7 @@ export const {
   useLazyGetApManagementVlanQuery,
   useUpdateApManagementVlanMutation,
   useLazyGetApFeatureSetsQuery,
+  useLazyGetEnhanceApFeatureSetsQuery,
   useLazyGetApNeighborsQuery,
   useMoveApToTargetApGroupMutation,
   useGetApStickyClientSteeringQuery,

@@ -712,13 +712,13 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber/managementTrafficVlanSettings',
     newApi: true
   },
-  /*
   getApFeatureSets: {
-    method: 'get',
-    url: '/wifiFeatureSets/:featureName',
+    method: 'post',
+    url: '/wifiFeatureSets/query',
+    //oldMethod: 'get',
+    //OldUrl: '/wifiFeatureSets/:featureName',
     newApi: true
   },
-  */
   getApCompatibilitiesVenue: {
     method: 'post',
     url: '/venues/:venueId/apCompatibilities/query',
@@ -733,6 +733,11 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueApCompatibilities: {
     method: 'post',
     url: '/venues/apCompatibilities/query',
+    newApi: true
+  },
+  getVenuePreCheckApCompatibilities: {
+    method: 'post',
+    url: '/venues/apCompatibilities/query?precheck=ture',
     newApi: true
   },
   // replace the getApCompatibilitiesNetwork

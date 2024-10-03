@@ -16,7 +16,8 @@ import {
 } from '../__test__/fixtures'
 import { ApCompatibilityType, InCompatibilityFeatures } from '../constants'
 
-import { ApCompatibilityDrawer } from '.'
+import { OldApCompatibilityDrawer } from './OldApCompatibilityDrawer'
+
 
 const mockedUseConfigTemplate = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
@@ -24,7 +25,7 @@ jest.mock('@acx-ui/rc/utils', () => ({
   useConfigTemplate: () => mockedUseConfigTemplate()
 }))
 
-describe('ApCompatibilityDrawer', () => {
+describe('OldApCompatibilityDrawer', () => {
   const venueId = '8caa8f5e01494b5499fa156a6c565138'
   const networkId = 'c9d5f4c771c34ad2898f7078cebbb191'
   const tenantId = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
@@ -64,7 +65,7 @@ describe('ApCompatibilityDrawer', () => {
     render(
       <Provider>
         <Form>
-          <ApCompatibilityDrawer
+          <OldApCompatibilityDrawer
             visible={true}
             type={ApCompatibilityType.VENUE}
             venueId={venueId}
@@ -84,7 +85,7 @@ describe('ApCompatibilityDrawer', () => {
     render(
       <Provider>
         <Form>
-          <ApCompatibilityDrawer
+          <OldApCompatibilityDrawer
             visible={true}
             type={ApCompatibilityType.NETWORK}
             networkId={networkId}
@@ -104,7 +105,7 @@ describe('ApCompatibilityDrawer', () => {
     render(
       <Provider>
         <Form>
-          <ApCompatibilityDrawer
+          <OldApCompatibilityDrawer
             visible={true}
             type={ApCompatibilityType.ALONE}
             featureName={InCompatibilityFeatures.BETA_DPSK3}
@@ -123,7 +124,7 @@ describe('ApCompatibilityDrawer', () => {
     render(
       <Provider>
         <Form>
-          <ApCompatibilityDrawer
+          <OldApCompatibilityDrawer
             visible={true}
             type={ApCompatibilityType.VENUE}
             venueId={venueId}
@@ -144,7 +145,7 @@ describe('ApCompatibilityDrawer', () => {
     render(
       <Provider>
         <Form>
-          <ApCompatibilityDrawer
+          <OldApCompatibilityDrawer
             isMultiple
             visible={true}
             data={mockApCompatibilitiesVenue.apCompatibilities}
@@ -169,7 +170,7 @@ describe('ApCompatibilityDrawer', () => {
     render(
       <Provider>
         <Form>
-          <ApCompatibilityDrawer
+          <OldApCompatibilityDrawer
             isMultiple
             visible={true}
             venueId={params.venueId}

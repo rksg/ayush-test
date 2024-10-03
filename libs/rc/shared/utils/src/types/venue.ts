@@ -867,13 +867,22 @@ export enum IncompatibleFeatureLevelEnum {
   WIFI_NETWORK = 'WIFI_NETWORK'
 }
 
-export type IncompatibleFeature = {
+export type FeatureSet = {
   featureName: string,
   featureType?: IncompatibleFeatureTypeEnum,
   featureLevel?: IncompatibleFeatureLevelEnum,
   featureGroup?: string,
-  incompatibleDevices?: ApIncompatibleDevice[],
   requirements?: ApRequirement[]
+}
+
+export type FeatureSetResponse = {
+  featureSets: FeatureSet[],
+  page: number,
+  totalCount: number
+}
+
+export type IncompatibleFeature = FeatureSet & {
+  incompatibleDevices?: ApIncompatibleDevice[],
 }
 
 export type Compatibility = {

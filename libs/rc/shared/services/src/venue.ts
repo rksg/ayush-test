@@ -1017,6 +1017,19 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
+    getVenuePreCheckApCompatibilities: build.query<CompatibilityResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const apiCustomHeader = {
+          ...GetApiVersionHeader(ApiVersionEnum.v1),
+          ...ignoreErrorModal
+        }
+        const req = createHttpRequest(WifiRbacUrlsInfo.getVenuePreCheckApCompatibilities, params, apiCustomHeader)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
     getVenueApModels: build.query<VenueApModels, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.getVenueApModels, params)
@@ -2174,6 +2187,8 @@ export const {
   useLazyGetApCompatibilitiesVenueQuery,
   useGetVenueApCompatibilitiesQuery,
   useLazyGetVenueApCompatibilitiesQuery,
+  useGetVenuePreCheckApCompatibilitiesQuery,
+  useLazyGetVenuePreCheckApCompatibilitiesQuery,
   useGetVenueApModelsQuery,
   useGetVenueLedOnQuery,
   useLazyGetVenueLedOnQuery,

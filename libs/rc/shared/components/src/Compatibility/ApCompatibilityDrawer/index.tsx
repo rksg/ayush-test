@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react'
 import { isNil }   from 'lodash'
 import { useIntl } from 'react-intl'
 
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useLazyGetApCompatibilitiesVenueQuery,
   useLazyGetApCompatibilitiesNetworkQuery,
@@ -45,6 +46,7 @@ export type ApGeneralCompatibilityDrawerProps = {
 }
 
 export const ApGeneralCompatibilityDrawer = (props: ApGeneralCompatibilityDrawerProps) => {
+  const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
   const { $t } = useIntl()
   const {
     visible,
@@ -57,12 +59,15 @@ export const ApGeneralCompatibilityDrawer = (props: ApGeneralCompatibilityDrawer
   const { apCompatibilities, isLoading } = useApCompatibilityData(props)
   const apNameTitle = (apName) ? `: ${apName}` : ''
 
+  const drawerWidth = isApCompatibilitiesByModel? 700 : 500
+
   const title = isMultiple
     ? ($t({ defaultMessage: 'Incompatibility Details' }) + apNameTitle)
     : $t({ defaultMessage: 'Compatibility Requirement' })
   return (
     <CompatibilityDrawer
       data-testid={'ap-compatibility-drawer'}
+      width={drawerWidth}
       visible={visible}
       title={title}
       compatibilityType={apId

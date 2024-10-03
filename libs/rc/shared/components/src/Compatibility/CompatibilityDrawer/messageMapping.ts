@@ -23,6 +23,11 @@ export const messageMapping = {
     'in this <venueSingular></venueSingular> due to <b>firmware incompatibility</b>. '+
     'You can upgrade your RUCKUS Edge firmware by selecting these features and choosing to update now or schedule an update below.'
   }),
+  multipleFromVenueDevice: defineMessage({ defaultMessage:
+    'The following features are unavailable on certain access points ' +
+    'in this <venueSingular></venueSingular> due to <b>firmware</b> or <b>device incompatibility</b>. ' +
+    'You can upgrade your AP firmware by selecting these features and choosing to update now or schedule an update below.'
+  }),
   singleApFeature: defineMessage({ defaultMessage:
     'To use the <b>{featureName}</b> feature, ensure that the access points '+
     'meet the minimum required version and AP model support list below. You may upgrade your firmware from {apFwLink}'

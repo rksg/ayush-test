@@ -1,7 +1,8 @@
 import { Form } from 'antd'
 import { omit } from 'lodash'
 
-import { Drawer, Loader } from '@acx-ui/components'
+import { Drawer, Loader }         from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ApCompatibility,
   IncompatibilityFeatures,
@@ -47,6 +48,7 @@ export const CompatibilityDrawer = (props: CompatibilityDrawerProps) => {
     ...others
   } = props
 
+
   return (
     <Drawer
       title={title}
@@ -76,6 +78,7 @@ interface DrawerContentUnitProps extends Omit<CompatibilityDrawerProps, 'data' |
   deviceType: CompatibilityDeviceEnum,
 }
 const DrawerContentUnit = (props: DrawerContentUnitProps ) => {
+  const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
   const { data, deviceType = CompatibilityDeviceEnum.AP, ...others } = props
   const description = useDescription(omit(props, 'data'))
 
@@ -83,7 +86,7 @@ const DrawerContentUnit = (props: DrawerContentUnitProps ) => {
   const deviceTypes = Object.keys(compatibilityData)
   const isCrossDevices = deviceTypes.length > 1
 
-  if ((isCrossDevices && deviceType === CompatibilityDeviceEnum.AP)
+  if (((isApCompatibilitiesByModel || isCrossDevices) && deviceType === CompatibilityDeviceEnum.AP)
   // eslint-disable-next-line max-len
   || (deviceType === CompatibilityDeviceEnum.EDGE && (props.compatibilityType === CompatibilityType.VENUE || props.compatibilityType === CompatibilityType.DEVICE))) {
     return <SameDeviceTypeCompatibility
