@@ -1,5 +1,6 @@
 import { Typography } from 'antd'
 import { useIntl }    from 'react-intl'
+import AutoSizer      from 'react-virtualized-auto-sizer'
 
 import { Drawer, GridCol, GridRow } from '@acx-ui/components'
 import { AnalyticsFilter }          from '@acx-ui/utils'
@@ -68,28 +69,30 @@ export const MoreDetailsDrawer = (props: MoreDetailsDrawerProps) => {
       width={'80%'}
       visible={visible}
       onClose={onClose}
-      children={
-        <GridRow style={{ paddingTop: 20 }}>
-          <GridCol col={{ span: 8 }} key={`pie-${type}`} style={{ height: 220 }}>
-            <MoreDetailsPieChart
-              filters={filters}
-              queryType={type}
-              title={pieTitle}/>
+      children={<AutoSizer>{(size) =>
+        <GridRow style={size}>
+          <GridCol col={{ span: 24 }} key={`drawer-${type}`}>
+            <GridRow style={{ paddingTop: 10 }}>
+              <GridCol col={{ span: 9 }} key={`pie-${type}`}>
+                <MoreDetailsPieChart
+                  filters={filters}
+                  queryType={type}
+                  title={pieTitle} />
+              </GridCol>
+              <GridCol col={{ span: 15 }}>
+                {
+                  (type === 'dhcpFailure' || type === 'cpuUsage') &&
+                  <ImpactedSwitchesTable filters={filters} queryType={type} />
+                }
+                {
+                  (type === 'portStorm' || type === 'congestion') &&
+                  <ImpactedClientsTable filters={filters} queryType={type} />
+                }
+              </GridCol>
+            </GridRow>
           </GridCol>
-          {
-            (type === 'dhcpFailure' || type === 'cpuUsage') &&
-            <GridCol col={{ span: 16 }} key={`table-${type}`}>
-              <ImpactedSwitchesTable filters={filters} queryType={type}/>
-            </GridCol>
-          }
-          {
-            (type === 'portStorm' || type === 'congestion') &&
-            <GridCol col={{ span: 16 }} key={`table-${type}`}>
-              <ImpactedClientsTable filters={filters} queryType={type}/>
-            </GridCol>
-          }
         </GridRow>
-      }
+      }</AutoSizer>}
     />
   )
 }

@@ -41,6 +41,10 @@ export interface DelegationEntitlementRecord {
   outOfComplianceDevices?: number;
   futureOutOfComplianceDevices?: number;
   futureOfComplianceDate?: number;
+  wifiDeviceCount?: number;
+  switchDeviceCount?: number;
+  rwgDeviceCount?: number;
+  edgeDeviceCount?: number
 }
 
 export interface MspEc {
@@ -535,6 +539,27 @@ export enum MspEcAccountType {
   EXTENDED_TRIAL = 'EXTENDED_TRIAL'
 }
 
+export interface LicenseCardProps {
+  title: string
+  subTitle: string
+  data: ComplianceData
+  isMsp: boolean
+  trialType?: string,
+  footerContent?: React.ReactElement
+}
+
+export interface LicenseCalculatorCardProps {
+  title: string
+  subTitle: string
+  footerContent?: React.ReactElement
+}
+
+export enum ComplianceMspCustomersDevicesTypes {
+  AP='AP',
+  SWITCH='SWITCH',
+  EDGE='EDGE',
+  RWG='RWG'
+}
 export interface LicenseAttentionNotes {
   data: {
     summary?: string,
