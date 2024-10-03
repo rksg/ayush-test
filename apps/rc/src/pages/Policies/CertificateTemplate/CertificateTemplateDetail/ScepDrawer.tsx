@@ -164,7 +164,7 @@ export default function ScepDrawer
           <Form.Item
             name='challengePassword'
             label={$t({ defaultMessage: 'Challenge Password' })}
-            rules={[{ required: true }]}
+            rules={[{ required: true, min: 4, max: 255 }]}
           >
             <Input />
           </Form.Item>
