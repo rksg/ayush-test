@@ -4,9 +4,9 @@ import { Form, Col, Row, Space } from 'antd'
 import { useIntl }               from 'react-intl'
 
 
-import { Button, Card, showActionModal, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
-import { CsvSize }                                from '@acx-ui/rc/components'
+import { Button, Card, showActionModal, Tooltip }   from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { CsvSize }                                  from '@acx-ui/rc/components'
 import {
   useGetAdminListQuery,
   useDeleteTenantAuthenticationsMutation
@@ -40,7 +40,8 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
   const isGroupBasedLoginEnabled = useIsSplitOn(Features.GROUP_BASED_LOGIN_TOGGLE)
   const isGoogleWorkspaceEnabled = useIsSplitOn(Features.GOOGLE_WORKSPACE_SSO_TOGGLE)
   const loginSsoSignatureEnabled = useIsSplitOn(Features.LOGIN_SSO_SIGNATURE_TOGGLE)
-  const isRbacEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
+  const isRbacEarlyAccessEnable = useIsTierAllowed(Features.RBAC_IMPLICIT_P1)
+  const isRbacEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const linkToAdministrators =
   useTenantLink(isRbacEnabled ? '/administration/userPrivileges/ssoGroups'
     : '/administration/administrators/adminGroups')
