@@ -69,71 +69,73 @@ export const LicenseCompliance = (props: ComplianceProps) => {
     }
   }, [queryData?.data])
 
-  return isMsp
-    ? <UI.ComplianceContainer>
-      <DeviceNetworkingCard
+  return <>
+    {isComplianceNotesEnabled && <ComplianceBanner />}
+    {isMsp
+      ? <UI.ComplianceContainer>
+        <DeviceNetworkingCard
+          title='Device Networking Subscriptions'
+          subTitle='My Account License Expiration'
+          data={selfData}
+          isMsp={true}
+          trialType={TrialType.TRIAL}
+        />
+        <DeviceNetworkingCard
+          title='Device Networking Subscriptions'
+          subTitle='MSP Customers License Expiration'
+          isMsp={false}
+          data={ecSummaryData}
+          trialType={isExtendedTrial ? TrialType.EXTENDED_TRIAL : undefined}
+          footerContent={showCompliancePhase2UI ? <div style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'end'
+          }}>
+            <Button
+              size='small'
+              type={'link'}
+              onClick={openMspCustomersDrawer}>
+              {$t({ defaultMessage: 'View Details' })}
+            </Button>
+          </div> : <></>}
+        />
+        {
+          showCompliancePhase2UI && openMspCustLicencesDrawer && <Drawer
+            title={<>{$t({ defaultMessage: 'Device Networking Subscriptions' }) }
+              {ecSummaryData.licenseGap >= 0 ? <UI.GreenTickIcon /> : <UI.RedTickIcon />}</>}
+            visible={openMspCustLicencesDrawer}
+            onClose={closeMspCustomersDrawer}
+            destroyOnClose={true}
+            width={1080}
+          >
+            <MspCustomersLicences />
+          </Drawer>
+        }
+        { showCompliancePhase2UI && <LicenseCalculatorCard
+          title='Device Networking Subscriptions'
+          subTitle='License Distance Calculator'
+          footerContent={<div style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'end',
+            borderTop: '1px solid #02a7f0',
+            paddingTop: '8px'
+          }}>
+            <span>{$t({ defaultMessage: 'To view currently available licenses timeline, ' })}</span>
+            <Button
+              size='small'
+              type={'link'}>
+              {$t({ defaultMessage: 'Click Here' })}
+            </Button>
+          </div>}
+        /> }
+      </UI.ComplianceContainer>
+      : <DeviceNetworkingCard
         title='Device Networking Subscriptions'
-        subTitle='My Account License Expiration'
-        data={selfData}
-        isMsp={true}
-        trialType={TrialType.TRIAL}
-      />
-      <DeviceNetworkingCard
-        title='Device Networking Subscriptions'
-        subTitle='MSP Customers License Expiration'
+        subTitle='License Expiration'
         isMsp={false}
-        data={ecSummaryData}
-        trialType={isExtendedTrial ? TrialType.EXTENDED_TRIAL : undefined}
-        footerContent={showCompliancePhase2UI ? <div style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'end'
-        }}>
-          <Button
-            size='small'
-            type={'link'}
-            onClick={openMspCustomersDrawer}>
-            {$t({ defaultMessage: 'View Details' })}
-          </Button>
-        </div> : <></>}
-      />
-      {
-        showCompliancePhase2UI && openMspCustLicencesDrawer && <Drawer
-          title={<>{$t({ defaultMessage: 'Device Networking Subscriptions' }) }
-            {ecSummaryData.licenseGap >= 0 ? <UI.GreenTickIcon /> : <UI.RedTickIcon />}</>}
-          visible={openMspCustLicencesDrawer}
-          onClose={closeMspCustomersDrawer}
-          destroyOnClose={true}
-          width={1080}
-        >
-          <MspCustomersLicences />
-        </Drawer>
-      }
-      { showCompliancePhase2UI && <LicenseCalculatorCard
-        title='Device Networking Subscriptions'
-        subTitle='License Distance Calculator'
-        footerContent={<div style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'end',
-          borderTop: '1px solid #02a7f0',
-          paddingTop: '8px'
-        }}>
-          <span>{$t({ defaultMessage: 'To view currently available licenses timeline, ' })}</span>
-          <Button
-            size='small'
-            type={'link'}>
-            {$t({ defaultMessage: 'Click Here' })}
-          </Button>
-        </div>}
-      /> }
-    </UI.ComplianceContainer>
-    : <DeviceNetworkingCard
-      title='Device Networking Subscriptions'
-      subTitle='License Expiration'
-      isMsp={false}
-      data={selfData}
-      trialType={TrialType.TRIAL}
-    />
-
+        data={selfData}
+        trialType={TrialType.TRIAL}
+      />}
+  </>
 }

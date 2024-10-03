@@ -560,6 +560,7 @@ export enum ComplianceMspCustomersDevicesTypes {
   EDGE='EDGE',
   RWG='RWG'
 }
+
 export interface LicenseAttentionNotes {
   data: {
     summary?: string,
