@@ -7,18 +7,17 @@ export const DOCS_HOME_URL = 'https://docs.cloud.ruckuswireless.com'
 //for Local test, use '/docs/ruckusone/userguide/mapfile/doc-mapper.json'
 export const getDocsMappingURL = (isMspUser:boolean) =>
   process.env['NODE_ENV'] === 'development'
-    ? isMspUser ? '/docs/ruckusone/mspguide/mapfile/doc-mapper.json'
-      : '/docs/ruckusone/userguide/mapfile/doc-mapper.json'
-    : isMspUser ? 'https://docs.cloud.ruckuswireless.com/ruckusone/mspguide/mapfile/doc-mapper.json'  //eslint-disable-line max-len
-      : 'https://docs.cloud.ruckuswireless.com/ruckusone/userguide/mapfile/doc-mapper.json'
+    // eslint-disable-next-line max-len
+    ? isMspUser ? '/docs/ruckusone/mspguide/mapfile/doc-mapper.json':'/docs/ruckusone/userguide/mapfile/doc-mapper.json'
+    // eslint-disable-next-line max-len
+    : isMspUser ? 'https://docs.cloud.ruckuswireless.com/ruckusone/mspguide/mapfile/doc-mapper.json' : 'https://docs.cloud.ruckuswireless.com/ruckusone/userguide/mapfile/doc-mapper.json'
 
 // for local test, use '/docs/ruckusone/userguide/'
 export const getDocsURL = (isMspUser:boolean) =>
   process.env['NODE_ENV'] === 'development'
-    ? isMspUser ? '/docs/ruckusone/mspguide/'
-      : '/docs/ruckusone/userguide/'
-    : isMspUser ? 'https://docs.cloud.ruckuswireless.com/ruckusone/mspguide/'
-      : 'https://docs.cloud.ruckuswireless.com/ruckusone/userguide/'
+    ? isMspUser ? '/docs/ruckusone/mspguide/':'/docs/ruckusone/userguide/'
+    // eslint-disable-next-line max-len
+    : isMspUser ? 'https://docs.cloud.ruckuswireless.com/ruckusone/mspguide/':'https://docs.cloud.ruckuswireless.com/ruckusone/userguide/'
 
 export const getRaiDocsMappingURL = () =>
   process.env['NODE_ENV'] === 'development'
