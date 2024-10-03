@@ -82,7 +82,7 @@ describe('AccessSwitchDrawer', () => {
         <AccessSwitchDrawer open={true}
           onSave={saveSpy}
           editRecords={mockNsgSwitchInfoData.accessSwitches}
-          venueId={mockNsgData.venueInfos[0].venueId} />
+          venueId={mockNsgData.venueId} />
       </Provider>, {
         route: { params, path }
       })
@@ -117,7 +117,7 @@ describe('AccessSwitchDrawer', () => {
             ...mockNsgSwitchInfoData.accessSwitches,
             { id: 'c0:c5:20:aa:35:ff', name: 'mockAS', distributionSwitchId: 'c8:03:f5:3a:95:c6' }
           ]}
-          venueId={mockNsgData.venueInfos[0].venueId} />
+          venueId={mockNsgData.venueId} />
       </Provider>, {
         route: { params, path }
       })

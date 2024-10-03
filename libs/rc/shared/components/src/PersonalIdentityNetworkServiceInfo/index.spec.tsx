@@ -17,14 +17,13 @@ import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/t
 
 import {
   mockedApList,
-  mockedNsgSwitchInfoData,
   mockedPersonaGroup,
   mockedTunnelProfileData
 } from './__tests__/fixtures'
 
 import { PersonalIdentityNetworkServiceInfo } from '.'
 
-const { mockNsgStatsList, mockNsgData } = EdgePinFixtures
+const { mockNsgStatsList, mockNsgData, mockNsgSwitchInfoData } = EdgePinFixtures
 const { mockEdgeClusterList } = EdgeGeneralFixtures
 const { mockEdgeDhcpDataList } = EdgeDHCPFixtures
 
@@ -50,7 +49,7 @@ describe('NetworkSegmentationServiceInfo', () => {
       ),
       rest.get(
         EdgePinUrls.getSwitchInfoByNSGId.url,
-        (_req, res, ctx) => res(ctx.json(mockedNsgSwitchInfoData))
+        (_req, res, ctx) => res(ctx.json(mockNsgSwitchInfoData))
       ),
       rest.get(
         EdgeDhcpUrls.getDhcp.url,

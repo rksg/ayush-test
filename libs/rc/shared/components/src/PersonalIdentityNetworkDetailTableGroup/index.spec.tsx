@@ -1,19 +1,27 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { apApi, nsgApi, personaApi }                             from '@acx-ui/rc/services'
-import { CommonUrlsInfo, EdgePinUrls, PersonaUrls }              from '@acx-ui/rc/utils'
+import { apApi, nsgApi, personaApi } from '@acx-ui/rc/services'
+import {
+  CommonUrlsInfo,
+  EdgePinFixtures,
+  EdgeGeneralFixtures,
+  EdgePinUrls,
+  EdgeUrlsInfo,
+  PersonaUrls,
+  PropertyUrlsInfo
+} from '@acx-ui/rc/utils'
 import { Provider, store }                                       from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { mockedApList,
-  mockedNsgData,
-  mockedNsgStatsList,
-  mockedNsgSwitchInfoData,
+import {
+  mockedApList,
   mockedPersonaList,
   replacePagination } from './__tests__/fixtures'
 
 import { PersonalIdentityNetworkDetailTableGroup } from '.'
+const { mockNsgData, mockNsgStatsList, mockNsgSwitchInfoData } = EdgePinFixtures
+const { mockEdgeClusterList } = EdgeGeneralFixtures
 
 jest.mock('./ApsTable', () => ({
   ApsTable: () => <div data-testid='ApsTable' />
@@ -38,28 +46,28 @@ describe('NetworkSegmentationDetailTableGroup', () => {
     mockServer.use(
       rest.get(
         EdgePinUrls.getEdgePinById.url,
-        (_req, res, ctx) => res(ctx.json(mockedNsgData))
-      ),
+        (_req, res, ctx) => res(ctx.json(mockNsgData))),
+      rest.post(
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeClusterList))),
       rest.get(
         PersonaUrls.getPersonaGroupById.url,
-        (req, res, ctx) => res(ctx.json({}))
-      ),
+        (_req, res, ctx) => res(ctx.json({}))),
+      rest.get(
+        PropertyUrlsInfo.getPropertyConfigs.url,
+        (_req, res, ctx) => res(ctx.json({}))),
       rest.post(
         EdgePinUrls.getEdgePinStatsList.url,
-        (_req, res, ctx) => res(ctx.json(mockedNsgStatsList))
-      ),
+        (_req, res, ctx) => res(ctx.json(mockNsgStatsList))),
       rest.post(
         CommonUrlsInfo.getApsList.url,
-        (_req, res, ctx) => res(ctx.json(mockedApList))
-      ),
+        (_req, res, ctx) => res(ctx.json(mockedApList))),
       rest.post(
         replacePagination(PersonaUrls.searchPersonaList.url),
-        (_req, res, ctx) => res(ctx.json(mockedPersonaList))
-      ),
+        (_req, res, ctx) => res(ctx.json(mockedPersonaList))),
       rest.get(
         EdgePinUrls.getSwitchInfoByNSGId.url,
-        (_req, res, ctx) => res(ctx.json(mockedNsgSwitchInfoData))
-      )
+        (_req, res, ctx) => res(ctx.json(mockNsgSwitchInfoData)))
     )
   })
 

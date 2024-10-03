@@ -1,13 +1,13 @@
 import { rest } from 'msw'
 
-import { nsgApi }                     from '@acx-ui/rc/services'
-import { EdgePinUrls }                from '@acx-ui/rc/utils'
-import { Provider, store }            from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { nsgApi }                       from '@acx-ui/rc/services'
+import { EdgePinUrls, EdgePinFixtures } from '@acx-ui/rc/utils'
+import { Provider, store }              from '@acx-ui/store'
+import { mockServer, render, screen }   from '@acx-ui/test-utils'
 
-import { mockedNsgSwitchInfoData, webAuthList } from './__tests__/fixtures'
-import { DistSwitchesTable }                    from './DistSwitchesTable'
+import { DistSwitchesTable } from './DistSwitchesTable'
 
+const { mockNsgSwitchInfoData, mockWebAuthList } = EdgePinFixtures
 
 describe('NetworkSegmentationDetailTableGroup - DistSwitchesTable', () => {
 
@@ -17,7 +17,7 @@ describe('NetworkSegmentationDetailTableGroup - DistSwitchesTable', () => {
     mockServer.use(
       rest.post(
         EdgePinUrls.getWebAuthTemplateList.url,
-        (req, res, ctx) => res(ctx.json({ data: webAuthList }))
+        (_req, res, ctx) => res(ctx.json({ data: mockWebAuthList }))
       )
     )
   })
@@ -25,7 +25,7 @@ describe('NetworkSegmentationDetailTableGroup - DistSwitchesTable', () => {
   it('Should render DistSwitchesTable successfully', async () => {
     render(
       <Provider>
-        <DistSwitchesTable dataSource={mockedNsgSwitchInfoData.distributionSwitches} />
+        <DistSwitchesTable dataSource={mockNsgSwitchInfoData.distributionSwitches} />
       </Provider>
     )
 

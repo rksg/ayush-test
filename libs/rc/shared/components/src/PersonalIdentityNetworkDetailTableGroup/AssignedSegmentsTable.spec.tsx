@@ -1,15 +1,24 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { personaApi, useSearchPersonaListQuery }                                                   from '@acx-ui/rc/services'
-import { getServiceRoutePath, Persona, PersonaUrls, ServiceOperation, ServiceType, useTableQuery } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                         from '@acx-ui/store'
-import { mockServer, render, renderHook, screen, waitFor, within }                                 from '@acx-ui/test-utils'
-import { RequestPayload }                                                                          from '@acx-ui/types'
+import { personaApi, useSearchPersonaListQuery } from '@acx-ui/rc/services'
+import {
+  getServiceRoutePath,
+  Persona,
+  PersonaUrls,
+  ServiceOperation,
+  ServiceType,
+  useTableQuery,
+  EdgePinFixtures
+} from '@acx-ui/rc/utils'
+import { Provider, store }                                         from '@acx-ui/store'
+import { mockServer, render, renderHook, screen, waitFor, within } from '@acx-ui/test-utils'
+import { RequestPayload }                                          from '@acx-ui/types'
 
+import { mockedPersonaList, replacePagination } from './__tests__/fixtures'
+import { AssignedSegmentsTable }                from './AssignedSegmentsTable'
 
-import { mockedNsgData, mockedPersonaList, replacePagination } from './__tests__/fixtures'
-import { AssignedSegmentsTable }                               from './AssignedSegmentsTable'
+const { mockNsgData } = EdgePinFixtures
 
 
 const mockedUsedNavigate = jest.fn()
@@ -34,7 +43,7 @@ describe('NetworkSegmentationDetailTableGroup - AssignedSegmentsTable', () => {
     mockServer.use(
       rest.post(
         replacePagination(PersonaUrls.searchPersonaList.url),
-        (req, res, ctx) => res(ctx.json(mockedPersonaList))
+        (_req, res, ctx) => res(ctx.json(mockedPersonaList))
       )
     )
   })
@@ -52,7 +61,7 @@ describe('NetworkSegmentationDetailTableGroup - AssignedSegmentsTable', () => {
     render(
       <Provider>
         <AssignedSegmentsTable
-          switchInfo={mockedNsgData.distributionSwitchInfos}
+          switchInfo={mockNsgData.distributionSwitchInfos}
           tableQuery={result.current}
         />
       </Provider>, {
@@ -79,7 +88,7 @@ describe('NetworkSegmentationDetailTableGroup - AssignedSegmentsTable', () => {
     render(
       <Provider>
         <AssignedSegmentsTable
-          switchInfo={mockedNsgData.distributionSwitchInfos}
+          switchInfo={mockNsgData.distributionSwitchInfos}
           tableQuery={result.current}
           venueId='venue-id'
         />

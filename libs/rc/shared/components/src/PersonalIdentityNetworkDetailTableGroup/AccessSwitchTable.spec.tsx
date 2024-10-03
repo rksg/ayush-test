@@ -1,12 +1,12 @@
 import { rest } from 'msw'
 
-import { EdgePinUrls }                from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { EdgePinUrls, EdgePinFixtures } from '@acx-ui/rc/utils'
+import { Provider }                     from '@acx-ui/store'
+import { mockServer, render, screen }   from '@acx-ui/test-utils'
 
-import { mockedNsgSwitchInfoData, webAuthList } from './__tests__/fixtures'
-import { AccessSwitchTable }                    from './AccessSwitchTable'
+import { AccessSwitchTable } from './AccessSwitchTable'
 
+const { mockNsgSwitchInfoData, mockWebAuthList } = EdgePinFixtures
 
 describe('NetworkSegmentationDetailTableGroup - AccessSwitchTable', () => {
 
@@ -14,13 +14,13 @@ describe('NetworkSegmentationDetailTableGroup - AccessSwitchTable', () => {
     mockServer.use(
       rest.post(
         EdgePinUrls.getWebAuthTemplateList.url,
-        (req, res, ctx) => res(ctx.json({ data: webAuthList }))
+        (_req, res, ctx) => res(ctx.json({ data: mockWebAuthList }))
       )
     )
   })
 
   it('Should render AccessSwitchTable successfully', async () => {
-    const accessSwitchData = mockedNsgSwitchInfoData.accessSwitches.map((as, idx) =>({
+    const accessSwitchData = mockNsgSwitchInfoData.accessSwitches.map((as, idx) =>({
       ...as,
       distributionSwitchName: `DS-${idx}`
     }))

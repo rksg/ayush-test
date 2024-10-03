@@ -113,6 +113,16 @@ export const mockNsgData = {
   ]
 }
 
+export const mockWebAuthList = [{
+  id: '723250a97f3a4c3780e70c83c5b095ba',
+  name: 'Template-Ken-0209',
+  webAuthPasswordLabel: 'password-Ken-0209',
+  webAuthCustomTitle: 'title-Ken-0209',
+  webAuthCustomTop: 'top-Ken-0209',
+  webAuthCustomLoginButton: 'login-Ken-0209',
+  webAuthCustomBottom: 'bottom-Ken-0209'
+}]
+
 export const mockPropertyConfigs = {
   personaGroupId: 'testPersonaId'
 }

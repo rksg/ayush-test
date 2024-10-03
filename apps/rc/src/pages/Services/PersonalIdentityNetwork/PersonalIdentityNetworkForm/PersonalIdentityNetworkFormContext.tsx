@@ -216,7 +216,7 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
   const { usedNetworkIds, isUsedNetworkIdsLoading } = useGetEdgePinViewDataListQuery({
     payload: {
       fields: ['id', 'tunneledWlans'],
-      filters: { networkIds: networkIds }
+      filters: { 'tunneledWlans.networkId': networkIds }
     }
   }, {
     skip: !Boolean(networkIds),
