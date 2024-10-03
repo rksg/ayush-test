@@ -299,11 +299,7 @@ export function useRadiusServer () {
     fetchRadiusDetails()
   }, [radiusServerProfiles, radiusServerSettings])
 
-
-  // eslint-disable-next-line max-len
   const updateProfile = async (saveData: NetworkSaveData, networkId?: string) => {
-    if (!resolvedRbacEnabled || !networkId) return Promise.resolve()
-
     const mutations: Promise<CommonResult>[] = []
 
     // eslint-disable-next-line max-len
@@ -329,20 +325,26 @@ export function useRadiusServer () {
   }
 
   const updateSettings = async (saveData: NetworkSaveData, networkId?: string) => {
-    if (!resolvedRbacEnabled || !networkId) return Promise.resolve()
+    const resolvedMacAuthMacFormat = saveData.type === NetworkTypeEnum.AAA
+      ? saveData.wlan?.macAddressAuthenticationConfiguration?.macAuthMacFormat
+      : saveData.wlan?.macAuthMacFormat
+
+    if (!resolvedMacAuthMacFormat) return Promise.resolve()
 
     return await updateRadiusServerSettings({
       params: { networkId },
       payload: {
         enableAccountingProxy: saveData.enableAccountingProxy,
         enableAuthProxy: saveData.enableAuthProxy,
-        macAuthMacFormat: saveData.wlan?.macAddressAuthenticationConfiguration?.macAuthMacFormat
+        macAuthMacFormat: resolvedMacAuthMacFormat
       }
     }).unwrap()
   }
 
   // eslint-disable-next-line max-len
   const updateRadiusServer = async (saveData: NetworkSaveData, networkId?: string) => {
+    if (!resolvedRbacEnabled || !networkId) return Promise.resolve()
+
     return Promise.all([
       updateProfile(saveData, networkId),
       updateSettings(saveData, networkId)
