@@ -6,6 +6,7 @@ import { Button, Drawer }                     from '@acx-ui/components'
 import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import { useGetEntitlementsCompliancesQuery } from '@acx-ui/msp/services'
 import { ComplianceData }                     from '@acx-ui/msp/utils'
+import { TrialType }                          from '@acx-ui/rc/utils'
 import { useParams }                          from '@acx-ui/react-router-dom'
 
 import { emptyCompliance }      from './__tests__/fixtures'
@@ -18,11 +19,6 @@ import * as UI                  from './styledComponents'
 interface ComplianceProps {
   isMsp: boolean
   isExtendedTrial?: boolean
-}
-
-enum TrialType {
-  TRIAL = 'TRIAL',
-  EXTENDED_TRIAL = 'EXTENDED_TRIAL'
 }
 
 export const LicenseCompliance = (props: ComplianceProps) => {
