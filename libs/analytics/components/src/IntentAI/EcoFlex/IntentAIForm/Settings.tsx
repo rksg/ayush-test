@@ -13,7 +13,7 @@ const { Paragraph } = Typography
 export function Settings () {
   const { $t } = useIntl()
   const { form } = useStepFormContext<Intent>()
-  const enableExcludedHours = Form.useWatch('enableExcludedHours')
+  const enableExcludedHours = Form.useWatch(['preferences', 'enableExcludedHours'])
   const isEnabled = form.getFieldValue('preferences').enable
   const excludedHours = form.getFieldValue('preferences').excludedHours
 
@@ -32,7 +32,7 @@ export function Settings () {
       <StepsForm.Subtitle children={$t({ defaultMessage: 'Optional' })} />
       <Paragraph><span>{content.description}</span></Paragraph>
       <Form.Item
-        name='enableExcludedHours'
+        name={['preferences','enableExcludedHours']}
         valuePropName='checked'>
         <Checkbox
           children={content.option1}

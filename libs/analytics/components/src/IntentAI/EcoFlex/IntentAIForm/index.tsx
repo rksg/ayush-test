@@ -54,9 +54,8 @@ export const IntentAIForm: React.FC = () => {
   // always enable = true, because only new, scheduled, active, applyscheduled can open wizard
   const initialValues = {
     ...useInitialValues(),
-    preferences: { enable: true, excludedHours },
-    averagePowerPrice,
-    enableExcludedHours: !!excludedHours
+    preferences: { enable: true, excludedHours, enableExcludedHours: !!excludedHours },
+    averagePowerPrice
   }
   return (<>
     <IntentWizardHeader />
