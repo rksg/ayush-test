@@ -53,7 +53,6 @@ export default function ScepDrawer
     form.resetFields()
     const { expirationDate, ...rest } = scepData || {}
     const initialValues = scepData ? { ...rest, expirationDate: moment(expirationDate) } : {
-      scepKey: generateHexKey(20),
       challengePasswordType: ChallengePasswordType.NONE,
       challengePassword: '',
       allowedSubnets: '*',
@@ -94,14 +93,6 @@ export default function ScepDrawer
           name='name'
           label={$t({ defaultMessage: 'Name' })}
           rules={[{ required: true, max: 255 }]}
-        >
-          <Input/>
-        </Form.Item>
-        <Form.Item
-          name='scepKey'
-          label={$t({ defaultMessage: 'SCEP Key' })}
-          rules={[{ required: true }]}
-          extra={$t(scepKeysDescription.SCEP_KEY)}
         >
           <Input/>
         </Form.Item>
