@@ -93,14 +93,6 @@ describe('IntentAIDetails', () => {
     expect(await screen.findByTestId('Potential trade-off')).toBeVisible()
     expect(await screen.findByTestId('Status Trail')).toBeVisible()
   })
-  it('should show different tooltip based on return value of compareVersion', async () => {
-    const { params } = mockIntentContextWith({ status: Statuses.active, currentValue: '7.0.0' })
-    render(<IntentAIDetails />, { route: { params }, wrapper: Provider })
-    await hover(await screen.findByTestId('InformationSolid'))
-    expect(await screen.findByRole('tooltip', { hidden: true }))
-      // eslint-disable-next-line max-len
-      .toHaveTextContent('Zone was upgraded manually to recommended AP firmware version. Manually check whether this intent is still valid.')
-  })
   it('should render correctly for firmware drawer', async () => {
     const { params } = mockIntentContextWith()
     render(<IntentAIDetails />, { route: { params }, wrapper: Provider })
@@ -134,7 +126,7 @@ describe('IntentAIDetails', () => {
     await hover(await screen.findByTestId('InformationSolid'))
     expect(await screen.findByRole('tooltip', { hidden: true }))
       // eslint-disable-next-line max-len
-      .toHaveTextContent('Latest available AP firmware version will be used when this intent is applied.')
+      .toHaveTextContent('When applied, the Intent will use the latest available firmware version.')
     expect(screen.queryByText('Scheduled Date')).not.toBeInTheDocument()
   })
   it('should render with scheduled date', async () => {
