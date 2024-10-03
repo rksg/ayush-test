@@ -32,8 +32,7 @@ export const IconWrapper = styled(Space)`
 `
 
 const excludedIcons = [
-  'R1Cloud',
-  'SearchResultNoData'
+  'R1Cloud'
 ]
 
 export function Basic () {
