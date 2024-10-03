@@ -1,6 +1,6 @@
 import { ApiInfo } from '@acx-ui/utils'
 
-const paginationParams = '?size=:pageSize&page=:page'
+const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
 export const CertificateUrls: { [key: string]: ApiInfo } = {
   getCertificateTemplates: {
     method: 'post',
