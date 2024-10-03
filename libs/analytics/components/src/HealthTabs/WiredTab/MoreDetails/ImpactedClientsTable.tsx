@@ -158,7 +158,6 @@ export const ImpactedClientsTable = ({
           }}/>
       </ChartTitle>
       <Table<ImpactedClients>
-        settingsId='switch-health-impacted-devices-table'
         columns={columns}
         dataSource={data}
         pagination={{

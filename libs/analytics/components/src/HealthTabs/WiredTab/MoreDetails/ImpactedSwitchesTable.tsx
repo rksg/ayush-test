@@ -99,14 +99,12 @@ export const ImpactedSwitchesTable = ({
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',
       key: 'status',
-      show: false,
       sorter: { compare: sortProp('status', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Firmware' }),
       dataIndex: 'firmware',
       key: 'firmware',
-      show: false,
       sorter: { compare: sortProp('firmware', defaultSort) }
     },
     {
@@ -142,7 +140,6 @@ export const ImpactedSwitchesTable = ({
         />
       </ChartTitle>
       <Table
-        settingsId='switch-health-impacted-switches-table'
         columns={columns}
         dataSource={data as SwitchDetails[]}
         rowKey='rowId'
