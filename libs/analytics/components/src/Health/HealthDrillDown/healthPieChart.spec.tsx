@@ -29,6 +29,7 @@ jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
 }))
 describe('HealthPieChart', () => {
+  const size = { width: 300, height: 300 }
 
   beforeEach(() => store.dispatch(api.util.resetApiState()))
 
@@ -47,6 +48,7 @@ describe('HealthPieChart', () => {
       <Provider>
         <div style={{ height: 300, width: 300 }}>
           <HealthPieChart
+            size={size}
             filters={filters}
             queryType='connectionFailure'
             selectedStage='Authentication'
@@ -80,6 +82,7 @@ describe('HealthPieChart', () => {
       <Provider>
         <div style={{ height: 300, width: 300 }}>
           <HealthPieChart
+            size={size}
             filters={filters}
             queryType='ttc'
             selectedStage='Authentication'
@@ -112,6 +115,7 @@ describe('HealthPieChart', () => {
       <Provider>
         <div style={{ height: 300, width: 300 }}>
           <HealthPieChart
+            size={size}
             filters={apFilters}
             queryType='ttc'
             selectedStage='Authentication'
@@ -141,6 +145,7 @@ describe('HealthPieChart', () => {
       <Provider>
         <div style={{ height: 300, width: 300 }}>
           <HealthPieChart
+            size={size}
             filters={apFilters}
             queryType='ttc'
             selectedStage='Authentication'
@@ -169,6 +174,7 @@ describe('HealthPieChart', () => {
       <Provider>
         <div style={{ height: 300, width: 300 }}>
           <HealthPieChart
+            size={size}
             filters={filters}
             queryType='connectionFailure'
             selectedStage='Authentication'
@@ -203,6 +209,7 @@ describe('HealthPieChart', () => {
       <Provider>
         <div style={{ height: 300, width: 300 }}>
           <HealthPieChart
+            size={size}
             filters={filters}
             queryType='connectionFailure'
             selectedStage='Authentication'
