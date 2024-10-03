@@ -107,7 +107,7 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
       key: 'role',
       dataIndex: 'role',
       render: function (_, row) {
-        return row.role ? $t(roleStringMap[row.role]) : ''
+        return row.role ? roleStringMap[row.role] ? $t(roleStringMap[row.role]) : row.role : ''
       }
     },
     {
