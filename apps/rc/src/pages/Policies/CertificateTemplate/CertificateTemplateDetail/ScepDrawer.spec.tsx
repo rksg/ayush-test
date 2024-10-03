@@ -107,4 +107,16 @@ describe('ScepDrawer', () => {
     rerender(<Provider><ScepDrawer visible={true} onClose={() => {}}/></Provider>)
     await waitFor(() => expect(screen.getByLabelText('Name')).toHaveValue(''))
   })
+
+  it('should prevent typing spaces in the Name field', async () => {
+    render(<Provider><ScepDrawer visible={true} onClose={() => {}}/></Provider>)
+
+    const nameInput = screen.getByLabelText('Name')
+
+    // Try typing a space
+    await userEvent.type(nameInput, ' ')
+
+    // Ensure the input value does not contain a space
+    expect(nameInput).toHaveValue('')
+  })
 })

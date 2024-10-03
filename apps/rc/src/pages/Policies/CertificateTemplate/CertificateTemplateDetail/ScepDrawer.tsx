@@ -95,7 +95,11 @@ export default function ScepDrawer
           label={$t({ defaultMessage: 'Name' })}
           rules={[{ required: true, max: 255 }]}
         >
-          <Input/>
+          <Input onKeyPress={(e) => {
+            if (e.key === ' ') {
+              e.preventDefault()
+            }
+          }}/>
         </Form.Item>
         <Form.Item
           name='scepKey'
