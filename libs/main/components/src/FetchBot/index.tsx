@@ -106,8 +106,7 @@ export function FetchBot (props:FetchBotProps) {
         try {
           const authResp = await fetch(tokenReq.url,{
             method: tokenReq.method,
-            headers: tokenReq.headers,
-            body: JSON.stringify({ swuId })
+            headers: tokenReq.headers
           })
           const { idToken } = await authResp.json()
           callback(idToken,null,{
