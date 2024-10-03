@@ -15,7 +15,7 @@ export const TransparentButton = styled(Button)`
   align-items: center;
   justify-content: center;
   
-  &:hover {
+  &:hover, &:focus {
     background-color: transparent;
   }
 `

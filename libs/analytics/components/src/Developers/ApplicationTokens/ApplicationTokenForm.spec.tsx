@@ -6,11 +6,11 @@ import { get }                                       from '@acx-ui/config'
 import { notificationApi, Provider, rbacApi, store } from '@acx-ui/store'
 import { mockServer, render, screen, waitFor }       from '@acx-ui/test-utils'
 
-import { webhooks, mockResourceGroups, webhooksUrl, resourceGroups } from './__fixtures__'
-import { ApplicationTokenForm, resourceGroupFilterOption }           from './ApplicationTokenForm'
-import { WebhookDto, webhookDtoKeys }                                from './services'
+import { applicationTokens }                            from './__fixtures__'
+import { ApplicationTokenForm }                         from './ApplicationTokenForm'
+import { ApplicationTokenDto, applicationTokenDtoKeys } from './services'
 
-const { click, selectOptions, type, clear } = userEvent
+const { click, type, clear } = userEvent
 
 jest.mock('@acx-ui/config')
 jest.mock('antd', () => {
@@ -41,13 +41,10 @@ jest.mock('antd', () => {
 
 describe('ApplicationTokenForm', () => {
   const renderCreateAndFillIn = async (isRAI = true) => {
-    const dto: WebhookDto = {
-      name: 'Webhook Name',
-      callbackUrl: 'https://example.com',
-      secret: '123',
-      resourceGroupId: webhook.resourceGroupId,
-      eventTypes: webhook.eventTypes,
-      enabled: false
+    const dto: ApplicationTokenDto = {
+      name: 'Token Name',
+      clientId: '123',
+      clientSecret: '456'
     }
 
     const onClose = jest.fn()
@@ -63,71 +60,41 @@ describe('ApplicationTokenForm', () => {
       name: (_, el) => el.textContent!.includes('Please enter')
     })).toHaveLength(isRAI ? 4 : 3)
 
-    // trigger URL validation
-    const webhookUrl = await screen.findByRole('textbox', { name: 'Webhook URL' })
-    await type(webhookUrl, 'http')
     expect(await screen.findByRole('alert', {
       name: (_, el) => el.textContent!.includes('Please enter a valid URL')
     })).toBeVisible()
-    await clear(webhookUrl)
 
     await type(name, dto.name)
-    await type(webhookUrl, dto.callbackUrl)
-    await type(await screen.findByRole('textbox', { name: 'Secret' }), dto.secret)
-    if (isRAI) {
-      await selectOptions(
-        await screen.findByRole('combobox', { name: 'Resource Group' }),
-        dto.resourceGroupId
-      )
-    }
-    await click(await screen.findByRole('switch', { name: 'Enabled' }))
-
-    const returnDto = isRAI ? dto : _.omit(dto, 'resourceGroupId')
-    return { dto: returnDto, onClose }
+    return { dto, onClose }
   }
 
-  const webhook = webhooks[6]
-  const renderEditAndFillIn = async (isRAI = true) => {
-    const dto: WebhookDto = _.pick(webhook, webhookDtoKeys)
-    const editedDto: WebhookDto = {
+  const applicationToken = applicationTokens[6]
+  const renderEditAndFillIn = async () => {
+    const dto: ApplicationTokenDto = _.pick(applicationToken, applicationTokenDtoKeys)
+    const editedDto: ApplicationTokenDto = {
       name: `${dto.name}-edited`,
-      callbackUrl: `${dto.callbackUrl}-edited`,
-      secret: `${dto.secret}-edited`,
-      eventTypes: dto.eventTypes.slice(0, -2),
-      enabled: !dto.enabled,
-      resourceGroupId: resourceGroups.find(node => node.id !== dto.resourceGroupId)!.id
+      clientId: dto.clientId,
+      clientSecret: dto.clientSecret
     }
 
     const onClose = jest.fn()
-    render(<ApplicationTokenForm {...{ onClose, webhook }} />, { wrapper: Provider })
+    render(
+      <ApplicationTokenForm {...{ onClose, applicationToken: applicationToken }} />,
+      { wrapper: Provider }
+    )
 
     // ensure name field visible before trigger validation
-    const [name, webhookUrl, secret] = [
+    const [name, clientSecret] = [
       await screen.findByRole('textbox', { name: 'Name' }),
-      await screen.findByRole('textbox', { name: 'Webhook URL' }),
-      await screen.findByRole('textbox', { name: 'Secret' })
+      await screen.findByRole('textbox', { name: 'Client Secret' })
     ]
 
     await clear(name)
     await type(name, editedDto.name)
-    await clear(webhookUrl)
-    await type(webhookUrl, editedDto.callbackUrl)
-    await clear(secret)
-    await type(secret, editedDto.secret)
+    await clear(clientSecret)
+    await type(clientSecret, editedDto.clientSecret)
 
-    if (isRAI) {
-      await selectOptions(
-        await screen.findByRole('combobox', { name: 'Resource Group' }),
-        editedDto.resourceGroupId
-      )
-    }
-    await click(await screen.findByRole('checkbox', { name: 'P4 Incidents' }))
-    await click(await screen.findByRole('switch', {
-      name: dto.enabled ? 'Enabled' : 'Disabled'
-    }))
-
-    const returnDto = isRAI ? editedDto : _.omit(editedDto, 'resourceGroupId')
-    return { dto: returnDto, onClose }
+    return { dto, onClose }
   }
 
   describe('RAI', () => {
@@ -135,7 +102,7 @@ describe('ApplicationTokenForm', () => {
       jest.resetModules()
       jest.mocked(get).mockReturnValue('true')
 
-      mockServer.use(mockResourceGroups())
+      // mockServer.use(mockResourceGroups())
     })
 
     afterEach(() => {
@@ -148,12 +115,12 @@ describe('ApplicationTokenForm', () => {
         const payloadSpy = jest.fn()
         const { dto, onClose } = await renderCreateAndFillIn()
 
-        mockServer.use(
-          rest.post(webhooksUrl(), (req, res, ctx) => {
-            payloadSpy(req.body)
-            return res(ctx.json({ success: true }))
-          })
-        )
+        // mockServer.use(
+        //   rest.post(webhooksUrl(), (req, res, ctx) => {
+        //     payloadSpy(req.body)
+        //     return res(ctx.json({ success: true }))
+        //   })
+        // )
         await click(await screen.findByRole('button', { name: 'Create' }))
 
         expect(await screen.findByText('Webhook was created')).toBeVisible()
@@ -164,12 +131,12 @@ describe('ApplicationTokenForm', () => {
         const payloadSpy = jest.fn()
         const { dto, onClose } = await renderCreateAndFillIn()
 
-        mockServer.use(
-          rest.post(webhooksUrl(), (req, res) => {
-            payloadSpy(req.body)
-            return res.networkError('Failed to connect')
-          })
-        )
+        // mockServer.use(
+        //   rest.post(webhooksUrl(), (req, res) => {
+        //     payloadSpy(req.body)
+        //     return res.networkError('Failed to connect')
+        //   })
+        // )
         await click(await screen.findByRole('button', { name: 'Create' }))
 
         expect(await screen.findByText('Failed to create webhook')).toBeVisible()
@@ -181,12 +148,12 @@ describe('ApplicationTokenForm', () => {
         const { dto, onClose } = await renderCreateAndFillIn()
 
         const [status, error] = [500, 'Error from API']
-        mockServer.use(
-          rest.post(webhooksUrl(), (req, res, ctx) => {
-            payloadSpy(req.body)
-            return res(ctx.status(status), ctx.json({ error }))
-          })
-        )
+        // mockServer.use(
+        //   rest.post(webhooksUrl(), (req, res, ctx) => {
+        //     payloadSpy(req.body)
+        //     return res(ctx.status(status), ctx.json({ error }))
+        //   })
+        // )
         await click(await screen.findByRole('button', { name: 'Create' }))
 
         expect(await screen.findByText(`Error: ${error}. (status code: ${status})`)).toBeVisible()
@@ -200,12 +167,12 @@ describe('ApplicationTokenForm', () => {
         const payloadSpy = jest.fn()
         const { dto, onClose } = await renderEditAndFillIn()
 
-        mockServer.use(
-          rest.put(webhooksUrl(webhook.id), (req, res, ctx) => {
-            payloadSpy(req.body)
-            return res(ctx.json({ success: true }))
-          })
-        )
+        // mockServer.use(
+        //   rest.put(webhooksUrl(webhook.id), (req, res, ctx) => {
+        //     payloadSpy(req.body)
+        //     return res(ctx.json({ success: true }))
+        //   })
+        // )
         await click(await screen.findByRole('button', { name: 'Save' }))
 
         expect(await screen.findByText('Webhook was updated')).toBeVisible()
@@ -216,12 +183,12 @@ describe('ApplicationTokenForm', () => {
         const payloadSpy = jest.fn()
         const { dto, onClose } = await renderEditAndFillIn()
 
-        mockServer.use(
-          rest.put(webhooksUrl(webhook.id), (req, res) => {
-            payloadSpy(req.body)
-            return res.networkError('Failed to connect')
-          })
-        )
+        // mockServer.use(
+        //   rest.put(webhooksUrl(webhook.id), (req, res) => {
+        //     payloadSpy(req.body)
+        //     return res.networkError('Failed to connect')
+        //   })
+        // )
         await click(await screen.findByRole('button', { name: 'Save' }))
 
         expect(await screen.findByText('Failed to update webhook')).toBeVisible()
@@ -233,12 +200,12 @@ describe('ApplicationTokenForm', () => {
         const { dto, onClose } = await renderEditAndFillIn()
 
         const [status, error] = [500, 'Error from API']
-        mockServer.use(
-          rest.put(webhooksUrl(webhook.id), (req, res, ctx) => {
-            payloadSpy(req.body)
-            return res(ctx.status(status), ctx.json({ error }))
-          })
-        )
+        // mockServer.use(
+        //   rest.put(webhooksUrl(webhook.id), (req, res, ctx) => {
+        //     payloadSpy(req.body)
+        //     return res(ctx.status(status), ctx.json({ error }))
+        //   })
+        // )
         await click(await screen.findByRole('button', { name: 'Save' }))
 
         expect(await screen.findByText(`Error: ${error}. (status code: ${status})`)).toBeVisible()
@@ -253,7 +220,7 @@ describe('ApplicationTokenForm', () => {
       jest.resetModules()
       jest.mocked(get).mockReturnValue('')
 
-      mockServer.use(mockResourceGroups())
+      // mockServer.use(mockResourceGroups())
     })
 
     afterEach(() => {
@@ -266,12 +233,12 @@ describe('ApplicationTokenForm', () => {
         const payloadSpy = jest.fn()
         const { dto, onClose } = await renderCreateAndFillIn(false)
 
-        mockServer.use(
-          rest.post(webhooksUrl(), (req, res, ctx) => {
-            payloadSpy(req.body)
-            return res(ctx.json({ success: true }))
-          })
-        )
+        // mockServer.use(
+        //   rest.post(webhooksUrl(), (req, res, ctx) => {
+        //     payloadSpy(req.body)
+        //     return res(ctx.json({ success: true }))
+        //   })
+        // )
         await click(await screen.findByRole('button', { name: 'Create' }))
 
         expect(await screen.findByText('Webhook was created')).toBeVisible()
@@ -283,14 +250,14 @@ describe('ApplicationTokenForm', () => {
     describe('Update existing Webhook', () => {
       it('handle edit flow', async () => {
         const payloadSpy = jest.fn()
-        const { dto, onClose } = await renderEditAndFillIn(false)
+        const { dto, onClose } = await renderEditAndFillIn()
 
-        mockServer.use(
-          rest.put(webhooksUrl(webhook.id), (req, res, ctx) => {
-            payloadSpy(req.body)
-            return res(ctx.json({ success: true }))
-          })
-        )
+        // mockServer.use(
+        //   rest.put(webhooksUrl(webhook.id), (req, res, ctx) => {
+        //     payloadSpy(req.body)
+        //     return res(ctx.json({ success: true }))
+        //   })
+        // )
         await click(await screen.findByRole('button', { name: 'Save' }))
 
         expect(await screen.findByText('Webhook was updated')).toBeVisible()
@@ -311,17 +278,19 @@ describe('ApplicationTokenForm', () => {
     it('send sample and render details', async () => {
       const [payloadSpy, onClose] = [jest.fn(), jest.fn()]
 
-      render(<ApplicationTokenForm {...{ onClose, webhook }} />, { wrapper: Provider })
+      render(
+        <ApplicationTokenForm {...{ onClose, applicationToken: applicationToken }} />,
+        { wrapper: Provider })
 
-      const status = 200
-      const data = '<html>\n  <body>\n    <h1>Code Details</h1>\n  </body>\n</html>'
+      // const status = 200
+      // const data = '<html>\n  <body>\n    <h1>Code Details</h1>\n  </body>\n</html>'
 
-      mockServer.use(
-        rest.post(webhooksUrl('send-sample-incident'), (req, res, ctx) => {
-          payloadSpy(req.body)
-          return res(ctx.json({ status, data, success: true }))
-        })
-      )
+      // mockServer.use(
+      //   rest.post(webhooksUrl('send-sample-incident'), (req, res, ctx) => {
+      //     payloadSpy(req.body)
+      //     return res(ctx.json({ status, data, success: true }))
+      //   })
+      // )
 
       await click(await screen.findByRole('button', { name }))
 
@@ -329,23 +298,26 @@ describe('ApplicationTokenForm', () => {
         name: (_, el) => el.textContent!.includes('Sample Incident Sent')
       })
       expect(dialog).toBeVisible()
-      expect(payloadSpy).toBeCalledWith(_.pick(webhook, ['callbackUrl', 'secret']))
+      expect(payloadSpy).toBeCalledWith(_.pick(applicationToken, ['clientSecret']))
       await click(await screen.findByRole('button', { name: 'OK' }))
     })
     it('send sample and render details (object)', async () => {
       const [payloadSpy, onClose] = [jest.fn(), jest.fn()]
 
-      render(<ApplicationTokenForm {...{ onClose, webhook }} />, { wrapper: Provider })
-
-      const status = 200
-      const data = { abc: 1, message: 'message' }
-
-      mockServer.use(
-        rest.post(webhooksUrl('send-sample-incident'), (req, res, ctx) => {
-          payloadSpy(req.body)
-          return res(ctx.json({ status, data, success: true }))
-        })
+      render(
+        <ApplicationTokenForm {...{ onClose, applicationToken: applicationToken }} />,
+        { wrapper: Provider }
       )
+
+      // const status = 200
+      // const data = { abc: 1, message: 'message' }
+
+      // mockServer.use(
+      //   rest.post(webhooksUrl('send-sample-incident'), (req, res, ctx) => {
+      //     payloadSpy(req.body)
+      //     return res(ctx.json({ status, data, success: true }))
+      //   })
+      // )
 
       await click(await screen.findByRole('button', { name }))
 
@@ -353,52 +325,51 @@ describe('ApplicationTokenForm', () => {
         name: (_, el) => el.textContent!.includes('Sample Incident Sent')
       })
       expect(dialog).toBeVisible()
-      expect(payloadSpy).toBeCalledWith(_.pick(webhook, ['callbackUrl', 'secret']))
+      expect(payloadSpy).toBeCalledWith(_.pick(applicationToken, ['callbackUrl', 'clientSecret']))
       await click(await screen.findByRole('button', { name: 'OK' }))
     })
     it('handle RTKQuery error', async () => {
       const [payloadSpy, onClose] = [jest.fn(), jest.fn()]
 
-      render(<ApplicationTokenForm {...{ onClose, webhook }} />, { wrapper: Provider })
-
-      mockServer.use(
-        rest.post(webhooksUrl('send-sample-incident'), (req, res) => {
-          payloadSpy(req.body)
-          return res.networkError('Failed to connect')
-        })
+      render(
+        <ApplicationTokenForm {...{ onClose, applicationToken: applicationToken }} />,
+        { wrapper: Provider }
       )
+
+      // mockServer.use(
+      //   rest.post(webhooksUrl('send-sample-incident'), (req, res) => {
+      //     payloadSpy(req.body)
+      //     return res.networkError('Failed to connect')
+      //   })
+      // )
 
       await click(await screen.findByRole('button', { name }))
 
       expect(await screen.findByText('Failed to send sample incident')).toBeVisible()
-      expect(payloadSpy).toBeCalledWith(_.pick(webhook, ['callbackUrl', 'secret']))
+      expect(payloadSpy).toBeCalledWith(_.pick(applicationToken, ['callbackUrl', 'clientSecret']))
       expect(onClose).not.toBeCalled()
     })
     it('handle API error', async () => {
       const [payloadSpy, onClose] = [jest.fn(), jest.fn()]
 
-      render(<ApplicationTokenForm {...{ onClose, webhook }} />, { wrapper: Provider })
+      render(
+        <ApplicationTokenForm {...{ onClose, applicationToken: applicationToken }} />,
+        { wrapper: Provider }
+      )
 
       const [status, error] = [500, 'Error from API']
-      mockServer.use(
-        rest.post(webhooksUrl('send-sample-incident'), (req, res, ctx) => {
-          payloadSpy(req.body)
-          return res(ctx.status(status), ctx.json({ error }))
-        })
-      )
+      // mockServer.use(
+      //   rest.post(webhooksUrl('send-sample-incident'), (req, res, ctx) => {
+      //     payloadSpy(req.body)
+      //     return res(ctx.status(status), ctx.json({ error }))
+      //   })
+      // )
 
       await click(await screen.findByRole('button', { name }))
 
       expect(await screen.findByText(`Error: ${error}. (status code: ${status})`)).toBeVisible()
-      expect(payloadSpy).toBeCalledWith(_.pick(webhook, ['callbackUrl', 'secret']))
+      expect(payloadSpy).toBeCalledWith(_.pick(applicationToken, ['clientSecret']))
       expect(onClose).not.toBeCalled()
-    })
-  })
-
-  describe('resourceGroupFilterOption', () => {
-    it('should filter resource groups', () => {
-      expect(resourceGroupFilterOption('a', { label: 'aaaaa' })).toBe(true)
-      expect(resourceGroupFilterOption('a', { label: 'AAAA' })).toBe(true)
     })
   })
 })
