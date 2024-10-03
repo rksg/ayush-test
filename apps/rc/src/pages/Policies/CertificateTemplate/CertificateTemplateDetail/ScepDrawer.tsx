@@ -34,7 +34,7 @@ export default function ScepDrawer
       const payload = { ...form.getFieldsValue(),
         challengePassword:
           challengePasswordType === ChallengePasswordType.NONE ?
-            '' : form.getFieldValue('challengePassword') }
+            null : form.getFieldValue('challengePassword') }
       if (!scepData) {
         await addScepKey({ params, payload })
       } else {
