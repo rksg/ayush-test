@@ -42,8 +42,6 @@ export default function ScepDrawer
             null : form.getFieldValue('challengePassword'),
         expirationDate: moment(form.getFieldValue('expirationDate')).endOf('day').utc()
       }
-      // eslint-disable-next-line no-console
-      console.log(payload.expirationDate)
       if (!scepData) {
         await addScepKey({ params, payload })
       } else {
