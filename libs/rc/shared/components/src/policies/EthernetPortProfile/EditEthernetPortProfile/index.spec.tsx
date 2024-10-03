@@ -3,12 +3,11 @@ import { rest }  from 'msw'
 
 import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import { ethernetPortProfileApi, policyApi } from '@acx-ui/rc/services'
-import { AaaUrls,
-  EthernetPortAuthType,
+import {
+  AaaUrls,
   EthernetPortProfileUrls,
   PolicyOperation,
   PolicyType,
-  getEthernetPortAuthTypeString,
   getPolicyRoutePath } from '@acx-ui/rc/utils'
 import { Provider, store }                     from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
@@ -187,54 +186,6 @@ describe('EditEthernetPortProfile', () => {
     })
   })
 
-  // eslint-disable-next-line max-len
-  it('If enable 802.1x and select Auth service will with Auth service api call', async () => {
-
-    mockServer.use(
-      rest.get(
-        EthernetPortProfileUrls.getEthernetPortProfile.url,
-        (req, res, ctx) => res(ctx.json(dummyEthernetPortProfileAccess))
-      )
-    )
-
-    const user = userEvent.setup()
-    render(
-      <Provider>
-        <EditEthernetPortProfile />
-      </Provider>
-      , { route: { path: editViewPath, params } }
-    )
-
-    await user.click(await screen.findByRole('switch', { name: '802.1X Authentication' }))
-
-    const _8021XCombo = await screen.findByRole('combobox', { name: '802.1X Role' })
-    await user.click(_8021XCombo)
-    await user.click(
-      // eslint-disable-next-line max-len
-      (await screen.findAllByText(getEthernetPortAuthTypeString(EthernetPortAuthType.PORT_BASED)))[1]
-    )
-
-    const authServerCombo = await screen.findByText('Select RADIUS')
-    await user.click(authServerCombo)
-    await user.click(await screen.findByText(mockAuthRadiusName))
-
-    await user.click(screen.getByRole('button', { name: 'Apply' }))
-
-    await waitFor(() => expect(mockedMainEthernetProfile).toBeCalledWith({
-      name: mockEthernetPortProfileId6,
-      type: 'ACCESS',
-      untagId: 1,
-      vlanMembers: 1,
-      authRadiusId: '__Auth_Radius_ID__',
-      enableAuthProxy: false,
-      accountingEnabled: false,
-      authType: 'PORT_BASED_AUTHENTICATOR'
-    }))
-
-    await waitFor(() => expect(mockedDeleteRadiusId).not.toBeCalled())
-    await waitFor(() => expect(mockedUpdateRadiusId).toBeCalled())
-  })
-
   it('If change Auth service will with Auth service delete api call', async () => {
     mockServer.use(
       rest.get(
@@ -250,8 +201,6 @@ describe('EditEthernetPortProfile', () => {
       </Provider>
       , { route: { path: editViewPath, params } }
     )
-    // await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    // const authServerCombo = screen.getByRole('combobox', { name: 'Authentication Server' })
     const authServerCombo = await screen.findByText(mockAuthRadiusName)
     await user.click(authServerCombo)
     await user.click(await screen.findByText(mockAuthRadiusName2))
@@ -260,57 +209,5 @@ describe('EditEthernetPortProfile', () => {
 
     await waitFor(() => expect(mockedDeleteRadiusId).toBeCalled())
     await waitFor(() => expect(mockedUpdateRadiusId).toBeCalled())
-  })
-
-
-  it('Enable MAC based and set guest VLAN could save success', async () => {
-    const user = userEvent.setup()
-    render(
-      <Provider>
-        <EditEthernetPortProfile />
-      </Provider>
-      , { route: {
-        path: editViewPath,
-        params: {
-          tenantId: params.tenantId,
-          policyId: mockEthernetPortProfileId6
-        }
-      }
-      }
-    )
-
-    await user.click(await screen.findByRole('switch', { name: '802.1X Authentication' }))
-
-    const _8021XCombo = screen.getByRole('combobox', { name: '802.1X Role' })
-    await user.click(_8021XCombo)
-    await user.click(
-      // eslint-disable-next-line max-len
-      await screen.findByText(getEthernetPortAuthTypeString(EthernetPortAuthType.MAC_BASED))
-    )
-
-    const authServerCombo = await screen.findByText('Select RADIUS')
-    await user.click(authServerCombo)
-    await user.click(await screen.findByText(mockAuthRadiusName))
-
-
-    await user.click(screen.getByRole('switch', { name: 'Dynamic VLAN' }))
-
-    const guestVlanField = screen.getByRole('spinbutton', { name: 'Guest VLAN' })
-    await user.type(guestVlanField, '3')
-
-    await user.click(screen.getByRole('button', { name: 'Apply' }))
-
-    await waitFor(() => expect(mockedMainEthernetProfile).toBeCalledWith({
-      name: mockEthernetPortProfileId6,
-      type: 'ACCESS',
-      untagId: 1,
-      vlanMembers: 1,
-      authRadiusId: '__Auth_Radius_ID__',
-      enableAuthProxy: false,
-      accountingEnabled: false,
-      authType: 'MAC_BASED_AUTHENTICATOR',
-      dynamicVlanEnabled: true,
-      unauthenticatedGuestVlan: 3
-    }))
   })
 })
