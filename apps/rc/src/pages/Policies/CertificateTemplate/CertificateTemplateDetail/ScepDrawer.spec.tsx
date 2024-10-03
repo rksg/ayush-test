@@ -100,8 +100,8 @@ describe('ScepDrawer', () => {
     // eslint-disable-next-line max-len
     const { rerender } = render(<Provider><ScepDrawer visible={true} onClose={() => {}}/></Provider>)
 
-    await userEvent.type(screen.getByLabelText('Name'), 'Test Name')
-    expect(screen.getByLabelText('Name')).toHaveValue('Test Name')
+    await userEvent.type(screen.getByLabelText('Name'), 'TestName')
+    await waitFor(() => expect(screen.getByLabelText('Name')).toHaveValue('TestName'))
 
     rerender(<Provider><ScepDrawer visible={false} onClose={() => {}}/></Provider>)
     rerender(<Provider><ScepDrawer visible={true} onClose={() => {}}/></Provider>)
