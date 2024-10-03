@@ -56,7 +56,6 @@ export default function ScepTable ({ templateId = '' }) {
       title: $t({ defaultMessage: 'SCEP Enroll URL' }),
       dataIndex: 'enrollmentUrl',
       key: 'enrollmentUrl',
-      sorter: true,
       copyable: true,
       ellipsis: true
     },
