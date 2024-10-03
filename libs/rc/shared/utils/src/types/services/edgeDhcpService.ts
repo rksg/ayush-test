@@ -94,5 +94,5 @@ export interface DhcpUeSummaryStats {
 export interface EdgeDhcpSettingFormData extends EdgeDhcpSetting {
   enableSecondaryDNSServer?: boolean
   leaseTimeType?: LeaseTimeType
-  usedForNSG?: boolean
+  usedForPin?: boolean
 }

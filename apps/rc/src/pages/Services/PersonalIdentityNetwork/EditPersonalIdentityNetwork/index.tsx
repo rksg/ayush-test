@@ -25,33 +25,33 @@ const EditPersonalIdentityNetwork = () => {
   const { editPin } = useEdgePinActions()
 
   const {
-    data: nsgData,
-    isLoading: isNsgDataLoading,
-    isFetching: isNsgDataFetching
+    data: pinData,
+    isLoading: isPinDataLoading,
+    isFetching: isPinDataFetching
   } = useGetEdgePinByIdQuery({ params })
 
   const tablePath = getServiceRoutePath(
-    { type: ServiceType.NETWORK_SEGMENTATION, oper: ServiceOperation.LIST })
+    { type: ServiceType.PIN, oper: ServiceOperation.LIST })
 
   const initFormValues = useMemo(() => {
     return {
-      id: nsgData?.id,
-      name: nsgData?.name,
-      venueId: nsgData?.venueId,
-      edgeClusterId: nsgData?.edgeClusterInfo?.edgeClusterId,
-      segments: nsgData?.edgeClusterInfo?.segments,
-      devices: nsgData?.edgeClusterInfo?.devices,
-      dhcpId: nsgData?.edgeClusterInfo?.dhcpInfoId,
-      poolId: nsgData?.edgeClusterInfo?.dhcpPoolId,
-      vxlanTunnelProfileId: nsgData?.vxlanTunnelProfileId,
-      personaGroupId: nsgData?.personaGroupId,
-      networkIds: nsgData?.tunneledWlans.map(nw => nw.networkId),
-      distributionSwitchInfos: nsgData?.distributionSwitchInfos,
-      accessSwitchInfos: nsgData?.accessSwitchInfos,
-      originalDistributionSwitchInfos: nsgData?.distributionSwitchInfos,
-      originalAccessSwitchInfos: nsgData?.accessSwitchInfos
+      id: pinData?.id,
+      name: pinData?.name,
+      venueId: pinData?.venueId,
+      edgeClusterId: pinData?.edgeClusterInfo?.edgeClusterId,
+      segments: pinData?.edgeClusterInfo?.segments,
+      devices: pinData?.edgeClusterInfo?.devices,
+      dhcpId: pinData?.edgeClusterInfo?.dhcpInfoId,
+      poolId: pinData?.edgeClusterInfo?.dhcpPoolId,
+      vxlanTunnelProfileId: pinData?.vxlanTunnelProfileId,
+      personaGroupId: pinData?.personaGroupId,
+      networkIds: pinData?.tunneledWlans.map(nw => nw.networkId),
+      distributionSwitchInfos: pinData?.distributionSwitchInfos,
+      accessSwitchInfos: pinData?.accessSwitchInfos,
+      originalDistributionSwitchInfos: pinData?.distributionSwitchInfos,
+      originalAccessSwitchInfos: pinData?.accessSwitchInfos
     }
-  }, [nsgData])
+  }, [pinData])
 
   const steps = [
     {
@@ -87,9 +87,9 @@ const EditPersonalIdentityNetwork = () => {
         ]}
       />
       <PersonalIdentityNetworkFormDataProvider
-        venueId={nsgData?.venueId}
+        venueId={pinData?.venueId}
       >
-        <Loader states={[{ isLoading: isNsgDataLoading || isNsgDataFetching }]}>
+        <Loader states={[{ isLoading: isPinDataLoading || isPinDataFetching }]}>
           <PersonalIdentityNetworkForm
             form={form}
             steps={steps}

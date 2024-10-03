@@ -1,4 +1,4 @@
-import { genDhcpConfigByNsgSetting } from './edgePinUtils'
+import { genDhcpConfigByPinSetting } from './edgePinUtils'
 
 describe('Network Segmentation Utils', () => {
 
@@ -184,16 +184,16 @@ subnet 192.168.10.176 netmask 255.255.255.240 {
     range 192.168.10.178 192.168.10.187;
     option routers 192.168.10.177;
 }\n\n`
-  it('genDhcpConfigByNsgSetting successfully', () => {
-    const configs = genDhcpConfigByNsgSetting('192.168.10.1','192.168.10.200',10,10)
+  it('genDhcpConfigByPinSetting successfully', () => {
+    const configs = genDhcpConfigByPinSetting('192.168.10.1','192.168.10.200',10,10)
     expect(configs.keaDhcpConfig).toBe(keaConfig)
     expect(configs.iscDhcpConfig).toBe(iscConfig)
   })
 
-  it('genDhcpConfigByNsgSetting failed', () => {
+  it('genDhcpConfigByPinSetting failed', () => {
     const mockedErrorHandler = jest.fn()
     try{
-      genDhcpConfigByNsgSetting('10.0.0.1', '10.0.10.100', 100, 20)
+      genDhcpConfigByPinSetting('10.0.0.1', '10.0.10.100', 100, 20)
     }catch(err) {
       mockedErrorHandler(err)
     }

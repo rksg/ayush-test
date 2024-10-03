@@ -69,7 +69,7 @@ export function VenueServicesTab () {
       })
     })
   const {
-    hasNsg, isGetNsgLoading
+    hasPin, isGetPinLoading
   } = useGetEdgePinViewDataListQuery({
     payload: {
       fields: ['id'],
@@ -79,8 +79,8 @@ export function VenueServicesTab () {
     skip: !!!venueId || !isEdgePinReady,
     selectFromResult: ({ data, isLoading }) => {
       return {
-        hasNsg: data?.data[0]?.id,
-        isGetNsgLoading: isLoading
+        hasPin: data?.data[0]?.id,
+        isGetPinLoading: isLoading
       }
     }
   })
@@ -119,7 +119,7 @@ export function VenueServicesTab () {
     ? !_.isEmpty(edgeData?.firewallId) : false
 
   return (
-    <Loader states={[{ isLoading: isEdgeLoading || isEdgeDhcpLoading || isGetNsgLoading }]}>
+    <Loader states={[{ isLoading: isEdgeLoading || isEdgeDhcpLoading || isGetPinLoading }]}>
       <Tabs type='card' defaultActiveKey={ServiceType.DHCP}>
         <Tabs.TabPane key={ServiceType.DHCP}
           tab={$t({ defaultMessage: 'DHCP' })}>
@@ -141,10 +141,10 @@ export function VenueServicesTab () {
           </Tabs>
         </Tabs.TabPane>
         {
-          hasNsg && isEdgePinReady &&
+          hasPin && isEdgePinReady &&
           <Tabs.TabPane
             tab={$t({ defaultMessage: 'Personal Identity Network' })}
-            key={ServiceType.NETWORK_SEGMENTATION}
+            key={ServiceType.PIN}
           >
             <EdgePin />
           </Tabs.TabPane>

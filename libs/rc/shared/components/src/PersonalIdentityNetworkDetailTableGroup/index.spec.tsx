@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { apApi, nsgApi, personaApi } from '@acx-ui/rc/services'
+import { apApi, pinApi, personaApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   EdgePinFixtures,
@@ -20,7 +20,7 @@ import {
   replacePagination } from './__tests__/fixtures'
 
 import { PersonalIdentityNetworkDetailTableGroup } from '.'
-const { mockNsgData, mockNsgStatsList, mockNsgSwitchInfoData } = EdgePinFixtures
+const { mockPinData, mockPinStatsList, mockPinSwitchInfoData } = EdgePinFixtures
 const { mockEdgeClusterList } = EdgeGeneralFixtures
 
 jest.mock('./ApsTable', () => ({
@@ -36,17 +36,17 @@ jest.mock('./AccessSwitchTable', () => ({
   AccessSwitchTable: () => <div data-testid='AccessSwitchTable' />
 }))
 
-describe('NetworkSegmentationDetailTableGroup', () => {
+describe('PersonalIdentityNetwork DetailTableGroup', () => {
 
   beforeEach(() => {
-    store.dispatch(nsgApi.util.resetApiState())
+    store.dispatch(pinApi.util.resetApiState())
     store.dispatch(personaApi.util.resetApiState())
     store.dispatch(apApi.util.resetApiState())
 
     mockServer.use(
       rest.get(
         EdgePinUrls.getEdgePinById.url,
-        (_req, res, ctx) => res(ctx.json(mockNsgData))),
+        (_req, res, ctx) => res(ctx.json(mockPinData))),
       rest.post(
         EdgeUrlsInfo.getEdgeClusterStatusList.url,
         (_req, res, ctx) => res(ctx.json(mockEdgeClusterList))),
@@ -58,7 +58,7 @@ describe('NetworkSegmentationDetailTableGroup', () => {
         (_req, res, ctx) => res(ctx.json({}))),
       rest.post(
         EdgePinUrls.getEdgePinStatsList.url,
-        (_req, res, ctx) => res(ctx.json(mockNsgStatsList))),
+        (_req, res, ctx) => res(ctx.json(mockPinStatsList))),
       rest.post(
         CommonUrlsInfo.getApsList.url,
         (_req, res, ctx) => res(ctx.json(mockedApList))),
@@ -66,8 +66,8 @@ describe('NetworkSegmentationDetailTableGroup', () => {
         replacePagination(PersonaUrls.searchPersonaList.url),
         (_req, res, ctx) => res(ctx.json(mockedPersonaList))),
       rest.get(
-        EdgePinUrls.getSwitchInfoByNSGId.url,
-        (_req, res, ctx) => res(ctx.json(mockNsgSwitchInfoData)))
+        EdgePinUrls.getSwitchInfoByPinId.url,
+        (_req, res, ctx) => res(ctx.json(mockPinSwitchInfoData)))
     )
   })
 
@@ -75,7 +75,7 @@ describe('NetworkSegmentationDetailTableGroup', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <PersonalIdentityNetworkDetailTableGroup nsgId='test' />
+        <PersonalIdentityNetworkDetailTableGroup pinId='test' />
       </Provider>
     )
 

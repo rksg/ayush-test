@@ -71,7 +71,7 @@ export default function MyServices () {
       disabled: !isEdgeHaReady || !isEdgeDhcpHaReady
     },
     {
-      type: ServiceType.NETWORK_SEGMENTATION,
+      type: ServiceType.PIN,
       categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
       totalCount: useGetEdgePinViewDataListQuery({
         params, payload: { ...defaultPayload }

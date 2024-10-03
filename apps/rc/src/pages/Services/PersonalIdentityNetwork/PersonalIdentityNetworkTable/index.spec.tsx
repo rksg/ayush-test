@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { edgeApi, networkApi, nsgApi, switchApi, venueApi } from '@acx-ui/rc/services'
+import { edgeApi, networkApi, pinApi, switchApi, venueApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   EdgeGeneralFixtures,
@@ -31,7 +31,7 @@ import PersonalIdentityNetworkTable from '.'
 
 const { mockVenueOptions } = VenueFixtures
 const { mockEdgeClusterList } = EdgeGeneralFixtures
-const { mockNsgStatsList } = EdgePinFixtures
+const { mockPinStatsList } = EdgePinFixtures
 
 const mockedUsedNavigate = jest.fn()
 const mockUseLocationValue = {
@@ -49,7 +49,7 @@ jest.mock('react-router-dom', () => ({
 describe('PersonalIdentityNetworkTable', () => {
   let params: { tenantId: string }
   const tablePath = '/:tenantId/t' + getServiceRoutePath({
-    type: ServiceType.NETWORK_SEGMENTATION,
+    type: ServiceType.PIN,
     oper: ServiceOperation.LIST
   })
   beforeEach(() => {
@@ -58,7 +58,7 @@ describe('PersonalIdentityNetworkTable', () => {
     }
     store.dispatch(venueApi.util.resetApiState())
     store.dispatch(edgeApi.util.resetApiState())
-    store.dispatch(nsgApi.util.resetApiState())
+    store.dispatch(pinApi.util.resetApiState())
     store.dispatch(networkApi.util.resetApiState())
     store.dispatch(switchApi.util.resetApiState())
 
@@ -73,7 +73,7 @@ describe('PersonalIdentityNetworkTable', () => {
       ),
       rest.post(
         EdgePinUrls.getEdgePinStatsList.url,
-        (_req, res, ctx) => res(ctx.json(mockNsgStatsList))
+        (_req, res, ctx) => res(ctx.json(mockPinStatsList))
       ),
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
@@ -86,7 +86,7 @@ describe('PersonalIdentityNetworkTable', () => {
     )
   })
 
-  it('should create NetworkSegmentationList successfully', async () => {
+  it('should create PersonalIdentityNetwork list successfully', async () => {
     render(
       <Provider>
         <PersonalIdentityNetworkTable />
@@ -115,7 +115,7 @@ describe('PersonalIdentityNetworkTable', () => {
       name: 'My Services'
     })).toBeVisible()
   })
-  it('nsg detail page link should be correct', async () => {
+  it('PIN detail page link should be correct', async () => {
     render(
       <Provider>
         <PersonalIdentityNetworkTable />
@@ -128,7 +128,7 @@ describe('PersonalIdentityNetworkTable', () => {
       { name: 'nsg1' }) as HTMLAnchorElement
     expect(smartEdgeLink.href)
       .toContain(`/${params.tenantId}/t/${getServiceDetailsLink({
-        type: ServiceType.NETWORK_SEGMENTATION,
+        type: ServiceType.PIN,
         oper: ServiceOperation.DETAIL,
         serviceId: '1'
       })}`)
@@ -164,7 +164,7 @@ describe('PersonalIdentityNetworkTable', () => {
     await user.click(screen.getByRole('button', { name: 'Edit' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/${params.tenantId}/t/${getServiceDetailsLink({
-        type: ServiceType.NETWORK_SEGMENTATION,
+        type: ServiceType.PIN,
         oper: ServiceOperation.EDIT,
         serviceId: '1'
       })}`,

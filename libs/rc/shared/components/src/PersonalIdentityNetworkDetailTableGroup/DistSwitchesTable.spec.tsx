@@ -1,18 +1,18 @@
 import { rest } from 'msw'
 
-import { nsgApi }                       from '@acx-ui/rc/services'
+import { pinApi }                       from '@acx-ui/rc/services'
 import { EdgePinUrls, EdgePinFixtures } from '@acx-ui/rc/utils'
 import { Provider, store }              from '@acx-ui/store'
 import { mockServer, render, screen }   from '@acx-ui/test-utils'
 
 import { DistSwitchesTable } from './DistSwitchesTable'
 
-const { mockNsgSwitchInfoData, mockWebAuthList } = EdgePinFixtures
+const { mockPinSwitchInfoData, mockWebAuthList } = EdgePinFixtures
 
-describe('NetworkSegmentationDetailTableGroup - DistSwitchesTable', () => {
+describe('PersonalIdentityNetwork DetailTableGroup - DistSwitchesTable', () => {
 
   beforeEach(() => {
-    store.dispatch(nsgApi.util.resetApiState())
+    store.dispatch(pinApi.util.resetApiState())
 
     mockServer.use(
       rest.post(
@@ -25,7 +25,7 @@ describe('NetworkSegmentationDetailTableGroup - DistSwitchesTable', () => {
   it('Should render DistSwitchesTable successfully', async () => {
     render(
       <Provider>
-        <DistSwitchesTable dataSource={mockNsgSwitchInfoData.distributionSwitches} />
+        <DistSwitchesTable dataSource={mockPinSwitchInfoData.distributionSwitches} />
       </Provider>
     )
 

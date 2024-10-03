@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { StepsForm }             from '@acx-ui/components'
-import { nsgApi }                from '@acx-ui/rc/services'
+import { pinApi }                from '@acx-ui/rc/services'
 import {
   EdgePinFixtures, EdgePinUrls
 } from '@acx-ui/rc/utils'
@@ -49,11 +49,11 @@ jest.mock('./PersonalIdentityDiagram', () => ({
   PersonalIdentityDiagram: () => <div data-testid='PersonalIdentityDiagram' />
 }))
 
-const createNsgPath = '/:tenantId/services/personalIdentityNetwork/create'
-const { mockNsgStatsList } = EdgePinFixtures
+const createPinPath = '/:tenantId/services/personalIdentityNetwork/create'
+const { mockPinStatsList } = EdgePinFixtures
 
 describe('PersonalIdentityNetworkForm - GeneralSettingsForm', () => {
-  store.dispatch(nsgApi.util.resetApiState())
+  store.dispatch(pinApi.util.resetApiState())
   let params: { tenantId: string, serviceId: string }
   beforeEach(() => {
     params = {
@@ -64,7 +64,7 @@ describe('PersonalIdentityNetworkForm - GeneralSettingsForm', () => {
     mockServer.use(
       rest.post(
         EdgePinUrls.getEdgePinStatsList.url,
-        (req, res, ctx) => res(ctx.json(mockNsgStatsList))
+        (req, res, ctx) => res(ctx.json(mockPinStatsList))
       )
     )
   })
@@ -82,7 +82,7 @@ describe('PersonalIdentityNetworkForm - GeneralSettingsForm', () => {
           </StepsForm>
         </PersonalIdentityNetworkFormContext.Provider>
       </Provider>,
-      { route: { params, path: createNsgPath } })
+      { route: { params, path: createPinPath } })
     expect(await screen.findByRole('textbox', { name: 'Service Name' })).toBeVisible()
     expect(await screen.findByRole('combobox', { name: 'Venue with RUCKUS Edge deployed' })).toBeVisible()
     expect(await screen.findByTestId('PersonalIdentityPreparationListDrawer')).toBeVisible()
@@ -101,7 +101,7 @@ describe('PersonalIdentityNetworkForm - GeneralSettingsForm', () => {
           </StepsForm>
         </PersonalIdentityNetworkFormContext.Provider>
       </Provider>,
-      { route: { params, path: createNsgPath } })
+      { route: { params, path: createPinPath } })
     expect(screen.queryByTestId('PropertyManagementInfo')).not.toBeInTheDocument()
     await userEvent.selectOptions(
       await screen.findByRole('combobox', { name: 'Venue with RUCKUS Edge deployed' }),
@@ -123,7 +123,7 @@ describe('PersonalIdentityNetworkForm - GeneralSettingsForm', () => {
           </StepsForm>
         </PersonalIdentityNetworkFormContext.Provider>
       </Provider>,
-      { route: { params, path: createNsgPath } })
+      { route: { params, path: createPinPath } })
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
     expect(await screen.findByText('Please enter Service Name')).toBeVisible()
     expect(await screen.findByText('Please select a Venue')).toBeVisible()
@@ -142,7 +142,7 @@ describe('PersonalIdentityNetworkForm - GeneralSettingsForm', () => {
           </StepsForm>
         </PersonalIdentityNetworkFormContext.Provider>
       </Provider>,
-      { route: { params, path: createNsgPath } })
+      { route: { params, path: createPinPath } })
     expect(screen.queryByTestId('PersonalIdentityDiagram')).not.toBeInTheDocument()
     await userEvent.selectOptions(
       await screen.findByRole('combobox', { name: 'Venue with RUCKUS Edge deployed' }),

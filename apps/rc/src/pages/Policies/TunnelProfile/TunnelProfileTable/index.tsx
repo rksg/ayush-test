@@ -51,7 +51,7 @@ const TunnelProfileTable = () => {
       searchTargetFields: ['name']
     }
   })
-  const { nsgOptions } = useGetEdgePinViewDataListQuery({
+  const { pinOptions } = useGetEdgePinViewDataListQuery({
     payload: {
       fields: ['name', 'id'],
       sortField: 'name',
@@ -61,7 +61,7 @@ const TunnelProfileTable = () => {
   }, {
     skip: !isEdgePinReady,
     selectFromResult: ({ data }) => ({
-      nsgOptions: data?.data
+      pinOptions: data?.data
         ? data.data.map(item => ({ key: item.id, value: item.name }))
         : []
     })
@@ -160,7 +160,7 @@ const TunnelProfileTable = () => {
       dataIndex: 'personalIdentityNetworkIds',
       align: 'center',
       show: isEdgePinReady,
-      filterable: isEdgePinReady? nsgOptions : false,
+      filterable: isEdgePinReady? pinOptions : false,
       sorter: true,
       render: (_, row) => row.personalIdentityNetworkIds?.length || 0
     },

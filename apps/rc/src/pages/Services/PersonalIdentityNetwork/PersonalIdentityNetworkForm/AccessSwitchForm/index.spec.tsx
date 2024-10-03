@@ -21,8 +21,8 @@ import {
 
 import { AccessSwitchForm } from './'
 
-const updateNsgPath = '/:tenantId/services/personalIdentityNetwork/:serviceId/edit'
-const { mockNsgSwitchInfoData } = EdgePinFixtures
+const updatePinPath = '/:tenantId/services/personalIdentityNetwork/:serviceId/edit'
+const { mockPinSwitchInfoData } = EdgePinFixtures
 
 type MockDrawerProps = React.PropsWithChildren<{
   open: boolean
@@ -66,15 +66,15 @@ describe('PersonalIdentityNetworkForm - AccessSwitchForm', () => {
     formRef.current.setFieldsValue({
       venueId: 'venueId',
       edgeClusterId: 'edgeId',
-      distributionSwitchInfos: mockNsgSwitchInfoData.distributionSwitches,
-      accessSwitchInfos: mockNsgSwitchInfoData.accessSwitches
+      distributionSwitchInfos: mockPinSwitchInfoData.distributionSwitches,
+      accessSwitchInfos: mockPinSwitchInfoData.accessSwitches
     })
 
     render(
       <Provider>
         <StepsForm form={formRef.current}><AccessSwitchForm /></StepsForm>
       </Provider>, {
-        route: { params, path: updateNsgPath }
+        route: { params, path: updatePinPath }
       })
     const row = await screen.findByRole('row', { name: /FEK3224R09N---AS---3/i })
     await user.click(await within(row).findByRole('checkbox'))
@@ -98,11 +98,11 @@ describe('PersonalIdentityNetworkForm - AccessSwitchForm', () => {
     formRef.current.setFieldsValue({
       venueId: 'venueId',
       edgeClusterId: 'edgeId',
-      distributionSwitchInfos: mockNsgSwitchInfoData.distributionSwitches,
+      distributionSwitchInfos: mockPinSwitchInfoData.distributionSwitches,
       accessSwitchInfos: [{
-        id: mockNsgSwitchInfoData.accessSwitches[0].id,
-        name: mockNsgSwitchInfoData.accessSwitches[0].name,
-        distributionSwitchId: mockNsgSwitchInfoData.accessSwitches[0].distributionSwitchId
+        id: mockPinSwitchInfoData.accessSwitches[0].id,
+        name: mockPinSwitchInfoData.accessSwitches[0].name,
+        distributionSwitchId: mockPinSwitchInfoData.accessSwitches[0].distributionSwitchId
       }]
     })
 
@@ -110,7 +110,7 @@ describe('PersonalIdentityNetworkForm - AccessSwitchForm', () => {
       <Provider>
         <StepsForm form={formRef.current}><AccessSwitchForm /></StepsForm>
       </Provider>, {
-        route: { params, path: updateNsgPath }
+        route: { params, path: updatePinPath }
       })
     const row = await screen.findByRole('row', { name: /FEK3224R09N---AS---3/i })
     const buttons = await within(row).findAllByRole('button')

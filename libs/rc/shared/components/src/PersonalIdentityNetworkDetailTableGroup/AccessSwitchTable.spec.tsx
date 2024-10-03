@@ -6,9 +6,9 @@ import { mockServer, render, screen }   from '@acx-ui/test-utils'
 
 import { AccessSwitchTable } from './AccessSwitchTable'
 
-const { mockNsgSwitchInfoData, mockWebAuthList } = EdgePinFixtures
+const { mockPinSwitchInfoData, mockWebAuthList } = EdgePinFixtures
 
-describe('NetworkSegmentationDetailTableGroup - AccessSwitchTable', () => {
+describe('PersonalIdentityNetwork DetailTableGroup - AccessSwitchTable', () => {
 
   beforeEach(() => {
     mockServer.use(
@@ -20,7 +20,7 @@ describe('NetworkSegmentationDetailTableGroup - AccessSwitchTable', () => {
   })
 
   it('Should render AccessSwitchTable successfully', async () => {
-    const accessSwitchData = mockNsgSwitchInfoData.accessSwitches.map((as, idx) =>({
+    const accessSwitchData = mockPinSwitchInfoData.accessSwitches.map((as, idx) =>({
       ...as,
       distributionSwitchName: `DS-${idx}`
     }))

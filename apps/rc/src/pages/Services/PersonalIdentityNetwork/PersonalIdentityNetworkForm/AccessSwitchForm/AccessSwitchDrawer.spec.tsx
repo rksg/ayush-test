@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { nsgApi }                                       from '@acx-ui/rc/services'
+import { pinApi }                                       from '@acx-ui/rc/services'
 import { EdgePinFixtures, EdgePinUrls, SwitchUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                              from '@acx-ui/store'
 import { mockServer, render, screen, waitFor }          from '@acx-ui/test-utils'
@@ -10,7 +10,7 @@ import { switchPortList, switchVlanUnion, switchLagList, webAuthList } from '../
 
 import { AccessSwitchDrawer } from './AccessSwitchDrawer'
 
-const { mockNsgSwitchInfoData, mockNsgData } = EdgePinFixtures
+const { mockPinSwitchInfoData, mockPinData } = EdgePinFixtures
 
 type MockSelectProps = React.PropsWithChildren<{
   onChange?: (value: string) => void
@@ -45,7 +45,7 @@ describe('AccessSwitchDrawer', () => {
   }
   const path = '/:tenantId/t/services/personalIdentityNetwork/:serviceId/edit'
   beforeEach(async () => {
-    store.dispatch(nsgApi.util.resetApiState())
+    store.dispatch(pinApi.util.resetApiState())
     mockServer.use(
       rest.post(
         SwitchUrlsInfo.getSwitchPortlist.url,
@@ -81,8 +81,8 @@ describe('AccessSwitchDrawer', () => {
       <Provider>
         <AccessSwitchDrawer open={true}
           onSave={saveSpy}
-          editRecords={mockNsgSwitchInfoData.accessSwitches}
-          venueId={mockNsgData.venueId} />
+          editRecords={mockPinSwitchInfoData.accessSwitches}
+          venueId={mockPinData.venueId} />
       </Provider>, {
         route: { params, path }
       })
@@ -114,10 +114,10 @@ describe('AccessSwitchDrawer', () => {
         <AccessSwitchDrawer open={true}
           onSave={saveSpy}
           editRecords={[
-            ...mockNsgSwitchInfoData.accessSwitches,
+            ...mockPinSwitchInfoData.accessSwitches,
             { id: 'c0:c5:20:aa:35:ff', name: 'mockAS', distributionSwitchId: 'c8:03:f5:3a:95:c6' }
           ]}
-          venueId={mockNsgData.venueId} />
+          venueId={mockPinData.venueId} />
       </Provider>, {
         route: { params, path }
       })

@@ -11,8 +11,8 @@ export const EdgePin = () => {
   const { venueId } = useParams()
 
   const {
-    nsgId,
-    isNsgViewDataLoading
+    pinId,
+    isPinViewDataLoading
   } = useGetEdgePinViewDataListQuery({
     payload: {
       fields: ['id'],
@@ -22,22 +22,22 @@ export const EdgePin = () => {
     skip: !!!venueId,
     selectFromResult: ({ data, isLoading }) => {
       return {
-        nsgId: data?.data[0]?.id,
-        isNsgViewDataLoading: isLoading
+        pinId: data?.data[0]?.id,
+        isPinViewDataLoading: isLoading
       }
     }
   })
 
   return (
     <Loader states={[{
-      isLoading: isNsgViewDataLoading,
+      isLoading: isPinViewDataLoading,
       isFetching: false
     }]}>
       {
-        nsgId &&
+        pinId &&
           <Space direction='vertical'>
-            <PersonalIdentityNetworkServiceInfo nsgId={nsgId || ''} />
-            <PersonalIdentityNetworkDetailTableGroup nsgId={nsgId || ''} />
+            <PersonalIdentityNetworkServiceInfo pinId={pinId || ''} />
+            <PersonalIdentityNetworkDetailTableGroup pinId={pinId || ''} />
           </Space>
       }
     </Loader>

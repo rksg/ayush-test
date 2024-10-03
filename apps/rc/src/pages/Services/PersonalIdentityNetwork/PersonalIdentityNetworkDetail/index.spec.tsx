@@ -14,7 +14,7 @@ import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import PersonalIdentityNetworkDetail from '.'
-const { mockNsgStatsList } = EdgePinFixtures
+const { mockPinStatsList } = EdgePinFixtures
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
@@ -40,12 +40,12 @@ jest.mock('file-saver', ()=>({ saveAs: () => mockedSaveAs() }))
 
 const mockEdgeDhcpDataList = cloneDeep(EdgeDHCPFixtures.mockEdgeDhcpDataList)
 // eslint-disable-next-line max-len
-mockEdgeDhcpDataList.content[0].dhcpPools[0].id = mockNsgStatsList.data[0].edgeClusterInfo.dhcpPoolId
+mockEdgeDhcpDataList.content[0].dhcpPools[0].id = mockPinStatsList.data[0].edgeClusterInfo.dhcpPoolId
 
-describe('NsgDetail', () => {
+describe('PIN Detail', () => {
   let params: { tenantId: string, serviceId: string }
   const detailPath = '/:tenantId/t/' + getServiceRoutePath({
-    type: ServiceType.NETWORK_SEGMENTATION,
+    type: ServiceType.PIN,
     oper: ServiceOperation.DETAIL
   })
   beforeEach(() => {
@@ -57,7 +57,7 @@ describe('NsgDetail', () => {
     mockServer.use(
       rest.post(
         EdgePinUrls.getEdgePinStatsList.url,
-        (_req, res, ctx) => res(ctx.json(mockNsgStatsList))
+        (_req, res, ctx) => res(ctx.json(mockPinStatsList))
       ),
       rest.get(
         EdgeDhcpUrls.getDhcp.url,

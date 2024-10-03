@@ -14,14 +14,13 @@ import {
   ServiceOperation, ServiceType,
   edgePinDefaultPayloadFields,
   filterByAccessForServicePolicyMutation,
-  genDhcpConfigByNsgSetting,
+  genDhcpConfigByPinSetting,
   getScopeKeyByService,
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useParams } from '@acx-ui/react-router-dom'
-
 
 import * as UI from './styledComponents'
 
@@ -32,7 +31,7 @@ const PersonalIdentityNetworkDetail = () => {
   const location = useLocation()
 
   const {
-    nsgViewData
+    pinViewData
   } = useGetEdgePinViewDataListQuery({
     payload: {
       fields: edgePinDefaultPayloadFields,
@@ -41,14 +40,14 @@ const PersonalIdentityNetworkDetail = () => {
   }, {
     selectFromResult: ({ data }) => {
       return {
-        nsgViewData: data?.data[0]
+        pinViewData: data?.data[0]
       }
     }
   })
 
   const { dhcpRelay, dhcpPools } = useGetEdgeDhcpServiceQuery(
-    { params: { id: nsgViewData?.edgeClusterInfo?.dhcpInfoId } },{
-      skip: !nsgViewData?.edgeClusterInfo?.dhcpInfoId,
+    { params: { id: pinViewData?.edgeClusterInfo?.dhcpInfoId } },{
+      skip: !pinViewData?.edgeClusterInfo?.dhcpInfoId,
       selectFromResult: ({ data }) => {
         return {
           dhcpRelay: data?.dhcpRelay,
@@ -58,11 +57,11 @@ const PersonalIdentityNetworkDetail = () => {
     })
 
   const handleDownloadConfigs = () => {
-    const edgeClusterInfo = nsgViewData?.edgeClusterInfo
+    const edgeClusterInfo = pinViewData?.edgeClusterInfo
     const targetPool = dhcpPools?.find(item => item.id === edgeClusterInfo?.dhcpPoolId)
     if(!edgeClusterInfo || !targetPool) return
 
-    const dhcpConfigs = genDhcpConfigByNsgSetting(
+    const dhcpConfigs = genDhcpConfigByPinSetting(
       targetPool.poolStartIp,
       targetPool.poolEndIp,
       edgeClusterInfo.segments,
@@ -99,14 +98,14 @@ const PersonalIdentityNetworkDetail = () => {
   return (
     <>
       <PageHeader
-        title={nsgViewData && nsgViewData.name}
+        title={pinViewData && pinViewData.name}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
           {
             text: $t({ defaultMessage: 'Personal Identity Network' }),
             link: getServiceRoutePath({
-              type: ServiceType.NETWORK_SEGMENTATION,
+              type: ServiceType.PIN,
               oper: ServiceOperation.LIST
             })
           }
@@ -117,11 +116,10 @@ const PersonalIdentityNetworkDetail = () => {
         ...filterByAccessForServicePolicyMutation([
           <TenantLink state={{ from: location }}
             to={getServiceDetailsLink({
-              type: ServiceType.NETWORK_SEGMENTATION,
+              type: ServiceType.PIN,
               oper: ServiceOperation.EDIT,
               serviceId: params.serviceId! })}
-            key='edit'
-            scopeKey={getScopeKeyByService(ServiceType.NETWORK_SEGMENTATION, ServiceOperation.EDIT)}
+            scopeKey={getScopeKeyByService(ServiceType.PIN, ServiceOperation.EDIT)}
           >
             <Button type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
@@ -129,13 +127,13 @@ const PersonalIdentityNetworkDetail = () => {
         ]}
       />
       <Space direction='vertical' size={30}>
-        <PersonalIdentityNetworkServiceInfo nsgId={params.serviceId || ''} />
+        <PersonalIdentityNetworkServiceInfo pinId={params.serviceId || ''} />
         <Card>
           <UI.InstancesMargin>
             <Typography.Title level={2}>
               {$t({ defaultMessage: 'Instances' })}
             </Typography.Title>
-            <PersonalIdentityNetworkDetailTableGroup nsgId={params.serviceId || ''} />
+            <PersonalIdentityNetworkDetailTableGroup pinId={params.serviceId || ''} />
           </UI.InstancesMargin>
         </Card>
       </Space>

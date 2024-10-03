@@ -20,7 +20,7 @@ import {
   PropertyUrlsInfo,
   PropertyConfigs
 } from '@acx-ui/rc/utils'
-import { baseNsgApi }                          from '@acx-ui/store'
+import { basePinApi }                          from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
 import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
@@ -50,7 +50,7 @@ const getEdgePinUrls = (enableRbac?: boolean | unknown) => {
   return enableRbac ? EdgePinRbacUrls : EdgePinUrls
 }
 
-export const nsgApi = baseNsgApi.injectEndpoints({
+export const pinApi = basePinApi.injectEndpoints({
   endpoints: (build) => ({
     createEdgePin: build.mutation<CommonResult, RequestPayload>({
       query: ({ payload }) => {
@@ -62,7 +62,7 @@ export const nsgApi = baseNsgApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Networksegmentation', id: 'LIST' }],
+      invalidatesTags: [{ type: 'EdgePin', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
           await handleCallbackWhenActivityDone({
@@ -89,7 +89,7 @@ export const nsgApi = baseNsgApi.injectEndpoints({
           ? { data: pinList }
           : { error: pinQuery.error as FetchBaseQueryError }
       },
-      providesTags: [{ type: 'Networksegmentation', id: 'LIST' }],
+      providesTags: [{ type: 'EdgePin', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
@@ -102,8 +102,8 @@ export const nsgApi = baseNsgApi.injectEndpoints({
             api.dispatch(serviceApi.util.invalidateTags([
               { type: 'Service', id: 'LIST' }
             ]))
-            api.dispatch(nsgApi.util.invalidateTags([
-              { type: 'Networksegmentation', id: 'LIST' }
+            api.dispatch(pinApi.util.invalidateTags([
+              { type: 'EdgePin', id: 'LIST' }
             ]))
           })
         })
@@ -117,7 +117,7 @@ export const nsgApi = baseNsgApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Networksegmentation', id: 'LIST' }]
+      invalidatesTags: [{ type: 'EdgePin', id: 'LIST' }]
     }),
     updateEdgePin: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -133,7 +133,7 @@ export const nsgApi = baseNsgApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Networksegmentation', id: 'LIST' }],
+      invalidatesTags: [{ type: 'EdgePin', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
           await handleCallbackWhenActivityDone({
@@ -163,7 +163,7 @@ export const nsgApi = baseNsgApi.injectEndpoints({
         })
 
         const pinViewmodel = pinViewmodelQuery.data as TableResult<PersonalIdentityNetworksViewData>
-        if (pinViewmodel)
+        if (pinData && pinViewmodel)
           pinData.tunneledWlans = pinViewmodel.data[0]?.tunneledWlans ?? []
 
         let pinSwitch
@@ -194,7 +194,7 @@ export const nsgApi = baseNsgApi.injectEndpoints({
           pinData.personaGroupId = personaList?.personaGroupId ?? ''
 
           const pinSwitchRequest = createHttpRequest(
-            EdgePinUrls.getSwitchInfoByNSGId, {
+            EdgePinUrls.getSwitchInfoByPinId, {
               ...params,
               venueId
             })
@@ -206,15 +206,15 @@ export const nsgApi = baseNsgApi.injectEndpoints({
         }
 
         return pinData
-          ? { data: pinSwitch ? aggregatedNSGData(pinData, pinSwitch) : pinData }
+          ? { data: pinSwitch ? aggregatedPinData(pinData, pinSwitch) : pinData }
           : { error: pinQuery.error as FetchBaseQueryError }
       }
     }),
     getWebAuthTemplate: build.query<WebAuthTemplate, RequestPayload>({
       query: ({ params, enableRbac }) => {
         const headers = enableRbac ? customHeaders.v1001 : {}
-        const nsgUrls = getEdgePinUrls(enableRbac)
-        const req = createHttpRequest( nsgUrls.getWebAuthTemplate, params, headers)
+        const pinUrls = getEdgePinUrls(enableRbac)
+        const req = createHttpRequest( pinUrls.getWebAuthTemplate, params, headers)
         return {
           ...req
         }
@@ -225,8 +225,8 @@ export const nsgApi = baseNsgApi.injectEndpoints({
     }, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const headers = enableRbac ? customHeaders.v1001 : {}
-        const nsgUrls = getEdgePinUrls(enableRbac)
-        const req = createHttpRequest( nsgUrls.getWebAuthTemplateSwitches, params, headers)
+        const pinUrls = getEdgePinUrls(enableRbac)
+        const req = createHttpRequest( pinUrls.getWebAuthTemplateSwitches, params, headers)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -236,8 +236,8 @@ export const nsgApi = baseNsgApi.injectEndpoints({
     webAuthTemplateList: build.query<TableResult<WebAuthTemplateTableData>, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const headers = enableRbac ? customHeaders.v1001 : {}
-        const nsgUrls = getEdgePinUrls(enableRbac)
-        const req = createHttpRequest( nsgUrls.getWebAuthTemplateList, params, headers)
+        const pinUrls = getEdgePinUrls(enableRbac)
+        const req = createHttpRequest( pinUrls.getWebAuthTemplateList, params, headers)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -249,8 +249,8 @@ export const nsgApi = baseNsgApi.injectEndpoints({
     createWebAuthTemplate: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const headers = enableRbac ? customHeaders.v1001 : {}
-        const nsgUrls = getEdgePinUrls(enableRbac)
-        const req = createHttpRequest( nsgUrls.addWebAuthTemplate, params, headers)
+        const pinUrls = getEdgePinUrls(enableRbac)
+        const req = createHttpRequest( pinUrls.addWebAuthTemplate, params, headers)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -261,8 +261,8 @@ export const nsgApi = baseNsgApi.injectEndpoints({
     updateWebAuthTemplate: build.mutation<WebAuthTemplate, RequestPayload<WebAuthTemplate>>({
       query: ({ params, payload, enableRbac }) => {
         const headers = enableRbac ? customHeaders.v1001 : {}
-        const nsgUrls = getEdgePinUrls(enableRbac)
-        const req = createHttpRequest( nsgUrls.updateWebAuthTemplate, params, headers)
+        const pinUrls = getEdgePinUrls(enableRbac)
+        const req = createHttpRequest( pinUrls.updateWebAuthTemplate, params, headers)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -273,8 +273,8 @@ export const nsgApi = baseNsgApi.injectEndpoints({
     deleteWebAuthTemplate: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, enableRbac }) => {
         const headers = enableRbac ? customHeaders.v1001 : {}
-        const nsgUrls = getEdgePinUrls(enableRbac)
-        const req = createHttpRequest( nsgUrls.deleteWebAuthTemplate, params, headers)
+        const pinUrls = getEdgePinUrls(enableRbac)
+        const req = createHttpRequest( pinUrls.deleteWebAuthTemplate, params, headers)
         return {
           ...req
         }
@@ -330,9 +330,9 @@ export const nsgApi = baseNsgApi.injectEndpoints({
   })
 })
 
-const aggregatedNSGData = (
-  nsg: PersonalIdentityNetworks,
-  nsgSwitch: {
+const aggregatedPinData = (
+  pin: PersonalIdentityNetworks,
+  pinSwitch: {
     distributionSwitches: DistributionSwitch[]
     accessSwitches: AccessSwitch[]
   }
@@ -341,8 +341,8 @@ const aggregatedNSGData = (
   let accessSwitchInfos: AccessSwitch[]
   let dsMap: { [key: string]: AccessSwitch[] } = {}
 
-  accessSwitchInfos = nsg.accessSwitchInfos?.map(as=>{
-    const asDetail = nsgSwitch.accessSwitches.find(item=>item.id === as.id)
+  accessSwitchInfos = pin.accessSwitchInfos?.map(as=>{
+    const asDetail = pinSwitch.accessSwitches.find(item=>item.id === as.id)
     const dsId = asDetail!.distributionSwitchId
     const ret: AccessSwitch = { ...as, ...asDetail }
     if (!dsMap.hasOwnProperty(dsId)) {
@@ -351,13 +351,13 @@ const aggregatedNSGData = (
     dsMap[dsId].push(ret)
     return ret
   }) || []
-  distributionSwitchInfos = nsg.distributionSwitchInfos?.map(ds=>{
-    const dsDetail = nsgSwitch.distributionSwitches.find(item=>item.id === ds.id)
+  distributionSwitchInfos = pin.distributionSwitchInfos?.map(ds=>{
+    const dsDetail = pinSwitch.distributionSwitches.find(item=>item.id === ds.id)
     const ret: DistributionSwitch = { ...ds, ...dsDetail, accessSwitches: dsMap[ds.id] }
     return ret
   }) || []
 
-  return { ...nsg, distributionSwitchInfos, accessSwitchInfos } as PersonalIdentityNetworks
+  return { ...pin, distributionSwitchInfos, accessSwitchInfos } as PersonalIdentityNetworks
 }
 
 export const {
@@ -380,4 +380,4 @@ export const {
   useValidateAccessSwitchInfoMutation,
   useActivateEdgePinNetworkMutation,
   useDeactivateEdgePinNetworkMutation
-} = nsgApi
+} = pinApi

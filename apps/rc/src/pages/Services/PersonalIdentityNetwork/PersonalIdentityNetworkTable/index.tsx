@@ -133,7 +133,7 @@ const PersonalIdentityNetworkTable = () => {
         return (
           <TenantLink
             to={getServiceDetailsLink({
-              type: ServiceType.NETWORK_SEGMENTATION,
+              type: ServiceType.PIN,
               oper: ServiceOperation.DETAIL,
               serviceId: row.id!
             })}>
@@ -232,7 +232,7 @@ const PersonalIdentityNetworkTable = () => {
 
   const rowActions: TableProps<PersonalIdentityNetworksViewData>['rowActions'] = [
     {
-      scopeKey: getScopeKeyByService(ServiceType.NETWORK_SEGMENTATION, ServiceOperation.EDIT),
+      scopeKey: getScopeKeyByService(ServiceType.PIN, ServiceOperation.EDIT),
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -240,7 +240,7 @@ const PersonalIdentityNetworkTable = () => {
           ...basePath,
           pathname:
           `${basePath.pathname}/${getServiceDetailsLink({
-            type: ServiceType.NETWORK_SEGMENTATION,
+            type: ServiceType.PIN,
             oper: ServiceOperation.EDIT,
             serviceId: selectedRows[0].id!
           })}`
@@ -248,7 +248,7 @@ const PersonalIdentityNetworkTable = () => {
       }
     },
     {
-      scopeKey: getScopeKeyByService(ServiceType.NETWORK_SEGMENTATION, ServiceOperation.DELETE),
+      scopeKey: getScopeKeyByService(ServiceType.PIN, ServiceOperation.DELETE),
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
@@ -286,11 +286,11 @@ const PersonalIdentityNetworkTable = () => {
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink state={{ from: location }}
             to={getServiceRoutePath({
-              type: ServiceType.NETWORK_SEGMENTATION,
+              type: ServiceType.PIN,
               oper: ServiceOperation.CREATE
             })}
             // eslint-disable-next-line max-len
-            scopeKey={getScopeKeyByService(ServiceType.NETWORK_SEGMENTATION, ServiceOperation.CREATE)}
+            scopeKey={getScopeKeyByService(ServiceType.PIN, ServiceOperation.CREATE)}
           >
             {/* eslint-disable-next-line max-len */}
             <Button type='primary'>{$t({ defaultMessage: 'Add Personal Identity Network' })}</Button>

@@ -1,7 +1,7 @@
 import { cloneDeep } from 'lodash'
 import { rest }      from 'msw'
 
-import { nsgApi }   from '@acx-ui/rc/services'
+import { pinApi }   from '@acx-ui/rc/services'
 import {
   CommonErrorsResult,
   CatchErrorDetails,
@@ -15,7 +15,7 @@ import { RequestPayload }                  from '@acx-ui/types'
 
 import { useEdgePinActions } from './useEdgePinActions'
 
-const { mockNsgData } = EdgePinFixtures
+const { mockPinData } = EdgePinFixtures
 
 const mockedCallback = jest.fn()
 const mockedUpdateReq = jest.fn()
@@ -40,7 +40,7 @@ jest.mock('@acx-ui/rc/services', () => ({
 
 describe('useEdgePinActions', () => {
   beforeEach(() => {
-    store.dispatch(nsgApi.util.resetApiState())
+    store.dispatch(pinApi.util.resetApiState())
 
     mockedCallback.mockClear()
     mockedUpdateReq.mockClear()
@@ -72,7 +72,7 @@ describe('useEdgePinActions', () => {
     )
   })
   describe('addPin', () => {
-    const mockedAddData = mockNsgData
+    const mockedAddData = mockPinData
 
     it('should add PIN successfully', async () => {
       const mockedData = {
@@ -104,8 +104,8 @@ describe('useEdgePinActions', () => {
   })
 
   describe('editPin', () => {
-    const serviceId = mockNsgData.id
-    const mockedEditData = mockNsgData as unknown as PersonalIdentityNetworkFormData
+    const serviceId = mockPinData.id
+    const mockedEditData = mockPinData as unknown as PersonalIdentityNetworkFormData
     mockedEditData.networkIds = mockedEditData.tunneledWlans.map(wlan => wlan.networkId)
 
     // eslint-disable-next-line max-len

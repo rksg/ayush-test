@@ -62,8 +62,8 @@ const EditTunnelProfile = () => {
   )
 
   const {
-    nsgId,
-    isNSGFetching
+    pinId,
+    isPinFetching
   } = useGetEdgePinViewDataListQuery({
     payload: {
       fields: ['id'],
@@ -73,8 +73,8 @@ const EditTunnelProfile = () => {
     skip: !(isEdgeSdLanReady || isEdgeSdLanHaReady) || !isEdgePinReady,
     selectFromResult: ({ data, isFetching }) => {
       return {
-        nsgId: data?.data[0]?.id,
-        isNSGFetching: isFetching
+        pinId: data?.data[0]?.id,
+        isPinFetching: isFetching
       }
     }
   })
@@ -86,7 +86,7 @@ const EditTunnelProfile = () => {
   const isDefaultTunnelProfile = getIsDefaultTunnelProfile(tunnelProfileData)
   const formInitValues = getTunnelProfileFormDefaultValues(tunnelProfileData)
   formInitValues.disabledFields = []
-  if (nsgId || isSdLanUsed)
+  if (pinId || isSdLanUsed)
     formInitValues.disabledFields.push('type')
 
   if (isDMZUsed)
@@ -94,7 +94,7 @@ const EditTunnelProfile = () => {
 
   return (
     <Loader states={[{
-      isLoading: isFetching || isSdLanP1Fetching || isSdLanHaFetching || isNSGFetching
+      isLoading: isFetching || isSdLanP1Fetching || isSdLanHaFetching || isPinFetching
     }]}>
       <TunnelProfileForm
         form={form}

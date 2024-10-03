@@ -73,7 +73,7 @@ export const EdgePinUrls: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/personalIdentityNetworks',
     newApi: true
   },
-  getSwitchInfoByNSGId: {
+  getSwitchInfoByPinId: {
     method: 'get',
     url: '/venues/:venueId/personalIdentityNetworks/:serviceId',
     newApi: true

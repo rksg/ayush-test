@@ -15,24 +15,24 @@ import { AssignedSegmentsTable }                        from './AssignedSegments
 import { DistSwitchesTable }                            from './DistSwitchesTable'
 
 interface PersonalIdentitNetworkDetailTableGroupProps {
-  nsgId: string
+  pinId: string
 }
 
 export const PersonalIdentityNetworkDetailTableGroup = (
   props: PersonalIdentitNetworkDetailTableGroupProps
 ) => {
 
-  const { nsgId } = props
+  const { pinId } = props
   const { $t } = useIntl()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const [isApPayloadReady,setIsApPayloadReady] = useState(false)
   const [accessSwitchData, setAccessSwitchData] = useState<AccessSwitchTableDataType[]>([])
   const {
-    data: nsgData,
-    isLoading: isNsgDataLoading
+    data: pinData,
+    isLoading: isPinDataLoading
   } = useGetEdgePinByIdQuery({
-    params: { serviceId: nsgId }
+    params: { serviceId: pinId }
   })
 
   const apListTableQuery = useTableQuery({
@@ -45,25 +45,25 @@ export const PersonalIdentityNetworkDetailTableGroup = (
     enableRbac: isWifiRbacEnabled
   })
   const personaListTableQuery = usePersonaListQuery({
-    personaGroupId: nsgData?.personaGroupId
+    personaGroupId: pinData?.personaGroupId
   }) as TableQuery<Persona, { keyword: string, groupId: string }, unknown>
 
   useEffect(() => {
-    if(nsgData) {
-      setAccessSwitchData(nsgData.accessSwitchInfos?.map(as => ({
+    if(pinData) {
+      setAccessSwitchData(pinData.accessSwitchInfos?.map(as => ({
         ...as,
-        distributionSwitchName: nsgData.distributionSwitchInfos
+        distributionSwitchName: pinData.distributionSwitchInfos
           ?.find(ds => ds.id === as.distributionSwitchId)?.name || ''
       })))
     }
-  }, [nsgData])
+  }, [pinData])
 
   useEffect(() => {
     apListTableQuery.setPayload({
       ...defaultApPayload,
-      filters: { venueId: [nsgData?.venueId ?? ''] }
+      filters: { venueId: [pinData?.venueId ?? ''] }
     })
-  }, [nsgData])
+  }, [pinData])
 
   useEffect(() => {
     if(apListTableQuery?.payload?.filters?.venueId?.length > 0) {
@@ -79,20 +79,20 @@ export const PersonalIdentityNetworkDetailTableGroup = (
     },
     distSwitches: {
       title: $t({ defaultMessage: 'Dist. Switches ({num})' },
-        { num: nsgData?.distributionSwitchInfos.length }),
-      content: <DistSwitchesTable dataSource={nsgData?.distributionSwitchInfos} />
+        { num: pinData?.distributionSwitchInfos.length }),
+      content: <DistSwitchesTable dataSource={pinData?.distributionSwitchInfos} />
     },
     accessSwitches: {
       title: $t({ defaultMessage: 'Access Switches ({num})' },
-        { num: nsgData?.accessSwitchInfos.length }),
+        { num: pinData?.accessSwitchInfos.length }),
       content: <AccessSwitchTable dataSource={accessSwitchData} />
     },
     assignedSegments: {
       title: $t({ defaultMessage: 'Assigned Segments ({num})' },
         { num: transformDisplayNumber(personaListTableQuery.data?.totalCount) }),
       content: <AssignedSegmentsTable
-        venueId={nsgData?.venueId ?? ''}
-        switchInfo={nsgData?.accessSwitchInfos}
+        venueId={pinData?.venueId ?? ''}
+        switchInfo={pinData?.accessSwitchInfos}
         tableQuery={personaListTableQuery}
       />
     }
@@ -101,7 +101,7 @@ export const PersonalIdentityNetworkDetailTableGroup = (
   return (
     <Loader states={[
       {
-        isLoading: isNsgDataLoading
+        isLoading: isPinDataLoading
       },
       apListTableQuery,
       personaListTableQuery

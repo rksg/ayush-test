@@ -59,7 +59,7 @@ describe('EdgeDhcpSelectionForm', () => {
       <Provider>
         <StepsForm>
           <StepsForm.StepForm>
-            <EdgeDhcpSelectionForm hasNsg={false} />
+            <EdgeDhcpSelectionForm hasPin={false} />
           </StepsForm.StepForm>
         </StepsForm>
       </Provider>, { route: { params } }
@@ -72,7 +72,7 @@ describe('EdgeDhcpSelectionForm', () => {
       <Provider>
         <StepsForm>
           <StepsForm.StepForm>
-            <EdgeDhcpSelectionForm hasNsg={false} />
+            <EdgeDhcpSelectionForm hasPin={false} />
           </StepsForm.StepForm>
         </StepsForm>
       </Provider>, { route: { params } }
@@ -92,7 +92,7 @@ describe('EdgeDhcpSelectionForm', () => {
       <Provider>
         <StepsForm form={formRef.current}>
           <StepsForm.StepForm>
-            <EdgeDhcpSelectionForm hasNsg={false} />
+            <EdgeDhcpSelectionForm hasPin={false} />
           </StepsForm.StepForm>
         </StepsForm>
       </Provider>, { route: { params } }

@@ -40,9 +40,9 @@ export const PersonalIdentityNetworkDetails = (props: PersonalIdentityNetworkDet
   const { tenantId } = params
   const { $t } = useIntl()
   const {
-    nsgViewData,
+    pinViewData,
     dhcpPoolId,
-    isNsgViewDataLoading
+    isPinViewDataLoading
   } = useGetEdgePinViewDataListQuery({
     payload: {
       fields: defaultFields,
@@ -51,18 +51,18 @@ export const PersonalIdentityNetworkDetails = (props: PersonalIdentityNetworkDet
   }, {
     skip: !serviceData.serviceId,
     selectFromResult: ({ data, isLoading }) => {
-      const nsgViewData = data?.data[0]
+      const pinViewData = data?.data[0]
       return {
-        nsgViewData,
-        dhcpPoolId: nsgViewData?.edgeClusterInfo?.dhcpPoolId,
-        isNsgViewDataLoading: isLoading
+        pinViewData,
+        dhcpPoolId: pinViewData?.edgeClusterInfo?.dhcpPoolId,
+        isPinViewDataLoading: isLoading
       }
     }
   })
 
   const { dhcpName, dhcpId, dhcpPool, isLoading: isDhcpLoading } = useGetEdgeDhcpServiceQuery(
-    { params: { id: nsgViewData?.edgeClusterInfo?.dhcpInfoId } },{
-      skip: !nsgViewData?.edgeClusterInfo,
+    { params: { id: pinViewData?.edgeClusterInfo?.dhcpInfoId } },{
+      skip: !pinViewData?.edgeClusterInfo,
       selectFromResult: ({ data, isLoading }) => {
         return {
           dhcpName: data?.serviceName,
@@ -74,22 +74,22 @@ export const PersonalIdentityNetworkDetails = (props: PersonalIdentityNetworkDet
     })
 
   const{ data: tunnelData, isLoading: isTunnelLoading } = useGetTunnelProfileByIdQuery(
-    { params: { id: nsgViewData?.vxlanTunnelProfileId } }, {
-      skip: !nsgViewData?.vxlanTunnelProfileId
+    { params: { id: pinViewData?.vxlanTunnelProfileId } }, {
+      skip: !pinViewData?.vxlanTunnelProfileId
     })
 
   const {
     data: personaGroupData,
     isLoading: isPersonaGroupLoading
   } = useGetPersonaGroupByIdQuery(
-    { params: { groupId: nsgViewData?.personaGroupId } },
-    { skip: !nsgViewData?.personaGroupId }
+    { params: { groupId: pinViewData?.personaGroupId } },
+    { skip: !pinViewData?.personaGroupId }
   )
 
   return(
     <Loader states={[{
       isLoading: false,
-      isFetching: isNsgViewDataLoading || isDhcpLoading ||
+      isFetching: isPinViewDataLoading || isDhcpLoading ||
         isTunnelLoading || isPersonaGroupLoading
     }]}>
       <Subtitle level={3}>
@@ -99,9 +99,9 @@ export const PersonalIdentityNetworkDetails = (props: PersonalIdentityNetworkDet
         label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
         children={
           <TenantLink
-            to={`/venues/${nsgViewData?.venueId}/venue-details/overview`}
+            to={`/venues/${pinViewData?.venueId}/venue-details/overview`}
           >
-            {nsgViewData?.venueName}
+            {pinViewData?.venueName}
           </TenantLink>
         }
       />
@@ -115,11 +115,11 @@ export const PersonalIdentityNetworkDetails = (props: PersonalIdentityNetworkDet
       />
       <Form.Item
         label={$t({ defaultMessage: 'Number of Segments' })}
-        children={nsgViewData?.edgeClusterInfo?.segments}
+        children={pinViewData?.edgeClusterInfo?.segments}
       />
       <Form.Item
         label={$t({ defaultMessage: 'Number of devices per segment' })}
-        children={nsgViewData?.edgeClusterInfo?.devices}
+        children={pinViewData?.edgeClusterInfo?.devices}
       />
       <Form.Item
         label={$t({ defaultMessage: 'DHCP Service' })}
@@ -149,16 +149,16 @@ export const PersonalIdentityNetworkDetails = (props: PersonalIdentityNetworkDet
           })}>
             {
               `${tunnelData.id === tenantId ? $t({ defaultMessage: 'Default' }): tunnelData.name}
-              (${nsgViewData?.tunnelNumber || 0})`
+              (${pinViewData?.tunnelNumber || 0})`
             }
           </TenantLink>
         }
       />
       <Form.Item
         label={$t({ defaultMessage: 'Networks' })}
-        children={nsgViewData?.tunneledWlans?.length}
+        children={pinViewData?.tunneledWlans?.length}
       />
-      <PersonalIdentityNetworkDetailTableGroup nsgId={serviceData.serviceId} />
+      <PersonalIdentityNetworkDetailTableGroup pinId={serviceData.serviceId} />
     </Loader>
   )
 }

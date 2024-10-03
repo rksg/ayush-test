@@ -313,7 +313,7 @@ const {
   mockPropertyConfigs,
   mockPersonaGroup,
   mockDpsk,
-  mockNsgSwitchInfoData,
+  mockPinSwitchInfoData,
   mockDeepNetworkList
 } = EdgePinFixtures
 const { mockEdgeClusterList } = EdgeGeneralFixtures
@@ -344,8 +344,8 @@ export const mockContextData = {
   networkOptions: mockDeepNetworkList.response.map(item =>({ label: item.name, value: item.id })),
   isNetworkOptionsLoading: false,
   switchList: [
-    ...mockNsgSwitchInfoData.distributionSwitches,
-    ...mockNsgSwitchInfoData.accessSwitches
+    ...mockPinSwitchInfoData.distributionSwitches,
+    ...mockPinSwitchInfoData.accessSwitches
   ],
   refetchSwitchesQuery: jest.fn(),
   getVenueName: jest.fn(),

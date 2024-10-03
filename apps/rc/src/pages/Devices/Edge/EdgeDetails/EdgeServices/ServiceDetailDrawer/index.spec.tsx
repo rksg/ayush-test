@@ -43,9 +43,9 @@ const {
 const { mockedSdLanDataList, mockedSdLanDataListP2, mockedMvSdLanDataList } = EdgeSdLanFixtures
 const { mockFirewallData } = EdgeFirewallFixtures
 const { mockDhcpStatsData, mockEdgeDhcpDataList } = EdgeDHCPFixtures
-const mockNsgStatsList = cloneDeep(EdgePinFixtures.mockNsgStatsList)
-mockNsgStatsList.data[0].edgeClusterInfo.segments = 10
-mockNsgStatsList.data[0].edgeClusterInfo.devices = 10
+const mockPinStatsList = cloneDeep(EdgePinFixtures.mockPinStatsList)
+mockPinStatsList.data[0].edgeClusterInfo.segments = 10
+mockPinStatsList.data[0].edgeClusterInfo.devices = 10
 
 const mockedSetVisible = jest.fn()
 const mockedUseSearchParams = jest.fn()
@@ -84,7 +84,7 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
       ),
       rest.post(
         EdgePinUrls.getEdgePinStatsList.url,
-        (_req, res, ctx) => res(ctx.json(mockNsgStatsList))
+        (_req, res, ctx) => res(ctx.json(mockPinStatsList))
       ),
       rest.get(
         EdgeDhcpUrls.getDhcp.url,
@@ -164,7 +164,7 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
     await screen.findByTestId('rc-EdgeFirewallGroupedStatsTables')
   })
 
-  it('should render nsg detail successfully', async () => {
+  it('should render PIN detail successfully', async () => {
     render(
       <Provider>
         <ServiceDetailDrawer

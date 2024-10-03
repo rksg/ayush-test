@@ -40,7 +40,7 @@ const mockPropertyConfigOptionsResult = { content: [
   { venueId: 'venue-id', venueName: 'venue-name' }
 ] }
 
-const mockNsgData = {
+const mockPinData = {
   id: 'nsg-id-1',
   name: 'nsg-name-1',
   venueInfos: [
@@ -50,7 +50,7 @@ const mockNsgData = {
   ]
 }
 
-const mockNsgSwitchInfoData: {
+const mockPinSwitchInfoData: {
   distributionSwitches: DistributionSwitch[],
   accessSwitches: AccessSwitch[]
 } = {
@@ -96,7 +96,7 @@ const mockNsgSwitchInfoData: {
   }]
 }
 
-// To enable NSG PLM FF and allow to call api
+// To enable PIN PLM FF and allow to call api
 jest.mocked(useIsSplitOn).mockReturnValue(true)
 jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
@@ -146,11 +146,11 @@ describe('Persona Group Table', () => {
       ),
       rest.get(
         EdgePinUrls.getEdgePinById.url,
-        (req, res, ctx) => res(ctx.json(mockNsgData))
+        (req, res, ctx) => res(ctx.json(mockPinData))
       ),
       rest.get(
-        EdgePinUrls.getSwitchInfoByNSGId.url,
-        (req, res, ctx) => res(ctx.json(mockNsgSwitchInfoData))
+        EdgePinUrls.getSwitchInfoByPinId.url,
+        (req, res, ctx) => res(ctx.json(mockPinSwitchInfoData))
       ),
       rest.post(
         EdgePinUrls.getEdgePinStatsList.url,

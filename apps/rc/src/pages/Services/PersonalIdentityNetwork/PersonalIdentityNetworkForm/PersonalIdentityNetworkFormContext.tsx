@@ -94,7 +94,7 @@ const clusterOptionsDefaultPayload = {
   sortOrder: 'ASC'
 }
 
-const activtatedvenueNetworksPayload = {
+const activtatedVenueNetworksPayload = {
   pageSize: 10000,
   sortField: 'name',
   sortOrder: 'ASC',
@@ -200,7 +200,7 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
 
   const { dpskNetworkList, isNetworkLoading } = useVenueNetworkActivationsViewModelListQuery({
     params: { ...params },
-    payload: { ...activtatedvenueNetworksPayload, venueId: venueId }
+    payload: { ...activtatedVenueNetworksPayload, venueId: venueId }
   }, {
     skip: !Boolean(venueId),
     selectFromResult: ({ data, isLoading }) => {

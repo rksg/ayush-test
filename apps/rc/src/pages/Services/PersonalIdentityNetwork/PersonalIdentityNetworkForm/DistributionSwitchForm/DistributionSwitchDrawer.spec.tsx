@@ -12,7 +12,7 @@ import {
 
 import { DistributionSwitchDrawer } from './DistributionSwitchDrawer'
 
-const { mockNsgSwitchInfoData, mockNsgData } = EdgePinFixtures
+const { mockPinSwitchInfoData, mockPinData } = EdgePinFixtures
 
 describe('DistributionSwitchDrawer', () => {
   const params = {
@@ -28,7 +28,7 @@ describe('DistributionSwitchDrawer', () => {
         <StepsForm>
           <StepsForm.StepForm>
             <DistributionSwitchDrawer open={true}
-              availableSwitches={mockNsgSwitchInfoData.distributionSwitches} />
+              availableSwitches={mockPinSwitchInfoData.distributionSwitches} />
           </StepsForm.StepForm>
         </StepsForm>
       </Provider>, {
@@ -58,12 +58,12 @@ describe('DistributionSwitchDrawer', () => {
       return form
     })
     formRef.current.setFieldsValue({
-      venueId: mockNsgData.venueId,
-      edgeClusterId: mockNsgData.edgeClusterInfo.edgeClusterId,
-      distributionSwitchInfos: mockNsgSwitchInfoData.distributionSwitches,
-      originalDistributionSwitchInfos: mockNsgSwitchInfoData.distributionSwitches,
-      accessSwitchInfos: mockNsgSwitchInfoData.accessSwitches,
-      originalAccessSwitchInfos: mockNsgSwitchInfoData.accessSwitches
+      venueId: mockPinData.venueId,
+      edgeClusterId: mockPinData.edgeClusterInfo.edgeClusterId,
+      distributionSwitchInfos: mockPinSwitchInfoData.distributionSwitches,
+      originalDistributionSwitchInfos: mockPinSwitchInfoData.distributionSwitches,
+      accessSwitchInfos: mockPinSwitchInfoData.accessSwitches,
+      originalAccessSwitchInfos: mockPinSwitchInfoData.accessSwitches
     })
 
     render(
@@ -73,10 +73,10 @@ describe('DistributionSwitchDrawer', () => {
             <DistributionSwitchDrawer open={true}
               onSaveDS={saveSpy}
               editRecord={{
-                ...mockNsgSwitchInfoData.distributionSwitches[0],
-                accessSwitches: mockNsgSwitchInfoData.accessSwitches
+                ...mockPinSwitchInfoData.distributionSwitches[0],
+                accessSwitches: mockPinSwitchInfoData.accessSwitches
               }}
-              availableSwitches={mockNsgSwitchInfoData.accessSwitches} />
+              availableSwitches={mockPinSwitchInfoData.accessSwitches} />
           </StepsForm.StepForm>
         </StepsForm>
       </Provider>, {

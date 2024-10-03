@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { Features, useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
-import { edgeSdLanApi, nsgApi, tunnelProfileApi }                                                      from '@acx-ui/rc/services'
+import { edgeSdLanApi, pinApi, tunnelProfileApi }                                                      from '@acx-ui/rc/services'
 import { EdgeSdLanFixtures, EdgeSdLanUrls, EdgeTunnelProfileFixtures, EdgePinUrls, TunnelProfileUrls } from '@acx-ui/rc/utils'
 import { Provider, store }                                                                             from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved }                              from '@acx-ui/test-utils'
@@ -129,7 +129,7 @@ describe('EditTunnelProfile', () => {
   })
 
   describe('when SD-LAN is ready', () => {
-    const mockNsgList = {
+    const mockPinList = {
       totalCount: 0,
       data: []
     }
@@ -140,12 +140,12 @@ describe('EditTunnelProfile', () => {
     }
 
     const mockedReqSdLan = jest.fn()
-    const mockedReqNSG = jest.fn()
+    const mockedReqPin = jest.fn()
     beforeEach(() => {
       store.dispatch(edgeSdLanApi.util.resetApiState())
-      store.dispatch(nsgApi.util.resetApiState())
+      store.dispatch(pinApi.util.resetApiState())
       mockedReqSdLan.mockClear()
-      mockedReqNSG.mockClear()
+      mockedReqPin.mockClear()
 
       jest.mocked(useIsSplitOn).mockImplementation((flag: string) => {
         if (flag === Features.EDGES_SD_LAN_TOGGLE ||
@@ -165,14 +165,14 @@ describe('EditTunnelProfile', () => {
         rest.post(
           EdgePinUrls.getEdgePinStatsList.url,
           (_, res, ctx) => {
-            mockedReqNSG()
-            return res(ctx.json(mockNsgList))
+            mockedReqPin()
+            return res(ctx.json(mockPinList))
           }
         )
       )
     })
 
-    it('should lock type fields when it is used in NSG/SD-LAN P1', async () => {
+    it('should lock type fields when it is used in PIN / SD-LAN P1', async () => {
       render(
         <Provider>
           <EditTunnelProfile />
@@ -182,7 +182,7 @@ describe('EditTunnelProfile', () => {
 
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
       expect(mockedReqSdLan).toBeCalled()
-      expect(mockedReqNSG).toBeCalled()
+      expect(mockedReqPin).toBeCalled()
       const typeField = await screen.findByRole('combobox', { name: 'Tunnel Type' })
       expect(typeField).toBeDisabled()
     })
@@ -215,7 +215,7 @@ describe('EditTunnelProfile', () => {
 
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
       expect(mockedReqSdLan).toBeCalled()
-      expect(mockedReqNSG).not.toBeCalled()
+      expect(mockedReqPin).not.toBeCalled()
       const typeField = await screen.findByRole('combobox', { name: 'Tunnel Type' })
       expect(typeField).toBeDisabled()
     })

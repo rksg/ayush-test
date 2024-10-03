@@ -1,7 +1,7 @@
 import { PassphraseFormatEnum }                           from '../../../../constants'
 import { AccessSwitch, DistributionSwitch, PersonaGroup } from '../../../../types'
 
-export const mockNsgStatsList = {
+export const mockPinStatsList = {
   fields: [
     'venueId',
     'venueName',
@@ -69,7 +69,7 @@ export const mockNsgStatsList = {
   ]
 }
 
-export const mockNsgData = {
+export const mockPinData = {
   id: '2599f95d-86a2-470c-9679-e739de054ba1',
   name: 'RLTestNsg-1',
   vxlanTunnelProfileId: 'test123',
@@ -157,7 +157,7 @@ export const mockDpsk = {
   expirationType: null
 }
 
-export const mockNsgSwitchInfoData: {
+export const mockPinSwitchInfoData: {
   distributionSwitches: DistributionSwitch[],
   accessSwitches: AccessSwitch[]
 } = {

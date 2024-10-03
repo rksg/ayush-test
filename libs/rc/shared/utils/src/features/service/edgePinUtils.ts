@@ -130,13 +130,13 @@ function calculateDHCPPool (ipStart: number, ipEnd: number, panNum: number, panS
   }
 
   const PANIPSize = tempPanSize
-  const NSGIPStart = Math.floor((ipStart / PANIPSize + 1) * PANIPSize)
-  const NSGIPEnd = Math.floor((ipEnd / PANIPSize) * PANIPSize - 1)
+  const pinIPStart = Math.floor((ipStart / PANIPSize + 1) * PANIPSize)
+  const pinIPEnd = Math.floor((ipEnd / PANIPSize) * PANIPSize - 1)
 
-  const NSGPANNumMax = Math.floor((NSGIPEnd - NSGIPStart + 1) / PANIPSize)
-  if (NSGPANNumMax < panNum) {
+  const pinPANNumMax = Math.floor((pinIPEnd - pinIPStart + 1) / PANIPSize)
+  if (pinPANNumMax < panNum) {
     throw new Error(`error: DHCP pool size is too small to configure ${panNum} PANs
-    Currently range can hold ${NSGPANNumMax} number of PANs`)
+    Currently range can hold ${pinPANNumMax} number of PANs`)
 
   }
 
@@ -145,18 +145,18 @@ function calculateDHCPPool (ipStart: number, ipEnd: number, panNum: number, panS
   const dhcpPoolEnd = []
 
   for (let i = 0;; i++) {
-    if ((i + 1) * PANIPSize - 2 + NSGIPStart > NSGIPEnd) {
+    if ((i + 1) * PANIPSize - 2 + pinIPStart > pinIPEnd) {
       break
     }
-    dhcpGwAddr[i] = i * PANIPSize + NSGIPStart
-    dhcpPoolStart[i] = i * PANIPSize + 1 + NSGIPStart
-    dhcpPoolEnd[i] = i * PANIPSize + panSize + NSGIPStart
+    dhcpGwAddr[i] = i * PANIPSize + pinIPStart
+    dhcpPoolStart[i] = i * PANIPSize + 1 + pinIPStart
+    dhcpPoolEnd[i] = i * PANIPSize + panSize + pinIPStart
   }
 
   return [dhcpGwAddr, dhcpPoolStart, dhcpPoolEnd, 32 - i]
 }
 
-export function genDhcpConfigByNsgSetting
+export function genDhcpConfigByPinSetting
 (
   ipStart: string,
   ipEnd: string,

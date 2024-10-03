@@ -4,7 +4,7 @@ import { Form }  from 'antd'
 import { rest }  from 'msw'
 
 import { StepsForm } from '@acx-ui/components'
-import { nsgApi }    from '@acx-ui/rc/services'
+import { pinApi }    from '@acx-ui/rc/services'
 import {
   DistributionSwitch,
   EdgePinFixtures,
@@ -28,9 +28,9 @@ import { PersonalIdentityNetworkFormContext } from '../PersonalIdentityNetworkFo
 
 import { DistributionSwitchForm } from './'
 
-const createNsgPath = '/:tenantId/services/personalIdentityNetwork/create'
-const updateNsgPath = '/:tenantId/services/personalIdentityNetwork/:serviceId/edit'
-const { mockNsgSwitchInfoData } = EdgePinFixtures
+const createPinPath = '/:tenantId/services/personalIdentityNetwork/create'
+const updatePinPath = '/:tenantId/services/personalIdentityNetwork/:serviceId/edit'
+const { mockPinSwitchInfoData } = EdgePinFixtures
 
 type MockDrawerProps = React.PropsWithChildren<{
   open: boolean
@@ -42,7 +42,7 @@ jest.mock('./DistributionSwitchDrawer', () => ({
     open && <div data-testid={'DistributionSwitchDrawer'}>
       <button onClick={(e)=>{
         e.preventDefault()
-        onSaveDS(mockNsgSwitchInfoData.distributionSwitches[0])
+        onSaveDS(mockPinSwitchInfoData.distributionSwitches[0])
       }}>Save</button>
       <button onClick={(e)=>{
         e.preventDefault()
@@ -60,7 +60,7 @@ describe('PersonalIdentityNetworkForm - DistributionSwitchForm', () => {
 
   const requestSpy = jest.fn()
   beforeEach(() => {
-    store.dispatch(nsgApi.util.resetApiState())
+    store.dispatch(pinApi.util.resetApiState())
 
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
@@ -90,8 +90,8 @@ describe('PersonalIdentityNetworkForm - DistributionSwitchForm', () => {
 
     formRef.current.setFieldsValue({
       edgeClusterId: 'edgeId',
-      distributionSwitchInfos: mockNsgSwitchInfoData.distributionSwitches,
-      accessSwitchInfos: mockNsgSwitchInfoData.accessSwitches
+      distributionSwitchInfos: mockPinSwitchInfoData.distributionSwitches,
+      accessSwitchInfos: mockPinSwitchInfoData.accessSwitches
     })
 
     render(
@@ -102,7 +102,7 @@ describe('PersonalIdentityNetworkForm - DistributionSwitchForm', () => {
           <StepsForm form={formRef.current}><DistributionSwitchForm /></StepsForm>
         </PersonalIdentityNetworkFormContext.Provider>
       </Provider>, {
-        route: { params, path: updateNsgPath }
+        route: { params, path: updatePinPath }
       })
 
     const row = await screen.findByRole('row', { name: /FMN4221R00H---DS---3/i })
@@ -137,7 +137,7 @@ describe('PersonalIdentityNetworkForm - DistributionSwitchForm', () => {
           <StepsForm form={formRef.current}><DistributionSwitchForm /></StepsForm>
         </PersonalIdentityNetworkFormContext.Provider>
       </Provider>, {
-        route: { params, path: createNsgPath }
+        route: { params, path: createPinPath }
       })
     const createBtn = await screen.findByRole('button', { name: 'Add Distribution Switch' })
     await user.click(createBtn)

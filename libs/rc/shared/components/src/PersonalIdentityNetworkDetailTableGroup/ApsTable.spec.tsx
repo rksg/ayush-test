@@ -7,7 +7,7 @@ import { RequestPayload }                                                from '@
 import { mockedApList }               from './__tests__/fixtures'
 import { ApsTable, defaultApPayload } from './ApsTable'
 
-describe('NetworkSegmentationDetailTableGroup - ApsTable', () => {
+describe('PersonalIdentityNetwork DetailTableGroup - ApsTable', () => {
   let params: { tenantId: string, serviceId: string }
   beforeEach(() => {
     params = {

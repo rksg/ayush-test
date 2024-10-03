@@ -18,7 +18,7 @@ import { RequestPayload }                                          from '@acx-ui
 import { mockedPersonaList, replacePagination } from './__tests__/fixtures'
 import { AssignedSegmentsTable }                from './AssignedSegmentsTable'
 
-const { mockNsgData } = EdgePinFixtures
+const { mockPinData } = EdgePinFixtures
 
 
 const mockedUsedNavigate = jest.fn()
@@ -27,10 +27,10 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-describe('NetworkSegmentationDetailTableGroup - AssignedSegmentsTable', () => {
+describe('PersonalIdentityNetwork DetailTableGroup - AssignedSegmentsTable', () => {
   let params: { tenantId: string, serviceId: string }
   const detailPath = '/:tenantId/t/' + getServiceRoutePath({
-    type: ServiceType.NETWORK_SEGMENTATION,
+    type: ServiceType.PIN,
     oper: ServiceOperation.DETAIL
   })
   beforeEach(() => {
@@ -61,7 +61,7 @@ describe('NetworkSegmentationDetailTableGroup - AssignedSegmentsTable', () => {
     render(
       <Provider>
         <AssignedSegmentsTable
-          switchInfo={mockNsgData.distributionSwitchInfos}
+          switchInfo={mockPinData.distributionSwitchInfos}
           tableQuery={result.current}
         />
       </Provider>, {
@@ -88,7 +88,7 @@ describe('NetworkSegmentationDetailTableGroup - AssignedSegmentsTable', () => {
     render(
       <Provider>
         <AssignedSegmentsTable
-          switchInfo={mockNsgData.distributionSwitchInfos}
+          switchInfo={mockPinData.distributionSwitchInfos}
           tableQuery={result.current}
           venueId='venue-id'
         />

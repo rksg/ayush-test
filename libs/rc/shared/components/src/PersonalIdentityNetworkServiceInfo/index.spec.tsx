@@ -23,21 +23,21 @@ import {
 
 import { PersonalIdentityNetworkServiceInfo } from '.'
 
-const { mockNsgStatsList, mockNsgData, mockNsgSwitchInfoData } = EdgePinFixtures
+const { mockPinStatsList, mockPinData, mockPinSwitchInfoData } = EdgePinFixtures
 const { mockEdgeClusterList } = EdgeGeneralFixtures
 const { mockEdgeDhcpDataList } = EdgeDHCPFixtures
 
-describe('NetworkSegmentationServiceInfo', () => {
+describe('PersonalIdentityNetwork ServiceInfo', () => {
 
   beforeEach(() => {
     mockServer.use(
       rest.get(
         EdgePinUrls.getEdgePinById.url,
-        (_req, res, ctx) => res(ctx.json(mockNsgData))
+        (_req, res, ctx) => res(ctx.json(mockPinData))
       ),
       rest.post(
         EdgePinUrls.getEdgePinStatsList.url,
-        (_req, res, ctx) => res(ctx.json(mockNsgStatsList))
+        (_req, res, ctx) => res(ctx.json(mockPinStatsList))
       ),
       rest.post(
         EdgeUrlsInfo.getEdgeClusterStatusList.url,
@@ -48,8 +48,8 @@ describe('NetworkSegmentationServiceInfo', () => {
         (_req, res, ctx) => res(ctx.json(mockedApList))
       ),
       rest.get(
-        EdgePinUrls.getSwitchInfoByNSGId.url,
-        (_req, res, ctx) => res(ctx.json(mockNsgSwitchInfoData))
+        EdgePinUrls.getSwitchInfoByPinId.url,
+        (_req, res, ctx) => res(ctx.json(mockPinSwitchInfoData))
       ),
       rest.get(
         EdgeDhcpUrls.getDhcp.url,
@@ -70,13 +70,13 @@ describe('NetworkSegmentationServiceInfo', () => {
     )
   })
 
-  it('Should render NetworkSegmentationServiceInfo successfully', async () => {
+  it('Should render PersonalIdentityNetwork ServiceInfo successfully', async () => {
     const params = {
       tenantId: 'tenant-id'
     }
     render(
       <Provider>
-        <PersonalIdentityNetworkServiceInfo nsgId='test' />
+        <PersonalIdentityNetworkServiceInfo pinId='test' />
       </Provider>,{
         route: { params }
       }
