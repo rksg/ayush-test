@@ -15,8 +15,11 @@ import {
   VirtualIpSetting
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
+import { EdgeScopes }    from '@acx-ui/types'
+import { hasPermission } from '@acx-ui/user'
 
 import * as CommUI from '../styledComponents'
+
 
 interface VirtualIpProps {
   currentClusterStatus?: EdgeClusterStatus
@@ -120,6 +123,8 @@ export const VirtualIp = (props: VirtualIpProps) => {
     navigate(clusterListPage)
   }
 
+  const hasUpdatePermission = hasPermission({ scopes: [EdgeScopes.UPDATE] })
+
   return (
     <Loader states={[{ isLoading: isLanInterfacesLoading }]}>
       <Row>
@@ -134,7 +139,7 @@ export const VirtualIp = (props: VirtualIpProps) => {
             form={form}
             onFinish={handleFinish}
             onCancel={handleCancel}
-            buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
+            buttonLabel={{ submit: hasUpdatePermission ? $t({ defaultMessage: 'Apply' }) : '' }}
           >
             <StepsForm.StepForm>
               <CommUI.Mt15>

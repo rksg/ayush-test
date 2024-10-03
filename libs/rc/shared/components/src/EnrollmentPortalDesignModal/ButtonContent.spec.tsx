@@ -17,8 +17,8 @@ const defaultUIConfiguration: UIConfiguration = {
     buttonFontColor: expectedColor
   },
   uiStyleSchema: {
-    logoRatio: 0,
-    titleFontSize: 0
+    logoSize: 'MEDIUM',
+    headerFontSize: 16
   },
   welcomeTitle: 'welcomeTitle',
   welcomeName: 'welcomeName'

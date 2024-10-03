@@ -22,10 +22,10 @@ import {
   WlanSecurityEnum,
   WifiNetwork
 } from '@acx-ui/rc/utils'
-import { TenantLink, useTenantLink }                from '@acx-ui/react-router-dom'
-import { RequestPayload, WifiScopes }               from '@acx-ui/types'
-import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
-import { getIntl, noDataDisplay }                   from '@acx-ui/utils'
+import { TenantLink, useTenantLink }                               from '@acx-ui/react-router-dom'
+import { RequestPayload, WifiScopes }                              from '@acx-ui/types'
+import { filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
+import { getIntl, noDataDisplay }                                  from '@acx-ui/utils'
 
 
 const disabledType: NetworkTypeEnum[] = []
@@ -439,6 +439,9 @@ export function NetworkTable ({
     expandedRowKeys
   }
 
+  const showRowSelection = (selectable
+    && hasCrossVenuesPermission()
+    && hasPermission({ scopes: [WifiScopes.CREATE, WifiScopes.UPDATE, WifiScopes.DELETE] }) )
 
   return (
     <Loader states={[
@@ -459,8 +462,9 @@ export function NetworkTable ({
         }
         expandable={expandable}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={(hasCrossVenuesPermission() && selectable) ? { type: 'radio',
-          ...rowSelection } : undefined}
+        rowSelection={showRowSelection && {
+          type: 'radio',
+          ...rowSelection }}
         actions={isBetaDPSK3FeatureEnabled && isWpaDsae3Toggle && showOnboardNetworkToggle ? [{
           key: 'toggleOnboardNetworks',
           label: expandOnBoaroardingNetworks

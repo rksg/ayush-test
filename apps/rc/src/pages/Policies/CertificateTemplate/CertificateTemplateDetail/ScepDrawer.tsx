@@ -47,6 +47,9 @@ export default function ScepDrawer
   }
 
   useEffect(() => {
+    if (!visible) {
+      return
+    }
     form.resetFields()
     const { expirationDate, ...rest } = scepData || {}
     const initialValues = scepData ? { ...rest, expirationDate: moment(expirationDate) } : {
@@ -54,15 +57,14 @@ export default function ScepDrawer
       challengePasswordType: ChallengePasswordType.NONE,
       challengePassword: '',
       allowedSubnets: '*',
-      overrideDays: 0,
+      overrideDays: 10,
       cnValue1: ScepKeyCommonNameType.USERNAME,
       cnValue2: ScepKeyCommonNameType.IGNORE,
       cnValue3: ScepKeyCommonNameType.IGNORE,
       expirationDate: moment().add(2, 'months')
     }
     form.setFieldsValue(initialValues)
-
-  }, [scepData])
+  }, [visible])
 
   return (
     <Drawer
@@ -91,7 +93,7 @@ export default function ScepDrawer
           style={{ marginTop: 8 }}
           name='name'
           label={$t({ defaultMessage: 'Name' })}
-          rules={[{ required: true }]}
+          rules={[{ required: true, max: 255 }]}
         >
           <Input/>
         </Form.Item>
@@ -202,10 +204,10 @@ export default function ScepDrawer
               <Form.Item
                 style={{ marginTop: 8, display: 'inline-block' }}
                 name='overrideDays'
-                label={$t({ defaultMessage: 'Day of Access' })}
+                label={$t({ defaultMessage: 'Days of Access' })}
                 rules={[{ required: true }]}
               >
-                <InputNumber min={0}/>
+                <InputNumber min={0} max={365}/>
               </Form.Item>
               <Description style={{ marginTop: 38, marginLeft: 10, display: 'inline-block' }}>
                 {$t({ defaultMessage: 'Days' })}
