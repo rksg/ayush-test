@@ -13,7 +13,7 @@ export function Summary () {
   const { $t } = useIntl()
   const { form } = useStepFormContext<Intent>()
   const isEnabled = form.getFieldValue('preferences').enable
-  const enableExcludedHours = form.getFieldValue('enableExcludedHours')
+  const enableExcludedHours = form.getFieldValue('preferences').enableExcludedHours
   return <Row gutter={20}>
     <Col span={16}>
       <StepsForm.Title children={$t({ defaultMessage: 'Summary' })} />
