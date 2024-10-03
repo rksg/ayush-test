@@ -2,7 +2,7 @@ import { rest } from 'msw'
 
 import { mockServer, renderHook, waitFor } from '@acx-ui/test-utils'
 
-import { DOCS_HOME_URL, getDocsMappingURL, getDocsURL, useHelpPageLink } from './helpDoc.utils'
+import { DOCS_HOME_URL, getDocsMappingURL, getDocsURL, getRaiDocsMappingURL, getRaiDocsURL, useHelpPageLink, useRaiHelpPageLink } from './helpDoc.utils'
 
 const mockedUrlMappingData = {
   'dashboard': 'GUID-A338E06B-7FD9-4492-B1B2-D43841D704F1.html',
@@ -152,19 +152,19 @@ describe('HelpPage URL', () => {
   })
 
   describe('RAI case', () => {
-    const mockedRAIUrlMappingData = {
+    const mockedRaiUrlMappingData = {
       'analytics/intentAI': 'GUID-CAAC695C-6740-499D-8C42-AB521CEE65F6.html'
     }
 
-    const expectedRAIDefaultVal = DOCS_HOME_URL+'/RUCKUS-AI/userguide/index.html'
+    const expectedRaiDefaultVal = DOCS_HOME_URL+'/RUCKUS-AI/userguide/index.html'
 
     it('should correctly return corresponding link URL', async () => {
       mockServer.use(
-        rest.get(getDocsMappingURL(false, true), (_, res, ctx) =>
-          res(ctx.json(mockedRAIUrlMappingData))
+        rest.get(getRaiDocsMappingURL(), (_, res, ctx) =>
+          res(ctx.json(mockedRaiUrlMappingData))
         ))
       const { result } = renderHook(() => {
-        return useHelpPageLink(undefined, true)
+        return useRaiHelpPageLink()
       }, {
         route: {
           path: '/1d4c01e03b9540f29a3ebac62d56c8fb/t/analytics/intentAI',
@@ -174,19 +174,19 @@ describe('HelpPage URL', () => {
 
       await waitFor(() =>
         // eslint-disable-next-line max-len
-        expect(result.current).toBe(DOCS_HOME_URL+'/RUCKUS-AI/userguide/'+mockedRAIUrlMappingData['analytics/intentAI'])
+        expect(result.current).toBe(DOCS_HOME_URL+'/RUCKUS-AI/userguide/'+mockedRaiUrlMappingData['analytics/intentAI'])
       )
     })
 
     it('should correctly return corresponding link URL corresponding to given target', async () => {
       mockServer.use(
-        rest.get(getDocsMappingURL(false, true), (_, res, ctx) =>
-          res(ctx.json(mockedRAIUrlMappingData))
+        rest.get(getRaiDocsMappingURL(), (_, res, ctx) =>
+          res(ctx.json(mockedRaiUrlMappingData))
         ))
 
       const intentAIPagePath = 'analytics/intentAI'
       const { result } = renderHook(() => {
-        return useHelpPageLink(intentAIPagePath, true)
+        return useRaiHelpPageLink(intentAIPagePath)
       }, {
         route: {
           path: '/1d4c01e03b9540f29a3ebac62d56c8fb/t/dashboard',
@@ -196,20 +196,20 @@ describe('HelpPage URL', () => {
 
       await waitFor(() =>
       // eslint-disable-next-line max-len
-        expect(result.current).toBe(DOCS_HOME_URL+'/RUCKUS-AI/userguide/'+mockedRAIUrlMappingData['analytics/intentAI'])
+        expect(result.current).toBe(DOCS_HOME_URL+'/RUCKUS-AI/userguide/'+mockedRaiUrlMappingData['analytics/intentAI'])
       )
     })
 
     it('should use default when mapping not found', async () => {
       mockServer.use(
-        rest.get(getDocsMappingURL(false, true), (_, res, ctx) =>
+        rest.get(getRaiDocsMappingURL(), (_, res, ctx) =>
           res(ctx.json({
             empty: ''
           }))
         ))
 
       const { result } = renderHook(() => {
-        return useHelpPageLink(undefined, true)
+        return useRaiHelpPageLink()
       }, {
         route: {
           path: '/1d4c01e03b9540f29a3ebac62d56c8fb/t/not-found',
@@ -217,7 +217,30 @@ describe('HelpPage URL', () => {
         }
       })
 
-      await waitFor(() => expect(result.current).toBe(expectedRAIDefaultVal))
+      await waitFor(() => expect(result.current).toBe(expectedRaiDefaultVal))
+    })
+
+    it('should use default when fetch mapping file failed', async () => {
+      mockServer.use(
+        rest.get(getRaiDocsMappingURL(), (_, res, ctx) =>
+          res(
+            ctx.status(404),
+            ctx.json({
+              errorMessage: 'File not found'
+            })
+          )
+        ))
+
+      const { result } = renderHook(() => {
+        return useRaiHelpPageLink()
+      }, {
+        route: {
+          path: '/1d4c01e03b9540f29a3ebac62d56c8fb/t/analytics/intentAI',
+          wrapRoutes: false
+        }
+      })
+
+      await waitFor(() => expect(result.current).toBe(expectedRaiDefaultVal))
     })
   })
 })
@@ -256,11 +279,10 @@ describe('HelpPage Component URLs', () => {
   })
 
   it('should return correct URL for RAI', async () => {
-    const isMspPage = false, isRAI = true
-    const mappingURL = getDocsMappingURL(isMspPage, isRAI)
+    const mappingURL = getRaiDocsMappingURL()
     expect(mappingURL).not.toBeNull()
     expect(mappingURL).toBe('/docs/RUCKUS-AI/userguide/mapfile/doc-mapper.json')
-    const docURL = getDocsURL(isMspPage, isRAI)
+    const docURL = getRaiDocsURL()
     expect(docURL).not.toBeNull()
     expect(docURL).toBe('/docs/RUCKUS-AI/userguide/')
   })

@@ -23,7 +23,7 @@ const mockGet = jest.mocked(get)
 
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
-  useHelpPageLink: () => 'https://docs.cloud.ruckuswireless.com/RUCKUS-AI/userguide/GUID-CAAC695C-6740-499D-8C42-AB521CEE65F6.html'
+  useRaiHelpPageLink: () => 'https://docs.cloud.ruckuswireless.com/RUCKUS-AI/userguide/GUID-CAAC695C-6740-499D-8C42-AB521CEE65F6.html'
 }))
 
 describe('AIFeature component', () => {
