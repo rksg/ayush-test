@@ -5,10 +5,15 @@ import moment                       from 'moment'
 import { useIntl }                  from 'react-intl'
 import { useParams }                from 'react-router-dom'
 
-import { Collapse, DatePicker, Drawer, Select }                                                              from '@acx-ui/components'
-import { CollapseInactive, CollapseActive }                                                                  from '@acx-ui/icons'
-import { useAddSpecificTemplateScepKeyMutation, useEditSpecificTemplateScepKeyMutation }                     from '@acx-ui/rc/services'
-import { ChallengePasswordType, EXPIRATION_DATE_FORMAT, ScepKeyCommonNameType, ScepKeyData, generateHexKey } from '@acx-ui/rc/utils'
+import { Collapse, DatePicker, Drawer, Select }                                          from '@acx-ui/components'
+import { CollapseInactive, CollapseActive }                                              from '@acx-ui/icons'
+import { useAddSpecificTemplateScepKeyMutation, useEditSpecificTemplateScepKeyMutation } from '@acx-ui/rc/services'
+import {
+  ChallengePasswordType,
+  EXPIRATION_DATE_FORMAT,
+  ScepKeyCommonNameType,
+  ScepKeyData
+} from '@acx-ui/rc/utils'
 
 import { challengePasswordTypeLabel, scepKeyCommonNameTypeLabel, scepKeysDescription } from '../contentsMap'
 import { CollapseWrapper, CollapseTitle, DrawerTitle, Description }                    from '../styledComponents'
@@ -34,7 +39,11 @@ export default function ScepDrawer
       const payload = { ...form.getFieldsValue(),
         challengePassword:
           challengePasswordType === ChallengePasswordType.NONE ?
-            null : form.getFieldValue('challengePassword') }
+            null : form.getFieldValue('challengePassword'),
+        expirationDate: moment(form.getFieldValue('expirationDate')).endOf('day').utc()
+      }
+      // eslint-disable-next-line no-console
+      console.log(payload.expirationDate)
       if (!scepData) {
         await addScepKey({ params, payload })
       } else {
