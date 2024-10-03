@@ -56,14 +56,14 @@ describe('useEdgePinActions', () => {
         }
       ),
       rest.delete(
-        EdgePinUrls.deactivatePinNetwork.url,
+        EdgePinUrls.deactivateEdgePinNetwork.url,
         (req, res, ctx) => {
           mockedDeactivateNetworkReq(req.params)
           return res(ctx.status(202))
         }
       ),
       rest.put(
-        EdgePinUrls.activatePinNetwork.url,
+        EdgePinUrls.activateEdgePinNetwork.url,
         (req, res, ctx) => {
           mockedActivateNetworkReq(req.params)
           return res(ctx.status(202))
@@ -106,6 +106,7 @@ describe('useEdgePinActions', () => {
   describe('editPin', () => {
     const serviceId = mockNsgData.id
     const mockedEditData = mockNsgData as unknown as PersonalIdentityNetworkFormData
+    mockedEditData.networkIds = mockedEditData.tunneledWlans.map(wlan => wlan.networkId)
 
     // eslint-disable-next-line max-len
     const prepareTesting = async (originData: PersonalIdentityNetworkFormData, submitData: PersonalIdentityNetworkFormData) => {
@@ -172,7 +173,7 @@ describe('useEdgePinActions', () => {
       const mockedReq = jest.fn()
       mockServer.use(
         rest.put(
-          EdgePinUrls.activatePinNetwork.url,
+          EdgePinUrls.activateEdgePinNetwork.url,
           (req, res, ctx) => {
             mockedReq(req.params)
             return res(ctx.status(403), ctx.json({
