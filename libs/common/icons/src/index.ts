@@ -223,8 +223,6 @@ export { ReactComponent as MagnifyingGlassPlusOutlined } from './icons/Magnifyin
 export { ReactComponent as MagnifyingGlassPlusSolid } from './icons/MagnifyingGlassPlusSolid.svg'
 export { ReactComponent as MapOutlined } from './icons/MapOutlined.svg'
 export { ReactComponent as MapSolid } from './icons/MapSolid.svg'
-export { ReactComponent as MelissaHeaderIcon } from './icons/MelissaHeaderIcon.svg'
-export { ReactComponent as MelissaIcon } from './icons/MelissaIcon.svg'
 export { ReactComponent as MeshSolid } from './icons/MeshSolid.svg'
 export { ReactComponent as MicrophoneOutlined } from './icons/MicrophoneOutlined.svg'
 export { ReactComponent as MicrophoneSolid } from './icons/MicrophoneSolid.svg'

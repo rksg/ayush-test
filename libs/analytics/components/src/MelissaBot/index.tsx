@@ -10,8 +10,9 @@ import { useLocation }     from 'react-router-dom'
 import { Conversation, FulfillmentMessage, Content,
   ContentSwitcher, ContentSwitcherProps, Mode,
   cssStr } from '@acx-ui/components'
-import { MelissaHeaderIcon, MelissaIcon } from '@acx-ui/icons'
 
+import headerIconUrl                                   from './MelissaHeaderIcon.png'
+import iconUrl                                         from './MelissaIcon.png'
 import { AskMelissaBody, queryAskMelissa, uploadFile } from './services'
 import { MelissaDrawer, SubTitle, Title }              from './styledComponents'
 
@@ -293,7 +294,10 @@ export function MelissaBot ({ sessionTimeoutInSecs = DEFAULT_DF_SESSION_TIMEOUT_
       tooltip: $t({ defaultMessage: 'Use power of Generative AI to get RUCKUS product details and technical knowledge.' }),
       children: <div/>, value: 'general' }
   ]
-  return (<>{state.showFloatingButton && <MelissaIcon
+  return (<>{state.showFloatingButton && <img
+    data-testid='MelissaIcon'
+    src={iconUrl}
+    alt='melissa icon'
     onClick={showDrawer}
     style={{
       width: '56px',
@@ -305,7 +309,7 @@ export function MelissaBot ({ sessionTimeoutInSecs = DEFAULT_DF_SESSION_TIMEOUT_
     }} />}
   <MelissaDrawer
     title={title}
-    icon={<MelissaHeaderIcon/>}
+    icon={<img src={headerIconUrl} alt='melissa header icon' />}
     onClose={onClose}
     visible={state.isOpen}
     width={390}
