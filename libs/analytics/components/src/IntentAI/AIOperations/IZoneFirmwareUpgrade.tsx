@@ -3,7 +3,6 @@ import { Form }                                     from 'antd'
 import _                                            from 'lodash'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
-import { compareVersion }                from '@acx-ui/analytics/utils'
 import { StepsForm, useStepFormContext } from '@acx-ui/components'
 import { formatter }                     from '@acx-ui/formatter'
 
@@ -13,7 +12,7 @@ import { KpiField }                                           from '../common/Kp
 import { richTextFormatValues }                               from '../common/richTextFormatValues'
 import { getScheduledAt, ScheduleTiming }                     from '../common/ScheduleTiming'
 import { IntentConfigurationConfig, useIntentContext }        from '../IntentContext'
-import { getGraphKPIs, Intent, IntentKPIConfig, intentState } from '../useIntentDetailsQuery'
+import { getGraphKPIs, IntentKPIConfig }                      from '../useIntentDetailsQuery'
 import { useInitialValues }                                   from '../useIntentTransition'
 import { Actions, getTransitionStatus, TransitionIntentItem } from '../utils'
 
@@ -27,12 +26,7 @@ import { Tradeoff }              from './SideNotes/Tradeoff'
 export const configuration: IntentConfigurationConfig = {
   label: defineMessage({ defaultMessage: 'AP Firmware Version' }),
   valueFormatter: formatter('noFormat'),
-  tooltip: (intent: Intent) =>
-    (intentState(intent) === 'active' &&
-      intent.currentValue &&
-      compareVersion(intent.currentValue as string, intent.recommendedValue as string) > -1)
-      ? defineMessage({ defaultMessage: 'Zone was upgraded manually to recommended AP firmware version. Manually check whether this intent is still valid.' })
-      : defineMessage({ defaultMessage: 'Latest available AP firmware version will be used when this intent is applied.' })
+  tooltip: () => defineMessage({ defaultMessage: 'When applied, the Intent will use the latest available firmware version.' })
 }
 
 export const kpis: IntentKPIConfig[] = [{
