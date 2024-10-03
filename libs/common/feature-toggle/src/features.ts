@@ -214,7 +214,7 @@ interface BetaList {
 // If we don't have a description blurb and
 // don't want it to be displayed then add status = false
 export const BetaListDetails:BetaList[] = [
-  { key: TierFeatures.WORKFLOW_ONBOARD, description: defineMessage({ defaultMessage: '' }), status: false },
+  { key: TierFeatures.WORKFLOW_ONBOARD, description: defineMessage({ defaultMessage: 'Workflows: ' }), status: false },
   { key: TierFeatures.BETA_DPSK3, description: defineMessage({ defaultMessage: 'DPSK3: Dynamic Preshared Keys working with WPA3-DSAE. Users connect their devices to a WPA2/WPA3 network with DPSK and are automatically moved to the WPA3 WLAN, allowing DPSK operation with WiFi 6e or WiFi7. DPSK3 allows the customer to take advantage of the flexibility of DPSK with the security of WPA3.' }), status: true },
   { key: TierFeatures.AP_70, description: defineMessage({ defaultMessage: 'AP-70: Wi-Fi 7 - Wi-Fi 7 UI configuration available for early adopters and customers provided with advance units of the R770. Contact your reseller for more information on availability of the new R770!' }), status: true },
   { key: TierFeatures.SMART_EDGES, description: defineMessage({ defaultMessage: 'RUCKUS Edge: RUCKUS Edge is a platfrom to run RUCKUS services on. Network administrators can utilize SD-LAN service or Personal Identity Networking service on a RUCKUS Edge. SD-LAN provides WLAN tunnelling using VXLAN. This will provide end users a seamless roaming experience across a network. The Personal Identity Networking service provides individual networks for users which is typically used in a multi-dwelling facility.' }), status: true },
