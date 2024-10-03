@@ -1,6 +1,8 @@
 import { useEffect } from 'react'
 
 import { Form, Input, InputNumber } from 'antd'
+import { Rule }                     from 'antd/lib/form'
+import { StoreValue }               from 'antd/lib/form/interface'
 import moment                       from 'moment'
 import { useIntl }                  from 'react-intl'
 import { useParams }                from 'react-router-dom'
@@ -28,6 +30,44 @@ export default function ScepDrawer
   const challengePasswordOptions = Object.values(ChallengePasswordType).map((value) =>
     ({ label: $t(challengePasswordTypeLabel[value as ChallengePasswordType]), value }))
 
+  const validateSubnets = (getFieldValue: (name: string) => StoreValue) => {
+    return (_: Rule, value: string) => {
+      const allowedSubnets = getFieldValue('allowedSubnets') as string
+      const blockedSubnets = getFieldValue('blockedSubnets') as string
+
+      // eslint-disable-next-line max-len
+      const subnetRegex = /^(\*|(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/?(3[0-2]|[12]?[0-9])?))$/
+
+      // Validate each subnet in the value field
+      if (value) {
+        const subnets = value.split(';').map(subnet => subnet.trim())
+
+        for (const subnet of subnets) {
+          if (!subnetRegex.test(subnet)) {
+            return Promise.reject(new Error($t({ defaultMessage: 'Invalid subnet format' })))
+          }
+        }
+      }
+
+      // Check for overlap between allowedSubnets and blockedSubnets
+      if (allowedSubnets && blockedSubnets) {
+        const allowedList = allowedSubnets.split(';').map(subnet => subnet.trim())
+        const blockedList = blockedSubnets.split(';').map(subnet => subnet.trim())
+
+        // Check if any subnet exists in both allowed and blocked lists
+        const overlappingSubnets = allowedList.filter(subnet => blockedList.includes(subnet))
+
+        if (overlappingSubnets.length > 0) {
+          // eslint-disable-next-line max-len
+          return Promise.reject(new Error($t({ defaultMessage: 'Subnets cannot be both allowed and blocked' })))
+        }
+      }
+
+      return Promise.resolve()
+    }
+  }
+
+
   const onSubmit = async () => {
     try {
       await form.validateFields()
@@ -47,6 +87,9 @@ export default function ScepDrawer
   }
 
   useEffect(() => {
+    if (!visible) {
+      return
+    }
     form.resetFields()
     const { expirationDate, ...rest } = scepData || {}
     const initialValues = scepData ? { ...rest, expirationDate: moment(expirationDate) } : {
@@ -61,8 +104,7 @@ export default function ScepDrawer
       expirationDate: moment().add(2, 'months')
     }
     form.setFieldsValue(initialValues)
-
-  }, [scepData])
+  }, [visible])
 
   return (
     <Drawer
@@ -91,9 +133,13 @@ export default function ScepDrawer
           style={{ marginTop: 8 }}
           name='name'
           label={$t({ defaultMessage: 'Name' })}
-          rules={[{ required: true }]}
+          rules={[{ required: true, max: 255, min: 2 }]}
         >
-          <Input/>
+          <Input onKeyPress={(e) => {
+            if (e.key === ' ') {
+              e.preventDefault()
+            }
+          }}/>
         </Form.Item>
         <Form.Item
           name='scepKey'
@@ -115,13 +161,13 @@ export default function ScepDrawer
           </Select>
         </Form.Item>
         { challengePasswordType === ChallengePasswordType.STATIC &&
-            <Form.Item
-              name='challengePassword'
-              label={$t({ defaultMessage: 'Challenge Password' })}
-              rules={[{ required: true }]}
-            >
-              <Input />
-            </Form.Item>
+          <Form.Item
+            name='challengePassword'
+            label={$t({ defaultMessage: 'Challenge Password' })}
+            rules={[{ required: true, min: 4, max: 255 }]}
+          >
+            <Input />
+          </Form.Item>
         }
         { challengePasswordType === ChallengePasswordType.MICROSOFT &&
           <>
@@ -175,12 +221,14 @@ export default function ScepDrawer
               <Form.Item
                 name='allowedSubnets'
                 label={$t({ defaultMessage: 'Allowed Subnets' })}
+                rules={[{ validator: validateSubnets(form.getFieldValue) }]}
               >
                 <Input/>
               </Form.Item>
               <Form.Item
                 name='blockedSubnets'
                 label={$t({ defaultMessage: 'Blocked Subnets' })}
+                rules={[{ validator: validateSubnets(form.getFieldValue) }]}
               >
                 <Input/>
               </Form.Item>
@@ -205,7 +253,7 @@ export default function ScepDrawer
                 label={$t({ defaultMessage: 'Days of Access' })}
                 rules={[{ required: true }]}
               >
-                <InputNumber min={-1} max={365}/>
+                <InputNumber min={0} max={365}/>
               </Form.Item>
               <Description style={{ marginTop: 38, marginLeft: 10, display: 'inline-block' }}>
                 {$t({ defaultMessage: 'Days' })}
