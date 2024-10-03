@@ -37,19 +37,19 @@ const EditPersonalIdentityNetwork = () => {
     return {
       id: nsgData?.id,
       name: nsgData?.name,
-      venueId: nsgData?.venueInfos[0]?.venueId,
-      edgeClusterId: nsgData?.edgeClusterInfos[0]?.edgeClusterId,
-      segments: nsgData?.edgeClusterInfos[0]?.segments,
-      devices: nsgData?.edgeClusterInfos[0]?.devices,
-      dhcpId: nsgData?.edgeClusterInfos[0]?.dhcpInfoId,
-      poolId: nsgData?.edgeClusterInfos[0]?.dhcpPoolId,
+      venueId: nsgData?.venueId,
+      edgeClusterId: nsgData?.edgeClusterInfo?.edgeClusterId,
+      segments: nsgData?.edgeClusterInfo?.segments,
+      devices: nsgData?.edgeClusterInfo?.devices,
+      dhcpId: nsgData?.edgeClusterInfo?.dhcpInfoId,
+      poolId: nsgData?.edgeClusterInfo?.dhcpPoolId,
       vxlanTunnelProfileId: nsgData?.vxlanTunnelProfileId,
-      networkIds: nsgData?.networkIds,
+      personaGroupId: nsgData?.personaGroupId,
+      networkIds: nsgData?.tunneledWlans.map(nw => nw.networkId),
       distributionSwitchInfos: nsgData?.distributionSwitchInfos,
       accessSwitchInfos: nsgData?.accessSwitchInfos,
       originalDistributionSwitchInfos: nsgData?.distributionSwitchInfos,
-      originalAccessSwitchInfos: nsgData?.accessSwitchInfos,
-      personaGroupId: nsgData?.venueInfos[0]?.personaGroupId
+      originalAccessSwitchInfos: nsgData?.accessSwitchInfos
     }
   }, [nsgData])
 
@@ -87,7 +87,7 @@ const EditPersonalIdentityNetwork = () => {
         ]}
       />
       <PersonalIdentityNetworkFormDataProvider
-        venueId={nsgData?.venueInfos[0].venueId}
+        venueId={nsgData?.venueId}
       >
         <Loader states={[{ isLoading: isNsgDataLoading || isNsgDataFetching }]}>
           <PersonalIdentityNetworkForm

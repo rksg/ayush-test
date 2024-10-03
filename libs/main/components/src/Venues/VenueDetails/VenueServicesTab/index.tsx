@@ -72,7 +72,8 @@ export function VenueServicesTab () {
     hasNsg, isGetNsgLoading
   } = useGetEdgePinViewDataListQuery({
     payload: {
-      filters: { venueInfoIds: [venueId] }
+      fields: ['id'],
+      filters: { venueId: [venueId] }
     }
   }, {
     skip: !!!venueId || !isEdgePinReady,

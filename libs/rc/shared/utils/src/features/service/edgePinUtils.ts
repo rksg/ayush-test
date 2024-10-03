@@ -1,3 +1,14 @@
+export const edgePinDefaultPayloadFields = [
+  'id', 'name',
+  'venueId', 'venueName',
+  'edgeClusterInfo',
+  'personaGroupId',
+  'vxlanTunnelProfileId',
+  'tunneledWlans',
+  'serviceStatus',
+  'edgeAlarmSummary'
+]
+
 function cidrToSubnetMask (cidr: number) {
   if (cidr < 0 || cidr > 32) {
     throw new Error('Invalid CIDR prefix length')

@@ -20,6 +20,15 @@ import {
 }              from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
+const defaultFields = [
+  'id', 'name',
+  'venueId', 'venueName',
+  'edgeClusterInfo',
+  'personaGroupId',
+  'vxlanTunnelProfileId',
+  'tunneledWlans',
+  'edgeAlarmSummary'
+]
 interface PersonalIdentityNetworkDetailsProps {
   serviceData: EdgeService
 }
@@ -32,11 +41,11 @@ export const PersonalIdentityNetworkDetails = (props: PersonalIdentityNetworkDet
   const { $t } = useIntl()
   const {
     nsgViewData,
-    venueInfo,
     dhcpPoolId,
     isNsgViewDataLoading
   } = useGetEdgePinViewDataListQuery({
     payload: {
+      fields: defaultFields,
       filters: { id: [serviceData.serviceId] }
     }
   }, {
@@ -45,15 +54,15 @@ export const PersonalIdentityNetworkDetails = (props: PersonalIdentityNetworkDet
       const nsgViewData = data?.data[0]
       return {
         nsgViewData,
-        venueInfo: nsgViewData?.venueInfos?.[0],
-        dhcpPoolId: nsgViewData?.edgeClusterInfos[0]?.dhcpPoolId,
+        dhcpPoolId: nsgViewData?.edgeClusterInfo?.dhcpPoolId,
         isNsgViewDataLoading: isLoading
       }
     }
   })
+
   const { dhcpName, dhcpId, dhcpPool, isLoading: isDhcpLoading } = useGetEdgeDhcpServiceQuery(
-    { params: { id: nsgViewData?.edgeClusterInfos[0].dhcpInfoId } },{
-      skip: !!!nsgViewData?.edgeClusterInfos[0],
+    { params: { id: nsgViewData?.edgeClusterInfo?.dhcpInfoId } },{
+      skip: !nsgViewData?.edgeClusterInfo,
       selectFromResult: ({ data, isLoading }) => {
         return {
           dhcpName: data?.serviceName,
@@ -63,17 +72,18 @@ export const PersonalIdentityNetworkDetails = (props: PersonalIdentityNetworkDet
         }
       }
     })
+
   const{ data: tunnelData, isLoading: isTunnelLoading } = useGetTunnelProfileByIdQuery(
     { params: { id: nsgViewData?.vxlanTunnelProfileId } }, {
-      skip: !!!nsgViewData?.vxlanTunnelProfileId
-    }
-  )
+      skip: !nsgViewData?.vxlanTunnelProfileId
+    })
+
   const {
     data: personaGroupData,
     isLoading: isPersonaGroupLoading
   } = useGetPersonaGroupByIdQuery(
-    { params: { groupId: nsgViewData?.venueInfos[0].personaGroupId } },
-    { skip: !!!nsgViewData?.venueInfos[0] }
+    { params: { groupId: nsgViewData?.personaGroupId } },
+    { skip: !nsgViewData?.personaGroupId }
   )
 
   return(
@@ -89,9 +99,9 @@ export const PersonalIdentityNetworkDetails = (props: PersonalIdentityNetworkDet
         label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
         children={
           <TenantLink
-            to={`/venues/${venueInfo?.venueId}/venue-details/overview`}
+            to={`/venues/${nsgViewData?.venueId}/venue-details/overview`}
           >
-            {venueInfo?.venueName}
+            {nsgViewData?.venueName}
           </TenantLink>
         }
       />
@@ -105,11 +115,11 @@ export const PersonalIdentityNetworkDetails = (props: PersonalIdentityNetworkDet
       />
       <Form.Item
         label={$t({ defaultMessage: 'Number of Segments' })}
-        children={nsgViewData?.edgeClusterInfos[0]?.segments}
+        children={nsgViewData?.edgeClusterInfo?.segments}
       />
       <Form.Item
         label={$t({ defaultMessage: 'Number of devices per segment' })}
-        children={nsgViewData?.edgeClusterInfos[0]?.devices}
+        children={nsgViewData?.edgeClusterInfo?.devices}
       />
       <Form.Item
         label={$t({ defaultMessage: 'DHCP Service' })}
@@ -146,7 +156,7 @@ export const PersonalIdentityNetworkDetails = (props: PersonalIdentityNetworkDet
       />
       <Form.Item
         label={$t({ defaultMessage: 'Networks' })}
-        children={nsgViewData?.networkIds?.length}
+        children={nsgViewData?.tunneledWlans?.length}
       />
       <PersonalIdentityNetworkDetailTableGroup nsgId={serviceData.serviceId} />
     </Loader>

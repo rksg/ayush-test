@@ -58,8 +58,8 @@ describe('DistributionSwitchDrawer', () => {
       return form
     })
     formRef.current.setFieldsValue({
-      venueId: mockNsgData.venueInfos[0].venueId,
-      edgeClusterId: mockNsgData.edgeClusterInfos[0].edgeClusterId,
+      venueId: mockNsgData.venueId,
+      edgeClusterId: mockNsgData.edgeClusterInfo.edgeClusterId,
       distributionSwitchInfos: mockNsgSwitchInfoData.distributionSwitches,
       originalDistributionSwitchInfos: mockNsgSwitchInfoData.distributionSwitches,
       accessSwitchInfos: mockNsgSwitchInfoData.accessSwitches,

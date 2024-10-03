@@ -1,6 +1,5 @@
 /* eslint-disable max-len */
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
-import { uniq }                from 'lodash'
 
 import {
   AccessSwitch,
@@ -10,12 +9,10 @@ import {
   PersonalIdentityNetworksViewData,
   EdgePinUrls,
   EdgePinRbacUrls,
-  NewTableResult,
   onActivityMessageReceived,
   onSocketActivityChanged,
   SwitchLite,
   TableResult,
-  transferToTableResult,
   WebAuthTemplate,
   WebAuthTemplateTableData,
   EdgeClusterStatus,
@@ -27,8 +24,8 @@ import { baseNsgApi }                          from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
 import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
-import { serviceApi }                                        from './service'
-import { handleCallbackWhenActivityDone, isPayloadHasField } from './utils'
+import { serviceApi }                     from './service'
+import { handleCallbackWhenActivityDone } from './utils'
 
 const customHeaders = {
   v1: {
@@ -87,46 +84,6 @@ export const nsgApi = baseNsgApi.injectEndpoints({
           body: payload
         })
         const pinList = pinQuery.data as TableResult<PersonalIdentityNetworksViewData>
-
-        // fetch venue id & name
-        if (isPayloadHasField(payload, 'venueId')) {
-          const edgeClusterIds = uniq(pinList.data.flatMap(item => item.edgeClusterInfos?.map(edge => edge.edgeClusterId)))
-            .filter(i => i)
-          if (edgeClusterIds.length) {
-            const clusterReq = createHttpRequest(EdgeUrlsInfo.getEdgeClusterStatusList)
-            const edgeClusterQuery = await fetchWithBQ({
-              ...clusterReq,
-              body: {
-                fields: [
-                  'name',
-                  'clusterId',
-                  'venueId'
-                ],
-                filters: { clusterId: edgeClusterIds }
-              }
-            })
-
-            const clusterList = edgeClusterQuery.data as TableResult<EdgeClusterStatus>
-            aggregateVenueInfo(pinList, clusterList)
-
-            const venueIds = clusterList.data.map(cluster => cluster.venueId)
-            const personaReq = createHttpRequest(PropertyUrlsInfo.getPropertyConfigsQuery, params,
-              { Accept: 'application/hal+json' })
-            const personaQuery = await fetchWithBQ({
-              ...personaReq,
-              body: {
-                filters: { venueId: venueIds },
-                sortField: 'venueName',
-                sortOrder: 'ASC',
-                page: 1,
-                pageSize: 10000
-              }
-            })
-
-            const personaList = personaQuery.data as TableResult<PropertyConfigs>
-            aggregatePersonaId(pinList, personaList)
-          }
-        }
 
         return pinQuery.data
           ? { data: pinList }
@@ -200,28 +157,25 @@ export const nsgApi = baseNsgApi.injectEndpoints({
         const pinViewmodelQuery = await fetchWithBQ({
           ...pinViewmodelReq,
           body: {
-            fields: ['id', 'networkIds'],
+            fields: ['id', 'tunneledWlans'],
             filters: { id: [params?.serviceId!] }
           }
         })
 
         const pinViewmodel = pinViewmodelQuery.data as TableResult<PersonalIdentityNetworksViewData>
         if (pinViewmodel)
-          pinData.networkIds = pinViewmodel.data[0]?.networkIds
+          pinData.tunneledWlans = pinViewmodel.data[0]?.tunneledWlans ?? []
 
         let pinSwitch
-        // fetch venue id & name
-        const edgeClusterId = pinData?.edgeClusterInfos?.map(edge => edge.edgeClusterId)
+        // fetch venue id
+        const edgeClusterId = pinData?.edgeClusterInfo.edgeClusterId
         if (edgeClusterId) {
           const clusterReq = createHttpRequest(EdgeUrlsInfo.getEdgeClusterStatusList)
           const edgeClusterQuery = await fetchWithBQ({
             ...clusterReq,
             body: {
-              fields: [
-                'clusterId',
-                'venueId'
-              ],
-              filters: { clusterId: edgeClusterId }
+              fields: [ 'clusterId', 'venueId' ],
+              filters: { clusterId: [edgeClusterId] }
             }
           })
 
@@ -236,11 +190,8 @@ export const nsgApi = baseNsgApi.injectEndpoints({
           const personaQuery = await fetchWithBQ(personaReq)
           const personaList = personaQuery.data as PropertyConfigs
 
-          pinData.venueInfos = [{
-            venueId: venueId ?? '',
-            venueName: clusterList.data[0]?.venueName ?? '',
-            personaGroupId: personaList?.personaGroupId ?? ''
-          }]
+          pinData.venueId = venueId ?? ''
+          pinData.personaGroupId = personaList?.personaGroupId ?? ''
 
           const pinSwitchRequest = createHttpRequest(
             EdgePinUrls.getSwitchInfoByNSGId, {
@@ -259,20 +210,6 @@ export const nsgApi = baseNsgApi.injectEndpoints({
           : { error: pinQuery.error as FetchBaseQueryError }
       }
     }),
-    // eslint-disable-next-line max-len
-    getEdgePinList: build.query<TableResult<PersonalIdentityNetworks>, RequestPayload>({
-      query: ({ params }) => {
-        const req =
-          createHttpRequest(EdgePinUrls.getEdgePinList, params)
-        return {
-          ...req
-        }
-      },
-      transformResponse (result: NewTableResult<PersonalIdentityNetworks>) {
-        return transferToTableResult<PersonalIdentityNetworks>(result)
-      }
-    }),
-
     getWebAuthTemplate: build.query<WebAuthTemplate, RequestPayload>({
       query: ({ params, enableRbac }) => {
         const headers = enableRbac ? customHeaders.v1001 : {}
@@ -374,7 +311,7 @@ export const nsgApi = baseNsgApi.injectEndpoints({
     }),
     activateEdgePinNetwork: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(EdgePinUrls.activatePinNetwork, params)
+        const req = createHttpRequest(EdgePinUrls.activateEdgePinNetwork, params)
         return {
           ...req,
           body: payload
@@ -383,7 +320,7 @@ export const nsgApi = baseNsgApi.injectEndpoints({
     }),
     deactivateEdgePinNetwork: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(EdgePinUrls.deactivatePinNetwork, params)
+        const req = createHttpRequest(EdgePinUrls.deactivateEdgePinNetwork, params)
         return {
           ...req,
           body: payload
@@ -423,35 +360,6 @@ const aggregatedNSGData = (
   return { ...nsg, distributionSwitchInfos, accessSwitchInfos } as PersonalIdentityNetworks
 }
 
-export const aggregateVenueInfo = (
-  pinList?: TableResult<PersonalIdentityNetworksViewData>,
-  clusterList?: TableResult<EdgeClusterStatus>
-) => {
-  const clusterListData = clusterList?.data
-  pinList?.data?.forEach(item => {
-    const target = clusterListData?.find(clusterItem =>
-      clusterItem.clusterId === item.edgeClusterInfos[0].edgeClusterId)
-
-    item.venueInfos = [{
-      venueId: target?.venueId ?? '',
-      venueName: target?.venueName ?? ''
-    }]
-  })
-}
-
-export const aggregatePersonaId = (
-  pinList?: TableResult<PersonalIdentityNetworksViewData>,
-  personaList?: TableResult<PropertyConfigs>
-) => {
-  const personaListData = personaList?.data
-  pinList?.data?.forEach(item => {
-    const target = personaListData?.find(persona =>
-      persona.venueId === item.venueInfos[0].venueId)
-
-    item.venueInfos[0].personaGroupId = target?.personaGroupId
-  })
-}
-
 export const {
   useCreateEdgePinMutation,
   useGetEdgePinViewDataListQuery,
@@ -459,7 +367,7 @@ export const {
   useUpdateEdgePinMutation,
   useLazyGetEdgePinByIdQuery,
   useGetEdgePinByIdQuery,
-  useGetEdgePinListQuery,
+  // useGetEdgePinListQuery,
   useGetWebAuthTemplateQuery,
   useGetWebAuthTemplateSwitchesQuery,
   useLazyGetWebAuthTemplateQuery,

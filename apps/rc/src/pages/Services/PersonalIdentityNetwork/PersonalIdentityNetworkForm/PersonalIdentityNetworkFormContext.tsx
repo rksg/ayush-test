@@ -87,12 +87,25 @@ const tunnelProfileDefaultPayload = {
   sortOrder: 'ASC'
 }
 
+const clusterOptionsDefaultPayload = {
+  fields: ['name', 'clusterId'],
+  pageSize: 10000,
+  sortField: 'name',
+  sortOrder: 'ASC'
+}
+
+const activtatedvenueNetworksPayload = {
+  pageSize: 10000,
+  sortField: 'name',
+  sortOrder: 'ASC',
+  fields: [ 'id', 'name', 'type' ]
+}
+
 export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) => {
   const params = useParams()
   const [venueId, setVenueId] = useState('')
   const {
-    venueOptions,
-    isVenueOptionsLoading
+    venueOptions, isVenueOptionsLoading
   } = useVenuesListQuery(
     { payload: venueOptionsDefaultPayload }, {
       selectFromResult: ({ data, isLoading }) => {
@@ -103,6 +116,7 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
         }
       }
     })
+
   const {
     personaGroupId,
     isGetPropertyConfigError,
@@ -118,8 +132,7 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
           isPropertyConfigLoading: isLoading || isFetching
         }
       }
-    }
-  )
+    })
 
   const { dhcpList, isDhcpOptionsLoading } = useGetDhcpStatsQuery({
     payload: { pageSize: 10000 }
@@ -145,8 +158,8 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
           isPersonaGroupLoading: isLoading || isFetching
         }
       }
-    }
-  )
+    })
+
   const {
     dpskData,
     isDpskLoading
@@ -162,15 +175,8 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
       }
     })
 
-  const clusterOptionsDefaultPayload = {
-    fields: ['name', 'clusterId'],
-    pageSize: 10000,
-    sortField: 'name',
-    filters: { venueId: [venueId] },
-    sortOrder: 'ASC'
-  }
   const { clusterOptions, isLoading: isClusterOptionsLoading } = useGetEdgeClusterListQuery(
-    { params, payload: clusterOptionsDefaultPayload },
+    { params, payload: { ...clusterOptionsDefaultPayload, filters: { venueId: [venueId] } } },
     {
       skip: !Boolean(venueId),
       selectFromResult: ({ data, isLoading }) => {
@@ -180,6 +186,7 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
         }
       }
     })
+
   const { tunnelProfileOptions, isTunnelLoading } = useGetTunnelProfileViewDataListQuery({
     payload: tunnelProfileDefaultPayload
   }, {
@@ -190,19 +197,10 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
       }
     }
   })
+
   const { dpskNetworkList, isNetworkLoading } = useVenueNetworkActivationsViewModelListQuery({
     params: { ...params },
-    payload: {
-      pageSize: 10000,
-      sortField: 'name',
-      sortOrder: 'ASC',
-      venueId: venueId,
-      fields: [
-        'id',
-        'name',
-        'type'
-      ]
-    }
+    payload: { ...activtatedvenueNetworksPayload, venueId: venueId }
   }, {
     skip: !Boolean(venueId),
     selectFromResult: ({ data, isLoading }) => {
@@ -217,6 +215,7 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
   const networkIds = dpskNetworkList?.map(item => (item.id))
   const { usedNetworkIds, isUsedNetworkIdsLoading } = useGetEdgePinViewDataListQuery({
     payload: {
+      fields: ['id', 'tunneledWlans'],
       filters: { networkIds: networkIds }
     }
   }, {
@@ -224,11 +223,12 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
     selectFromResult: ({ data, isLoading }) => {
       return {
         usedNetworkIds: data?.data.filter(item => item.id !== params.serviceId)
-          .flatMap(item => item.networkIds),
+          .flatMap(item => item.tunneledWlans?.map(nw => nw.networkId)),
         isUsedNetworkIdsLoading: isLoading
       }
     }
   })
+
   const networkOptions = dpskNetworkList?.filter(item => !usedNetworkIds?.includes(item.id ?? ''))
     .filter(item => dpskData?.networkIds?.includes(item.id))
     .map(item => ({ label: item.name, value: item.id }))

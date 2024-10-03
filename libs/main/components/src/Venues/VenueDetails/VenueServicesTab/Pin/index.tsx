@@ -15,7 +15,8 @@ export const EdgePin = () => {
     isNsgViewDataLoading
   } = useGetEdgePinViewDataListQuery({
     payload: {
-      filters: { venueInfoIds: [venueId] }
+      fields: ['id'],
+      filters: { venueId: [venueId] }
     }
   }, {
     skip: !!!venueId,

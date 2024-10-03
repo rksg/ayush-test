@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Tabs }                                                           from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
-import { useApListQuery, useGetEdgePinByIdQuery, useGetEdgePinViewDataListQuery } from '@acx-ui/rc/services'
-import { Persona, TableQuery, useTableQuery }                                     from '@acx-ui/rc/utils'
+import { Loader, Tabs }                                               from '@acx-ui/components'
+import { Features, useIsSplitOn }                                     from '@acx-ui/feature-toggle'
+import { useApListQuery, useGetEdgePinByIdQuery }                     from '@acx-ui/rc/services'
+import { Persona, TableQuery, transformDisplayNumber, useTableQuery } from '@acx-ui/rc/utils'
 
 import { usePersonaListQuery } from '../usePersonaListQuery'
 
@@ -34,21 +34,7 @@ export const PersonalIdentityNetworkDetailTableGroup = (
   } = useGetEdgePinByIdQuery({
     params: { serviceId: nsgId }
   })
-  const {
-    nsgViewData,
-    isNsgViewDataLoading
-  } = useGetEdgePinViewDataListQuery({
-    payload: {
-      filters: { id: [nsgId] }
-    }
-  }, {
-    selectFromResult: ({ data, isLoading }) => {
-      return {
-        nsgViewData: data?.data[0],
-        isNsgViewDataLoading: isLoading
-      }
-    }
-  })
+
   const apListTableQuery = useTableQuery({
     useQuery: useApListQuery,
     defaultPayload: {
@@ -59,7 +45,7 @@ export const PersonalIdentityNetworkDetailTableGroup = (
     enableRbac: isWifiRbacEnabled
   })
   const personaListTableQuery = usePersonaListQuery({
-    personaGroupId: nsgViewData?.venueInfos[0]?.personaGroupId
+    personaGroupId: nsgData?.personaGroupId
   }) as TableQuery<Persona, { keyword: string, groupId: string }, unknown>
 
   useEffect(() => {
@@ -75,9 +61,9 @@ export const PersonalIdentityNetworkDetailTableGroup = (
   useEffect(() => {
     apListTableQuery.setPayload({
       ...defaultApPayload,
-      filters: { venueId: [nsgViewData?.venueInfos[0]?.venueId??''] }
+      filters: { venueId: [nsgData?.venueId ?? ''] }
     })
-  }, [nsgViewData])
+  }, [nsgData])
 
   useEffect(() => {
     if(apListTableQuery?.payload?.filters?.venueId?.length > 0) {
@@ -88,7 +74,7 @@ export const PersonalIdentityNetworkDetailTableGroup = (
   const tabs = {
     aps: {
       title: $t({ defaultMessage: 'APs ({num})' },
-        { num: apListTableQuery?.data?.totalCount??0 }),
+        { num: transformDisplayNumber(apListTableQuery?.data?.totalCount) }),
       content: <ApsTable tableQuery={apListTableQuery}/>
     },
     distSwitches: {
@@ -103,9 +89,9 @@ export const PersonalIdentityNetworkDetailTableGroup = (
     },
     assignedSegments: {
       title: $t({ defaultMessage: 'Assigned Segments ({num})' },
-        { num: personaListTableQuery.data?.totalCount??0 }),
+        { num: transformDisplayNumber(personaListTableQuery.data?.totalCount) }),
       content: <AssignedSegmentsTable
-        venueId={nsgViewData?.venueInfos[0]?.venueId??''}
+        venueId={nsgData?.venueId ?? ''}
         switchInfo={nsgData?.accessSwitchInfos}
         tableQuery={personaListTableQuery}
       />
@@ -115,7 +101,7 @@ export const PersonalIdentityNetworkDetailTableGroup = (
   return (
     <Loader states={[
       {
-        isLoading: isNsgDataLoading || isNsgViewDataLoading
+        isLoading: isNsgDataLoading
       },
       apListTableQuery,
       personaListTableQuery

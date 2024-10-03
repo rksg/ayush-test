@@ -44,8 +44,8 @@ const { mockedSdLanDataList, mockedSdLanDataListP2, mockedMvSdLanDataList } = Ed
 const { mockFirewallData } = EdgeFirewallFixtures
 const { mockDhcpStatsData, mockEdgeDhcpDataList } = EdgeDHCPFixtures
 const mockNsgStatsList = cloneDeep(EdgePinFixtures.mockNsgStatsList)
-mockNsgStatsList.data[0].edgeClusterInfos[0].segments = 10
-mockNsgStatsList.data[0].edgeClusterInfos[0].devices = 10
+mockNsgStatsList.data[0].edgeClusterInfo.segments = 10
+mockNsgStatsList.data[0].edgeClusterInfo.devices = 10
 
 const mockedSetVisible = jest.fn()
 const mockedUseSearchParams = jest.fn()

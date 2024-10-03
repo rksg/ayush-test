@@ -39,11 +39,9 @@ const getEdgePinPayload = {
     'id',
     'name',
     'tags',
-    'networkIds',
-    'venueInfoIds',
-    'venueInfos',
-    'edgeClusterInfos',
-    'distributionSwitchInfoIds',
+    'venueId',
+    'edgeClusterInfo',
+    'tunneledWlans',
     'distributionSwitchInfos',
     'accessSwitchInfos',
     'edgeAlarmSummary'
@@ -70,14 +68,17 @@ const switchDefaultPayload = {
 }
 
 const PersonalIdentityNetworkTable = () => {
-
   const { $t } = useIntl()
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const navigate = useNavigate()
   const location = useLocation()
   const basePath = useTenantLink('')
   const settingsId = 'services-network-segmentation-table'
+
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
+  const [ deleteEdgePin, { isLoading: isPinDeleting } ] = useDeleteEdgePinMutation()
+
   const tableQuery = useTableQuery({
     useQuery: useGetEdgePinViewDataListQuery,
     defaultPayload: getEdgePinPayload,
@@ -90,17 +91,13 @@ const PersonalIdentityNetworkTable = () => {
     },
     pagination: { settingsId }
   })
-  const [
-    deleteEdgePin,
-    { isLoading: isPinDeleting }
-  ] = useDeleteEdgePinMutation()
 
-  const { clusterOptions = [] } = useGetEdgeClusterListQuery(
+  const { clusterOptions } = useGetEdgeClusterListQuery(
     { payload: clusterOptionsDefaultPayload },
     {
       selectFromResult: ({ data }) => {
         return {
-          clusterOptions: data?.data.map(item => ({ value: item.name, key: item.clusterId }))
+          clusterOptions: data?.data.map(item => ({ value: item.name, key: item.clusterId })) ?? []
         }
       }
     })
@@ -114,13 +111,12 @@ const PersonalIdentityNetworkTable = () => {
       })
     })
 
-  const { switchOptions = [] } = useSwitchListQuery(
+  const { switchOptions } = useSwitchListQuery(
     { payload: switchDefaultPayload,
       enableRbac: isSwitchRbacEnabled
-    },
-    {
+    }, {
       selectFromResult: ({ data }) => ({
-        switchOptions: data?.data.map(item => ({ key: item.switchMac, value: item.name }))
+        switchOptions: data?.data.map(item => ({ key: item.switchMac, value: item.name })) ?? []
       })
     })
 
@@ -149,15 +145,16 @@ const PersonalIdentityNetworkTable = () => {
     {
       title: $t({ defaultMessage: 'Cluster' }),
       key: 'edge',
-      dataIndex: 'edgeClusterInfos',
+      dataIndex: 'edgeClusterInfo',
       sorter: true,
       filterable: clusterOptions,
-      filterKey: 'edgeClusterInfoIds',
+      filterKey: 'edgeClusterInfo.edgeClusterId',
       render: (_, row) => {
-        const edgeInfo = row.edgeClusterInfos[0]
+        const clusterInfo = row.edgeClusterInfo
         return (
-          <TenantLink to={`/devices/edge/cluster/${edgeInfo?.edgeClusterId}/edit/cluster-details`}>
-            {edgeInfo?.edgeClusterName}
+          // eslint-disable-next-line max-len
+          <TenantLink to={`/devices/edge/cluster/${clusterInfo?.edgeClusterId}/edit/cluster-details`}>
+            {clusterInfo?.edgeClusterName}
           </TenantLink>
         )
       }
@@ -168,12 +165,12 @@ const PersonalIdentityNetworkTable = () => {
       dataIndex: 'networkIds',
       align: 'center',
       filterable: networkOptions,
-      filterKey: 'networkIds',
+      filterKey: 'tunneledWlans.networkId',
       render: (_, row) => {
         return <CountAndNamesTooltip data={{
-          count: row.networkIds?.length,
-          names: row.networkIds
-            ?.map(networkId => find(networkOptions, { key: networkId })?.value)
+          count: row.tunneledWlans?.length ?? 0,
+          names: row.tunneledWlans
+            ?.map(wlan => find(networkOptions, { key: wlan.networkId })?.value)
             .filter(n => n) as string[]
         }}/>
       }
@@ -184,7 +181,7 @@ const PersonalIdentityNetworkTable = () => {
       dataIndex: 'switches',
       align: 'center',
       filterable: switchOptions,
-      filterKey: 'distributionSwitchInfoIds',
+      filterKey: 'distributionSwitchInfos.id',
       render: (_, row) => {
         const switchIds = (row.distributionSwitchInfos?.map(s => s.id) ?? [])
         switchIds.push(...(row.accessSwitchInfos?.map(s => s.id) ?? []))
@@ -203,7 +200,7 @@ const PersonalIdentityNetworkTable = () => {
       dataIndex: 'edgeAlarmSummary',
       align: 'center',
       render: (_, row) =>
-        (row?.edgeClusterInfos?.length)
+        (row?.edgeClusterInfo)
           ? <Row justify='center'>
             <EdgeServiceStatusLight data={row.edgeAlarmSummary} />
           </Row>

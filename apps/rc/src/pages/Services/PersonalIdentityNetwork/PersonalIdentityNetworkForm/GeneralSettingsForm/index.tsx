@@ -31,6 +31,7 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
     switchList
   } = useContext(PersonalIdentityNetworkFormContext)
   const venueId = Form.useWatch('venueId', form)
+
   const { data: pinData } = useGetEdgePinViewDataListQuery({
     payload: { fields: ['id'] }
   })

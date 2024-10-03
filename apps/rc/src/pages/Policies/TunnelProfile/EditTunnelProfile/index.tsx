@@ -66,6 +66,7 @@ const EditTunnelProfile = () => {
     isNSGFetching
   } = useGetEdgePinViewDataListQuery({
     payload: {
+      fields: ['id'],
       filters: { vxlanTunnelProfileId: [policyId] }
     }
   }, {

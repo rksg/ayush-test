@@ -40,7 +40,7 @@ jest.mock('file-saver', ()=>({ saveAs: () => mockedSaveAs() }))
 
 const mockEdgeDhcpDataList = cloneDeep(EdgeDHCPFixtures.mockEdgeDhcpDataList)
 // eslint-disable-next-line max-len
-mockEdgeDhcpDataList.content[0].dhcpPools[0].id = mockNsgStatsList.data[0].edgeClusterInfos[0].dhcpPoolId
+mockEdgeDhcpDataList.content[0].dhcpPools[0].id = mockNsgStatsList.data[0].edgeClusterInfo.dhcpPoolId
 
 describe('NsgDetail', () => {
   let params: { tenantId: string, serviceId: string }

@@ -12,6 +12,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   ServiceOperation, ServiceType,
+  edgePinDefaultPayloadFields,
   filterByAccessForServicePolicyMutation,
   genDhcpConfigByNsgSetting,
   getScopeKeyByService,
@@ -34,6 +35,7 @@ const PersonalIdentityNetworkDetail = () => {
     nsgViewData
   } = useGetEdgePinViewDataListQuery({
     payload: {
+      fields: edgePinDefaultPayloadFields,
       filters: { id: [params.serviceId] }
     }
   }, {
@@ -43,9 +45,10 @@ const PersonalIdentityNetworkDetail = () => {
       }
     }
   })
+
   const { dhcpRelay, dhcpPools } = useGetEdgeDhcpServiceQuery(
-    { params: { id: nsgViewData?.edgeClusterInfos[0].dhcpInfoId } },{
-      skip: !!!nsgViewData?.edgeClusterInfos[0],
+    { params: { id: nsgViewData?.edgeClusterInfo?.dhcpInfoId } },{
+      skip: !nsgViewData?.edgeClusterInfo?.dhcpInfoId,
       selectFromResult: ({ data }) => {
         return {
           dhcpRelay: data?.dhcpRelay,
@@ -55,7 +58,7 @@ const PersonalIdentityNetworkDetail = () => {
     })
 
   const handleDownloadConfigs = () => {
-    const edgeClusterInfo = nsgViewData?.edgeClusterInfos[0]
+    const edgeClusterInfo = nsgViewData?.edgeClusterInfo
     const targetPool = dhcpPools?.find(item => item.id === edgeClusterInfo?.dhcpPoolId)
     if(!edgeClusterInfo || !targetPool) return
 

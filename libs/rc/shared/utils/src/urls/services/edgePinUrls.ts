@@ -7,11 +7,6 @@ export const EdgePinUrls: { [key: string]: ApiInfo } = {
     newApi: true,
     url: '/personalIdentityNetworks/:serviceId'
   },
-  getEdgePinList: {
-    method: 'get',
-    newApi: true,
-    url: '/personalIdentityNetworks?size=:pageSize&page=:page&sort=:sort'
-  },
   createEdgePin: {
     method: 'post',
     newApi: true,

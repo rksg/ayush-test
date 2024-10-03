@@ -5,16 +5,23 @@ import { Loader, Tooltip, SummaryCard } from '@acx-ui/components'
 import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
   useApListQuery,
-  useGetEdgeClusterListQuery,
   useGetEdgeDhcpServiceQuery,
   useGetEdgePinByIdQuery,
   useGetEdgePinViewDataListQuery,
   useGetPersonaGroupByIdQuery,
   useGetTunnelProfileByIdQuery
 } from '@acx-ui/rc/services'
-import { PolicyOperation, PolicyType, ServiceOperation, ServiceType, getPolicyDetailsLink, getServiceDetailsLink } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                                                                   from '@acx-ui/react-router-dom'
-import { noDataDisplay }                                                                                           from '@acx-ui/utils'
+import {
+  PolicyOperation,
+  PolicyType,
+  ServiceOperation,
+  ServiceType,
+  getPolicyDetailsLink,
+  getServiceDetailsLink,
+  edgePinDefaultPayloadFields
+} from '@acx-ui/rc/utils'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { noDataDisplay }         from '@acx-ui/utils'
 
 import { EdgeServiceStatusLight } from '../EdgeServiceStatusLight'
 import { defaultApPayload }       from '../PersonalIdentityNetworkDetailTableGroup/ApsTable'
@@ -41,6 +48,7 @@ export const PersonalIdentityNetworkServiceInfo = styled((
     isNsgViewDataLoading
   } = useGetEdgePinViewDataListQuery({
     payload: {
+      fields: edgePinDefaultPayloadFields,
       filters: { id: [nsgId] }
     }
   }, {
@@ -61,31 +69,14 @@ export const PersonalIdentityNetworkServiceInfo = styled((
   const apListQuery = useApListQuery({
     payload: {
       ...defaultApPayload,
-      filters: { venueId: [nsgViewData?.venueInfos[0]?.venueId] }
+      filters: { venueId: [nsgData?.venueId] }
     },
     enableRbac: isWifiRbacEnabled
-  }, { skip: !!!nsgViewData?.venueInfos[0]?.venueId })
-
-  // TODO if nsg es index is refactored, remove below scope
-  /*Temp*/
-  const { clusterName } = useGetEdgeClusterListQuery(
-    { params, payload: {
-      fields: ['name', 'clusterId'],
-      pageSize: 1,
-      filters: { clusterId: [nsgViewData?.edgeClusterInfos[0].edgeClusterId] }
-    } },
-    {
-      skip: !Boolean(nsgViewData?.edgeClusterInfos[0].edgeClusterId),
-      selectFromResult: ({ data }) => {
-        return {
-          clusterName: data?.data[0]?.name
-        }
-      }
-    })
+  }, { skip: !nsgData?.venueId })
 
   const { dhcpName, dhcpId, dhcpPools, isLoading: isDhcpLoading } = useGetEdgeDhcpServiceQuery(
-    { params: { id: nsgViewData?.edgeClusterInfos[0].dhcpInfoId } },{
-      skip: !!!nsgViewData?.edgeClusterInfos[0],
+    { params: { id: nsgData?.edgeClusterInfo?.dhcpInfoId } },{
+      skip: !nsgData?.edgeClusterInfo,
       selectFromResult: ({ data, isLoading }) => {
         return {
           dhcpName: data?.serviceName,
@@ -96,18 +87,16 @@ export const PersonalIdentityNetworkServiceInfo = styled((
       }
     })
   const{ data: tunnelData, isLoading: isTunnelLoading } = useGetTunnelProfileByIdQuery(
-    { params: { id: nsgViewData?.vxlanTunnelProfileId } }, {
-      skip: !!!nsgViewData?.vxlanTunnelProfileId
-    }
-  )
+    { params: { id: nsgData?.vxlanTunnelProfileId } }, {
+      skip: !nsgData?.vxlanTunnelProfileId
+    })
+
   const {
     data: personaGroupData,
     isLoading: isPersonaGroupLoading
   } = useGetPersonaGroupByIdQuery(
-    { params: { groupId: nsgViewData?.venueInfos[0].personaGroupId } },
-    { skip: !!!nsgViewData?.venueInfos[0] }
-  )
-  /*Temp*/
+    { params: { groupId: nsgViewData?.personaGroupId } },
+    { skip: !nsgViewData?.personaGroupId })
 
   const tunnelTooltipMsg = $t(
     {
@@ -127,7 +116,7 @@ export const PersonalIdentityNetworkServiceInfo = styled((
     },
     {
       title: $t({ defaultMessage: 'Service Health' }),
-      content: () => ((nsgViewData?.edgeClusterInfos?.length)
+      content: () => ((nsgViewData?.edgeClusterInfo)
         ? <EdgeServiceStatusLight data={nsgViewData.edgeAlarmSummary} />
         : noDataDisplay
       )
@@ -135,12 +124,11 @@ export const PersonalIdentityNetworkServiceInfo = styled((
     {
       title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       content: () => {
-        const venueInfo = nsgViewData?.venueInfos?.[0]
         return (
           <TenantLink
-            to={`/venues/${venueInfo?.venueId}/venue-details/overview`}
+            to={`/venues/${nsgViewData?.venueId}/venue-details/overview`}
           >
-            {venueInfo?.venueName}
+            {nsgViewData?.venueName}
           </TenantLink>
         )
       }
@@ -156,29 +144,29 @@ export const PersonalIdentityNetworkServiceInfo = styled((
     {
       title: $t({ defaultMessage: 'Cluster' }),
       content: () => {
-        const edgeInfo = nsgViewData?.edgeClusterInfos?.[0]
+        const clusterInfo = nsgViewData?.edgeClusterInfo
         return (
           <TenantLink
-            to={`/devices/edge/cluster/${edgeInfo?.edgeClusterId}/edit/cluster-details`}
+            to={`/devices/edge/cluster/${clusterInfo?.edgeClusterId}/edit/cluster-details`}
           >
-            {clusterName}
+            {clusterInfo?.edgeClusterName}
           </TenantLink>
         )
       }
     },
     {
       title: $t({ defaultMessage: 'Number of Segments' }),
-      content: nsgViewData?.edgeClusterInfos[0]?.segments
+      content: nsgData?.edgeClusterInfo?.segments
     },
     {
       title: $t({ defaultMessage: 'Number of devices per segment' }),
-      content: nsgViewData?.edgeClusterInfos[0]?.devices
+      content: nsgData?.edgeClusterInfo?.devices
     },
     {
       title: $t({ defaultMessage: 'DHCP Service (Pool)' }),
       content: () => {
         if(dhcpName) {
-          const dhcpPoolId = nsgViewData?.edgeClusterInfos[0]?.dhcpPoolId
+          const dhcpPoolId = nsgData?.edgeClusterInfo?.dhcpPoolId
           const dhcpPool = dhcpPools?.find(item => item.id === dhcpPoolId)
           return (
             <TenantLink to={getServiceDetailsLink({
@@ -221,7 +209,7 @@ export const PersonalIdentityNetworkServiceInfo = styled((
     },
     {
       title: $t({ defaultMessage: 'Networks' }),
-      content: nsgViewData?.networkIds?.length
+      content: nsgViewData?.tunneledWlans?.length
     },
     {
       title: $t({ defaultMessage: 'APs' }),
