@@ -20,6 +20,7 @@ import { useDeleteWebhookMutation, useWebhooksQuery, useResourceGroups, handleEr
 import { WebhookForm }                                                                from './WebhookForm'
 
 import type { Webhook, ExtendedWebhook } from './services'
+import { webhooks } from './__fixtures__'
 
 type WebhookTableProps = TableProps<ExtendedWebhook>
 
@@ -51,7 +52,8 @@ export const useWebhooks = () => {
   // null      = no webhook selected
   const [selectedId, setSelectedId] = useState<string | undefined | null>(null)
 
-  const { webhook, webhooks, states } = useWebhooksData(selectedId)
+  const { states } = useWebhooksData(selectedId)
+  const webhook = webhooks[0]
 
   const [doDelete, response] = useDeleteWebhookMutation()
 

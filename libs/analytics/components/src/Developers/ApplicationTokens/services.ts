@@ -38,6 +38,16 @@ export type ExtendedWebhook = Webhook & {
   enabledStr: string
 }
 
+export const applicationTokenDtoKeys = [
+  'id', 'name', 'clientId', 'clientSecret'
+] as const
+
+export type ApplicationTokenDto = Omit<
+Pick<ApplicationToken, typeof applicationTokenDtoKeys[number]>, 'id'
+> & {
+  id?: string
+}
+
 export const webhookDtoKeys = [
   'id', 'name', 'secret', 'enabled',
   'callbackUrl', 'eventTypes', 'resourceGroupId'

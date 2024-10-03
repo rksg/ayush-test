@@ -12,15 +12,20 @@ import {
   showActionModal,
   showToast
 } from '@acx-ui/components'
-import { get }                                                     from '@acx-ui/config'
-import { SwitchScopes, WifiScopes }                                from '@acx-ui/types'
-import { filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
+import { get }                                      from '@acx-ui/config'
+import { CopyOutlined }                             from '@acx-ui/icons-new'
+import { SwitchScopes, WifiScopes }                 from '@acx-ui/types'
+import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
 
+import { TransparentButton, Row, SecretInput } from '../styledComponents'
+import { Label }                               from '../styledComponents'
+
+import { applicationTokens }                                                          from './__fixtures__'
+import { ApplicationTokenForm }                                                       from './ApplicationTokenForm'
 import { useDeleteWebhookMutation, useWebhooksQuery, useResourceGroups, handleError } from './services'
-import { ApplicationTokenForm }                                                                from './ApplicationTokenForm'
 
-import type { ApplicationToken, Webhook, ExtendedWebhook } from './services'
-import { applicationTokens, webhooks } from './__fixtures__'
+import type { ApplicationToken, Webhook } from './services'
+
 
 type ApplicationTokenTableProps = TableProps<ApplicationToken>
 
@@ -52,7 +57,9 @@ export const useApplicationTokens = () => {
   // null      = no webhook selected
   const [selectedId, setSelectedId] = useState<string | undefined | null>(null)
 
-  const { webhook, states } = useWebhooksData(selectedId)
+  const { states } = useWebhooksData(selectedId)
+  // const webhook = applicationTokens[0]
+  const webhook = null
 
   const [doDelete, response] = useDeleteWebhookMutation()
 
@@ -66,7 +73,10 @@ export const useApplicationTokens = () => {
 
   useEffect(() => {
     if (response.isSuccess) {
-      showToast({ type: 'success', content: $t({ defaultMessage: 'Application token was deleted' }) })
+      showToast({
+        type: 'success',
+        content: $t({ defaultMessage: 'Application token was deleted' })
+      })
     }
     if (response.isError) {
       handleError(
@@ -84,20 +94,51 @@ export const useApplicationTokens = () => {
     key: 'name',
     dataIndex: 'name',
     searchable: true,
-    title: $t({ defaultMessage: 'Name' }),
+    title: $t({ defaultMessage: 'Token Name' }),
     sorter: { compare: sortProp('name', defaultSort) }
   }, {
     key: 'clientId',
     dataIndex: 'clientId',
     searchable: true,
     title: $t({ defaultMessage: 'Client ID' }),
-    sorter: { compare: sortProp('clientId', defaultSort) }
+    sorter: { compare: sortProp('clientId', defaultSort) },
+    width: 275,
+    render: function (_, row) {
+      return <Row>
+        <Label>{row.clientId}</Label>
+        <TransparentButton
+          data-testid={'copy'}
+          type='text'
+          icon={<CopyOutlined />}
+          onClick={() =>
+            navigator.clipboard.writeText(row.clientId ?? '')
+          }
+        />
+      </Row>
+    }
   }, {
     key: 'clientSecret',
     dataIndex: 'clientSecret',
     searchable: true,
     title: $t({ defaultMessage: 'Client Secret' }),
-    sorter: { compare: sortProp('clientSecret', defaultSort) }
+    sorter: { compare: sortProp('clientSecret', defaultSort) },
+    width: 275,
+    render: function (_, row) {
+      return <Row>
+        <SecretInput
+          bordered={false}
+          value={row.clientSecret}
+        />
+        <TransparentButton
+          data-testid={'copy'}
+          type='text'
+          icon={<CopyOutlined />}
+          onClick={() => {
+            navigator.clipboard.writeText(row.clientSecret ?? '')
+          }}
+        />
+      </Row>
+    }
   }]
 
   const rowActions: ApplicationTokenTableProps['rowActions'] = [{
@@ -123,7 +164,7 @@ export const useApplicationTokens = () => {
 
   const component = <Loader states={states}>
     <ApplicationTokenForm
-      webhook={webhook}
+      applicationToken={webhook}
       onClose={() => setSelectedId(null)}
     />
     <Table<ApplicationToken>
