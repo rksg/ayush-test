@@ -93,7 +93,7 @@ export default function ScepDrawer
           style={{ marginTop: 8 }}
           name='name'
           label={$t({ defaultMessage: 'Name' })}
-          rules={[{ required: true, max: 255 }]}
+          rules={[{ required: true, max: 255, min: 2 }]}
         >
           <Input onKeyPress={(e) => {
             if (e.key === ' ') {
