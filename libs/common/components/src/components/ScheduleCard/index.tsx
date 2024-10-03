@@ -200,7 +200,7 @@ export function ScheduleCard (props: ScheduleCardProps) {
     } else {
       initialValues(scheduler as Scheduler)
     }
-  }, [disabled, scheduler])
+  }, [disabled])
 
   const convertToTimeFromSlotIndex = (index: number): string => {
     const unit = 60 / intervalUnit
