@@ -30,7 +30,7 @@ export const SummaryForm = () => {
   } = useContext(PersonalIdentityNetworkFormContext)
   const [smartEdgeData, setSmartEdgeData] = useState<SmartEdgeTableData[]>([])
   const [accessSwitchData, setAccessSwitchData] = useState<AccessSwitchTableDataType[]>([])
-  const nsgName = form.getFieldValue('name')
+  const pinName = form.getFieldValue('name')
   const venueId = form.getFieldValue('venueId')
   const edgeClusterId = form.getFieldValue('edgeClusterId')
   const segments = form.getFieldValue('segments')
@@ -89,7 +89,7 @@ export const SummaryForm = () => {
     </Subtitle>
     <Row gutter={20}>
       <Col flex={1}>
-        <Form.Item label={$t({ defaultMessage: 'Service Name' })} children={nsgName} />
+        <Form.Item label={$t({ defaultMessage: 'Service Name' })} children={pinName} />
       </Col>
       <Col flex={1}>{/* eslint-disable-next-line max-len */}
         <Form.Item label={$t({ defaultMessage: '<VenueSingular></VenueSingular> with the property management enabled' })}

@@ -172,7 +172,7 @@ describe('Tunneled Venue Networks Form', () => {
 
   it('should correctly render in edit mode', async () => {
     const mockedNetworkIds = ['network_1', 'network_2']
-    const { result: stepFormRef } = renderHook(() => useMockedFormHook())
+    const { result: stepFormRef } = renderHook(() => useMockedFormHook({}))
 
     render(<MockedTargetComponent
       form={stepFormRef.current}

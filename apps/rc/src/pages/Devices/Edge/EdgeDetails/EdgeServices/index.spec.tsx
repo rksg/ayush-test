@@ -3,8 +3,9 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { Features, useIsSplitOn }                                                        from '@acx-ui/feature-toggle'
+import { edgeApi }                                                                       from '@acx-ui/rc/services'
 import { EdgeDHCPFixtures, EdgeDhcpUrls, EdgeGeneralFixtures, EdgeStatus, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                                      from '@acx-ui/store'
+import { Provider, store }                                                               from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -32,6 +33,7 @@ describe('Edge Detail Services Tab', () => {
 
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    store.dispatch(edgeApi.util.resetApiState())
 
     mockServer.use(
       rest.post(
@@ -115,7 +117,7 @@ describe('Edge Detail Services Tab', () => {
     expect(screen.queryByText('Service Details')).toBeNull()
   })
 
-  it.skip('should delete selected row', async () => {
+  it('should delete selected row', async () => {
     const user = userEvent.setup()
     render(
       <Provider>
