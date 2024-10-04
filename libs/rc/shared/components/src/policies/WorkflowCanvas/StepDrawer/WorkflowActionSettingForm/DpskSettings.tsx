@@ -16,9 +16,9 @@ import { ActionType } from '@acx-ui/rc/utils'
 import { CommonActionSettings } from './CommonActionSettings'
 
 const notificationOptions = [
-  { label: 'QR Code', field: 'qrCodeDisplay', initialValue: true },
-  { label: 'Email', field: 'emailNotification', initialValue: false },
-  { label: 'SMS', field: 'smsNotification', initialValue: false }
+  { label: 'QR Code', field: 'qrCodeDisplay', initialValue: true }
+  // { label: 'Email', field: 'emailNotification', initialValue: false },
+  // { label: 'SMS', field: 'smsNotification', initialValue: false }
 ]
 
 export function DpskSettings () {
@@ -163,6 +163,7 @@ export function DpskSettings () {
             </Form.Item>
           </div>
           <Form.Item
+            hidden={true}
             label={$t({ defaultMessage: 'Share Passphrase via…' })}
           >
             {notificationOptions.map(option => (
