@@ -92,8 +92,12 @@ describe('HQoS Scope Form', () => {
     const rows = await screen.findAllByRole('row', { name: /Edge Cluster/i })
 
     await waitFor(()=>{
-      expect(rows.length).toBe(1)
+      expect(rows.length).toBe(mockEdgeClusterListForHqos.data.length)
     })
+
+    expect(within(rows[1]).getByRole('cell', { name: /Edge Cluster /i })).toBeVisible()
+    const switchBtn = within(rows[1]).getByRole('switch')
+    expect(switchBtn).toBeDisabled()
   })
 
 
@@ -112,11 +116,12 @@ describe('HQoS Scope Form', () => {
 
     const rows = await screen.findAllByRole('row', { name: /Edge Cluster/i })
     await waitFor(()=>{
-      expect(rows.length).toBe(1)
+      expect(rows.length).toBe(mockEdgeClusterListForHqos.data.length)
     })
 
     expect(within(rows[0]).getByRole('cell', { name: /Edge Cluster 1/i })).toBeVisible()
     const switchBtn = within(rows[0]).getByRole('switch')
+    expect(switchBtn).not.toBeDisabled()
     expect(switchBtn).toBeChecked()
     expect(within(rows[0]).getByText('1000')).toBeVisible()
 
@@ -141,7 +146,7 @@ describe('HQoS Scope Form', () => {
 
     const rows = await screen.findAllByRole('row', { name: /Edge Cluster/i })
     await waitFor(()=>{
-      expect(rows.length).toBe(1)
+      expect(rows.length).toBe(mockEdgeClusterListForHqos.data.length)
     })
 
     expect(within(rows[0]).getByRole('cell', { name: /Edge Cluster 1/i })).toBeVisible()
@@ -166,7 +171,7 @@ describe('HQoS Scope Form', () => {
     await screen.findByText(/Activate clusters that the HQoS bandwidth profile will be applied/i)
 
     const rows = await screen.findAllByRole('row', { name: /Edge Cluster/i })
-    expect(rows.length).toBe(1)
+    expect(rows.length).toBe(mockEdgeClusterListForHqos.data.length)
 
     const warningTooltip = await within(rows[0]).findByTestId('WarningCircleSolid')
     await userEvent.hover(warningTooltip)

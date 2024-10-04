@@ -25,9 +25,9 @@ export function RecentLogin (props: { userEmail: string }) {
         'id',
         'ipAddress'
       ],
-      searchString: `${userEmail} logged into the cloud controller`,
+      searchString: `${userEmail}`,
       filters: {
-        entity_type: ['ADMIN']
+        eventId: ['login-001']
       }
     },
     sorter: {
