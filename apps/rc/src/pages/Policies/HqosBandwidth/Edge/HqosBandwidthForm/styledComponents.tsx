@@ -18,6 +18,7 @@ export const FlexEndCol = styled(Col)`
 `
 
 export const StyledFormItem = styled(Form.Item)`
+  margin-bottom: 0px !important;
   .ant-form-item-control-input {
     min-height: 0;
   }
