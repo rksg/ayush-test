@@ -141,7 +141,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
       {
         ...tenantBasePath,
         pathname: `${tenantBasePath.pathname}/` + getServiceDetailsLink({
-          type: ServiceType.NETWORK_SEGMENTATION,
+          type: ServiceType.PIN,
           oper: ServiceOperation.DETAIL,
           serviceId: params.serviceId!
         })

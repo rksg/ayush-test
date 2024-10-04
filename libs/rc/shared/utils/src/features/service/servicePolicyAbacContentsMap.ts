@@ -20,7 +20,7 @@ export const serviceTypeScopeMap: SvcPcyScopeMap<ServiceType> = {
   [ServiceType.WIFI_CALLING]: ['wifi'],
   [ServiceType.MDNS_PROXY]: ['wifi'],
   [ServiceType.DPSK]: ['wifi'],
-  [ServiceType.NETWORK_SEGMENTATION]: ['wifi', 'switch', 'edge'],
+  [ServiceType.PIN]: ['wifi', 'switch', 'edge'],
   [ServiceType.WEBAUTH_SWITCH]: ['switch'],
   [ServiceType.RESIDENT_PORTAL]: ['wifi'],
   [ServiceType.EDGE_SD_LAN]: ['wifi', 'edge'],

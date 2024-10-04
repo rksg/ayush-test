@@ -8,7 +8,7 @@ jest.mock('@acx-ui/rc/components', () => ({
   NetworkForm: () => <div data-testid='NetworkForm' />
 }))
 
-describe('NSG WirelessNetwork Form - AddDpskModal', () => {
+describe('PIN WirelessNetwork Form - AddDpskModal', () => {
   it('Should render modal successfully', async () => {
     render(
       <StepsForm>
