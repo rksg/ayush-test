@@ -2,9 +2,9 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { StepsForm }                                from '@acx-ui/components'
-import { EdgeNSGFixtures, NetworkSegmentationUrls } from '@acx-ui/rc/utils'
-import { Provider }                                 from '@acx-ui/store'
+import { StepsForm }                    from '@acx-ui/components'
+import { EdgePinFixtures, EdgePinUrls } from '@acx-ui/rc/utils'
+import { Provider }                     from '@acx-ui/store'
 import {
   mockServer, render, renderHook,
   screen, waitFor, within
@@ -12,7 +12,7 @@ import {
 
 import { DistributionSwitchDrawer } from './DistributionSwitchDrawer'
 
-const { mockNsgSwitchInfoData, mockNsgData } = EdgeNSGFixtures
+const { mockPinSwitchInfoData, mockPinData } = EdgePinFixtures
 
 describe('DistributionSwitchDrawer', () => {
   const params = {
@@ -28,7 +28,7 @@ describe('DistributionSwitchDrawer', () => {
         <StepsForm>
           <StepsForm.StepForm>
             <DistributionSwitchDrawer open={true}
-              availableSwitches={mockNsgSwitchInfoData.distributionSwitches} />
+              availableSwitches={mockPinSwitchInfoData.distributionSwitches} />
           </StepsForm.StepForm>
         </StepsForm>
       </Provider>, {
@@ -48,7 +48,7 @@ describe('DistributionSwitchDrawer', () => {
 
     mockServer.use(
       rest.post(
-        NetworkSegmentationUrls.validateDistributionSwitchInfo.url,
+        EdgePinUrls.validateDistributionSwitchInfo.url,
         (req, res, ctx) => res(ctx.json({ valid: true }))
       )
     )
@@ -58,12 +58,12 @@ describe('DistributionSwitchDrawer', () => {
       return form
     })
     formRef.current.setFieldsValue({
-      venueId: mockNsgData.venueInfos[0].venueId,
-      edgeClusterId: mockNsgData.edgeClusterInfos[0].edgeClusterId,
-      distributionSwitchInfos: mockNsgSwitchInfoData.distributionSwitches,
-      originalDistributionSwitchInfos: mockNsgSwitchInfoData.distributionSwitches,
-      accessSwitchInfos: mockNsgSwitchInfoData.accessSwitches,
-      originalAccessSwitchInfos: mockNsgSwitchInfoData.accessSwitches
+      venueId: mockPinData.venueId,
+      edgeClusterId: mockPinData.edgeClusterInfo.edgeClusterId,
+      distributionSwitchInfos: mockPinSwitchInfoData.distributionSwitches,
+      originalDistributionSwitchInfos: mockPinSwitchInfoData.distributionSwitches,
+      accessSwitchInfos: mockPinSwitchInfoData.accessSwitches,
+      originalAccessSwitchInfos: mockPinSwitchInfoData.accessSwitches
     })
 
     render(
@@ -73,10 +73,10 @@ describe('DistributionSwitchDrawer', () => {
             <DistributionSwitchDrawer open={true}
               onSaveDS={saveSpy}
               editRecord={{
-                ...mockNsgSwitchInfoData.distributionSwitches[0],
-                accessSwitches: mockNsgSwitchInfoData.accessSwitches
+                ...mockPinSwitchInfoData.distributionSwitches[0],
+                accessSwitches: mockPinSwitchInfoData.accessSwitches
               }}
-              availableSwitches={mockNsgSwitchInfoData.accessSwitches} />
+              availableSwitches={mockPinSwitchInfoData.accessSwitches} />
           </StepsForm.StepForm>
         </StepsForm>
       </Provider>, {

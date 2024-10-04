@@ -53,13 +53,13 @@ export const EdgeDhcpSettingForm = styled((props: EdgeDhcpSettingFormProps) => {
     enableSecondaryDNSServer,
     leaseTimeType,
     leaseTime,
-    usedForNSG
+    usedForPin
   ] = [
     useWatch<boolean>('dhcpRelay'),
     useWatch<boolean>('enableSecondaryDNSServer'),
     useWatch('leaseTimeType'),
     form.getFieldValue('leaseTime'),
-    useWatch('usedForNSG')
+    useWatch('usedForPin')
   ]
   const initDhcpData: Partial<EdgeDhcpSetting> = {
     leaseTime: 24,
@@ -147,7 +147,7 @@ export const EdgeDhcpSettingForm = styled((props: EdgeDhcpSettingFormProps) => {
               <StepsForm.FieldLabel width='90%'>
                 {$t({ defaultMessage: 'Use for Personal Identity Network' })}
                 <Form.Item
-                  name='usedForNSG'
+                  name='usedForPin'
                   valuePropName='checked'
                   initialValue={false}
                   children={<Switch />}
@@ -234,7 +234,7 @@ export const EdgeDhcpSettingForm = styled((props: EdgeDhcpSettingFormProps) => {
       </Row>
 
       <SpaceWrapper direction='vertical' size='middle' fullWidth>
-        { (!dhcpRelay || (dhcpRelay && usedForNSG)) &&
+        { (!dhcpRelay || (dhcpRelay && usedForPin)) &&
           <Row gutter={20}>
             <Col span={24}>
               <Subtitle level={3}>
