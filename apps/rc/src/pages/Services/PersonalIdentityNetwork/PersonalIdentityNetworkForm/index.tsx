@@ -47,13 +47,13 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
       id: formData.id,
       name: formData.name,
       vxlanTunnelProfileId: formData.vxlanTunnelProfileId,
-      edgeClusterInfos: [{
+      edgeClusterInfo: {
         edgeClusterId: formData.edgeClusterId,
         segments: formData.segments,
         devices: formData.devices,
         dhcpInfoId: formData.dhcpId,
         dhcpPoolId: formData.poolId
-      }],
+      },
       networkIds: formData.networkIds,
       distributionSwitchInfos: formData.distributionSwitchInfos?.map(ds => omit(
         ds, ['accessSwitches', 'name'])),

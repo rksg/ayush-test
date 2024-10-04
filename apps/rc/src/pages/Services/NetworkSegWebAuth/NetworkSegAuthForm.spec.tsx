@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 
 import {
-  NetworkSegmentationUrls
+  EdgePinUrls
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -27,7 +27,7 @@ describe( 'NetworkSegAuthForm', () => {
     mockedUsedNavigate.mockClear()
     mockServer.use(
       rest.get(
-        NetworkSegmentationUrls.getWebAuthTemplate.url,
+        EdgePinUrls.getWebAuthTemplate.url,
         (req, res, ctx) => res(ctx.json({
           id: 'zxzz',
           name: 'Mock Template name',
@@ -39,11 +39,11 @@ describe( 'NetworkSegAuthForm', () => {
         }))
       ),
       rest.post(
-        NetworkSegmentationUrls.addWebAuthTemplate.url,
+        EdgePinUrls.addWebAuthTemplate.url,
         (req, res, ctx) => res(ctx.json({}))
       ),
       rest.put(
-        NetworkSegmentationUrls.updateWebAuthTemplate.url,
+        EdgePinUrls.updateWebAuthTemplate.url,
         (req, res, ctx) => res(ctx.json({}))
       )
     )

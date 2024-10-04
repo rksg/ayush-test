@@ -66,7 +66,7 @@ export const EdgeServices = () => {
       case EdgeServiceTypeEnum.FIREWALL:
         setDrawerVisible(isEdgeHaReady && isEdgeFirewallHaReady)
         break
-      case EdgeServiceTypeEnum.NETWORK_SEGMENTATION:
+      case EdgeServiceTypeEnum.PIN:
         setDrawerVisible(isEdgePinReady)
         break
       default:
@@ -140,15 +140,15 @@ export const EdgeServices = () => {
       .filter(EdgeService => EdgeService.serviceType === EdgeServiceTypeEnum.DHCP)
       .length > 0
 
-    let isNsgSelected = selectedRows
-      .filter(EdgeService => EdgeService.serviceType === EdgeServiceTypeEnum.NETWORK_SEGMENTATION)
+    let isPinSelected = selectedRows
+      .filter(EdgeService => EdgeService.serviceType === EdgeServiceTypeEnum.PIN)
       .length > 0
 
-    let isNsgExist = tableQuery?.data?.data ? tableQuery?.data?.data?.filter(EdgeService =>
-      EdgeService.serviceType === EdgeServiceTypeEnum.NETWORK_SEGMENTATION)
+    let isPinExist = tableQuery?.data?.data ? tableQuery?.data?.data?.filter(EdgeService =>
+      EdgeService.serviceType === EdgeServiceTypeEnum.PIN)
       .length > 0 : false
 
-    return isDhcpSelected ? isNsgSelected ? false : isNsgExist : false
+    return isDhcpSelected ? isPinSelected ? false : isPinExist : false
   }
 
   const isRestartBtnDisable = (selectedRows: EdgeService[]) => {
