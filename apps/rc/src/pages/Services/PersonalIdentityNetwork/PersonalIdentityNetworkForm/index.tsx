@@ -2,19 +2,18 @@ import { ReactNode } from 'react'
 
 import { FormInstance }                        from 'antd'
 import { omit }                                from 'lodash'
-import { useIntl }                             from 'react-intl'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
-import { showActionModal, StepsForm } from '@acx-ui/components'
+import { StepsForm, StepsFormGotoStepFn } from '@acx-ui/components'
 import {
-  CatchErrorResponse,
   CommonErrorsResult,
   CommonResult,
   CatchErrorDetails,
   getServiceListRoutePath,
   LocationExtended,
   PersonalIdentityNetworkFormData,
-  redirectPreviousPage
+  redirectPreviousPage,
+  CatchErrorResponse
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 import { getIntl }       from '@acx-ui/utils'
@@ -33,8 +32,6 @@ interface PersonalIdentityNetworkFormStep {
 }
 
 export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormProps) => {
-
-  const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
   const location = useLocation()
@@ -42,7 +39,8 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
   const linkToServices = useTenantLink(getServiceListRoutePath(true))
   const previousPath = (location as LocationExtended)?.state?.from?.pathname
 
-  const handleFinish = async (formData: PersonalIdentityNetworkFormData) => {
+  // eslint-disable-next-line max-len
+  const handleFinish = async (formData: PersonalIdentityNetworkFormData, gotoStep: StepsFormGotoStepFn) => {
     const payload = {
       id: formData.id,
       name: formData.name,
@@ -59,6 +57,14 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
         ds, ['accessSwitches', 'name'])),
       accessSwitchInfos: formData.accessSwitchInfos?.map(as => omit(
         as, ['name', 'familyId', 'firmwareVersion', 'model']))
+    }
+
+    if (formData.distributionSwitchInfos?.length > 0 && (
+      formData.accessSwitchInfos.length === 0 || !formData.accessSwitchInfos.every(as =>
+        as.vlanId && as.uplinkInfo?.uplinkId && as.webAuthPageType)
+    )) {
+      gotoStep(4)
+      return
     }
 
     try {
@@ -84,37 +90,6 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
       redirectPreviousPage(navigate, previousPath, linkToServices)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
-      const overwriteMsg = afterSubmitMessage(error as CatchErrorResponse,
-        [...(formData.distributionSwitchInfos || []), ...(formData.accessSwitchInfos || [])])
-
-      if (overwriteMsg.length > 0) {
-        showActionModal({
-          type: 'confirm',
-          width: 450,
-          title: $t({ defaultMessage: 'Please confirm before executing' }),
-          content: overwriteMsg,
-          okText: $t({ defaultMessage: 'Yes' }),
-          cancelText: $t({ defaultMessage: 'No' }),
-          onOk: async () => {
-            handleFinish(formData)
-          },
-          onCancel: async () => {}
-        })
-      } else {
-        showActionModal({
-          type: 'error',
-          title: $t({ defaultMessage: 'Server Error' }),
-          content: $t({
-            defaultMessage: 'An internal error has occurred. Please contact support.'
-          }),
-          customContent: {
-            action: 'SHOW_ERRORS',
-            errorDetails: error as CatchErrorResponse
-          }
-        })
-      }
-
-      redirectPreviousPage(navigate, previousPath, linkToServices)
     }
   }
 
