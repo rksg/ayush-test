@@ -5,8 +5,8 @@ import _                                                     from 'lodash'
 import { useIntl }                                           from 'react-intl'
 import styled                                                from 'styled-components'
 
-import { Button, Drawer, Modal, Subtitle, Table, Transfer, useStepFormContext } from '@acx-ui/components'
-import { useValidateDistributionSwitchInfoMutation }                            from '@acx-ui/rc/services'
+import { Button, Drawer, Modal, Subtitle, Table, Transfer, useStepFormContext }    from '@acx-ui/components'
+import { useGetSwitchFeatureSetsQuery, useValidateDistributionSwitchInfoMutation } from '@acx-ui/rc/services'
 import {
   AccessSwitch,
   checkVlanMember,
@@ -14,7 +14,8 @@ import {
   DistributionSwitchSaveData,
   networkWifiIpRegExp,
   SwitchLite,
-  PersonalIdentityNetworkFormData
+  PersonalIdentityNetworkFormData,
+  isVerGEVer
 } from '@acx-ui/rc/utils'
 import { useParams }                   from '@acx-ui/react-router-dom'
 import { getIntl, validationMessages } from '@acx-ui/utils'
@@ -43,11 +44,20 @@ export function DistributionSwitchDrawer (props: {
   const venueId = pinForm.getFieldValue('venueId')
   const edgeClusterId = pinForm.getFieldValue('edgeClusterId')
 
-  const defaultRecord = { siteKeepAlive: '5', siteRetry: '3', siteName: edgeClusterId }
+  const defaultRecord = { siteKeepAlive: '5', siteRetry: '3' }
 
   const [openModal, setOpenModal] = useState(false)
   const [availableSwitchList, setAvailableSwitchList] = useState<SwitchLite[]>([])
 
+  const { requiredFw } = useGetSwitchFeatureSetsQuery({
+    params: { featureName: encodeURI('PIN') }
+  }, {
+    selectFromResult: ({ data }) => {
+      return {
+        requiredFw: data?.requiredFw || ''
+      }
+    }
+  })
   const [validateDistributionSwitchInfo] = useValidateDistributionSwitchInfoMutation()
 
   const dsId = Form.useWatch('id', form)
@@ -95,7 +105,7 @@ export function DistributionSwitchDrawer (props: {
           try {
             await validateDistributionSwitchInfo({
               params: { tenantId, venueId },
-              payload: values
+              payload: { ...values, siteName: edgeClusterId }
             }).unwrap()
             form.submit()
           } catch (error) {
@@ -107,14 +117,15 @@ export function DistributionSwitchDrawer (props: {
         layout='vertical'
         initialValues={editRecord || defaultRecord}>
 
-        <Form.Item name='siteName' hidden children={<Input />} />
         <Form.Item name='id'
           label={$t({ defaultMessage: 'Distribution Switch' })}
           rules={[{ required: true }]}
           hidden={!!editRecord}
         >
           <Select placeholder={$t({ defaultMessage: 'Select ...' })}
-            options={availableSwitchList.map(item => ({
+            options={availableSwitchList.filter(item =>
+              item.firmwareVersion && !isVerGEVer(requiredFw, item.firmwareVersion, true)
+            ).map(item => ({
               value: item.id,
               label: item.name
             }))}
