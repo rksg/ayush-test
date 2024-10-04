@@ -85,6 +85,7 @@ export enum Features {
   MSP_PATCH_TIER = 'mspservice-patch-tier',
   MSP_RBAC_API = 'abac-policies-toggle',
   MSP_SELF_ASSIGNMENT = 'entitlement-msp-own-license-assignment-toggle',
+  MSP_SORT_ON_TP_COUNT_TOGGLE = 'mspservice-sort-on-tp-count-toggle',
   MSP_UPGRADE_MULTI_EC_FIRMWARE = 'mspservice-multi-ec-to-upgrade-ap-firmware',
   MSPEC_ALARM_COUNT_SUPPORT_TOGGLE = 'acx-ui-mspec-alarm-count-toggle',
   MSPEC_ALLOW_DELETE_ADMIN = 'mspservice-allow-last-ec-admin-deletion',
