@@ -58,11 +58,17 @@ import {
   SEARCH,
   SORTER,
   SwitchPortViewModelQueryFields,
-  TroubleshootingResponse
+  TroubleshootingResponse,
+  SwitchFeatureSet
 } from '@acx-ui/rc/utils'
-import { baseSwitchApi }                                     from '@acx-ui/store'
-import { RequestPayload }                                    from '@acx-ui/types'
-import { createHttpRequest, batchApi, APT_QUERY_CACHE_TIME } from '@acx-ui/utils'
+import { baseSwitchApi }  from '@acx-ui/store'
+import { RequestPayload } from '@acx-ui/types'
+import {
+  createHttpRequest,
+  batchApi,
+  ignoreErrorModal,
+  APT_QUERY_CACHE_TIME
+} from '@acx-ui/utils'
 
 export type SwitchsExportPayload = {
   filters: Filter
@@ -412,6 +418,16 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'SwitchProfiles', id: 'DETAIL' }]
+    }),
+    getSwitchFeatureSets: build.query<SwitchFeatureSet, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getSwitchFeatureSets, params, { ...ignoreErrorModal }
+        )
+        return {
+          ...req
+        }
+      }
     }),
     getCliTemplates: build.query<TableResult<SwitchCliTemplateModel>, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
@@ -1760,6 +1776,8 @@ export const {
   useGetJwtTokenQuery,
   useGetSwitchClientListQuery,
   useGetSwitchClientDetailsQuery,
+  useGetSwitchFeatureSetsQuery,
+  useLazyGetSwitchFeatureSetsQuery,
   useGetTroubleshootingQuery,
   useBlinkLedsMutation,
   usePingMutation,
