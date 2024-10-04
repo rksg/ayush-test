@@ -1,6 +1,6 @@
 
-import { Col, Form, Row, Space, Switch } from 'antd'
-import { useIntl }                       from 'react-intl'
+import { Col, Row, Space, Switch } from 'antd'
+import { useIntl }                 from 'react-intl'
 
 import { StepsForm, Table, TableProps, Tooltip, useStepFormContext }                                              from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                                 from '@acx-ui/feature-toggle'
@@ -136,20 +136,21 @@ export const ScopeForm = () => {
       title: $t({ defaultMessage: 'Activate' }),
       dataIndex: 'activate',
       key: 'activate',
-      align: 'left',
-      width: 50,
+      align: 'center',
       render: (_, row) => {
         const hqosReadOnly =
           row.edgeList?.find(e => e.cpuCores === undefined || e.cpuCores < 4) ? true : false
         return <Tooltip title={showHqosReadOnlyToolTipMessage(hqosReadOnly)}>
-          <Form.Item
+          <UI.StyledFormItem
             name={['activateChangedClusters', row.clusterId??'']}
             valuePropName='checked'
-            noStyle>
-            <Switch disabled={hqosReadOnly}
-              onChange={() =>
-                setActivateChangedClustersInfo(row.clusterId??'', row.name??'', row.venueId??'')}/>
-          </Form.Item>
+            children={
+              <Switch disabled={hqosReadOnly}
+                onChange={() =>
+                // eslint-disable-next-line max-len
+                  setActivateChangedClustersInfo(row.clusterId??'', row.name??'', row.venueId??'')}/>
+            }
+          />
         </Tooltip>
       }
     }
