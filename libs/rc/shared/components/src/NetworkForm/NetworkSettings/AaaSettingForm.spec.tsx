@@ -217,7 +217,7 @@ describe('NetworkForm', () => {
   })
 
   describe('resolveMacAddressAuthenticationConfiguration', () => {
-    it('should return the original macAddressAuthenticationConfiguration when isWifiRbacEnabled is false', () => {
+    it('should return the original value when isWifiRbacEnabled is false', () => {
       const mockData: NetworkSaveData = {
         wlan: {
           macAddressAuthenticationConfiguration: { macAddressAuthentication: true }
@@ -259,6 +259,7 @@ describe('NetworkForm', () => {
       })
     })
 
+    // eslint-disable-next-line max-len
     it('should return undefined if wlan and macAddressAuthenticationConfiguration are both undefined and isWifiRbacEnabled is false', () => {
       const mockData: NetworkSaveData = {}
 

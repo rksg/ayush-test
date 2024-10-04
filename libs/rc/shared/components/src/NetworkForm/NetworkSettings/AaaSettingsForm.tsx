@@ -71,6 +71,7 @@ export function AaaSettingsForm () {
         wlan: {
           wlanSecurity: data.wlan?.wlanSecurity,
           managementFrameProtection: data.wlan?.managementFrameProtection,
+          // eslint-disable-next-line max-len
           macAddressAuthenticationConfiguration: resolveMacAddressAuthenticationConfiguration(data, isWifiRbacEnabled)
         }
       })
