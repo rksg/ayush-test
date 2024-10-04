@@ -1,10 +1,10 @@
 import { difference, isEqual, omit } from 'lodash'
 
 import {
-  useActivatePinNetworkMutation,
-  useCreateNetworkSegmentationGroupMutation,
-  useDeactivatePinNetworkMutation,
-  useUpdateNetworkSegmentationGroupMutation
+  useActivateEdgePinNetworkMutation,
+  useCreateEdgePinMutation,
+  useDeactivateEdgePinNetworkMutation,
+  useUpdateEdgePinMutation
 } from '@acx-ui/rc/services'
 import {
   CatchErrorDetails,
@@ -19,11 +19,11 @@ const differenceNetworks = (first: string[], second: string[]) => {
 }
 
 export const useEdgePinActions = () => {
-  const [createPin] = useCreateNetworkSegmentationGroupMutation()
-  const [updatePin] = useUpdateNetworkSegmentationGroupMutation()
+  const [createPin] = useCreateEdgePinMutation()
+  const [updatePin] = useUpdateEdgePinMutation()
 
-  const [activate] = useActivatePinNetworkMutation()
-  const [deactivate] = useDeactivatePinNetworkMutation()
+  const [activate] = useActivateEdgePinNetworkMutation()
+  const [deactivate] = useDeactivateEdgePinNetworkMutation()
 
   const handleAssociationDiff = async (
     serviceId: string,

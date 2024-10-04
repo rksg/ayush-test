@@ -6,8 +6,8 @@ import { rest }  from 'msw'
 
 import {
   CatchErrorResponse,
-  EdgeNSGFixtures,
-  NetworkSegmentationUrls
+  EdgePinFixtures,
+  EdgePinUrls
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -20,9 +20,9 @@ import { RequestPayload } from '@acx-ui/types'
 
 import { afterSubmitMessage } from '../PersonalIdentityNetworkForm'
 
-import EditNetworkSegmentation from '.'
+import EditPersonalIdentityNetwork from '.'
 
-const { mockNsgSwitchInfoData, mockNsgData, mockNsgStatsList } = EdgeNSGFixtures
+const { mockPinSwitchInfoData, mockPinData, mockPinStatsList } = EdgePinFixtures
 
 jest.mock('../PersonalIdentityNetworkForm/GeneralSettingsForm', () => ({
   GeneralSettingsForm: () => <div data-testid='GeneralSettingsForm' />
@@ -42,8 +42,8 @@ jest.mock('../PersonalIdentityNetworkForm/AccessSwitchForm', () => ({
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   // mock API response due to all form steps are mocked
-  useGetNetworkSegmentationGroupByIdQuery: () => ({ data: mockNsgData, isLoading: false }),
-  useGetNetworkSegmentationViewDataListQuery: () => ({ data: mockNsgStatsList, isLoading: false })
+  useGetEdgePinByIdQuery: () => ({ data: mockPinData, isLoading: false }),
+  useGetEdgePinViewDataListQuery: () => ({ data: mockPinStatsList, isLoading: false })
 }))
 jest.mock('../PersonalIdentityNetworkForm/PersonalIdentityNetworkFormContext', () => ({
   ...jest.requireActual('../PersonalIdentityNetworkForm/PersonalIdentityNetworkFormContext'),
@@ -71,7 +71,7 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-const updateNsgPath = '/:tenantId/t/services/personalIdentityNetwork/:serviceId/edit'
+const updatePinPath = '/:tenantId/t/services/personalIdentityNetwork/:serviceId/edit'
 
 describe('Edit PersonalIdentityNetwork', () => {
   let params: { tenantId: string, serviceId: string }
@@ -83,7 +83,7 @@ describe('Edit PersonalIdentityNetwork', () => {
 
     mockServer.use(
       rest.put(
-        NetworkSegmentationUrls.updateNetworkSegmentationGroup.url,
+        EdgePinUrls.updateEdgePin.url,
         (_req, res, ctx) => res(ctx.status(202)))
 
     )
@@ -91,9 +91,9 @@ describe('Edit PersonalIdentityNetwork', () => {
 
   it('cancel and go back to device list', async () => {
     const user = userEvent.setup()
-    render(<EditNetworkSegmentation />, {
+    render(<EditPersonalIdentityNetwork />, {
       wrapper: Provider,
-      route: { params, path: updateNsgPath }
+      route: { params, path: updatePinPath }
     })
     await user.click(await screen.findByRole('button', { name: 'Cancel' }))
     await waitFor(() => expect(mockedUsedNavigate).toBeCalledWith({
@@ -103,13 +103,13 @@ describe('Edit PersonalIdentityNetwork', () => {
     }))
   })
 
-  it('should update networkSegmentation successfully', async () => {
+  it('should update PersonalIdentityNetwork successfully', async () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <EditNetworkSegmentation />
+        <EditPersonalIdentityNetwork />
       </Provider>, {
-        route: { params, path: updateNsgPath }
+        route: { params, path: updatePinPath }
       })
     // step 1
     await screen.findByTestId('GeneralSettingsForm')
@@ -134,9 +134,9 @@ describe('Edit PersonalIdentityNetwork', () => {
   })
 
   it('should render breadcrumb correctly', async () => {
-    render(<EditNetworkSegmentation />, {
+    render(<EditPersonalIdentityNetwork />, {
       wrapper: Provider,
-      route: { params, path: updateNsgPath }
+      route: { params, path: updatePinPath }
     })
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', {
@@ -166,8 +166,8 @@ describe('Test afterSubmitMessage', () => {
       { message: '' }
     ]
     const switches = [
-      ...mockNsgSwitchInfoData.distributionSwitches,
-      ...mockNsgSwitchInfoData.accessSwitches,
+      ...mockPinSwitchInfoData.distributionSwitches,
+      ...mockPinSwitchInfoData.accessSwitches,
       { id: 'c8:03:f5:3a:95:c8' }
     ]
 

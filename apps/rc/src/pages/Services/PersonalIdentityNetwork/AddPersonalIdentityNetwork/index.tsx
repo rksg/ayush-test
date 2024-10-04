@@ -21,7 +21,7 @@ const AddPersonalIdentityNetwork = () => {
   const { addPin } = useEdgePinActions()
 
   const tablePath = getServiceRoutePath(
-    { type: ServiceType.NETWORK_SEGMENTATION, oper: ServiceOperation.LIST })
+    { type: ServiceType.PIN, oper: ServiceOperation.LIST })
 
   const steps = [
     {

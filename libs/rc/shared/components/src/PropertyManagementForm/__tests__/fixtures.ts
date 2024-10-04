@@ -135,7 +135,7 @@ export const mockResidentPortalProfileList: NewTableResult<ResidentPortal> = {
   ]
 }
 
-export const mockEnabledNoNSGPropertyConfig: PropertyConfigs = {
+export const mockEnabledNoPinPropertyConfig: PropertyConfigs = {
   status: PropertyConfigStatus.ENABLED,
   personaGroupId: 'persona-group-id-noNSG',
   residentPortalId: mockResidentPortalProfileList.content[0].id,

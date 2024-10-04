@@ -194,7 +194,7 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
               dependencies={['dhcpSwitch']}
             >
               {({ getFieldValue }) => {
-                return getFieldValue('dhcpSwitch') ?<EdgeDhcpSelectionForm hasNsg={false} />:<></>
+                return getFieldValue('dhcpSwitch') ?<EdgeDhcpSelectionForm hasPin={false} />:<></>
               }}
             </Form.Item>}
             </Col>

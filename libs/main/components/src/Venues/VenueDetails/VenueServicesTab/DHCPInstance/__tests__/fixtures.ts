@@ -464,5 +464,8 @@ export const configTemplateHandlers = [
   ),
   rest.get(VenueConfigTemplateUrlsInfo.getDhcpUsagesRbac.url, (_, res, ctx) =>
     res(ctx.json(configTemplateWifiDhcpPoolUsages))
+  ),
+  rest.get(VenueConfigTemplateUrlsInfo.getVenueMeshRbac.url, (_, res, ctx) =>
+    res(ctx.json({}))
   )
 ]
