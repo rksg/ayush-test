@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import {
-  NetworkSegmentationUrls
+  EdgePinUrls
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -34,7 +34,7 @@ describe( 'NetworkSegAuthTable', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.post(
-        NetworkSegmentationUrls.getWebAuthTemplateList.url,
+        EdgePinUrls.getWebAuthTemplateList.url,
         (req, res, ctx) => res(ctx.json({ data, page: 1, totalCount: 1, totalPages: 1 }))
       )
     )
@@ -59,7 +59,7 @@ describe( 'NetworkSegAuthTable', () => {
     const user = userEvent.setup()
     mockServer.use(
       rest.delete(
-        NetworkSegmentationUrls.deleteWebAuthTemplate.url,
+        EdgePinUrls.deleteWebAuthTemplate.url,
         (req, res, ctx) => res(ctx.json({}))
       )
     )
