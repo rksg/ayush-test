@@ -35,8 +35,7 @@ export const ScopeForm = () => {
     }
   })
 
-  const edgeClusterList = tableQuery.data?.data?.filter(c =>
-    c.edgeList?.find(e => e.cpuCores !== undefined && e.cpuCores >= 4))
+  const edgeClusterList = tableQuery.data?.data
   const clusterIds = edgeClusterList?.map(item => item.clusterId)
   const { clusterNodesMap = {} } = useGetEdgeListQuery({
     payload: {
@@ -129,15 +128,27 @@ export const ScopeForm = () => {
       title: $t({ defaultMessage: 'Activate' }),
       dataIndex: 'activate',
       key: 'activate',
-      align: 'center',
+      align: 'left',
+      width: 50,
       render: (_, row) => {
-        return <Form.Item
+        const hqosReadOnly =
+          row.edgeList?.find(e => e.cpuCores === undefined || e.cpuCores < 4) ? true : false
+        return <Space><Form.Item
           name={['activateChangedClusters', row.clusterId??'']}
           valuePropName='checked'
-          noStyle
-          children={<Switch onChange={() =>
-            setActivateChangedClustersInfo(row.clusterId??'', row.name??'', row.venueId??'')}/>}
-        />
+          noStyle>
+          <Switch disabled={hqosReadOnly}
+            onChange={() =>
+              setActivateChangedClustersInfo(row.clusterId??'', row.name??'', row.venueId??'')}/>
+        </Form.Item>
+        {hqosReadOnly && <Tooltip.Question
+          title={
+            $t({ defaultMessage: `
+                      Insufficient CPU cores have been detected on this cluster` })
+          }
+          placement='right'
+          iconStyle={{ width: 16, height: 16, marginTop: 4 }}
+        />}</Space>
       }
     }
   ]
