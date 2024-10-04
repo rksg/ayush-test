@@ -1,11 +1,12 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import { Form, Input } from 'antd'
-import { useIntl }     from 'react-intl'
+import { Checkbox, Form, Input, Typography } from 'antd'
+import FormItem                              from 'antd/es/form/FormItem'
+import { useIntl }                           from 'react-intl'
 
-import { Button, GridCol, GridRow, Loader }                                                           from '@acx-ui/components'
-import { useGetWorkflowStepsByIdQuery, useLazySearchInProgressWorkflowListQuery }                     from '@acx-ui/rc/services'
-import { checkObjectNotExists, WorkflowPanelMode, WorkflowStepsEmptyCount, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
+import { Button, GridCol, GridRow, Loader }                                                                                    from '@acx-ui/components'
+import { useGetWorkflowStepsByIdQuery, useLazySearchInProgressWorkflowListQuery, useUpdateWorkflowIgnoreErrorsMutation }       from '@acx-ui/rc/services'
+import { checkObjectNotExists, WorkflowPanelMode, WorkflowStepsEmptyCount, trailingNorLeadingSpaces, PublishStatus, Workflow } from '@acx-ui/rc/utils'
 
 import { WorkflowDesigner } from '../../policies/WorkflowCanvas/WorkflowDesigner'
 import { WorkflowPanel }    from '../../policies/WorkflowCanvas/WorkflowPanel'
@@ -40,8 +41,45 @@ export function WorkflowSettingForm (props: { policyId?: string }) {
     setIsDesignerOpen(true)
   }
 
-  const closeWorkflowDesigner = () => {
+  const closeWorkflowDesigner = async () => {
     setIsDesignerOpen(false)
+
+    validateWorkflow()
+  }
+
+  const [validateWorkflowRequest] = useUpdateWorkflowIgnoreErrorsMutation()
+  const [publicationError, setPublicationError] = useState('')
+  useEffect(() => {
+    if(policyId){
+      validateWorkflow()
+    }
+  }, [])
+
+  const validateWorkflow = async function () {
+
+    const submittedData = form.getFieldsValue()
+    const patchData = {}
+
+    if(submittedData && submittedData['name']) {
+      Object.assign(patchData, { name: submittedData['name'] })
+    }
+
+    Object.assign(patchData, { publishedDetails: { status: 'VALIDATE' as PublishStatus } } )
+
+    await validateWorkflowRequest({ params: { id: policyId }, payload: patchData as Workflow })
+      .unwrap()
+      .then(() => {
+        setPublicationError('')
+        form.setFieldValue('workflowValid', true)
+      })
+      .catch((error) => {
+        if(error && error.data && error.data.message) {
+          setPublicationError(error.data.message)
+        } else {
+          setPublicationError($t({ defaultMessage: 'Failure while validating workflow.' }))
+        }
+        form.setFieldValue('workflowValid', false)
+      })
   }
 
   return (
@@ -84,6 +122,16 @@ export function WorkflowSettingForm (props: { policyId?: string }) {
               </Button>
             }
           </div>
+        </GridCol>
+      </GridRow>
+      <GridRow>
+        <GridCol col={{ span: 8 }}>
+          {publicationError &&
+            <Typography.Text type='danger'>
+              {$t({ defaultMessage: 'Workflow cannot be published due to the following error: ' })
+              + ' ' + publicationError}
+            </Typography.Text>}
+          <FormItem hidden name='workflowValid'><Checkbox checked={false}/></FormItem>
         </GridCol>
       </GridRow>
       <GridRow>
