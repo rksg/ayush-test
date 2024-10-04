@@ -2,10 +2,10 @@ import { Typography }                          from 'antd'
 import _                                       from 'lodash'
 import { FormattedMessage, MessageDescriptor } from 'react-intl'
 
-import { Table, TableHighlightFnArgs, Tooltip }           from '@acx-ui/components'
-import { Event, replaceStrings, parseTimestampAttribute } from '@acx-ui/rc/utils'
-import { TenantLink, generatePath }                       from '@acx-ui/react-router-dom'
-import { getIntl, noDataDisplay }                         from '@acx-ui/utils'
+import { Table, TableHighlightFnArgs, Tooltip }            from '@acx-ui/components'
+import { Event, replaceStrings, formatTurnOnOffTimestamp } from '@acx-ui/rc/utils'
+import { TenantLink, generatePath }                        from '@acx-ui/react-router-dom'
+import { getIntl, noDataDisplay }                          from '@acx-ui/utils'
 
 import { typeMapping } from './mapping'
 
@@ -139,7 +139,7 @@ export const getSource = (data: Event, highlightFn?: TableHighlightFnArgs) => {
 }
 
 export const getDescription = (data: Event, highlightFn?: TableHighlightFnArgs) => {
-  const parseData = parseTimestampAttribute(data)
+  const parseData = formatTurnOnOffTimestamp(data)
   try {
     let message = String(parseData.message && JSON.parse(parseData.message).message_template)
       // escape ' by replacing with ''
