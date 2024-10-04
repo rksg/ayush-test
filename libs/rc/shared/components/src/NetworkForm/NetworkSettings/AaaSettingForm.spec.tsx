@@ -5,12 +5,12 @@ import { rest }  from 'msw'
 
 
 import { Features, useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
-import { AaaUrls, CertificateUrls, CommonUrlsInfo, WifiUrlsInfo }                                 from '@acx-ui/rc/utils'
+import { AaaUrls, CertificateUrls, CommonUrlsInfo, NetworkSaveData, PersonaUrls, RulesManagementUrlsInfo, WifiUrlsInfo }                                 from '@acx-ui/rc/utils'
 import { Provider }                                                                               from '@acx-ui/store'
 import { act, mockServer, render, screen, fireEvent, waitForElementToBeRemoved, within, waitFor } from '@acx-ui/test-utils'
 import { UserUrlsInfo }                                                                           from '@acx-ui/user'
 
-import { certificateAuthorityList, certificateTemplateList } from '../../policies/CertificateTemplate/__test__/fixtures'
+import { certificateAuthorityList, certificateTemplateList, policySetList } from '../../policies/CertificateTemplate/__test__/fixtures'
 import {
   venuesResponse,
   venueListResponse,
@@ -21,7 +21,7 @@ import {
 } from '../__tests__/fixtures'
 import { MLOContext, NetworkForm } from '../NetworkForm'
 
-import { AaaSettingsForm } from './AaaSettingsForm'
+import { AaaSettingsForm, resolveMacAddressAuthenticationConfiguration } from './AaaSettingsForm'
 
 jest.mock('react-intl', () => {
   const reactIntl = jest.requireActual('react-intl')
@@ -157,14 +157,26 @@ describe('NetworkForm', () => {
       </MLOContext.Provider>
     </Provider>, { route: { params } })
 
-    await screen.findByText(/MAC Authentication/i)
-    await userEvent.click(await screen.findByTestId('macAuth8021x'))
+    const macAuthenticationSwitch = await screen.findByTestId('macAuth8021x')
+    expect(macAuthenticationSwitch).toBeVisible()
+    await userEvent.click(macAuthenticationSwitch)
     expect(await screen.findByText(/MAC Address Format/i)).toBeInTheDocument()
     expect(await screen.findByText('AA-BB-CC-DD-EE-FF')).toBeVisible()
   })
 
   it('should render correctly when certificateTemplate enabled', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.CERTIFICATE_TEMPLATE)
+
+    mockServer.use(
+      rest.get(
+        RulesManagementUrlsInfo.getPolicySets.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(policySetList))
+      ),rest.post(
+        PersonaUrls.searchPersonaGroupList.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json([]))
+      )
+    )
+
     render(<Provider>
       <MLOContext.Provider value={{
         isDisableMLO: true,
@@ -180,8 +192,7 @@ describe('NetworkForm', () => {
     const useCertRadio = await screen.findByLabelText('Use Certificate Auth')
     await userEvent.click(useCertRadio)
     expect(await screen.findByText('Certificate Template')).toBeVisible()
-    const addCertTemplateBtn = await screen.findByText('Add')
-    await userEvent.click(addCertTemplateBtn)
+    await userEvent.click(await screen.findByText('Add'))
     const dialog = await screen.findByRole('dialog')
     expect(within(dialog).getByText('Add Certificate Template')).toBeVisible()
     await userEvent.click(screen.getByRole('button', { name: /Cancel/i }))
@@ -203,5 +214,57 @@ describe('NetworkForm', () => {
 
     expect(screen.queryByText('Use Certificate Auth')).not.toBeInTheDocument()
     expect(screen.queryByText('Use External AAA Service')).not.toBeInTheDocument()
+  })
+
+  describe('resolveMacAddressAuthenticationConfiguration', () => {
+    it('should return the original macAddressAuthenticationConfiguration when isWifiRbacEnabled is false', () => {
+      const mockData: NetworkSaveData = {
+        wlan: {
+          macAddressAuthenticationConfiguration: { macAddressAuthentication: true }
+        }
+      }
+
+      const result = resolveMacAddressAuthenticationConfiguration(mockData, false)
+
+      expect(result).toEqual({ macAddressAuthentication: true })
+    })
+
+    it('should merge macAddressAuthentication when isWifiRbacEnabled is true', () => {
+      const mockData: NetworkSaveData = {
+        wlan: {
+          macAddressAuthentication: false,
+          macAddressAuthenticationConfiguration: { macAuthMacFormat: 'Upper' }
+        }
+      }
+
+      const result = resolveMacAddressAuthenticationConfiguration(mockData, true)
+
+      expect(result).toEqual({
+        macAddressAuthentication: false,
+        macAuthMacFormat: 'Upper'
+      })
+    })
+
+    it('should handle undefined macAddressAuthenticationConfiguration and wlan gracefully', () => {
+      const mockData: NetworkSaveData = {
+        wlan: {
+          macAddressAuthentication: true
+        }
+      }
+
+      const result = resolveMacAddressAuthenticationConfiguration(mockData, true)
+
+      expect(result).toEqual({
+        macAddressAuthentication: true
+      })
+    })
+
+    it('should return undefined if wlan and macAddressAuthenticationConfiguration are both undefined and isWifiRbacEnabled is false', () => {
+      const mockData: NetworkSaveData = {}
+
+      const result = resolveMacAddressAuthenticationConfiguration(mockData, false)
+
+      expect(result).toBeUndefined()
+    })
   })
 })

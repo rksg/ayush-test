@@ -273,7 +273,8 @@ export function useRadiusServer () {
         wlan: {
           macAddressAuthenticationConfiguration: {
             macAuthMacFormat: radiusServerSettings.macAuthMacFormat
-          }
+          },
+          macAuthMacFormat: radiusServerSettings.macAuthMacFormat
         }
       }
 
