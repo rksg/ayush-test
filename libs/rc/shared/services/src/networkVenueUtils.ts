@@ -730,7 +730,7 @@ export const fetchRbacAccessControlSubPolicyNetwork = async (queryArgs: RequestP
     data: {
       ...(l2aclPolicyListInfoQuery.data.data.length ? { l2AclPolicyId: l2aclPolicyListInfoQuery.data.data[0].id, l2AclEnable: true } : {}),
       ...(l3aclPolicyListInfoQuery.data.data.length ? { l3AclPolicyId: l3aclPolicyListInfoQuery.data.data[0].id, l3AclEnable: true } : {}),
-      ...(appAclPolicyListInfoQuery.data.data.length ? { appAclPolicyId: appAclPolicyListInfoQuery.data.data[0].id, applicationPolicyEnable: true } : {}),
+      ...(appAclPolicyListInfoQuery.data.data.length ? { applicationPolicyId: appAclPolicyListInfoQuery.data.data[0].id, applicationPolicyEnable: true } : {}),
       ...(deviceAclPolicyListInfoQuery.data.data.length ? { devicePolicyId: deviceAclPolicyListInfoQuery.data.data[0].id, enableDeviceOs: true } : {})
     }
   }
