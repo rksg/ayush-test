@@ -71,6 +71,14 @@ export const ScopeForm = () => {
     }
   })
 
+  const showHqosReadOnlyToolTipMessage = (hqosReadOnly : boolean) => {
+    if (hqosReadOnly === true) {
+      return $t({ defaultMessage:
+        'Insufficient CPU cores have been detected on this cluster' })
+    }
+    return ''
+  }
+
   const columns: TableProps<EdgeClusterStatus>['columns'] = [
     {
       title: $t({ defaultMessage: 'Cluster' }),
@@ -133,22 +141,16 @@ export const ScopeForm = () => {
       render: (_, row) => {
         const hqosReadOnly =
           row.edgeList?.find(e => e.cpuCores === undefined || e.cpuCores < 4) ? true : false
-        return <Space><Form.Item
-          name={['activateChangedClusters', row.clusterId??'']}
-          valuePropName='checked'
-          noStyle>
-          <Switch disabled={hqosReadOnly}
-            onChange={() =>
-              setActivateChangedClustersInfo(row.clusterId??'', row.name??'', row.venueId??'')}/>
-        </Form.Item>
-        {hqosReadOnly && <Tooltip.Question
-          title={
-            $t({ defaultMessage: `
-                      Insufficient CPU cores have been detected on this cluster` })
-          }
-          placement='right'
-          iconStyle={{ width: 16, height: 16, marginTop: 4 }}
-        />}</Space>
+        return <Tooltip title={showHqosReadOnlyToolTipMessage(hqosReadOnly)}>
+          <Form.Item
+            name={['activateChangedClusters', row.clusterId??'']}
+            valuePropName='checked'
+            noStyle>
+            <Switch disabled={hqosReadOnly}
+              onChange={() =>
+                setActivateChangedClustersInfo(row.clusterId??'', row.name??'', row.venueId??'')}/>
+          </Form.Item>
+        </Tooltip>
       }
     }
   ]
