@@ -13,6 +13,7 @@ import * as UI                    from './styledComponents'
 import VerticalPage               from './VerticalPage'
 import GptWizard from './GptWizard'
 import { useStartConversationsMutation } from '@acx-ui/rc/services'
+import { GptConversation } from '@acx-ui/rc/utils'
 
 export default function RuckusGptButton () {
   const [visible, setVisible] = useState(false)
@@ -28,9 +29,9 @@ export default function RuckusGptButton () {
 
   const [currentStep, setCurrentStep] = useState(0 as number)
   const [basicFormRef] = Form.useForm()
-
   const [startConversations] = useStartConversationsMutation()
-
+  const [venueType, setVenueType] = useState('' as string)
+  const [nextStep, setNextStep] = useState({} as GptConversation)
 
 
   return <div>
@@ -89,16 +90,14 @@ export default function RuckusGptButton () {
           </div>
         </div>}
       visible={visible}
-      footer={<>
+      footer={step==='wizard' ? null : <>
         {step !== 'vertical' &&
           <Button key='back'
             onClick={
               () => {
                 if (step === 'basic') {
                   setStep('vertical')
-                } else if (step === 'wizard') {
-                  setStep('basic')
-                }
+                } 
               }
             }>
             {$t({ defaultMessage: 'Back' })}
@@ -107,11 +106,11 @@ export default function RuckusGptButton () {
         <Button key='next'
           type='primary'
           onClick={async () => {
-            let venyeType = ''  // need use async method
             if (step === 'vertical') {
               basicFormRef.validateFields().then(() => {
                 const result = basicFormRef.getFieldsValue()
-                venyeType = result.venueType === 'OTHER' ? result.othersValue : result.venueType
+                const type = result.venueType === 'OTHER' ? result.othersValue : result.venueType
+                setVenueType(type)
                 setStep('basic')
               }).catch(() => {
                 return
@@ -121,18 +120,22 @@ export default function RuckusGptButton () {
               basicFormRef.validateFields().then(
 
                 async () => {
-                  const result = basicFormRef.getFieldsValue()
-                  await startConversations({
-                    payload: {
-                      venueName: result.venueName,
-                      numberOfAp: result.numberOfAp,
-                      numberOfSwitch: result.numberOfSwitch,
-                      venyeType,
-                      description: result.description
-                    }
-                  }).unwrap()
-
-                  setStep('wizard')
+                  try {
+                    const result = basicFormRef.getFieldsValue();
+                    const response = await startConversations({
+                      payload: {
+                        venueName: result.venueName,
+                        numberOfAp: result.numberOfAp,
+                        numberOfSwitch: result.numberOfSwitch,
+                        venueType,
+                        description: result.description,
+                      },
+                    }).unwrap();
+                    setStep('wizard');
+                    setNextStep(response);
+                  } catch (error) {
+                    console.error('Failed to start conversation:', error);
+                  }
                 }
 
               ).catch(() => {
@@ -147,7 +150,11 @@ export default function RuckusGptButton () {
       </>}
       mask={true}
       width={1000}
-      onCancel={() => setVisible(false)}
+      onCancel={() => {
+        basicFormRef.resetFields()
+        setStep('vertical')
+        setVisible(false)
+      }}
       children={
         <>
           <Form form={basicFormRef}
@@ -157,10 +164,10 @@ export default function RuckusGptButton () {
             {step === 'basic' && <BasicInformationPage />}
           </Form>
           {step === 'wizard' && <GptWizard
-            requestId={mockResponse_step2.requestId}
-            actionType={mockResponse_step2.actionType}
-            description={'test'}
-            payload={mockResponse_step2.payload}
+            requestId={nextStep.requestId}
+            actionType={nextStep.nextStep}
+            description={nextStep.description}
+            payload={nextStep.payload}
             currentStep={currentStep}
             setCurrentStep={setCurrentStep}
           />}

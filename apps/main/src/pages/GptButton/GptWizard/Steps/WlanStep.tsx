@@ -168,7 +168,7 @@ export function WlanStep(props: {
                fontSize: '12px',
                margin: '5px 0px 0px 25px'
              }}>
-               {props.description}
+               {item['Purpose']}
              </div>
            </div>
          </div>

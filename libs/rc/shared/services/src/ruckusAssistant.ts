@@ -1,5 +1,6 @@
 import {
   CommonResult,
+  GptConversation,
   RuckusAssistantUrlInfo
 } from '@acx-ui/rc/utils'
 import { baseRuckusAssistantApi } from '@acx-ui/store'
@@ -8,7 +9,7 @@ import { createHttpRequest }          from '@acx-ui/utils'
 
 export const ruckusAssistantApi = baseRuckusAssistantApi.injectEndpoints({
   endpoints: (build) => ({
-    startConversations: build.mutation<CommonResult, RequestPayload>({
+    startConversations: build.mutation<GptConversation, RequestPayload>({
       query: ({ payload }) => {
         const req = createHttpRequest(RuckusAssistantUrlInfo.startConversations)
         return {
