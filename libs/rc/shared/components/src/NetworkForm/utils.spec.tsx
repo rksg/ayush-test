@@ -2,7 +2,7 @@ import { FormInstance } from 'antd'
 import { rest }         from 'msw'
 
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { networkApi, policyApi, softGreApi }                                             from '@acx-ui/rc/services'
+import { networkApi, policyApi, softGreApi }                      from '@acx-ui/rc/services'
 import {
   ClientIsolationUrls,
   ConfigTemplateType,
