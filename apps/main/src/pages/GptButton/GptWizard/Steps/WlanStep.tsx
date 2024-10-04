@@ -10,6 +10,7 @@ type NetworkConfig = {
   'SSID Name': string;
   'SSID Objective': string;
   'Checked': boolean;
+  'id':string
 }
 
 export function WlanStep(props: {
@@ -113,6 +114,12 @@ export function WlanStep(props: {
            </div>
          </div>
          <div >
+
+           <ProFormText
+             name={['step1payload', index, 'id']}
+             initialValue={item['id']}
+             hidden
+           />
 
            <ProFormText
              width={200}

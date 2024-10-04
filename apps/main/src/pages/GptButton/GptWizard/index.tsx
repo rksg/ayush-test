@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { ProFormInstance, StepsForm } from '@ant-design/pro-form'
 import dayjs from 'dayjs'
 
-import { NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { GptConversation, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 import { GptStepsForm } from '../styledComponents'
 
@@ -16,6 +16,7 @@ import { WlanStep } from './Steps/WlanStep'
 import { WlanDetailStep } from './Steps/WlanDetailStep'
 import { VlanStep } from './Steps/VlanStep'
 import { SummaryStep } from './Steps/SummaryStep'
+import { useUpdateSsidMutation, useUpdateSsidProfileMutation, useUpdateVlanMutation } from '@acx-ui/rc/services'
 
 type FormValue = {
   jobInfo: {
@@ -48,6 +49,7 @@ const waitTime = (time: number = 100) => {
 
 
 export default function GptWizard(props: {
+  sessionId: string,
   requestId: string,
   actionType: string,
   description: string,
@@ -65,16 +67,7 @@ export default function GptWizard(props: {
 
   const step1payload = JSON.parse(props.payload) as NetworkConfig[]
 
-  const [step2payload, setStep2payload] = useState({} as {
-    'requestId': string;
-    'actionType': string;
-    'payload': string;
-  })
-  const mockResponse_step2 = {
-    requestId: '567ce50233af4e47a7354d2c47b3a8e6',
-    actionType: 'WLAN',
-    payload: '[{"SSID Name":"Guest","SSID Type":"aaa"},{"SSID Name":"Staff","SSID Type":"dpsk"}]'
-  }
+  const [step2payload, setStep2payload] = useState({} as GptConversation)
 
   const [step3payload, setStep3payload] = useState({} as {
     'requestId': string;
@@ -93,6 +86,11 @@ export default function GptWizard(props: {
     'payload': string;
   })
   const navigate = useNavigate()
+  const [updateSsidProfile] = useUpdateSsidProfileMutation()
+  const [updateSsid] = useUpdateSsidMutation()
+  const [updateVlan] = useUpdateVlanMutation()
+  
+  
 
   const formMapRef = useRef<
     React.MutableRefObject<ProFormInstance<any> | undefined>[]
@@ -126,7 +124,6 @@ export default function GptWizard(props: {
         name='step1'
         title=''
         onFinish={async () => {
-          return true
           try {
             console.log(formMapRef.current[0].current?.getFieldsValue());
             const values = formMapRef.current[0].current?.getFieldsValue();
@@ -140,25 +137,32 @@ export default function GptWizard(props: {
 
             console.log(updatedValues);
 
-            const url = `/api/gpt/tenant/${getTenantId()}/onboardAssistant/${props.requestId}/ssidProfile`;
-
             // Perform the fetch request
-            const response = await fetch(url, {
-              method: 'POST',
-              headers: {
-                'Authorization': `Bearer ${getJwtToken()}`,
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-              },
-              body: JSON.stringify(updatedValues)
-            });
+            // const response = await fetch(url, {
+            //   method: 'POST',
+            //   headers: {
+            //     'Authorization': `Bearer ${getJwtToken()}`,
+            //     'Content-Type': 'application/json',
+            //     'Accept': 'application/json'
+            //   },
+            //   body: JSON.stringify(updatedValues)
+            // });
 
-            if (!response.ok) {
-              throw new Error('Network response was not ok');
+            try{
+              const response = await updateSsidProfile({
+                params: { sessionId: props.sessionId },
+                payload: JSON.stringify(updatedValues)
+              }).unwrap()
+
+              setStep2payload(response)
+
+            } catch (error) {
+              console.error('Failed to update SSID:', error);
             }
-            const data = await response.json();
-            setStep2payload(data);
-            return true;
+
+            return true
+        
+
           } catch (error) {
             console.log(error);
           } finally {

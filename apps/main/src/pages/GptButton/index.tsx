@@ -164,7 +164,8 @@ export default function RuckusGptButton () {
             {step === 'basic' && <BasicInformationPage />}
           </Form>
           {step === 'wizard' && <GptWizard
-            requestId={nextStep.requestId}
+            sessionId={nextStep.sessionId}
+            requestId={nextStep.sessionId}
             actionType={nextStep.nextStep}
             description={nextStep.description}
             payload={nextStep.payload}

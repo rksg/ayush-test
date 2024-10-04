@@ -18,9 +18,9 @@ export const ruckusAssistantApi = baseRuckusAssistantApi.injectEndpoints({
         }
       }
     }),
-    updateSsidProfile: build.mutation<CommonResult, RequestPayload>({
-      query: ({ payload }) => {
-        const req = createHttpRequest(RuckusAssistantUrlInfo.updateSsidProfile)
+    updateSsidProfile: build.mutation<GptConversation, RequestPayload>({
+      query: ({ payload, params }) => {
+        const req = createHttpRequest(RuckusAssistantUrlInfo.updateSsidProfile, params)
         return {
           ...req,
           body: payload
@@ -28,8 +28,8 @@ export const ruckusAssistantApi = baseRuckusAssistantApi.injectEndpoints({
       }
     }),
     updateSsid: build.mutation<CommonResult, RequestPayload>({
-      query: ({ payload }) => {
-        const req = createHttpRequest(RuckusAssistantUrlInfo.updateSsid)
+      query: ({ payload, params }) => {
+        const req = createHttpRequest(RuckusAssistantUrlInfo.updateSsid, params)
         return {
           ...req,
           body: payload
@@ -37,8 +37,8 @@ export const ruckusAssistantApi = baseRuckusAssistantApi.injectEndpoints({
       }
     }),
     updateVlan: build.mutation<CommonResult, RequestPayload>({
-      query: ({ payload }) => {
-        const req = createHttpRequest(RuckusAssistantUrlInfo.updateVlan)
+      query: ({ payload, params }) => {
+        const req = createHttpRequest(RuckusAssistantUrlInfo.updateVlan, params)
         return {
           ...req,
           body: payload

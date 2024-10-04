@@ -1,5 +1,5 @@
 export interface GptConversation {
-    requestId: string,
+    sessionId: string,
     nextStep: string,
     payload: string,
     description: string
