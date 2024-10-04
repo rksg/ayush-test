@@ -5,18 +5,16 @@ import { rest }      from 'msw'
 import {
   EdgeDHCPFixtures,
   EdgeDhcpUrls,
-  EdgeNSGFixtures,
+  EdgePinFixtures,
   getServiceRoutePath,
-  NetworkSegmentationUrls,
+  EdgePinUrls,
   ServiceOperation,
   ServiceType } from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-// import { mockNsgStatsList } from '../__tests__/fixtures'
-
-import NetworkSegmentationDetail from '.'
-const { mockNsgStatsList } = EdgeNSGFixtures
+import PersonalIdentityNetworkDetail from '.'
+const { mockPinStatsList } = EdgePinFixtures
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
@@ -42,12 +40,12 @@ jest.mock('file-saver', ()=>({ saveAs: () => mockedSaveAs() }))
 
 const mockEdgeDhcpDataList = cloneDeep(EdgeDHCPFixtures.mockEdgeDhcpDataList)
 // eslint-disable-next-line max-len
-mockEdgeDhcpDataList.content[0].dhcpPools[0].id = mockNsgStatsList.data[0].edgeClusterInfos[0].dhcpPoolId
+mockEdgeDhcpDataList.content[0].dhcpPools[0].id = mockPinStatsList.data[0].edgeClusterInfo.dhcpPoolId
 
-describe('NsgDetail', () => {
+describe('PIN Detail', () => {
   let params: { tenantId: string, serviceId: string }
   const detailPath = '/:tenantId/t/' + getServiceRoutePath({
-    type: ServiceType.NETWORK_SEGMENTATION,
+    type: ServiceType.PIN,
     oper: ServiceOperation.DETAIL
   })
   beforeEach(() => {
@@ -58,8 +56,8 @@ describe('NsgDetail', () => {
 
     mockServer.use(
       rest.post(
-        NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
-        (_req, res, ctx) => res(ctx.json(mockNsgStatsList))
+        EdgePinUrls.getEdgePinStatsList.url,
+        (_req, res, ctx) => res(ctx.json(mockPinStatsList))
       ),
       rest.get(
         EdgeDhcpUrls.getDhcp.url,
@@ -71,7 +69,7 @@ describe('NsgDetail', () => {
   it('Should render detail page successfully', async () => {
     render(
       <Provider>
-        <NetworkSegmentationDetail />
+        <PersonalIdentityNetworkDetail />
       </Provider>, {
         route: { params, path: detailPath }
       })
@@ -81,7 +79,7 @@ describe('NsgDetail', () => {
   })
 
   it('should render breadcrumb correctly', async () => {
-    render(<NetworkSegmentationDetail />, {
+    render(<PersonalIdentityNetworkDetail />, {
       wrapper: Provider,
       route: { params, path: detailPath }
     })
@@ -98,7 +96,7 @@ describe('NsgDetail', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <NetworkSegmentationDetail />
+        <PersonalIdentityNetworkDetail />
       </Provider>, {
         route: { params, path: detailPath }
       })

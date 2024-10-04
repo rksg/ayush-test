@@ -25,7 +25,7 @@ interface ServiceDetailDrawerProps {
 const drawerWidthMap = {
   [EdgeServiceTypeEnum.DHCP]: 500,
   [EdgeServiceTypeEnum.FIREWALL]: '60%',
-  [EdgeServiceTypeEnum.NETWORK_SEGMENTATION]: '50%',
+  [EdgeServiceTypeEnum.PIN]: '50%',
   [EdgeServiceTypeEnum.SD_LAN]: 500,
   [EdgeServiceTypeEnum.SD_LAN_P2]: 500,
   [EdgeServiceTypeEnum.MV_SD_LAN]: 500
@@ -113,9 +113,9 @@ const getServiceDetailUrl = (serviceType: EdgeServiceTypeEnum, serviceId: string
         oper: ServiceOperation.DETAIL,
         serviceId: serviceId
       })
-    case EdgeServiceTypeEnum.NETWORK_SEGMENTATION:
+    case EdgeServiceTypeEnum.PIN:
       return getServiceDetailsLink({
-        type: ServiceType.NETWORK_SEGMENTATION,
+        type: ServiceType.PIN,
         oper: ServiceOperation.DETAIL,
         serviceId: serviceId
       })
@@ -138,7 +138,7 @@ const useServiceContentByType = (serviceData: EdgeService) => {
       return <DhcpDetails serviceData={serviceData} />
     case EdgeServiceTypeEnum.FIREWALL:
       return <FirewallDetails serviceData={serviceData} />
-    case EdgeServiceTypeEnum.NETWORK_SEGMENTATION:
+    case EdgeServiceTypeEnum.PIN:
       return <PersonalIdentityNetworkDetails serviceData={serviceData} />
     case EdgeServiceTypeEnum.SD_LAN:
       return sdLanServiceType === EdgeServiceTypeEnum.MV_SD_LAN

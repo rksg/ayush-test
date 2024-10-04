@@ -15,12 +15,12 @@ import {
 } from '@acx-ui/user'
 
 import {
-  mockPersonaGroupWithoutNSG,
+  mockPersonaGroupWithoutPin,
   mockPropertyUnit,
   venueLanPorts,
-  mockEnabledNoNSGPropertyConfig,
-  mockEnabledNSGPropertyConfig,
-  mockPersonaGroupWithNSG,
+  mockEnabledNoPinPropertyConfig,
+  mockEnabledPinPropertyConfig,
+  mockPersonaGroupWithPin,
   mockConnectionMeteringTableResult,
   replacePagination,
   mockConnectionMeterings,
@@ -33,8 +33,8 @@ const closeFn = jest.fn()
 const params = {
   tenantId: '15a04f095a8f4a96acaf17e921e8a6df',
   venueId: 'has-nsg-venue-id',
-  nsgVenueId: 'has-nsg-venue-id',
-  noNsgVenueId: 'no-nsg-venue-id'
+  pinVenueId: 'has-nsg-venue-id',
+  noPinVenueId: 'no-nsg-venue-id'
 }
 const unitId = 'c59f537f-2257-4fa6-934b-69f787e686fb'
 
@@ -75,9 +75,9 @@ describe('Property Unit Drawer', () => {
       rest.get(
         PropertyUrlsInfo.getPropertyConfigs.url,
         (req, res, ctx) => {
-          return res(ctx.json(req.params.venueId === params.noNsgVenueId
-            ? mockEnabledNoNSGPropertyConfig
-            : mockEnabledNSGPropertyConfig))
+          return res(ctx.json(req.params.venueId === params.noPinVenueId
+            ? mockEnabledNoPinPropertyConfig
+            : mockEnabledPinPropertyConfig))
         }
       ),
       rest.post(
@@ -96,8 +96,8 @@ describe('Property Unit Drawer', () => {
         PersonaUrls.getPersonaGroupById.url,
         (req, res, ctx) => {
           return res(ctx.json(req.params.groupId === 'persona-group-id-noNSG'
-            ? mockPersonaGroupWithoutNSG
-            : mockPersonaGroupWithNSG))
+            ? mockPersonaGroupWithoutPin
+            : mockPersonaGroupWithPin))
         }
       ),
       rest.get(
@@ -137,7 +137,7 @@ describe('Property Unit Drawer', () => {
       <UserProfileContext.Provider
         value={{ data: userProfile } as UserProfileContextProps}
       ></UserProfileContext.Provider>
-      <PropertyUnitDrawer isEdit={false} visible onClose={closeFn} venueId={params.noNsgVenueId} />
+      <PropertyUnitDrawer isEdit={false} visible onClose={closeFn} venueId={params.noPinVenueId} />
     </Provider>)
 
     await screen.findByText('Unit Name')
@@ -149,7 +149,7 @@ describe('Property Unit Drawer', () => {
     await userEvent.click(buttons[0]) //click to add Data Usage Metering
   })
 
-  it('should add no nsg drawer', async () => {
+  it('should add no PIN drawer', async () => {
     mockServer.use(
       rest.post(
         PropertyUrlsInfo.getPropertyUnitList.url,
@@ -161,7 +161,7 @@ describe('Property Unit Drawer', () => {
       <UserProfileContext.Provider
         value={{ data: userProfile } as UserProfileContextProps}
       ></UserProfileContext.Provider>
-      <PropertyUnitDrawer isEdit={false} visible onClose={closeFn} venueId={params.noNsgVenueId} />
+      <PropertyUnitDrawer isEdit={false} visible onClose={closeFn} venueId={params.noPinVenueId} />
     </Provider>)
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -180,7 +180,7 @@ describe('Property Unit Drawer', () => {
     await userEvent.click(buttons[1])
   })
 
-  it('should edit no nsg drawer', async () => {
+  it('should edit no PIN drawer', async () => {
     window.HTMLElement.prototype.scrollIntoView = function () { }
     render(<Provider>
       <UserProfileContext.Provider
@@ -191,7 +191,7 @@ describe('Property Unit Drawer', () => {
         visible
         unitId={unitId}
         onClose={closeFn}
-        venueId={params.noNsgVenueId}
+        venueId={params.noPinVenueId}
       />
     </Provider>)
 
@@ -209,7 +209,7 @@ describe('Property Unit Drawer', () => {
     await userEvent.click(saveBtn)
   })
 
-  it('should edit nsg drawer', async () => {
+  it('should edit PIN drawer', async () => {
     window.HTMLElement.prototype.scrollIntoView = function () { }
     render(<Provider>
       <UserProfileContext.Provider
@@ -220,7 +220,7 @@ describe('Property Unit Drawer', () => {
         visible
         unitId={unitId}
         onClose={closeFn}
-        venueId={params.nsgVenueId}
+        venueId={params.pinVenueId}
       />
     </Provider>)
 

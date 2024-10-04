@@ -72,12 +72,11 @@ export function SwitchCableTestForm () {
   })
 
   const getPortDisabled = (port: SwitchPortViewModel) => {
-    return port.portSpeedConfig !== 'AUTO' || port.status !== 'Up' || port.portConnectorType !== 'COPPER'
+    return port.portSpeedConfig !== 'AUTO' || port.portConnectorType !== 'COPPER'
   }
 
   const TOOLTIPS= {
     auto: $t({ defaultMessage: 'To execute the cable test, port speed must be set to “Auto”' }),
-    up: $t({ defaultMessage: 'To execute the cable test, the port must be UP' }),
     copper: $t({ defaultMessage: 'This test can only be executed on Copper ports. Fiber ports are not supported' })
   }
 
@@ -85,9 +84,6 @@ export function SwitchCableTestForm () {
     const t = []
     if(port.portSpeedConfig !== 'AUTO') {
       t.push(TOOLTIPS.auto)
-    }
-    if(port.status !== 'Up') {
-      t.push(TOOLTIPS.up)
     }
     if(port.portConnectorType !== 'COPPER') {
       t.push(TOOLTIPS.copper)

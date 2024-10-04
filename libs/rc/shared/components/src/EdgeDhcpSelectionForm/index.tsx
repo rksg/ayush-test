@@ -9,12 +9,12 @@ import { EdgeDhcpPool }                                     from '@acx-ui/rc/uti
 import { AddEdgeDhcpServiceModal } from '../AddEdgeDhcpServiceModal'
 
 interface EdgeDhcpSelectionFormProps {
-  hasNsg?: boolean
+  hasPin?: boolean
 }
 
 export const EdgeDhcpSelectionForm = (props: EdgeDhcpSelectionFormProps) => {
 
-  const { hasNsg } = props
+  const { hasPin } = props
   const { $t } = useIntl()
   const { form } = useStepFormContext()
   const dhcpId = Form.useWatch('dhcpId', form)
@@ -96,7 +96,7 @@ export const EdgeDhcpSelectionForm = (props: EdgeDhcpSelectionFormProps) => {
               ...(edgeDhcpOptions || [])
             ]}
             loading={isEdgeDhcpOptionsLoading}
-            disabled={hasNsg}
+            disabled={hasPin}
           />
         </Form.Item>
         <AddEdgeDhcpServiceModal />
