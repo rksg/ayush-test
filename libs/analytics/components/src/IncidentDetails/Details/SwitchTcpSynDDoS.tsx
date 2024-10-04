@@ -51,10 +51,10 @@ export const SwitchTcpSynDDoS = (incident: Incident) => {
       <GridCol col={{ span: 20 }}>
         <Insights incident={incident} />
       </GridCol>
-      <GridCol col={{ offset: 4, span: 4 }} style={{ minHeight: '129px' }}>
+      <GridCol col={{ offset: 4, span: 5 }} style={{ minHeight: '129px' }}>
         <ImpactedSwitchDDoSDonut incident={incident}/>
       </GridCol>
-      <GridCol col={{ offset: 1, span: 15 }} style={{ minHeight: '129px' }}>
+      <GridCol col={{ span: 15 }} style={{ minHeight: '129px' }}>
         <TimeSeries
           incident={incident}
           charts={timeSeriesCharts}
