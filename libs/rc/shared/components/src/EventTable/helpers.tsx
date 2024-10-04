@@ -139,15 +139,15 @@ export const getSource = (data: Event, highlightFn?: TableHighlightFnArgs) => {
 }
 
 export const getDescription = (data: Event, highlightFn?: TableHighlightFnArgs) => {
-  const parseData = formatTurnOnOffTimestamp(data)
+  const formatData = formatTurnOnOffTimestamp(data)
   try {
-    let message = String(parseData.message && JSON.parse(parseData.message).message_template)
+    let message = String(formatData.message && JSON.parse(formatData.message).message_template)
       // escape ' by replacing with ''
       .replaceAll("'", "''")
       // escape < { by replacing with '<' or '{'
       .replaceAll(/([<{])/g, "'$1'")
 
-    const template = replaceStrings(message, parseData, (key) => `<entity>${key}</entity>`)
+    const template = replaceStrings(message, formatData, (key) => `<entity>${key}</entity>`)
     const highlighted = (highlightFn
       ? highlightFn(template, (key) => `<b>${key}</b>`)
       : template) as string
@@ -166,14 +166,14 @@ export const getDescription = (data: Event, highlightFn?: TableHighlightFnArgs) 
       values={{
         entity: (chunks) => <EntityLink
           entityKey={String(chunks[0]) as keyof Event}
-          data={parseData}
+          data={formatData}
           highlightFn={highlightFn}
         />,
         b: (chunks) => <Table.Highlighter>{chunks}</Table.Highlighter>
       }}
     />
   } catch {
-    return parseData.message
+    return formatData.message
   }
 }
 
