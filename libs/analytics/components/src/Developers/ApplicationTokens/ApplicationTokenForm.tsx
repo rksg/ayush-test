@@ -8,27 +8,21 @@ import { useIntl }                         from 'react-intl'
 import {
   Drawer,
   DrawerProps,
-  Loader,
   showToast
 } from '@acx-ui/components'
 
+import { handleError }                                from '../services'
 import { TransparentButton, Label, SecretInput, Row } from '../styledComponents'
 
-import {
-  useCreateWebhookMutation,
-  useResourceGroups,
-  useUpdateWebhookMutation,
-  handleError,
-  applicationTokenDtoKeys
-} from './services'
+import { applicationTokenDtoKeys, useCreateApplicationTokenMutation, useUpdateApplicationTokenMutation } from './services'
 
-import type { ApplicationToken, ApplicationTokenDto, WebhookDto } from './services'
+import type { ApplicationToken, ApplicationTokenDto } from './services'
 
 function useApplicationTokenMutation (
   applicationToken?: ApplicationToken | null
 ) {
-  const [doCreate, createResponse] = useCreateWebhookMutation()
-  const [doUpdate, updateResponse] = useUpdateWebhookMutation()
+  const [doCreate, createResponse] = useCreateApplicationTokenMutation()
+  const [doUpdate, updateResponse] = useUpdateApplicationTokenMutation()
 
   return applicationToken
     ? { submit: doUpdate, response: updateResponse }
@@ -49,7 +43,6 @@ export function ApplicationTokenForm (props: {
   applicationToken?: ApplicationToken | null
   onClose: () => void
 }) {
-  const rg = useResourceGroups()
   const { submit, response } = useApplicationTokenMutation(props.applicationToken)
   const applicationToken = props.applicationToken
   const { $t } = useIntl()
@@ -104,7 +97,7 @@ export function ApplicationTokenForm (props: {
   const onSave = async () => {
     try {
       await form.validateFields()
-      const values = form.getFieldsValue() as unknown as WebhookDto
+      const values = form.getFieldsValue()
       await submit(values).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -128,67 +121,66 @@ export function ApplicationTokenForm (props: {
       onSave={onSave}
     />
   }
+
   return <Drawer {...drawerProps}>
-    <Loader states={[rg]}>
-      <Form {...formProps}>
+    <Form {...formProps}>
+      <Form.Item
+        validateFirst
+        name='name'
+        label={$t({ defaultMessage: 'Token Name' })}
+        rules={[
+          { required: true },
+          { max: 255 },
+          { whitespace: true }
+        ]}
+        children={<Input />}
+      />
+      { applicationToken?.id && (<>
         <Form.Item
           validateFirst
-          name='name'
-          label={$t({ defaultMessage: 'Token Name' })}
-          rules={[
-            { required: true },
-            { max: 255 },
-            { whitespace: true }
-          ]}
-          children={<Input />}
+          name='clientId'
+          label={$t({ defaultMessage: 'Client ID' })}
+          rules={[{ required: true }]}
+          children={
+            <Label>{initClientId}</Label>
+          }
         />
-        { applicationToken?.id && (<>
-          <Form.Item
-            validateFirst
-            name='clientId'
-            label={$t({ defaultMessage: 'Client ID' })}
-            rules={[{ required: true }]}
-            children={
-              <Label>{initClientId}</Label>
-            }
-          />
+        <TransparentButton
+          type='link'
+          onClick={() => {
+            handleClickCopy(form.getFieldValue('clientId'))
+          }}>
+          {$t({ defaultMessage: 'Copy' })}
+        </TransparentButton>
+        <Form.Item
+          validateFirst
+          name='clientSecret'
+          style={{ marginTop: '13px' }}
+          label={$t({ defaultMessage: 'Client Secret' })}
+          rules={[{ required: true }]}
+          children={
+            <SecretInput
+              bordered={false}
+              value={initClientSecret}
+            />
+          }
+        />
+        <Row>
+          <TransparentButton
+            type='link'
+            onClick={() => {}}>
+            {$t({ defaultMessage: 'Rotate Secret' })}
+          </TransparentButton>
+          <Divider type='vertical'/>
           <TransparentButton
             type='link'
             onClick={() => {
-              handleClickCopy(form.getFieldValue('clientId'))
+              handleClickCopy(form.getFieldValue('clientSecret'))
             }}>
             {$t({ defaultMessage: 'Copy' })}
           </TransparentButton>
-          <Form.Item
-            validateFirst
-            name='clientSecret'
-            style={{ marginTop: '13px' }}
-            label={$t({ defaultMessage: 'Client Secret' })}
-            rules={[{ required: true }]}
-            children={
-              <SecretInput
-                bordered={false}
-                value={initClientSecret}
-              />
-            }
-          />
-          <Row>
-            <TransparentButton
-              type='link'
-              onClick={() => {}}>
-              {$t({ defaultMessage: 'Rotate Secret' })}
-            </TransparentButton>
-            <Divider type='vertical'/>
-            <TransparentButton
-              type='link'
-              onClick={() => {
-                handleClickCopy(form.getFieldValue('clientSecret'))
-              }}>
-              {$t({ defaultMessage: 'Copy' })}
-            </TransparentButton>
-          </Row>
-        </>)}
-      </Form>
-    </Loader>
+        </Row>
+      </>)}
+    </Form>
   </Drawer>
 }

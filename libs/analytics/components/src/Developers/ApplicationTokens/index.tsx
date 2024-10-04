@@ -12,40 +12,30 @@ import {
   showActionModal,
   showToast
 } from '@acx-ui/components'
-import { get }                                      from '@acx-ui/config'
 import { CopyOutlined }                             from '@acx-ui/icons-new'
 import { SwitchScopes, WifiScopes }                 from '@acx-ui/types'
 import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
 
+import { handleError }                         from '../services'
 import { TransparentButton, Row, SecretInput } from '../styledComponents'
 import { Label }                               from '../styledComponents'
 
-import { applicationTokens }                                                          from './__fixtures__'
-import { ApplicationTokenForm }                                                       from './ApplicationTokenForm'
-import { useDeleteWebhookMutation, useWebhooksQuery, useResourceGroups, handleError } from './services'
+import { ApplicationTokenForm }                                         from './ApplicationTokenForm'
+import { useApplicationTokensQuery, useDeleteApplicationTokenMutation } from './services'
 
-import type { ApplicationToken, Webhook } from './services'
+import type { ApplicationToken } from './services'
 
 
 type ApplicationTokenTableProps = TableProps<ApplicationToken>
 
-const useWebhooksData = (selectedId?: Webhook['id'] | null) => {
-  const rg = useResourceGroups()
-  const webhooks = useWebhooksQuery(rg.rgMap, {
-    skip: !rg.data && Boolean(get('IS_MLISA_SA')),
-    selectFromResult: (response) => {
-      return {
-        ...response,
-        webhook: selectedId
-          ? _.get(_.keyBy(response.data, 'id'), selectedId)
-          : (selectedId as null | undefined)
-      }
-    }
-  })
+const useApplicationTokensData = (selectedId?: ApplicationToken['id'] | null) => {
+  const applicationTokens = useApplicationTokensQuery()
   return {
-    webhooks: webhooks.data,
-    webhook: webhooks.webhook,
-    states: [rg, webhooks]
+    applicationTokens: applicationTokens.data,
+    applicationToken: selectedId
+      ? _.get(_.keyBy(applicationTokens.data, 'id'), selectedId)
+      : (selectedId as null | undefined),
+    states: [applicationTokens]
   }
 }
 
@@ -53,15 +43,13 @@ export const useApplicationTokens = () => {
   const { $t } = useIntl()
 
   // string    = existing record
-  // undefined = create new webhook
-  // null      = no webhook selected
+  // undefined = create new application token
+  // null      = no application token selected
   const [selectedId, setSelectedId] = useState<string | undefined | null>(null)
 
-  const { states } = useWebhooksData(selectedId)
-  // const webhook = applicationTokens[0]
-  const webhook = null
+  const { applicationTokens, applicationToken, states } = useApplicationTokensData(selectedId)
 
-  const [doDelete, response] = useDeleteWebhookMutation()
+  const [doDelete, response] = useDeleteApplicationTokenMutation()
 
   const [count, setCount] = useState(applicationTokens?.length || 0)
   useEffect(() => setCount(applicationTokens?.length || 0), [applicationTokens?.length])
@@ -102,7 +90,6 @@ export const useApplicationTokens = () => {
     searchable: true,
     title: $t({ defaultMessage: 'Client ID' }),
     sorter: { compare: sortProp('clientId', defaultSort) },
-    width: 275,
     render: function (_, row) {
       return <Row>
         <Label>{row.clientId}</Label>
@@ -122,7 +109,6 @@ export const useApplicationTokens = () => {
     searchable: true,
     title: $t({ defaultMessage: 'Client Secret' }),
     sorter: { compare: sortProp('clientSecret', defaultSort) },
-    width: 275,
     render: function (_, row) {
       return <Row>
         <SecretInput
@@ -144,15 +130,17 @@ export const useApplicationTokens = () => {
   const rowActions: ApplicationTokenTableProps['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     scopeKey: [WifiScopes.UPDATE, SwitchScopes.UPDATE],
-    onClick: ([webhook]) => setSelectedId(webhook.id)
+    onClick: ([applicationToken]) => setSelectedId(applicationToken.id)
   }, {
     label: $t({ defaultMessage: 'Delete' }),
     scopeKey: [WifiScopes.DELETE, SwitchScopes.DELETE],
-    onClick: ([webhook]) => showActionModal({
+    onClick: ([applicationToken]) => showActionModal({
       type: 'confirm',
-      title: $t({ defaultMessage: 'Delete "{name}"?' }, { name: webhook.name }),
+      title: $t({ defaultMessage: 'Delete "{name}"?' }, { name: applicationToken.name }),
       content: $t({ defaultMessage: 'Are you sure you want to delete this application token?' }),
-      onOk: () => doDelete(webhook.id)
+      onOk: () => {
+        doDelete(applicationToken)
+      }
     })
   }]
 
@@ -164,7 +152,7 @@ export const useApplicationTokens = () => {
 
   const component = <Loader states={states}>
     <ApplicationTokenForm
-      applicationToken={webhook}
+      applicationToken={applicationToken}
       onClose={() => setSelectedId(null)}
     />
     <Table<ApplicationToken>

@@ -6,7 +6,7 @@ import { PasswordInput } from '@acx-ui/components'
 export const Label = styled.span`
   font-size: var(--acx-body-4-font-size);
   line-height: 34px;
-  width: 270px;
+  width: 240px;
 `
 
 export const TransparentButton = styled(Button)`
@@ -26,7 +26,7 @@ export const Row = styled.div`
 `
 
 export const SecretInput = styled(PasswordInput)`
-  width: 280px;
+  width: 340px;
   margin-left: -12px;
 
   & .ant-input {
