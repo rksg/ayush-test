@@ -47,7 +47,7 @@ export const SettingsForm = () => {
   $t({ defaultMessage: 'This value should be between 1 and 100' })
   const prioritySchedulingRangeErrMsg =
   // eslint-disable-next-line max-len
-  $t({ defaultMessage: 'If you want to set this traffic class to priority scheduling, the value must be greater than or equal to 1' })
+  $t({ defaultMessage: 'If you want to set this traffic class to priority scheduling, the value must be at least 1' })
   const guaranteedBandwidthSumErrMsg =
   $t({ defaultMessage: 'Total guaranteed bandwidth across all classes must NOT exceed 100%' })
   const bandwidthRangeCompareErrMsg =

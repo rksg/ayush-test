@@ -5,7 +5,8 @@ import { Tabs,
   PageHeader
 } from '@acx-ui/components'
 import { Features,
-  useIsSplitOn
+  useIsSplitOn,
+  useIsTierAllowed
 } from '@acx-ui/feature-toggle'
 import {
   useGetAdminListQuery,
@@ -31,7 +32,8 @@ const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boo
   const { tenantId, venueId, serialNumber } = params
   const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
   const isGroupBasedLoginEnabled = useIsSplitOn(Features.GROUP_BASED_LOGIN_TOGGLE)
-  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
+  const isRbacEarlyAccessEnable = useIsTierAllowed(Features.RBAC_IMPLICIT_P1)
+  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
 
   const defaultPayload = {
     filters: venueId ? { venueId: [venueId] } :
