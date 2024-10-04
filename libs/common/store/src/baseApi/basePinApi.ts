@@ -2,10 +2,10 @@ import { createApi } from '@reduxjs/toolkit/query/react'
 
 import { baseQuery } from './baseQuery'
 
-export const baseNsgApi = createApi({
+export const basePinApi = createApi({
   baseQuery: baseQuery,
-  reducerPath: 'nsgApi',
-  tagTypes: ['Networksegmentation', 'WebAuthNSG'],
+  reducerPath: 'pinApi',
+  tagTypes: ['EdgePin', 'WebAuthNSG'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })

@@ -1,16 +1,41 @@
 import { ApiInfo } from '@acx-ui/utils'
 
 
-export const NetworkSegmentationUrls: { [key: string]: ApiInfo } = {
-  getNetworkSegmentationGroupById: {
+export const EdgePinUrls: { [key: string]: ApiInfo } = {
+  getEdgePinById: {
     method: 'get',
     newApi: true,
     url: '/personalIdentityNetworks/:serviceId'
   },
-  getNetworkSegmentationGroupList: {
-    method: 'get',
+  createEdgePin: {
+    method: 'post',
     newApi: true,
-    url: '/personalIdentityNetworks?size=:pageSize&page=:page&sort=:sort'
+    url: '/personalIdentityNetworks'
+  },
+  getEdgePinStatsList: {
+    method: 'post',
+    newApi: true,
+    url: '/personalIdentityNetworks/query'
+  },
+  deleteEdgePin: {
+    method: 'delete',
+    newApi: true,
+    url: '/personalIdentityNetworks/:serviceId'
+  },
+  updateEdgePin: {
+    method: 'put',
+    newApi: true,
+    url: '/personalIdentityNetworks/:serviceId'
+  },
+  activateEdgePinNetwork: {
+    method: 'put',
+    newApi: true,
+    url: '/personalIdentityNetworks/:serviceId/wifiNetworks/:wifiNetworkId'
+  },
+  deactivateEdgePinNetwork: {
+    method: 'delete',
+    newApi: true,
+    url: '/personalIdentityNetworks/:serviceId/wifiNetworks/:wifiNetworkId'
   },
   getWebAuthTemplate: {
     method: 'get',
@@ -48,12 +73,11 @@ export const NetworkSegmentationUrls: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/personalIdentityNetworks',
     newApi: true
   },
-  getSwitchInfoByNSGId: {
+  getSwitchInfoByPinId: {
     method: 'get',
     url: '/venues/:venueId/personalIdentityNetworks/:serviceId',
     newApi: true
   },
-
   validateDistributionSwitchInfo: {
     method: 'post',
     url: '/venues/:venueId/personalIdentityNetworks/distributionSwitchInfo',
@@ -63,35 +87,5 @@ export const NetworkSegmentationUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/venues/:venueId/personalIdentityNetworks/accessSwitchInfo',
     newApi: true
-  },
-  createNetworkSegmentationGroup: {
-    method: 'post',
-    newApi: true,
-    url: '/personalIdentityNetworks'
-  },
-  getNetworkSegmentationStatsList: {
-    method: 'post',
-    newApi: true,
-    url: '/personalIdentityNetworks/query'
-  },
-  deleteNetworkSegmentationGroup: {
-    method: 'delete',
-    newApi: true,
-    url: '/personalIdentityNetworks/:serviceId'
-  },
-  updateNetworkSegmentationGroup: {
-    method: 'put',
-    newApi: true,
-    url: '/personalIdentityNetworks/:serviceId'
-  },
-  activatePinNetwork: {
-    method: 'put',
-    newApi: true,
-    url: '/personalIdentityNetworks/:serviceId/wifiNetworks/:wifiNetworkId'
-  },
-  deactivatePinNetwork: {
-    method: 'delete',
-    newApi: true,
-    url: '/personalIdentityNetworks/:serviceId/wifiNetworks/:wifiNetworkId'
   }
 }

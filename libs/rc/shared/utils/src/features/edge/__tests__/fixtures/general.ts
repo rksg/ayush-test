@@ -100,7 +100,7 @@ export const mockEdgeServiceList = {
       edgeId: '96B341ADD6C16C11ED8B8B000C296600F3',
       serviceName: 'NSG-1',
       serviceId: 'nsg-1',
-      serviceType: EdgeServiceTypeEnum.NETWORK_SEGMENTATION,
+      serviceType: EdgeServiceTypeEnum.PIN,
       status: 'Up',
       currentVersion: '1.1.1',
       targetVersion: ''
