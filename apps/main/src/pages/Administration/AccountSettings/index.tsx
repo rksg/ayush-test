@@ -30,6 +30,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const { className } = props
   const params = { tenantId: useTenantId() }
   const betaButtonToggle = useIsSplitOn(Features.BETA_BUTTON)
+  const mfaNewApiToggle = useIsSplitOn(Features.MFA_NEW_API_TOGGLE)
   const {
     data: userProfileData,
     isPrimeAdmin,
@@ -38,7 +39,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const mspUtils = MSPUtils()
 
   const recoveryPassphraseData = useGetRecoveryPassphraseQuery({ params })
-  const mfaTenantDetailsData = useGetMfaTenantDetailsQuery({ params })
+  const mfaTenantDetailsData = useGetMfaTenantDetailsQuery({ params, enableRbac: mfaNewApiToggle })
   const mspEcProfileData = useGetMspEcProfileQuery({ params })
   const canMSPDelegation = isDelegationMode() === false
   const hasMSPEcLabel = mspUtils.isMspEc(mspEcProfileData.data)
