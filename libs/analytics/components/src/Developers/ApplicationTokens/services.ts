@@ -1,12 +1,20 @@
+import jwt from 'jsonwebtoken'
+
 import { rbacApi } from '@acx-ui/store'
 
 export type ApplicationToken = {
   id: string
+  camId: string
   name: string
   clientId: string
   clientSecret: string
-  grantTypes: string[]
-  accessTokenTtl: number
+}
+
+export type ApplicationTokenResponse = {
+  camId: string
+  name: string
+  clientId: string
+  clientSecret: string
 }
 
 export const applicationTokenDtoKeys = [
@@ -19,13 +27,11 @@ Pick<ApplicationToken, typeof applicationTokenDtoKeys[number]>, 'id'
   id?: string
 }
 
-// type SampleResponse = {
-//   success: boolean
-//   status: number
-//   data: string
-// }
+const token = sessionStorage.getItem('jwt')
+const decodedJwt = jwt.decode(token)
 
-// type SamplePayload = Pick<Webhook, 'callbackUrl' | 'secret'>
+console.log('JWT', jwt)
+console.log('Decoded JWT', decodedJwt)
 
 export const {
   useApplicationTokensQuery,
@@ -41,7 +47,11 @@ export const {
         method: 'get',
         credentials: 'include'
       }),
-      providesTags: [{ type: 'ApplicationToken', id: 'LIST' }]
+      providesTags: [{ type: 'ApplicationToken', id: 'LIST' }],
+      transformResponse: (response: ApplicationTokenResponse[]) => response.map((item) => ({
+        id: item.camId,
+        ...item
+      }))
     }),
     createApplicationToken: build.mutation<void, ApplicationTokenDto>({
       query: (applicationToken) => ({
