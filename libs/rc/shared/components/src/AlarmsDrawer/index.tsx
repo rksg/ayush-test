@@ -165,7 +165,14 @@ export function AlarmsDrawer (props: AlarmsType) {
         filters
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    if(tableQuery.data?.totalCount && tableQuery.data.totalCount > 0
+        && tableQuery.data?.data.length === 0){
+      tableQuery.setPayload({
+        ...allAlarmsPayload,
+        filters
+      })
+    }
   }, [tableQuery.data, severity, serialNumber, venueId])
 
   const getIconBySeverity = (severity: EventSeverityEnum)=>{
