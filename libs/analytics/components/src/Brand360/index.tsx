@@ -5,6 +5,10 @@ import moment from 'moment-timezone'
 import { useBrand360Config }                                 from '@acx-ui/analytics/services'
 import { Settings }                                          from '@acx-ui/analytics/utils'
 import { PageHeader, RangePicker, GridRow, GridCol, Loader } from '@acx-ui/components'
+import { Features,
+  useIsSplitOn,
+  useIsTierAllowed
+} from '@acx-ui/feature-toggle'
 import {
   useMspECListQuery,
   useIntegratorCustomerListDropdownQuery
@@ -67,6 +71,7 @@ const getlspPayload = (parentTenantId: string | undefined) => ({
 })
 
 export function Brand360 () {
+  const isMDUEnabled = useIsSplitOn(Features.BRAND360_MDU_TOGGLE)
   const { names, settingsQuery } = useBrand360Config()
   const { brand, lsp, property } = names
   const { tenantId, tenantType } = getJwtTokenPayload()
@@ -113,13 +118,13 @@ export function Brand360 () {
       - rc api for properties still loading
       - no tenantids implies no data in table
   */
-  const skipTSQuery = ssidSkip || propertiesLoading || !tenantIds.length
+  const skipTSQuery = ssidSkip || propertiesLoading || !tenantIds.length || false
   const {
     data: chartData,
     ...chartResults
   } = useFetchBrandTimeseriesQuery(
     { ...chartPayload, tenantIds },
-    { skip: skipTSQuery }
+    // { skip: skipTSQuery }
   )
   const [pastStart, pastEnd] = computePastRange(startDate, endDate)
   const {

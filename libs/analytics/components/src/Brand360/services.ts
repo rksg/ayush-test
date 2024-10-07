@@ -111,6 +111,7 @@ export const api = dataApi.injectEndpoints({
               clientThroughputSLA
               connectionSuccessSLA
               ssidComplianceSLA
+              prospectCountSLA
             }
           }
         `,
