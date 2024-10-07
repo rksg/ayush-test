@@ -81,6 +81,7 @@ import { OpenSettingsForm }        from './NetworkSettings/OpenSettingsForm'
 import { PskSettingsForm }         from './NetworkSettings/PskSettingsForm'
 import { SummaryForm }             from './NetworkSummary/SummaryForm'
 import {
+  handleServicePolicyRbacPayload,
   tranferSettingsToSave,
   transferDetailToSave,
   transferMoreSettingsToSave,
@@ -738,26 +739,11 @@ export function NetworkForm (props:{
       ])
     // eslint-disable-next-line max-len
     const processClientIsolationAllowlist = (data: NetworkSaveData) => updateClientIsolationAllowlist(data)
-    const processRemoveServicePolicyProfileId = (data: NetworkSaveData) => {
-      return omit(data, [
-        'wlan.advancedCustomization.l2AclPolicyId',
-        'wlan.advancedCustomization.l3AclPolicyId',
-        'wlan.advancedCustomization.devicePolicyId',
-        'wlan.advancedCustomization.applicationPolicyId',
-        'wlan.advancedCustomization.accessControlProfileId',
-        'wlan.advancedCustomization.vlanPool',
-        'wlan.advancedCustomization.wifiCallingIds',
-        'dpskServiceId',
-        'macRegistrationPoolId',
-        'portalServiceProfileId'
-      ])
-    }
     const processFns = [
       processWlanAdvanced3MLO,
       processGuestMoreSetting,
       processCloneMode,
-      processClientIsolationAllowlist,
-      ...(resolvedRbacEnabled) ? [processRemoveServicePolicyProfileId] : []
+      processClientIsolationAllowlist
     ]
     return processFns.reduce((tempData, processFn) => processFn(tempData), data)
   }
@@ -766,7 +752,11 @@ export function NetworkForm (props:{
       const payload = processAddData(saveState)
 
       // eslint-disable-next-line max-len
-      const networkResponse = await addNetworkInstance({ params, payload, enableRbac: resolvedRbacEnabled }).unwrap()
+      const networkResponse = await addNetworkInstance({
+        params,
+        payload: resolvedRbacEnabled ? handleServicePolicyRbacPayload(payload) : payload,
+        enableRbac: resolvedRbacEnabled
+      }).unwrap()
       const networkId = networkResponse?.response?.id
 
       const allRequests = []
@@ -812,7 +802,6 @@ export function NetworkForm (props:{
       }
       await Promise.allSettled(allRequests)
 
-      await Promise.allSettled(allRequests)
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -878,7 +867,7 @@ export function NetworkForm (props:{
             'owePairNetworkId',
             'certificateTemplateId',
             'userConnection',
-            ...(enableServiceRbac) ? ['dpskServiceId', 'macRegistrationPoolId'] : [],
+            ...(enableServiceRbac) ? ['dpskServiceProfileId', 'macRegistrationPoolId'] : [],
             ...(isUseWifiRbacApi) ? ['portalServiceProfileId'] : []
           ]
         )
@@ -890,7 +879,11 @@ export function NetworkForm (props:{
     try {
       processEditData(formData)
       const payload = updateClientIsolationAllowlist(saveContextRef.current as NetworkSaveData)
-      await updateNetworkInstance({ params, payload, enableRbac: resolvedRbacEnabled }).unwrap()
+      await updateNetworkInstance({
+        params,
+        payload: resolvedRbacEnabled ? handleServicePolicyRbacPayload(payload) : payload,
+        enableRbac: resolvedRbacEnabled
+      }).unwrap()
 
       const allRequests = []
       allRequests.push(activateCertificateTemplate(formData.certificateTemplateId, payload.id))
