@@ -1,5 +1,3 @@
-import jwt from 'jsonwebtoken'
-
 import { rbacApi } from '@acx-ui/store'
 
 export type ApplicationToken = {
@@ -18,20 +16,18 @@ export type ApplicationTokenResponse = {
 }
 
 export const applicationTokenDtoKeys = [
-  'id', 'name', 'clientId', 'clientSecret'
+  'id', 'camId', 'name', 'clientId', 'clientSecret'
 ] as const
 
+const omittedKeys = ['id', 'camId', 'clientId', 'clientSecret'] as const
+
 export type ApplicationTokenDto = Omit<
-Pick<ApplicationToken, typeof applicationTokenDtoKeys[number]>, 'id'
+Pick<ApplicationToken, typeof applicationTokenDtoKeys[number]>, typeof omittedKeys[number]
 > & {
   id?: string
+  camId?: string
+  clientId?: string
 }
-
-const token = sessionStorage.getItem('jwt')
-const decodedJwt = jwt.decode(token)
-
-console.log('JWT', jwt)
-console.log('Decoded JWT', decodedJwt)
 
 export const {
   useApplicationTokensQuery,
@@ -74,10 +70,9 @@ export const {
     deleteApplicationToken: build.mutation<void, ApplicationTokenDto>({
       query: (applicationToken) => {
         return ({
-          url: '/applicationTokens',
+          url: `/applicationTokens/${applicationToken.camId}`,
           method: 'delete',
-          credentials: 'include',
-          body: applicationToken
+          credentials: 'include'
         })
       },
       invalidatesTags: [{ type: 'ApplicationToken', id: 'LIST' }]

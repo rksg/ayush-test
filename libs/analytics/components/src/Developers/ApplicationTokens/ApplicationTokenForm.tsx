@@ -29,16 +29,6 @@ function useApplicationTokenMutation (
     : { submit: doCreate, response: createResponse }
 }
 
-const generateHexKey = (keyLength: number):string => {
-  let hexKey = ''
-  const crypto = window.crypto
-  const array = new Uint32Array(1)
-  while (hexKey.length < keyLength) {
-    hexKey += crypto.getRandomValues(array)[0].toString(16).substring(2)
-  }
-  return hexKey.slice(0, keyLength)
-}
-
 export function ApplicationTokenForm (props: {
   applicationToken?: ApplicationToken | null
   onClose: () => void
@@ -91,9 +81,6 @@ export function ApplicationTokenForm (props: {
     navigator.clipboard.writeText(copyString)
   }
 
-  const initClientId = applicationToken?.clientId || generateHexKey(32)
-  const initClientSecret = applicationToken?.clientSecret || generateHexKey(32)
-
   const onSave = async () => {
     try {
       await form.validateFields()
@@ -142,7 +129,7 @@ export function ApplicationTokenForm (props: {
           label={$t({ defaultMessage: 'Client ID' })}
           rules={[{ required: true }]}
           children={
-            <Label>{initClientId}</Label>
+            <Label>{applicationToken?.clientId}</Label>
           }
         />
         <TransparentButton
@@ -161,7 +148,7 @@ export function ApplicationTokenForm (props: {
           children={
             <SecretInput
               bordered={false}
-              value={initClientSecret}
+              value={applicationToken?.clientSecret}
             />
           }
         />
