@@ -83,7 +83,6 @@ export function MspCustomers () {
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
   const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
   const isvViewModelTpLoginEnabled = useIsSplitOn(Features.VIEWMODEL_TP_LOGIN_ADMIN_COUNT)
-  const isMspSortOnTpEnabled = useIsSplitOn(Features.MSP_SORT_ON_TP_COUNT_TOGGLE)
 
   const [ecTenantId, setTenantId] = useState('')
   const [selectedTenantType, setTenantType] = useState(AccountType.MSP_INTEGRATOR)
@@ -160,8 +159,6 @@ export function MspCustomers () {
       'alarmCount',
       'mspAdminCount',
       'mspEcAdminCount',
-      'integratorCount',
-      'installerCount',
       'creationDate',
       'expirationDate',
       'wifiLicense',
@@ -314,9 +311,8 @@ export function MspCustomers () {
         title: techPartnerAssignEcsEanbled
           ? $t({ defaultMessage: 'Integrator Count' })
           : $t({ defaultMessage: 'Integrator' }),
-        dataIndex: isMspSortOnTpEnabled ? 'integratorCount' : 'integrator',
-        key: isMspSortOnTpEnabled ? 'integratorCount' : 'integrator',
-        sorter: isMspSortOnTpEnabled,
+        dataIndex: 'integrator',
+        key: 'integrator',
         width: 130,
         onCell: (data: MspEc) => {
           return allowSelectTechPartner ? {
@@ -342,9 +338,8 @@ export function MspCustomers () {
         title: techPartnerAssignEcsEanbled
           ? $t({ defaultMessage: 'Installer Count' })
           : $t({ defaultMessage: 'Installer' }),
-        dataIndex: isMspSortOnTpEnabled ? 'installerCount' : 'installer',
-        key: isMspSortOnTpEnabled ? 'installerCount' : 'installer',
-        sorter: isMspSortOnTpEnabled,
+        dataIndex: 'installer',
+        key: 'installer',
         width: 120,
         onCell: (data: MspEc) => {
           return allowSelectTechPartner ? {
