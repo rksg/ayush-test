@@ -28,8 +28,6 @@ export function AupSettings () {
     setDisplayFileOption(!displayFileOption)
   }
 
-  useEffect(() => {formInstance.validateFields()}, [aupFormatSwitch])
-
   useEffect(() => {
     setDisplayFileOption(formInstance.getFieldValue('useAupFile'))
   }, [formInstance.getFieldValue('useAupFile')])
