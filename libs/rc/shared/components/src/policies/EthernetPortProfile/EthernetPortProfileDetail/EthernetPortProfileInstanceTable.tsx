@@ -20,7 +20,8 @@ export const EthernetPortProfileInstanceTable = (props: EthernetPortTableProps) 
       'name',
       'venueId',
       'model',
-      'serialNumber'
+      'serialNumber',
+      'venueName'
     ],
     filters: { serialNumber: apSerialNumbers }
   }

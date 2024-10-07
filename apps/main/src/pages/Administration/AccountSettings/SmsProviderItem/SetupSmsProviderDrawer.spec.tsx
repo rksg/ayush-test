@@ -315,7 +315,7 @@ describe('Set SMS Provider Drawer', () => {
     const mockedCloseDrawer = jest.fn()
     mockLazyPhoneNumberQuery.mockImplementation(() =>
       Promise.resolve(
-        { data: { incommingPhoneNumbers: [] } }
+        { error: { data: { errorMessage: phoneNumberValidationMessage } } }
       ))
     render(
       <Provider>
@@ -366,7 +366,7 @@ describe('Set SMS Provider Drawer', () => {
     const mockedCloseDrawer = jest.fn()
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockLazyMessagingQuery.mockImplementation(() => Promise.resolve(
-      { data: { messagingServiceResources: [] } }
+      { error: { data: { errorMessage: servicesValidationMessage } } }
     ))
     render(
       <Provider>
