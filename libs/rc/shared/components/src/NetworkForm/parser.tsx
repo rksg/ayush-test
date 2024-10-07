@@ -1,4 +1,4 @@
-import { get, isEmpty, omit, merge } from 'lodash'
+import { get, isEmpty, omit } from 'lodash'
 
 import {
   NetworkTypeEnum,
