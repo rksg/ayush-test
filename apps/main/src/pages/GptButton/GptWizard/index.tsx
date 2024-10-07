@@ -4,14 +4,11 @@ import React, { useEffect, useRef, useState } from 'react'
 import { ProFormInstance, StepsForm } from '@ant-design/pro-form'
 import dayjs from 'dayjs'
 
-import { GptConversation, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { GptConversation } from '@acx-ui/rc/utils'
 
 import { GptStepsForm } from '../styledComponents'
 
 import type { Dayjs } from 'dayjs'
-import { getJwtToken, getTenantId } from '@acx-ui/utils'
-import { showActionModal } from '@acx-ui/components'
-import { useNavigate } from 'react-router-dom'
 import { WlanStep } from './Steps/WlanStep'
 import { WlanDetailStep } from './Steps/WlanDetailStep'
 import { VlanStep } from './Steps/VlanStep'
@@ -73,7 +70,6 @@ export default function GptWizard(props: {
 
   const [step4payload, setStep4payload] = useState({} as GptConversation)
 
-  const navigate = useNavigate()
   const [updateSsidProfile] = useUpdateSsidProfileMutation()
   const [updateSsid] = useUpdateSsidMutation()
   const [updateVlan] = useUpdateVlanMutation()
@@ -172,7 +168,7 @@ export default function GptWizard(props: {
 
 
           } catch (error) {
-            console.log(error);
+            return false
           }
         }}
       >
@@ -205,7 +201,7 @@ export default function GptWizard(props: {
 
             return true
           } catch (error) {
-            console.log(error);
+            return false
           }
         }}
 
