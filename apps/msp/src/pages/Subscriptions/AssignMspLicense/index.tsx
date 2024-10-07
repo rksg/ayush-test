@@ -32,7 +32,7 @@ import {
   MspAssignmentSummary
 } from '@acx-ui/msp/utils'
 import {
-  EntitlementDeviceType, EntitlementUtil, useTableQuery
+  EntitlementDeviceType, EntitlementUtil, ErrorDetails, ErrorsResult, useTableQuery
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -68,17 +68,6 @@ interface Assignment {
   quantity: number
   deviceType: EntitlementDeviceType
   useTemporaryMspEntitlement?: boolean
-}
-
-interface ErrorsResult<T> {
-  data: T;
-  status: number;
-}
-
-interface ErrorDetails {
-  code: string,
-  message?: string,
-  errorMessage?: string
 }
 
 export const entitlementAssignmentPayload = {

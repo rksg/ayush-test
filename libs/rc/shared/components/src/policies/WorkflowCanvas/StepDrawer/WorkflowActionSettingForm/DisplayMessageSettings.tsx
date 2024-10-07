@@ -17,7 +17,7 @@ export function DisplayMessageSetting () {
       label={$t({ defaultMessage: 'Page Title' })}
       rules={[
         { required: true },
-        { min: 1 },
+        { min: 2 },
         { max: 100 },
         { validator: (_, value) => trailingNorLeadingSpaces(value) }
       ]}
@@ -30,7 +30,7 @@ export function DisplayMessageSetting () {
       label={$t({ defaultMessage: 'Page Body Text' })}
       rules={[
         { required: true },
-        { min: 1 },
+        { min: 2 },
         { max: 1000 },
         { validator: (_, value) => trailingNorLeadingSpaces(value) }
       ]}
