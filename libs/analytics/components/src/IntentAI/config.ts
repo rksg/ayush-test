@@ -155,10 +155,6 @@ export const states = {
   [DisplayStates.naWaitingForEtl]: {
     text: defineMessage({ defaultMessage: 'No Recommendation' }),
     tooltip: defineMessage({ defaultMessage: 'No recommendation was generated. Reason: Awaiting data processing and recommendation generation by ML algorithms.' })
-  },
-  'paused-no-aps': {
-    text: defineMessage({ defaultMessage: 'Tmp' }),
-    tooltip: defineMessage({ defaultMessage: 'Tmp' })
   }
 } as Record<DisplayStates, StateInfo>
 
