@@ -995,6 +995,21 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         }
       }
     }),
+    // replace the getApCompatibilitiesNetwork
+    getNetworkApCompatibilities: build.query<CompatibilityResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const apiCustomHeader = {
+          ...GetApiVersionHeader(ApiVersionEnum.v1),
+          ...ignoreErrorModal
+        }
+
+        const req = createHttpRequest(WifiRbacUrlsInfo.getNetworkApCompatibilities, params, apiCustomHeader)
+        return{
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
     venueNetworkActivationsDataList: build.query<NetworkSaveData[], RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const networkActivations = {
@@ -1587,6 +1602,8 @@ export const {
   useLazyNewApGroupNetworkListQuery,
   useGetApCompatibilitiesNetworkQuery,
   useLazyGetApCompatibilitiesNetworkQuery,
+  useGetNetworkApCompatibilitiesQuery,
+  useLazyGetNetworkApCompatibilitiesQuery,
   useDashboardV2OverviewQuery,
   useExternalProvidersQuery,
   useGetCertificateTemplateNetworkBindingQuery,

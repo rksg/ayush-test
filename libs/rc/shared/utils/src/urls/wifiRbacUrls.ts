@@ -719,6 +719,7 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     //OldUrl: '/wifiFeatureSets/:featureName',
     newApi: true
   },
+  /*
   getApCompatibilitiesVenue: {
     method: 'post',
     url: '/venues/:venueId/apCompatibilities/query',
@@ -729,6 +730,7 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/wifiNetworks/:networkId/apCompatibilities/query',
     newApi: true
   },
+  */
   // replace the getApCompatibilitiesVenue
   getVenueApCompatibilities: {
     method: 'post',
@@ -738,6 +740,11 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
   getVenuePreCheckApCompatibilities: {
     method: 'post',
     url: '/venues/apCompatibilities/query?precheck=ture',
+    newApi: true
+  },
+  getApCompatibilities: {
+    method: 'post',
+    url: '/venues/aps/apCompatibilities/query',
     newApi: true
   },
   // replace the getApCompatibilitiesNetwork

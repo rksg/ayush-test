@@ -16,3 +16,22 @@ export const CompatibilityWarningCircleIcon = styled(WarningCircleSolid)`
     stroke: var(--acx-semantics-yellow-30);
   }
 `
+
+export const MinReqVersionTooltipWrapper= styled.div`
+  padding: 10px 10px 0 10px;
+  
+  .title {
+    font-weight: bold;
+    color: white;
+    padding-bottom: 5px;
+  }
+
+  .label {
+    color: var(--acx-neutrals-40);
+    padding-bottom: 5px;
+  }
+  
+  .list {
+    padding-bottom: 10px;
+  }
+`

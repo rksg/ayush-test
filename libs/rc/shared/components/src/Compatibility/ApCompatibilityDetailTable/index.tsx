@@ -5,24 +5,53 @@ import { sumBy }   from 'lodash'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps }             from '@acx-ui/components'
-import { IncompatibleFeature }           from '@acx-ui/rc/utils'
-import { WifiScopes }                    from '@acx-ui/types'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { Table, TableProps, Tooltip }                        from '@acx-ui/components'
+import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { useGetApModelFamiliesQuery }                        from '@acx-ui/rc/services'
+import { ApModelFamily, ApRequirement, IncompatibleFeature } from '@acx-ui/rc/utils'
+import { WifiScopes }                                        from '@acx-ui/types'
+import { filterByAccess, hasPermission }                     from '@acx-ui/user'
 
-import { SimpleListTooltip } from '../../SimpleListTooltip'
-import { getFeatureTypeTag } from '../CompatibilityDrawer/utils'
+import { SimpleListTooltip }    from '../../SimpleListTooltip'
+import { ApModelFamiliesItem }  from '../ApModelFamiliesItem'
+import { getFeatureTypeTag }    from '../CompatibilityDrawer/utils'
+import {
+  MinReqVersionTooltipWrapper
+} from '../styledComponents'
 
 
+const RequiredVersionTooltips = (props: {
+  requirements?: ApRequirement[],
+  apModelFamilies?: ApModelFamily[]
+}) => {
+  const { $t } = useIntl()
+  const { requirements, apModelFamilies } = props
+  const firmwareString = requirements?.map((req) => req.firmware).join(', ') ?? ''
+  const requirementsLen = requirements?.length ?? 0
 
-interface ApCompatibilityDetailTableProps {
-  data: IncompatibleFeature[],
-  requirementOnly?: boolean,
-  venueId?: string,  // is required when `requirementOnly === false`
+  const context = (requirements && apModelFamilies) ? requirements.map(((req, index) => {
+    const { firmware, models } = req
+    return (
+      <MinReqVersionTooltipWrapper key={`min_req_${index}`}>
+        <div className='title' children={`Version ${firmware}`} />
+        <div className='label' children={$t({ defaultMessage: 'Supported AP Models' })} />
+        <div className='list'>
+          <ApModelFamiliesItem
+            apModelFamilies={apModelFamilies}
+            models={models}
+          />
+        </div>
+        {(requirementsLen > (index+1)) && <hr /> }
+      </MinReqVersionTooltipWrapper>
+    )
+  })) : ''
+
+  return (
+    <Tooltip title={context} placement='rightTop' dottedUnderline>{firmwareString}</Tooltip>
+  )
 }
 
-
-const useColumns = () => {
+const useColumns = (apModelFamilies?: ApModelFamily[]) => {
   const { $t } = useIntl()
 
   const defaultColumns: TableProps<IncompatibleFeature>['columns'] = [{
@@ -54,17 +83,33 @@ const useColumns = () => {
     dataIndex: 'requirements',
     render: function (_, row) {
       const { requirements } = row
-      const firmwareString = requirements?.map((req) => req.firmware).join(', ')
-      return firmwareString
+      return <RequiredVersionTooltips
+        requirements={requirements}
+        apModelFamilies={apModelFamilies}
+      />
     }
   }]
 
   return defaultColumns
 }
+
+interface ApCompatibilityDetailTableProps {
+  data: IncompatibleFeature[],
+  requirementOnly?: boolean,
+  venueId?: string,  // is required when `requirementOnly === false`
+}
+
 export const ApCompatibilityDetailTable = (props: ApCompatibilityDetailTableProps) => {
+  const isSupportedFwModels = useIsSplitOn(Features.WIFI_EDA_BRANCH_LEVEL_SUPPORTED_MODELS_TOGGLE)
   const { $t } = useIntl()
 
   const { data, requirementOnly = false, venueId } = props
+
+  const { data: apModelFamilies } = useGetApModelFamiliesQuery({}, {
+    skip: !isSupportedFwModels,
+    refetchOnMountOrArgChange: false
+  })
+
   const [updateNowFwVer, setUpdateNowFwVer] = useState<string|undefined>()
   const [scheduleUpdateFwVer, setScheduleUpdateFwVer] = useState<string|undefined>()
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
@@ -94,7 +139,7 @@ export const ApCompatibilityDetailTable = (props: ApCompatibilityDetailTableProp
   })
  */
 
-  const columns = useColumns()
+  const columns = useColumns(apModelFamilies)
 
   /*
   const handleUpdateNowSubmit = async (data: string) => {
