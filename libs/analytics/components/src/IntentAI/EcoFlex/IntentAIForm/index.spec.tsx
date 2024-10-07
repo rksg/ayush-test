@@ -114,8 +114,15 @@ describe('IntentAIForm', () => {
     await selectOptions(time, '12:30 (UTC+08)')
     expect(time).toHaveValue('12.5')
 
+    const scheduleEnabled = screen.getByRole('checkbox', { name: /following time slots of the week/ })
+    await click(scheduleEnabled)
+    expect(scheduleEnabled).toBeChecked()
+    expect(await screen.findByText(/Local time/)).toBeVisible()
+
     await click(actions.getByRole('button', { name: 'Next' }))
     expect((await screen.findAllByText('Summary')).length).toEqual(2)
+    expect(await screen.findByText('Hours not applied for EcoFlex')).toBeVisible()
+    expect(await screen.findByText(/PowerSave will not be triggered during specific hours set in the Settings/)).toBeVisible()
     await click(actions.getByRole('button', { name: 'Apply' }))
 
     expect(await screen.findByText(/has been updated/)).toBeVisible()
@@ -155,9 +162,14 @@ describe('IntentAIForm', () => {
 
     expect(await screen.findByPlaceholderText('Select date')).toBeDisabled()
     expect(await screen.findByPlaceholderText('Select time')).toBeDisabled()
+
+    const scheduleEnabled = screen.getByRole('checkbox', { name: /following time slots of the week/ })
+    expect(scheduleEnabled).toBeDisabled()
+
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Summary' })).toBeVisible()
+    expect(screen.queryByText('Hours not applied for EcoFlex')).toBeNull()
 
     expect(await screen.findByText(/IntentAI will maintain the existing network configuration and will cease automated monitoring of configuration for handling PowerSafe request\/response in the network./)).toBeVisible()
     await click(actions.getByRole('button', { name: 'Apply' }))

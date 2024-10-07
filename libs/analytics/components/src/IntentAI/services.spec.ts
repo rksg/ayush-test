@@ -52,7 +52,7 @@ describe('Intent services', () => {
 > 01-Alethea-WiCheck Test (Venue)`,
         status: Statuses.na,
         statusLabel: 'No Recommendation, Not Enough License',
-        statusTooltip: 'No recommendation was generated because IntentAI did not find sufficient licenses for the Venue 01-Alethea-WiCheck Test.'
+        statusTooltip: 'No recommendation was generated because IntentAI did not find sufficient licenses for Venue 01-Alethea-WiCheck Test.'
       },
       {
         ...intentListResult.intents.data[2],
@@ -579,7 +579,7 @@ describe('Intent services', () => {
           ...expectedCommonResult,
           status: Statuses.applyScheduleInProgress,
           statusLabel: 'Apply In Progress',
-          statusTooltip: 'IntentAI recommended changes are getting applied to the Venue zone-1.'
+          statusTooltip: 'IntentAI recommended changes are getting applied to Venue zone-1.'
         },
         {
           ...intentListWithAllStatus.intents.data[5],
@@ -593,7 +593,7 @@ describe('Intent services', () => {
           ...expectedCommonResult,
           status: Statuses.paused,
           statusLabel: 'Paused, Applied Failed',
-          statusTooltip: `IntentAI recommended changes failed to apply to the Venue zone-1 due to:
+          statusTooltip: `IntentAI recommended changes failed to apply to Venue zone-1 due to:
  - errMsg from the notification service
 
  The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.`
@@ -610,7 +610,7 @@ describe('Intent services', () => {
           ...expectedCommonResult,
           status: Statuses.revertScheduleInProgress,
           statusLabel: 'Revert In Progress',
-          statusTooltip: 'IntentAI recommended changes are getting reverted, to the earlier configuration, on the Venue zone-1.'
+          statusTooltip: 'IntentAI recommended changes are getting reverted, to the earlier configuration, on Venue zone-1.'
         },
         {
           ...intentListWithAllStatus.intents.data[9],
@@ -672,7 +672,7 @@ describe('Intent services', () => {
           ...expectedCommonResult,
           status: Statuses.na,
           statusLabel: 'No Recommendation, Not Enough License',
-          statusTooltip: 'No recommendation was generated because IntentAI did not find sufficient licenses for the Venue zone-1.'
+          statusTooltip: 'No recommendation was generated because IntentAI did not find sufficient licenses for Venue zone-1.'
         },
         {
           ...intentListWithAllStatus.intents.data[17],
@@ -680,7 +680,7 @@ describe('Intent services', () => {
           status: Statuses.na,
           statusLabel: 'No Recommendation, Not Enough Data',
           statusTooltip: `No recommendation was generated. Reason:
- - Insufficient data on neighboring APs.
+ - Insufficient data on neighbour APs.
 
 `
         },
@@ -689,7 +689,7 @@ describe('Intent services', () => {
           ...expectedCommonResult,
           status: Statuses.na,
           statusLabel: 'Verified',
-          statusTooltip: 'IntentAI has validated the Venue zone-1 configurations. No new changes have been recommended.'
+          statusTooltip: 'IntentAI has validated Venue zone-1 configurations. No new changes have been recommended.'
         },
         {
           ...intentListWithAllStatus.intents.data[19],

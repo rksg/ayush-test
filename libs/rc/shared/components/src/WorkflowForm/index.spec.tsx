@@ -175,7 +175,7 @@ describe('WorkflowForm', () => {
     const nameField = await screen.findByLabelText('Workflow Name')
     await userEvent.type(nameField, 'new name')
     fireEvent.click(applyButton)
-    await waitFor(() => expect(mockUpdateWorkflowApi).toHaveBeenCalled())
+    await waitFor(() => expect(mockUpdateWorkflowApi).toHaveBeenCalledTimes(2))
   })
 
 
@@ -196,6 +196,7 @@ describe('WorkflowForm', () => {
     const nameField = await screen.findByLabelText('Workflow Name')
     await userEvent.type(nameField, 'new name')
     fireEvent.click(cancelButton)
-    await waitFor(() => expect(mockUpdateWorkflowApi).toHaveBeenCalledTimes(0))
+    // Called once for validation
+    await waitFor(() => expect(mockUpdateWorkflowApi).toHaveBeenCalledTimes(1))
   })
 })

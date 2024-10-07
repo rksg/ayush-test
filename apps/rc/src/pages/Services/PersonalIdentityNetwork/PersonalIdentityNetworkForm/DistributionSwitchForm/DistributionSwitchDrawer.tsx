@@ -39,9 +39,9 @@ export function DistributionSwitchDrawer (props: {
   const [form] = Form.useForm<DistributionSwitch>()
   const { open, editRecord, availableSwitches, onClose = ()=>{}, onSaveDS } = props
 
-  const { form: nsgForm } = useStepFormContext<PersonalIdentityNetworkFormData>()
-  const venueId = nsgForm.getFieldValue('venueId')
-  const edgeClusterId = nsgForm.getFieldValue('edgeClusterId')
+  const { form: pinForm } = useStepFormContext<PersonalIdentityNetworkFormData>()
+  const venueId = pinForm.getFieldValue('venueId')
+  const edgeClusterId = pinForm.getFieldValue('edgeClusterId')
 
   const defaultRecord = { siteKeepAlive: '5', siteRetry: '3', siteName: edgeClusterId }
 
@@ -59,10 +59,10 @@ export function DistributionSwitchDrawer (props: {
   }, [form, open, editRecord])
 
   useEffect(() => {
-    const originalDistriSwitches = nsgForm.getFieldValue('originalDistributionSwitchInfos') || []
-    const originalAccessSwitches = nsgForm.getFieldValue('originalAccessSwitchInfos') || []
-    const distributionSwitchInfos = nsgForm.getFieldValue('distributionSwitchInfos') || []
-    const accessSwitchInfos = nsgForm.getFieldValue('accessSwitchInfos') || []
+    const originalDistriSwitches = pinForm.getFieldValue('originalDistributionSwitchInfos') || []
+    const originalAccessSwitches = pinForm.getFieldValue('originalAccessSwitchInfos') || []
+    const distributionSwitchInfos = pinForm.getFieldValue('distributionSwitchInfos') || []
+    const accessSwitchInfos = pinForm.getFieldValue('accessSwitchInfos') || []
     const removedSwitchList = _.differenceBy(
       [ ...originalDistriSwitches, ...originalAccessSwitches ],
       [ ...distributionSwitchInfos, ...accessSwitchInfos ], 'id')
@@ -70,7 +70,7 @@ export function DistributionSwitchDrawer (props: {
     const availableSwitchList =
       availableSwitches.concat(removedSwitchList).filter(sw=>!inUseSwitchIds.includes(sw.id))
     setAvailableSwitchList(availableSwitchList)
-  }, [nsgForm, availableSwitches, dsId, accessSwitches])
+  }, [pinForm, availableSwitches, dsId, accessSwitches])
 
   const handleFormFinish = (values: DistributionSwitch) => {
     onSaveDS && onSaveDS({ ...values, accessSwitches: accessSwitches })
