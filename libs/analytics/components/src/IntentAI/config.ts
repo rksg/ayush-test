@@ -202,7 +202,8 @@ export const failureCodes = {
   'not-enough-license': defineMessage({ defaultMessage: 'The network contains unlicensed APs.' }),
   'invalid-aggregation-interval': defineMessage({ defaultMessage: 'SmartZone data interval is too long; recommended interval is 3 minutes or less.' }),
   'no-ap-peer-data': defineMessage({ defaultMessage: 'Insufficient data on neighbour APs.' }),
-  'no-channel-range-for-aps': defineMessage({ defaultMessage: 'Insufficient channel range data for one or more APs.' })
+  'no-channel-range-for-aps': defineMessage({ defaultMessage: 'Insufficient channel range data for one or more APs.' }),
+  'deleted-zone': defineMessage({ defaultMessage: 'Unable to read <venueSingular></venueSingular> configuration.' })
 }
 
 //For original codes, please refer to libs/analytics/components/src/Recommendations/config.ts
