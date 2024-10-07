@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                                                    from '@acx-ui/feature-toggle'
+import { useIsSplitOn, useIsTierAllowed }                                                                  from '@acx-ui/feature-toggle'
 import { AdministrationUrlsInfo, ApplicationAuthenticationStatus, SamlFileType, TenantAuthenticationType } from '@acx-ui/rc/utils'
 import { Provider }                                                                                        from '@acx-ui/store'
 import {
@@ -303,6 +303,8 @@ describe('Auth Server Form Item', () => {
     expect(screen.getByRole('button', { name: 'Ok' })).toBeEnabled()
   })
   it('should navigate correctly when manage sso users button is clicked', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     render(
       <Provider>
         <AuthServerFormItem

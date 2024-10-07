@@ -5,7 +5,6 @@ import { Path }      from 'react-router-dom'
 import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ActionType,
-  AupActionContext,
   GenericActionData,
   StepType,
   UIConfiguration,
@@ -28,8 +27,8 @@ const config: UIConfiguration = {
     buttonColor: 'var(--acx-accents-orange-50)'
   },
   uiStyleSchema: {
-    logoRatio: 1,
-    titleFontSize: 16,
+    logoSize: 'MEDIUM',
+    headerFontSize: 16,
     logoImageFileName: 'logo',
     backgroundImageName: 'bgImage'
   },
@@ -61,13 +60,12 @@ const steps: WorkflowStep[] = [
   }
 ]
 
-const actionData: AupActionContext = {
-  title: '',
-  messageHtml: '',
-  checkboxText: '',
-  bottomLabel: '',
-  backButtonText: '',
-  continueButtonText: ''
+const actionData = {
+  id: 'actionId',
+  actionType: ActionType.AUP,
+  name: 'action name',
+  description: '',
+  version: 0
 }
 
 

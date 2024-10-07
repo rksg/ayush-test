@@ -12,7 +12,8 @@ import {
   MspEcProfile,
   MspProfile,
   MspRecCustomer,
-  MspEcAccountType
+  MspEcAccountType,
+  ComplianceMspCustomersDevicesTypes
 } from './types'
 
 export * from './types'
@@ -212,6 +213,27 @@ export const MSPUtils = () => {
         ? 'Integrator Admin Count' : 'MSP Admin Count')
   }
 
+  const getConfiguredDevices = (deviceType: ComplianceMspCustomersDevicesTypes,
+    entitlements: DelegationEntitlementRecord[]) => {
+    entitlements = entitlements ?? []
+
+    switch(deviceType) {
+      case ComplianceMspCustomersDevicesTypes.AP:
+        return entitlements.reduce((sum, en:DelegationEntitlementRecord) =>
+          sum + (en.wifiDeviceCount || 0), 0)
+      case ComplianceMspCustomersDevicesTypes.SWITCH:
+        return entitlements.reduce((sum, en:DelegationEntitlementRecord) =>
+          sum + (en.switchDeviceCount || 0), 0)
+      case ComplianceMspCustomersDevicesTypes.EDGE:
+        return entitlements.reduce((sum, en:DelegationEntitlementRecord) =>
+          sum + (en.edgeDeviceCount || 0), 0)
+      case ComplianceMspCustomersDevicesTypes.RWG:
+        return entitlements.reduce((sum, en:DelegationEntitlementRecord) =>
+          sum + (en.rwgDeviceCount || 0), 0)
+      default: return 0
+    }
+  }
+
   return {
     isMspEc,
     isOnboardedMsp,
@@ -231,6 +253,7 @@ export const MSPUtils = () => {
     transformTechPartner,
     transformTechPartnerCount,
     transformAdminCount,
-    transformAdminCountHeader
+    transformAdminCountHeader,
+    getConfiguredDevices
   }
 }

@@ -351,12 +351,17 @@ export function EditPortDrawer ({
         ?.[0]?.portNumber?.split('-')?.[2] || ''
 
       let portSpeed = getPortSpeed(selectedPorts)
-      if (!isSwitch785048CPortSpeedEnabled &&
-        selectedPorts.every(port => port.switchModel === 'ICX7850-48C') &&
-        switchDetail?.firmware) {
-        if(!isVerGEVer(switchDetail?.firmware , '10010f', false) ||
+      if (isSwitch785048CPortSpeedEnabled) {
+        if(selectedPorts.some(port => port.switchModel === 'ICX7850-48C') &&
+        switchDetail?.firmware &&
+        (!isVerGEVer(switchDetail?.firmware , '10010f', false) ||
         (isVerGEVer(switchDetail?.firmware, '10020', false) &&
-        !isVerGEVer(switchDetail?.firmware, '10020b', false))) {
+        !isVerGEVer(switchDetail?.firmware, '10020b', false)))) {
+          portSpeed = portSpeed.filter(item => !item.includes('FIVE_G'))
+            .filter(item => !item.includes('TEN_G_FULL_'))
+        }
+      }else{
+        if(selectedPorts.some(port => port.switchModel === 'ICX7850-48C')) {
           portSpeed = portSpeed.filter(item => !item.includes('FIVE_G'))
             .filter(item => !item.includes('TEN_G_FULL_'))
         }
@@ -375,9 +380,8 @@ export function EditPortDrawer ({
       setSwitchVlans(switchVlans as SwitchVlanUnion)
       setVenueVlans(vlansByVenue)
       setVlanUsedByVe(vlanUsedByVe)
-
-      setAclsOptions(getAclOptions(aclUnion))
       setPortSpeedOptions(portSpeed)
+      setAclsOptions(getAclOptions(aclUnion))
       setPoeClassOptions(getPoeClass(selectedPorts))
       setVlansOptions(getVlanOptions(switchVlans as SwitchVlanUnion, defaultVlan, voiceVlan))
 

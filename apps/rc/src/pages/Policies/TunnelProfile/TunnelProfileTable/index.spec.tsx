@@ -3,7 +3,7 @@ import { rest }  from 'msw'
 
 import { Features }                             from '@acx-ui/feature-toggle'
 import { useIsEdgeFeatureReady }                from '@acx-ui/rc/components'
-import { networkApi, nsgApi, tunnelProfileApi } from '@acx-ui/rc/services'
+import { networkApi, pinApi, tunnelProfileApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   EdgeSdLanUrls,
@@ -11,7 +11,7 @@ import {
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
-  NetworkSegmentationUrls,
+  EdgePinUrls,
   PolicyOperation,
   PolicyType,
   TunnelProfileUrls
@@ -19,7 +19,7 @@ import {
 import { Provider, store }                                                        from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
-import { mockedNetworkOptions, mockedNsgOptions } from '../__tests__/fixtures'
+import { mockedNetworkOptions, mockedPinOptions } from '../__tests__/fixtures'
 
 import TunnelProfileTable from '.'
 const {
@@ -67,7 +67,7 @@ describe('TunnelProfileList', () => {
       tenantId: tenantId
     }
     store.dispatch(tunnelProfileApi.util.resetApiState())
-    store.dispatch(nsgApi.util.resetApiState())
+    store.dispatch(pinApi.util.resetApiState())
     store.dispatch(networkApi.util.resetApiState())
     mockedSingleDeleteApi.mockClear()
 
@@ -77,8 +77,8 @@ describe('TunnelProfileList', () => {
         (_, res, ctx) => res(ctx.json(mockedTunnelProfileViewData))
       ),
       rest.post(
-        NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
-        (_, res, ctx) => res(ctx.json(mockedNsgOptions))
+        EdgePinUrls.getEdgePinStatsList.url,
+        (_, res, ctx) => res(ctx.json(mockedPinOptions))
       ),
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,

@@ -1,11 +1,12 @@
 import { PassphraseFormatEnum }                           from '../../../../constants'
 import { AccessSwitch, DistributionSwitch, PersonaGroup } from '../../../../types'
 
-export const mockNsgStatsList = {
+export const mockPinStatsList = {
   fields: [
-    'venueInfos',
-    'edgeClusterInfos',
-    'networkIds',
+    'venueId',
+    'venueName',
+    'edgeClusterInfo',
+    'tunneledWlans',
     'name',
     'id',
     'tags',
@@ -18,30 +19,22 @@ export const mockNsgStatsList = {
       id: '1',
       name: 'nsg1',
       vxlanTunnelProfileId: 'test123',
-      networkIds: [
-        'wlan-1'
-        // 'wlan2'
+      tunneledWlans: [
+        { networkId: 'wlan-1' }
       ],
-      venueInfos: [
-        {
-          id: '7a5474bf-be4a-4207-b808-e3aaa8be7a3e',
-          venueId: 'mock_venue_1',
-          venueName: 'MockVenue1',
-          personaGroupId: 'per-444'
-        }
-      ],
-      edgeClusterInfos: [
-        {
-          id: '5e5a85d5-1540-4aab-86c4-a8d8b9f3e28b',
-          edgeClusterId: '0000000001',
-          edgeClusterName: 'Edge1',
-          segments: 1,
-          devices: 1,
-          dhcpInfoId: 'ee61bd6e-c637-4177-b070-0ded060af3bd',
-          dhcpPoolId: '6a408e31-30a0-4ac1-a672-76b666f57d6e',
-          vniRange: ''
-        }
-      ],
+      venueId: 'mock_venue_1',
+      venueName: 'MockVenue1',
+      personaGroupId: 'per-444',
+      edgeClusterInfo: {
+        id: '5e5a85d5-1540-4aab-86c4-a8d8b9f3e28b',
+        edgeClusterId: '0000000001',
+        edgeClusterName: 'Edge1',
+        segments: 1,
+        devices: 1,
+        dhcpInfoId: 'ee61bd6e-c637-4177-b070-0ded060af3bd',
+        dhcpPoolId: '6a408e31-30a0-4ac1-a672-76b666f57d6e',
+        vniRange: ''
+      },
       edgeAlarmSummary: [
         {
           edgeId: '0000000001',
@@ -56,54 +49,43 @@ export const mockNsgStatsList = {
       id: '2',
       name: 'nsg2',
       vxlanTunnelProfileId: 'test123',
-      networkIds: [
-        // 'wlan-1',
-        'wlan2'
+      tunneledWlans: [
+        { networkId: 'wlan2' }
       ],
-      venueInfos: [
-        {
-          id: '7a5474bf-be4a-4207-b808-e3aaa8be7a3e',
-          venueId: 'mock_venue_2',
-          venueName: 'MockVenue2',
-          personaGroupId: 'per-444'
-        }
-      ],
-      edgeClusterInfos: [
-        {
-          id: '5e5a85d5-1540-4aab-86c4-a8d8b9f3e28b',
-          edgeClusterId: '0000000002',
-          edgeClusterName: 'Edge2',
-          segments: 10,
-          devices: 10,
-          dhcpInfoId: 'ee61bd6e-c637-4177-b070-0ded060af3bd',
-          dhcpPoolId: '6a408e31-30a0-4ac1-a672-76b666f57d6e',
-          vniRange: ''
-        }
-      ]
+      venueId: 'mock_venue_2',
+      venueName: 'MockVenue2',
+      personaGroupId: 'per-444',
+      edgeClusterInfo: {
+        id: '5e5a85d5-1540-4aab-86c4-a8d8b9f3e28b',
+        edgeClusterId: '0000000002',
+        edgeClusterName: 'Edge2',
+        segments: 10,
+        devices: 10,
+        dhcpInfoId: 'ee61bd6e-c637-4177-b070-0ded060af3bd',
+        dhcpPoolId: '6a408e31-30a0-4ac1-a672-76b666f57d6e',
+        vniRange: ''
+      }
     }
   ]
 }
 
-export const mockNsgData = {
+export const mockPinData = {
   id: '2599f95d-86a2-470c-9679-e739de054ba1',
   name: 'RLTestNsg-1',
   vxlanTunnelProfileId: 'test123',
-  venueInfos: [
-    {
-      venueId: 'mock_venue_1',
-      personaId: ''
-    }
+  venueId: 'mock_venue_1',
+  personaGroupId: '',
+  edgeClusterInfo: {
+    edgeClusterId: '0000000001',
+    segments: 10,
+    devices: 10,
+    dhcpInfoId: '1',
+    dhcpPoolId: '1'
+  },
+  tunneledWlans: [
+    { networkId: '1' },
+    { networkId: '2' }
   ],
-  edgeClusterInfos: [
-    {
-      edgeClusterId: '0000000001',
-      segments: 10,
-      devices: 10,
-      dhcpInfoId: '1',
-      dhcpPoolId: '1'
-    }
-  ],
-  networkIds: ['1', '2'],
   distributionSwitchInfos: [
     {
       id: 'c8:03:f5:3a:95:c6',
@@ -130,6 +112,16 @@ export const mockNsgData = {
     }
   ]
 }
+
+export const mockWebAuthList = [{
+  id: '723250a97f3a4c3780e70c83c5b095ba',
+  name: 'Template-Ken-0209',
+  webAuthPasswordLabel: 'password-Ken-0209',
+  webAuthCustomTitle: 'title-Ken-0209',
+  webAuthCustomTop: 'top-Ken-0209',
+  webAuthCustomLoginButton: 'login-Ken-0209',
+  webAuthCustomBottom: 'bottom-Ken-0209'
+}]
 
 export const mockPropertyConfigs = {
   personaGroupId: 'testPersonaId'
@@ -165,7 +157,7 @@ export const mockDpsk = {
   expirationType: null
 }
 
-export const mockNsgSwitchInfoData: {
+export const mockPinSwitchInfoData: {
   distributionSwitches: DistributionSwitch[],
   accessSwitches: AccessSwitch[]
 } = {

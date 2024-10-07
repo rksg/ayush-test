@@ -290,7 +290,7 @@ function DeviceRoutes () {
       <Route path='devices/edge/:serialNumber/details/:activeTab/:activeSubTab'
         element={<EdgeDetails />} />
       <Route path='devices/edge/cluster/:clusterId/edit/:activeTab'
-        element={<AuthRoute scopes={[EdgeScopes.UPDATE]}>
+        element={<AuthRoute scopes={[EdgeScopes.READ, EdgeScopes.UPDATE]}>
           <EditEdgeCluster />
         </AuthRoute>} />
       <Route path='devices/edge/cluster/:clusterId/configure'
@@ -508,31 +508,31 @@ const edgeFirewallRoutes = () => {
 const edgePinRoutes = () => {
   return <>
     <Route
-      path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
+      path={getServiceRoutePath({ type: ServiceType.PIN,
         oper: ServiceOperation.CREATE })}
       element={
         // eslint-disable-next-line max-len
-        <ServiceAuthRoute serviceType={ServiceType.NETWORK_SEGMENTATION} oper={ServiceOperation.CREATE}>
+        <ServiceAuthRoute serviceType={ServiceType.PIN} oper={ServiceOperation.CREATE}>
           <AddPersonalIdentitNetwork />
         </ServiceAuthRoute>
       }
     />
     <Route
-      path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
+      path={getServiceRoutePath({ type: ServiceType.PIN,
         oper: ServiceOperation.LIST })}
       element={<PersonalIdentityNetworkTable />}
     />
     <Route
-      path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
+      path={getServiceRoutePath({ type: ServiceType.PIN,
         oper: ServiceOperation.DETAIL })}
       element={<PersonalIdentityNetworkDetail />}
     />
     <Route
-      path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
+      path={getServiceRoutePath({ type: ServiceType.PIN,
         oper: ServiceOperation.EDIT })}
       element={
         // eslint-disable-next-line max-len
-        <ServiceAuthRoute serviceType={ServiceType.NETWORK_SEGMENTATION} oper={ServiceOperation.EDIT}>
+        <ServiceAuthRoute serviceType={ServiceType.PIN} oper={ServiceOperation.EDIT}>
           <EditPersonalIdentityNetwork />
         </ServiceAuthRoute>
       }
