@@ -8,7 +8,7 @@ import * as EdgeFirmwareFixtures      from './firmware'
 import * as EdgeGeneralFixtures       from './general'
 import * as EdgeHqosProfileFixtures   from './hqosProfile'
 import * as EdgeLagFixtures           from './lag'
-import * as EdgeNSGFixtures           from './networkSegmentation'
+import * as EdgePinFixtures           from './pin'
 import * as EdgePortConfigFixtures    from './portsConfig'
 import * as EdgeSdLanFixtures         from './sdLan'
 import * as EdgeSubInterfaceFixtures  from './subInterface'
@@ -25,7 +25,7 @@ export {
   EdgeLagFixtures,
   EdgeGeneralFixtures,
   EdgeFirewallFixtures,
-  EdgeNSGFixtures,
+  EdgePinFixtures,
   EdgeDHCPFixtures,
   EdgeErrorsFixtures,
   EdgeTunnelProfileFixtures,
