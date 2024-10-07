@@ -20,7 +20,7 @@ import {
   useLazyGetCertificateTemplateQuery,
   useLazyGetDpskQuery,
   useLazyGetMacRegListQuery,
-  useLazyGetNetworkSegmentationGroupByIdQuery,
+  useLazyGetEdgePinByIdQuery,
   useLazyGetVenueQuery
 } from '@acx-ui/rc/services'
 import { PersonaGroup }             from '@acx-ui/rc/utils'
@@ -73,13 +73,13 @@ function PersonaGroupDetails () {
   const [venueDisplay, setVenueDisplay] = useState<{ id?: string, name?: string }>()
   const [macPoolDisplay, setMacPoolDisplay] = useState<{ id?: string, name?: string }>()
   const [dpskPoolDisplay, setDpskPoolDisplay] = useState<{ id?: string, name?: string }>()
-  const [nsgDisplay, setNsgDisplay] = useState<{ id?: string, name?: string }>()
+  const [pinDisplay, setPinDisplay] = useState<{ id?: string, name?: string }>()
   const [certTemplateDisplay, setCertTemplateDisplay] = useState<{ id?: string, name?: string }>()
 
   const [getVenue] = useLazyGetVenueQuery()
   const [getDpskPoolById] = useLazyGetDpskQuery()
   const [getMacRegistrationById] = useLazyGetMacRegListQuery()
-  const [getNsgById] = useLazyGetNetworkSegmentationGroupByIdQuery()
+  const [getPinById] = useLazyGetEdgePinByIdQuery()
   const [getCertTemplateById] = useLazyGetCertificateTemplateQuery()
   const detailsQuery = useGetPersonaGroupByIdQuery({
     params: { groupId: personaGroupId }
@@ -116,9 +116,9 @@ function PersonaGroupDetails () {
 
     if (personalIdentityNetworkId && networkSegmentationEnabled) {
       let name: string | undefined
-      getNsgById({ params: { tenantId, serviceId: personalIdentityNetworkId } })
+      getPinById({ params: { tenantId, serviceId: personalIdentityNetworkId } })
         .then(result => name = result.data?.name)
-        .finally(() => setNsgDisplay({ id: personalIdentityNetworkId, name }))
+        .finally(() => setPinDisplay({ id: personalIdentityNetworkId, name }))
     }
 
     if (propertyId) {
@@ -178,7 +178,7 @@ function PersonaGroupDetails () {
       content:
         <NetworkSegmentationLink
           showNoData={true}
-          name={nsgDisplay?.name}
+          name={pinDisplay?.name}
           id={detailsQuery.data?.personalIdentityNetworkId}
         />
     }] : []),

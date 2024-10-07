@@ -39,6 +39,8 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
 
   const edgeCpuCores = currentClusterStatus?.edgeList?.map(e => e.cpuCores)[0]
   const hqosReadOnly = (edgeCpuCores===undefined || edgeCpuCores < 4) ? true : false
+  const hqosReadOnlyToolTipMessage = hqosReadOnly === true ? $t({ defaultMessage:
+    'Insufficient CPU cores have been detected on this cluster' }) : ''
 
   const { currentDhcp, isDhcpLoading } = useGetDhcpStatsQuery({
     payload: {
@@ -192,7 +194,7 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
               dependencies={['dhcpSwitch']}
             >
               {({ getFieldValue }) => {
-                return getFieldValue('dhcpSwitch') ?<EdgeDhcpSelectionForm hasNsg={false} />:<></>
+                return getFieldValue('dhcpSwitch') ?<EdgeDhcpSelectionForm hasPin={false} />:<></>
               }}
             </Form.Item>}
             </Col>
@@ -213,21 +215,16 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
                   }
                 </Space>
                 <Space>
-                  <Form.Item noStyle
-                    name='qosSwitch'
-                    valuePropName='checked'
-                  >
-                    <Switch disabled={hqosReadOnly} />
-                  </Form.Item>
-                  {hqosReadOnly && <Tooltip.Question
-                    title={
-                      $t({ defaultMessage: `
-                                Insufficient CPU cores have been detected on this cluster` })
-                    }
-                    placement='right'
-                    iconStyle={{ width: 16, height: 16, marginTop: 4 }}
-                  />}
+                  <Tooltip title={hqosReadOnlyToolTipMessage}>
+                    <Form.Item
+                      name='qosSwitch'
+                      valuePropName='checked'
+                    >
+                      <Switch disabled={hqosReadOnly} />
+                    </Form.Item>
+                  </Tooltip>
                 </Space>
+
               </StepsForm.FieldLabel>
               }
               {

@@ -58,7 +58,8 @@ export function ContentPreview (props: ContentPreviewProps) {
       </UI.Title>
       <UI.Body
         style={{
-          color: uiColorSchema.fontColor
+          color: uiColorSchema.fontColor,
+          overflow: 'auto'
         }}
       >
         {body}
