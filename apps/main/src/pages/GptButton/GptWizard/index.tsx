@@ -89,8 +89,6 @@ export default function GptWizard(props: {
   const [updateSsidProfile] = useUpdateSsidProfileMutation()
   const [updateSsid] = useUpdateSsidMutation()
   const [updateVlan] = useUpdateVlanMutation()
-  
-  
 
   const formMapRef = useRef<
     React.MutableRefObject<ProFormInstance<any> | undefined>[]
@@ -161,7 +159,6 @@ export default function GptWizard(props: {
             }
 
             return true
-        
 
           } catch (error) {
             console.log(error);
@@ -218,7 +215,8 @@ export default function GptWizard(props: {
           }
         }}
       >
-        <WlanDetailStep/>
+        <WlanDetailStep
+          payload={step2payload.payload} />
       </GptStepsForm.StepForm>
 
       <GptStepsForm.StepForm name='step3'

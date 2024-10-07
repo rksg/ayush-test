@@ -1,15 +1,24 @@
-import { NetworkTypeEnum } from '@acx-ui/rc/utils';
-import { ProFormSelect, ProFormText } from '@ant-design/pro-form';
-import { Divider } from 'antd';
-import React from 'react';
+import React from 'react'
 
-export function WlanDetailStep() {
+import { ProFormSelect, ProFormText } from '@ant-design/pro-form'
+import { Divider }                    from 'antd'
 
-   const step2payload = { //Mock Data
-    requestId: '567ce50233af4e47a7354d2c47b3a8e6',
-    actionType: 'WLAN',
-    payload: '[{"SSID Name":"Guest","SSID Type":"aaa"},{"SSID Name":"Staff","SSID Type":"dpsk"}]'
-  }
+import { NetworkTypeEnum } from '@acx-ui/rc/utils'
+
+type NetworkConfig = {
+  'Purpose': string;
+  'SSID Name': string;
+  'SSID Objective': string;
+  'SSID Type': boolean;
+  'id':string
+}
+
+
+export function WlanDetailStep (props: {
+  payload: string
+}) {
+
+  const step2payload = props.payload ? JSON.parse(props.payload) as NetworkConfig[] : []
 
   const networkOptions = [
     {
@@ -31,64 +40,81 @@ export function WlanDetailStep() {
   ]
 
   return <div style={{ display: 'flex', flexDirection: 'column' }}>
-  <div style={{
-    flex: '0 1 auto',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center'
-  }}>
+    <div style={{
+      flex: '0 1 auto',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center'
+    }}>
 
 
-    <span style={{ fontSize: '24px', fontWeight: 600, fontFamily: 'Montserrat' }}>
+      <span style={{ fontSize: '24px', fontWeight: 600, fontFamily: 'Montserrat' }}>
       Recommended SSID Profiles
-    </span>
-    <span style={{ fontSize: '12px', color: '#808284', margin: '5px 0px 30px 0px' }}>
-      Based on your selection, below is the list of SSIDs and their recommended respective configurations.
-    </span>
+      </span>
+      <span style={{ fontSize: '12px', color: '#808284', margin: '5px 0px 30px 0px' }}
+      // eslint-disable-next-line max-len
+      >Based on your selection, below is the list of SSIDs and their recommended respective configurations.
+      </span>
 
 
-    {step2payload.payload && JSON.parse(step2payload.payload).map((item: { [x: string]: any; }, index: number) => (
-      <React.Fragment key={index}>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: '35px 1fr'
-        }}>
-          <div style={{ display: 'flex' }}>
-            <div style={{
-              display: 'inline-block',
-              border: '1px solid',
-              borderRadius: '50%',
-              width: '20px',
-              height: '20px',
-              textAlign: 'center',
-              lineHeight: '20px',
-              fontSize: '10px',
-              fontWeight: '600',
-              margin: '0px 5px 5px 5px'
-            }}>
-              {index + 1}
-            </div>
-          </div>
-          <div >
+      {step2payload &&
+       step2payload.map((item, index: number) => (
+         <React.Fragment key={index}>
+           <div style={{
+             display: 'grid',
+             gridTemplateColumns: '35px 1fr'
+           }}>
+             <div style={{ display: 'flex' }}>
+               <div style={{
+                 display: 'inline-block',
+                 border: '1px solid',
+                 borderRadius: '50%',
+                 width: '20px',
+                 height: '20px',
+                 textAlign: 'center',
+                 lineHeight: '20px',
+                 fontSize: '10px',
+                 fontWeight: '600',
+                 margin: '0px 5px 5px 5px'
+               }}>
+                 {index + 1}
+               </div>
+             </div>
+             <div >
+               <ProFormText
+                 name={['step2payload', index, 'id']}
+                 initialValue={item['id']}
+                 hidden
+               />
+               <ProFormText
+                 name={['step2payload', index, 'Purpose']}
+                 initialValue={item['Purpose']}
+                 hidden
+               />
+               <ProFormText
+                 name={['step2payload', index, 'SSID Objective']}
+                 initialValue={item['SSID Objective']}
+                 hidden
+               />
 
-         <ProFormText label='SSID name'
-          name={['step2payload', index, 'SSID Name']}
-          children={item['SSID Name']}
-        />
-        <ProFormSelect
-          label='Network Type'
-          name={['step2payload', index, 'SSID Type']}
-          initialValue={item['SSID Type']}
-          options={networkOptions}
-        />
+               <ProFormText label='SSID name'
+                 name={['step2payload', index, 'SSID Name']}
+                 children={item['SSID Name']}
+               />
+               <ProFormSelect
+                 label='Network Type'
+                 name={['step2payload', index, 'SSID Type']}
+                 initialValue={item['SSID Type']}
+                 options={networkOptions}
+               />
 
-         </div>
-       </div>
+             </div>
+           </div>
 
-        <Divider dashed />
-      </React.Fragment>
-    ))}
+           <Divider dashed />
+         </React.Fragment>
+       ))}
 
+    </div>
   </div>
-</div>
 }
