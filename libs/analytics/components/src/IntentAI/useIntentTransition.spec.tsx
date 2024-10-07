@@ -96,12 +96,14 @@ describe('createUseIntentTransition', () => {
       expect(await screen.findByTestId('toast-content'))
         // eslint-disable-next-line max-len
         .toHaveTextContent('AI-Driven RRM: Client Density vs Throughput for 2.4 GHz radio for 21_US_Beta_Samsung has been updated')
-      const link =
-      // eslint-disable-next-line max-len
-      '?intentTableFilters=%257B%2522aiFeature%2522%253A%255B%2522AI-Driven%2520RRM%2522%255D%252C%2522intent%2522%253A%255B%2522Client%2520Density%2520vs%2520Throughput%2520for%25202.4%2520GHz%2520radio%2522%255D%252C%2522category%2522%253A%255B%2522Wi-Fi%2520Experience%2522%255D%252C%2522sliceValue%2522%253A%255B%25224e3f1fbc-63dd-417b-b69d-2b08ee0abc52%2522%255D%252C%2522statusLabel%2522%253A%255B%2522applyscheduled%2522%255D%257D'
       const viewElement = await screen.findByText('View')
       await userEvent.click(viewElement)
-      expect(window.location.href).toContain(link)
+      expect(window.location.href)
+        // eslint-disable-next-line max-len
+        .toContain('?intentTableFilters=%257B%2522aiFeature%2522%253A%255B%2522AI-Driven%2520RRM%2522%255D%252C%2522intent%2522%253A%255B%2522Client%2520Density%2520vs%2520Throughput%2520for%25202.4%2520GHz%2520radio%2522%255D%252C%2522category%2522%253A%255B%2522Wi-Fi%2520Experience%2522%255D%252C%2522sliceValue%2522%253A%255B%25224e3f1fbc-63dd-417b-b69d-2b08ee0abc52%2522%255D%252C%2522statusLabel%2522%253A%255B%2522')
+      expect(window.location.href).toContain('scheduled')
+      expect(window.location.href).toContain('scheduled-one-click')
+      expect(window.location.href).toContain('applyscheduled')
     })
     it('handle submit error', async () => {
       mockIntentContext({

@@ -79,7 +79,7 @@ describe('Intent services', () => {
       statuses: [
         { value: 'New', key: 'new' },
         { value: 'No Recommendation, No APs', key: 'na-no-aps' },
-        { value: 'Paused', key: 'paused-from-active+paused-by-default' }
+        { value: 'Paused', key: 'paused-from-inactive+paused-from-active+paused-by-default' }
       ],
       zones: [
         {

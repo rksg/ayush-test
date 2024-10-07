@@ -9,8 +9,13 @@ import { useNavigate, useNavigateToPath, useTenantLink } from '@acx-ui/react-rou
 import { intentAIApi }                                   from '@acx-ui/store'
 import { encodeParameter }                               from '@acx-ui/utils'
 
-import { validateScheduleTiming }                 from './common/ScheduleTiming'
-import { aiFeaturesLabel, codes, Intent }         from './config'
+import { validateScheduleTiming } from './common/ScheduleTiming'
+import {
+  aiFeaturesLabel,
+  codes,
+  stateToGroupedStates,
+  Intent
+} from './config'
 import { Wlan }                                   from './EquiFlex/IntentAIForm/WlanSelection'
 import { useIntentContext }                       from './IntentContext'
 import { DisplayStates, Statuses, StatusReasons } from './states'
@@ -121,7 +126,8 @@ export function createUseIntentTransition <Preferences> (
             text: 'View',
             onClick: () => {
               const { status, statusReason } = response.originalArgs!
-              const statusLabel = [status,statusReason].filter((val)=>val).join('-')
+              const key = [status, statusReason].filter(Boolean).join('-')
+              const statusLabel = stateToGroupedStates[key as unknown as DisplayStates]?.key || key
               const intentFilter = {
                 aiFeature: [featureValue],
                 intent: [intentValue],

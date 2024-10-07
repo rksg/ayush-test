@@ -551,11 +551,12 @@ describe('useIntentAIActions', () => {
       await waitFor(() => expect(mockOK).toBeCalledTimes(1))
 
       expect(await screen.findByText(/The selected intents has been updated/)).toBeVisible()
-      const link =
-      '?intentTableFilters=%257B%2522statusLabel%2522%253A%255B%2522paused-from-active%2522%255D%257D'
       const viewElement = await screen.findByText('View')
       await userEvent.click(viewElement)
-      expect(window.location.href).toContain(link)
+      expect(window.location.href).toContain('?intentTableFilters=%257B%2522statusLabel%2522%253A%255B%2522')
+      expect(window.location.href).toContain('paused-from-inactive')
+      expect(window.location.href).toContain('paused-from-active')
+      expect(window.location.href).toContain('paused-by-default')
     })
 
     it('should handle revert', async () => {

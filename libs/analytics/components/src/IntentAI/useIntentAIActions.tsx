@@ -13,13 +13,14 @@ import {
 import { RadioTypeEnum }                         from '@acx-ui/rc/utils'
 import { Filters, getIntl, useEncodedParameter } from '@acx-ui/utils'
 
-import { IntentListItem }       from './config'
+import { IntentListItem, stateToGroupedStates } from './config'
 import {
   TransitionMutationResponse,
   useLazyIntentWlansQuery,
   useTransitionIntentMutation
 } from './services'
-import * as UI          from './styledComponents'
+import { DisplayStates } from './states'
+import * as UI           from './styledComponents'
 import {
   Actions,
   TransitionIntentItem,
@@ -147,7 +148,8 @@ export function useIntentAIActions () {
         onClick: () => {
           const statusLabelList = data.map((item) => {
             const { status, statusReason } = getTransitionStatus(action, item)
-            return [status, statusReason].filter(Boolean).join('-')
+            const key = [status, statusReason].filter(Boolean).join('-')
+            return stateToGroupedStates[key as unknown as DisplayStates]?.key || key
           })
           const currentFilter = intentTableFilters.read() || {}
           const newFilter = {

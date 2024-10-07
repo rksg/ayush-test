@@ -155,19 +155,28 @@ export const states = {
   [DisplayStates.naWaitingForEtl]: {
     text: defineMessage({ defaultMessage: 'No Recommendation' }),
     tooltip: defineMessage({ defaultMessage: 'No recommendation was generated. Reason: Awaiting data processing and recommendation generation by ML algorithms.' })
+  },
+  'paused-no-aps': {
+    text: defineMessage({ defaultMessage: 'Tmp' }),
+    tooltip: defineMessage({ defaultMessage: 'Tmp' })
   }
 } as Record<DisplayStates, StateInfo>
 
 export const groupedStates = [
   {
     group: defineMessage({ defaultMessage: 'Scheduled' }),
-    states: [DisplayStates.scheduled, DisplayStates.scheduledOneClick, DisplayStates.applyScheduled] as unknown as string[]
+    states: [DisplayStates.scheduled, DisplayStates.scheduledOneClick, DisplayStates.applyScheduled]
   },
   {
     group: defineMessage({ defaultMessage: 'Paused' }),
-    states: [DisplayStates.pausedFromInactive, DisplayStates.pausedFromActive, DisplayStates.pausedByDefault] as unknown as string[]
+    states: [DisplayStates.pausedFromInactive, DisplayStates.pausedFromActive, DisplayStates.pausedByDefault]
   }
 ]
+
+export const stateToGroupedStates = groupedStates.reduce((grouped, { group, states }) => {
+  states.forEach(state => grouped[state] = { key: states.join('+'), group })
+  return grouped
+}, {} as Record<DisplayStates, { key: string, group: MessageDescriptor }>)
 
 export const failureCodes = {
   'probeflex-support-fw-version': defineMessage({ defaultMessage: 'AP firmware version is unsupported.' }),
