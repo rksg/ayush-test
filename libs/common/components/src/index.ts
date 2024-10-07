@@ -84,4 +84,4 @@ export * from './components/TimeRangeDropdown'
 export * from './components/Conversation'
 export * from './components/StatsCard'
 export * from './components/UserProfileSection'
-
+export * from './components/ScheduleCard'

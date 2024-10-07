@@ -289,7 +289,7 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
               name='authEnabled'
               valuePropName={'checked'}
             >
-              <Switch />
+              <Switch disabled={isEditMode} />
             </Form.Item>
           </StepsForm.FieldLabel>
           {authEnabled && <>
@@ -312,8 +312,8 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
                 >
                   <Select
                     options={authTypeRoleOptionsArray}
-                  >
-                  </Select>
+                    disabled={isEditMode}
+                  />
                 </Form.Item>
               </Col>
             </Row>

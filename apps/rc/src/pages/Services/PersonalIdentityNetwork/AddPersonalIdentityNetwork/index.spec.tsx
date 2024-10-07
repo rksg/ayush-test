@@ -11,7 +11,7 @@ import {
 } from '@acx-ui/test-utils'
 import { RequestPayload } from '@acx-ui/types'
 
-import AddNetworkSegmentation from '.'
+import AddPersonalIdentityNetwork from '.'
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -56,7 +56,7 @@ jest.mock('@acx-ui/rc/components', () => ({
   })
 }))
 
-const createNsgPath = '/:tenantId/services/personalIdentityNetwork/create'
+const createPinPath = '/:tenantId/services/personalIdentityNetwork/create'
 
 describe('Add PersonalIdentityNetwork', () => {
   let params: { tenantId: string, serviceId: string }
@@ -67,11 +67,11 @@ describe('Add PersonalIdentityNetwork', () => {
     }
   })
 
-  it('should create networkSegmentation successfully', async () => {
+  it('should create PersonalIdentityNetwork successfully', async () => {
     const user = userEvent.setup()
-    render(<AddNetworkSegmentation />, {
+    render(<AddPersonalIdentityNetwork />, {
       wrapper: Provider,
-      route: { params, path: createNsgPath }
+      route: { params, path: createPinPath }
     })
     // step 1
     await screen.findByTestId('GeneralSettingsForm')
@@ -99,9 +99,9 @@ describe('Add PersonalIdentityNetwork', () => {
   })
 
   it('should render breadcrumb correctly', async () => {
-    render(<AddNetworkSegmentation />, {
+    render(<AddPersonalIdentityNetwork />, {
       wrapper: Provider,
-      route: { params, path: createNsgPath }
+      route: { params, path: createPinPath }
     })
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', {

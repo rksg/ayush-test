@@ -136,7 +136,8 @@ export function CertificateTemplateForm (props: CerficateTemplateStepFromProps) 
             ...chromebook,
             accountCredentialFile: undefined
           }
-        } : {})
+        } : {}),
+        identityGroupId
       }
       const res = await addCertificateTemplate({
         params: { caId: formData.onboard?.certificateAuthorityId },
