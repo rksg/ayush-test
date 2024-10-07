@@ -49,7 +49,7 @@ export function WlanDetailStep (props: {
 
 
       <span style={{ fontSize: '24px', fontWeight: 600, fontFamily: 'Montserrat' }}>
-      Recommended SSID Profiles
+      Recommended SSID
       </span>
       <span style={{ fontSize: '12px', color: '#808284', margin: '5px 0px 30px 0px' }}
       // eslint-disable-next-line max-len
@@ -99,6 +99,7 @@ export function WlanDetailStep (props: {
 
                <ProFormText label='SSID name'
                  name={['step2payload', index, 'SSID Name']}
+                 initialValue={item['SSID Name']}
                  children={item['SSID Name']}
                />
                <ProFormSelect

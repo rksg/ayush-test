@@ -20,5 +20,10 @@ export const RuckusAssistantUrlInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/ruckusAssistant/conversations/:sessionId/vlan',
     newApi: true
+  },
+  applyConversations: {
+    method: 'post',
+    url: '/ruckusAssistant/conversations/:sessionId/apply',
+    newApi: true
   }
 }

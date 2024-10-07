@@ -16,7 +16,7 @@ import { WlanStep } from './Steps/WlanStep'
 import { WlanDetailStep } from './Steps/WlanDetailStep'
 import { VlanStep } from './Steps/VlanStep'
 import { SummaryStep } from './Steps/SummaryStep'
-import { useUpdateSsidMutation, useUpdateSsidProfileMutation, useUpdateVlanMutation } from '@acx-ui/rc/services'
+import { useUpdateSsidMutation, useUpdateSsidProfileMutation, useUpdateVlanMutation, useApplyConversationsMutation } from '@acx-ui/rc/services'
 
 type FormValue = {
   jobInfo: {
@@ -69,26 +69,16 @@ export default function GptWizard(props: {
 
   const [step2payload, setStep2payload] = useState({} as GptConversation)
 
-  const [step3payload, setStep3payload] = useState({} as {
-    'requestId': string;
-    'actionType': string;
-    'payload': string;
-  })
-  const mockResponse_step3 = {
-    requestId: '567ce50233af4e47a7354d2c47b3a8e6',
-    actionType: 'VLAN',
-    payload: '[{"VLAN Name":"VLAN1","VLAN ID":"100"},{"VLAN Name":"VLAN2","VLAN ID":"200"}]'
-  }
+  const [step3payload, setStep3payload] = useState({} as GptConversation)
 
-  const [step4payload, setStep4payload] = useState({} as {
-    'requestId': string;
-    'actionType': string;
-    'payload': string;
-  })
+  const [step4payload, setStep4payload] = useState({} as GptConversation)
+
   const navigate = useNavigate()
   const [updateSsidProfile] = useUpdateSsidProfileMutation()
   const [updateSsid] = useUpdateSsidMutation()
   const [updateVlan] = useUpdateVlanMutation()
+  const [applyConversations] = useApplyConversationsMutation()
+
 
   const formMapRef = useRef<
     React.MutableRefObject<ProFormInstance<any> | undefined>[]
@@ -123,28 +113,12 @@ export default function GptWizard(props: {
         title=''
         onFinish={async () => {
           try {
-            console.log(formMapRef.current[0].current?.getFieldsValue());
             const values = formMapRef.current[0].current?.getFieldsValue();
             const updatedValues = values.step1payload
-              .map((item: { [x: string]: any; }, index: any) => ({
-                ...item,
-                Purpose: step1payload[index]['Purpose']
-              }))
               .filter((item: { 'Checked': any; }) => item['Checked'])
               .map(({ Checked, ...rest }: { Checked?: boolean;[key: string]: any }) => rest);
 
             console.log(updatedValues);
-
-            // Perform the fetch request
-            // const response = await fetch(url, {
-            //   method: 'POST',
-            //   headers: {
-            //     'Authorization': `Bearer ${getJwtToken()}`,
-            //     'Content-Type': 'application/json',
-            //     'Accept': 'application/json'
-            //   },
-            //   body: JSON.stringify(updatedValues)
-            // });
 
             try{
               const response = await updateSsidProfile({
@@ -162,11 +136,6 @@ export default function GptWizard(props: {
 
           } catch (error) {
             console.log(error);
-          } finally {
-            // setStep2payload(mockResponse_step2); // TODO: GPT TESTING, NEED REMOVED!!!
-            // return true; // TODO: GPT TESTING, NEED REMOVED!!!
-
-            return true; // TODO: GPT TESTING, NEED REMOVED!!!
           }
         }}>
         <WlanStep
@@ -180,38 +149,30 @@ export default function GptWizard(props: {
         title=''
         onFinish={async () => {
           try {
-            console.log(formMapRef.current[1].current?.getFieldsValue())
+            console.log(formMapRef.current[1].current?.getFieldsValue());
+            const values = formMapRef.current[1].current?.getFieldsValue();
+            const updatedValues = values.step2payload
 
-            const values = formMapRef.current[1].current?.getFieldsValue()
-            const updatedValues = values.step2payload.map((item: { [x: string]: any; }, index: any) => ({
-              ...item,
-              'SSID Name': JSON.parse(step2payload.payload)[index]['SSID Name']
-            }))
             console.log(updatedValues);
 
-            const url = `/api/gpt/tenant/${getTenantId()}/onboardAssistant/${props.requestId}/wlan`;
+            try{
+              const response = await updateSsid({
+                params: { sessionId: props.sessionId },
+                payload: JSON.stringify(updatedValues)
+              }).unwrap()
 
-            // Perform the fetch request
-            const response = await fetch(url, {
-              method: 'POST',
-              headers: {
-                'Authorization': `Bearer ${getJwtToken()}`,
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-              },
-              body: JSON.stringify(updatedValues)
-            });
+              setStep3payload(response)
 
-            if (!response.ok) {
-              throw new Error('Network response was not ok');
+            } catch (error) {
+              console.error('Failed to update SSID:', error);
             }
-            const data = await response.json();
-            setStep3payload(data);
-            return true;
+
+            return true
+
+
+
           } catch (error) {
             console.log(error);
-          } finally {
-            return true
           }
         }}
       >
@@ -223,82 +184,51 @@ export default function GptWizard(props: {
         title={''}
         onFinish={async () => {
           try {
-            console.log(formMapRef.current[2].current?.getFieldsValue())
-            const values = formMapRef.current[2].current?.getFieldsValue()
-            const updatedValues = values.step3payload.map((item: { [x: string]: any; }, index: any) => ({
-              ...item
-            })).filter((item: { 'Checked': any; }) => item['Checked'])
-              .map(({ Checked, ...rest }: { Checked?: boolean;[key: string]: any }) => rest)
+            const values = formMapRef.current[2].current?.getFieldsValue();
+            const updatedValues = values.step3payload
+              .filter((item: { 'Checked': any; }) => item['Checked'])
+              .map(({ Checked, ...rest }: { Checked?: boolean;[key: string]: any }) => rest);
 
-            const url = `/api/gpt/tenant/${getTenantId()}/onboardAssistant/${props.requestId}/vlan`;
+            console.log(updatedValues);
 
-            // Perform the fetch request
-            const response = await fetch(url, {
-              method: 'POST',
-              headers: {
-                'Authorization': `Bearer ${getJwtToken()}`,
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-              },
-              body: JSON.stringify(updatedValues)
-            });
+            try{
+              const response = await updateVlan({
+                params: { sessionId: props.sessionId },
+                payload: JSON.stringify(updatedValues)
+              }).unwrap()
 
-            if (!response.ok) {
-              throw new Error('Network response was not ok');
+              setStep4payload(response)
+
+            } catch (error) {
+              console.error('Failed to update SSID:', error);
             }
-            const data = await response.json();
-            setStep4payload(data);
-            return true;
+
+            return true
           } catch (error) {
             console.log(error);
-          } finally {
-            return true; // TODO: GPT TESTING, NEED REMOVED!!!
           }
         }}
 
 
       >
-        <VlanStep/>
+        <VlanStep
+            payload={step3payload.payload}/>
       </GptStepsForm.StepForm>
 
       <GptStepsForm.StepForm name='step4'
         title={''}
         onFinish={async () => {
           try {
-            const url = `/api/gpt/tenant/${getTenantId()}/onboardAssistant/${props.requestId}/apply`;
-            // Perform the fetch request
-            const response = await fetch(url, {
-              method: 'POST',
-              headers: {
-                'Authorization': `Bearer ${getJwtToken()}`,
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-              },
-              body: JSON.stringify({})
-            });
-
-            if (!response.ok) {
-              throw new Error('Network response was not ok');
-            }
-            const data = await response.json();
-            showActionModal({
-              title: 'Congratulations! ',
-              type: 'info',
-              content: 'Your network is now fully configured.',
-              onOk: () => {
-                navigate(`/${getTenantId()}/t/networks/wireless`,
-                  { replace: true })
-                // window.location.reload()
-              }
-            })
-            return false;
+            const response = await applyConversations({
+              params: { sessionId: props.sessionId }
+            }).unwrap()
+            alert('yes')
           } catch (error) {
+            alert('no')
             console.log(error);
-          } finally {
-            return false;
           }
         }}>
-          <SummaryStep/>
+          <SummaryStep payload={step4payload.payload}/>
       </GptStepsForm.StepForm>
 
     </StepsForm>

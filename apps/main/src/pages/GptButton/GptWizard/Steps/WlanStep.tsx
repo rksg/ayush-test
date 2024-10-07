@@ -125,6 +125,11 @@ export function WlanStep (props: {
                 initialValue={item['id']}
                 hidden
               />
+              <ProFormText
+                name={['step1payload', index, 'Purpose']}
+                initialValue={item['Purpose']}
+                hidden
+              />
 
               <ProFormText
                 width={200}
