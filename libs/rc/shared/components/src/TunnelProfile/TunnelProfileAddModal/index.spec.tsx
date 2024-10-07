@@ -14,7 +14,7 @@ jest.mock('../../useEdgeActions', () => ({
   ...jest.requireActual('../../useEdgeActions'),
   useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
-describe('NetworkSegmentation - WirelessNetworkForm > TunnelProfileAddModal', () => {
+describe('PersonalIdentityNetwork - WirelessNetworkForm > TunnelProfileAddModal', () => {
 
   beforeEach(() => {
     mockServer.use(

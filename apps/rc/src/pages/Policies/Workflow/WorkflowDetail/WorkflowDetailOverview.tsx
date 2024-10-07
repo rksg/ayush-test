@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { SummaryCard }                         from '@acx-ui/components'
+import { GridCol, GridRow, SummaryCard }       from '@acx-ui/components'
 import { EnrollmentPortalLink, WorkflowPanel } from '@acx-ui/rc/components'
 import {
   useGetWorkflowByIdQuery,
@@ -65,15 +65,23 @@ export function WorkflowDetailOverview () {
 
   return (
     <>
-      <SummaryCard
-        data={workflowInfo}
-        isLoading={workflowQuery.isLoading}
-        isFetching={workflowQuery.isFetching}
-      />
-      <WorkflowPanel
-        workflowId={data?.id!!}
-        mode={WorkflowPanelMode.Default}
-      />
+      <GridRow>
+        <GridCol col={{ span: 24 }}>
+          <SummaryCard
+            data={workflowInfo}
+            isLoading={workflowQuery.isLoading}
+            isFetching={workflowQuery.isFetching}
+          />
+        </GridCol>
+      </GridRow>
+      <GridRow style={{ minHeight: 600, marginTop: '20px' }}>
+        <GridCol col={{ span: 24 }}>
+          <WorkflowPanel
+            workflowId={data?.id!!}
+            mode={WorkflowPanelMode.Default}
+          />
+        </GridCol>
+      </GridRow>
     </>
   )
 }

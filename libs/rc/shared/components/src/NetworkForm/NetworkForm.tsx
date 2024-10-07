@@ -448,7 +448,7 @@ export function NetworkForm (props:{
     return true
   }
 
-  const handleGuestMoreSetting = (data: GuestMore) => {
+  const handleGuestMoreSetting = (data: GuestMore): NetworkSaveData => {
     if(data.guestPortal){
       if(saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr
         &&data.guestPortal.wisprPage?.customExternalProvider){
@@ -464,7 +464,7 @@ export function NetworkForm (props:{
     return handleUserConnection(data)
   }
 
-  const handleUserConnection = (data: GuestMore) => {
+  const handleUserConnection = (data: GuestMore): NetworkSaveData => {
     if(data.guestPortal && data.userConnection){
       const { userSessionTimeout, userSessionTimeoutUnit,
         lockoutPeriod, lockoutPeriodUnit,
@@ -722,25 +722,22 @@ export function NetworkForm (props:{
   const processAddData = function (data: NetworkSaveData) {
     const processWlanAdvanced3MLO = (data: NetworkSaveData) => handleWlanAdvanced3MLO(data, wifi7Mlo3LinkFlag)
     const processGuestMoreSetting = (data: NetworkSaveData) => handleGuestMoreSetting(data)
+    const processCloneMode = (data: NetworkSaveData) => omit(data,
+      ['id',
+        'networkSecurity',
+        'enableOwe',
+        'pskProtocol',
+        'isOweMaster',
+        'owePairNetworkId',
+        'certificateTemplateId',
+        'hotspot20Settings.wifiOperator',
+        'hotspot20Settings.originalOperator',
+        'hotspot20Settings.identityProviders',
+        'hotspot20Settings.originalProviders',
+        'userConnection'
+      ])
     // eslint-disable-next-line max-len
-    const processClientIsolationAllowlist = (data: NetworkSaveData) => updateClientIsolationAllowlist(
-      // omit id to handle clone
-      omit(data,
-        ['id',
-          'networkSecurity',
-          'enableOwe',
-          'pskProtocol',
-          'isOweMaster',
-          'owePairNetworkId',
-          'certificateTemplateId',
-          'hotspot20Settings.wifiOperator',
-          'hotspot20Settings.originalOperator',
-          'hotspot20Settings.identityProviders',
-          'hotspot20Settings.originalProviders',
-          'userConnection',
-          ...(enableServiceRbac) ? ['dpskServiceId', 'macRegistrationPoolId'] : [],
-          ...(isUseWifiRbacApi) ? ['portalServiceProfileId'] : []
-        ]))
+    const processClientIsolationAllowlist = (data: NetworkSaveData) => updateClientIsolationAllowlist(data)
     const processRemoveServicePolicyProfileId = (data: NetworkSaveData) => {
       return omit(data, [
         'wlan.advancedCustomization.l2AclPolicyId',
@@ -749,14 +746,18 @@ export function NetworkForm (props:{
         'wlan.advancedCustomization.applicationPolicyId',
         'wlan.advancedCustomization.accessControlProfileId',
         'wlan.advancedCustomization.vlanPool',
-        'wlan.advancedCustomization.wifiCallingIds'
+        'wlan.advancedCustomization.wifiCallingIds',
+        'dpskServiceId',
+        'macRegistrationPoolId',
+        'portalServiceProfileId'
       ])
     }
     const processFns = [
       processWlanAdvanced3MLO,
       processGuestMoreSetting,
+      processCloneMode,
       processClientIsolationAllowlist,
-      ...(enableServiceRbac) ? [processRemoveServicePolicyProfileId] : []
+      ...(resolvedRbacEnabled) ? [processRemoveServicePolicyProfileId] : []
     ]
     return processFns.reduce((tempData, processFn) => processFn(tempData), data)
   }
@@ -809,6 +810,7 @@ export function NetworkForm (props:{
           allRequests.push(updateSoftGreActivations(networkId, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode))
         }
       }
+      await Promise.allSettled(allRequests)
 
       await Promise.allSettled(allRequests)
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)

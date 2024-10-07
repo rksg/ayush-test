@@ -4,39 +4,40 @@ import { useParams } from 'react-router-dom'
 
 import { Loader }                                                                      from '@acx-ui/components'
 import { PersonalIdentityNetworkDetailTableGroup, PersonalIdentityNetworkServiceInfo } from '@acx-ui/rc/components'
-import { useGetNetworkSegmentationViewDataListQuery }                                  from '@acx-ui/rc/services'
+import { useGetEdgePinViewDataListQuery }                                              from '@acx-ui/rc/services'
 
-export const NetworkSegmentation = () => {
+export const EdgePin = () => {
 
   const { venueId } = useParams()
 
   const {
-    nsgId,
-    isNsgViewDataLoading
-  } = useGetNetworkSegmentationViewDataListQuery({
+    pinId,
+    isPinViewDataLoading
+  } = useGetEdgePinViewDataListQuery({
     payload: {
-      filters: { venueInfoIds: [venueId] }
+      fields: ['id'],
+      filters: { venueId: [venueId] }
     }
   }, {
     skip: !!!venueId,
     selectFromResult: ({ data, isLoading }) => {
       return {
-        nsgId: data?.data[0]?.id,
-        isNsgViewDataLoading: isLoading
+        pinId: data?.data[0]?.id,
+        isPinViewDataLoading: isLoading
       }
     }
   })
 
   return (
     <Loader states={[{
-      isLoading: isNsgViewDataLoading,
+      isLoading: isPinViewDataLoading,
       isFetching: false
     }]}>
       {
-        nsgId &&
+        pinId &&
           <Space direction='vertical'>
-            <PersonalIdentityNetworkServiceInfo nsgId={nsgId || ''} />
-            <PersonalIdentityNetworkDetailTableGroup nsgId={nsgId || ''} />
+            <PersonalIdentityNetworkServiceInfo pinId={pinId || ''} />
+            <PersonalIdentityNetworkDetailTableGroup pinId={pinId || ''} />
           </Space>
       }
     </Loader>

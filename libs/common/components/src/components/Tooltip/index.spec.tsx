@@ -10,6 +10,13 @@ describe('Tooltip', () => {
     expect(content).toBeVisible()
   })
 
+  it('should render dottedUnderline correctly', async () => {
+    // eslint-disable-next-line max-len
+    render(<Tooltip title={'This is a dottedUnderline tooltip'} dottedUnderline children='Some text' />)
+    const content = await screen.findByText('Some text')
+    expect(content).toBeVisible()
+  })
+
   it('renders Tooltip.Question', async () => {
     render(<Tooltip.Question title='question tooltip' iconStyle={{ width: '16px' }}/>)
     const icon = await screen.findByTestId('QuestionMarkCircleOutlined')

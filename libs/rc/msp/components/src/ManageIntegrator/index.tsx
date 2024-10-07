@@ -22,9 +22,9 @@ import {
   StepsFormLegacyInstance,
   Subtitle
 } from '@acx-ui/components'
-import { useIsSplitOn, Features }        from '@acx-ui/feature-toggle'
-import { formatter, DateFormatEnum }     from '@acx-ui/formatter'
-import { SearchOutlined }                from '@acx-ui/icons'
+import { useIsSplitOn, Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { formatter, DateFormatEnum }                from '@acx-ui/formatter'
+import { SearchOutlined }                           from '@acx-ui/icons'
 import {
   useAddCustomerMutation,
   useMspEcAdminListQuery,
@@ -160,7 +160,8 @@ export function ManageIntegrator () {
   const intl = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
-  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
+  const isRbacEarlyAccessEnable = useIsTierAllowed(Features.RBAC_IMPLICIT_P1)
+  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
   const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
 
