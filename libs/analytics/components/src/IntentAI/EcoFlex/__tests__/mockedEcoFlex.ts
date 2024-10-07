@@ -19,8 +19,8 @@ export const mocked = {
     { status: 'new', createdAt: '2024-04-03T06:03:59.617Z' }
   ],
   metadata: {
-    scheduledAt: '2023-07-15T14:15:00.000Z',
-    dataEndTime: '2023-06-26T00:00:25.772Z'
+    scheduledAt: '2024-08-08T12:00:00.000Z',
+    dataEndTime: '2024-07-06T12:00:00.000Z'
   },
   kpi: {
     data: {

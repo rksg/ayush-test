@@ -3,14 +3,14 @@ import userEvent   from '@testing-library/user-event'
 import { message } from 'antd'
 import moment      from 'moment-timezone'
 
-import { intentAIApi, intentAIUrl, Provider, store }                                         from '@acx-ui/store'
-import { fireEvent, mockGraphqlMutation, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { intentAIApi, intentAIUrl, Provider, store }                                                           from '@acx-ui/store'
+import { fireEvent, mockGraphqlMutation, mockGraphqlQuery, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
-import { mockIntentContext } from '../../__tests__/fixtures'
-import { Statuses }          from '../../states'
-import { Intent }            from '../../useIntentDetailsQuery'
-import { mocked }            from '../__tests__/mockedEcoFlex'
-import { kpis }              from '../common'
+import { mockIntentContext }   from '../../__tests__/fixtures'
+import { Statuses }            from '../../states'
+import { Intent }              from '../../useIntentDetailsQuery'
+import { mocked, mockKpiData } from '../__tests__/mockedEcoFlex'
+import { kpis }                from '../common'
 
 import { IntentAIForm } from '.'
 
@@ -62,9 +62,13 @@ beforeEach(() => {
   mockGraphqlMutation(intentAIUrl, 'IntentTransition', {
     data: { transition: { success: true, errorMsg: '' , errorCode: '' } }
   })
+  mockGraphqlQuery(intentAIUrl, 'IntentAIEcoKpi', {
+    data: { intent: mockKpiData }
+  })
 })
 
 afterEach((done) => {
+  // jest.resetAllMocks()
   const toast = screen.queryByRole('img', { name: 'close' })
   if (toast) {
     waitForElementToBeRemoved(toast).then(done)
@@ -121,6 +125,7 @@ describe('IntentAIForm', () => {
     expect((await screen.findAllByText('Summary')).length).toEqual(2)
     expect(await screen.findByText('Hours not applied for EcoFlex')).toBeVisible()
     expect(await screen.findByText(/PowerSave will not be triggered during specific hours set in the Settings/)).toBeVisible()
+    expect(await screen.findByText('Projected energy reduction')).toBeVisible()
     await click(actions.getByRole('button', { name: 'Apply' }))
 
     expect(await screen.findByText(/has been updated/)).toBeVisible()

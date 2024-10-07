@@ -91,8 +91,9 @@ export const LegendText = styled.div`
   font-weight: var(--acx-body-font-weight);
 `
 
-export const LegendSquare = styled.span<{ $color: string }>`
+export const LegendCircle = styled.span<{ $color: string }>`
   background-color: ${props => props.$color};
+  border-radius: 50%;
   display: inline-block;
   width: 12px;
   height: 12px;

@@ -1,4 +1,5 @@
 import { gql }           from 'graphql-request'
+import { cloneDeep }     from 'lodash'
 import moment            from 'moment-timezone'
 import { defineMessage } from 'react-intl'
 
@@ -8,8 +9,6 @@ import {
 } from '@acx-ui/components'
 import { intentAIApi } from '@acx-ui/store'
 import { getIntl }     from '@acx-ui/utils'
-
-// import { mockKpiData } from '../__tests__/mockedEcoFlex'
 
 const Type = {
   Unsupported: 'unsupported',
@@ -27,19 +26,19 @@ export const categoryStyles = [
   {
     key: Type.Unsupported,
     legendText: defineMessage({ defaultMessage: 'EcoFlex is not supported' }),
-    name: defineMessage({ defaultMessage: 'are not supporting EcoFlex.' }),
+    name: defineMessage({ defaultMessage: 'not supporting EcoFlex.' }),
     color: cssStr('--acx-viz-qualitative-1')
   },
   {
     key: Type.Disabled,
     legendText: defineMessage({ defaultMessage: 'EcoFlex is supported and disabled' }),
-    name: defineMessage({ defaultMessage: 'are not supporting and disabling EcoFlex.' }),
+    name: defineMessage({ defaultMessage: 'not supporting and disabling EcoFlex.' }),
     color: cssStr('--acx-accents-orange-50')
   },
   {
     key: Type.Enabled,
     legendText: defineMessage({ defaultMessage: 'EcoFlex is supported and enabled' }),
-    name: defineMessage({ defaultMessage: 'are not supporting and enabling EcoFlex.' }),
+    name: defineMessage({ defaultMessage: 'not supporting and enabling EcoFlex.' }),
     color: cssStr('--acx-semantics-green-60')
   }
 // eslint-disable-next-line max-len
@@ -62,6 +61,20 @@ interface KpiChartData {
   color: string
 }
 
+export const calExcludeApCount = (kpiData: KpiData, excludeApCount: number): KpiData => {
+  const [unsupportedData,disabledData, enabledData] = cloneDeep(kpiData.data.data)
+  const disabledCount = disabledData.value + excludeApCount
+  const enabledCount = enabledData.value - excludeApCount
+  return {
+    compareData: { ...kpiData.data },
+    data: {
+      timestamp: kpiData.data.timestamp,
+      data: [{ ...unsupportedData },
+        { ...disabledData, value: disabledCount },
+        { ...enabledData, value: enabledCount }]
+    } }
+}
+
 // eslint-disable-next-line max-len
 const parseChartData = (result: KpiResult): KpiChartData[] => categoryStyles.map(({ key, name, color }) => ({
   value: result[key] ?? 0,
@@ -77,7 +90,7 @@ export const { useIntentAIEcoKpiQuery } = intentAIApi.injectEndpoints({
         document: gql`
           query IntentAIEcoKpi($root: String!, $sliceId: String!, $code: String!) {
             intent(root: $root, sliceId: $sliceId, code: $code) {
-              graph: kpi(key: "power-save-aps", timeZone: "${moment.tz.guess()}") {
+              kpi: kpi(key: "power-save-aps", timeZone: "${moment.tz.guess()}") {
                 data {
                   timestamp
                   result
@@ -112,16 +125,16 @@ export const { useIntentAIEcoKpiQuery } = intentAIApi.injectEndpoints({
         if (!kpi) return { data: { timestamp: '', data: [] }, compareData: { timestamp: '', data: [] } }
         const { data, compareData } = kpi
 
-        // const { data, compareData } = mockKpiData.kpi
-
         const chartData = parseChartData(data.result)
         const compareChartData = parseChartData(compareData.result)
 
         return {
-          data: { ...data,
+          data: {
+            timestamp: data.timestamp,
             data: chartData.map(({ value, name, color }) => ({ value, name: $t(name), color }))
           },
-          compareData: { ...compareData,
+          compareData: {
+            timestamp: compareData.timestamp,
             // eslint-disable-next-line max-len
             data: compareChartData.map(({ value, name, color }) => ({ value, name: $t(name), color }))
           }

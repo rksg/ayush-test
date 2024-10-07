@@ -5,21 +5,32 @@ import { useIntl, FormattedMessage } from 'react-intl'
 
 import { StepsForm, useStepFormContext } from '@acx-ui/components'
 
-import { richTextFormatValues } from '../../common/richTextFormatValues'
-import { ScheduleTiming }       from '../../common/ScheduleTiming'
-import { Intent }               from '../../useIntentDetailsQuery'
+import { richTextFormatValues }    from '../../common/richTextFormatValues'
+import { ScheduleTiming }          from '../../common/ScheduleTiming'
+import { Intent, useIntentParams } from '../../useIntentDetailsQuery'
+import { ComparisonDonutChart }    from '../ComparisonDonutChart'
+import { useIntentAIEcoKpiQuery }  from '../ComparisonDonutChart/services'
 
 export function Summary () {
   const { $t } = useIntl()
   const { form } = useStepFormContext<Intent>()
+  const params = useIntentParams()
+  const kpiQuery = useIntentAIEcoKpiQuery(params)
   const isEnabled = form.getFieldValue('preferences').enable
   const enableExcludedHours = form.getFieldValue('preferences').enableExcludedHours
+  const enableExcludedAps = true //TODO temp for testing
+  const excludeApCount = 7 //TODO temp for testing
   return <Row gutter={20}>
     <Col span={16}>
       <StepsForm.Title children={$t({ defaultMessage: 'Summary' })} />
 
       {isEnabled
         ? <><ScheduleTiming.FieldSummary />
+          {enableExcludedAps && <Form.Item
+            label={$t({ defaultMessage: 'Projected energy reduction' })}
+            children={<ComparisonDonutChart kpiData={kpiQuery.data} excludeApCount={excludeApCount}/>}
+          />
+          }
           {enableExcludedHours && <Form.Item
             label={$t({ defaultMessage: 'Hours not applied for EcoFlex' })}
           >

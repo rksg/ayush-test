@@ -13,7 +13,7 @@ export const Legend = () => {
     <UI.LegendTitle>{$t({ defaultMessage: 'Legend' })}</UI.LegendTitle>
     <UI.LegendItems>
       {Object.entries(categoryStyles).map(([key, value]) => <React.Fragment key={key}>
-        <UI.LegendSquare $color={value.color} />
+        <UI.LegendCircle $color={value.color} />
         <UI.LegendText>{$t(value.legendText)}</UI.LegendText>
       </React.Fragment>)}
     </UI.LegendItems>

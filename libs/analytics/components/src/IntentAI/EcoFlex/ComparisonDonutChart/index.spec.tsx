@@ -17,7 +17,7 @@ jest.mock('./Legend', () => ({
 
 describe('ComparisonDonutChart', () => {
   beforeEach(() => {
-    jest.spyOn(Date, 'now').mockReturnValue(+new Date('2023-07-15T14:15:00.000Z'))
+    jest.spyOn(Date, 'now').mockReturnValue(+new Date('2024-08-08T12:00:00.000Z'))
     mockIntentContext({ intent: mocked })
     mockGraphqlQuery(intentAIUrl, 'IntentAIEcoKpi', {
       data: { intent: mockKpiData }
@@ -41,7 +41,7 @@ describe('ComparisonDonutChart', () => {
 
   it('should render correctly for active states (non-Detail)', async () => {
     // eslint-disable-next-line max-len
-    render(<ComparisonDonutChart kpiData={mockKpiResultData} />, { wrapper: Provider })
+    render(<ComparisonDonutChart kpiData={mockKpiResultData} excludeApCount={1}/>, { wrapper: Provider })
 
     expect(await screen.findByText('(Default)')).toBeVisible()
     expect(await screen.findByText('(EcoFlex projection)')).toBeVisible()

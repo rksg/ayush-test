@@ -73,7 +73,7 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
           <DetailsSection data-testid='Key Performance Indications'>
             <DetailsSection.Title
               children={$t({ defaultMessage: 'Key Performance Indications' })} />
-            <ComparisonDonutChart kpiData={kpiQuery.data}/>
+            <ComparisonDonutChart kpiData={kpiQuery.data} isDetail/>
           </DetailsSection>
 
           <GridRow>

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Legend should render properly 1`] = `
+exports[`Legend should render correctly 1`] = `
 <DocumentFragment>
   .c0 {
   margin-left: 3em;
@@ -35,6 +35,7 @@ exports[`Legend should render properly 1`] = `
 
 .c3 {
   background-color: #66B1E8;
+  border-radius: 50%;
   display: inline-block;
   width: 12px;
   height: 12px;
@@ -43,6 +44,7 @@ exports[`Legend should render properly 1`] = `
 
 .c5 {
   background-color: #EC7100;
+  border-radius: 50%;
   display: inline-block;
   width: 12px;
   height: 12px;
@@ -51,6 +53,7 @@ exports[`Legend should render properly 1`] = `
 
 .c6 {
   background-color: #258D36;
+  border-radius: 50%;
   display: inline-block;
   width: 12px;
   height: 12px;

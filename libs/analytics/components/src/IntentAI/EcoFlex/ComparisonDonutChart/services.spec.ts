@@ -2,9 +2,9 @@ import { Provider, intentAIUrl }                 from '@acx-ui/store'
 import { mockGraphqlQuery, renderHook, waitFor } from '@acx-ui/test-utils'
 
 
-import { mocked, mockKpiData } from '../__tests__/mockedEcoFlex'
+import { mocked, mockKpiData, mockKpiResultData } from '../__tests__/mockedEcoFlex'
 
-import { useIntentAIEcoKpiQuery } from './services'
+import { calExcludeApCount, useIntentAIEcoKpiQuery } from './services'
 
 describe('useIntentAIEcoKpiQuery', () => {
   afterEach(() => jest.resetAllMocks())
@@ -41,4 +41,15 @@ describe('useIntentAIEcoKpiQuery', () => {
     expect(result.current.data?.data.timestamp).toEqual('')
     expect(result.current.data?.compareData.timestamp).toEqual('')
   })
+
+  it('calExcludeApCount', async () => {
+    const excludeApCount = 2
+    const kpiData = calExcludeApCount(mockKpiResultData, excludeApCount)
+    expect(kpiData.compareData).toEqual(mockKpiResultData.data)
+    // eslint-disable-next-line max-len
+    expect(kpiData.data.data[1].value).toEqual(mockKpiResultData.data.data[1].value + excludeApCount)
+    // eslint-disable-next-line max-len
+    expect(kpiData.data.data[2].value).toEqual(mockKpiResultData.data.data[2].value - excludeApCount)
+  })
+
 })
