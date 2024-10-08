@@ -67,6 +67,7 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
   const networkType = network?.type
   const networkVenueId = network?.venueId
   const networkVenueName = network?.venueName
+  const hiddenSoftGre = NetworkTypeEnum.CAPTIVEPORTAL === networkType
 
   const { getVenueSdLan, networkVlanPool } = useEdgeMvSdLanData({
     sdLanQueryOptions: {
@@ -182,7 +183,7 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
                   : undefined}
               />
             }
-            {isSoftGreEnabled && visible &&
+            {isSoftGreEnabled && !hiddenSoftGre && visible &&
               <WifiSoftGreRadioOption
                 currentTunnelType={tunnelType}
                 venueId={networkVenueId!}
