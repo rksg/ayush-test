@@ -148,10 +148,8 @@ export function AlarmsDrawer (props: AlarmsType) {
 
     if(serialNumber){
       filters = { ...filters, ...{ serialNumber: [serialNumber] } }
-
     } else if(venueId){
       filters = { ...filters, ...{ venueId: [venueId] } }
-
     }
 
     tableQuery.setPayload({
