@@ -257,7 +257,6 @@ function PersonaDetails () {
     }
   ]
 
-  // @ts-ignore
   return (
     <Loader
       states={[personaDetailsQuery]}
