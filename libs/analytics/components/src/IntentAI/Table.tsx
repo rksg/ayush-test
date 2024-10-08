@@ -124,7 +124,7 @@ export const AIFeature = (props: AIFeatureProps): JSX.Element => {
   </UI.FeatureIcon>)
 }
 
-export function Banner () {
+export function Banner ({ helpUrl } : { helpUrl: string | undefined }) {
   const { $t } = useIntl()
   const bannerTitle = $t({ defaultMessage: 'Revolutionize your Network Optimization' })
   const subTitle1 = $t({
@@ -143,9 +143,7 @@ export function Banner () {
       <Button
         style={{ marginTop: '15px' }}
         onClick={() => {
-          //TODO: change to dynamic doc mapping
-          // eslint-disable-next-line max-len
-          window.open('https://docs.commscope.com/bundle/ruckusai-userguide/page/GUID-CAAC695C-6740-499D-8C42-AB521CEE65F6.html', '_blank')
+          window.open(helpUrl, '_blank')
         }}>
         <b>{$t({ defaultMessage: 'Learn More' })}</b>{<ChatbotLink />}
       </Button>
@@ -154,7 +152,7 @@ export function Banner () {
 }
 
 export function IntentAITable (
-  { pathFilters }: { pathFilters: PathFilter }
+  { pathFilters, helpUrl }: { pathFilters: PathFilter, helpUrl: string | undefined }
 ) {
   const { $t } = useIntl()
   const navigate = useNavigate()
@@ -337,7 +335,7 @@ export function IntentAITable (
       <UI.IntentAITableStyle />
       <UI.AlertNote
         data-testid='intent-ai-alert-note'
-        message={Banner()}
+        message={Banner({ helpUrl })}
         type='info'
       />
       <Table<IntentListItem>
