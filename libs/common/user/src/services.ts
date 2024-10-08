@@ -185,6 +185,16 @@ export const UserRbacUrlsInfo = {
     url: '/roleAuthentications/privilegeGroups',
     newApi: true
   },
+  getMfaTenantDetails: {
+    method: 'get',
+    url: '/mfa',
+    newApi: true
+  },
+  toggleMFA: {
+    method: 'put',
+    url: '/mfa/setupTenant/:enable',
+    newApi: true
+  },
   getBetaFeatureList: {
     method: 'get',
     url: '/tenants/betaFeatureList',
@@ -290,7 +300,13 @@ export const {
       query: ({ params }) => createHttpRequest(UserUrlsInfo.getCloudMessageBanner, params)
     }),
     getMfaTenantDetails: build.query<MfaDetailStatus, RequestPayload>({
-      query: ({ params }) => createHttpRequest(UserUrlsInfo.getMfaTenantDetails, params ),
+      query: ({ params, enableRbac }) => {
+        const userUrlsInfo = getUserUrls(enableRbac)
+        const req = createHttpRequest(userUrlsInfo.getMfaTenantDetails, params)
+        return {
+          ...req
+        }
+      },
       transformResponse (mfaDetail: MfaDetailStatus) {
         mfaDetail.enabled = mfaDetail.tenantStatus === 'ENABLED'
         return mfaDetail
@@ -306,7 +322,13 @@ export const {
       providesTags: [{ type: 'Mfa', id: 'DETAIL' }]
     }),
     toggleMFA: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => createHttpRequest(UserUrlsInfo.toggleMFA, params),
+      query: ({ params, enableRbac }) => {
+        const userUrlsInfo = getUserUrls(enableRbac)
+        const req = createHttpRequest(userUrlsInfo.toggleMFA, params)
+        return {
+          ...req
+        }
+      },
       invalidatesTags: [{ type: 'Mfa', id: 'DETAIL' }]
     }),
     // getMfaMasterCode: build.query<UserProfile, RequestPayload>({

@@ -4,6 +4,7 @@ import { Row, Col, Form } from 'antd'
 import { useIntl }        from 'react-intl'
 
 import { Subtitle }                 from '@acx-ui/components'
+import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { useGetTenantDetailsQuery } from '@acx-ui/rc/services'
 import { useParams }                from '@acx-ui/react-router-dom'
 import {
@@ -19,9 +20,12 @@ import { BackupAuthenticationMethod } from './BackupAuthenticationMethod'
 
 export const MultiFactor = () => {
   const { $t } = useIntl()
+  const mfaNewApiToggle = useIsSplitOn(Features.MFA_NEW_API_TOGGLE)
+
   const { tenantId } = useParams()
   const [form] = Form.useForm()
-  const { data } = useGetMfaTenantDetailsQuery({ params: { tenantId } })
+  const { data } = useGetMfaTenantDetailsQuery({ params: { tenantId },
+    enableRbac: mfaNewApiToggle })
   const tenantDetailsData = useGetTenantDetailsQuery({ params: { tenantId } })
 
   const mfaStatus = data?.enabled &&
