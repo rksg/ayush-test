@@ -82,10 +82,8 @@ export interface DhcpHostStats {
 }
 
 export interface DhcpUeSummaryStats {
-  edgeName?: string
-  edgeId?: string
+  edgeClusterId?: string
   venueId?: string
-  venueName?: string
   successfulAllocation?: number
   remainsIps?: number
   droppedPackets?: number

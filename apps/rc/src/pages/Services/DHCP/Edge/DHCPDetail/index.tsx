@@ -2,11 +2,22 @@
 import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
-import { Button, Card, Loader, PageHeader, SummaryCard, Table, TableProps }                                                                                                                                            from '@acx-ui/components'
-import { EdgeServiceStatusLight, useIsEdgeReady }                                                                                                                                                                      from '@acx-ui/rc/components'
-import { useGetDhcpStatsQuery, useGetDhcpUeSummaryStatsQuery }                                                                                                                                                         from '@acx-ui/rc/services'
-import { DhcpUeSummaryStats, ServiceOperation, ServiceType, defaultSort, filterByAccessForServicePolicyMutation, getScopeKeyByService, getServiceDetailsLink, getServiceListRoutePath, getServiceRoutePath, sortProp } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                                                                                                                                                                       from '@acx-ui/react-router-dom'
+import { Button, Card, Loader, PageHeader, SummaryCard, Table, TableProps }                                    from '@acx-ui/components'
+import { EdgeServiceStatusLight, useIsEdgeReady }                                                              from '@acx-ui/rc/components'
+import { useGetDhcpStatsQuery, useGetDhcpUeSummaryStatsQuery, useGetEdgeClusterListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
+import {
+  DhcpUeSummaryStats,
+  ServiceOperation,
+  ServiceType,
+  defaultSort,
+  filterByAccessForServicePolicyMutation,
+  getScopeKeyByService,
+  getServiceDetailsLink,
+  getServiceListRoutePath,
+  getServiceRoutePath,
+  sortProp
+} from '@acx-ui/rc/utils'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
@@ -24,16 +35,14 @@ const EdgeDHCPDetail = () => {
       'dhcpPoolNum',
       'leaseTime',
       'edgeAlarmSummary',
-      'edgeNum'
+      'edgeClusterIds'
     ],
     filters: { id: [params.serviceId] }
   }
   const getDhcpUeSummaryStatsPayload = {
     fields: [
-      'edgeId',
-      'edgeName',
+      'edgeClusterId',
       'venueId',
-      'venueName',
       'successfulAllocation',
       'remainsIps',
       'droppedPackets'
@@ -56,22 +65,55 @@ const EdgeDHCPDetail = () => {
   },{
     skip: !isEdgeReady
   })
+  const { clusterNameMap, edgeNodeMap, isEdgeClusterInfoLoading } = useGetEdgeClusterListQuery({
+    payload: {
+      fields: ['clusterId', 'name', 'edgeList'],
+      filters: { clusterId: dhcpUeSummaryStats?.data.map(
+        summaryStats =>summaryStats.edgeClusterId
+      ) }
+    }
+  }, {
+    skip: !dhcpUeSummaryStats?.data?.length,
+    selectFromResult: ({ data, isLoading }) => ({
+      clusterNameMap: data?.data?.reduce((acc, curr) =>{
+        acc[curr.clusterId ?? ''] = curr.name ?? ''
+        return acc
+      }, {} as { [key: string]: string }),
+      edgeNodeMap: data?.data?.reduce((acc, curr) =>{
+        acc[curr.clusterId ?? ''] = curr.edgeList?.map(item =>
+          item.serialNumber.toUpperCase()) ?? []
+        return acc
+      }, {} as { [key: string]: string[] }),
+      isEdgeClusterInfoLoading: isLoading
+    })
+  })
+  const { venueNameMap, isVenueInfoLoading } = useVenuesListQuery({
+    payload: {
+      fields: ['id', 'name'],
+      filters: { id: dhcpUeSummaryStats?.data.map(
+        summaryStats =>summaryStats.venueId
+      ) }
+    }
+  }, {
+    skip: !dhcpUeSummaryStats?.data?.length,
+    selectFromResult: ({ data, isLoading }) => ({
+      venueNameMap: data?.data?.reduce((acc, curr) =>{
+        acc[curr.id] = curr.name
+        return acc
+      }, {} as { [key: string]: string }),
+      isVenueInfoLoading: isLoading
+    })
+  })
 
   const columns: TableProps<DhcpUeSummaryStats>['columns'] = [
     {
-      title: $t({ defaultMessage: 'RUCKUS Edge' }),
+      title: $t({ defaultMessage: 'Cluster' }),
       key: 'edgeName',
       dataIndex: 'edgeName',
       sorter: { compare: sortProp('edgeName', defaultSort) },
       defaultSortOrder: 'ascend',
       fixed: 'left',
-      render: function (_, row) {
-        return (
-          <TenantLink to={`/devices/edge/${row.edgeId}/details/overview`}>
-            {row.edgeName}
-          </TenantLink>
-        )
-      }
+      render: (_, row) => clusterNameMap?.[row.edgeClusterId ?? '']
     },
     {
       title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
@@ -80,7 +122,7 @@ const EdgeDHCPDetail = () => {
       render: function (_, row) {
         return (
           <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
-            {row.venueName}
+            {venueNameMap?.[row.venueId ?? '']}
           </TenantLink>
         )
       }
@@ -91,10 +133,10 @@ const EdgeDHCPDetail = () => {
       dataIndex: 'edgeAlarmSummary',
       render: (data, row) => {
         if(!dhcpStats) return '--'
-        const targetAlarmSummary = dhcpStats.edgeAlarmSummary?.find(
-          item => item.edgeId.toLocaleLowerCase() === row.edgeId?.toLocaleLowerCase()
+        const targetAlarmSummary = dhcpStats.edgeAlarmSummary?.filter(
+          item => edgeNodeMap?.[row.edgeClusterId ?? '']?.includes(item.edgeId.toUpperCase())
         )
-        return <EdgeServiceStatusLight data={targetAlarmSummary ? [targetAlarmSummary] : []} />
+        return <EdgeServiceStatusLight data={targetAlarmSummary ?? []} />
       }
     },
     {
@@ -134,7 +176,7 @@ const EdgeDHCPDetail = () => {
     {
       title: $t({ defaultMessage: 'Service Health' }),
       content: dhcpStats &&
-      (dhcpStats.edgeNum ?? 0) ?
+      (dhcpStats?.edgeClusterIds?.length ?? 0) ?
         <EdgeServiceStatusLight data={dhcpStats?.edgeAlarmSummary} /> :
         '--'
     },
@@ -184,7 +226,8 @@ const EdgeDHCPDetail = () => {
         ])}
       />
       <Loader states={[
-        { isFetching: isDhcpStatsLoading || isDhcpUeSummaryStatsLoading, isLoading: false }
+        { isFetching: isDhcpStatsLoading || isDhcpUeSummaryStatsLoading ||
+            isEdgeClusterInfoLoading || isVenueInfoLoading, isLoading: false }
       ]}>
         <Space direction='vertical' size={30}>
           <SummaryCard data={dhcpInfo} />
