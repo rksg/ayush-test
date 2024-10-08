@@ -51,7 +51,7 @@ jest.mock('react-router-dom', () => ({
 
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
-  useRaiHelpPageLink: () => ''
+  useRaiR1HelpPageLink: () => ''
 }))
 
 setUpIntl({ locale: 'en-US', messages: {} })

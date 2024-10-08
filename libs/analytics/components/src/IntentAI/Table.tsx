@@ -6,7 +6,6 @@ import { Loader, TableProps, Table, Tooltip, Button }                           
 import { get }                                                                                 from '@acx-ui/config'
 import { DateFormatEnum, formatter }                                                           from '@acx-ui/formatter'
 import { AIDrivenRRM, AIOperation, EquiFlex, EcoFlexAI, ChatbotLink }                          from '@acx-ui/icons'
-import { useRaiHelpPageLink }                                                                  from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink, TenantLink }                                              from '@acx-ui/react-router-dom'
 import { WifiScopes }                                                                          from '@acx-ui/types'
 import { filterByAccess, getShowWithoutRbacCheckKey, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
@@ -125,9 +124,8 @@ export const AIFeature = (props: AIFeatureProps): JSX.Element => {
   </UI.FeatureIcon>)
 }
 
-export function Banner () {
+export function Banner ({ helpUrl } : { helpUrl: string | undefined }) {
   const { $t } = useIntl()
-  const helpUrl = useRaiHelpPageLink()
   const bannerTitle = $t({ defaultMessage: 'Revolutionize your Network Optimization' })
   const subTitle1 = $t({
     defaultMessage: `Automate configuration and
@@ -154,7 +152,7 @@ export function Banner () {
 }
 
 export function IntentAITable (
-  { pathFilters }: { pathFilters: PathFilter }
+  { pathFilters, helpUrl }: { pathFilters: PathFilter, helpUrl: string | undefined }
 ) {
   const { $t } = useIntl()
   const navigate = useNavigate()
@@ -337,7 +335,7 @@ export function IntentAITable (
       <UI.IntentAITableStyle />
       <UI.AlertNote
         data-testid='intent-ai-alert-note'
-        message={Banner()}
+        message={Banner({ helpUrl })}
         type='info'
       />
       <Table<IntentListItem>

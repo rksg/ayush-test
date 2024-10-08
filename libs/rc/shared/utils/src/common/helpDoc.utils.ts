@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 
+import { get }         from '@acx-ui/config'
 import { useLocation } from '@acx-ui/react-router-dom'
 
 export const DOCS_HOME_URL = 'https://docs.cloud.ruckuswireless.com'
@@ -30,32 +31,11 @@ export const getRaiDocsURL = () =>
     : 'https://docs.cloud.ruckuswireless.com/RUCKUS-AI/userguide/'
 
 export const fetchDocsURLMapping = async (
-  basePath: string,
-  showError: () => void,
-  isMspUser: boolean
-) => {
-  let result = await fetch(getDocsMappingURL(isMspUser), {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json'
-    }
-  })
-
-  if(!result.ok){
-    showError()
-    return
-  }
-
-  result = await result.json()
-  const mapKey = Object.keys(result).find(item => basePath === item)
-  return result[mapKey as keyof typeof result]
-}
-
-export const fetchRaiDocsURLMapping = async (
-  basePath: string,
+  targetPath: string,
+  docMappingURL: string,
   showError: () => void
 ) => {
-  let result = await fetch(getRaiDocsMappingURL(), {
+  let result = await fetch(docMappingURL, {
     method: 'GET',
     headers: {
       Accept: 'application/json'
@@ -68,7 +48,7 @@ export const fetchRaiDocsURLMapping = async (
   }
 
   result = await result.json()
-  const mapKey = Object.keys(result).find(item => basePath === item)
+  const mapKey = Object.keys(result).find(item => targetPath === item)
   return result[mapKey as keyof typeof result]
 }
 
@@ -84,6 +64,14 @@ export const useHelpPageLinkBasePath = (targetPathname?: string) => {
   }
 }
 
+export const useRaiHelpPageLinkBasePath = (targetPathname?: string) => {
+  const location = useLocation()
+  const [, pathname] = location.pathname.match(/^\/(.+)$/) || []
+  // enhance here if we need to replace path with * (and UT)
+  const basePath = (targetPathname || pathname)
+  return basePath
+}
+
 export const useHelpPageLink = (targetPathname?: string) => {
   const { isMspUser, basePath } = useHelpPageLinkBasePath(targetPathname)
   const [helpUrl, setHelpUrl] = useState<string|undefined>(undefined)
@@ -94,7 +82,8 @@ export const useHelpPageLink = (targetPathname?: string) => {
         ? `${DOCS_HOME_URL}/ruckusone/mspguide/index.html`
         : `${DOCS_HOME_URL}/ruckusone/userguide/index.html`
 
-      const mappingRs = await fetchDocsURLMapping(basePath, () => {}, isMspUser)
+      const mappingRs = await fetchDocsURLMapping(basePath,
+        getDocsMappingURL(isMspUser), () => { })
       setHelpUrl(mappingRs ? getDocsURL(isMspUser)+mappingRs : indexPageUrl)
     })()
   }, [basePath, isMspUser])
@@ -102,18 +91,24 @@ export const useHelpPageLink = (targetPathname?: string) => {
   return helpUrl
 }
 
-export const useRaiHelpPageLink = (targetPathname?: string) => {
-  const { basePath } = useHelpPageLinkBasePath(targetPathname)
-  const [helpUrl, setHelpUrl] = useState<string|undefined>(undefined)
+const useRaiHelpPageLink = (targetPathname?: string) => {
+  const basePath = useRaiHelpPageLinkBasePath(targetPathname)
+  const [helpUrl, setHelpUrl] = useState<string | undefined>(undefined)
 
   useEffect(() => {
     (async () => {
       const indexPageUrl = `${DOCS_HOME_URL}/RUCKUS-AI/userguide/index.html`
 
-      const mappingRs = await fetchRaiDocsURLMapping(basePath, () => {})
+      const mappingRs = await fetchDocsURLMapping(basePath, getRaiDocsMappingURL(), () => {})
       setHelpUrl(mappingRs ? getRaiDocsURL() + mappingRs : indexPageUrl)
     })()
   }, [basePath])
 
   return helpUrl
+}
+
+export const useRaiR1HelpPageLink = (targetPathname?: string) => {
+  const raiHelpPageLink = useRaiHelpPageLink(targetPathname)
+  const r1HelpPageLink = useHelpPageLink(targetPathname)
+  return get('IS_MLISA_SA') ? raiHelpPageLink : r1HelpPageLink
 }
