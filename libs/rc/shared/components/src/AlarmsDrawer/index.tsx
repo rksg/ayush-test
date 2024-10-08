@@ -157,21 +157,23 @@ export function AlarmsDrawer (props: AlarmsType) {
       filters
     })
 
-    if(tableQuery.data?.totalCount && tableQuery.data?.data.length === 0 &&
-      paginationValue.page > Math.ceil(tableQuery.data.totalCount / paginationValue.pageSize)){
-      const pagination = {
-        current: Math.ceil(tableQuery.data.totalCount / paginationValue.pageSize),
-        pageSize: paginationValue.pageSize
+    if(tableQuery.data?.totalCount && tableQuery.data?.data.length === 0){
+      const totalPage = Math.ceil(tableQuery.data.totalCount / paginationValue.pageSize)
+      if(paginationValue.page > totalPage){
+        const pagination = {
+          current: totalPage,
+          pageSize: paginationValue.pageSize
+        }
+        const sorter = {
+          field: 'startTime',
+          order: 'descend'
+        } as SorterResult<Alarm>
+        const extra = {
+          currentDataSource: [] as Alarm[],
+          action: 'paginate' as const
+        }
+        tableQuery?.handleTableChange?.(pagination, {}, sorter, extra)
       }
-      const sorter = {
-        field: 'startTime',
-        order: 'descend'
-      } as SorterResult<Alarm>
-      const extra = {
-        currentDataSource: [] as Alarm[],
-        action: 'paginate' as const
-      }
-      tableQuery?.handleTableChange?.(pagination, {}, sorter, extra)
     }
   }, [tableQuery.data, severity, serialNumber, venueId])
 
