@@ -145,17 +145,26 @@ export function AlarmsDrawer (props: AlarmsType) {
   useEffect(()=>{
     const { payload, pagination: paginationValue } = tableQuery
     let filters = severity === 'all' ? {} : { severity: [severity] }
-
-    if(serialNumber){
-      filters = { ...filters, ...{ serialNumber: [serialNumber] } }
-    } else if(venueId){
-      filters = { ...filters, ...{ venueId: [venueId] } }
-    }
-
     tableQuery.setPayload({
       ...payload,
       filters
     })
+
+    if(serialNumber){
+      filters = { ...filters, ...{ serialNumber: [serialNumber] } }
+      tableQuery.setPayload({
+        ...payload,
+        filters
+      })
+    }
+
+    if(venueId){
+      filters = { ...filters, ...{ venueId: [venueId] } }
+      tableQuery.setPayload({
+        ...payload,
+        filters
+      })
+    }
 
     if(tableQuery.data?.totalCount && tableQuery.data?.data.length === 0){
       const totalPage = Math.ceil(tableQuery.data.totalCount / paginationValue.pageSize)
