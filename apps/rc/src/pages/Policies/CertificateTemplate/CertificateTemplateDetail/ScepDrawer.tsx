@@ -265,24 +265,6 @@ export default function ScepDrawer
                   options={commonNameOptions}
                   placeholder={$t({ defaultMessage: 'Select...' })}/>
               </Form.Item>
-              <Form.Item
-                name='cnValue2'
-                label={$t({ defaultMessage: 'Common Name #2 Mapping' })}
-                rules={[{ required: true }]}
-              >
-                <Select
-                  options={commonNameOptions}
-                  placeholder={$t({ defaultMessage: 'Select...' })}/>
-              </Form.Item>
-              <Form.Item
-                name='cnValue3'
-                label={$t({ defaultMessage: 'Common Name #3 Mapping' })}
-                rules={[{ required: true }]}
-              >
-                <Select
-                  options={commonNameOptions}
-                  placeholder={$t({ defaultMessage: 'Select...' })}/>
-              </Form.Item>
             </Collapse.Panel>
           </Collapse>
         </CollapseWrapper>
