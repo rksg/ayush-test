@@ -243,7 +243,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
             // TODO Need more discuss wether groupBy feature is necessary
             if (hasGroupBy) {
               tableQuery.data.data?.forEach(item => {
-                const children = (item as unknown as { aps: NewAPModelExtended[] }).aps?.map(ap => ({ 
+                const children = (item as unknown as { aps: NewAPModelExtended[] }).aps?.map(ap => ({
                   ...ap,
                   incompatible: apIdsToIncompatible[ap.serialNumber],
                   compatibilityStatus: apIdsToCompatibleStatus[ap.serialNumber]
