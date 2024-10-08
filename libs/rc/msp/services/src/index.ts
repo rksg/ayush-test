@@ -34,6 +34,7 @@ import {
   MspEcWithVenue,
   MspRbacUrlsInfo,
   MspCompliances,
+  LicenseAttentionNotes,
   RecommendFirmwareUpgradeByApModel
 } from '@acx-ui/msp/utils'
 import {
@@ -998,6 +999,15 @@ export const mspApi = baseMspApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getEntitlementsAttentionNotes: build.query<LicenseAttentionNotes, RequestPayload>({
+      query: ({ params, payload }) => {
+        const request = createHttpRequest(MspRbacUrlsInfo.getEntitlementsAttentionNotes, params)
+        return {
+          ...request,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -1113,7 +1123,8 @@ export const {
   useAddBrandCustomersMutation,
   usePatchCustomerMutation,
   useGetMspUploadURLMutation,
-  useGetEntitlementsCompliancesQuery
+  useGetEntitlementsCompliancesQuery,
+  useGetEntitlementsAttentionNotesQuery
 } = mspApi
 
 export * from './hospitalityVerticalFFCheck'
