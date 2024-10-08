@@ -759,48 +759,53 @@ export function NetworkForm (props:{
       }).unwrap()
       const networkId = networkResponse?.response?.id
 
-      const allRequests = []
+      const firstBatchRequest = []
+      const secondBatchRequest = []
+      const thirdBatchRequest = []
+
       if (isUseWifiRbacApi) {
-        allRequests.push(activatePortal(networkId, formData.portalServiceProfileId))
+        firstBatchRequest.push(activatePortal(networkId, formData.portalServiceProfileId))
       }
-      allRequests.push(addHotspot20NetworkActivations(saveState, networkId))
-      allRequests.push(updateVlanPoolActivation(networkId, saveState.wlan?.advancedCustomization?.vlanPool))
+      firstBatchRequest.push(addHotspot20NetworkActivations(saveState, networkId))
+      firstBatchRequest.push(updateVlanPoolActivation(networkId, saveState.wlan?.advancedCustomization?.vlanPool))
       if (formData.type !== NetworkTypeEnum.HOTSPOT20) {
-        allRequests.push(updateRadiusServer(saveState, networkId))
+        firstBatchRequest.push(updateRadiusServer(saveState, networkId))
       }
-      allRequests.push(updateWifiCallingActivation(networkId, saveState))
-      allRequests.push(updateAccessControl(saveState, data, networkId))
+      firstBatchRequest.push(updateWifiCallingActivation(networkId, saveState))
+      firstBatchRequest.push(updateAccessControl(saveState, data, networkId))
       // eslint-disable-next-line max-len
-      allRequests.push(activateCertificateTemplate(saveState.certificateTemplateId, networkId))
+      firstBatchRequest.push(activateCertificateTemplate(saveState.certificateTemplateId, networkId))
       if (enableServiceRbac) {
-        allRequests.push(activateDpskPool(saveState.dpskServiceProfileId, networkId))
-        allRequests.push(activateMacRegistrationPool(saveState.wlan?.macRegistrationListId, networkId))
+        firstBatchRequest.push(activateDpskPool(saveState.dpskServiceProfileId, networkId))
+        firstBatchRequest.push(activateMacRegistrationPool(saveState.wlan?.macRegistrationListId, networkId))
       }
       if (networkResponse?.response && payload.venues) {
         // @ts-ignore
         const network: Network = networkResponse.response
         if (resolvedRbacEnabled) {
-          allRequests.push(handleRbacNetworkVenues(network.id, payload.venues))
+          secondBatchRequest.push(handleRbacNetworkVenues(network.id, payload.venues))
         } else {
-          allRequests.push(handleNetworkVenues(network.id, payload.venues))
+          secondBatchRequest.push(handleNetworkVenues(network.id, payload.venues))
         }
       }
-      allRequests.push(updateClientIsolationActivations(payload, null, networkId))
+      thirdBatchRequest.push(updateClientIsolationActivations(payload, null, networkId))
 
       // Tunnel Activation/Deactivation
       if (!isTemplate && networkId && payload.venues) {
         // eslint-disable-next-line max-len
         if (isEdgeSdLanMvEnabled && formData['sdLanAssociationUpdate']) {
         // eslint-disable-next-line max-len
-          allRequests.push(updateEdgeSdLanActivations(networkId, formData['sdLanAssociationUpdate'] as NetworkTunnelSdLanAction[], payload.venues))
+          firstBatchRequest.push(updateEdgeSdLanActivations(networkId, formData['sdLanAssociationUpdate'] as NetworkTunnelSdLanAction[], payload.venues))
         }
 
         if (isSoftGreEnabled && formData['softGreAssociationUpdate']) {
         // eslint-disable-next-line max-len
-          allRequests.push(updateSoftGreActivations(networkId, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode))
+          firstBatchRequest.push(updateSoftGreActivations(networkId, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode))
         }
       }
-      await Promise.allSettled(allRequests)
+      await Promise.all(firstBatchRequest)
+      await Promise.all(secondBatchRequest)
+      await Promise.all(thirdBatchRequest)
 
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
