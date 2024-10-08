@@ -3167,7 +3167,7 @@ export const mockResidentPortalProfileList: NewTableResult<ResidentPortal> = {
   ]
 }
 
-export const mockEnabledNSGPropertyConfig: PropertyConfigs = {
+export const mockEnabledPinPropertyConfig: PropertyConfigs = {
   status: PropertyConfigStatus.ENABLED,
   personaGroupId: 'persona-group-id-NSG',
   residentPortalId: mockResidentPortalProfileList.content[0].id,
@@ -3181,7 +3181,7 @@ export const mockEnabledNSGPropertyConfig: PropertyConfigs = {
   }
 }
 
-export const mockEnabledNoNSGPropertyConfig: PropertyConfigs = {
+export const mockEnabledNoPinPropertyConfig: PropertyConfigs = {
   status: PropertyConfigStatus.ENABLED,
   personaGroupId: 'persona-group-id-noNSG',
   residentPortalId: mockResidentPortalProfileList.content[0].id,
@@ -3210,7 +3210,7 @@ export const mockEnabledNoNSGPropertyConfig: PropertyConfigs = {
 //   ]
 // }
 
-export const mockPersonaGroupWithoutNSG: PersonaGroup = {
+export const mockPersonaGroupWithoutPin: PersonaGroup = {
   id: 'persona-group-id-1',
   name: 'Class A',
   description: '',
@@ -3219,7 +3219,7 @@ export const mockPersonaGroupWithoutNSG: PersonaGroup = {
   propertyId: 'propertyId-100'
 }
 
-export const mockPersonaGroupWithNSG: PersonaGroup = {
+export const mockPersonaGroupWithPin: PersonaGroup = {
   id: 'persona-group-id-1',
   name: 'Class A',
   description: '',

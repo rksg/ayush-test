@@ -46,22 +46,20 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
 
   let abacEnabled = false, isCustomRole = false
   const abacFF = 'abac-policies-toggle'
-  const ptenantRbacFF = 'acx-ui-rbac-api-ptenant-toggle'
 
   const { data: featureFlagStates, isLoading: isFeatureFlagStatesLoading }
     = useFeatureFlagStatesQuery(
-      { params: { tenantId }, payload: [abacFF, ptenantRbacFF] },
+      { params: { tenantId }, payload: [abacFF] },
       { skip: !Boolean(profile) }
     )
-  const ptenantRbacEnable = featureFlagStates?.[ptenantRbacFF] ?? false
   abacEnabled = featureFlagStates?.[abacFF] ?? false
 
   const { data: beta } = useGetBetaStatusQuery(
-    { params: { tenantId }, enableRbac: ptenantRbacEnable },
+    { params: { tenantId }, enableRbac: abacEnabled },
     { skip: !Boolean(profile) })
   const betaEnabled = beta?.enabled === 'true'
   const { data: accTierResponse } = useGetAccountTierQuery(
-    { params: { tenantId }, enableRbac: ptenantRbacEnable },
+    { params: { tenantId }, enableRbac: abacEnabled },
     { skip: !Boolean(profile) })
   const accountTier = accTierResponse?.acx_account_tier
 

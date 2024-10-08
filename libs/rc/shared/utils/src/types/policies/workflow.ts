@@ -13,7 +13,7 @@ export interface Workflow {
   links?: { rel: string, href: string }[]
 }
 
-export type PublishStatus = 'WORK_IN_PROGRESS' | 'PUBLISHED' | 'RETIRED'
+export type PublishStatus = 'WORK_IN_PROGRESS' | 'PUBLISHED' | 'RETIRED' | 'VALIDATE'
 
 export interface PublishDetail {
   status: PublishStatus
