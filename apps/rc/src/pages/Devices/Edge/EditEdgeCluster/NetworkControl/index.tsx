@@ -10,7 +10,7 @@ import { useActivateHqosOnEdgeClusterMutation, useDeactivateHqosOnEdgeClusterMut
 import { EdgeClusterStatus, IncompatibilityFeatures }                                                                                                 from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }                                                                                                      from '@acx-ui/react-router-dom'
 import { EdgeScopes }                                                                                                                                 from '@acx-ui/types'
-import { hasPermission }                                                                                                                              from '@acx-ui/user'
+import { hasCrossVenuesPermission, hasPermission }                                                                                                    from '@acx-ui/user'
 
 import EdgeQosProfileSelectionForm from '../../../../Policies/HqosBandwidth/Edge/HqosBandwidthSelectionForm'
 
@@ -160,12 +160,12 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
     }
   }
 
-  const hasUpdatePermission = hasPermission({ scopes: [EdgeScopes.UPDATE] })
+  const hasUpdatePermission =!!hasCrossVenuesPermission({ needGlobalPermission: true })
+  && hasPermission({ scopes: [EdgeScopes.UPDATE] })
 
   return (
     <Loader states={[{ isLoading: isQosLoading || isDhcpLoading }]}>
       <StepsForm
-        editMode
         form={form}
         onFinish={handleApply}
         onCancel={() => navigate(linkToEdgeList)}
