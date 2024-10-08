@@ -117,6 +117,8 @@ export interface EventBase {
   clientName?: string
   remoteEdgeId?: string
   clientMldMac?: string
+  turnOnTimestamp?: string
+  turnOffTimestamp?: string
 }
 
 export interface EventMeta {

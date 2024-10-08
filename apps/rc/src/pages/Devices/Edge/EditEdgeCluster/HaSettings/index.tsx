@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 
-
 import { Form }        from 'antd'
 import { useIntl }     from 'react-intl'
 import { useNavigate } from 'react-router-dom'
@@ -18,6 +17,8 @@ import {
 } from '@acx-ui/rc/services'
 import { EdgeClusterStatus } from '@acx-ui/rc/utils'
 import { useTenantLink }     from '@acx-ui/react-router-dom'
+import { EdgeScopes }        from '@acx-ui/types'
+import { hasPermission }     from '@acx-ui/user'
 
 interface HaSettingsProps {
   currentClusterStatus?: EdgeClusterStatus
@@ -69,6 +70,8 @@ export const HaSettings = (props: HaSettingsProps) => {
     navigate(clusterListPage)
   }
 
+  const hasUpdatePermission = hasPermission({ scopes: [EdgeScopes.UPDATE] })
+
   return (
     <Loader states={[{
       isLoading: isClusterNetworkSettingsLoading,
@@ -78,7 +81,7 @@ export const HaSettings = (props: HaSettingsProps) => {
         onFinish={handleFinish}
         onCancel={handleCancel}
         form={form}
-        buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
+        buttonLabel={{ submit: hasUpdatePermission ? $t({ defaultMessage: 'Apply' }) : '' }}
       >
         <StepsForm.StepForm>
           <EdgeHaSettingsForm />

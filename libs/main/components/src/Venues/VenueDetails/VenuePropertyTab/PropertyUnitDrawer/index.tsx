@@ -183,7 +183,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   const [rawFormValues, setRawFormValues]
     = useState<PropertyUnitFormFields>({} as PropertyUnitFormFields)
   const [isReady, setIsReady] = useState(!isEdit) // Control the Drawer rendering state
-  const [withNsg, setWithNsg] = useState(true)
+  const [withPin, setWithPin] = useState(true)
   const [connectionMeteringList, setConnectionMeteringList] = useState<ConnectionMetering[]>([])
   const [qosSetting, setQosSetting] = useState<QosSetting>()
   // VLAN fields state
@@ -223,7 +223,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
       setEnableGuestUnit(propertyConfigsQuery.data?.unitConfig?.guestAllowed ?? false)
 
       getPersonaGroupById({ params: { groupId } })
-        .then(result => setWithNsg(!!result.data?.personalIdentityNetworkId))
+        .then(result => setWithPin(!!result.data?.personalIdentityNetworkId))
     }
   }, [propertyConfigsQuery.data, propertyConfigsQuery.isLoading ])
 
@@ -270,7 +270,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
             vlan, dpskPassphrase, ethernetPorts, vni, meteringProfileId, expirationDate
           } = personaResult.data as Persona
 
-          if (withNsg) {
+          if (withPin) {
             // Assume that a Persona only allow to bind with one AP
             const apName = ethernetPorts?.[0]?.name
             const accessAp = ethernetPorts?.[0]?.macAddress?.replaceAll('-', ':')
@@ -381,7 +381,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
 
     // Update UnitPersona only when AP data or Qos profile changes
     const personaUpdateResult = await patchPersona(personaId, {
-      ...(withNsg && {
+      ...(withPin && {
         ethernetPorts: ports?.map(p => ({
           personaId,
           macAddress: accessAp,
@@ -479,7 +479,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
     }
   }
 
-  const withNsgForm = (<>
+  const withPinForm = (<>
     {isEdit &&
       <Form.Item
         name={['vxlan']}
@@ -634,7 +634,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
               </Form.Item>
             }
 
-            {withNsg && withNsgForm}
+            {withPin && withPinForm}
 
             <Form.Item
               name={['resident', 'name']}

@@ -64,8 +64,8 @@ describe('servicePolicyAbacUtils', () => {
     expect(getScopeKeyByService(ServiceType.WEBAUTH_SWITCH, ServiceOperation.DELETE)).toEqual<ScopeKeys>([SwitchScopes.DELETE])
 
     // eslint-disable-next-line max-len
-    expect(getScopeKeyByService(ServiceType.NETWORK_SEGMENTATION, ServiceOperation.EDIT).sort())
-      .toEqual<ScopeKeys>([WifiScopes.UPDATE, SwitchScopes.UPDATE, EdgeScopes.UPDATE].sort())
+    expect(getScopeKeyByService(ServiceType.PIN, ServiceOperation.EDIT).sort())
+      .toEqual<ScopeKeys>([SwitchScopes.UPDATE, EdgeScopes.UPDATE].sort())
   })
 
   describe('policyTypeScopeMap', () => { // Test for a combination of all policy types and operations to ensure they are all covered

@@ -3,34 +3,38 @@ export interface PersonalIdentityNetworks {
   id: string
   name: string
   vxlanTunnelProfileId: string
-  venueInfos: VenueInfo[]
-  edgeClusterInfos: EdgeClusterInfos[]
+  personaGroupId: string
+  venueId: string
+  edgeClusterInfo: EdgeClusterInfo
+  tunneledWlans: EdgePinTunneledWlan[]
   distributionSwitchInfos: DistributionSwitch[]
   accessSwitchInfos: AccessSwitch[]
 }
 
 export interface PersonalIdentityNetworksViewData {
-  id: string
-  name: string
-  tags: string[]
-  vxlanTunnelProfileId: string
-  networkIds: string[]
-  venueInfos: VenueInfo[]
-  edgeClusterInfos: EdgeClusterInfos[]
-  distributionSwitchInfos: DistributionSwitch[]
-  accessSwitchInfos: AccessSwitch[]
-  serviceStatus: string
-  tunnelNumber: string
-  edgeAlarmSummary: EdgeAlarmSummary[]
+  id?: string
+  name?: string
+  tags?: string[]
+  venueId?: string
+  venueName?: string
+  vxlanTunnelProfileId?: string
+  personaGroupId?: string
+  edgeClusterInfo?: EdgeClusterInfo & {
+    edgeClusterName: string
+  }
+  tunneledWlans?: EdgePinTunneledWlan[]
+  distributionSwitchInfos?: DistributionSwitch[]
+  accessSwitchInfos?: AccessSwitch[]
+  serviceStatus?: string
+  tunnelNumber?: string
+  edgeAlarmSummary?: EdgeAlarmSummary[]
 }
 
 export interface PersonalIdentityNetworkFormData extends PersonalIdentityNetworks {
   networkIds: string[]
-  venueId: string
   venueName: string
-  personaGroupId: string
   edgeClusterId: string
-  edgeName: string
+  edgeClusterName: string
   dhcpId: string
   dhcpName: string
   poolId: string
@@ -44,15 +48,14 @@ export interface PersonalIdentityNetworkFormData extends PersonalIdentityNetwork
   dhcpRelay: boolean
 }
 
-export interface VenueInfo {
-  venueId: string
-  venueName: string
-  personaGroupId?: string
+export interface EdgePinTunneledWlan {
+  // should unmark this when support multi-venue PIN
+  // venueId: string
+  networkId: string
 }
 
-export interface EdgeClusterInfos {
+export interface EdgeClusterInfo {
   edgeClusterId: string
-  edgeClusterName: string
   segments: number
   devices: number
   dhcpInfoId: string

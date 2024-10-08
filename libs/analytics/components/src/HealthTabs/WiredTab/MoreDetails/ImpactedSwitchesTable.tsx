@@ -1,4 +1,4 @@
-import { useIntl, FormattedMessage } from 'react-intl'
+import { FormattedMessage, useIntl } from 'react-intl'
 
 import { sortProp, defaultSort  } from '@acx-ui/analytics/utils'
 import {
@@ -67,7 +67,6 @@ export const ImpactedSwitchesTable = ({
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
       key: 'name',
-      fixed: 'left',
       render: (_, row: SwitchDetails) => (
         <TenantLink
           to={`/devices/switch/${row.mac?.toLowerCase()}/serial/details/${get('IS_MLISA_SA')
@@ -82,7 +81,6 @@ export const ImpactedSwitchesTable = ({
       title: $t({ defaultMessage: 'MAC Address' }),
       dataIndex: 'mac',
       key: 'mac',
-      fixed: 'left',
       sorter: { compare: sortProp('mac', defaultSort) }
     },
     {
@@ -101,21 +99,18 @@ export const ImpactedSwitchesTable = ({
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',
       key: 'status',
-      show: false,
       sorter: { compare: sortProp('status', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Firmware' }),
       dataIndex: 'firmware',
       key: 'firmware',
-      show: false,
       sorter: { compare: sortProp('firmware', defaultSort) }
     },
     {
       title: metricTableColLabelMapping[queryType as keyof typeof metricTableColLabelMapping],
       dataIndex: metricField,
       key: metricField,
-      width: 160,
       sorter: { compare: sortProp(metricField, defaultSort) },
       render: (_, row) => {
         return formatter('countFormat')(row[metricField as keyof SwitchDetails])
@@ -145,7 +140,6 @@ export const ImpactedSwitchesTable = ({
         />
       </ChartTitle>
       <Table
-        settingsId='switch-health-impacted-switches-table'
         columns={columns}
         dataSource={data as SwitchDetails[]}
         rowKey='rowId'
