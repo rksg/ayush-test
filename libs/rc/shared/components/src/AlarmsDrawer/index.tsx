@@ -143,35 +143,37 @@ export function AlarmsDrawer (props: AlarmsType) {
     { skip: !visible })
 
   useEffect(()=>{
-    const { payload } = tableQuery
+    const { payload, pagination: paginationValue } = tableQuery
     let filters = severity === 'all' ? {} : { severity: [severity] }
+
+    if(serialNumber){
+      filters = { ...filters, ...{ serialNumber: [serialNumber] } }
+
+    } else if(venueId){
+      filters = { ...filters, ...{ venueId: [venueId] } }
+
+    }
+
     tableQuery.setPayload({
       ...payload,
       filters
     })
 
-    if(serialNumber){
-      filters = { ...filters, ...{ serialNumber: [serialNumber] } }
-      tableQuery.setPayload({
-        ...payload,
-        filters
-      })
-    }
-
-    if(venueId){
-      filters = { ...filters, ...{ venueId: [venueId] } }
-      tableQuery.setPayload({
-        ...payload,
-        filters
-      })
-    }
-
-    if(tableQuery.data?.totalCount && tableQuery.data.totalCount > 0
-        && tableQuery.data?.data.length === 0){
-      tableQuery.setPayload({
-        ...allAlarmsPayload,
-        filters
-      })
+    if(tableQuery.data?.totalCount && tableQuery.data?.data.length === 0 &&
+      paginationValue.page > Math.ceil(tableQuery.data.totalCount / paginationValue.pageSize)){
+      const pagination = {
+        current: Math.ceil(tableQuery.data.totalCount / paginationValue.pageSize),
+        pageSize: paginationValue.pageSize
+      }
+      const sorter = {
+        field: 'startTime',
+        order: 'descend'
+      } as SorterResult<Alarm>
+      const extra = {
+        currentDataSource: [] as Alarm[],
+        action: 'paginate' as const
+      }
+      tableQuery?.handleTableChange?.(pagination, {}, sorter, extra)
     }
   }, [tableQuery.data, severity, serialNumber, venueId])
 
