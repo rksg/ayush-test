@@ -11,6 +11,7 @@ import { useGetApCompatibilitiesVenueQuery, useGetVenueApCompatibilitiesQuery } 
 import {
   ACX_UI_AP_COMPATIBILITY_NOTE_HIDDEN_KEY,
   ApCompatibility,
+  Compatibility,
   isEdgeCompatibilityFeature
 } from '@acx-ui/rc/utils'
 
@@ -58,6 +59,7 @@ const useGetApCompatibilityData = (venueId: string) => {
 
 
 export const CompatibilityCheck = ({ venueId }: { venueId: string }) => {
+  const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
   const { $t } = useIntl()
 
   const [drawerFeature, setDrawerFeature] = useState<boolean>(false)
@@ -72,6 +74,8 @@ export const CompatibilityCheck = ({ venueId }: { venueId: string }) => {
   const incompatibleCount = Number(apVenueCompatibilities?.incompatible)
   const hasEdgeFeature = apVenueCompatibilities?.incompatibleFeatures
     ?.some(item => isEdgeCompatibilityFeature(item.featureName))
+
+  const emptyData = isApCompatibilitiesByModel? [] as Compatibility[] : [] as ApCompatibility[]
 
   return !isLoading && incompatibleCount > 0
     ? <>
@@ -94,7 +98,7 @@ export const CompatibilityCheck = ({ venueId }: { venueId: string }) => {
         isMultiple
         type={ApCompatibilityType.VENUE}
         venueId={venueId}
-        data={apVenueCompatibilities ? [apVenueCompatibilities] : ([] as ApCompatibility[])}
+        data={apVenueCompatibilities ? [apVenueCompatibilities] : emptyData}
         onClose={() => toggleCompatibilityDrawer(false)}
       />}
     </>

@@ -39,7 +39,8 @@ import {
   CertificateTemplate,
   ExternalWifiProviders,
   CompatibilityResponse,
-  Compatibility
+  Compatibility,
+  IncompatibleFeatureLevelEnum
 } from '@acx-ui/rc/utils'
 import { baseNetworkApi }                      from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -227,7 +228,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
             body: JSON.stringify({
               filters: {
                 wifiNetworkIds: networkIds,
-                featureLevel: ['WIFI_NETWORK']
+                featureLevels: [IncompatibleFeatureLevelEnum.WIFI_NETWORK]
               },
               page: 1,
               pageSize: 100
@@ -705,7 +706,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
                 filters: {
                   venueIds: venueIds,
                   wifiNetworkIds: [arg.params!.networkId],
-                  featureLevel: ['VENUE', 'WIFI_NETWORK']
+                  featureLevels: [IncompatibleFeatureLevelEnum.VENUE, IncompatibleFeatureLevelEnum.WIFI_NETWORK]
                 },
                 page: 1,
                 pageSize: 100
@@ -717,7 +718,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
             const apCompatibilities = apCompatibilitiesResponse?.compatibilities
 
             apCompatibilities.forEach((item: Compatibility) => {
-              venueIdsToIncompatible[item.id] = item.incompatible
+              venueIdsToIncompatible[item.id] = item.incompatible ?? 0
             })
           } catch (e) {
           // eslint-disable-next-line no-console
@@ -904,7 +905,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
                 filters: {
                   venueIds: [ arg.params!.venueId],
                   wifiNetworkIds: networkIds,
-                  featureLevel: ['VENUE', 'WIFI_NETWORK']
+                  featureLevels: [IncompatibleFeatureLevelEnum.VENUE, IncompatibleFeatureLevelEnum.WIFI_NETWORK]
                 },
                 page: 1,
                 pageSize: 100
@@ -916,7 +917,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
             const apCompatibilities = apCompatibilitiesResponse?.compatibilities
 
             apCompatibilities.forEach((item: Compatibility) => {
-              networkIdsToIncompatible[item.id] = item.incompatible
+              networkIdsToIncompatible[item.id] = item.incompatible ?? 0
             })
           } catch (e) {
             // eslint-disable-next-line no-console

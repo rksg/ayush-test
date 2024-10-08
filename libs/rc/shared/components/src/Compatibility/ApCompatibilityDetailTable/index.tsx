@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from 'react'
 
-import { Space }   from 'antd'
-import { sumBy }   from 'lodash'
-import moment      from 'moment-timezone'
+import { Space, Typography } from 'antd'
+import { sumBy }             from 'lodash'
+//import moment                from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Table, TableProps, Tooltip }                        from '@acx-ui/components'
@@ -110,11 +111,9 @@ export const ApCompatibilityDetailTable = (props: ApCompatibilityDetailTableProp
     refetchOnMountOrArgChange: false
   })
 
-  const [updateNowFwVer, setUpdateNowFwVer] = useState<string|undefined>()
-  const [scheduleUpdateFwVer, setScheduleUpdateFwVer] = useState<string|undefined>()
+  //const [updateNowFwVer, setUpdateNowFwVer] = useState<string|undefined>()
+  //const [scheduleUpdateFwVer, setScheduleUpdateFwVer] = useState<string|undefined>()
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
-
-  console.log('ApCompatibilityDetailTable data: ', data)
 
   /*
   const [updateNow] = useUpdateApFirmwareNowMutation()
@@ -215,10 +214,14 @@ export const ApCompatibilityDetailTable = (props: ApCompatibilityDetailTableProp
   const showCheckbox = hasPermission({ scopes: [WifiScopes.UPDATE] }) && !requirementOnly
 
   return <>
+    {!requirementOnly &&
+      <Typography.Text children={
+        $t({ defaultMessage: '* Note that not all features are available on all access points.' })
+      }/>
+    }
     <Table
       rowKey='featureName'
-      //columns={columns.filter(i => requirementOnly ? i.dataIndex !== 'incompatible' : true)}
-      columns={columns}
+      columns={columns.filter(i => requirementOnly ? i.dataIndex !== 'incompatibleDevices' : true)}
       dataSource={data}
       rowActions={filterByAccess(rowActions)}
       rowSelection={showCheckbox && {

@@ -1,6 +1,7 @@
 import { FormattedMessage } from 'react-intl'
 
-import { useGetVenueQuery }     from '@acx-ui/rc/services'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useGetVenueQuery }       from '@acx-ui/rc/services'
 import {
   ApModelFamilyType,
   CompatibilityDeviceEnum,
@@ -54,6 +55,7 @@ export const getFirmwareLinkByDeviceType = (deviceType: CompatibilityDeviceEnum)
 
 // eslint-disable-next-line max-len
 export const useDescription = (props: Pick<CompatibilityDrawerProps, 'compatibilityType'|'deviceType'|'featureName'|'venueId'|'venueName'>) => {
+  const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
   const {
     compatibilityType,
     deviceType = CompatibilityDeviceEnum.AP,
@@ -92,7 +94,11 @@ export const useDescription = (props: Pick<CompatibilityDrawerProps, 'compatibil
   const multipleTitle = <FormattedMessage
     {...(isVenueLevel
     // eslint-disable-next-line max-len
-      ? (deviceType === CompatibilityDeviceEnum.AP ? messageMapping.multipleFromVenueAp : messageMapping.multipleFromVenueEdge)
+      ? (deviceType === CompatibilityDeviceEnum.AP
+        ? ((isApCompatibilitiesByModel)
+          ? messageMapping.multipleFromVenueDevice
+          : messageMapping.multipleFromVenueAp )
+        : messageMapping.multipleFromVenueEdge)
     // eslint-disable-next-line max-len
       : (deviceType === CompatibilityDeviceEnum.AP ? messageMapping.multipleFromAp : messageMapping.multipleFromEdge))}
     values={{

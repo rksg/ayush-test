@@ -29,6 +29,7 @@ import {
 import {
   useImportApMutation,
   useLazyGetApCompatibilitiesNetworkQuery,
+  useLazyGetApCompatibilitiesQuery,
   useLazyGetApCompatibilitiesVenueQuery,
   useLazyImportResultQuery,
   useNewApListQuery,
@@ -53,7 +54,10 @@ import {
   transformDisplayNumber,
   transformDisplayText,
   usePollingTableQuery,
-  PowerSavingStatusEnum
+  PowerSavingStatusEnum,
+  IncompatibleFeatureLevelEnum,
+  CompatibilityResponse,
+  Compatibility
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload, WifiScopes }                                     from '@acx-ui/types'
@@ -109,9 +113,14 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
   const apTxPowerFlag = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
   const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+  const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
 
+  // old API
   const [ getApCompatibilitiesVenue ] = useLazyGetApCompatibilitiesVenueQuery()
   const [ getApCompatibilitiesNetwork ] = useLazyGetApCompatibilitiesNetworkQuery()
+  // new API
+  const [ getApCompatibilities] = useLazyGetApCompatibilitiesQuery()
+
   const { data: wifiCapabilities } = useWifiCapabilitiesQuery({ params: { }, enableRbac: true })
 
   const apListTableQuery = usePollingTableQuery({
@@ -139,56 +148,123 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
     const fetchApCompatibilitiesAndSetData = async () => {
       const result:React.SetStateAction<(NewAPModelExtended|NewAPExtendedGrouped)[]> = []
       const apIdsToIncompatible:{ [key:string]: number } = {}
+      const apIdsToCompatibleStatus:{ [key:string]: string } = {}
       if (tableQuery.data?.data) {
-        let apCompatibilitiesResponse:ApCompatibilityResponse = { apCompatibilities: [] }
-        let apCompatibilities:ApCompatibility[] = []
         let apIds:string[] = []
-        if (enableApCompatibleCheck && showFeatureCompatibilitiy) {
-          const aps = tableQuery.data as TableResult<NewAPModelExtended|NewAPExtendedGrouped, ApExtraParams>
-          apIds = retriedApIds(aps, !!hasGroupBy)
-          try {
-            if (apIds.length > 0) {
+
+        const aps = tableQuery.data as TableResult<NewAPModelExtended|NewAPExtendedGrouped, ApExtraParams>
+        apIds = retriedApIds(aps, !!hasGroupBy)
+
+        if (apIds.length > 0) {
+          if (isApCompatibilitiesByModel) {
+            let compatibilitiesResponse: CompatibilityResponse = {} as CompatibilityResponse
+            let compatibilities: Compatibility[] = []
+            try {
+              if (params.venueId) {
+                compatibilitiesResponse = await getApCompatibilities({
+                  params: {},
+                  payload: {
+                    filters: {
+                      apIds: apIds,
+                      venueIds: [params.venueId],
+                      featureLevels: [IncompatibleFeatureLevelEnum.VENUE]
+                    },
+                    page: 1,
+                    pageSize: 10
+                  }
+                }).unwrap()
+              } else if (params.networkId) {
+                compatibilitiesResponse = await getApCompatibilities({
+                  params: {},
+                  payload: {
+                    filters: {
+                      apIds: apIds,
+                      wifiNetworkIds: [params.networkId],
+                      featureLevels: [IncompatibleFeatureLevelEnum.WIFI_NETWORK]
+                    },
+                    page: 1,
+                    pageSize: 10
+                  }
+                }).unwrap()
+              }
+
+              compatibilities = compatibilitiesResponse?.compatibilities
+
+              if (compatibilities?.length > 0) {
+                apIds.forEach((id:string) => {
+                  const apIncompatible = find(compatibilities, ap => id===ap.id)
+                  if (apIncompatible) {
+                    const { incompatibleFeatures, status, incompatible } = apIncompatible
+                    apIdsToIncompatible[id] = incompatibleFeatures?.length ?? incompatible ?? 0
+                    if (status) {
+                      apIdsToCompatibleStatus[id] = status
+                    }
+                  }
+                })
+              }
+            } catch (e) {
+              // eslint-disable-next-line no-console
+              console.error('fetchApCompatibilitiesAndSetData error:', e)
+            }
+          } else {
+            let apCompatibilitiesResponse:ApCompatibilityResponse = { apCompatibilities: [] }
+            let apCompatibilities:ApCompatibility[] = []
+            try {
               if (params.venueId) {
                 apCompatibilitiesResponse = await getApCompatibilitiesVenue({
                   params: { venueId: params.venueId },
                   payload: { filters: { apIds } }
                 }).unwrap()
+
               } else if (params.networkId) {
                 apCompatibilitiesResponse = await getApCompatibilitiesNetwork({
                   params: { networkId: params.networkId },
                   payload: { filters: { apIds } }
                 }).unwrap()
               }
-            }
-          } catch (e) {
-            // eslint-disable-next-line no-console
-            console.error('fetchApCompatibilitiesAndSetData error:', e)
-          }
-          apCompatibilities = apCompatibilitiesResponse.apCompatibilities
-        }
 
-        if (apCompatibilities?.length > 0) {
-          apIds.forEach((id:string) => {
-            const apIncompatible = find(apCompatibilities, ap => id===ap.id)
-            if (apIncompatible) {
-              apIdsToIncompatible[id] = apIncompatible?.incompatibleFeatures?.length ?? apIncompatible?.incompatible ?? 0
+              apCompatibilities = apCompatibilitiesResponse.apCompatibilities
+            } catch (e) {
+              // eslint-disable-next-line no-console
+              console.error('fetchApCompatibilitiesAndSetData error:', e)
             }
-          })
-          // TODO Need more discuss wether groupBy feature is necessary
-          if (hasGroupBy) {
-            tableQuery.data.data?.forEach(item => {
-              const children = (item as unknown as { aps: NewAPModelExtended[] }).aps?.map(ap => ({ ...ap, incompatible: apIdsToIncompatible[ap.serialNumber] }))
-              result.push({ ...item, aps: children, children })
-            })
-          } else {
-            tableQuery.data.data?.forEach(ap => (result.push({ ...ap, incompatible: apIdsToIncompatible[ap.serialNumber] })))
+
+            if (apCompatibilities?.length > 0) {
+              apIds.forEach((id:string) => {
+                const apIncompatible = find(apCompatibilities, ap => id===ap.id)
+                if (apIncompatible) {
+                  apIdsToIncompatible[id] = apIncompatible?.incompatibleFeatures?.length ?? apIncompatible?.incompatible ?? 0
+                }
+              })
+            }
           }
-          setTableData(result)
-        } else {
-          setTableData(tableQuery.data?.data)
+
+          if (Object.keys(apIdsToIncompatible).length > 0) {
+            // TODO Need more discuss wether groupBy feature is necessary
+            if (hasGroupBy) {
+              tableQuery.data.data?.forEach(item => {
+                const children = (item as unknown as { aps: NewAPModelExtended[] }).aps?.map(ap => ({ 
+                  ...ap,
+                  incompatible: apIdsToIncompatible[ap.serialNumber],
+                  compatibilityStatus: apIdsToCompatibleStatus[ap.serialNumber]
+                }))
+                result.push({ ...item, aps: children, children })
+              })
+            } else {
+              tableQuery.data.data?.forEach(ap => (result.push({
+                ...ap,
+                incompatible: apIdsToIncompatible[ap.serialNumber],
+                compatibilityStatus: apIdsToCompatibleStatus[ap.serialNumber]
+              })))
+            }
+            setTableData(result)
+          } else {
+            setTableData(tableQuery.data?.data)
+          }
         }
       }
     }
+
     if (tableQuery.data) {
       if (enableApCompatibleCheck && showFeatureCompatibilitiy) {
         fetchApCompatibilitiesAndSetData()
@@ -516,6 +592,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
         return (<ApCompatibilityFeature
           count={row?.incompatible}
           deviceStatus={row?.status}
+          compatibilityStatus={row?.compatibilityStatus}
           onClick={() => {
             setSelectedApSN(row?.serialNumber)
             setSelectedApName(row?.name ?? '')

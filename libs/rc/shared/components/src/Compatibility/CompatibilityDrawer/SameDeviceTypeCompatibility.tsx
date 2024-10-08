@@ -13,7 +13,7 @@ import { useDescription }    from './utils'
 
 interface SameDeviceTypeCompatibilityProps {
   types: string[],
-  data: Record<string, ApIncompatibleFeature[]>,
+  data: Record<string, IncompatibleFeature[]> | Record<string, ApIncompatibleFeature[]>,
   compatibilityType: CompatibilityType,
   deviceType: CompatibilityDeviceEnum,
   totalDevices?: number,
@@ -38,6 +38,7 @@ export const SameDeviceTypeCompatibility = (props: SameDeviceTypeCompatibilityPr
     {props.deviceType === CompatibilityDeviceEnum.AP?
       (isApCompatibilitiesByModel?
         <ApCompatibilityDetailTable
+          requirementOnly={props.compatibilityType === CompatibilityType.DEVICE}
           data={data[CompatibilityDeviceEnum.AP] as IncompatibleFeature[]}
           venueId={props.venueId}
         />
@@ -58,7 +59,7 @@ export const SameDeviceTypeCompatibility = (props: SameDeviceTypeCompatibilityPr
         </Tabs>)
       : <EdgeCompatibilityDetailTable
         requirementOnly={props.compatibilityType === CompatibilityType.DEVICE}
-        data={data[CompatibilityDeviceEnum.EDGE].map(i => ({
+        data={(data[CompatibilityDeviceEnum.EDGE] as ApIncompatibleFeature[]).map(i => ({
           featureRequirement: {
             featureName: i.featureName,
             requiredFw: i.requiredFw!

@@ -101,7 +101,8 @@ import {
   RbacAPMesh,
   EthernetPortProfileUrls,
   EthernetPortProfileViewData,
-  CompatibilityResponse
+  CompatibilityResponse,
+  IncompatibleFeatureLevelEnum
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                                                        from '@acx-ui/store'
 import { RequestPayload }                                                      from '@acx-ui/types'
@@ -255,7 +256,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
             body: JSON.stringify({
               filters: {
                 venueIds: venueIds,
-                featureLevel: ['VENUE']
+                featureLevels: [IncompatibleFeatureLevelEnum.VENUE]
               },
               page: 1,
               pageSize: 100

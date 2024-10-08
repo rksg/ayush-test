@@ -73,8 +73,8 @@ export const ApModelCompatibilityDrawer = (props: ApModelCompatibilityDrawerProp
 
   const {
     visible, type=ApCompatibilityType.VENUE, isMultiple=false,
-    venueId, venueName, networkId, featureName='',
-    apName, apIds=[], networkIds=[], venueIds=[], data=[]
+    venueId, venueName, featureName='',
+    apName, data=[]
   } = props
 
   const { $t } = useIntl()
@@ -105,12 +105,15 @@ export const ApModelCompatibilityDrawer = (props: ApModelCompatibilityDrawerProp
     ? ($t({ defaultMessage: 'Incompatibility Details' }) + apNameTitle)
     : $t({ defaultMessage: 'Compatibility Requirement' })
 
-  const multipleFromAp = $t({
-    defaultMessage:
-    'The following features are not enabled on this access point due to firmware or device ' +
-    'incompatibility. Please see the minimum firmware versions required below. Also note that ' +
-    'not all features are available on all access points. You may upgrade your firmware from'
-  })
+  const multipleFromAp = <FormattedMessage
+    defaultMessage={
+      'The following features are not enabled on this access point due to <b>firmware</b> or <b>device ' +
+      'incompatibility</b>. Please see the minimum firmware versions required below. Also note that ' +
+      'not all features are available on all access points. You may upgrade your firmware from'
+    }
+    values={{
+      b: (text: string) => <strong>{text}</strong>
+    }} />
 
   const multipleFromVenue = $t({
     defaultMessage:
@@ -147,7 +150,6 @@ export const ApModelCompatibilityDrawer = (props: ApModelCompatibilityDrawerProp
   const contentTxt = isMultiple ? multipleTitle : singleTitle
 
   const getCompatibilities = async () => {
-    console.log('currentType: ', currentType)
     if (ApCompatibilityType.NETWORK === currentType) {
       /*
       return getApCompatibilitiesNetwork({

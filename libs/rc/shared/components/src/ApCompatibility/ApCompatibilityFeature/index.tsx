@@ -4,9 +4,9 @@ import { ReactElement } from 'react'
 import { Space }                      from 'antd'
 import { MessageDescriptor, useIntl } from 'react-intl'
 
-import { Button, cssStr }                     from '@acx-ui/components'
-import { Features }                           from '@acx-ui/feature-toggle'
-import { ApDeviceStatusEnum, EdgeStatusEnum } from '@acx-ui/rc/utils'
+import { Button, cssStr }                                           from '@acx-ui/components'
+import { Features }                                                 from '@acx-ui/feature-toggle'
+import { ApDeviceStatusEnum, CompatibleStatusEnum, EdgeStatusEnum } from '@acx-ui/rc/utils'
 
 import { useIsEdgeFeatureReady } from '../../useEdgeActions'
 import {
@@ -21,36 +21,44 @@ import { messageMapping } from './messageMapping'
 
 export type ApCompatibilityFeatureProps = {
     count?: number,
-    deviceStatus?: ApDeviceStatusEnum | EdgeStatusEnum | string
+    deviceStatus?: ApDeviceStatusEnum | EdgeStatusEnum | string,
+    compatibilityStatus?: string,
     onClick: () => void
   }
 
 export const ApCompatibilityFeature = (props: ApCompatibilityFeatureProps) => {
   const { $t } = useIntl()
-  const { count, deviceStatus, onClick } = props
+  const { count, deviceStatus, compatibilityStatus, onClick } = props
   const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
-  if (!isEdgeCompatibilityEnabled) {
-    if (count === undefined) {
-      return (<><UnknownIcon/> {$t(messageMapping.unknown)}</>)
-    } else if (count === 0) {
-      return (<><CheckMarkCircleSolidIcon/> {$t(messageMapping.fullyCompatible)}</>)
-    } else {
-      return <>
-        <WarningTriangleSolidIcon/>
-        <Button
-          type='link'
-          style={{ fontSize: cssStr('--acx-body-4-font-size') }}
-          onClick={onClick}>
-          {$t(messageMapping.partiallyIncompatible)}
-        </Button>
-      </>
+  let checkResult: { message: MessageDescriptor, icon: ReactElement }
+  let isPartialCompatible: boolean
+
+  if (compatibilityStatus) {
+    checkResult = getCompatibilityMessageByCompatibityStatus(compatibilityStatus)
+    isPartialCompatible = compatibilityStatus === CompatibleStatusEnum.PARTIALLY_INCOMPATIBLE
+  } else {
+    if (!isEdgeCompatibilityEnabled) {
+      if (count === undefined) {
+        return (<><UnknownIcon/> {$t(messageMapping.unknown)}</>)
+      } else if (count === 0) {
+        return (<><CheckMarkCircleSolidIcon/> {$t(messageMapping.fullyCompatible)}</>)
+      } else {
+        return <>
+          <WarningTriangleSolidIcon/>
+          <Button
+            type='link'
+            style={{ fontSize: cssStr('--acx-body-4-font-size') }}
+            onClick={onClick}>
+            {$t(messageMapping.partiallyIncompatible)}
+          </Button>
+        </>
+      }
     }
+
+    checkResult = getCompatibilityMessage(deviceStatus, count)
+    isPartialCompatible = !!count && (deviceStatus === ApDeviceStatusEnum.OPERATIONAL)
   }
-
-  const checkResult = getCompatibilityMessage(deviceStatus, count)
-
-  const isPartialCompatible = !!count && ApDeviceStatusEnum.OPERATIONAL
 
   return <Space size='small'>
     {isPartialCompatible
@@ -120,4 +128,38 @@ const getCompatibilityMessage = (
         icon: <UnknownIcon/>
       }
   }
+}
+
+const getCompatibilityMessageByCompatibityStatus = ( compatibityStatus: string ): {
+  message: MessageDescriptor,
+  icon: ReactElement
+} => {
+  switch (compatibityStatus) {
+    case CompatibleStatusEnum.CHECK_UNAVAILABLE:
+      return {
+        message: messageMapping.unavailable,
+        icon: <UnavailableIcon/>
+      }
+    case CompatibleStatusEnum.FULLY_COMPATIBLE:
+      return {
+        message: messageMapping.fullyCompatible,
+        icon: <CheckMarkCircleSolidIcon/>
+      }
+    case CompatibleStatusEnum.PARTIALLY_INCOMPATIBLE:
+      return {
+        message: messageMapping.partiallyIncompatible,
+        icon: <WarningTriangleSolidIcon/>
+      }
+    case CompatibleStatusEnum.COMPATIBILITY_CHECKING:
+      return {
+        message: messageMapping.checking,
+        icon: <CheckingIcon />
+      }
+    default:
+      return {
+        message: messageMapping.unknown,
+        icon: <UnknownIcon/>
+      }
+  }
+
 }

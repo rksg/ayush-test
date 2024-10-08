@@ -196,6 +196,7 @@ export interface NewAPModelExtended extends NewAPModel {
   switchPort?: string
   rogueCategory?: { [key: string]: number }
   incompatible?: number
+  compatibilityStatus?: string
 }
 export interface NewCelluarInfo {
   activeSim: string,

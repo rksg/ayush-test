@@ -7,9 +7,11 @@ import {
   ApCompatibility,
   IncompatibilityFeatures,
   CompatibilityDeviceEnum,
-  CompatibilityType } from '@acx-ui/rc/utils'
+  CompatibilityType,
+  Compatibility
+} from '@acx-ui/rc/utils'
 
-import { compatibilityDataGroupByFeatureDeviceType } from '../utils'
+import { apCompatibilityDataGroupByFeatureDeviceType, compatibilityDataGroupByFeatureDeviceType } from '../utils'
 
 import { CompatibilityItem }           from './CompatibilityItem'
 import { SameDeviceTypeCompatibility } from './SameDeviceTypeCompatibility'
@@ -22,7 +24,7 @@ import { useDescription }              from './utils'
 export type CompatibilityDrawerProps = {
   visible: boolean,
   title: string,
-  data: ApCompatibility[],
+  data: Compatibility[] | ApCompatibility[],
   compatibilityType: CompatibilityType,
 
   onClose: () => void
@@ -74,7 +76,7 @@ export const CompatibilityDrawer = (props: CompatibilityDrawerProps) => {
 
 // eslint-disable-next-line max-len
 interface DrawerContentUnitProps extends Omit<CompatibilityDrawerProps, 'data' | 'visible' | 'isLoading' | 'onClose' | 'title'> {
-  data: ApCompatibility,
+  data: Compatibility | ApCompatibility,
   deviceType: CompatibilityDeviceEnum,
 }
 const DrawerContentUnit = (props: DrawerContentUnitProps ) => {
@@ -82,7 +84,10 @@ const DrawerContentUnit = (props: DrawerContentUnitProps ) => {
   const { data, deviceType = CompatibilityDeviceEnum.AP, ...others } = props
   const description = useDescription(omit(props, 'data'))
 
-  const compatibilityData = compatibilityDataGroupByFeatureDeviceType(data)
+  // eslint-disable-next-line max-len
+  const compatibilityData = (isApCompatibilitiesByModel && (deviceType === CompatibilityDeviceEnum.AP))
+    ? compatibilityDataGroupByFeatureDeviceType(data as Compatibility)
+    : apCompatibilityDataGroupByFeatureDeviceType(data as ApCompatibility)
   const deviceTypes = Object.keys(compatibilityData)
   const isCrossDevices = deviceTypes.length > 1
 

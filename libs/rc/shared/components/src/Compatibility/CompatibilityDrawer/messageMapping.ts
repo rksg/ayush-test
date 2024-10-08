@@ -4,8 +4,8 @@ import { defineMessage } from 'react-intl'
 export const messageMapping = {
   // TODO: should change `multipleFromAp` when AP compatibility enhancement.
   multipleFromAp: defineMessage({ defaultMessage:
-    'The following features are not enabled on this access point due to firmware or device ' +
-    'incompatibility. Please see the minimum firmware versions required below. Also note that ' +
+    'The following features are not enabled on this access point due to <b>firmware</b> or <b>device ' +
+    'incompatibility</b>. Please see the minimum firmware versions required below. Also note that ' +
     'not all features are available on all access points. You may upgrade your firmware from {apFwLink}'
   }),
   multipleFromEdge: defineMessage({ defaultMessage:

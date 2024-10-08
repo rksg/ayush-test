@@ -171,7 +171,7 @@ export const OldApCompatibilityDrawer = (props: OldApCompatibilityDrawerProps) =
   useEffect(() => {
     if (isInitializing && data?.length !== 0) {
       setIsInitializing(false)
-      setApCompatibilities(data)
+      setApCompatibilities(data as ApCompatibility[])
     }
   }, [data])
 
@@ -247,7 +247,7 @@ export const OldApCompatibilityDrawer = (props: OldApCompatibilityDrawerProps) =
       visible={visible}
       closable={true}
       onClose={props.onClose}
-      children={getContent(apCompatibilities)}
+      children={getContent(apCompatibilities as ApCompatibility[])}
       destroyOnClose={true}
       width={'500px'}
     />
