@@ -9,7 +9,6 @@ import { useIsSplitOn }                                   from '@acx-ui/feature-
 import { WorkflowUrls, Workflow, NewAPITableResult }      from '@acx-ui/rc/utils'
 import { Provider }                                       from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
-import { RequestPayload }                                 from '@acx-ui/types'
 
 import { WorkflowDrawer } from '.'
 
@@ -47,21 +46,6 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useTenantLink: (): Path => mockedTenantPath
 }))
 
-
-jest.mock('@acx-ui/rc/services', () => ({
-  ...jest.requireActual('@acx-ui/rc/services'),
-  useUpdateWorkflowMutation: () => {
-    return [(req: RequestPayload) => {
-      return { unwrap: () => new Promise((resolve) => {
-        mockUpdateWorkflowApi()
-        resolve(true)
-        setTimeout(() => {
-          (req.callback as Function)()
-        }, 100)})
-      }
-    }, { isLoading: false }]
-  }
-}))
 
 describe('WorkflowDrawer', () => {
   beforeEach(async () => {
