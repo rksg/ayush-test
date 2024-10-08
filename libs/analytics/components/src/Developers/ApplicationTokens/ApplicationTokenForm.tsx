@@ -14,7 +14,7 @@ import {
 import { handleError }                                from '../services'
 import { TransparentButton, Label, SecretInput, Row } from '../styledComponents'
 
-import { applicationTokenDtoKeys, useCreateApplicationTokenMutation, useUpdateApplicationTokenMutation } from './services'
+import { applicationTokenDtoKeys, useCreateApplicationTokenMutation, useRotateApplicationTokenMutation, useUpdateApplicationTokenMutation } from './services'
 
 import type { ApplicationToken, ApplicationTokenDto } from './services'
 
@@ -34,6 +34,7 @@ export function ApplicationTokenForm (props: {
   onClose: () => void
 }) {
   const { submit, response } = useApplicationTokenMutation(props.applicationToken)
+  const [doRotate, rotateResponse] = useRotateApplicationTokenMutation()
   const applicationToken = props.applicationToken
   const { $t } = useIntl()
   const [form] = Form.useForm<ApplicationTokenDto>()
@@ -52,7 +53,7 @@ export function ApplicationTokenForm (props: {
       showToast({
         type: 'success',
         content: applicationToken?.id
-          ? $t({ defaultMessage: 'Application Token was updated' })
+          ? $t({ defaultMessage: 'Application token was updated' })
           : $t({ defaultMessage: 'Application token was created' })
       })
     }
@@ -71,6 +72,23 @@ export function ApplicationTokenForm (props: {
     if (isEnded) response.reset()
   }, [$t, onClose, response, applicationToken?.id])
 
+  useEffect(() => {
+    console.log('RESP', rotateResponse)
+    if (rotateResponse.isSuccess) {
+      showToast({
+        type: 'success',
+        content: $t({ defaultMessage: 'Application token secret was rotated' })
+      })
+    }
+
+    if (rotateResponse.isError) {
+      handleError(
+        rotateResponse.error as FetchBaseQueryError,
+        $t({ defaultMessage: 'Failed to rotate application token secret' })
+      )
+    }
+  }, [$t, rotateResponse, applicationToken?.clientSecret])
+
   const formProps: FormProps<ApplicationTokenDto> = {
     layout: 'vertical',
     form,
@@ -86,6 +104,15 @@ export function ApplicationTokenForm (props: {
       await form.validateFields()
       const values = form.getFieldsValue()
       await submit(values).unwrap()
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
+
+  const onRotate = async () => {
+    try {
+      console.log('VALUES', applicationToken)
+      await doRotate(applicationToken!).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -155,15 +182,13 @@ export function ApplicationTokenForm (props: {
         <Row>
           <TransparentButton
             type='link'
-            onClick={() => {}}>
+            onClick={onRotate}>
             {$t({ defaultMessage: 'Rotate Secret' })}
           </TransparentButton>
           <Divider type='vertical'/>
           <TransparentButton
             type='link'
-            onClick={() => {
-              handleClickCopy(form.getFieldValue('clientSecret'))
-            }}>
+            onClick={() => handleClickCopy(form.getFieldValue('clientSecret'))}>
             {$t({ defaultMessage: 'Copy' })}
           </TransparentButton>
         </Row>

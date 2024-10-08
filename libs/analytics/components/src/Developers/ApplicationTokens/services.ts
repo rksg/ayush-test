@@ -9,7 +9,8 @@ export type ApplicationToken = {
 }
 
 export type ApplicationTokenResponse = {
-  camId: string
+  id?: string
+  camId?: string
   name: string
   clientId: string
   clientSecret: string
@@ -33,8 +34,8 @@ export const {
   useApplicationTokensQuery,
   useCreateApplicationTokenMutation,
   useUpdateApplicationTokenMutation,
-  useDeleteApplicationTokenMutation
-  // useSendSampleMutation
+  useDeleteApplicationTokenMutation,
+  useRotateApplicationTokenMutation
 } = rbacApi.injectEndpoints({
   endpoints: (build) => ({
     applicationTokens: build.query<ApplicationToken[], void>({
@@ -45,7 +46,8 @@ export const {
       }),
       providesTags: [{ type: 'ApplicationToken', id: 'LIST' }],
       transformResponse: (response: ApplicationTokenResponse[]) => response.map((item) => ({
-        id: item.camId,
+        id: item.camId!,
+        camId: item.camId!,
         ...item
       }))
     }),
@@ -68,22 +70,20 @@ export const {
       invalidatesTags: [{ type: 'ApplicationToken', id: 'LIST' }]
     }),
     deleteApplicationToken: build.mutation<void, ApplicationTokenDto>({
-      query: (applicationToken) => {
-        return ({
-          url: `/applicationTokens/${applicationToken.camId}`,
-          method: 'delete',
-          credentials: 'include'
-        })
-      },
+      query: (applicationToken) => ({
+        url: `/applicationTokens/${applicationToken.camId}`,
+        method: 'delete',
+        credentials: 'include'
+      }),
+      invalidatesTags: [{ type: 'ApplicationToken', id: 'LIST' }]
+    }),
+    rotateApplicationToken: build.mutation<ApplicationToken, ApplicationTokenDto>({
+      query: (applicationToken) => ({
+        url: `/applicationTokens/${applicationToken.camId}`,
+        method: 'patch',
+        credentials: 'include'
+      }),
       invalidatesTags: [{ type: 'ApplicationToken', id: 'LIST' }]
     })
-    // sendSample: build.mutation<SampleResponse, SamplePayload>({
-    //   query: (webhook) => ({
-    //     url: '/webhooks/send-sample-incident',
-    //     method: 'post',
-    //     credentials: 'include',
-    //     body: webhook
-    //   })
-    // })
   })
 })
