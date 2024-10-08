@@ -12,9 +12,7 @@ import {
   showActionModal,
   showToast
 } from '@acx-ui/components'
-import { CopyOutlined }                             from '@acx-ui/icons-new'
-import { SwitchScopes, WifiScopes }                 from '@acx-ui/types'
-import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
+import { CopyOutlined } from '@acx-ui/icons-new'
 
 import { handleError }                         from '../services'
 import { TransparentButton, Row, SecretInput } from '../styledComponents'
@@ -129,11 +127,9 @@ export const useApplicationTokens = () => {
 
   const rowActions: ApplicationTokenTableProps['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
-    scopeKey: [WifiScopes.UPDATE, SwitchScopes.UPDATE],
     onClick: ([applicationToken]) => setSelectedId(applicationToken.id)
   }, {
     label: $t({ defaultMessage: 'Delete' }),
-    scopeKey: [WifiScopes.DELETE, SwitchScopes.DELETE],
     onClick: ([applicationToken]) => showActionModal({
       type: 'confirm',
       title: $t({ defaultMessage: 'Delete "{name}"?' }, { name: applicationToken.name }),
@@ -146,7 +142,6 @@ export const useApplicationTokens = () => {
 
   const actions: ApplicationTokenTableProps['actions'] = [{
     label: $t({ defaultMessage: 'Create Application Token' }),
-    scopeKey: [WifiScopes.CREATE, SwitchScopes.CREATE],
     onClick: () => setSelectedId(undefined)
   }]
 
@@ -161,10 +156,9 @@ export const useApplicationTokens = () => {
       columns={columns}
       dataSource={applicationTokens}
       searchableWidth={450}
-      actions={hasCrossVenuesPermission() ? filterByAccess(actions) : []}
-      rowActions={filterByAccess(rowActions)}
-      rowSelection={hasCrossVenuesPermission() &&
-      {
+      actions={actions}
+      rowActions={rowActions}
+      rowSelection={{
         type: 'radio',
         selectedRowKeys: selectedId ? [selectedId] : []
       }}

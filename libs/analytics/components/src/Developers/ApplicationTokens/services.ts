@@ -1,4 +1,4 @@
-import { rbacApi } from '@acx-ui/store'
+import { rbacApi } from '@acx-ui/analytics/services'
 
 export type ApplicationToken = {
   id: string
@@ -33,7 +33,6 @@ Pick<ApplicationToken, typeof applicationTokenDtoKeys[number]>, typeof omittedKe
 export const {
   useApplicationTokensQuery,
   useCreateApplicationTokenMutation,
-  useUpdateApplicationTokenMutation,
   useDeleteApplicationTokenMutation,
   useRotateApplicationTokenMutation
 } = rbacApi.injectEndpoints({
@@ -41,7 +40,7 @@ export const {
     applicationTokens: build.query<ApplicationToken[], void>({
       query: () => ({
         url: '/applicationTokens',
-        method: 'get',
+        method: 'GET',
         credentials: 'include'
       }),
       providesTags: [{ type: 'ApplicationToken', id: 'LIST' }],
@@ -54,16 +53,7 @@ export const {
     createApplicationToken: build.mutation<void, ApplicationTokenDto>({
       query: (applicationToken) => ({
         url: '/applicationTokens',
-        method: 'post',
-        credentials: 'include',
-        body: applicationToken
-      }),
-      invalidatesTags: [{ type: 'ApplicationToken', id: 'LIST' }]
-    }),
-    updateApplicationToken: build.mutation<void, ApplicationTokenDto>({
-      query: (applicationToken) => ({
-        url: '/applicationTokens',
-        method: 'post',
+        method: 'POST',
         credentials: 'include',
         body: applicationToken
       }),
@@ -72,7 +62,7 @@ export const {
     deleteApplicationToken: build.mutation<void, ApplicationTokenDto>({
       query: (applicationToken) => ({
         url: `/applicationTokens/${applicationToken.camId}`,
-        method: 'delete',
+        method: 'DELETE',
         credentials: 'include'
       }),
       invalidatesTags: [{ type: 'ApplicationToken', id: 'LIST' }]
@@ -80,10 +70,15 @@ export const {
     rotateApplicationToken: build.mutation<ApplicationToken, ApplicationTokenDto>({
       query: (applicationToken) => ({
         url: `/applicationTokens/${applicationToken.camId}`,
-        method: 'patch',
+        method: 'PATCH',
         credentials: 'include'
       }),
-      invalidatesTags: [{ type: 'ApplicationToken', id: 'LIST' }]
+      invalidatesTags: [{ type: 'ApplicationToken', id: 'LIST' }],
+      transformResponse: (response: ApplicationTokenResponse) => ({
+        id: response.id!,
+        camId: response.id!,
+        ...response
+      })
     })
   })
 })

@@ -53,7 +53,7 @@ export const {
     webhooks: build.query<ExtendedWebhook[], Record<string, string>>({
       query: () => ({
         url: '/webhooks',
-        method: 'get',
+        method: 'GET',
         credentials: 'include'
       }),
       providesTags: [{ type: 'Webhook', id: 'LIST' }],
@@ -70,7 +70,7 @@ export const {
     createWebhook: build.mutation<void, WebhookDto>({
       query: (webhook) => ({
         url: '/webhooks',
-        method: 'post',
+        method: 'POST',
         credentials: 'include',
         body: webhook
       }),
@@ -79,7 +79,7 @@ export const {
     updateWebhook: build.mutation<void, WebhookDto>({
       query: ({ id, ...webhook }) => ({
         url: `/webhooks/${id}`,
-        method: 'put',
+        method: 'PUT',
         credentials: 'include',
         body: webhook
       }),
@@ -88,7 +88,7 @@ export const {
     deleteWebhook: build.mutation<void, Webhook['id']>({
       query: (id) => ({
         url: `/webhooks/${id}`,
-        method: 'delete',
+        method: 'DELETE',
         credentials: 'include'
       }),
       invalidatesTags: [{ type: 'Webhook', id: 'LIST' }]
@@ -96,7 +96,7 @@ export const {
     sendSample: build.mutation<SampleResponse, SamplePayload>({
       query: (webhook) => ({
         url: '/webhooks/send-sample-incident',
-        method: 'post',
+        method: 'POST',
         credentials: 'include',
         body: webhook
       })

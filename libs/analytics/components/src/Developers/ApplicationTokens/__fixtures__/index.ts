@@ -1,8 +1,17 @@
+import { rest } from 'msw'
+
+import { rbacApiURL } from '@acx-ui/store'
+
 export const applicationTokens = Array(10).fill(null).map((_, index) => ({
-  id: `00000000-0000-0000-0000-00000000000${index}`,
+  id: `4cff7ebcb8d045898427749bfc89189${index}`,
+  camId: `4cff7ebcb8d045898427749bfc89189${index}`,
   name: `token-${index}`,
-  clientId: `00000000-0000-0000-0000-00000000000${index}`,
-  clientSecret: `10000000-0000-0000-0000-00000000000${index}`,
-  grantTypes: ['client_credentials'],
-  accessTokenTtl: index
+  clientId: `220ed88d2119454096be40a1f5fc55b${index}`,
+  clientSecret: `b+nnswB4lgP7Zg7wzUKgva9wdJLSl2htT44KOt7RawFp/gdJwPZFcYTIqR7KQ1r${index}`
 }))
+
+export const mockApplicationTokens = () => rest.get(
+  `${rbacApiURL}/applicationTokens`,
+  (_, res, ctx) => res(ctx.json(applicationTokens))
+)
+

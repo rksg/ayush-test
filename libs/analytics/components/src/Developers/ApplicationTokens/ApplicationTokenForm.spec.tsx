@@ -2,15 +2,15 @@ import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { get }                                       from '@acx-ui/config'
-import { notificationApi, Provider, rbacApi, store } from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }       from '@acx-ui/test-utils'
+import { get }                                  from '@acx-ui/config'
+import { Provider, rbacApi, rbacApiURL, store } from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }  from '@acx-ui/test-utils'
 
-import { applicationTokens }                            from './__fixtures__'
+import { applicationTokens, mockApplicationTokens }     from './__fixtures__'
 import { ApplicationTokenForm }                         from './ApplicationTokenForm'
 import { ApplicationTokenDto, applicationTokenDtoKeys } from './services'
 
-const { click, type, clear } = userEvent
+const { click, type } = userEvent
 
 jest.mock('@acx-ui/config')
 jest.mock('antd', () => {
@@ -40,42 +40,24 @@ jest.mock('antd', () => {
 })
 
 describe('ApplicationTokenForm', () => {
-  const renderCreateAndFillIn = async (isRAI = true) => {
+  const renderCreateAndFillIn = async () => {
     const dto: ApplicationTokenDto = {
-      name: 'Token Name',
-      clientId: '123',
-      clientSecret: '456'
+      name: 'Token Name'
     }
 
     const onClose = jest.fn()
     render(<ApplicationTokenForm {...{ onClose }} />, { wrapper: Provider })
 
     // ensure name field visible before trigger validation
-    const name = await screen.findByRole('textbox', { name: 'Name' })
-
-    // trigger required validations
-    await click(await screen.findByRole('button', { name: 'Create' }))
-
-    expect(await screen.findAllByRole('alert', {
-      name: (_, el) => el.textContent!.includes('Please enter')
-    })).toHaveLength(isRAI ? 4 : 3)
-
-    expect(await screen.findByRole('alert', {
-      name: (_, el) => el.textContent!.includes('Please enter a valid URL')
-    })).toBeVisible()
+    const name = await screen.findByRole('textbox', { name: 'Token Name' })
 
     await type(name, dto.name)
     return { dto, onClose }
   }
 
   const applicationToken = applicationTokens[6]
-  const renderEditAndFillIn = async () => {
+  const renderEditAndRotate = async () => {
     const dto: ApplicationTokenDto = _.pick(applicationToken, applicationTokenDtoKeys)
-    const editedDto: ApplicationTokenDto = {
-      name: `${dto.name}-edited`,
-      clientId: dto.clientId,
-      clientSecret: dto.clientSecret
-    }
 
     const onClose = jest.fn()
     render(
@@ -83,292 +65,117 @@ describe('ApplicationTokenForm', () => {
       { wrapper: Provider }
     )
 
-    // ensure name field visible before trigger validation
-    const [name, clientSecret] = [
-      await screen.findByRole('textbox', { name: 'Name' }),
-      await screen.findByRole('textbox', { name: 'Client Secret' })
-    ]
-
-    await clear(name)
-    await type(name, editedDto.name)
-    await clear(clientSecret)
-    await type(clientSecret, editedDto.clientSecret)
-
     return { dto, onClose }
   }
 
-  describe('RAI', () => {
-    beforeEach(() => {
-      jest.resetModules()
-      jest.mocked(get).mockReturnValue('true')
+  beforeEach(() => {
+    jest.resetModules()
+    jest.mocked(get).mockReturnValue('true')
 
-      // mockServer.use(mockResourceGroups())
-    })
-
-    afterEach(() => {
-      store.dispatch(rbacApi.util.resetApiState())
-      store.dispatch(notificationApi.util.resetApiState())
-    })
-
-    describe('Create new Webhook', () => {
-      it('handle create flow', async () => {
-        const payloadSpy = jest.fn()
-        const { dto, onClose } = await renderCreateAndFillIn()
-
-        // mockServer.use(
-        //   rest.post(webhooksUrl(), (req, res, ctx) => {
-        //     payloadSpy(req.body)
-        //     return res(ctx.json({ success: true }))
-        //   })
-        // )
-        await click(await screen.findByRole('button', { name: 'Create' }))
-
-        expect(await screen.findByText('Webhook was created')).toBeVisible()
-        expect(payloadSpy).toBeCalledWith(dto)
-        await waitFor(() => expect(onClose).toBeCalledTimes(1))
-      })
-      it('handle RTKQuery error', async () => {
-        const payloadSpy = jest.fn()
-        const { dto, onClose } = await renderCreateAndFillIn()
-
-        // mockServer.use(
-        //   rest.post(webhooksUrl(), (req, res) => {
-        //     payloadSpy(req.body)
-        //     return res.networkError('Failed to connect')
-        //   })
-        // )
-        await click(await screen.findByRole('button', { name: 'Create' }))
-
-        expect(await screen.findByText('Failed to create webhook')).toBeVisible()
-        expect(payloadSpy).toBeCalledWith(dto)
-        expect(onClose).not.toBeCalled()
-      })
-      it('handle API error', async () => {
-        const payloadSpy = jest.fn()
-        const { dto, onClose } = await renderCreateAndFillIn()
-
-        const [status, error] = [500, 'Error from API']
-        // mockServer.use(
-        //   rest.post(webhooksUrl(), (req, res, ctx) => {
-        //     payloadSpy(req.body)
-        //     return res(ctx.status(status), ctx.json({ error }))
-        //   })
-        // )
-        await click(await screen.findByRole('button', { name: 'Create' }))
-
-        expect(await screen.findByText(`Error: ${error}. (status code: ${status})`)).toBeVisible()
-        expect(payloadSpy).toBeCalledWith(dto)
-        expect(onClose).not.toBeCalled()
-      })
-    })
-
-    describe('Update existing Webhook', () => {
-      it('handle edit flow', async () => {
-        const payloadSpy = jest.fn()
-        const { dto, onClose } = await renderEditAndFillIn()
-
-        // mockServer.use(
-        //   rest.put(webhooksUrl(webhook.id), (req, res, ctx) => {
-        //     payloadSpy(req.body)
-        //     return res(ctx.json({ success: true }))
-        //   })
-        // )
-        await click(await screen.findByRole('button', { name: 'Save' }))
-
-        expect(await screen.findByText('Webhook was updated')).toBeVisible()
-        expect(payloadSpy).toBeCalledWith(dto)
-        await waitFor(() => expect(onClose).toBeCalledTimes(1))
-      })
-      it('handle RTKQuery error', async () => {
-        const payloadSpy = jest.fn()
-        const { dto, onClose } = await renderEditAndFillIn()
-
-        // mockServer.use(
-        //   rest.put(webhooksUrl(webhook.id), (req, res) => {
-        //     payloadSpy(req.body)
-        //     return res.networkError('Failed to connect')
-        //   })
-        // )
-        await click(await screen.findByRole('button', { name: 'Save' }))
-
-        expect(await screen.findByText('Failed to update webhook')).toBeVisible()
-        expect(payloadSpy).toBeCalledWith(dto)
-        expect(onClose).not.toBeCalled()
-      })
-      it('handle API error', async () => {
-        const payloadSpy = jest.fn()
-        const { dto, onClose } = await renderEditAndFillIn()
-
-        const [status, error] = [500, 'Error from API']
-        // mockServer.use(
-        //   rest.put(webhooksUrl(webhook.id), (req, res, ctx) => {
-        //     payloadSpy(req.body)
-        //     return res(ctx.status(status), ctx.json({ error }))
-        //   })
-        // )
-        await click(await screen.findByRole('button', { name: 'Save' }))
-
-        expect(await screen.findByText(`Error: ${error}. (status code: ${status})`)).toBeVisible()
-        expect(payloadSpy).toBeCalledWith(dto)
-        expect(onClose).not.toBeCalled()
-      })
-    })
+    mockServer.use(mockApplicationTokens())
   })
 
-  describe('R1', () => {
-    beforeEach(() => {
-      jest.resetModules()
-      jest.mocked(get).mockReturnValue('')
-
-      // mockServer.use(mockResourceGroups())
-    })
-
-    afterEach(() => {
-      store.dispatch(rbacApi.util.resetApiState())
-      store.dispatch(notificationApi.util.resetApiState())
-    })
-
-    describe('Create new Webhook', () => {
-      it('handle create flow', async () => {
-        const payloadSpy = jest.fn()
-        const { dto, onClose } = await renderCreateAndFillIn(false)
-
-        // mockServer.use(
-        //   rest.post(webhooksUrl(), (req, res, ctx) => {
-        //     payloadSpy(req.body)
-        //     return res(ctx.json({ success: true }))
-        //   })
-        // )
-        await click(await screen.findByRole('button', { name: 'Create' }))
-
-        expect(await screen.findByText('Webhook was created')).toBeVisible()
-        expect(payloadSpy).toBeCalledWith(dto)
-        await waitFor(() => expect(onClose).toBeCalledTimes(1))
-      })
-    })
-
-    describe('Update existing Webhook', () => {
-      it('handle edit flow', async () => {
-        const payloadSpy = jest.fn()
-        const { dto, onClose } = await renderEditAndFillIn()
-
-        // mockServer.use(
-        //   rest.put(webhooksUrl(webhook.id), (req, res, ctx) => {
-        //     payloadSpy(req.body)
-        //     return res(ctx.json({ success: true }))
-        //   })
-        // )
-        await click(await screen.findByRole('button', { name: 'Save' }))
-
-        expect(await screen.findByText('Webhook was updated')).toBeVisible()
-        expect(payloadSpy).toBeCalledWith(dto)
-        await waitFor(() => expect(onClose).toBeCalledTimes(1))
-      })
-    })
+  afterEach(() => {
+    store.dispatch(rbacApi.util.resetApiState())
   })
 
-  describe('SendSampleIncident', () => {
-    const name = 'Send Sample Incident'
-    it('disabled when required field empty', async () => {
-      const onClose = jest.fn()
-      render(<ApplicationTokenForm {...{ onClose }} />, { wrapper: Provider })
+  describe('Create new application token', () => {
+    it('handle create flow', async () => {
+      const payloadSpy = jest.fn()
+      const { dto, onClose } = await renderCreateAndFillIn()
 
-      expect(await screen.findByRole('button', { name })).toBeDisabled()
-    })
-    it('send sample and render details', async () => {
-      const [payloadSpy, onClose] = [jest.fn(), jest.fn()]
-
-      render(
-        <ApplicationTokenForm {...{ onClose, applicationToken: applicationToken }} />,
-        { wrapper: Provider })
-
-      // const status = 200
-      // const data = '<html>\n  <body>\n    <h1>Code Details</h1>\n  </body>\n</html>'
-
-      // mockServer.use(
-      //   rest.post(webhooksUrl('send-sample-incident'), (req, res, ctx) => {
-      //     payloadSpy(req.body)
-      //     return res(ctx.json({ status, data, success: true }))
-      //   })
-      // )
-
-      await click(await screen.findByRole('button', { name }))
-
-      const dialog = await screen.findByRole('dialog', {
-        name: (_, el) => el.textContent!.includes('Sample Incident Sent')
-      })
-      expect(dialog).toBeVisible()
-      expect(payloadSpy).toBeCalledWith(_.pick(applicationToken, ['clientSecret']))
-      await click(await screen.findByRole('button', { name: 'OK' }))
-    })
-    it('send sample and render details (object)', async () => {
-      const [payloadSpy, onClose] = [jest.fn(), jest.fn()]
-
-      render(
-        <ApplicationTokenForm {...{ onClose, applicationToken: applicationToken }} />,
-        { wrapper: Provider }
+      mockServer.use(
+        rest.post(`${rbacApiURL}/applicationTokens`, (req, res, ctx) => {
+          payloadSpy(req.body)
+          return res(ctx.json(applicationTokens[6]))
+        })
       )
+      await click(await screen.findByRole('button', { name: 'Create' }))
 
-      // const status = 200
-      // const data = { abc: 1, message: 'message' }
-
-      // mockServer.use(
-      //   rest.post(webhooksUrl('send-sample-incident'), (req, res, ctx) => {
-      //     payloadSpy(req.body)
-      //     return res(ctx.json({ status, data, success: true }))
-      //   })
-      // )
-
-      await click(await screen.findByRole('button', { name }))
-
-      const dialog = await screen.findByRole('dialog', {
-        name: (_, el) => el.textContent!.includes('Sample Incident Sent')
-      })
-      expect(dialog).toBeVisible()
-      expect(payloadSpy).toBeCalledWith(_.pick(applicationToken, ['callbackUrl', 'clientSecret']))
-      await click(await screen.findByRole('button', { name: 'OK' }))
+      expect(await screen.findByText('Application token was created')).toBeVisible()
+      expect(payloadSpy).toBeCalledWith(dto)
+      await waitFor(() => expect(onClose).toBeCalledTimes(1))
     })
     it('handle RTKQuery error', async () => {
-      const [payloadSpy, onClose] = [jest.fn(), jest.fn()]
+      const payloadSpy = jest.fn()
+      const { dto, onClose } = await renderCreateAndFillIn()
 
-      render(
-        <ApplicationTokenForm {...{ onClose, applicationToken: applicationToken }} />,
-        { wrapper: Provider }
+      mockServer.use(
+        rest.post(`${rbacApiURL}/applicationTokens`, (req, res) => {
+          payloadSpy(req.body)
+          return res.networkError('Failed to connect')
+        })
       )
+      await click(await screen.findByRole('button', { name: 'Create' }))
 
-      // mockServer.use(
-      //   rest.post(webhooksUrl('send-sample-incident'), (req, res) => {
-      //     payloadSpy(req.body)
-      //     return res.networkError('Failed to connect')
-      //   })
-      // )
-
-      await click(await screen.findByRole('button', { name }))
-
-      expect(await screen.findByText('Failed to send sample incident')).toBeVisible()
-      expect(payloadSpy).toBeCalledWith(_.pick(applicationToken, ['callbackUrl', 'clientSecret']))
+      expect(await screen.findByText('Failed to create application token')).toBeVisible()
+      expect(payloadSpy).toBeCalledWith(dto)
       expect(onClose).not.toBeCalled()
     })
     it('handle API error', async () => {
-      const [payloadSpy, onClose] = [jest.fn(), jest.fn()]
-
-      render(
-        <ApplicationTokenForm {...{ onClose, applicationToken: applicationToken }} />,
-        { wrapper: Provider }
-      )
+      const payloadSpy = jest.fn()
+      const { dto, onClose } = await renderCreateAndFillIn()
 
       const [status, error] = [500, 'Error from API']
-      // mockServer.use(
-      //   rest.post(webhooksUrl('send-sample-incident'), (req, res, ctx) => {
-      //     payloadSpy(req.body)
-      //     return res(ctx.status(status), ctx.json({ error }))
-      //   })
-      // )
-
-      await click(await screen.findByRole('button', { name }))
+      mockServer.use(
+        rest.post(`${rbacApiURL}/applicationTokens`, (req, res, ctx) => {
+          payloadSpy(req.body)
+          return res(ctx.status(status), ctx.json({ error }))
+        })
+      )
+      await click(await screen.findByRole('button', { name: 'Create' }))
 
       expect(await screen.findByText(`Error: ${error}. (status code: ${status})`)).toBeVisible()
-      expect(payloadSpy).toBeCalledWith(_.pick(applicationToken, ['clientSecret']))
+      expect(payloadSpy).toBeCalledWith(dto)
+      expect(onClose).not.toBeCalled()
+    })
+  })
+
+  describe('Rotate existing application token', () => {
+    it('handle edit flow', async () => {
+      const { dto, onClose } = await renderEditAndRotate()
+
+      mockServer.use(
+        rest.patch(`${rbacApiURL}/applicationTokens/${dto.camId}`,
+          (req, res, ctx) => {
+            return res(ctx.json({
+              ...dto,
+              clientSecret: '0nbCA1j/UC1SRGmt+o1GGf9S3CIHjAU4uTT2jNn9fgCE8MbRu3aJsZ6r1lnPYjCk'
+            }))
+          })
+      )
+      await click(await screen.findByRole('button', { name: 'Rotate Secret' }))
+
+      expect(await screen.findByText('Application token secret was rotated')).toBeVisible()
+      expect(onClose).not.toBeCalled()
+    })
+    it('handle RTKQuery error', async () => {
+      const { dto, onClose } = await renderEditAndRotate()
+
+      mockServer.use(
+        rest.patch(`${rbacApiURL}/applicationTokens/${dto.camId}`,
+          (req, res) => {
+            return res.networkError('Failed to connect')
+          })
+      )
+      await click(await screen.findByRole('button', { name: 'Rotate Secret' }))
+
+      expect(await screen.findByText('Failed to rotate application token secret')).toBeVisible()
+      expect(onClose).not.toBeCalled()
+    })
+    it('handle API error', async () => {
+      const { dto, onClose } = await renderEditAndRotate()
+
+      const [status, error] = [500, 'Error from API']
+      mockServer.use(
+        rest.patch(`${rbacApiURL}/applicationTokens/${dto.camId}`,
+          (req, res, ctx) => {
+            return res(ctx.status(status), ctx.json({ error }))
+          })
+      )
+      await click(await screen.findByRole('button', { name: 'Rotate Secret' }))
+
+      expect(await screen.findByText(`Error: ${error}. (status code: ${status})`)).toBeVisible()
       expect(onClose).not.toBeCalled()
     })
   })

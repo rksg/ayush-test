@@ -18,7 +18,6 @@ import { filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui
 
 import { handleError } from '../services'
 
-import { webhooks }                                                      from './__fixtures__'
 import { useDeleteWebhookMutation, useWebhooksQuery, useResourceGroups } from './services'
 import { WebhookForm }                                                   from './WebhookForm'
 
@@ -54,8 +53,7 @@ export const useWebhooks = () => {
   // null      = no webhook selected
   const [selectedId, setSelectedId] = useState<string | undefined | null>(null)
 
-  const { states } = useWebhooksData(selectedId)
-  const webhook = webhooks[0]
+  const { webhooks, webhook, states } = useWebhooksData(selectedId)
 
   const [doDelete, response] = useDeleteWebhookMutation()
 

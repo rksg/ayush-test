@@ -14,26 +14,15 @@ import {
 import { handleError }                                from '../services'
 import { TransparentButton, Label, SecretInput, Row } from '../styledComponents'
 
-import { applicationTokenDtoKeys, useCreateApplicationTokenMutation, useRotateApplicationTokenMutation, useUpdateApplicationTokenMutation } from './services'
+import { applicationTokenDtoKeys, useCreateApplicationTokenMutation, useRotateApplicationTokenMutation } from './services'
 
 import type { ApplicationToken, ApplicationTokenDto } from './services'
-
-function useApplicationTokenMutation (
-  applicationToken?: ApplicationToken | null
-) {
-  const [doCreate, createResponse] = useCreateApplicationTokenMutation()
-  const [doUpdate, updateResponse] = useUpdateApplicationTokenMutation()
-
-  return applicationToken
-    ? { submit: doUpdate, response: updateResponse }
-    : { submit: doCreate, response: createResponse }
-}
 
 export function ApplicationTokenForm (props: {
   applicationToken?: ApplicationToken | null
   onClose: () => void
 }) {
-  const { submit, response } = useApplicationTokenMutation(props.applicationToken)
+  const [doCreate, createResponse] = useCreateApplicationTokenMutation()
   const [doRotate, rotateResponse] = useRotateApplicationTokenMutation()
   const applicationToken = props.applicationToken
   const { $t } = useIntl()
@@ -45,35 +34,32 @@ export function ApplicationTokenForm (props: {
   }, [form, props.onClose])
 
   // reset form fields every time user choose to edit/create record
-  useEffect(() => { form.resetFields() }, [form, props.applicationToken?.id])
+  useEffect(() => {
+    form.resetFields()
+  }, [form, props.applicationToken?.id, props.applicationToken?.clientSecret])
 
   useEffect(() => {
-    if (response.isSuccess) {
+    if (createResponse.isSuccess) {
       onClose()
       showToast({
         type: 'success',
-        content: applicationToken?.id
-          ? $t({ defaultMessage: 'Application token was updated' })
-          : $t({ defaultMessage: 'Application token was created' })
+        content: $t({ defaultMessage: 'Application token was created' })
       })
     }
 
-    if (response.isError) {
+    if (createResponse.isError) {
       handleError(
-        response.error as FetchBaseQueryError,
-        applicationToken?.id
-          ? $t({ defaultMessage: 'Failed to update application token' })
-          : $t({ defaultMessage: 'Failed to create application token' })
+        createResponse.error as FetchBaseQueryError,
+        $t({ defaultMessage: 'Failed to create application token' })
       )
     }
 
     // reset mutation response everytime submission ended
-    const isEnded = response.isSuccess || response.isError
-    if (isEnded) response.reset()
-  }, [$t, onClose, response, applicationToken?.id])
+    const isEnded = createResponse.isSuccess || createResponse.isError
+    if (isEnded) createResponse.reset()
+  }, [$t, onClose, createResponse, applicationToken?.id])
 
   useEffect(() => {
-    console.log('RESP', rotateResponse)
     if (rotateResponse.isSuccess) {
       showToast({
         type: 'success',
@@ -87,6 +73,10 @@ export function ApplicationTokenForm (props: {
         $t({ defaultMessage: 'Failed to rotate application token secret' })
       )
     }
+
+    // reset mutation response everytime submission ended
+    const isEnded = rotateResponse.isSuccess || rotateResponse.isError
+    if (isEnded) rotateResponse.reset()
   }, [$t, rotateResponse, applicationToken?.clientSecret])
 
   const formProps: FormProps<ApplicationTokenDto> = {
@@ -103,7 +93,7 @@ export function ApplicationTokenForm (props: {
     try {
       await form.validateFields()
       const values = form.getFieldsValue()
-      await submit(values).unwrap()
+      await doCreate(values).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -111,7 +101,6 @@ export function ApplicationTokenForm (props: {
 
   const onRotate = async () => {
     try {
-      console.log('VALUES', applicationToken)
       await doRotate(applicationToken!).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -126,14 +115,13 @@ export function ApplicationTokenForm (props: {
       ? $t({ defaultMessage: 'Edit Application Token' })
       : $t({ defaultMessage: 'Create Application Token' }),
     onClose: onClose,
-    footer: <Drawer.FormFooter
-      buttonLabel={{ save: applicationToken?.id
-        ? $t({ defaultMessage: 'Save' })
-        : $t({ defaultMessage: 'Create' })
-      }}
-      onCancel={onClose}
-      onSave={onSave}
-    />
+    footer: !applicationToken?.id ? (
+      <Drawer.FormFooter
+        buttonLabel={{ save: $t({ defaultMessage: 'Create' }) }}
+        onCancel={onClose}
+        onSave={onSave}
+      />
+    ) : null
   }
 
   return <Drawer {...drawerProps}>
@@ -147,7 +135,9 @@ export function ApplicationTokenForm (props: {
           { max: 255 },
           { whitespace: true }
         ]}
-        children={<Input />}
+        children={
+          applicationToken?.id ? <Label>{applicationToken.name}</Label> : <Input />
+        }
       />
       { applicationToken?.id && (<>
         <Form.Item
