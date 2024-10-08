@@ -163,7 +163,7 @@ export enum Features {
   SWITCH_NEXT_GENERATION_TOPOLOGY_TOGGLE = 'switch-next-generation-topology-toggle',
   RUCKUS_AI_USERS_TOGGLE = 'ruckus-ai-sso-toggle',
   SWITCH_EXTERNAL_IP_TOGGLE = 'removable-ff',
-  WORKFLOW_ONBOARD = 'WORKFLOW_ONBOARD',
+  WORKFLOW_ONBOARD = 'WORKFLOW-ONBOARD',
   WORKFLOW_TOGGLE = 'workflow-framework-enabled',
   AP_FW_MGMT_UPGRADE_BY_MODEL = 'ap-fw-mgmt-upgrade-by-model',
   WIFI_8021X_MAC_AUTH_TOGGLE = 'wifi-fr-8021x-mac-toggle',
@@ -199,7 +199,7 @@ export enum TierFeatures { // for Tier (ex: Beta) feature flag
   BETA_DPSK3 = 'BETA-DPSK3',
   SMART_EDGES = 'PLCY-EDGE',
   CONFIG_TEMPLATE = 'CONFIG-TEMPLATE',
-  WORKFLOW_ONBOARD = 'WORKFLOW_ONBOARD',
+  WORKFLOW_ONBOARD = 'WORKFLOW-ONBOARD',
 }
 
 interface BetaList {
