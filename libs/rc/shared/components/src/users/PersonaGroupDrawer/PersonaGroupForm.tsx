@@ -5,7 +5,6 @@ import TextArea                                               from 'antd/lib/inp
 import { useIntl }                                            from 'react-intl'
 
 import { Button, Modal, ModalType, Subtitle }                                                         from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                     from '@acx-ui/feature-toggle'
 import { useGetEnhancedDpskListQuery, useLazySearchPersonaGroupListQuery, useSearchMacRegListsQuery } from '@acx-ui/rc/services'
 import { DpskSaveData, PersonaGroup, checkObjectNotExists, hasDpskAccess, trailingNorLeadingSpaces }  from '@acx-ui/rc/utils'
 
@@ -37,7 +36,7 @@ export function PersonaGroupForm (props: {
   const [dpskModalVisible, setDpskModalVisible] = useState(false)
   const onMacModalClose = () => setMacModalVisible(false)
   const onDpskModalClose = () => setDpskModalVisible(false)
-  useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
+
   const dpskPoolList = useGetEnhancedDpskListQuery({
     payload: { sortField: 'name', sortOrder: 'ASC', page: 1, pageSize: 10000 }
   })
