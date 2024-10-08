@@ -35,3 +35,8 @@ export const MinReqVersionTooltipWrapper= styled.div`
     padding-bottom: 10px;
   }
 `
+export const ApInfoWrapper = styled.div`
+  .label {
+    color: #7F7F7F;
+  }
+`

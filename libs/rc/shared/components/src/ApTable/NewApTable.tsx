@@ -57,7 +57,8 @@ import {
   PowerSavingStatusEnum,
   IncompatibleFeatureLevelEnum,
   CompatibilityResponse,
-  Compatibility
+  Compatibility,
+  CompatibilitySelectedApInfo
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload, WifiScopes }                                     from '@acx-ui/types'
@@ -93,6 +94,13 @@ export const newDefaultApPayload = {
   ]
 }
 
+const DefaultSelectedApInfo = {
+  serialNumber: '',
+  name: '',
+  model: '',
+  firmwareVersion: ''
+} as CompatibilitySelectedApInfo
+
 export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|NewAPExtendedGrouped>, ref?: Ref<ApTableRefType>) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
@@ -101,8 +109,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const { filters, isNetworkLoading } = useFilters(params)
   const { searchable, filterables, enableGroups=true, enableApCompatibleCheck=false, settingsId = 'ap-table' } = props
   const [ compatibilitiesDrawerVisible, setCompatibilitiesDrawerVisible ] = useState(false)
-  const [ selectedApSN, setSelectedApSN ] = useState('')
-  const [ selectedApName, setSelectedApName ] = useState('')
+  const [ selectedApInfo, setSelectedApInfo ] = useState<CompatibilitySelectedApInfo>(DefaultSelectedApInfo)
   const [ tableData, setTableData ] = useState([] as (NewAPModelExtended|NewAPExtendedGrouped)[])
   const [ hasGroupBy, setHasGroupBy ] = useState(false)
   const [ showFeatureCompatibilitiy, setShowFeatureCompatibilitiy ] = useState(false)
@@ -589,13 +596,14 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       show: false,
       sorter: false,
       render: (_: ReactNode, row: NewAPModelExtended) => {
+        const { incompatible, status, compatibilityStatus } = row || {}
         return (<ApCompatibilityFeature
-          count={row?.incompatible}
-          deviceStatus={row?.status}
-          compatibilityStatus={row?.compatibilityStatus}
+          count={incompatible}
+          deviceStatus={status}
+          compatibilityStatus={compatibilityStatus}
           onClick={() => {
-            setSelectedApSN(row?.serialNumber)
-            setSelectedApName(row?.name ?? '')
+            const { serialNumber, name='', model='', firmwareVersion='' } = row || {}
+            setSelectedApInfo({ serialNumber, name, model, firmwareVersion })
             setCompatibilitiesDrawerVisible(true)
           }} />
         )
@@ -840,8 +848,8 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
         type={params.venueId?ApCompatibilityType.VENUE:ApCompatibilityType.NETWORK}
         venueId={params.venueId}
         networkId={params.networkId}
-        apIds={selectedApSN ? [selectedApSN] : []}
-        apName={selectedApName}
+        apIds={selectedApInfo?.serialNumber ? [selectedApInfo.serialNumber] : []}
+        apName={selectedApInfo?.name}
         isMultiple
         onClose={() => setCompatibilitiesDrawerVisible(false)}
       />}
@@ -851,8 +859,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
         type={params.venueId?ApCompatibilityType.VENUE:ApCompatibilityType.NETWORK}
         venueId={params.venueId}
         networkId={params.networkId}
-        apId={selectedApSN}
-        apName={selectedApName}
+        apInfo={selectedApInfo}
         onClose={() => setCompatibilitiesDrawerVisible(false)}
       />}
     </Loader>

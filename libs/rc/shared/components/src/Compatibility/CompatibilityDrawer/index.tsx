@@ -8,7 +8,8 @@ import {
   IncompatibilityFeatures,
   CompatibilityDeviceEnum,
   CompatibilityType,
-  Compatibility
+  Compatibility,
+  CompatibilitySelectedApInfo
 } from '@acx-ui/rc/utils'
 
 import { apCompatibilityDataGroupByFeatureDeviceType, compatibilityDataGroupByFeatureDeviceType } from '../utils'
@@ -31,6 +32,7 @@ export type CompatibilityDrawerProps = {
   isLoading?: boolean,
   deviceType?: CompatibilityDeviceEnum,
 
+  apInfo?: CompatibilitySelectedApInfo,
   venueId?: string,
   venueName?: string,
   featureName?: IncompatibilityFeatures,

@@ -874,6 +874,13 @@ export enum CompatibleStatusEnum {
   COMPATIBILITY_CHECKING = 'COMPATIBILITY_CHECKING'
 }
 
+export type CompatibilitySelectedApInfo = {
+  serialNumber: string
+  name: string,
+  model: string,
+  firmwareVersion: string
+}
+
 export type FeatureSet = {
   featureName: string,
   featureType?: IncompatibleFeatureTypeEnum,

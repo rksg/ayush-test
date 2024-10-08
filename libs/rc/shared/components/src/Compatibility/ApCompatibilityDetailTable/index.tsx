@@ -6,17 +6,23 @@ import { sumBy }             from 'lodash'
 //import moment                from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps, Tooltip }                        from '@acx-ui/components'
-import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
-import { useGetApModelFamiliesQuery }                        from '@acx-ui/rc/services'
-import { ApModelFamily, ApRequirement, IncompatibleFeature } from '@acx-ui/rc/utils'
-import { WifiScopes }                                        from '@acx-ui/types'
-import { filterByAccess, hasPermission }                     from '@acx-ui/user'
+import { Table, TableProps, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { useGetApModelFamiliesQuery } from '@acx-ui/rc/services'
+import {
+  ApModelFamily,
+  ApRequirement,
+  CompatibilitySelectedApInfo,
+  IncompatibleFeature
+} from '@acx-ui/rc/utils'
+import { WifiScopes }                    from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 import { SimpleListTooltip }    from '../../SimpleListTooltip'
 import { ApModelFamiliesItem }  from '../ApModelFamiliesItem'
 import { getFeatureTypeTag }    from '../CompatibilityDrawer/utils'
 import {
+  ApInfoWrapper,
   MinReqVersionTooltipWrapper
 } from '../styledComponents'
 
@@ -98,13 +104,15 @@ interface ApCompatibilityDetailTableProps {
   data: IncompatibleFeature[],
   requirementOnly?: boolean,
   venueId?: string,  // is required when `requirementOnly === false`
+  apInfo?: CompatibilitySelectedApInfo
 }
 
 export const ApCompatibilityDetailTable = (props: ApCompatibilityDetailTableProps) => {
   const isSupportedFwModels = useIsSplitOn(Features.WIFI_EDA_BRANCH_LEVEL_SUPPORTED_MODELS_TOGGLE)
   const { $t } = useIntl()
 
-  const { data, requirementOnly = false, venueId } = props
+  const { data, requirementOnly = false, venueId, apInfo } = props
+  const { model='', firmwareVersion='' } = apInfo ?? {}
 
   const { data: apModelFamilies } = useGetApModelFamiliesQuery({}, {
     skip: !isSupportedFwModels,
@@ -214,7 +222,18 @@ export const ApCompatibilityDetailTable = (props: ApCompatibilityDetailTableProp
   const showCheckbox = hasPermission({ scopes: [WifiScopes.UPDATE] }) && !requirementOnly
 
   return <>
-    {!requirementOnly &&
+    {requirementOnly ?
+      <ApInfoWrapper>
+        <Space>
+          <div className='label' children={$t({ defaultMessage: 'Model:' })}/>
+          <div children={model} />
+        </Space>
+        <br/>
+        <Space>
+          <div className='label' children={$t({ defaultMessage: 'Current Version:' })}/>
+          <div children={firmwareVersion} />
+        </Space>
+      </ApInfoWrapper> :
       <Typography.Text children={
         $t({ defaultMessage: '* Note that not all features are available on all access points.' })
       }/>

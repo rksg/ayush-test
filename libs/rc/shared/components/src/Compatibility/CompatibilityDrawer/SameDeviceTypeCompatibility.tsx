@@ -1,9 +1,17 @@
 import { Form }               from 'antd'
 import { intersection, omit } from 'lodash'
 
-import { Tabs }                                                                                                                                                   from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                                                                 from '@acx-ui/feature-toggle'
-import { ApIncompatibleFeature, CompatibilityDeviceEnum, CompatibilityType, IncompatibilityFeatures, IncompatibleFeature, getCompatibilityDeviceTypeDisplayName } from '@acx-ui/rc/utils'
+import { Tabs }                           from '@acx-ui/components'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
+import {
+  ApIncompatibleFeature,
+  CompatibilityDeviceEnum,
+  CompatibilitySelectedApInfo,
+  CompatibilityType,
+  IncompatibilityFeatures,
+  IncompatibleFeature,
+  getCompatibilityDeviceTypeDisplayName
+} from '@acx-ui/rc/utils'
 
 import { ApCompatibilityDetailTable }   from '../ApCompatibilityDetailTable'
 import { EdgeCompatibilityDetailTable } from '../EdgeCompatibilityDetailTable'
@@ -17,6 +25,7 @@ interface SameDeviceTypeCompatibilityProps {
   compatibilityType: CompatibilityType,
   deviceType: CompatibilityDeviceEnum,
   totalDevices?: number,
+  apInfo?: CompatibilitySelectedApInfo,
   venueId?: string,
   venueName?: string,
   featureName?: IncompatibilityFeatures,
@@ -41,6 +50,7 @@ export const SameDeviceTypeCompatibility = (props: SameDeviceTypeCompatibilityPr
           requirementOnly={props.compatibilityType === CompatibilityType.DEVICE}
           data={data[CompatibilityDeviceEnum.AP] as IncompatibleFeature[]}
           venueId={props.venueId}
+          apInfo={props.apInfo}
         />
         /* Should be a detail table for AP in the future, like <EdgeCompatibilityDetailTable /> */
         :<Tabs defaultActiveKey={defaultActiveKey}>

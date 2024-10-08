@@ -21,7 +21,8 @@ import {
   Compatibility,
   IncompatibleFeature,
   CompatibilityResponse,
-  IncompatibleFeatureLevelEnum
+  IncompatibleFeatureLevelEnum,
+  CompatibilitySelectedApInfo
 } from '@acx-ui/rc/utils'
 
 import { CompatibilityDrawer } from '../CompatibilityDrawer'
@@ -44,10 +45,9 @@ export type ApGeneralCompatibilityDrawerProps = {
   venueId?: string,
   venueName?: string,
   networkId?: string,
-  apName?: string,
   featureName?: IncompatibilityFeatures,
   requiredFeatures?: IncompatibilityFeatures[],
-  apId?: string,
+  apInfo?: CompatibilitySelectedApInfo,
   data?: ApCompatibility[],
   onClose: () => void
 }
@@ -60,8 +60,10 @@ export const ApGeneralCompatibilityDrawer = (props: ApGeneralCompatibilityDrawer
     isMultiple = false,
     featureName,
     venueId, venueName,
-    apName, apId
+    apInfo
   } = props
+
+  const { name: apName, serialNumber: apId } = apInfo || {}
 
   const { apCompatibilities: oldCompatibilities, isLoading: isOldLoading } = useApCompatibilityData({ ...props, isSkip: isApCompatibilitiesByModel })
   const { apCompatibilities: newCompatibilities, isLoading: isNewLoading } = useCompatibilityData({ ...props, isSkip: !isApCompatibilitiesByModel })
@@ -89,6 +91,7 @@ export const ApGeneralCompatibilityDrawer = (props: ApGeneralCompatibilityDrawer
       onClose={props.onClose}
       isLoading={isLoading}
 
+      apInfo={apInfo}
       venueId={venueId}
       venueName={venueName}
       featureName={featureName}
@@ -105,11 +108,13 @@ const useApCompatibilityData = (props: (Omit<ApGeneralCompatibilityDrawerProps, 
     requiredFeatures,
     venueId,
     networkId,
-    apId,
+    apInfo,
     data,
     isFeatureEnabledRegardless = false,
     isSkip = false
   } = props
+
+  const { serialNumber: apId } = apInfo || {}
 
   const [ isInitializing, setIsInitializing ] = useState(false)
   // eslint-disable-next-line max-len
@@ -215,11 +220,13 @@ const useCompatibilityData = (props: (Omit<ApGeneralCompatibilityDrawerProps, 'i
     featureName,
     venueId,
     networkId,
-    apId,
+    apInfo,
     data,
     isFeatureEnabledRegardless = false,
     isSkip = false
   } = props
+
+  const { serialNumber: apId } = apInfo || {}
 
   const [ isInitializing, setIsInitializing ] = useState(false)
   // eslint-disable-next-line max-len
