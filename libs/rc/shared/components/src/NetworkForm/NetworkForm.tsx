@@ -760,7 +760,6 @@ export function NetworkForm (props:{
       const networkId = networkResponse?.response?.id
 
       const firstBatchRequest = []
-      const secondBatchRequest = []
       const thirdBatchRequest = []
 
       if (isUseWifiRbacApi) {
@@ -779,13 +778,14 @@ export function NetworkForm (props:{
         firstBatchRequest.push(activateDpskPool(saveState.dpskServiceProfileId, networkId))
         firstBatchRequest.push(activateMacRegistrationPool(saveState.wlan?.macRegistrationListId, networkId))
       }
+      await Promise.all(firstBatchRequest)
       if (networkResponse?.response && payload.venues) {
         // @ts-ignore
         const network: Network = networkResponse.response
         if (resolvedRbacEnabled) {
-          secondBatchRequest.push(handleRbacNetworkVenues(network.id, payload.venues))
+          await handleRbacNetworkVenues(network.id, payload.venues)
         } else {
-          secondBatchRequest.push(handleNetworkVenues(network.id, payload.venues))
+          await handleNetworkVenues(network.id, payload.venues)
         }
       }
       thirdBatchRequest.push(updateClientIsolationActivations(payload, null, networkId))
@@ -795,16 +795,14 @@ export function NetworkForm (props:{
         // eslint-disable-next-line max-len
         if (isEdgeSdLanMvEnabled && formData['sdLanAssociationUpdate']) {
         // eslint-disable-next-line max-len
-          firstBatchRequest.push(updateEdgeSdLanActivations(networkId, formData['sdLanAssociationUpdate'] as NetworkTunnelSdLanAction[], payload.venues))
+          thirdBatchRequest.push(updateEdgeSdLanActivations(networkId, formData['sdLanAssociationUpdate'] as NetworkTunnelSdLanAction[], payload.venues))
         }
 
         if (isSoftGreEnabled && formData['softGreAssociationUpdate']) {
         // eslint-disable-next-line max-len
-          firstBatchRequest.push(updateSoftGreActivations(networkId, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode))
+          thirdBatchRequest.push(updateSoftGreActivations(networkId, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode))
         }
       }
-      await Promise.all(firstBatchRequest)
-      await Promise.all(secondBatchRequest)
       await Promise.all(thirdBatchRequest)
 
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
