@@ -81,6 +81,7 @@ export const LayoutView = styled(AntLayout)<{ $type: string | null }>`
   }
   background-position: center !important;
   background-repeat: no-repeat !important;
+  background-size: cover !important
   height:100%;
   overflow-y:auto;
 `

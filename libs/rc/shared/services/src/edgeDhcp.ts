@@ -21,6 +21,15 @@ const versionHeader = {
   'Accept': 'application/vnd.ruckus.v1+json'
 }
 
+enum EdgeDhcpActivityEnum {
+  ADD = 'Add Dhcp',
+  UPDATE = 'Update Dhcp',
+  DELETE = 'Delete Dhcp',
+  ACTIVATE = 'Activate Dhcp',
+  DEACTIVATE = 'Deactivate Dhcp',
+  RESTART = 'Restart Dhcp'
+}
+
 export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
   endpoints: (build) => ({
     addEdgeDhcpService: build.mutation<CommonResult, RequestPayload>({
@@ -73,6 +82,16 @@ export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
           ...req
         }
       },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            EdgeDhcpActivityEnum.UPDATE
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeDhcpApi.util.invalidateTags([{ type: 'EdgeDhcp', id: 'DETAIL' }]))
+          })
+        })
+      },
       providesTags: [{ type: 'EdgeDhcp', id: 'DETAIL' }]
     }),
     getDhcpPoolStats: build.query<TableResult<DhcpPoolStats>, RequestPayload>({
@@ -87,7 +106,7 @@ export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'Update DHCP'
+            EdgeDhcpActivityEnum.UPDATE
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(edgeDhcpApi.util.invalidateTags([{ type: 'EdgeDhcp', id: 'LIST' }]))
@@ -109,9 +128,9 @@ export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'Add DHCP',
-            'Update DHCP',
-            'Delete DHCP'
+            EdgeDhcpActivityEnum.ADD,
+            EdgeDhcpActivityEnum.UPDATE,
+            EdgeDhcpActivityEnum.DELETE
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(edgeDhcpApi.util.invalidateTags([{ type: 'EdgeDhcp', id: 'LIST' }]))
@@ -178,6 +197,7 @@ export const {
   usePatchEdgeDhcpServiceMutation,
   useDeleteEdgeDhcpServicesMutation,
   useGetEdgeDhcpServiceQuery,
+  useLazyGetEdgeDhcpServiceQuery,
   useGetDhcpPoolStatsQuery,
   useGetDhcpStatsQuery,
   useGetDhcpHostStatsQuery,

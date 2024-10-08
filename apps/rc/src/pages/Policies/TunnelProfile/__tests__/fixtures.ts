@@ -1,4 +1,4 @@
-export const mockedNsgOptions = {
+export const mockedPinOptions = {
   totalCount: 2,
   page: 1,
   data: [

@@ -4,6 +4,7 @@ import { useIntl, FormattedMessage } from 'react-intl'
 import { useAnalyticsFilter, categoryTabs, CategoryTab } from '@acx-ui/analytics/utils'
 import { Alert, GridCol, GridRow, Tabs }                 from '@acx-ui/components'
 import { get }                                           from '@acx-ui/config'
+import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { useNavigate, useParams, useTenantLink }         from '@acx-ui/react-router-dom'
 import type { AnalyticsFilter }                          from '@acx-ui/utils'
 
@@ -28,22 +29,28 @@ const WiredTab = (props: { filters?: AnalyticsFilter, path?: string, noSwitches?
   const selectedTab = params['categoryTab'] ?? categoryTabs[0].value
   const navigate = useNavigate()
   const basePath = useTenantLink(props.path ?? '/analytics/health/wired/tab/')
+  const isSwitchHealth10010eEnabled = [
+    useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_10010E_TOGGLE),
+    useIsSplitOn(Features.SWITCH_HEALTH_10010E_TOGGLE)
+  ].some(Boolean)
   const switchFirmwareVersionMsg = get('IS_MLISA_SA') ?
     <FormattedMessage
       defaultMessage={
       // eslint-disable-next-line max-len
-        'Data is displayed for switches with firmware version <b>10.0.10d</b> and SmartZone version <b>7.x</b> or above.'
+        'Data is displayed for switches with firmware version <b>{switchFmwrVersion}</b> and SmartZone version <b>7.x</b> or above.'
       }
       values={{
+        switchFmwrVersion: isSwitchHealth10010eEnabled ? '10.0.10f' : '10.0.10d',
         b: (content) => <b >{content}</b>
       }}
     />
     :
     <FormattedMessage
       defaultMessage={
-        'Data is displayed for switches with firmware version <b>10.0.10d</b> or above.'
+        'Data is displayed for switches with firmware version <b>{switchFmwrVersion}</b> or above.'
       }
       values={{
+        switchFmwrVersion: isSwitchHealth10010eEnabled ? '10.0.10f' : '10.0.10d',
         b: (content) => <b >{content}</b>
       }}
     />

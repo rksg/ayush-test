@@ -1,13 +1,20 @@
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import userEvent     from '@testing-library/user-event'
+import { cloneDeep } from 'lodash'
+import { rest }      from 'msw'
 
-import { EdgeDHCPFixtures, EdgeDhcpUrls, getServiceRoutePath, NetworkSegmentationUrls, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                    from '@acx-ui/store'
-import { mockServer, render, screen }                                                                                  from '@acx-ui/test-utils'
+import {
+  EdgeDHCPFixtures,
+  EdgeDhcpUrls,
+  EdgePinFixtures,
+  getServiceRoutePath,
+  EdgePinUrls,
+  ServiceOperation,
+  ServiceType } from '@acx-ui/rc/utils'
+import { Provider }                   from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { mockNsgStatsList } from '../__tests__/fixtures'
-
-import NetworkSegmentationDetail from '.'
+import PersonalIdentityNetworkDetail from '.'
+const { mockPinStatsList } = EdgePinFixtures
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
@@ -31,12 +38,14 @@ jest.mock('jszip', () => (class JSZip {
 const mockedSaveAs = jest.fn()
 jest.mock('file-saver', ()=>({ saveAs: () => mockedSaveAs() }))
 
-const { mockEdgeDhcpDataList } = EdgeDHCPFixtures
+const mockEdgeDhcpDataList = cloneDeep(EdgeDHCPFixtures.mockEdgeDhcpDataList)
+// eslint-disable-next-line max-len
+mockEdgeDhcpDataList.content[0].dhcpPools[0].id = mockPinStatsList.data[0].edgeClusterInfo.dhcpPoolId
 
-describe('NsgDetail', () => {
+describe('PIN Detail', () => {
   let params: { tenantId: string, serviceId: string }
   const detailPath = '/:tenantId/t/' + getServiceRoutePath({
-    type: ServiceType.NETWORK_SEGMENTATION,
+    type: ServiceType.PIN,
     oper: ServiceOperation.DETAIL
   })
   beforeEach(() => {
@@ -47,12 +56,12 @@ describe('NsgDetail', () => {
 
     mockServer.use(
       rest.post(
-        NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
-        (req, res, ctx) => res(ctx.json(mockNsgStatsList))
+        EdgePinUrls.getEdgePinStatsList.url,
+        (_req, res, ctx) => res(ctx.json(mockPinStatsList))
       ),
       rest.get(
         EdgeDhcpUrls.getDhcp.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeDhcpDataList.content[0]))
+        (_req, res, ctx) => res(ctx.json(mockEdgeDhcpDataList.content[0]))
       )
     )
   })
@@ -60,7 +69,7 @@ describe('NsgDetail', () => {
   it('Should render detail page successfully', async () => {
     render(
       <Provider>
-        <NetworkSegmentationDetail />
+        <PersonalIdentityNetworkDetail />
       </Provider>, {
         route: { params, path: detailPath }
       })
@@ -70,7 +79,7 @@ describe('NsgDetail', () => {
   })
 
   it('should render breadcrumb correctly', async () => {
-    render(<NetworkSegmentationDetail />, {
+    render(<PersonalIdentityNetworkDetail />, {
       wrapper: Provider,
       route: { params, path: detailPath }
     })
@@ -87,7 +96,7 @@ describe('NsgDetail', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <NetworkSegmentationDetail />
+        <PersonalIdentityNetworkDetail />
       </Provider>, {
         route: { params, path: detailPath }
       })

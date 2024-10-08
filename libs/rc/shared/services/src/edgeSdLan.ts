@@ -239,6 +239,9 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
           const sdLanStatusQuery = await fetchWithBQ({
             ...sdLanStatusReq,
             body: {
+              fields: [
+                'networkIds', 'guestNetworkIds', 'guestEdgeClusterId', 'guestTunnelProfileId'
+              ],
               filters: { id: [params!.serviceId] }
             }
           })
@@ -377,11 +380,13 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
       },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
-          await handleCallbackWhenActivityDone(api, msg,
-            EdgeSdLanActivityEnum.ACTIVATE_NETWORK,
-            requestArgs.callback,
-            requestArgs.failedCallback
-          )
+          await handleCallbackWhenActivityDone({
+            api,
+            activityData: msg,
+            useCase: EdgeSdLanActivityEnum.ACTIVATE_NETWORK,
+            callback: requestArgs.callback,
+            failedCallback: requestArgs.failedCallback
+          })
         })
       }
     }),
@@ -394,11 +399,13 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
       },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
-          await handleCallbackWhenActivityDone(api, msg,
-            EdgeSdLanActivityEnum.DEACTIVATE_NETWORK,
-            requestArgs.callback,
-            requestArgs.failedCallback
-          )
+          await handleCallbackWhenActivityDone({
+            api,
+            activityData: msg,
+            useCase: EdgeSdLanActivityEnum.DEACTIVATE_NETWORK,
+            callback: requestArgs.callback,
+            failedCallback: requestArgs.failedCallback
+          })
         })
       }
     }),
@@ -521,11 +528,13 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
       invalidatesTags: [{ type: 'EdgeMvSdLan', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
-          await handleCallbackWhenActivityDone(api, msg,
-            EdgeSdLanActivityEnum.ADD,
-            requestArgs.callback,
-            requestArgs.failedCallback
-          )
+          await handleCallbackWhenActivityDone({
+            api,
+            activityData: msg,
+            useCase: EdgeSdLanActivityEnum.ADD,
+            callback: requestArgs.callback,
+            failedCallback: requestArgs.failedCallback
+          })
         })
       }
     }),
@@ -540,11 +549,13 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
       invalidatesTags: [{ type: 'EdgeMvSdLan', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
-          await handleCallbackWhenActivityDone(api, msg,
-            EdgeSdLanActivityEnum.UPDATE,
-            requestArgs.callback,
-            requestArgs.failedCallback
-          )
+          await handleCallbackWhenActivityDone({
+            api,
+            activityData: msg,
+            useCase: EdgeSdLanActivityEnum.UPDATE,
+            callback: requestArgs.callback,
+            failedCallback: requestArgs.failedCallback
+          })
         })
       }
     }),

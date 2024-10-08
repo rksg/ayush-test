@@ -1,68 +1,88 @@
 import { rest } from 'msw'
 
-import { CommonUrlsInfo, EdgeDhcpUrls, NetworkSegmentationUrls, PersonaUrls, TunnelProfileUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                                              from '@acx-ui/store'
-import { mockServer, render, screen }                                                            from '@acx-ui/test-utils'
+import {
+  CommonUrlsInfo,
+  EdgeDHCPFixtures,
+  EdgeDhcpUrls,
+  EdgeGeneralFixtures,
+  EdgePinFixtures,
+  EdgePinUrls,
+  PersonaUrls,
+  TunnelProfileUrls,
+  EdgeUrlsInfo,
+  PropertyUrlsInfo
+} from '@acx-ui/rc/utils'
+import { Provider }                                              from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import {
   mockedApList,
-  mockedEdgeDhcpDataList,
-  mockedNsgData,
-  mockedNsgStatsList,
-  mockedNsgSwitchInfoData,
   mockedPersonaGroup,
   mockedTunnelProfileData
 } from './__tests__/fixtures'
 
 import { PersonalIdentityNetworkServiceInfo } from '.'
 
-describe('NetworkSegmentationServiceInfo', () => {
+const { mockPinStatsList, mockPinData, mockPinSwitchInfoData } = EdgePinFixtures
+const { mockEdgeClusterList } = EdgeGeneralFixtures
+const { mockEdgeDhcpDataList } = EdgeDHCPFixtures
+
+describe('PersonalIdentityNetwork ServiceInfo', () => {
 
   beforeEach(() => {
     mockServer.use(
       rest.get(
-        NetworkSegmentationUrls.getNetworkSegmentationGroupById.url,
-        (req, res, ctx) => res(ctx.json(mockedNsgData))
+        EdgePinUrls.getEdgePinById.url,
+        (_req, res, ctx) => res(ctx.json(mockPinData))
       ),
       rest.post(
-        NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
-        (req, res, ctx) => res(ctx.json(mockedNsgStatsList))
+        EdgePinUrls.getEdgePinStatsList.url,
+        (_req, res, ctx) => res(ctx.json(mockPinStatsList))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeClusterList))
       ),
       rest.post(
         CommonUrlsInfo.getApsList.url,
-        (req, res, ctx) => res(ctx.json(mockedApList))
+        (_req, res, ctx) => res(ctx.json(mockedApList))
       ),
       rest.get(
-        NetworkSegmentationUrls.getSwitchInfoByNSGId.url,
-        (req, res, ctx) => res(ctx.json(mockedNsgSwitchInfoData))
+        EdgePinUrls.getSwitchInfoByPinId.url,
+        (_req, res, ctx) => res(ctx.json(mockPinSwitchInfoData))
       ),
       rest.get(
         EdgeDhcpUrls.getDhcp.url,
-        (req, res, ctx) => res(ctx.json(mockedEdgeDhcpDataList.content[0]))
+        (_req, res, ctx) => res(ctx.json(mockEdgeDhcpDataList.content[0]))
       ),
       rest.get(
         PersonaUrls.getPersonaGroupById.url,
-        (req, res, ctx) => res(ctx.json(mockedPersonaGroup))
+        (_req, res, ctx) => res(ctx.json(mockedPersonaGroup))
+      ),
+      rest.get(
+        PropertyUrlsInfo.getPropertyConfigs.url,
+        (req, res, ctx) => res(ctx.json({}))
       ),
       rest.get(
         TunnelProfileUrls.getTunnelProfile.url,
-        (req, res, ctx) => res(ctx.json(mockedTunnelProfileData))
+        (_req, res, ctx) => res(ctx.json(mockedTunnelProfileData))
       )
     )
   })
 
-  it('Should render NetworkSegmentationServiceInfo successfully', async () => {
+  it('Should render PersonalIdentityNetwork ServiceInfo successfully', async () => {
     const params = {
       tenantId: 'tenant-id'
     }
     render(
       <Provider>
-        <PersonalIdentityNetworkServiceInfo nsgId='test' />
+        <PersonalIdentityNetworkServiceInfo pinId='test' />
       </Provider>,{
         route: { params }
       }
-    )
 
+    )
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByText(/TestDhcp-1/i)).toBeVisible()
     expect(await screen.findByText(/tunnelProfile1/i)).toBeVisible()
     expect(await screen.findByText(/Poor/i)).toBeVisible()

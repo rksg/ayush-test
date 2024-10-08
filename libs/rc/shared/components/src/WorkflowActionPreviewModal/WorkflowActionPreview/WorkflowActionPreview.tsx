@@ -14,12 +14,14 @@ import {
 } from '@acx-ui/rc/services'
 import {
   ActionType,
-  UIConfiguration,
-  WorkflowStep,
   DefaultUIConfiguration,
+  GenericActionData,
   toReactFlowData,
-  GenericActionData
+  ActionTypeTitle,
+  UIConfiguration,
+  WorkflowStep
 } from '@acx-ui/rc/utils'
+import { hasCrossVenuesPermission } from '@acx-ui/user'
 
 import { EnrollmentPortalDesignModal } from '../../EnrollmentPortalDesignModal'
 import { ActionNavigationDrawer }      from '../ActionNavigationDrawer'
@@ -42,6 +44,7 @@ export interface WorkflowActionPreviewProps {
   workflowId: string
   step?: WorkflowStep,
   actionData?: GenericActionData
+  disablePortalDesign?: boolean
 }
 export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
   const [marked, setMarked] = useState({
@@ -51,7 +54,7 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
   })
   const [screen, setScreen] = useState('desk')
   const { $t } = useIntl()
-  const { workflowId, step, actionData } = props
+  const { workflowId, step, actionData, disablePortalDesign } = props
   const [selectedStepId, setSelectedStepId] = useState(step?.id)
   const [stepMap, setStepMap] = useState(new Map<string, WorkflowStep>())
   const [UIConfig, setUIConfig] = useState<UIConfiguration>(DefaultUIConfiguration)
@@ -61,6 +64,7 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
   const configurationQuery = useGetUIConfigurationQuery({ params: { id: workflowId } })
   const [getUIConfigLogoImage] = useLazyGetUIConfigurationLogoImageQuery()
   const [getUIConfigBackgroundImage] = useLazyGetUIConfigurationBackgroundImageQuery()
+  const showNavigator = !step && ! actionData
   const fetchImage = async (imageType: string) => {
     if (imageType === 'logoImages')
       return getUIConfigLogoImage({ params: { id: workflowId } } ).unwrap()
@@ -105,14 +109,13 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
 
   useEffect(() => {
     if (!stepsData ) return
-
     const { nodes } = toReactFlowData(stepsData?.content)
     setNodes(nodes as Node<WorkflowStep, ActionType>[])
     setStepMap(new Map<string, WorkflowStep>(stepsData?.content.map(v => [v.id, v])))
     setSelectedStepId(nodes.find(node => node.type !== 'START' as ActionType)?.data.id)
   }, [stepsData])
 
-  useEffect(() => {
+  useEffect(()=>{
     if (step) {
       setNodes([{
         id: step.id,
@@ -125,9 +128,24 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
         }
       }])
       setStepMap(map => map.set(step.id, step))
+    } else if (actionData) {
+      let workflowStep = {
+        id: actionData.id,
+        actionType: actionData.actionType,
+        enrollmentActionId: '',
+        isStart: false,
+        isEnd: false
+      }
+      setNodes([{
+        id: actionData.id,
+        type: actionData.actionType,
+        position: { x: 0, y: 0 },
+        data: workflowStep
+      }])
+      setStepMap(map => map.set(workflowStep.id, workflowStep))
+      setSelectedStepId(workflowStep.id)
     }
-
-  }, [step])
+  }, [step, actionData])
 
   return (
     <Loader states={[stepQuery, configurationQuery]}>
@@ -140,20 +158,19 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
                 {$t({ defaultMessage: 'Action Preview:' })}
               </div>
               <div style={{ fontSize: 16, color: 'var(--acx-primary-black)', marginLeft: '4px' }}>
-                {$t({ defaultMessage: `{
-                    type, select,
-                    AUP {Acceptable Use Policy (AUP)}
-                    DATA_PROMPT {Display a Form}
-                    DISPLAY_MESSAGE {Custom Message}
-                    other {}
-                  }` }, {
-                  type: stepMap.get(selectedStepId ?? '')?.actionType ?? actionData?.actionType
-                })}
+                {
+                  (stepMap.get(selectedStepId ?? '')?.actionType ?? actionData?.actionType) ?
+                  // eslint-disable-next-line max-len
+                    $t(ActionTypeTitle[stepMap.get(selectedStepId ?? '')?.actionType ?? actionData?.actionType!]) : undefined
+                }
               </div>
-              <div style={{ marginLeft: '8px' }}
-                onClick={()=>setNavigatorVisible(!navigatorVisible)}>
-                <ListSolid/>
-              </div>
+              {
+                showNavigator &&
+                <div style={{ marginLeft: '8px' }}
+                  onClick={()=>setNavigatorVisible(!navigatorVisible)}>
+                  <ListSolid/>
+                </div>
+              }
             </div>
             <div style={{ flex: 'auto', textAlign: 'center' }}>
               <UI.DesktopOutlined $marked={marked.desk}
@@ -175,6 +192,7 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
                   setMarked({ desk: false, tablet: false, mobile: true })
                 }}/>
             </div>
+
             <div
               style={{
                 flex: '0 0 513px',
@@ -183,17 +201,19 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
                 paddingRight: 80,
                 paddingTop: 4
               }}>
-              <div>
-                <UI.Button type='default'
-                  size='small'
-                  style={{ fontSize: '14px' }}
-                  onClick={()=>{
-                    setNavigatorVisible(false)
-                    setPortalVisible(true)
-                  }}>
-                  {$t({ defaultMessage: 'Portal Design' })}
-                </UI.Button>
-              </div>
+              {hasCrossVenuesPermission({ needGlobalPermission: true }) && !disablePortalDesign &&
+                <div>
+                  <UI.Button type='default'
+                    size='small'
+                    style={{ fontSize: '14px' }}
+                    onClick={() => {
+                      setNavigatorVisible(false)
+                      setPortalVisible(true)
+                    }}>
+                    {$t({ defaultMessage: 'Portal Design' })}
+                  </UI.Button>
+                </div>
+              }
             </div>
           </div>
         </UI.LayoutHeader>
@@ -202,9 +222,9 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
           style={{ height: '750px' }}>
           <UI.LayoutView $type={screen}
             style={{
-              backgroundImage: 'url("'+ UIConfig?.backgroundImage+'")',
-              backgroundColor: UIConfig.uiColorSchema?.backgroundColor,
-              backgroundSize: 'contain'
+              backgroundImage: UIConfig.backgroundImage ?
+                'url("'+ UIConfig?.backgroundImage+'")' : undefined,
+              backgroundColor: UIConfig.uiColorSchema?.backgroundColor
             }}>
             <CommonPreviewContainer
               ui={UIConfig}

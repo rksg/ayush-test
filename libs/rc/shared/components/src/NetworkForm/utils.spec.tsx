@@ -303,9 +303,7 @@ describe('Network utils test', () => {
     })
 
     it('should return false if neither policy nor service config template', () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff =>
-        ff === Features.SERVICES || ff === Features.POLICIES || ff === Features.CONFIG_TEMPLATE
-      )
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.CONFIG_TEMPLATE)
       // eslint-disable-next-line max-len
       jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.CONFIG_TEMPLATE)
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
@@ -317,9 +315,7 @@ describe('Network utils test', () => {
     })
 
     it('should return true if policy config template and policy enabled', () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff =>
-        ff === Features.SERVICES || ff === Features.POLICIES || ff === Features.CONFIG_TEMPLATE
-      )
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.CONFIG_TEMPLATE)
       // eslint-disable-next-line max-len
       jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.CONFIG_TEMPLATE)
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
@@ -331,9 +327,7 @@ describe('Network utils test', () => {
     })
 
     it('should return true if service config template and service enabled', () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff =>
-        ff === Features.SERVICES || ff === Features.POLICIES || ff === Features.CONFIG_TEMPLATE
-      )
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.CONFIG_TEMPLATE)
       // eslint-disable-next-line max-len
       jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.CONFIG_TEMPLATE)
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
@@ -345,9 +339,7 @@ describe('Network utils test', () => {
     })
 
     it('should return true if it is not a config template', () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff =>
-        ff === Features.SERVICES || ff === Features.POLICIES || ff === Features.CONFIG_TEMPLATE
-      )
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.CONFIG_TEMPLATE)
       // eslint-disable-next-line max-len
       jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.CONFIG_TEMPLATE)
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
@@ -443,11 +435,11 @@ describe('Network utils test', () => {
             return res(ctx.json({
               data: [
                 {
-                  id: 'mock-radius-server-id',
+                  id: 'mock-auth-radius-server-id',
                   type: 'AUTHENTICATION'
                 },
                 {
-                  id: 'mock-radius-server-id',
+                  id: 'mock-acct-radius-server-id',
                   type: 'ACCOUNTING'
                 }]
             }))}
@@ -556,14 +548,67 @@ describe('Network utils test', () => {
       const updateRadius = result.current.updateRadiusServer
 
       await updateRadius(
-        { authRadiusId: 'new-radius-id' },
-        { authRadiusId: 'old-radius-id' },
+        {
+          enableAccountingProxy: false,
+          enableAuthProxy: false,
+          authRadiusId: 'new-auth-radius-id',
+          accountingRadiusId: 'new-acct-radius-id'
+        },
         'new-networkId'
       )
 
       await waitFor(() => expect(spyUpdateRadiusSettingsFn).toHaveBeenCalledTimes(1))
-      await waitFor(() => expect(spyActivateRadiusFn).toHaveBeenCalledTimes(1))
+      await waitFor(() => expect(spyActivateRadiusFn).toHaveBeenCalledTimes(2))
       await waitFor(() => expect(spyDeactivateRadiusFn).toHaveBeenCalledTimes(0))
+    })
+
+    it('should not update RADIUS server profile while there is no RADIUS profile ID', async () => {
+      const spyActivateRadiusFn = jest.fn()
+      const spyDeactivateRadiusFn = jest.fn()
+      mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+      jest.mocked(useIsSplitOn)
+        .mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
+
+      mockServer.use(
+        rest.put(
+          WifiRbacUrlsInfo.updateRadiusServerSettings.url,
+          (_, res, ctx) => res(ctx.json({}))
+        ),
+        rest.put(
+          WifiRbacUrlsInfo.activateRadiusServer.url,
+          (_, res, ctx) => {
+            spyActivateRadiusFn()
+            return res(ctx.json({}))
+          }
+        ),
+        rest.delete(
+          WifiRbacUrlsInfo.deactivateRadiusServer.url,
+          (_, res, ctx) => {
+            spyDeactivateRadiusFn()
+            return res(ctx.json({}))
+          }
+        )
+      )
+
+      const { result } = renderHook(
+        () => useRadiusServer(),
+        {
+          wrapper: Provider,
+          route: { params: { networkId: 'mock-network-id' } }
+        })
+
+      const updateRadius = result.current.updateRadiusServer
+
+      await updateRadius(
+        {
+          enableAccountingProxy: false,
+          enableAuthProxy: false
+        },
+        'new-networkId'
+      )
+
+      await waitFor(() => expect(spyActivateRadiusFn).not.toHaveBeenCalled())
+      await waitFor(() => expect(spyDeactivateRadiusFn).not.toHaveBeenCalled())
     })
   })
 

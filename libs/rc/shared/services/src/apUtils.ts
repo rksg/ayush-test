@@ -29,7 +29,9 @@ import {
   NewAPModel,
   NewAPModelExtended,
   RadioProperties,
+  SwitchClient,
   SwitchInformation,
+  SwitchRbacUrlsInfo,
   TableResult,
   Venue,
   WifiRbacUrlsInfo
@@ -348,6 +350,7 @@ export const aggregateSwitchInfo = (
         groupedAp.switchId = switchInformation?.id
         groupedAp.switchName = switchInformation?.name
         groupedAp.switchSerialNumber = switchInformation?.serialNumber
+        groupedAp.switchPort = switchInformation?.port
       })
     } else {
       const apMac = apItem.macAddress ?? ''
@@ -356,6 +359,7 @@ export const aggregateSwitchInfo = (
       apItem.switchId = switchInformation?.id
       apItem.switchName = switchInformation?.name
       apItem.switchSerialNumber = switchInformation?.serialNumber
+      apItem.switchPort = switchInformation?.port
     }
   })
 }
@@ -714,6 +718,43 @@ const fetchApList = async ({ params, payload, enableRbac }: RequestPayload, fetc
 
       if (isPayloadHasField(newPayload, 'xPercent') || isPayloadHasField(newPayload, 'yPercent')) {
         await fetchAppendApPositions(apListData as TableResult<FloorPlanMeshAP>, fetchWithBQ)
+      }
+
+      if (apListData && apListData.data.length > 0) {
+        const apMacSwitchMap = new Map<string, SwitchInformation>()
+        const unqueClientApMacs: Set<string> = new Set()
+        apListData.data.forEach((item) => {
+          const { macAddress } = item
+          if (macAddress) {
+            unqueClientApMacs.add(macAddress)
+          }
+        })
+        const switchClientMacs: string[] = Array.from(unqueClientApMacs)
+        const switchApiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+        const switchClientPayload = {
+          fields: ['clientMac', 'switchId', 'switchName', 'switchSerialNumber', 'switchPort'],
+          page: 1,
+          pageSize: 10000,
+          filters: { clientMac: switchClientMacs }
+        }
+        const switchClistInfo = {
+          ...createHttpRequest(SwitchRbacUrlsInfo.getSwitchClientList, {}, switchApiCustomHeader),
+          body: JSON.stringify(switchClientPayload)
+        }
+        const switchClientsQuery = await fetchWithBQ(switchClistInfo)
+        const switchClients = switchClientsQuery.data as TableResult<SwitchClient>
+
+        switchClients?.data?.forEach((switchInfo) => {
+          const { clientMac, switchId, switchName, switchSerialNumber, switchPort } = switchInfo
+          apMacSwitchMap.set(clientMac, {
+            id: switchId,
+            name: switchName,
+            serialNumber: switchSerialNumber,
+            port: switchPort
+          })
+        })
+
+        aggregateSwitchInfo(apListData as TableResult<NewAPModelExtended, ApExtraParams>, apMacSwitchMap)
       }
 
       const rbacApList = transformRbacApList(transformApListFromNewModel(apListData as TableResult<NewAPModelExtended, ApExtraParams>))

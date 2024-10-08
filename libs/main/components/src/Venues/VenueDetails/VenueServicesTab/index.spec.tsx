@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
 import { rest } from 'msw'
 
-import { Tabs }                                                               from '@acx-ui/components'
-import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
-import { EdgeDhcpUrls, EdgeSdLanUrls, EdgeUrlsInfo, NetworkSegmentationUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                           from '@acx-ui/store'
+import { Tabs }                                                                                         from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                       from '@acx-ui/feature-toggle'
+import { EdgeDhcpUrls, EdgeGeneralFixtures, EdgePinFixtures, EdgeSdLanUrls, EdgeUrlsInfo, EdgePinUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                                                     from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -12,8 +12,10 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
-
 import { VenueServicesTab } from '.'
+
+const { mockEdgeClusterList } = EdgeGeneralFixtures
+const { mockPinStatsList } = EdgePinFixtures
 
 jest.spyOn(Tabs, 'TabPane').mockImplementation((props) => {
   return <div data-testid={`rc-tabpane-${props.tab}`}>{props.children}</div>
@@ -38,8 +40,8 @@ jest.mock('./MdnsProxyInstances', () => ({
   default: () => <div data-testid='MdnsProxyInstances' />,
   __esModule: true
 }))
-jest.mock('./NetworkSegmentation', () => ({
-  NetworkSegmentation: () => (<div data-testid='NetworkSegmentation' />)
+jest.mock('./Pin', () => ({
+  EdgePin: () => (<div data-testid='EdgePin' />)
 }))
 jest.mock('./VenueRogueAps', () => ({
   VenueRogueAps: () => (<div data-testid='VenueRogueAps' />)
@@ -77,19 +79,19 @@ describe('Venue service tab', () => {
   describe('when edge feature flag is on', () => {
     const mockedGetEdgeListFn = jest.fn()
     const mockedGetEdgeDhcpFn = jest.fn()
-    const mockedGetNsgListFn = jest.fn()
+    const mockedGetPinListFn = jest.fn()
     const mockedGetSdLanListFn = jest.fn()
 
     beforeEach(() => {
       mockedGetEdgeListFn.mockReset()
       mockedGetEdgeDhcpFn.mockReset()
-      mockedGetNsgListFn.mockReset()
+      mockedGetPinListFn.mockReset()
       mockedGetSdLanListFn.mockReset()
 
       jest.mocked(useIsSplitOn).mockReturnValue(true)
     })
 
-    describe('when there is no firewall, nsg and SD-LAN data', () => {
+    describe('when there is no firewall, PIN and SD-LAN data', () => {
       const mockNoData = {
         totalCount: 0,
         data: []
@@ -104,9 +106,9 @@ describe('Venue service tab', () => {
             }
           ),
           rest.post(
-            NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
+            EdgePinUrls.getEdgePinStatsList.url,
             (_req, res, ctx) => {
-              mockedGetNsgListFn()
+              mockedGetPinListFn()
               return res(ctx.json(mockNoData))
             }
           ),
@@ -120,7 +122,7 @@ describe('Venue service tab', () => {
         )
       })
 
-      it('should not render firewall, nsg and SD-LAN tab when there is no edge on venue', async () => {
+      it('should not render firewall, PIN and SD-LAN tab when there is no edge on venue', async () => {
         render(
           <Provider>
             <VenueServicesTab />
@@ -129,7 +131,7 @@ describe('Venue service tab', () => {
           })
 
         await waitFor(() => expect(mockedGetEdgeListFn).toBeCalled())
-        await waitFor(() => expect(mockedGetNsgListFn).toBeCalled())
+        await waitFor(() => expect(mockedGetPinListFn).toBeCalled())
         await waitFor(() => expect(mockedGetSdLanListFn).toBeCalled())
 
         expect((await screen.findAllByTestId(/rc-tabpane-/)).length).toBe(6)
@@ -147,10 +149,7 @@ describe('Venue service tab', () => {
           }
         ]
       }
-      const mockNsgList = {
-        totalCount: 1,
-        data: [{ id: 'testNsg' }]
-      }
+
       beforeEach(() => {
         mockServer.use(
           rest.post(
@@ -161,10 +160,10 @@ describe('Venue service tab', () => {
             }
           ),
           rest.post(
-            NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
+            EdgePinUrls.getEdgePinStatsList.url,
             (_req, res, ctx) => {
-              mockedGetNsgListFn()
-              return res(ctx.json(mockNsgList))
+              mockedGetPinListFn()
+              return res(ctx.json(mockPinStatsList))
             }
           ),
           rest.post(
@@ -183,6 +182,10 @@ describe('Venue service tab', () => {
                 name: 'mocked_sdLan_1'
               }] }))
             }
+          ),
+          rest.post(
+            EdgeUrlsInfo.getEdgeClusterStatusList.url,
+            (_req, res, ctx) => res(ctx.json(mockEdgeClusterList))
           )
         )
       })
@@ -196,7 +199,7 @@ describe('Venue service tab', () => {
           })
 
         await waitFor(() => expect(mockedGetEdgeListFn).toBeCalled())
-        await waitFor(() => expect(mockedGetNsgListFn).toBeCalled())
+        await waitFor(() => expect(mockedGetPinListFn).toBeCalled())
         await waitFor(() => expect(mockedGetEdgeDhcpFn).toBeCalled())
         await waitFor(() => expect(mockedGetSdLanListFn).toBeCalled())
 
@@ -214,7 +217,7 @@ describe('Venue service tab', () => {
           })
 
         await waitFor(() => expect(mockedGetEdgeListFn).toBeCalled())
-        await waitFor(() => expect(mockedGetNsgListFn).toBeCalled())
+        await waitFor(() => expect(mockedGetPinListFn).toBeCalled())
         await waitFor(() => expect(mockedGetSdLanListFn).toBeCalled())
         expect(mockedGetEdgeDhcpFn).not.toBeCalled()
         await screen.findByTestId(/rc-tabpane-SD-LAN/)
@@ -235,7 +238,7 @@ describe('Venue service tab', () => {
           })
 
         await waitFor(() => expect(mockedGetEdgeListFn).toBeCalled())
-        await waitFor(() => expect(mockedGetNsgListFn).toBeCalled())
+        await waitFor(() => expect(mockedGetPinListFn).toBeCalled())
         await waitFor(() => expect(mockedGetSdLanListFn).toBeCalled())
         expect(mockedGetEdgeDhcpFn).not.toBeCalled()
         await screen.findByTestId(/rc-tabpane-SD-LAN/)
@@ -256,7 +259,7 @@ describe('Venue service tab', () => {
           })
 
         await waitFor(() => expect(mockedGetEdgeListFn).toBeCalled())
-        await waitFor(() => expect(mockedGetNsgListFn).toBeCalled())
+        await waitFor(() => expect(mockedGetPinListFn).toBeCalled())
         await waitFor(() => expect(mockedGetEdgeDhcpFn).toBeCalled())
         await waitFor(() => expect(mockedGetSdLanListFn).toBeCalled())
 
@@ -276,7 +279,7 @@ describe('Venue service tab', () => {
           })
 
         await waitFor(() => expect(mockedGetEdgeListFn).toBeCalled())
-        await waitFor(() => expect(mockedGetNsgListFn).toBeCalled())
+        await waitFor(() => expect(mockedGetPinListFn).toBeCalled())
         await waitFor(() => expect(mockedGetEdgeDhcpFn).toBeCalled())
         expect(mockedGetSdLanListFn).not.toBeCalled()
         expect((await screen.findAllByTestId(/rc-tabpane-/)).length).toBe(8)

@@ -59,7 +59,7 @@ describe('EdgeDhcpSelectionForm', () => {
       <Provider>
         <StepsForm>
           <StepsForm.StepForm>
-            <EdgeDhcpSelectionForm hasNsg={false} />
+            <EdgeDhcpSelectionForm hasPin={false} />
           </StepsForm.StepForm>
         </StepsForm>
       </Provider>, { route: { params } }
@@ -72,7 +72,7 @@ describe('EdgeDhcpSelectionForm', () => {
       <Provider>
         <StepsForm>
           <StepsForm.StepForm>
-            <EdgeDhcpSelectionForm hasNsg={false} />
+            <EdgeDhcpSelectionForm hasPin={false} />
           </StepsForm.StepForm>
         </StepsForm>
       </Provider>, { route: { params } }
@@ -92,12 +92,12 @@ describe('EdgeDhcpSelectionForm', () => {
       <Provider>
         <StepsForm form={formRef.current}>
           <StepsForm.StepForm>
-            <EdgeDhcpSelectionForm hasNsg={false} />
+            <EdgeDhcpSelectionForm hasPin={false} />
           </StepsForm.StepForm>
         </StepsForm>
       </Provider>, { route: { params } }
     )
-    expect(await screen.findByText('TestDHCP-1')).toBeVisible()
+    expect(await screen.findByText('TestDhcp-1')).toBeVisible()
     expect(await screen.findByText('PoolTest1')).toBeVisible()
   })
 })

@@ -66,6 +66,13 @@ export default function MyPolicies () {
         onClick={() => setEdgeFeatureName(IncompatibilityFeatures.TUNNEL_PROFILE)}
       />
       : undefined
+    find(policies, { type: PolicyType.HQOS_BANDWIDTH })!.helpIcon = isEdgeCompatibilityEnabled
+      ? <ApCompatibilityToolTip
+        title=''
+        visible
+        onClick={() => setEdgeFeatureName(IncompatibilityFeatures.HQOS)}
+      />
+      : undefined
   }
 
   return (
@@ -145,7 +152,8 @@ function useCardData (): PolicyCardData[] {
   const isEdgeEnabled = useIsEdgeReady()
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isWorkflowEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE)
+  const isWorkflowTierEnabled = useIsTierAllowed(Features.WORKFLOW_ONBOARD)
+  const isWorkflowFFEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE)
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
@@ -289,10 +297,10 @@ function useCardData (): PolicyCardData[] {
       categories: [RadioCardCategory.WIFI],
       totalCount: useSearchInProgressWorkflowListQuery({
         params: { ...params, excludeContent: 'true' }
-      }, { skip: !isWorkflowEnabled }).data?.totalCount,
+      }, { skip: !isWorkflowFFEnabled || !isWorkflowTierEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.LIST })),
-      disabled: !isWorkflowEnabled
+      disabled: !isWorkflowFFEnabled || !isWorkflowTierEnabled
     },
     {
       type: PolicyType.CERTIFICATE_TEMPLATE,

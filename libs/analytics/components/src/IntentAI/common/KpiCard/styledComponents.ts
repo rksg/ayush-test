@@ -12,10 +12,9 @@ export const Title = styled.div`
   margin-bottom: 10px;
 `
 
-export const Statistic = styled<ComponentType<StatisticProps & { $blur: boolean }>>(AntStatistic)`
+export const Statistic = styled<ComponentType<StatisticProps>>(AntStatistic)`
   display: flex;
   flex-direction: column-reverse;
-  ${props => props.$blur && 'filter: blur(8px);'}
   .ant-statistic-title {
     color: var(--acx-neutrals-60);
     font-size: var(--acx-body-5-font-size);

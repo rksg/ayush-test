@@ -36,7 +36,7 @@ const EditDhcp = () => {
         leaseTimeType: edgeDhcpData.leaseTime === -1 ?
           LeaseTimeType.INFINITE :
           LeaseTimeType.LIMITED,
-        usedForNSG: (edgeDhcpData.dhcpPools?.length ?? -1) > 0
+        usedForPin: (edgeDhcpData.dhcpPools?.length ?? -1) > 0
       })
     }
   }, [edgeDhcpData])

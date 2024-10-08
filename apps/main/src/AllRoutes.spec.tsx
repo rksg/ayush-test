@@ -176,19 +176,6 @@ describe('AllRoutes', () => {
     expect(await screen.findByTestId('services')).toBeInTheDocument()
   })
 
-  test('should not navigate to services/* if the feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-
-    render(<Provider><AllRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/services/some-page',
-        wrapRoutes: false
-      }
-    })
-
-    expect(await screen.findByText('Services is not enabled')).toBeInTheDocument()
-  })
-
   test('should navigate to policies/* if the feature flag is on', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
@@ -200,19 +187,6 @@ describe('AllRoutes', () => {
     })
 
     expect(await screen.findByTestId('policies')).toBeInTheDocument()
-  })
-
-  test('should not navigate to policies/* if the feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-
-    render(<Provider><AllRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/policies/some-page',
-        wrapRoutes: false
-      }
-    })
-
-    expect(await screen.findByText('Policies is not enabled')).toBeInTheDocument()
   })
 
   test('should navigate to venues/*', async () => {

@@ -6,10 +6,13 @@ import {
 } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
+import _         from 'lodash'
 import { rest }  from 'msw'
 
 import { StepsForm, StepsFormProps } from '@acx-ui/components'
+import { useIsSplitOn }              from '@acx-ui/feature-toggle'
 import {
+  EdgeCompatibilityFixtures,
   EdgeGeneralFixtures,
   EdgeUrlsInfo
 } from '@acx-ui/rc/utils'
@@ -22,7 +25,8 @@ import {
 
 import { ScopeForm } from '.'
 
-const { mockEdgeClusterList } = EdgeGeneralFixtures
+const { mockEdgeClusterList, mockEdgeList } = EdgeGeneralFixtures
+const { mockEdgeFeatureCompatibilities } = EdgeCompatibilityFixtures
 
 const mockedSetFieldValue = jest.fn()
 const { click } = userEvent
@@ -43,14 +47,30 @@ const MockedTargetComponent = (props: Partial<StepsFormProps>) => {
   </Provider>
 }
 
+const modifiedMockEdgeList = {
+  ...mockEdgeList,
+  data: mockEdgeList.data.map(edge => ({ ...edge, clusterId: edge.clusterId.replace('cluster-', 'clusterId_') }))
+}
+
 describe('HQoS Scope Form', () => {
+
+  const mockEdgeClusterListForHqos = _.cloneDeep(mockEdgeClusterList)
+  mockEdgeClusterListForHqos.data[0].edgeList.forEach(e => e.cpuCores = 4)
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockedSetFieldValue.mockReset()
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.getEdgeClusterStatusList.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeClusterList))
-      )
+        (req, res, ctx) => res(ctx.json(mockEdgeClusterListForHqos))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeList.url,
+        (req, res, ctx) => res(ctx.json(modifiedMockEdgeList))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeFeatureSets.url,
+        (_, res, ctx) => res(ctx.json(mockEdgeFeatureCompatibilities)))
     )
   })
 
@@ -70,9 +90,14 @@ describe('HQoS Scope Form', () => {
     expect(screen.getByRole('columnheader', { name: /Activate/i })).toBeTruthy()
 
     const rows = await screen.findAllByRole('row', { name: /Edge Cluster/i })
+
     await waitFor(()=>{
-      expect(rows.length).toBe(mockEdgeClusterList.data.length)
+      expect(rows.length).toBe(mockEdgeClusterListForHqos.data.length)
     })
+
+    expect(within(rows[1]).getByRole('cell', { name: /Edge Cluster /i })).toBeVisible()
+    const switchBtn = within(rows[1]).getByRole('switch')
+    expect(switchBtn).toBeDisabled()
   })
 
 
@@ -91,15 +116,16 @@ describe('HQoS Scope Form', () => {
 
     const rows = await screen.findAllByRole('row', { name: /Edge Cluster/i })
     await waitFor(()=>{
-      expect(rows.length).toBe(mockEdgeClusterList.data.length)
+      expect(rows.length).toBe(mockEdgeClusterListForHqos.data.length)
     })
 
     expect(within(rows[0]).getByRole('cell', { name: /Edge Cluster 1/i })).toBeVisible()
     const switchBtn = within(rows[0]).getByRole('switch')
+    expect(switchBtn).not.toBeDisabled()
     expect(switchBtn).toBeChecked()
     expect(within(rows[0]).getByText('1000')).toBeVisible()
 
-    expect(within(rows[1]).getByRole('cell', { name: /Edge Cluster 2/i })).toBeVisible()
+    expect(within(rows[0]).getByRole('cell', { name: /Edge Cluster 1/i })).toBeVisible()
     const switchBtn2 = within(rows[0]).getByRole('switch')
     expect(switchBtn2).toBeChecked()
   })
@@ -120,7 +146,7 @@ describe('HQoS Scope Form', () => {
 
     const rows = await screen.findAllByRole('row', { name: /Edge Cluster/i })
     await waitFor(()=>{
-      expect(rows.length).toBe(mockEdgeClusterList.data.length)
+      expect(rows.length).toBe(mockEdgeClusterListForHqos.data.length)
     })
 
     expect(within(rows[0]).getByRole('cell', { name: /Edge Cluster 1/i })).toBeVisible()
@@ -130,4 +156,25 @@ describe('HQoS Scope Form', () => {
       { clusterId_1: { venueId: 'mock_venue_1', clusterName: 'Edge Cluster 1' } })
   })
 
+  it('should show incompatible warning', async () => {
+    const { result: stepFormRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      form.setFieldValue = mockedSetFieldValue
+      return form
+    })
+    render(<MockedTargetComponent
+      form={stepFormRef.current}
+      editMode={false}
+    />, { route: { params: { tenantId: 't-id' } } })
+
+    expect(await screen.findByText('Scope')).toBeVisible()
+    await screen.findByText(/Activate clusters that the HQoS bandwidth profile will be applied/i)
+
+    const rows = await screen.findAllByRole('row', { name: /Edge Cluster/i })
+    expect(rows.length).toBe(mockEdgeClusterListForHqos.data.length)
+
+    const warningTooltip = await within(rows[0]).findByTestId('WarningCircleSolid')
+    await userEvent.hover(warningTooltip)
+    expect(await screen.findByText(/HQoS feature requires your RUCKUS Edge cluster/i)).toBeInTheDocument()
+  })
 })
