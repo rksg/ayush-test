@@ -759,26 +759,26 @@ export function NetworkForm (props:{
       }).unwrap()
       const networkId = networkResponse?.response?.id
 
-      const firstBatchRequest = []
-      const thirdBatchRequest = []
+      const beforeVenueActivationRequest = []
+      const afterVenueActivationRequest = []
 
       if (isUseWifiRbacApi) {
-        firstBatchRequest.push(activatePortal(networkId, formData.portalServiceProfileId))
+        beforeVenueActivationRequest.push(activatePortal(networkId, formData.portalServiceProfileId))
       }
-      firstBatchRequest.push(addHotspot20NetworkActivations(saveState, networkId))
-      firstBatchRequest.push(updateVlanPoolActivation(networkId, saveState.wlan?.advancedCustomization?.vlanPool))
+      beforeVenueActivationRequest.push(addHotspot20NetworkActivations(saveState, networkId))
+      beforeVenueActivationRequest.push(updateVlanPoolActivation(networkId, saveState.wlan?.advancedCustomization?.vlanPool))
       if (formData.type !== NetworkTypeEnum.HOTSPOT20) {
-        firstBatchRequest.push(updateRadiusServer(saveState, networkId))
+        beforeVenueActivationRequest.push(updateRadiusServer(saveState, networkId))
       }
-      firstBatchRequest.push(updateWifiCallingActivation(networkId, saveState))
-      firstBatchRequest.push(updateAccessControl(saveState, data, networkId))
+      beforeVenueActivationRequest.push(updateWifiCallingActivation(networkId, saveState))
+      beforeVenueActivationRequest.push(updateAccessControl(saveState, data, networkId))
       // eslint-disable-next-line max-len
-      firstBatchRequest.push(activateCertificateTemplate(saveState.certificateTemplateId, networkId))
+      beforeVenueActivationRequest.push(activateCertificateTemplate(saveState.certificateTemplateId, networkId))
       if (enableServiceRbac) {
-        firstBatchRequest.push(activateDpskPool(saveState.dpskServiceProfileId, networkId))
-        firstBatchRequest.push(activateMacRegistrationPool(saveState.wlan?.macRegistrationListId, networkId))
+        beforeVenueActivationRequest.push(activateDpskPool(saveState.dpskServiceProfileId, networkId))
+        beforeVenueActivationRequest.push(activateMacRegistrationPool(saveState.wlan?.macRegistrationListId, networkId))
       }
-      await Promise.all(firstBatchRequest)
+      await Promise.all(beforeVenueActivationRequest)
       if (networkResponse?.response && payload.venues) {
         // @ts-ignore
         const network: Network = networkResponse.response
@@ -788,22 +788,22 @@ export function NetworkForm (props:{
           await handleNetworkVenues(network.id, payload.venues)
         }
       }
-      thirdBatchRequest.push(updateClientIsolationActivations(payload, null, networkId))
+      afterVenueActivationRequest.push(updateClientIsolationActivations(payload, null, networkId))
 
       // Tunnel Activation/Deactivation
       if (!isTemplate && networkId && payload.venues) {
         // eslint-disable-next-line max-len
         if (isEdgeSdLanMvEnabled && formData['sdLanAssociationUpdate']) {
         // eslint-disable-next-line max-len
-          thirdBatchRequest.push(updateEdgeSdLanActivations(networkId, formData['sdLanAssociationUpdate'] as NetworkTunnelSdLanAction[], payload.venues))
+          afterVenueActivationRequest.push(updateEdgeSdLanActivations(networkId, formData['sdLanAssociationUpdate'] as NetworkTunnelSdLanAction[], payload.venues))
         }
 
         if (isSoftGreEnabled && formData['softGreAssociationUpdate']) {
         // eslint-disable-next-line max-len
-          thirdBatchRequest.push(updateSoftGreActivations(networkId, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode))
+          afterVenueActivationRequest.push(updateSoftGreActivations(networkId, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode))
         }
       }
-      await Promise.all(thirdBatchRequest)
+      await Promise.all(afterVenueActivationRequest)
 
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
