@@ -148,12 +148,6 @@ describe('Persona Group Drawer', () => {
     await userEvent.type(macSelector, 'mac')
     await userEvent.click(await screen.findByText('mac-name-1'))
 
-    // Select a Certificate Template
-    const certSelector = selector[2]
-    await userEvent.click(certSelector)
-    await userEvent.type(certSelector, 'cert')
-    await userEvent.click(await screen.findByText('certTemplate'))
-
     // Submit
     const addButton = await screen.findAllByRole('button', { name: /Add/i })
     await userEvent.click(addButton[addButton.length - 1])
