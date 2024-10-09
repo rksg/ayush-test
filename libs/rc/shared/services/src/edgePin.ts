@@ -309,6 +309,15 @@ export const pinApi = basePinApi.injectEndpoints({
         }
       }
     }),
+    validateEdgePinNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgePinUrls.validateEdgePinNetwork, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     activateEdgePinNetwork: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(EdgePinUrls.activateEdgePinNetwork, params)
@@ -378,6 +387,7 @@ export const {
   useGetAvailableSwitchesQuery,
   useValidateDistributionSwitchInfoMutation,
   useValidateAccessSwitchInfoMutation,
+  useValidateEdgePinNetworkMutation,
   useActivateEdgePinNetworkMutation,
   useDeactivateEdgePinNetworkMutation
 } = pinApi

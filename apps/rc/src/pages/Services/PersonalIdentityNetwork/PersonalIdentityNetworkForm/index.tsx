@@ -4,7 +4,8 @@ import { FormInstance }                        from 'antd'
 import { omit }                                from 'lodash'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
-import { StepsForm, StepsFormGotoStepFn } from '@acx-ui/components'
+import { showActionModal, StepsForm, StepsFormGotoStepFn } from '@acx-ui/components'
+import { useValidateEdgePinNetworkMutation }               from '@acx-ui/rc/services'
 import {
   CommonErrorsResult,
   CommonResult,
@@ -39,6 +40,8 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
   const linkToServices = useTenantLink(getServiceListRoutePath(true))
   const previousPath = (location as LocationExtended)?.state?.from?.pathname
 
+  const [validateEdgePinNetwork] = useValidateEdgePinNetworkMutation()
+
   // eslint-disable-next-line max-len
   const handleFinish = async (formData: PersonalIdentityNetworkFormData, gotoStep: StepsFormGotoStepFn) => {
     const payload = {
@@ -65,6 +68,36 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
     )) {
       gotoStep(4)
       return
+    }
+
+    if (formData.distributionSwitchInfos?.length > 0 && formData.accessSwitchInfos?.length > 0) {
+      try {
+        await validateEdgePinNetwork({
+          params,
+          payload: {
+            pinId: formData.id || '',
+            venueId: formData.venueId,
+            edgeClusterId: formData.edgeClusterId,
+            distributionSwitchInfos: payload.distributionSwitchInfos,
+            accessSwitchInfos: payload.accessSwitchInfos
+          }
+        }).unwrap()
+      } catch (error) {
+        console.log(error) // eslint-disable-line no-console
+        const overwriteMsg = afterSubmitMessage(error as CatchErrorResponse,
+          [...(formData.distributionSwitchInfos || []), ...(formData.accessSwitchInfos || [])])
+
+        showActionModal({
+          type: 'error',
+          content: overwriteMsg.length > 0 ? overwriteMsg : undefined,
+          customContent: {
+            action: 'SHOW_ERRORS',
+            errorDetails: error as CatchErrorResponse
+          }
+        })
+
+        return
+      }
     }
 
     try {
