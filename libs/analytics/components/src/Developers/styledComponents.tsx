@@ -26,7 +26,7 @@ export const Row = styled.div`
 `
 
 export const SecretInput = styled(PasswordInput)`
-  width: 280px;
+  width: 270px;
   margin-left: -12px;
 
   & .ant-input {
