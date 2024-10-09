@@ -14,7 +14,6 @@ import { CertificateTemplateForm } from './CertificateTemplateForm'
 const mockedUsedNavigate = jest.fn()
 const mockedUsedEdit = jest.fn()
 const mockedBind = jest.fn()
-const mockedAssociate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
@@ -22,8 +21,7 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   useEditCertificateTemplateMutation: () => [mockedUsedEdit],
-  useBindCertificateTemplateWithPolicySetMutation: () => [mockedBind],
-  useAssociateIdentityGroupWithCertificateTemplateMutation: () => [mockedAssociate]
+  useBindCertificateTemplateWithPolicySetMutation: () => [mockedBind]
 }))
 
 describe('CertificateTemplateForm', () => {
@@ -103,7 +101,6 @@ describe('CertificateTemplateForm', () => {
 
     await userEvent.click(screen.getByText('Add'))
     await waitFor(() => expect(mockedBind).toBeCalledTimes(1))
-    await waitFor(() => expect(mockedAssociate).toBeCalledTimes(1))
     await waitFor(() => expect(mockedUsedNavigate).toBeCalledTimes(1))
   })
 

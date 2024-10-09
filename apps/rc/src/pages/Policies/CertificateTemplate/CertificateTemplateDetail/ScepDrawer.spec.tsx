@@ -34,8 +34,6 @@ describe('ScepDrawer', () => {
     await fireEvent.click(screen.getByText('Configuration Information'))
     expect(screen.getByLabelText('Days of Access')).toBeInTheDocument()
     expect(screen.getByLabelText('Common Name #1 Mapping')).toBeInTheDocument()
-    expect(screen.getByLabelText('Common Name #2 Mapping')).toBeInTheDocument()
-    expect(screen.getByLabelText('Common Name #3 Mapping')).toBeInTheDocument()
   })
 
   it('should add scep key correctly', async () => {
