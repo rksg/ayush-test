@@ -20,6 +20,7 @@ import {
   sortProp
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { noDataDisplay }         from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -147,7 +148,7 @@ const EdgeDHCPDetail = () => {
       key: 'edgeAlarmSummary',
       dataIndex: 'edgeAlarmSummary',
       render: (data, row) => {
-        if(!dhcpStats) return '--'
+        if(!dhcpStats) return noDataDisplay
         const targetAlarmSummary = dhcpStats.edgeAlarmSummary?.filter(
           item => edgeNodeMap?.[row.edgeClusterId ?? '']?.includes(item.edgeId.toUpperCase())
         )
@@ -193,7 +194,7 @@ const EdgeDHCPDetail = () => {
       content: dhcpStats &&
       (dhcpStats?.edgeClusterIds?.length ?? 0) ?
         <EdgeServiceStatusLight data={dhcpStats?.edgeAlarmSummary} /> :
-        '--'
+        noDataDisplay
     },
     {
       title: $t({ defaultMessage: 'DHCP Relay' }),
