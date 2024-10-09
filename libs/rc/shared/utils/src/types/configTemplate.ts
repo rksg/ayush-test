@@ -28,8 +28,8 @@ export enum AccessControlPolicyForTemplateCheckType {
 }
 
 export enum ConfigTemplateDriftType {
-  DRIFT_DETECTED = 'driftDetected',
-  IN_SYNC = 'inSync'
+  DRIFT_DETECTED = 'DRIFT_DETECTED',
+  IN_SYNC = 'IN_SYNC'
 }
 
 export interface ConfigTemplate {
