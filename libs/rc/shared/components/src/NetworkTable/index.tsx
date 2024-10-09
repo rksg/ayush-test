@@ -274,6 +274,7 @@ export const defaultRbacNetworkPayload = {
     'nwSubType',
     'venueApGroups',
     'apSerialNumbers',
+    'apCount',
     'clientCount',
     'vlan',
     'cog',
