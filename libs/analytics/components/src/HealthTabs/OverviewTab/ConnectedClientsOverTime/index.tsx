@@ -34,12 +34,13 @@ export function ConnectedClientsOverTime ({
     seriesMapping.push({ key: 'wiredClientsCount', name: $t({ defaultMessage: 'Wired Clients' }) })
   }
 
-  const queryResults = useHealthConnectedClientsOverTimeQuery(filters, {
-    selectFromResult: ({ data, ...rest }) => ({
-      ...rest,
-      data: getSeriesData(data!, seriesMapping)
+  const queryResults = useHealthConnectedClientsOverTimeQuery(
+    { ...filters , isSwitchHealth10010eEnabled }, {
+      selectFromResult: ({ data, ...rest }) => ({
+        ...rest,
+        data: getSeriesData(data!, seriesMapping)
+      })
     })
-  })
 
   return (
     <Loader states={[queryResults]}>
