@@ -547,6 +547,7 @@ describe('Network utils test', () => {
           type: NetworkTypeEnum.AAA,
           enableAccountingProxy: false,
           enableAuthProxy: false,
+          enableAccountingService: true,
           wlan: { macAddressAuthenticationConfiguration: { macAuthMacFormat: 'UPPER' } },
           authRadiusId: 'new-auth-radius-id',
           accountingRadiusId: 'new-acct-radius-id'
