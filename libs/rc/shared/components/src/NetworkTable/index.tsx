@@ -30,7 +30,7 @@ import { getIntl, noDataDisplay }                                  from '@acx-ui
 
 const disabledType: NetworkTypeEnum[] = []
 
-function getCols (intl: ReturnType<typeof useIntl>) {
+function getCols (intl: ReturnType<typeof useIntl>, isUseWifiRbacApi: boolean) {
   function getSecurityProtocol (securityProtocol: WlanSecurityEnum, oweMaster?: boolean) {
     let _securityProtocol: string = ''
     switch (securityProtocol) {
@@ -114,7 +114,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       key: 'venues',
       title: intl.$t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: ['venues', 'count'],
-      sorter: true,
+      sorter: !isUseWifiRbacApi,
       sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
       render: function (_, row) {
@@ -136,7 +136,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       key: 'aps',
       title: intl.$t({ defaultMessage: 'APs' }),
       dataIndex: 'aps',
-      sorter: true,
+      sorter: !isUseWifiRbacApi,
       sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
       render: function (_, row) {
@@ -435,7 +435,7 @@ export function NetworkTable ({
     ]}>
       <Table
         settingsId={settingsId}
-        columns={getCols(intl)}
+        columns={getCols(intl, isUseWifiRbacApi)}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
