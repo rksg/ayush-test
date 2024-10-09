@@ -14,6 +14,7 @@ export function DevelopersTab () {
   const basePath = useTenantLink('/analytics/admin/developers')
 
   const onTabChange = (tab: string) => {
+    console.log('Tab changed to:', tab)
     navigate({
       ...location,
       pathname: `${basePath.pathname}/${tab}`

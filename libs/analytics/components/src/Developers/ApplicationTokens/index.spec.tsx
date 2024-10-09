@@ -1,51 +1,48 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { get }                                                                      from '@acx-ui/config'
-import { notificationApi, Provider, rbacApi, store }                                from '@acx-ui/store'
-import { findTBody, mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
-import { RolesEnum }                                                                from '@acx-ui/types'
-import { getUserProfile, RaiPermissions, setRaiPermissions, setUserProfile }        from '@acx-ui/user'
+import { get }                                                                               from '@acx-ui/config'
+import { Provider, rbacApi, rbacApiURL, store }                                              from '@acx-ui/store'
+import { cleanup, findTBody, mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
-import { mockResourceGroups, webhooks, webhooksUrl } from './__fixtures__'
-import { Webhook }                                   from './services'
+
+import { applicationTokens, mockApplicationTokens } from './__fixtures__'
+import { ApplicationToken }                         from './services'
 
 import { useApplicationTokens } from '.'
 
 const { click } = userEvent
 
 jest.mock('@acx-ui/config')
-jest.mock('./WebhookForm', () => ({
-  WebhookForm: (props: { webhook?: Webhook | null, onClose: () => void }) => {
-    if (props.webhook === null) return null
+jest.mock('./ApplicationTokenForm', () => ({
+  ApplicationTokenForm: (props: {
+    applicationToken?: ApplicationToken | null,
+    onClose: () => void
+  }) => {
+    if (props.applicationToken === null) return null
     return <div
-      data-testid='WebhookForm'
+      data-testid='ApplicationTokenForm'
       onClick={props.onClose}
-      children={props.webhook ? `Edit Webhook: ${props.webhook.name}` : 'Create Webhook'}
+      children={
+        props.applicationToken
+          ? `Edit Application Token: ${props.applicationToken.name}`
+          : 'Create Application Token'
+      }
     />
   }
 }))
 
-const mockWebhooks = (data = webhooks, success = true) => rest.get(
-  webhooksUrl(),
-  (_, res, ctx) => res(ctx.json({ data, success }))
-)
-
-describe('WebhooksTable', () => {
+describe('ApplicationTokensTable', () => {
   describe('RAI', () => {
     beforeEach(() => {
       jest.resetModules()
       jest.mocked(get).mockReturnValue('true')
-      setRaiPermissions({ WRITE_WEBHOOKS: true } as RaiPermissions)
 
-      mockServer.use(
-        mockResourceGroups(),
-        mockWebhooks()
-      )
+      mockServer.use(mockApplicationTokens())
     })
     afterEach(() => {
       store.dispatch(rbacApi.util.resetApiState())
-      store.dispatch(notificationApi.util.resetApiState())
+      cleanup()
     })
     it('renders table with data and correct columns', async () => {
       const Component = () => {
@@ -55,18 +52,17 @@ describe('WebhooksTable', () => {
       render(<Component />, { wrapper: Provider, route: {} })
 
       const tbody = within(await findTBody())
-      expect(await tbody.findAllByRole('row')).toHaveLength(webhooks.length)
+      expect(await tbody.findAllByRole('row')).toHaveLength(applicationTokens.length)
       expect(await screen
-        .findAllByRole('columnheader', { name: name => Boolean(name) })).toHaveLength(4)
+        .findAllByRole('columnheader', { name: name => Boolean(name) })).toHaveLength(3)
       const firstRow = (await tbody.findAllByRole('row'))[0]
       const firstRowText = within(firstRow).getAllByRole('cell').map(cell =>
         cell.title)
       expect(firstRowText).toEqual([
         '', // radio
-        webhooks[0].name,
-        webhooks[0].callbackUrl,
-        'rg-1',
-        'Disabled',
+        applicationTokens[0].name,
+        '', // client id
+        '', // client secret
         '' // settings
       ])
     })
@@ -81,15 +77,18 @@ describe('WebhooksTable', () => {
       expect(element).toBeVisible()
 
       const tbody = within(element)
-      const webhook = webhooks[4]
-      const targetRow = await tbody.findByRole('row', { name: (row) => row.includes(webhook.name) })
+      const applicationToken = applicationTokens[4]
+      const targetRow = await tbody.findByRole(
+        'row',
+        { name: (row) => row.includes(applicationToken.name) }
+      )
 
       await click(targetRow)
       await click(await screen.findByRole('button', { name: 'Edit' }))
 
-      const form = await screen.findByTestId('WebhookForm')
+      const form = await screen.findByTestId('ApplicationTokenForm')
       expect(form).toBeVisible()
-      expect(form).toHaveTextContent(`Edit Webhook: ${webhook.name}`)
+      expect(form).toHaveTextContent(`Edit Application Token: ${applicationToken.name}`)
 
       await click(form)
 
@@ -104,11 +103,11 @@ describe('WebhooksTable', () => {
 
       expect(await findTBody()).toBeVisible()
 
-      await click(await screen.findByRole('button', { name: 'Create Webhook' }))
+      await click(await screen.findByRole('button', { name: 'Create Application Token' }))
 
-      const form = await screen.findByTestId('WebhookForm')
+      const form = await screen.findByTestId('ApplicationTokenForm')
       expect(form).toBeVisible()
-      expect(form).toHaveTextContent('Create Webhook')
+      expect(form).toHaveTextContent('Create Application Token')
 
       await click(form)
 
@@ -116,7 +115,7 @@ describe('WebhooksTable', () => {
     })
 
     describe('delete', () => {
-      const webhook = webhooks[4]
+      const applicationToken = applicationTokens[4]
       const renderElements = async () => {
         const Component = () => {
           const { component } = useApplicationTokens()
@@ -129,14 +128,14 @@ describe('WebhooksTable', () => {
 
         const tbody = within(element)
         const targetRow = await tbody
-          .findByRole('row', { name: (row) => row.includes(webhook.name) })
+          .findByRole('row', { name: (row) => row.includes(applicationToken.name) })
 
         await click(targetRow)
         await click(await screen.findByRole('button', { name: 'Delete' }))
 
         const dialog = await screen.findByRole('dialog')
         expect(dialog).toBeVisible()
-        expect(dialog).toHaveTextContent('Are you sure you want to delete this webhook?')
+        expect(dialog).toHaveTextContent('Are you sure you want to delete this application token?')
 
         return { dialog, targetRow }
       }
@@ -144,8 +143,11 @@ describe('WebhooksTable', () => {
         const { dialog, targetRow } = await renderElements()
 
         mockServer.use(
-          rest.delete(webhooksUrl(webhook.id), (_, res, ctx) => res(ctx.json({ success: true }))),
-          mockWebhooks(webhooks.filter(item => item.id !== webhook.id))
+          rest.delete(
+            `${rbacApiURL}/applicationTokens/${applicationToken.camId}`,
+            (_, res, ctx) => res(ctx.json({ success: true }))
+          ),
+          mockApplicationTokens(applicationTokens.filter(item => item.id !== applicationToken.id))
         )
 
         await click(await within(dialog).findByRole('button', { name: 'OK' }))
@@ -153,88 +155,39 @@ describe('WebhooksTable', () => {
         await waitForElementToBeRemoved(targetRow)
 
         expect(await within(await findTBody()).findAllByRole('row'))
-          .toHaveLength(webhooks.length - 1)
+          .toHaveLength(applicationTokens.length - 1)
 
-        expect(await screen.findByText('Webhook was deleted')).toBeVisible()
+        expect(await screen.findByText('Application token was deleted')).toBeVisible()
       })
       it('handle delete RTKQuery error', async () => {
         const { dialog } = await renderElements()
 
         mockServer.use(
-          rest.delete(webhooksUrl(webhook.id), (_, res) => res.networkError('Failed to connect'))
+          rest.delete(
+            `${rbacApiURL}/applicationTokens/${applicationToken.camId}`,
+            (_, res) => res.networkError('Failed to connect'))
         )
 
         await click(await within(dialog).findByRole('button', { name: 'OK' }))
 
-        expect(await screen.findByText('Failed to delete webhook')).toBeVisible()
+        expect(await screen.findByText('Failed to delete application token')).toBeVisible()
       })
       it('handle delete API error', async () => {
         const { dialog } = await renderElements()
 
         const [status, error] = [500, 'Error from API']
         mockServer.use(
-          rest.delete(webhooksUrl(webhook.id), (_, res, ctx) => res(
-            ctx.status(status),
-            ctx.json({ error })
-          ))
+          rest.delete(
+            `${rbacApiURL}/applicationTokens/${applicationToken.camId}`,
+            (_, res, ctx) => res(
+              ctx.status(status),
+              ctx.json({ error })
+            ))
         )
 
         await click(await within(dialog).findByRole('button', { name: 'OK' }))
 
         expect(await screen.findByText(`Error: ${error}. (status code: ${status})`)).toBeVisible()
-      })
-    })
-  })
-  describe('R1', () => {
-    beforeEach(() => {
-      jest.resetModules()
-      jest.mocked(get).mockReturnValue('')
-
-      mockServer.use(
-        mockResourceGroups(),
-        mockWebhooks()
-      )
-    })
-    afterEach(() => {
-      store.dispatch(rbacApi.util.resetApiState())
-      store.dispatch(notificationApi.util.resetApiState())
-    })
-    it('renders table with data and correct columns', async () => {
-      const Component = () => {
-        const { component } = useApplicationTokens()
-        return component
-      }
-      render(<Component />, { wrapper: Provider, route: {} })
-
-      const tbody = within(await findTBody())
-      expect(await tbody.findAllByRole('row')).toHaveLength(webhooks.length)
-      expect(await screen
-        .findAllByRole('columnheader', { name: name => Boolean(name) })).toHaveLength(3)
-    })
-    describe('when role = READ_ONLY', () => {
-      beforeEach(() => {
-        const profile = getUserProfile()
-        setUserProfile({ ...profile, profile: {
-          ...profile.profile, roles: [RolesEnum.READ_ONLY]
-        } })
-      })
-      it('should hide actions', async () => {
-        const Component = () => {
-          const { component } = useApplicationTokens()
-          return component
-        }
-        render(<Component />, { wrapper: Provider, route: {} })
-        expect(await findTBody()).toBeVisible()
-        expect(screen.queryByRole('button', { name: 'Create Webhook' })).not.toBeInTheDocument()
-      })
-      it('should hide row actions', async () => {
-        const Component = () => {
-          const { component } = useApplicationTokens()
-          return component
-        }
-        render(<Component />, { wrapper: Provider, route: {} })
-        expect(await findTBody()).toBeVisible()
-        expect(screen.queryByRole('radio')).not.toBeInTheDocument()
       })
     })
   })

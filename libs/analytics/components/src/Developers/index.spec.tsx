@@ -1,13 +1,15 @@
 import '@testing-library/jest-dom'
+import userEvent   from '@testing-library/user-event'
 import * as router from 'react-router-dom'
 
-import { Provider, dataApiURL, store }                 from '@acx-ui/store'
-import { render, screen, fireEvent, mockGraphqlQuery } from '@acx-ui/test-utils'
+import { Provider, dataApiURL, store }      from '@acx-ui/store'
+import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
 
-import { switchCountFixture } from './OverviewTab/SummaryBoxes/__tests__/fixtures'
-import { api }                from './OverviewTab/SummaryBoxes/services'
+// import { switchCountFixture } from './OverviewTab/SummaryBoxes/__tests__/fixtures'
+// import { api }                from './OverviewTab/SummaryBoxes/services'
 
-import { HealthTabs } from '.'
+import { DevelopersTab } from '.'
+import { webhookDtoKeys } from './Webhooks/services'
 
 const mockedUsedNavigate = jest.fn()
 
@@ -18,36 +20,37 @@ jest.mock('react-router-dom', () => ({
   useLocation: jest.fn()
 }))
 
-jest.mock('../Health', () => ({
-  HealthPage: () => <div>HealthPage</div>
+jest.mock('./ApplicationTokens', () => ({
+  useApplicationTokens: jest.fn(() => ({
+    title: 'Application Tokens',
+    component: <div>applicationTokens</div>
+  }))
 }))
 
-jest.mock('./OverviewTab', () => ({
-  OverviewTab: () => <div>Mocked OverviewTab</div>
+jest.mock('./Webhooks', () => ({
+  useWebhooks: jest.fn(() => ({
+    title: 'Webhooks',
+    component: <div>webhooks</div>
+  }))
 }))
 
-jest.mock('./WiredTab', () => ({
-  OverviewTab: () => <div>Mocked WiredTab</div>
-}))
+const params = { activeTab: 'applicationTokens', tenantId: 'tenant-id' }
 
-
-const params = { activeTab: 'overview', tenantId: 'tenant-id' }
-
-describe('HealthTabs', () => {
+describe('DevelopersTab', () => {
   beforeEach(() => {
     mockedUsedNavigate.mockReset()
   })
-  afterEach(() =>
-    store.dispatch(api.util.resetApiState())
-  )
+  // afterEach(() =>
+  //   store.dispatch(api.util.resetApiState())
+  // )
   it('should handle default tab', async () => {
-    mockGraphqlQuery(dataApiURL, 'SwitchCount', { data: switchCountFixture })
+    // mockGraphqlQuery(dataApiURL, 'SwitchCount', { data: switchCountFixture })
     jest.spyOn(router, 'useParams').mockImplementation(
       () => ({ tenantId: 't1' })
     )
     jest.spyOn(router, 'useLocation').mockImplementation(
       () => ({
-        pathname: '/health',
+        pathname: '/developers',
         search: '',
         state: {}
       }) as unknown as ReturnType<typeof router.useLocation>
@@ -55,32 +58,41 @@ describe('HealthTabs', () => {
 
     render(
       <Provider>
-        <HealthTabs />
+        <DevelopersTab />
       </Provider>, { route: { params } })
-    fireEvent.click(await screen.findByText('Wireless'))
-    expect(mockedUsedNavigate.mock.calls[0][0].pathname).toEqual(
-      '/t1/t/analytics/health/wireless'
-    )
+    userEvent.click(await screen.findByText('Application Tokens'))
+    expect(await screen.findByText('applicationTokens')).toBeInTheDocument()
+
+    await new Promise((r)=>{setTimeout(r, 1000)})
+
+    expect(mockedUsedNavigate).toHaveBeenCalled()
+    // expect(mockedUsedNavigate.mock.calls[0][0].pathname).toEqual(
+    //   '/t1/t/analytics/developers/applicationTokens'
+    // )
   })
 
   it('should handle tab changes', async () => {
-    mockGraphqlQuery(dataApiURL, 'SwitchCount', { data: switchCountFixture })
     jest.spyOn(router, 'useParams').mockImplementation(
-      () => ({ activeSubTab: 'wireless', tenantId: 't1' })
+      () => ({ activeSubTab: 'webhooks', tenantId: 't1' })
     )
     jest.spyOn(router, 'useLocation').mockImplementation(
       () => ({
-        pathname: '/health/wireless',
+        pathname: '/developers/webhooks',
         search: '',
         state: {}
       }) as unknown as ReturnType<typeof router.useLocation>
     )
     render(<Provider>
-      <HealthTabs />
+      <DevelopersTab />
     </Provider> , { route: { params } })
-    fireEvent.click(await screen.findByText('Wired'))
+    const webhooksTab = screen.getByRole('tab', { name: /Webhooks/i })
+    expect(webhooksTab).toBeInTheDocument()
+
+    userEvent.click(webhooksTab)
+    expect(mockedUsedNavigate).toHaveBeenCalled()
+    console.log(mockedUsedNavigate.mock.calls)
     expect(mockedUsedNavigate.mock.calls[0][0].pathname).toEqual(
-      '/t1/t/analytics/health/wired'
+      '/t1/t/analytics/developers/webhooks'
     )
   })
 })

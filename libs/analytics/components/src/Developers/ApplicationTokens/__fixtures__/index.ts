@@ -10,8 +10,8 @@ export const applicationTokens = Array(10).fill(null).map((_, index) => ({
   clientSecret: `b+nnswB4lgP7Zg7wzUKgva9wdJLSl2htT44KOt7RawFp/gdJwPZFcYTIqR7KQ1r${index}`
 }))
 
-export const mockApplicationTokens = () => rest.get(
+export const mockApplicationTokens = (appTokens = applicationTokens) => rest.get(
   `${rbacApiURL}/applicationTokens`,
-  (_, res, ctx) => res(ctx.json(applicationTokens))
+  (_, res, ctx) => res(ctx.json(appTokens))
 )
 
