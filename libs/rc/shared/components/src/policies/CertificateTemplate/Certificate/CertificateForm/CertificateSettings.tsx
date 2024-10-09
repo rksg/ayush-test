@@ -128,7 +128,8 @@ export default function CertificateSettings (
             <Select
               placeholder={$t({ defaultMessage: 'Choose ...' })}
               options={
-                identityList.map(identity => ({ value: identity.id, label: identity.name }))}
+                // eslint-disable-next-line max-len
+                identityList.filter(identity => !identity.revoked).map(identity => ({ value: identity.id, label: identity.name }))}
             />
           </Form.Item>
         </Col>

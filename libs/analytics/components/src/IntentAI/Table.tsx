@@ -329,7 +329,6 @@ export function IntentAITable (
       render: (_, row) => formatter(DateFormatEnum.DateTimeFormat)(row.updatedAt)
     }
   ]
-
   return (
     <Loader states={[queryResults]}>
       <UI.IntentAITableStyle />
@@ -339,6 +338,7 @@ export function IntentAITable (
         type='info'
       />
       <Table<IntentListItem>
+        key={JSON.stringify(selectedFilters)}
         className='intentai-table'
         data-testid='intentAI'
         settingsId={'intentai-table'}
