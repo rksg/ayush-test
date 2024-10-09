@@ -280,8 +280,8 @@ function VlanSettingForm (props: VlanSettingFormProps) {
     setOpenModal(false)
   }
 
-  const multicastVersionIsDisable = (): boolean => {
-    const igmpSnooping = form.getFieldValue('igmpSnooping');
+  const multicastVersionIsDisable = () : boolean => {
+    const igmpSnooping = form.getFieldValue('igmpSnooping')
     return !(igmpSnooping === 'active' || igmpSnooping === 'passive')
   }
 
