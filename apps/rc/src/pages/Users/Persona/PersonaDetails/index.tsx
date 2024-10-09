@@ -361,7 +361,7 @@ function PersonaDetails () {
               )}
             >
               <CertificateTable
-                showGenerateCert={true}
+                showGenerateCert={!personaDetailsQuery.data?.revoked ?? false}
                 templateData={certTemplateData}
                 tableQuery={certTableQuery}
                 specificIdentity={personaId}
