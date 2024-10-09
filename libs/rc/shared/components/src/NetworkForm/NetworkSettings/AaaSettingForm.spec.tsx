@@ -11,6 +11,7 @@ import { act, mockServer, render, screen, fireEvent, waitForElementToBeRemoved, 
 import { UserUrlsInfo }                                                                                                  from '@acx-ui/user'
 
 import { certificateAuthorityList, certificateTemplateList, policySetList } from '../../policies/CertificateTemplate/__test__/fixtures'
+import { mockPersonaGroupTableResult }                                      from '../../users/__tests__/fixtures'
 import {
   venuesResponse,
   venueListResponse,
@@ -22,7 +23,6 @@ import {
 import { MLOContext, NetworkForm } from '../NetworkForm'
 
 import { AaaSettingsForm, resolveMacAddressAuthenticationConfiguration } from './AaaSettingsForm'
-import { mockPersonaGroupTableResult } from '../../users/__tests__/fixtures'
 
 jest.mock('react-intl', () => {
   const reactIntl = jest.requireActual('react-intl')
