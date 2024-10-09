@@ -2,8 +2,8 @@ import { useState, useEffect, useCallback } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, Drawer }                                                          from '@acx-ui/components'
-import { DOCS_HOME_URL, fetchDocsURLMapping, getDocsURL, useHelpPageLinkBasePath } from '@acx-ui/rc/utils'
+import { Button, Drawer }                                                                             from '@acx-ui/components'
+import { DOCS_HOME_URL, fetchDocsURLMapping, getDocsMappingURL, getDocsURL, useHelpPageLinkBasePath } from '@acx-ui/rc/utils'
 
 import { EmptyDescription } from './styledComponents'
 
@@ -45,7 +45,8 @@ export default function HelpPage (props: {
   useEffect(() => {
     if (!props.modalState) return
     (async ()=> {
-      const mappingRs = await fetchDocsURLMapping(basePath, showError, isMspUser)
+      const mappingRs = await fetchDocsURLMapping(basePath,
+        getDocsMappingURL(isMspUser), showError)
       if (!mappingRs) {
         return showError()
       }

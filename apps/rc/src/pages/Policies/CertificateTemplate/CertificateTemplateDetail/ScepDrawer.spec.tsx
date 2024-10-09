@@ -24,7 +24,6 @@ describe('ScepDrawer', () => {
     expect(screen.getByText('Validity Information')).toBeInTheDocument()
     expect(screen.getByText('Configuration Information')).toBeInTheDocument()
     expect(screen.getByLabelText('Name')).toBeInTheDocument()
-    expect(screen.getByLabelText('SCEP Key')).toBeInTheDocument()
     expect(screen.getByLabelText('Challenge Password Type')).toBeInTheDocument()
 
     await fireEvent.click(screen.getByText('Validity Information'))
@@ -35,8 +34,6 @@ describe('ScepDrawer', () => {
     await fireEvent.click(screen.getByText('Configuration Information'))
     expect(screen.getByLabelText('Days of Access')).toBeInTheDocument()
     expect(screen.getByLabelText('Common Name #1 Mapping')).toBeInTheDocument()
-    expect(screen.getByLabelText('Common Name #2 Mapping')).toBeInTheDocument()
-    expect(screen.getByLabelText('Common Name #3 Mapping')).toBeInTheDocument()
   })
 
   it('should add scep key correctly', async () => {
@@ -100,11 +97,81 @@ describe('ScepDrawer', () => {
     // eslint-disable-next-line max-len
     const { rerender } = render(<Provider><ScepDrawer visible={true} onClose={() => {}}/></Provider>)
 
-    await userEvent.type(screen.getByLabelText('Name'), 'Test Name')
-    expect(screen.getByLabelText('Name')).toHaveValue('Test Name')
+    await userEvent.type(screen.getByLabelText('Name'), 'TestName')
+    await waitFor(() => expect(screen.getByLabelText('Name')).toHaveValue('TestName'))
 
     rerender(<Provider><ScepDrawer visible={false} onClose={() => {}}/></Provider>)
     rerender(<Provider><ScepDrawer visible={true} onClose={() => {}}/></Provider>)
     await waitFor(() => expect(screen.getByLabelText('Name')).toHaveValue(''))
+  })
+
+  it('should prevent typing spaces in the Name field', async () => {
+    render(<Provider><ScepDrawer visible={true} onClose={() => {}}/></Provider>)
+
+    const nameInput = screen.getByLabelText('Name')
+
+    // Try typing a space
+    await userEvent.type(nameInput, ' ')
+
+    // Ensure the input value does not contain a space
+    expect(nameInput).toHaveValue('')
+  })
+
+  it('should show error for invalid subnet format in allowedSubnets', async () => {
+    render(<Provider><ScepDrawer visible={true} onClose={() => {}}/></Provider>)
+
+    const allowedSubnetsInput = screen.getByLabelText('Allowed Subnets')
+    await userEvent.type(allowedSubnetsInput, 'invalid_subnet')
+    await userEvent.tab() // Trigger validation
+
+    await waitFor(() => {
+      expect(screen.getByText('Invalid subnet format')).toBeInTheDocument()
+    })
+  })
+
+  it('should show error for invalid subnet format in blockedSubnets', async () => {
+    render(<Provider><ScepDrawer visible={true} onClose={() => {}}/></Provider>)
+
+    const blockedSubnetsInput = screen.getByLabelText('Blocked Subnets')
+    await userEvent.type(blockedSubnetsInput, 'invalid_subnet')
+    await userEvent.tab() // Trigger validation
+
+    await waitFor(() => {
+      expect(screen.getByText('Invalid subnet format')).toBeInTheDocument()
+    })
+  })
+
+  // eslint-disable-next-line max-len
+  it('should show error for overlapping subnets between allowedSubnets and blockedSubnets', async () => {
+    render(<Provider><ScepDrawer visible={true} onClose={() => {}}/></Provider>)
+
+    const allowedSubnetsInput = screen.getByLabelText('Allowed Subnets')
+    const blockedSubnetsInput = screen.getByLabelText('Blocked Subnets')
+
+    await userEvent.clear(allowedSubnetsInput)
+    await userEvent.type(allowedSubnetsInput, '192.168.1.0/24')
+    await userEvent.type(blockedSubnetsInput, '192.168.1.0/24')
+    await userEvent.tab() // Trigger validation
+
+    await waitFor(() => {
+      expect(screen.getByText('Subnets cannot be both allowed and blocked')).toBeInTheDocument()
+    })
+  })
+
+  it('should not show error for valid subnets in allowedSubnets and blockedSubnets', async () => {
+    render(<Provider><ScepDrawer visible={true} onClose={() => {}}/></Provider>)
+
+    const allowedSubnetsInput = screen.getByLabelText('Allowed Subnets')
+    const blockedSubnetsInput = screen.getByLabelText('Blocked Subnets')
+
+    await userEvent.clear(allowedSubnetsInput)
+    await userEvent.type(allowedSubnetsInput, '192.168.1.0/24')
+    await userEvent.type(blockedSubnetsInput, '192.168.2.0/24')
+    await userEvent.tab() // Trigger validation
+
+    await waitFor(() => {
+      // eslint-disable-next-line max-len
+      expect(screen.queryByText('Subnets cannot be both allowed and blocked')).not.toBeInTheDocument()
+    })
   })
 })

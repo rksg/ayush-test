@@ -291,22 +291,6 @@ export const defaultRbacNetworkPayload = {
   pageSize: 2048
 }
 
-const rowSelection = () => {
-  return {
-    getCheckboxProps: (record: Network) => ({
-      disabled: !!record?.isOnBoarded
-        || disabledType.indexOf(record.nwSubType as NetworkTypeEnum) > -1
-        || (record?.isOweMaster === false && record?.owePairNetworkId !== undefined)
-    }),
-    renderCell: (checked: boolean, record: Network, index: number, node: ReactNode) => {
-      if (record?.isOnBoarded) {
-        return <></>
-      }
-      return node
-    }
-  }
-}
-
 /* eslint-disable max-len */
 const getDeleteMessage = (messageKey: string) => {
   const { $t } = getIntl()
@@ -464,7 +448,17 @@ export function NetworkTable ({
         rowActions={filterByAccess(rowActions)}
         rowSelection={showRowSelection && {
           type: 'radio',
-          ...rowSelection }}
+          getCheckboxProps: (record: Network) => ({
+            disabled: !!record?.isOnBoarded
+              || disabledType.indexOf(record.nwSubType as NetworkTypeEnum) > -1
+              || (record?.isOweMaster === false && record?.owePairNetworkId !== undefined)
+          }),
+          renderCell: (checked: boolean, record: Network, index: number, node: ReactNode) => {
+            if (record?.isOnBoarded) {
+              return <></>
+            }
+            return node
+          } }}
         actions={isBetaDPSK3FeatureEnabled && isWpaDsae3Toggle && showOnboardNetworkToggle ? [{
           key: 'toggleOnboardNetworks',
           label: expandOnBoaroardingNetworks

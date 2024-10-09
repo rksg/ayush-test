@@ -8,10 +8,10 @@ import {
   EdgeDHCPFixtures,
   EdgeDhcpUrls,
   EdgeGeneralFixtures,
-  EdgeNSGFixtures,
+  EdgePinFixtures,
   EdgeTunnelProfileFixtures,
   EdgeUrlsInfo,
-  NetworkSegmentationUrls,
+  EdgePinUrls,
   PersonaUrls,
   PropertyUrlsInfo,
   TunnelProfileUrls,
@@ -29,16 +29,16 @@ jest.mock('@acx-ui/utils', () => ({
   getTenantId: jest.fn().mockReturnValue(tenantId)
 }))
 
-const createNsgPath = '/:tenantId/services/personalIdentityNetwork/create'
+const createPinPath = '/:tenantId/services/personalIdentityNetwork/create'
 const { mockVenueOptions } = VenueFixtures
 const {
   mockPersonaGroup,
   mockDpsk,
   mockPropertyConfigs,
   mockDeepNetworkList,
-  mockNsgStatsList,
-  mockNsgSwitchInfoData
-} = EdgeNSGFixtures
+  mockPinStatsList,
+  mockPinSwitchInfoData
+} = EdgePinFixtures
 const { mockEdgeClusterList } = EdgeGeneralFixtures
 const { mockedTunnelProfileViewData } = EdgeTunnelProfileFixtures
 const { mockDhcpStatsData } = EdgeDHCPFixtures
@@ -87,15 +87,15 @@ describe('PersonalIdentityNetworkFormContext', () => {
         (_req, res, ctx) => res(ctx.json(pinTunnelData))
       ),
       rest.post(
-        NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
-        (_req, res, ctx) => res(ctx.json(mockNsgStatsList))
+        EdgePinUrls.getEdgePinStatsList.url,
+        (_req, res, ctx) => res(ctx.json(mockPinStatsList))
       ),
       rest.get(
-        NetworkSegmentationUrls.getAvailableSwitches.url,
+        EdgePinUrls.getAvailableSwitches.url,
         (_req, res, ctx) => {
           return res(ctx.json({ switchViewList: [
-            ...mockNsgSwitchInfoData.distributionSwitches,
-            ...mockNsgSwitchInfoData.accessSwitches
+            ...mockPinSwitchInfoData.distributionSwitches,
+            ...mockPinSwitchInfoData.accessSwitches
           ] }))
         }
       ),
@@ -114,7 +114,7 @@ describe('PersonalIdentityNetworkFormContext', () => {
           {children}
         </PersonalIdentityNetworkFormDataProvider>
       </Provider>,
-      route: { params, path: createNsgPath }
+      route: { params, path: createPinPath }
     })
     await waitFor(() => expect(result.current.venueOptions?.length).toBe(2))
     expect(result.current.venueOptions?.[0].label).toBe(mockVenueOptions.data[0].name)
@@ -145,8 +145,8 @@ describe('PersonalIdentityNetworkFormContext', () => {
     expect(result.current.networkOptions?.[0].value).toBe(mockDeepNetworkList.response[0].id)
     await waitFor(() =>
       expect(result.current.switchList?.length)
-        .toBe(mockNsgSwitchInfoData.distributionSwitches.length +
-          mockNsgSwitchInfoData.accessSwitches.length))
+        .toBe(mockPinSwitchInfoData.distributionSwitches.length +
+          mockPinSwitchInfoData.accessSwitches.length))
   })
 
   it('should get name correctly', async () => {
@@ -158,7 +158,7 @@ describe('PersonalIdentityNetworkFormContext', () => {
           {children}
         </PersonalIdentityNetworkFormDataProvider>
       </Provider>,
-      route: { params, path: createNsgPath }
+      route: { params, path: createPinPath }
     })
     await waitFor(() =>
       expect(result.current.getVenueName('mock_venue_1')).toBe('Mock Venue 1'))

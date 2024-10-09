@@ -69,7 +69,7 @@ const mockedRelayOnFormData = {
   leaseTimeType: 'Infinite',
   leaseTimeUnit: 'HOURS',
   enableSecondaryDNSServer: false,
-  usedForNSG: true,
+  usedForPin: true,
   dhcpPools: [{
     id: '1',
     poolName: 'PoolTest1',
@@ -104,7 +104,7 @@ describe('Edge DHCP utils - convertEdgeDHCPFormDataToApiPayload', () => {
     const result = convertEdgeDHCPFormDataToApiPayload(mockedRelayOnFormData)
     expect(result.enableSecondaryDNSServer).toBe(undefined)
     expect(result.leaseTimeType).toBe(undefined)
-    expect(result.usedForNSG).toBe(undefined)
+    expect(result.usedForPin).toBe(undefined)
     expect(result).toEqual({
       id: '2',
       serviceName: 'testRelayOn',
@@ -193,7 +193,7 @@ describe('Edge DHCP utils - convertEdgeDHCPFormDataToApiPayload', () => {
     expect(result.hosts).toBe(undefined)
   })
 
-  it('should have pools when relay is ON and use for NSG', () => {
+  it('should have pools when relay is ON and use for PIN', () => {
     const result = convertEdgeDHCPFormDataToApiPayload({
       id: '2',
       serviceName: 'testUseForNSG',
@@ -206,7 +206,7 @@ describe('Edge DHCP utils - convertEdgeDHCPFormDataToApiPayload', () => {
       leaseTime: 30,
       leaseTimeUnit: LeaseTimeUnit.HOURS,
       enableSecondaryDNSServer: false,
-      usedForNSG: true,
+      usedForPin: true,
       dhcpPools: [{
         id: '1',
         poolName: 'PoolTest1',
@@ -221,7 +221,7 @@ describe('Edge DHCP utils - convertEdgeDHCPFormDataToApiPayload', () => {
     expect(result.dhcpPools?.length).toEqual(1)
   })
 
-  it('should clear pools when relay is ON and NOT for NSG', () => {
+  it('should clear pools when relay is ON and NOT for PIN', () => {
     const result = convertEdgeDHCPFormDataToApiPayload({
       id: '3',
       serviceName: 'testNotForNSG',
@@ -234,7 +234,7 @@ describe('Edge DHCP utils - convertEdgeDHCPFormDataToApiPayload', () => {
       leaseTime: 30,
       leaseTimeUnit: LeaseTimeUnit.HOURS,
       enableSecondaryDNSServer: false,
-      usedForNSG: false,
+      usedForPin: false,
       dhcpPools: [{
         id: '1',
         poolName: 'PoolTest1',

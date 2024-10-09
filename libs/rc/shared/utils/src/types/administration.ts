@@ -409,3 +409,14 @@ export interface TwiliosMessagingServices
 {
   messagingServiceResources?: string[]
 }
+
+export interface ErrorsResult<T> {
+  data: T;
+  status: number;
+}
+
+export interface ErrorDetails {
+  code: string,
+  message?: string,
+  errorMessage?: string
+}
