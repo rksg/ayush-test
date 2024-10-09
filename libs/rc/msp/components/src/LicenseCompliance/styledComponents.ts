@@ -113,11 +113,18 @@ export const BannerVersionOld = styled.div`
   line-height: 20px;
 `
 
-export const BannerVersion = styled.div`
+export const BannerComplianceNotes = styled.div`
   background-color: var(--acx-accents-orange-10);
   // width: fit-content;
   width: 100%;
   padding: 7px 15px 15px 15px;
+  .note {
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+  .detail {
+    padding-left: 8px;
+  }
 `
 
 export const BannerVersionName = styled.span`
@@ -125,10 +132,17 @@ export const BannerVersionName = styled.span`
   color: var(--acx-neutrals-70);
 `
 
-export const LatestVersion = styled.div`
+export const ComplianceNotesLabel = styled.div`
   font-weight: 600;
-  margin-bottom: 14px;
-  line-height: 18px;
+  line-height: 31px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  svg {
+    height: 18px;
+    width: 18px;
+    color: var(--acx-accents-orange-50);
+  }
 `
 export const TypeSpace = styled(Space)`
     gap: 0px !important;
