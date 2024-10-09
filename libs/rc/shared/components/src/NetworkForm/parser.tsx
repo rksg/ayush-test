@@ -525,3 +525,25 @@ export function updateClientIsolationAllowlist (data: NetworkSaveData): NetworkS
     venues: updatedVenues
   }
 }
+
+export function handleServicePolicyRbacPayload (data: NetworkSaveData): NetworkSaveData {
+  return omit(data, [
+    'wlan.advancedCustomization.l2AclPolicyId',
+    'wlan.advancedCustomization.l3AclPolicyId',
+    'wlan.advancedCustomization.devicePolicyId',
+    'wlan.advancedCustomization.applicationPolicyId',
+    'wlan.advancedCustomization.accessControlProfileId',
+    'wlan.advancedCustomization.vlanPool',
+    'wlan.advancedCustomization.wifiCallingIds',
+    'dpskServiceProfileId',
+    'macRegistrationPoolId',
+    'portalServiceProfileId',
+    'authRadiusId',
+    'authRadius',
+    'accountingRadiusId',
+    'accountingRadius',
+    'enableAuthProxy',
+    'enableAccountingProxy',
+    'wlan.macAddressAuthenticationConfiguration'
+  ])
+}

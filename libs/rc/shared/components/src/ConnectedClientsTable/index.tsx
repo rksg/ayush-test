@@ -60,11 +60,10 @@ export const isEqualCaptivePortal = (networkType?: string) : boolean => {
 
 
 export interface ClientsTableProps<T> {
-showAllColumns?: boolean,
-searchString?: string,
-setConnectedClientCount?: (connectClientCount: number) => void,
+  showAllColumns?: boolean,
+  searchString?: string,
+  setConnectedClientCount?: (connectClientCount: number) => void,
   tableQuery?: TableQuery<T, RequestPayload<unknown>, unknown>
-
 }
 
 export const ConnectedClientsTable = (props: ClientsTableProps<ClientList|ClientInfo>) => {
