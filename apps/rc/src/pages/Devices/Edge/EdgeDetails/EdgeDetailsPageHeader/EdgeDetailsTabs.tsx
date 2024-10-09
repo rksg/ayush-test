@@ -25,7 +25,7 @@ const EdgeDetailsTabs = (props: { isOperational: boolean }) => {
   const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
   const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
 
-  const { hasDhcpService } = useGetDhcpStatsQuery({
+  const { hasDhcpService = false } = useGetDhcpStatsQuery({
     payload: { fields: ['id'], filters: { edgeClusterIds: [currentEdge?.clusterId] } }
   }, {
     skip: !isEdgeDhcpHaReady || !currentEdge?.clusterId,
