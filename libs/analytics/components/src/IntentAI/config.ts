@@ -161,13 +161,18 @@ export const states = {
 export const groupedStates = [
   {
     group: defineMessage({ defaultMessage: 'Scheduled' }),
-    states: [DisplayStates.scheduled, DisplayStates.scheduledOneClick, DisplayStates.applyScheduled] as unknown as string[]
+    states: [DisplayStates.scheduled, DisplayStates.scheduledOneClick, DisplayStates.applyScheduled]
   },
   {
     group: defineMessage({ defaultMessage: 'Paused' }),
-    states: [DisplayStates.pausedFromInactive, DisplayStates.pausedFromActive, DisplayStates.pausedByDefault] as unknown as string[]
+    states: [DisplayStates.pausedFromInactive, DisplayStates.pausedFromActive, DisplayStates.pausedByDefault]
   }
 ]
+
+export const stateToGroupedStates = groupedStates.reduce((grouped, { group, states }) => {
+  states.forEach(state => grouped[state] = { key: states.join('+'), group })
+  return grouped
+}, {} as Record<DisplayStates, { key: string, group: MessageDescriptor }>)
 
 export const failureCodes = {
   'probeflex-support-fw-version': defineMessage({ defaultMessage: 'AP firmware version is unsupported.' }),
@@ -193,7 +198,8 @@ export const failureCodes = {
   'not-enough-license': defineMessage({ defaultMessage: 'The network contains unlicensed APs.' }),
   'invalid-aggregation-interval': defineMessage({ defaultMessage: 'SmartZone data interval is too long; recommended interval is 3 minutes or less.' }),
   'no-ap-peer-data': defineMessage({ defaultMessage: 'Insufficient data on neighbour APs.' }),
-  'no-channel-range-for-aps': defineMessage({ defaultMessage: 'Insufficient channel range data for one or more APs.' })
+  'no-channel-range-for-aps': defineMessage({ defaultMessage: 'Insufficient channel range data for one or more APs.' }),
+  'deleted-zone': defineMessage({ defaultMessage: 'Unable to read <venueSingular></venueSingular> configuration.' })
 }
 
 //For original codes, please refer to libs/analytics/components/src/Recommendations/config.ts
