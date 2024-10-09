@@ -133,11 +133,11 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
           try {
             const response = await api.cacheDataLoaded
-
             if (response.data.requestId === msg.requestId
               && msg.status === 'SUCCESS'
               && (msg.useCase === 'INITIATE_PUBLISH_WORKFLOW' ||
-                msg.useCase === 'UPDATE_WORKFLOW')) {
+                msg.useCase === 'UPDATE_WORKFLOW' ||
+                msg.useCase === 'INITIATE_UPDATE_AND_PUBLISH_WORKFLOW')) {
               requestArgs.callback?.()
             }
           } catch { }
