@@ -280,6 +280,11 @@ function VlanSettingForm (props: VlanSettingFormProps) {
     setOpenModal(false)
   }
 
+  const multicastVersionIsDisable = (): boolean => {
+    const igmpSnooping = form.getFieldValue('igmpSnooping');
+    return !(igmpSnooping === 'active' || igmpSnooping === 'passive')
+  }
+
   return (
     <div data-testid='addVlanDrawer'>
       <Form
@@ -369,7 +374,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           label={$t({ defaultMessage: 'Multicast Version' })}
           initialValue={null}
           children={
-            <Select disabled={multicastVersionDisabled}>
+            <Select disabled={multicastVersionIsDisable()}>
               <Option value={2}>
                 {$t({ defaultMessage: 'Version 2' })}</Option>
               <Option value={3}>
