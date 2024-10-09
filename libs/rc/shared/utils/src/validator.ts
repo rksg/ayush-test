@@ -1004,9 +1004,9 @@ export function validateVlanId (vlanId: string){
   return Promise.resolve()
 }
 
-export function validateVlanName (vlanName: string){
+export function validateVlanExceptReservedVlanId (vlanName: string){
   const { $t } = getIntl()
-  const vlanRegexp = new RegExp('^([1-9]|[1-8][0-9]|9[0-9]|[1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|[1-3][0-9]{3}|40[0-7][0-9]|408[0-6]|4088|4089|4095)$')
+  const vlanRegexp = new RegExp('^([1-9]|[1-8][0-9]|9[0-9]|[1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|[1-3][0-9]{3}|40[0-7][0-9]|408[0-6]|4088|4089|4093|4095)$')
   if (!vlanRegexp.test(vlanName)) {
     return Promise.reject($t(validationMessages.vlanNameInvalid))
   }
@@ -1184,3 +1184,12 @@ export function guestPasswordValidator (value: string) {
 
 }
 
+export function normalNameRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/^[A-Za-z0-9]*$/)
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.nameInvalid))
+  }
+  return Promise.resolve()
+}

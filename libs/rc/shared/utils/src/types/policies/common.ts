@@ -30,7 +30,8 @@ export enum PolicyType {
   ETHERNET_PORT_PROFILE = 'Ethernet Port Profile',
   WORKFLOW = 'Workflow',
   HQOS_BANDWIDTH = 'HQoS Bandwidth',
-  SOFTGRE = 'SoftGRE'
+  SOFTGRE = 'SoftGRE',
+  FLEX_AUTH = 'Flexible Authentication'
 }
 
 export enum PolicyTechnology {
@@ -74,7 +75,8 @@ export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.WORKFLOW]: defineMessage({ defaultMessage: 'A customizable onboarding process that provides more control over who is granted network access' }),
   [PolicyType.HQOS_BANDWIDTH]: defineMessage({ defaultMessage: 'HQoS Bandwidth' }),
   [PolicyType.SOFTGRE]: defineMessage({ defaultMessage: 'Tunnel the traffic to a third party WLAN gateway' }),
-  [PolicyType.ETHERNET_PORT_PROFILE]: defineMessage({ defaultMessage: 'An Ethernet port profile is a configuration that specifies how a network port functions and behaves.' })
+  [PolicyType.ETHERNET_PORT_PROFILE]: defineMessage({ defaultMessage: 'An Ethernet port profile is a configuration that specifies how a network port functions and behaves.' }),
+  [PolicyType.FLEX_AUTH]: defineMessage({ defaultMessage: 'Flexible authentication combines MAC and 802.1X authentication as a single authentication procedure' })
 }
 
 export const downloadCertExtension: Record<CertificateAcceptType, String> = {

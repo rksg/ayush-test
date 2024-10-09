@@ -160,6 +160,7 @@ function useCardData (): PolicyCardData[] {
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const isEdgeHqosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
+  const isSwitchFlexAuthEnabled = true//useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
 
   return [
     {
@@ -337,6 +338,15 @@ function useCardData (): PolicyCardData[] {
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.SOFTGRE, oper: PolicyOperation.LIST })),
       disabled: !isSoftGreEnabled
+    },
+    {
+      type: PolicyType.FLEX_AUTH,
+      categories: [RadioCardCategory.SWITCH],
+      // eslint-disable-next-line max-len
+      totalCount: 0, //useGetSoftGreViewDataListQuery({ params, payload: {} }, { skip: !isSoftGreEnabled }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.FLEX_AUTH, oper: PolicyOperation.LIST })),
+      disabled: !isSwitchFlexAuthEnabled
     }
   ]
 }

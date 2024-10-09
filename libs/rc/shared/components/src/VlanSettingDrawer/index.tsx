@@ -21,7 +21,7 @@ import {
   SwitchSlot,
   StackMember,
   PortStatusMessages,
-  validateVlanName,
+  validateVlanExceptReservedVlanId,
   validateDuplicateVlanId,
   validateVlanNameWithoutDVlans,
   Vlan
@@ -299,7 +299,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           validateFirst
           rules={[
             { required: true },
-            { validator: (_, value) => validateVlanName(value) },
+            { validator: (_, value) => validateVlanExceptReservedVlanId(value) },
             { validator: (_, value) => validateDuplicateVlanId(
               value, vlansList.filter(v => editMode ? v.vlanId !== vlan?.vlanId : v)
             ) }

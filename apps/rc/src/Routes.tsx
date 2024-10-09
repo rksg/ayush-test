@@ -100,6 +100,9 @@ import ConnectionMeteringDetail                     from './pages/Policies/Conne
 import ConnectionMeteringPageForm                   from './pages/Policies/ConnectionMetering/ConnectionMeteringPageForm'
 import ConnectionMeteringTable                      from './pages/Policies/ConnectionMetering/ConnectionMeteringTable'
 import EthernetPortProfileTable                     from './pages/Policies/EthernetPortProfile/EthernetPortProfileTable'
+import AddFlexibleAuthentication                    from './pages/Policies/FlexibleAuthentication/AddFlexibleAuthentication'
+import EditFlexibleAuthentication                   from './pages/Policies/FlexibleAuthentication/EditFlexibleAuthentication'
+import FlexibleAuthenticationTable                  from './pages/Policies/FlexibleAuthentication/FlexibleAuthenticationTable'
 import AddEdgeHqosBandwidth                         from './pages/Policies/HqosBandwidth/Edge/AddHqosBandwidth'
 import EditEdgeHqosBandwidth                        from './pages/Policies/HqosBandwidth/Edge/EditHqosBandwidth'
 import EdgeHqosBandwidthDetail                      from './pages/Policies/HqosBandwidth/Edge/HqosBandwidthDetail'
@@ -794,6 +797,7 @@ function PolicyRoutes () {
   const isWorkflowTierEnabled = useIsTierAllowed(Features.WORKFLOW_ONBOARD)
   const isWorkflowFFEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE)
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
+  const isSwitchFlexAuthEnabled = true//useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
 
   return rootRoutes(
     <Route path=':tenantId/t'>
@@ -1337,6 +1341,27 @@ function PolicyRoutes () {
         />
       </>
       }
+      {isSwitchFlexAuthEnabled && <>
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.FLEX_AUTH, oper: PolicyOperation.LIST })}
+          element={<FlexibleAuthenticationTable />}
+        />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.FLEX_AUTH ,
+            oper: PolicyOperation.CREATE
+          })}
+          element={<AddFlexibleAuthentication/>}
+        />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.FLEX_AUTH ,
+            oper: PolicyOperation.EDIT
+          })}
+          element={<EditFlexibleAuthentication/>}
+        />
+      </>}
       <Route
         path={getPolicyRoutePath({ type: PolicyType.SOFTGRE, oper: PolicyOperation.CREATE })}
         element={

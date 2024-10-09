@@ -37,5 +37,6 @@ export const policyTypeLabelMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.CERTIFICATE]: defineMessage({ defaultMessage: 'Certificate' }),
   [PolicyType.HQOS_BANDWIDTH]: defineMessage({ defaultMessage: 'HQoS Bandwidth' }),
   [PolicyType.SOFTGRE]: defineMessage({ defaultMessage: 'SoftGRE' }),
-  [PolicyType.ETHERNET_PORT_PROFILE]: defineMessage({ defaultMessage: 'Ethernet Port Profile' })
+  [PolicyType.ETHERNET_PORT_PROFILE]: defineMessage({ defaultMessage: 'Ethernet Port Profile' }),
+  [PolicyType.FLEX_AUTH]: defineMessage({ defaultMessage: 'Flexible Authentication' })
 }

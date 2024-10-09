@@ -15,6 +15,7 @@ import {
   whitespaceOnlyRegExp,
   agreeRegExp,
   nameCannotStartWithNumberRegExp,
+  normalNameRegExp,
   cliVariableNameRegExp,
   cliIpAddressRegExp,
   subnetMaskPrefixRegExp,
@@ -23,6 +24,7 @@ import {
   targetHostRegExp,
   validateRecoveryPassphrasePart,
   validateVlanId,
+  validateVlanExceptReservedVlanId,
   ipv6RegExp,
   validateTags,
   multicastIpAddressRegExp,
@@ -168,6 +170,23 @@ describe('validator', () => {
     it('Should take care of Vlan ID with alphabet', async () => {
       const result1 = validateVlanId('abc')
       await expect(result1).rejects.toEqual('VLAN ID must be between 1 and 4094')
+    })
+  })
+
+  describe('validateVlanExceptReservedVlanId', () => {
+    it('Should take care of Vlan ID with valid value', async () => {
+      const result = validateVlanExceptReservedVlanId('100')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should take care of Vlan ID with invalid number', async () => {
+      const result = validateVlanExceptReservedVlanId('4099')
+      // eslint-disable-next-line max-len
+      await expect(result).rejects.toEqual('Enter a valid number between 1 and 4095, except 4087, 4090, 4091, 4092, 4094')
+    })
+    it('Should take care of Vlan ID with reserved vlan', async () => {
+      const result1 = validateVlanExceptReservedVlanId('4092')
+      // eslint-disable-next-line max-len
+      await expect(result1).rejects.toEqual('Enter a valid number between 1 and 4095, except 4087, 4090, 4091, 4092, 4094')
     })
   })
 
@@ -326,6 +345,17 @@ describe('validator', () => {
     it('Should display error message if name value incorrectly', async () => {
       const result1 = nameCannotStartWithNumberRegExp('87test')
       await expect(result1).rejects.toEqual('Name cannot start with a number')
+    })
+  })
+
+  describe('normalNameRegExp', () => {
+    it('Should take care of name value correctly', async () => {
+      const result = normalNameRegExp('87test')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if name value incorrectly', async () => {
+      const result1 = normalNameRegExp('test!@#$')
+      await expect(result1).rejects.toEqual('Name may include only letters and numbers')
     })
   })
 
