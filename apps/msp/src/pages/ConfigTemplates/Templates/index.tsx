@@ -48,7 +48,8 @@ import {
   ConfigTemplate,
   ConfigTemplateType,
   getConfigTemplateEditPath,
-  PolicyType
+  PolicyType,
+  ConfigTemplateDriftType
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }               from '@acx-ui/user'
@@ -110,14 +111,15 @@ export function ConfigTemplateList () {
         setApplyTemplateDrawerVisible(true)
       }
     },
-    {
-      visible: driftsEnabled,
+    ...(driftsEnabled ? [{
+      // eslint-disable-next-line max-len
+      visible: (selectedRows: ConfigTemplate[]) => selectedRows[0]?.driftStatus === ConfigTemplateDriftType.DRIFT_DETECTED,
       label: $t({ defaultMessage: 'Show Drifts' }),
       onClick: (rows: ConfigTemplate[]) => {
         setSelectedTemplates(rows)
         setShowDriftsDrawerVisible(true)
       }
-    },
+    }] : []),
     {
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedRows) => selectedRows[0] && !!deleteMutationMap[selectedRows[0].type],

@@ -409,7 +409,7 @@ describe('ConfigTemplateList component', () => {
     const row = await screen.findByRole('row', { name: new RegExp(targetTemplate.name) })
     await userEvent.click(within(row).getByRole('radio'))
 
-    await userEvent.click(screen.getByRole('button', { name: /Show Drifts/ }))
+    await userEvent.click(await screen.findByRole('button', { name: /Show Drifts/ }))
 
     expect(await screen.findByTestId('ShowDriftsDrawer')).toBeInTheDocument()
   })
