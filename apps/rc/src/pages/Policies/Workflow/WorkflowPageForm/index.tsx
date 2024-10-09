@@ -1,8 +1,11 @@
+import { useState } from 'react'
+
 import { Form }                                from 'antd'
 import { useIntl }                             from 'react-intl'
 import { resolvePath, useNavigate, useParams } from 'react-router-dom'
 
 import {
+  Loader,
   PageHeader,
   StepsForm
 } from '@acx-ui/components'
@@ -29,7 +32,7 @@ export default function WorkflowPageForm () {
   const navigate = useNavigate()
   const tablePath = getPolicyRoutePath( { type: PolicyType.WORKFLOW, oper: PolicyOperation.LIST })
   const linkToPolicies = useTenantLink(tablePath)
-
+  const [isCreating, setIsCreating] = useState(false)
   const [addWorkflow] = useAddWorkflowMutation()
   const handleAddWorkflow = async (data: Workflow, callback?: (v: CommonAsyncResponse)=>void) => {
     return addWorkflow({ payload: {
@@ -54,6 +57,7 @@ export default function WorkflowPageForm () {
       await form.validateFields()
       // eslint-disable-next-line max-len
       await handleAddWorkflow(form.getFieldsValue(), callback)
+      setIsCreating(true)
     } catch (error) {
       return Promise.resolve()
     }
@@ -74,20 +78,21 @@ export default function WorkflowPageForm () {
         breadcrumb={usePolicyListBreadcrumb(PolicyType.WORKFLOW)}
         title={$t({ defaultMessage: 'Add Workflow' })}
       />
-      <StepsForm<WorkflowFormField>
-        form={form}
-        editMode={false}
-        buttonLabel={buttonLabel}
-        onCancel={()=>onCancel()}
-        onFinish={async ()=> {onSubmit()}
-        }>
-        <StepsForm.StepForm<WorkflowFormField>
-          name='settings'
-          title={$t({ defaultMessage: 'Settings' })}
-          layout={'vertical'}
-        >
-          <WorkflowForm isEdit={false}/>
-        </StepsForm.StepForm>
-      </StepsForm>
+      <Loader states={[{ isLoading: isCreating }]}>
+        <StepsForm<WorkflowFormField>
+          form={form}
+          editMode={false}
+          buttonLabel={buttonLabel}
+          onCancel={()=>onCancel()}
+          onFinish={onSubmit}>
+          <StepsForm.StepForm<WorkflowFormField>
+            name='settings'
+            title={$t({ defaultMessage: 'Settings' })}
+            layout={'vertical'}
+          >
+            <WorkflowForm isEdit={false}/>
+          </StepsForm.StepForm>
+        </StepsForm>
+      </Loader>
     </>)
 }
