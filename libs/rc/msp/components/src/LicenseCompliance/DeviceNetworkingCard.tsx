@@ -31,8 +31,8 @@ export function DeviceNetworkingCard (props: LicenseCardProps) {
           <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between',
             marginBottom: '10px' }}>
             <div style={{ flexDirection: 'column', marginTop: '4px' }}>
-              <UI.Title>{$t({ defaultMessage: '{title}' }, { title })}</UI.Title>
-              <UI.SubTitle>{$t({ defaultMessage: '{subTitle}' }, { subTitle })}</UI.SubTitle>
+              <UI.Title>{title}</UI.Title>
+              <UI.SubTitle>{subTitle}</UI.SubTitle>
             </div>
             { data.licenseGap >= 0 ? <UI.GreenTickIcon /> : <UI.RedTickIcon />}
           </div>
