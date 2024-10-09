@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   MFASetupModal
 } from '@acx-ui/msp/components'
@@ -13,6 +14,8 @@ import { getJwtTokenPayload, isDelegationMode } from '@acx-ui/utils'
 
 export const MFACheck = () => {
   const { tenantId } = getJwtTokenPayload()
+  const mfaNewApiToggle = useIsSplitOn(Features.MFA_NEW_API_TOGGLE)
+
   const[mfaDetails, setMfaDetails] = useState({} as MfaDetailStatus)
   const[mfaSetupFinish, setMfaSetupFinish] = useState(false)
   const [getMfaTenantDetails] = useLazyGetMfaTenantDetailsQuery()
@@ -24,7 +27,8 @@ export const MFACheck = () => {
 
   useEffect(() => {
     const fetchMfaData = async () => {
-      const mfaTenantData = await getMfaTenantDetails({ params: { tenantId } }).unwrap()
+      const mfaTenantData = await getMfaTenantDetails({ params: { tenantId },
+        enableRbac: mfaNewApiToggle }).unwrap()
       if (mfaTenantData.enabled) {
         const mfaDetailsData = await getMfaAdminDetails({
           params: {

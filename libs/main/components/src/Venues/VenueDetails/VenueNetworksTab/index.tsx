@@ -227,7 +227,6 @@ export function VenueNetworksTab () {
   const softGreTunnelActions = useSoftGreTunnelActions()
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
   const updateSdLanNetworkTunnel = useUpdateNetworkTunnelAction()
-  // const { toggleNetwork } = useEdgeMvSdLanActions()
 
   const { vlanPoolingNameMap }: { vlanPoolingNameMap: KeyValue<string, string>[] } = useGetVLANPoolPolicyViewModelListQuery({
     params: { tenantId: params.tenantId },

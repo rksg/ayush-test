@@ -2,6 +2,7 @@
 import { useContext, useEffect, useState } from 'react'
 
 import { Space }              from 'antd'
+import _                      from 'lodash'
 import { IntlShape, useIntl } from 'react-intl'
 
 import {
@@ -11,11 +12,13 @@ import {
   Subtitle,
   Table,
   TableProps,
-  Tabs
+  Tabs,
+  Tooltip
 } from '@acx-ui/components'
 import { get }                       from '@acx-ui/config'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { InformationSolid }          from '@acx-ui/icons'
 import {
   LicenseCompliance,
   PendingActivations,
@@ -25,9 +28,10 @@ import {
   useMspEntitlementListQuery,
   useMspAssignmentSummaryQuery,
   useMspEntitlementSummaryQuery,
-  useRefreshMspEntitlementMutation
+  useRefreshMspEntitlementMutation,
+  useGetEntitlementsAttentionNotesQuery
 } from '@acx-ui/msp/services'
-import { MspAssignmentSummary, MspEntitlementSummary }                                           from '@acx-ui/msp/utils'
+import { MspAssignmentSummary, MspAttentionNotesPayload, MspEntitlementSummary }                 from '@acx-ui/msp/utils'
 import { SpaceWrapper, MspSubscriptionUtilizationWidget }                                        from '@acx-ui/rc/components'
 import { useGetTenantDetailsQuery, useRbacEntitlementListQuery, useRbacEntitlementSummaryQuery } from '@acx-ui/rc/services'
 import {
@@ -106,6 +110,7 @@ export function Subscriptions () {
 
   const [showDialog, setShowDialog] = useState(false)
   const [isAssignedActive, setActiveTab] = useState(false)
+  const [hasAttentionNotes, setHasAttentionNotes] = useState(false)
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isPendingActivationEnabled = useIsSplitOn(Features.ENTITLEMENT_PENDING_ACTIVATION_TOGGLE)
@@ -114,13 +119,17 @@ export function Subscriptions () {
   const isComplianceEnabled = useIsSplitOn(Features.ENTITLEMENT_LICENSE_COMPLIANCE_TOGGLE)
   const showCompliance = isvSmartEdgeEnabled && isComplianceEnabled
   const isExtendedTrialToggleEnabled = useIsSplitOn(Features.ENTITLEMENT_EXTENDED_TRIAL_TOGGLE)
+  const isComplianceNotesEnabled = useIsSplitOn(Features.ENTITLEMENT_COMPLIANCE_NOTES_TOGGLE)
+
+  const { data: queryData } = useGetEntitlementsAttentionNotesQuery(
+    { payload: MspAttentionNotesPayload }, { skip: !isComplianceNotesEnabled })
 
   const {
     state
   } = useContext(HspContext)
   const { isHsp: isHspSupportEnabled } = state
 
-  const { tenantId } = useParams()
+  const { tenantId, activeTab } = useParams()
 
   const { data: tenantDetailsData } = useGetTenantDetailsQuery({ })
 
@@ -131,6 +140,10 @@ export function Subscriptions () {
   const [
     refreshEntitlement
   ] = useRefreshMspEntitlementMutation()
+
+  useEffect(() => {
+    setHasAttentionNotes(!_.isEmpty(queryData?.data))
+  }, [queryData])
 
   const getCourtesyTooltip = (total: number, courtesy: number) => {
     const purchased = total-courtesy
@@ -495,7 +508,10 @@ export function Subscriptions () {
       visible: isPendingActivationEnabled
     },
     compliance: {
-      title: $t({ defaultMessage: 'Compliance' }),
+      title: <UI.TabWithHint>{$t({ defaultMessage: 'Compliance' })}
+        {hasAttentionNotes && <Tooltip children={<InformationSolid />}
+          title={$t({ defaultMessage: 'New licensing attention notes are available' })} />}
+      </UI.TabWithHint>,
       content: <LicenseCompliance
         isMsp={true}
         isExtendedTrial={tenantDetailsData?.extendedTrial && isExtendedTrialToggleEnabled}
@@ -529,6 +545,7 @@ export function Subscriptions () {
       />
       <Tabs
         defaultActiveKey='mspSubscriptions'
+        activeKey={activeTab}
         onChange={onTabChange}
       >
         {
