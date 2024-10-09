@@ -1,10 +1,11 @@
-import { rest } from 'msw'
-import { Path } from 'react-router-dom'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
+import { Path }  from 'react-router-dom'
 
-import { useIsSplitOn }                                                                                            from '@acx-ui/feature-toggle'
-import { ActionType, NewAPITableResult, StepType, Workflow, WorkflowActionDefinition, WorkflowStep, WorkflowUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }                                                                     from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                                                  from '@acx-ui/feature-toggle'
+import { ActionType, NewAPITableResult, Workflow, WorkflowActionDefinition, WorkflowStep, WorkflowUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                                                      from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }                                                           from '@acx-ui/test-utils'
 
 import { WorkflowDetailOverview } from './WorkflowDetailOverview'
 
@@ -69,29 +70,30 @@ const actionDefinitions: WorkflowActionDefinition[] = [
   }
 ]
 
-const steps: WorkflowStep[] = [
-  {
-    id: 'id1',
-    type: StepType.Basic,
-    enrollmentActionId: 'id',
-    actionDefinitionId: 'actionId1',
-    actionType: ActionType.AUP
-  },
-  {
-    id: 'id2',
-    type: StepType.Basic,
-    enrollmentActionId: '',
-    actionDefinitionId: 'actionId2',
-    actionType: ActionType.DATA_PROMPT
-  },
-  {
-    id: 'id1',
-    type: StepType.Basic,
-    enrollmentActionId: '',
-    actionDefinitionId: 'actionId3',
-    actionType: ActionType.DISPLAY_MESSAGE
+const steps: NewAPITableResult<WorkflowStep> = {
+  content: [
+    {
+      id: 'step-1',
+      enrollmentActionId: 'step-1-action-id',
+      nextStepId: 'step-2'
+    },
+    {
+      id: 'step-2',
+      enrollmentActionId: 'step-2-action-id',
+      priorStepId: 'step-1'
+    },
+    {
+      id: 'step-3',
+      enrollmentActionId: 'step-3-action-id',
+      priorStepId: 'step-2'
+    }
+  ],
+  paging: {
+    page: 0,
+    pageSize: 1,
+    totalCount: 3
   }
-]
+}
 
 
 // eslint-disable-next-line max-len
@@ -116,9 +118,14 @@ jest.mock('@acx-ui/rc/components', () => ({
 describe('WorkflowDetailOverview', () => {
   const getWorkflowApi = jest.fn()
   const searchVersionApi = jest.fn()
+  const updateWorkflowApi = jest.fn()
   jest.mocked(useIsSplitOn).mockReturnValue(true)
   const params = { tenantId: 't1', policyId: workflows[0].id }
   beforeEach(async () => {
+    getWorkflowApi.mockClear()
+    searchVersionApi.mockClear()
+    updateWorkflowApi.mockClear()
+
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
       rest.get(
@@ -144,7 +151,7 @@ describe('WorkflowDetailOverview', () => {
       rest.get(
         WorkflowUrls.getWorkflowStepsById.url.split('?')[0],
         (req, res, ctx) => {
-          return res(ctx.json({ content: steps }))
+          return res(ctx.json(steps))
         }
       ),
       rest.get(
@@ -152,11 +159,18 @@ describe('WorkflowDetailOverview', () => {
         (req, res, ctx) => {
           return res(ctx.json({ content: actionDefinitions }))
         }
+      ),
+      rest.patch(
+        WorkflowUrls.updateWorkflow.url,
+        (req, res, ctx) => {
+          updateWorkflowApi()
+          return res(ctx.json({}))
+        }
       )
     )
   })
 
-  it('should render correctly', async () => {
+  it('should close correctly', async () => {
     render(<Provider>
       <WorkflowDetailOverview/>
     </Provider>, {
@@ -164,7 +178,29 @@ describe('WorkflowDetailOverview', () => {
     })
     await screen.findByText('URL')
     await screen.findByText('Status')
+    await screen.findByText('Publish')
+    const closeButton = await screen.findByText('Close')
+    userEvent.click(closeButton)
+
     await waitFor(() => expect(getWorkflowApi).toHaveBeenCalled())
     await waitFor(() => expect(searchVersionApi).toHaveBeenCalled())
+    await waitFor(()=>expect(updateWorkflowApi).toHaveBeenCalled())
+  })
+
+  it('should publish correctly', async () => {
+    render(<Provider>
+      <WorkflowDetailOverview/>
+    </Provider>, {
+      route: { params }
+    })
+    await screen.findByText('URL')
+    await screen.findByText('Status')
+    const publishButton = await screen.findByText('Publish')
+    await screen.findByText('Close')
+    userEvent.click(publishButton)
+
+    await waitFor(() => expect(getWorkflowApi).toHaveBeenCalled())
+    await waitFor(() => expect(searchVersionApi).toHaveBeenCalled())
+    await waitFor(()=>expect(updateWorkflowApi).toHaveBeenCalledTimes(2))
   })
 })
