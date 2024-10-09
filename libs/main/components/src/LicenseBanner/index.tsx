@@ -4,10 +4,11 @@ import _                    from 'lodash'
 import { useIntl }          from 'react-intl'
 import { FormattedMessage } from 'react-intl'
 
-import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                      from '@acx-ui/formatter'
-import { useGetMspEntitlementBannersQuery }               from '@acx-ui/msp/services'
-import { useEntitlementBannersQuery, useGetBannersQuery } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                                               from '@acx-ui/formatter'
+import { useGetEntitlementsAttentionNotesQuery, useGetMspEntitlementBannersQuery } from '@acx-ui/msp/services'
+import { MspAttentionNotesPayload }                                                from '@acx-ui/msp/utils'
+import { useEntitlementBannersQuery, useGetBannersQuery }                          from '@acx-ui/rc/services'
 import {
   LicenseBannerTypeEnum,
   EntitlementBanner,
@@ -25,7 +26,6 @@ import {
   MSPLicenseBannerDescMapping } from './contentsMap'
 import useViewport from './hooks/useViewport'
 import * as UI     from './styledComponents'
-
 
 const MAX_VIEWPORT_CHANGE = 1510
 const getBulbIcon = (expireType:LicenseBannerTypeEnum | undefined) => {
@@ -89,6 +89,7 @@ export function LicenseBanner (props: BannerProps) {
 
   const isFFEnabled = useIsSplitOn(Features.LICENSE_BANNER)
   const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
+  const isComplianceNotesEnabled = useIsSplitOn(Features.ENTITLEMENT_COMPLIANCE_NOTES_TOGGLE)
 
   const [expireList, setExpireList] = useState<ExpireInfo[]>([])
 
@@ -98,6 +99,8 @@ export function LicenseBanner (props: BannerProps) {
     { skip: isMSPUser || isEntitlementRbacApiEnabled })
   const { data: mspBannerData } = useGetMspEntitlementBannersQuery({ params },
     { skip: !isMSPUser || isEntitlementRbacApiEnabled })
+  const { data: queryData } = useGetEntitlementsAttentionNotesQuery(
+    { params, payload: MspAttentionNotesPayload }, { skip: !isComplianceNotesEnabled })
 
   const recPayload = {
     filters: {
@@ -175,6 +178,7 @@ export function LicenseBanner (props: BannerProps) {
     const isCritical = _.some(expireList, (expireInfo)=>{
       return getIsExpired(expireInfo)
     })
+    const attentionNotes = !_.isEmpty(queryData?.data)
     const expandBtn = <UI.LicenseWarningBtn
       data-testid='arrowBtn'
       isCritical={isCritical}
@@ -192,7 +196,9 @@ export function LicenseBanner (props: BannerProps) {
           </UI.LicenseIconWrapper>
           <UI.TipsWrapper>
             <UI.MainTips>
-              {$t({ defaultMessage: 'Subscriptions require your attention' })}
+              {attentionNotes
+                ? $t({ defaultMessage: 'Subscriptions and licensing notes require your attention' })
+                : $t({ defaultMessage: 'Subscriptions require your attention' })}
             </UI.MainTips>
           </UI.TipsWrapper>
         </UI.ContentWrapper>
@@ -222,12 +228,18 @@ export function LicenseBanner (props: BannerProps) {
             { getCardItem(expireInfo) }
           </UI.LicenseGrid>
         })}
+        {attentionNotes &&
+        <UI.LicenseGrid expired={false} isWhiteBorder={false}>
+          { notesRender() }
+        </UI.LicenseGrid>
+        }
       </UI.LicenseContainer>
     </div>
   }
 
   const licenseRender = ()=>{
-    if(expireList && expireList.length===1 && width>MAX_VIEWPORT_CHANGE){
+    if(expireList && expireList.length===1 && width>MAX_VIEWPORT_CHANGE
+      && _.isEmpty(queryData?.data)){
       const expireInfo = _.first(expireList)
 
       const isExpired = expireInfo && getIsExpired(expireInfo)
@@ -238,7 +250,39 @@ export function LicenseBanner (props: BannerProps) {
     return multipleRender()
   }
 
-  return !_.isEmpty(expireList) && isFFEnabled ? <UI.LicenseWrapper>
-    {licenseRender()}
-  </UI.LicenseWrapper> : <UI.ContentWrapper />
+  const notesRender = ()=>{
+    return <UI.LicenseContainerSingle expired={false}>
+      <UI.LicenseIconWrapper>
+        <UI.LayoutIcon children={<UI.BulbLesserInitial/>} />
+      </UI.LicenseIconWrapper>
+      <UI.TipsWrapper>
+        <UI.MainTips expired={false}
+          children={'RUCKUS One subscription note is available on the Compliance page'}/>
+        <UI.SubTips expired={false} style={{ whiteSpace: 'pre' }}>
+          <FormattedMessage
+            defaultMessage={'<a>See licensing attention note</a>'}
+            values={{
+              b: chunks => chunks,
+              a: (chunks) =>
+                <UI.ActiveBtn onClick={()=>{setLicenseExpanded(false)}}
+                  tenantType={'v'}
+                  to={'mspLicenses/compliance'}>
+                  {chunks}
+                </UI.ActiveBtn>
+            }}
+          />
+        </UI.SubTips>
+      </UI.TipsWrapper>
+    </UI.LicenseContainerSingle>
+  }
+
+  return !_.isEmpty(expireList) && isFFEnabled
+    ? <UI.LicenseWrapper>
+      {licenseRender()}
+    </UI.LicenseWrapper>
+    : !_.isEmpty(queryData?.data)
+      ? <UI.LicenseWrapper>
+        {notesRender()}
+      </UI.LicenseWrapper>
+      : <UI.ContentWrapper />
 }

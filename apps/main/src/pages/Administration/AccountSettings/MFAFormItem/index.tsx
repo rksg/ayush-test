@@ -4,6 +4,7 @@ import { useIntl }                                    from 'react-intl'
 import styled                                         from 'styled-components/macro'
 
 import { Card, showActionModal }                       from '@acx-ui/components'
+import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
 import { SpaceWrapper }                                from '@acx-ui/rc/components'
 import { administrationApi, useGetTenantDetailsQuery } from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink }       from '@acx-ui/react-router-dom'
@@ -30,6 +31,7 @@ interface MFAFormItemProps {
 
 const MFAFormItem = styled((props: MFAFormItemProps) => {
   const { $t } = useIntl()
+  const mfaNewApiToggle = useIsSplitOn(Features.MFA_NEW_API_TOGGLE)
   const { className, mfaTenantDetailsData, isPrimeAdminUser, isMspEc } = props
   const params = useParams()
   const [toggleMFA, { isLoading: isUpdating }] = useToggleMFAMutation()
@@ -60,7 +62,7 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
             params: {
               tenantId: params.tenantId,
               enable: isChecked + ''
-            }
+            }, enableRbac: mfaNewApiToggle
           }).unwrap()
           if (isMspEc) {
             store.dispatch(
