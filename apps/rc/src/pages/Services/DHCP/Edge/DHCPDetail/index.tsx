@@ -1,4 +1,6 @@
 
+import { useMemo } from 'react'
+
 import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
@@ -20,6 +22,11 @@ import {
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
+
+interface EdgeTableType extends DhcpUeSummaryStats {
+  edgeClusterName?: string
+  venueName?: string
+}
 
 const EdgeDHCPDetail = () => {
 
@@ -47,6 +54,7 @@ const EdgeDHCPDetail = () => {
       'remainsIps',
       'droppedPackets'
     ],
+    pageSize: 10000,
     filters: { dhcpId: [params.serviceId] }
   }
   const { dhcpStats, isLoading: isDhcpStatsLoading } = useGetDhcpStatsQuery({
@@ -105,15 +113,22 @@ const EdgeDHCPDetail = () => {
     })
   })
 
-  const columns: TableProps<DhcpUeSummaryStats>['columns'] = [
+  const tableData = useMemo(() => {
+    return dhcpUeSummaryStats?.data.map(item => ({
+      ...item,
+      edgeClusterName: clusterNameMap?.[item.edgeClusterId ?? ''],
+      venueName: venueNameMap?.[item.venueId ?? '']
+    }))
+  }, [dhcpUeSummaryStats, clusterNameMap, venueNameMap])
+
+  const columns: TableProps<EdgeTableType>['columns'] = [
     {
       title: $t({ defaultMessage: 'Cluster' }),
-      key: 'edgeName',
-      dataIndex: 'edgeName',
-      sorter: { compare: sortProp('edgeName', defaultSort) },
+      key: 'edgeClusterName',
+      dataIndex: 'edgeClusterName',
+      sorter: { compare: sortProp('edgeClusterName', defaultSort) },
       defaultSortOrder: 'ascend',
-      fixed: 'left',
-      render: (_, row) => clusterNameMap?.[row.edgeClusterId ?? '']
+      fixed: 'left'
     },
     {
       title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
@@ -122,7 +137,7 @@ const EdgeDHCPDetail = () => {
       render: function (_, row) {
         return (
           <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
-            {venueNameMap?.[row.venueId ?? '']}
+            {row.venueName}
           </TenantLink>
         )
       }
@@ -239,8 +254,8 @@ const EdgeDHCPDetail = () => {
               </Typography.Title>
               <Table
                 columns={columns}
-                dataSource={dhcpUeSummaryStats?.data}
-                rowKey='edgeId'
+                dataSource={tableData}
+                rowKey='edgeClusterId'
               />
             </UI.InstancesMargin>
           </Card>
