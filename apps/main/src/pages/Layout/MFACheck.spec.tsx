@@ -3,9 +3,9 @@ import { useState } from 'react'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Provider }                                             from '@acx-ui/store'
-import { act, render, renderHook, screen, mockServer, waitFor } from '@acx-ui/test-utils'
-import { UserUrlsInfo, MFAStatus, MfaDetailStatus }             from '@acx-ui/user'
+import { Provider }                                                   from '@acx-ui/store'
+import { act, render, renderHook, screen, mockServer, waitFor }       from '@acx-ui/test-utils'
+import { UserUrlsInfo, MFAStatus, MfaDetailStatus, UserRbacUrlsInfo } from '@acx-ui/user'
 
 import { MFACheck } from './MFACheck'
 
@@ -35,6 +35,17 @@ describe('MFA is not enabled', () => {
     mockServer.use(
       rest.get(
         UserUrlsInfo.getMfaTenantDetails.url,
+        (_req, res, ctx) => {
+          mockedGetMfaTenantDetDetails()
+          return res(ctx.json({
+            tenantStatus: MFAStatus.DISABLED,
+            userId: 'userId',
+            enabled: false
+          }))
+        }
+      ),
+      rest.get(
+        UserRbacUrlsInfo.getMfaTenantDetails.url,
         (_req, res, ctx) => {
           mockedGetMfaTenantDetDetails()
           return res(ctx.json({
@@ -82,6 +93,10 @@ describe('MFA First-time Setup Check', () => {
     mockServer.use(
       rest.get(
         UserUrlsInfo.getMfaTenantDetails.url,
+        (_req, res, ctx) => res(ctx.json(mockedMFATenantDetail))
+      ),
+      rest.get(
+        UserRbacUrlsInfo.getMfaTenantDetails.url,
         (_req, res, ctx) => res(ctx.json(mockedMFATenantDetail))
       ),
       rest.get(

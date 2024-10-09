@@ -1,15 +1,21 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 import { gql }                       from 'graphql-request'
 import moment, { Moment }            from 'moment-timezone'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { showToast }         from '@acx-ui/components'
-import { useNavigateToPath } from '@acx-ui/react-router-dom'
-import { intentAIApi }       from '@acx-ui/store'
+import { showToast }                                     from '@acx-ui/components'
+import { useNavigate, useNavigateToPath, useTenantLink } from '@acx-ui/react-router-dom'
+import { intentAIApi }                                   from '@acx-ui/store'
+import { encodeParameter }                               from '@acx-ui/utils'
 
-import { validateScheduleTiming }                 from './common/ScheduleTiming'
-import { aiFeaturesLabel, codes, Intent }         from './config'
+import { validateScheduleTiming } from './common/ScheduleTiming'
+import {
+  aiFeaturesLabel,
+  codes,
+  stateToGroupedStates,
+  Intent
+} from './config'
 import { Wlan }                                   from './EquiFlex/IntentAIForm/WlanSelection'
 import { useIntentContext }                       from './IntentContext'
 import { DisplayStates, Statuses, StatusReasons } from './states'
@@ -88,7 +94,10 @@ export function createUseIntentTransition <Preferences> (
   return function useIntentTransition () {
     const { $t } = useIntl()
     const { intent } = useIntentContext()
-    const navigate = useNavigateToPath('/analytics/intentAI')
+    const intentRef = useRef(intent)
+    const basePath = useTenantLink('/intentAI')
+    const navigate = useNavigate()
+    const navigateToTable = useNavigateToPath('/analytics/intentAI')
     const [doSubmit, response] = useIntentTransitionMutation()
 
     const submit = useCallback(async (values: FormValues<Preferences>) => {
@@ -99,23 +108,50 @@ export function createUseIntentTransition <Preferences> (
       if (!response.data) return
 
       if (response.data.success) {
-        const feature = codes[intent.code]
+        const featureValue = $t(aiFeaturesLabel[codes[intentRef.current.code].aiFeature])
+        const intentValue = $t(codes[intentRef.current.code].intent)
+        const sliceValue = intentRef.current.sliceValue
         showToast({
           type: 'success',
           content: <FormattedMessage
             defaultMessage='{feature}: {intent} for {sliceValue} has been updated'
             values={{
-              feature: $t(aiFeaturesLabel[feature.aiFeature]),
-              intent: $t(feature.intent),
-              sliceValue: intent.sliceValue
+              feature: featureValue,
+              intent: intentValue,
+              sliceValue: sliceValue
             }}
           />
+          ,
+          link: {
+            text: 'View',
+            onClick: () => {
+              const { status, statusReason } = response.originalArgs!
+              const key = [status, statusReason].filter(Boolean).join('-')
+              const statusLabel = stateToGroupedStates[key as unknown as DisplayStates]?.key || key
+              const intentFilter = {
+                aiFeature: [featureValue],
+                intent: [intentValue],
+                category: [$t(codes[intentRef.current.code].category)],
+                sliceValue: [intentRef.current.sliceId],
+                statusLabel: [statusLabel]
+              }
+              const encodedParameters = encodeParameter(intentFilter)
+              const newSearch =
+                new URLSearchParams(basePath.search)
+              newSearch.set('intentTableFilters', encodedParameters)
+              navigate({
+                ...basePath,
+                search: newSearch.toString()
+              })
+            }
+          }
         })
-        navigate()
+        navigateToTable()
       } else {
         showToast({ type: 'error', content: response.data.errorMsg })
       }
-    }, [$t, navigate, intent, response])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [$t, navigate, response])
 
     return { submit, response }
   }
