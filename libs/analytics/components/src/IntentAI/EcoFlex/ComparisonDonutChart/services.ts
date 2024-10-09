@@ -39,7 +39,7 @@ export const categoryStyles = [
     key: Type.Enabled,
     legendText: defineMessage({ defaultMessage: 'EcoFlex is supported and enabled' }),
     name: defineMessage({ defaultMessage: 'not supporting and enabling EcoFlex.' }),
-    color: cssStr('--acx-semantics-green-60')
+    color: cssStr('--acx-semantics-green-30')
   }
 // eslint-disable-next-line max-len
 ] as { key: keyof KpiResult, legendText: ReturnType<typeof defineMessage>, name: ReturnType<typeof defineMessage>, color: string }[]
