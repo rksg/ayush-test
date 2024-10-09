@@ -216,12 +216,10 @@ export function useServicePolicyEnabledWithConfigTemplate (configTemplateType: C
   return false
 }
 
-// eslint-disable-next-line max-len
 export function deriveRadiusFieldsFromServerData (data: NetworkSaveData): NetworkSaveData {
   return {
     ...data,
     isCloudpathEnabled: data.authRadius ? true : false,
-    // eslint-disable-next-line max-len
     enableAccountingService: (data.accountingRadius || data.guestPortal?.wisprPage?.accountingRadius)
       ? true
       : false
@@ -303,10 +301,9 @@ export function useRadiusServer () {
   const updateProfile = async (saveData: NetworkSaveData, networkId?: string) => {
     const mutations: Promise<CommonResult>[] = []
 
-    // eslint-disable-next-line max-len
     const radiusServerIdKeys: Extract<keyof NetworkSaveData, 'authRadiusId' | 'accountingRadiusId'>[] = ['authRadiusId', 'accountingRadiusId']
     radiusServerIdKeys.forEach(radiusKey => {
-      const newRadiusId = saveData[radiusKey]
+      const newRadiusId = (radiusKey === 'authRadiusId' || saveData.enableAccountingService) ? saveData[radiusKey] : undefined
       const oldRadiusId = radiusServerConfigurations?.[radiusKey]
 
       if (!newRadiusId && !oldRadiusId) return
@@ -326,18 +323,14 @@ export function useRadiusServer () {
   }
 
   const updateSettings = async (saveData: NetworkSaveData, networkId?: string) => {
-    const resolvedMacAuthMacFormat = saveData.type === NetworkTypeEnum.AAA
-      ? saveData.wlan?.macAddressAuthenticationConfiguration?.macAuthMacFormat
-      : saveData.wlan?.macAuthMacFormat
-
-    if (!resolvedMacAuthMacFormat) return Promise.resolve()
+    if (!shouldSaveRadiusServerSettings(saveData)) return Promise.resolve()
 
     return await updateRadiusServerSettings({
       params: { networkId },
       payload: {
         enableAccountingProxy: saveData.enableAccountingProxy,
         enableAuthProxy: saveData.enableAuthProxy,
-        macAuthMacFormat: resolvedMacAuthMacFormat
+        macAuthMacFormat: resolveMacAuthFormat(saveData)
       }
     }).unwrap()
   }
@@ -356,6 +349,28 @@ export function useRadiusServer () {
     updateRadiusServer,
     radiusServerConfigurations
   }
+}
+
+function resolveMacAuthFormat (newSettings: NetworkSaveData): string | undefined {
+  return newSettings.type === NetworkTypeEnum.AAA
+    ? newSettings.wlan?.macAddressAuthenticationConfiguration?.macAuthMacFormat
+    : newSettings.wlan?.macAuthMacFormat
+}
+
+function shouldSaveRadiusServerSettings (saveData: NetworkSaveData): boolean {
+  switch (saveData.type) {
+    case NetworkTypeEnum.PSK:
+    case NetworkTypeEnum.OPEN:
+      return !!saveData.wlan?.macAuthMacFormat
+    case NetworkTypeEnum.DPSK:
+      return !!saveData.isCloudpathEnabled
+    case NetworkTypeEnum.AAA:
+      return !saveData.useCertificateTemplate
+    case NetworkTypeEnum.CAPTIVEPORTAL:
+      return saveData.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.Cloudpath
+  }
+
+  return false
 }
 
 export function useClientIsolationActivations (shouldSkipMode: boolean,
