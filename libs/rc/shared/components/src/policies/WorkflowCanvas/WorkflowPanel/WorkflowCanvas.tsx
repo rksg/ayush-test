@@ -1,6 +1,6 @@
 import 'reactflow/dist/style.css' // Very important css must be imported!
 
-import { useEffect, useRef } from 'react'
+import { ReactElement, useEffect, useRef } from 'react'
 
 import { useIntl }      from 'react-intl'
 import ReactFlow, {
@@ -43,13 +43,14 @@ const nodeTypes: NodeTypes = {
 interface WorkflowProps {
   mode?: WorkflowPanelMode,
   initialNodes?: Node[],
-  initialEdges?: Edge[]
+  initialEdges?: Edge[],
+  customPanel?: ReactElement<typeof Panel>
 }
 
 const MIN_STEP_COUNT = 5
 
 export default function WorkflowCanvas (props: WorkflowProps) {
-  const { initialNodes, mode = WorkflowPanelMode.Default } = props
+  const { initialNodes, mode = WorkflowPanelMode.Default, customPanel } = props
   const isFirstRender = useRef(true)
   const isDesignMode = mode === WorkflowPanelMode.Design
   const isEditMode = mode === WorkflowPanelMode.Edit
@@ -142,6 +143,9 @@ export default function WorkflowCanvas (props: WorkflowProps) {
         <Panel position={'top-left'} style={{ fontWeight: 600 }}>
           {$t({ defaultMessage: 'Active Workflow Design' })}
         </Panel>
+      }
+      {
+        mode === WorkflowPanelMode.Custom && customPanel
       }
     </ReactFlow>
   )

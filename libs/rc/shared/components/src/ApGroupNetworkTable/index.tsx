@@ -53,7 +53,7 @@ export const defaultNewApGroupNetworkPayload = {
     'name',
     'description',
     'nwSubType',
-    'clients',
+    'clientCount',
     'vlan',
     'cog',
     'ssid',

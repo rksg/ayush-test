@@ -63,7 +63,8 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 
 jest.mock('@acx-ui/rc/components', ()=> ({
   ...jest.requireActual('@acx-ui/rc/components'),
-  WorkflowActionPreviewModal: () => <div id='action preview'></div>
+  WorkflowActionPreviewModal: () => <div id='action preview'></div>,
+  WorkflowDrawer: ()=> <div data-testid='drawer'></div>
 }))
 
 
@@ -159,5 +160,24 @@ describe('WorkflowTable', () => {
 
     const previewButton = await screen.findByRole('button', { name: /Preview/i })
     await userEvent.click(previewButton)
+  })
+
+  it('should able to edit workflow', async () => {
+    render(<Provider>
+      <WorkflowTable/>
+    </Provider>, {
+      route: { params, path: tablePath }
+    })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await screen.findByRole('button', { name: 'Add Workflow' })
+    // // assert link in Table view
+    await screen.findByRole('link', { name: workflows[0].name })
+
+    const row = await screen.findByRole('row', { name: new RegExp(workflows[0].name) })
+    await userEvent.click(within(row).getByRole('checkbox'))
+
+    const editButton = await screen.findByRole('button', { name: /Edit/i })
+    await userEvent.click(editButton)
+    await screen.findByTestId('drawer')
   })
 })
