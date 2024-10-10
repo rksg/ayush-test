@@ -114,7 +114,8 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
   },
   getWorkflowUIConfigImage: {
     method: 'get',
-    url: `${WorkflowBaseUrl}/:id/uiConfigurations/:imageType`
+    url: `${WorkflowBaseUrl}/:id/uiConfigurations/:imageType`,
+    newApi: true
   },
 
   /** Workflow Action Definitions endpoints */

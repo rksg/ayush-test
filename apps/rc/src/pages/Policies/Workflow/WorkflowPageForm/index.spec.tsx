@@ -1,7 +1,7 @@
-import { Path } from 'react-router-dom'
+import userEvent from '@testing-library/user-event'
+import { Path }  from 'react-router-dom'
 
 import { useIsSplitOn }                                    from '@acx-ui/feature-toggle'
-import { WorkflowFormMode }                                from '@acx-ui/rc/components'
 import { PolicyOperation, PolicyType, getPolicyRoutePath } from '@acx-ui/rc/utils'
 import { Provider }                                        from '@acx-ui/store'
 import { render, screen }                                  from '@acx-ui/test-utils'
@@ -39,21 +39,13 @@ describe('Workflow page form', () => {
     const path = '/:tenantId/' + getPolicyRoutePath({
       type: PolicyType.WORKFLOW, oper: PolicyOperation.CREATE })
     render(<Provider>
-      <WorkflowPageForm mode={WorkflowFormMode.CREATE}/>
+      <WorkflowPageForm/>
     </Provider>, {
       route: { params, path }
     })
     await screen.findByText('Add Workflow')
-  })
-
-  it('should render correctly for edit', async () => {
-    const path = '/:tenantId/' + getPolicyRoutePath({
-      type: PolicyType.WORKFLOW, oper: PolicyOperation.EDIT })
-    render(<Provider>
-      <WorkflowPageForm mode={WorkflowFormMode.EDIT}/>
-    </Provider>, {
-      route: { params, path }
-    })
-    await screen.findByText('Edit Workflow')
+    await screen.findByText('Next')
+    const cancelButton = await screen.findByText('Cancel')
+    userEvent.click(cancelButton)
   })
 })
