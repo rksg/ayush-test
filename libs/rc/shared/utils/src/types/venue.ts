@@ -867,13 +867,6 @@ export enum IncompatibleFeatureLevelEnum {
   WIFI_NETWORK = 'WIFI_NETWORK'
 }
 
-export enum CompatibleStatusEnum {
-  CHECK_UNAVAILABLE = 'CHECK_UNAVAILABLE',
-  PARTIALLY_INCOMPATIBLE = 'PARTIALLY_INCOMPATIBLE',
-  FULLY_COMPATIBLE = 'FULLY_COMPATIBLE',
-  COMPATIBILITY_CHECKING = 'COMPATIBILITY_CHECKING'
-}
-
 export type CompatibilitySelectedApInfo = {
   serialNumber: string
   name: string,
@@ -903,7 +896,6 @@ export type Compatibility = {
   id: string,
   incompatible: number,
   incompatibleFeatures?: IncompatibleFeature[],
-  status?: string,
   total: number
 }
 

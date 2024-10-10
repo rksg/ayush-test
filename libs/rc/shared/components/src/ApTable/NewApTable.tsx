@@ -155,7 +155,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
     const fetchApCompatibilitiesAndSetData = async () => {
       const result:React.SetStateAction<(NewAPModelExtended|NewAPExtendedGrouped)[]> = []
       const apIdsToIncompatible:{ [key:string]: number } = {}
-      const apIdsToCompatibleStatus:{ [key:string]: string } = {}
+
       if (tableQuery.data?.data) {
         let apIds:string[] = []
 
@@ -201,11 +201,8 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
                 apIds.forEach((id:string) => {
                   const apIncompatible = find(compatibilities, ap => id===ap.id)
                   if (apIncompatible) {
-                    const { incompatibleFeatures, status, incompatible } = apIncompatible
+                    const { incompatibleFeatures, incompatible } = apIncompatible
                     apIdsToIncompatible[id] = incompatibleFeatures?.length ?? incompatible ?? 0
-                    if (status) {
-                      apIdsToCompatibleStatus[id] = status
-                    }
                   }
                 })
               }
@@ -252,16 +249,14 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
               tableQuery.data.data?.forEach(item => {
                 const children = (item as unknown as { aps: NewAPModelExtended[] }).aps?.map(ap => ({
                   ...ap,
-                  incompatible: apIdsToIncompatible[ap.serialNumber],
-                  compatibilityStatus: apIdsToCompatibleStatus[ap.serialNumber]
+                  incompatible: apIdsToIncompatible[ap.serialNumber]
                 }))
                 result.push({ ...item, aps: children, children })
               })
             } else {
               tableQuery.data.data?.forEach(ap => (result.push({
                 ...ap,
-                incompatible: apIdsToIncompatible[ap.serialNumber],
-                compatibilityStatus: apIdsToCompatibleStatus[ap.serialNumber]
+                incompatible: apIdsToIncompatible[ap.serialNumber]
               })))
             }
             setTableData(result)
@@ -596,11 +591,10 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       show: false,
       sorter: false,
       render: (_: ReactNode, row: NewAPModelExtended) => {
-        const { incompatible, status, compatibilityStatus } = row || {}
+        const { incompatible, status } = row || {}
         return (<ApCompatibilityFeature
           count={incompatible}
           deviceStatus={status}
-          compatibilityStatus={compatibilityStatus}
           onClick={() => {
             const { serialNumber, name='', model='', firmwareVersion='' } = row || {}
             setSelectedApInfo({ serialNumber, name, model, firmwareVersion })
