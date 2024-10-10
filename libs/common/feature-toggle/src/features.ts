@@ -14,7 +14,6 @@ export enum Features {
   ASSIGN_MULTI_EC_TO_MSP_ADMINS = 'mspservice-assign-multi-ec-to-multi-msp-admin',
   AP_TX_POWER_TOGGLE = 'ap-tx-power-toggle',
   BETA_BUTTON = 'acx-ui-beta-button-toggle',
-  CLOUDMOTE_SERVICE = 'cloudmote-service-enabled',
   CLOUDPATH_ASYNC_API_TOGGLE = 'acx-ui-cloudpath-async-api-toggle',
   CLOUDPATH_BETA = 'BETA-CP',
   CONFIG_CHANGE = 'acx-ui-config-change-toggle',
@@ -50,6 +49,7 @@ export enum Features {
   ENTITLEMENT_EXTENDED_TRIAL_TOGGLE = 'entitlement-acx-extended-trial-toggle',
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
+  ENTITLEMENT_COMPLIANCE_NOTES_TOGGLE = 'entitlement-no-courtesy-licenses-toggle',
   ENTITLEMENT_LICENSE_COMPLIANCE_TOGGLE= 'entitlement-license-compliance-toggle',
   ENTITLEMENT_RBAC_API = 'abac-policies-toggle',
   ENTITLEMENT_SEPARATE_SERVICEDATE_TOGGLE = 'entitlement-separate-trial-date-toggle',
@@ -194,7 +194,8 @@ export enum Features {
   WIFI_CAPTIVE_PORTAL_OWE = 'wifi-captive-portal-owe',
   WIFI_WLAN_DEPRECATE_WEP = 'wifi-wlan-deprecate-wpa',
   WIFI_OVER_THE_DS_FT_SUPPORT_TOGGLE = 'wifi-over-the-ds-ft-support-toggle',
-  ENTITLEMENT_LICENSE_COMPLIANCE_PHASE2_TOGGLE = 'entitlement-license-compliance-phase2-toggle'
+  ENTITLEMENT_LICENSE_COMPLIANCE_PHASE2_TOGGLE = 'entitlement-license-compliance-phase2-toggle',
+  BRAND360_MDU_TOGGLE = 'acx-ui-brand360-mdu-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

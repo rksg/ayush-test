@@ -560,3 +560,24 @@ export enum ComplianceMspCustomersDevicesTypes {
   EDGE='EDGE',
   RWG='RWG'
 }
+
+export interface LicenseAttentionNotes {
+  data: {
+    summary?: string,
+    details?: string
+  }[]
+}
+
+export const MspAttentionNotesPayload = {
+  page: 1,
+  pageSize: 20,
+  fields: ['summary', 'details'],
+  sortField: 'status',
+  sortOrder: 'DESC',
+  filters: {
+    type: ['STOP_COURTESY'],
+    tenantType: ['MSP', 'ALL'],
+    status: ['VALID'],
+    licenseCheck: true
+  }
+}
