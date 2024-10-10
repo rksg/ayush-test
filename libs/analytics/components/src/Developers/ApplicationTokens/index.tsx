@@ -92,11 +92,11 @@ export const useApplicationTokens = () => {
       return <Row>
         <Label>{row.clientId}</Label>
         <TransparentButton
-          data-testid={'copy'}
+          data-testid={'copy-client-id'}
           type='text'
           icon={<CopyOutlined />}
           onClick={() =>
-            navigator.clipboard.writeText(row.clientId ?? '')
+            navigator.clipboard.writeText(row.clientId)
           }
         />
       </Row>
@@ -114,11 +114,11 @@ export const useApplicationTokens = () => {
           value={row.clientSecret}
         />
         <TransparentButton
-          data-testid={'copy'}
+          data-testid={'copy-client-secret'}
           type='text'
           icon={<CopyOutlined />}
           onClick={() => {
-            navigator.clipboard.writeText(row.clientSecret ?? '')
+            navigator.clipboard.writeText(row.clientSecret)
           }}
         />
       </Row>

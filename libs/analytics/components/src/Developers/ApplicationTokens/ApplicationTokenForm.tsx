@@ -151,6 +151,7 @@ export function ApplicationTokenForm (props: {
         />
         <TransparentButton
           type='link'
+          data-testid='copy-client-id'
           onClick={() => {
             handleClickCopy(form.getFieldValue('clientId'))
           }}>
@@ -178,6 +179,7 @@ export function ApplicationTokenForm (props: {
           <Divider type='vertical'/>
           <TransparentButton
             type='link'
+            data-testid='copy-client-secret'
             onClick={() => handleClickCopy(form.getFieldValue('clientSecret'))}>
             {$t({ defaultMessage: 'Copy' })}
           </TransparentButton>

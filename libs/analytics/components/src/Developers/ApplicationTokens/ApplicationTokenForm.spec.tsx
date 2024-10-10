@@ -131,8 +131,36 @@ describe('ApplicationTokenForm', () => {
     })
   })
 
-  describe('Rotate existing application token', () => {
-    it('handle edit flow', async () => {
+  describe('Handle existing application token', () => {
+    beforeAll(() => {
+      Object.defineProperty(navigator, 'clipboard', {
+        value: {
+          writeText: jest.fn()
+        },
+        configurable: true
+      })
+    })
+    it('should copy client ID to clipboard', async () => {
+      const { onClose } = await renderEditAndRotate()
+
+      await click(await screen.findByTestId('copy-client-id'))
+
+      expect(navigator.clipboard.writeText).toHaveBeenCalledWith(applicationToken.clientId)
+
+      expect(onClose).not.toBeCalled()
+    })
+
+    it('should copy client secret to clipboard', async () => {
+      const { onClose } = await renderEditAndRotate()
+
+      await click(await screen.findByTestId('copy-client-secret'))
+
+      expect(navigator.clipboard.writeText).toHaveBeenCalledWith(applicationToken.clientSecret)
+
+      expect(onClose).not.toBeCalled()
+    })
+
+    it('handle secret rotation', async () => {
       const { dto, onClose } = await renderEditAndRotate()
 
       mockServer.use(
@@ -140,7 +168,7 @@ describe('ApplicationTokenForm', () => {
           (req, res, ctx) => {
             return res(ctx.json({
               ...dto,
-              clientSecret: '0nbCA1j/UC1SRGmt+o1GGf9S3CIHjAU4uTT2jNn9fgCE8MbRu3aJsZ6r1lnPYjCk'
+              clientSecret: '32c4d5e357cd424bac3d981bf68a7349'
             }))
           })
       )

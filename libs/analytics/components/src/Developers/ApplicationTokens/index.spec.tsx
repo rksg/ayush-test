@@ -114,6 +114,60 @@ describe('ApplicationTokensTable', () => {
       expect(form).not.toBeInTheDocument()
     })
 
+    describe('copy client details', () => {
+      beforeAll(() => {
+        Object.defineProperty(navigator, 'clipboard', {
+          value: {
+            writeText: jest.fn()
+          },
+          configurable: true
+        })
+      })
+      it('should copy client ID to clipboard', async () => {
+        const Component = () => {
+          const { component } = useApplicationTokens()
+          return component
+        }
+        render(<Component />, { wrapper: Provider, route: {} })
+
+        const tbody = within(await findTBody())
+
+        const applicationToken = applicationTokens[5]
+
+        const targetRow = await tbody.findByRole(
+          'row',
+          { name: (row) => row.includes(applicationToken.name) }
+        )
+
+        const copyButton = await within(targetRow).findByTestId('copy-client-id')
+        await click(copyButton)
+
+        expect(navigator.clipboard.writeText).toHaveBeenCalledWith(applicationToken.clientId)
+      })
+
+      it('should copy client secret to clipboard', async () => {
+        const Component = () => {
+          const { component } = useApplicationTokens()
+          return component
+        }
+        render(<Component />, { wrapper: Provider, route: {} })
+
+        const tbody = within(await findTBody())
+
+        const applicationToken = applicationTokens[5]
+
+        const targetRow = await tbody.findByRole(
+          'row',
+          { name: (row) => row.includes(applicationToken.name) }
+        )
+
+        const copyButton = await within(targetRow).findByTestId('copy-client-secret')
+        await click(copyButton)
+
+        expect(navigator.clipboard.writeText).toHaveBeenCalledWith(applicationToken.clientSecret)
+      })
+    })
+
     describe('delete', () => {
       const applicationToken = applicationTokens[4]
       const renderElements = async () => {

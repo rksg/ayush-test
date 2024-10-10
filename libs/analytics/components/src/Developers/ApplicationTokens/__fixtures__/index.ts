@@ -6,8 +6,8 @@ export const applicationTokens = Array(10).fill(null).map((_, index) => ({
   id: `4cff7ebcb8d045898427749bfc89189${index}`,
   camId: `4cff7ebcb8d045898427749bfc89189${index}`,
   name: `token-${index}`,
-  clientId: `220ed88d2119454096be40a1f5fc55b${index}`,
-  clientSecret: `b+nnswB4lgP7Zg7wzUKgva9wdJLSl2htT44KOt7RawFp/gdJwPZFcYTIqR7KQ1r${index}`
+  clientId: `eb9081a7d7b043d9a585644506b0de7${index}`,
+  clientSecret: `54be75a13bd247feb59f7d0020d014d${index}`
 }))
 
 export const mockApplicationTokens = (appTokens = applicationTokens) => rest.get(
