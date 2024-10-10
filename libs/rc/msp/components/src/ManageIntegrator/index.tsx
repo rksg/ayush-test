@@ -64,9 +64,9 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { RolesEnum }             from '@acx-ui/types'
-import { useUserProfileContext } from '@acx-ui/user'
-import { AccountType  }          from '@acx-ui/utils'
+import { RolesEnum }                   from '@acx-ui/types'
+import { useUserProfileContext }       from '@acx-ui/user'
+import { AccountType, noDataDisplay  } from '@acx-ui/utils'
 
 import { AssignEcDrawer }            from '../AssignEcDrawer'
 import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'
@@ -522,7 +522,7 @@ export function ManageIntegrator () {
 
   const displayMspAdmins = ( ) => {
     if (!mspAdmins || mspAdmins.length === 0)
-      return '--'
+      return noDataDisplay
     return <>
       {mspAdmins.map(admin =>
         <UI.AdminList key={admin.id}>
@@ -535,7 +535,7 @@ export function ManageIntegrator () {
 
   const displayAssignedEc = () => {
     if (!selectedEcs || selectedEcs.length === 0)
-      return '--'
+      return noDataDisplay
     return <>
       {selectedEcs.map(ec =>
         <UI.AdminList key={ec.id}>
@@ -556,7 +556,7 @@ export function ManageIntegrator () {
     } else if (assignedEcs?.data?.delegation_type) {
       return intl.$t({ defaultMessage: 'Unlimited' })
     }
-    return '--'
+    return noDataDisplay
   }
 
   const displayCustomerAdmins = () => {

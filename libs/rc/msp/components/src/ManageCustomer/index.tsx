@@ -76,7 +76,7 @@ import {
 } from '@acx-ui/react-router-dom'
 import { RolesEnum }                             from '@acx-ui/types'
 import { PrivilegeGroup, useUserProfileContext } from '@acx-ui/user'
-import { AccountType }                           from '@acx-ui/utils'
+import { AccountType, noDataDisplay }            from '@acx-ui/utils'
 
 import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'
 import { ManageDelegateAdminDrawer } from '../ManageDelegateAdminDrawer'
@@ -709,7 +709,7 @@ export function ManageCustomer () {
 
   const displayMspAdmins = () => {
     if (!mspAdmins || mspAdmins.length === 0)
-      return '--'
+      return noDataDisplay
     return <>
       {mspAdmins.map(admin =>
         <UI.AdminList key={admin.id}>
@@ -722,7 +722,7 @@ export function ManageCustomer () {
 
   const displayPrivilegeGroups = () => {
     if (!privilegeGroups || privilegeGroups.length === 0)
-      return '--'
+      return noDataDisplay
     return <>
       {privilegeGroups.map(pg =>
         <UI.AdminList key={pg.id}>
@@ -734,7 +734,7 @@ export function ManageCustomer () {
 
   const displayIntegrator = () => {
     if (!mspIntegrator || mspIntegrator.length === 0)
-      return '--'
+      return noDataDisplay
     return <>
       {mspIntegrator.map(integrator =>
         <UI.AdminList key={integrator.id}>
@@ -746,7 +746,7 @@ export function ManageCustomer () {
 
   const displayInstaller = () => {
     if (!mspInstaller || mspInstaller.length === 0)
-      return '--'
+      return noDataDisplay
     return <>
       {mspInstaller.map(installer =>
         <UI.AdminList key={installer.id}>
