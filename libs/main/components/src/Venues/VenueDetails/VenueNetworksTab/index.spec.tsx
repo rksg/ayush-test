@@ -57,7 +57,8 @@ const disabledFFs = [
   Features.EDGES_SD_LAN_TOGGLE,
   Features.EDGES_SD_LAN_HA_TOGGLE,
   Features.WIFI_RBAC_API,
-  Features.RBAC_CONFIG_TEMPLATE_TOGGLE
+  Features.RBAC_CONFIG_TEMPLATE_TOGGLE,
+  Features.WIFI_COMPATIBILITY_BY_MODEL
 ]
 jest.mocked(useIsSplitOn).mockImplementation(ff => !disabledFFs.includes(ff as Features))
 
@@ -412,7 +413,9 @@ describe('VenueNetworksTab', () => {
       jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP
         && ff !== Features.WIFI_RBAC_API
         && ff !== Features.EDGE_SD_LAN_MV_TOGGLE
-        && ff !== Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
+        && ff !== Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE
+        && ff !== Features.WIFI_COMPATIBILITY_BY_MODEL
+      )
     })
     const mockedSdLanScopeData = {
       sdLans: [{
@@ -473,7 +476,9 @@ describe('VenueNetworksTab', () => {
 
     beforeEach(() => {
       jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP
-        && ff !== Features.WIFI_RBAC_API)
+        && ff !== Features.WIFI_RBAC_API
+        && ff !== Features.WIFI_COMPATIBILITY_BY_MODEL
+      )
     })
     const mockedSdLanScopeData = {
       sdLans: [{
@@ -621,7 +626,9 @@ describe('VenueNetworksTab', () => {
         ff !== Features.G_MAP &&
         ff !== Features.EDGES_SD_LAN_TOGGLE &&
         ff !== Features.EDGES_SD_LAN_HA_TOGGLE &&
-        ff !== Features.EDGE_SD_LAN_MV_TOGGLE)
+        ff !== Features.EDGE_SD_LAN_MV_TOGGLE &&
+        ff !== Features.WIFI_COMPATIBILITY_BY_MODEL
+      )
     })
 
     it('should correctly display tunnel column when SoftGre is running on it', async () => {
