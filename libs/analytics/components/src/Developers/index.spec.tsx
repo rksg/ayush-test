@@ -22,7 +22,7 @@ jest.mock('./ApplicationTokens', () => ({
   }))
 }))
 
-jest.mock('./Webhooks', () => ({
+jest.mock('../Webhooks', () => ({
   useWebhooks: jest.fn(() => ({
     title: 'Webhooks',
     component: <div>webhooks</div>

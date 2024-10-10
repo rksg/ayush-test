@@ -7,10 +7,10 @@ import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { DevelopersTab }       from '../Developers'
-import { useWebhooks }         from '../Developers/Webhooks'
 import { useOnboardedSystems } from '../OnboardedSystems'
 import { Support }             from '../Support'
 import { useUsers }            from '../Users'
+import { useWebhooks }         from '../Webhooks'
 
 export enum AccountManagementTabEnum {
   ONBOARDED_SYSTEMS = 'onboarded',
