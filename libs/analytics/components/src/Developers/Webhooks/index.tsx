@@ -16,7 +16,7 @@ import { get }                                                     from '@acx-ui
 import { SwitchScopes, WifiScopes }                                from '@acx-ui/types'
 import { filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 
-import { handleError } from '../Developers/services'
+import { handleError } from '../services'
 
 import { useDeleteWebhookMutation, useWebhooksQuery, useResourceGroups } from './services'
 import { WebhookForm }                                                   from './WebhookForm'

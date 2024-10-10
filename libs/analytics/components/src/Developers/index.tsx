@@ -3,9 +3,8 @@
 import { Tabs }                                               from '@acx-ui/components'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { useWebhooks } from '../Webhooks'
-
 import { useApplicationTokens } from './ApplicationTokens'
+import { useWebhooks }          from './Webhooks'
 
 export function DevelopersTab () {
   // const { $t } = useIntl()
