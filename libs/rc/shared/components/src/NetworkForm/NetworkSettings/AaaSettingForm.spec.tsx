@@ -11,6 +11,7 @@ import { act, mockServer, render, screen, fireEvent, waitForElementToBeRemoved, 
 import { UserUrlsInfo }                                                                                                  from '@acx-ui/user'
 
 import { certificateAuthorityList, certificateTemplateList, policySetList } from '../../policies/CertificateTemplate/__test__/fixtures'
+import { mockPersonaGroupTableResult }                                      from '../../users/__tests__/fixtures'
 import {
   venuesResponse,
   venueListResponse,
@@ -167,13 +168,22 @@ describe('NetworkForm', () => {
   it('should render correctly when certificateTemplate enabled', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.CERTIFICATE_TEMPLATE)
 
+    const queryPolicySetFn = jest.fn()
+    const searchPersonaGroupListFn = jest.fn()
+
     mockServer.use(
       rest.get(
         RulesManagementUrlsInfo.getPolicySets.url.split('?')[0],
-        (req, res, ctx) => res(ctx.json(policySetList))
+        (req, res, ctx) => {
+          queryPolicySetFn()
+          return res(ctx.json(policySetList))
+        }
       ),rest.post(
         PersonaUrls.searchPersonaGroupList.url.split('?')[0],
-        (req, res, ctx) => res(ctx.json([]))
+        (req, res, ctx) => {
+          searchPersonaGroupListFn()
+          return res(ctx.json(mockPersonaGroupTableResult))
+        }
       )
     )
 
@@ -195,6 +205,10 @@ describe('NetworkForm', () => {
     await userEvent.click(await screen.findByText('Add'))
     const dialog = await screen.findByRole('dialog')
     expect(within(dialog).getByText('Add Certificate Template')).toBeVisible()
+
+    await waitFor(() => expect(queryPolicySetFn).toHaveBeenCalled())
+    await waitFor(() => expect(searchPersonaGroupListFn).toHaveBeenCalled())
+
     await userEvent.click(screen.getByRole('button', { name: /Cancel/i }))
     await waitFor(() => expect(dialog).not.toBeVisible())
   })
