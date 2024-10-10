@@ -70,7 +70,7 @@ export const ApGeneralCompatibilityDrawer = (props: ApGeneralCompatibilityDrawer
 
   const apNameTitle = (apName) ? `: ${apName}` : ''
 
-  const drawerWidth = isApCompatibilitiesByModel? 700 : 500
+  const drawerWidth = (isApCompatibilitiesByModel && isMultiple && !apId)? 700 : 500
   const apCompatibilities = isApCompatibilitiesByModel? newCompatibilities : oldCompatibilities
   const isLoading = isApCompatibilitiesByModel? isNewLoading : isOldLoading
 

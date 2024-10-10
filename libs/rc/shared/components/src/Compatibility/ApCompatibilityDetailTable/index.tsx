@@ -85,7 +85,7 @@ const useColumns = (apModelFamilies?: ApModelFamily[]) => {
         /> : ''
     }
   }, {
-    title: $t({ defaultMessage: 'Min. Required Version' }),
+    title: $t({ defaultMessage: 'Min. Required Versions' }),
     key: 'requirements',
     dataIndex: 'requirements',
     render: function (_, row) {

@@ -225,9 +225,9 @@ export const ApModelCompatibilityDrawer = (props: ApModelCompatibilityDrawerProp
   const getItems = (items: Compatibility[]) => items?.map((item: Compatibility, index) => {
     const { incompatibleFeatures } = item
     return incompatibleFeatures?.map((itemDetail) => (
-      <StyledWrapper key={`Compatibility_${item.id}`}>
+      <StyledWrapper key={`incompatibleFeatures_${item.id}`}>
         {isMultiple &&
-          <Form.Item key={`name_${index}`}>
+          <Form.Item>
             <StyledFeatureName>
               {itemDetail?.featureName}
             </StyledFeatureName>
@@ -235,7 +235,6 @@ export const ApModelCompatibilityDrawer = (props: ApModelCompatibilityDrawerProp
         }
         {!apName && currentType !== ApCompatibilityType.ALONE &&
           <Form.Item
-            key={`total_${index}`}
             label={$t({
               defaultMessage: 'Incompatible Access Points (Currently)'
             })}
@@ -247,9 +246,8 @@ export const ApModelCompatibilityDrawer = (props: ApModelCompatibilityDrawerProp
         }
 
         {itemDetail?.requirements?.map((requirement: ApRequirement, reqIndex) => (
-          <StyledRequirementWrapper>
+          <StyledRequirementWrapper key={`requirements_${item.id}_${index}_${reqIndex}`}>
             <Form.Item
-              key={`minfw_${index}_${reqIndex}`}
               label={$t({ defaultMessage: 'Minimum required version' })}
               style={detailStyle}
               className='ApCompatibilityDrawerFormItem'
@@ -257,7 +255,6 @@ export const ApModelCompatibilityDrawer = (props: ApModelCompatibilityDrawerProp
               {requirement?.firmware}
             </Form.Item>
             <Form.Item
-              key={`model_${index}_${reqIndex}`}
               label={$t({ defaultMessage: 'Supported AP Models' })}
               style={detailStyle}
               className='ApCompatibilityDrawerFormItem'
