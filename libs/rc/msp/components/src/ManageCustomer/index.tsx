@@ -81,9 +81,10 @@ import { AccountType }           from '@acx-ui/utils'
 import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'
 import { ManageDelegateAdminDrawer } from '../ManageDelegateAdminDrawer'
 // eslint-disable-next-line import/order
-import { SelectIntegratorDrawer } from '../SelectIntegratorDrawer'
-import { StartSubscriptionModal } from '../StartSubscriptionModal'
-import * as UI                    from '../styledComponents'
+import { ManageMspDelegationDrawer } from '../ManageMspDelegations'
+import { SelectIntegratorDrawer }    from '../SelectIntegratorDrawer'
+import { StartSubscriptionModal }    from '../StartSubscriptionModal'
+import * as UI                       from '../styledComponents'
 
 interface AddressComponent {
   long_name?: string;
@@ -188,6 +189,7 @@ export function ManageCustomer () {
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
   const isExtendedTrialToggleEnabled = useIsSplitOn(Features.ENTITLEMENT_EXTENDED_TRIAL_TOGGLE)
   const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
+  const isRbacPhase2Enabled = true//useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
@@ -843,16 +845,30 @@ export function ManageCustomer () {
 
   const MspAdminsForm = () => {
     return <>
-      <UI.FieldLabelAdmins width='275px' style={{ marginTop: '15px' }}>
-        <label>{intl.$t({ defaultMessage: 'MSP Administrators' })}</label>
-        <Form.Item children={<div>{displayMspAdmins()}</div>} />
-        {!isEditMode && <Form.Item
-          children={<UI.FieldTextLink onClick={() => setDrawerAdminVisible(true)}>
-            {intl.$t({ defaultMessage: 'Manage' })}
-          </UI.FieldTextLink>
-          }
-        />}
-      </UI.FieldLabelAdmins>
+      {isRbacPhase2Enabled
+        ? <div>
+          <UI.FieldLabelAdmins2 width='275px' style={{ marginTop: '15px' }}>
+            <label>{intl.$t({ defaultMessage: 'MSP Deligations' })}</label>
+            {!isEditMode && <Form.Item
+              children={<UI.FieldTextLink onClick={() => setDrawerAdminVisible(true)}>
+                {intl.$t({ defaultMessage: 'Manage' })}
+              </UI.FieldTextLink>
+              }
+            />}
+          </UI.FieldLabelAdmins2>
+          <Form.Item children={<div>{displayMspAdmins()}</div>} />
+        </div>
+        : <UI.FieldLabelAdmins width='275px' style={{ marginTop: '15px' }}>
+          <label>{intl.$t({ defaultMessage: 'MSP Administrators' })}</label>
+          <Form.Item children={<div>{displayMspAdmins()}</div>} />
+          {!isEditMode && <Form.Item
+            children={<UI.FieldTextLink onClick={() => setDrawerAdminVisible(true)}>
+              {intl.$t({ defaultMessage: 'Manage' })}
+            </UI.FieldTextLink>
+            }
+          />}
+        </UI.FieldLabelAdmins>}
+
       <UI.FieldLabelAdmins width='275px' style={{ marginTop: '-12px' }}>
         <label>{intl.$t({ defaultMessage: 'Integrator' })}</label>
         <Form.Item children={displayIntegrator()} />
@@ -1876,11 +1892,17 @@ export function ManageCustomer () {
       </StepsFormLegacy>
 
       {drawerAdminVisible && (isAbacToggleEnabled
-        ? <ManageDelegateAdminDrawer
-          visible={drawerAdminVisible}
-          setVisible={setDrawerAdminVisible}
-          setSelected={selectedMspAdmins}
-          tenantId={mspEcTenantId}/>
+        ? (isRbacPhase2Enabled
+          ? <ManageMspDelegationDrawer
+            visible={drawerAdminVisible}
+            setVisible={setDrawerAdminVisible}
+            setSelected={selectedMspAdmins}
+            tenantId={mspEcTenantId}/>
+          : <ManageDelegateAdminDrawer
+            visible={drawerAdminVisible}
+            setVisible={setDrawerAdminVisible}
+            setSelected={selectedMspAdmins}
+            tenantId={mspEcTenantId}/>)
         : <ManageAdminsDrawer
           visible={drawerAdminVisible}
           setVisible={setDrawerAdminVisible}

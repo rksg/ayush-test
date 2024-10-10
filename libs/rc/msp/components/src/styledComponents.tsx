@@ -51,6 +51,12 @@ export const FieldLabelAdmins = styled.div<{ width: string }>`
   grid-template-columns: 135px 280px 40px;
   align-items: baseline;
 `
+export const FieldLabelAdmins2 = styled.div<{ width: string }>`
+  font-size: var(--acx-body-4-font-size);
+  display: grid;
+  grid-template-columns: 415px 40px;
+  align-items: baseline;
+`
 export const FieldLabelSubs = styled.div<{ width: string }>`
   font-size: var(--acx-body-4-font-size);
   display: grid;
