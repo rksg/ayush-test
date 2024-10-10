@@ -31,6 +31,7 @@ export interface Response {
   lsps: string[]
   p1Incidents: number
   ssidCompliance: [number, number]
+  prospectCountSLA: number
   deviceCount: number
   avgConnSuccess: [number, number]
   avgTTC: [number, number]
@@ -44,6 +45,7 @@ export interface BrandTimeseriesPayload {
   ssidRegex: string,
   granularity?: 'all',
   tenantIds: (string | undefined)[]
+  isMDU?: boolean
 }
 export interface FranchisorTimeseries {
   time: string[],
@@ -64,6 +66,7 @@ export interface BrandVenuesSLA {
   timeToConnectSLA: [number| null, number| null]
   clientThroughputSLA: [number| null, number| null]
   connectionSuccessSLA: [number| null, number| null]
+  prospectCountSLA: number | null
 }
 const getRequestPayload = (payload: BrandTimeseriesPayload & IncidentsToggleFilter) => {
   const {
@@ -110,8 +113,7 @@ export const api = dataApi.injectEndpoints({
               timeToConnectSLA
               clientThroughputSLA
               connectionSuccessSLA
-              ssidComplianceSLA
-              prospectCountSLA
+              ${payload.isMDU ? 'prospectCountSLA' : 'ssidComplianceSLA'}
             }
           }
         `,
@@ -142,7 +144,7 @@ export const api = dataApi.injectEndpoints({
             tenantId
             zoneName
             incidentCount
-            ssidComplianceSLA
+            ${payload.isMDU ? 'prospectCountSLA' : 'ssidComplianceSLA'}
             timeToConnectSLA
             clientThroughputSLA
             connectionSuccessSLA

@@ -6,8 +6,7 @@ import { useBrand360Config }                                 from '@acx-ui/analy
 import { Settings }                                          from '@acx-ui/analytics/utils'
 import { PageHeader, RangePicker, GridRow, GridCol, Loader } from '@acx-ui/components'
 import { Features,
-  useIsSplitOn,
-  useIsTierAllowed
+  useIsSplitOn
 } from '@acx-ui/feature-toggle'
 import {
   useMspECListQuery,
@@ -91,7 +90,8 @@ export function Brand360 () {
     start: startDate,
     end: endDate,
     ssidRegex: ssid,
-    toggles: useIncidentToggles()
+    toggles: useIncidentToggles(),
+    isMDU: isMDUEnabled
   }
 
   const tenantDetails = useGetTenantDetailsQuery({ tenantId })
@@ -109,7 +109,11 @@ export function Brand360 () {
     : {}
   const venuesData = useFetchBrandPropertiesQuery(chartPayload, { skip: ssidSkip })
   const tableResults = venuesData.data && lookupAndMappingData
-    ? transformVenuesData(venuesData as { data : BrandVenuesSLA[] }, lookupAndMappingData)
+    ? transformVenuesData(
+      venuesData as { data : BrandVenuesSLA[] },
+      lookupAndMappingData,
+      isMDUEnabled
+    )
     : []
   const tenantIds = tableResults?.map(({ tenantId }) => tenantId)
   /*
@@ -118,13 +122,13 @@ export function Brand360 () {
       - rc api for properties still loading
       - no tenantids implies no data in table
   */
-  const skipTSQuery = ssidSkip || propertiesLoading || !tenantIds.length || false
+  const skipTSQuery = ssidSkip || propertiesLoading || !tenantIds.length
   const {
     data: chartData,
     ...chartResults
   } = useFetchBrandTimeseriesQuery(
     { ...chartPayload, tenantIds },
-    // { skip: skipTSQuery }
+    { skip: skipTSQuery }
   )
   const [pastStart, pastEnd] = computePastRange(startDate, endDate)
   const {
@@ -147,7 +151,14 @@ export function Brand360 () {
   },
   { skip: skipTSQuery }
   )
-  const chartMap: ChartKey[] = ['incident', 'experience', 'compliance']
+  const chartMap: ChartKey[] = ['incident', 'experience']
+  if (isMDUEnabled) {
+    chartMap.push('mdu')
+  } else
+  // istanbul ignore next
+  {
+    chartMap.push('compliance')
+  }
   return <Loader states={[settingsQuery, propertiesData, venuesData]}>
     <PageHeader
       title={brand}
@@ -183,7 +194,12 @@ export function Brand360 () {
         </Loader>
       </GridCol>)}
       <GridCol col={{ span: 6 }}>
-        <SlaSliders initialSlas={data || {}} currentSlas={settings} setCurrentSlas={setSettings} />
+        <SlaSliders
+          initialSlas={data || {}}
+          currentSlas={settings}
+          setCurrentSlas={setSettings}
+          isMDU={isMDUEnabled}
+        />
       </GridCol>
       <GridCol col={{ span: 24 }}>
         <BrandTable
@@ -194,6 +210,7 @@ export function Brand360 () {
           isLSP={isLSP}
           lspLabel={lsp}
           propertyLabel={property}
+          isMDU={isMDUEnabled}
         />
       </GridCol>
     </GridRow>

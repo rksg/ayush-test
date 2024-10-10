@@ -8,7 +8,7 @@ import { TableResult }   from '@acx-ui/rc/utils'
 import { noDataDisplay } from '@acx-ui/utils'
 
 import type { Response, BrandVenuesSLA } from './services'
-export type ChartKey = 'incident' | 'experience' | 'compliance'
+export type ChartKey = 'incident' | 'experience' | 'compliance' | 'mdu'
 
 type SLARecord = [ number, number ]
 type SortResult = -1 | 0 | 1
@@ -21,7 +21,8 @@ export interface Common {
   deviceCount: number
   avgConnSuccess: number | null,
   avgTTC: number | null,
-  avgClientThroughput: number | null
+  avgClientThroughput: number | null,
+  prospectCountSLA: number
 }
 export interface Property extends Common {
   property: string
@@ -84,7 +85,8 @@ export const transformToLspView = (properties: Response[]): Lsp[] => {
       clientThroughput,
       p1Incidents,
       ssidCompliance,
-      deviceCount
+      deviceCount,
+      prospectCountSLA
     } = properties.reduce(
       (acc, cur) => ({
         connSuccess: [
@@ -102,7 +104,8 @@ export const transformToLspView = (properties: Response[]): Lsp[] => {
           acc.ssidCompliance[0] + checkNaN(cur.ssidCompliance[0]),
           acc.ssidCompliance[1] + checkNaN(cur.ssidCompliance[1])
         ],
-        deviceCount: acc.deviceCount + cur.deviceCount
+        deviceCount: acc.deviceCount + cur.deviceCount,
+        prospectCountSLA: acc.prospectCountSLA + cur.prospectCountSLA
       }),
       {
         connSuccess: [0, 0],
@@ -110,7 +113,8 @@ export const transformToLspView = (properties: Response[]): Lsp[] => {
         clientThroughput: [0, 0],
         p1Incidents: 0,
         ssidCompliance: [0, 0],
-        deviceCount: 0
+        deviceCount: 0,
+        prospectCountSLA: 0
       }
     )
     const avgConnSuccess = checkPropertiesForNaN(properties, 'avgConnSuccess', connSuccess)
@@ -135,7 +139,8 @@ export const transformToLspView = (properties: Response[]): Lsp[] => {
       p1Incidents,
       ssidCompliance: validatedSsidCompliance,
       deviceCount,
-      guestExp: calGuestExp(avgConnSuccess, avgTTC, avgClientThroughput)
+      guestExp: calGuestExp(avgConnSuccess, avgTTC, avgClientThroughput),
+      prospectCountSLA
     }
   })
 }
@@ -150,7 +155,7 @@ export const transformToPropertyView = (data: Response[]): Property[] =>
       avgTTC = !noDataCheck(property.avgTTC[1])
         ? calcSLA(property.avgTTC)
         : null,
-      ssidCompliance = !noDataCheck(property.ssidCompliance[1])
+      ssidCompliance = !noDataCheck(property?.ssidCompliance[1])
         ? calcSLA(property.ssidCompliance)
         : null
     return {
@@ -197,6 +202,15 @@ export const slaKpiConfig = {
     formatter: formatter('percentFormat'),
     direction: 'high',
     order: 'desc'
+  },
+  mdu: {
+    getTitle: // istanbul ignore next
+      () => defineMessage({ defaultMessage: '# of prospects' }),
+    dataKey: 'prospectCountSLA',
+    avg: true,
+    formatter: formatter('countFormat'),
+    direction: 'high',
+    order: 'desc'
   }
 }
 
@@ -219,7 +233,8 @@ export const transformLookupAndMappingData = (mappingData : ECList) => {
 
 export const transformVenuesData = (
   venuesData: { data: BrandVenuesSLA[] },
-  lookupAndMappingData: TransformedMap
+  lookupAndMappingData: TransformedMap,
+  isMDU: boolean
 ): Response[] => {
   const groupByTenantID = groupBy(venuesData?.data, 'tenantId')
   const sumData = (data: ([number | null, number | null] | null)[], initial: number[]) =>
@@ -238,9 +253,15 @@ export const transformVenuesData = (
       lsps: mappingData?.integrators?.map(integrator => lookupAndMappingData[integrator]?.name),
       p1Incidents: tenantData
         ? tenantData?.reduce((total, venue) => total + (venue.incidentCount || 0), 0) : 0,
-      ssidCompliance: sumData(
-        tenantData?.map(v => v.ssidComplianceSLA), [0, 0]
-      ) as [number, number],
+      ssidCompliance: isMDU
+        ? [0, 0]
+        : sumData(
+          tenantData?.map(v => v.ssidComplianceSLA), [0, 0]
+        ) as [number, number],
+      prospectCountSLA: isMDU
+        ? tenantData
+          ? tenantData?.reduce((total, venue) => total + (venue.prospectCountSLA || 0), 0) : 0
+        : 0,
       deviceCount: tenantData
         ? tenantData?.reduce((total, venue) => total +
         (venue.onlineApsSLA?.[1] || 0) + (venue.onlineSwitchesSLA?.[1] || 0), 0) : 0,
