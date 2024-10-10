@@ -1,5 +1,3 @@
-// import { useIntl } from 'react-intl'
-
 import { Tabs }                                               from '@acx-ui/components'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -7,7 +5,6 @@ import { useApplicationTokens } from './ApplicationTokens'
 import { useWebhooks }          from './Webhooks'
 
 export function DevelopersTab () {
-  // const { $t } = useIntl()
   const location = useLocation()
   const navigate = useNavigate()
   const { activeSubTab } = useParams()
