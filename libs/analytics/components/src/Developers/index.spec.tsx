@@ -18,7 +18,7 @@ jest.mock('react-router-dom', () => ({
 jest.mock('./ApplicationTokens', () => ({
   useApplicationTokens: jest.fn(() => ({
     title: 'Application Tokens',
-    component: <div>applicationTokens</div>
+    component: <div>application tokens</div>
   }))
 }))
 
@@ -45,7 +45,7 @@ describe('DevelopersTab', () => {
       }) as unknown as ReturnType<typeof router.useLocation>
     )
     render(<Provider><DevelopersTab /></Provider>, { route: { params } })
-    expect(await screen.findByText('applicationTokens')).toBeInTheDocument()
+    expect(await screen.findByText('application tokens')).toBeInTheDocument()
   })
 
   it('should handle tab changes', async () => {
@@ -69,6 +69,6 @@ describe('DevelopersTab', () => {
     fireEvent.click(webhooksTab)
     expect(mockedUsedNavigate).toHaveBeenCalled()
     expect(mockedUsedNavigate.mock.calls[0][0].pathname)
-      .toEqual('/t1/t/analytics/developers/webhooks') //need check route and fix this
+      .toEqual('/t1/t/analytics/admin/developers/webhooks')
   })
 })
