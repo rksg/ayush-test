@@ -14,9 +14,9 @@ import {
 } from '@acx-ui/components'
 import { CopyOutlined } from '@acx-ui/icons-new'
 
-import { handleError }                         from '../services'
 import { TransparentButton, Row, SecretInput } from '../styledComponents'
 import { Label }                               from '../styledComponents'
+import { handleError }                         from '../utils'
 
 import { ApplicationTokenForm }                                         from './ApplicationTokenForm'
 import { useApplicationTokensQuery, useDeleteApplicationTokenMutation } from './services'

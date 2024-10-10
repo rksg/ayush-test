@@ -18,7 +18,7 @@ import {
 import { get }               from '@acx-ui/config'
 import { URLProtocolRegExp } from '@acx-ui/rc/utils'
 
-import { handleError } from '../services'
+import { handleError } from '../utils'
 
 import {
   useCreateWebhookMutation,

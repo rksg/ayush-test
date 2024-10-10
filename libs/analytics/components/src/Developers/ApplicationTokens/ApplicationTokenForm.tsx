@@ -11,8 +11,8 @@ import {
   showToast
 } from '@acx-ui/components'
 
-import { handleError }                                from '../services'
 import { TransparentButton, Label, SecretInput, Row } from '../styledComponents'
+import { handleError }                                from '../utils'
 
 import { applicationTokenDtoKeys, useCreateApplicationTokenMutation, useRotateApplicationTokenMutation } from './services'
 
