@@ -1,15 +1,10 @@
 import '@testing-library/jest-dom'
-import userEvent   from '@testing-library/user-event'
 import * as router from 'react-router-dom'
 
-import { Provider, dataApiURL, store }      from '@acx-ui/store'
-import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
-
-// import { switchCountFixture } from './OverviewTab/SummaryBoxes/__tests__/fixtures'
-// import { api }                from './OverviewTab/SummaryBoxes/services'
+import { Provider }                  from '@acx-ui/store'
+import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
 import { DevelopersTab } from '.'
-import { webhookDtoKeys } from './Webhooks/services'
 
 const mockedUsedNavigate = jest.fn()
 
@@ -40,44 +35,26 @@ describe('DevelopersTab', () => {
   beforeEach(() => {
     mockedUsedNavigate.mockReset()
   })
-  // afterEach(() =>
-  //   store.dispatch(api.util.resetApiState())
-  // )
   it('should handle default tab', async () => {
-    // mockGraphqlQuery(dataApiURL, 'SwitchCount', { data: switchCountFixture })
     jest.spyOn(router, 'useParams').mockImplementation(
       () => ({ tenantId: 't1' })
     )
     jest.spyOn(router, 'useLocation').mockImplementation(
       () => ({
-        pathname: '/developers',
-        search: '',
-        state: {}
+        pathname: '/developers', search: '', state: {}
       }) as unknown as ReturnType<typeof router.useLocation>
     )
-
-    render(
-      <Provider>
-        <DevelopersTab />
-      </Provider>, { route: { params } })
-    userEvent.click(await screen.findByText('Application Tokens'))
+    render(<Provider><DevelopersTab /></Provider>, { route: { params } })
     expect(await screen.findByText('applicationTokens')).toBeInTheDocument()
-
-    await new Promise((r)=>{setTimeout(r, 1000)})
-
-    expect(mockedUsedNavigate).toHaveBeenCalled()
-    // expect(mockedUsedNavigate.mock.calls[0][0].pathname).toEqual(
-    //   '/t1/t/analytics/developers/applicationTokens'
-    // )
   })
 
   it('should handle tab changes', async () => {
     jest.spyOn(router, 'useParams').mockImplementation(
-      () => ({ activeSubTab: 'webhooks', tenantId: 't1' })
+      () => ({ activeSubTab: 'applicationTokens', tenantId: 't1' })
     )
     jest.spyOn(router, 'useLocation').mockImplementation(
       () => ({
-        pathname: '/developers/webhooks',
+        pathname: '/developers/applicationTokens',
         search: '',
         state: {}
       }) as unknown as ReturnType<typeof router.useLocation>
@@ -85,14 +62,13 @@ describe('DevelopersTab', () => {
     render(<Provider>
       <DevelopersTab />
     </Provider> , { route: { params } })
-    const webhooksTab = screen.getByRole('tab', { name: /Webhooks/i })
+
+    const webhooksTab = await screen.findByRole('tab', { name: /Webhooks/i })
     expect(webhooksTab).toBeInTheDocument()
 
-    userEvent.click(webhooksTab)
+    fireEvent.click(webhooksTab)
     expect(mockedUsedNavigate).toHaveBeenCalled()
-    console.log(mockedUsedNavigate.mock.calls)
-    expect(mockedUsedNavigate.mock.calls[0][0].pathname).toEqual(
-      '/t1/t/analytics/developers/webhooks'
-    )
+    expect(mockedUsedNavigate.mock.calls[0][0].pathname)
+      .toEqual('/t1/t/analytics/developers/webhooks') //need check route and fix this
   })
 })
