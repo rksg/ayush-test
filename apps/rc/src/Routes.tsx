@@ -41,8 +41,7 @@ import {
   WifiCallingConfigureForm,
   WifiCallingDetailView,
   WifiCallingForm,
-  WifiOperatorForm,
-  WorkflowFormMode
+  WifiOperatorForm
 } from '@acx-ui/rc/components'
 import {
   CertificateCategoryType,
@@ -1264,16 +1263,10 @@ function PolicyRoutes () {
           path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.CREATE })}
           element={
             <PolicyAuthRoute policyType={PolicyType.WORKFLOW} oper={PolicyOperation.CREATE}>
-              <WorkflowPageForm mode={WorkflowFormMode.CREATE} />
+              <WorkflowPageForm/>
             </PolicyAuthRoute>
           } />
-        <Route
-          // eslint-disable-next-line max-len
-          path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.EDIT })}
-          element={<PolicyAuthRoute policyType={PolicyType.WORKFLOW} oper={PolicyOperation.EDIT}>
-            <WorkflowPageForm mode={WorkflowFormMode.EDIT} />
-          </PolicyAuthRoute>}
-        /> </>
+      </>
       }
       {isCertificateTemplateEnabled && <>
         <Route
