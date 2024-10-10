@@ -217,15 +217,13 @@ describe('AIFeature component', () => {
 describe('Banner Component', () => {
   it('should open the documentation link when the button is clicked', () => {
     const openSpy = jest.spyOn(window, 'open').mockImplementation(() => {return null})
+    const helpUrl = 'https://docs.cloud.ruckuswireless.com/RUCKUS-AI/userguide/GUID-CAAC695C-6740-499D-8C42-AB521CEE65F6.html'
 
-    render(<Banner />)
+    render(<Banner helpUrl={helpUrl} />)
 
     const button = screen.getByRole('button', { name: /Learn More/i })
     fireEvent.click(button)
-    expect(openSpy).toHaveBeenCalledWith(
-      'https://docs.commscope.com/bundle/ruckusai-userguide/page/GUID-CAAC695C-6740-499D-8C42-AB521CEE65F6.html',
-      '_blank'
-    )
+    expect(openSpy).toHaveBeenCalledWith(helpUrl, '_blank')
 
     openSpy.mockRestore()
   })

@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 
-import { Row, Col }                  from 'antd'
+import { Row, Col, Form }            from 'antd'
 import { useIntl, FormattedMessage } from 'react-intl'
 
 import { StepsForm, useStepFormContext } from '@acx-ui/components'
@@ -13,12 +13,20 @@ export function Summary () {
   const { $t } = useIntl()
   const { form } = useStepFormContext<Intent>()
   const isEnabled = form.getFieldValue('preferences').enable
+  const enableExcludedHours = form.getFieldValue('preferences').enableExcludedHours
   return <Row gutter={20}>
     <Col span={16}>
       <StepsForm.Title children={$t({ defaultMessage: 'Summary' })} />
 
       {isEnabled
-        ? <ScheduleTiming.FieldSummary />
+        ? <><ScheduleTiming.FieldSummary />
+          {enableExcludedHours && <Form.Item
+            label={$t({ defaultMessage: 'Hours not applied for EcoFlex' })}
+          >
+            {$t({ defaultMessage: 'PowerSave will not be triggered during specific hours set in the Settings.' })}
+          </Form.Item>
+          }
+        </>
         : <FormattedMessage
           values={richTextFormatValues}
           defaultMessage={`

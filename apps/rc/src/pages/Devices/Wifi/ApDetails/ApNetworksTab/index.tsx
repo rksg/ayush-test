@@ -29,6 +29,7 @@ export function ApNetworksTab () {
   const { $t } = useIntl()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const isEdgeMvSdLanReady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
 
   const apiParams = useApContext() as Record<string, string>
   const settingsId = 'ap-networks-table'
@@ -47,7 +48,7 @@ export function ApNetworksTab () {
     apiParams,
     payload: apViewModelPayload,
     enableRbac: isWifiRbacEnabled
-  }, { skip: !isEdgeSdLanHaReady })
+  }, { skip: !isEdgeSdLanHaReady || isEdgeMvSdLanReady })
 
   const sdLanScopedNetworks = useSdLanScopedVenueNetworks(apViewModelQuery.data?.venueId
     , tableQuery.data?.data?.map(item => item.id))
@@ -91,7 +92,7 @@ export function ApNetworksTab () {
           $t({ defaultMessage: 'VLAN-{id}' }, { id: row.vlan })
       }
     },
-    ...(isEdgeSdLanHaReady ? [{
+    ...(isEdgeSdLanHaReady && !isEdgeMvSdLanReady ? [{
       key: 'tunneled',
       title: $t({ defaultMessage: 'Tunnel' }),
       dataIndex: 'tunneled',
@@ -114,7 +115,7 @@ export function ApNetworksTab () {
     //   sorter: true
     // }
     ]
-  }, [$t, sdLanScopedNetworks, isEdgeSdLanHaReady])
+  }, [$t, sdLanScopedNetworks, isEdgeSdLanHaReady, isEdgeMvSdLanReady])
 
   return (
     <Loader states={[tableQuery]}>
