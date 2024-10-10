@@ -205,7 +205,7 @@ export const slaKpiConfig = {
   },
   mdu: {
     getTitle: // istanbul ignore next
-      () => defineMessage({ defaultMessage: '# of prospects' }),
+      () => defineMessage({ defaultMessage: '# of Prospects' }),
     dataKey: 'prospectCountSLA',
     avg: true,
     formatter: formatter('countFormat'),
