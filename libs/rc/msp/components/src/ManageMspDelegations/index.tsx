@@ -22,8 +22,8 @@ import { RolesEnum }                                  from '@acx-ui/types'
 import { PrivilegeGroup, useGetPrivilegeGroupsQuery } from '@acx-ui/user'
 import { AccountType }                                from '@acx-ui/utils'
 
-import { SelectPGs }   from './selectPGs'
-import { SelectUsers } from './selectUsers'
+import { SelectPGs }   from './SelectPGs'
+import { SelectUsers } from './SelectUsers'
 
 interface ManageMspDelegationDrawerProps {
   visible: boolean
