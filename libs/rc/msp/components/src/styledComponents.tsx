@@ -34,6 +34,7 @@ export const FieldTextLink = styled.div`
   ${linkStyle}
 `
 export const AdminList = styled.div`
+  font-size: var(--acx-body-4-font-size);
   padding-right: 5px;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -55,7 +56,17 @@ export const FieldLabelAdmins2 = styled.div<{ width: string }>`
   font-size: var(--acx-body-4-font-size);
   display: grid;
   grid-template-columns: 415px 40px;
+  grid-template-rows: 20px;
   align-items: baseline;
+`
+export const FieldLabelDelegations = styled.div<{ width: string }>`
+  font-size: var(--acx-body-4-font-size);
+  display: grid;
+  grid-template-columns: 120px 275px;
+  align-items: baseline;
+  .ant-form-item {
+    margin-bottom: 0px;
+  }
 `
 export const FieldLabelSubs = styled.div<{ width: string }>`
   font-size: var(--acx-body-4-font-size);

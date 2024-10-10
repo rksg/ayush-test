@@ -1,10 +1,11 @@
-import { Key, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
 import {
   Button,
   Drawer,
+  Loader,
   Tabs
 } from '@acx-ui/components'
 import {
@@ -16,18 +17,22 @@ import {
   MspAdministrator,
   MspEcDelegatedAdmins
 } from '@acx-ui/msp/utils'
-import { useParams }   from '@acx-ui/react-router-dom'
-import { RolesEnum }   from '@acx-ui/types'
-import { AccountType } from '@acx-ui/utils'
+import { useParams }                                  from '@acx-ui/react-router-dom'
+import { RolesEnum }                                  from '@acx-ui/types'
+import { PrivilegeGroup, useGetPrivilegeGroupsQuery } from '@acx-ui/user'
+import { AccountType }                                from '@acx-ui/utils'
 
 import { SelectPGs }   from './selectPGs'
 import { SelectUsers } from './selectUsers'
 
 interface ManageMspDelegationDrawerProps {
   visible: boolean
-  tenantId?: string
+  tenantIds?: string[]
   setVisible: (visible: boolean) => void
-  setSelected: (selected: MspAdministrator[]) => void
+  setSelectedUsers: (selected: MspAdministrator[]) => void
+  selectedUsers?: MspAdministrator[]
+  setSelectedPrivilegeGroups: (selected: PrivilegeGroup[]) => void
+  selectedPrivilegeGroups?: PrivilegeGroup[]
   tenantType?: string
 }
 
@@ -41,56 +46,60 @@ export const SystemRoles = [
 
 export const ManageMspDelegationDrawer = (props: ManageMspDelegationDrawerProps) => {
   const { $t } = useIntl()
+  const params = useParams()
 
-  const { visible, tenantId, setVisible, setSelected, tenantType } = props
+  const { visible, tenantIds, setVisible,
+    setSelectedUsers: setAdminUsers,
+    selectedUsers: selectedAdminUsers,
+    setSelectedPrivilegeGroups: setAdminPGs,
+    selectedPrivilegeGroups: selectedAdminPGs,
+    tenantType } = props
   const [resetField, setResetField] = useState(false)
-  const [selectedKeys, setSelectedKeys] = useState<Key[]>([])
-  const [selectedRows, setSelectedRows] = useState<MspAdministrator[]>([])
   const [selectedRoles, setSelectedRoles] = useState<{ id: string, role: string }[]>([])
+  const [selectedUsers, setSelectedUsers] = useState<MspAdministrator[]>(selectedAdminUsers ?? [])
+  const [selectedPrivilegeGroups, setSelectedPrivilegeGroups] =
+    useState<PrivilegeGroup[]>(selectedAdminPGs ?? [])
   const [currentTab, setCurrentTab] = useState('users')
+  const [usersData, setUsersData] = useState([] as MspAdministrator[])
+  const [delegatedAdminsData, setDelegatedAdminsData] = useState([] as MspEcDelegatedAdmins[])
+  const [privilegeGroupData, setPrivilegeGroupData] = useState([] as PrivilegeGroup[])
+
+  const { data: privilegeGroupList, isLoading, isFetching }
+    = useGetPrivilegeGroupsQuery({ params })
+
+  useEffect(() => {
+    if (privilegeGroupList) {
+      const pgs = privilegeGroupList?.filter(pg =>
+        !SystemRoles.includes(pg.name as RolesEnum))
+      setPrivilegeGroupData(pgs ?? [])
+    }
+  }, [privilegeGroupList])
 
   const onTabChange = (tab: string) => {
     setCurrentTab(tab)
   }
 
-  const isSkip = tenantId === undefined
+  const isSkip = (tenantIds === undefined || tenantIds.length !== 1)
   const isTechPartner =
     (tenantType === AccountType.MSP_INSTALLER ||
      tenantType === AccountType.MSP_INTEGRATOR)
 
-  function getSelectedKeys (mspAdmins: MspAdministrator[], admins: string[]) {
-    return mspAdmins.filter(rec => admins.includes(rec.id)).map(rec => rec.email)
-  }
-
-  function getSelectedRows (mspAdmins: MspAdministrator[], admins: string[]) {
-    return mspAdmins.filter(rec => admins.includes(rec.id))
-  }
-
   const delegatedAdmins =
-      useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId: tenantId },
+      useGetMspEcDelegatedAdminsQuery({
+        params: { mspEcTenantId: tenantIds ? tenantIds[0] : undefined },
         enableRbac: true }, { skip: isSkip })
   const queryResults = useMspAdminListQuery({ params: useParams() })
 
-  const usersQueryResults = queryResults.data?.filter(admin => SystemRoles.includes(admin.role))
-
   useEffect(() => {
-    if (usersQueryResults && delegatedAdmins?.data) {
-      const selRoles = delegatedAdmins?.data?.map((admin) => {
-        return { id: admin.msp_admin_id, role: admin.msp_admin_role }
-      })
-      setSelectedRoles(selRoles)
-      const admins = delegatedAdmins?.data.map((admin: MspEcDelegatedAdmins)=> admin.msp_admin_id)
-      setSelectedKeys(getSelectedKeys(usersQueryResults as MspAdministrator[], admins))
-      const selRows = getSelectedRows(usersQueryResults as MspAdministrator[], admins)
-      setSelectedRows(selRows)
-    }
-  }, [usersQueryResults, delegatedAdmins?.data])
+    setUsersData(queryResults.data?.filter(admin => SystemRoles.includes(admin.role)) ?? [])
+    setDelegatedAdminsData(delegatedAdmins?.data ?? [])
+  }, [queryResults?.data, delegatedAdmins?.data])
 
   const onClose = () => {
     setVisible(false)
-    setSelectedRows([])
+    setSelectedUsers([])
+    setSelectedPrivilegeGroups([])
     setSelectedRoles([])
-    setSelectedKeys([])
   }
 
   const resetFields = () => {
@@ -101,10 +110,13 @@ export const ManageMspDelegationDrawer = (props: ManageMspDelegationDrawerProps)
   const [ saveMspAdmins ] = useUpdateMspEcDelegatedAdminsMutation()
 
   const handleSave = () => {
+    // TODO: add in API functionality for saving privilege groups
     let payload: MspEcDelegatedAdmins[] = []
     let returnRows: MspAdministrator[] = []
-    if (selectedRows && selectedRows.length > 0) {
-      selectedRows.forEach((element:MspAdministrator) => {
+    if ((selectedUsers && selectedUsers.length > 0) ||
+        (selectedPrivilegeGroups && selectedPrivilegeGroups.length > 0)
+    ) {
+      selectedUsers.forEach((element:MspAdministrator) => {
         const role = selectedRoles.find(row => row.id === element.id)?.role ?? element.role
         payload.push ({
           msp_admin_id: element.id,
@@ -117,15 +129,16 @@ export const ManageMspDelegationDrawer = (props: ManageMspDelegationDrawerProps)
     } else {
       return
     }
-    if (tenantId) {
-      saveMspAdmins({ payload, params: { mspEcTenantId: tenantId } })
+    if (tenantIds) {
+      saveMspAdmins({ payload, params: { mspEcTenantId: tenantIds[0] } })
         .then(() => {
-          setSelected(selectedRows)
+          setAdminUsers(selectedUsers)
           setVisible(false)
           resetFields()
         })
     } else {
-      setSelected(returnRows)
+      setAdminUsers(returnRows)
+      setAdminPGs(selectedPrivilegeGroups)
     }
     setVisible(false)
   }
@@ -134,15 +147,27 @@ export const ManageMspDelegationDrawer = (props: ManageMspDelegationDrawerProps)
     {
       key: 'users',
       title: $t({ defaultMessage: 'Users' }),
-      component: <SelectUsers
-
-      />
+      component: <Loader states={[queryResults]}>
+        <SelectUsers usersData={usersData}
+          delegatedAdminsData={delegatedAdminsData}
+          setSelected={setSelectedUsers}
+          selected={selectedUsers}
+        />
+      </Loader>
     },
     {
       key: 'privilegeGroup',
       title: $t({ defaultMessage: 'Privilege Groups' }),
-      component: <SelectPGs
-      />
+      component: <Loader states={[
+        { isLoading: isLoading,
+          isFetching: isFetching
+        }
+      ]}>
+        <SelectPGs data={privilegeGroupData}
+          setSelected={setSelectedPrivilegeGroups}
+          selected={selectedPrivilegeGroups}
+        />
+      </Loader>
     }
   ]
 
@@ -163,7 +188,7 @@ export const ManageMspDelegationDrawer = (props: ManageMspDelegationDrawerProps)
   const footer =<div>
     <Button
       type='primary'
-      disabled={selectedKeys.length === 0}
+      disabled={selectedUsers.length === 0 && selectedPrivilegeGroups.length === 0}
       onClick={() => handleSave()}>
       {$t({ defaultMessage: 'Save' })}
     </Button>

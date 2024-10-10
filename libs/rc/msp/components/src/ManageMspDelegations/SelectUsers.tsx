@@ -4,14 +4,9 @@ import { Select, Space } from 'antd'
 import { useIntl }       from 'react-intl'
 
 import {
-  Loader,
   Table,
   TableProps
 } from '@acx-ui/components'
-import {
-  useGetMspEcDelegatedAdminsQuery,
-  useMspAdminListQuery
-} from '@acx-ui/msp/services'
 import {
   MspAdministrator,
   MspEcDelegatedAdmins
@@ -21,20 +16,20 @@ import {
   roleDisplayText,
   sortProp
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
 import { RolesEnum } from '@acx-ui/types'
-
-import { SystemRoles } from '.'
 
 interface SelectUsersProps {
   tenantId?: string
-  setSelected?: (selected: MspAdministrator[]) => void
+  setSelected: (selected: MspAdministrator[]) => void
+  selected?: MspAdministrator[],
+  usersData?: MspAdministrator[],
+  delegatedAdminsData?: MspEcDelegatedAdmins[]
 }
 
 export const SelectUsers = (props: SelectUsersProps) => {
   const { $t } = useIntl()
 
-  const { tenantId, setSelected } = props
+  const { tenantId, setSelected, selected, usersData, delegatedAdminsData } = props
   const [isLoaded, setIsLoaded] = useState(false)
   const [selectedKeys, setSelectedKeys] = useState<Key[]>([])
   const [selectedRows, setSelectedRows] = useState<MspAdministrator[]>([])
@@ -54,26 +49,27 @@ export const SelectUsers = (props: SelectUsersProps) => {
     return selectedRows.find(rec => rec.email === email) ? false : true
   }
 
-  const delegatedAdmins =
-      useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId: tenantId },
-        enableRbac: true }, { skip: isSkip })
-  const queryResults = useMspAdminListQuery({ params: useParams() })
-
-  const usersQueryResults = queryResults.data?.filter(admin => SystemRoles.includes(admin.role))
-
   useEffect(() => {
-    if (usersQueryResults && delegatedAdmins?.data) {
-      const selRoles = delegatedAdmins?.data?.map((admin) => {
+    if (usersData && delegatedAdminsData) {
+      const selRoles = delegatedAdminsData.map((admin) => {
         return { id: admin.msp_admin_id, role: admin.msp_admin_role }
       })
       setSelectedRoles(selRoles)
-      const admins = delegatedAdmins?.data.map((admin: MspEcDelegatedAdmins)=> admin.msp_admin_id)
-      setSelectedKeys(getSelectedKeys(usersQueryResults as MspAdministrator[], admins))
-      const selRows = getSelectedRows(usersQueryResults as MspAdministrator[], admins)
-      setSelectedRows(selRows)
+      // TODO: check if this functionality is correct
+      if (selected && selected.length > 0) {
+        setSelectedKeys(selected.map(sel => sel.email))
+        setSelectedRows(selected)
+      }
+      else {
+        const admins = delegatedAdminsData.map((admin: MspEcDelegatedAdmins) => admin.msp_admin_id)
+        setSelectedKeys(getSelectedKeys(usersData, admins))
+        const selRows = getSelectedRows(usersData, admins)
+        setSelectedRows(selRows)
+        setSelected(selRows)
+      }
     }
-    setIsLoaded(isSkip || (usersQueryResults && delegatedAdmins?.data) as unknown as boolean)
-  }, [queryResults?.data, delegatedAdmins?.data])
+    setIsLoaded(isSkip || (usersData && delegatedAdminsData) as unknown as boolean)
+  }, [usersData, delegatedAdminsData])
 
   const { Option } = Select
 
@@ -119,7 +115,7 @@ export const SelectUsers = (props: SelectUsersProps) => {
   }
 
   const transformAdminRole = (id: string, initialRole: RolesEnum) => {
-    const role = delegatedAdmins?.data?.find((admin) => admin.msp_admin_id === id)?.msp_admin_role
+    const role = delegatedAdminsData?.find((admin) => admin.msp_admin_id === id)?.msp_admin_role
       ?? initialRole
     return isLoaded && <Select defaultValue={role}
       style={{ width: '150px' }}
@@ -139,39 +135,40 @@ export const SelectUsers = (props: SelectUsersProps) => {
   }
 
   return <Space direction='vertical'>
-    <Loader states={[queryResults]}>
-      <Table
-        columns={columns}
-        dataSource={usersQueryResults}
-        rowKey='email'
-        rowSelection={{
-          type: 'checkbox',
-          selectedRowKeys: selectedKeys,
-          onChange (selectedRowKeys, selRows) {
-            if (selectedRowKeys.length === selRows.length) {
-              setSelectedRows(selRows)
+    <Table
+      columns={columns}
+      dataSource={usersData}
+      rowKey='email'
+      rowSelection={{
+        type: 'checkbox',
+        selectedRowKeys: selectedKeys,
+        onChange (selectedRowKeys, selRows) {
+          if (selectedRowKeys.length === selRows.length) {
+            setSelectedRows(selRows)
+            setSelected(selRows)
+          }
+          else {
+            // On row click to deselect (i.e. clicking on row itself not checkbox) selRows is empty array
+            if (selRows.length === 0) {
+              setSelectedRows([...selectedRows.filter(row =>
+                selectedRowKeys.includes(row.email))])
+              setSelected([...selectedRows.filter(row =>
+                selectedRowKeys.includes(row.email))])
             }
+            // On row click to select (i.e. clicking on row itself not checkbox) selRows only has newly selected row
             else {
-              // On row click to deselect (i.e. clicking on row itself not checkbox) selRows is empty array
-              if (selRows.length === 0) {
-                setSelectedRows([...selectedRows.filter(row =>
-                  selectedRowKeys.includes(row.email))])
-              }
-              // On row click to select (i.e. clicking on row itself not checkbox) selRows only has newly selected row
-              else {
-                setSelectedRows([...selectedRows, ...selRows])
-              }
+              setSelectedRows([...selectedRows, ...selRows])
+              setSelected([...selectedRows, ...selRows])
             }
-            // setSelected(selectedRows)
-            setSelectedKeys(selectedRowKeys)
-          },
-          getCheckboxProps: (record: MspAdministrator) => ({
-            disabled:
+          }
+          setSelectedKeys(selectedRowKeys)
+        },
+        getCheckboxProps: (record: MspAdministrator) => ({
+          disabled:
                  record.role === RolesEnum.DPSK_ADMIN ||
                 (record.role === RolesEnum.GUEST_MANAGER && rowNotSelected(record.email))
-          })
-        }}
-      />
-    </Loader>
+        })
+      }}
+    />
   </Space>
 }

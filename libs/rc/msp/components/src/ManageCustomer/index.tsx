@@ -74,9 +74,9 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { RolesEnum }             from '@acx-ui/types'
-import { useUserProfileContext } from '@acx-ui/user'
-import { AccountType }           from '@acx-ui/utils'
+import { RolesEnum }                             from '@acx-ui/types'
+import { PrivilegeGroup, useUserProfileContext } from '@acx-ui/user'
+import { AccountType }                           from '@acx-ui/utils'
 
 import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'
 import { ManageDelegateAdminDrawer } from '../ManageDelegateAdminDrawer'
@@ -202,6 +202,7 @@ export function ManageCustomer () {
   const [trialSelected, setTrialSelected] = useState(true)
   const [ecSupportEnabled, setEcSupport] = useState(false)
   const [mspAdmins, setAdministrator] = useState([] as MspAdministrator[])
+  const [privilegeGroups, setPrivilegeGroups] = useState([] as PrivilegeGroup[])
   const [mspIntegrator, setIntegrator] = useState([] as MspEc[])
   const [mspInstaller, setInstaller] = useState([] as MspEc[])
   const [mspEcAdmins, setMspEcAdmins] = useState([] as MspAdministrator[])
@@ -719,6 +720,18 @@ export function ManageCustomer () {
     </>
   }
 
+  const displayPrivilegeGroups = () => {
+    if (!privilegeGroups || privilegeGroups.length === 0)
+      return '--'
+    return <>
+      {privilegeGroups.map(pg =>
+        <UI.AdminList key={pg.id}>
+          {pg.name}
+        </UI.AdminList>
+      )}
+    </>
+  }
+
   const displayIntegrator = () => {
     if (!mspIntegrator || mspIntegrator.length === 0)
       return '--'
@@ -845,18 +858,23 @@ export function ManageCustomer () {
 
   const MspAdminsForm = () => {
     return <>
-      {isRbacPhase2Enabled
+      {(isRbacPhase2Enabled && !isEditMode)
         ? <div>
           <UI.FieldLabelAdmins2 width='275px' style={{ marginTop: '15px' }}>
             <label>{intl.$t({ defaultMessage: 'MSP Deligations' })}</label>
-            {!isEditMode && <Form.Item
+            <Form.Item
               children={<UI.FieldTextLink onClick={() => setDrawerAdminVisible(true)}>
                 {intl.$t({ defaultMessage: 'Manage' })}
               </UI.FieldTextLink>
               }
-            />}
+            />
           </UI.FieldLabelAdmins2>
-          <Form.Item children={<div>{displayMspAdmins()}</div>} />
+          <UI.FieldLabelDelegations width='260px' style={{ marginLeft: '15px' }}>
+            <label>{intl.$t({ defaultMessage: 'Users' })}</label>
+            <Form.Item children={<div>{displayMspAdmins()}</div>} />
+            <label>{intl.$t({ defaultMessage: 'Privilege Groups' })}</label>
+            <Form.Item children={<div>{displayPrivilegeGroups()}</div>} />
+          </UI.FieldLabelDelegations>
         </div>
         : <UI.FieldLabelAdmins width='275px' style={{ marginTop: '15px' }}>
           <label>{intl.$t({ defaultMessage: 'MSP Administrators' })}</label>
@@ -1645,10 +1663,18 @@ export function ManageCustomer () {
           <Paragraph>{address.addressLine}</Paragraph>
         </Form.Item>
 
-        <Form.Item
+        <Form.Item style={{ height: '20px', margin: '0' }}
           label={intl.$t({ defaultMessage: 'MSP Administrators' })}
+        />
+        <Form.Item style={{ margin: '0' }}
+          label={intl.$t({ defaultMessage: 'Users' })}
         >
           <Paragraph>{displayMspAdmins()}</Paragraph>
+        </Form.Item>
+        <Form.Item
+          label={intl.$t({ defaultMessage: 'Privilege Groups' })}
+        >
+          <Paragraph>{displayPrivilegeGroups()}</Paragraph>
         </Form.Item>
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Integrator' })}
@@ -1896,8 +1922,11 @@ export function ManageCustomer () {
           ? <ManageMspDelegationDrawer
             visible={drawerAdminVisible}
             setVisible={setDrawerAdminVisible}
-            setSelected={selectedMspAdmins}
-            tenantId={mspEcTenantId}/>
+            setSelectedUsers={selectedMspAdmins}
+            selectedUsers={mspAdmins}
+            setSelectedPrivilegeGroups={setPrivilegeGroups}
+            selectedPrivilegeGroups={privilegeGroups}
+            tenantIds={mspEcTenantId ? [mspEcTenantId] : undefined}/>
           : <ManageDelegateAdminDrawer
             visible={drawerAdminVisible}
             setVisible={setDrawerAdminVisible}

@@ -4,49 +4,37 @@ import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
 import {
-  Loader,
   Table,
   TableProps
 } from '@acx-ui/components'
 import {
-  MspAdministrator
-} from '@acx-ui/msp/utils'
-import {
   defaultSort,
   sortProp
 } from '@acx-ui/rc/utils'
-import { useParams }                                  from '@acx-ui/react-router-dom'
-import { RolesEnum }                                  from '@acx-ui/types'
-import { PrivilegeGroup, useGetPrivilegeGroupsQuery } from '@acx-ui/user'
+import { PrivilegeGroup } from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
-import { SystemRoles } from '.'
-
 interface SelectPGsProps {
   tenantId?: string
-  setSelected?: (selected: PrivilegeGroup[]) => void
+  setSelected: (selected: PrivilegeGroup[]) => void
+  selected?: PrivilegeGroup[]
+  data?: PrivilegeGroup[]
 }
 
 export const SelectPGs = (props: SelectPGsProps) => {
   const { $t } = useIntl()
-  const params = useParams()
 
-  const { setSelected } = props
+  const { setSelected, selected, data } = props
   const [selectedKeys, setSelectedKeys] = useState<Key[]>([])
   const [selectedRows, setSelectedRows] = useState<PrivilegeGroup[]>([])
-  const [privilegeGroupData, setPrivilegeGroupData] = useState([] as PrivilegeGroup[])
-
-  const { data: privilegeGroupList, isLoading, isFetching }
-    = useGetPrivilegeGroupsQuery({ params })
 
   useEffect(() => {
-    if (privilegeGroupList) {
-      const pgs = privilegeGroupList?.filter(pg =>
-        !SystemRoles.includes(pg.name as RolesEnum))
-      setPrivilegeGroupData(pgs ?? [])
+    if (selected) {
+      setSelectedRows(selected)
+      setSelectedKeys(selected.map(sel => sel.id))
     }
-  }, [privilegeGroupList])
+  }, [selected])
 
   const columns: TableProps<PrivilegeGroup>['columns'] = [
     {
@@ -67,25 +55,46 @@ export const SelectPGs = (props: SelectPGsProps) => {
   ]
 
   return <Space direction='vertical'>
-    <Loader states={[
-      { isLoading: isLoading,
-        isFetching: isFetching
-      }
-    ]}>
-      <UI.TableWrapper>
-        <Table
-          columns={columns}
-          dataSource={privilegeGroupData}
-          rowKey='id'
-          rowSelection={{
-            type: 'checkbox',
-            selectedRowKeys: selectedKeys,
-            onChange (selectedRowKeys, selRows) {
+    <UI.TableWrapper>
+      <Table
+        columns={columns}
+        dataSource={data}
+        rowKey='id'
+        rowSelection={{
+          type: 'checkbox',
+          selectedRowKeys: selectedKeys,
+          onChange (selectedRowKeys, selRows) {
+            if (selectedRowKeys.length === selRows.length) {
               setSelectedRows(selRows)
+              setSelected(selRows)
             }
-          }}
-        />
-      </UI.TableWrapper>
-    </Loader>
+            else {
+            // On row click to deselect (i.e. clicking on row itself not checkbox) selRows is empty array
+              if (selRows.length === 0) {
+                setSelectedRows([...selectedRows.filter(row =>
+                  selectedRowKeys.includes(row.id))])
+                setSelected([...selectedRows.filter(row =>
+                  selectedRowKeys.includes(row.id))])
+              }
+              // On row click to select (i.e. clicking on row itself not checkbox) selRows only has newly selected row
+              else {
+                setSelectedRows([...selectedRows, ...selRows])
+                setSelected([...selectedRows, ...selRows])
+              }
+            }
+            setSelectedKeys(selectedRowKeys)
+          },
+          getCheckboxProps: (record) => ({
+            disabled:
+            //   record.roleName === RolesEnum.DPSK_ADMIN ||
+            //     (record.roleName === RolesEnum.GUEST_MANAGER && rowNotSelected(record.email)) ||
+            // (selectedRoles.find((sel) => sel.id === record.id)
+            //   && !SupportedDelegatedRoles.includes(selectedRoles.find((sel) =>
+            //     sel.id === record.id)?.role as RolesEnum)) ||
+            record.allCustomers
+          })
+        }}
+      />
+    </UI.TableWrapper>
   </Space>
 }
