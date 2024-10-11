@@ -13,10 +13,11 @@ import { hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 
 import { SliderLabel, Buttons, SliderWrapper } from './styledComponents'
 
-export const SlaSliders = ({ initialSlas, currentSlas, setCurrentSlas }: {
+export const SlaSliders = ({ initialSlas, currentSlas, setCurrentSlas, isMDU }: {
   initialSlas: Partial<Settings>,
   currentSlas: Partial<Settings>,
-  setCurrentSlas: CallableFunction
+  setCurrentSlas: CallableFunction,
+  isMDU?: boolean
 }) => {
   const { $t } = useIntl()
   const [updateSlas, result] = useUpdateTenantSettingsMutation()
@@ -38,8 +39,19 @@ export const SlaSliders = ({ initialSlas, currentSlas, setCurrentSlas }: {
         <SlaSlider name='sla-p1-incidents-count' format='countFormat' />
         <SliderLabel>{$t({ defaultMessage: 'Guest Experience' })}</SliderLabel>
         <SlaSlider name='sla-guest-experience' format='percent' />
-        <SliderLabel>{$t({ defaultMessage: 'SSID Compliance' })}</SliderLabel>
-        <SlaSlider name='sla-brand-ssid-compliance' format='percent' />
+        {isMDU
+          ? <>
+            <SliderLabel>{$t({ defaultMessage: '# of Prospects' })}</SliderLabel>
+            <SlaSlider name='sla-prospect-count' format='countFormat' />
+          </>
+          :
+          // istanbul ignore next
+          <>
+            <SliderLabel>{$t({ defaultMessage: 'SSID Compliance' })}</SliderLabel>
+            <SlaSlider name='sla-brand-ssid-compliance' format='percent' />
+          </>
+        }
+
         <Buttons>
           <Button
             size='small'

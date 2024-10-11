@@ -27,6 +27,7 @@ import {
   AAAWlanSecurityEnum,
   MacAuthMacFormatEnum,
   ManagementFrameProtectionEnum,
+  NetworkSaveData,
   PolicyOperation,
   PolicyType,
   WifiNetworkMessages,
@@ -52,9 +53,10 @@ const { useWatch } = Form
 export function AaaSettingsForm () {
   const { editMode, cloneMode, data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   useEffect(()=>{
-    if(data && (editMode || cloneMode)){
+    if(data && (editMode || cloneMode)) {
 
       form.setFieldsValue({
         enableAuthProxy: data.enableAuthProxy,
@@ -69,7 +71,8 @@ export function AaaSettingsForm () {
         wlan: {
           wlanSecurity: data.wlan?.wlanSecurity,
           managementFrameProtection: data.wlan?.managementFrameProtection,
-          macAddressAuthenticationConfiguration: data.wlan?.macAddressAuthenticationConfiguration
+          // eslint-disable-next-line max-len
+          macAddressAuthenticationConfiguration: resolveMacAddressAuthenticationConfiguration(data, isWifiRbacEnabled)
         }
       })
     }
@@ -257,6 +260,7 @@ function AaaService () {
   const enableMacAuthentication = useWatch<boolean>(
     ['wlan', 'macAddressAuthenticationConfiguration', 'macAddressAuthentication'])
   const support8021xMacAuth = useIsSplitOn(Features.WIFI_8021X_MAC_AUTH_TOGGLE)
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const labelWidth = '250px'
 
   const onProxyChange = (value: boolean, fieldName: string) => {
@@ -269,10 +273,12 @@ function AaaService () {
       ...{
         wlan: {
           ...data?.wlan,
-          macAddressAuthenticationConfiguration: {
-            ...data?.wlan?.macAddressAuthenticationConfiguration,
-            macAddressAuthentication: checked
-          }
+          ...(isWifiRbacEnabled
+            ? { macAddressAuthentication: checked }
+            : { macAddressAuthenticationConfiguration: {
+              ...data?.wlan?.macAddressAuthenticationConfiguration,
+              macAddressAuthentication: checked
+            } })
         }
       }
     })
@@ -374,4 +380,18 @@ function AaaService () {
       </>}
     </Space>
   )
+}
+
+export function resolveMacAddressAuthenticationConfiguration (
+  data: NetworkSaveData,
+  isWifiRbacEnabled: boolean
+) : NonNullable<NetworkSaveData['wlan']>['macAddressAuthenticationConfiguration'] {
+  const config = data.wlan?.macAddressAuthenticationConfiguration
+
+  if (!isWifiRbacEnabled) return config
+
+  return {
+    ...(config ?? {}),
+    macAddressAuthentication: data.wlan?.macAddressAuthentication
+  }
 }
