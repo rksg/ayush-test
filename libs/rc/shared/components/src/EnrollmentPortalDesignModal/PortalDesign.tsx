@@ -93,7 +93,7 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
   const [display, setDisplay] = useState<Map<keyof typeof PortalComponentEnum, boolean>>(new Map([
     ['logo', value.uiStyleSchema.logoImageFileName !== undefined],
     ['poweredBy', !value.disablePoweredBy],
-    ['wifi4eu', value.uiStyleSchema.wifi4EUNetworkId !== undefined]
+    ['wifi4eu', !!value.uiStyleSchema.wifi4EUNetworkId]
   ]))
 
   const reset = () => {
@@ -101,7 +101,7 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
     setDisplay(new Map([
       ['logo', original.current!!.uiStyleSchema.logoImageFileName !== undefined],
       ['poweredBy', !(original.current!!.disablePoweredBy)],
-      ['wifi4eu', original.current!!.uiStyleSchema.wifi4EUNetworkId !== undefined]
+      ['wifi4eu', !!original.current!!.uiStyleSchema.wifi4EUNetworkId]
     ]))
   }
 
