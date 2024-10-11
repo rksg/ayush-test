@@ -16,12 +16,12 @@ import {
   cssStr,
   showToast
 } from '@acx-ui/components'
-import { get }                      from '@acx-ui/config'
+import { get }                     from '@acx-ui/config'
 import {
   Features, TierFeatures,
   useIsSplitOn, useIsTierAllowed
 } from '@acx-ui/feature-toggle'
-import { formatter }  from '@acx-ui/formatter'
+import { formatter } from '@acx-ui/formatter'
 import {
   CheckMark,
   DownloadOutlined
