@@ -145,12 +145,21 @@ describe('Aps', () => {
 
   it('Table action bar Download Log', async () => {
     const fakeDownloadUrl = '/api/abc'
+    jest.mocked(get).mockReturnValue('')
     mockServer.use(
       rest.get(
         WifiRbacUrlsInfo.downloadApLog.url,
         (req, res, ctx) => res(ctx.json({ fileURL: fakeDownloadUrl, fileUrl: fakeDownloadUrl }))
       )
     )
+
+    setUserProfile({
+      ...getUserProfile(),
+      abacEnabled: true,
+      isCustomRole: false,
+      scopes: [WifiScopes.UPDATE, WifiScopes.DELETE, WifiScopes.CREATE, WifiScopes.READ],
+      profile: { ...getUserProfile().profile, roles: [RolesEnum.PRIME_ADMIN] }
+    })
 
     render(<Provider><ApTable
       rowSelection={{
