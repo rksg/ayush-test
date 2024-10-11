@@ -146,6 +146,11 @@ function VlanSettingForm (props: VlanSettingFormProps) {
   const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
   const isSwitchLevel = !!switchFamilyModel
 
+  const multicastVersionEnabled = () : boolean => {
+    const igmpSnooping = form.getFieldValue('igmpSnooping')
+    return (igmpSnooping === 'active' || igmpSnooping === 'passive')
+  }
+
   useEffect(() => {
     form.resetFields()
   }, [])
@@ -166,6 +171,9 @@ function VlanSettingForm (props: VlanSettingFormProps) {
       setRuleList(vlanPortsData as SwitchModelPortData[])
       setArpInspection(vlan.arpInspection || false)
       setIpv4DhcpSnooping(vlan.ipv4DhcpSnooping || false)
+    }
+    if (multicastVersionEnabled()) {
+      setMulticastVersionDisabled(false)
     }
   }, [vlan])
 
@@ -280,11 +288,6 @@ function VlanSettingForm (props: VlanSettingFormProps) {
     setOpenModal(false)
   }
 
-  const multicastVersionIsDisable = () : boolean => {
-    const igmpSnooping = form.getFieldValue('igmpSnooping')
-    return !(igmpSnooping === 'active' || igmpSnooping === 'passive')
-  }
-
   return (
     <div data-testid='addVlanDrawer'>
       <Form
@@ -374,7 +377,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           label={$t({ defaultMessage: 'Multicast Version' })}
           initialValue={null}
           children={
-            <Select disabled={multicastVersionIsDisable()}>
+            <Select disabled={multicastVersionDisabled}>
               <Option value={2}>
                 {$t({ defaultMessage: 'Version 2' })}</Option>
               <Option value={3}>
