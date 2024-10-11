@@ -18,6 +18,9 @@ interface FieldType {
 }
 
 function DataPromptField () {
+
+  const form = Form.useFormInstance()
+
   const { $t } = useIntl()
   const fieldTypes: FieldType[] = [
     { value: 'USER_NAME', label: $t({ defaultMessage: 'Username' }) }
@@ -41,6 +44,22 @@ function DataPromptField () {
       return Promise.reject($t({ defaultMessage: 'Field type already selected' }))
     }
 
+    return Promise.resolve()
+  }
+
+  const validateDuplicateName = (label: string) => {
+
+    const formFields = form.getFieldValue('variables')
+
+    let nameCount = 0
+    if(formFields && formFields.length > 0) {
+      //@ts-ignore
+      formFields.forEach(field => field.label === label ? nameCount++ : 1)
+    }
+
+    if (label && nameCount > 1) {
+      return Promise.reject($t({ defaultMessage: 'Field label is already in use.' }))
+    }
     return Promise.resolve()
   }
 
@@ -69,7 +88,8 @@ function DataPromptField () {
                     { required: true },
                     { min: 3 },
                     { max: 50 },
-                    { validator: (_, value) => trailingNorLeadingSpaces(value) }
+                    { validator: (_, value) => trailingNorLeadingSpaces(value) },
+                    { validator: (_, value) => validateDuplicateName(value) }
                   ]}
                 >
                   <Input />
