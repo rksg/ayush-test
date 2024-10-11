@@ -15,9 +15,9 @@ export function loadFile (file: RcFile, callback: (url:string)=>void) {
     })
     return
   }
-  const isLt20M = file.size / 1024 / 1024 < 20
-  if (!isLt20M) {
-    const content = $t({ defaultMessage: 'Image must smaller than 20MB!' })
+  const isGt8M = file.size / 1024 / 1024 > 8
+  if (isGt8M) {
+    const content = $t({ defaultMessage: 'Image must smaller than 8MB!' })
     showToast({
       type: 'error',
       content
