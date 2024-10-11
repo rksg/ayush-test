@@ -1008,6 +1008,26 @@ export const mspApi = baseMspApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    updateMspEcDelegations: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspRbacUrlsInfo.updateMspEcDelegations, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    updateMspMultipleEcDelegations: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspRbacUrlsInfo.updateMspMultipleEcDelegations, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     })
   })
 })
@@ -1124,7 +1144,9 @@ export const {
   usePatchCustomerMutation,
   useGetMspUploadURLMutation,
   useGetEntitlementsCompliancesQuery,
-  useGetEntitlementsAttentionNotesQuery
+  useGetEntitlementsAttentionNotesQuery,
+  useUpdateMspEcDelegationsMutation,
+  useUpdateMspMultipleEcDelegationsMutation
 } = mspApi
 
 export * from './hospitalityVerticalFFCheck'

@@ -558,6 +558,10 @@ export function ManageCustomer () {
       if (ecDelegations.length > 0) {
         customer.delegations = ecDelegations
       }
+      if (isRbacPhase2Enabled && privilegeGroups.length > 0) {
+        const pgIds = privilegeGroups?.map((pg: PrivilegeGroup)=> pg.id)
+        customer.privilegeGroups = pgIds
+      }
 
       const result =
       await addCustomer({ params: { tenantId: tenantId },

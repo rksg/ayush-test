@@ -11,11 +11,14 @@ import {
 import {
   useGetMspEcDelegatedAdminsQuery,
   useMspAdminListQuery,
-  useUpdateMspEcDelegatedAdminsMutation
+  useUpdateMspEcDelegationsMutation,
+  useUpdateMspMultipleEcDelegationsMutation
 } from '@acx-ui/msp/services'
 import {
+  AssignedMultiEcMspAdmins,
   MspAdministrator,
-  MspEcDelegatedAdmins
+  MspEcDelegatedAdmins,
+  SelectedMspMspAdmins
 } from '@acx-ui/msp/utils'
 import { useParams }                                  from '@acx-ui/react-router-dom'
 import { RolesEnum }                                  from '@acx-ui/types'
@@ -75,10 +78,6 @@ export const ManageMspDelegationDrawer = (props: ManageMspDelegationDrawerProps)
     }
   }, [privilegeGroupList])
 
-  const onTabChange = (tab: string) => {
-    setCurrentTab(tab)
-  }
-
   const isSkip = (tenantIds === undefined || tenantIds.length !== 1)
   const isTechPartner =
     (tenantType === AccountType.MSP_INSTALLER ||
@@ -107,30 +106,59 @@ export const ManageMspDelegationDrawer = (props: ManageMspDelegationDrawerProps)
     onClose()
   }
 
-  const [ saveMspAdmins ] = useUpdateMspEcDelegatedAdminsMutation()
+  const [ saveMspAdmins ] = useUpdateMspEcDelegationsMutation()
+  const [ saveMspMultipleEcAdmins ] = useUpdateMspMultipleEcDelegationsMutation()
 
   const handleSave = () => {
-    // TODO: add in API functionality for saving privilege groups
-    let payload: MspEcDelegatedAdmins[] = []
+    if (!selectedUsers?.length && !selectedPrivilegeGroups?.length)
+      return
+
+    // handle save for different cases
+    let selAdminList: MspEcDelegatedAdmins[] = []
     let returnRows: MspAdministrator[] = []
-    if ((selectedUsers && selectedUsers.length > 0) ||
-        (selectedPrivilegeGroups && selectedPrivilegeGroups.length > 0)
-    ) {
+    selectedUsers.forEach((element:MspAdministrator) => {
+      const role = selectedRoles.find(row => row.id === element.id)?.role ?? element.role
+      selAdminList.push ({
+        msp_admin_id: element.id,
+        msp_admin_role: role
+      })
+      const rowEntry = { ...element }
+      rowEntry.role = role as RolesEnum
+      returnRows.push(rowEntry)
+    })
+    const pgIds = selectedPrivilegeGroups?.map((pg: PrivilegeGroup)=> pg.id)
+
+    if (tenantIds && tenantIds.length > 1) {
+      let selMspAdmins: SelectedMspMspAdmins[] = []
       selectedUsers.forEach((element:MspAdministrator) => {
         const role = selectedRoles.find(row => row.id === element.id)?.role ?? element.role
-        payload.push ({
-          msp_admin_id: element.id,
-          msp_admin_role: role
+        selMspAdmins.push ({
+          mspAdminId: element.id,
+          mspAdminRole: role as RolesEnum
         })
-        const rowEntry = { ...element }
-        rowEntry.role = role as RolesEnum
-        returnRows.push(rowEntry)
       })
-    } else {
-      return
-    }
-    if (tenantIds) {
-      saveMspAdmins({ payload, params: { mspEcTenantId: tenantIds[0] } })
+      let assignedEcMspAdmins: AssignedMultiEcMspAdmins[] = []
+      tenantIds.forEach((id: string) => {
+        assignedEcMspAdmins.push ({
+          operation: 'ADD',
+          mspEcId: id,
+          mspAdminRoles: selMspAdmins,
+          privilege_group_ids: pgIds.length > 0 ? pgIds : undefined
+        })
+      })
+      saveMspMultipleEcAdmins({ params, payload: { associations: assignedEcMspAdmins } })
+        .then(() => {
+          setAdminUsers(selectedUsers)
+          setVisible(false)
+          resetFields()
+        })
+    } else if (tenantIds && tenantIds.length === 1) {
+      const assignedPayload = {
+        delegation_type: 'MSP',
+        mspec_list: selAdminList,
+        privilege_group_ids: pgIds.length > 0 ? pgIds : undefined
+      }
+      saveMspAdmins({ params: { mspEcTenantId: tenantIds[0] }, payload: assignedPayload })
         .then(() => {
           setAdminUsers(selectedUsers)
           setVisible(false)
@@ -141,6 +169,10 @@ export const ManageMspDelegationDrawer = (props: ManageMspDelegationDrawerProps)
       setAdminPGs(selectedPrivilegeGroups)
     }
     setVisible(false)
+  }
+
+  const onTabChange = (tab: string) => {
+    setCurrentTab(tab)
   }
 
   const tabs = [
