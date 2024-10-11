@@ -181,6 +181,7 @@ describe('Aps', () => {
   })
 
   it('Table action bar Delete', async () => {
+    jest.mocked(get).mockReturnValue('')
     render(<Provider><ApTable
       rowSelection={{
         type: 'checkbox'
@@ -206,6 +207,14 @@ describe('Aps', () => {
         (req, res, ctx) => deleteSpy() && res(ctx.status(202))
       )
     )
+
+    setUserProfile({
+      ...getUserProfile(),
+      abacEnabled: true,
+      isCustomRole: false,
+      scopes: [WifiScopes.UPDATE, WifiScopes.DELETE, WifiScopes.CREATE, WifiScopes.READ],
+      profile: { ...getUserProfile().profile, roles: [RolesEnum.PRIME_ADMIN] }
+    })
 
     const apRows = await screen.findAllByRole('row', { name: /mock-ap-/i })
     expect(within(apRows[0]).getByRole('cell', { name: /mock-ap-1/i })).toBeVisible()
@@ -244,6 +253,7 @@ describe('Aps', () => {
     jest.mocked(useIsSplitOn).mockImplementation((ff) => {
       return ff === Features.EXPORT_DEVICE || ff === Features.WIFI_RBAC_API
     })
+    jest.mocked(get).mockReturnValue('')
 
     render(<Provider><ApTable
       rowSelection={{
@@ -251,6 +261,14 @@ describe('Aps', () => {
       }}
     /></Provider>, {
       route: { params, path: '/:tenantId' }
+    })
+
+    setUserProfile({
+      ...getUserProfile(),
+      abacEnabled: true,
+      isCustomRole: false,
+      scopes: [WifiScopes.UPDATE, WifiScopes.DELETE, WifiScopes.CREATE, WifiScopes.READ],
+      profile: { ...getUserProfile().profile, roles: [RolesEnum.PRIME_ADMIN] }
     })
 
     const row = await screen.findByRole('row', { name: /mock-ap-1/i })
