@@ -63,9 +63,12 @@ export const FieldLabelDelegations = styled.div<{ width: string }>`
   font-size: var(--acx-body-4-font-size);
   display: grid;
   grid-template-columns: 120px 275px;
-  align-items: baseline;
+  align-items: flex-start;
   .ant-form-item {
     margin-bottom: 0px;
+  }
+  .ant-form-item-control-input {
+    align-items: flex-start;
   }
 `
 export const FieldLabelSubs = styled.div<{ width: string }>`

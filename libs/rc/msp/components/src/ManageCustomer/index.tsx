@@ -861,7 +861,7 @@ export function ManageCustomer () {
       {(isRbacPhase2Enabled && !isEditMode)
         ? <div>
           <UI.FieldLabelAdmins2 width='275px' style={{ marginTop: '15px' }}>
-            <label>{intl.$t({ defaultMessage: 'MSP Deligations' })}</label>
+            <label>{intl.$t({ defaultMessage: 'MSP Delegations' })}</label>
             <Form.Item
               children={<UI.FieldTextLink onClick={() => setDrawerAdminVisible(true)}>
                 {intl.$t({ defaultMessage: 'Manage' })}
@@ -869,7 +869,7 @@ export function ManageCustomer () {
               }
             />
           </UI.FieldLabelAdmins2>
-          <UI.FieldLabelDelegations width='260px' style={{ marginLeft: '15px' }}>
+          <UI.FieldLabelDelegations width='260px' style={{ marginLeft: '15px', marginTop: '5px' }}>
             <label>{intl.$t({ defaultMessage: 'Users' })}</label>
             <Form.Item children={<div>{displayMspAdmins()}</div>} />
             <label>{intl.$t({ defaultMessage: 'Privilege Groups' })}</label>
@@ -887,7 +887,7 @@ export function ManageCustomer () {
           />}
         </UI.FieldLabelAdmins>}
 
-      <UI.FieldLabelAdmins width='275px' style={{ marginTop: '-12px' }}>
+      <UI.FieldLabelAdmins width='275px'>
         <label>{intl.$t({ defaultMessage: 'Integrator' })}</label>
         <Form.Item children={displayIntegrator()} />
         {!isEditMode && <Form.Item

@@ -640,33 +640,25 @@ export function MspCustomers () {
           setVisible={setModalVisible}
           tenantId={selTenantId}
         />}
-        {drawerAssignEcMspAdminsVisible && ((isAbacToggleEnabled && selEcTenantIds.length === 1)
-          ? (isRbacPhase2Enabled
-            ? <ManageMspDelegationDrawer
-              visible={drawerAssignEcMspAdminsVisible}
-              setVisible={setDrawerAssignEcMspAdminsVisible}
-              setSelectedUsers={() => {}}
-              setSelectedPrivilegeGroups={() => {}}
-              tenantIds={[selEcTenantIds[0]]}
-              tenantType={AccountType.MSP_EC}/>
-            : <ManageDelegateAdminDrawer
+        {drawerAssignEcMspAdminsVisible && (isAbacToggleEnabled && isRbacPhase2Enabled
+          ? <ManageMspDelegationDrawer
+            visible={drawerAssignEcMspAdminsVisible}
+            tenantIds={selEcTenantIds}
+            setVisible={setDrawerAssignEcMspAdminsVisible}
+            setSelectedUsers={() => {}}
+            setSelectedPrivilegeGroups={() => {}}/>
+          : (isAbacToggleEnabled && selEcTenantIds.length === 1)
+            ? <ManageDelegateAdminDrawer
               visible={drawerAssignEcMspAdminsVisible}
               setVisible={setDrawerAssignEcMspAdminsVisible}
               setSelected={() => {}}
               tenantId={selEcTenantIds[0]}
-              tenantType={AccountType.MSP_EC}/>)
-          : (isRbacPhase2Enabled
-            ? <ManageMspDelegationDrawer
-              visible={drawerAssignEcMspAdminsVisible}
-              tenantIds={selEcTenantIds}
-              setVisible={setDrawerAssignEcMspAdminsVisible}
-              setSelectedUsers={() => {}}
-              setSelectedPrivilegeGroups={() => {}}/>
+              tenantType={AccountType.MSP_EC}/>
             : <AssignEcMspAdminsDrawer
               visible={drawerAssignEcMspAdminsVisible}
               tenantIds={selEcTenantIds}
               setVisible={setDrawerAssignEcMspAdminsVisible}
-              setSelected={() => {}}/>))
+              setSelected={() => {}}/>)
         }
         {drawerScheduleFirmwareVisible && <ScheduleFirmwareDrawer
           visible={drawerScheduleFirmwareVisible}

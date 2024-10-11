@@ -54,11 +54,15 @@ export const SelectUsers = (props: SelectUsersProps) => {
       const selRoles = delegatedAdminsData.map((admin) => {
         return { id: admin.msp_admin_id, role: admin.msp_admin_role }
       })
-      setSelectedRoles(selRoles)
       // TODO: check if this functionality is correct
       if (selected && selected.length > 0) {
         setSelectedKeys(selected.map(sel => sel.email))
         setSelectedRows(selected)
+        const nonselectedRoles = selRoles.filter(rec =>
+          !selected.map(sel => sel.id).includes(rec.id))
+        setSelectedRoles([ ...nonselectedRoles,
+          ...selected.map(sel => { return { id: sel.id, role: sel.role as string } })
+        ])
       }
       else {
         const admins = delegatedAdminsData.map((admin: MspEcDelegatedAdmins) => admin.msp_admin_id)
@@ -66,6 +70,7 @@ export const SelectUsers = (props: SelectUsersProps) => {
         const selRows = getSelectedRows(usersData, admins)
         setSelectedRows(selRows)
         setSelected(selRows)
+        setSelectedRoles(selRoles)
       }
     }
     setIsLoaded(isSkip || (usersData && delegatedAdminsData) as unknown as boolean)
@@ -112,10 +117,18 @@ export const SelectUsers = (props: SelectUsersProps) => {
   const handleRoleChange = (id: string, value: string) => {
     const updatedRole = { id: id, role: value }
     setSelectedRoles([ ...selectedRoles.filter(row => row.id !== id), updatedRole ])
+    const selRow = selectedRows?.find(sel => sel.id === id)
+    if (selRow) {
+      const updatedSelRows = [ ...selectedRows.filter(row => row.id !== id),
+        { ...selRow, role: value as RolesEnum } ]
+      setSelectedRows(updatedSelRows)
+      setSelected(updatedSelRows)
+    }
   }
 
   const transformAdminRole = (id: string, initialRole: RolesEnum) => {
-    const role = delegatedAdminsData?.find((admin) => admin.msp_admin_id === id)?.msp_admin_role
+    const role = selectedRoles.find(sel => sel.id === id)?.role
+    ?? delegatedAdminsData?.find((admin) => admin.msp_admin_id === id)?.msp_admin_role
       ?? initialRole
     return isLoaded && <Select defaultValue={role}
       style={{ width: '150px' }}
