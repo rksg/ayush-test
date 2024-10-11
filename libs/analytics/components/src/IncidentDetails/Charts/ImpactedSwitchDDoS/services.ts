@@ -6,7 +6,6 @@ import { dataApi }  from '@acx-ui/store'
 
 interface ImpactedSwitchPort {
   portNumber: string
-  portMac: string
 }
 
 export interface ImpactedSwitch {
@@ -33,7 +32,6 @@ const document = gql`
         serial
         ports {
           portNumber
-          portMac
         }
       }
       switchCount
