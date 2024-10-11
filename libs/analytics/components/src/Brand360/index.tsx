@@ -190,6 +190,7 @@ export function Brand360 () {
             currData={currData}
             lsp={lsp}
             property={property}
+            isMDU={isMDUEnabled}
           />
         </Loader>
       </GridCol>)}
