@@ -16,12 +16,12 @@ import {
   cssStr,
   showToast
 } from '@acx-ui/components'
-import { get }                     from '@acx-ui/config'
+import { get }                      from '@acx-ui/config'
 import {
   Features, TierFeatures,
   useIsSplitOn, useIsTierAllowed
 } from '@acx-ui/feature-toggle'
-import { formatter } from '@acx-ui/formatter'
+import { formatter }  from '@acx-ui/formatter'
 import {
   CheckMark,
   DownloadOutlined
@@ -57,7 +57,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload, WifiScopes, RolesEnum }                          from '@acx-ui/types'
-import { filterByAccess, hasRoles, hasPermission }                        from '@acx-ui/user'
+import { filterByAccess, hasPermission }                                  from '@acx-ui/user'
 import { exportMessageMapping }                                           from '@acx-ui/utils'
 
 import { ApCompatibilityDrawer, ApCompatibilityFeature, ApCompatibilityType } from '../ApCompatibility'
@@ -109,7 +109,6 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
   const apTxPowerFlag = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
   const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
-  const isReadOnly = hasRoles([RolesEnum.READ_ONLY])
   const operationRoles = [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]
 
   const [ getApCompatibilitiesVenue ] = useLazyGetApCompatibilitiesVenueQuery()
@@ -561,15 +560,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
     return visible
   }
 
-  const rowActions: TableProps<NewAPModelExtended>['rowActions'] = (isReadOnly ? [{
-    label: $t({ defaultMessage: 'Download Log' }),
-    scopeKey: [WifiScopes.READ],
-    roles: [RolesEnum.READ_ONLY],
-    visible: (rows) => isActionVisible(rows, { selectOne: true, deviceStatus: [ ApDeviceStatusEnum.OPERATIONAL, ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED ] }),
-    onClick: (rows) => {
-      apAction.showDownloadApLog(rows[0].serialNumber, params.tenantId, rows[0].venueId)
-    }
-  }] : [{
+  const rowActions: TableProps<NewAPModelExtended>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     scopeKey: [WifiScopes.UPDATE],
     roles: [...operationRoles],
@@ -619,7 +610,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
     onClick: (rows) => {
       apAction.showDownloadApLog(rows[0].serialNumber, params.tenantId, rows[0].venueId)
     }
-  }])
+  }]
 
   const [ isImportResultLoading, setIsImportResultLoading ] = useState(false)
   const [ importVisible, setImportVisible ] = useState(false)
