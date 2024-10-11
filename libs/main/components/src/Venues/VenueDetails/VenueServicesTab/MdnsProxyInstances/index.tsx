@@ -10,6 +10,8 @@ import {
   useDeleteMdnsProxyApsMutation
 } from '@acx-ui/rc/services'
 import {
+  filterByAccessForServicePolicyMutation,
+  getScopeKeyByService,
   getServiceDetailsLink,
   MdnsProxyAp,
   ServiceOperation,
@@ -150,9 +152,10 @@ export default function MdnsProxyInstances () {
           settingsId={settingsId}
           columns={columns}
           dataSource={tableQuery.data?.data}
-          actions={filterByAccess([{
+          actions={filterByAccessForServicePolicyMutation([{
             label: $t({ defaultMessage: 'Add Instance' }),
-            onClick: handleAddAction
+            onClick: handleAddAction,
+            scopeKey: getScopeKeyByService(ServiceType.MDNS_PROXY, ServiceOperation.EDIT)
           }])}
           onChange={tableQuery.handleTableChange}
           rowKey='serialNumber'

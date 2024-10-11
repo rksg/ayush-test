@@ -297,6 +297,11 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/switches/:switchId/debugRequests',
     newApi: true
   },
+  cableTest: {
+    method: 'post',
+    url: '/venues/:venueId/switches/:switchId/debugRequests',
+    newApi: true
+  },
   macAddressTable: {
     method: 'post',
     url: '/venues/:venueId/switches/:switchId/debugRequests',

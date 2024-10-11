@@ -1,5 +1,6 @@
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import userEvent     from '@testing-library/user-event'
+import { cloneDeep } from 'lodash'
+import { rest }      from 'msw'
 
 import { Features }              from '@acx-ui/feature-toggle'
 import { useIsEdgeFeatureReady } from '@acx-ui/rc/components'
@@ -10,11 +11,11 @@ import {
   EdgeFirewallFixtures,
   EdgeFirewallUrls,
   EdgeGeneralFixtures,
-  EdgeNSGFixtures,
+  EdgePinFixtures,
   EdgeSdLanFixtures,
   EdgeSdLanUrls,
   EdgeUrlsInfo,
-  NetworkSegmentationUrls,
+  EdgePinUrls,
   PersonaUrls,
   TunnelProfileUrls
 } from '@acx-ui/rc/utils'
@@ -41,8 +42,10 @@ const {
 } = EdgeGeneralFixtures
 const { mockedSdLanDataList, mockedSdLanDataListP2, mockedMvSdLanDataList } = EdgeSdLanFixtures
 const { mockFirewallData } = EdgeFirewallFixtures
-const { mockNsgStatsList } = EdgeNSGFixtures
 const { mockDhcpStatsData, mockEdgeDhcpDataList } = EdgeDHCPFixtures
+const mockPinStatsList = cloneDeep(EdgePinFixtures.mockPinStatsList)
+mockPinStatsList.data[0].edgeClusterInfo.segments = 10
+mockPinStatsList.data[0].edgeClusterInfo.devices = 10
 
 const mockedSetVisible = jest.fn()
 const mockedUseSearchParams = jest.fn()
@@ -80,8 +83,8 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
         (_req, res, ctx) => res(ctx.json(mockFirewallData))
       ),
       rest.post(
-        NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
-        (_req, res, ctx) => res(ctx.json(mockNsgStatsList))
+        EdgePinUrls.getEdgePinStatsList.url,
+        (_req, res, ctx) => res(ctx.json(mockPinStatsList))
       ),
       rest.get(
         EdgeDhcpUrls.getDhcp.url,
@@ -161,7 +164,7 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
     await screen.findByTestId('rc-EdgeFirewallGroupedStatsTables')
   })
 
-  it('should render nsg detail successfully', async () => {
+  it('should render PIN detail successfully', async () => {
     render(
       <Provider>
         <ServiceDetailDrawer
@@ -185,7 +188,7 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
     expect(await screen.findByText('Tunnel Profile')).toBeVisible()
     expect(await screen.findByRole('link', { name: /tunnelProfile1/i })).toBeVisible()
     expect(await screen.findByText('Networks')).toBeVisible()
-    expect(await screen.findByText('2')).toBeVisible()
+    expect(await screen.findByText('1')).toBeVisible()
     expect(await screen.findByTestId('rc-PinTableGroup')).toBeVisible()
   })
 

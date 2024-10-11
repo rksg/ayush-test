@@ -20,7 +20,7 @@ import {
   PolicyType,
   PolicyOperation,
   ClientIsolationSaveData,
-  getPolicyListRoutePath
+  getPolicyListRoutePath, formatMacAddress
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -58,12 +58,25 @@ export function ClientIsolationForm (props: ClientIsolationFormProps) {
     }
   }, [dataFromServer, editMode])
 
+  const transformData = (data: ClientIsolationSaveData) => {
+    return {
+      ...data,
+      allowlist: data.allowlist.map((client) => {
+        return {
+          ...client,
+          mac: formatMacAddress(client.mac)
+        }
+      })
+    }
+  }
+
   const saveData = async (data: ClientIsolationSaveData) => {
     try {
       if (editMode) {
-        await updateClientIsolation({ params, payload: _.omit(data, 'id'), enableRbac }).unwrap()
+        // eslint-disable-next-line max-len
+        await updateClientIsolation({ params, payload: _.omit(transformData(data), 'id'), enableRbac }).unwrap()
       } else {
-        await addClientIsolation({ params, payload: data, enableRbac }).unwrap()
+        await addClientIsolation({ params, payload: transformData(data), enableRbac }).unwrap()
       }
 
       navigate(linkToPolicies, { replace: true })

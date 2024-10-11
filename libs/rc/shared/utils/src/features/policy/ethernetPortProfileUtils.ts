@@ -2,25 +2,25 @@
 
 import { getIntl } from '@acx-ui/utils'
 
-import { ApLanPortTypeEnum, EthernetPortAuthType, EthernetPortSupplicantType } from '../../models'
+import { EthernetPortAuthType, EthernetPortSupplicantType, EthernetPortType } from '../../models'
 
 export const getEthernetPortTypeOptions = ()
-: Array<{ label: string, value: ApLanPortTypeEnum }> => {
-  return Object.keys(ApLanPortTypeEnum)
+: Array<{ label: string, value: EthernetPortType }> => {
+  return Object.keys(EthernetPortType)
     .map(key => ({
-      label: getEthernetPortTypeString(key as ApLanPortTypeEnum),
-      value: key as ApLanPortTypeEnum
+      label: getEthernetPortTypeString(key as EthernetPortType),
+      value: key as EthernetPortType
     }))
 }
 
-export const getEthernetPortTypeString = (type?: ApLanPortTypeEnum) => {
+export const getEthernetPortTypeString = (type?: EthernetPortType) => {
   const { $t } = getIntl()
   switch (type) {
-    case ApLanPortTypeEnum.ACCESS :
+    case EthernetPortType.ACCESS :
       return $t({ defaultMessage: 'Access' })
-    case ApLanPortTypeEnum.GENERAL:
-      return $t({ defaultMessage: 'General' })
-    case ApLanPortTypeEnum.TRUNK:
+    case EthernetPortType.SELECTIVE_TRUNK:
+      return $t({ defaultMessage: 'Selective Trunk' })
+    case EthernetPortType.TRUNK:
       return $t({ defaultMessage: 'Trunk' })
     default:
       return ''

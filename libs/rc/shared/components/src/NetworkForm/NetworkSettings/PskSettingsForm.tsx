@@ -130,9 +130,13 @@ function SettingsForm () {
       }
     </>)
   }
-
+  const isDeprecateWep = useIsSplitOn(Features.WIFI_WLAN_DEPRECATE_WEP)
   const securityOptions = Object.keys(PskWlanSecurityEnum).map((key =>
-    <Option key={key}>{ PskWlanSecurityEnum[key as keyof typeof PskWlanSecurityEnum] }</Option>
+    <Option key={key} disabled={isDeprecateWep && key === 'WEP'}>
+      {isDeprecateWep && key === 'WEP' ?
+        `${PskWlanSecurityEnum[key as keyof typeof PskWlanSecurityEnum]} (Unsafe)`
+        : PskWlanSecurityEnum[key as keyof typeof PskWlanSecurityEnum]}
+    </Option>
   ))
   const frameOptions = Object.keys(ManagementFrameProtectionEnum).map((key =>
     <Option key={key}>
@@ -237,7 +241,6 @@ function SettingsForm () {
   }, [cloneMode, editMode, form, wlanSecurity])
 
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const disablePolicies = !useIsSplitOn(Features.POLICIES)
 
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
@@ -346,11 +349,7 @@ function SettingsForm () {
           <Form.Item
             name={['wlan', 'macAddressAuthentication']}
             valuePropName='checked'>
-            <Switch disabled={
-              editMode || disablePolicies
-            }
-            onChange={onMacAuthChange}
-            />
+            <Switch disabled={editMode} onChange={onMacAuthChange} />
           </Form.Item>
         </UI.FieldLabel>
         {macAddressAuthentication && <>

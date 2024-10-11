@@ -13,6 +13,7 @@ import {
   AAAViewModalType,
   EthernetPortProfileViewData,
   getEthernetPortAuthTypeString,
+  getEthernetPortTypeString,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
@@ -87,6 +88,10 @@ const EthernetPortProfileTable = () => {
       sorter: true,
       defaultSortOrder: 'ascend',
       render: (_, row) => {
+        if(row.isDefault){
+          return row.name
+        }
+
         return (
           <TenantLink to={getPolicyDetailsLink({
             type: PolicyType.ETHERNET_PORT_PROFILE,
@@ -102,7 +107,10 @@ const EthernetPortProfileTable = () => {
       title: $t({ defaultMessage: 'Port Type' }),
       key: 'type',
       dataIndex: 'type',
-      sorter: true
+      sorter: true,
+      render: (_, { type }) => {
+        return getEthernetPortTypeString(type)
+      }
     },
     {
       title: $t({ defaultMessage: 'VLAN Untag' }),
@@ -221,7 +229,7 @@ const EthernetPortProfileTable = () => {
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Policy' }),
+            entityName: $t({ defaultMessage: 'Profile' }),
             entityValue: rows.length === 1 ? rows[0].name : undefined,
             numOfEntities: rows.length
           },
@@ -265,7 +273,7 @@ const EthernetPortProfileTable = () => {
       />
       <Loader states={[tableQuery]}>
         <Table
-          rowKey='id'
+          rowKey={(row: EthernetPortProfileViewData) => `${row.id}-${row.name}`}
           columns={columns}
           rowActions={filterByAccess(rowActions)}
           rowSelection={isSelectionVisible && { type: 'checkbox' }}

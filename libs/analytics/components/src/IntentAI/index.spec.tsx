@@ -49,6 +49,11 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useRaiR1HelpPageLink: () => ''
+}))
+
 setUpIntl({ locale: 'en-US', messages: {} })
 //Refer to libs/analytics/components/src/Recommendations/index.spec.tsx
 describe('IntentAITabContent', () => {
@@ -76,6 +81,11 @@ describe('IntentAITabContent', () => {
     jest.mocked(useDateRange).mockReturnValue(defaultTimeRangeDropDownContextValue)
     jest.mocked(get).mockReturnValue('') // get('IS_MLISA_SA')
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+  })
+
+  afterEach(() => {
+    jest.clearAllMocks()
+    jest.restoreAllMocks()
   })
 
   it('should render loader and empty table', async () => {

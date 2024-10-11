@@ -48,7 +48,7 @@ export enum EdgeStatusSeverityEnum {
 export enum EdgeServiceTypeEnum {
   DHCP = 'DHCP',
   FIREWALL = 'FIREWALL',
-  NETWORK_SEGMENTATION = 'NETWORK_SEGMENTATION',
+  PIN = 'NETWORK_SEGMENTATION',
   SD_LAN = 'SDLAN',
   SD_LAN_P2 = 'SDLAN_P2',
   MV_SD_LAN = 'MV_SDLAN'
@@ -114,7 +114,8 @@ export enum ClusterHaLoadDistributionEnum {
 export enum EdgeFeatureEnum {
   SD_LAN = 'SD-LAN',
   TUNNEL_PROFILE = 'Tunnel Profile',
-  HA_AA = 'HA-AA'
+  HA_AA = 'HA-AA',
+  HQOS = 'HQoS'
 }
 
 export enum CompatibilityEntityTypeEnum {

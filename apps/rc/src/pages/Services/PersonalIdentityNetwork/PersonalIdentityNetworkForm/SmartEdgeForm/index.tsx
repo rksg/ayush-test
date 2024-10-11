@@ -1,16 +1,15 @@
-import { useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 
 import { Col, Form, InputNumber, Row, Select, Space } from 'antd'
 import { FormattedMessage, useIntl }                  from 'react-intl'
 import { useNavigate, useParams }                     from 'react-router-dom'
 
-import { Alert, Button, StepsForm, useStepFormContext }         from '@acx-ui/components'
-import { AddEdgeDhcpServiceModal }                              from '@acx-ui/rc/components'
-import { useGetDhcpStatsQuery }                                 from '@acx-ui/rc/services'
-import { ServiceOperation, ServiceType, getServiceDetailsLink } from '@acx-ui/rc/utils'
-import { useTenantLink }                                        from '@acx-ui/react-router-dom'
+import { Alert, Button, StepsForm, useStepFormContext }                                          from '@acx-ui/components'
+import { AddEdgeDhcpServiceModal }                                                               from '@acx-ui/rc/components'
+import { useGetDhcpStatsQuery, useGetEdgeDhcpServiceQuery }                                      from '@acx-ui/rc/services'
+import { PersonalIdentityNetworkFormData, ServiceOperation, ServiceType, getServiceDetailsLink } from '@acx-ui/rc/utils'
+import { useTenantLink }                                                                         from '@acx-ui/react-router-dom'
 
-import { PersonalIdentityNetworkFormData }    from '..'
 import { PersonalIdentityNetworkFormContext } from '../PersonalIdentityNetworkFormContext'
 
 import { DhcpPoolTable }        from './DhcpPoolTable'
@@ -28,22 +27,37 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
   const tenantBasePath = useTenantLink('')
   const { form } = useStepFormContext<PersonalIdentityNetworkFormData>()
   const {
-    edgeOptions,
-    isEdgeOptionsLoading,
-    dhcpProfles,
+    clusterOptions,
+    isClusterOptionsLoading,
+    dhcpList,
     dhcpOptions,
-    isDhcpOptionsLoading,
-    poolMap,
-    getDhcpPoolName
+    isDhcpOptionsLoading
   } = useContext(PersonalIdentityNetworkFormContext)
-  const edgeId = Form.useWatch('edgeId', form)
+
+  const edgeClusterId = Form.useWatch('edgeClusterId', form)
   const dhcpId = Form.useWatch('dhcpId', form) || form.getFieldValue('dhcpId')
   const poolId = form.getFieldValue('poolId')
   const dhcpRelay = form.getFieldValue('dhcpRelay')
+
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [shouldDhcpDisabled, setShouldDhcpDisabled] = useState(true)
+
+  const {
+    poolList,
+    isPoolListFetching
+  } = useGetEdgeDhcpServiceQuery({ params: { id: dhcpId } }, {
+    skip: !dhcpId,
+    selectFromResult: ({ data, isFetching }) => {
+      return {
+        poolList: data?.dhcpPools,
+        isPoolListFetching: isFetching
+      }
+    }
+  })
+
   const {
     currentEdgeDhcp,
+    currentEdgeDhcpIsRelay,
     isGetDhcpByEdgeIdFail,
     isGetDhcpByEdgeIdFetching
   } = useGetDhcpStatsQuery(
@@ -53,14 +67,15 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
           'id',
           'dhcpRelay'
         ],
-        filters: { edgeClusterIds: [edgeId] }
+        filters: { edgeClusterIds: [edgeClusterId] }
       }
     },
     {
-      skip: !Boolean(edgeId),
+      skip: !Boolean(edgeClusterId),
       selectFromResult: ({ data, isFetching }) => {
         return {
           currentEdgeDhcp: data?.data[0],
+          currentEdgeDhcpIsRelay: data?.data[0]?.dhcpRelay === 'true',
           isGetDhcpByEdgeIdFail: (data?.totalCount ?? 0) < 1,
           isGetDhcpByEdgeIdFetching: isFetching
         }
@@ -71,21 +86,30 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
   useEffect(() => {
     if(isGetDhcpByEdgeIdFetching) return
     if(!dhcpId) {
-      if(!edgeId || isGetDhcpByEdgeIdFail) {
+      if(!edgeClusterId || isGetDhcpByEdgeIdFail) {
         form.setFieldValue('dhcpId', null)
       } else {
         form.setFieldValue('dhcpId', currentEdgeDhcp?.id)
       }
     }
-    form.setFieldValue('dhcpRelay', dhcpRelay || currentEdgeDhcp?.dhcpRelay)
+
+    form.setFieldValue('dhcpRelay', dhcpRelay || currentEdgeDhcpIsRelay)
     setShouldDhcpDisabled(!isGetDhcpByEdgeIdFail)
 
   }, [
     currentEdgeDhcp,
     isGetDhcpByEdgeIdFail,
-    edgeId,
+    edgeClusterId,
     isGetDhcpByEdgeIdFetching
   ])
+
+  const getDhcpPoolName = useCallback(() => {
+    return poolList?.find(item => item.id === poolId)?.poolName
+  }, [poolList, poolId])
+
+  useEffect(() => {
+    form.setFieldValue('poolName', getDhcpPoolName())
+  }, [getDhcpPoolName])
 
   const onEdgeChange = () => {
     form.setFieldsValue({
@@ -96,10 +120,10 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
   }
 
   const onDhcpChange = (value: string) => {
-    const dhcpPorilfe = dhcpProfles?.find(item => item.id === value)
+    const dhcpProfile = dhcpList?.find(item => item.id === value)
     form.setFieldsValue({
       poolId: undefined,
-      dhcpRelay: dhcpPorilfe?.dhcpRelay
+      dhcpRelay: dhcpProfile?.dhcpRelay === 'true'
     })
   }
 
@@ -108,9 +132,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
   }
 
   const selectPool = (poolId?: string) => {
-    form.setFieldsValue({
-      poolId
-    })
+    form.setFieldsValue({ poolId, poolName: getDhcpPoolName() })
     form.validateFields(['poolId'])
   }
 
@@ -119,7 +141,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
       {
         ...tenantBasePath,
         pathname: `${tenantBasePath.pathname}/` + getServiceDetailsLink({
-          type: ServiceType.NETWORK_SEGMENTATION,
+          type: ServiceType.PIN,
           oper: ServiceOperation.DETAIL,
           serviceId: params.serviceId!
         })
@@ -153,27 +175,28 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
         setVisible={setDrawerVisible}
         selectPool={selectPool}
         dhcpId={dhcpId}
-        pools={poolMap && poolMap[dhcpId]}
+        pools={poolList}
         data={poolId}
         isRelayOn={dhcpRelay}
+        isLoading={isPoolListFetching}
       />
       <Row gutter={20}>
         <Col span={8}>
           <StepsForm.Title>{$t({ defaultMessage: 'RUCKUS Edge Settings' })}</StepsForm.Title>
           <Form.Item
-            name='edgeId'
-            label={$t({ defaultMessage: 'RUCKUS Edge' })}
+            name='edgeClusterId'
+            label={$t({ defaultMessage: 'Cluster' })}
             rules={[{
               required: true,
-              message: $t({ defaultMessage: 'Please enter RUCKUS Edge' })
+              message: $t({ defaultMessage: 'Please select Cluster' })
             }]}
             children={
               <Select
-                loading={isEdgeOptionsLoading}
+                loading={isClusterOptionsLoading}
                 placeholder={$t({ defaultMessage: 'Select...' })}
                 onChange={onEdgeChange}
                 options={[
-                  ...(edgeOptions || [])
+                  ...(clusterOptions || [])
                 ]}
               />
             }
@@ -248,9 +271,9 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
               <Space direction='vertical'>
                 <Space size={20}>
                   {
-                    poolId ?
-                      getDhcpPoolName(dhcpId, poolId) :
-                      $t({ defaultMessage: 'No Pool selected' })
+                    poolId
+                      ? getDhcpPoolName()
+                      : $t({ defaultMessage: 'No Pool selected' })
                   }
                   {
                     !props.editMode &&
@@ -268,7 +291,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
                 {
                   poolId &&
                   <DhcpPoolTable
-                    data={poolMap && poolMap[dhcpId]?.find(item => item.id === poolId)}
+                    data={poolList?.find(item => item.id === poolId)}
                   />
                 }
               </Space>

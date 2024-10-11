@@ -1,14 +1,21 @@
 import { useEffect } from 'react'
 
 import { Form, Input, InputNumber } from 'antd'
+import { Rule }                     from 'antd/lib/form'
+import { StoreValue }               from 'antd/lib/form/interface'
 import moment                       from 'moment'
 import { useIntl }                  from 'react-intl'
 import { useParams }                from 'react-router-dom'
 
-import { Collapse, DatePicker, Drawer, Select }                                                              from '@acx-ui/components'
-import { CollapseInactive, CollapseActive }                                                                  from '@acx-ui/icons'
-import { useAddSpecificTemplateScepKeyMutation, useEditSpecificTemplateScepKeyMutation }                     from '@acx-ui/rc/services'
-import { ChallengePasswordType, EXPIRATION_DATE_FORMAT, ScepKeyCommonNameType, ScepKeyData, generateHexKey } from '@acx-ui/rc/utils'
+import { Collapse, DatePicker, Drawer, Select }                                          from '@acx-ui/components'
+import { CollapseInactive, CollapseActive }                                              from '@acx-ui/icons'
+import { useAddSpecificTemplateScepKeyMutation, useEditSpecificTemplateScepKeyMutation } from '@acx-ui/rc/services'
+import {
+  ChallengePasswordType,
+  EXPIRATION_DATE_FORMAT,
+  ScepKeyCommonNameType,
+  ScepKeyData
+} from '@acx-ui/rc/utils'
 
 import { challengePasswordTypeLabel, scepKeyCommonNameTypeLabel, scepKeysDescription } from '../contentsMap'
 import { CollapseWrapper, CollapseTitle, DrawerTitle, Description }                    from '../styledComponents'
@@ -28,13 +35,53 @@ export default function ScepDrawer
   const challengePasswordOptions = Object.values(ChallengePasswordType).map((value) =>
     ({ label: $t(challengePasswordTypeLabel[value as ChallengePasswordType]), value }))
 
+  const validateSubnets = (getFieldValue: (name: string) => StoreValue) => {
+    return (_: Rule, value: string) => {
+      const allowedSubnets = getFieldValue('allowedSubnets') as string
+      const blockedSubnets = getFieldValue('blockedSubnets') as string
+
+      // eslint-disable-next-line max-len
+      const subnetRegex = /^(\*|(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/?(3[0-2]|[12]?[0-9])?))$/
+
+      // Validate each subnet in the value field
+      if (value) {
+        const subnets = value.split(';').map(subnet => subnet.trim())
+
+        for (const subnet of subnets) {
+          if (!subnetRegex.test(subnet)) {
+            return Promise.reject(new Error($t({ defaultMessage: 'Invalid subnet format' })))
+          }
+        }
+      }
+
+      // Check for overlap between allowedSubnets and blockedSubnets
+      if (allowedSubnets && blockedSubnets) {
+        const allowedList = allowedSubnets.split(';').map(subnet => subnet.trim())
+        const blockedList = blockedSubnets.split(';').map(subnet => subnet.trim())
+
+        // Check if any subnet exists in both allowed and blocked lists
+        const overlappingSubnets = allowedList.filter(subnet => blockedList.includes(subnet))
+
+        if (overlappingSubnets.length > 0) {
+          // eslint-disable-next-line max-len
+          return Promise.reject(new Error($t({ defaultMessage: 'Subnets cannot be both allowed and blocked' })))
+        }
+      }
+
+      return Promise.resolve()
+    }
+  }
+
+
   const onSubmit = async () => {
     try {
       await form.validateFields()
       const payload = { ...form.getFieldsValue(),
         challengePassword:
           challengePasswordType === ChallengePasswordType.NONE ?
-            '' : form.getFieldValue('challengePassword') }
+            null : form.getFieldValue('challengePassword'),
+        expirationDate: moment(form.getFieldValue('expirationDate')).endOf('day').utc()
+      }
       if (!scepData) {
         await addScepKey({ params, payload })
       } else {
@@ -47,22 +94,23 @@ export default function ScepDrawer
   }
 
   useEffect(() => {
+    if (!visible) {
+      return
+    }
     form.resetFields()
     const { expirationDate, ...rest } = scepData || {}
     const initialValues = scepData ? { ...rest, expirationDate: moment(expirationDate) } : {
-      scepKey: generateHexKey(20),
       challengePasswordType: ChallengePasswordType.NONE,
       challengePassword: '',
       allowedSubnets: '*',
-      overrideDays: 0,
+      overrideDays: 10,
       cnValue1: ScepKeyCommonNameType.USERNAME,
       cnValue2: ScepKeyCommonNameType.IGNORE,
       cnValue3: ScepKeyCommonNameType.IGNORE,
       expirationDate: moment().add(2, 'months')
     }
     form.setFieldsValue(initialValues)
-
-  }, [scepData])
+  }, [visible])
 
   return (
     <Drawer
@@ -91,17 +139,13 @@ export default function ScepDrawer
           style={{ marginTop: 8 }}
           name='name'
           label={$t({ defaultMessage: 'Name' })}
-          rules={[{ required: true }]}
+          rules={[{ required: true, max: 255, min: 2 }]}
         >
-          <Input/>
-        </Form.Item>
-        <Form.Item
-          name='scepKey'
-          label={$t({ defaultMessage: 'SCEP Key' })}
-          rules={[{ required: true }]}
-          extra={$t(scepKeysDescription.SCEP_KEY)}
-        >
-          <Input/>
+          <Input onKeyPress={(e) => {
+            if (e.key === ' ') {
+              e.preventDefault()
+            }
+          }}/>
         </Form.Item>
         <Form.Item
           name='challengePasswordType'
@@ -115,13 +159,13 @@ export default function ScepDrawer
           </Select>
         </Form.Item>
         { challengePasswordType === ChallengePasswordType.STATIC &&
-            <Form.Item
-              name='challengePassword'
-              label={$t({ defaultMessage: 'Challenge Password' })}
-              rules={[{ required: true }]}
-            >
-              <Input />
-            </Form.Item>
+          <Form.Item
+            name='challengePassword'
+            label={$t({ defaultMessage: 'Challenge Password' })}
+            rules={[{ required: true, min: 4, max: 255 }]}
+          >
+            <Input />
+          </Form.Item>
         }
         { challengePasswordType === ChallengePasswordType.MICROSOFT &&
           <>
@@ -175,12 +219,14 @@ export default function ScepDrawer
               <Form.Item
                 name='allowedSubnets'
                 label={$t({ defaultMessage: 'Allowed Subnets' })}
+                rules={[{ validator: validateSubnets(form.getFieldValue) }]}
               >
                 <Input/>
               </Form.Item>
               <Form.Item
                 name='blockedSubnets'
                 label={$t({ defaultMessage: 'Blocked Subnets' })}
+                rules={[{ validator: validateSubnets(form.getFieldValue) }]}
               >
                 <Input/>
               </Form.Item>
@@ -202,10 +248,10 @@ export default function ScepDrawer
               <Form.Item
                 style={{ marginTop: 8, display: 'inline-block' }}
                 name='overrideDays'
-                label={$t({ defaultMessage: 'Day of Access' })}
+                label={$t({ defaultMessage: 'Days of Access' })}
                 rules={[{ required: true }]}
               >
-                <InputNumber min={0}/>
+                <InputNumber min={0} max={365}/>
               </Form.Item>
               <Description style={{ marginTop: 38, marginLeft: 10, display: 'inline-block' }}>
                 {$t({ defaultMessage: 'Days' })}
@@ -213,24 +259,6 @@ export default function ScepDrawer
               <Form.Item
                 name='cnValue1'
                 label={$t({ defaultMessage: 'Common Name #1 Mapping' })}
-                rules={[{ required: true }]}
-              >
-                <Select
-                  options={commonNameOptions}
-                  placeholder={$t({ defaultMessage: 'Select...' })}/>
-              </Form.Item>
-              <Form.Item
-                name='cnValue2'
-                label={$t({ defaultMessage: 'Common Name #2 Mapping' })}
-                rules={[{ required: true }]}
-              >
-                <Select
-                  options={commonNameOptions}
-                  placeholder={$t({ defaultMessage: 'Select...' })}/>
-              </Form.Item>
-              <Form.Item
-                name='cnValue3'
-                label={$t({ defaultMessage: 'Common Name #3 Mapping' })}
                 rules={[{ required: true }]}
               >
                 <Select

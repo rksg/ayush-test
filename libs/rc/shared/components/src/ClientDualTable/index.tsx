@@ -1,5 +1,6 @@
-import { useState, SyntheticEvent } from 'react'
+import { useState, SyntheticEvent, useEffect } from 'react'
 
+import { debounce }                                 from 'lodash'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
 import { Anchor, Tooltip, Table } from '@acx-ui/components'
@@ -40,6 +41,17 @@ export function ClientDualTable ({ clientMac }: ClientDualTableProps) {
     }
   }
 
+  const updateSearch = debounce((value: string) => {
+    setSearchValue(value)
+  }, 1000)
+
+  useEffect(() => {
+    if(searchInputRef === '' || searchInputRef.length >= 2) {
+      updateSearch(searchInputRef)
+    }
+    return () => updateSearch.cancel()
+  }, [searchInputRef])
+
   return <>
     <div id='ClientsTable'>
       <SearchBarDiv>
@@ -49,9 +61,11 @@ export function ClientDualTable ({ clientMac }: ClientDualTableProps) {
           onChange={(e) => {
             const value = e.target.value
             setSearchInputRef(value)
+            /*
             if (value.length === 0 || value.length >= 2) {
               setSearchValue(value)
             }
+            */
           }}
           placeholder={
             $t({ defaultMessage: 'Search for connected and historical clients...' })}

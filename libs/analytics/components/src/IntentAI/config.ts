@@ -42,7 +42,7 @@ export type IntentListItem = Intent & {
   }
 }
 
-export enum aiFeatures {
+export enum AiFeatures {
   RRM = 'AI-Driven RRM',
   EquiFlex = 'EquiFlex',
   AIOps = 'AI Operations',
@@ -50,10 +50,10 @@ export enum aiFeatures {
 }
 
 export const aiFeaturesLabel = {
-  [aiFeatures.RRM]: defineMessage({ defaultMessage: 'AI-Driven RRM' }),
-  [aiFeatures.EquiFlex]: defineMessage({ defaultMessage: 'EquiFlex' }),
-  [aiFeatures.AIOps]: defineMessage({ defaultMessage: 'AI Operations' }),
-  [aiFeatures.EcoFlex]: defineMessage({ defaultMessage: 'EcoFlex' })
+  [AiFeatures.RRM]: defineMessage({ defaultMessage: 'AI-Driven RRM' }),
+  [AiFeatures.EquiFlex]: defineMessage({ defaultMessage: 'EquiFlex' }),
+  [AiFeatures.AIOps]: defineMessage({ defaultMessage: 'AI Operations' }),
+  [AiFeatures.EcoFlex]: defineMessage({ defaultMessage: 'EcoFlex' })
 }
 
 type CodeInfo = {
@@ -94,15 +94,15 @@ export const states = {
   },
   [DisplayStates.applyScheduleInProgress]: {
     text: defineMessage({ defaultMessage: 'Apply In Progress' }),
-    tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes are getting applied to the <VenueSingular></VenueSingular> {zoneName}.' })
+    tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes are getting applied to <VenueSingular></VenueSingular> {zoneName}.' })
   },
   [DisplayStates.active]: {
     text: defineMessage({ defaultMessage: 'Active' }),
-    tooltip: defineMessage({ defaultMessage: 'IntentAI is active and has successfully applied the changes to the <VenueSingular></VenueSingular> {zoneName}.' }) //TODO: The new configuration is: {newConfig}.
+    tooltip: defineMessage({ defaultMessage: 'IntentAI is active on <VenueSingular></VenueSingular> {zoneName}.' }) //TODO: The new configuration is: {newConfig}.
   },
   [DisplayStates.pausedApplyFailed]: {
     text: defineMessage({ defaultMessage: 'Paused, Applied Failed' }),
-    tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes failed to apply to the <VenueSingular></VenueSingular> {zoneName} due to:{errorMessage} The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.' })
+    tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes failed to apply to <VenueSingular></VenueSingular> {zoneName} due to:{errorMessage} The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.' })
   },
   [DisplayStates.revertScheduled]: {
     text: defineMessage({ defaultMessage: 'Revert Scheduled' }),
@@ -110,7 +110,7 @@ export const states = {
   },
   [DisplayStates.revertScheduleInProgress]: {
     text: defineMessage({ defaultMessage: 'Revert In Progress' }),
-    tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes are getting reverted, to the earlier configuration, on the <VenueSingular></VenueSingular> {zoneName}.' })
+    tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes are getting reverted, to the earlier configuration, on <VenueSingular></VenueSingular> {zoneName}.' })
   },
   [DisplayStates.pausedRevertFailed]: {
     text: defineMessage({ defaultMessage: 'Paused, Revert Failed' }),
@@ -142,7 +142,7 @@ export const states = {
   },
   [DisplayStates.naNotEnoughLicense]: {
     text: defineMessage({ defaultMessage: 'No Recommendation, Not Enough License' }),
-    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI did not find sufficient licenses for the <VenueSingular></VenueSingular> {zoneName}.' })
+    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI did not find sufficient licenses for <VenueSingular></VenueSingular> {zoneName}.' })
   },
   [DisplayStates.naNotEnoughData]: {
     text: defineMessage({ defaultMessage: 'No Recommendation, Not Enough Data' }),
@@ -150,7 +150,7 @@ export const states = {
   },
   [DisplayStates.naVerified]: {
     text: defineMessage({ defaultMessage: 'Verified' }),
-    tooltip: defineMessage({ defaultMessage: 'IntentAI has validated the <VenueSingular></VenueSingular> {zoneName} configurations. No new changes have been recommended.' })
+    tooltip: defineMessage({ defaultMessage: 'IntentAI has validated <VenueSingular></VenueSingular> {zoneName} configurations. No new changes have been recommended.' })
   },
   [DisplayStates.naWaitingForEtl]: {
     text: defineMessage({ defaultMessage: 'No Recommendation' }),
@@ -161,140 +161,146 @@ export const states = {
 export const groupedStates = [
   {
     group: defineMessage({ defaultMessage: 'Scheduled' }),
-    states: [DisplayStates.scheduled, DisplayStates.scheduledOneClick, DisplayStates.applyScheduled] as unknown as string[]
+    states: [DisplayStates.scheduled, DisplayStates.scheduledOneClick, DisplayStates.applyScheduled]
   },
   {
     group: defineMessage({ defaultMessage: 'Paused' }),
-    states: [DisplayStates.pausedFromInactive, DisplayStates.pausedFromActive, DisplayStates.pausedByDefault] as unknown as string[]
+    states: [DisplayStates.pausedFromInactive, DisplayStates.pausedFromActive, DisplayStates.pausedByDefault]
   }
 ]
+
+export const stateToGroupedStates = groupedStates.reduce((grouped, { group, states }) => {
+  states.forEach(state => grouped[state] = { key: states.join('+'), group })
+  return grouped
+}, {} as Record<DisplayStates, { key: string, group: MessageDescriptor }>)
 
 export const failureCodes = {
   'probeflex-support-fw-version': defineMessage({ defaultMessage: 'AP firmware version is unsupported.' }),
   'sufficient-aps-crrm': defineMessage({ defaultMessage: 'The network has an insufficient number of APs to meet the minimum requirements.' }),
   'sufficient-aps-pf': defineMessage({ defaultMessage: 'The network has an insufficient number of APs to meet the minimum requirements.' }),
-  'dual-5g-disabled-or-no-R760': defineMessage({ defaultMessage: 'The network has one or more APs with dual 5GHz radios, which are not currently supported.' }),
+  'dual-5g-disabled-or-no-R760': defineMessage({ defaultMessage: 'The network has one or more R760 APs with dual 5GHz radios, which are not currently supported.' }),
   'for-country-us': defineMessage({ defaultMessage: 'The network\'s country code is set to a region other than the US, which is not supported.' }),
   'no-ap-mesh-checker': defineMessage({ defaultMessage: 'The network has active Mesh APs, which are currently not supported.' }),
   'sz-version-and-zone-name-checker': defineMessage({ defaultMessage: 'Unsupported SmartZone version or restricted Zone configuration detected.' }),
   'zone-version-is-equal-to-sz-version': defineMessage({ defaultMessage: 'Detected a mismatch between the Zone firmware version and the SmartZone version.' }),
-  'channel-5g-is-auto': defineMessage({ defaultMessage: 'The 5GHz radio channel is set to Auto, preventing IntentAI from controlling channel configurations.' }),
-  'compare-tx-power-24g-with-min-other-bands': defineMessage({ defaultMessage: 'The minimum transmit (Tx) power of the 2.4GHz radio matches the power of either the 5GHz or 6GHz radio.' }),
-  'band-balancing-enabled': defineMessage({ defaultMessage: 'Band Balancing is enabled on this network.' }),
-  'channel-select-24g-is-channel-fly-or-bg-scan': defineMessage({ defaultMessage: 'Auto Channel Selection for 2.4Ghz radio is set to Channel Fly or Background (BG) Scan.' }),
-  'channel-select-5g-is-channel-fly-or-bg-scan': defineMessage({ defaultMessage: 'Auto Channel Selection for 5Ghz radio is set to Channel Fly or Background (BG) Scan.' }),
-  'channel-select-6g-is-channel-fly-or-bg-scan': defineMessage({ defaultMessage: 'Auto Channel Selection for 6Ghz radio is set to Channel Fly or Background (BG) Scan.' }),
-  'bg-scan-24g-enabled': defineMessage({ defaultMessage: 'Background Scanning is enabled for 2.4Ghz radio.' }),
-  'bg-scan-5g-enabled': defineMessage({ defaultMessage: 'Background Scanning is enabled for 5Ghz radio.' }),
-  'bg-scan-6g-enabled': defineMessage({ defaultMessage: 'Background Scanning is enabled for 6Ghz radio.' }),
-  'auto-cell-sizing-24g-disabled': defineMessage({ defaultMessage: 'Auto Cell Sizing is disabled for 2.4Ghz radio.' }),
-  'auto-cell-sizing-5g-disabled': defineMessage({ defaultMessage: 'Auto Cell Sizing is disabled for 5Ghz radio.' }),
+  'channel-5g-is-auto': defineMessage({ defaultMessage: 'The 5GHz radio channel is expected to be Auto.' }),
+  'compare-tx-power-24g-with-min-other-bands': defineMessage({ defaultMessage: 'No further TxPower changes required on the radios.' }),
+  'band-balancing-enabled': defineMessage({ defaultMessage: 'Band Balancing needs to be enabled on this network.' }),
+  'channel-select-24g-is-channel-fly-or-bg-scan': defineMessage({ defaultMessage: 'Auto Channel Selection for 2.4Ghz radio needs to be set to Channel Fly or Background (BG) Scan.' }),
+  'channel-select-5g-is-channel-fly-or-bg-scan': defineMessage({ defaultMessage: 'Auto Channel Selection for 5Ghz radio needs to be set to Channel Fly or Background (BG) Scan.' }),
+  'channel-select-6g-is-channel-fly-or-bg-scan': defineMessage({ defaultMessage: 'Auto Channel Selection for 6Ghz radio needs to be set to Channel Fly or Background (BG) Scan.' }),
+  'bg-scan-24g-enabled': defineMessage({ defaultMessage: 'Background Scanning needs to be enabled for 2.4Ghz radio.' }),
+  'bg-scan-5g-enabled': defineMessage({ defaultMessage: 'Background Scanning needs to be enabled for 5Ghz radio.' }),
+  'bg-scan-6g-enabled': defineMessage({ defaultMessage: 'Background Scanning needs to be enabled for 6Ghz radio.' }),
+  'auto-cell-sizing-24g-disabled': defineMessage({ defaultMessage: 'Auto Cell Sizing needs to be disabled for 2.4Ghz radio.' }),
+  'auto-cell-sizing-5g-disabled': defineMessage({ defaultMessage: 'Auto Cell Sizing needs to be disabled for 5Ghz radio.' }),
   'no-aps': defineMessage({ defaultMessage: 'No APs are detected in the network.' }),
   'not-enough-license': defineMessage({ defaultMessage: 'The network contains unlicensed APs.' }),
   'invalid-aggregation-interval': defineMessage({ defaultMessage: 'SmartZone data interval is too long; recommended interval is 3 minutes or less.' }),
-  'no-ap-peer-data': defineMessage({ defaultMessage: 'Insufficient data on neighboring APs.' }),
-  'no-channel-range-for-aps': defineMessage({ defaultMessage: 'Insufficient channel range data for one or more APs.' })
+  'no-ap-peer-data': defineMessage({ defaultMessage: 'Insufficient data on neighbour APs.' }),
+  'no-channel-range-for-aps': defineMessage({ defaultMessage: 'Insufficient channel range data for one or more APs.' }),
+  'deleted-zone': defineMessage({ defaultMessage: 'Unable to read <venueSingular></venueSingular> configuration.' })
 }
 
 //For original codes, please refer to libs/analytics/components/src/Recommendations/config.ts
 export const codes = {
   'c-bgscan24g-enable': {
-    aiFeature: aiFeatures.AIOps,
+    aiFeature: AiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Dynamic vs Static Channel capability on 2.4 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-bgscan5g-enable': {
-    aiFeature: aiFeatures.AIOps,
+    aiFeature: AiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Dynamic vs Static Channel capability on 5 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-bgscan24g-timer': {
-    aiFeature: aiFeatures.AIOps,
+    aiFeature: AiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Network Efficiency vs Stability on 2.4 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-bgscan5g-timer': {
-    aiFeature: aiFeatures.AIOps,
+    aiFeature: AiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Network Efficiency vs Stability on 5 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-bgscan6g-timer': {
-    aiFeature: aiFeatures.AIOps,
+    aiFeature: AiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Network Efficiency vs Stability on 6 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-dfschannels-enable': {
-    aiFeature: aiFeatures.AIOps,
+    aiFeature: AiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Expanded Radar channels vs Limited Channel options' }),
     category: categories['Wi-Fi Experience']
   },
   'c-dfschannels-disable': {
-    aiFeature: aiFeatures.AIOps,
+    aiFeature: AiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Radar Interference vs Optimal Channel availability' }),
     category: categories['Wi-Fi Experience']
   },
   'c-bandbalancing-enable': {
-    aiFeature: aiFeatures.AIOps,
+    aiFeature: AiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Client Performance vs Compatibility' }),
     category: categories['Wi-Fi Experience']
   },
   'c-bandbalancing-enable-below-61': {
-    aiFeature: aiFeatures.AIOps,
+    aiFeature: AiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Client Performance vs Compatibility' }),
     category: categories['Wi-Fi Experience']
   },
   'c-bandbalancing-proactive': {
-    aiFeature: aiFeatures.AIOps,
+    aiFeature: AiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Client Distribution vs Compatibility' }),
     category: categories['Wi-Fi Experience']
   },
   'c-aclb-enable': {
-    aiFeature: aiFeatures.AIOps,
+    aiFeature: AiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Distributed Wi-Fi Load vs Client Stability' }),
     category: categories['Wi-Fi Experience']
   },
   'i-zonefirmware-upgrade': {
-    aiFeature: aiFeatures.AIOps,
+    aiFeature: AiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Secure AP firmware vs Client Device Compatibility' }),
     category: categories.Infrastructure
   },
   'c-txpower-same': {
-    aiFeature: aiFeatures.AIOps,
+    aiFeature: AiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Optimize for 5 GHz Radio vs Longer range with 2.4 GHz' }),
     category: categories['Wi-Fi Experience']
   },
   'c-crrm-channel24g-auto': {
-    aiFeature: aiFeatures.RRM,
+    aiFeature: AiFeatures.RRM,
     intent: defineMessage({ defaultMessage: 'Client Density vs Throughput for 2.4 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-crrm-channel5g-auto': {
-    aiFeature: aiFeatures.RRM,
+    aiFeature: AiFeatures.RRM,
     intent: defineMessage({ defaultMessage: 'Client Density vs Throughput for 5 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-crrm-channel6g-auto': {
-    aiFeature: aiFeatures.RRM,
+    aiFeature: AiFeatures.RRM,
     intent: defineMessage({ defaultMessage: 'Client Density vs Throughput for 6 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-probeflex-24g': {
-    aiFeature: aiFeatures.EquiFlex,
+    aiFeature: AiFeatures.EquiFlex,
     intent: defineMessage({ defaultMessage: 'Time to Connect vs Client Density for 2.4 GHz' }),
     category: categories['Wi-Fi Experience']
   },
   'c-probeflex-5g': {
-    aiFeature: aiFeatures.EquiFlex,
+    aiFeature: AiFeatures.EquiFlex,
     intent: defineMessage({ defaultMessage: 'Time to Connect vs Client Density for 5 GHz' }),
     category: categories['Wi-Fi Experience']
   },
   'c-probeflex-6g': {
-    aiFeature: aiFeatures.EquiFlex,
+    aiFeature: AiFeatures.EquiFlex,
     intent: defineMessage({ defaultMessage: 'Time to Connect vs Client Density for 6 GHz' }),
     category: categories['Wi-Fi Experience']
   },
   'i-ecoflex': {
-    aiFeature: aiFeatures.EcoFlex,
+    aiFeature: AiFeatures.EcoFlex,
     intent: defineMessage({ defaultMessage: 'Energy Footprint vs Mission Criticality' }),
     category: categories.Sustainability
   }

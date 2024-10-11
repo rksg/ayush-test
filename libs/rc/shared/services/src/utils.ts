@@ -40,7 +40,14 @@ export function latestTimeFilter (payload: unknown) {
 
 
 type SocketActivityChangedParams = Parameters<typeof onSocketActivityChanged>
-
+interface handleCallbackWhenActivityProps {
+  api: SocketActivityChangedParams[1],
+  activityData: Transaction,
+  useCase: string,
+  stepName?: string,
+  callback?: unknown,
+  failedCallback?: unknown
+}
 export async function handleCallbackWhenActivitySuccess (
   api: SocketActivityChangedParams[1],
   activityData: Transaction,
@@ -66,13 +73,9 @@ export async function handleCallbackWhenActivitySuccess (
   }
 }
 
-export async function handleCallbackWhenActivityDone (
-  api: SocketActivityChangedParams[1],
-  activityData: Transaction,
-  targetUseCase: string,
-  callback?: unknown,
-  failedCallback?: unknown
-) {
+export async function handleCallbackWhenActivityDone (props: handleCallbackWhenActivityProps) {
+  const { api, activityData, useCase, stepName, callback, failedCallback } = props
+
   try {
     if (!callback || typeof callback !== 'function') return
 
@@ -80,9 +83,10 @@ export async function handleCallbackWhenActivityDone (
 
     if (!response) return
 
+    const targetStepName = stepName || useCase
     // eslint-disable-next-line max-len
-    if ((response?.data as CommonResult)?.requestId === activityData.requestId && activityData.useCase === targetUseCase) {
-      const status = activityData.steps?.find((step) => (step.id === targetUseCase))?.status
+    if ((response?.data as CommonResult)?.requestId === activityData.requestId && activityData.useCase === useCase) {
+      const status = activityData.steps?.find((step) => (step.id === targetStepName))?.status
 
       if (status === TxStatus.FAIL) {
         ((failedCallback || callback) as Function)?.(response.data)

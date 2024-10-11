@@ -1,7 +1,7 @@
 'use strict';
 
 // Called when the user clicks on the browser action.
-chrome.browserAction.onClicked.addListener(function(tab) {
+chrome.action.onClicked.addListener(function(tab) {
   console.log("Extract cookie extension clicked");
   var source_domain = 'dev.ruckus.cloud';
 
@@ -36,18 +36,10 @@ function execute_copy(source_domain, tab) {
       chrome.cookies.set(localCookieItem);
     });
 
-    var opt = {
-      type: "basic",
-      title: domain + ' cookies are copied to localhost',
-      message: '',
-      iconUrl: chrome.runtime.getURL("wallet.png")
-    };
-
-    chrome.notifications.create('', opt);
     if (isRAI) {
       open_localhostRA(tab)
     } else {
-      open_localhost(tab);// ACX/R1
+      open_localhost(tab); // R1
     }
   });
 }

@@ -1,6 +1,7 @@
-import { Typography, Space, Input, Form } from 'antd'
-import { MessageDescriptor, useIntl }     from 'react-intl'
+import { Typography, Input, Form }    from 'antd'
+import { MessageDescriptor, useIntl } from 'react-intl'
 
+import { GridCol, GridRow }                                                from '@acx-ui/components'
 import { DataPromptAction, DataPromptVariable, GenericActionPreviewProps } from '@acx-ui/rc/utils'
 
 import PhoneInput from '../../PhoneInput'
@@ -27,26 +28,30 @@ export function DataPromptPreview (props: GenericActionPreviewProps<DataPromptAc
   return <ContentPreview
     title={data?.title}
     body={
-      <Space direction='vertical' align='center'>
-        <Text>{data?.messageHtml}</Text>
-        <Form layout='vertical' style={{ width: '250px' }}>
-          {data?.variables?.map((formField:DataPromptVariable) => {
-            return <Form.Item
-              key={getFormFieldLabel(formField)}
-              label={getFormFieldLabel(formField)}
-              style={formField.type === 'PHONE' ? { marginBottom: '0' } : {}}
-              children={
-                formField.type === 'PHONE' ?
-                  <PhoneInput
-                    name={getFormFieldLabel(formField)}
-                    onTop={true}
-                  /> :
-                  <Input />
-              }
-            />})
-          }
-        </Form>
-      </Space>
+      <GridRow justify={'center'} align={'middle'}>
+        <GridCol col={{ span: 24 }}>
+          <Text>{data?.messageHtml}</Text>
+        </GridCol>
+        <GridCol col={{ span: 24 }} style={{ alignItems: 'center' }}>
+          <Form layout='vertical' style={{ width: '250px' }}>
+            {data?.variables?.map((formField:DataPromptVariable) => {
+              return <Form.Item
+                key={getFormFieldLabel(formField)}
+                label={getFormFieldLabel(formField)}
+                style={formField.type === 'PHONE' ? { marginBottom: '0' } : {}}
+                children={
+                  formField.type === 'PHONE' ?
+                    <PhoneInput
+                      name={getFormFieldLabel(formField)}
+                      onTop={true}
+                    /> :
+                    <Input />
+                }
+              />})
+            }
+          </Form>
+        </GridCol>
+      </GridRow>
     }
     {...rest}
   />

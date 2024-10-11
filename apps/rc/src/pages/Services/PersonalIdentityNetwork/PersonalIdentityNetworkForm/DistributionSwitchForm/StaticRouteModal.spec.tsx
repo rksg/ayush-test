@@ -16,9 +16,12 @@ jest.mock('@acx-ui/rc/components', () => ({
 }))
 
 const requestSpy = jest.fn()
+const edgeId = 'edgeId'
+const edgeClusterId = 'edgeClusterId'
+const edgeName = 'Smart Edge 1'
+const venueId = 'venueId'
 
-// TODO: skip this UT temporarily, need to add back when PIN support HA
-describe.skip('StaticRouteModal', () => {
+describe('StaticRouteModal', () => {
   beforeEach(() => {
     store.dispatch(edgeApi.util.resetApiState())
 
@@ -40,7 +43,13 @@ describe.skip('StaticRouteModal', () => {
   it('Should render successfully', async () => {
     render(
       <Provider>
-        <StaticRouteModal edgeId='0000000001' edgeName='Smart Edge 1' />
+        <StaticRouteModal
+          edgeId={edgeId}
+          edgeName={edgeName}
+          edgeClusterId={edgeClusterId}
+          venueId={venueId}>
+          Static Route
+        </StaticRouteModal>
       </Provider>
     )
 
@@ -54,7 +63,13 @@ describe.skip('StaticRouteModal', () => {
   it('Should submit successfully', async () => {
     render(
       <Provider>
-        <StaticRouteModal edgeId='0000000001' edgeName='Smart Edge 1' />
+        <StaticRouteModal
+          edgeId={edgeId}
+          edgeName={edgeName}
+          edgeClusterId={edgeClusterId}
+          venueId={venueId}>
+          Static Route
+        </StaticRouteModal>
       </Provider>
     )
 

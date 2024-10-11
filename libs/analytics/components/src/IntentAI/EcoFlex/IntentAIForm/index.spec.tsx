@@ -3,8 +3,8 @@ import userEvent   from '@testing-library/user-event'
 import { message } from 'antd'
 import moment      from 'moment-timezone'
 
-import { intentAIApi, intentAIUrl, Provider, store }                              from '@acx-ui/store'
-import { mockGraphqlMutation, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { intentAIApi, intentAIUrl, Provider, store }                                         from '@acx-ui/store'
+import { fireEvent, mockGraphqlMutation, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import { mockIntentContext } from '../../__tests__/fixtures'
 import { Statuses }          from '../../states'
@@ -41,7 +41,7 @@ jest.mock('antd', () => {
 const mockNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
-  useNavigateToPath: () => mockNavigate
+  useNavigate: () => mockNavigate
 }))
 
 jest.mock('../common/ScheduleTiming', () => ({
@@ -65,6 +65,8 @@ beforeEach(() => {
 })
 
 afterEach((done) => {
+  jest.clearAllMocks()
+  jest.restoreAllMocks()
   const toast = screen.queryByRole('img', { name: 'close' })
   if (toast) {
     waitForElementToBeRemoved(toast).then(done)
@@ -98,10 +100,12 @@ describe('IntentAIForm', () => {
     const radioEnabled = screen.getByRole('radio', { name: 'Reduction in energy footprint' })
     await click(radioEnabled)
     expect(radioEnabled).toBeChecked()
+    const currInput = await screen.findByDisplayValue('USD')
+    fireEvent.change(currInput, { target: { value: 'SGD' } })
+    expect(screen.getByDisplayValue('SGD')).toBeVisible()
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Settings' })).toBeVisible()
-    // await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const date = await screen.findByPlaceholderText('Select date')
     await click(date)
     await click(await screen.findByRole('cell', { name: '2024-08-09' }))
@@ -110,15 +114,33 @@ describe('IntentAIForm', () => {
     await selectOptions(time, '12:30 (UTC+08)')
     expect(time).toHaveValue('12.5')
 
+    const scheduleEnabled = screen.getByRole('checkbox', { name: /following time slots of the week/ })
+    await click(scheduleEnabled)
+    expect(scheduleEnabled).toBeChecked()
+    expect(await screen.findByText(/Local time/)).toBeVisible()
+
     await click(actions.getByRole('button', { name: 'Next' }))
     expect((await screen.findAllByText('Summary')).length).toEqual(2)
+    expect(await screen.findByText('Hours not applied for EcoFlex')).toBeVisible()
+    expect(await screen.findByText(/PowerSave will not be triggered during specific hours set in the Settings/)).toBeVisible()
     await click(actions.getByRole('button', { name: 'Apply' }))
 
     expect(await screen.findByText(/has been updated/)).toBeVisible()
+    await click(await screen.findByText(/View/))
     expect(mockNavigate).toBeCalled()
   })
   it('handle pause intent', async () => {
-    const { params } = mockIntentContextWith({ status: Statuses.new })
+    const { params } = mockIntentContextWith({
+      status: Statuses.new,
+      metadata: {
+        preferences: {
+          averagePowerPrice: { currency: 'SGD', value: 0 },
+          crrmFullOptimization: true
+        },
+        scheduledAt: '',
+        dataEndTime: ''
+      }
+    })
     render(<IntentAIForm />, { route: { params }, wrapper: Provider })
     const form = within(await screen.findByTestId('steps-form'))
     const actions = within(form.getByTestId('steps-form-actions'))
@@ -134,19 +156,26 @@ describe('IntentAIForm', () => {
     )
     await click(radioDisabled)
     expect(radioDisabled).toBeChecked()
+    expect(screen.getByDisplayValue('SGD')).toBeVisible()
     await click(actions.getByRole('button', { name: 'Next' }))
     expect(await screen.findByRole('heading', { name: 'Settings' })).toBeVisible()
 
     expect(await screen.findByPlaceholderText('Select date')).toBeDisabled()
     expect(await screen.findByPlaceholderText('Select time')).toBeDisabled()
+
+    const scheduleEnabled = screen.getByRole('checkbox', { name: /following time slots of the week/ })
+    expect(scheduleEnabled).toBeDisabled()
+
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Summary' })).toBeVisible()
+    expect(screen.queryByText('Hours not applied for EcoFlex')).toBeNull()
 
     expect(await screen.findByText(/IntentAI will maintain the existing network configuration and will cease automated monitoring of configuration for handling PowerSafe request\/response in the network./)).toBeVisible()
     await click(actions.getByRole('button', { name: 'Apply' }))
 
     expect(await screen.findByText(/has been updated/)).toBeVisible()
+    await click(await screen.findByText(/View/))
     expect(mockNavigate).toBeCalled()
   })
 })

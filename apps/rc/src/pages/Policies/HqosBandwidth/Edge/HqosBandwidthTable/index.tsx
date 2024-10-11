@@ -1,32 +1,41 @@
+import { useMemo } from 'react'
+
+import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Button, cssStr, Loader, PageHeader, showActionModal, Table, TableProps, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
 import { TrafficClassSettingsTable }                                                       from '@acx-ui/rc/components'
 import {
   useDeleteEdgeHqosProfileMutation,
   useGetEdgeClusterListQuery,
-  useGetEdgeHqosProfileViewDataListQuery
+  useGetEdgeHqosProfileViewDataListQuery,
+  useGetHqosEdgeCompatibilitiesQuery
 } from '@acx-ui/rc/services'
 import {
   EdgeHqosViewData,
+  filterByAccessForServicePolicyMutation,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
+  getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { EdgeScopes }                             from '@acx-ui/types'
-import { filterByAccess, hasPermission }          from '@acx-ui/user'
 
 import * as UI from '../styledComponents'
 
-const EdgeHqosBandwidthTable = () => {
+import { CompatibilityCheck } from './CompatibilityCheck'
 
+
+const EdgeHqosBandwidthTable = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
+  const isEdgeCompatibilityEnabled = useIsSplitOn(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
   const getQosViewDataPayload = {
     fields: [
@@ -77,6 +86,20 @@ const EdgeHqosBandwidthTable = () => {
 
   const [deleteQos, { isLoading: isDeleteQosUpdating }] = useDeleteEdgeHqosProfileMutation()
 
+  const currentServiceIds = useMemo(
+    () => tableQuery.data?.data?.map(i => i.id!) ?? [],
+    [tableQuery.data?.data])
+
+  const { hqosCompatibilityData = [] } = useGetHqosEdgeCompatibilitiesQuery({
+    payload: { filters: { serviceIds: currentServiceIds } } }, {
+    skip: !isEdgeCompatibilityEnabled || !currentServiceIds.length,
+    selectFromResult: ({ data }) => {
+      return {
+        hqosCompatibilityData: data?.compatibilities
+      }
+    }
+  })
+
   const columns: TableProps<EdgeHqosViewData>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
@@ -88,14 +111,20 @@ const EdgeHqosBandwidthTable = () => {
       searchable: true,
       render: function (_, row) {
         return (
-          <TenantLink
-            to={getPolicyDetailsLink({
-              type: PolicyType.HQOS_BANDWIDTH,
-              oper: PolicyOperation.DETAIL,
-              policyId: row.id!
-            })}>
-            {row.name}
-          </TenantLink>
+          <Space>
+            <TenantLink
+              to={getPolicyDetailsLink({
+                type: PolicyType.HQOS_BANDWIDTH,
+                oper: PolicyOperation.DETAIL,
+                policyId: row.id!
+              })}>
+              {row.name}
+            </TenantLink>
+            {isEdgeCompatibilityEnabled && <CompatibilityCheck
+              serviceId={row.id!}
+              compatibilityData={hqosCompatibilityData}
+            />}
+          </Space>
         )
       }
     },
@@ -143,7 +172,7 @@ const EdgeHqosBandwidthTable = () => {
 
   const rowActions: TableProps<EdgeHqosViewData>['rowActions'] = [
     {
-      scopeKey: [EdgeScopes.UPDATE],
+      scopeKey: getScopeKeyByPolicy(PolicyType.HQOS_BANDWIDTH, PolicyOperation.EDIT),
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -159,7 +188,7 @@ const EdgeHqosBandwidthTable = () => {
       }
     },
     {
-      scopeKey: [EdgeScopes.DELETE],
+      scopeKey: getScopeKeyByPolicy(PolicyType.HQOS_BANDWIDTH, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         showActionModal({
@@ -178,6 +207,7 @@ const EdgeHqosBandwidthTable = () => {
       }
     }
   ]
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
   return (
     <>
@@ -193,7 +223,7 @@ const EdgeHqosBandwidthTable = () => {
             link: getPolicyListRoutePath(true)
           }
         ]}
-        extra={filterByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             scopeKey={[EdgeScopes.CREATE]}
             to={getPolicyRoutePath({
@@ -212,10 +242,8 @@ const EdgeHqosBandwidthTable = () => {
           settingsId={settingsId}
           rowKey='id'
           columns={columns}
-          rowSelection={hasPermission({
-            scopes: [EdgeScopes.UPDATE, EdgeScopes.DELETE]
-          }) && { type: 'radio' }}
-          rowActions={filterByAccess(rowActions)}
+          rowSelection={allowedRowActions.length > 0 && { type: 'radio' }}
+          rowActions={allowedRowActions}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}

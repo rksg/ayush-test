@@ -1,37 +1,39 @@
-
 import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import { MaybePromise }                            from '@reduxjs/toolkit/dist/query/tsHelpers'
 import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 import _                                           from 'lodash'
 
 import {
+  ActionBase,
+  ActionType,
+  ApiVersionEnum,
+  CommonResult,
   createNewTableHttpRequest,
+  FileDto,
+  GenericActionData,
+  GetApiVersionHeader,
+  ImageUrl,
+  NewAPITableResult,
+  NewTableResult,
+  onActivityMessageReceived,
+  onSocketActivityChanged,
+  RequestFormData,
+  SplitOption,
   TableChangePayload,
+  TableResult,
   transferNewResToTableResult,
   transferToNewTablePaginationParams,
-  Workflow,
-  WorkflowUrls,
-  NewAPITableResult,
-  TableResult,
-  onSocketActivityChanged,
-  onActivityMessageReceived,
-  UIConfiguration,
-  WorkflowActionDefinition,
-  NewTableResult,
-  ActionType,
-  WorkflowStep,
-  SplitOption,
-  GenericActionData,
   TxStatus,
-  ActionBase,
-  GetApiVersionHeader,
-  ApiVersionEnum,
-  ImageUrl, RequestFormData, FileDto,
-  CommonResult
+  UIConfiguration,
+  Workflow,
+  WorkflowActionDefinition,
+  WorkflowStep,
+  WorkflowUrls,
+  FileDownloadResponse
 } from '@acx-ui/rc/utils'
-import { baseWorkflowApi }             from '@acx-ui/store'
-import { RequestPayload }              from '@acx-ui/types'
-import { batchApi, createHttpRequest } from '@acx-ui/utils'
+import { baseWorkflowApi }                               from '@acx-ui/store'
+import { RequestPayload }                                from '@acx-ui/types'
+import { batchApi, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 import { CommonAsyncResponse } from './common'
 import { commonQueryFn }       from './servicePolicy.utils'
@@ -131,17 +133,28 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
           try {
             const response = await api.cacheDataLoaded
-
             if (response.data.requestId === msg.requestId
               && msg.status === 'SUCCESS'
               && (msg.useCase === 'INITIATE_PUBLISH_WORKFLOW' ||
-                msg.useCase === 'UPDATE_WORKFLOW')) {
+                msg.useCase === 'UPDATE_WORKFLOW' ||
+                msg.useCase === 'INITIATE_UPDATE_AND_PUBLISH_WORKFLOW')) {
               requestArgs.callback?.()
             }
           } catch { }
         })
       }
     }),
+    updateWorkflowIgnoreErrors: build.mutation<CommonAsyncResponse, RequestPayload<Workflow>
+      & { callback?: () => void }>({
+        query: ({ params, payload }) => {
+          const req =
+            createHttpRequest(WorkflowUrls.updateWorkflow, params, { ...ignoreErrorModal })
+          return {
+            ...req,
+            body: JSON.stringify(payload)
+          }
+        }
+      }),
     searchWorkflowList: build.query<TableResult<Workflow>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createNewTableHttpRequest({
@@ -443,19 +456,24 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
       query: ({ params, payload }) => {
         return {
           ...createHttpRequest(WorkflowUrls.uploadFile, params,
-            { 'Content-Type': undefined, 'Accept': '*/*' }),
+            { 'Content-Type': undefined }),
           body: payload
         }
       } }),
-    deleteFile: build.mutation<void, RequestPayload>({
-      query: ({ params, payload }) => {
+    deleteFile: build.mutation({
+      query: ({ params }) => {
         return {
-          ...createHttpRequest(WorkflowUrls.deleteFile, params),
-          body: JSON.stringify(payload)
+          ...createHttpRequest(WorkflowUrls.deleteFile, params)
         }
-      } }),
+      }
+    }),
+    getFile: build.query<FileDownloadResponse, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(WorkflowUrls.getFile, params)
+      }
+    }),
     // eslint-disable-next-line max-len
-    createAction: build.mutation<CommonAsyncResponse, RequestPayload & { callback?: (response: CommonAsyncResponse) => void }>({
+    createAction: build.mutation<CommonAsyncResponse, RequestPayload & { onSuccess?: (response: CommonAsyncResponse) => void, onError?: () => void }>({
       query: commonQueryFn(WorkflowUrls.createAction),
       invalidatesTags: [{ type: 'Action', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
@@ -464,11 +482,16 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
             const response = await api.cacheDataLoaded
 
             if (response.data.requestId === msg.requestId
-              && msg.status === TxStatus.SUCCESS
               && msg.useCase === 'CREATE_WORKFLOW_ACTION') {
-              requestArgs.callback?.(response.data)
+              if (msg.status === TxStatus.SUCCESS) {
+                requestArgs.onSuccess?.(response.data)
+              } else {
+                requestArgs?.onError?.()
+              }
             }
-          } catch {}
+          } catch {
+            requestArgs?.onError?.()
+          }
         })
       }
     }),
@@ -545,6 +568,7 @@ export const {
   useGetWorkflowByIdQuery,
   useLazyGetWorkflowByIdQuery,
   useUpdateWorkflowMutation,
+  useUpdateWorkflowIgnoreErrorsMutation,
   useSearchWorkflowListQuery,
   useLazySearchWorkflowListQuery,
   useSearchInProgressWorkflowListQuery,
@@ -585,5 +609,6 @@ export const {
   usePatchActionMutation,
   useDeleteActionByIdMutation,
   useUploadFileMutation,
-  useDeleteFileMutation
+  useDeleteFileMutation,
+  useLazyGetFileQuery
 } = workflowApi

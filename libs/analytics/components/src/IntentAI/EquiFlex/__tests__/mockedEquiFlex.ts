@@ -28,12 +28,10 @@ export const mocked = {
   metadata: {
     wlans: [
       {
-        id: 'DENSITY-GUEST',
         name: 'DENSITY-GUEST',
         ssid: 'DENSITY-GUEST'
       },
       {
-        id: 'DENSITY',
         name: 'DENSITY',
         ssid: 'DENSITY'
       }

@@ -1,14 +1,16 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { edgeApi, networkApi, nsgApi, switchApi, venueApi } from '@acx-ui/rc/services'
+import { edgeApi, networkApi, pinApi, switchApi, venueApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
+  EdgeGeneralFixtures,
+  EdgePinFixtures,
   EdgeUrlsInfo,
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath,
-  NetworkSegmentationUrls,
+  EdgePinUrls,
   ServiceOperation,
   ServiceType,
   SwitchUrlsInfo,
@@ -21,15 +23,15 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  mockEdgeData,
   mockedNetworkOptions,
-  mockedSwitchOptions,
-  mockNsgStatsList
+  mockedSwitchOptions
 } from '../__tests__/fixtures'
 
-import NetworkSegmentationTable from '.'
+import PersonalIdentityNetworkTable from '.'
 
 const { mockVenueOptions } = VenueFixtures
+const { mockEdgeClusterList } = EdgeGeneralFixtures
+const { mockPinStatsList } = EdgePinFixtures
 
 const mockedUsedNavigate = jest.fn()
 const mockUseLocationValue = {
@@ -47,7 +49,7 @@ jest.mock('react-router-dom', () => ({
 describe('PersonalIdentityNetworkTable', () => {
   let params: { tenantId: string }
   const tablePath = '/:tenantId/t' + getServiceRoutePath({
-    type: ServiceType.NETWORK_SEGMENTATION,
+    type: ServiceType.PIN,
     oper: ServiceOperation.LIST
   })
   beforeEach(() => {
@@ -56,38 +58,38 @@ describe('PersonalIdentityNetworkTable', () => {
     }
     store.dispatch(venueApi.util.resetApiState())
     store.dispatch(edgeApi.util.resetApiState())
-    store.dispatch(nsgApi.util.resetApiState())
+    store.dispatch(pinApi.util.resetApiState())
     store.dispatch(networkApi.util.resetApiState())
     store.dispatch(switchApi.util.resetApiState())
 
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
-        (req, res, ctx) => res(ctx.json(mockVenueOptions))
+        (_req, res, ctx) => res(ctx.json(mockVenueOptions))
       ),
       rest.post(
-        EdgeUrlsInfo.getEdgeList.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeData))
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeClusterList))
       ),
       rest.post(
-        NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
-        (req, res, ctx) => res(ctx.json(mockNsgStatsList))
+        EdgePinUrls.getEdgePinStatsList.url,
+        (_req, res, ctx) => res(ctx.json(mockPinStatsList))
       ),
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
-        (req, res, ctx) => res(ctx.json(mockedNetworkOptions))
+        (_req, res, ctx) => res(ctx.json(mockedNetworkOptions))
       ),
       rest.post(
         SwitchUrlsInfo.getSwitchList.url,
-        (req, res, ctx) => res(ctx.json(mockedSwitchOptions))
+        (_req, res, ctx) => res(ctx.json(mockedSwitchOptions))
       )
     )
   })
 
-  it('should create NetworkSegmentationList successfully', async () => {
+  it('should create PersonalIdentityNetwork list successfully', async () => {
     render(
       <Provider>
-        <NetworkSegmentationTable />
+        <PersonalIdentityNetworkTable />
       </Provider>, {
         route: { params, path: tablePath }
       })
@@ -96,13 +98,13 @@ describe('PersonalIdentityNetworkTable', () => {
     const rows = await screen.findAllByRole('row', { name: /nsg/i })
     expect(rows.length).toBe(2)
 
-    expect(rows[0]).toHaveTextContent(/sg1\s*MockVenue1\s*SmartEdge1\s*1\s*0\s*Poor\s*No/)
-    expect(rows[1]).toHaveTextContent(/nsg2\s*1\s*0\s*Unknown\s*No/)
+    expect(rows[0]).toHaveTextContent(/nsg1\s*Edge1\s*1\s*0\s*Poor\s*No/)
+    expect(rows[1]).toHaveTextContent(/nsg2\s*Edge2\s*1\s*0\s*Unknown\s*No/)
   })
 
 
   it('should render breadcrumb correctly', async () => {
-    render(<NetworkSegmentationTable />, {
+    render(<PersonalIdentityNetworkTable />, {
       wrapper: Provider,
       route: { params, path: tablePath }
     })
@@ -113,10 +115,10 @@ describe('PersonalIdentityNetworkTable', () => {
       name: 'My Services'
     })).toBeVisible()
   })
-  it('nsg detail page link should be correct', async () => {
+  it('PIN detail page link should be correct', async () => {
     render(
       <Provider>
-        <NetworkSegmentationTable />
+        <PersonalIdentityNetworkTable />
       </Provider>, {
         route: { params, path: tablePath }
       })
@@ -126,7 +128,7 @@ describe('PersonalIdentityNetworkTable', () => {
       { name: 'nsg1' }) as HTMLAnchorElement
     expect(smartEdgeLink.href)
       .toContain(`/${params.tenantId}/t/${getServiceDetailsLink({
-        type: ServiceType.NETWORK_SEGMENTATION,
+        type: ServiceType.PIN,
         oper: ServiceOperation.DETAIL,
         serviceId: '1'
       })}`)
@@ -135,38 +137,23 @@ describe('PersonalIdentityNetworkTable', () => {
   it('edge detail page link should be correct', async () => {
     render(
       <Provider>
-        <NetworkSegmentationTable />
+        <PersonalIdentityNetworkTable />
       </Provider>, {
         route: { params, path: tablePath }
       })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     const smartEdgeLink = await screen.findByRole('link',
-      { name: 'SmartEdge1' }) as HTMLAnchorElement
+      { name: 'Edge1' }) as HTMLAnchorElement
     expect(smartEdgeLink.href)
-      .toContain(`/${params.tenantId}/t/devices/edge/0000000001/details/overview`)
-  })
-
-  it('venue detail page link should be correct', async () => {
-    render(
-      <Provider>
-        <NetworkSegmentationTable />
-      </Provider>, {
-        route: { params, path: tablePath }
-      })
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-
-    const venue1List = await screen.findAllByRole('link', { name: 'MockVenue1' })
-    const venue1Link = venue1List[0] as HTMLAnchorElement
-    expect(venue1Link.href)
-      .toContain(`/${params.tenantId}/t/venues/mock_venue_1/venue-details/overview`)
+      .toContain(`/${params.tenantId}/t/devices/edge/cluster/0000000001/edit/cluster-details`)
   })
 
   it('should go edit page', async () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <NetworkSegmentationTable />
+        <PersonalIdentityNetworkTable />
       </Provider>, {
         route: { params, path: tablePath }
       })
@@ -177,7 +164,7 @@ describe('PersonalIdentityNetworkTable', () => {
     await user.click(screen.getByRole('button', { name: 'Edit' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/${params.tenantId}/t/${getServiceDetailsLink({
-        type: ServiceType.NETWORK_SEGMENTATION,
+        type: ServiceType.PIN,
         oper: ServiceOperation.EDIT,
         serviceId: '1'
       })}`,
@@ -192,7 +179,7 @@ describe('PersonalIdentityNetworkTable', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <NetworkSegmentationTable />
+        <PersonalIdentityNetworkTable />
       </Provider>, {
         route: { params, path: tablePath }
       })
@@ -207,18 +194,18 @@ describe('PersonalIdentityNetworkTable', () => {
 
   it('should delete selected row', async () => {
     const user = userEvent.setup()
-    const mockedDeleteNetworkSegmentationGroup = jest.fn()
+    const mockedDeleteEdgePin = jest.fn()
     mockServer.use(
       rest.delete(
-        NetworkSegmentationUrls.deleteNetworkSegmentationGroup.url,
-        (req, res, ctx) => {
-          mockedDeleteNetworkSegmentationGroup()
+        EdgePinUrls.deleteEdgePin.url,
+        (_req, res, ctx) => {
+          mockedDeleteEdgePin()
           return res(ctx.status(202))}
       )
     )
     render(
       <Provider>
-        <NetworkSegmentationTable />
+        <PersonalIdentityNetworkTable />
       </Provider>, {
         route: { params, path: tablePath }
       })
@@ -230,7 +217,7 @@ describe('PersonalIdentityNetworkTable', () => {
     await screen.findByText('Delete "nsg1"?')
     await user.click((await screen.findAllByRole('button', { name: 'Delete' }))[1])
     await waitFor(() => {
-      expect(mockedDeleteNetworkSegmentationGroup).toBeCalled()
+      expect(mockedDeleteEdgePin).toBeCalled()
     })
   })
 })

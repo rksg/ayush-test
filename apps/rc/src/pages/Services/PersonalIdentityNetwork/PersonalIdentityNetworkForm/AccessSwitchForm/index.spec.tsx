@@ -3,9 +3,9 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { StepsForm }                                from '@acx-ui/components'
-import { EdgeNSGFixtures, NetworkSegmentationUrls } from '@acx-ui/rc/utils'
-import { Provider }                                 from '@acx-ui/store'
+import { StepsForm }                    from '@acx-ui/components'
+import { EdgePinFixtures, EdgePinUrls } from '@acx-ui/rc/utils'
+import { Provider }                     from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -21,8 +21,8 @@ import {
 
 import { AccessSwitchForm } from './'
 
-const updateNsgPath = '/:tenantId/services/personalIdentityNetwork/:serviceId/edit'
-const { mockNsgSwitchInfoData } = EdgeNSGFixtures
+const updatePinPath = '/:tenantId/services/personalIdentityNetwork/:serviceId/edit'
+const { mockPinSwitchInfoData } = EdgePinFixtures
 
 type MockDrawerProps = React.PropsWithChildren<{
   open: boolean
@@ -50,7 +50,7 @@ describe('PersonalIdentityNetworkForm - AccessSwitchForm', () => {
 
     mockServer.use(
       rest.post(
-        NetworkSegmentationUrls.getWebAuthTemplateList.url,
+        EdgePinUrls.getWebAuthTemplateList.url,
         (req, res, ctx) => res(ctx.json({ data: webAuthList }))
       )
     )
@@ -65,16 +65,16 @@ describe('PersonalIdentityNetworkForm - AccessSwitchForm', () => {
 
     formRef.current.setFieldsValue({
       venueId: 'venueId',
-      edgeId: 'edgeId',
-      distributionSwitchInfos: mockNsgSwitchInfoData.distributionSwitches,
-      accessSwitchInfos: mockNsgSwitchInfoData.accessSwitches
+      edgeClusterId: 'edgeId',
+      distributionSwitchInfos: mockPinSwitchInfoData.distributionSwitches,
+      accessSwitchInfos: mockPinSwitchInfoData.accessSwitches
     })
 
     render(
       <Provider>
         <StepsForm form={formRef.current}><AccessSwitchForm /></StepsForm>
       </Provider>, {
-        route: { params, path: updateNsgPath }
+        route: { params, path: updatePinPath }
       })
     const row = await screen.findByRole('row', { name: /FEK3224R09N---AS---3/i })
     await user.click(await within(row).findByRole('checkbox'))
@@ -97,12 +97,12 @@ describe('PersonalIdentityNetworkForm - AccessSwitchForm', () => {
 
     formRef.current.setFieldsValue({
       venueId: 'venueId',
-      edgeId: 'edgeId',
-      distributionSwitchInfos: mockNsgSwitchInfoData.distributionSwitches,
+      edgeClusterId: 'edgeId',
+      distributionSwitchInfos: mockPinSwitchInfoData.distributionSwitches,
       accessSwitchInfos: [{
-        id: mockNsgSwitchInfoData.accessSwitches[0].id,
-        name: mockNsgSwitchInfoData.accessSwitches[0].name,
-        distributionSwitchId: mockNsgSwitchInfoData.accessSwitches[0].distributionSwitchId
+        id: mockPinSwitchInfoData.accessSwitches[0].id,
+        name: mockPinSwitchInfoData.accessSwitches[0].name,
+        distributionSwitchId: mockPinSwitchInfoData.accessSwitches[0].distributionSwitchId
       }]
     })
 
@@ -110,7 +110,7 @@ describe('PersonalIdentityNetworkForm - AccessSwitchForm', () => {
       <Provider>
         <StepsForm form={formRef.current}><AccessSwitchForm /></StepsForm>
       </Provider>, {
-        route: { params, path: updateNsgPath }
+        route: { params, path: updatePinPath }
       })
     const row = await screen.findByRole('row', { name: /FEK3224R09N---AS---3/i })
     const buttons = await within(row).findAllByRole('button')

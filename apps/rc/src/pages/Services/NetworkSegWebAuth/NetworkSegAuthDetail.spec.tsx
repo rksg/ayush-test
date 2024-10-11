@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 
 import {
-  NetworkSegmentationUrls
+  EdgePinUrls
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -26,11 +26,11 @@ describe( 'NetworkSegAuthDetail', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.get(
-        NetworkSegmentationUrls.getWebAuthTemplate.url,
+        EdgePinUrls.getWebAuthTemplate.url,
         (req, res, ctx) => res(ctx.json(data))
       ),
       rest.get(
-        NetworkSegmentationUrls.getWebAuthTemplateSwitches.url,
+        EdgePinUrls.getWebAuthTemplateSwitches.url,
         (req, res, ctx) => res(ctx.json({}))
       )
     )

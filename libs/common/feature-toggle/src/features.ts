@@ -14,7 +14,6 @@ export enum Features {
   ASSIGN_MULTI_EC_TO_MSP_ADMINS = 'mspservice-assign-multi-ec-to-multi-msp-admin',
   AP_TX_POWER_TOGGLE = 'ap-tx-power-toggle',
   BETA_BUTTON = 'acx-ui-beta-button-toggle',
-  CLOUDMOTE_SERVICE = 'cloudmote-service-enabled',
   CLOUDPATH_ASYNC_API_TOGGLE = 'acx-ui-cloudpath-async-api-toggle',
   CLOUDPATH_BETA = 'BETA-CP',
   CONFIG_CHANGE = 'acx-ui-config-change-toggle',
@@ -50,8 +49,10 @@ export enum Features {
   ENTITLEMENT_EXTENDED_TRIAL_TOGGLE = 'entitlement-acx-extended-trial-toggle',
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
+  ENTITLEMENT_COMPLIANCE_NOTES_TOGGLE = 'entitlement-no-courtesy-licenses-toggle',
   ENTITLEMENT_LICENSE_COMPLIANCE_TOGGLE= 'entitlement-license-compliance-toggle',
-  ENTITLEMENT_RBAC_API = 'acx-ui-rbac-api-entitlement-toggle',
+  ENTITLEMENT_RBAC_API = 'abac-policies-toggle',
+  ENTITLEMENT_SEPARATE_SERVICEDATE_TOGGLE = 'entitlement-separate-trial-date-toggle',
   ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE = 'entitlement-virtual-smart-edge-toggle',
   EOL_AP_2022_12_PHASE_2_TOGGLE = 'eol-ap-2022-12-phase-2-toggle',
   ETHERNET_PORT_PROFILE_TOGGLE = 'acx-ui-ethernet-toggle',
@@ -67,10 +68,12 @@ export enum Features {
   IDM_APPLICATION_KEY_TOGGLE = 'ptenant-application-key-toggle',
   IDM_DECOUPLING = 'ptenant-admin-authentication-enabled',
   INCIDENTS_AIRTIME_TOGGLE = 'acx-ui-incidents-airtime-toggle',
+  INCIDENTS_SWITCH_DDOS_TOGGLE = 'acx-ui-tcp-syn-ddos-toggle',
   LICENSE_BANNER = 'acx-ui-license-banner',
   LINKEDIN_OIDC_TOGGLE = 'guest-linkedin-openid-connect-toggle',
   LOGIN_SSO_SIGNATURE_TOGGLE = 'login-sso-saml-signature',
   MFA_ALTERNATE_QR_CODE_TOGGLE = 'acx-ui-mfa-qr-code-display-toggle',
+  MFA_NEW_API_TOGGLE = 'mfa-new-api-toggle',
   MSP_AGGREGATE_NOTIFICATION_TOGGLE = 'aggregate-notification-toggle',
   MSP_BRAND_360 = 'acx-ui-msp-brand360-toggle',
   MSP_DATA_STUDIO = 'acx-ui-msp-data-studio-toggle',
@@ -82,6 +85,7 @@ export enum Features {
   MSP_PATCH_TIER = 'mspservice-patch-tier',
   MSP_RBAC_API = 'abac-policies-toggle',
   MSP_SELF_ASSIGNMENT = 'entitlement-msp-own-license-assignment-toggle',
+  MSP_SORT_ON_TP_COUNT_TOGGLE = 'mspservice-sort-on-tp-count-toggle',
   MSP_UPGRADE_MULTI_EC_FIRMWARE = 'mspservice-multi-ec-to-upgrade-ap-firmware',
   MSPEC_ALARM_COUNT_SUPPORT_TOGGLE = 'acx-ui-mspec-alarm-count-toggle',
   MSPEC_ALLOW_DELETE_ADMIN = 'mspservice-allow-last-ec-admin-deletion',
@@ -96,9 +100,8 @@ export enum Features {
   NUVO_SMS_GRACE_PERIOD_TOGGLE = 'nuvo-sms-grace-period',
   NUVO_SMS_MESSAGING_SERVICE_TOGGLE = 'nuvo-messaging-service-toggle',
   PLM_FF = 'ACX-PLM-FF',
-  POLICIES = 'acx-ui-policies',
   PTENANT_RBAC_DPSK_ROLE_INTRODUCTION = 'ptenant-rbac-dpsk-role-introduction',
-  PTENANT_RBAC_API = 'acx-ui-rbac-api-ptenant-toggle',
+  PTENANT_RBAC_API = 'abac-policies-toggle',
   RADIO6G_RATE_CONTROL = 'radio6g-rate-control-toggle',
   RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
   REC_TO_MSP_CONVERSION_TOGGLE = 'acx-rec-to-msp-conversion-toggle',
@@ -108,10 +111,10 @@ export enum Features {
   RUCKUS_AI_CRRM_PARTIAL = 'ruckus-ai-recommendations-crrm-partial-toggle',
   RUCKUS_AI_INCIDENTS_AIRTIME_TOGGLE = 'ruckus-ai-incidents-airtime-toggle',
   RUCKUS_AI_SWITCH_HEALTH_TOGGLE = 'ruckus-ai-switch-health-toggle',
+  RUCKUS_AI_INCIDENTS_SWITCH_DDOS_TOGGLE = 'ruckus-ai-tcp-syn-ddos-toggle',
   HEALTH_WIRED_TOPN_WITH_OTHERS = 'acx-ui-health-wired-topn-with-others-toggle',
   RUCKUS_AI_SWITCH_HEALTH_10010E_TOGGLE = 'ruckus-ai-switch-health-10010e-toggle',
   RUCKUS_WAN_GATEWAY_UI_SHOW = 'ruckus-wan-gateway-ui-show',
-  SERVICES = 'acx-ui-services',
   SSO = 'ADMN-SSO',
   SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE = 'acx-ui-support-to-msp-dashboard-toggle',
   SUPPORT_SWITCH_TWO_VERSION_UPGRADE = 'removable-ff',
@@ -132,6 +135,7 @@ export enum Features {
   SWITCH_FIRMWARE_V1002_TOGGLE= 'switch-firmware-management-for-10010d-toggle',
   SWITCH_PROFILE_ONBOARD_ONLY= 'switch-config-profile-onboarding-only-toggle',
   SWITCH_NTP_SERVER = 'switch-consumer-apply-ntp-server-toggle',
+  SWITCH_CABLE_TEST = 'switch-cable-testing-toggle',
   TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs',
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
   VENUE_AP_MANAGEMENT_VLAN_TOGGLE = 'wifi-venue-ap-mgmt-vlan-toggle',
@@ -161,6 +165,7 @@ export enum Features {
   SWITCH_NEXT_GENERATION_TOPOLOGY_TOGGLE = 'switch-next-generation-topology-toggle',
   RUCKUS_AI_USERS_TOGGLE = 'ruckus-ai-sso-toggle',
   SWITCH_EXTERNAL_IP_TOGGLE = 'removable-ff',
+  WORKFLOW_ONBOARD = 'WORKFLOW-ONBOARD',
   WORKFLOW_TOGGLE = 'workflow-framework-enabled',
   AP_FW_MGMT_UPGRADE_BY_MODEL = 'ap-fw-mgmt-upgrade-by-model',
   WIFI_8021X_MAC_AUTH_TOGGLE = 'wifi-fr-8021x-mac-toggle',
@@ -175,6 +180,7 @@ export enum Features {
   INTENT_AI_TOGGLE = 'acx-ui-intent-ai-toggle',
   SWITCH_CLI_MODE = 'switch-consumer-cli-mode-toggle',
   RBAC_CONFIG_TEMPLATE_TOGGLE = 'acx-ui-rbac-config-template-toggle',
+  RBAC_IMPLICIT_P1 = 'RBAC-IMPLICIT-P1',
   WIFI_EDA_WIFI7_MLO_3LINK_TOGGLE='wifi-eda-wifi7-mlo-3link-toggle',
   WIFI_MESH_CONFIGURATION_FOR_5G_6G_ONLY = 'wifi-mesh-configuration-for-5g-6g-only-toggle',
   SWITCH_AP_PORT_HYPERLINK ='switch-ap-port-hyperlink-toggle',
@@ -183,14 +189,21 @@ export enum Features {
   WIFI_SMART_MONITOR_DISABLE_WLAN_TOGGLE = 'wifi-smart-monitor-disable-wlan-toggle',
   SWITCH_ICX7850_48C_SUPPORT_PORT_SPEED_TOGGLE = 'switch-consumer-icx7850-48c-support-port-speed-toggle',
   WIFI_AP_STICKY_CLIENT_STEERING_TOGGLE = 'wifi-ap-sticky-client-steering-toggle',
-  WIFI_OVER_THE_DS_FT_SUPPORT_TOGGLE = 'wifi-over-the-ds-ft-support-toggle'
+  WIFI_CAPTIVE_PORTAL_PSK = 'wifi-captive-portal-psk',
+  WIFI_CAPTIVE_PORTAL_OWE = 'wifi-captive-portal-owe',
+  WIFI_WLAN_DEPRECATE_WEP = 'wifi-wlan-deprecate-wpa',
+  WIFI_OVER_THE_DS_FT_SUPPORT_TOGGLE = 'wifi-over-the-ds-ft-support-toggle',
+  ENTITLEMENT_LICENSE_COMPLIANCE_PHASE2_TOGGLE = 'entitlement-license-compliance-phase2-toggle',
+  BRAND360_MDU_TOGGLE = 'acx-ui-brand360-mdu-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
   AP_70 = 'AP-70',
   BETA_DPSK3 = 'BETA-DPSK3',
   SMART_EDGES = 'PLCY-EDGE',
-  CONFIG_TEMPLATE = 'CONFIG-TEMPLATE'
+  CONFIG_TEMPLATE = 'CONFIG-TEMPLATE',
+  WORKFLOW_ONBOARD = 'WORKFLOW-ONBOARD',
+  LOCATION_BASED_SERVICES = 'LOCATION-BASED-SERVICES'
 }
 
 interface BetaList {
@@ -206,8 +219,10 @@ interface BetaList {
 // If we don't have a description blurb and
 // don't want it to be displayed then add status = false
 export const BetaListDetails:BetaList[] = [
+  { key: TierFeatures.WORKFLOW_ONBOARD, description: defineMessage({ defaultMessage: 'Workflows: ' }), status: false },
   { key: TierFeatures.BETA_DPSK3, description: defineMessage({ defaultMessage: 'DPSK3: Dynamic Preshared Keys working with WPA3-DSAE. Users connect their devices to a WPA2/WPA3 network with DPSK and are automatically moved to the WPA3 WLAN, allowing DPSK operation with WiFi 6e or WiFi7. DPSK3 allows the customer to take advantage of the flexibility of DPSK with the security of WPA3.' }), status: true },
   { key: TierFeatures.AP_70, description: defineMessage({ defaultMessage: 'AP-70: Wi-Fi 7 - Wi-Fi 7 UI configuration available for early adopters and customers provided with advance units of the R770. Contact your reseller for more information on availability of the new R770!' }), status: true },
   { key: TierFeatures.SMART_EDGES, description: defineMessage({ defaultMessage: 'RUCKUS Edge: RUCKUS Edge is a platfrom to run RUCKUS services on. Network administrators can utilize SD-LAN service or Personal Identity Networking service on a RUCKUS Edge. SD-LAN provides WLAN tunnelling using VXLAN. This will provide end users a seamless roaming experience across a network. The Personal Identity Networking service provides individual networks for users which is typically used in a multi-dwelling facility.' }), status: true },
-  { key: TierFeatures.CONFIG_TEMPLATE, description: defineMessage({ defaultMessage: 'Config Template: It allows MSP users to create templates for networks, <venuePlural></venuePlural>, services, and policies. These templates can then be applied to multiple customers, providing a centralized and efficient solution for managing RUCKUS brand network equipment across properties.' }), status: true }
+  { key: TierFeatures.CONFIG_TEMPLATE, description: defineMessage({ defaultMessage: 'Config Template: It allows MSP users to create templates for networks, <venuePlural></venuePlural>, services, and policies. These templates can then be applied to multiple customers, providing a centralized and efficient solution for managing RUCKUS brand network equipment across properties.' }), status: true },
+  { key: TierFeatures.LOCATION_BASED_SERVICES, description: defineMessage({ defaultMessage: 'LBS: RUCKUS One now lets you create a Location Based Service (LBS) Server linked to multiple <venuePlural></venuePlural> for efficient tracking and management of location-specific information. This feature gathers location data from connected access points (APs) and routes it to third-party application servers. You can add and manage LBS server profiles and enable Location Based Services for any <venueSingular></venueSingular> directly from the RUCKUS One web interface, enhancing your <venueSingular></venueSingular> management capabilities.' }), status: true }
 ]

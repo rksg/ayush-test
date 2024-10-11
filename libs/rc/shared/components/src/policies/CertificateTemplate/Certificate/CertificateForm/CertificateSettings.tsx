@@ -1,19 +1,29 @@
+import { useEffect, useState } from 'react'
+
 import { Col, Divider, Form, Input, Row, Select } from 'antd'
 import { useIntl }                                from 'react-intl'
 
-import { useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery } from '@acx-ui/rc/services'
-import { CertificateTemplate }                                                from '@acx-ui/rc/utils'
+import {
+  useGetCertificateAuthoritiesQuery,
+  useGetPersonaGroupByIdQuery,
+  useGetCertificateTemplatesQuery,
+  useLazyGetPersonaGroupByIdQuery
+} from '@acx-ui/rc/services'
+import { CertificateTemplate, Persona } from '@acx-ui/rc/utils'
 
 import { MAX_CERTIFICATE_PER_TENANT }                         from '../../constants'
 import { certificateDescription, onboardSettingsDescription } from '../../contentsMap'
 import { Description }                                        from '../../styledComponents'
 
 export default function CertificateSettings (
-  { templateData }: { templateData?: CertificateTemplate }) {
+  // eslint-disable-next-line max-len
+  { templateData, specificIdentity }: { templateData?: CertificateTemplate, specificIdentity?: string }) {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const csrType = Form.useWatch('csrType', form)
   const certificateTemplateId = Form.useWatch('certificateTemplateId', form)
+
+  const [identityList, setIdentityList] = useState([] as Persona [])
 
   const { caList } = useGetCertificateAuthoritiesQuery(
     { payload: { page: '1', pageSize: MAX_CERTIFICATE_PER_TENANT } },
@@ -36,10 +46,18 @@ export default function CertificateSettings (
       ({
         isCertificateTemplateOptionsLoading: isLoading,
         certificateTemplateOptions: data?.data?.filter((item) =>
-          caList?.includes(item.onboard?.certificateAuthorityId!))
-          .map((item) => ({ label: item.name, value: item.id, variables: item.variables }))
+          caList?.includes(item.onboard?.certificateAuthorityId!) && item.identityGroupId)
+          .map((item) => ({ label: item.name, value: item.id, variables: item.variables,
+            groupId: item.identityGroupId }))
       })
   })
+
+  const { data: personaGroupData } = useGetPersonaGroupByIdQuery(
+    { params: { groupId: templateData?.identityGroupId } },
+    { skip: !templateData?.identityGroupId || !!specificIdentity }
+  )
+
+  const [getPersonaGroupById] = useLazyGetPersonaGroupByIdQuery()
 
   const csrSourceOptions = [
     { label: $t({ defaultMessage: 'Auto-Generate CSR' }), value: 'generate' },
@@ -61,6 +79,24 @@ export default function CertificateSettings (
     ))
   )
 
+  useEffect(() =>{
+    if(certificateTemplateId) {
+      getPersonaGroupById({ params: { groupId: certificateTemplateOptions?.find(
+        (item) => item.value === certificateTemplateId)?.groupId } })
+        .then(result => {
+          if (!result.data) return
+          setIdentityList(result.data.identities ?? [])
+          form.setFieldValue('identityId', undefined)
+        })
+    }
+  }, [certificateTemplateId])
+
+  useEffect(() =>{
+    if(personaGroupData) {
+      setIdentityList(personaGroupData?.identities ?? [])
+    }
+  }, [personaGroupData])
+
   return (
     <>
       {!templateData && <Row>
@@ -80,6 +116,24 @@ export default function CertificateSettings (
           </Form.Item>
         </Col>
       </Row>}
+      {!specificIdentity && <Row>
+        <Col span={10}>
+          <Form.Item
+            name='identityId'
+            label={$t({ defaultMessage: 'Identity' })}
+            rules={[{
+              required: true
+            }]}
+          >
+            <Select
+              placeholder={$t({ defaultMessage: 'Choose ...' })}
+              options={
+                // eslint-disable-next-line max-len
+                identityList.filter(identity => !identity.revoked).map(identity => ({ value: identity.id, label: identity.name }))}
+            />
+          </Form.Item>
+        </Col>
+      </Row>}
       <Row>
         <Col span={10}>
           <Form.Item
@@ -95,18 +149,20 @@ export default function CertificateSettings (
         </Col>
       </Row>
       {csrType === 'copy' &&
-        <Row>
+        <>
           <Description>{$t(onboardSettingsDescription.KEY_LENGTH)}</Description>
-          <Col span={10}>
-            <Form.Item
-              name='csrString'
-              label={$t({ defaultMessage: 'Certificate Signing Request' })}
-              rules={[{ required: true }]}
-            >
-              <Input.TextArea rows={5} />
-            </Form.Item>
-          </Col>
-        </Row>
+          <Row>
+            <Col span={10}>
+              <Form.Item
+                name='csrString'
+                label={$t({ defaultMessage: 'Certificate Signing Request' })}
+                rules={[{ required: true }]}
+              >
+                <Input.TextArea rows={5} />
+              </Form.Item>
+            </Col>
+          </Row>
+        </>
       }
       <Divider />
       <Description>{$t(certificateDescription.INFORMATION)}</Description>

@@ -29,6 +29,7 @@ import {
 } from '@acx-ui/icons'
 import { useIsEdgeReady } from '@acx-ui/rc/components'
 import {
+  getPolicyListRoutePath,
   getServiceCatalogRoutePath,
   getServiceListRoutePath,
   hasAdministratorTab
@@ -44,8 +45,6 @@ export function useMenuConfig () {
   const isAnltAdvTier = useIsTierAllowed('ANLT-ADV')
   const showConfigChange = useIsSplitOn(Features.CONFIG_CHANGE)
   const isEdgeEnabled = useIsEdgeReady()
-  const isServiceEnabled = useIsSplitOn(Features.SERVICES)
-  const isPolicyEnabled = useIsSplitOn(Features.POLICIES)
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
@@ -54,7 +53,8 @@ export function useMenuConfig () {
   const isAdministratorAccessible = hasAdministratorTab(userProfileData, tenantID)
   const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
   const showApGroupTable = useIsSplitOn(Features.AP_GROUP_TOGGLE)
-  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
+  const isRbacEarlyAccessEnable = useIsTierAllowed(Features.RBAC_IMPLICIT_P1)
+  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const isSwitchHealthEnabled = [
     useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
     useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
@@ -289,27 +289,25 @@ export function useMenuConfig () {
       inactiveIcon: SmartEdgeOutlined,
       activeIcon: SmartEdgeSolid
     }] : []),
-    ...(isServiceEnabled || isPolicyEnabled ? [{
+    {
       label: $t({ defaultMessage: 'Network Control' }),
       inactiveIcon: ServicesOutlined,
       activeIcon: ServicesSolid,
       children: [
-        ...(isServiceEnabled ? [
-          {
-            uri: getServiceListRoutePath(true),
-            isActiveCheck: new RegExp('^(?=/services/)((?!catalog).)*$'),
-            label: $t({ defaultMessage: 'My Services' })
-          },
-          {
-            uri: getServiceCatalogRoutePath(true),
-            label: $t({ defaultMessage: 'Service Catalog' })
-          }
-        ] : []),
-        ...(isPolicyEnabled
-          ? [{ uri: '/policies', label: $t({ defaultMessage: 'Policies & Profiles' }) }]
-          : [])
+        {
+          uri: getServiceListRoutePath(true),
+          isActiveCheck: new RegExp('^(?=/services/)((?!catalog).)*$'),
+          label: $t({ defaultMessage: 'My Services' })
+        },
+        {
+          uri: getServiceCatalogRoutePath(true),
+          label: $t({ defaultMessage: 'Service Catalog' })
+        },
+        { uri: getPolicyListRoutePath(true),
+          label: $t({ defaultMessage: 'Policies & Profiles' })
+        }
       ]
-    }] : []),
+    },
     {
       label: $t({ defaultMessage: 'Business Insights' }),
       inactiveIcon: BulbOutlined,

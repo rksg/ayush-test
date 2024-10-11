@@ -430,7 +430,7 @@ describe('NetworkTunnelModal', () => {
       const mockedNetworkData = {
         id: networkId,
         venueId,
-        type: NetworkTypeEnum.CAPTIVEPORTAL,
+        type: NetworkTypeEnum.OPEN,
         venueName: 'mock_venue_test'
       }
 
@@ -461,6 +461,44 @@ describe('NetworkTunnelModal', () => {
       expect(localBreakout).not.toBeChecked()
       const sdlanTunneling = screen.getByRole('radio', { name: 'SD-LAN Tunneling' })
       expect(sdlanTunneling).not.toBeChecked()
+    })
+
+    it('should correctly hidden when SoftGRE run on this venue (CAPTIVEPORTAL)', async () => {
+      const venueId = 'venueId-1'
+      const networkId = 'network_1'
+      const tenantId = 'tenantId-1'
+      const mockedNetworkData = {
+        id: networkId,
+        venueId,
+        type: NetworkTypeEnum.CAPTIVEPORTAL,
+        venueName: 'mock_venue_test'
+      }
+
+      const viewPath = '/:tenantId/t/venues/:venueId/venue-details/networks'
+      const cachedSoftGre = [{
+        venueId,
+        networkIds: [networkId],
+        profileId: '0d89c0f5596c4689900fb7f5f53a0859',
+        profileName: 'softGreProfileName1'
+      }]
+      render(
+        <Provider>
+          <NetworkTunnelActionModal
+            visible={true}
+            onClose={() => {}}
+            network={mockedNetworkData}
+            onFinish={mockedOnFinish}
+            cachedSoftGre={cachedSoftGre}
+          />
+        </Provider>,
+        { route: { path: viewPath, params: { venueId, tenantId } } }
+      )
+
+      await checkPageLoaded(mockedNetworkData.venueName)
+      const softGreTunneling = screen.queryByRole('radio', { name: 'SoftGRE Tunneling' })
+      await waitFor(() => expect(softGreTunneling).toBeNull())
+      const localBreakout = screen.getByRole('radio', { name: 'Local Breakout' })
+      expect(localBreakout).not.toBeChecked()
     })
   })
 })
