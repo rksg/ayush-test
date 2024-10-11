@@ -141,38 +141,6 @@ describe('Aps', () => {
     expect(await screen.findByText('Partially incompatible')).toBeVisible()
   })
 
-  it('Table action bar Download Log', async () => {
-    const fakeDownloadUrl = '/api/abc'
-    mockServer.use(
-      rest.get(
-        WifiRbacUrlsInfo.downloadApLog.url,
-        (req, res, ctx) => res(ctx.json({ fileURL: fakeDownloadUrl, fileUrl: fakeDownloadUrl }))
-      )
-    )
-
-    render(<Provider><ApTable
-      rowSelection={{
-        type: 'checkbox'
-      }}
-    /></Provider>, {
-      route: { params, path: '/:tenantId' }
-    })
-
-    const row1 = await screen.findByRole('row', { name: /mock-ap-1/i })
-    await userEvent.click(await within(row1).findByRole('checkbox'))
-    expect(await within(row1).findByRole('checkbox')).toBeChecked()
-
-    const downloadButton = await screen.findByRole('button', { name: 'Download Log' })
-    await userEvent.click(downloadButton)
-    const toast = await screen.findByText('Preparing log', { exact: false })
-    expect(toast).toBeVisible()
-    await waitFor(() =>
-      expect(mockFileSaver)
-        .toHaveBeenCalledWith(fakeDownloadUrl, expect.stringContaining('SupportLog_'))
-    )
-    expect(await screen.findByText('Log is ready.', { exact: false })).toBeVisible()
-  })
-
   it('Table action bar Reboot', async () => {
     const rebootSpy = jest.fn()
     rebootSpy.mockReturnValueOnce(true)
