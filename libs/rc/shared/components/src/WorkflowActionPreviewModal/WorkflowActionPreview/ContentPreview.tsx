@@ -66,7 +66,7 @@ export function ContentPreview (props: ContentPreviewProps) {
 
       {extra}
 
-      {!hideNavigation && <StepNavigation {...rest} />}
+      {!hideNavigation && <StepNavigation {...rest} config={uiColorSchema} />}
 
       {!disablePoweredBy &&
         <UI.PoweredByContainer>
