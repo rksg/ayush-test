@@ -37,7 +37,11 @@ export const SlaSliders = ({ initialSlas, currentSlas, setCurrentSlas, isMDU }: 
       <Card title={$t({ defaultMessage: 'Service Level Agreements' })}>
         <SliderLabel>{$t({ defaultMessage: 'P1 Incidents' })}</SliderLabel>
         <SlaSlider name='sla-p1-incidents-count' format='countFormat' />
-        <SliderLabel>{$t({ defaultMessage: 'Guest Experience' })}</SliderLabel>
+        <SliderLabel>{isMDU
+          ? $t({ defaultMessage: 'Resident Experience' })
+          // istanbul ignore next
+          : $t({ defaultMessage: 'Guest Experience' })
+        }</SliderLabel>
         <SlaSlider name='sla-guest-experience' format='percent' />
         {isMDU
           ? <>

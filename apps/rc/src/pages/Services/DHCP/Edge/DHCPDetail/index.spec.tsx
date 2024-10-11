@@ -1,14 +1,16 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
-import { EdgeDhcpUrls, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
-import { Provider }                                                         from '@acx-ui/store'
-import { mockServer, render, screen }                                       from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                                                                                       from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, EdgeDhcpUrls, EdgeGeneralFixtures, EdgeUrlsInfo, getServiceRoutePath, ServiceOperation, ServiceType, VenueFixtures } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                                           from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved }                                                                              from '@acx-ui/test-utils'
 
 import { mockDhcpStatsData, mockDhcpUeSummaryStatsData } from '../__tests__/fixtures'
 
 import EdgeDHCPDetail from '.'
 
+const { mockEdgeClusterList } = EdgeGeneralFixtures
+const { mockVenueOptions } = VenueFixtures
 
 describe('EdgeDhcpDetail', () => {
   let params: { tenantId: string, serviceId: string }
@@ -31,6 +33,14 @@ describe('EdgeDhcpDetail', () => {
       rest.post(
         EdgeDhcpUrls.getDhcpUeSummaryStats.url,
         (req, res, ctx) => res(ctx.json(mockDhcpUeSummaryStatsData))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeClusterList))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json(mockVenueOptions))
       )
     )
   })
@@ -61,7 +71,7 @@ describe('EdgeDhcpDetail', () => {
     })).toBeVisible()
   })
 
-  it('edge detail page link should be correct', async () => {
+  it('edge cluster name in table should be correct', async () => {
     render(
       <Provider>
         <EdgeDHCPDetail />
@@ -69,24 +79,21 @@ describe('EdgeDhcpDetail', () => {
         route: { params, path: detailPath }
       })
 
-    const edgeDetailLink = await screen.findByRole('link',
-      { name: 'Edge-dhcp-1' }) as HTMLAnchorElement
-
-    expect(edgeDetailLink.href)
-      .toContain(`${params.tenantId}/t/devices/edge/1/details/overview`)
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const rows = await screen.findAllByRole('row', { name: /Edge Cluster/i })
+    expect(rows.length).toBe(2)
   })
 
-  it('venue detail page link should be correct', async () => {
+  it('venue name in table should be correct', async () => {
     render(
       <Provider>
         <EdgeDHCPDetail />
       </Provider>, {
         route: { params, path: detailPath }
       })
-    const venueDetailLinks = await screen.findAllByRole('link',
-      { name: 'Edge-venue-1' }) as HTMLAnchorElement[]
-    expect(venueDetailLinks[0].href)
-      .toContain(`/${params.tenantId}/t/venues/1/venue-details/overview`)
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const rows = await screen.findAllByRole('row', { name: /Mock Venue/i })
+    expect(rows.length).toBe(2)
   })
 
   // it('restart service', async () => {
