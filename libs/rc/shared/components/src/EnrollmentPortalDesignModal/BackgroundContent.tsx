@@ -36,7 +36,7 @@ export function BackgroundContent (props: BackgroundContentProps){
         disableAlpha={true}
         onChangeComplete={(color)=> onColorChange(color.hex)}/>
     </div>}
-    <Upload accept='.png,.jpg,.jpeg,.svg,.gif'
+    <Upload accept='.png,.jpg,.jpeg'
       id='bgimageupload'
       showUploadList={false}
       customRequest={async ({ file }) => {
