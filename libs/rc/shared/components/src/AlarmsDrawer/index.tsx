@@ -143,7 +143,7 @@ export function AlarmsDrawer (props: AlarmsType) {
     { skip: !visible })
 
   useEffect(()=>{
-    const { payload } = tableQuery
+    const { payload, pagination: paginationValue } = tableQuery
     let filters = severity === 'all' ? {} : { severity: [severity] }
     tableQuery.setPayload({
       ...payload,
@@ -165,7 +165,25 @@ export function AlarmsDrawer (props: AlarmsType) {
         filters
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    if(tableQuery.data?.totalCount && tableQuery.data?.data.length === 0){
+      const totalPage = Math.ceil(tableQuery.data.totalCount / paginationValue.pageSize)
+      if(paginationValue.page > totalPage){
+        const pagination = {
+          current: totalPage,
+          pageSize: paginationValue.pageSize
+        }
+        const sorter = {
+          field: 'startTime',
+          order: 'descend'
+        } as SorterResult<Alarm>
+        const extra = {
+          currentDataSource: [] as Alarm[],
+          action: 'paginate' as const
+        }
+        tableQuery?.handleTableChange?.(pagination, {}, sorter, extra)
+      }
+    }
   }, [tableQuery.data, severity, serialNumber, venueId])
 
   const getIconBySeverity = (severity: EventSeverityEnum)=>{
