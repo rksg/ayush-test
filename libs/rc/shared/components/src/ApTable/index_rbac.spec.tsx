@@ -19,6 +19,8 @@ import {
   waitForElementToBeRemoved,
   within
 } from '@acx-ui/test-utils'
+import { RolesEnum, WifiScopes }          from '@acx-ui/types'
+import { setUserProfile, getUserProfile } from '@acx-ui/user'
 
 import {
   apCompatibilities,
@@ -144,12 +146,20 @@ describe('Aps', () => {
   it('Table action bar Reboot', async () => {
     const rebootSpy = jest.fn()
     rebootSpy.mockReturnValueOnce(true)
+    jest.mocked(get).mockReturnValue('')
     mockServer.use(
       rest.patch(
         WifiRbacUrlsInfo.rebootAp.url,
         (req, res, ctx) => rebootSpy() && res(ctx.json({ requestId: '456' }))
       )
     )
+    setUserProfile({
+      ...getUserProfile(),
+      abacEnabled: true,
+      isCustomRole: false,
+      scopes: [WifiScopes.UPDATE, WifiScopes.DELETE, WifiScopes.CREATE, WifiScopes.READ],
+      profile: { ...getUserProfile().profile, roles: [RolesEnum.PRIME_ADMIN] }
+    })
 
     render(<Provider><ApTable
       rowSelection={{
