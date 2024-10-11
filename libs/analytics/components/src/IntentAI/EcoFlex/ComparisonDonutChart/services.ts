@@ -32,13 +32,13 @@ export const categoryStyles = [
   {
     key: Type.Disabled,
     legendText: defineMessage({ defaultMessage: 'EcoFlex is supported and disabled' }),
-    name: defineMessage({ defaultMessage: 'not supporting and disabling EcoFlex.' }),
+    name: defineMessage({ defaultMessage: 'supporting and disabling EcoFlex.' }),
     color: cssStr('--acx-accents-orange-50')
   },
   {
     key: Type.Enabled,
     legendText: defineMessage({ defaultMessage: 'EcoFlex is supported and enabled' }),
-    name: defineMessage({ defaultMessage: 'not supporting and enabling EcoFlex.' }),
+    name: defineMessage({ defaultMessage: 'supporting and enabling EcoFlex.' }),
     color: cssStr('--acx-semantics-green-30')
   }
 // eslint-disable-next-line max-len
