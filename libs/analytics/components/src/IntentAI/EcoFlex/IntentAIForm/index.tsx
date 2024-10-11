@@ -3,7 +3,8 @@ import React from 'react'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { StepsForm } from '@acx-ui/components'
+import { StepsForm }   from '@acx-ui/components'
+import { useNavigate } from '@acx-ui/react-router-dom'
 
 import { IntentWizardHeader }                                                               from '../../common/IntentWizardHeader'
 import { getScheduledAt }                                                                   from '../../common/ScheduleTiming'
@@ -45,6 +46,7 @@ function getFormDTO (values: FormValues<FormVal>): IntentTransitionPayload {
 const useIntentTransition = createUseIntentTransition<FormVal>(getFormDTO as any)
 export const IntentAIForm: React.FC = () => {
   const { $t } = useIntl()
+  const navigate = useNavigate()
   const { submit } = useIntentTransition()
   const { intent: { metadata: { preferences } } } = useIntentContext()
   const averagePowerPrice = preferences?.averagePowerPrice
@@ -61,6 +63,7 @@ export const IntentAIForm: React.FC = () => {
     <IntentWizardHeader />
 
     <StepsForm
+      onCancel={() => { navigate(-1) }}
       onFinish={async (values) => { submit(values) }}
       buttonLabel={{
         submit: $t({ defaultMessage: 'Apply' })
