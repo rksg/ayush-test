@@ -52,7 +52,7 @@ exports[`Legend should render correctly 1`] = `
 }
 
 .c6 {
-  background-color: #258D36;
+  background-color: #88D392;
   border-radius: 50%;
   display: inline-block;
   width: 12px;
