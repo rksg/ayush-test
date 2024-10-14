@@ -164,6 +164,7 @@ interface schedule {
 
 export function NetworkVenuesTab () {
   const hasUpdatePermission = hasPermission({ scopes: [WifiScopes.UPDATE] })
+  const hasCreatePermission = hasPermission({ scopes: [WifiScopes.CREATE] })
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
@@ -548,7 +549,7 @@ export function NetworkVenuesTab () {
       render: function (_, row) {
         let disabled = false
         let title = ''
-        if (hasUpdatePermission) {
+        if (hasUpdatePermission || hasCreatePermission) {
           if (networkQuery.data && networkQuery.data.enableDhcp && row.mesh && row.mesh.enabled){
             disabled = true
             title = $t({ defaultMessage: 'You cannot activate the DHCP service on this <venueSingular></venueSingular> because it already enabled mesh setting' })
@@ -562,7 +563,7 @@ export function NetworkVenuesTab () {
           placement='bottom'>
           <Switch
             checked={Boolean(row.activated?.isActivated)}
-            disabled={!hasUpdatePermission || disabled}
+            disabled={!(hasUpdatePermission || hasCreatePermission) || disabled}
             onClick={(checked, event) => {
               activateNetwork(checked, row)
               event.stopPropagation()
