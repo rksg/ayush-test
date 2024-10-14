@@ -61,7 +61,7 @@ interface KpiChartData {
 }
 
 // eslint-disable-next-line max-len
-const parseChartData = (result?: KpiResult): KpiChartData[] => result ? categoryStyles.map(({ key, name, color }) => ({
+const parseChartData = (result?: KpiResult|null): KpiChartData[] => result ? categoryStyles.map(({ key, name, color }) => ({
   value: result[key] ?? 0,
   name: name,
   color: color
