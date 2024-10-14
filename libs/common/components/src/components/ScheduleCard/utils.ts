@@ -5,16 +5,18 @@ import { Box, SelectionBox } from '@air/react-drag-to-select/dist/utils/types'
 import { FormInstance }      from 'antd'
 import _                     from 'lodash'
 
-export const genTimeTicks = (is12H:boolean) => {
+export const genTimeTicks = (is12H:boolean, intervalUnit:number) => {
   const timeticks: string[] = []
   if (is12H) {
+    const unit = intervalUnit === 15 ? 2 : 3
+    const range = 12 / unit
     timeticks.push('Midnight')
-    for (let i = 1; i < 6; i++) {
-      timeticks.push((i * 2) + ' AM')
+    for (let i = 1; i < range; i++) {
+      timeticks.push((i * unit) + ' AM')
     }
     timeticks.push('Noon')
-    for (let i = 1; i < 6; i++) {
-      timeticks.push((i * 2) + ' PM')
+    for (let i = 1; i < range; i++) {
+      timeticks.push((i * unit) + ' PM')
     }
     timeticks.push('Midnight')
   } else {

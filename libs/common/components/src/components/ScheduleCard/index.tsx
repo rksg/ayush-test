@@ -219,7 +219,7 @@ export function ScheduleCard (props: ScheduleCardProps) {
     return `${hour.toString()}:${minString}`
   }
   const _genTimeTicks = () => {
-    setTimeTicks(genTimeTicks(is12H))
+    setTimeTicks(genTimeTicks(is12H, intervalUnit))
   }
 
   const onChange = (list: CheckboxValueType[], key:string) => {
@@ -298,7 +298,7 @@ export function ScheduleCard (props: ScheduleCardProps) {
                 </Col>
                 <Col flex='auto' key={`col2_${item.key}`}>
                   { timelineLabelTop && i === 0 &&
-                          <div style={{ width: '100%', height: '25px', marginLeft: intervalUnit === 15 ? '-30px' : '-2px' }}>
+                          <div style={{ width: '100%', height: '25px', marginLeft: is12H ? '-30px' : '-2px' }}>
                             {timeTicks.map((item: string, i: number) => {
                               return (
                                 <UI.Timetick intervalunit={intervalUnit} key={`timetick_${i}`}>{item}</UI.Timetick>
@@ -340,7 +340,7 @@ export function ScheduleCard (props: ScheduleCardProps) {
                   />
                   <DragSelection />
                   { !timelineLabelTop && i === scheduleList.length -1 &&
-                          <div style={{ width: '100%', height: '25px', marginLeft: intervalUnit === 15 ? '-30px' : '-2px' }}>
+                          <div style={{ width: '100%', height: '25px', marginLeft: is12H ? '-30px' : '-2px' }}>
                             {timeTicks.map((item: string, i: number) => {
                               return (
                                 <UI.Timetick intervalunit={intervalUnit} key={`timetick_${i}`}>{item}</UI.Timetick>
