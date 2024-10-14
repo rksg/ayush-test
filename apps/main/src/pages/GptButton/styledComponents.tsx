@@ -57,6 +57,14 @@ export const GptModal = styled(Modal)<{ titleType: string }>`
       .ant-pro-steps-form-container {
         padding: '0px 20px';
       }
+
+      .ant-pro-steps-form-step.ant-pro-steps-form-step-active {
+        overflow-y: auto;
+        max-height: calc(100vh - 400px);
+        padding-right: 30px;
+        margin-right: -35px;
+        margin-bottom: 10px;
+      }
     }
   }
 `
@@ -168,5 +176,6 @@ export const GptStepsForm = styled(StepsForm)`
   position: absolute;
   right: 100px;
  }
+
 
 `
