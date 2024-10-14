@@ -273,7 +273,7 @@ function ACLSettingForm (props: ACLSettingFormProps) {
           rules={[
             { required: true },
             { max: 255 },
-            { validator: (_, value) => checkAclName(value) },
+            { validator: (_, value) => checkAclName(value, form.getFieldValue('aclType')) },
             { validator: (_, value) => validateDuplicateAclOption(value, aclsOptions) }
           ]}
           children={<Input style={{ width: '400px' }} />}

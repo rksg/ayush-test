@@ -1,6 +1,6 @@
 
-import { Col, Form, Row, Space, Switch } from 'antd'
-import { useIntl }                       from 'react-intl'
+import { Col, Row, Space, Switch } from 'antd'
+import { useIntl }                 from 'react-intl'
 
 import { StepsForm, Table, TableProps, Tooltip, useStepFormContext }                                              from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                                 from '@acx-ui/feature-toggle'
@@ -35,8 +35,7 @@ export const ScopeForm = () => {
     }
   })
 
-  const edgeClusterList = tableQuery.data?.data?.filter(c =>
-    c.edgeList?.find(e => e.cpuCores !== undefined && e.cpuCores >= 4))
+  const edgeClusterList = tableQuery.data?.data
   const clusterIds = edgeClusterList?.map(item => item.clusterId)
   const { clusterNodesMap = {} } = useGetEdgeListQuery({
     payload: {
@@ -71,6 +70,14 @@ export const ScopeForm = () => {
       }
     }
   })
+
+  const showHqosReadOnlyToolTipMessage = (hqosReadOnly : boolean) => {
+    if (hqosReadOnly === true) {
+      return $t({ defaultMessage:
+        'Insufficient CPU cores have been detected on this cluster' })
+    }
+    return ''
+  }
 
   const columns: TableProps<EdgeClusterStatus>['columns'] = [
     {
@@ -131,13 +138,20 @@ export const ScopeForm = () => {
       key: 'activate',
       align: 'center',
       render: (_, row) => {
-        return <Form.Item
-          name={['activateChangedClusters', row.clusterId??'']}
-          valuePropName='checked'
-          noStyle
-          children={<Switch onChange={() =>
-            setActivateChangedClustersInfo(row.clusterId??'', row.name??'', row.venueId??'')}/>}
-        />
+        const hqosReadOnly =
+          row.edgeList?.find(e => e.cpuCores === undefined || e.cpuCores < 4) ? true : false
+        return <Tooltip title={showHqosReadOnlyToolTipMessage(hqosReadOnly)}>
+          <UI.StyledFormItem
+            name={['activateChangedClusters', row.clusterId??'']}
+            valuePropName='checked'
+            children={
+              <Switch disabled={hqosReadOnly}
+                onChange={() =>
+                // eslint-disable-next-line max-len
+                  setActivateChangedClustersInfo(row.clusterId??'', row.name??'', row.venueId??'')}/>
+            }
+          />
+        </Tooltip>
       }
     }
   ]

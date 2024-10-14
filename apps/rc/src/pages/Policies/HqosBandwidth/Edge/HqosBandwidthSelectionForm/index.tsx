@@ -2,8 +2,10 @@
 import { Form, Select, Space } from 'antd'
 import { useIntl }             from 'react-intl'
 
-import { useStepFormContext }                     from '@acx-ui/components'
-import { useGetEdgeHqosProfileViewDataListQuery } from '@acx-ui/rc/services'
+import { useStepFormContext }                      from '@acx-ui/components'
+import { useGetEdgeHqosProfileViewDataListQuery }  from '@acx-ui/rc/services'
+import { EdgeScopes }                              from '@acx-ui/types'
+import { hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 
 import { AddHqosBandwidthModal }     from './AddHqosBandwidthModal'
 import { HqosBandwidthDeatilDrawer } from './HqosBandwidthDetailDrawer'
@@ -33,6 +35,9 @@ export const EdgeQosProfileSelectionForm = () => {
     }
   })
 
+  const hasUpdatePermission =!!hasCrossVenuesPermission({ needGlobalPermission: true })
+  && hasPermission({ scopes: [EdgeScopes.CREATE] })
+
 
   const content = <Form.Item
     label={$t({ defaultMessage: 'HQoS Bandwitdth Profile' })}
@@ -58,7 +63,7 @@ export const EdgeQosProfileSelectionForm = () => {
         />
       </Form.Item>
       <HqosBandwidthDeatilDrawer />
-      <AddHqosBandwidthModal />
+      {hasUpdatePermission && <AddHqosBandwidthModal />}
     </Space>
   </Form.Item>
 

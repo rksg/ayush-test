@@ -3,10 +3,10 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { StepsForm }        from '@acx-ui/components'
+import { StepsForm } from '@acx-ui/components'
 import {
-  EdgeNSGFixtures,
-  NetworkSegmentationUrls
+  EdgePinFixtures,
+  EdgePinUrls
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -62,8 +62,8 @@ const mockedGetTunnelProfileName = jest.fn()
 mockedGetTunnelProfileName.mockReturnValue('tunnelProfileName')
 const mockedGetNetworksName = jest.fn()
 mockedGetNetworksName.mockReturnValue(['network 1', 'network 2'])
-const createNsgPath = '/:tenantId/services/personalIdentityNetwork/create'
-const { mockNsgSwitchInfoData } = EdgeNSGFixtures
+const createPinPath = '/:tenantId/services/personalIdentityNetwork/create'
+const { mockPinSwitchInfoData } = EdgePinFixtures
 
 describe('PersonalIdentityNetworkForm - SummaryForm', () => {
   let params: { tenantId: string, serviceId: string }
@@ -75,7 +75,7 @@ describe('PersonalIdentityNetworkForm - SummaryForm', () => {
 
     mockServer.use(
       rest.post(
-        NetworkSegmentationUrls.getWebAuthTemplateList.url,
+        EdgePinUrls.getWebAuthTemplateList.url,
         (_req, res, ctx) => res(ctx.json({ data: webAuthList }))
       )
     )
@@ -95,8 +95,8 @@ describe('PersonalIdentityNetworkForm - SummaryForm', () => {
         poolName: 'DHCP_Pool',
         vxlanTunnelProfileId: 'vxlanTunnelProfileId',
         networkIds: ['testDpsk1', 'testDpsk2'],
-        distributionSwitchInfos: mockNsgSwitchInfoData.distributionSwitches,
-        accessSwitchInfos: mockNsgSwitchInfoData.accessSwitches
+        distributionSwitchInfos: mockPinSwitchInfoData.distributionSwitches,
+        accessSwitchInfos: mockPinSwitchInfoData.accessSwitches
       })
       return form
     })
@@ -120,7 +120,7 @@ describe('PersonalIdentityNetworkForm - SummaryForm', () => {
           </StepsForm>
         </PersonalIdentityNetworkFormContext.Provider>
       </Provider>,
-      { route: { params, path: createNsgPath } })
+      { route: { params, path: createPinPath } })
     expect(await screen.findByText('testNsgName')).toBeVisible()
     expect(mockedGetVenueName).toBeCalledWith('venueId')
     expect(mockedGetClusterName).toBeCalledWith('edgeId')

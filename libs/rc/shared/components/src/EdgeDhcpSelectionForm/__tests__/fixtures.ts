@@ -11,7 +11,7 @@ export const mockEdgeDhcpList = {
       leaseTime: 25,
       leaseTimeType: 'Limited',  // UI used
       leaseTimeUnit: 'HOURS',
-      usedForNSG: true,
+      usedForPin: true,
       dhcpPools: [{
         id: '1',
         poolName: 'RelayOffPoolTest1',

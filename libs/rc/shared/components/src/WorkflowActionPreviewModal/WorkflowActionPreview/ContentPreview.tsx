@@ -21,7 +21,6 @@ interface ContentPreviewProps {
 export function ContentPreview (props: ContentPreviewProps) {
   const { uiConfiguration, title, body, extra, hideNavigation = false, ...rest } = props
   const {
-    wifi4EUNetworkId,
     uiColorSchema,
     uiStyleSchema,
     disablePoweredBy
@@ -31,7 +30,7 @@ export function ContentPreview (props: ContentPreviewProps) {
     <UI.PreviewContainer
       hasBackgroundImage={!!uiConfiguration?.logoImage}
     >
-      {!!wifi4EUNetworkId &&
+      {!!uiStyleSchema.wifi4EUNetworkId &&
         <WiFi4EuBanner />
       }
 
@@ -58,7 +57,8 @@ export function ContentPreview (props: ContentPreviewProps) {
       </UI.Title>
       <UI.Body
         style={{
-          color: uiColorSchema.fontColor
+          color: uiColorSchema.fontColor,
+          overflow: 'auto'
         }}
       >
         {body}
@@ -66,7 +66,7 @@ export function ContentPreview (props: ContentPreviewProps) {
 
       {extra}
 
-      {!hideNavigation && <StepNavigation {...rest} />}
+      {!hideNavigation && <StepNavigation {...rest} config={uiColorSchema} />}
 
       {!disablePoweredBy &&
         <UI.PoweredByContainer>

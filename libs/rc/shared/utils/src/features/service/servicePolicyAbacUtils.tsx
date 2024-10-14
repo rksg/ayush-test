@@ -161,7 +161,7 @@ function getSpecialScopeKey<T extends SvcPcyAllowedType, U extends SvcPcyAllowed
         return ['edge-' + operScopeMap[oper]] as ScopeKeys
       }
       return null
-    case ServiceType.NETWORK_SEGMENTATION:
+    case ServiceType.PIN:
       // eslint-disable-next-line max-len
       if (oper === ServiceOperation.CREATE || oper === ServiceOperation.EDIT || oper === ServiceOperation.DELETE) {
         return ['edge-' + operScopeMap[oper], 'switch-' + operScopeMap[oper]] as ScopeKeys

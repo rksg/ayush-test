@@ -45,3 +45,8 @@ export interface EntitlementSummaries {
 export interface RbacEntitlementSummary {
   data: EntitlementSummaries[];
 }
+
+export enum TrialType {
+  TRIAL = 'TRIAL',
+  EXTENDED_TRIAL = 'EXTENDED_TRIAL'
+}

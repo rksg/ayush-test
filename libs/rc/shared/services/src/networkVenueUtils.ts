@@ -134,6 +134,7 @@ export const aggregatedRbacVenueNetworksData = (
 
     data.push({
       ...(item as Network),
+      clients: item.clientCount ?? 0,
       activated: calculateRbacNetworkActivated(item, venueId),
       deepNetwork: deepNetwork,
       incompatible: apCompatibilities[item.id] ?? 0

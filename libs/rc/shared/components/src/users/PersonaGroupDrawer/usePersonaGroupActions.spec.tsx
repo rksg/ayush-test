@@ -12,7 +12,6 @@ const spyUpdatePersonaGroup = jest.fn()
 const spyCreatePersonaGroup = jest.fn()
 const spyAssociateDpsk = jest.fn()
 const spyAssociateMacRegistration = jest.fn()
-const spyAssociateCertTemplate = jest.fn()
 
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
@@ -37,7 +36,6 @@ describe('usePersonaGroupActions', () => {
     spyCreatePersonaGroup.mockClear()
     spyAssociateDpsk.mockClear()
     spyAssociateMacRegistration.mockClear()
-    spyAssociateCertTemplate.mockClear()
 
     mockServer.use(
       rest.patch(
@@ -58,13 +56,6 @@ describe('usePersonaGroupActions', () => {
         PersonaUrls.associateMacRegistration.url,
         (req, res, ctx) => {
           spyAssociateMacRegistration()
-          return res(ctx.json({}))
-        }
-      ),
-      rest.put(
-        PersonaUrls.associateCertTemplate.url,
-        (_, res, ctx) => {
-          spyAssociateCertTemplate()
           return res(ctx.json({}))
         }
       )
@@ -88,7 +79,6 @@ describe('usePersonaGroupActions', () => {
 
     await waitFor(() => expect(spyAssociateDpsk).toBeCalled())
     await waitFor(() => expect(spyAssociateMacRegistration).toBeCalled())
-    await waitFor(() => expect(spyAssociateCertTemplate).toBeCalled())
 
     jest.mocked(useIsSplitOn).mockReset()
   })
@@ -111,7 +101,6 @@ describe('usePersonaGroupActions', () => {
     expect(spyUpdatePersonaGroup).toBeCalled()
     expect(spyAssociateDpsk).toBeCalled()
     expect(spyAssociateMacRegistration).toBeCalled()
-    expect(spyAssociateCertTemplate).toBeCalled()
 
     jest.mocked(useIsSplitOn).mockReset()
   })
@@ -127,7 +116,6 @@ describe('usePersonaGroupActions', () => {
     expect(spyUpdatePersonaGroup).not.toHaveBeenCalled()
     expect(spyAssociateDpsk).not.toHaveBeenCalled()
     expect(spyAssociateMacRegistration).not.toHaveBeenCalled()
-    expect(spyAssociateCertTemplate).not.toHaveBeenCalled()
   })
 
   it('Should create persona group with dpsk and macRegistration via single step', async () => {
@@ -147,7 +135,6 @@ describe('usePersonaGroupActions', () => {
 
     await waitFor(() => expect(spyAssociateDpsk).not.toBeCalled())
     await waitFor(() => expect(spyAssociateMacRegistration).not.toBeCalled())
-    await waitFor(() => expect(spyAssociateCertTemplate).not.toBeCalled())
 
     jest.mocked(useIsSplitOn).mockReset()
   })
