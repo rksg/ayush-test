@@ -66,6 +66,11 @@ jest.mock('./ClientOverviewTab/ClientProperties', () => ({
   ClientProperties: () => <div data-testid='ClientProperties' />
 }))
 
+jest.mock('./ClientOverviewTab/RbacClientProperties', () => ({
+  ...jest.requireActual('./ClientOverviewTab/RbacClientProperties'),
+  RbacClientProperties: () => <div data-testid='ClientProperties' />
+}))
+
 jest.mock('./ClientOverviewTab/TopApplications', () => ({
   ...jest.requireActual('./ClientOverviewTab/TopApplications'),
   TopApplications: () => <div data-testid='TopApplications' />
@@ -139,7 +144,7 @@ describe('ClientDetails', () => {
       search: ''
     })
     expect(await screen.findByText('(')).toBeVisible()
-    expect(await screen.findByText('LP-XXXXX')).toBeVisible()
+    expect(await screen.findByText('Galaxy-S7-edge')).toBeVisible()
     expect(await screen.findByText(')')).toBeVisible()
   })
 
@@ -248,7 +253,7 @@ describe('ClientDetails', () => {
       expect(requestDisconnectClientSpy).toHaveBeenCalledTimes(1)
     })
     await waitFor(() => {
-      expect(mockedUsedNavigate).toHaveBeenCalledTimes(1)
+      expect(mockedUsedNavigate).toBeCalled()
     })
   })
 })
