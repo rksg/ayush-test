@@ -59,7 +59,9 @@ export function BrandTable ({
         </span>
     },
     {
-      title: $t({ defaultMessage: 'Guest Experience' }),
+      title: isMDU  // istanbul ignore next
+        ? $t({ defaultMessage: 'Resident Experience' })
+        : $t({ defaultMessage: 'Guest Experience' }),
       dataIndex: 'guestExp',
       key: 'guestExp',
       sorter: { compare: sortProp('guestExp', customSort) },

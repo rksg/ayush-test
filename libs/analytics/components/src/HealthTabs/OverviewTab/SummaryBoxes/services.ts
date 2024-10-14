@@ -1,16 +1,21 @@
 import { gql } from 'graphql-request'
 
-import { getFilterPayload, wiredIncidentCodes, wirelessIncidentCodes } from '@acx-ui/analytics/utils'
-import { dataApi }                                                     from '@acx-ui/store'
-import type { NodesFilter }                                            from '@acx-ui/utils'
+import { getFilterPayload,
+  getWiredWirelessIncidentCodes,
+  IncidentToggle } from '@acx-ui/analytics/utils'
+import { dataApi }          from '@acx-ui/store'
+import type { NodesFilter } from '@acx-ui/utils'
 
 
 export interface RequestPayload {
   filter: NodesFilter
   start: string
   end: string
+  toggles: Record<IncidentToggle, boolean>
   wirelessOnly?: boolean
 }
+
+type SwitchCountRequestPayload = Omit<RequestPayload, 'toggles'>
 
 export interface SummaryResult {
   apIncidentCount: number
@@ -64,7 +69,8 @@ export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     summaryData: build.query<SummaryResult, RequestPayload>({
       query: payload => {
-        const { wirelessOnly = false, ...restPayload } = payload
+        const { wirelessOnly = false, toggles, ...restPayload } = payload
+        const [wiredIncidentCodes, wirelessIncidentCodes] = getWiredWirelessIncidentCodes(toggles)
         return ({
           document: gql`
           query SummaryQuery(
@@ -96,7 +102,7 @@ export const api = dataApi.injectEndpoints({
       transformResponse: (response: {
         network: { hierarchyNode: SummaryResult } }) => response.network.hierarchyNode
     }),
-    switchCount: build.query<SwitchCount, RequestPayload>({
+    switchCount: build.query<SwitchCount, SwitchCountRequestPayload>({
       query: payload => ({
         document: gql`
           query SwitchCount(
