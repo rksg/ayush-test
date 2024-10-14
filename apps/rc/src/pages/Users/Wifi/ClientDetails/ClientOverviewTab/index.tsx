@@ -41,13 +41,13 @@ export function ClientOverviewTab () {
     filters: {
       macAddress: [clientId]
     }
-  } })
+  } }, { skip: !isWifiRbacEnabled })
   const clientResult = useGetClientOrHistoryDetailQuery({
     params: {
       tenantId,
       clientId,
       status: searchParams.get('clientStatus') || ClientStatusEnum.CONNECTED
-    } })
+    } }, { skip: isWifiRbacEnabled })
   const clientDetails = clientResult?.data?.data || {} as Client
   const clientStatus = searchParams.get('clientStatus') || ClientStatusEnum.CONNECTED
 
