@@ -157,5 +157,20 @@ export const CertificateUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     newApi: true,
     url: '/certificateTemplates/:templateId/identities/:personaId/certificates'
+  },
+  getServerCertificates: {
+    method: 'post',
+    newApi: true,
+    url: '/certificates/query'
+  },
+  updateServerCertificate: {
+    method: 'patch',
+    newApi: true,
+    url: '/certificates/:certId'
+  },
+  downloadServerCertificate: {
+    method: 'get',
+    newApi: true,
+    url: '/certificates/:certId'
   }
 }
