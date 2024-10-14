@@ -32,7 +32,9 @@ import {
   ExpirationType,
   displayDeviceCountLimit,
   EXPIRATION_TIME_FORMAT,
-  ClientInfo
+  ClientInfo,
+  transformQosPriorityType,
+  QosPriorityEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { getIntl }               from '@acx-ui/utils'
@@ -208,7 +210,9 @@ export function RbacClientProperties ({ clientStatus, clientInfo } : {
               clientMac={client.clientMac}
               username={getClientUsername(client)}
             />
-          )
+          ),
+          // eslint-disable-next-line max-len
+          (stateOfClientInfo.wifiCallingEnabled && <WiFiCallingDetails clientInfo={stateOfClientInfo} />)
         ]
         break
     }
@@ -480,6 +484,52 @@ function OperationalData ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
       <Descriptions.Item
         label={intl.$t({ defaultMessage: 'Radio Type' })}
         children={clientInfo?.radioStatus.type ? clientInfo?.radioStatus.type : '--'}
+      />
+    </Descriptions>
+  </>
+}
+
+function WiFiCallingDetails ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
+  const { $t } = getIntl()
+  const bytesFormatter = formatter('bytesFormat')
+
+  return <>
+    <Subtitle level={4}>
+      {$t({ defaultMessage: 'Wi-Fi Calling Details' })}
+    </Subtitle>
+    <Descriptions labelWidthPercent={50}>
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Carrier Name' })}
+        children={clientInfo?.wifiCallingStatus.carrierName || '--'}
+      />
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'QoS Priority' })}
+        children={
+          clientInfo?.wifiCallingStatus.qosPriority
+            ? transformQosPriorityType(clientInfo?.wifiCallingStatus.qosPriority as QosPriorityEnum)
+            : '--'
+        }
+      />
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Total Traffic' })}
+        children={
+          (clientInfo?.wifiCallingStatus.totalTraffic &&
+            bytesFormatter(clientInfo?.wifiCallingStatus.totalTraffic)) || '--'
+        }
+      />
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Transmitted Traffic' })}
+        children={
+          (clientInfo?.wifiCallingStatus.trafficToClient &&
+            bytesFormatter(clientInfo?.wifiCallingStatus.trafficToClient)) || '--'
+        }
+      />
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Recieved Traffic' })}
+        children={
+          (clientInfo?.wifiCallingStatus.trafficFromClient &&
+            bytesFormatter(clientInfo?.wifiCallingStatus.trafficFromClient)) || '--'
+        }
       />
     </Descriptions>
   </>
