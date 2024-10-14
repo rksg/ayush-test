@@ -1,19 +1,19 @@
 import { useRef, useState } from 'react'
 
 
-import { Button, Form, Steps }  from 'antd'
-import { useIntl } from 'react-intl'
+import { Button, Form, Steps } from 'antd'
+import { useIntl }             from 'react-intl'
 
 
-import { cssStr } from '@acx-ui/components'
+import { cssStr }                        from '@acx-ui/components'
+import { useStartConversationsMutation } from '@acx-ui/rc/services'
+import { GptConversation }               from '@acx-ui/rc/utils'
 
 import { ReactComponent as Logo } from './assets/gptDog.svg'
 import BasicInformationPage       from './BasicInformationPage'
+import GptWizard                  from './GptWizard'
 import * as UI                    from './styledComponents'
 import VerticalPage               from './VerticalPage'
-import GptWizard from './GptWizard'
-import { useStartConversationsMutation } from '@acx-ui/rc/services'
-import { GptConversation } from '@acx-ui/rc/utils'
 
 export default function RuckusGptButton () {
   const [visible, setVisible] = useState(false)
@@ -21,11 +21,6 @@ export default function RuckusGptButton () {
 
   const [step, setStep] = useState('vertical' as String)
 
-  const mockResponse_step2 = {
-    requestId: '567ce50233af4e47a7354d2c47b3a8e6',
-    actionType: 'WLAN',
-    payload: '[{"SSID Name":"Guest","SSID Type":"aaa"},{"SSID Name":"Staff","SSID Type":"dpsk"}]'
-  }
 
   const [currentStep, setCurrentStep] = useState(0 as number)
   const [basicFormRef] = Form.useForm()
@@ -34,7 +29,7 @@ export default function RuckusGptButton () {
   const [nextStep, setNextStep] = useState({} as GptConversation)
 
 
-  return <div>
+  return <>
     <UI.ButtonSolid
       icon={<Logo />}
       onClick={() => {
@@ -48,8 +43,9 @@ export default function RuckusGptButton () {
           style={{ width: '250px' }}>
           <UI.GptStep
             current={currentStep}
-            percent={100} size="small"
-            type="default">
+            percent={100}
+            size='small'
+            type='default'>
             {[
               { key: 'step1' },
               { key: 'step2' },
@@ -97,7 +93,7 @@ export default function RuckusGptButton () {
               () => {
                 if (step === 'basic') {
                   setStep('vertical')
-                } 
+                }
               }
             }>
             {$t({ defaultMessage: 'Back' })}
@@ -121,20 +117,20 @@ export default function RuckusGptButton () {
 
                 async () => {
                   try {
-                    const result = basicFormRef.getFieldsValue();
+                    const result = basicFormRef.getFieldsValue()
                     const response = await startConversations({
                       payload: {
                         venueName: result.venueName,
                         numberOfAp: result.numberOfAp,
                         numberOfSwitch: result.numberOfSwitch,
                         venueType,
-                        description: result.description,
-                      },
-                    }).unwrap();
-                    setStep('wizard');
-                    setNextStep(response);
+                        description: result.description
+                      }
+                    }).unwrap()
+                    setStep('wizard')
+                    setNextStep(response)
                   } catch (error) {
-                    console.error('Failed to start conversation:', error);
+                    console.error('Failed to start conversation:', error)
                   }
                 }
 
@@ -175,7 +171,7 @@ export default function RuckusGptButton () {
         </>
       }
     />
-  </div>
+  </>
 }
 
 export {
