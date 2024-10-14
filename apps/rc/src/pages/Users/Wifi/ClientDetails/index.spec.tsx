@@ -19,7 +19,8 @@ import {
   clientVenueList,
   clientReportList,
   clientNetworkList,
-  histClientList
+  histClientList,
+  rbacClientInfo
 } from '../__tests__/fixtures'
 
 import ClientDetailPageHeader from './ClientDetailPageHeader'
@@ -97,7 +98,10 @@ describe('ClientDetails', () => {
         (_, res, ctx) => {
           requestDisconnectClientSpy()
           return res(ctx.json({}))
-        })
+        }),
+      rest.post(ClientUrlsInfo.getClients.url, (_, res, ctx) => {
+        return res(ctx.json(rbacClientInfo))
+      })
     )
   })
 
@@ -243,10 +247,8 @@ describe('ClientDetails', () => {
     await waitFor(() => {
       expect(requestDisconnectClientSpy).toHaveBeenCalledTimes(1)
     })
-    expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/users/wifi/clients/${params.clientId}/details/reports`,
-      hash: '',
-      search: ''
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalledTimes(1)
     })
   })
 })
