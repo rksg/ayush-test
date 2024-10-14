@@ -12,7 +12,7 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import {
   useAddNetworkVenueMutation,
   useAddNetworkVenuesMutation,
@@ -29,7 +29,9 @@ import {
   useDeleteNetworkVenuesTemplateMutation,
   useScheduleSlotIndexMap,
   useGetVLANPoolPolicyViewModelListQuery,
-  useNewNetworkVenueTableQuery, useNetworkDetailHeaderQuery
+  useNewNetworkVenueTableQuery,
+  useNetworkDetailHeaderQuery,
+  useGetEnhancedVlanPoolPolicyTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -42,8 +44,15 @@ import {
   SchedulingModalState,
   IsNetworkSupport6g,
   ApGroupModalState,
-  SchedulerTypeEnum, useConfigTemplate, useConfigTemplateMutationFnSwitcher,
-  KeyValue, VLANPoolViewModelType, EdgeSdLanViewDataP2, EdgeMvSdLanViewData
+  SchedulerTypeEnum,
+  useConfigTemplate,
+  useConfigTemplateMutationFnSwitcher,
+  KeyValue,
+  VLANPoolViewModelType,
+  EdgeSdLanViewDataP2,
+  EdgeMvSdLanViewData,
+  useConfigTemplateQueryFnSwitcher,
+  TableResult
 } from '@acx-ui/rc/utils'
 import { useParams }                     from '@acx-ui/react-router-dom'
 import { WifiScopes }                    from '@acx-ui/types'
@@ -237,25 +246,25 @@ export function NetworkVenuesTab () {
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
   const updateSdLanNetworkTunnel = useUpdateNetworkTunnelAction()
 
-  const { vlanPoolingNameMap }: { vlanPoolingNameMap: KeyValue<string, string>[] } = useGetVLANPoolPolicyViewModelListQuery({
-    params: { tenantId: params.tenantId },
+  const [vlanPoolingNameMap, setVlanPoolingNameMap] = useState<KeyValue<string, string>[]>([])
+  const { data: instanceListResult } = useConfigTemplateQueryFnSwitcher<TableResult<VLANPoolViewModelType>>({
+    useQueryFn: useGetVLANPoolPolicyViewModelListQuery,
+    useTemplateQueryFn: useGetEnhancedVlanPoolPolicyTemplateListQuery,
+    skip: !tableData.length,
     payload: {
-      fields: ['name', 'id'],
-      sortField: 'name',
-      sortOrder: 'ASC',
-      page: 1,
-      pageSize: 10000
+      fields: ['name', 'id', 'vlanMembers'], sortField: 'name',
+      sortOrder: 'ASC', page: 1, pageSize: 10000
     },
     enableRbac: isPolicyRbacEnabled
-  }, {
-    skip: !tableData.length,
-    selectFromResult: ({ data }: { data?: { data: VLANPoolViewModelType[] } }) => ({
-      vlanPoolingNameMap: data?.data
-        ? data.data.map(vlanPool => ({ key: vlanPool.id!, value: vlanPool.name }))
-        : [] as KeyValue<string, string>[]
-    })
   })
 
+  useEffect(() => {
+    if (instanceListResult?.data) {
+      setVlanPoolingNameMap(instanceListResult.data
+        ? instanceListResult.data.map(vlanPool => ({ key: vlanPool.id!, value: vlanPool.name }))
+        : [])
+    }
+  },[instanceListResult])
 
   const getCurrentVenue = (row: Venue) => {
     if (!row.activated.isActivated) {
