@@ -41,14 +41,6 @@ import { getIntl }               from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
-interface ClientExtended extends Client {
-  hasSwitch: boolean,
-  enableLinkToAp: boolean,
-  enableLinkToVenue: boolean,
-  enableLinkToNetwork: boolean,
-  radioType: string
-}
-
 interface ClientInfoExtended extends ClientInfo {
   hasSwitch: boolean,
   enableLinkToAp: boolean,
@@ -78,7 +70,6 @@ export function RbacClientProperties ({ clientStatus, clientInfo } : {
 }) {
 
   const { tenantId } = useParams()
-  const [client, setClient] = useState(undefined as unknown as ClientExtended)
   // eslint-disable-next-line max-len
   const [stateOfClientInfo, setStateOfClientInfo] = useState(undefined as unknown as ClientInfoExtended)
   const [networkType, setNetworkType] = useState<NetworkTypeEnum>()
@@ -97,7 +88,7 @@ export function RbacClientProperties ({ clientStatus, clientInfo } : {
       let venueData = null as unknown as VenueExtended
       let networkData = null as NetworkSaveData | null
       let radioType = null as string | null
-      const serialNumber = clientInfo?.apInformation.serialNumber
+      const serialNumber = clientInfo?.apInformation?.serialNumber
 
       const getGuestData = async () => {
         const list = (await getGuestsList({
@@ -119,7 +110,7 @@ export function RbacClientProperties ({ clientStatus, clientInfo } : {
 
           await Promise.all([
             getAp({ params: { tenantId, serialNumber } }, true),
-            getVenue({ params: { tenantId, venueId: clientInfo?.venueInformation.id } }, true),
+            getVenue({ params: { tenantId, venueId: clientInfo?.venueInformation?.id } }, true),
             // eslint-disable-next-line max-len
             getNetwork({ params: { tenantId, networkId: clientInfo?.networkInformation?.id } }, true),
             getClientRbac({ payload: {
@@ -178,7 +169,7 @@ export function RbacClientProperties ({ clientStatus, clientInfo } : {
       getMetaData()
 
     } else {
-      setClient({} as ClientExtended)
+      setStateOfClientInfo({} as ClientInfoExtended)
     }
   }, [clientInfo])
 
@@ -206,13 +197,13 @@ export function RbacClientProperties ({ clientStatus, clientInfo } : {
             <GuestDetails guestDetail={guestDetail} clientMac={clientMac}/>),
           (shouldDisplayDpskPassphraseDetail() &&
             <DpskPassphraseDetails
-              networkId={client.networkId}
-              clientMac={client.clientMac}
-              username={getClientUsername(client)}
+              networkId={clientInfo?.networkInformation.id}
+              clientMac={clientInfo?.macAddress}
+              username={clientInfo?.username}
             />
           ),
           // eslint-disable-next-line max-len
-          (stateOfClientInfo.wifiCallingEnabled && <WiFiCallingDetails clientInfo={stateOfClientInfo} />)
+          (stateOfClientInfo?.wifiCallingEnabled && <WiFiCallingDetails clientInfo={stateOfClientInfo} />)
         ]
         break
     }
@@ -229,7 +220,7 @@ export function RbacClientProperties ({ clientStatus, clientInfo } : {
 
   return <Card>
     <Loader states={[{
-      isLoading: !client
+      isLoading: !stateOfClientInfo
     }]}>
       { getProperties(clientStatus, clientInfo.macAddress) }
     </Loader>
@@ -302,10 +293,10 @@ function Connection ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
         children={
           clientInfo?.enableLinkToAp ?
             <TenantLink
-              to={`devices/wifi/${clientInfo.apInformation.serialNumber}/details/overview`}>
-              {clientInfo?.apInformation.name || '--'}
+              to={`devices/wifi/${clientInfo.apInformation?.serialNumber}/details/overview`}>
+              {clientInfo?.apInformation?.name || '--'}
             </TenantLink>
-            : clientInfo?.apInformation.name || '--'
+            : clientInfo?.apInformation?.name || '--'
         }
       />
       {clientInfo?.hasSwitch && <Descriptions.Item
@@ -328,10 +319,10 @@ function Connection ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
         children={
           clientInfo?.enableLinkToVenue ?
             // eslint-disable-next-line max-len
-            <TenantLink to={`venues/${clientInfo?.venueInformation.id}/venue-details/overview`}>
-              {clientInfo?.venueInformation.name || '--'}
+            <TenantLink to={`venues/${clientInfo?.venueInformation?.id}/venue-details/overview`}>
+              {clientInfo?.venueInformation?.name || '--'}
             </TenantLink>
-            : clientInfo?.venueInformation.name || '--'
+            : clientInfo?.venueInformation?.name || '--'
         }
       />
       <Descriptions.Item
@@ -377,7 +368,7 @@ function Connection ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
           title={$t({ defaultMessage: 'Basic Service Set Identifier' })}
         >{$t({ defaultMessage: 'BSSID' })}
         </Tooltip>}
-        children={clientInfo?.apInformation.bssid || '--'}
+        children={clientInfo?.apInformation?.bssid || '--'}
       />
       { wifiEDAClientRevokeToggle && <Descriptions.Item
         label={<Tooltip
@@ -419,7 +410,7 @@ function OperationalData ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
           title={intl.$t({ defaultMessage: 'Radio Frequency Channel' })}
         >{intl.$t({ defaultMessage: 'RF Channel' })}
         </Tooltip>}
-        children={clientInfo?.radioStatus.channel || '--'}
+        children={clientInfo?.radioStatus?.channel || '--'}
       />
       <Descriptions.Item
         label={intl.$t({ defaultMessage: 'Traffic From Client' })}
@@ -432,26 +423,26 @@ function OperationalData ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
       />
       <Descriptions.Item
         label={intl.$t({ defaultMessage: 'Packets From Client' })}
-        children={clientInfo?.trafficStatus.packetsFromClient ?
-          numberFormatter(clientInfo?.trafficStatus.packetsFromClient) : '--'}
+        children={clientInfo?.trafficStatus?.packetsFromClient ?
+          numberFormatter(clientInfo?.trafficStatus?.packetsFromClient) : '--'}
       />
       <Descriptions.Item
         label={intl.$t({ defaultMessage: 'Traffic To Client' })}
-        children={clientInfo?.trafficStatus.trafficToClient ? <Tooltip
+        children={clientInfo?.trafficStatus?.trafficToClient ? <Tooltip
           placement='bottom'
-          title={`${numberFormatter(parseInt(clientInfo?.trafficStatus.trafficToClient))} B`}
-        >{bytesFormatter(parseInt(clientInfo?.trafficStatus.trafficToClient))}
+          title={`${numberFormatter(parseInt(clientInfo?.trafficStatus?.trafficToClient))} B`}
+        >{bytesFormatter(parseInt(clientInfo?.trafficStatus?.trafficToClient))}
         </Tooltip> : '--'}
       />
       <Descriptions.Item
         label={intl.$t({ defaultMessage: 'Packets To Client' })}
-        children={clientInfo?.trafficStatus.packetsToClient ?
-          numberFormatter(clientInfo?.trafficStatus.packetsToClient) : '--'}
+        children={clientInfo?.trafficStatus?.packetsToClient ?
+          numberFormatter(clientInfo?.trafficStatus?.packetsToClient) : '--'}
       />
       <Descriptions.Item
         label={intl.$t({ defaultMessage: 'Frames Dropped' })}
-        children={clientInfo?.trafficStatus.framesDropped ?
-          numberFormatter(clientInfo?.trafficStatus.framesDropped) : '--'}
+        children={clientInfo?.trafficStatus?.framesDropped ?
+          numberFormatter(clientInfo?.trafficStatus?.framesDropped) : '--'}
       />
       <Descriptions.Item
         label={<Tooltip
@@ -460,8 +451,8 @@ function OperationalData ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
         >{intl.$t({ defaultMessage: 'SNR' })}
         </Tooltip>}
         children={<WifiSignal
-          snr={clientInfo?.signalStatus.snr}
-          text={clientInfo?.signalStatus.snr ? clientInfo?.signalStatus.snr + ' dB' : '--'}
+          snr={clientInfo?.signalStatus?.snr}
+          text={clientInfo?.signalStatus?.snr ? clientInfo?.signalStatus?.snr + ' dB' : '--'}
         />}
       />
       <Descriptions.Item
@@ -471,19 +462,19 @@ function OperationalData ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
         >{intl.$t({ defaultMessage: 'RSSI' })}
         </Tooltip>}
         children={<Space style={{
-          color: getRssiStatus(intl, clientInfo?.signalStatus.rssi)?.color
+          color: getRssiStatus(intl, clientInfo?.signalStatus?.rssi)?.color
         }}>
           <Tooltip
             placement='bottom'
-            title={getRssiStatus(intl, clientInfo?.signalStatus.rssi)?.tooltip}
+            title={getRssiStatus(intl, clientInfo?.signalStatus?.rssi)?.tooltip}
           >
-            {clientInfo?.signalStatus.rssi ? clientInfo?.signalStatus.rssi + ' dBm' : '--'}
+            {clientInfo?.signalStatus?.rssi ? clientInfo?.signalStatus?.rssi + ' dBm' : '--'}
           </Tooltip>
         </Space>}
       />
       <Descriptions.Item
         label={intl.$t({ defaultMessage: 'Radio Type' })}
-        children={clientInfo?.radioStatus.type ? clientInfo?.radioStatus.type : '--'}
+        children={clientInfo?.radioStatus?.type ? clientInfo?.radioStatus?.type : '--'}
       />
     </Descriptions>
   </>
@@ -685,10 +676,6 @@ function getGuestsPayload (clientMacAddress: string) {
       ]
     }
   }
-}
-
-function getClientUsername (client?: Client): string | undefined {
-  return client?.userName || client?.username
 }
 
 function getAuthStatus (statusInt: number) {
