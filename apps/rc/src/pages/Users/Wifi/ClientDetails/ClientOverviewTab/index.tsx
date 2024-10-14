@@ -35,21 +35,21 @@ export function ClientOverviewTab () {
   }), [dateFilter])
   const { tenantId, clientId } = useParams()
   const [searchParams] = useSearchParams()
-
+  const clientStatus = searchParams.get('clientStatus') || ClientStatusEnum.CONNECTED
   const clientStats = useClientStatisticsQuery({ ...filters, clientMac: clientId!.toUpperCase() })
   const clientInfo = useGetClientsQuery({ payload: {
     filters: {
       macAddress: [clientId]
     }
-  } }, { skip: !isWifiRbacEnabled })
+  } }, { skip: !isWifiRbacEnabled || clientStatus !== ClientStatusEnum.CONNECTED })
   const clientResult = useGetClientOrHistoryDetailQuery({
     params: {
       tenantId,
       clientId,
-      status: searchParams.get('clientStatus') || ClientStatusEnum.CONNECTED
-    } }, { skip: isWifiRbacEnabled })
+      status: clientStatus
+    } }, { skip: isWifiRbacEnabled && clientStatus === ClientStatusEnum.CONNECTED })
   const clientDetails = clientResult?.data?.data || {} as Client
-  const clientStatus = searchParams.get('clientStatus') || ClientStatusEnum.CONNECTED
+
 
   return <GridRow>
     <GridCol col={{ span: 18 }}>

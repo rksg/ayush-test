@@ -40,13 +40,13 @@ function ClientDetailPageHeader () {
     filters: {
       macAddress: [clientId]
     }
-  } }, { skip: !isWifiRbacEnabled })?.data?.data[0]
+  } }, { skip: !isWifiRbacEnabled || status !== ClientStatusEnum.CONNECTED })?.data?.data[0]
   const { data: result } = useGetClientOrHistoryDetailQuery(
     { params: {
       tenantId,
       clientId,
       status
-    } }, { skip: isWifiRbacEnabled })
+    } }, { skip: isWifiRbacEnabled && status === ClientStatusEnum.CONNECTED })
   const clentDetails = (status ? { hostname: result?.data?.hostname } : result?.data) as Client
 
   /* eslint-disable max-len */
