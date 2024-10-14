@@ -43,8 +43,8 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
   const [form] = Form.useForm()
   const [isValidTwiliosNumber, setIsValidTwiliosNumber] = useState(false)
   const [isValidTwiliosService, setIsValidTwiliosService] = useState(false)
-  const [isValidAccountSID, setIsValidAccountSID] = useState(false)
-  const [isValidAuthToken, setIsValidAuthToken] = useState(false)
+  const [isValidAccountSID, setIsValidAccountSID] = useState<boolean>()
+  const [isValidAuthToken, setIsValidAuthToken] = useState<boolean>()
   const [phoneNumbers, setPhoneNumbers] = useState<string[]>()
   const [messagingServices, setMessagingServices] = useState<string[]>()
   const [messageMethod, setMessageMethod] = useState<MessageMethod>()
@@ -65,16 +65,28 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
   }, [])
 
   useEffect(() => {
-    if(isEditMode && editData?.providerType === SmsProviderType.TWILIO) {
-      form.validateFields(['authToken'])
-      if (isTwilioFromNumber(editData.providerData.fromNumber ?? '')) {
-        setMessageMethod(MessageMethod.PhoneNumber)
-        setTwilioEditMethod(MessageMethod.PhoneNumber)
-        handleGetTwiliosIncomingPhoneNumbers()
-      } else {
-        setMessageMethod(MessageMethod.MessagingService)
-        setTwilioEditMethod(MessageMethod.MessagingService)
-        handleGetTwiliosIncomingServices()
+    if (providerType) {
+      if(providerType === SmsProviderType.TWILIO) {
+        if(isEditMode) {
+          form.validateFields(['accountSid','authToken'])
+          if (isTwilioFromNumber(editData?.providerData.fromNumber ?? '')) {
+            setMessageMethod(MessageMethod.PhoneNumber)
+            setTwilioEditMethod(MessageMethod.PhoneNumber)
+          } else {
+            setMessageMethod(MessageMethod.MessagingService)
+            setTwilioEditMethod(MessageMethod.MessagingService)
+          }
+        }
+        else {
+          // If add twilio form was touched and provider was changed, validate sid and token again
+          if (isValidAccountSID === false && isValidAuthToken === false) {
+            form.validateFields(['accountSid','authToken'])
+          }
+        }
+      }
+      else {
+        setIsValidAccountSID(false)
+        setIsValidAuthToken(false)
       }
     }
   }, [providerType])
@@ -277,6 +289,7 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
           rules={[
             { required: true, message: $t({ defaultMessage: 'Please select a messaging method' }) }
           ]}
+          valuePropName='checked'
         >
           <Radio.Group
             disabled={!isValidAuthToken}
