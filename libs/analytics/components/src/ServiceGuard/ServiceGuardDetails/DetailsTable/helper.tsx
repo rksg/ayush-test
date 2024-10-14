@@ -214,6 +214,10 @@ export const getTableColumns = ({
       }
     } as TableColumn<TestResultByAP>
   }
+
+  const linkType = get('IS_MLISA_SA') ? 'ai' : 'overview';
+  const getApMacDetailsLinkByMac = (apMac: string) => `devices/wifi/${apMac}/details/${linkType}`;
+
   const columns: TableProps<TestResultByAP>['columns'] = [
     {
       title: isWirelessClient
@@ -227,7 +231,7 @@ export const getTableColumns = ({
         const { apMac } = row
         return (
           <TenantLink
-            to={`devices/wifi/${apMac}/details/${get('IS_MLISA_SA') ? 'ai' : 'overview'}`}
+            to={getApMacDetailsLinkByMac(apMac)}
             title={isWirelessClient ? $t(targetApDetailsText) : $t(apDetails)}
           >{row.apName}</TenantLink>
         )
@@ -260,7 +264,7 @@ export const getTableColumns = ({
           const { stationAp } = row
           return stationAp ? (
             <TenantLink
-              to={`devices/wifi/${stationAp?.mac}/details/overview`}
+              to={getApMacDetailsLinkByMac(stationAp?.mac)}
               title={$t(stationAPDetailsText)}
             >{stationAp?.name}</TenantLink>
           ) : noDataDisplay
