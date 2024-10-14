@@ -74,6 +74,8 @@ function ApPageHeader () {
   const basePath = useTenantLink(`/devices/wifi/${serialNumber}`)
   const linkToWifi = useTenantLink('/devices/wifi/')
   const isReadOnly = hasRoles([RolesEnum.READ_ONLY])
+  // eslint-disable-next-line max-len
+  const operationRoles = [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]
   const status = data?.headers.overview as ApDeviceStatusEnum
   const currentApOperational = status === ApDeviceStatusEnum.OPERATIONAL
   const ApStatusData = apStatusData as ApStatus
@@ -100,31 +102,41 @@ function ApPageHeader () {
       onClick={handleMenuClick}
       items={(isReadOnly ? [{
         label: $t({ defaultMessage: 'Download Log' }),
-        key: 'downloadLog'
+        key: 'downloadLog',
+        scopeKey: [WifiScopes.READ],
+        roles: [RolesEnum.READ_ONLY]
       }, {
         label: $t({ defaultMessage: 'Blink LEDs' }),
-        key: 'blinkLed'
+        key: 'blinkLed',
+        scopeKey: [WifiScopes.READ],
+        roles: [RolesEnum.READ_ONLY]
       }] : [{
         label: $t({ defaultMessage: 'Reboot' }),
         key: 'reboot',
-        scopeKey: [WifiScopes.UPDATE]
+        scopeKey: [WifiScopes.UPDATE],
+        roles: operationRoles
       }, {
         label: $t({ defaultMessage: 'Download Log' }),
-        key: 'downloadLog'
+        key: 'downloadLog',
+        scopeKey: [WifiScopes.READ],
+        roles: [RolesEnum.READ_ONLY, ...operationRoles]
       }, {
         label: $t({ defaultMessage: 'Blink LEDs' }),
-        key: 'blinkLed'
+        key: 'blinkLed',
+        scopeKey: [WifiScopes.READ],
+        roles: [RolesEnum.READ_ONLY, ...operationRoles]
       }, {
         type: 'divider',
         key: 'divider'
       }, {
         label: $t({ defaultMessage: 'Delete AP' }),
         key: 'delete',
-        scopeKey: [WifiScopes.DELETE]
+        scopeKey: [WifiScopes.DELETE],
+        roles: operationRoles
       }]).filter(item => {
         return (
-          (currentApOperational && hasPermission({ scopes: item.scopeKey })) ||
-          (item.key === 'delete' && hasPermission({ scopes: item.scopeKey })) ||
+          (currentApOperational && hasPermission({ scopes: item.scopeKey, roles: item.roles })) ||
+          (item.key === 'delete' && hasPermission({ scopes: item.scopeKey, roles: item.roles })) ||
           (item.key === 'downloadLog' && status === ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED)
         )
       })}
@@ -133,6 +145,17 @@ function ApPageHeader () {
 
   const enableTimeFilter = () =>
     !['clients', 'networks', 'troubleshooting'].includes(activeTab as string)
+
+  const dropdown = [<Dropdown
+    scopeKey={[WifiScopes.READ, WifiScopes.DELETE, WifiScopes.UPDATE]}
+    overlay={menu}>{()=>
+      <Button>
+        <Space>
+          {$t({ defaultMessage: 'More Actions' })}
+          <CaretDownSolidIcon />
+        </Space>
+      </Button>}
+  </Dropdown>]
 
   return (
     <PageHeader
@@ -158,17 +181,8 @@ function ApPageHeader () {
             selectionType={range}
           />
           : <></>,
+        ...((isReadOnly) ? dropdown : filterByAccess(dropdown)),
         ...filterByAccess([
-          <Dropdown
-            scopeKey={[WifiScopes.READ, WifiScopes.DELETE, WifiScopes.UPDATE]}
-            overlay={menu}>{()=>
-              <Button>
-                <Space>
-                  {$t({ defaultMessage: 'More Actions' })}
-                  <CaretDownSolidIcon />
-                </Space>
-              </Button>}
-          </Dropdown>,
           <Button
             type='primary'
             scopeKey={[WifiScopes.UPDATE]}

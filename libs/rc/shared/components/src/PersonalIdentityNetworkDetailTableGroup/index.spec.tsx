@@ -1,19 +1,27 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { apApi, nsgApi, personaApi }                             from '@acx-ui/rc/services'
-import { CommonUrlsInfo, NetworkSegmentationUrls, PersonaUrls }  from '@acx-ui/rc/utils'
+import { apApi, pinApi, personaApi } from '@acx-ui/rc/services'
+import {
+  CommonUrlsInfo,
+  EdgePinFixtures,
+  EdgeGeneralFixtures,
+  EdgePinUrls,
+  EdgeUrlsInfo,
+  PersonaUrls,
+  PropertyUrlsInfo
+} from '@acx-ui/rc/utils'
 import { Provider, store }                                       from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { mockedApList,
-  mockedNsgData,
-  mockedNsgStatsList,
-  mockedNsgSwitchInfoData,
+import {
+  mockedApList,
   mockedPersonaList,
   replacePagination } from './__tests__/fixtures'
 
 import { PersonalIdentityNetworkDetailTableGroup } from '.'
+const { mockPinData, mockPinStatsList, mockPinSwitchInfoData } = EdgePinFixtures
+const { mockEdgeClusterList } = EdgeGeneralFixtures
 
 jest.mock('./ApsTable', () => ({
   ApsTable: () => <div data-testid='ApsTable' />
@@ -28,38 +36,38 @@ jest.mock('./AccessSwitchTable', () => ({
   AccessSwitchTable: () => <div data-testid='AccessSwitchTable' />
 }))
 
-describe('NetworkSegmentationDetailTableGroup', () => {
+describe('PersonalIdentityNetwork DetailTableGroup', () => {
 
   beforeEach(() => {
-    store.dispatch(nsgApi.util.resetApiState())
+    store.dispatch(pinApi.util.resetApiState())
     store.dispatch(personaApi.util.resetApiState())
     store.dispatch(apApi.util.resetApiState())
 
     mockServer.use(
       rest.get(
-        NetworkSegmentationUrls.getNetworkSegmentationGroupById.url,
-        (_req, res, ctx) => res(ctx.json(mockedNsgData))
-      ),
+        EdgePinUrls.getEdgePinById.url,
+        (_req, res, ctx) => res(ctx.json(mockPinData))),
+      rest.post(
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeClusterList))),
       rest.get(
         PersonaUrls.getPersonaGroupById.url,
-        (req, res, ctx) => res(ctx.json({}))
-      ),
+        (_req, res, ctx) => res(ctx.json({}))),
+      rest.get(
+        PropertyUrlsInfo.getPropertyConfigs.url,
+        (_req, res, ctx) => res(ctx.json({}))),
       rest.post(
-        NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
-        (_req, res, ctx) => res(ctx.json(mockedNsgStatsList))
-      ),
+        EdgePinUrls.getEdgePinStatsList.url,
+        (_req, res, ctx) => res(ctx.json(mockPinStatsList))),
       rest.post(
         CommonUrlsInfo.getApsList.url,
-        (_req, res, ctx) => res(ctx.json(mockedApList))
-      ),
+        (_req, res, ctx) => res(ctx.json(mockedApList))),
       rest.post(
         replacePagination(PersonaUrls.searchPersonaList.url),
-        (_req, res, ctx) => res(ctx.json(mockedPersonaList))
-      ),
+        (_req, res, ctx) => res(ctx.json(mockedPersonaList))),
       rest.get(
-        NetworkSegmentationUrls.getSwitchInfoByNSGId.url,
-        (_req, res, ctx) => res(ctx.json(mockedNsgSwitchInfoData))
-      )
+        EdgePinUrls.getSwitchInfoByPinId.url,
+        (_req, res, ctx) => res(ctx.json(mockPinSwitchInfoData)))
     )
   })
 
@@ -67,7 +75,7 @@ describe('NetworkSegmentationDetailTableGroup', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <PersonalIdentityNetworkDetailTableGroup nsgId='test' />
+        <PersonalIdentityNetworkDetailTableGroup pinId='test' />
       </Provider>
     )
 

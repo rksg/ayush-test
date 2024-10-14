@@ -142,7 +142,7 @@ describe('Common Link Helper', () => {
     const expectedHref = getServiceDetailsLink({
       serviceId: 'nsg-id',
       oper: ServiceOperation.DETAIL,
-      type: ServiceType.NETWORK_SEGMENTATION
+      type: ServiceType.PIN
     })
 
     const link = await screen.findByRole('link', { name: 'nsg-name' })

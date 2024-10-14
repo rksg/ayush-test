@@ -22,15 +22,15 @@ import {
   WlanSecurityEnum,
   WifiNetwork
 } from '@acx-ui/rc/utils'
-import { TenantLink, useTenantLink }                from '@acx-ui/react-router-dom'
-import { RequestPayload, WifiScopes }               from '@acx-ui/types'
-import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
-import { getIntl, noDataDisplay }                   from '@acx-ui/utils'
+import { TenantLink, useTenantLink }                               from '@acx-ui/react-router-dom'
+import { RequestPayload, WifiScopes }                              from '@acx-ui/types'
+import { filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
+import { getIntl, noDataDisplay }                                  from '@acx-ui/utils'
 
 
 const disabledType: NetworkTypeEnum[] = []
 
-function getCols (intl: ReturnType<typeof useIntl>) {
+function getCols (intl: ReturnType<typeof useIntl>, isUseWifiRbacApi: boolean) {
   function getSecurityProtocol (securityProtocol: WlanSecurityEnum, oweMaster?: boolean) {
     let _securityProtocol: string = ''
     switch (securityProtocol) {
@@ -114,7 +114,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       key: 'venues',
       title: intl.$t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: ['venues', 'count'],
-      sorter: true,
+      sorter: !isUseWifiRbacApi,
       sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
       render: function (_, row) {
@@ -136,7 +136,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       key: 'aps',
       title: intl.$t({ defaultMessage: 'APs' }),
       dataIndex: 'aps',
-      sorter: true,
+      sorter: !isUseWifiRbacApi,
       sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
       render: function (_, row) {
@@ -274,6 +274,7 @@ export const defaultRbacNetworkPayload = {
     'nwSubType',
     'venueApGroups',
     'apSerialNumbers',
+    'apCount',
     'clientCount',
     'vlan',
     'cog',
@@ -289,22 +290,6 @@ export const defaultRbacNetworkPayload = {
   ],
   page: 1,
   pageSize: 2048
-}
-
-const rowSelection = () => {
-  return {
-    getCheckboxProps: (record: Network) => ({
-      disabled: !!record?.isOnBoarded
-        || disabledType.indexOf(record.nwSubType as NetworkTypeEnum) > -1
-        || (record?.isOweMaster === false && record?.owePairNetworkId !== undefined)
-    }),
-    renderCell: (checked: boolean, record: Network, index: number, node: ReactNode) => {
-      if (record?.isOnBoarded) {
-        return <></>
-      }
-      return node
-    }
-  }
 }
 
 /* eslint-disable max-len */
@@ -439,6 +424,9 @@ export function NetworkTable ({
     expandedRowKeys
   }
 
+  const showRowSelection = (selectable
+    && hasCrossVenuesPermission()
+    && hasPermission({ scopes: [WifiScopes.CREATE, WifiScopes.UPDATE, WifiScopes.DELETE] }) )
 
   return (
     <Loader states={[
@@ -447,7 +435,7 @@ export function NetworkTable ({
     ]}>
       <Table
         settingsId={settingsId}
-        columns={getCols(intl)}
+        columns={getCols(intl, isUseWifiRbacApi)}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
@@ -459,8 +447,19 @@ export function NetworkTable ({
         }
         expandable={expandable}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={(hasCrossVenuesPermission() && selectable) ? { type: 'radio',
-          ...rowSelection } : undefined}
+        rowSelection={showRowSelection && {
+          type: 'radio',
+          getCheckboxProps: (record: Network) => ({
+            disabled: !!record?.isOnBoarded
+              || disabledType.indexOf(record.nwSubType as NetworkTypeEnum) > -1
+              || (record?.isOweMaster === false && record?.owePairNetworkId !== undefined)
+          }),
+          renderCell: (checked: boolean, record: Network, index: number, node: ReactNode) => {
+            if (record?.isOnBoarded) {
+              return <></>
+            }
+            return node
+          } }}
         actions={isBetaDPSK3FeatureEnabled && isWpaDsae3Toggle && showOnboardNetworkToggle ? [{
           key: 'toggleOnboardNetworks',
           label: expandOnBoaroardingNetworks

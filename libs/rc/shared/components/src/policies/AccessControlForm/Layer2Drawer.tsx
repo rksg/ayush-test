@@ -22,10 +22,10 @@ import {
 import {
   AccessStatus,
   CommonResult,
-  defaultSort,
+  defaultSort, formatMacAddress,
   hasPolicyPermission,
   L2AclPolicy,
-  MacAddressFilterRegExp,
+  MacAddressFilterRegExp, MacRegistrationFilterRegExp,
   PolicyOperation,
   PolicyType,
   sortProp,
@@ -376,7 +376,7 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
     if (!inputValue || !ruleDrawerVisible) return
 
     try {
-      const macAddressValidation = await MacAddressFilterRegExp(inputValue)
+      const macAddressValidation = await MacRegistrationFilterRegExp(inputValue)
       // eslint-disable-next-line max-len
       if (inputValue && addressTags.indexOf(inputValue) === -1 && macAddressValidation === undefined) {
         await new Promise((resolve) => {
@@ -409,7 +409,7 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
       name: policyName,
       access: accessStatus,
       macAddresses: macAddressList.map((item: { macAddress: string }) =>
-        item.macAddress.trim()
+        formatMacAddress(item.macAddress.trim())
       ),
       description: description
     }

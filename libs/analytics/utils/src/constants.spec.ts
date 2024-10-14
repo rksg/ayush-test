@@ -1,4 +1,4 @@
-import { IncidentToggle } from './constants'
+import { getWiredWirelessIncidentCodes, IncidentToggle } from './constants'
 
 describe('constants', () => {
   describe('productNames', () => {
@@ -90,6 +90,75 @@ describe('constants', () => {
       }
       const code = categoryCodeMap.performance.codes
       expect(incidentsToggle({ code, toggles }, 'infrastructure')).toEqual(code)
+    })
+    it('should return wired and wireless codes when no active toggles', () => {
+      const toggles = {
+        [IncidentToggle.AirtimeIncidents]: false,
+        [IncidentToggle.SwitchDDoSIncidents]: false
+      }
+      expect(getWiredWirelessIncidentCodes(toggles)).toEqual([
+        [
+          'p-switch-memory-high',
+          'i-switch-vlan-mismatch',
+          'i-switch-poe-pd'
+        ],
+        [
+          'ttc',
+          'radius-failure',
+          'eap-failure',
+          'dhcp-failure',
+          'auth-failure',
+          'assoc-failure',
+          'p-cov-clientrssi-low',
+          'p-load-sz-cpu-load',
+          'p-channeldist-suboptimal-plan-24g',
+          'p-channeldist-suboptimal-plan-50g-outdoor',
+          'p-channeldist-suboptimal-plan-50g-indoor',
+          'i-net-time-future',
+          'i-net-time-past',
+          'i-net-sz-net-latency',
+          'i-apserv-high-num-reboots',
+          'i-apserv-continuous-reboots',
+          'i-apserv-downtime-high',
+          'i-apinfra-poe-low',
+          'i-apinfra-wanthroughput-low'
+        ]
+      ])
+    })
+    it('should return wired and wireless codes when active switch DDoS toggle', () => {
+      const toggles = {
+        [IncidentToggle.AirtimeIncidents]: false,
+        [IncidentToggle.SwitchDDoSIncidents]: true
+      }
+      expect(getWiredWirelessIncidentCodes(toggles)).toEqual([
+        [
+          'p-switch-memory-high',
+          'i-switch-vlan-mismatch',
+          'i-switch-poe-pd',
+          's-switch-tcp-syn-ddos'
+        ],
+        [
+          'ttc',
+          'radius-failure',
+          'eap-failure',
+          'dhcp-failure',
+          'auth-failure',
+          'assoc-failure',
+          'p-cov-clientrssi-low',
+          'p-load-sz-cpu-load',
+          'p-channeldist-suboptimal-plan-24g',
+          'p-channeldist-suboptimal-plan-50g-outdoor',
+          'p-channeldist-suboptimal-plan-50g-indoor',
+          'i-net-time-future',
+          'i-net-time-past',
+          'i-net-sz-net-latency',
+          'i-apserv-high-num-reboots',
+          'i-apserv-continuous-reboots',
+          'i-apserv-downtime-high',
+          'i-apinfra-poe-low',
+          'i-apinfra-wanthroughput-low'
+        ]
+      ])
     })
   })
   describe('useRoles', () => {

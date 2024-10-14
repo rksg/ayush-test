@@ -5,16 +5,20 @@ import { formatter }                                           from '@acx-ui/for
 import type { AnalyticsFilter }                                from '@acx-ui/utils'
 import { noDataDisplay }                                       from '@acx-ui/utils'
 
+import { useIncidentToggles } from '../../../useIncidentToggles'
+
 import { useSummaryDataQuery } from './services'
 
 export const SummaryBoxes = ({ filters, wirelessOnly }: {
   filters: AnalyticsFilter, wirelessOnly: boolean
 }) => {
+  const toggles = useIncidentToggles()
   const payload = {
     filter: filters.filter,
     start: filters.startDate,
     end: filters.endDate,
-    wirelessOnly
+    wirelessOnly,
+    toggles
   }
 
   const { data: summaryData, ...summaryQueryState } = useSummaryDataQuery(payload)

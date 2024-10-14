@@ -88,6 +88,10 @@ const EthernetPortProfileTable = () => {
       sorter: true,
       defaultSortOrder: 'ascend',
       render: (_, row) => {
+        if(row.isDefault){
+          return row.name
+        }
+
         return (
           <TenantLink to={getPolicyDetailsLink({
             type: PolicyType.ETHERNET_PORT_PROFILE,
@@ -269,7 +273,7 @@ const EthernetPortProfileTable = () => {
       />
       <Loader states={[tableQuery]}>
         <Table
-          rowKey='id'
+          rowKey={(row: EthernetPortProfileViewData) => `${row.id}-${row.name}`}
           columns={columns}
           rowActions={filterByAccess(rowActions)}
           rowSelection={isSelectionVisible && { type: 'checkbox' }}

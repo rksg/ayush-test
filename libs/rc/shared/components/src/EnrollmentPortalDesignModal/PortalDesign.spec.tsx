@@ -20,8 +20,8 @@ const config: UIConfiguration = {
     buttonColor: 'var(--acx-accents-orange-50)'
   },
   uiStyleSchema: {
-    logoRatio: 1,
-    titleFontSize: 16,
+    logoSize: 'MEDIUM',
+    headerFontSize: 16,
     logoImageFileName: 'logo',
     backgroundImageName: 'bgImage'
   },
@@ -99,7 +99,7 @@ describe('Portal Design', () => {
     await screen.findByText('Components')
     await screen.findByText('Powered By')
     await screen.findByText('Title text style')
-    await screen.findByText('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await screen.findByText('Body text style')
 
     await userEvent.click(await screen.findByText('Reset'))
     await userEvent.click(await screen.findByText('Components'))

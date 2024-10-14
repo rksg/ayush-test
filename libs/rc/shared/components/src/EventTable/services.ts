@@ -55,7 +55,9 @@ const defaultPayload = {
     'remoteEdgeId',
     'apModel',
     'minimumRequiredVersion',
-    'clientMldMac'
+    'clientMldMac',
+    'turnOnTimestamp',
+    'turnOffTimestamp'
   ]
 }
 

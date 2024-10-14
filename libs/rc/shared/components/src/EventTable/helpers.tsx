@@ -2,10 +2,10 @@ import { Typography }                          from 'antd'
 import _                                       from 'lodash'
 import { FormattedMessage, MessageDescriptor } from 'react-intl'
 
-import { Table, TableHighlightFnArgs, Tooltip } from '@acx-ui/components'
-import { Event, replaceStrings }                from '@acx-ui/rc/utils'
-import { TenantLink, generatePath }             from '@acx-ui/react-router-dom'
-import { getIntl, noDataDisplay }               from '@acx-ui/utils'
+import { Table, TableHighlightFnArgs, Tooltip }            from '@acx-ui/components'
+import { Event, replaceStrings, formatTurnOnOffTimestamp } from '@acx-ui/rc/utils'
+import { TenantLink, generatePath }                        from '@acx-ui/react-router-dom'
+import { getIntl, noDataDisplay }                          from '@acx-ui/utils'
 
 import { typeMapping } from './mapping'
 
@@ -139,35 +139,41 @@ export const getSource = (data: Event, highlightFn?: TableHighlightFnArgs) => {
 }
 
 export const getDescription = (data: Event, highlightFn?: TableHighlightFnArgs) => {
+  const formatData = formatTurnOnOffTimestamp(data)
   try {
-    let message = String(data.message && JSON.parse(data.message).message_template)
+    let message = String(formatData.message && JSON.parse(formatData.message).message_template)
       // escape ' by replacing with ''
       .replaceAll("'", "''")
       // escape < { by replacing with '<' or '{'
       .replaceAll(/([<{])/g, "'$1'")
 
-    const template = replaceStrings(message, data, (key) => `<entity>${key}</entity>`)
+    const template = replaceStrings(message, formatData, (key) => `<entity>${key}</entity>`)
     const highlighted = (highlightFn
       ? highlightFn(template, (key) => `<b>${key}</b>`)
       : template) as string
+
+    const cleanedHighlighted = highlighted.replace(/<entity>(.*?)<\/entity>/g, (match, p1) => {
+      const cleanedContent = p1.replace(/<\/?b>/g, '')
+      return `<entity>${cleanedContent}</entity>`
+    })
 
     // rename to prevent it being parse by extraction process
     const FormatMessage = FormattedMessage
 
     return <FormatMessage
       id='events-description-template'
-      defaultMessage={highlighted}
+      defaultMessage={cleanedHighlighted}
       values={{
         entity: (chunks) => <EntityLink
           entityKey={String(chunks[0]) as keyof Event}
-          data={data}
+          data={formatData}
           highlightFn={highlightFn}
         />,
         b: (chunks) => <Table.Highlighter>{chunks}</Table.Highlighter>
       }}
     />
   } catch {
-    return data.message
+    return formatData.message
   }
 }
 

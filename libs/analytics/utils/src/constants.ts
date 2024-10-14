@@ -122,11 +122,12 @@ export const incidentCodes: IncidentCode[] = [
   'i-apinfra-wanthroughput-low'
 ]
 
-export const [wiredIncidentCodes, wirelessIncidentCodes] = partition(
-  allIncidentCodes,
-  code => code.includes('switch')
+export const getWiredWirelessIncidentCodes = (
+  toggles: Record<IncidentToggle, boolean>) => partition(
+  incidentsToggle({ code: [...incidentCodes],
+    toggles }),
+  (code: IncidentCode) => code.includes('switch')
 )
-
 export type CategoryOption = 'connection' | 'performance' | 'infrastructure' | 'security'
 export const categoryOptions = [
   { value: 'connection', label: defineMessage({ defaultMessage: 'Connection' }) },
@@ -168,8 +169,7 @@ export const categoryCodeMap = {
       'i-switch-vlan-mismatch',
       'i-switch-poe-pd',
       'i-apinfra-poe-low',
-      'i-apinfra-wanthroughput-low',
-      's-switch-tcp-syn-ddos'
+      'i-apinfra-wanthroughput-low'
     ] as IncidentCode[]
   },
   security: {

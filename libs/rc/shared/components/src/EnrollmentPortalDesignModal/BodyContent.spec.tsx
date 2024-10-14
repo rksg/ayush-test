@@ -18,8 +18,8 @@ const config: UIConfiguration = {
     buttonColor: 'var(--acx-accents-orange-50)'
   },
   uiStyleSchema: {
-    logoRatio: 1,
-    titleFontSize: 16,
+    logoSize: 'MEDIUM',
+    headerFontSize: 16,
     logoImageFileName: 'logo',
     backgroundImageName: 'bgImage'
   },
@@ -36,7 +36,7 @@ describe('BodyContent', () => {
     render(<Provider>
       <BodyContent value={config} onColorChange={()=>{}}/>
     </Provider>)
-    await screen.findByText('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await screen.findByText('Body text style')
     const body = await screen.findByPlaceholderText('bodytext')
     await fireEvent.mouseOver(body)
     await fireEvent.mouseLeave(body)

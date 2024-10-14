@@ -3144,10 +3144,11 @@ export const policyApi = basePolicyApi.injectEndpoints({
       }
     }),
     getSpecificTemplateScepKeys: build.query<TableResult<ScepKeyData>, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         const req = createNewTableHttpRequest({
           apiInfo: CertificateUrls.getCertificateTemplateScepKeys,
           params,
+          payload: payload as TableChangePayload,
           headers: defaultCertTempVersioningHeaders
         })
         return {
@@ -3281,6 +3282,17 @@ export const policyApi = basePolicyApi.injectEndpoints({
           })
         })
       }
+    }),
+    generateCertificateToIdentity: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.generateCertificatesToIdentity, params, defaultCertTempVersioningHeaders)
+        return{
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Certificate', id: 'LIST' }]
     })
   })
 })
@@ -3514,5 +3526,6 @@ export const {
   useLazyDownloadCertificateChainsQuery,
   useDeleteCertificateAuthorityMutation,
   useGetCertificatesByIdentityIdQuery,
-  useLazyGetCertificatesByIdentityIdQuery
+  useLazyGetCertificatesByIdentityIdQuery,
+  useGenerateCertificateToIdentityMutation
 } = policyApi
