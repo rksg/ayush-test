@@ -59,6 +59,7 @@ export const EdgeServices = () => {
   const { restartEdgeDhcp } = useEdgeDhcpActions()
 
   const showServiceDetailsDrawer = (data: EdgeService) => {
+    setCurrentData(data)
     switch (data.serviceType) {
       case EdgeServiceTypeEnum.DHCP:
         setDrawerVisible(isEdgeHaReady && isEdgeDhcpHaReady)
@@ -70,7 +71,6 @@ export const EdgeServices = () => {
         setDrawerVisible(isEdgePinReady)
         break
       default:
-        setCurrentData(data)
         setDrawerVisible(true)
         break
     }
@@ -249,7 +249,7 @@ export const EdgeServices = () => {
                   await restartEdgeDhcp(
                     selectedRows[0].serviceId,
                     currentEdgeStatus?.venueId ?? '',
-                    selectedRows[0].edgeId
+                    currentEdgeStatus?.clusterId ?? ''
                   )
                   clearSelection()
                 }

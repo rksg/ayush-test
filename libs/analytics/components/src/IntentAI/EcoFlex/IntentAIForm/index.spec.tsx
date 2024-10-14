@@ -41,7 +41,7 @@ jest.mock('antd', () => {
 const mockNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
-  useNavigateToPath: () => mockNavigate
+  useNavigate: () => mockNavigate
 }))
 
 jest.mock('../common/ScheduleTiming', () => ({
@@ -65,6 +65,8 @@ beforeEach(() => {
 })
 
 afterEach((done) => {
+  jest.clearAllMocks()
+  jest.restoreAllMocks()
   const toast = screen.queryByRole('img', { name: 'close' })
   if (toast) {
     waitForElementToBeRemoved(toast).then(done)
@@ -124,6 +126,7 @@ describe('IntentAIForm', () => {
     await click(actions.getByRole('button', { name: 'Apply' }))
 
     expect(await screen.findByText(/has been updated/)).toBeVisible()
+    await click(await screen.findByText(/View/))
     expect(mockNavigate).toBeCalled()
   })
   it('handle pause intent', async () => {
@@ -172,6 +175,20 @@ describe('IntentAIForm', () => {
     await click(actions.getByRole('button', { name: 'Apply' }))
 
     expect(await screen.findByText(/has been updated/)).toBeVisible()
+    await click(await screen.findByText(/View/))
+    expect(mockNavigate).toBeCalled()
+  })
+
+  it('handle cancel button', async () => {
+    const { params } = mockIntentContextWith({ status: Statuses.new })
+    render(<IntentAIForm />, { route: { params }, wrapper: Provider })
+    const form = within(await screen.findByTestId('steps-form'))
+    const actions = within(form.getByTestId('steps-form-actions'))
+
+    expect(await screen.findByRole('heading', { name: 'Introduction' })).toBeVisible()
+    await click(actions.getByRole('button', { name: 'Next' }))
+    expect(await screen.findByRole('heading', { name: 'Intent Priority' })).toBeVisible()
+    await click(actions.getByRole('button', { name: 'Cancel' }))
     expect(mockNavigate).toBeCalled()
   })
 })
