@@ -160,15 +160,20 @@ export default function WorkflowTable () {
       scopeKey: getScopeKeyByPolicy(PolicyType.WORKFLOW, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedItems, clearSelection) => {
+
+        let containsPublishedWorkflow = false
+        selectedItems.forEach(w => {
+          if(w.id && workflowMap.get(w.id)){containsPublishedWorkflow = true}})
+
         doProfileDelete(selectedItems,
           $t({ defaultMessage: 'Workflow' }),
           selectedItems.length === 1 ? selectedItems[0].name : undefined,
           [],
           async () => {
-            const ids = selectedItems.map(v => workflowMap.get(v.id!)?.id ?? v.id!)
+            const ids = selectedItems.map(v => v.id!)
             deleteWorkflows({ payload: ids })
               .unwrap()
-              .then(()=> {
+              .then(() => {
                 setWorkflowMap(map => {
                   ids.forEach(id => map.delete(id!))
                   return new Map(map)
@@ -179,7 +184,10 @@ export default function WorkflowTable () {
                 // eslint-disable-next-line no-console
                 console.log(e)
               })
-          })
+          },
+          containsPublishedWorkflow ?
+            (' ' + $t({ defaultMessage: 'WARNING: This action will delete published workflows.' }))
+            : '')
       }
     }
   ]
