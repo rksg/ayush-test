@@ -64,7 +64,7 @@ export function BodyContent (props: BodyContentProps) {
     >
       <TextArea
         maxLength={100}
-        value={$t({ defaultMessage: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' })}
+        value={$t({ defaultMessage: 'Body text style' })}
         placeholder='bodytext'
         rows={4}
         style={{
