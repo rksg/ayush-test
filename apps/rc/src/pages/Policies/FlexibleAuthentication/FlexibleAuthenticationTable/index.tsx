@@ -23,6 +23,7 @@ const FlexibleAuthenticationTable = () => {
   // const params = useParams()
   const basePath: Path = useTenantLink('')
   const navigate = useNavigate()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [deleteFlexAuthenticationProfiles] = useDeleteFlexAuthenticationProfilesMutation()
 
   const tableQuery = useTableQuery({
@@ -90,6 +91,7 @@ const FlexibleAuthenticationTable = () => {
     {
       scopeKey: [SwitchScopes.DELETE],
       label: $t({ defaultMessage: 'Delete' }),
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       onClick: (rows, clearSelection) => {
         showActionModal({
           type: 'confirm',

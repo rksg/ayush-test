@@ -50,11 +50,11 @@ import {
   Vlan,
   VlanModalType
 } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }     from '@acx-ui/react-router-dom'
-import { store }         from '@acx-ui/store'
-import { SwitchScopes }  from '@acx-ui/types'
-import { hasPermission } from '@acx-ui/user'
-import { getIntl }       from '@acx-ui/utils'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { store }                                 from '@acx-ui/store'
+import { SwitchScopes }                          from '@acx-ui/types'
+import { hasPermission }                         from '@acx-ui/user'
+import { getIntl }                               from '@acx-ui/utils'
 
 import {
   AuthenticationType,
@@ -470,7 +470,7 @@ export function EditPortDrawer ({
     // TODO: wait for API
     portSetting = {
       ...portSetting,
-      // switchLevelAuthDefaultVlan: 2,
+      switchLevelAuthDefaultVlan: 2,
       shouldAlertAaaAndRadiusNotApply: false
     }
 
@@ -503,7 +503,8 @@ export function EditPortDrawer ({
           (portSetting?.taggedVlans ? portSetting.untaggedVlan : defaultVlan)),
       voiceVlan: (portSetting.revert ? voice
         : (portSetting?.voiceVlan === 0 ? '' : portSetting?.voiceVlan)),
-      switchLevelAuthDefaultVlan: [Number(portSetting.switchLevelAuthDefaultVlan)]
+      switchLevelAuthDefaultVlan: portSetting.switchLevelAuthDefaultVlan
+        ? [Number(portSetting.switchLevelAuthDefaultVlan)] : []
     })
     checkIsVoiceVlanInvalid(true, portSetting?.revert)
   }
@@ -517,7 +518,7 @@ export function EditPortDrawer ({
     portsSetting = portsSetting.map((p, index) => {
       return {
         ...p,
-        switchLevelAuthDefaultVlan: 3,
+        switchLevelAuthDefaultVlan: (3 + index),
         shouldAlertAaaAndRadiusNotApply: false
       }
     })
@@ -569,8 +570,6 @@ export function EditPortDrawer ({
       switchLevelAuthDefaultVlan: portsSetting.map(p => Number(p.switchLevelAuthDefaultVlan))
     })
   }
-
-  console.log('switchLevelAuthDefaultVlan: ', switchLevelAuthDefaultVlan)
 
   const getFieldTooltip = (field: string) => {
     switch (field) {
@@ -751,10 +750,6 @@ export function EditPortDrawer ({
       ...result, [item.switchId]: item.defaultVlanId
     }), {})
     const { transformedValues, ignoreFields } = transformData(values)
-
-    console.log('values: ', values)
-    return
-    //
 
     try {
       const payload = switches.map((item) => {
@@ -1078,7 +1073,9 @@ export function EditPortDrawer ({
                     && hasMultipleValue.includes('flexibleAuthenticationEnabled')
                   ? <MultipleText />
                   : <Tooltip title={getFieldTooltip('flexibleAuthenticationEnabled')}>
-                    <Space style={{ display: 'flex', flex: '1', justifyContent: 'space-between' }}>
+                    <Space style={{ display: 'flex', flex: '1',
+                      justifyContent: getFlexAuthStatus()?.disabled ? '' : 'space-between'
+                    }}>
                       <Form.Item
                         name='flexibleAuthenticationEnabled'
                         noStyle
@@ -1089,22 +1086,22 @@ export function EditPortDrawer ({
                           data-testid='flex-enable-switch'
                           disabled={getFieldDisabled('flexibleAuthenticationEnabled')}
                           className={
+                            // eslint-disable-next-line max-len
                             getToggleClassName('flexibleAuthenticationEnabled', isMultipleEdit, hasMultipleValue)
                           }
                         />
-                        
+
                       </Form.Item>
-                      { !isMultipleEdit && getFlexAuthStatus()?.disabled &&
-                        <Button
-                          type='link'
-                          size='small'
-                          onClick={() => navigate({ //TODO
-                            ...basePath,
-                            pathname: `${basePath.pathname}/${switchDetail?.id}/${switchDetail?.serialNumber}/${ switchDetail?.isStack ? 'stack' : 'switch' }/edit`
-                          })}
-                        >{
-                          $t({ defaultMessage: 'Go to Edit Switch page' })
-                        }</Button>
+                      { (!isMultipleEdit || switches?.length === 1)
+                        && getFlexAuthStatus()?.disabled && <Button
+                        type='link'
+                        size='small'
+                        onClick={() => navigate({ //TODO
+                          ...basePath,
+                          // eslint-disable-next-line max-len
+                          pathname: `${basePath.pathname}/${switchDetail?.id}/${switchDetail?.serialNumber}${ switchDetail?.isStack ? '/stack' : 'switch' }/edit`
+                        })}
+                      >{ $t({ defaultMessage: 'Go to Edit Switch page' })}</Button>
                       }
                       { flexibleAuthenticationEnabled &&
                         <Button
@@ -1112,8 +1109,8 @@ export function EditPortDrawer ({
                           size='small'
                           onClick={() => setImportDrawerVisible(true)}
                         >{
-                          $t({ defaultMessage: 'Import Flexible Authentication' })
-                        }</Button>
+                            $t({ defaultMessage: 'Import Flexible Authentication' })
+                          }</Button>
                       }
                     </Space>
                   </Tooltip>
@@ -1122,18 +1119,21 @@ export function EditPortDrawer ({
             'flexibleAuthenticationEnabled', $t({ defaultMessage: 'Flexible Authentication' }), true
           )}
           { <Form.Item
-              name='switchLevelAuthDefaultVlan'
-              hidden
-              children={<></>}
-            />}
-          { flexibleAuthenticationEnabled && <Space style={{ display: 'block', marginLeft: isMultipleEdit ? '24px' : '0' }}>
+            name='switchLevelAuthDefaultVlan'
+            hidden
+            children={<></>}
+          />}
+          { flexibleAuthenticationEnabled &&
+          <Space style={{ display: 'block', marginLeft: isMultipleEdit ? '24px' : '0' }}>
             { getFieldTemplate(
               <Form.Item
                 {...getFormItemLayout(isMultipleEdit)}
                 name='authenticationType'
                 label={$t({ defaultMessage: 'Type' })}
                 initialValue={AuthenticationType._802_1X}
-                children={isMultipleEdit && !authenticationTypeCheckbox && hasMultipleValue.includes('authenticationType')
+                children={isMultipleEdit
+                  && !authenticationTypeCheckbox
+                  && hasMultipleValue.includes('authenticationType')
                   ? <MultipleText />
                   : <Select
                     options={Object.values(AuthenticationType).map(authType => ({
@@ -1165,9 +1165,9 @@ export function EditPortDrawer ({
                           <Switch
                             data-testid='flex-auth-order-switch'
                             disabled={getFieldDisabled('changeAuthOrder')}
-                            className={
-                              getToggleClassName('changeAuthOrder', isMultipleEdit, hasMultipleValue)
-                            }
+                            className={getToggleClassName(
+                              'changeAuthOrder', isMultipleEdit, hasMultipleValue
+                            )}
                           />
                         </Form.Item>
                       </Space>
@@ -1182,7 +1182,9 @@ export function EditPortDrawer ({
                 name='dot1xPortControl'
                 label={$t({ defaultMessage: '802.1x Port Control' })}
                 initialValue={PortControl.AUTO}
-                children={isMultipleEdit && !dot1xPortControlCheckbox && hasMultipleValue.includes('dot1xPortControl')
+                children={isMultipleEdit
+                  && !dot1xPortControlCheckbox
+                  && hasMultipleValue.includes('dot1xPortControl')
                   ? <MultipleText />
                   : <Select
                     options={Object.values(PortControl).map(controlType => ({
@@ -1223,7 +1225,9 @@ export function EditPortDrawer ({
                     return Promise.resolve()
                   } }
                 ]}
-                children={isMultipleEdit && !authDefaultVlanCheckbox && hasMultipleValue.includes('authDefaultVlan')
+                children={isMultipleEdit
+                  && !authDefaultVlanCheckbox
+                  && hasMultipleValue.includes('authDefaultVlan')
                   ? <MultipleText />
                   : <Input disabled={getFieldDisabled('authDefaultVlan')} maxLength={255} />
                 }
@@ -1236,7 +1240,9 @@ export function EditPortDrawer ({
                 name='authFailAction'
                 label={$t({ defaultMessage: 'Fail Action' })}
                 initialValue={AuthFailAction.BLOCK}
-                children={isMultipleEdit && !authFailActionCheckbox && hasMultipleValue.includes('authFailAction')
+                children={isMultipleEdit
+                  && !authFailActionCheckbox
+                  && hasMultipleValue.includes('authFailAction')
                   ? <MultipleText />
                   : <Select
                     options={Object.values(AuthFailAction).map(failType => ({
@@ -1290,7 +1296,9 @@ export function EditPortDrawer ({
                     ] : []
                   )
                 ]}
-                children={isMultipleEdit && !restrictedVlanCheckbox && hasMultipleValue.includes('restrictedVlan')
+                children={isMultipleEdit
+                  && !restrictedVlanCheckbox
+                  && hasMultipleValue.includes('restrictedVlan')
                   ? <MultipleText />
                   : <Input disabled={getFieldDisabled('restrictedVlan')} maxLength={255} />
                 }
@@ -1303,7 +1311,9 @@ export function EditPortDrawer ({
                 name='authTimeoutAction'
                 label={$t({ defaultMessage: 'Timeout Action' })}
                 initialValue={AuthTimeoutAction.NONE}
-                children={isMultipleEdit && !authTimeoutActionCheckbox && hasMultipleValue.includes('authTimeoutAction')
+                children={isMultipleEdit
+                  && !authTimeoutActionCheckbox
+                  && hasMultipleValue.includes('authTimeoutAction')
                   ? <MultipleText />
                   : <Select
                     options={Object.values(AuthTimeoutAction).map(timeoutType => ({
@@ -1357,7 +1367,9 @@ export function EditPortDrawer ({
                     ] : []
                   )
                 ]}
-                children={isMultipleEdit && !criticalVlanCheckbox && hasMultipleValue.includes('criticalVlan')
+                children={isMultipleEdit
+                  && !criticalVlanCheckbox
+                  && hasMultipleValue.includes('criticalVlan')
                   ? <MultipleText />
                   : <Input disabled={getFieldDisabled('criticalVlan')} maxLength={255} />
                 }

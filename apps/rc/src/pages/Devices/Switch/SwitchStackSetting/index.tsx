@@ -52,7 +52,7 @@ export function SwitchStackSetting (props: {
   const { apGroupOption, readOnly, isIcx7650, disableIpSetting, deviceOnline, switchDetail } = props
   const form = Form.useFormInstance()
 
-  const vlanMapping = JSON.parse(switchDetail?.vlanMapping ?? '')
+  const vlanMapping = JSON.parse(switchDetail?.vlanMapping ?? '{}')
   const defaultVlan = Object.keys(vlanMapping).find(k => vlanMapping[k] === 'DEFAULT-VLAN')
   const isSwitchFirmwareAbove10010f = true || isFirmwareVersionAbove10010f(switchDetail?.firmware) //TODO
 
