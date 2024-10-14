@@ -41,8 +41,7 @@ import {
   WifiCallingConfigureForm,
   WifiCallingDetailView,
   WifiCallingForm,
-  WifiOperatorForm,
-  WorkflowFormMode
+  WifiOperatorForm
 } from '@acx-ui/rc/components'
 import {
   CertificateCategoryType,
@@ -791,7 +790,8 @@ function ServiceRoutes () {
 function PolicyRoutes () {
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
-  const isWorkflowEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE)
+  const isWorkflowTierEnabled = useIsTierAllowed(Features.WORKFLOW_ONBOARD)
+  const isWorkflowFFEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE)
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
 
   return rootRoutes(
@@ -1248,7 +1248,7 @@ function PolicyRoutes () {
           element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.ADAPTIVE_POLICY_SET}/>}
         /> </>
       }
-      {isWorkflowEnabled &&
+      {isWorkflowFFEnabled && isWorkflowTierEnabled &&
       <>
         <Route
           path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.LIST })}
@@ -1263,16 +1263,10 @@ function PolicyRoutes () {
           path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.CREATE })}
           element={
             <PolicyAuthRoute policyType={PolicyType.WORKFLOW} oper={PolicyOperation.CREATE}>
-              <WorkflowPageForm mode={WorkflowFormMode.CREATE} />
+              <WorkflowPageForm/>
             </PolicyAuthRoute>
           } />
-        <Route
-          // eslint-disable-next-line max-len
-          path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.EDIT })}
-          element={<PolicyAuthRoute policyType={PolicyType.WORKFLOW} oper={PolicyOperation.EDIT}>
-            <WorkflowPageForm mode={WorkflowFormMode.EDIT} />
-          </PolicyAuthRoute>}
-        /> </>
+      </>
       }
       {isCertificateTemplateEnabled && <>
         <Route

@@ -430,9 +430,9 @@ export const apApi = baseApApi.injectEndpoints({
           apData.serialNumber = params?.serialNumber ?? ''
           apData.venueId = params?.venueId ?? ''
           const mDnsProxyPayload = {
-            fields: ['id', 'apSerialNumbers'],
+            fields: ['name', 'activations', 'rules', 'id'],
             filters: {
-              apSerialNumbers: [params?.serialNumber]
+              'activations.apSerialNumbers': [params?.serialNumber]
             }
           }
           const mDnsProxyListReq = createHttpRequest(MdnsProxyUrls.queryMdnsProxy, undefined, apiCustomHeader)

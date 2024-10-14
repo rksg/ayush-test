@@ -30,7 +30,7 @@ import { getIntl, noDataDisplay }                                  from '@acx-ui
 
 const disabledType: NetworkTypeEnum[] = []
 
-function getCols (intl: ReturnType<typeof useIntl>) {
+function getCols (intl: ReturnType<typeof useIntl>, isUseWifiRbacApi: boolean) {
   function getSecurityProtocol (securityProtocol: WlanSecurityEnum, oweMaster?: boolean) {
     let _securityProtocol: string = ''
     switch (securityProtocol) {
@@ -114,7 +114,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       key: 'venues',
       title: intl.$t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: ['venues', 'count'],
-      sorter: true,
+      sorter: !isUseWifiRbacApi,
       sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
       render: function (_, row) {
@@ -136,7 +136,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       key: 'aps',
       title: intl.$t({ defaultMessage: 'APs' }),
       dataIndex: 'aps',
-      sorter: true,
+      sorter: !isUseWifiRbacApi,
       sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
       render: function (_, row) {
@@ -274,6 +274,7 @@ export const defaultRbacNetworkPayload = {
     'nwSubType',
     'venueApGroups',
     'apSerialNumbers',
+    'apCount',
     'clientCount',
     'vlan',
     'cog',
@@ -289,22 +290,6 @@ export const defaultRbacNetworkPayload = {
   ],
   page: 1,
   pageSize: 2048
-}
-
-const rowSelection = () => {
-  return {
-    getCheckboxProps: (record: Network) => ({
-      disabled: !!record?.isOnBoarded
-        || disabledType.indexOf(record.nwSubType as NetworkTypeEnum) > -1
-        || (record?.isOweMaster === false && record?.owePairNetworkId !== undefined)
-    }),
-    renderCell: (checked: boolean, record: Network, index: number, node: ReactNode) => {
-      if (record?.isOnBoarded) {
-        return <></>
-      }
-      return node
-    }
-  }
 }
 
 /* eslint-disable max-len */
@@ -450,7 +435,7 @@ export function NetworkTable ({
     ]}>
       <Table
         settingsId={settingsId}
-        columns={getCols(intl)}
+        columns={getCols(intl, isUseWifiRbacApi)}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
@@ -464,7 +449,17 @@ export function NetworkTable ({
         rowActions={filterByAccess(rowActions)}
         rowSelection={showRowSelection && {
           type: 'radio',
-          ...rowSelection }}
+          getCheckboxProps: (record: Network) => ({
+            disabled: !!record?.isOnBoarded
+              || disabledType.indexOf(record.nwSubType as NetworkTypeEnum) > -1
+              || (record?.isOweMaster === false && record?.owePairNetworkId !== undefined)
+          }),
+          renderCell: (checked: boolean, record: Network, index: number, node: ReactNode) => {
+            if (record?.isOnBoarded) {
+              return <></>
+            }
+            return node
+          } }}
         actions={isBetaDPSK3FeatureEnabled && isWpaDsae3Toggle && showOnboardNetworkToggle ? [{
           key: 'toggleOnboardNetworks',
           label: expandOnBoaroardingNetworks

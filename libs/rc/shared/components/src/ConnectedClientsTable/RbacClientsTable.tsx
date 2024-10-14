@@ -636,7 +636,7 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
   const rowActions: TableProps<ClientInfo>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Disconnect' }),
-      scopeKey: [WifiScopes.UPDATE, WifiScopes.DELETE],
+      scopeKey: [WifiScopes.UPDATE],
       onClick: async (selectedRows, clearRowSelections) => {
         const selectedVenues = selectedRows.map((row) => row.venueInformation.id)
         const allAps = (await getApList({ params,
@@ -661,7 +661,7 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
     },
     {
       label: $t({ defaultMessage: 'Revoke' }),
-      scopeKey: [WifiScopes.UPDATE, WifiScopes.DELETE],
+      scopeKey: [WifiScopes.UPDATE],
       tooltip: (tableSelected.actionButton.revoke.disable ?
         $t({ defaultMessage: 'Only clients connected to captive portal networks may have their access revoked' })
         :''
