@@ -160,7 +160,7 @@ function useCardData (): PolicyCardData[] {
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const isEdgeHqosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
-  const isSwitchFlexAuthEnabled = true//useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
+  const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
 
   return [
     {

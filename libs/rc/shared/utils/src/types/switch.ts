@@ -304,6 +304,7 @@ export class SwitchViewModel extends Switch {
   syncedAdminPassword?: boolean
   adminPassword?: string
   extIp?: string
+  vlanMapping?: string
 }
 
 export interface SwitchRow {
@@ -511,6 +512,17 @@ export interface SwitchPortViewModel extends GridDataRow {
   venueId: string;
   portSpeedConfig?: string;
   portConnectorType?: string;
+  // flex auth
+  isAuthPort?: boolean
+  flexibleAuthenticationEnabled?: boolean
+	authenticationType?: string
+	changeAuthOrder?: boolean
+	dot1xPortControl?: string
+	authDefaultVlan?: number
+	restrictedVlan?: number
+	criticalVlan?: number
+	authFailAction?: string
+	authTimeoutAction?: string
 }
 
 export interface SwitchPortStatus extends SwitchPortViewModel {
@@ -920,3 +932,16 @@ export enum VlanModalType {
   TAGGED = 'taggedVlans'
 }
 
+export interface FlexibleAuthentication {
+	profileId?: string,
+	profileName?: string,
+	flexibleAuthenticationEnabled?: boolean
+	authenticationType: string
+	changeAuthOrder: boolean
+	dot1xPortControl: string
+	authDefaultVlan?: number
+	restrictedVlan?: number
+	criticalVlan?: number
+	authFailAction: string
+	authTimeoutAction: string
+}

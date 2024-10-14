@@ -631,5 +631,30 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/switches/query/csvFiles',
     oldUrl: '/switches/query/csvFiles',
     newApi: true
+  },
+  getFlexAuthenticationProfiles: {
+    method: 'get',
+    url: '/flexibleAuthentication/profiles',
+    newApi: true
+  },
+  updateFlexAuthenticationProfile: {
+    method: 'post',
+    url: '/flexibleAuthentication/profile',
+    newApi: true
+  },
+  deleteFlexAuthenticationProfiles: {
+    method: 'delete',
+    url: '/flexibleAuthentication/profiles',
+    newApi: true
+  },
+  getSwitchAuthentication: {
+    method: 'get',
+    url: '/venues/:venueId/switches/:switchId/authentication',
+    newApi: true
+  },
+  updateSwitchAuthentication: {
+    method: 'put',
+    url: '/venues/:venueId/switches/:switchId/authentication',
+    newApi: true
   }
 }

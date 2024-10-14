@@ -1,17 +1,20 @@
 import { useEffect, useState } from 'react'
 
-import { Form, Select, Radio, Space, RadioChangeEvent, Input, Switch } from 'antd'
-import { DefaultOptionType }                                           from 'antd/lib/select'
-import { FormattedMessage, useIntl }                                   from 'react-intl'
+import { Form, Select, Space, Typography, Radio, RadioChangeEvent, Input, Switch } from 'antd'
+import { DefaultOptionType }                                                       from 'antd/lib/select'
+import { FormattedMessage, useIntl }                                               from 'react-intl'
 
 import { showActionModal, Tooltip } from '@acx-ui/components'
 import {
+  FlexAuthMessages,
   IP_ADDRESS_TYPE,
   IGMP_SNOOPING_TYPE,
   isL3FunctionSupported,
+  isFirmwareVersionAbove10010f,
   validateSwitchIpAddress,
   validateSwitchSubnetIpAddress,
   validateSwitchGatewayIpAddress,
+  validateVlanExceptReservedVlanId,
   SwitchViewModel
 } from '@acx-ui/rc/utils'
 
@@ -48,6 +51,16 @@ export function SwitchStackSetting (props: {
   const { $t } = useIntl()
   const { apGroupOption, readOnly, isIcx7650, disableIpSetting, deviceOnline, switchDetail } = props
   const form = Form.useFormInstance()
+
+  const vlanMapping = JSON.parse(switchDetail?.vlanMapping ?? '')
+  const defaultVlan = Object.keys(vlanMapping).find(k => vlanMapping[k] === 'DEFAULT-VLAN')
+  const isSwitchFirmwareAbove10010f = true || isFirmwareVersionAbove10010f(switchDetail?.firmware) //TODO
+
+  const { useWatch } = Form
+  const [authEnable, authDefaultVlan] = [
+    useWatch<string>('authEnable', form),
+    useWatch<string>('authDefaultVlan', form)
+  ]
 
   const [enableDhcp, setEnableDhcp] = useState(false)
   const [isL3ConfigAllowed, setIsL3ConfigAllowed] = useState(false)
@@ -283,6 +296,71 @@ export function SwitchStackSetting (props: {
       }
       { switchDetail && isL3ConfigAllowed &&
         <StaticRoutes readOnly={readOnly} switchDetail={switchDetail}/> }
+      {
+        isSwitchFirmwareAbove10010f && <>
+          <Space style={{
+            display: 'flex', margin: '40px 0 30px', justifyContent: 'space-between'
+          }}>
+            <Typography.Text style={{ display: 'flex', fontSize: '12px' }}>
+              {$t({ defaultMessage: 'Flexible Authentication' })}
+            </Typography.Text>
+            <Form.Item
+              noStyle
+              name='authEnable'
+              children={<Switch />}
+            />
+          </Space>
+          { authEnable && <>
+            <Form.Item
+              name='authDefaultVlan'
+              label={$t({ defaultMessage: 'Auth Default VLAN' })}
+              validateFirst
+              rules={[
+                { required: true },
+                { validator: (_, value) => validateVlanExceptReservedVlanId(value) },
+                { validator: (_, value) => {
+                  if (Number(value) === Number(defaultVlan)) {
+                    return Promise.reject(
+                      $t(FlexAuthMessages.CANNOT_SAME_AS_SWITCH_DEFAULT_VLAN)
+                    )
+                  }
+                  return Promise.resolve()
+                } }
+              ]}
+              children={
+                <Input />
+              }
+            />
+            <Form.Item
+              name='guestVlan'
+              label={$t({ defaultMessage: 'Guest VLAN' })}
+              validateFirst
+              rules={[
+                { validator: (_, value) => validateVlanExceptReservedVlanId(value) },
+                { validator: (_, value) => {
+                  if (Number(value) === Number(defaultVlan)) {
+                    return Promise.reject(
+                      $t(FlexAuthMessages.CANNOT_SAME_AS_SWITCH_DEFAULT_VLAN)
+                    )
+                  }
+                  return Promise.resolve()
+                } },
+                { validator: (_, value) => {
+                  if (Number(value) === Number(authDefaultVlan)) {
+                    return Promise.reject(
+                      $t(FlexAuthMessages.CANNOT_SAME_AS_AUTH_DEFAULT_VLAN)
+                    )
+                  }
+                  return Promise.resolve()
+                } }
+              ]}
+              children={
+                <Input />
+              }
+            />
+          </>}
+        </>
+      }
     </>
   )
 }

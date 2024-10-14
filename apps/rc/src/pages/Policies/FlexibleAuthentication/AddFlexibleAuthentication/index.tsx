@@ -1,18 +1,15 @@
 import { Form } from 'antd'
 // import { useIntl }        from 'react-intl'
 
-// import {
-//   useParams
-// } from '@acx-ui/react-router-dom'
-
-import { FlexibleAuthenticationForm, FlexibleAuthentication } from '../FlexibleAuthenticationForm'
+import { FlexibleAuthenticationForm } from '@acx-ui/rc/components'
+import { FlexibleAuthentication }     from '@acx-ui/rc/utils'
 
 export const AddFlexibleAuthentication = () => {
   // const { $t } = useIntl()
   const [form] = Form.useForm()
 
   const onFinish = async (data: FlexibleAuthentication) => {
-    // console.log(data)
+    console.log(data) // eslint-disable-line no-console
     try {
 
     } catch (error) {

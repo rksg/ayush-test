@@ -2,11 +2,11 @@ import { useIntl } from 'react-intl'
 
 import { Button, Loader, PageHeader, Table, TableProps, showActionModal } from '@acx-ui/components'
 import {
-  useDeleteEthernetPortProfileMutation,
-  useGetEthernetPortProfileViewDataListQuery
+  useDeleteFlexAuthenticationProfilesMutation,
+  useGetFlexAuthenticationProfilesQuery
 }                     from '@acx-ui/rc/services'
 import {
-  EthernetPortProfileViewData,
+  FlexibleAuthentication,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
@@ -21,53 +21,57 @@ import { filterByAccess, hasPermission }                from '@acx-ui/user'
 const FlexibleAuthenticationTable = () => {
   const { $t } = useIntl()
   // const params = useParams()
-  const defaultEthernetPortProfileTablePayload = {}
   const basePath: Path = useTenantLink('')
   const navigate = useNavigate()
-  const [deleteEthernetPortProfile] = useDeleteEthernetPortProfileMutation()
+  const [deleteFlexAuthenticationProfiles] = useDeleteFlexAuthenticationProfilesMutation()
 
-  const tableQuery = useTableQuery({ //TODO
-    useQuery: useGetEthernetPortProfileViewDataListQuery,
-    defaultPayload: defaultEthernetPortProfileTablePayload,
+  const tableQuery = useTableQuery({
+    useQuery: useGetFlexAuthenticationProfilesQuery,
+    defaultPayload: {},
     sorter: {
       sortField: 'name',
       sortOrder: 'ASC'
     },
     search: {
       searchTargetFields: ['name']
+    },
+    option: {
+      skip: true //TODO
     }
   })
 
-  const columns: TableProps<EthernetPortProfileViewData>['columns'] = [
+  const columns: TableProps<FlexibleAuthentication>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
-      key: 'name',
-      dataIndex: 'name',
+      key: 'profileName',
+      dataIndex: 'profileName',
       searchable: true,
       sorter: true,
       defaultSortOrder: 'ascend',
       render: (_, row) => { //TODO
-        return (
+        return row.profileId
+          ?
           <TenantLink to={getPolicyDetailsLink({
             type: PolicyType.FLEX_AUTH,
             oper: PolicyOperation.DETAIL,
-            policyId: row.id || '123'
+            policyId: row.profileId
           })}>
-            {row.name}
+            {row.profileName}
           </TenantLink>
-        )
+          : row.profileName
       }
     },
     {
       title: $t({ defaultMessage: 'Type' }),
-      key: 'type',
-      dataIndex: 'type',
+      key: 'authenticationType',
+      dataIndex: 'authenticationType',
+      filterable: true,
       sorter: true,
-      render: (_, { type }) => type //TODO
+      render: (_, { authenticationType }) => authenticationType
     }
   ]
 
-  const rowActions: TableProps<EthernetPortProfileViewData>['rowActions'] = [
+  const rowActions: TableProps<FlexibleAuthentication>['rowActions'] = [
     {
       scopeKey: [SwitchScopes.UPDATE],
       visible: (selectedRows) => selectedRows.length === 1,
@@ -78,7 +82,7 @@ const FlexibleAuthenticationTable = () => {
           pathname: `${basePath.pathname}/` + getPolicyDetailsLink({
             type: PolicyType.FLEX_AUTH,
             oper: PolicyOperation.EDIT,
-            policyId: selectedRow.id
+            policyId: selectedRow.profileId || ''
           })
         })
       }
@@ -92,12 +96,10 @@ const FlexibleAuthenticationTable = () => {
           customContent: {
             action: 'DELETE',
             entityName: $t({ defaultMessage: 'Profile' }),
-            entityValue: rows.length === 1 ? rows[0].name : undefined,
+            entityValue: rows.length === 1 ? rows[0].profileName : undefined,
             numOfEntities: rows.length
           },
           onOk: () => {
-            Promise.all(rows.map(row => deleteEthernetPortProfile({ params: { id: row.id } })))
-              .then(clearSelection)
           }
         })
       }
@@ -126,7 +128,7 @@ const FlexibleAuthenticationTable = () => {
         ]}
 
         extra={filterByAccess([<TenantLink
-          scopeKey={[SwitchScopes.CREATE]} //
+          scopeKey={[SwitchScopes.CREATE]}
           to={getPolicyRoutePath({
             type: PolicyType.FLEX_AUTH,
             oper: PolicyOperation.CREATE

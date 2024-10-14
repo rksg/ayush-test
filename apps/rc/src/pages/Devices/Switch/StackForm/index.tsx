@@ -66,6 +66,7 @@ import {
   SwitchRow,
   SwitchMessages,
   isSameModelFamily,
+  isFirmwareVersionAbove10010f,
   checkSwitchUpdateFields,
   checkVersionAtLeast09010h,
   getStackUnitsMinLimitation,
@@ -480,6 +481,7 @@ export function StackForm () {
   }
 
   const handleEditSwitchStack = async (values: Switch) => {
+    const isSwitchFirmwareAbove10010f = isFirmwareVersionAbove10010f(switchDetail?.firmware)
     if (hasBlockingTsb()) {
       if (getTsbBlockedSwitch(tableData.map(item => item.id))?.length > 0) {
         showTsbBlockedSwitchErrorDialog()
@@ -505,6 +507,10 @@ export function StackForm () {
         payload.rearModule = _.get(payload, 'rearModuleOption') === true ? 'stack-40g' : 'none'
       } else {
         delete payload.rearModule
+      }
+
+      if (isSwitchFirmwareAbove10010f) {
+        //TODO: call flex auth api
       }
 
       await updateSwitch({

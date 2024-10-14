@@ -58,7 +58,8 @@ import {
   SEARCH,
   SORTER,
   SwitchPortViewModelQueryFields,
-  TroubleshootingResponse
+  TroubleshootingResponse,
+  FlexibleAuthentication
 } from '@acx-ui/rc/utils'
 import { baseSwitchApi }                                     from '@acx-ui/store'
 import { RequestPayload }                                    from '@acx-ui/types'
@@ -82,6 +83,10 @@ const customHeaders = {
   v1001: {
     'Content-Type': 'application/vnd.ruckus.v1.1+json',
     'Accept': 'application/vnd.ruckus.v1.1+json'
+  },
+  v1002: {
+    'Content-Type': 'application/vnd.ruckus.v1.2+json',
+    'Accept': 'application/vnd.ruckus.v1.2+json'
   }
 }
 
@@ -1532,32 +1537,90 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
-    downloadSwitchsCSV: build.mutation<Blob, {
-      payload: SwitchsExportPayload, enableRbac:boolean }>({
-        query: ({ payload, enableRbac }) => {
-          const switchUrls = getSwitchUrls(enableRbac)
-          const headers = enableRbac ? customHeaders.v1 : {}
-          const req = createHttpRequest(switchUrls.downloadSwitchsCSV,
-            { tenantId: payload.tenantId },
-            headers
-          )
-          return {
-            ...req,
-            body: JSON.stringify(payload),
-            responseHandler: async (response) => {
-              const date = new Date()
-              // eslint-disable-next-line max-len
-              const nowTime = date.getUTCFullYear() + ('0' + (date.getUTCMonth() + 1)).slice(-2) + ('0' + date.getUTCDate()).slice(-2) + ('0' + date.getUTCHours()).slice(-2) + ('0' + date.getUTCMinutes()).slice(-2) + ('0' + date.getUTCSeconds()).slice(-2)
-              const filename = 'Switch Device Inventory - ' + nowTime + '.csv'
-              const headerContent = response.headers.get('content-disposition')
-              const fileName = headerContent
-                ? headerContent.split('filename=')[1]
-                : filename
-              downloadFile(response, fileName)
-            }
+    // eslint-disable-next-line max-len
+    downloadSwitchsCSV: build.mutation<Blob, { payload: SwitchsExportPayload, enableRbac:boolean }>({
+      query: ({ payload, enableRbac }) => {
+        const switchUrls = getSwitchUrls(enableRbac)
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(switchUrls.downloadSwitchsCSV,
+          { tenantId: payload.tenantId },
+          headers
+        )
+        return {
+          ...req,
+          body: JSON.stringify(payload),
+          responseHandler: async (response) => {
+            const date = new Date()
+            // eslint-disable-next-line max-len
+            const nowTime = date.getUTCFullYear() + ('0' + (date.getUTCMonth() + 1)).slice(-2) + ('0' + date.getUTCDate()).slice(-2) + ('0' + date.getUTCHours()).slice(-2) + ('0' + date.getUTCMinutes()).slice(-2) + ('0' + date.getUTCSeconds()).slice(-2)
+            const filename = 'Switch Device Inventory - ' + nowTime + '.csv'
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1]
+              : filename
+            downloadFile(response, fileName)
           }
         }
-      })
+      }
+    }),
+    // eslint-disable-next-line max-len
+    getFlexAuthenticationProfiles: build.query<TableResult<FlexibleAuthentication>, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getFlexAuthenticationProfiles, params, customHeaders.v1002
+        )
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Switch', id: 'FlexAuthProfile' }]
+    }),
+    updateFlexAuthenticationProfile: build.mutation<FlexibleAuthentication, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.updateFlexAuthenticationProfile, params, customHeaders.v1002
+        )
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'FlexAuthProfile' }]
+    }),
+    deleteFlexAuthenticationProfiles: build.mutation<FlexibleAuthentication, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.deleteFlexAuthenticationProfiles, params, customHeaders.v1002
+        )
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'FlexAuthProfile' }]
+    }),
+    getSwitchAuthentication: build.query<FlexibleAuthentication, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getSwitchAuthentication, params, customHeaders.v1002
+        )
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Switch', id: 'SwitchAuth' }]
+    }),
+    updateSwitchAuthentication: build.mutation<FlexibleAuthentication, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.updateSwitchAuthentication, params, customHeaders.v1002
+        )
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'SwitchAuth' }]
+    })
   })
 })
 
@@ -1808,5 +1871,10 @@ export const {
   useBatchDisassociateSwitchProfileMutation,
   useGetSwitchModelListQuery,
   useDownloadSwitchsCSVMutation,
-  useBatchDeleteProfilesMutation
+  useBatchDeleteProfilesMutation,
+  useGetFlexAuthenticationProfilesQuery,
+  useUpdateFlexAuthenticationProfileMutation,
+  useDeleteFlexAuthenticationProfilesMutation,
+  useGetSwitchAuthenticationQuery,
+  useUpdateSwitchAuthenticationMutation
 } = switchApi
