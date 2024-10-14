@@ -16,7 +16,7 @@ import {
   SWITCH_SERIAL_PATTERN
 } from '../../types'
 
-import { compareSwitchVersion } from './switch.firmware.utils'
+import { compareSwitchVersion, isVerGEVer } from './switch.firmware.utils'
 
 export const modelMap: ReadonlyMap<string, string> = new Map([
   ['CRH', 'ICX7750-48F'],
@@ -738,6 +738,20 @@ export const isFirmwareVersionAbove10 = (
   firmwareVersion: string
 ) => {
   return firmwareVersion.slice(3,6) === '100'
+}
+
+export const isFirmwareVersionAbove10010f = function (firmwareVersion?: string) {
+  /*
+  Only support the firmware versions listed below:
+  1. > 10010f < 10020
+  2. > 10020b
+  */
+  if (firmwareVersion) {
+    return isVerGEVer(firmwareVersion, '10010f', false) &&
+    (!isVerGEVer(firmwareVersion, '10020', false) || isVerGEVer(firmwareVersion, '10020b', false))
+  } else {
+    return false
+  }
 }
 
 export const isFirmwareSupportAdminPassword = (

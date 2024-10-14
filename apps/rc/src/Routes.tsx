@@ -797,7 +797,7 @@ function PolicyRoutes () {
   const isWorkflowTierEnabled = useIsTierAllowed(Features.WORKFLOW_ONBOARD)
   const isWorkflowFFEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE)
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
-  const isSwitchFlexAuthEnabled = true//useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
+  const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
 
   return rootRoutes(
     <Route path=':tenantId/t'>

@@ -263,6 +263,12 @@ export const EditPortMessages = {
   RESET_PORT_WARNING: defineMessage({
     defaultMessage: `Changing the port settings may result in loss of connectivity and
       communication issues to your APs. Do you want to continue with these changes?`
+  }),
+  UNTAGGED_PORT_CANNOT_ENABLE_FLEX_AUTH: defineMessage({
+    defaultMessage: 'This port is Untagged port. So can not enable Flexible Authentication.'
+  }),
+  SHOULD_ENABLE_SWITCH_LEVEL_FIRST: defineMessage({
+    defaultMessage: 'Before enable Flexible Authentication on port, please go to Edit Switch page to apply global level\'s Auth Default VLAN.'
   })
 }
 
@@ -272,6 +278,21 @@ export const MultipleEditPortMessages = {
   }),
   POE_CAPABILITY_DISABLE: defineMessage({
     defaultMessage: 'Can not configure PoE configurations(PoE Enable, PoE Class, and PoE Priority) since one or more ports don\'t have PoE capability.'
+  })
+}
+
+export const FlexAuthMessages = {
+  CANNOT_SAME_AS_SWITCH_DEFAULT_VLAN: defineMessage({
+    defaultMessage: 'VLAN ID can not be same as Default VLAN'
+  }),
+  CANNOT_SAME_AS_AUTH_DEFAULT_VLAN: defineMessage({
+    defaultMessage: 'VLAN ID can not be same as Auth Default VLAN'
+  }),
+  CANNOT_SAME_AS_SWITCH_LEVEL_AUTH_DEFAULT_VLAN: defineMessage({
+    defaultMessage: 'VLAN ID can not be same as Switch Level Auth Default VLAN'
+  }),
+  CANNOT_SAME_AS_TAGGED_VLAN: defineMessage({
+    defaultMessage: 'VLAN ID can not be same as Tagged VLANs'
   })
 }
 

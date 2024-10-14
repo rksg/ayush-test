@@ -46,6 +46,8 @@ export default function SelectPolicyForm () {
   const isWorkflowTierEnabled = useIsTierAllowed(Features.WORKFLOW_ONBOARD)
   const isWorkflowFFEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE)
   const isEdgeQosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
+  const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
+
   const ApSnmpPolicyTotalCount = useGetApSnmpViewModelQuery({
     params,
     enableRbac: isUseRbacApi,
@@ -143,6 +145,11 @@ export default function SelectPolicyForm () {
       type: PolicyType.HQOS_BANDWIDTH,
       categories: [RadioCardCategory.EDGE],
       disabled: !isEdgeQosEnabled
+    },
+    {
+      type: PolicyType.FLEX_AUTH,
+      categories: [RadioCardCategory.SWITCH],
+      disabled: !isSwitchFlexAuthEnabled
     }
   ]
 
