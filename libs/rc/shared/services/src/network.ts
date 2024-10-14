@@ -900,6 +900,14 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       providesTags: [{ type: 'Network', id: 'Overview' }]
     }),
+    alarmsSummary: build.query<Dashboard, RequestPayload>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(CommonUrlsInfo.getAlarmsSummary, params),
+          body: payload
+        }
+      }
+    }),
     externalProviders: build.query<ExternalProviders, RequestPayload>({
       query: ({ params, enableRbac }) => {
         const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
@@ -1405,6 +1413,7 @@ export const {
   useGetApCompatibilitiesNetworkQuery,
   useLazyGetApCompatibilitiesNetworkQuery,
   useDashboardV2OverviewQuery,
+  useAlarmsSummaryQuery,
   useExternalProvidersQuery,
   useGetCertificateTemplateNetworkBindingQuery,
   useActivateCertificateTemplateMutation,

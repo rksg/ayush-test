@@ -62,7 +62,7 @@ export const eventAlarmApi = baseEventAlarmApi.injectEndpoints({
     }),
     getAlarmCount: build.query<Dashboard, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getDashboardV2Overview, params)
+        const req = createHttpRequest(CommonUrlsInfo.alarmsSummary, params)
         return {
           ...req,
           body: payload
