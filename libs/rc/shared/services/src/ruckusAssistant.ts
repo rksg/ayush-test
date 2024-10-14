@@ -1,5 +1,4 @@
 import {
-  CommonResult,
   GptConversation,
   RuckusAssistantUrlInfo
 } from '@acx-ui/rc/utils'

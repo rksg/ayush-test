@@ -14,12 +14,13 @@ import BasicInformationPage       from './BasicInformationPage'
 import GptWizard                  from './GptWizard'
 import * as UI                    from './styledComponents'
 import VerticalPage               from './VerticalPage'
+import WelcomePage                from './WelcomePage'
 
 export default function RuckusGptButton () {
   const [visible, setVisible] = useState(false)
   const { $t } = useIntl()
 
-  const [step, setStep] = useState('vertical' as String)
+  const [step, setStep] = useState('welcome' as String)
 
 
   const [currentStep, setCurrentStep] = useState(0 as number)
@@ -28,7 +29,11 @@ export default function RuckusGptButton () {
   const [venueType, setVenueType] = useState('' as string)
   const [nextStep, setNextStep] = useState({} as GptConversation)
 
-
+  const closeModal = () => {
+    basicFormRef.resetFields()
+    setStep('welcome')
+    setVisible(false)
+  }
   return <>
     <UI.ButtonSolid
       icon={<Logo />}
@@ -38,7 +43,7 @@ export default function RuckusGptButton () {
     />
     <UI.GptModal
       titleType={step === 'wizard' ? 'wizard' : 'default'}
-      title={step === 'wizard' ?
+      title={(step === 'welcome')? null : (step === 'wizard') ?
         <div
           style={{ width: '250px' }}>
           <UI.GptStep
@@ -87,12 +92,14 @@ export default function RuckusGptButton () {
         </div>}
       visible={visible}
       footer={step==='wizard' ? null : <>
-        {step !== 'vertical' &&
+        {step !== 'welcome' &&
           <Button key='back'
             onClick={
               () => {
                 if (step === 'basic') {
                   setStep('vertical')
+                } else if (step === 'vertical') {
+                  setStep('welcome')
                 }
               }
             }>
@@ -112,6 +119,8 @@ export default function RuckusGptButton () {
                 return
               })
 
+            } else if (step === 'welcome') {
+              setStep('vertical')
             } else if (step === 'basic') {
               basicFormRef.validateFields().then(
 
@@ -146,16 +155,13 @@ export default function RuckusGptButton () {
       </>}
       mask={true}
       width={1000}
-      onCancel={() => {
-        basicFormRef.resetFields()
-        setStep('vertical')
-        setVisible(false)
-      }}
+      onCancel={closeModal}
       children={
         <>
           <Form form={basicFormRef}
             layout={'vertical'}
             labelAlign='left'>
+            {step === 'welcome' && <WelcomePage />}
             {step === 'vertical' && <VerticalPage />}
             {step === 'basic' && <BasicInformationPage />}
           </Form>
@@ -166,6 +172,7 @@ export default function RuckusGptButton () {
             description={nextStep.description}
             payload={nextStep.payload}
             currentStep={currentStep}
+            closeModal={closeModal}
             setCurrentStep={setCurrentStep}
           />}
         </>

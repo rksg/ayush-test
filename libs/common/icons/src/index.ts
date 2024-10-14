@@ -414,5 +414,8 @@ export { ReactComponent as DataPromptActionTypeIcon } from './icons/DataPromptAc
 export { ReactComponent as DpskActionTypeIcon } from './icons/DpskActionTypeIcon.svg'
 export { ReactComponent as MacRegActionTypeIcon } from './icons/MacRegActionTypeIcon.svg'
 export { ReactComponent as QrCodeSmallIcon } from './icons/QrCodeSmall.svg'
+export { ReactComponent as GptWhiteicon } from './icons/GptWhiteicon.svg'
+export { ReactComponent as GptBlackicon } from './icons/GptBlackicon.svg'
+export { ReactComponent as GptBackground } from './icons/GptBackground.svg'
 
 export * from './styledComponents'

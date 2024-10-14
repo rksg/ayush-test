@@ -1,6 +1,8 @@
 
 
-import { Form, FormInstance, Input, Radio, RadioChangeEvent } from 'antd'
+import { useState } from 'react'
+
+import { Form, Input, Radio, RadioChangeEvent } from 'antd'
 
 
 import { cssStr }              from '@acx-ui/components'
@@ -15,7 +17,6 @@ import { ReactComponent as GptStadium }       from './assets/gptStadium.svg'
 import { ReactComponent as GptTransport }     from './assets/gptTransport.svg'
 import { ReactComponent as GptWareHouse }     from './assets/gptWareHouse.svg'
 import * as UI                                from './styledComponents'
-import { useState } from 'react'
 
 
 function VerticalPage () {
@@ -24,7 +25,7 @@ function VerticalPage () {
     setSelected(e.target.value)
   }
 
-return <div>
+  return <div>
     <div style={{
       fontFamily: cssStr('--acx-accent-brand-font'),
       fontSize: '16px',
@@ -32,14 +33,14 @@ return <div>
       margin: '0px 0px 10px 85px'
     }}>
       Vertical Type
-  </div>
+    </div>
 
     <Form.Item
-     name='venueType'
-    validateFirst
-    rules={[
-       { required: true }
-     ]}>
+      name='venueType'
+      validateFirst
+      rules={[
+        { required: true }
+      ]}>
 
       <Radio.Group
         style={{ width: '100%' }}
@@ -115,16 +116,16 @@ return <div>
             />
           </UI.VirticalBox>
         </UI.VirticalContainer>
-        <Radio value={'OTHER'}  style={{ marginLeft: '100px' }}>
-        {'Others'}
-        {selected === 'OTHER' &&
+        <Radio value={'OTHER'} style={{ marginLeft: '100px' }}>
+          {'Others'}
+          {selected === 'OTHER' &&
           <Form.Item
             name={'othersValue'}
             rules={[{ required: true }]}
           >
             <Input />
           </Form.Item>
-        }
+          }
 
         </Radio>
 

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { StepsForm } from '@ant-design/pro-form'
 import {
   Button as AntButton,
@@ -40,7 +41,7 @@ export const GptModal = styled(Modal)<{ titleType: string }>`
       border-radius: 24px;
 
       ${(props) =>
-        props.titleType === 'wizard' &&
+    props.titleType === 'wizard' &&
         `
         display: flex;
         justify-content: center;

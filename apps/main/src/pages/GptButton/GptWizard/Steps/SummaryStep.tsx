@@ -2,70 +2,12 @@ import { Form } from 'antd'
 
 import { NetworkTypeEnum } from '@acx-ui/rc/utils'
 
-type NetworkConfig = {
-  'venue': string;
-  'vlan': string;
-  'ssid': string;
-  'Checked': boolean;
-  'id':string
-}
-
 export function SummaryStep (props: {
   payload: string
 }) {
 
   const step4payload = props.payload ? JSON.parse(props.payload) : {}
 
-  // const step4payload = { payload: JSON.stringify({
-  //   venue: {
-  //     venueName: 'JK Venue',
-  //     numberOfAp: 6,
-  //     ssidDescription: "For JK Venue, a hotel with 6 WiFi access points and 7 switches, setting up a robust and secure WiFi network is essential to cater to both guest and operational needs. Here's a recommended list for SSID Profiles:",
-  //     venueType: 'HOTEL',
-  //     description: 'Good',
-  //     numberOfSwitch: 7
-  //   },
-  //   vlan: [
-  //     { 'VLAN Name': 'Guest', 'VLAN ID': 10 },
-  //     { 'VLAN Name': 'Staff', 'VLAN ID': 20 },
-  //     { 'VLAN Name': 'VIP', 'VLAN ID': 30 },
-  //     { 'VLAN Name': 'IoT', 'VLAN ID': 40 },
-  //     { 'VLAN Name': 'Public', 'VLAN ID': 50 }
-  //   ],
-  //   wlan: [
-  //     {
-  //       'SSID Type': 'guest',
-  //       'SSID Objective': 'Guest',
-  //       'SSID Name': 'Guest',
-  //       'Purpose': 'This network is for all hotel guests to access the internet freely during their stay.'
-  //     },
-  //     {
-  //       'SSID Type': 'aaa',
-  //       'SSID Objective': 'Internal',
-  //       'SSID Name': 'Staff',
-  //       'Purpose': 'This network is for hotel staff to manage operations and communicate effectively.'
-  //     },
-  //     {
-  //       'SSID Type': 'guest',
-  //       'SSID Objective': 'VIP',
-  //       'SSID Name': 'VIP',
-  //       'Purpose': 'This network is reserved for high-priority guests, providing them with a premium internet experience.'
-  //     },
-  //     {
-  //       'SSID Type': 'dpsk',
-  //       'SSID Objective': 'Infrastructure',
-  //       'SSID Name': 'IoT',
-  //       'Purpose': 'This network supports infrastructure devices like security cameras and smart devices used throughout the hotel.'
-  //     },
-  //     {
-  //       'SSID Type': 'open',
-  //       'SSID Objective': 'Public',
-  //       'SSID Name': 'Public',
-  //       'Purpose': 'This network is available for public use without authentication, ideal for visitors to the hotel.'
-  //     }
-  //   ]
-  // })
-  // }
 
   const getNetworkTypeDescription = (type: string) => {
     if (type === NetworkTypeEnum.OPEN) {

@@ -52,7 +52,8 @@ export default function GptWizard(props: {
   description: string,
   payload: string,
   currentStep: number,
-  setCurrentStep: (currentStep: number) => void
+  setCurrentStep: (currentStep: number) => void,
+  closeModal: () => void
 }) {
 
   type NetworkConfig = {
@@ -85,8 +86,6 @@ export default function GptWizard(props: {
         formInstanceRef?.current?.setFieldsValue(formValue)
       })
     })
-
-
   }, [])
 
 
@@ -219,9 +218,10 @@ export default function GptWizard(props: {
             const response = await applyConversations({
               params: { sessionId: props.sessionId }
             }).unwrap()
-            alert('yes')
+            // alert('yes')
+            props.closeModal()
           } catch (error) {
-            alert('no')
+            alert('Please try again.')
             console.log(error);
           }
         }}>

@@ -1,6 +1,5 @@
 /* eslint-disable max-len */
 
-
 import { Col, Form, Input } from 'antd'
 
 import { cssStr } from '@acx-ui/components'
@@ -21,14 +20,14 @@ function BasicInformationPage () {
         rules={[
           { required: true }
         ]}>
-        <Input onChange={(e) => { }} />
+        <Input onChange={() => { }} />
       </Form.Item>
       <Form.Item name='numberOfAp' label='Approx. Number of APs'>
-        <Input onChange={(e) => { }} />
+        <Input onChange={() => { }} />
       </Form.Item>
 
       <Form.Item name='numberOfSwitch' label='Approx. Number of Switches'>
-        <Input onChange={(e) => { }} />
+        <Input onChange={() => { }} />
       </Form.Item>
 
     </Col>
