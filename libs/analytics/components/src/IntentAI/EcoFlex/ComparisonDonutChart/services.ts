@@ -1,5 +1,4 @@
 import { gql }           from 'graphql-request'
-import { cloneDeep }     from 'lodash'
 import moment            from 'moment-timezone'
 import { defineMessage } from 'react-intl'
 
@@ -61,26 +60,12 @@ interface KpiChartData {
   color: string
 }
 
-export const calExcludeApCount = (kpiData: KpiData, excludeApCount: number): KpiData => {
-  const [unsupportedData,disabledData, enabledData] = cloneDeep(kpiData.data.data)
-  const disabledCount = disabledData.value + excludeApCount
-  const enabledCount = enabledData.value - excludeApCount
-  return {
-    compareData: { ...kpiData.data },
-    data: {
-      timestamp: kpiData.data.timestamp,
-      data: [{ ...unsupportedData },
-        { ...disabledData, value: disabledCount },
-        { ...enabledData, value: enabledCount }]
-    } }
-}
-
 // eslint-disable-next-line max-len
-const parseChartData = (result: KpiResult): KpiChartData[] => categoryStyles.map(({ key, name, color }) => ({
+const parseChartData = (result?: KpiResult): KpiChartData[] => result ? categoryStyles.map(({ key, name, color }) => ({
   value: result[key] ?? 0,
   name: name,
   color: color
-}))
+})) : []
 
 export const { useIntentAIEcoKpiQuery } = intentAIApi.injectEndpoints({
   endpoints: (build) => ({
@@ -125,8 +110,8 @@ export const { useIntentAIEcoKpiQuery } = intentAIApi.injectEndpoints({
         if (!kpi) return { data: { timestamp: '', data: [] }, compareData: { timestamp: '', data: [] } }
         const { data, compareData } = kpi
 
-        const chartData = parseChartData(data.result)
-        const compareChartData = parseChartData(compareData.result)
+        const chartData = parseChartData(data?.result)
+        const compareChartData = parseChartData(compareData?.result)
 
         return {
           data: {

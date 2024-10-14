@@ -10,9 +10,9 @@ import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { useIntentContext }  from '../../IntentContext'
 import { dataRetentionText } from '../../utils'
 
-import { Legend }                     from './Legend'
-import { calExcludeApCount, KpiData } from './services'
-import * as UI                        from './styledComponents'
+import { Legend }  from './Legend'
+import { KpiData } from './services'
+import * as UI     from './styledComponents'
 
 function DataGraph ({ kpiData, isDetail }: { kpiData: KpiData, isDetail: boolean }) {
   if (!kpiData) return null
@@ -99,8 +99,7 @@ const GraphSubTitle = () => {
 export const ComparisonDonutChart: React.FC<{
   kpiData?: KpiData
   isDetail?: boolean
-  excludeApCount?: number
-}> = ({ kpiData, isDetail=false, excludeApCount=0 }) => {
+}> = ({ kpiData, isDetail=false }) => {
   const { $t } = useIntl()
   const { state, isDataRetained } = useIntentContext()
 
@@ -112,16 +111,14 @@ export const ComparisonDonutChart: React.FC<{
     </Card>
   }
 
-  const displayData = isDetail ? kpiData: calExcludeApCount(kpiData, excludeApCount)
-
   return <UI.Wrapper isDetail={isDetail}>
     <Card>
       <UI.GraphWrapper data-testid='graph-wrapper'
         key={'graph-details'}
       >
-        <DataGraph kpiData={displayData} isDetail={isDetail} />
+        <DataGraph kpiData={kpiData} isDetail={isDetail} />
         {isDetail ? null: <GraphSubTitle /> }
-        {isDetail ? <GraphTitle kpiData={displayData} /> : null}
+        {isDetail ? <GraphTitle kpiData={kpiData} /> : null}
       </UI.GraphWrapper>
     </Card>
   </UI.Wrapper>

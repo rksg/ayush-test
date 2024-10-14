@@ -18,19 +18,16 @@ export function Summary () {
   const kpiQuery = useIntentAIEcoKpiQuery(params)
   const isEnabled = form.getFieldValue('preferences').enable
   const enableExcludedHours = form.getFieldValue('preferences').enableExcludedHours
-  const enableExcludedAps = true //TODO temp for testing
-  const excludeApCount = 7 //TODO temp for testing
   return <Row gutter={20}>
     <Col span={16}>
       <StepsForm.Title children={$t({ defaultMessage: 'Summary' })} />
 
       {isEnabled
         ? <><ScheduleTiming.FieldSummary />
-          {enableExcludedAps && <Form.Item
+          <Form.Item
             label={$t({ defaultMessage: 'Projected energy reduction' })}
-            children={<ComparisonDonutChart kpiData={kpiQuery.data} excludeApCount={excludeApCount}/>}
+            children={<ComparisonDonutChart kpiData={kpiQuery.data} />}
           />
-          }
           {enableExcludedHours && <Form.Item
             label={$t({ defaultMessage: 'Hours not applied for EcoFlex' })}
           >
