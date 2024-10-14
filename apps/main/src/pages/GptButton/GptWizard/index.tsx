@@ -53,7 +53,8 @@ export default function GptWizard(props: {
   payload: string,
   currentStep: number,
   setCurrentStep: (currentStep: number) => void,
-  closeModal: () => void
+  step: string,
+  setStep: (step: string) => void
 }) {
 
   type NetworkConfig = {
@@ -97,6 +98,7 @@ export default function GptWizard(props: {
       onCurrentChange={(current) => {
         props.setCurrentStep(current)
       }}
+
       stepsRender={() => null}
       onFinish={(values) => {
         console.log(values)
@@ -219,7 +221,8 @@ export default function GptWizard(props: {
               params: { sessionId: props.sessionId }
             }).unwrap()
             // alert('yes')
-            props.closeModal()
+            // props.closeModal()
+            props.setStep('congratulations')
           } catch (error) {
             alert('Please try again.')
             console.log(error);
@@ -227,6 +230,7 @@ export default function GptWizard(props: {
         }}>
           <SummaryStep payload={step4payload.payload}/>
       </GptStepsForm.StepForm>
+
 
     </StepsForm>
   )

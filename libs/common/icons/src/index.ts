@@ -417,5 +417,7 @@ export { ReactComponent as QrCodeSmallIcon } from './icons/QrCodeSmall.svg'
 export { ReactComponent as GptWhiteicon } from './icons/GptWhiteicon.svg'
 export { ReactComponent as GptBlackicon } from './icons/GptBlackicon.svg'
 export { ReactComponent as GptBackground } from './icons/GptBackground.svg'
+export { ReactComponent as GptSuccess } from './icons/GptSuccess.svg'
+
 
 export * from './styledComponents'

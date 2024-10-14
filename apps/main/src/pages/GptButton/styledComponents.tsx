@@ -68,12 +68,16 @@ export const GptModal = styled(Modal)<{ titleType: string }>`
       }
     }
   }
+  .ant-btn.ant-btn-primary {
+    border-color: var(--acx-accents-blue-50) !important;
+    background-color: var(--acx-accents-blue-50) !important;
+  }
 `
 
 export const GptStep = styled(Steps)`
   .ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-icon {
-    background: #5496EA;
-    border-color: #5496EA;
+    background: var(--acx-accents-blue-50);
+    border-color: var(--acx-accents-blue-50);
   }
 
   .ant-steps-item-icon {

@@ -11,6 +11,7 @@ import { GptConversation }               from '@acx-ui/rc/utils'
 
 import { ReactComponent as Logo } from './assets/gptDog.svg'
 import BasicInformationPage       from './BasicInformationPage'
+import Congratulations            from './Congratulations'
 import GptWizard                  from './GptWizard'
 import * as UI                    from './styledComponents'
 import VerticalPage               from './VerticalPage'
@@ -20,7 +21,7 @@ export default function RuckusGptButton () {
   const [visible, setVisible] = useState(false)
   const { $t } = useIntl()
 
-  const [step, setStep] = useState('welcome' as String)
+  const [step, setStep] = useState('welcome' as string)
 
 
   const [currentStep, setCurrentStep] = useState(0 as number)
@@ -28,6 +29,7 @@ export default function RuckusGptButton () {
   const [startConversations] = useStartConversationsMutation()
   const [venueType, setVenueType] = useState('' as string)
   const [nextStep, setNextStep] = useState({} as GptConversation)
+  const [isLoading, setIsLoading] = useState(false as boolean)
 
   const closeModal = () => {
     basicFormRef.resetFields()
@@ -43,7 +45,7 @@ export default function RuckusGptButton () {
     />
     <UI.GptModal
       titleType={step === 'wizard' ? 'wizard' : 'default'}
-      title={(step === 'welcome')? null : (step === 'wizard') ?
+      title={(step === 'welcome' || step === 'congratulations') ? null : (step === 'wizard') ?
         <div
           style={{ width: '250px' }}>
           <UI.GptStep
@@ -91,68 +93,79 @@ export default function RuckusGptButton () {
           </div>
         </div>}
       visible={visible}
-      footer={step==='wizard' ? null : <>
-        {step !== 'welcome' &&
-          <Button key='back'
-            onClick={
-              () => {
-                if (step === 'basic') {
-                  setStep('vertical')
-                } else if (step === 'vertical') {
-                  setStep('welcome')
-                }
-              }
-            }>
-            {$t({ defaultMessage: 'Back' })}
-          </Button>}
-
-        <Button key='next'
-          type='primary'
-          onClick={async () => {
-            if (step === 'vertical') {
-              basicFormRef.validateFields().then(() => {
-                const result = basicFormRef.getFieldsValue()
-                const type = result.venueType === 'OTHER' ? result.othersValue : result.venueType
-                setVenueType(type)
-                setStep('basic')
-              }).catch(() => {
-                return
-              })
-
-            } else if (step === 'welcome') {
-              setStep('vertical')
-            } else if (step === 'basic') {
-              basicFormRef.validateFields().then(
-
-                async () => {
-                  try {
-                    const result = basicFormRef.getFieldsValue()
-                    const response = await startConversations({
-                      payload: {
-                        venueName: result.venueName,
-                        numberOfAp: result.numberOfAp,
-                        numberOfSwitch: result.numberOfSwitch,
-                        venueType,
-                        description: result.description
-                      }
-                    }).unwrap()
-                    setStep('wizard')
-                    setNextStep(response)
-                  } catch (error) {
-                    console.error('Failed to start conversation:', error)
+      footer={step == 'congratulations' ?
+        <Button key='back'
+          onClick={() => {
+            closeModal()
+          }}>
+          {$t({ defaultMessage: 'Finish' })}
+        </Button>
+        : step === 'wizard' ? null : <>
+          {step !== 'welcome' &&
+            <Button key='back'
+              onClick={
+                () => {
+                  if (step === 'basic') {
+                    setStep('vertical')
+                  } else if (step === 'vertical') {
+                    setStep('welcome')
                   }
                 }
+              }>
+              {$t({ defaultMessage: 'Back' })}
+            </Button>}
 
-              ).catch(() => {
-                return
+          <Button key='next'
+            type='primary'
+            loading={isLoading}
+            onClick={async () => {
+              if (step === 'vertical') {
+                basicFormRef.validateFields().then(() => {
+                  const result = basicFormRef.getFieldsValue()
+                  const type = result.venueType === 'OTHER' ? result.othersValue : result.venueType
+                  setVenueType(type)
+                  setStep('basic')
+                }).catch(() => {
+                  return
+                })
+
+              } else if (step === 'welcome') {
+                setStep('vertical')
+              } else if (step === 'basic') {
+                basicFormRef.validateFields().then(
+
+                  async () => {
+                    try {
+                      setIsLoading(true)
+                      const result = basicFormRef.getFieldsValue()
+                      const response = await startConversations({
+                        payload: {
+                          venueName: result.venueName,
+                          numberOfAp: result.numberOfAp,
+                          numberOfSwitch: result.numberOfSwitch,
+                          venueType,
+                          description: result.description
+                        }
+                      }).unwrap()
+                      setIsLoading(false)
+                      setStep('wizard')
+                      setNextStep(response)
+                    } catch (error) {
+                      setIsLoading(false)
+                    }
+                  }
+
+                ).catch(() => {
+                  setIsLoading(false)
+                  return
+                }
+                )
+
               }
-              )
-
-            }
-          }}>
-          {$t({ defaultMessage: 'Next' })}
-        </Button>
-      </>}
+            }}>
+            {$t({ defaultMessage: 'Next' })}
+          </Button>
+        </>}
       mask={true}
       width={1000}
       onCancel={closeModal}
@@ -161,6 +174,7 @@ export default function RuckusGptButton () {
           <Form form={basicFormRef}
             layout={'vertical'}
             labelAlign='left'>
+
             {step === 'welcome' && <WelcomePage />}
             {step === 'vertical' && <VerticalPage />}
             {step === 'basic' && <BasicInformationPage />}
@@ -172,9 +186,11 @@ export default function RuckusGptButton () {
             description={nextStep.description}
             payload={nextStep.payload}
             currentStep={currentStep}
-            closeModal={closeModal}
+            setStep={setStep}
+            step={step}
             setCurrentStep={setCurrentStep}
           />}
+          {step === 'congratulations' && <Congratulations closeModal={closeModal} />}
         </>
       }
     />
