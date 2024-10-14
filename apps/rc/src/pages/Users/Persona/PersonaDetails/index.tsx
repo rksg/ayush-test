@@ -27,7 +27,7 @@ import {
   useLazyGetConnectionMeteringByIdQuery,
   useLazyGetDpskQuery,
   useLazyGetMacRegListQuery,
-  useLazyGetNetworkSegmentationGroupByIdQuery,
+  useLazyGetEdgePinByIdQuery,
   useLazyGetPersonaGroupByIdQuery,
   useLazyGetPropertyUnitByIdQuery,
   useUpdatePersonaMutation
@@ -55,7 +55,7 @@ function PersonaDetails () {
   const [connectionMetering, setConnectionMetering] = useState<ConnectionMetering>()
   const [macPoolData, setMacPoolData] = useState({} as { id?: string, name?: string } | undefined)
   const [dpskPoolData, setDpskPoolData] = useState({} as { id?: string, name?: string } | undefined)
-  const [nsgData, setNsgData] = useState({} as { id?: string, name?: string } | undefined)
+  const [pinData, setPinData] = useState({} as { id?: string, name?: string } | undefined)
   const [unitData, setUnitData] =
     useState({} as { venueId?: string, unitId?: string, name?: string } | undefined)
   const [editDrawerVisible, setEditDrawerVisible] = useState(false)
@@ -68,7 +68,7 @@ function PersonaDetails () {
   const [getPersonaGroupById] = useLazyGetPersonaGroupByIdQuery()
   const [getMacRegistrationById] = useLazyGetMacRegListQuery()
   const [getDpskPoolById] = useLazyGetDpskQuery()
-  const [getNsgById] = useLazyGetNetworkSegmentationGroupByIdQuery()
+  const [getPinById] = useLazyGetEdgePinByIdQuery()
   const [getUnitById] = useLazyGetPropertyUnitByIdQuery()
   const personaDetailsQuery = useGetPersonaByIdQuery({
     params: { groupId: personaGroupId, id: personaId }
@@ -134,9 +134,9 @@ function PersonaDetails () {
 
     if (personaGroupData.personalIdentityNetworkId && networkSegmentationEnabled) {
       let name: string | undefined
-      getNsgById({ params: { tenantId, serviceId: personaGroupData.personalIdentityNetworkId } })
+      getPinById({ params: { tenantId, serviceId: personaGroupData.personalIdentityNetworkId } })
         .then(result => name = result.data?.name)
-        .finally(() => setNsgData({ id: personaGroupData.personalIdentityNetworkId, name }))
+        .finally(() => setPinData({ id: personaGroupData.personalIdentityNetworkId, name }))
     }
 
     if (propertyEnabled && personaGroupData.propertyId && personaDetailsQuery?.data?.identityId) {
@@ -153,9 +153,9 @@ function PersonaDetails () {
   useEffect(() => {
     if (!personaGroupData || !personaDetailsQuery.data) return
     const { primary = true, revoked } = personaDetailsQuery.data
-    const hasNSG = !!personaGroupData?.personalIdentityNetworkId
+    const hasPin = !!personaGroupData?.personalIdentityNetworkId
 
-    setVniRetryable(hasNSG && primary && !revoked)
+    setVniRetryable(hasPin && primary && !revoked)
   }, [personaGroupData, personaDetailsQuery])
 
   const revokePersona = async () => {
@@ -236,7 +236,7 @@ function PersonaDetails () {
       personaGroupData?.personalIdentityNetworkId
         && <NetworkSegmentationLink
           showNoData={true}
-          name={nsgData?.name}
+          name={pinData?.name}
           id={personaGroupData?.personalIdentityNetworkId}
         />
     },
@@ -361,7 +361,7 @@ function PersonaDetails () {
               )}
             >
               <CertificateTable
-                showGenerateCert={true}
+                showGenerateCert={!personaDetailsQuery.data?.revoked ?? false}
                 templateData={certTemplateData}
                 tableQuery={certTableQuery}
                 specificIdentity={personaId}

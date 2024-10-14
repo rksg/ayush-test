@@ -2,12 +2,10 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader }                                              from '@acx-ui/components'
-import { WorkflowActionPreviewModal }                                      from '@acx-ui/rc/components'
-import { useGetWorkflowByIdQuery, useLazySearchWorkflowsVersionListQuery } from '@acx-ui/rc/services'
+import { Button, PageHeader }                                               from '@acx-ui/components'
+import { WorkflowActionPreviewModal, WorkflowDesigner, WorkflowComparator } from '@acx-ui/rc/components'
+import { useGetWorkflowByIdQuery, useLazySearchWorkflowsVersionListQuery }  from '@acx-ui/rc/services'
 import {
-  filterByAccessForServicePolicyMutation,
-  getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
   getScopeKeyByPolicy,
@@ -15,17 +13,19 @@ import {
   PolicyType,
   Workflow
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { useParams }     from '@acx-ui/react-router-dom'
+import { hasPermission } from '@acx-ui/user'
 
 
 function WorkflowPageHeader () {
   const { $t } = useIntl()
   const { policyId } = useParams()
   const { data } = useGetWorkflowByIdQuery({ params: { id: policyId } })
-  const [visible, setVisible] = useState(false)
+  const [previewVisible, setPreviewVisible] = useState(false)
   const [searchVersionedWorkflows] = useLazySearchWorkflowsVersionListQuery()
   const [published, setPublished] = useState<Workflow>()
-
+  const [isDesignerOpen, setIsDesignerOpen] = useState(false)
+  const [isComparatorOpen, setIsComparatorOpen] = useState(false)
   const fetchVersionHistory = async (id: string) => {
     try {
       const result = await searchVersionedWorkflows(
@@ -46,7 +46,13 @@ function WorkflowPageHeader () {
     fetchVersionHistory(data.id!!)
   }, [data])
 
+  const openWorkflowDesigner = () => {
+    setIsDesignerOpen(true)
+  }
 
+  const closeWorkflowDesigner = async () => {
+    setIsDesignerOpen(false)
+  }
 
   return (
     <>
@@ -63,35 +69,63 @@ function WorkflowPageHeader () {
           }
         ]}
         extra={
-          [<Button
-            type='default'
-            onClick={() => setVisible(true)}
-          >
-            {$t({ defaultMessage: 'Preview' })}
-          </Button>,
-          ...filterByAccessForServicePolicyMutation([
-            <TenantLink
+          [
+            // eslint-disable-next-line max-len
+            ...(hasPermission({ scopes: getScopeKeyByPolicy(PolicyType.WORKFLOW, PolicyOperation.EDIT) }) ?
+              []: []),
+            <Button
+              key='configure'
+              type='default'
               scopeKey={getScopeKeyByPolicy(PolicyType.WORKFLOW, PolicyOperation.EDIT)}
-              to={getPolicyDetailsLink({
-                type: PolicyType.WORKFLOW,
-                oper: PolicyOperation.EDIT,
-                policyId: policyId!
-              })}
+              onClick={()=> {
+                setPreviewVisible(false)
+                openWorkflowDesigner()
+                setIsComparatorOpen(false)
+              }}
             >
-              <Button
-                key='configure'
-                type='primary'
-              >
-                {$t({ defaultMessage: 'Configure' })}
-              </Button>
-            </TenantLink>
-          ])]}
+              {$t({ defaultMessage: 'Configure' })}
+            </Button>,
+            <Button
+              type='default'
+              onClick={() => {
+                closeWorkflowDesigner()
+                setPreviewVisible(true)
+                setIsComparatorOpen(false)
+              }}
+            >
+              {$t({ defaultMessage: 'Preview' })}
+            </Button>,
+            <Button
+              type='default'
+              disabled={!published}
+              onClick={()=>{
+                closeWorkflowDesigner()
+                setPreviewVisible(false)
+                setIsComparatorOpen(true)
+              }}
+            >
+              {$t({ defaultMessage: 'Compare' })}
+            </Button>]
+        }
       />
-      {visible &&
+      {previewVisible &&
       <WorkflowActionPreviewModal
         disablePortalDesign
         workflowId={published?.id ?? data?.id!!}
-        onClose={()=>setVisible(false)}/>}
+        onClose={()=>setPreviewVisible(false)}/>}
+      {(isDesignerOpen ) &&
+        <WorkflowDesigner
+          workflowId={policyId!}
+          onClose={closeWorkflowDesigner}
+        />
+      }
+      {
+        isComparatorOpen &&
+        <WorkflowComparator
+          draftWorkflowId={policyId!}
+          publishedWorkflowId={published?.id ?? policyId!}
+          onClose={()=>{setIsComparatorOpen(false)}}/>
+      }
     </>
   )
 }

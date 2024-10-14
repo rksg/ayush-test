@@ -59,7 +59,7 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
     return venueIds.concat(allSelectedVenueIds)
   }
 
-  const { data: customerList }
+  const { data: customerList, isLoading, isFetching }
   = useGetMspEcWithVenuesListQuery({ params: useParams(), payload: customerListPayload })
 
   const onClose = () => {
@@ -134,7 +134,11 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
   const content =
   <UI.ExpanderTableWrapper>
     <Space direction='vertical'>
-      <Loader >
+      <Loader states={[
+        { isLoading: isLoading,
+          isFetching: isFetching
+        }
+      ]}>
         <UI.SelectedCount hidden={totalCount === 0}>
           {$t({ defaultMessage: '{totalCount} selected' }, {
             totalCount

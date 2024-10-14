@@ -114,3 +114,7 @@ export interface GenericActionPreviewProps<T> {
   data?: T,
   uiConfiguration?: UIConfiguration
 }
+
+export interface FileDownloadResponse {
+  url: string
+}
