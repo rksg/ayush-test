@@ -93,7 +93,7 @@ export function AupSettings () {
       label={$t({ defaultMessage: 'Title' })}
       rules={[
         { required: true },
-        { min: 1 },
+        { min: 2 },
         { max: 100 },
         { validator: (_, value) => trailingNorLeadingSpaces(value) }
       ]}

@@ -278,7 +278,7 @@ function ACLSettingForm (props: ACLSettingFormProps) {
           validateFirst
           rules={[
             { required: true },
-            { validator: (_, value) => checkAclName(value) },
+            { validator: (_, value) => checkAclName(value, form.getFieldValue('aclType')) },
             { validator: (_, value) => editMode ?
               validateDuplicateAclName(value, aclsTable.filter(item => item.name !== rule?.name)) :
               validateDuplicateAclName(value, aclsTable) }

@@ -236,21 +236,23 @@ export const mockDhcpUeSummaryStatsData = {
       edgeId: '1',
       dhcpId: '1',
       edgeName: 'Edge-dhcp-1',
-      venueId: '1',
+      venueId: 'mock_venue_1',
       venueName: 'Edge-venue-1',
       successfulAllocation: 7,
       remainsIps: 151,
-      droppedPackets: 0
+      droppedPackets: 0,
+      edgeClusterId: 'clusterId_1'
     },
     {
       edgeId: '2',
       dhcpId: '1',
       edgeName: 'Edge-dhcp-2',
-      venueId: '2',
+      venueId: 'mock_venue_2',
       venueName: 'Edge-venue-2',
       successfulAllocation: 1,
       remainsIps: 151,
-      droppedPackets: 0
+      droppedPackets: 0,
+      edgeClusterId: 'clusterId_2'
     }
   ]
 }
