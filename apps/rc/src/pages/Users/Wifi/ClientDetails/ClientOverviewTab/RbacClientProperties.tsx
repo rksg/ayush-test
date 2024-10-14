@@ -19,7 +19,6 @@ import {
 } from '@acx-ui/rc/services'
 import {
   ApDeep,
-  Client,
   ClientStatusEnum,
   getRssiStatus,
   getOsTypeIcon,
