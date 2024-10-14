@@ -7,6 +7,7 @@ import {
   hasGraveAccentAndDollarSign,
   checkVlanMember,
   checkValues,
+  checkAclName,
   apNameRegExp,
   dscpRegExp,
   gpsRegExp,
@@ -183,6 +184,52 @@ describe('validator', () => {
     it('Should not display error when values are equal', async () => {
       const result = checkValues('test', 'test', true)
       await expect(result).resolves.toEqual(undefined)
+    })
+  })
+
+  describe('checkAclName', () => {
+    it('Should take care of ACL name values correctly', async () => {
+      const result1 = checkAclName('acl_1', 'standard')
+      await expect(result1).resolves.toEqual(undefined)
+
+      const result2 = checkAclName('ac1Name1', 'extended')
+      await expect(result2).resolves.toEqual(undefined)
+
+      const result3 = checkAclName('test', 'standard')
+      await expect(result3).rejects.toEqual('The ACL name cannot be \'test\'')
+
+      const result4 = checkAclName('_underscore', 'standard')
+      await expect(result4).rejects.toEqual('Name should start with an alphabet')
+
+      const result5 = checkAclName('1acl', 'standard')
+      await expect(result5).rejects.toEqual('Name should start with an alphabet')
+
+      const result6 = checkAclName('12 wrong acl name', 'standard')
+      await expect(result6).rejects.toEqual('Name should start with an alphabet')
+
+      const result7 = checkAclName('10.1.12', 'standard')
+      await expect(result7).rejects.toEqual('Name should start with an alphabet')
+
+      const result8 = checkAclName('aclName"1', 'standard')
+      // eslint-disable-next-line max-len
+      await expect(result8).rejects.toEqual('An ACL name cannot contain special characters such as a double quote (")')
+    })
+
+    it('Should take care of ACL name as numeric range values correctly', async () => {
+      const result1 = checkAclName('10', 'standard')
+      await expect(result1).resolves.toEqual(undefined)
+
+      const result2 = checkAclName('120', 'standard')
+      await expect(result2).rejects.toEqual('Standard ACL Numeric Value Must Be 1-99')
+
+      const result3 = checkAclName('120', 'extended')
+      await expect(result3).resolves.toEqual(undefined)
+
+      const result4 = checkAclName('50', 'extended')
+      await expect(result4).rejects.toEqual('Extended ACL Numeric Value Must Be 100-199')
+
+      const result5 = checkAclName('250', 'extended')
+      await expect(result5).rejects.toEqual('Extended ACL Numeric Value Must Be 100-199')
     })
   })
 
