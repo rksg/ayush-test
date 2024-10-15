@@ -8,7 +8,9 @@ import { isEqualCaptivePortal }                                          from '@
 import {
   useDisconnectClientMutation,
   useGetClientOrHistoryDetailQuery,
-  useRevokeClientMutation } from '@acx-ui/rc/services'
+  useRevokeClientMutation,
+  useGetClientsQuery
+} from '@acx-ui/rc/services'
 import { Client, ClientStatusEnum }                               from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useSearchParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { WifiScopes }                                             from '@acx-ui/types'
@@ -29,17 +31,31 @@ function DatePicker () {
 }
 
 function ClientDetailPageHeader () {
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const { $t } = useIntl()
   const { tenantId, clientId } = useParams()
   const [searchParams] = useSearchParams()
+  const status = searchParams.get('clientStatus') || ClientStatusEnum.CONNECTED
+  const clientInfo = useGetClientsQuery({ payload: {
+    filters: {
+      macAddress: [clientId]
+    }
+  } }, { skip: !isWifiRbacEnabled || status !== ClientStatusEnum.CONNECTED })?.data?.data[0]
   const { data: result } = useGetClientOrHistoryDetailQuery(
     { params: {
       tenantId,
       clientId,
-      status: searchParams.get('clientStatus') || ClientStatusEnum.CONNECTED
-    } })
-  const clentDetails = (result?.isHistorical ?
-    { hostname: result?.data?.hostname } : result?.data) as Client
+      status
+    } }, { skip: isWifiRbacEnabled && status === ClientStatusEnum.CONNECTED })
+  const clentDetails = (status ? { hostname: result?.data?.hostname } : result?.data) as Client
+
+  /* eslint-disable max-len */
+  const venueId = isWifiRbacEnabled ? clientInfo?.venueInformation.id : clentDetails.venueId
+  const apSerialNumber = isWifiRbacEnabled ? clientInfo?.apInformation.serialNumber : clentDetails.apSerialNumber
+  const macAddress = isWifiRbacEnabled ? clientInfo?.macAddress : clentDetails.clientMac
+  const hostname = isWifiRbacEnabled ? clientInfo?.hostname : clentDetails?.hostname
+  /* eslint-enable max-len */
+
   const [disconnectClient] = useDisconnectClientMutation()
   const [revokeClient] = useRevokeClientMutation()
   const navigate = useNavigate()
@@ -55,9 +71,9 @@ function ClientDetailPageHeader () {
       case 'disconnect-client':
         disconnectClient({
           params: {
-            venueId: clentDetails.venueId,
-            serialNumber: clentDetails.apSerialNumber,
-            clientMacAddress: clentDetails.clientMac
+            venueId: venueId,
+            serialNumber: apSerialNumber,
+            clientMacAddress: macAddress
           }
         }).then(()=>{
           const period = encodeParameter<DateFilter>({
@@ -77,9 +93,9 @@ function ClientDetailPageHeader () {
       case 'revoke-client':
         revokeClient({
           params: {
-            venueId: clentDetails.venueId,
-            serialNumber: clentDetails.apSerialNumber,
-            clientMacAddress: clentDetails.clientMac
+            venueId: venueId,
+            serialNumber: apSerialNumber,
+            clientMacAddress: macAddress
           }
         }).then(()=> {
           navigate({
@@ -112,10 +128,11 @@ function ClientDetailPageHeader () {
           key: 'disconnect-client'
         },
         // eslint-disable-next-line max-len
-        ...((wifiEDAClientRevokeToggle && !result?.isHistorical && isEqualCaptivePortal(result?.data.networkType)) ? [{
-          label: $t({ defaultMessage: 'Revoke Network Access' }),
-          key: 'revoke-client'
-        }] : [])
+        ...((wifiEDAClientRevokeToggle &&
+            (status === ClientStatusEnum.CONNECTED) &&
+            isEqualCaptivePortal(result?.data.networkType)) ?
+          [{ label: $t({ defaultMessage: 'Revoke Network Access' }),key: 'revoke-client' }] :
+          [])
       ]}
     />
   )
@@ -124,10 +141,9 @@ function ClientDetailPageHeader () {
     <PageHeader
       title={<Space size={4}>{clientId}
         {
-          clentDetails?.hostname &&
-          clentDetails?.hostname !== clientId &&
+          hostname && (hostname !== clientId) &&
           <Space style={{ fontSize: '14px', marginLeft: '8px' }} size={0}>
-            ({clentDetails?.hostname})
+            ({hostname})
           </Space>
         }
       </Space>}
