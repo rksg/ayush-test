@@ -48,12 +48,7 @@ export function DriftInstance (props: DriftInstanceProps) {
     onCheckboxChange(selected)
   }, [selected])
 
-  const header = <div style={{
-    backgroundColor: '#F2F2F2', padding: '8px 30px 8px 16px', width: '100%',
-    display: 'inline-flex', alignItems: 'center',
-    borderTop: '1px solid #D7D7D7',
-    borderBottom: '1px solid #D7D7D7'
-  }}>
+  const header = <UI.DriftInstanceHeader>
     <Checkbox
       style={{ flex: '0 0 26px' }}
       onChange={(e: CheckboxChangeEvent) => onCheckboxChange(e.target.checked)}
@@ -69,7 +64,7 @@ export function DriftInstance (props: DriftInstanceProps) {
         {$t({ defaultMessage: 'Configurations in {instanceName}' }, { instanceName })}
       </Col>
     </Row>
-  </div>
+  </UI.DriftInstanceHeader>
 
   return <UI.DriftInstanceCollapse
     ghost

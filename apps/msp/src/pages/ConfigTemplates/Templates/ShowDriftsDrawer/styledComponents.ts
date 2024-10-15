@@ -37,3 +37,12 @@ export const DriftInstanceCollapse = styled(Collapse)`
     padding-bottom: 4px;
   }
 `
+export const DriftInstanceHeader = styled.div`
+  backgroundColor: #F2F2F2;
+  padding: 8px 30px 8px 16px;
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  border-top: 1px solid #D7D7D7;
+  border-bottom: 1px solid #D7D7D7
+`
