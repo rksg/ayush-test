@@ -333,6 +333,10 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
 
         const instanceIds = (driftInstanceIdsRes.data as TableResult<{ tenantId: string }>).data.map(item => item.tenantId)
 
+        if (instanceIds.length === 0) {
+          return { data: [] }
+        }
+
         const driftInstancesRes = await fetchWithBQ({
           ...createHttpRequest(MspUrlsInfo.getMspCustomersList, params),
           body: JSON.stringify({
