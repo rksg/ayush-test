@@ -27,9 +27,7 @@ jest.mock('react-router-dom', () => ({
   useLocation: jest.fn().mockImplementation(() => mockUseLocationValue)
 }))
 
-// const mockedSingleDeleteApi = jest.fn()
 describe('FlexibleAuthenticationTable', ()=>{
-
   let params: { tenantId: string }
   const tablePath = '/:tenantId/' + getPolicyRoutePath({
     type: PolicyType.FLEX_AUTH,

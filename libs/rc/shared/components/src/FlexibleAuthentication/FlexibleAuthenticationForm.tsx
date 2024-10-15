@@ -12,7 +12,11 @@ import {
 import {
   FlexibleAuthentication,
   FlexAuthMessages,
+  getPolicyListRoutePath,
+  getPolicyRoutePath,
   normalNameRegExp,
+  PolicyOperation,
+  PolicyType,
   validateVlanExceptReservedVlanId
 } from '@acx-ui/rc/utils'
 import {
@@ -43,8 +47,12 @@ export const FlexibleAuthenticationForm = (props: {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/policies/')
-  const { useWatch } = Form
+  const flexAuthRoute = getPolicyRoutePath({
+    type: PolicyType.FLEX_AUTH,
+    oper: PolicyOperation.LIST
+  })
 
+  const { useWatch } = Form
   const [form] = Form.useForm()
   const { editMode, onFinish } = props
 
@@ -78,7 +86,10 @@ export const FlexibleAuthenticationForm = (props: {
         }
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'Policies & Profiles' }) }
+          { text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          },
+          { text: $t({ defaultMessage: 'Flexible Authentication' }), link: flexAuthRoute }
         ]}
       />
 
@@ -205,20 +216,19 @@ export const FlexibleAuthenticationForm = (props: {
               validateFirst
               rules={[
                 ...(authFailAction === AuthFailAction.RESTRICTED_VLAN
-                  ? [
-                    {
-                      validator: (_:unknown, value: string) =>
-                        validateVlanExceptReservedVlanId(value)
-                    },
-                    { validator: (_:unknown, value: string) => {
-                      if (Number(value) === Number(authDefaultVlan)) {
-                        return Promise.reject(
-                          $t(FlexAuthMessages.CANNOT_SAME_AS_AUTH_DEFAULT_VLAN)
-                        )
-                      }
-                      return Promise.resolve()
+                  ? [{
+                    validator: (_:unknown, value: string) =>
+                      validateVlanExceptReservedVlanId(value)
+                  },
+                  { validator: (_:unknown, value: string) => {
+                    if (Number(value) === Number(authDefaultVlan)) {
+                      return Promise.reject(
+                        $t(FlexAuthMessages.CANNOT_SAME_AS_AUTH_DEFAULT_VLAN)
+                      )
                     }
-                    }] : []
+                    return Promise.resolve()
+                  }
+                  }] : []
                 )
               ]}
               children={
@@ -249,20 +259,19 @@ export const FlexibleAuthenticationForm = (props: {
               validateFirst
               rules={[
                 ...(authTimeoutAction === AuthTimeoutAction.CRITICAL_VLAN
-                  ? [
-                    {
-                      validator: (_:unknown, value: string) =>
-                        validateVlanExceptReservedVlanId(value)
-                    },
-                    { validator: (_:unknown, value: string) => {
-                      if (Number(value) === Number(authDefaultVlan)) {
-                        return Promise.reject(
-                          $t(FlexAuthMessages.CANNOT_SAME_AS_AUTH_DEFAULT_VLAN)
-                        )
-                      }
-                      return Promise.resolve()
+                  ? [{
+                    validator: (_:unknown, value: string) =>
+                      validateVlanExceptReservedVlanId(value)
+                  },
+                  { validator: (_:unknown, value: string) => {
+                    if (Number(value) === Number(authDefaultVlan)) {
+                      return Promise.reject(
+                        $t(FlexAuthMessages.CANNOT_SAME_AS_AUTH_DEFAULT_VLAN)
+                      )
                     }
-                    }] : []
+                    return Promise.resolve()
+                  }
+                  }] : []
                 )
               ]}
               children={

@@ -17,6 +17,7 @@ import {
   useGetEnhancedAccessControlProfileListQuery,
   useGetEnhancedClientIsolationListQuery,
   useGetEthernetPortProfileViewDataListQuery,
+  useGetFlexAuthenticationProfilesQuery,
   useGetIdentityProviderListQuery,
   useGetLbsServerProfileListQuery,
   useGetSoftGreViewDataListQuery,
@@ -343,7 +344,7 @@ function useCardData (): PolicyCardData[] {
       type: PolicyType.FLEX_AUTH,
       categories: [RadioCardCategory.SWITCH],
       // eslint-disable-next-line max-len
-      totalCount: 0, //useGetSoftGreViewDataListQuery({ params, payload: {} }, { skip: !isSoftGreEnabled }).data?.totalCount,
+      totalCount: useGetFlexAuthenticationProfilesQuery({ params, payload: {} }, { skip: true }).data?.totalCount, //TODO
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.FLEX_AUTH, oper: PolicyOperation.LIST })),
       disabled: !isSwitchFlexAuthEnabled

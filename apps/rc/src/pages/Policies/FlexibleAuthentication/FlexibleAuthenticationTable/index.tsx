@@ -14,16 +14,15 @@ import {
   PolicyType,
   useTableQuery
 }                                                                  from '@acx-ui/rc/utils'
-import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { SwitchScopes }                                 from '@acx-ui/types'
-import { filterByAccess, hasPermission }                from '@acx-ui/user'
+import { Path, TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { SwitchScopes }                                            from '@acx-ui/types'
+import { filterByAccess, hasPermission }                           from '@acx-ui/user'
 
 const FlexibleAuthenticationTable = () => {
   const { $t } = useIntl()
-  // const params = useParams()
+  const params = useParams()
   const basePath: Path = useTenantLink('')
   const navigate = useNavigate()
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [deleteFlexAuthenticationProfiles] = useDeleteFlexAuthenticationProfilesMutation()
 
   const tableQuery = useTableQuery({
@@ -50,8 +49,7 @@ const FlexibleAuthenticationTable = () => {
       sorter: true,
       defaultSortOrder: 'ascend',
       render: (_, row) => { //TODO
-        return row.profileId
-          ?
+        return row.profileId ?
           <TenantLink to={getPolicyDetailsLink({
             type: PolicyType.FLEX_AUTH,
             oper: PolicyOperation.DETAIL,
@@ -91,7 +89,6 @@ const FlexibleAuthenticationTable = () => {
     {
       scopeKey: [SwitchScopes.DELETE],
       label: $t({ defaultMessage: 'Delete' }),
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       onClick: (rows, clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -102,6 +99,8 @@ const FlexibleAuthenticationTable = () => {
             numOfEntities: rows.length
           },
           onOk: () => {
+            deleteFlexAuthenticationProfiles({ params, payload: rows.map(item => item.profileId) })
+              .then(clearSelection)
           }
         })
       }

@@ -1598,6 +1598,16 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Switch', id: 'FlexAuthProfile' }]
     }),
+    getSwitchesAuthentication: build.query<FlexibleAuthentication, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getSwitchesAuthentication, params, customHeaders.v1002
+        )
+        return {
+          ...req
+        }
+      }
+    }),
     getSwitchAuthentication: build.query<FlexibleAuthentication, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(

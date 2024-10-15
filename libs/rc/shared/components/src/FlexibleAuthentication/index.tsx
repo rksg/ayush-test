@@ -89,10 +89,9 @@ export const getAuthfieldDisabled = (field: string, values: string[]) => {
     criticalVlan: () => isPortControlNotAuto
       || authTimeoutAction !== AuthTimeoutAction.CRITICAL_VLAN
   }
+  const checkFieldDisabled = fieldDisabledMapping[field as keyof typeof fieldDisabledMapping]
 
-  return fieldDisabledMapping[field as keyof typeof fieldDisabledMapping]
-    ? fieldDisabledMapping[field as keyof typeof fieldDisabledMapping]()
-    : false
+  return checkFieldDisabled?.() ?? false
 }
 
 export const shouldHideAuthField = (

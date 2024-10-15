@@ -633,7 +633,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getFlexAuthenticationProfiles: {
-    method: 'get',
+    method: 'post',
     url: '/flexibleAuthentication/profiles',
     newApi: true
   },
@@ -649,6 +649,11 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getSwitchAuthentication: {
     method: 'get',
+    url: '/venues/:venueId/switches/:switchId/authentication',
+    newApi: true
+  },
+  getSwitchesAuthentication: {
+    method: 'post',
     url: '/venues/:venueId/switches/:switchId/authentication',
     newApi: true
   },

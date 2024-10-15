@@ -40,6 +40,7 @@ import {
   Vlan,
   SwitchStatusEnum,
   isOperationalSwitch,
+  isFirmwareVersionAbove10010f,
   redirectPreviousPage,
   LocationExtended,
   VenueMessages,
@@ -340,6 +341,8 @@ export function SwitchForm () {
   }
 
   const handleEditSwitch = async (values: Switch) => {
+    const isSwitchFirmwareAbove10010f = isFirmwareVersionAbove10010f(switchDetail?.firmware)
+
     try {
       let payload = {
         ...values,
@@ -358,6 +361,10 @@ export function SwitchForm () {
       delete payload.serialNumber
 
       payload.rearModule = _.get(payload, 'rearModuleOption') === true ? 'stack-40g' : 'none'
+
+      if (isSwitchFirmwareAbove10010f) {
+        //TODO: call flex auth api
+      }
 
       await updateSwitch({
         params: { tenantId, switchId, venueId: values.venueId },
