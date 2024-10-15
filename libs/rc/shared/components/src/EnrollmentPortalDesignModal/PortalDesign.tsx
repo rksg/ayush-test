@@ -283,10 +283,13 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
             $isDesk={marked.desk}
             value={value}
             onColorChange={(color)=> {
-              setValue({ ...value, uiColorSchema: {
-                ...value.uiColorSchema,
-                backgroundColor: color
-              } })
+              setValue({ ...value,
+                backgroundImage: undefined,
+                backgroundImageFile: undefined,
+                uiColorSchema: {
+                  ...value.uiColorSchema,
+                  backgroundColor: color
+                } })
             }}
             onImageChange={(url, file)=> {
               setValue({ ...value,
