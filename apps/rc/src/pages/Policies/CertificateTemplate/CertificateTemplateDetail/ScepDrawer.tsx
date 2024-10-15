@@ -78,7 +78,7 @@ export default function ScepDrawer
       await form.validateFields()
       const payload = { ...form.getFieldsValue(),
         challengePassword:
-          challengePasswordType === ChallengePasswordType.NONE ?
+          challengePasswordType !== ChallengePasswordType.STATIC ?
             null : form.getFieldValue('challengePassword'),
         expirationDate: moment(form.getFieldValue('expirationDate')).endOf('day').utc()
       }

@@ -56,8 +56,8 @@ import {
   PowerSavingStatusEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { RequestPayload, WifiScopes }                                     from '@acx-ui/types'
-import { filterByAccess }                                                 from '@acx-ui/user'
+import { RequestPayload, WifiScopes, RolesEnum }                          from '@acx-ui/types'
+import { filterByAccess, hasPermission }                                  from '@acx-ui/user'
 import { exportMessageMapping }                                           from '@acx-ui/utils'
 
 import { ApCompatibilityDrawer, ApCompatibilityFeature, ApCompatibilityType } from '../ApCompatibility'
@@ -109,6 +109,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
   const apTxPowerFlag = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
   const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+  const operationRoles = [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]
 
   const [ getApCompatibilitiesVenue ] = useLazyGetApCompatibilitiesVenueQuery()
   const [ getApCompatibilitiesNetwork ] = useLazyGetApCompatibilitiesNetworkQuery()
@@ -562,6 +563,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const rowActions: TableProps<NewAPModelExtended>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     scopeKey: [WifiScopes.UPDATE],
+    roles: [...operationRoles],
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
     onClick: (rows) => {
       navigate(`${linkToEditAp.pathname}/${rows[0].serialNumber}/edit/general`, { replace: false })
@@ -569,6 +571,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   }, {
     label: $t({ defaultMessage: 'Delete' }),
     scopeKey: [WifiScopes.DELETE],
+    roles: [...operationRoles],
     onClick: async (rows, clearSelection) => {
       apAction.showDeleteAps(rows, params.tenantId, clearSelection)
     }
@@ -581,6 +584,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
     // }, {
     label: $t({ defaultMessage: 'Reboot' }),
     scopeKey: [WifiScopes.UPDATE],
+    roles: [...operationRoles],
     visible: (rows) => isActionVisible(rows, { selectOne: true, deviceStatus: [ ApDeviceStatusEnum.OPERATIONAL ] }),
     onClick: (rows, clearSelection) => {
       const showSendingToast = () => {
@@ -600,6 +604,8 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
     }
   }, {
     label: $t({ defaultMessage: 'Download Log' }),
+    scopeKey: [WifiScopes.READ],
+    roles: [RolesEnum.READ_ONLY, ...operationRoles],
     visible: (rows) => isActionVisible(rows, { selectOne: true, deviceStatus: [ ApDeviceStatusEnum.OPERATIONAL, ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED ] }),
     onClick: (rows) => {
       apAction.showDownloadApLog(rows[0].serialNumber, params.tenantId, rows[0].venueId)
@@ -678,7 +684,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
         onChange={handleTableChange}
         onFilterChange={handleFilterChange}
         enableApiFilter={true}
-        rowActions={filterByAccess(rowActions)}
+        rowActions={rowActions?.filter((item) => hasPermission({ scopes: item.scopeKey, roles: item.roles }))}
         actions={props.enableActions ? filterByAccess([{
           label: $t({ defaultMessage: 'Add AP' }),
           scopeKey: [WifiScopes.CREATE],

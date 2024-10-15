@@ -25,9 +25,9 @@ export function RecentLogin (props: { userEmail: string }) {
         'id',
         'ipAddress'
       ],
-      searchString: `${userEmail}`,
       filters: {
-        eventId: ['login-001']
+        eventId: ['login-001'],
+        userName: [`${userEmail}`]
       }
     },
     sorter: {
