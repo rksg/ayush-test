@@ -34,6 +34,7 @@ interface SlaTileProps {
   sliceType: SliceType
   lsp: string
   property: string
+  isMDU: boolean
 }
 
 const { Text } = Typography
@@ -43,6 +44,9 @@ export const getChartDataKey = (chartKey: ChartKey): string[] => {
     case 'incident': return ['incidentCount']
     case 'experience': return ['timeToConnectSLA', 'clientThroughputSLA', 'connectionSuccessSLA']
     case 'compliance': return ['ssidComplianceSLA']
+    // for demo only
+    // istanbul ignore next
+    case 'mdu': return ['prospectCountSLA']
   }
 }
 
@@ -156,6 +160,7 @@ export function SlaTile ({
   prevData,
   currData,
   sliceType,
+  isMDU,
   lsp,
   property
 }: SlaTileProps) {
@@ -165,7 +170,7 @@ export function SlaTile ({
   const groupedData = groupBySliceType(sliceType, tableData)
   const listData = getListData(groupedData, chartKey)
   const overallData = useOverallData(chartKey, currData)
-  return <Card title={$t(getTitle(), { name })}
+  return <Card title={$t(getTitle(isMDU), { name })}
   >
     <UI.Spacer />
     {chartKey === 'incident' && <Subtitle sliceType={sliceType} />}
@@ -177,7 +182,7 @@ export function SlaTile ({
         currData={currData} />
     </UI.ValueWrapper>
     <UI.Spacer />
-    <SlaChart chartData={chartData} chartKey={chartKey} />
+    <SlaChart isMDU={isMDU} chartData={chartData} chartKey={chartKey} />
     <UI.Spacer />
     <TopElementsSwitcher data={listData} chartKey={chartKey} />
   </Card>

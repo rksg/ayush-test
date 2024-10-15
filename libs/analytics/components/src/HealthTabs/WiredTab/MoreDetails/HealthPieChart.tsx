@@ -159,7 +159,11 @@ export const MoreDetailsPieChart = ({
             labelTextStyle={{ overflow: 'truncate', width: width * 0.5 }} // 50% of width
             showLegend
             dataFormatter={tooltipFormatter(total, formatter('countFormat'))}
-          /> : <NoData />}
+          /> : <p style={{
+            position: 'relative', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+            <NoData />
+          </p>
+          }
           {hasOthers &&
             <Space align='start' style={{ width }}>
               <InformationOutlined />

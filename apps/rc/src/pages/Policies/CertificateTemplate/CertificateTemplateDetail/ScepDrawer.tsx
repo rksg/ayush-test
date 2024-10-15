@@ -78,7 +78,7 @@ export default function ScepDrawer
       await form.validateFields()
       const payload = { ...form.getFieldsValue(),
         challengePassword:
-          challengePasswordType === ChallengePasswordType.NONE ?
+          challengePasswordType !== ChallengePasswordType.STATIC ?
             null : form.getFieldValue('challengePassword'),
         expirationDate: moment(form.getFieldValue('expirationDate')).endOf('day').utc()
       }
@@ -259,24 +259,6 @@ export default function ScepDrawer
               <Form.Item
                 name='cnValue1'
                 label={$t({ defaultMessage: 'Common Name #1 Mapping' })}
-                rules={[{ required: true }]}
-              >
-                <Select
-                  options={commonNameOptions}
-                  placeholder={$t({ defaultMessage: 'Select...' })}/>
-              </Form.Item>
-              <Form.Item
-                name='cnValue2'
-                label={$t({ defaultMessage: 'Common Name #2 Mapping' })}
-                rules={[{ required: true }]}
-              >
-                <Select
-                  options={commonNameOptions}
-                  placeholder={$t({ defaultMessage: 'Select...' })}/>
-              </Form.Item>
-              <Form.Item
-                name='cnValue3'
-                label={$t({ defaultMessage: 'Common Name #3 Mapping' })}
                 rules={[{ required: true }]}
               >
                 <Select

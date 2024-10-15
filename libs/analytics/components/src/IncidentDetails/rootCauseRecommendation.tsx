@@ -914,7 +914,7 @@ export const rootCauseRecommendationMap = {
         <ol>
           <li>RADIUS server certificate changes or expiration.</li>
           <li>Mass user password changes or credential expiry.</li>
-          <li>Client onboarding or provisioning with wrong our outdated trust or credential profiles.</li>
+          <li>Client onboarding/provisioning with wrong or outdated trust/credential profiles.</li>
         </ol>`
       })
     },
@@ -1429,7 +1429,7 @@ export const ccd80211RootCauseRecommendations = {
       <ol>
         <li>RADIUS server certificate changes or expiration.</li>
         <li>Mass user password changes or credential expiry.</li>
-        <li>Client onboarding or provisioning with wrong our outdated trust or credential profiles.</li>
+        <li>Client onboarding/provisioning with wrong or outdated trust/credential profiles.</li>
       </ol>`
     })
   },
