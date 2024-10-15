@@ -7,10 +7,10 @@ import { NetworkTunnelTypeEnum } from '../types'
 
 interface NetworkTunnelSwitchBtnProps {
   tunnelType: NetworkTunnelTypeEnum
-  disabled: boolean | undefined
-  tooltip: string | undefined
   onClick: (checked: boolean) => void
   venueSdLanInfo: EdgeMvSdLanViewData | undefined
+  disabled?: boolean
+  tooltip?: string
 }
 
 export const NetworkTunnelSwitchBtn = (props: NetworkTunnelSwitchBtnProps) => {

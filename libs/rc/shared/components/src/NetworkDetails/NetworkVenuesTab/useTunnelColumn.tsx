@@ -2,9 +2,14 @@ import { ReactNode } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Table }                                       from '@acx-ui/components'
-import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
-import { EdgeMvSdLanViewData, NetworkSaveData, Venue } from '@acx-ui/rc/utils'
+import { Table }                  from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  EdgeMvSdLanViewData,
+  NetworkSaveData,
+  PersonalIdentityNetworksViewData,
+  Venue
+} from '@acx-ui/rc/utils'
 
 import { SdLanScopedNetworkVenuesData } from '../../EdgeSdLan/useEdgeSdLanActions'
 import {
@@ -37,7 +42,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
 
   const deactivateNetworkTunnelByType = useDeactivateNetworkTunnelByType()
   const softGreVenueMap = useGetSoftGreScopeNetworkMap(networkId)
-  const venuePinInfo = useEdgePinScopedNetworkVenueMap(networkId)
+  const pinScopedNetworkVenues = useEdgePinScopedNetworkVenueMap(networkId)
 
   const handleClickNetworkTunnel = (currentVenue: Venue, currentNetwork: NetworkSaveData) => () => {
     const cachedSoftGre = networkId && softGreVenueMap[currentVenue.id] ?
@@ -79,6 +84,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
     key: 'tunneledInfo',
     title: $t({ defaultMessage: 'Tunnel' }),
     dataIndex: 'tunneledInfo',
+    width: 230,
     children: [{
       key: 'tunneledInfo.activated',
       title: <Table.SubTitle>{$t({ defaultMessage: 'Activated' })}</Table.SubTitle>,
@@ -98,6 +104,8 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
         const venueSdLanInfo = (sdLanScopedNetworkVenues.sdLansVenueMap[row.id] as EdgeMvSdLanViewData[])?.[0]
         const venueSoftGre = softGreVenueMap[row.id]
         const targetSoftGre = venueSoftGre?.filter(sg => sg.networkIds.includes(row.id))
+        // eslint-disable-next-line max-len
+        const venuePinInfo = (pinScopedNetworkVenues[row.id] as PersonalIdentityNetworksViewData[])?.[0]
 
         // eslint-disable-next-line max-len
         const tunnelType = getNetworkTunnelType(networkInfo, venueSoftGre, venueSdLanInfo, venuePinInfo)
@@ -136,7 +144,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
         // eslint-disable-next-line max-len
         'Network traffic can be tunneled using SoftGRE or VxLAN. For VxLAN, in a <venueSingular></venueSingular>, you can choose either SD-LAN or Personal Identity Network (PIN) for DPSK network services, but not both.' }),
       dataIndex: 'tunneledInfo.networkTopology',
-      width: 100,
+      width: 150,
       render: function (_: ReactNode, row: Venue) {
         if (!networkId) return
 
@@ -149,6 +157,8 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
         const venueSdLanInfo = sdLanScopedNetworkVenues.sdLansVenueMap[row.id]?.[0]
         const venueSoftGre = softGreVenueMap[row.id]
         const targetSoftGre = venueSoftGre?.filter(sg => sg.networkIds.includes(row.id))
+        // eslint-disable-next-line max-len
+        const venuePinInfo = (pinScopedNetworkVenues[row.id] as PersonalIdentityNetworksViewData[])?.[0]
 
         return <NetworkTunnelInfoLabel
           network={networkInfo}

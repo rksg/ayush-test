@@ -89,12 +89,13 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
       key: 'tunneledInfo',
       title: $t({ defaultMessage: 'Tunnel' }),
       dataIndex: 'tunneledInfo',
+      width: 180,
       children: [{
         key: 'tunneledInfo.activated',
         title: <Table.SubTitle>{$t({ defaultMessage: 'Activated' })}</Table.SubTitle>,
         dataIndex: 'tunneledInfo.activated',
         align: 'center',
-        width: 80,
+        // width: 80,
         render: function (_: ReactNode, row: Network) {
           const networkInfo = {
             id: row.id,
