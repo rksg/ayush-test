@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react'
 
-import { Modal as AntModal }        from 'antd'
-import moment                       from 'moment'
+import { Modal as AntModal, Badge } from 'antd'
 import { RawIntlProvider, useIntl } from 'react-intl'
 
-import { Loader, TableProps, Table, Button }                                                                                                                                                          from '@acx-ui/components'
-import { certificateStatusTypeLabel, getCertificateStatus, issuedByLabel, RevokeForm, ServerCertificateDetailDrawer }                                                                                 from '@acx-ui/rc/components'
-import { useGetServerCertificatesQuery, useUpdateServerCertificateMutation }                                                                                                                          from '@acx-ui/rc/services'
-import { CertificateCategoryType, CertificateStatusType, EnrollmentType, PolicyOperation, PolicyType, ServerCertificate, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, useTableQuery } from '@acx-ui/rc/utils'
-import { getIntl, noDataDisplay }                                                                                                                                                                     from '@acx-ui/utils'
+import { Loader, TableProps, Table, Button }                                                                                                                                                                                  from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                                                                                                                                                                          from '@acx-ui/formatter'
+import { certificateStatusTypeLabel, getCertificateStatus, issuedByLabel, RevokeForm, ServerCertificateDetailDrawer }                                                                                                         from '@acx-ui/rc/components'
+import { useGetServerCertificatesQuery, useUpdateServerCertificateMutation }                                                                                                                                                  from '@acx-ui/rc/services'
+import { CertificateCategoryType, CertificateStatusType, EnrollmentType, PolicyOperation, PolicyType, ServerCertificate, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, serverCertStatusColors, useTableQuery } from '@acx-ui/rc/utils'
+import { getIntl, noDataDisplay }                                                                                                                                                                                             from '@acx-ui/utils'
 
 
 export default function ServerCertificatesTable () {
@@ -63,7 +63,9 @@ export default function ServerCertificatesTable () {
       dataIndex: 'status',
       key: 'status',
       render: (_, row) => {
-        return row.status[0] ? $t(certificateStatusTypeLabel[row.status[0]])
+        return row.status[0] ?
+          <span> <Badge color={`var(${serverCertStatusColors[row.status[0]]})`}
+            text={$t(certificateStatusTypeLabel[row.status[0]])}></Badge></span>
           : noDataDisplay
       }
     },
@@ -93,7 +95,8 @@ export default function ServerCertificatesTable () {
       key: 'notAfterDate',
       sorter: true,
       render: (_, { notAfterDate }) => {
-        return moment(notAfterDate).format('MM/DD/YYYY')
+        return formatter(DateFormatEnum.DateFormat)(notAfterDate)
+        // return moment(notAfterDate).format('MM/DD/YYYY')
       }
     },
     {

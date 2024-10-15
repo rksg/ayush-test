@@ -281,3 +281,9 @@ export interface ServerCertificate extends Certificate{
   csrString?: string
   extendedKeyUsages?: string
 }
+
+export const serverCertStatusColors = {
+  [CertificateStatusType.VALID]: '--acx-semantics-green-50',
+  [CertificateStatusType.REVOKED]: '--acx-neutrals-20',
+  [CertificateStatusType.EXPIRED]: '--acx-semantics-red-50'
+}

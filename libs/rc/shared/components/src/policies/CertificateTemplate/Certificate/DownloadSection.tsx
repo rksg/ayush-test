@@ -186,7 +186,12 @@ export default function DownloadSection (props: DownloadDrawerProps) {
   const renderDownloadButton = (type: CertDownloadType, onClick: () => void) => (
     <Row style={{ marginBottom: '8px' }} key={type}>
       <ButtonWrapper>
-        <Button type='default' onClick={onClick}>
+        <Button style={{
+          width: '142px',
+          height: '28px'
+        }}
+        type='default'
+        onClick={onClick}>
           {$t(downloadButtonLabel[type])}
         </Button>
       </ButtonWrapper>
