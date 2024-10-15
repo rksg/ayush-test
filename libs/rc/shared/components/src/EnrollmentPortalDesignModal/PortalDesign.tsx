@@ -63,9 +63,9 @@ function PortalComponentList (props: {
               }}
             />
             {PortalComponentEnum[key] ===PortalComponentEnum.wifi4eu &&
-               <WiFi4euModal wifi4eu={value.uiStyleSchema.wifi4EUNetworkId}
+               <WiFi4euModal wifi4eu={value.uiStyleSchema.wifi4EuNetworkId}
                  onChange={(v) => onValueChange({ ...value,
-                   uiStyleSchema: { ...value.uiStyleSchema, wifi4EUNetworkId: v }
+                   uiStyleSchema: { ...value.uiStyleSchema, wifi4EuNetworkId: v }
                  })}/>
             }
           </UI.CommonLabel>
@@ -92,16 +92,16 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
   const [value, setValue] = useState<UIConfiguration>(DefaultUIConfiguration)
   const [display, setDisplay] = useState<Map<keyof typeof PortalComponentEnum, boolean>>(new Map([
     ['logo', value.uiStyleSchema.logoImageFileName !== undefined],
-    ['poweredBy', !value.disablePoweredBy],
-    ['wifi4eu', !!value.uiStyleSchema.wifi4EUNetworkId]
+    ['poweredBy', !value.uiStyleSchema.disablePoweredBy],
+    ['wifi4eu', !!value.uiStyleSchema.wifi4EuNetworkId]
   ]))
 
   const reset = () => {
     setValue(original.current!!)
     setDisplay(new Map([
       ['logo', original.current!!.uiStyleSchema.logoImageFileName !== undefined],
-      ['poweredBy', !(original.current!!.disablePoweredBy)],
-      ['wifi4eu', !!original.current!!.uiStyleSchema.wifi4EUNetworkId]
+      ['poweredBy', !(original.current!!.uiStyleSchema.disablePoweredBy)],
+      ['wifi4eu', !!original.current!!.uiStyleSchema.wifi4EuNetworkId]
     ]))
   }
 
@@ -143,8 +143,8 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
       setValue(configurationQuery.data)
       setDisplay(new Map([
         ['logo', configurationQuery.data.uiStyleSchema.logoImageFileName !== undefined],
-        ['poweredBy', !(configurationQuery.data.disablePoweredBy)],
-        ['wifi4eu', !!configurationQuery.data.uiStyleSchema.wifi4EUNetworkId]
+        ['poweredBy', !(configurationQuery.data.uiStyleSchema.disablePoweredBy)],
+        ['wifi4eu', !!configurationQuery.data.uiStyleSchema.wifi4EuNetworkId]
       ]))
     }
   }, [configurationQuery])
@@ -153,7 +153,7 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
     if (!value) return
     let data: UIConfiguration = { ...value }
     if (!display.get('wifi4eu')) {
-      data.uiStyleSchema = { ...data.uiStyleSchema, wifi4EUNetworkId: '' }
+      data.uiStyleSchema = { ...data.uiStyleSchema, wifi4EuNetworkId: '' }
     }
     if (!display.get('logo')) {
       data.logoImage = undefined
@@ -169,7 +169,10 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
     }
 
     if (!display.get('poweredBy')) {
-      data.disablePoweredBy = true
+      data.uiStyleSchema = {
+        ...data.uiStyleSchema,
+        disablePoweredBy: true
+      }
     }
 
     if (!_.isEqual(data, original.current)) {
@@ -283,15 +286,22 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
             $isDesk={marked.desk}
             value={value}
             onColorChange={(color)=> {
-              setValue({ ...value, uiColorSchema: {
-                ...value.uiColorSchema,
-                backgroundColor: color
-              } })
+              setValue({ ...value,
+                backgroundImage: undefined,
+                backgroundImageFile: undefined,
+                uiColorSchema: {
+                  ...value.uiColorSchema,
+                  backgroundColor: color
+                } })
             }}
             onImageChange={(url, file)=> {
               setValue({ ...value,
                 backgroundImage: url,
-                backgroundImageFile: file
+                backgroundImageFile: file,
+                uiColorSchema: {
+                  ...value.uiColorSchema,
+                  backgroundColor: '#ECECEC'
+                }
               })
             }}
           />}
