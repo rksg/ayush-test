@@ -1,6 +1,5 @@
 import { ReactNode } from 'react'
 
-import { Switch }  from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Table }                  from '@acx-ui/components'
@@ -9,6 +8,7 @@ import {
   NetworkTunnelActionForm,
   NetworkTunnelActionModalProps,
   NetworkTunnelInfoLabel,
+  NetworkTunnelSwitchBtn,
   NetworkTunnelTypeEnum,
   SdLanScopedVenueNetworksData,
   getNetworkTunnelType,
@@ -108,11 +108,18 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
 
           // eslint-disable-next-line max-len
           const tunnelType = getNetworkTunnelType(networkInfo, venueSoftGre, venueSdLanInfo, venuePinInfo)
+          // eslint-disable-next-line max-len
+          const isTheLastSdLanWlan = (venueSdLanInfo?.tunneledWlans?.length ?? 0) === 1 && tunnelType === NetworkTunnelTypeEnum.SdLan
+          const disabled = isTheLastSdLanWlan || tunnelType === NetworkTunnelTypeEnum.Pin
 
           return row.activated?.isActivated
-            ? <Switch
-              checked={tunnelType !== NetworkTunnelTypeEnum.None}
-              disabled={tunnelType === NetworkTunnelTypeEnum.Pin}
+            ? <NetworkTunnelSwitchBtn
+              tunnelType={tunnelType}
+              disabled={disabled}
+              tooltip={isTheLastSdLanWlan
+                // eslint-disable-next-line max-len
+                ? $t({ defaultMessage: 'Cannot deactivate the last network at this <venueSingular></venueSingular>' })
+                : undefined}
               onClick={(checked) => {
                 if (checked) {
                   handleClickNetworkTunnel({

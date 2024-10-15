@@ -20,7 +20,6 @@ import { NetworkTunnelSwitch } from './NetworkTunnelSwitch'
 interface useTunnelColumnProps {
   network: NetworkSaveData | null | undefined
   sdLanScopedNetworkVenues: SdLanScopedNetworkVenuesData
-  // tunnelModalState: NetworkTunnelActionModalProps
   setTunnelModalState: (state: NetworkTunnelActionModalProps) => void
 }
 export const useTunnelColumn = (props: useTunnelColumnProps) => {
@@ -149,7 +148,6 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
                 ...network,
                 id: networkId
               }}
-              // tunnelModalState={tunnelModalState}
               venueSdLanInfo={venueSdLanInfo}
               venuePinInfo={venuePinInfo}
               venueSoftGre={cachedSoftGre}

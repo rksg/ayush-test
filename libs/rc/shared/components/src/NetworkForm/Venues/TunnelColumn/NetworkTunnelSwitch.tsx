@@ -1,15 +1,20 @@
-import { Form, Switch } from 'antd'
+import { Form } from 'antd'
 
 import { EdgeMvSdLanViewData, NetworkSaveData, PersonalIdentityNetworksViewData, Venue } from '@acx-ui/rc/utils'
 
-import { NetworkTunnelActionForm, NetworkTunnelTypeEnum, SoftGreNetworkTunnel, getNetworkTunnelType } from '../../../NetworkTunnelActionModal'
+import {
+  NetworkTunnelActionForm,
+  NetworkTunnelTypeEnum,
+  SoftGreNetworkTunnel,
+  getNetworkTunnelType,
+  NetworkTunnelSwitchBtn
+} from '../../../NetworkTunnelActionModal'
 
 import { handleSdLanTunnelAction, handleSoftGreTunnelAction } from './utils'
 
 interface NetworkTunnelSwitchProps {
   currentVenue: Venue
   currentNetwork: NetworkSaveData
-  // tunnelModalState: NetworkTunnelActionModalProps
   venueSdLanInfo: EdgeMvSdLanViewData
   venuePinInfo: PersonalIdentityNetworksViewData
   venueSoftGre: SoftGreNetworkTunnel[]
@@ -19,7 +24,6 @@ interface NetworkTunnelSwitchProps {
 export const NetworkTunnelSwitch = (props: NetworkTunnelSwitchProps) => {
   const {
     currentVenue, currentNetwork,
-    // tunnelModalState,
     venueSdLanInfo, venuePinInfo, venueSoftGre,
     onClick
   } = props
@@ -37,10 +41,17 @@ export const NetworkTunnelSwitch = (props: NetworkTunnelSwitchProps) => {
 
   // eslint-disable-next-line max-len
   const tunnelType = getNetworkTunnelType(networkInfo, venueSoftGre, venueSdLanInfo, venuePinInfo)
+  // eslint-disable-next-line max-len
+  const isTheLastSdLanWlan = (venueSdLanInfo?.tunneledWlans?.length ?? 0) === 1 && tunnelType === NetworkTunnelTypeEnum.SdLan
+  const disabled = isTheLastSdLanWlan || tunnelType === NetworkTunnelTypeEnum.Pin
 
-  return <Switch
+  return <NetworkTunnelSwitchBtn
     checked={tunnelType !== NetworkTunnelTypeEnum.None}
-    disabled={tunnelType === NetworkTunnelTypeEnum.Pin}
+    disabled={disabled}
+    tooltip={isTheLastSdLanWlan
+      // eslint-disable-next-line max-len
+      ? $t({ defaultMessage: 'Cannot deactivate the last network at this <venueSingular></venueSingular>' })
+      : undefined}
     onClick={(checked) => {
       if (checked) {
         onClick(currentVenue, currentNetwork)

@@ -4,6 +4,7 @@ export {
 } from './NetworkTunnelActionModal'
 export { NetworkTunnelInfoButton }                        from './TunnelInfo/NetworkTunnelInfoButton'
 export { NetworkTunnelInfoLabel }                         from './TunnelInfo/NetworkTunnelInfoLabel'
+export { NetworkTunnelSwitchBtn }                         from './TunnelInfo/NetworkTunnelSwitchBtn'
 export {
   useEdgePinByVenue,
   useEdgePinScopedNetworkVenueMap

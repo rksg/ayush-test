@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import { cloneDeep, findIndex } from 'lodash'
 
+import { Features }                                                                                                                from '@acx-ui/feature-toggle'
 import { useGetEdgePinViewDataListQuery }                                                                                          from '@acx-ui/rc/services'
 import { EdgeMvSdLanViewData, EdgeSdLanTunneledWlan, NetworkTunnelSdLanAction, NetworkTypeEnum, PersonalIdentityNetworksViewData } from '@acx-ui/rc/utils'
 import { getIntl }                                                                                                                 from '@acx-ui/utils'
@@ -8,6 +9,7 @@ import { getIntl }                                                              
 import { isGuestTunnelUtilized, isSdLanLastNetworkInVenue, showSdLanVenueDissociateModal } from '../EdgeSdLan/edgeSdLanUtils'
 import { showSdLanGuestFwdConflictModal }                                                  from '../EdgeSdLan/SdLanGuestFwdConflictModal'
 import { useEdgeMvSdLanActions }                                                           from '../EdgeSdLan/useEdgeSdLanActions'
+import { useIsEdgeFeatureReady }                                                           from '../useEdgeActions'
 
 import { NetworkTunnelActionModalProps }                  from './NetworkTunnelActionModal'
 import { NetworkTunnelTypeEnum, NetworkTunnelActionForm } from './types'
@@ -20,13 +22,14 @@ interface useTunnelInfosProps {
     id: string,
     type: NetworkTypeEnum,
     venueId: string,
-    venueName?: string,
   }
   cachedActs?: NetworkTunnelSdLanAction[]
   cachedSoftGre?: SoftGreNetworkTunnel[]
 }
 export const useTunnelInfos = (props: useTunnelInfosProps) => {
   const { network, cachedActs, cachedSoftGre } = props
+  const isEdgePinHaEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+
   const networkVenueId = network?.venueId
 
   const { venueSdLan, networkVlanPool } = useEdgeMvSdLanData(network)
@@ -43,7 +46,7 @@ export const useTunnelInfos = (props: useTunnelInfosProps) => {
       filters: { 'tunneledWlans.venueId': [networkVenueId!] }
     }
   }, {
-    skip: !network,
+    skip: !isEdgePinHaEnabled || !network,
     selectFromResult: ({ data }) => {
       return {
         venuePinInfo: data?.data[0]

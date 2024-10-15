@@ -1,15 +1,25 @@
 import { ReactNode } from 'react'
 
-import { Switch }  from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Table }                  from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { NetworkSaveData, Venue } from '@acx-ui/rc/utils'
 
-import { SdLanScopedNetworkVenuesData }                                                                                                                                                                                                                          from '../../EdgeSdLan/useEdgeSdLanActions'
-import { NetworkTunnelActionForm, NetworkTunnelActionModalProps, NetworkTunnelInfoButton, NetworkTunnelInfoLabel, NetworkTunnelTypeEnum, getNetworkTunnelType, useDeactivateNetworkTunnelByType, useEdgePinScopedNetworkVenueMap, useGetSoftGreScopeNetworkMap } from '../../NetworkTunnelActionModal'
-import { useIsEdgeFeatureReady }                                                                                                                                                                                                                                 from '../../useEdgeActions'
+import { SdLanScopedNetworkVenuesData } from '../../EdgeSdLan/useEdgeSdLanActions'
+import {
+  NetworkTunnelActionForm,
+  NetworkTunnelActionModalProps,
+  NetworkTunnelInfoButton,
+  NetworkTunnelInfoLabel,
+  NetworkTunnelSwitchBtn,
+  NetworkTunnelTypeEnum,
+  getNetworkTunnelType,
+  useDeactivateNetworkTunnelByType,
+  useEdgePinScopedNetworkVenueMap,
+  useGetSoftGreScopeNetworkMap
+} from '../../NetworkTunnelActionModal'
+import { useIsEdgeFeatureReady } from '../../useEdgeActions'
 
 interface useTunnelColumnProps {
   network: NetworkSaveData | null | undefined
@@ -90,11 +100,18 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
 
         // eslint-disable-next-line max-len
         const tunnelType = getNetworkTunnelType(networkInfo, venueSoftGre, venueSdLanInfo, venuePinInfo)
+        // eslint-disable-next-line max-len
+        const isTheLastSdLanWlan = (venueSdLanInfo?.tunneledWlans?.length ?? 0) === 1 && tunnelType === NetworkTunnelTypeEnum.SdLan
+        const disabled = isTheLastSdLanWlan || tunnelType === NetworkTunnelTypeEnum.Pin
 
         return row.activated?.isActivated
-          ? <Switch
+          ? <NetworkTunnelSwitchBtn
             checked={tunnelType !== NetworkTunnelTypeEnum.None}
-            disabled={tunnelType === NetworkTunnelTypeEnum.Pin}
+            disabled={disabled}
+            tooltip={isTheLastSdLanWlan
+              // eslint-disable-next-line max-len
+              ? $t({ defaultMessage: 'Cannot deactivate the last network at this <venueSingular></venueSingular>' })
+              : undefined}
             onClick={(checked) => {
               if (checked) {
                 handleClickNetworkTunnel(row, network)()

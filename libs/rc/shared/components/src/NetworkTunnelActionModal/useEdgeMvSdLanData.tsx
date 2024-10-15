@@ -6,23 +6,24 @@ import { EdgeMvSdLanViewData, NetworkTypeEnum, VLANPoolViewModelType }          
 
 import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
-export const useEdgeMvSdLanData = (props: {
-    id: string,
-    type: NetworkTypeEnum,
-    venueId: string,
-    venueName?: string,
-  } | undefined): {
+interface useEdgeMvSdLanDataProps {
+  id: string,
+  type: NetworkTypeEnum,
+  venueId: string,
+}
+export const useEdgeMvSdLanData = (networkInfo: useEdgeMvSdLanDataProps | undefined): {
     venueSdLan?: EdgeMvSdLanViewData
     networkVlanPool?: VLANPoolViewModelType
   } => {
-  const networkId = props?.id
-  const networkVenueId = props?.venueId
+  const networkId = networkInfo?.id
+  const networkVenueId = networkInfo?.venueId
   const isEdgeSdLanP2Enabled = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
 
   const { venueSdLan } = useGetEdgeMvSdLanViewDataListQuery({
     payload: {
-      fields: ['id', 'name',
+      fields: [
+        'id', 'name',
         'venueId',
         'edgeClusterId', 'guestEdgeClusterId', 'edgeClusterName', 'guestEdgeClusterName',
         'isGuestTunnelEnabled',

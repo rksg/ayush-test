@@ -195,7 +195,6 @@ export function Venues (props: VenuesProps) {
   const tunnelColumn = useTunnelColumn({
     network: data,
     sdLanScopedNetworkVenues,
-    // tunnelModalState,
     setTunnelModalState
   })
   // hooks for tunnel column - end
