@@ -71,19 +71,17 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
       if(providerType === SmsProviderType.TWILIO) {
         if(isEditMode) {
           form.validateFields(['accountSid','authToken'])
-          if (isTwilioFromNumber(editData?.providerData.fromNumber ?? '')) {
-            setMessageMethod(MessageMethod.PhoneNumber)
-            setTwilioEditMethod(MessageMethod.PhoneNumber)
-          } else {
-            setMessageMethod(MessageMethod.MessagingService)
-            setTwilioEditMethod(MessageMethod.MessagingService)
-          }
+          const fromNumber = editData?.providerData.fromNumber ?? ''
+          const messageMethod = isTwilioFromNumber(fromNumber)
+            ? MessageMethod.PhoneNumber
+            : MessageMethod.MessagingService
+          setMessageMethod(messageMethod)
+          setTwilioEditMethod(messageMethod)
+          form.setFieldValue('messageMethod', messageMethod)
         }
-        else {
+        else if (isValidAccountSID === false && isValidAuthToken === false) {
           // If add twilio form was touched and provider was changed, validate sid and token again
-          if (isValidAccountSID === false && isValidAuthToken === false) {
-            form.validateFields(['accountSid','authToken'])
-          }
+          form.validateFields(['accountSid','authToken'])
         }
       }
       else {
@@ -295,7 +293,6 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
           rules={[
             { required: true, message: $t({ defaultMessage: 'Please select a messaging method' }) }
           ]}
-          valuePropName='checked'
         >
           <Radio.Group
             disabled={!isValidAuthToken}
