@@ -411,6 +411,7 @@ export function SwitchForm () {
   }
 
   const switchSerialPatterns = [
+    // eslint-disable-next-line max-len
     { condition: isSupport8100 && isSupport8200AV, pattern: SWITCH_SERIAL_PATTERN_INCLUDED_8100_8200AV },
     { condition: isSupport8100, pattern: SWITCH_SERIAL_PATTERN_INCLUDED_8100 },
     { condition: isSupport8200AV, pattern: SWITCH_SERIAL_PATTERN_INCLUDED_8200AV }
