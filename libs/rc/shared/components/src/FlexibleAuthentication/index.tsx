@@ -105,13 +105,12 @@ export const shouldHideAuthField = (
 export const handleAuthFieldChange = (field: string, value: string, form: FormInstance) => {
   switch(field) {
     case 'authenticationType':
-      if (value !== AuthenticationType._802_1X) {
-        const values = form.getFieldsValue()
-        form.setFieldsValue({
-          ...values,
-          dot1xPortControl: PortControl.AUTO
-        })
-      }
+      const values = form.getFieldsValue()
+      form.setFieldsValue({
+        ...values,
+        ...(value !== AuthenticationType._802_1X ? { dot1xPortControl: PortControl.AUTO }: {}),
+        ...(value !== AuthenticationType._802_1X_AND_MACAUTH ? { changeAuthOrder: false }: {})
+      })
       break
     case 'dot1xPortControl':
       if (value !== PortControl.AUTO) {

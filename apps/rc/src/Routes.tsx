@@ -101,6 +101,7 @@ import ConnectionMeteringTable                      from './pages/Policies/Conne
 import EthernetPortProfileTable                     from './pages/Policies/EthernetPortProfile/EthernetPortProfileTable'
 import AddFlexibleAuthentication                    from './pages/Policies/FlexibleAuthentication/AddFlexibleAuthentication'
 import EditFlexibleAuthentication                   from './pages/Policies/FlexibleAuthentication/EditFlexibleAuthentication'
+import FlexibleAuthenticationDetail                 from './pages/Policies/FlexibleAuthentication/FlexibleAuthenticationDetail'
 import FlexibleAuthenticationTable                  from './pages/Policies/FlexibleAuthentication/FlexibleAuthenticationTable'
 import AddEdgeHqosBandwidth                         from './pages/Policies/HqosBandwidth/Edge/AddHqosBandwidth'
 import EditEdgeHqosBandwidth                        from './pages/Policies/HqosBandwidth/Edge/EditHqosBandwidth'
@@ -1353,6 +1354,12 @@ function PolicyRoutes () {
             oper: PolicyOperation.EDIT
           })}
           element={<EditFlexibleAuthentication/>}
+        />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.FLEX_AUTH, oper: PolicyOperation.DETAIL
+          })}
+          element={<FlexibleAuthenticationDetail />}
         />
       </>}
       <Route

@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Checkbox, Divider, Form, Input, Select, Space, Switch } from 'antd'
 import { DefaultOptionType }                                     from 'antd/lib/select'
@@ -157,19 +157,19 @@ export function EditPortDrawer ({
     untaggedVlan,
     taggedVlans,
     voiceVlan,
-    portProtectedCheckbox,
-    lldpEnableCheckbox,
+    // portProtectedCheckbox,
+    // lldpEnableCheckbox,
     portSpeedCheckbox,
-    rstpAdminEdgePortCheckbox,
-    stpBpduGuardCheckbox,
-    stpRootGuardCheckbox,
-    dhcpSnoopingTrustCheckbox,
-    ipsgCheckbox,
+    // rstpAdminEdgePortCheckbox,
+    // stpBpduGuardCheckbox,
+    // stpRootGuardCheckbox,
+    // dhcpSnoopingTrustCheckbox,
+    // ipsgCheckbox,
     ipsg,
     lldpQosCheckbox,
     ingressAclCheckbox,
     egressAclCheckbox,
-    tagsCheckbox,
+    // tagsCheckbox,
     profileName,
     // Flex auth
     switchLevelAuthDefaultVlanObj,
@@ -177,18 +177,18 @@ export function EditPortDrawer ({
     flexibleAuthenticationEnabled,
     flexibleAuthenticationEnabledCheckbox,
     authenticationType,
-    authenticationTypeCheckbox,
-    changeAuthOrderCheckbox,
+    // authenticationTypeCheckbox,
+    // changeAuthOrderCheckbox,
     dot1xPortControl,
-    dot1xPortControlCheckbox,
+    // dot1xPortControlCheckbox,
     authDefaultVlan,
-    authDefaultVlanCheckbox,
-    restrictedVlanCheckbox,
-    criticalVlanCheckbox,
+    // authDefaultVlanCheckbox,
+    // restrictedVlanCheckbox,
+    // criticalVlanCheckbox,
     authFailAction,
-    authFailActionCheckbox,
-    authTimeoutAction,
-    authTimeoutActionCheckbox
+    // authFailActionCheckbox,
+    authTimeoutAction
+    // authTimeoutActionCheckbox
   } = (useWatch([], form) ?? {})
 
   const navigate = useNavigate()
@@ -507,7 +507,8 @@ export function EditPortDrawer ({
         : (portSetting?.voiceVlan === 0 ? '' : portSetting?.voiceVlan)),
       switchLevelAuthDefaultVlanObj: portSetting.switchLevelAuthDefaultVlan
         ? { [switchDetail?.switchMac as string]: [Number(portSetting.switchLevelAuthDefaultVlan)] }
-        : {}
+        : {},
+      untaggedVlansObj: { [switchDetail?.switchMac as string]: [portSetting.untaggedVlan] }
     })
     checkIsVoiceVlanInvalid(true, portSetting?.revert)
   }
@@ -702,6 +703,13 @@ export function EditPortDrawer ({
     </UI.FormItem>
   }
 
+  const shouldRenderMultipleText = (field: string, ignoreCheckbox: boolean = false) => {
+    const checkboxEnabled = form.getFieldValue(`${field}Checkbox`)
+    return isMultipleEdit
+      && (!checkboxEnabled || ignoreCheckbox)
+      && hasMultipleValue.includes(field)
+  }
+
   const transformData = (data: PortSettingModel) => {
     const hasBreakoutPortAndVenueSettings = hasBreakoutPort && useVenueSettings
     const vlansHasChanged = form?.isFieldTouched('taggedVlans') ||
@@ -849,7 +857,7 @@ export function EditPortDrawer ({
       .filter(v => v?.[1] && v?.[0].includes('Checkbox')).map(v => v?.[0])
     const resetList = checkboxChecked.reduce((obj, c) => ({ ...obj, [c]: false }), {})
     form.setFieldsValue(resetList)
-
+    form.setFieldsValue(['switchLevelAuthDefaultVlanObj', 'untaggedVlansObj']) //
     setLoading(true)
     setLldpQosList([])
   }
@@ -984,23 +992,26 @@ export function EditPortDrawer ({
   // }
 
   const getFlexAuthButtonStatus = () => {
-    // const switchLevelAuthDefaultVlans = Object.values(switchLevelAuthDefaultVlan)
-    const isSwitchLevelAuthNotEnabled
-      = getSwitchLevelAuthDefaultVlans()?.length !== switches?.length
-    // const isUntaggedPort = false
+    const switchLevelAuthVlans = getSwitchLevelAuthDefaultVlans() ?? []
+    const isSwitchLevelAuthNotEnabled = switchLevelAuthVlans.length !== switches?.length
     const switchIds = Object.keys(untaggedVlansObj ?? {})
+
+    const checkUntaggedPortMismatch = (id: string) => { //TODO: check untaggedVlansObj
+      // eslint-disable-next-line max-len
+      const defaultVlan = switchesDefaultVlan?.find((s: SwitchDefaultVlan) => s.switchId === id)?.defaultVlanId
+      // eslint-disable-next-line max-len
+      // const isUntaggedNotMatchDefaultVlan = untaggedVlan && (Number(untaggedVlan) !== Number(defaultVlan))
+      const isVlanMismatchDefaultVlan = (vlan: string) => Number(vlan) !== Number(defaultVlan)
+
+      if (!hasMultipleValue.includes('untaggedVlan') || !untaggedVlansObj[id]) {
+        return untaggedVlan && isVlanMismatchDefaultVlan(untaggedVlan)
+      }
+      return untaggedVlansObj[id]?.some(isVlanMismatchDefaultVlan)
+    }
+
     const isUntaggedPort = isMultipleEdit
-      ? switchIds.map(id => {
-        const defaultVlan = switchesDefaultVlan?.filter((s: SwitchDefaultVlan) => {
-          return s.switchId === id
-        })?.[0]?.defaultVlanId
-        return !hasMultipleValue.includes('untaggedVlan')
-          ? (untaggedVlan && (Number(untaggedVlan) !== Number(defaultVlan)))
-          : untaggedVlansObj[id].find((vlan: string) => {
-            return Number(vlan) !== Number(defaultVlan)
-          })
-      })?.filter(s => s)?.length > 0
-      : (untaggedVlan && (Number(untaggedVlan) !== Number(defaultVlan)))
+      ? switchIds.some(id => checkUntaggedPortMismatch(id))
+      : checkUntaggedPortMismatch('')
 
     if (isSwitchLevelAuthNotEnabled) {
       return 'SWITCH_LEVEL_AUTH_NOT_ENABLED'
@@ -1131,8 +1142,9 @@ export function EditPortDrawer ({
               noStyle
               label={false}
               children={
-                isMultipleEdit && !flexibleAuthenticationEnabledCheckbox
-                    && hasMultipleValue.includes('flexibleAuthenticationEnabled')
+                shouldRenderMultipleText('flexibleAuthenticationEnabled')
+                // isMultipleEdit && !flexibleAuthenticationEnabledCheckbox
+                //     && hasMultipleValue.includes('flexibleAuthenticationEnabled')
                   ? <MultipleText />
                   : <Tooltip title={getFieldTooltip('flexibleAuthenticationEnabled')}>
                     <Space style={{ display: 'flex', flex: '1',
@@ -1187,8 +1199,12 @@ export function EditPortDrawer ({
             />,
             'flexibleAuthenticationEnabled', $t({ defaultMessage: 'Flexible Authentication' }), true
           )}
-          { <Form.Item name='untaggedVlansObj' hidden children={<></>} /> }
-          { <Form.Item name='switchLevelAuthDefaultVlanObj' hidden children={<></>} /> }
+          { <Form.Item name='untaggedVlansObj' hidden initialValue={{}} children={<></>} /> }
+          { <Form.Item name='switchLevelAuthDefaultVlanObj'
+            hidden
+            initialValue={{}}
+            children={<></>}
+          /> }
           { flexibleAuthenticationEnabled &&
           <Space style={{ display: 'block', marginLeft: isMultipleEdit ? '24px' : '0' }}>
             { getFieldTemplate(
@@ -1197,9 +1213,10 @@ export function EditPortDrawer ({
                 name='authenticationType'
                 label={$t({ defaultMessage: 'Type' })}
                 initialValue={AuthenticationType._802_1X}
-                children={isMultipleEdit
-                  && !authenticationTypeCheckbox
-                  && hasMultipleValue.includes('authenticationType')
+                children={shouldRenderMultipleText('authenticationType')
+                  // isMultipleEdit
+                  // && !authenticationTypeCheckbox
+                  // && hasMultipleValue.includes('authenticationType')
                   ? <MultipleText />
                   : <Select
                     options={Object.values(AuthenticationType).map(authType => ({
@@ -1217,8 +1234,9 @@ export function EditPortDrawer ({
                 noStyle
                 label={false}
                 children={
-                  isMultipleEdit && !changeAuthOrderCheckbox
-                      && hasMultipleValue.includes('changeAuthOrder')
+                  shouldRenderMultipleText('changeAuthOrder')
+                  // isMultipleEdit && !changeAuthOrderCheckbox
+                  //     && hasMultipleValue.includes('changeAuthOrder')
                     ? <MultipleText />
                     : <Tooltip title={getFieldTooltip('changeAuthOrder')}>
                       <Space>
@@ -1248,9 +1266,10 @@ export function EditPortDrawer ({
                 name='dot1xPortControl'
                 label={$t({ defaultMessage: '802.1x Port Control' })}
                 initialValue={PortControl.AUTO}
-                children={isMultipleEdit
-                  && !dot1xPortControlCheckbox
-                  && hasMultipleValue.includes('dot1xPortControl')
+                children={shouldRenderMultipleText('dot1xPortControl')
+                  // isMultipleEdit
+                  // && !dot1xPortControlCheckbox
+                  // && hasMultipleValue.includes('dot1xPortControl')
                   ? <MultipleText />
                   : <Select
                     options={Object.values(PortControl).map(controlType => ({
@@ -1291,9 +1310,10 @@ export function EditPortDrawer ({
                     return Promise.resolve()
                   } }
                 ]}
-                children={isMultipleEdit
-                  && !authDefaultVlanCheckbox
-                  && hasMultipleValue.includes('authDefaultVlan')
+                children={shouldRenderMultipleText('authDefaultVlan')
+                  // isMultipleEdit
+                  // && !authDefaultVlanCheckbox
+                  // && hasMultipleValue.includes('authDefaultVlan')
                   ? <MultipleText />
                   : <Input disabled={getFieldDisabled('authDefaultVlan')} maxLength={255} />
                 }
@@ -1306,9 +1326,10 @@ export function EditPortDrawer ({
                 name='authFailAction'
                 label={$t({ defaultMessage: 'Fail Action' })}
                 initialValue={AuthFailAction.BLOCK}
-                children={isMultipleEdit
-                  && !authFailActionCheckbox
-                  && hasMultipleValue.includes('authFailAction')
+                children={shouldRenderMultipleText('authFailAction')
+                  // isMultipleEdit
+                  // && !authFailActionCheckbox
+                  // && hasMultipleValue.includes('authFailAction')
                   ? <MultipleText />
                   : <Select
                     options={Object.values(AuthFailAction).map(failType => ({
@@ -1362,9 +1383,10 @@ export function EditPortDrawer ({
                     ] : []
                   )
                 ]}
-                children={isMultipleEdit
-                  && !restrictedVlanCheckbox
-                  && hasMultipleValue.includes('restrictedVlan')
+                children={shouldRenderMultipleText('restrictedVlan')
+                  // isMultipleEdit
+                  // && !restrictedVlanCheckbox
+                  // && hasMultipleValue.includes('restrictedVlan')
                   ? <MultipleText />
                   : <Input disabled={getFieldDisabled('restrictedVlan')} maxLength={255} />
                 }
@@ -1377,9 +1399,10 @@ export function EditPortDrawer ({
                 name='authTimeoutAction'
                 label={$t({ defaultMessage: 'Timeout Action' })}
                 initialValue={AuthTimeoutAction.NONE}
-                children={isMultipleEdit
-                  && !authTimeoutActionCheckbox
-                  && hasMultipleValue.includes('authTimeoutAction')
+                children={shouldRenderMultipleText('authTimeoutAction')
+                  // isMultipleEdit
+                  // && !authTimeoutActionCheckbox
+                  // && hasMultipleValue.includes('authTimeoutAction')
                   ? <MultipleText />
                   : <Select
                     options={Object.values(AuthTimeoutAction).map(timeoutType => ({
@@ -1433,9 +1456,10 @@ export function EditPortDrawer ({
                     ] : []
                   )
                 ]}
-                children={isMultipleEdit
-                  && !criticalVlanCheckbox
-                  && hasMultipleValue.includes('criticalVlan')
+                children={shouldRenderMultipleText('criticalVlan')
+                  // isMultipleEdit
+                  // && !criticalVlanCheckbox
+                  // && hasMultipleValue.includes('criticalVlan')
                   ? <MultipleText />
                   : <Input disabled={getFieldDisabled('criticalVlan')} maxLength={255} />
                 }
@@ -1522,7 +1546,8 @@ export function EditPortDrawer ({
               wrapperCol={{ span: 24 }}
               style={{ width: '95%' }}
               name='untaggedVlan'
-              children={isMultipleEdit && hasMultipleValue.includes('untaggedVlan')
+              children={shouldRenderMultipleText('untaggedVlan', true)
+                // isMultipleEdit && hasMultipleValue.includes('untaggedVlan')
                 ? <MultipleText data-testid='untagged-multi-text' />
                 : <Space style={{ fontSize: isMultipleEdit ? '14px' : '16px', margin: 0 }}>{
                   untaggedVlan
@@ -1547,7 +1572,8 @@ export function EditPortDrawer ({
               wrapperCol={{ span: 24 }}
               style={{ width: '95%', marginBottom: '0' }}
               name='taggedVlans'
-              children={isMultipleEdit && hasMultipleValue.includes('taggedVlans')
+              children={shouldRenderMultipleText('taggedVlans', true)
+                // isMultipleEdit && hasMultipleValue.includes('taggedVlans')
                 ? <MultipleText data-testid='tagged-multi-text' />
                 : <Space style={{ fontSize: isMultipleEdit ? '14px' : '16px', margin: 0 }}>{
                   taggedVlans?.length > 0
@@ -1624,7 +1650,8 @@ export function EditPortDrawer ({
             noStyle
             label={false}
             children={
-              isMultipleEdit && !portEnableCheckbox && hasMultipleValue.includes('portEnable')
+              shouldRenderMultipleText('portEnable')
+              // isMultipleEdit && !portEnableCheckbox && hasMultipleValue.includes('portEnable')
                 ? <MultipleText />
                 : <Tooltip title={getFieldTooltip('portEnable')}>
                   <Space>
@@ -1652,7 +1679,8 @@ export function EditPortDrawer ({
         { getFieldTemplate(
           <Form.Item
             noStyle
-            children={isMultipleEdit && !poeEnableCheckbox && hasMultipleValue.includes('poeEnable')
+            children={shouldRenderMultipleText('poeEnable')
+              // isMultipleEdit && !poeEnableCheckbox && hasMultipleValue.includes('poeEnable')
               ? <MultipleText />
               : <Tooltip title={getFieldTooltip('poeEnable')}>
                 <Space>
@@ -1682,7 +1710,8 @@ export function EditPortDrawer ({
             name='poeClass'
             label={$t({ defaultMessage: 'PoE Class' })}
             initialValue='UNSET'
-            children={isMultipleEdit && !poeClassCheckbox && hasMultipleValue.includes('poeClass')
+            children={shouldRenderMultipleText('poeClass')
+              // isMultipleEdit && !poeClassCheckbox && hasMultipleValue.includes('poeClass')
               ? <MultipleText />
               : <Select
                 options={poeClassOptions.map(
@@ -1700,7 +1729,8 @@ export function EditPortDrawer ({
             label={$t({ defaultMessage: 'PoE Priority' })}
             initialValue={1}
             children={
-              isMultipleEdit && !poePriorityCheckbox && hasMultipleValue.includes('poePriority')
+              shouldRenderMultipleText('poePriority')
+              // isMultipleEdit && !poePriorityCheckbox && hasMultipleValue.includes('poePriority')
                 ? <MultipleText />
                 : <Select
                   options={poePriorityOptions}
@@ -1721,7 +1751,8 @@ export function EditPortDrawer ({
               ]}
               initialValue=''
               children={
-                isMultipleEdit && !poeBudgetCheckbox && hasMultipleValue.includes('poeBudget')
+                shouldRenderMultipleText('poeBudget')
+                // isMultipleEdit && !poeBudgetCheckbox && hasMultipleValue.includes('poeBudget')
                   ? <MultipleText />
                   : <Input
                     data-testid='poe-budget-input'
@@ -1750,8 +1781,9 @@ export function EditPortDrawer ({
             name='portProtected'
             valuePropName='checked'
             initialValue={false}
-            children={isMultipleEdit &&
-              !portProtectedCheckbox && hasMultipleValue.includes('portProtected')
+            children={shouldRenderMultipleText('portProtected')
+              // isMultipleEdit &&
+              // !portProtectedCheckbox && hasMultipleValue.includes('portProtected')
               ? <MultipleText />
               : <Switch
                 disabled={getFieldDisabled('portProtected')}
@@ -1768,8 +1800,9 @@ export function EditPortDrawer ({
             name='lldpEnable'
             valuePropName='checked'
             initialValue={true}
-            children={isMultipleEdit &&
-              !lldpEnableCheckbox && hasMultipleValue.includes('lldpEnable')
+            children={shouldRenderMultipleText('lldpEnable')
+              // isMultipleEdit &&
+              // !lldpEnableCheckbox && hasMultipleValue.includes('lldpEnable')
               ? <MultipleText />
               : <Switch
                 disabled={getFieldDisabled('lldpEnable')}
@@ -1783,7 +1816,8 @@ export function EditPortDrawer ({
           <Form.Item
             {...getFormItemLayout(isMultipleEdit)}
             label={$t({ defaultMessage: 'Port Speed' })}
-            children={isMultipleEdit && !portSpeedCheckbox && hasMultipleValue.includes('portSpeed')
+            children={shouldRenderMultipleText('portSpeed')
+              // isMultipleEdit && !portSpeedCheckbox && hasMultipleValue.includes('portSpeed')
               ? <MultipleText />
               : <Tooltip title={getFieldTooltip('portSpeed')}>
                 <Form.Item
@@ -1809,8 +1843,9 @@ export function EditPortDrawer ({
             name='rstpAdminEdgePort'
             valuePropName='checked'
             initialValue={false}
-            children={isMultipleEdit &&
-              !rstpAdminEdgePortCheckbox && hasMultipleValue.includes('rstpAdminEdgePort')
+            children={shouldRenderMultipleText('rstpAdminEdgePort')
+              // isMultipleEdit &&
+              // !rstpAdminEdgePortCheckbox && hasMultipleValue.includes('rstpAdminEdgePort')
               ? <MultipleText />
               : <Switch
                 disabled={getFieldDisabled('rstpAdminEdgePort')}
@@ -1828,13 +1863,13 @@ export function EditPortDrawer ({
             name='stpBpduGuard'
             valuePropName='checked'
             initialValue={false}
-            children={
-              isMultipleEdit && !stpBpduGuardCheckbox && hasMultipleValue.includes('stpBpduGuard')
-                ? <MultipleText />
-                : <Switch
-                  disabled={getFieldDisabled('stpBpduGuard')}
-                  className={getToggleClassName('stpBpduGuard', isMultipleEdit, hasMultipleValue)}
-                />}
+            children={shouldRenderMultipleText('stpBpduGuard')
+              // isMultipleEdit && !stpBpduGuardCheckbox && hasMultipleValue.includes('stpBpduGuard')
+              ? <MultipleText />
+              : <Switch
+                disabled={getFieldDisabled('stpBpduGuard')}
+                className={getToggleClassName('stpBpduGuard', isMultipleEdit, hasMultipleValue)}
+              />}
           />,
           'stpBpduGuard', $t({ defaultMessage: 'STP BPDU Guard' }), true
         )}
@@ -1846,13 +1881,13 @@ export function EditPortDrawer ({
             name='stpRootGuard'
             valuePropName='checked'
             initialValue={false}
-            children={
-              isMultipleEdit && !stpRootGuardCheckbox && hasMultipleValue.includes('stpRootGuard')
-                ? <MultipleText />
-                : <Switch
-                  disabled={getFieldDisabled('stpRootGuard')}
-                  className={getToggleClassName('stpRootGuard', isMultipleEdit, hasMultipleValue)}
-                />
+            children={shouldRenderMultipleText('stpRootGuard')
+              // isMultipleEdit && !stpRootGuardCheckbox && hasMultipleValue.includes('stpRootGuard')
+              ? <MultipleText />
+              : <Switch
+                disabled={getFieldDisabled('stpRootGuard')}
+                className={getToggleClassName('stpRootGuard', isMultipleEdit, hasMultipleValue)}
+              />
             }
           />,
           'stpRootGuard', $t({ defaultMessage: 'STP Root Guard' }), true
@@ -1867,8 +1902,9 @@ export function EditPortDrawer ({
             name='dhcpSnoopingTrust'
             valuePropName='checked'
             initialValue={false}
-            children={isMultipleEdit && !dhcpSnoopingTrustCheckbox
-              && hasMultipleValue.includes('dhcpSnoopingTrust')
+            children={shouldRenderMultipleText('dhcpSnoopingTrust')
+              // isMultipleEdit && !dhcpSnoopingTrustCheckbox
+              // && hasMultipleValue.includes('dhcpSnoopingTrust')
               ? <MultipleText />
               : <Switch
                 disabled={getFieldDisabled('dhcpSnoopingTrust')}
@@ -1884,7 +1920,8 @@ export function EditPortDrawer ({
         { getFieldTemplate(
           <Form.Item
             noStyle
-            children={isMultipleEdit && !ipsgCheckbox && hasMultipleValue.includes('ipsg')
+            children={shouldRenderMultipleText('ipsg')
+              // isMultipleEdit && !ipsgCheckbox && hasMultipleValue.includes('ipsg')
               ? <MultipleText />
               : <Form.Item
                 noStyle
@@ -1907,7 +1944,8 @@ export function EditPortDrawer ({
             noStyle
             name='lldpQos'
             initialValue={false}
-            children={isMultipleEdit && !lldpQosCheckbox && hasMultipleValue.includes('lldpQos')
+            children={shouldRenderMultipleText('lldpQos')
+              // isMultipleEdit && !lldpQosCheckbox && hasMultipleValue.includes('lldpQos')
               ? <MultipleText />
               : <Button type='link'
                 key='create-lldp'
@@ -1949,13 +1987,13 @@ export function EditPortDrawer ({
               name='ingressAcl'
               label={$t({ defaultMessage: 'Ingress ACL (IPv4)' })}
               initialValue=''
-              children={
-                isMultipleEdit && !ingressAclCheckbox && hasMultipleValue.includes('ingressAcl')
-                  ? <MultipleText />
-                  : <Select
-                    options={aclsOptions}
-                    disabled={getFieldDisabled('ingressAcl')}
-                  />
+              children={shouldRenderMultipleText('ingressAcl')
+                // isMultipleEdit && !ingressAclCheckbox && hasMultipleValue.includes('ingressAcl')
+                ? <MultipleText />
+                : <Select
+                  options={aclsOptions}
+                  disabled={getFieldDisabled('ingressAcl')}
+                />
               }
             />
             {((isMultipleEdit && ingressAclCheckbox) || !isMultipleEdit) && hasCreatePermission &&
@@ -1982,13 +2020,13 @@ export function EditPortDrawer ({
               name='egressAcl'
               label={$t({ defaultMessage: 'Egress ACL (IPv4)' })}
               initialValue=''
-              children={
-                isMultipleEdit && !egressAclCheckbox && hasMultipleValue.includes('egressAcl')
-                  ? <MultipleText />
-                  : <Select
-                    options={aclsOptions}
-                    disabled={getFieldDisabled('egressAcl')}
-                  />
+              children={shouldRenderMultipleText('egressAcl')
+                // isMultipleEdit && !egressAclCheckbox && hasMultipleValue.includes('egressAcl')
+                ? <MultipleText />
+                : <Select
+                  options={aclsOptions}
+                  disabled={getFieldDisabled('egressAcl')}
+                />
               }
             />
             {((isMultipleEdit && egressAclCheckbox) || !isMultipleEdit) && hasCreatePermission &&
@@ -2013,7 +2051,8 @@ export function EditPortDrawer ({
             name='tags'
             label={$t({ defaultMessage: 'Tags' })}
             initialValue=''
-            children={isMultipleEdit && !tagsCheckbox && hasMultipleValue.includes('tags')
+            children={shouldRenderMultipleText('tags')
+              // isMultipleEdit && !tagsCheckbox && hasMultipleValue.includes('tags')
               ? <MultipleText />
               : <Input disabled={getFieldDisabled('tags')} maxLength={255} />
             }
