@@ -410,16 +410,19 @@ export function SwitchForm () {
     setIsRodanModel(isRodan || false)
   }
 
+  const switchSerialPatterns = [
+    { condition: isSupport8100 && isSupport8200AV, pattern: SWITCH_SERIAL_PATTERN_INCLUDED_8100_8200AV },
+    { condition: isSupport8100, pattern: SWITCH_SERIAL_PATTERN_INCLUDED_8100 },
+    { condition: isSupport8200AV, pattern: SWITCH_SERIAL_PATTERN_INCLUDED_8200AV }
+  ]
+
   const serialNumberRegExp = function (value: string) {
     const modelNotSupportStack = ['ICX7150-C08P', 'ICX7150-C08PT']
     // Only 7150-C08P/C08PT are Switch Only.
     // Only 7850 all models are Router Only.
     const modelOnlyFirmware = ['ICX7150-C08P', 'ICX7150-C08PT', 'ICX7850']
-    // eslint-disable-next-line max-len
-    const re = isSupport8100 && isSupport8200AV ? new RegExp(SWITCH_SERIAL_PATTERN_INCLUDED_8100_8200AV) :
-      isSupport8100 ? new RegExp(SWITCH_SERIAL_PATTERN_INCLUDED_8100) :
-        isSupport8200AV ? new RegExp(SWITCH_SERIAL_PATTERN_INCLUDED_8200AV) :
-          new RegExp(SWITCH_SERIAL_PATTERN)
+    const matchedPattern = switchSerialPatterns.find(p => p.condition)
+    const re = new RegExp(matchedPattern ? matchedPattern.pattern : SWITCH_SERIAL_PATTERN)
     if (value && !re.test(value)) {
       return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
     }
