@@ -15,14 +15,14 @@ import { Provider }                                    from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import {
-  mockEnabledNoNSGPropertyConfig,
-  mockPersonaGroupWithoutNSG,
+  mockEnabledNoPinPropertyConfig,
+  mockPersonaGroupWithoutPin,
   mockPropertyUnitList,
   mockConnectionMeteringTableResult,
   mockConnectionMeterings,
   replacePagination,
-  mockEnabledNSGPropertyConfig,
-  mockPersonaGroupWithNSG
+  mockEnabledPinPropertyConfig,
+  mockPersonaGroupWithPin
 } from '../../__tests__/fixtures'
 
 import { VenuePropertyTab } from './index'
@@ -90,7 +90,7 @@ jest.mock('./PropertyUnitDrawer', () => ({
 
 const tenantId = '15a04f095a8f4a96acaf17e921e8a6df'
 const params = { tenantId, venueId: 'f892848466d047798430de7ac234e940' }
-const enableNsgParams = { tenantId, venueId: '23edaec8639a42c89ce0a52143c64f15' }
+const enablePinParams = { tenantId, venueId: '23edaec8639a42c89ce0a52143c64f15' }
 const updateUnitFn = jest.fn()
 const getPersonaGroupSpy = jest.fn()
 const getApSpy = jest.fn()
@@ -109,9 +109,9 @@ describe('Property Unit Page', () => {
         PropertyUrlsInfo.getPropertyConfigs.url,
         (req, res, ctx) => {
           return res(ctx.json(
-            req.params.venueId === enableNsgParams.venueId
-              ? mockEnabledNSGPropertyConfig
-              : mockEnabledNoNSGPropertyConfig)
+            req.params.venueId === enablePinParams.venueId
+              ? mockEnabledPinPropertyConfig
+              : mockEnabledNoPinPropertyConfig)
           )
         }
       ),
@@ -129,8 +129,8 @@ describe('Property Unit Page', () => {
           getPersonaGroupSpy()
           return res(ctx.json(
             req.params.groupId === 'persona-group-id-noNSG'
-              ? mockPersonaGroupWithoutNSG
-              : mockPersonaGroupWithNSG)
+              ? mockPersonaGroupWithoutPin
+              : mockPersonaGroupWithPin)
           )
         }
       ),
@@ -218,10 +218,10 @@ describe('Property Unit Page', () => {
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
   })
 
-  it('should render Unit table withNsg', async () => {
+  it('should render Unit table withPin', async () => {
     render(<Provider><VenuePropertyTab /></Provider>, {
       route: {
-        params: enableNsgParams,
+        params: enablePinParams,
         path: '/:tenantId/t/venues/:venueId/venue-details/units'
       }
     })

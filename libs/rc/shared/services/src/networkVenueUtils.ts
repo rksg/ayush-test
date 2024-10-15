@@ -134,6 +134,7 @@ export const aggregatedRbacVenueNetworksData = (
 
     data.push({
       ...(item as Network),
+      clients: item.clientCount ?? 0,
       activated: calculateRbacNetworkActivated(item, venueId),
       deepNetwork: deepNetwork,
       incompatible: apCompatibilities[item.id] ?? 0
@@ -730,7 +731,7 @@ export const fetchRbacAccessControlSubPolicyNetwork = async (queryArgs: RequestP
     data: {
       ...(l2aclPolicyListInfoQuery.data.data.length ? { l2AclPolicyId: l2aclPolicyListInfoQuery.data.data[0].id, l2AclEnable: true } : {}),
       ...(l3aclPolicyListInfoQuery.data.data.length ? { l3AclPolicyId: l3aclPolicyListInfoQuery.data.data[0].id, l3AclEnable: true } : {}),
-      ...(appAclPolicyListInfoQuery.data.data.length ? { appAclPolicyId: appAclPolicyListInfoQuery.data.data[0].id, applicationPolicyEnable: true } : {}),
+      ...(appAclPolicyListInfoQuery.data.data.length ? { applicationPolicyId: appAclPolicyListInfoQuery.data.data[0].id, applicationPolicyEnable: true } : {}),
       ...(deviceAclPolicyListInfoQuery.data.data.length ? { devicePolicyId: deviceAclPolicyListInfoQuery.data.data[0].id, enableDeviceOs: true } : {})
     }
   }
@@ -901,7 +902,7 @@ export const fetchRbacNetworkVenueList = async (queryArgs: RequestPayload<{ isTe
           }
         })
 
-        const networkVlanPoolId = networkVlanPoolList?.data?.find(vlanPool => vlanPool.wifiNetworkIds?.includes(networkId))?.id
+        const networkVlanPool = networkVlanPoolList?.data?.find(vlanPool => vlanPool.wifiNetworkIds?.includes(networkId))
 
         return {
           ...defaultNetworkVenue,
@@ -909,7 +910,11 @@ export const fetchRbacNetworkVenueList = async (queryArgs: RequestPayload<{ isTe
           ...(venueApGroups && { apGroups: venueApGroups }),
           networkId,
           venueId,
-          ...(networkVlanPoolId && { vlanPoolId: networkVlanPoolId })
+          ...(networkVlanPool && {
+            vlanPoolId: networkVlanPool.id,
+            vlanPoolName: networkVlanPool.name,
+            vlanMembers: networkVlanPool.vlanMembers
+          })
         }
 
       })

@@ -32,12 +32,12 @@ export const transformNetwork = (item: Network) => {
 }
 
 export const transformWifiNetwork = (item: WifiNetwork) => {
-  const { apSerialNumbers, clientCount, venueApGroups } = item
+  const { clientCount, venueApGroups, apCount } = item
   const venues = transVenuesForNetwork(venueApGroups)
 
   return {
     ...item,
-    aps: apSerialNumbers?.length ?? 0,
+    aps: apCount ?? 0,
     clients: clientCount ?? 0,
     venues: venues,
     activated: item.activated ?? { isActivated: false },
@@ -55,4 +55,9 @@ export function transVenuesForNetwork (venueApGroups: WifiNetwork['venueApGroups
     names: [],
     ids: venueApGroups.map(v => v.venueId)
   }
+}
+
+export function formatMacAddress (macAddress: string): string {
+  const replaceMacAddress = macAddress.replace(/[^a-z0-9]/gi, '')
+  return replaceMacAddress?.match(/.{1,2}/g)?.join(':') ?? ''
 }

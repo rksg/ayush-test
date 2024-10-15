@@ -627,7 +627,9 @@ export const useSdLanScopedNetworkVenues = (networkId: string | undefined) => {
 
   const { data } = useGetEdgeSdLanP2ViewDataListQuery({
     payload: {
-      filters: { networkIds: [networkId] },
+      filters: isEdgeMvSdLanReady
+        ? { 'tunneledWlans.networkId': [networkId] }
+        : { networkIds: [networkId] },
       fields: [
         'id',
         'name',

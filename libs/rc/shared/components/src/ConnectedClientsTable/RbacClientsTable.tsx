@@ -25,10 +25,10 @@ import {
   ClientInfo,
   getClientHealthClass
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { WifiScopes }            from '@acx-ui/types'
-import { filterByAccess }        from '@acx-ui/user'
-import { noDataDisplay }         from '@acx-ui/utils'
+import { TenantLink, useParams }         from '@acx-ui/react-router-dom'
+import { WifiScopes }                    from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { noDataDisplay }                 from '@acx-ui/utils'
 
 import { ClientHealthIcon } from '../ClientHealthIcon'
 
@@ -636,7 +636,7 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
   const rowActions: TableProps<ClientInfo>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Disconnect' }),
-      scopeKey: [WifiScopes.UPDATE, WifiScopes.DELETE],
+      scopeKey: [WifiScopes.UPDATE],
       onClick: async (selectedRows, clearRowSelections) => {
         const selectedVenues = selectedRows.map((row) => row.venueInformation.id)
         const allAps = (await getApList({ params,
@@ -661,7 +661,7 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
     },
     {
       label: $t({ defaultMessage: 'Revoke' }),
-      scopeKey: [WifiScopes.UPDATE, WifiScopes.DELETE],
+      scopeKey: [WifiScopes.UPDATE],
       tooltip: (tableSelected.actionButton.revoke.disable ?
         $t({ defaultMessage: 'Only clients connected to captive portal networks may have their access revoked' })
         :''
@@ -700,6 +700,9 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
     }
   ]
 
+  const showRowSelection = (wifiEDAClientRevokeToggle &&
+    hasPermission({ scopes: [ WifiScopes.UPDATE, WifiScopes.DELETE] }) )
+
   return (
     <UI.ClientTableDiv>
       <Loader states={[
@@ -709,7 +712,7 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
           {$t({ defaultMessage: 'Connected Clients' })}
         </Subtitle>
         <Table<ClientInfo>
-          rowSelection={(wifiEDAClientRevokeToggle ? rowSelection : undefined)}
+          rowSelection={(showRowSelection && rowSelection)}
           rowActions={(wifiEDAClientRevokeToggle ? filterByAccess(rowActions) : undefined)}
           settingsId={settingsId}
           columns={GetCols(useIntl(), showAllColumns)}

@@ -47,7 +47,7 @@ const serviceTypePathMapping: Record<ServiceType, string> = {
   [ServiceType.WIFI_CALLING]: 'wifiCalling',
   [ServiceType.MDNS_PROXY]: 'mdnsProxy',
   [ServiceType.DPSK]: 'dpsk',
-  [ServiceType.NETWORK_SEGMENTATION]: 'personalIdentityNetwork',
+  [ServiceType.PIN]: 'personalIdentityNetwork',
   [ServiceType.WEBAUTH_SWITCH]: 'webAuth',
   [ServiceType.RESIDENT_PORTAL]: 'residentPortal'
 }

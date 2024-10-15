@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { PoweredBy, WiFi4EuBanner }                from '@acx-ui/icons'
-import { DefaultUIConfiguration, UIConfiguration } from '@acx-ui/rc/utils'
+import { PoweredBy, WiFi4EuBanner }                                  from '@acx-ui/icons'
+import { DefaultUIConfiguration, getLogoImageSize, UIConfiguration } from '@acx-ui/rc/utils'
 
 import { StepNavigation } from './StepNavigation'
 import * as UI            from './styledComponent'
@@ -21,7 +21,6 @@ interface ContentPreviewProps {
 export function ContentPreview (props: ContentPreviewProps) {
   const { uiConfiguration, title, body, extra, hideNavigation = false, ...rest } = props
   const {
-    wifi4EUNetworkId,
     uiColorSchema,
     uiStyleSchema,
     disablePoweredBy
@@ -31,17 +30,15 @@ export function ContentPreview (props: ContentPreviewProps) {
     <UI.PreviewContainer
       hasBackgroundImage={!!uiConfiguration?.logoImage}
     >
-      {!!wifi4EUNetworkId &&
+      {!!uiStyleSchema.wifi4EUNetworkId &&
         <WiFi4EuBanner />
       }
 
       {uiConfiguration?.logoImage &&
         <img
           style={{
-            height: 105 * (uiStyleSchema.logoRatio
-              ?? DefaultUIConfiguration.uiStyleSchema.logoRatio),
-            width: 105 * (uiStyleSchema.logoRatio
-              ?? DefaultUIConfiguration.uiStyleSchema.logoRatio),
+            height: getLogoImageSize(uiStyleSchema.logoSize),
+            width: getLogoImageSize(uiStyleSchema.logoSize),
             margin: '24px'
           }}
           src={uiConfiguration?.logoImage}
@@ -50,9 +47,9 @@ export function ContentPreview (props: ContentPreviewProps) {
       }
       <UI.Title
         style={{
-          fontSize: `${uiStyleSchema.titleFontSize}px`,
-          letterSpacing: `${uiStyleSchema.titleFontSize * 0.03}px`,
-          lineHeight: `${uiStyleSchema.titleFontSize * 1.2}px`,
+          fontSize: `${uiStyleSchema.headerFontSize}px`,
+          letterSpacing: `${uiStyleSchema.headerFontSize * 0.03}px`,
+          lineHeight: `${uiStyleSchema.headerFontSize * 1.2}px`,
           color: uiColorSchema.fontHeaderColor
         }}
       >
@@ -60,7 +57,8 @@ export function ContentPreview (props: ContentPreviewProps) {
       </UI.Title>
       <UI.Body
         style={{
-          color: uiColorSchema.fontColor
+          color: uiColorSchema.fontColor,
+          overflow: 'auto'
         }}
       >
         {body}
@@ -68,7 +66,7 @@ export function ContentPreview (props: ContentPreviewProps) {
 
       {extra}
 
-      {!hideNavigation && <StepNavigation {...rest} />}
+      {!hideNavigation && <StepNavigation {...rest} config={uiColorSchema} />}
 
       {!disablePoweredBy &&
         <UI.PoweredByContainer>

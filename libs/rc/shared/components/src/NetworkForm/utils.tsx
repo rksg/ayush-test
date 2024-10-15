@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any, max-len */
 import { useEffect, useMemo, useState } from 'react'
 
 import { FormInstance }            from 'antd'
@@ -216,12 +216,10 @@ export function useServicePolicyEnabledWithConfigTemplate (configTemplateType: C
   return false
 }
 
-// eslint-disable-next-line max-len
 export function deriveRadiusFieldsFromServerData (data: NetworkSaveData): NetworkSaveData {
   return {
     ...data,
     isCloudpathEnabled: data.authRadius ? true : false,
-    // eslint-disable-next-line max-len
     enableAccountingService: (data.accountingRadius || data.guestPortal?.wisprPage?.accountingRadius)
       ? true
       : false
@@ -273,7 +271,8 @@ export function useRadiusServer () {
         wlan: {
           macAddressAuthenticationConfiguration: {
             macAuthMacFormat: radiusServerSettings.macAuthMacFormat
-          }
+          },
+          macAuthMacFormat: radiusServerSettings.macAuthMacFormat
         }
       }
 
@@ -299,20 +298,17 @@ export function useRadiusServer () {
     fetchRadiusDetails()
   }, [radiusServerProfiles, radiusServerSettings])
 
-
-  // eslint-disable-next-line max-len
   const updateProfile = async (saveData: NetworkSaveData, networkId?: string) => {
-    if (!resolvedRbacEnabled || !networkId) return Promise.resolve()
-
     const mutations: Promise<CommonResult>[] = []
 
-    // eslint-disable-next-line max-len
     const radiusServerIdKeys: Extract<keyof NetworkSaveData, 'authRadiusId' | 'accountingRadiusId'>[] = ['authRadiusId', 'accountingRadiusId']
     radiusServerIdKeys.forEach(radiusKey => {
-      const newRadiusId = saveData[radiusKey]
+      const newRadiusId = (radiusKey === 'authRadiusId' || saveData.enableAccountingService) ? saveData[radiusKey] : undefined
       const oldRadiusId = radiusServerConfigurations?.[radiusKey]
 
-      const isRadiusIdChanged = (newRadiusId ?? '') !== (oldRadiusId ?? '')
+      if (!newRadiusId && !oldRadiusId) return
+
+      const isRadiusIdChanged = newRadiusId !== oldRadiusId
       const isDifferentNetwork = saveData.id !== networkId
 
       if (isRadiusIdChanged || isDifferentNetwork) {
@@ -327,20 +323,22 @@ export function useRadiusServer () {
   }
 
   const updateSettings = async (saveData: NetworkSaveData, networkId?: string) => {
-    if (!resolvedRbacEnabled || !networkId) return Promise.resolve()
+    if (!shouldSaveRadiusServerSettings(saveData)) return Promise.resolve()
 
     return await updateRadiusServerSettings({
       params: { networkId },
       payload: {
         enableAccountingProxy: saveData.enableAccountingProxy,
         enableAuthProxy: saveData.enableAuthProxy,
-        macAuthMacFormat: saveData.wlan?.macAddressAuthenticationConfiguration?.macAuthMacFormat
+        macAuthMacFormat: resolveMacAuthFormat(saveData)
       }
     }).unwrap()
   }
 
   // eslint-disable-next-line max-len
   const updateRadiusServer = async (saveData: NetworkSaveData, networkId?: string) => {
+    if (!resolvedRbacEnabled || !networkId) return Promise.resolve()
+
     return Promise.all([
       updateProfile(saveData, networkId),
       updateSettings(saveData, networkId)
@@ -351,6 +349,28 @@ export function useRadiusServer () {
     updateRadiusServer,
     radiusServerConfigurations
   }
+}
+
+function resolveMacAuthFormat (newSettings: NetworkSaveData): string | undefined {
+  return newSettings.type === NetworkTypeEnum.AAA
+    ? newSettings.wlan?.macAddressAuthenticationConfiguration?.macAuthMacFormat
+    : newSettings.wlan?.macAuthMacFormat
+}
+
+function shouldSaveRadiusServerSettings (saveData: NetworkSaveData): boolean {
+  switch (saveData.type) {
+    case NetworkTypeEnum.PSK:
+    case NetworkTypeEnum.OPEN:
+      return !!saveData.wlan?.macAuthMacFormat
+    case NetworkTypeEnum.DPSK:
+      return !!saveData.isCloudpathEnabled
+    case NetworkTypeEnum.AAA:
+      return !saveData.useCertificateTemplate
+    case NetworkTypeEnum.CAPTIVEPORTAL:
+      return saveData.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.Cloudpath
+  }
+
+  return false
 }
 
 export function useClientIsolationActivations (shouldSkipMode: boolean,
@@ -489,7 +509,7 @@ export function useVlanPool () {
     if (!vlanPool && !originalPoolId) return
     if (originalPoolId && !vlanPool) await deactivateVlanPool(networkId, originalPoolId)
     // eslint-disable-next-line max-len
-    if (vlanPool && originalPoolId !== vlanPool.id) await activateVlanPool(vlanPool, networkId, vlanPool.id)
+    if (vlanPool && originalPoolId !== vlanPool.id)  await activateVlanPool(vlanPool, networkId, vlanPool.id)
   }
 
   return {
@@ -613,7 +633,6 @@ export function useAccessControlActivation () {
     useMutationFn: useDeactivateAccessControlProfileOnWifiNetworkMutation,
     useTemplateMutationFn: useDeactivateAccessControlProfileTemplateOnWifiNetworkMutation
   })
-  const { networkId } = useParams()
 
   const accessControlWifiActionMap = {
     l2AclPolicyId: {
@@ -782,7 +801,7 @@ export function useAccessControlActivation () {
     ])
   }
 
-  const updateAccessControl = async (formData: NetworkSaveData, data?: NetworkSaveData | null) => {
+  const updateAccessControl = async (formData: NetworkSaveData, data?: NetworkSaveData | null, networkId?: string) => {
     if (!enableServicePolicyRbac || !networkId) return Promise.resolve()
 
     const comparisonResult = comparePayload(

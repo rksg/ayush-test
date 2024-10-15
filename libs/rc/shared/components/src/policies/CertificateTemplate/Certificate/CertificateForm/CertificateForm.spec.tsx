@@ -1,12 +1,16 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CertificateUrls, PolicyOperation, PolicyType, getPolicyRoutePath } from '@acx-ui/rc/utils'
-import { Path, To, useTenantLink }                                          from '@acx-ui/react-router-dom'
-import { Provider }                                                         from '@acx-ui/store'
-import { mockServer, render, renderHook, screen, waitFor }                  from '@acx-ui/test-utils'
+import { CertificateUrls, PolicyOperation, PolicyType, getPolicyRoutePath, PersonaUrls } from '@acx-ui/rc/utils'
+import { Path, To, useTenantLink }                                                       from '@acx-ui/react-router-dom'
+import { Provider }                                                                      from '@acx-ui/store'
+import { mockServer, render, renderHook, screen, waitFor }                               from '@acx-ui/test-utils'
 
-import { certificateAuthorityList, certificateTemplateList } from '../../__test__/fixtures'
+import {
+  certificateAuthorityList,
+  certificateTemplateList,
+  mockPersonaGroupWithIdentity
+} from '../../__test__/fixtures'
 
 import { CertificateForm } from './CertificateForm'
 
@@ -32,12 +36,16 @@ describe('CertificateForm', () => {
         (req, res, ctx) => res(ctx.json(certificateTemplateList))
       ),
       rest.post(
-        CertificateUrls.generateCertificate.url,
+        CertificateUrls.generateCertificatesToIdentity.url,
         (req, res, ctx) => res(ctx.json({}))
       ),
       rest.post(
         CertificateUrls.getCAs.url,
         (req, res, ctx) => res(ctx.json(certificateAuthorityList))
+      ),
+      rest.get(
+        PersonaUrls.getPersonaGroupById.url,
+        (req, res, ctx) => res(ctx.json(mockPersonaGroupWithIdentity))
       )
     )
   })
@@ -54,6 +62,10 @@ describe('CertificateForm', () => {
     await userEvent.click(select)
     const certificateTemplate = await screen.findByText('certificateTemplate1')
     await userEvent.click(certificateTemplate)
+    const selectIdentity = screen.getByRole('combobox', { name: 'Identity' })
+    await userEvent.click(selectIdentity)
+    const identity = await screen.findByText('testccc-123')
+    await userEvent.click(identity)
     await userEvent.click(screen.getByRole('combobox', { name: 'CSR Source' }))
     await userEvent.click(await screen.findByText('Copy & Paste CSR'))
     await userEvent.type(screen.getByLabelText('Certificate Signing Request'), 'testCSR')

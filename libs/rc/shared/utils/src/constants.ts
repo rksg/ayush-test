@@ -117,7 +117,7 @@ export enum ServiceType {
   WIFI_CALLING = 'Wi-Fi Calling',
   MDNS_PROXY = 'mDNS Proxy',
   DPSK = 'DPSK',
-  NETWORK_SEGMENTATION = 'Personal Identity Network',
+  PIN = 'Personal Identity Network',
   WEBAUTH_SWITCH = 'Web Auth',
   RESIDENT_PORTAL = 'Resident Portal',
   EDGE_SD_LAN = 'SD-LAN',

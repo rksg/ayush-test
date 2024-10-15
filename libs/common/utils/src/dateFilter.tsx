@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import moment from 'moment-timezone'
 
 import { DateRangeFilter, DateRange, getDateRangeFilter } from './dateUtil'
-import { useEncodedParameter }                            from './encodedParameter'
+import { useEncodedParameter }                            from './useEncodedParameter'
 
 import type { Moment } from 'moment-timezone'
 

@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars, max-len */
 import { useEffect, useRef, useState, createContext } from 'react'
 
-import { MutationDefinition }                                            from '@reduxjs/toolkit/query'
 import { Form }                                                          from 'antd'
 import { get, isEqual, isNil, isNull, isUndefined, merge, omit, omitBy } from 'lodash'
 import { defineMessage, useIntl }                                        from 'react-intl'
@@ -82,6 +81,7 @@ import { OpenSettingsForm }        from './NetworkSettings/OpenSettingsForm'
 import { PskSettingsForm }         from './NetworkSettings/PskSettingsForm'
 import { SummaryForm }             from './NetworkSummary/SummaryForm'
 import {
+  handleServicePolicyRbacPayload,
   tranferSettingsToSave,
   transferDetailToSave,
   transferMoreSettingsToSave,
@@ -449,7 +449,7 @@ export function NetworkForm (props:{
     return true
   }
 
-  const handleGuestMoreSetting = (data: GuestMore) => {
+  const handleGuestMoreSetting = (data: GuestMore): NetworkSaveData => {
     if(data.guestPortal){
       if(saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr
         &&data.guestPortal.wisprPage?.customExternalProvider){
@@ -465,7 +465,7 @@ export function NetworkForm (props:{
     return handleUserConnection(data)
   }
 
-  const handleUserConnection = (data: GuestMore) => {
+  const handleUserConnection = (data: GuestMore): NetworkSaveData => {
     if(data.guestPortal && data.userConnection){
       const { userSessionTimeout, userSessionTimeoutUnit,
         lockoutPeriod, lockoutPeriodUnit,
@@ -721,51 +721,64 @@ export function NetworkForm (props:{
   }
 
   const processAddData = function (data: NetworkSaveData) {
-    const dataWlan = handleWlanAdvanced3MLO(data, wifi7Mlo3LinkFlag)
-    const saveData = handleGuestMoreSetting(dataWlan)
-    const payload = updateClientIsolationAllowlist(
-      // omit id to handle clone
-      omit(saveData,
-        ['id',
-          'networkSecurity',
-          'enableOwe',
-          'pskProtocol',
-          'isOweMaster',
-          'owePairNetworkId',
-          'certificateTemplateId',
-          'hotspot20Settings.wifiOperator',
-          'hotspot20Settings.originalOperator',
-          'hotspot20Settings.identityProviders',
-          'hotspot20Settings.originalProviders',
-          'userConnection',
-          ...(enableServiceRbac) ? ['dpskServiceId', 'macRegistrationPoolId'] : [],
-          ...(isUseWifiRbacApi) ? ['portalServiceProfileId'] : []
-        ]))
-    return payload
+    const processWlanAdvanced3MLO = (data: NetworkSaveData) => handleWlanAdvanced3MLO(data, wifi7Mlo3LinkFlag)
+    const processGuestMoreSetting = (data: NetworkSaveData) => handleGuestMoreSetting(data)
+    const processCloneMode = (data: NetworkSaveData) => omit(data,
+      ['id',
+        'networkSecurity',
+        'enableOwe',
+        'pskProtocol',
+        'isOweMaster',
+        'owePairNetworkId',
+        'certificateTemplateId',
+        'hotspot20Settings.wifiOperator',
+        'hotspot20Settings.originalOperator',
+        'hotspot20Settings.identityProviders',
+        'hotspot20Settings.originalProviders',
+        'userConnection'
+      ])
+    // eslint-disable-next-line max-len
+    const processClientIsolationAllowlist = (data: NetworkSaveData) => updateClientIsolationAllowlist(data)
+    const processFns = [
+      processWlanAdvanced3MLO,
+      processGuestMoreSetting,
+      processCloneMode,
+      processClientIsolationAllowlist
+    ]
+    return processFns.reduce((tempData, processFn) => processFn(tempData), data)
   }
   const handleAddNetwork = async (formData: NetworkSaveData) => {
     try {
       const payload = processAddData(saveState)
 
       // eslint-disable-next-line max-len
-      const networkResponse = await addNetworkInstance({ params, payload, enableRbac: resolvedRbacEnabled }).unwrap()
+      const networkResponse = await addNetworkInstance({
+        params,
+        payload: resolvedRbacEnabled ? handleServicePolicyRbacPayload(payload) : payload,
+        enableRbac: resolvedRbacEnabled
+      }).unwrap()
       const networkId = networkResponse?.response?.id
+
+      const beforeVenueActivationRequest = []
+      const afterVenueActivationRequest = []
+
       if (isUseWifiRbacApi) {
-        await activatePortal(networkId, formData.portalServiceProfileId)
+        beforeVenueActivationRequest.push(activatePortal(networkId, formData.portalServiceProfileId))
       }
-      await addHotspot20NetworkActivations(saveState, networkId)
-      await updateVlanPoolActivation(networkId, saveState.wlan?.advancedCustomization?.vlanPool)
+      beforeVenueActivationRequest.push(addHotspot20NetworkActivations(saveState, networkId))
+      beforeVenueActivationRequest.push(updateVlanPoolActivation(networkId, saveState.wlan?.advancedCustomization?.vlanPool))
       if (formData.type !== NetworkTypeEnum.HOTSPOT20) {
-        await updateRadiusServer(saveState, networkId)
+        beforeVenueActivationRequest.push(updateRadiusServer(saveState, networkId))
       }
-      await updateWifiCallingActivation(networkId, saveState)
-      await updateAccessControl(saveState, data)
+      beforeVenueActivationRequest.push(updateWifiCallingActivation(networkId, saveState))
+      beforeVenueActivationRequest.push(updateAccessControl(saveState, data, networkId))
       // eslint-disable-next-line max-len
-      await activateCertificateTemplate(saveState.certificateTemplateId, networkId)
+      beforeVenueActivationRequest.push(activateCertificateTemplate(saveState.certificateTemplateId, networkId))
       if (enableServiceRbac) {
-        await activateDpskPool(saveState.dpskServiceProfileId, networkId)
-        await activateMacRegistrationPool(saveState.wlan?.macRegistrationListId, networkId)
+        beforeVenueActivationRequest.push(activateDpskPool(saveState.dpskServiceProfileId, networkId))
+        beforeVenueActivationRequest.push(activateMacRegistrationPool(saveState.wlan?.macRegistrationListId, networkId))
       }
+      await Promise.all(beforeVenueActivationRequest)
       if (networkResponse?.response && payload.venues) {
         // @ts-ignore
         const network: Network = networkResponse.response
@@ -775,21 +788,22 @@ export function NetworkForm (props:{
           await handleNetworkVenues(network.id, payload.venues)
         }
       }
-      await updateClientIsolationActivations(payload, null, networkId)
+      afterVenueActivationRequest.push(updateClientIsolationActivations(payload, null, networkId))
 
       // Tunnel Activation/Deactivation
       if (!isTemplate && networkId && payload.venues) {
         // eslint-disable-next-line max-len
         if (isEdgeSdLanMvEnabled && formData['sdLanAssociationUpdate']) {
         // eslint-disable-next-line max-len
-          await updateEdgeSdLanActivations(networkId, formData['sdLanAssociationUpdate'] as NetworkTunnelSdLanAction[], payload.venues)
+          afterVenueActivationRequest.push(updateEdgeSdLanActivations(networkId, formData['sdLanAssociationUpdate'] as NetworkTunnelSdLanAction[], payload.venues))
         }
 
         if (isSoftGreEnabled && formData['softGreAssociationUpdate']) {
         // eslint-disable-next-line max-len
-          await updateSoftGreActivations(networkId, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode)
+          afterVenueActivationRequest.push(updateSoftGreActivations(networkId, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode))
         }
       }
+      await Promise.all(afterVenueActivationRequest)
 
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
@@ -856,7 +870,7 @@ export function NetworkForm (props:{
             'owePairNetworkId',
             'certificateTemplateId',
             'userConnection',
-            ...(enableServiceRbac) ? ['dpskServiceId', 'macRegistrationPoolId'] : [],
+            ...(enableServiceRbac) ? ['dpskServiceProfileId', 'macRegistrationPoolId'] : [],
             ...(isUseWifiRbacApi) ? ['portalServiceProfileId'] : []
           ]
         )
@@ -868,7 +882,11 @@ export function NetworkForm (props:{
     try {
       processEditData(formData)
       const payload = updateClientIsolationAllowlist(saveContextRef.current as NetworkSaveData)
-      await updateNetworkInstance({ params, payload, enableRbac: resolvedRbacEnabled }).unwrap()
+      await updateNetworkInstance({
+        params,
+        payload: resolvedRbacEnabled ? handleServicePolicyRbacPayload(payload) : payload,
+        enableRbac: resolvedRbacEnabled
+      }).unwrap()
 
       const allRequests = []
       allRequests.push(activateCertificateTemplate(formData.certificateTemplateId, payload.id))
@@ -890,7 +908,7 @@ export function NetworkForm (props:{
       allRequests.push(updateWifiCallingActivation(payload.id, formData))
       // eslint-disable-next-line max-len
       allRequests.push(updateVlanPoolActivation(payload.id, formData.wlan?.advancedCustomization?.vlanPool, vlanPoolId))
-      allRequests.push(updateAccessControl(formData, data))
+      allRequests.push(updateAccessControl(formData, data, payload.id))
       if (payload.id && (payload.venues || data?.venues)) {
         if (resolvedRbacEnabled) {
           allRequests.push(handleRbacNetworkVenues(payload.id, payload.venues, data?.venues))

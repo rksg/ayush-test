@@ -1,12 +1,12 @@
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Loader }                                                                                                                                         from '@acx-ui/components'
-import { Features }                                                                                                                                       from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady, useTunnelProfileActions }                                                                                                 from '@acx-ui/rc/components'
-import { useGetEdgeSdLanP2ViewDataListQuery, useGetEdgeSdLanViewDataListQuery, useGetNetworkSegmentationViewDataListQuery, useGetTunnelProfileByIdQuery } from '@acx-ui/rc/services'
-import { getTunnelProfileFormDefaultValues, isDefaultTunnelProfile as getIsDefaultTunnelProfile, TunnelProfileFormType }                                  from '@acx-ui/rc/utils'
-import { useParams }                                                                                                                                      from '@acx-ui/react-router-dom'
+import { Loader }                                                                                                                             from '@acx-ui/components'
+import { Features }                                                                                                                           from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady, useTunnelProfileActions }                                                                                     from '@acx-ui/rc/components'
+import { useGetEdgeSdLanP2ViewDataListQuery, useGetEdgeSdLanViewDataListQuery, useGetEdgePinViewDataListQuery, useGetTunnelProfileByIdQuery } from '@acx-ui/rc/services'
+import { getTunnelProfileFormDefaultValues, isDefaultTunnelProfile as getIsDefaultTunnelProfile, TunnelProfileFormType }                      from '@acx-ui/rc/utils'
+import { useParams }                                                                                                                          from '@acx-ui/react-router-dom'
 
 import { TunnelProfileForm } from '../TunnelProfileForm'
 
@@ -62,18 +62,19 @@ const EditTunnelProfile = () => {
   )
 
   const {
-    nsgId,
-    isNSGFetching
-  } = useGetNetworkSegmentationViewDataListQuery({
+    pinId,
+    isPinFetching
+  } = useGetEdgePinViewDataListQuery({
     payload: {
+      fields: ['id'],
       filters: { vxlanTunnelProfileId: [policyId] }
     }
   }, {
     skip: !(isEdgeSdLanReady || isEdgeSdLanHaReady) || !isEdgePinReady,
     selectFromResult: ({ data, isFetching }) => {
       return {
-        nsgId: data?.data[0]?.id,
-        isNSGFetching: isFetching
+        pinId: data?.data[0]?.id,
+        isPinFetching: isFetching
       }
     }
   })
@@ -85,7 +86,7 @@ const EditTunnelProfile = () => {
   const isDefaultTunnelProfile = getIsDefaultTunnelProfile(tunnelProfileData)
   const formInitValues = getTunnelProfileFormDefaultValues(tunnelProfileData)
   formInitValues.disabledFields = []
-  if (nsgId || isSdLanUsed)
+  if (pinId || isSdLanUsed)
     formInitValues.disabledFields.push('type')
 
   if (isDMZUsed)
@@ -93,7 +94,7 @@ const EditTunnelProfile = () => {
 
   return (
     <Loader states={[{
-      isLoading: isFetching || isSdLanP1Fetching || isSdLanHaFetching || isNSGFetching
+      isLoading: isFetching || isSdLanP1Fetching || isSdLanHaFetching || isPinFetching
     }]}>
       <TunnelProfileForm
         form={form}

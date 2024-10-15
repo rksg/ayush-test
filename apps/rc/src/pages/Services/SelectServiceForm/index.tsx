@@ -65,7 +65,7 @@ export default function SelectServiceForm () {
           categories: [RadioCardCategory.WIFI]
         },
         {
-          type: ServiceType.NETWORK_SEGMENTATION,
+          type: ServiceType.PIN,
           categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
           disabled: !isEdgeHaReady || !isEdgePinHaReady
         },

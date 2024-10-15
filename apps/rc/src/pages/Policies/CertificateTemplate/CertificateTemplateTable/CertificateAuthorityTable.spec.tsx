@@ -79,7 +79,7 @@ describe('CertificateAuthorityTable', () => {
     await userEvent.click(name)
     expect(screen.getByText('Certificate Authority Details')).toBeVisible()
     expect(screen.getByText('Certificate Authority Information')).toBeVisible()
-    expect(screen.getByText('Download')).toBeVisible()
+    expect(screen.getByText('View & Upload')).toBeVisible()
     expect(screen.getByText('Sub CAs (0)')).toBeVisible()
     expect(screen.getByText('Certificate Templates (3)')).toBeVisible()
   })
