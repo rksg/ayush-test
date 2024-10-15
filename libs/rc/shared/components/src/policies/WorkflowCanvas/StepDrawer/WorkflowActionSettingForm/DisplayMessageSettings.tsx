@@ -29,7 +29,7 @@ export function DisplayMessageSetting () {
       name={'messageHtml'}
       label={$t({ defaultMessage: 'Page Body Text' })}
       rules={[
-        { required: true },
+        { required: true, message: $t({defaultMessage: 'Please enter page body text'}) },
         { min: 2 },
         { max: 1000 },
         { validator: (_, value) => trailingNorLeadingSpaces(value) }
