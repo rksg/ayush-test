@@ -1071,3 +1071,60 @@ export const nonRbacClientRadioType = {
     'radio.mode'
   ]
 }
+
+export const rbacClientInfo = {
+  fields: null,
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      modelName: 'Android',
+      deviceType: 'Smartphone',
+      macAddress: '4c:66:41:c7:ac:28',
+      osType: 'Android',
+      ipAddress: '192.168.11.16',
+      username: '4c6641c7ac28',
+      hostname: 'Galaxy-S7-edge',
+      authenticationStatus: 1,
+      connectedTime: '2024-10-14T14:58:45.285Z',
+      lastUpdatedTime: '2024-10-14T15:01:22.060Z',
+      venueInformation: {
+        id: 'dcddcd5f93574cff8fa09172cacf2230',
+        name: 'RBAC-venue-3'
+      },
+      apInformation: {
+        serialNumber: '432202016240',
+        name: 'R750g',
+        macAddress: '70:47:77:27:E7:C0',
+        bssid: '70:47:77:a7:e7:c0'
+      },
+      networkInformation: {
+        id: 'a9d68eb0411d4cafbd10bfac754b990c',
+        type: 'psk',
+        ssid: 'QA-aaron-RBAC-3-psk',
+        encryptionMethod: 'WPA2-AES',
+        authenticationMethod: 'Standard+Open',
+        vlan: 1
+      },
+      signalStatus: {
+        snr: 47,
+        rssi: -49,
+        noiseFloor: -96,
+        health: 'Good',
+        healthDescription: 'RSSI is Good\nSNR is Good\nThroughput is Good'
+      },
+      radioStatus: {
+        type: 'a/n/ac',
+        channel: 132
+      },
+      trafficStatus: {
+        trafficToClient: 11289,
+        trafficFromClient: 1406,
+        packetsToClient: 110,
+        packetsFromClient: 17,
+        framesDropped: 0,
+        totalTraffic: 12695
+      }
+    }
+  ]
+}
