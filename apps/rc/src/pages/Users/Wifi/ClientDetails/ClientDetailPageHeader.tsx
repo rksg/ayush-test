@@ -154,8 +154,7 @@ function ClientDetailPageHeader () {
       ]}
       extra={[
         <DatePicker />,
-        hasCrossVenuesPermission() &&
-          hasPermission({ scopes: [WifiScopes.UPDATE] }) &&
+        hasPermission({ scopes: [WifiScopes.UPDATE] }) &&
           <Dropdown overlay={menu}>{()=>
             <Button type='primary'>
               <Space>
