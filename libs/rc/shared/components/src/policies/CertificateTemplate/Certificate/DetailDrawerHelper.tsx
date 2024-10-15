@@ -273,8 +273,8 @@ export const getCertificateAuthorityDetails =
           ]
       },
       {
-        type: RenderType.DOWNLOAD,
-        title: $t({ defaultMessage: 'Download' }),
+        type: RenderType.VIEW_UPLOAD,
+        title: $t({ defaultMessage: 'View & Upload' }),
         content: CertificateCategoryType.CERTIFICATE_AUTHORITY
       },
       {

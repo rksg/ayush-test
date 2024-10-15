@@ -36,17 +36,17 @@ export const useEdgeDhcpActions = () => {
     }
   }
 
-  const activateEdgeDhcp = async (id: string, venueId: string, edgeId: string) => {
+  const activateEdgeDhcp = async (id: string, venueId: string, clusterId: string) => {
     try {
-      return await activate({ params: { id, venueId, edgeId } }).unwrap()
+      return await activate({ params: { id, venueId, clusterId } }).unwrap()
     } catch (error) {
       return Promise.reject(error)
     }
   }
 
-  const deactivateEdgeDhcp = async (id: string, venueId: string, edgeId: string) => {
+  const deactivateEdgeDhcp = async (id: string, venueId: string, clusterId: string) => {
     try {
-      return await deactivate({ params: { id, venueId, edgeId } }).unwrap()
+      return await deactivate({ params: { id, venueId, clusterId } }).unwrap()
     } catch (error) {
       return Promise.reject(error)
     }
@@ -60,9 +60,9 @@ export const useEdgeDhcpActions = () => {
     }
   }
 
-  const restartEdgeDhcp = async (id: string, venueId: string, edgeId: string) => {
+  const restartEdgeDhcp = async (id: string, venueId: string, clusterId: string) => {
     try {
-      return await restart({ params: { id, venueId, edgeId } }).unwrap()
+      return await restart({ params: { id, venueId, clusterId } }).unwrap()
     } catch (error) {
       return Promise.reject(error)
     }

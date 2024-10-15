@@ -55,17 +55,17 @@ export const EdgeDhcpUrls: { [key: string]: ApiInfo } = {
   },
   restartDhcpService: {
     method: 'PATCH',
-    url: '/edgeDhcpServices/:id/venues/:venueId/edgeClusters/:edgeId',
+    url: '/edgeDhcpServices/:id/venues/:venueId/edgeClusters/:clusterId',
     newApi: true
   },
   activateDhcpService: {
     method: 'put',
-    url: '/edgeDhcpServices/:id/venues/:venueId/edgeClusters/:edgeId',
+    url: '/edgeDhcpServices/:id/venues/:venueId/edgeClusters/:clusterId',
     newApi: true
   },
   deactivateDhcpService: {
     method: 'delete',
-    url: '/edgeDhcpServices/:id/venues/:venueId/edgeClusters/:edgeId',
+    url: '/edgeDhcpServices/:id/venues/:venueId/edgeClusters/:clusterId',
     newApi: true
   }
 }
