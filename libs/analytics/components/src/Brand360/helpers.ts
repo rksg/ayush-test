@@ -188,7 +188,9 @@ export const slaKpiConfig = {
     order: 'asc'
   },
   experience: {
-    getTitle: () => defineMessage({ defaultMessage: 'Guest Experience' }),
+    getTitle: (isMDU: boolean) => isMDU // istanbul ignore next
+      ? defineMessage({ defaultMessage: 'Resident Experience' })
+      : defineMessage({ defaultMessage: 'Guest Experience' }),
     dataKey: 'guestExp',
     avg: true,
     formatter: formatter('percentFormat'),

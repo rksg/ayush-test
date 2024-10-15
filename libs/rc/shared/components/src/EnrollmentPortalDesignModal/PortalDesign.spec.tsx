@@ -10,7 +10,6 @@ import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemov
 import PortalDesign from './PortalDesign'
 
 const config: UIConfiguration = {
-  disablePoweredBy: false,
   uiColorSchema: {
     fontHeaderColor: 'var(--acx-neutrals-100)',
     backgroundColor: 'var(--acx-primary-white)',
@@ -23,7 +22,8 @@ const config: UIConfiguration = {
     logoSize: 'MEDIUM',
     headerFontSize: 16,
     logoImageFileName: 'logo',
-    backgroundImageName: 'bgImage'
+    backgroundImageName: 'bgImage',
+    disablePoweredBy: false
   },
   welcomeName: '',
   welcomeTitle: ''
@@ -99,7 +99,7 @@ describe('Portal Design', () => {
     await screen.findByText('Components')
     await screen.findByText('Powered By')
     await screen.findByText('Title text style')
-    await screen.findByText('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await screen.findByText('Body text style')
 
     await userEvent.click(await screen.findByText('Reset'))
     await userEvent.click(await screen.findByText('Components'))
