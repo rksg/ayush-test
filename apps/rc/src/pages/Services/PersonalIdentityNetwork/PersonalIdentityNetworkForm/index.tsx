@@ -2,19 +2,20 @@ import { ReactNode } from 'react'
 
 import { FormInstance }                        from 'antd'
 import { omit }                                from 'lodash'
+import { useIntl }                             from 'react-intl'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import { showActionModal, StepsForm, StepsFormGotoStepFn } from '@acx-ui/components'
 import { useValidateEdgePinNetworkMutation }               from '@acx-ui/rc/services'
 import {
+  CatchErrorResponse,
   CommonErrorsResult,
   CommonResult,
   CatchErrorDetails,
   getServiceListRoutePath,
   LocationExtended,
   PersonalIdentityNetworkFormData,
-  redirectPreviousPage,
-  CatchErrorResponse
+  redirectPreviousPage
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 import { getIntl }       from '@acx-ui/utils'
@@ -33,6 +34,7 @@ interface PersonalIdentityNetworkFormStep {
 }
 
 export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormProps) => {
+  const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
   const location = useLocation()
@@ -43,7 +45,7 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
   const [validateEdgePinNetwork] = useValidateEdgePinNetworkMutation()
 
   // eslint-disable-next-line max-len
-  const handleFinish = async (formData: PersonalIdentityNetworkFormData, gotoStep: StepsFormGotoStepFn) => {
+  const handleFinish = async (formData: PersonalIdentityNetworkFormData, gotoStep: StepsFormGotoStepFn, skipValidation = false) => {
     const payload = {
       id: formData.id,
       name: formData.name,
@@ -70,7 +72,8 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
       return
     }
 
-    if (formData.distributionSwitchInfos?.length > 0 && formData.accessSwitchInfos?.length > 0) {
+    if (!skipValidation &&
+      formData.distributionSwitchInfos?.length > 0 && formData.accessSwitchInfos?.length > 0) {
       try {
         await validateEdgePinNetwork({
           params,
@@ -84,17 +87,32 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
         }).unwrap()
       } catch (error) {
         console.log(error) // eslint-disable-line no-console
-        const overwriteMsg = afterSubmitMessage(error as CatchErrorResponse,
+        const errorRes = error as CatchErrorResponse
+        const overwriteMsg = afterSubmitMessage(errorRes,
           [...(formData.distributionSwitchInfos || []), ...(formData.accessSwitchInfos || [])])
 
-        showActionModal({
-          type: 'error',
-          content: overwriteMsg.length > 0 ? overwriteMsg : undefined,
-          customContent: {
-            action: 'SHOW_ERRORS',
-            errorDetails: error as CatchErrorResponse
-          }
-        })
+        if (overwriteMsg.length > 0) {
+          showActionModal({
+            type: 'confirm',
+            width: 450,
+            title: $t({ defaultMessage: 'Please confirm before executing' }),
+            content: overwriteMsg,
+            okText: $t({ defaultMessage: 'Yes' }),
+            cancelText: $t({ defaultMessage: 'No' }),
+            onOk: async () => {
+              handleFinish(formData, gotoStep, true)
+            },
+            onCancel: async () => {}
+          })
+        } else {
+          showActionModal({
+            type: 'error',
+            title: $t({ defaultMessage: 'Validation Error' }),
+            content: <>
+              {errorRes.data.errors.map((error, index) => <p key={index}>{error.message}</p>)}
+            </>
+          })
+        }
 
         return
       }

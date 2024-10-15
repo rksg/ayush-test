@@ -73,6 +73,9 @@ export function DistributionSwitchDrawer (props: {
     const inUseSwitchIds = (accessSwitches || []).map(sw=>sw.id).concat(dsId)
     const availableSwitchList =
       availableSwitches.concat(removedSwitchList).filter(sw=>!inUseSwitchIds.includes(sw.id))
+        .filter(item =>
+          item.firmwareVersion && !isVerGEVer(requiredFw, item.firmwareVersion, true)
+        )
     setAvailableSwitchList(availableSwitchList)
   }, [pinForm, availableSwitches, dsId, accessSwitches])
 
@@ -133,9 +136,7 @@ export function DistributionSwitchDrawer (props: {
           hidden={!!editRecord}
         >
           <Select placeholder={$t({ defaultMessage: 'Select ...' })}
-            options={availableSwitchList.filter(item =>
-              item.firmwareVersion && !isVerGEVer(requiredFw, item.firmwareVersion, true)
-            ).map(item => ({
+            options={availableSwitchList.map(item => ({
               value: item.id,
               label: item.name
             }))}

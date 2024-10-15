@@ -54,9 +54,7 @@ export const pinApi = basePinApi.injectEndpoints({
   endpoints: (build) => ({
     createEdgePin: build.mutation<CommonResult, RequestPayload>({
       query: ({ payload }) => {
-        const req = createHttpRequest(EdgePinUrls.createEdgePin, undefined, {
-          ...ignoreErrorModal
-        })
+        const req = createHttpRequest(EdgePinUrls.createEdgePin)
         return {
           ...req,
           body: payload
@@ -121,13 +119,7 @@ export const pinApi = basePinApi.injectEndpoints({
     }),
     updateEdgePin: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(
-          EdgePinUrls.updateEdgePin,
-          params,
-          {
-            ...ignoreErrorModal
-          }
-        )
+        const req = createHttpRequest(EdgePinUrls.updateEdgePin, params)
         return {
           ...req,
           body: payload
@@ -311,7 +303,9 @@ export const pinApi = basePinApi.injectEndpoints({
     }),
     validateEdgePinNetwork: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(EdgePinUrls.validateEdgePinNetwork, params)
+        const req = createHttpRequest(EdgePinUrls.validateEdgePinNetwork, params, {
+          ...ignoreErrorModal
+        })
         return {
           ...req,
           body: payload
