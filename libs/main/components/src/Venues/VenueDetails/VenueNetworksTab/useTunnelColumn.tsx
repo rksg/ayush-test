@@ -108,18 +108,11 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
 
           // eslint-disable-next-line max-len
           const tunnelType = getNetworkTunnelType(networkInfo, venueSoftGre, venueSdLanInfo, venuePinInfo)
-          // eslint-disable-next-line max-len
-          const isTheLastSdLanWlan = (venueSdLanInfo?.tunneledWlans?.length ?? 0) === 1 && tunnelType === NetworkTunnelTypeEnum.SdLan
-          const disabled = isTheLastSdLanWlan || tunnelType === NetworkTunnelTypeEnum.Pin
 
           return row.activated?.isActivated
             ? <NetworkTunnelSwitchBtn
               tunnelType={tunnelType}
-              disabled={disabled}
-              tooltip={isTheLastSdLanWlan
-                // eslint-disable-next-line max-len
-                ? $t({ defaultMessage: 'Cannot deactivate the last network at this <venueSingular></venueSingular>' })
-                : undefined}
+              venueSdLanInfo={venueSdLanInfo}
               onClick={(checked) => {
                 if (checked) {
                   handleClickNetworkTunnel({

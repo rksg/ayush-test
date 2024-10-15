@@ -323,8 +323,8 @@ describe('VenueNetworksTab - PIN enabled', () => {
       const activatedRow = await screen.findByRole('row', { name: /test_1/i })
       screen.getByText('Network Topology')
       await within(activatedRow).findByText(/PIN/)
-      const sdlanLink = within(activatedRow).getByRole('link', { name: 'nsg1' })
-      expect(sdlanLink).toHaveAttribute('href', `/${params.tenantId}/t/services/personalIdentityNetwork/1/detail`)
+      const pinLink = within(activatedRow).getByRole('link', { name: 'nsg1' })
+      expect(pinLink).toHaveAttribute('href', `/${params.tenantId}/t/services/personalIdentityNetwork/1/detail`)
       const toggleTunnelBtn = within(activatedRow).getAllByRole('switch')[1]
       expect(toggleTunnelBtn).toBeDisabled()
       expect(toggleTunnelBtn).toBeChecked()
@@ -352,8 +352,8 @@ describe('VenueNetworksTab - PIN enabled', () => {
       const activatedRow = await screen.findByRole('row', { name: /test_1/i })
       screen.getByText('Network Topology')
       await within(activatedRow).findByText(/SoftGRE/)
-      const sdlanLink = within(activatedRow).getByRole('link', { name: 'softGreProfileName1' })
-      expect(sdlanLink).toHaveAttribute('href', `/${tenantId}/t/policies/softGre/0d89c0f5596c4689900fb7f5f53a0859/detail`)
+      const softGreLink = within(activatedRow).getByRole('link', { name: 'softGreProfileName1' })
+      expect(softGreLink).toHaveAttribute('href', `/${tenantId}/t/policies/softGre/0d89c0f5596c4689900fb7f5f53a0859/detail`)
     })
 
     it('should correctly display local breakout when the network is not SoftGre selected', async () => {

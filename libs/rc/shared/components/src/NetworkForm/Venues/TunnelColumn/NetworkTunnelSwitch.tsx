@@ -1,5 +1,4 @@
-import { Form }    from 'antd'
-import { useIntl } from 'react-intl'
+import { Form } from 'antd'
 
 import { EdgeMvSdLanViewData, NetworkSaveData, PersonalIdentityNetworksViewData, Venue } from '@acx-ui/rc/utils'
 
@@ -23,7 +22,6 @@ interface NetworkTunnelSwitchProps {
 }
 
 export const NetworkTunnelSwitch = (props: NetworkTunnelSwitchProps) => {
-  const { $t } = useIntl()
   const {
     currentVenue, currentNetwork,
     venueSdLanInfo, venuePinInfo, venueSoftGre,
@@ -43,17 +41,10 @@ export const NetworkTunnelSwitch = (props: NetworkTunnelSwitchProps) => {
 
   // eslint-disable-next-line max-len
   const tunnelType = getNetworkTunnelType(networkInfo, venueSoftGre, venueSdLanInfo, venuePinInfo)
-  // eslint-disable-next-line max-len
-  const isTheLastSdLanWlan = (venueSdLanInfo?.tunneledWlans?.length ?? 0) === 1 && tunnelType === NetworkTunnelTypeEnum.SdLan
-  const disabled = isTheLastSdLanWlan || tunnelType === NetworkTunnelTypeEnum.Pin
 
   return <NetworkTunnelSwitchBtn
     tunnelType={tunnelType}
-    disabled={disabled}
-    tooltip={isTheLastSdLanWlan
-      // eslint-disable-next-line max-len
-      ? $t({ defaultMessage: 'Cannot deactivate the last network at this <venueSingular></venueSingular>' })
-      : undefined}
+    venueSdLanInfo={venueSdLanInfo}
     onClick={(checked) => {
       if (checked) {
         onClick(currentVenue, currentNetwork)
