@@ -215,8 +215,8 @@ export const getTableColumns = ({
     } as TableColumn<TestResultByAP>
   }
 
-  const linkType = get('IS_MLISA_SA') ? 'ai' : 'overview';
-  const getApMacDetailsLinkByMac = (apMac: string) => `devices/wifi/${apMac}/details/${linkType}`;
+  const linkType = get('IS_MLISA_SA') ? 'ai' : 'overview'
+  const getApMacDetailsLinkByMac = (apMac: string) => `devices/wifi/${apMac}/details/${linkType}`
 
   const columns: TableProps<TestResultByAP>['columns'] = [
     {
