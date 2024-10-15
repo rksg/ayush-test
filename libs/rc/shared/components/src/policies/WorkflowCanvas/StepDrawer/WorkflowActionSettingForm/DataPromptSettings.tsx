@@ -169,7 +169,7 @@ export function DataPromptSettings () {
         <Form.Item key='messageHtml'
           name={'messageHtml'}
           rules={[
-            { required: true, message: $t({defaultMessage: 'Please enter page intro text'}) },
+            { required: true, message: $t({ defaultMessage: 'Please enter page intro text' }) },
             { min: 2 },
             { max: 1000 },
             { validator: (_, value) => trailingNorLeadingSpaces(value) }
