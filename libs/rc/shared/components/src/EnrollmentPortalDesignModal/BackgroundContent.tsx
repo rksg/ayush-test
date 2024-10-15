@@ -51,7 +51,7 @@ export function BackgroundContent (props: BackgroundContentProps){
           {$t({ defaultMessage: 'Select image' })}</label></UI.PopoverButton>
     </Upload>
     <UI.CommonHints>
-      {$t({ defaultMessage: 'Recommended size: 1920*1080 ' })}
+      {$t({ defaultMessage: 'Maximum size: 8MB ' })}
     </UI.CommonHints></div>
 
   return (
