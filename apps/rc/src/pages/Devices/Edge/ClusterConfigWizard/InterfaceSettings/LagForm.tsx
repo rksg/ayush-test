@@ -22,7 +22,7 @@ export const LagForm = ({ onInit }: InterfaceSettingFormStepCommonProps) => {
       {$t({ defaultMessage: 'LAG Settings' })}
     </Typography.Title>
     <Typography.Text>
-      {$t({ defaultMessage: `Create and configure the LAG for all SmartEdges in this cluster 
+      {$t({ defaultMessage: `Create and configure the LAG for all RUCKUS Edges in this cluster 
       if needed, or click 'Next' to skip:` })}
     </Typography.Text>
   </Space>

@@ -67,7 +67,7 @@ export const useKpiThresholdsQuery = (
 export default function KpiSections (props: { tab: CategoryTab, filters: AnalyticsFilter }) {
   const { tab, filters } = props
   const { filter } = filters
-  const { kpis } = kpisForTab(isMLISA)[tab]
+  const { kpis } = kpisForTab(isMLISA)[tab as keyof typeof kpisForTab]
   const { useFetchThresholdPermissionQuery } = healthApi
   const { thresholds, kpiThresholdsQueryResults } = useKpiThresholdsQuery({ filters })
   const thresholdPermissionQuery = useFetchThresholdPermissionQuery({ filter })
@@ -84,12 +84,13 @@ export default function KpiSections (props: { tab: CategoryTab, filters: Analyti
 }
 
 export function KpiSection (props: {
+  isSwitch?: boolean
   kpis: string[]
   thresholds: KpiThresholdType
   mutationAllowed: boolean
   filters : AnalyticsFilter
 }) {
-  const { kpis, filters, thresholds } = props
+  const { kpis, filters, thresholds, isSwitch } = props
   const { timeWindow, setTimeWindow } = useContext(HealthPageContext)
   const [ kpiThreshold, setKpiThreshold ] = useState<KpiThresholdType>(thresholds)
   const [ loadMore, setLoadMore ] = useState<boolean>(true)
@@ -151,7 +152,7 @@ export function KpiSection (props: {
                 isNetwork={!filters.filter.networkNodes}
                 disabled={!(hasCrossVenuesPermission() && hasPermission({
                   permission: 'WRITE_HEALTH',
-                  scopes: [WifiScopes.UPDATE, SwitchScopes.UPDATE]
+                  scopes: [isSwitch ? SwitchScopes.UPDATE : WifiScopes.UPDATE]
                 }))}
               />
             ) : (

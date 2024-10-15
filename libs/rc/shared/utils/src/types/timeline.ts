@@ -26,7 +26,7 @@ export const eventTypeMapping = {
   CLIENT: defineMessage({ defaultMessage: 'Client' }),
   SWITCH: defineMessage({ defaultMessage: 'Switch' }),
   NETWORK: defineMessage({ defaultMessage: 'Network' }),
-  EDGE: defineMessage({ defaultMessage: 'SmartEdge' }),
+  EDGE: defineMessage({ defaultMessage: 'RUCKUS Edge' }),
   PROFILE: defineMessage({ defaultMessage: 'Profile' })
 }
 
@@ -35,7 +35,7 @@ export const eventProductMapping = {
   GENERAL: defineMessage({ defaultMessage: 'General' }),
   WIFI: defineMessage({ defaultMessage: 'Wi-Fi' }),
   SWITCH: defineMessage({ defaultMessage: 'Switch' }),
-  EDGE: defineMessage({ defaultMessage: 'SmartEdge' }),
+  EDGE: defineMessage({ defaultMessage: 'RUCKUS Edge' }),
   POLICY_ENGINE: defineMessage({ defaultMessage: 'Policy Engine' })
 }
 
@@ -117,6 +117,8 @@ export interface EventBase {
   clientName?: string
   remoteEdgeId?: string
   clientMldMac?: string
+  turnOnTimestamp?: string
+  turnOffTimestamp?: string
 }
 
 export interface EventMeta {

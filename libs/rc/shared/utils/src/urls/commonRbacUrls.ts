@@ -17,16 +17,13 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/wifiNetworks/query',
     newApi: true
   },
-  /*
   getNetworksDetailHeader: {
-    // [New API] Path variable not match
-    // method: 'get',
-    // url: '/networks/:networkId/headerDetails',
-    // oldUrl: '/api/viewmodel/:tenantId/network/:networkId/detailheader',
-    // newApi: true
     method: 'get',
-    url: '/api/viewmodel/:tenantId/network/:networkId/detailheader'
+    url: '/networks/:networkId/headerDetails',
+    // oldUrl: '/api/viewmodel/:tenantId/network/:networkId/detailheader',
+    newApi: true
   },
+  /*
   getNetworksVenuesList: {
     method: 'post',
     url: '/networks/:networkId/venues',

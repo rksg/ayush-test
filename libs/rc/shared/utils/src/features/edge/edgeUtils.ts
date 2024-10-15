@@ -1,12 +1,14 @@
-import { DefaultOptionType }      from 'antd/lib/select'
-import _, { difference, flatMap } from 'lodash'
-import { IntlShape }              from 'react-intl'
+import { DefaultOptionType }             from 'antd/lib/select'
+import _, { difference, flatMap, sumBy } from 'lodash'
+import { IntlShape }                     from 'react-intl'
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
 import { IpUtilsService }                                                          from '../../ipUtilsService'
 import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum } from '../../models/EdgeEnum'
 import {
+  ApCompatibility,
+  ApIncompatibleDevice,
   ClusterNetworkSettings,
   EdgeAlarmSummary,
   EdgeLag,
@@ -14,9 +16,13 @@ import {
   EdgePort,
   EdgePortStatus,
   EdgePortWithStatus,
+  EdgeSdLanApCompatibility,
   EdgeSerialNumber,
+  EdgeServiceCompatibility,
   EdgeStatus,
-  EdgeSubInterface
+  EdgeSubInterface,
+  EntityCompatibility,
+  VenueSdLanApCompatibility
 } from '../../types'
 import { isSubnetOverlap, networkWifiIpRegExp, subnetMaskIpRegExp } from '../../validator'
 
@@ -235,7 +241,7 @@ export const isVirtualEdgeSerial = (value: string) => {
 }
 
 export const deriveEdgeModel = (serial: string) => {
-  return isVirtualEdgeSerial(serial) ? 'vSmartEdge' : '-'
+  return isVirtualEdgeSerial(serial) ? 'vEdge' : '-'
 }
 
 export const isOtpEnrollmentRequired = (serial: string) => {
@@ -419,4 +425,76 @@ export const isInterfaceInVRRPSetting = (
     item.ports?.some(port =>
       port.serialNumber === serialNumber &&
       port.portName.toLowerCase() === interfaceName.toLowerCase())))
+}
+
+// eslint-disable-next-line max-len
+const getTotalScopedCount = (clusterCompatibilities: EntityCompatibility[] | VenueSdLanApCompatibility[]) => {
+  return sumBy(clusterCompatibilities as Record<string, unknown>[], 'total')
+}
+
+// eslint-disable-next-line max-len
+export const getFeaturesIncompatibleDetailData = (compatibleData: EdgeServiceCompatibility | EdgeSdLanApCompatibility) => {
+  const isEdgePerspective = compatibleData.hasOwnProperty('clusterEdgeCompatibilities')
+
+  const resultMapping : Record<string, ApCompatibility> = {}
+
+  if (isEdgePerspective) {
+    const data = (compatibleData as EdgeServiceCompatibility).clusterEdgeCompatibilities
+    const totalScoped = getTotalScopedCount(data)
+
+    data.forEach(clusterCompatibilities => {
+      clusterCompatibilities.incompatibleFeatures?.forEach(feature => {
+        const featureName = feature.featureRequirement.featureName
+
+        if (!resultMapping[featureName]) {
+          resultMapping[featureName] = {
+            id: `edge_incompatible_details_${featureName}`,
+            incompatibleFeatures: [{
+              featureName,
+              requiredFw: feature.featureRequirement.requiredFw
+            }],
+            incompatible: 0,
+            // `total` should beyound features
+            total: totalScoped
+          } as ApCompatibility
+        }
+
+        // eslint-disable-next-line max-len
+        resultMapping[featureName].incompatible += sumBy(feature.incompatibleDevices, (d) => d.count)
+
+
+        resultMapping[featureName].incompatibleFeatures![0].incompatibleDevices = [
+          { count: resultMapping[featureName].incompatible } as ApIncompatibleDevice]
+      })
+    })
+  } else {
+    const data = (compatibleData as EdgeSdLanApCompatibility).venueSdLanApCompatibilities
+    const totalScoped = getTotalScopedCount(data)
+
+    data.forEach(item => {
+      item.incompatibleFeatures?.forEach(feature => {
+        const featureName = feature.featureName
+
+        if (!resultMapping[featureName]) {
+          resultMapping[featureName] = {
+            id: `ap_incompatible_details_${featureName}`,
+            incompatibleFeatures: [{
+              featureName,
+              requiredFw: feature.requiredFw,
+              supportedModelFamilies: feature.supportedModelFamilies
+            }],
+            incompatible: 0,
+            total: totalScoped
+          } as ApCompatibility
+        }
+
+        // eslint-disable-next-line max-len
+        resultMapping[featureName].incompatible += sumBy(feature.incompatibleDevices, (d) => d.count)
+        resultMapping[featureName].incompatibleFeatures![0].incompatibleDevices = [
+          { count: resultMapping[featureName].incompatible } as ApIncompatibleDevice]
+      })
+    })
+  }
+
+  return resultMapping
 }

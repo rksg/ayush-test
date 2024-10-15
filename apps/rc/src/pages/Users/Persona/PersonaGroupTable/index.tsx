@@ -4,7 +4,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { Features }                                          from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
 import { DownloadOutlined }                                  from '@acx-ui/icons'
 import {
   DpskPoolLink,
@@ -14,18 +14,21 @@ import {
   PersonaGroupDrawer,
   usePersonaAsyncHeaders,
   useIsEdgeFeatureReady,
-  VenueLink
+  VenueLink,
+  CertTemplateLink
 } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeletePersonaGroupMutation,
+  useGetCertificateTemplatesQuery,
   useGetEnhancedDpskListQuery,
-  useGetNetworkSegmentationViewDataListQuery,
+  useGetEdgePinViewDataListQuery,
   useGetQueriablePropertyConfigsQuery,
   useLazyDownloadPersonaGroupsQuery,
+  useLazyGetCertificateTemplateQuery,
   useLazyGetDpskQuery,
   useLazyGetMacRegListQuery,
-  useLazyGetNetworkSegmentationGroupByIdQuery,
+  useLazyGetEdgePinByIdQuery,
   useLazyVenuesListQuery,
   useSearchMacRegListsQuery,
   useSearchPersonaGroupListQuery
@@ -62,16 +65,18 @@ function useColumns (
   macRegistrationPools: Map<string, string>,
   dpskPools: Map<string, string>,
   venuesMap: Map<string, string>,
-  nsgMap: Map<string, string>
+  pinMap: Map<string, string>,
+  certTemplateMap: Map<string, string>
 ) {
   const { $t } = useIntl()
   const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+  const isCertTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
 
   const { data: dpskPool } = useGetEnhancedDpskListQuery({
     payload: { sortField: 'name', sortOrder: 'ASC', page: 1, pageSize: 10000 }
   })
   const { data: macList } = useSearchMacRegListsQuery({ payload: macRegSearchDefaultPayload })
-  const { data: nsgList } = useGetNetworkSegmentationViewDataListQuery(
+  const { data: pinList } = useGetEdgePinViewDataListQuery(
     {
       payload: {
         page: 1,
@@ -91,6 +96,17 @@ function useColumns (
         venueOptions: data?.data.map(item => ({ value: item.venueName!, key: item.venueId! })) ?? []
       }
     }
+  })
+  const { certTemplateOptions, isCertTemplatesLoading } = useGetCertificateTemplatesQuery({
+    payload: { page: 1, pageSize: 10000 }
+  }, {
+    selectFromResult: ({ data, isLoading }) => {
+      return {
+        isCertTemplatesLoading: isLoading,
+        certTemplateOptions: data?.data.map(t => ({ value: t.name, key: t.id! })) ?? []
+      }
+    },
+    skip: !isCertTemplateEnabled
   })
 
   const columns: TableProps<PersonaGroup>['columns'] = [
@@ -152,17 +168,30 @@ function useColumns (
           macRegistrationPoolId={row.macRegistrationPoolId}
         />
     },
+    ...(isCertTemplateEnabled ? [{
+      key: 'certificateTemplateId',
+      title: $t({ defaultMessage: 'Certificate Template' }),
+      dataIndex: 'certificateTemplateId',
+      sorter: true,
+      filterMultiple: false,
+      filterable: isCertTemplatesLoading ? [] : certTemplateOptions,
+      render: (_, row) =>
+        <CertTemplateLink
+          name={certTemplateMap.get(row.certificateTemplateId ?? '')}
+          id={row.certificateTemplateId}
+        />
+    } as TableColumn<PersonaGroup>] : []),
     ...(networkSegmentationEnabled ? [{
       key: 'personalIdentityNetworkId',
       title: $t({ defaultMessage: 'Personal Identity Network' }),
       dataIndex: 'personalIdentityNetworkId',
       sorter: true,
       filterMultiple: false,
-      filterable: nsgList?.data.map(nsg => ({ key: nsg.id, value: nsg.name })) ?? [],
+      filterable: pinList?.data.map(pin => ({ key: pin.id, value: pin.name })) ?? [],
       render: (_, row) =>
         <NetworkSegmentationLink
           id={row.personalIdentityNetworkId}
-          name={nsgMap.get(row.personalIdentityNetworkId ?? '')}
+          name={pinMap.get(row.personalIdentityNetworkId ?? '')}
         />
     } as TableColumn<PersonaGroup>] : []),
     {
@@ -190,7 +219,8 @@ export function PersonaGroupTable () {
   const [venueMap, setVenueMap] = useState(new Map())
   const [macRegistrationPoolMap, setMacRegistrationPoolMap] = useState(new Map())
   const [dpskPoolMap, setDpskPoolMap] = useState(new Map())
-  const [nsgPoolMap, setNsgPoolMap] = useState(new Map())
+  const [pinPoolMap, setPinPoolMap] = useState(new Map())
+  const [certTemplateMap, setCertTemplateMap] = useState(new Map())
   const [drawerState, setDrawerState] = useState({
     isEdit: false,
     visible: false,
@@ -200,9 +230,10 @@ export function PersonaGroupTable () {
   const { isAsync, customHeaders } = usePersonaAsyncHeaders()
 
   const [getVenues] = useLazyVenuesListQuery()
+  const [getCertTemplate] = useLazyGetCertificateTemplateQuery()
   const [getDpskById] = useLazyGetDpskQuery()
   const [getMacRegistrationById] = useLazyGetMacRegListQuery()
-  const [getNsgById] = useLazyGetNetworkSegmentationGroupByIdQuery()
+  const [getPinById] = useLazyGetEdgePinByIdQuery()
   const [downloadCsv] = useLazyDownloadPersonaGroupsQuery()
   const [
     deletePersonaGroup,
@@ -217,6 +248,7 @@ export function PersonaGroupTable () {
     pagination: { settingsId }
   })
   const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+  const isCertTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
 
   useEffect(() => {
     if (tableQuery.isLoading) return
@@ -224,18 +256,29 @@ export function PersonaGroupTable () {
     const venueIds: string[] = []
     const macPools = new Map()
     const dpskPools = new Map()
-    const nsgPools = new Map()
+    const pinPools = new Map()
+    const certTemplates = new Map()
 
     tableQuery.data?.data.forEach(personaGroup => {
       const {
         macRegistrationPoolId,
         dpskPoolId,
         propertyId,
-        personalIdentityNetworkId
+        personalIdentityNetworkId,
+        certificateTemplateId
       } = personaGroup
 
       if (propertyId) {
         venueIds.push(propertyId)
+      }
+
+      if (isCertTemplateEnabled && certificateTemplateId) {
+        getCertTemplate({ params: { policyId: certificateTemplateId } })
+          .then(result => {
+            if (result.data) {
+              certTemplates.set(certificateTemplateId, result.data.name)
+            }
+          })
       }
 
       if (macRegistrationPoolId) {
@@ -257,10 +300,10 @@ export function PersonaGroupTable () {
       }
 
       if (networkSegmentationEnabled && personalIdentityNetworkId) {
-        getNsgById({ params: { tenantId, serviceId: personalIdentityNetworkId } })
+        getPinById({ params: { tenantId, serviceId: personalIdentityNetworkId } })
           .then(result => {
             if (result.data) {
-              nsgPools.set(personalIdentityNetworkId, result.data.name)
+              pinPools.set(personalIdentityNetworkId, result.data.name)
             }
           })
       }
@@ -278,7 +321,8 @@ export function PersonaGroupTable () {
 
     setDpskPoolMap(dpskPools)
     setMacRegistrationPoolMap(macPools)
-    setNsgPoolMap(nsgPools)
+    setPinPoolMap(pinPools)
+    setCertTemplateMap(certTemplates)
   }, [tableQuery.data])
 
   const downloadPersonaGroups = () => {
@@ -336,8 +380,9 @@ export function PersonaGroupTable () {
         {
           label: $t({ defaultMessage: 'Delete' }),
           disabled: (([selectedItem]) =>
-            (selectedItem && selectedItem.identityCount)
-              ? selectedItem.identityCount > 0 : false
+            selectedItem
+              ? (selectedItem.identityCount ?? 0) > 0 || !!selectedItem.certificateTemplateId
+              : false
           ),
           onClick: ([selectedRow], clearSelection) => {
             doDelete(selectedRow, clearSelection)
@@ -356,7 +401,9 @@ export function PersonaGroupTable () {
       personalIdentityNetworkId: Array.isArray(customFilters?.personalIdentityNetworkId)
         ? customFilters?.personalIdentityNetworkId[0] : undefined,
       propertyId: Array.isArray(customFilters?.propertyId)
-        ? customFilters?.propertyId[0] : undefined
+        ? customFilters?.propertyId[0] : undefined,
+      certificateTemplateId: Array.isArray(customFilters?.certificateTemplateId)
+        ? customFilters?.certificateTemplateId[0] : undefined
     }
 
     tableQuery.setPayload(payload)
@@ -373,7 +420,8 @@ export function PersonaGroupTable () {
       <Table<PersonaGroup>
         enableApiFilter
         settingsId={settingsId}
-        columns={useColumns(macRegistrationPoolMap, dpskPoolMap, venueMap, nsgPoolMap)}
+        // eslint-disable-next-line max-len
+        columns={useColumns(macRegistrationPoolMap, dpskPoolMap, venueMap, pinPoolMap, certTemplateMap)}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}

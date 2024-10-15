@@ -11,4 +11,11 @@ describe('Grid', () => {
     render(<GridCol col={{ span: 1 }}>col</GridCol>)
     expect(screen.getByText('col')).toBeVisible()
   })
+  it('should render grid row with divider', () => {
+    const { asFragment } = render(<>
+      <GridRow $divider>row1</GridRow>
+      <GridRow $divider>row2</GridRow>
+    </>)
+    expect(asFragment()).toMatchSnapshot()
+  })
 })

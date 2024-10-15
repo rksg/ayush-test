@@ -1,10 +1,11 @@
 import { useState } from 'react'
 
 import { isNull } from 'lodash'
+import AutoSizer  from 'react-virtualized-auto-sizer'
 
-import { GridCol, Loader, cssStr } from '@acx-ui/components'
-import { formatter }               from '@acx-ui/formatter'
-import type { AnalyticsFilter }    from '@acx-ui/utils'
+import { GridCol, GridRow, Loader, cssStr } from '@acx-ui/components'
+import { formatter }                        from '@acx-ui/formatter'
+import type { AnalyticsFilter }             from '@acx-ui/utils'
 
 import {
   Stages,
@@ -17,7 +18,7 @@ import { FunnelChart }                                       from './funnelChart
 import { HealthPieChart }                                    from './healthPieChart'
 import { ImpactedClientsTable }                              from './impactedClientTable'
 import { useTtcDrilldownQuery, useConnectionDrilldownQuery } from './services'
-import { Point, Separator, DrillDownRow }                    from './styledComponents'
+import { Point, Separator }                                  from './styledComponents'
 
 const HealthDrillDown = (props: {
   filters: AnalyticsFilter;
@@ -96,9 +97,8 @@ const HealthDrillDown = (props: {
   const isConnectionFailure = drilldownSelection === CONNECTIONFAILURE
   const funnelChartData = isConnectionFailure ? connectionFailureResults : ttcResults
   const format = formatter(isConnectionFailure ? 'countFormat' : 'durationFormat')
-  const height = '355px'
   return drilldownSelection ? (
-    <DrillDownRow>
+    <GridRow>
       <GridCol col={{ span: 24 }}>
         <Loader states={[funnelChartData]}>
           <FunnelChart
@@ -117,17 +117,20 @@ const HealthDrillDown = (props: {
       {selectedStage && (
         <>
           <GridCol col={{ span: 24 }} style={{ height: '15px' }}>
-            <Separator><Point $xPos={xPos}/></Separator>
+            <Separator><Point $xPos={xPos} /></Separator>
           </GridCol>
-          <GridCol col={{ span: 9 }} style={{ height }}>
-            <HealthPieChart
-              filters={filters}
-              queryType={drilldownSelection}
-              selectedStage={selectedStage}
-              valueFormatter={format}
-            />
+          <GridCol col={{ span: 9 }}>
+            <AutoSizer>{(size) =>
+              <HealthPieChart
+                size={size}
+                filters={filters}
+                queryType={drilldownSelection}
+                selectedStage={selectedStage}
+                valueFormatter={format}
+              />
+            }</AutoSizer>
           </GridCol>
-          <GridCol col={{ span: 15 }} style={{ height, overflow: 'auto' }}>
+          <GridCol col={{ span: 15 }}>
             <ImpactedClientsTable filters={filters}
               selectedStage={selectedStage}
               drillDownSelection={drilldownSelection}
@@ -135,7 +138,7 @@ const HealthDrillDown = (props: {
           </GridCol>
         </>
       )}
-    </DrillDownRow>
+    </GridRow>
   ) : null
 }
 export { HealthDrillDown }

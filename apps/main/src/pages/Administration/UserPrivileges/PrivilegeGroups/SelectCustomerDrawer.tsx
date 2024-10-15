@@ -47,13 +47,19 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
   const [totalCount, setTotalCount] = useState<number>(0)
 
   function getSelectedKeys (selected: MspEcWithVenue[]) {
-    const customers = selected.filter(ec => ec.children?.some(venue => venue.selected))
+    const customers = selected.filter(ec => !ec.allVenues
+      && ec.children?.some(venue => venue.selected))
     const venueIds = customers.flatMap(ec => ec.children).filter(venue => venue.selected)
       .map(venue => venue.id)
-    return venueIds
+    const custIdsWithAllSelVenues = selected.filter(ec => ec.allVenues).map(ec => ec.id)
+    const allSelectedVenueIds = customerList?.data
+      .filter(ec => custIdsWithAllSelVenues.includes(ec.id))
+      .flatMap(ec => ec.children)
+      .map(venue => venue.id) ?? []
+    return venueIds.concat(allSelectedVenueIds)
   }
 
-  const { data: customerList }
+  const { data: customerList, isLoading, isFetching }
   = useGetMspEcWithVenuesListQuery({ params: useParams(), payload: customerListPayload })
 
   const onClose = () => {
@@ -81,16 +87,20 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
   }
 
   const getSelectedVenues = (selectedRows: MspEcWithVenue[]) => {
-    const selVenueIds = selectedRows.filter(item => !item.isFirstLevel).map(venue => venue.id)
+    const customerIds = customerList?.data.map(ec => ec.id)
     // If no change in selected venues was made, return unchanged selectedRows
-    if (selVenueIds.length === 0) {
+    // This covers scenario where selectedRows does not need to be transformed into MspEcWithVenue[] type
+    // i.e. each element in array is a customer and not just a selected venue object
+    if (selectedRows.every(item => customerIds?.includes(item.id))) {
       return selectedRows
     }
+    const selVenueIds = selectedRows.filter(item => !item.isFirstLevel).map(venue => venue.id)
     const ecsWithSelVenues: MspEcWithVenue[] = customerList?.data.filter(ec =>
       ec.children?.some(venue => selVenueIds.includes(venue.id))) ?? []
     return ecsWithSelVenues.map(ec => {
       return {
         ...ec,
+        allVenues: ec.children.every(venue => selVenueIds.includes(venue.id)),
         children: ec.children.map(venue => {
           return {
             ...venue,
@@ -124,7 +134,11 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
   const content =
   <UI.ExpanderTableWrapper>
     <Space direction='vertical'>
-      <Loader >
+      <Loader states={[
+        { isLoading: isLoading,
+          isFetching: isFetching
+        }
+      ]}>
         <UI.SelectedCount hidden={totalCount === 0}>
           {$t({ defaultMessage: '{totalCount} selected' }, {
             totalCount

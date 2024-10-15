@@ -9,19 +9,27 @@ import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { intentAIApi }               from '@acx-ui/store'
 import {
   getIntl,
-  computeRangeFilter,
   TABLE_DEFAULT_PAGE_SIZE,
   useEncodedParameter
 }                                                   from '@acx-ui/utils'
 import type { PathFilter } from '@acx-ui/utils'
 
-import { states, codes, aiFeaturesLabel, groupedStates, IntentListItem, Intent, failureCodes } from './config'
-import { DisplayStates }                                                                       from './states'
+import {
+  states,
+  codes,
+  aiFeaturesLabel,
+  stateToGroupedStates,
+  IntentListItem,
+  Intent,
+  failureCodes
+} from './config'
+import { DisplayStates } from './states'
 import {
   Actions,
   IntentWlan,
   parseTransitionGQLByAction,
-  TransitionIntentItem } from './utils'
+  TransitionIntentItem
+} from './utils'
 
 type Metadata = {
   failures?: (keyof typeof failureCodes)[]
@@ -38,7 +46,7 @@ export type HighlightItem = {
 
 export type IntentHighlight = {
   rrm?: HighlightItem
-  airflex?: HighlightItem
+  probeflex?: HighlightItem
   ops?: HighlightItem
 }
 
@@ -56,7 +64,7 @@ export type IntentAP = {
   version: string
 }
 
-const getStatusTooltip = (state: DisplayStates, sliceValue: string, metadata: Metadata) => {
+export const getStatusTooltip = (state: DisplayStates, sliceValue: string, metadata: Metadata) => {
   const { $t } = getIntl()
 
   const stateConfig = states[state]
@@ -106,6 +114,7 @@ type TransformedFilterOptions = {
   categories: DisplayOption[]
   statuses: DisplayOption[]
   zones: DisplayOption[]
+  intents: DisplayOption[]
 }
 export const api = intentAIApi.injectEndpoints({
   endpoints: (build) => ({
@@ -116,11 +125,11 @@ export const api = intentAIApi.injectEndpoints({
       query: (payload) => ({
         document: gql`
         query IntentAIList(
-          $startDate: DateTime, $endDate: DateTime, $path: [HierarchyNodeInput],
+          $path: [HierarchyNodeInput],
           $filterBy: JSON, $page: Int, $pageSize: Int
         ) {
           intents(
-            start: $startDate, end: $endDate, path: $path,
+            path: $path,
             filterBy: $filterBy, page: $page, pageSize: $pageSize
           ) {
             data {
@@ -153,9 +162,6 @@ export const api = intentAIApi.injectEndpoints({
         `,
         variables: {
           ...(_.pick(payload,['path'])),
-          ...computeRangeFilter({
-            dateFilter: _.pick(payload, ['startDate', 'endDate', 'range'])
-          }),
           page: payload.page,
           pageSize: payload.pageSize,
           filterBy: payload.filterBy
@@ -201,6 +207,7 @@ export const api = intentAIApi.injectEndpoints({
         `,
         variables: { code, root, sliceId }
       }),
+      providesTags: [{ type: 'Intent', id: 'INTENT_AI_WLANS' }],
       transformResponse: (response: { intent: { wlans: IntentWlan[] } }) =>
         response.intent.wlans
     }),
@@ -227,13 +234,9 @@ export const api = intentAIApi.injectEndpoints({
       query: (payload) => ({
         document: gql`
         query IntentAI(
-          $startDate: DateTime
-          $endDate: DateTime
           $path: [HierarchyNodeInput]
         ) {
           intentFilterOptions(
-            start: $startDate
-            end: $endDate
             path: $path
           ) {
             codes { id label }
@@ -243,37 +246,28 @@ export const api = intentAIApi.injectEndpoints({
         }
         `,
         variables: {
-          ...(_.pick(payload,['path'])),
-          ...computeRangeFilter({
-            dateFilter: _.pick(payload, ['startDate', 'endDate', 'range'])
-          })
+          ...(_.pick(payload,['path']))
         }
       }),
       transformResponse: (response: { intentFilterOptions: FilterOptions }) => {
         const { $t } = getIntl()
         const { codes: filterCodes, statuses, zones } = response.intentFilterOptions
-        const aiFeatAndCat = filterCodes.reduce((data, { id }) => {
+        const { aiFeatures, categories, intents } = filterCodes.reduce((data, { id }) => {
           const aiFeature = codes[id as keyof typeof codes].aiFeature
           const category = $t(codes[id as keyof typeof codes].category)
+          const intent = $t(codes[id as keyof typeof codes].intent)
+          !data.intents.includes(intent) && data.intents.push(intent)
           !data.aiFeatures.includes(aiFeature) && data.aiFeatures.push(aiFeature)
           !data.categories.includes(category) && data.categories.push(category)
           return data
-        }, { aiFeatures: [] as string[], categories: [] as string[] })
+        }, { aiFeatures: [] as string[], categories: [] as string[], intents: [] as string[] })
 
-        const displayStatuses = statuses.reduce((data, { id, label }) => {
-          const groupedState = groupedStates.find(({ states }) => states.includes(id as string))
-          if (groupedState) {
-            const found = data.find(({ value }) => value === $t(groupedState.group))
-            if (!found) {
-              data.push({ key: id, value: $t(groupedState.group) })
-            } else { // state from same group
-              found.key = `${found.key}+${id}`
-            }
-          } else {
-            data.push(
-              { key: id, value: $t(states[label as unknown as keyof typeof states].text) }
-            )
-          }
+        const displayStatuses = statuses.reduce((data, { id }) => {
+          const stateKey = id as unknown as DisplayStates
+          const groupedState = stateToGroupedStates[stateKey]
+          const key = groupedState ? groupedState.key : id
+          const value = groupedState ? $t(groupedState.group) : $t(states[stateKey].text)
+          if (!data.find(({ key: dataKey }) => dataKey === key)) data.push({ key, value })
           return data
         }, [] as DisplayOption[])
           .sort((a, b) => a.value.localeCompare(b.value))
@@ -283,18 +277,23 @@ export const api = intentAIApi.injectEndpoints({
           key: id
         })).sort((a, b) => a.value.localeCompare(b.value))
         return {
-          aiFeatures: aiFeatAndCat.aiFeatures.map(
+          aiFeatures: aiFeatures.map(
             aiFeature => ({
               value: $t(aiFeaturesLabel[aiFeature as keyof typeof aiFeaturesLabel]),
               key: aiFeature
             })).sort((a, b) => a.value.localeCompare(b.value)),
-          categories: aiFeatAndCat.categories.map(
+          categories: categories.map(
             category => ({
               value: category,
               key: category
             })).sort((a, b) => a.value.localeCompare(b.value)),
           statuses: displayStatuses,
-          zones: displayZones
+          zones: displayZones,
+          intents: intents.map(
+            intent => ({
+              value: intent,
+              key: intent
+            })).sort((a, b) => a.value.localeCompare(b.value))
         }
       },
       providesTags: [{ type: 'Intent', id: 'INTENT_AI_FILTER_OPTIONS' }]
@@ -306,14 +305,14 @@ export const api = intentAIApi.injectEndpoints({
       query: (payload) => ({
         document: gql`
         query IntentHighlight(
-          $startDate: DateTime, $endDate: DateTime, $path: [HierarchyNodeInput]
+          $path: [HierarchyNodeInput]
         ) {
-          highlights(start: $startDate, end: $endDate, path: $path) {
+          highlights(path: $path) {
             rrm {
               new
               active
             }
-            airflex {
+            probeflex {
               new
               active
             }
@@ -325,10 +324,7 @@ export const api = intentAIApi.injectEndpoints({
         }
         `,
         variables: {
-          ...(_.pick(payload,['path'])),
-          ...computeRangeFilter({
-            dateFilter: _.pick(payload, ['startDate', 'endDate', 'range'])
-          })
+          ...(_.pick(payload,['path']))
         }
       }),
       transformResponse: (response: { highlights: IntentHighlight }) =>
@@ -378,10 +374,11 @@ export type Filters = {
   category: string[] | undefined
   aiFeature: string[] | undefined
   statusLabel: string[] | undefined
+  intent: string[] | undefined
 }
 const perpareFilterBy = (filters: Filters) => {
   const { $t } = getIntl()
-  const { sliceValue, category, aiFeature, statusLabel } = filters
+  const { sliceValue, category, aiFeature, statusLabel, intent } = filters
   let filterBy = []
   if (sliceValue) {
     filterBy.push({ col: '"sliceId"', values: sliceValue })
@@ -396,6 +393,17 @@ const perpareFilterBy = (filters: Filters) => {
   }
   if(catCodes.length > 0) {
     filterBy.push({ col: 'code', values: catCodes })
+  }
+  let intentCodes = [] as string[]
+  if(intent) {
+    // derive codes from intent
+    intent.forEach(intent => {
+      const matchedCodes = Object.keys(codes).filter(key => $t(codes[key].intent) === intent)
+      intentCodes = intentCodes.concat(matchedCodes)
+    })
+  }
+  if(intentCodes.length > 0) {
+    filterBy.push({ col: 'code', values: intentCodes })
   }
   let featCodes = [] as string[]
   if(aiFeature) {
@@ -464,6 +472,7 @@ export function useIntentAITableQuery (filter: PathFilter) {
 export const {
   useIntentAIListQuery,
   useLazyIntentWlansQuery,
+  useIntentWlansQuery,
   useTransitionIntentMutation,
   useIntentFilterOptionsQuery,
   useIntentHighlightQuery,

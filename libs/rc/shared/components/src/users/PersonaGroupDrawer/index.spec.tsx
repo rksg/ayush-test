@@ -118,8 +118,10 @@ describe('Persona Group Drawer', () => {
     const nameField = await screen.findByRole('textbox', { name: /identity group name/i })
     await userEvent.type(nameField, 'New Identity Group Name')
 
-    // Select a DPSK Service
     const selector = await screen.findAllByRole('combobox')
+    expect(selector.length).toBe(2)
+
+    // Select a DPSK Service
     const dpskPoolSelector = selector[0]
     await userEvent.click(dpskPoolSelector)
     await userEvent.type(dpskPoolSelector, 'DPSK')

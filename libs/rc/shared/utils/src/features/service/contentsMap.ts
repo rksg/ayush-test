@@ -21,7 +21,7 @@ export const defaultAccessLabelMapping: Record<PolicyDefaultAccess, MessageDescr
 export const serviceTypeLabelMapping: Record<ServiceType, MessageDescriptor> = {
   [ServiceType.PORTAL]: defineMessage({ defaultMessage: 'Portal' }),
   [ServiceType.DHCP]: defineMessage({ defaultMessage: 'DHCP for Wi-Fi' }),
-  [ServiceType.EDGE_DHCP]: defineMessage({ defaultMessage: 'DHCP for SmartEdge' }),
+  [ServiceType.EDGE_DHCP]: defineMessage({ defaultMessage: 'DHCP for RUCKUS Edge' }),
   [ServiceType.EDGE_FIREWALL]: defineMessage({ defaultMessage: 'Firewall' }),
   [ServiceType.EDGE_SD_LAN]: defineMessage({
     defaultMessage: 'SD-LAN' }),
@@ -30,7 +30,7 @@ export const serviceTypeLabelMapping: Record<ServiceType, MessageDescriptor> = {
   [ServiceType.WIFI_CALLING]: defineMessage({ defaultMessage: 'Wi-Fi Calling' }),
   [ServiceType.MDNS_PROXY]: defineMessage({ defaultMessage: 'mDNS Proxy' }),
   [ServiceType.DPSK]: defineMessage({ defaultMessage: 'DPSK' }),
-  [ServiceType.NETWORK_SEGMENTATION]: defineMessage(
+  [ServiceType.PIN]: defineMessage(
     { defaultMessage: 'Personal Identity Network' }),
   [ServiceType.WEBAUTH_SWITCH]: defineMessage(
     { defaultMessage: 'Personal Identity Network Auth Page for Switch' }),
@@ -55,7 +55,7 @@ export const serviceTypeDescMapping: Record<ServiceType, MessageDescriptor> = {
   // eslint-disable-next-line max-len
   [ServiceType.MDNS_PROXY]: defineMessage({ defaultMessage: 'Proxy multicast DNS for discovery of layer 2 services' }),
   [ServiceType.DPSK]: defineMessage({ defaultMessage: 'RUCKUS Dynamic Pre Shared Key Service' }),
-  [ServiceType.NETWORK_SEGMENTATION]: defineMessage(
+  [ServiceType.PIN]: defineMessage(
     { defaultMessage: 'Controls network traffic by different segments' }),
   [ServiceType.WEBAUTH_SWITCH]: defineMessage(
     { defaultMessage: 'Templates of Personal Identity Network Auth Page for Switch' }),

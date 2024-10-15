@@ -65,6 +65,7 @@ export interface EdgeStatus extends EdgeResourceUtilization {
   clusterId?: string
   hasCorePort?: boolean
   incompatible?: number // UI only
+  isHqosEnabled?: boolean
 }
 export interface EdgeDetails {
   serialNumber: string
@@ -393,12 +394,12 @@ export interface VenueEdgeCompatibilitiesResponse {
   compatibilities: EntityCompatibility[]
 }
 
-export interface EdgeSdLanCompatibility {
+export interface EdgeServiceCompatibility {
   serviceId: string
   clusterEdgeCompatibilities: EntityCompatibility[]
 }
-export interface EdgeSdLanCompatibilitiesResponse {
-  compatibilities: EdgeSdLanCompatibility[]
+export interface EdgeServiceCompatibilitiesResponse {
+  compatibilities: EdgeServiceCompatibility[]
 }
 
 export type VenueSdLanApCompatibility = Omit<ApCompatibility, 'id'> & {
@@ -434,6 +435,7 @@ export interface EdgeClusterStatus {
   hasCorePort?: boolean,
   highAvailabilityMode?: ClusterHighAvailabilityModeEnum
   firmwareVersion?: string
+  activeAps?:number
 }
 
 export interface EdgeClusterTableDataType extends EdgeStatus,

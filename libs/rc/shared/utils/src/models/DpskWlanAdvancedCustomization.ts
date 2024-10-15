@@ -1,6 +1,7 @@
 import { BasicServiceSetPriorityEnum } from './BasicServiceSetPriorityEnum'
 import { ClientIsolationOptions }      from './ClientIsolationOptions'
 import { DnsProxy }                    from './DnsProxy'
+import { FastRoamingOptions }          from './FastRoamingOptions'
 import { MultiLinkOperationOptions }   from './MultiLinkOperationOptions'
 import { QosMapSetOptions }            from './QosMapSetOptions'
 import { RadiusOptions }               from './RadiusOptions'
@@ -79,6 +80,8 @@ export class DpskWlanAdvancedCustomization {
   l2AclEnable?: boolean
 
   l3AclEnable?: boolean
+
+  enableDeviceOs?: boolean
 
   wifiCallingEnabled?: boolean
 
@@ -164,6 +167,8 @@ export class DpskWlanAdvancedCustomization {
   qosMapSetEnabled?: boolean
 
   qosMapSetOptions?: QosMapSetOptions
+
+  fastRoamingOptions?: FastRoamingOptions
 
   constructor () {
     this.maxClientsOnWlanPerRadio = 100
@@ -284,5 +289,7 @@ export class DpskWlanAdvancedCustomization {
     this.qosMapSetEnabled = false
 
     this.qosMapSetOptions = new QosMapSetOptions()
+
+    this.fastRoamingOptions = new FastRoamingOptions()
   }
 }

@@ -39,13 +39,14 @@ export default function KpiSections (props: { tab: CategoryTab, filters: Analyti
     useIsSplitOn(Features.SWITCH_HEALTH_10010E_TOGGLE)
   ].some(Boolean)
 
-  const { kpis } = wiredKPIsForTab(isSwitchHealth10010eEnabled)[tab]
+  const { kpis } = wiredKPIsForTab(isSwitchHealth10010eEnabled)[tab as keyof typeof wiredKPIsForTab]
   const { useFetchThresholdPermissionQuery } = healthApi
   const { thresholds, kpiThresholdsQueryResults } = useKpiThresholdsQuery({ filters })
   const thresholdPermissionQuery = useFetchThresholdPermissionQuery({ filter })
   const mutationAllowed = Boolean(thresholdPermissionQuery.data?.mutationAllowed)
   return <Loader states={[kpiThresholdsQueryResults, thresholdPermissionQuery]}>
     {kpiThresholdsQueryResults.fulfilledTimeStamp && <KpiSection
+      isSwitch
       key={kpiThresholdsQueryResults.fulfilledTimeStamp} // forcing component to rerender on newly received thresholds
       kpis={kpis}
       thresholds={thresholds}

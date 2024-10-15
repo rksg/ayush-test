@@ -23,7 +23,7 @@ interface FormValues { status: Statuses, settings: SettingsType, preferences?: u
 
 export function ScheduleTiming ({ disabled = false }: { disabled?: boolean }) {
   const { intent } = useIntentContext()
-  const showDate = isDateVisible(intent.status as Statuses)
+  const showDate = isDateVisible(intent.status)
 
   const summary = showDate ? <FormattedMessage
     values={richTextFormatValues}
@@ -56,7 +56,7 @@ export function ScheduleTiming ({ disabled = false }: { disabled?: boolean }) {
 
   return <>
     {summary}
-    {isDateVisible(intent.status as Statuses) && <ScheduleDate disabled={disabled} />}
+    {isDateVisible(intent.status) && <ScheduleDate disabled={disabled} />}
     <ScheduleTime disabled={disabled}/>
   </>
 }
@@ -67,7 +67,7 @@ function ScheduleDate ({ disabled = false }: { disabled?: boolean }) {
 
   return <Form.Item
     name={dateName}
-    label={<FormattedMessage defaultMessage='Start Date' />}
+    label={<FormattedMessage defaultMessage='Date' />}
     rules={[{ required: !disabled, message: $t({ defaultMessage: 'Please select date' }) }]}
     children={
       <DatePicker
@@ -86,11 +86,9 @@ function ScheduleDate ({ disabled = false }: { disabled?: boolean }) {
 function ScheduleTime ({ disabled = false }: { disabled?: boolean }) {
   const { $t } = useIntl()
   const { intent } = useIntentContext()
-  const showDate = isDateVisible(intent.status as Statuses)
+  const showDate = isDateVisible(intent.status)
 
-  const label = showDate
-    ? <FormattedMessage defaultMessage='Start Time' />
-    : <FormattedMessage defaultMessage='Schedule Time' />
+  const label = <FormattedMessage defaultMessage='Time' />
 
   const form = Form.useFormInstance<FormValues>()
   const date = (Form.useWatch(dateName) ?? form.getFieldValue(dateName)) as Moment | undefined
@@ -139,24 +137,35 @@ function ScheduleTime ({ disabled = false }: { disabled?: boolean }) {
 
 const formats = {
   datetime: formatter(DateFormatEnum.DateTimeFormat),
+  date: formatter(DateFormatEnum.DateFormat),
   time: formatter(DateFormatEnum.OnlyTime)
 }
 
 ScheduleTiming.FieldSummary = function FieldSummary (): JSX.Element {
   const { $t } = useIntl()
   const { intent } = useIntentContext()
-  const showDate = isDateVisible(intent.status as Statuses)
-  const format = showDate ? formats.datetime : formats.time
+  const showDate = isDateVisible(intent.status)
   const label = showDate
-    ? $t({ defaultMessage: 'Start Date & Time' })
-    : $t({ defaultMessage: 'Schedule Time' })
+    ? $t({ defaultMessage: 'Date & Time' })
+    : $t({ defaultMessage: 'Time' })
 
   return <Form.Item name={fieldName} label={label}>
     <StepsForm.FieldSummary<SettingsType>
-      convert={(settings) => format(getScheduledAt({
-        status: intent.status as Statuses,
-        settings: settings!
-      }))}
+      convert={(settings) => {
+        const value = getScheduledAt({
+          status: intent.status,
+          settings: settings!
+        })
+        const values = {
+          date: formats.date(value),
+          time: formats.time(value)
+        }
+        // eslint-disable-next-line max-len
+        const dateTimeText = $t({ defaultMessage: 'The Intent will be scheduled to activate on {date}. Once active, any identified configuration changes will be applied daily at {time}.' }, values)
+        // eslint-disable-next-line max-len
+        const timeText = $t({ defaultMessage: 'Any identified configuration changes will be applied daily at {time}.' }, values)
+        return showDate ? dateTimeText : timeText
+      }}
     />
   </Form.Item>
 }
@@ -169,11 +178,6 @@ function isDateVisible (status: Statuses) {
 }
 
 export function getScheduledAt (values: FormValues) {
-  // TODO:
-  // remove once switch to Intent resolver
-  // required due to Recommendation resolver doesn't return scheudledAt by default
-  values.settings.date ??= moment().clone().startOf('day')
-
   const duration = moment.duration(values.settings.time, 'hours')
   const scheduledAt = values.settings.date.clone().set({
     hours: duration.hours(),

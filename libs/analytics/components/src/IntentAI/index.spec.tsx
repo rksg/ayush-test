@@ -17,8 +17,9 @@ import {
   waitFor,
   mockGraphqlMutation
 } from '@acx-ui/test-utils'
-import { RaiPermissions, setRaiPermissions } from '@acx-ui/user'
-import { DateRange, setUpIntl }              from '@acx-ui/utils'
+import { WifiScopes }                                                        from '@acx-ui/types'
+import { getUserProfile, RaiPermissions, setRaiPermissions, setUserProfile } from '@acx-ui/user'
+import { DateRange, setUpIntl }                                              from '@acx-ui/utils'
 
 import { intentListResult, mockAIDrivenRow, filterOptions } from './__tests__/fixtures'
 import {
@@ -48,6 +49,11 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useRaiR1HelpPageLink: () => ''
+}))
+
 setUpIntl({ locale: 'en-US', messages: {} })
 //Refer to libs/analytics/components/src/Recommendations/index.spec.tsx
 describe('IntentAITabContent', () => {
@@ -75,6 +81,11 @@ describe('IntentAITabContent', () => {
     jest.mocked(useDateRange).mockReturnValue(defaultTimeRangeDropDownContextValue)
     jest.mocked(get).mockReturnValue('') // get('IS_MLISA_SA')
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+  })
+
+  afterEach(() => {
+    jest.clearAllMocks()
+    jest.restoreAllMocks()
   })
 
   it('should render loader and empty table', async () => {
@@ -118,6 +129,30 @@ describe('IntentAITabContent', () => {
     expect(screen.getByText('Intent')).toBeVisible()
     expect(screen.getByText('Venue')).toBeVisible()
     expect(screen.queryByText('Zone')).toBeNull()
+    expect(screen.getAllByRole('checkbox')).toHaveLength(4)
+  })
+
+  it('should render read only intentAI table for R1 when wifi-u is missing', async () => {
+    setUserProfile({
+      ...getUserProfile(),
+      abacEnabled: true,
+      isCustomRole: true,
+      scopes: [WifiScopes.READ]
+    })
+    mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
+      data: intentListResult
+    })
+    mockGraphqlQuery(intentAIUrl, 'IntentAI', {
+      data: filterOptions
+    })
+    render(<IntentAITabContent/>, {
+      route: {},
+      wrapper: Provider
+    })
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    const rowText = await screen.findAllByText('AI-Driven RRM')
+    expect(rowText).toHaveLength(1)
+    expect(screen.queryByRole('checkbox')).toBeNull()
   })
 
   it('should render intentAI table for RA', async () => {

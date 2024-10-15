@@ -10,7 +10,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   useMspAdminListQuery,
   useAssignMultiMspEcDelegatedAdminsMutation
@@ -46,7 +46,8 @@ interface AssignedMultiEcMspAdmins {
 
 export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => {
   const { $t } = useIntl()
-  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
+  const isRbacEarlyAccessEnable = useIsTierAllowed(Features.RBAC_IMPLICIT_P1)
+  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
 
   const { visible, tenantIds, setVisible, setSelected } = props
@@ -128,8 +129,9 @@ export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => 
         }
       },
       render: function (_, row) {
-        return row.role === RolesEnum.GUEST_MANAGER || row.role === RolesEnum.DPSK_ADMIN
-          ? <span>{$t(roleDisplayText[row.role])}</span>
+        return row.role === RolesEnum.GUEST_MANAGER || row.role === RolesEnum.DPSK_ADMIN ||
+          !SupportedDelegatedRoles.includes(row.role)
+          ? <span>{roleDisplayText[row.role] ? $t(roleDisplayText[row.role]) : row.role}</span>
           : transformAdminRole(row.id, row.role)
       }
     }
@@ -166,6 +168,7 @@ export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => 
           columns={columns}
           dataSource={queryResults?.data}
           rowKey='email'
+          alwaysShowFilters={true}
           rowSelection={{
             type: 'checkbox',
             onChange (selectedRowKeys, selRows) {
@@ -173,7 +176,8 @@ export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => 
             },
             getCheckboxProps: (record: MspAdministrator) => ({
               disabled: record.role === RolesEnum.GUEST_MANAGER ||
-                        record.role === RolesEnum.DPSK_ADMIN
+                        record.role === RolesEnum.DPSK_ADMIN ||
+                        !SupportedDelegatedRoles.includes(record.role)
             })
           }}
         />

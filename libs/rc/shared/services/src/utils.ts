@@ -1,6 +1,18 @@
-import { CommonResult, TableResult, Transaction, TxStatus, onSocketActivityChanged } from '@acx-ui/rc/utils'
-import { RequestPayload }                                                            from '@acx-ui/types'
-import { ApiInfo, DateRangeFilter, computeRangeFilter }                              from '@acx-ui/utils'
+import { find } from 'lodash'
+
+import {
+  CommonResult,
+  TableResult,
+  Transaction,
+  TxStatus,
+  onSocketActivityChanged,
+  NetworkVenue,
+  NetworkApGroup
+} from '@acx-ui/rc/utils'
+import { RequestPayload }                               from '@acx-ui/types'
+import { ApiInfo, DateRangeFilter, computeRangeFilter } from '@acx-ui/utils'
+
+import { ActionItem, comparePayload } from './servicePolicy.utils'
 
 
 type MetaBase = { id: string }
@@ -28,7 +40,14 @@ export function latestTimeFilter (payload: unknown) {
 
 
 type SocketActivityChangedParams = Parameters<typeof onSocketActivityChanged>
-
+interface handleCallbackWhenActivityProps {
+  api: SocketActivityChangedParams[1],
+  activityData: Transaction,
+  useCase: string,
+  stepName?: string,
+  callback?: unknown,
+  failedCallback?: unknown
+}
 export async function handleCallbackWhenActivitySuccess (
   api: SocketActivityChangedParams[1],
   activityData: Transaction,
@@ -54,13 +73,9 @@ export async function handleCallbackWhenActivitySuccess (
   }
 }
 
-export async function handleCallbackWhenActivityDone (
-  api: SocketActivityChangedParams[1],
-  activityData: Transaction,
-  targetUseCase: string,
-  callback?: unknown,
-  failedCallback?: unknown
-) {
+export async function handleCallbackWhenActivityDone (props: handleCallbackWhenActivityProps) {
+  const { api, activityData, useCase, stepName, callback, failedCallback } = props
+
   try {
     if (!callback || typeof callback !== 'function') return
 
@@ -68,9 +83,10 @@ export async function handleCallbackWhenActivityDone (
 
     if (!response) return
 
+    const targetStepName = stepName || useCase
     // eslint-disable-next-line max-len
-    if ((response?.data as CommonResult)?.requestId === activityData.requestId && activityData.useCase === targetUseCase) {
-      const status = activityData.steps?.find((step) => (step.id === targetUseCase))?.status
+    if ((response?.data as CommonResult)?.requestId === activityData.requestId && activityData.useCase === useCase) {
+      const status = activityData.steps?.find((step) => (step.id === targetStepName))?.status
 
       if (status === TxStatus.FAIL) {
         ((failedCallback || callback) as Function)?.(response.data)
@@ -97,4 +113,85 @@ export const isPayloadHasField = (payload: RequestPayload['payload'], fields: st
 
 export function isFulfilled <T,> (p: PromiseSettledResult<T>): p is PromiseFulfilledResult<T> {
   return p.status === 'fulfilled'
+}
+
+type ApGroupVlanPoolParams = {
+  venueId?: string
+  networkId?: string
+  apGroupId?: string
+  profileId: string
+}
+
+export const apGroupsChangeSet = (newPayload: NetworkVenue, oldPayload: NetworkVenue) => {
+  // eslint-disable-next-line max-len
+  const itemProcessFn = (currentPayload: Record<string, unknown>, oldPayload: Record<string, unknown> | null, key: string, id: string) => {
+    return {
+      [key]: { new: currentPayload[key], old: oldPayload?.[key], id: id }
+    } as ActionItem
+  }
+
+  const newApGroups = newPayload.apGroups as NetworkApGroup[]
+  const oldApGroups = oldPayload.apGroups as NetworkApGroup[]
+
+  const updateApGroups = [] as NetworkApGroup[]
+  const addApGroups = [] as NetworkApGroup[]
+  const deleteApGroups = [] as NetworkApGroup[]
+  const activatedVlanPoolParamsList = [] as ApGroupVlanPoolParams[]
+  const deactivatedVlanPoolParamsList = [] as ApGroupVlanPoolParams[]
+
+  newApGroups.forEach((newApGroup: NetworkApGroup) => {
+    const apGroupId = newApGroup.apGroupId as string
+    const oldApGroup = find(oldApGroups, { apGroupId })
+
+    if (!oldApGroup) {
+      addApGroups.push(newApGroup)
+      // activiate vlan pooling
+      if (newApGroup.vlanPoolId) {
+        activatedVlanPoolParamsList.push({
+          venueId: newApGroup.venueId ?? newPayload.venueId,
+          networkId: newApGroup.networkId ?? newPayload.networkId,
+          apGroupId: newApGroup.apGroupId,
+          profileId: newApGroup.vlanPoolId
+        })
+      }
+    } else {
+      const comparisonResult = comparePayload(
+        newApGroup as unknown as Record<string, unknown>,
+        oldApGroup as unknown as Record<string, unknown> || {},
+        apGroupId,
+        itemProcessFn
+      )
+      if (comparisonResult.updated.length) updateApGroups.push(newApGroup)
+
+      if (!newApGroup.vlanPoolId && oldApGroup.vlanPoolId) {
+        deactivatedVlanPoolParamsList.push({
+          venueId: oldApGroup.venueId ?? oldPayload.venueId,
+          networkId: oldApGroup.networkId ?? oldPayload.networkId,
+          apGroupId: oldApGroup.apGroupId,
+          profileId: oldApGroup.vlanPoolId
+        })
+      } else if (newApGroup.vlanPoolId && (newApGroup.vlanPoolId !== oldApGroup.vlanPoolId)) {
+        activatedVlanPoolParamsList.push({
+          venueId: newApGroup.venueId ?? newPayload.venueId,
+          networkId: newApGroup.networkId ?? newPayload.networkId,
+          apGroupId: newApGroup.apGroupId,
+          profileId: newApGroup.vlanPoolId
+        })
+      }
+    }
+  })
+
+  oldApGroups.forEach((oldApGroup: NetworkApGroup) => {
+    const apGroupId = oldApGroup.apGroupId as string
+    const newApGroup = find(newApGroups, { apGroupId })
+    if (!newApGroup) deleteApGroups.push(oldApGroup)
+  })
+
+  return {
+    addApGroups,
+    updateApGroups,
+    deleteApGroups,
+    activatedVlanPoolParamsList,
+    deactivatedVlanPoolParamsList
+  }
 }

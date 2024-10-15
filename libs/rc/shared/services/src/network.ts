@@ -45,12 +45,13 @@ import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 import {
   aggregatedRbacNetworksVenueData,
-  aggregatedRbacVenueNetworksData,
+  aggregatedRbacVenueNetworksData, fetchRbacAccessControlPolicyNetwork, fetchRbacAccessControlSubPolicyNetwork,
   fetchRbacApGroupNetworkVenueList,
   fetchRbacNetworkVenueList,
   fetchRbacVenueNetworkList,
   getNetworkDeepList, updateNetworkVenueFn
 } from './networkVenueUtils'
+import { commonQueryFn }     from './servicePolicy.utils'
 import { isPayloadHasField } from './utils'
 
 
@@ -345,6 +346,11 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         const networkQuery = await fetchWithBQ(
           createHttpRequest(urlsInfo.getNetwork, params, apiCustomHeader)
         )
+
+        if ((networkQuery as QueryReturnValue<NetworkSaveData, FetchBaseQueryError, FetchBaseQueryMeta>).data?.wlan?.advancedCustomization?.devicePolicyId) {
+          (networkQuery as QueryReturnValue<NetworkSaveData, FetchBaseQueryError, FetchBaseQueryMeta>).data!.wlan!.advancedCustomization!.enableDeviceOs = true
+        }
+
         return networkQuery as QueryReturnValue<NetworkSaveData,
         FetchBaseQueryError,
         FetchBaseQueryMeta>
@@ -379,11 +385,39 @@ export const networkApi = baseNetworkApi.injectEndpoints({
             networkDeep
           } = await fetchRbacNetworkVenueList(arg, fetchWithBQ)
 
+          const {
+            error: accessControlPolicyNetworkError,
+            data: accessControlPolicyNetwork
+          } = await fetchRbacAccessControlPolicyNetwork(arg, fetchWithBQ)
+
+          const {
+            error: accessControlSubPolicyNetworkError,
+            data: accessControlSubPolicyNetwork
+          } = await fetchRbacAccessControlSubPolicyNetwork(arg, fetchWithBQ)
+
           if (networkVenuesListQueryError)
             return { error: networkVenuesListQueryError }
 
+          if (accessControlPolicyNetworkError)
+            return { error: accessControlPolicyNetworkError }
+
+          if (accessControlSubPolicyNetworkError)
+            return { error: accessControlSubPolicyNetworkError }
+
           if (networkDeep?.venues) {
             networkDeepData.venues = cloneDeep(networkDeep.venues)
+          }
+
+          if (accessControlPolicyNetwork?.data.length > 0 && networkDeepData.wlan?.advancedCustomization) {
+            networkDeepData.wlan.advancedCustomization.accessControlEnable = true
+            networkDeepData.wlan.advancedCustomization.accessControlProfileId = accessControlPolicyNetwork.data[0].id
+          }
+
+          if (!accessControlPolicyNetwork?.data.length && Object.keys(accessControlSubPolicyNetwork).length && networkDeepData.wlan?.advancedCustomization) {
+            networkDeepData.wlan.advancedCustomization = {
+              ...networkDeepData.wlan.advancedCustomization,
+              ...accessControlSubPolicyNetwork
+            }
           }
         }
 
@@ -401,7 +435,9 @@ export const networkApi = baseNetworkApi.injectEndpoints({
             'ActivateWifiNetworkTemplateOnVenue',
             'DeactivateWifiNetworkOnVenue',
             'DeactivateWifiNetworkTemplateOnVenue',
-            'UpdateVenueWifiNetworkSettings'
+            'UpdateVenueWifiNetworkSettings',
+            'DeactivateApGroupOnWifiNetwork',
+            'ActivateApGroupOnWifiNetwork'
           ]
 
           onActivityMessageReceived(msg, useCases, () => {
@@ -412,7 +448,10 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     }),
     networkDetailHeader: build.query<NetworkDetailHeader, RequestPayload>({
       query: ({ params }) => {
-        const networkDetailReq = createHttpRequest(CommonUrlsInfo.getNetworksDetailHeader, params)
+        const networkDetailReq = createHttpRequest(
+          CommonRbacUrlsInfo.getNetworksDetailHeader,
+          params,
+          GetApiVersionHeader(ApiVersionEnum.v1))
         return {
           ...networkDetailReq
         }
@@ -542,7 +581,9 @@ export const networkApi = baseNetworkApi.injectEndpoints({
             'ActivateWifiNetworkTemplateOnVenue',
             'DeactivateWifiNetworkOnVenue',
             'DeactivateWifiNetworkTemplateOnVenue',
-            'UpdateVenueWifiNetworkSettings'
+            'UpdateVenueWifiNetworkSettings',
+            'DeactivateApGroupOnWifiNetwork',
+            'ActivateApGroupOnWifiNetwork'
           ], () => {
             api.dispatch(networkApi.util.invalidateTags([{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'LIST' }]))
           })
@@ -1014,6 +1055,27 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    activateVenueApGroup: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(
+        WifiRbacUrlsInfo.activateVenueApGroup,
+        WifiRbacUrlsInfo.activateVenueApGroup
+      ),
+      invalidatesTags: [{ type: 'Network', id: 'DETAIL' }]
+    }),
+    deactivateVenueApGroup: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(
+        WifiRbacUrlsInfo.deactivateVenueApGroup,
+        WifiRbacUrlsInfo.deactivateVenueApGroup
+      ),
+      invalidatesTags: [{ type: 'Network', id: 'DETAIL' }]
+    }),
+    updateVenueApGroup: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(
+        WifiRbacUrlsInfo.updateVenueApGroups,
+        WifiRbacUrlsInfo.updateVenueApGroups
+      ),
+      invalidatesTags: [{ type: 'Network', id: 'DETAIL' }]
     })
   })
 })
@@ -1356,7 +1418,10 @@ export const {
   useUpdateRadiusServerSettingsMutation,
   useGetRadiusServerSettingsQuery,
   useBindClientIsolationMutation,
-  useUnbindClientIsolationMutation
+  useUnbindClientIsolationMutation,
+  useActivateVenueApGroupMutation,
+  useDeactivateVenueApGroupMutation,
+  useUpdateVenueApGroupMutation
 } = networkApi
 
 export const aggregatedNetworkCompatibilitiesData = (networkList: TableResult<Network>,

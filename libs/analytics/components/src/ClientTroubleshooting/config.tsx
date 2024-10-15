@@ -373,6 +373,7 @@ export type NetworkIncidentCategoryMap = {
   connection:IncidentDetails[] |[],
   performance:IncidentDetails[] |[],
   infrastructure:IncidentDetails[] |[],
+  security:IncidentDetails[] |[],
   all: IncidentDetails[] | [];
 
 }

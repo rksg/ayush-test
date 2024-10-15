@@ -7,10 +7,11 @@ import {
   MacRegListUrlsInfo,
   DpskUrls,
   CommonUrlsInfo,
-  NetworkSegmentationUrls,
+  EdgePinUrls,
   PropertyUrlsInfo,
   DistributionSwitch,
-  AccessSwitch
+  AccessSwitch,
+  CertificateUrls
 } from '@acx-ui/rc/utils'
 import { Provider }           from '@acx-ui/store'
 import {
@@ -39,7 +40,7 @@ const mockPropertyConfigOptionsResult = { content: [
   { venueId: 'venue-id', venueName: 'venue-name' }
 ] }
 
-const mockNsgData = {
+const mockPinData = {
   id: 'nsg-id-1',
   name: 'nsg-name-1',
   venueInfos: [
@@ -49,7 +50,7 @@ const mockNsgData = {
   ]
 }
 
-const mockNsgSwitchInfoData: {
+const mockPinSwitchInfoData: {
   distributionSwitches: DistributionSwitch[],
   accessSwitches: AccessSwitch[]
 } = {
@@ -95,15 +96,22 @@ const mockNsgSwitchInfoData: {
   }]
 }
 
-// To enable NSG PLM FF and allow to call api
+// To enable PIN PLM FF and allow to call api
 jest.mocked(useIsSplitOn).mockReturnValue(true)
 jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
-describe.skip('Persona Group Table', () => {
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  PersonaGroupDrawer: () => <div>PersonaGroupDrawer</div>
+}))
+
+describe('Persona Group Table', () => {
   let params: { tenantId: string }
   const searchPersonaGroupApi = jest.fn()
 
   beforeEach(async () => {
+    searchPersonaGroupApi.mockClear()
+
     mockServer.use(
       rest.post(
         replacePagination(PersonaUrls.searchPersonaGroupList.url),
@@ -137,21 +145,31 @@ describe.skip('Persona Group Table', () => {
         (req, res, ctx) => res(ctx.json( { data: [] }))
       ),
       rest.get(
-        NetworkSegmentationUrls.getNetworkSegmentationGroupById.url,
-        (req, res, ctx) => res(ctx.json(mockNsgData))
+        EdgePinUrls.getEdgePinById.url,
+        (req, res, ctx) => res(ctx.json(mockPinData))
       ),
       rest.get(
-        NetworkSegmentationUrls.getSwitchInfoByNSGId.url,
-        (req, res, ctx) => res(ctx.json(mockNsgSwitchInfoData))
+        EdgePinUrls.getSwitchInfoByPinId.url,
+        (req, res, ctx) => res(ctx.json(mockPinSwitchInfoData))
       ),
       rest.post(
-        NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
+        EdgePinUrls.getEdgePinStatsList.url,
         // just for filterable options generation
         (req, res, ctx) => res(ctx.json({ data: [{ id: 'nsg-id-1', name: 'nsg-name-1' }] }))
       ),
       rest.post(
         PropertyUrlsInfo.getPropertyConfigsQuery.url,
         (_, res, ctx) => res(ctx.json(mockPropertyConfigOptionsResult))
+      ),
+      rest.post(
+        CertificateUrls.getCertificateTemplates.url,
+        (_, res, ctx) => {
+          return res(ctx.json({ data: [] }))
+        }
+      ),
+      rest.get(
+        CertificateUrls.getCertificateTemplate.url,
+        (_, res, ctx) => res(ctx.json({ id: 'cert-template-1', name: 'cert-template-name' }))
       )
     )
     params = {
@@ -175,6 +193,7 @@ describe.skip('Persona Group Table', () => {
     // assert link in Table view
     await screen.findByRole('link', { name: targetPersonaGroup.name })
     await screen.findAllByRole('link', { name: macLinkName })
+    await screen.findAllByRole('link', { name: /cert-template-name/i })
 
     // change search bar and trigger re-fetching mechanism
     const searchBar = await screen.findByRole('textbox')
@@ -184,7 +203,7 @@ describe.skip('Persona Group Table', () => {
     await waitFor(() => expect(searchPersonaGroupApi).toHaveBeenCalledTimes(2))
   })
 
-  it('should delete selected persona group', async () => {
+  it.skip('should delete selected persona group', async () => {
     render(
       <Provider>
         <PersonaGroupTable />
@@ -207,7 +226,7 @@ describe.skip('Persona Group Table', () => {
     fireEvent.click(deletePersonaGroupButton)
   })
 
-  it('should edit selected persona group', async () => {
+  it.skip('should edit selected persona group', async () => {
     render(
       <Provider>
         <PersonaGroupTable />
@@ -228,7 +247,7 @@ describe.skip('Persona Group Table', () => {
     // expect(nameDisplay.value).toBe(/Class A/i)
   })
 
-  it('should create persona group', async () => {
+  it.skip('should create persona group', async () => {
     render(
       <Provider>
         <PersonaGroupTable />
@@ -250,7 +269,7 @@ describe.skip('Persona Group Table', () => {
 
   })
 
-  it('should export persona group to CSV', async () => {
+  it.skip('should export persona group to CSV', async () => {
     const exportFn = jest.fn()
 
     mockServer.use(

@@ -1,19 +1,19 @@
 import { find, sumBy } from 'lodash'
 import { useIntl }     from 'react-intl'
 
-import { ApCompatibilityToolTip, CompatibilityWarningCircleIcon }                    from '@acx-ui/rc/components'
-import { CompatibilityDeviceEnum, EdgeSdLanApCompatibility, EdgeSdLanCompatibility } from '@acx-ui/rc/utils'
+import { ApCompatibilityToolTip, CompatibilityWarningCircleIcon }                      from '@acx-ui/rc/components'
+import { CompatibilityDeviceEnum, EdgeSdLanApCompatibility, EdgeServiceCompatibility } from '@acx-ui/rc/utils'
 
 interface CompatibilityCheckProps {
   serviceId: string,
-  sdLanCompatibilityData?: Record<string, EdgeSdLanCompatibility[] | EdgeSdLanApCompatibility[]>
+  sdLanCompatibilityData?: Record<string, EdgeServiceCompatibility[] | EdgeSdLanApCompatibility[]>
 }
 export const CompatibilityCheck = (props: CompatibilityCheckProps) => {
   const { $t } = useIntl()
   const { serviceId, sdLanCompatibilityData } = props
 
   // eslint-disable-next-line max-len
-  const edgeIncompatibleData = (find(sdLanCompatibilityData?.[CompatibilityDeviceEnum.EDGE], { serviceId }) as EdgeSdLanCompatibility)?.clusterEdgeCompatibilities
+  const edgeIncompatibleData = (find(sdLanCompatibilityData?.[CompatibilityDeviceEnum.EDGE], { serviceId }) as EdgeServiceCompatibility)?.clusterEdgeCompatibilities
   const edgeIncompatibleCount = sumBy(edgeIncompatibleData, (data) => data.incompatible)
   const edgeIncompatible = edgeIncompatibleCount > 0
   // eslint-disable-next-line max-len
@@ -28,11 +28,11 @@ export const CompatibilityCheck = (props: CompatibilityCheckProps) => {
     // eslint-disable-next-line max-len
       title={$t({
         defaultMessage: `This SD-LAN is not able to be brought up
-        on some {edgeInfo} {hasAnd} {apInfo} due to thier firmware incompatibility.` },
+        on some {edgeInfo} {hasAnd} {apInfo} due to their firmware incompatibility.` },
       {
         edgeInfo: (edgeIncompatible
         // eslint-disable-next-line max-len
-          ? $t({ defaultMessage: '{edgeCount, plural, one {SmartEdge} other {SmartEdges}}' }, { edgeCount: edgeIncompatibleCount })
+          ? $t({ defaultMessage: '{edgeCount, plural, one {RUCKUS Edge} other {RUCKUS Edges}}' }, { edgeCount: edgeIncompatibleCount })
           : ''),
         hasAnd: ((edgeIncompatible && apIncompatible) ? $t({ defaultMessage: 'and' }) : ''),
         apInfo: (apIncompatible

@@ -322,6 +322,55 @@ export const venueLanPorts = [{
   poeOut: false
 }]
 
+export const mockEthProfiles = {
+  fields: [
+    'id',
+    'name',
+    'type',
+    'untagId',
+    'vlanMembers',
+    'isDefault',
+    'venueIds',
+    'venueActivations'
+  ],
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      id: 'ed4b396d848e465d8044064ff3da9d33',
+      name: 'Default Trunk',
+      type: 'TRUNK',
+      untagId: 1,
+      vlanMembers: '1-4094',
+      isDefault: true,
+      venueIds: ['venue-id'],
+      venueActivations: [
+        {
+          venueId: 'venue-id',
+          apModel: 'T750',
+          portId: 1
+        }
+      ]
+    },
+    {
+      id: 'd17d0b68b34249ff85376ebfaa8a87d5',
+      name: 'Default Access',
+      type: 'ACCESS',
+      untagId: 1,
+      vlanMembers: '1',
+      isDefault: true,
+      venueIds: ['venue-id'],
+      venueActivations: [
+        {
+          venueId: 'venue-id',
+          apModel: 'T750',
+          portId: 2
+        }
+      ]
+    }
+  ]
+}
+
 export const venueSetting = {
   tenantId: '15a04f095a8f4a96acaf17e921e8a6df',
   wifiFirmwareVersion: '6.2.0.103.486',
@@ -3118,7 +3167,7 @@ export const mockResidentPortalProfileList: NewTableResult<ResidentPortal> = {
   ]
 }
 
-export const mockEnabledNSGPropertyConfig: PropertyConfigs = {
+export const mockEnabledPinPropertyConfig: PropertyConfigs = {
   status: PropertyConfigStatus.ENABLED,
   personaGroupId: 'persona-group-id-NSG',
   residentPortalId: mockResidentPortalProfileList.content[0].id,
@@ -3132,7 +3181,7 @@ export const mockEnabledNSGPropertyConfig: PropertyConfigs = {
   }
 }
 
-export const mockEnabledNoNSGPropertyConfig: PropertyConfigs = {
+export const mockEnabledNoPinPropertyConfig: PropertyConfigs = {
   status: PropertyConfigStatus.ENABLED,
   personaGroupId: 'persona-group-id-noNSG',
   residentPortalId: mockResidentPortalProfileList.content[0].id,
@@ -3161,7 +3210,7 @@ export const mockEnabledNoNSGPropertyConfig: PropertyConfigs = {
 //   ]
 // }
 
-export const mockPersonaGroupWithoutNSG: PersonaGroup = {
+export const mockPersonaGroupWithoutPin: PersonaGroup = {
   id: 'persona-group-id-1',
   name: 'Class A',
   description: '',
@@ -3170,7 +3219,7 @@ export const mockPersonaGroupWithoutNSG: PersonaGroup = {
   propertyId: 'propertyId-100'
 }
 
-export const mockPersonaGroupWithNSG: PersonaGroup = {
+export const mockPersonaGroupWithPin: PersonaGroup = {
   id: 'persona-group-id-1',
   name: 'Class A',
   description: '',

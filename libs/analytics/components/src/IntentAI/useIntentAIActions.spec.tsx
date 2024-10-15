@@ -1,13 +1,14 @@
 /* eslint-disable max-len */
 
-import userEvent from '@testing-library/user-event'
-import { Modal } from 'antd'
-import moment    from 'moment-timezone'
+import userEvent          from '@testing-library/user-event'
+import { message, Modal } from 'antd'
+import moment             from 'moment-timezone'
+import { BrowserRouter }  from 'react-router-dom'
 
-import { get }                   from '@acx-ui/config'
-import { useIsSplitOn }          from '@acx-ui/feature-toggle'
-import { Provider, intentAIUrl } from '@acx-ui/store'
-import { act }                   from '@acx-ui/test-utils'
+import { get }                            from '@acx-ui/config'
+import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { Provider, intentAIUrl }          from '@acx-ui/store'
+import { act, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 import {
   mockGraphqlMutation,
   screen,
@@ -17,21 +18,26 @@ import {
   renderHook
 }                                                               from '@acx-ui/test-utils'
 
-import { mockAIDrivenRow, mockAirflexRows } from './__tests__/fixtures'
-import { IntentListItem }                   from './config'
-import { TransitionMutationResponse }       from './services'
-import { DisplayStates, Statuses }          from './states'
-import { useIntentAIActions  }              from './useIntentAIActions'
-import { Actions }                          from './utils'
+import { mockAIDrivenRow, mockEquiFlexRows } from './__tests__/fixtures'
+import { AiFeatures, IntentListItem }        from './config'
+import { TransitionMutationResponse }        from './services'
+import { DisplayStates, Statuses }           from './states'
+import { useIntentAIActions  }               from './useIntentAIActions'
+import { Actions }                           from './utils'
 
 const mockedTransitionIntent = jest.fn()
 const mockedIntentWlansQuery = jest.fn()
 const mockedVenueRadioActiveNetworksQuery = jest.fn()
 
+declare global {
+  // eslint-disable-next-line no-var
+  var originalLocation: Location
+}
+
 const raiWlans = [
-  { id: 'i1', name: 'n1', ssid: 's1' },
-  { id: 'i2', name: 'n2', ssid: 's2' },
-  { id: 'i3', name: 'n3', ssid: 's3' }]
+  { name: 'n1', ssid: 's1' },
+  { name: 'n2', ssid: 's2' },
+  { name: 'n3', ssid: 's3' }]
 
 const r1Wlans = [
   { id: 'i4', name: 'n4', ssid: 's4' },
@@ -77,12 +83,10 @@ describe('useIntentAIActions', () => {
     mockedTransitionIntent.mockReturnValue(Promise.resolve({ data: resp }))
     mockedIntentWlansQuery.mockReturnValue({ unwrap: () => Promise.resolve(raiWlans) })
     mockedVenueRadioActiveNetworksQuery.mockReturnValue({ unwrap: () => Promise.resolve(r1Wlans) })
-    mockedTransitionIntent.mockReturnValue(Promise.resolve({ data: resp }))
     mockGraphqlMutation(intentAIUrl, 'TransitionIntent', { data: resp })
     jest.spyOn(Date, 'now').mockReturnValue(now)
   })
   afterEach(() => {
-    cleanup()
     jest.mocked(get).mockReturnValue('')
     jest.clearAllMocks()
     jest.restoreAllMocks()
@@ -99,11 +103,11 @@ describe('useIntentAIActions', () => {
         jest.mocked(Date.now).mockReturnValue(new Date('2024-07-21T00:01:00.000Z').getTime())
         const selectedRow = [{
           ...mockAIDrivenRow,
-          aiFeature: 'AI-Driven RRM',
+          aiFeature: AiFeatures.RRM,
           preferences: undefined ,
           ...extractItem }] as IntentListItem[]
         const { result } = renderHook(() => useIntentAIActions(), {
-          wrapper: ({ children }) => <Provider children={children} />
+          wrapper: ({ children }) => <BrowserRouter><Provider children={children} /></BrowserRouter>
         })
         const { showOneClickOptimize } = result.current
         act(() => {
@@ -140,9 +144,9 @@ describe('useIntentAIActions', () => {
       })
 
       it('should handle mutation correctly - single', async () => {
-        const selectedRow = [{ ...mockAIDrivenRow, aiFeature: 'AI-Driven RRM', ...extractItem }] as IntentListItem[]
+        const selectedRow = [{ ...mockAIDrivenRow, aiFeature: AiFeatures.RRM, ...extractItem }] as IntentListItem[]
         const { result } = renderHook(() => useIntentAIActions(), {
-          wrapper: ({ children }) => <Provider children={children} />
+          wrapper: ({ children }) => <BrowserRouter><Provider children={children} /></BrowserRouter>
         })
         const { showOneClickOptimize } = result.current
         act(() => {
@@ -179,11 +183,11 @@ describe('useIntentAIActions', () => {
       })
     })
 
-    describe('r1 - AirFlexAI', () => {
+    describe('r1 - EquiFlex', () => {
       it('should handle mutation correctly  - single', async () => {
-        const selectedRow = [{ ...mockAirflexRows[0], aiFeature: 'AirFlexAI', ...extractItem }] as IntentListItem[]
+        const selectedRow = [{ ...mockEquiFlexRows[0], aiFeature: AiFeatures.EquiFlex, ...extractItem }] as IntentListItem[]
         const { result } = renderHook(() => useIntentAIActions(), {
-          wrapper: ({ children }) => <Provider children={children} />
+          wrapper: ({ children }) => <BrowserRouter><Provider children={children} /></BrowserRouter>
         })
         const { showOneClickOptimize } = result.current
         act(() => {
@@ -218,9 +222,9 @@ describe('useIntentAIActions', () => {
       })
 
       it('should handle fetchWlans correctly', async () => {
-        const selectedRow = { ...mockAirflexRows[0], aiFeature: 'AirFlexAI', ...extractItem } as IntentListItem
+        const selectedRow = { ...mockEquiFlexRows[0], aiFeature: AiFeatures.EquiFlex, ...extractItem } as IntentListItem
         const { result } = renderHook(() => useIntentAIActions(), {
-          wrapper: ({ children }) => <Provider children={children} />
+          wrapper: ({ children }) => <BrowserRouter><Provider children={children} /></BrowserRouter>
         })
         const { fetchWlans } = result.current
         act(() => {
@@ -232,11 +236,11 @@ describe('useIntentAIActions', () => {
 
     it('should handle mutation correctly (OPTIMIZE_TYPES.1_2) - multiple', async () => {
       const selectedRows = [
-        { ...mockAirflexRows[1], aiFeature: 'AirFlexAI', ...extractItem },
-        { ...mockAirflexRows[2], aiFeature: 'AirFlexAI', ...extractItem }
+        { ...mockEquiFlexRows[1], aiFeature: AiFeatures.EquiFlex, ...extractItem },
+        { ...mockEquiFlexRows[2], aiFeature: AiFeatures.EquiFlex, ...extractItem }
       ] as IntentListItem[]
       const { result } = renderHook(() => useIntentAIActions(), {
-        wrapper: ({ children }) => <Provider children={children} />
+        wrapper: ({ children }) => <BrowserRouter><Provider children={children} /></BrowserRouter>
       })
       const { showOneClickOptimize } = result.current
       act(() => {
@@ -253,12 +257,12 @@ describe('useIntentAIActions', () => {
     it('should handle mutation correctly (OPTIMIZE_TYPES.2_1) - multiple', async () => {
       const { sliceValue } = mockAIDrivenRow
       const selectedRows = [
-        { ...mockAIDrivenRow, aiFeature: 'AI-Driven RRM', ...extractItem },
-        { ...mockAirflexRows[1], aiFeature: 'AirFlexAI', sliceValue, ...extractItem }
+        { ...mockAIDrivenRow, aiFeature: AiFeatures.RRM, ...extractItem },
+        { ...mockEquiFlexRows[1], aiFeature: AiFeatures.EquiFlex, sliceValue, ...extractItem }
       ] as IntentListItem[]
       const mockOK = jest.fn()
       const { result } = renderHook(() => useIntentAIActions(), {
-        wrapper: ({ children }) => <Provider children={children} />
+        wrapper: ({ children }) => <BrowserRouter><Provider children={children} /></BrowserRouter>
       })
       const { showOneClickOptimize } = result.current
       act(() => {
@@ -274,11 +278,11 @@ describe('useIntentAIActions', () => {
 
     it('should handle mutation correctly (OPTIMIZE_TYPES.2_2)  - multiple', async () => {
       const selectedRows = [
-        { ...mockAIDrivenRow, aiFeature: 'AI-Driven RRM', ...extractItem },
-        { ...mockAirflexRows[1], aiFeature: 'AirFlexAI', ...extractItem }
+        { ...mockAIDrivenRow, aiFeature: AiFeatures.RRM, ...extractItem },
+        { ...mockEquiFlexRows[1], aiFeature: AiFeatures.EquiFlex, ...extractItem }
       ] as IntentListItem[]
       const { result } = renderHook(() => useIntentAIActions(), {
-        wrapper: ({ children }) => <Provider children={children} />
+        wrapper: ({ children }) => <BrowserRouter><Provider children={children} /></BrowserRouter>
       })
       const { showOneClickOptimize } = result.current
       act(() => {
@@ -332,11 +336,14 @@ describe('useIntentAIActions', () => {
       jest.mocked(get).mockReturnValue('true')
       mockOK.mockClear()
     })
+    afterEach(() => {
+      cleanup()
+    })
     describe('rai - AI-Driven', () => {
       it('should handle mutation correctly - single', async () => {
-        const selectedRow = [{ ...mockAIDrivenRow, aiFeature: 'AI-Driven RRM', ...extractItem }] as IntentListItem[]
+        const selectedRow = [{ ...mockAIDrivenRow, aiFeature: AiFeatures.RRM, ...extractItem }] as IntentListItem[]
         const { result } = renderHook(() => useIntentAIActions(), {
-          wrapper: ({ children }) => <Provider children={children} />
+          wrapper: ({ children }) => <BrowserRouter><Provider children={children} /></BrowserRouter>
         })
         const { showOneClickOptimize } = result.current
         act(() => {
@@ -373,11 +380,11 @@ describe('useIntentAIActions', () => {
       })
     })
 
-    describe('rai - AirFlexAI', () => {
+    describe('rai - EquiFlex', () => {
       it('should handle mutation correctly  - single', async () => {
-        const selectedRow = [{ ...mockAirflexRows[0], aiFeature: 'AirFlexAI', ...extractItem }] as IntentListItem[]
+        const selectedRow = [{ ...mockEquiFlexRows[0], aiFeature: AiFeatures.EquiFlex, ...extractItem }] as IntentListItem[]
         const { result } = renderHook(() => useIntentAIActions(), {
-          wrapper: ({ children }) => <Provider children={children} />
+          wrapper: ({ children }) => <BrowserRouter><Provider children={children} /></BrowserRouter>
         })
         const { showOneClickOptimize } = result.current
         act(() => {
@@ -404,7 +411,7 @@ describe('useIntentAIActions', () => {
             status: Statuses.new,
             metadata: {
               scheduledAt: '2024-07-21T04:45:00.000Z',
-              wlans: [{ id: 'n1', name: 'n1', ssid: 's1' },{ id: 'n2', name: 'n2', ssid: 's2' },{ id: 'n3', name: 'n3', ssid: 's3' }]
+              wlans: [{ name: 'n1', ssid: 's1' },{ name: 'n2', ssid: 's2' },{ name: 'n3', ssid: 's3' }]
             }
           }]
         })
@@ -412,9 +419,9 @@ describe('useIntentAIActions', () => {
       })
 
       it('should show error when date time before  - single', async () => {
-        const selectedRow = [{ ...mockAirflexRows[0], aiFeature: 'AirFlexAI', ...extractItem }] as IntentListItem[]
+        const selectedRow = [{ ...mockEquiFlexRows[0], aiFeature: AiFeatures.EquiFlex, ...extractItem }] as IntentListItem[]
         const { result } = renderHook(() => useIntentAIActions(), {
-          wrapper: ({ children }) => <Provider children={children} />
+          wrapper: ({ children }) => <BrowserRouter><Provider children={children} /></BrowserRouter>
         })
         const { showOneClickOptimize } = result.current
         act(() => {
@@ -438,9 +445,9 @@ describe('useIntentAIActions', () => {
       })
 
       it('should handle fetchWlans correctly', async () => {
-        const selectedRow = { ...mockAirflexRows[0], aiFeature: 'AirFlexAI', ...extractItem } as IntentListItem
+        const selectedRow = { ...mockEquiFlexRows[0], aiFeature: AiFeatures.EquiFlex, ...extractItem } as IntentListItem
         const { result } = renderHook(() => useIntentAIActions(), {
-          wrapper: ({ children }) => <Provider children={children} />
+          wrapper: ({ children }) => <BrowserRouter><Provider children={children} /></BrowserRouter>
         })
         const { fetchWlans } = result.current
         act(() => {
@@ -458,9 +465,9 @@ describe('useIntentAIActions', () => {
       } as TransitionMutationResponse
       mockedTransitionIntent.mockReturnValue(Promise.resolve({ data: resp }))
       mockGraphqlMutation(intentAIUrl, 'TransitionIntent', { data: resp })
-      const selectedRow = [{ ...mockAirflexRows[0], aiFeature: 'AirFlexAI', ...extractItem }] as IntentListItem[]
+      const selectedRow = [{ ...mockEquiFlexRows[0], aiFeature: AiFeatures.EquiFlex, ...extractItem }] as IntentListItem[]
       const { result } = renderHook(() => useIntentAIActions(), {
-        wrapper: ({ children }) => <Provider children={children} />
+        wrapper: ({ children }) => <BrowserRouter><Provider children={children} /></BrowserRouter>
       })
       const { showOneClickOptimize } = result.current
       act(() => {
@@ -486,22 +493,32 @@ describe('useIntentAIActions', () => {
 
   describe('Other Actions', () => {
     const mockOK = jest.fn()
-    beforeEach(() => {
+    beforeEach((done) => {
+      global.originalLocation = window.location
       jest.mocked(useIsSplitOn).mockReturnValue(false)
       jest.mocked(get).mockReturnValue('true')
       mockOK.mockClear()
+      const toast = screen.queryAllByRole('img', { name: 'close' })
+      toast.forEach((t) => {
+        if (t) {
+          waitForElementToBeRemoved(toast).then(done)
+          message.destroy()
+        } else {
+          done()
+        }
+      })
     })
     it('should handle handleTransitionIntent', async () => {
       const statusTrail = [ { status: 'new' }]
       const selectedRows = [
         { ...mockAIDrivenRow,
-          aiFeature: 'AI-Driven RRM',
+          aiFeature: AiFeatures.RRM,
           ...extractItem,
           displayStatus: DisplayStates.active,
           status: Statuses.active,
           statusTrail
-        },{ ...mockAirflexRows[1],
-          aiFeature: 'AirFlexAI',
+        },{ ...mockEquiFlexRows[1],
+          aiFeature: AiFeatures.EquiFlex,
           ...extractItem,
           displayStatus: DisplayStates.active,
           status: Statuses.active,
@@ -509,7 +526,7 @@ describe('useIntentAIActions', () => {
         }
       ] as IntentListItem[]
       const { result } = renderHook(() => useIntentAIActions(), {
-        wrapper: ({ children }) => <Provider children={children} />
+        wrapper: ({ children }) => <BrowserRouter><Provider children={children} /></BrowserRouter>
       })
       const { handleTransitionIntent } = result.current
       act(() => {
@@ -522,7 +539,7 @@ describe('useIntentAIActions', () => {
           displayStatus: DisplayStates.active,
           status: Statuses.active,
           statusTrail,
-          metadata: { algorithmData: { isCrrmFullOptimization: false } }
+          metadata: {}
         },{
           id: '17',
           displayStatus: DisplayStates.active,
@@ -532,18 +549,26 @@ describe('useIntentAIActions', () => {
         }]
       })
       await waitFor(() => expect(mockOK).toBeCalledTimes(1))
+
+      expect(await screen.findByText(/The selected intents has been updated/)).toBeVisible()
+      const viewElement = await screen.findByText('View')
+      await userEvent.click(viewElement)
+      expect(window.location.href).toContain('?intentTableFilters=%257B%2522statusLabel%2522%253A%255B%2522')
+      expect(window.location.href).toContain('paused-from-inactive')
+      expect(window.location.href).toContain('paused-from-active')
+      expect(window.location.href).toContain('paused-by-default')
     })
 
     it('should handle revert', async () => {
       const statusTrail = [ { status: 'new' }]
       const selectedRows = [
-        { ...mockAIDrivenRow, aiFeature: 'AI-Driven RRM',
+        { ...mockAIDrivenRow, aiFeature: AiFeatures.RRM,
           ...extractItem,
           displayStatus: DisplayStates.active,
           status: Statuses.active,
           statusTrail
         },
-        { ...mockAirflexRows[1], aiFeature: 'AirFlexAI',
+        { ...mockEquiFlexRows[1], aiFeature: AiFeatures.EquiFlex,
           ...extractItem,
           displayStatus: DisplayStates.active,
           status: Statuses.active,
@@ -551,7 +576,7 @@ describe('useIntentAIActions', () => {
         }
       ] as IntentListItem[]
       const { result } = renderHook(() => useIntentAIActions(), {
-        wrapper: ({ children }) => <Provider children={children} />
+        wrapper: ({ children }) => <BrowserRouter><Provider children={children} /></BrowserRouter>
       })
       const { revert } = result.current
       act(() => {
@@ -572,6 +597,12 @@ describe('useIntentAIActions', () => {
         }]
       })
       await waitFor(() => expect(mockOK).toBeCalledTimes(1))
+      expect(await screen.findByText(/The selected intents has been updated/)).toBeVisible()
+      const link =
+      '?intentTableFilters=%257B%2522statusLabel%2522%253A%255B%2522revertscheduled%2522%255D%257D'
+      const viewElement = await screen.findByText('View')
+      await userEvent.click(viewElement)
+      expect(window.location.href).toContain(link)
     })
 
     it('should show error toast when revert fail - single', async () => {
@@ -581,9 +612,9 @@ describe('useIntentAIActions', () => {
       } as TransitionMutationResponse
       mockedTransitionIntent.mockReturnValue(Promise.resolve({ data: resp }))
       mockGraphqlMutation(intentAIUrl, 'TransitionIntent', { data: resp })
-      const selectedRows = [{ ...mockAirflexRows[0], aiFeature: 'AirFlexAI', ...extractItem }] as IntentListItem[]
+      const selectedRows = [{ ...mockEquiFlexRows[0], aiFeature: AiFeatures.EquiFlex, ...extractItem }] as IntentListItem[]
       const { result } = renderHook(() => useIntentAIActions(), {
-        wrapper: ({ children }) => <Provider children={children} />
+        wrapper: ({ children }) => <BrowserRouter><Provider children={children} /></BrowserRouter>
       })
       const { revert } = result.current
       act(() => {

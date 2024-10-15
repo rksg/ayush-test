@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import {
   Loading3QuartersOutlined
 } from '@ant-design/icons'
+import { MenuProps }              from 'antd'
 import { get, omit }              from 'lodash'
 import moment                     from 'moment'
 import { defineMessage, useIntl } from 'react-intl'
@@ -15,6 +16,7 @@ import { DownloadOutlined }                                               from '
 import { useAddExportSchedulesMutation }                                  from '@acx-ui/rc/services'
 import { Event, EventExportSchedule, EventScheduleFrequency, TableQuery } from '@acx-ui/rc/utils'
 import { RequestPayload }                                                 from '@acx-ui/types'
+import { hasCrossVenuesPermission, useUserProfileContext }                from '@acx-ui/user'
 import { computeRangeFilter, DateRangeFilter, exportMessageMapping }      from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
@@ -38,6 +40,15 @@ export const defaultColumnState = {
   source: true,
   macAddress: false,
   message: true
+}
+
+export type IconButtonProps = {
+  key?: string
+  icon: React.ReactNode
+  disabled?: boolean
+  tooltip?: string
+  onClick?: () => void
+  dropdownMenu?: Omit<MenuProps, 'placement'>
 }
 
 interface EventTableProps {
@@ -73,6 +84,8 @@ export const EventTable = ({
 
   const isExportEventsEnabled = useIsSplitOn(Features.EXPORT_EVENTS_TOGGLE)
   useEffect(() => { setVisible(false) },[tableQuery.data?.data])
+
+  const { isCustomRole } = useUserProfileContext()
 
   const openEventScheduler = () => {
     setExportDrawerVisible(true)
@@ -149,7 +162,7 @@ export const EventTable = ({
             onClick: openEventScheduler } : {})
       ]
     }
-  }
+  } as IconButtonProps
     : {
       icon: <DownloadOutlined />,
       disabled,
@@ -273,7 +286,8 @@ export const EventTable = ({
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
       enableApiFilter={true}
-      iconButton={tableIconButtonConfig}
+      iconButton={!isCustomRole && hasCrossVenuesPermission()
+        ? tableIconButtonConfig : {} as IconButtonProps}
     />
     {current && <TimelineDrawer
       title={defineMessage({ defaultMessage: 'Event Details' })}

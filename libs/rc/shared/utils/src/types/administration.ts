@@ -357,7 +357,8 @@ export interface PrivilegePolicy
 export interface PrivilegePolicyEntity
 {
   tenantId?: string,
-  objectList?: VenueObjectList
+  objectList?: VenueObjectList,
+  allVenues?: boolean
 }
 
 export interface VenueObjectList
@@ -407,4 +408,15 @@ export interface TwiliosIncommingPhoneNumbers
 export interface TwiliosMessagingServices
 {
   messagingServiceResources?: string[]
+}
+
+export interface ErrorsResult<T> {
+  data: T;
+  status: number;
+}
+
+export interface ErrorDetails {
+  code: string,
+  message?: string,
+  errorMessage?: string
 }

@@ -4,17 +4,20 @@ import { Slider }  from 'antd'
 import { isEqual } from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { useUpdateTenantSettingsMutation } from '@acx-ui/analytics/services'
-import type { Settings }                   from '@acx-ui/analytics/utils'
-import { Button, Card, Loader }            from '@acx-ui/components'
-import { formatter, FormatterType }        from '@acx-ui/formatter'
+import { useUpdateTenantSettingsMutation }         from '@acx-ui/analytics/services'
+import type { Settings }                           from '@acx-ui/analytics/utils'
+import { Button, Card, Loader }                    from '@acx-ui/components'
+import { formatter, FormatterType }                from '@acx-ui/formatter'
+import { WifiScopes }                              from '@acx-ui/types'
+import { hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 
 import { SliderLabel, Buttons, SliderWrapper } from './styledComponents'
 
-export const SlaSliders = ({ initialSlas, currentSlas, setCurrentSlas }: {
+export const SlaSliders = ({ initialSlas, currentSlas, setCurrentSlas, isMDU }: {
   initialSlas: Partial<Settings>,
   currentSlas: Partial<Settings>,
-  setCurrentSlas: CallableFunction
+  setCurrentSlas: CallableFunction,
+  isMDU?: boolean
 }) => {
   const { $t } = useIntl()
   const [updateSlas, result] = useUpdateTenantSettingsMutation()
@@ -27,16 +30,32 @@ export const SlaSliders = ({ initialSlas, currentSlas, setCurrentSlas }: {
     defaultValue={parseInt(currentSlas[name]!, 10)}
     onAfterChange={(value: number) => setCurrentSlas({ ...currentSlas, [name]: value.toString() })}
   />
-  const disabled = isEqual(savedSlas, currentSlas)
+  const isReadOnly = !(hasCrossVenuesPermission() && hasPermission({ scopes: [WifiScopes.UPDATE] }))
+  const disabled = isEqual(savedSlas, currentSlas) || isReadOnly
   return <SliderWrapper>
     <Loader states={[result]}>
       <Card title={$t({ defaultMessage: 'Service Level Agreements' })}>
         <SliderLabel>{$t({ defaultMessage: 'P1 Incidents' })}</SliderLabel>
         <SlaSlider name='sla-p1-incidents-count' format='countFormat' />
-        <SliderLabel>{$t({ defaultMessage: 'Guest Experience' })}</SliderLabel>
+        <SliderLabel>{isMDU
+          ? $t({ defaultMessage: 'Resident Experience' })
+          // istanbul ignore next
+          : $t({ defaultMessage: 'Guest Experience' })
+        }</SliderLabel>
         <SlaSlider name='sla-guest-experience' format='percent' />
-        <SliderLabel>{$t({ defaultMessage: 'SSID Compliance' })}</SliderLabel>
-        <SlaSlider name='sla-brand-ssid-compliance' format='percent' />
+        {isMDU
+          ? <>
+            <SliderLabel>{$t({ defaultMessage: '# of Prospects' })}</SliderLabel>
+            <SlaSlider name='sla-prospect-count' format='countFormat' />
+          </>
+          :
+          // istanbul ignore next
+          <>
+            <SliderLabel>{$t({ defaultMessage: 'SSID Compliance' })}</SliderLabel>
+            <SlaSlider name='sla-brand-ssid-compliance' format='percent' />
+          </>
+        }
+
         <Buttons>
           <Button
             size='small'

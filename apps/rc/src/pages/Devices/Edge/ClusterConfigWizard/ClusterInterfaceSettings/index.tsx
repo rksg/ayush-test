@@ -62,7 +62,7 @@ export const ClusterInterfaceSettings = () => {
     </Typography.Title>
     <Typography.Text>
       {$t({ defaultMessage: `Cluster interface will be used as a communication channel 
-      between SmartEdges. Please select the cluster interfaces for all SmartEdges in 
+      between RUCKUS Edges. Please select the cluster interfaces for all RUCKUS Edges in 
       this cluster:` })}
     </Typography.Text>
   </Space>

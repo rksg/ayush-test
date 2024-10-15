@@ -4,11 +4,10 @@ import { Col, Form, Row }            from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 import styled                        from 'styled-components'
 
-import { Alert, StepsForm, Subtitle, useStepFormContext } from '@acx-ui/components'
-import { AccessSwitchTable, AccessSwitchTableDataType }   from '@acx-ui/rc/components'
-import { AccessSwitch, DistributionSwitch }               from '@acx-ui/rc/utils'
+import { Alert, StepsForm, Subtitle, useStepFormContext }                    from '@acx-ui/components'
+import { AccessSwitchTable, AccessSwitchTableDataType }                      from '@acx-ui/rc/components'
+import { AccessSwitch, DistributionSwitch, PersonalIdentityNetworkFormData } from '@acx-ui/rc/utils'
 
-import { PersonalIdentityNetworkFormData }    from '..'
 import { DistributionSwitchTable }            from '../DistributionSwitchForm/DistributionSwitchTable'
 import { Sub5Bold }                           from '../GeneralSettingsForm/styledComponents'
 import { PersonalIdentityNetworkFormContext } from '../PersonalIdentityNetworkFormContext'
@@ -23,23 +22,24 @@ export const SummaryForm = () => {
   const { form } = useStepFormContext<PersonalIdentityNetworkFormData>()
   const {
     getVenueName,
-    getEdgeName,
+    getClusterName,
     getDhcpName,
-    getDhcpPoolName,
+    // getDhcpPoolName,
     getTunnelProfileName,
     getNetworksName
   } = useContext(PersonalIdentityNetworkFormContext)
   const [smartEdgeData, setSmartEdgeData] = useState<SmartEdgeTableData[]>([])
   const [accessSwitchData, setAccessSwitchData] = useState<AccessSwitchTableDataType[]>([])
-  const nsgName = form.getFieldValue('name')
+  const pinName = form.getFieldValue('name')
   const venueId = form.getFieldValue('venueId')
-  const edgeId = form.getFieldValue('edgeId')
+  const edgeClusterId = form.getFieldValue('edgeClusterId')
   const segments = form.getFieldValue('segments')
   const devices = form.getFieldValue('devices')
   const dhcpId = form.getFieldValue('dhcpId')
   const poolId = form.getFieldValue('poolId')
   const tunnelProfileId = form.getFieldValue('vxlanTunnelProfileId')
   const networkIds = form.getFieldValue('networkIds')
+  const poolName = form.getFieldValue('poolName')
 
   const distributionSwitchInfos = form.getFieldValue(
     'distributionSwitchInfos'
@@ -60,14 +60,14 @@ export const SummaryForm = () => {
   useEffect(() => {
     setSmartEdgeData([
       {
-        edgeName: getEdgeName(edgeId),
+        edgeName: getClusterName(edgeClusterId),
         segments: segments.toString(),
         devices: devices.toString(),
         dhcpServiceName: getDhcpName(dhcpId),
-        dhcpPoolName: getDhcpPoolName(dhcpId, poolId)
+        dhcpPoolName: poolName.toString()
       }
     ])
-  }, [edgeId, segments, devices, dhcpId, poolId])
+  }, [edgeClusterId, segments, devices, dhcpId, poolId, poolName])
 
   useEffect(() => {
     setAccessSwitchData(accessSwitchInfos?.map(as => ({
@@ -89,7 +89,7 @@ export const SummaryForm = () => {
     </Subtitle>
     <Row gutter={20}>
       <Col flex={1}>
-        <Form.Item label={$t({ defaultMessage: 'Service Name' })} children={nsgName} />
+        <Form.Item label={$t({ defaultMessage: 'Service Name' })} children={pinName} />
       </Col>
       <Col flex={1}>{/* eslint-disable-next-line max-len */}
         <Form.Item label={$t({ defaultMessage: '<VenueSingular></VenueSingular> with the property management enabled' })}
@@ -97,7 +97,7 @@ export const SummaryForm = () => {
       </Col>
     </Row>
     <Subtitle level={4}>
-      { $t({ defaultMessage: 'SmartEdge' }) }
+      { $t({ defaultMessage: 'RUCKUS Edge' }) }
     </Subtitle>
     <Form.Item>
       <SmartEdgeTable data={smartEdgeData} />

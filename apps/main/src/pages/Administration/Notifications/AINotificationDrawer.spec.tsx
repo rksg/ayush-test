@@ -124,10 +124,11 @@ describe('IncidentNotificationDrawer', () => {
     render(<MockDrawer />, { wrapper: Provider })
     const drawerButton = screen.getByRole('button', { name: /open me/ })
     fireEvent.click(drawerButton)
-    const inputs = await screen.findAllByRole('checkbox')
-    expect(inputs).toHaveLength(6)
-    await waitFor(() => { expect(inputs[0]).toBeChecked() })
-    await waitFor(() => { expect(inputs[5]).toBeChecked() })
+    expect(await screen.findAllByRole('checkbox')).toHaveLength(6)
+    await waitFor(() => {
+      expect(screen.getByRole('checkbox', { name: 'P1 Incidents' })).toBeChecked() })
+    await waitFor(() => {
+      expect(screen.getByRole('checkbox', { name: 'AI Operations' })).toBeChecked() })
   })
   it('should render correctly for notification channel enabled FF on', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -160,7 +161,7 @@ describe('IncidentNotificationDrawer', () => {
     await waitFor(() => {
       expect(screen.getByRole('checkbox', { name: 'Switch Firmware' })).not.toBeChecked() })
     await waitFor(() => {
-      expect(screen.getByRole('checkbox', { name: 'SmartEdge Firmware' })).toBeChecked() })
+      expect(screen.getByRole('checkbox', { name: 'RUCKUS Edge Firmware' })).toBeChecked() })
   })
   it('should handle notification preference update', async () => {
     const mockedPref = {
@@ -183,16 +184,16 @@ describe('IncidentNotificationDrawer', () => {
     fireEvent.click(drawerButton)
     const applyButton = await screen.findByRole('button', { name: /Apply/ })
     expect(applyButton).not.toBeDisabled()
-    const inputs = await screen.findAllByRole('checkbox')
-    expect(inputs).toHaveLength(6)
-    await waitFor(() => { expect(inputs[0]).toBeChecked() })
+    expect(await screen.findAllByRole('checkbox')).toHaveLength(6)
+    await waitFor(() => {
+      expect(screen.getByRole('checkbox', { name: 'P1 Incidents' })).toBeChecked() })
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => {
-      userEvent.click(inputs[0])
-      userEvent.click(inputs[1])
-      userEvent.click(inputs[2])
-      userEvent.click(inputs[4])
-      userEvent.click(inputs[5])
+      userEvent.click(screen.getByRole('checkbox', { name: 'P1 Incidents' }))
+      userEvent.click(screen.getByRole('checkbox', { name: 'P2 Incidents' }))
+      userEvent.click(screen.getByRole('checkbox', { name: 'P3 Incidents' }))
+      userEvent.click(screen.getByRole('checkbox', { name: 'AI-Driven RRM' }))
+      userEvent.click(screen.getByRole('checkbox', { name: 'AI Operations' }))
     })
     await waitFor(async () => {
       expect(await screen.findByRole('checkbox', { name: 'P1 Incidents' })).not.toBeChecked() })
@@ -240,16 +241,16 @@ describe('IncidentNotificationDrawer', () => {
     fireEvent.click(drawerButton)
     const applyButton = await screen.findByRole('button', { name: /Apply/ })
     expect(applyButton).not.toBeDisabled()
-    const inputs = await screen.findAllByRole('checkbox')
-    expect(inputs).toHaveLength(6)
-    await waitFor(() => { expect(inputs[0]).toBeChecked() })
+    expect(await screen.findAllByRole('checkbox')).toHaveLength(6)
+    await waitFor(() => {
+      expect(screen.getByRole('checkbox', { name: 'P1 Incidents' })).toBeChecked() })
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => {
-      userEvent.click(inputs[0])
-      userEvent.click(inputs[1])
-      userEvent.click(inputs[2])
-      userEvent.click(inputs[4])
-      userEvent.click(inputs[5])
+      userEvent.click(screen.getByRole('checkbox', { name: 'P1 Incidents' }))
+      userEvent.click(screen.getByRole('checkbox', { name: 'P2 Incidents' }))
+      userEvent.click(screen.getByRole('checkbox', { name: 'P3 Incidents' }))
+      userEvent.click(screen.getByRole('checkbox', { name: 'AI-Driven RRM' }))
+      userEvent.click(screen.getByRole('checkbox', { name: 'AI Operations' }))
     })
     await waitFor(() => {
       expect(screen.getByRole('checkbox', { name: 'P1 Incidents' })).not.toBeChecked()})
@@ -295,17 +296,17 @@ describe('IncidentNotificationDrawer', () => {
     fireEvent.click(drawerButton)
     const applyButton = await screen.findByRole('button', { name: /Apply/ })
     expect(applyButton).not.toBeDisabled()
-    const inputs = await screen.findAllByRole('checkbox')
-    expect(inputs).toHaveLength(6)
+    expect(await screen.findAllByRole('checkbox')).toHaveLength(6)
+    const checkbox = await screen.findByRole('checkbox', { name: 'AI Operations' })
     await waitFor(async () => {
-      expect(inputs[5]).not.toBeChecked()
+      expect(checkbox).not.toBeChecked()
     })
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => {
-      userEvent.click(inputs[5])
+      userEvent.click(checkbox)
     })
     await waitFor(async () => {
-      expect(inputs[5]).toBeChecked()
+      expect(checkbox).toBeChecked()
     })
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => { fireEvent.click(applyButton)} )
@@ -351,19 +352,18 @@ describe('IncidentNotificationDrawer', () => {
     await waitFor(() => {
       expect(screen.getAllByRole('checkbox')).toHaveLength(9)
     })
-    const inputs = await screen.findAllByRole('checkbox')
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => {
-      userEvent.click(inputs[0])
-      userEvent.click(inputs[1])
-      userEvent.click(inputs[2])
+      userEvent.click(await screen.findByRole('checkbox', { name: 'AP Firmware' }))
+      userEvent.click(await screen.findByRole('checkbox', { name: 'Switch Firmware' }))
+      userEvent.click(await screen.findByRole('checkbox', { name: 'API Changes' }))
     })
     await waitFor(async () => {
       expect(await screen.findByRole('checkbox', { name: 'AP Firmware' })).not.toBeChecked() })
     await waitFor(async () => {
       expect(await screen.findByRole('checkbox', { name: 'Switch Firmware' })).toBeChecked() })
     await waitFor(async () => {
-      expect(await screen.findByRole('checkbox', { name: 'SmartEdge Firmware' })).toBeChecked()
+      expect(await screen.findByRole('checkbox', { name: 'RUCKUS Edge Firmware' })).toBeChecked()
     })
     await waitFor(async () => {
       expect(await screen.findByRole('checkbox', { name: 'API Changes' })).not.toBeChecked() })
@@ -416,19 +416,18 @@ describe('IncidentNotificationDrawer', () => {
     await waitFor(() => {
       expect(screen.getAllByRole('checkbox')).toHaveLength(9)
     })
-    const inputs = await screen.findAllByRole('checkbox')
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => {
-      userEvent.click(inputs[0])
-      userEvent.click(inputs[1])
-      userEvent.click(inputs[2])
+      userEvent.click(await screen.findByRole('checkbox', { name: 'AP Firmware' }))
+      userEvent.click(await screen.findByRole('checkbox', { name: 'Switch Firmware' }))
+      userEvent.click(await screen.findByRole('checkbox', { name: 'API Changes' }))
     })
     await waitFor(async () => {
       expect(await screen.findByRole('checkbox', { name: 'AP Firmware' })).not.toBeChecked() })
     await waitFor(async () => {
       expect(await screen.findByRole('checkbox', { name: 'Switch Firmware' })).toBeChecked() })
     await waitFor(async () => {
-      expect(await screen.findByRole('checkbox', { name: 'SmartEdge Firmware' })).toBeChecked()
+      expect(await screen.findByRole('checkbox', { name: 'RUCKUS Edge Firmware' })).toBeChecked()
     })
     await waitFor(async () => {
       expect(await screen.findByRole('checkbox', { name: 'API Changes' })).not.toBeChecked() })
@@ -490,6 +489,6 @@ describe('IncidentNotificationDrawer', () => {
     await waitFor(() => {
       expect(screen.getByRole('checkbox', { name: 'Switch Firmware' })).toBeChecked() })
     await waitFor(() => {
-      expect(screen.getByRole('checkbox', { name: 'SmartEdge Firmware' })).toBeChecked() })
+      expect(screen.getByRole('checkbox', { name: 'RUCKUS Edge Firmware' })).toBeChecked() })
   })
 })

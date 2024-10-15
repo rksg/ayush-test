@@ -44,13 +44,13 @@ export function CertificateTemplateForm (props: CerficateTemplateStepFromProps) 
     {
       key: 'onboardCA',
       title: $t({ defaultMessage: 'Onboard CA' }),
-      content: <OnboardForm editMode={editMode} />,
+      content: <OnboardForm editMode={editMode}/>,
       showEdit: true
     },
     {
       key: 'moreSettings',
       title: $t({ defaultMessage: 'More Settings' }),
-      content: <MoreSettingsForm />,
+      content: <MoreSettingsForm editMode={editMode}/>,
       showEdit: true
     },
     {
@@ -111,16 +111,19 @@ export function CertificateTemplateForm (props: CerficateTemplateStepFromProps) 
           }
         } : { chromebook: { enabled: false } })
       }
-      await editCertificateTemplate({ params, payload })
+
+      const promises = []
+      promises.push(editCertificateTemplate({ params, payload }))
       if (policySetId) {
-        await bindPolicySet({ params: { templateId: params.policyId, policySetId } })
+        promises.push(bindPolicySet({ params: { templateId: params.policyId, policySetId } }))
       } else if (dataFromServer?.policySetId) {
         // eslint-disable-next-line max-len
-        await unbindPolicySet({ params: { templateId: params.policyId, policySetId: dataFromServer?.policySetId } })
+        promises.push(unbindPolicySet({ params: { templateId: params.policyId, policySetId: dataFromServer?.policySetId } }))
       }
+      await Promise.all(promises)
     } else {
-      const { notAfter, notBefore,
-        policySetId, policySetName, chromebook, ...restFormData } = formData
+      const { notAfter, notBefore, policySetId, policySetName,
+        identityGroupId, identityGroupName, chromebook, ...restFormData } = formData
       const payload = {
         ...restFormData,
         onboard: {
@@ -132,17 +135,21 @@ export function CertificateTemplateForm (props: CerficateTemplateStepFromProps) 
             ...chromebook,
             accountCredentialFile: undefined
           }
-        } : {})
+        } : {}),
+        identityGroupId
       }
       const res = await addCertificateTemplate({
         params: { caId: formData.onboard?.certificateAuthorityId },
         payload
       }).unwrap()
 
-      if (res.id && policySetId) {
-        await bindPolicySet({ params: { templateId: res.id, policySetId } })
+      if (res.id) {
+        const promises = []
+        if (policySetId) {
+          promises.push(bindPolicySet({ params: { templateId: res.id, policySetId } }))
+        }
+        await Promise.all(promises)
       }
-
       if (modalMode && res) {
         modalCallBack?.(res.id)
       }

@@ -41,6 +41,10 @@ export interface DelegationEntitlementRecord {
   outOfComplianceDevices?: number;
   futureOutOfComplianceDevices?: number;
   futureOfComplianceDate?: number;
+  wifiDeviceCount?: number;
+  switchDeviceCount?: number;
+  rwgDeviceCount?: number;
+  edgeDeviceCount?: number
 }
 
 export interface MspEc {
@@ -211,6 +215,7 @@ export interface MspAssignmentHistory {
   mspTenantId: string;
   trialAssignment: boolean;
   status: string;
+  ownAssignment?: boolean;
   // RBAC
   licenseType?: string;
   effectiveDate?: string;
@@ -427,6 +432,11 @@ export interface UpgradeFirmwareVer {
   branches: string[]
 }
 
+export interface RecommendFirmwareUpgradeByApModel {
+  id?: string,
+  supportedApModels: string[]
+}
+
 export interface MspRecData {
   account_id?: string;
   name?: string;
@@ -471,6 +481,7 @@ export enum MspEcTierEnum {
 export interface MspEcWithVenue extends MspEc {
   isFirstLevel?: boolean,
   isUnauthorizedAccess?: boolean,
+  allVenues?: boolean,
   children: {
     name: string,
     id: string,
@@ -526,4 +537,47 @@ export enum MspEcAccountType {
   PAID = 'PAID',
   TRIAL = 'TRIAL',
   EXTENDED_TRIAL = 'EXTENDED_TRIAL'
+}
+
+export interface LicenseCardProps {
+  title: string
+  subTitle: string
+  data: ComplianceData
+  isMsp: boolean
+  trialType?: string,
+  footerContent?: React.ReactElement
+}
+
+export interface LicenseCalculatorCardProps {
+  title: string
+  subTitle: string
+  footerContent?: React.ReactElement
+}
+
+export enum ComplianceMspCustomersDevicesTypes {
+  AP='AP',
+  SWITCH='SWITCH',
+  EDGE='EDGE',
+  RWG='RWG'
+}
+
+export interface LicenseAttentionNotes {
+  data: {
+    summary?: string,
+    details?: string
+  }[]
+}
+
+export const MspAttentionNotesPayload = {
+  page: 1,
+  pageSize: 20,
+  fields: ['summary', 'details'],
+  sortField: 'status',
+  sortOrder: 'DESC',
+  filters: {
+    type: ['STOP_COURTESY'],
+    tenantType: ['MSP', 'ALL'],
+    status: ['VALID'],
+    licenseCheck: true
+  }
 }

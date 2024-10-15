@@ -84,6 +84,25 @@ export function MacRegistrationPoolLink (props: {
   )
 }
 
+export function CertTemplateLink (props: {
+  id?: string,
+  name?: string,
+  showNoData?: boolean
+}) {
+  const { id, name, showNoData } = props
+  return (
+    id
+      ? <TenantLink to={getPolicyDetailsLink({
+        policyId: id,
+        oper: PolicyOperation.DETAIL,
+        type: PolicyType.CERTIFICATE_TEMPLATE
+      })}>
+        {name ?? id}
+      </TenantLink>
+      : <>{showNoData && noDataDisplay}</>
+  )
+}
+
 export function NetworkSegmentationLink (props: {
   id?: string,
   name?: string,
@@ -95,7 +114,7 @@ export function NetworkSegmentationLink (props: {
       ? <TenantLink to={getServiceDetailsLink({
         serviceId: id,
         oper: ServiceOperation.DETAIL,
-        type: ServiceType.NETWORK_SEGMENTATION
+        type: ServiceType.PIN
       })}>
         {name ?? id}
       </TenantLink>

@@ -146,11 +146,12 @@ export interface ClientInfo {
   venueInformation: VenueInformation
   apInformation: ApInformation
   networkInformation: NetworkInformation
+  wifiCallingEnabled: boolean
+  wifiCallingStatus: WifiCallingStatus
   signalStatus: SignalStatus
   radioStatus: RadioStatus
   trafficStatus: TrafficStatus
   mldMacAddress: string
-  wifiCallingEnabled: string
   cpeMacAddress: string
   switchInformation?: SwitchInformation // form GUI
   connectedTimeString: string // form GUI
@@ -173,6 +174,7 @@ export type SwitchInformation = {
   id: string
   name: string
   serialNumber: string
+  port?: string
 }
 
 type NetworkInformation = {
@@ -204,5 +206,13 @@ type TrafficStatus = {
   packetsToClient: string
   packetsFromClient: string
   framesDropped: string
+  totalTraffic: string
+}
+
+type WifiCallingStatus = {
+  carrierName: string
+  qosPriority: string
+  trafficFromClient: string
+  trafficToClient: string
   totalTraffic: string
 }

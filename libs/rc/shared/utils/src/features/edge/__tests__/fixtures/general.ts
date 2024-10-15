@@ -100,7 +100,7 @@ export const mockEdgeServiceList = {
       edgeId: '96B341ADD6C16C11ED8B8B000C296600F3',
       serviceName: 'NSG-1',
       serviceId: 'nsg-1',
-      serviceType: EdgeServiceTypeEnum.NETWORK_SEGMENTATION,
+      serviceType: EdgeServiceTypeEnum.PIN,
       status: 'Up',
       currentVersion: '1.1.1',
       targetVersion: ''
@@ -197,7 +197,7 @@ export const mockStaticRoutes = {
 export const mockEdgeClusterList = {
   fields: [
     'tenantId', 'clusterId', 'name', 'virtualIp', 'venueId', 'venueName',
-    'clusterStatus', 'edgeList'
+    'clusterStatus', 'edgeList', 'activeAps', 'isHqosEnabled'
   ],
   totalCount: 5,
   page: 1,
@@ -213,6 +213,8 @@ export const mockEdgeClusterList = {
       highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE,
       firmwareVersion: '2.1.0.480',
       hasCorePort: true,
+      activeAps: 1000,
+      isHqosEnabled: true,
       edgeList: [
         {
           name: 'Smart Edge 1',

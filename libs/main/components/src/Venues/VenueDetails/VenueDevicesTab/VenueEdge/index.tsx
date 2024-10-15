@@ -61,10 +61,11 @@ export const VenueEdge = () => {
         {(isEdgeCompatibilityEnabled && edgeCompatibilities) &&
           <CompatibilityCheck
             data={edgeCompatibilities!.compatibilities}
+            venueId={params.venueId}
           />
         }
         <TenantLink to='/devices/edge/add' key='add'>
-          <Button type='link'>{ $t({ defaultMessage: 'Add SmartEdge' }) }</Button>
+          <Button type='link'>{ $t({ defaultMessage: 'Add RUCKUS Edge' }) }</Button>
         </TenantLink>
       </SpaceWrapper>
     }

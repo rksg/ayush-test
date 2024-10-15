@@ -5,9 +5,9 @@ import { Col, Form, Input, Row, Select } from 'antd'
 import { FormattedMessage, useIntl }     from 'react-intl'
 
 import { Alert, Button, StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
-import { useGetNetworkSegmentationViewDataListQuery }            from '@acx-ui/rc/services'
+import { useGetEdgePinViewDataListQuery }                        from '@acx-ui/rc/services'
+import { PersonalIdentityNetworkFormData }                       from '@acx-ui/rc/utils'
 
-import { PersonalIdentityNetworkFormData }    from '..'
 import { PersonalIdentityNetworkFormContext } from '../PersonalIdentityNetworkFormContext'
 import * as UI                                from '../styledComponents'
 
@@ -31,7 +31,8 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
     switchList
   } = useContext(PersonalIdentityNetworkFormContext)
   const venueId = Form.useWatch('venueId', form)
-  const { data: pinData } = useGetNetworkSegmentationViewDataListQuery({
+
+  const { data: pinData } = useGetEdgePinViewDataListQuery({
     payload: { fields: ['id'] }
   })
 
@@ -42,7 +43,7 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
   const onVenueChange = (value: string) => {
     setVenueId(value)
     form.setFieldsValue({
-      edgeId: undefined,
+      edgeClusterId: undefined,
       dhcpId: undefined,
       poolId: undefined
     })
@@ -101,7 +102,7 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
               name='venueId'
               label={
                 <>{/* eslint-disable-next-line max-len */}
-                  {$t({ defaultMessage: '<VenueSingular></VenueSingular> with SmartEdge deployed' })}
+                  {$t({ defaultMessage: '<VenueSingular></VenueSingular> with RUCKUS Edge deployed' })}
                   <Tooltip.Question
                     title={$t({ defaultMessage: `
                     To enable the property management for a <venueSingular></venueSingular>,

@@ -19,13 +19,14 @@ import {
   fakeIncidentAirtimeRx,
   fakeIncidentAirtimeTxWithSameTime,
   fakeIncidentAirtimeTx,
-  IncidentCode
+  IncidentCode,
+  fakeIncidentDDoS
 }                         from '@acx-ui/analytics/utils'
-import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
-import { Provider }                       from '@acx-ui/store'
-import { render, screen }                 from '@acx-ui/test-utils'
-import { RolesEnum }                      from '@acx-ui/types'
-import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import { useIsSplitOn }                        from '@acx-ui/feature-toggle'
+import { Provider }                            from '@acx-ui/store'
+import { render, screen }                      from '@acx-ui/test-utils'
+import { RolesEnum, SwitchScopes, WifiScopes } from '@acx-ui/types'
+import { getUserProfile, setUserProfile }      from '@acx-ui/user'
 
 import * as fixtures               from './__tests__/fixtures'
 import { AirtimeB }                from './AirtimeB'
@@ -48,6 +49,7 @@ import { NetTime }                 from './NetTime'
 import { RadiusFailure }           from './RadiusFailure'
 import { SwitchMemoryHigh }        from './SwitchMemoryHigh'
 import { SwitchPoePd }             from './SwitchPoePd'
+import { SwitchTcpSynDDoS }        from './SwitchTcpSynDDoS'
 import { SwitchVlanMismatch }      from './SwitchVlanMismatch'
 import { Ttc }                     from './Ttc'
 
@@ -78,6 +80,10 @@ jest.mock('../Charts/ImpactedSwitchVLANsTable', () => ({
 }))
 jest.mock('../Charts/ImpactedSwitchVLANDetails', () => ({
   ImpactedSwitchVLANsDetails: () => <div data-testid='impactedSwitchVLANsDetails' />
+}))
+jest.mock('../Charts/ImpactedSwitchDDoS', () => ({
+  ImpactedSwitchDDoSTable: () => <div data-testid='impactedSwitchDDoSTable' />,
+  ImpactedSwitchDDoSDonut: () => <div data-testid='impactedSwitchDDoSDonut' />
 }))
 jest.mock('../Charts/WanthroughputTable', () => ({
   WanthroughputTable: () => <div data-testid='wanthroughputTable' />
@@ -189,6 +195,13 @@ describe('Test', () => {
         hasNetworkImpact: false,
         hasTimeSeries: false,
         charts: ['impactedSwitchVLANsTable']
+      },
+      {
+        component: SwitchTcpSynDDoS,
+        fakeIncident: fakeIncidentDDoS,
+        hasNetworkImpact: false,
+        hasTimeSeries: true,
+        charts: ['impactedSwitchDDoSTable','impactedSwitchDDoSDonut']
       },
       {
         component: Ttc,
@@ -344,6 +357,38 @@ describe('Test', () => {
         </Provider>, { route: { params } })
         expect(screen.queryByTestId('muteIncident')).not.toBeInTheDocument()
       })
+      it(`should hide mute for ${test.component.name} when scope does not match`, () => {
+        const { sliceType } = test.fakeIncident
+        jest.mocked(useIsSplitOn).mockReturnValue(true)
+        setUserProfile({
+          ...getUserProfile(),
+          abacEnabled: true,
+          isCustomRole: true,
+          scopes: [sliceType.startsWith('switch') ? WifiScopes.UPDATE : SwitchScopes.UPDATE]
+        })
+        const params = { incidentId: test.fakeIncident.id }
+        render(<Provider>
+          <test.component {...test.fakeIncident} />
+        </Provider>, { route: { params } })
+        expect(screen.queryByTestId('muteIncident')).not.toBeInTheDocument()
+      })
+    })
+  })
+  describe('Feature Flag Off', () => {
+    test('it should not render anything for SwitchTcpSynDDoS', () => {
+      const test = {
+        component: SwitchTcpSynDDoS,
+        fakeIncident: fakeIncidentDDoS,
+        hasNetworkImpact: false,
+        hasTimeSeries: true,
+        charts: ['impactedSwitchDDoSTable','impactedSwitchDDoSDonut']
+      }
+      jest.mocked(useIsSplitOn).mockReturnValue(false)
+      const params = { incidentId: test.fakeIncident.id }
+      const { asFragment } = render(<Provider>
+        <test.component {...test.fakeIncident} />
+      </Provider>, { route: { params } })
+      expect(asFragment()).toMatchSnapshot()
     })
   })
 })

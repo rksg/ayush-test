@@ -1,24 +1,28 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
+import { get }                                            from '@acx-ui/config'
 import { useIsSplitOn }                                   from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo }                                 from '@acx-ui/rc/utils'
+import { CommonRbacUrlsInfo }                             from '@acx-ui/rc/utils'
 import { generatePath }                                   from '@acx-ui/react-router-dom'
 import { Provider }                                       from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, fireEvent } from '@acx-ui/test-utils'
-import { RolesEnum }                                      from '@acx-ui/types'
-import { getUserProfile, setUserProfile }                 from '@acx-ui/user'
+import { RaiPermissions, setRaiPermissions }              from '@acx-ui/user'
 
 import { networkDetailHeaderData } from './__tests__/fixtures'
 import NetworkTabs                 from './NetworkTabs'
 
 const params = { networkId: 'network-id', tenantId: 'tenant-id' }
-const url = generatePath(CommonUrlsInfo.getNetworksDetailHeader.url, params)
+const url = generatePath(CommonRbacUrlsInfo.getNetworksDetailHeader.url, params)
 const mockedUsedNavigate = jest.fn()
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
+}))
+const mockGet = get as jest.Mock
+jest.mock('@acx-ui/config', () => ({
+  get: jest.fn()
 }))
 
 describe('NetworkTabs', () => {
@@ -54,11 +58,9 @@ describe('NetworkTabs', () => {
     })
   })
 
-  it('should hide incidents when role is READ_ONLY', async () => {
-    setUserProfile({
-      allowedOperations: [],
-      profile: { ...getUserProfile().profile, roles: [RolesEnum.READ_ONLY] }
-    })
+  it('should hide incidents when READ_INCIDENTS permission is false', async () => {
+    mockGet.mockReturnValue('true')
+    setRaiPermissions({ READ_INCIDENTS: false } as RaiPermissions)
     render(<Provider><NetworkTabs /></Provider>, { route: { params } })
     expect(screen.queryByText('Incidents')).toBeNull()
   })

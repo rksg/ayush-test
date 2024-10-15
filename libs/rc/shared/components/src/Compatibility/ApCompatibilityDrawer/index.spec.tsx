@@ -1,12 +1,12 @@
 /* eslint-disable max-len */
-import userEvent          from '@testing-library/user-event'
-import { cloneDeep, get } from 'lodash'
-import { rest }           from 'msw'
+import userEvent     from '@testing-library/user-event'
+import { cloneDeep } from 'lodash'
+import { rest }      from 'msw'
 
-import { venueApi, networkApi, apApi }                           from '@acx-ui/rc/services'
-import { WifiUrlsInfo, CommonUrlsInfo, IncompatibilityFeatures } from '@acx-ui/rc/utils'
-import { Provider, store }                                       from '@acx-ui/store'
-import { act, mockServer, render, screen, within }               from '@acx-ui/test-utils'
+import { venueApi, networkApi, apApi }                                        from '@acx-ui/rc/services'
+import { WifiUrlsInfo, CommonUrlsInfo, IncompatibilityFeatures }              from '@acx-ui/rc/utils'
+import { Provider, store }                                                    from '@acx-ui/store'
+import { act, mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 
 import { CompatibilityItemProps } from '../CompatibilityDrawer/CompatibilityItem'
@@ -38,6 +38,7 @@ jest.mock('../CompatibilityDrawer/CompatibilityItem/FeatureItem', () => {
     </div>
   }
 })
+const services = require('@acx-ui/rc/services')
 
 describe('ApGeneralCompatibilityDrawer', () => {
   const venueId = '8caa8f5e01494b5499fa156a6c565138'
@@ -61,9 +62,6 @@ describe('ApGeneralCompatibilityDrawer', () => {
 
     mockServer.use(
       rest.post(
-        WifiUrlsInfo.getApCompatibilitiesVenue.url,
-        (_, res, ctx) => res(ctx.json(mockApCompatibilitiesVenue))),
-      rest.post(
         WifiUrlsInfo.getApCompatibilitiesNetwork.url,
         (_, res, ctx) => res(ctx.json(mockApCompatibilitiesNetwork))),
       rest.get(
@@ -81,12 +79,9 @@ describe('ApGeneralCompatibilityDrawer', () => {
     )
   })
   it('should fetch and display render venue correctly', async () => {
-    mockServer.use(
-      rest.post(
-        WifiUrlsInfo.getApCompatibilitiesVenue.url,
-        (_, res, ctx) => res(ctx.json({ apCompatibilities: mockApCompatibilitiesVenue.apCompatibilities.slice(1, 2) })))
-    )
-
+    services.useLazyGetApCompatibilitiesVenueQuery = () => [() => ({
+      unwrap: () => ({ apCompatibilities: mockApCompatibilitiesVenue.apCompatibilities.slice(1, 2) })
+    })]
     render(
       <Provider>
         <ApGeneralCompatibilityDrawer
@@ -119,6 +114,9 @@ describe('ApGeneralCompatibilityDrawer', () => {
   })
 
   it('should fetch and display render network correctly', async () => {
+    services.useLazyGetApCompatibilitiesVenueQuery = () => [() => ({
+      unwrap: () => ({ apCompatibilities: mockApCompatibilitiesVenue.apCompatibilities.slice(1, 2) })
+    })]
     render(
       <Provider>
         <ApGeneralCompatibilityDrawer
@@ -139,6 +137,9 @@ describe('ApGeneralCompatibilityDrawer', () => {
   })
 
   it('should fetch and display render alone correctly', async () => {
+    services.useLazyGetApCompatibilitiesVenueQuery = () => [() => ({
+      unwrap: () => ({ apCompatibilities: mockApCompatibilitiesVenue.apCompatibilities.slice(1, 2) })
+    })]
     render(
       <Provider>
         <ApGeneralCompatibilityDrawer
@@ -160,6 +161,9 @@ describe('ApGeneralCompatibilityDrawer', () => {
 
   it('should direct display render correctly(Devices of Venue banner) with given data', async () => {
     mockedCloseDrawer.mockClear()
+    services.useLazyGetApCompatibilitiesVenueQuery = () => [() => ({
+      unwrap: () => ({ apCompatibilities: mockApCompatibilitiesVenue.apCompatibilities.slice(1, 2) })
+    })]
     render(
       <Provider>
         <ApGeneralCompatibilityDrawer
@@ -185,12 +189,9 @@ describe('ApGeneralCompatibilityDrawer', () => {
   it('should direct display render correctly(Device of Venue)', async () => {
     const apName = 'AP-Test'
     mockedCloseDrawer.mockClear()
-    mockServer.use(
-      rest.post(
-        WifiUrlsInfo.getApCompatibilitiesVenue.url,
-        (_, res, ctx) => res(ctx.json({ apCompatibilities: mockApCompatibilitiesVenue.apCompatibilities.slice(0, 1) })))
-    )
-
+    services.useLazyGetApCompatibilitiesVenueQuery = () => [() => ({
+      unwrap: () => ({ apCompatibilities: mockApCompatibilitiesVenue.apCompatibilities.slice(0, 1) })
+    })]
     render(
       <Provider>
         <ApGeneralCompatibilityDrawer
@@ -218,25 +219,93 @@ describe('ApGeneralCompatibilityDrawer', () => {
     expect(mockedCloseDrawer).toBeCalledTimes(1)
   })
 
+  it('should change query payload when props changed', async () => {
+    const apName = 'AP-Test'
+    const mockeReq = jest.fn()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    services.useLazyGetApCompatibilitiesVenueQuery = () => [(req:any) => ({
+      unwrap: () => {
+        mockeReq(req.payload)
+        return { apCompatibilities: mockApCompatibilitiesVenue.apCompatibilities.slice(0, 1) }
+      }
+    })]
+
+    const { rerender } = render(
+      <Provider>
+        <ApGeneralCompatibilityDrawer
+          isMultiple
+          visible={false}
+          type={ApCompatibilityType.VENUE}
+          venueId={params.venueId}
+          apId={undefined}
+          apName={undefined}
+          onClose={mockedCloseDrawer}
+        />
+      </Provider>, {
+        route: { params, path: '/:tenantId' }
+      })
+
+    rerender(
+      <Provider>
+        <ApGeneralCompatibilityDrawer
+          isMultiple
+          visible={true}
+          type={ApCompatibilityType.VENUE}
+          venueId={params.venueId}
+          apId={'001001001'}
+          apName={apName}
+          onClose={mockedCloseDrawer}
+        />
+      </Provider>)
+
+    expect(await screen.findByText(`Incompatibility Details: ${apName}`)).toBeInTheDocument()
+    const compatibilityItems = await screen.findAllByTestId('CompatibilityItem')
+    expect(mockeReq).toBeCalledTimes(1)
+    expect(compatibilityItems.length).toBe(1)
+    const features = screen.getAllByTestId('FeatureItem')
+    expect(features.length).toBe(1)
+    expect(await screen.findByText(/The following features are not enabled on this access point/)).toBeInTheDocument()
+    expect(screen.getByText('7.0.0.0.123')).toBeInTheDocument()
+
+    rerender(
+      <Provider>
+        <ApGeneralCompatibilityDrawer
+          isMultiple
+          visible={true}
+          type={ApCompatibilityType.VENUE}
+          venueId={params.venueId}
+          apId={'001002222'}
+          apName={'AP2-Test'}
+          onClose={mockedCloseDrawer}
+        />
+      </Provider>)
+
+    expect(await screen.findByText('Incompatibility Details: AP2-Test')).toBeInTheDocument()
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(mockeReq).toBeCalledTimes(2)
+    expect(mockeReq).toHaveBeenNthCalledWith(2, {
+      filters: { apIds: ['001002222'] }
+    })
+    await screen.findAllByTestId('CompatibilityItem')
+  })
+
   it('should also fetch requiredFeatures and merge data', async () => {
     const mockData = cloneDeep(mockApCompatibilitiesVenue)
     mockData.apCompatibilities[0].incompatibleFeatures![0].featureName = IncompatibilityFeatures.SD_LAN
     mockData.apCompatibilities[1].incompatibleFeatures![0].featureName = IncompatibilityFeatures.TUNNEL_PROFILE
-
-    mockServer.use(
-      rest.post(
-        WifiUrlsInfo.getApCompatibilitiesVenue.url,
-        (req, res, ctx) => {
-          const payload = get(req.body, 'featureName')
-          let returnVal
-          if (payload === IncompatibilityFeatures.TUNNEL_PROFILE) {
-            returnVal = mockData.apCompatibilities.slice(1, 2)
-          } else {
-            returnVal = mockData.apCompatibilities.slice(0, 1)
-          }
-          return res(ctx.json({ apCompatibilities: returnVal }))
-        })
-    )
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    services.useLazyGetApCompatibilitiesVenueQuery = () => [(req:any) => ({
+      unwrap: () => {
+        const payload = req.payload.featureName
+        let returnVal
+        if (payload === IncompatibilityFeatures.TUNNEL_PROFILE) {
+          returnVal = mockData.apCompatibilities.slice(1, 2)
+        } else {
+          returnVal = mockData.apCompatibilities.slice(0, 1)
+        }
+        return { apCompatibilities: returnVal }
+      }
+    })]
 
     render(
       <Provider>

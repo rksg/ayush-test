@@ -211,7 +211,7 @@ export const PoeUsageIcon = styled(PoeUsage)`
 export const TooltipStyle = styled(Descriptions)`
   .ant-descriptions-item-content,
   .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-label {
-    color: var(--acx-primary-white);
+    color: var(--acx-primary-white) !important;
   }
 `
 

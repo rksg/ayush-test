@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 
+import { isNil }   from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
@@ -47,30 +48,60 @@ export const ApGeneralCompatibilityDrawer = (props: ApGeneralCompatibilityDrawer
   const { $t } = useIntl()
   const {
     visible,
-    type = ApCompatibilityType.VENUE,
     isMultiple = false,
     featureName,
-    requiredFeatures,
     venueId, venueName,
-    networkId,
-    apName, apId,
-    data = [],
-    isFeatureEnabledRegardless = false
+    apName, apId
   } = props
 
-  const [ isInitializing, setIsInitializing ] = useState(data?.length === 0)
-  const [ apCompatibilities, setApCompatibilities ] = useState<ApCompatibility[]>(data)
-  const [ getApCompatibilitiesVenue ] = useLazyGetApCompatibilitiesVenueQuery()
-  const [ getApCompatibilitiesNetwork ] = useLazyGetApCompatibilitiesNetworkQuery()
-  const [ getApFeatureSets ] = useLazyGetApFeatureSetsQuery()
-
+  const { apCompatibilities, isLoading } = useApCompatibilityData(props)
   const apNameTitle = (apName) ? `: ${apName}` : ''
 
   const title = isMultiple
     ? ($t({ defaultMessage: 'Incompatibility Details' }) + apNameTitle)
     : $t({ defaultMessage: 'Compatibility Requirement' })
+  return (
+    <CompatibilityDrawer
+      data-testid={'ap-compatibility-drawer'}
+      visible={visible}
+      title={title}
+      compatibilityType={apId
+        ? CompatibilityType.DEVICE
+        : (featureName ? CompatibilityType.FEATURE : CompatibilityType.VENUE)
+      }
+      data={apCompatibilities ?? []}
+      onClose={props.onClose}
+      isLoading={isLoading}
 
-  const getApCompatibilities = async () => {
+      venueId={venueId}
+      venueName={venueName}
+      featureName={featureName}
+    />
+  )
+}
+
+const useApCompatibilityData = (props: Omit<ApGeneralCompatibilityDrawerProps, 'isMultiple'> ) => {
+  const {
+    visible,
+    type = ApCompatibilityType.VENUE,
+    featureName,
+    requiredFeatures,
+    venueId,
+    networkId,
+    apId,
+    data,
+    isFeatureEnabledRegardless = false
+  } = props
+
+  const [ isInitializing, setIsInitializing ] = useState(false)
+  // eslint-disable-next-line max-len
+  const [ apCompatibilities, setApCompatibilities ] = useState<ApCompatibility[] | undefined>(undefined)
+
+  const [ getApCompatibilitiesVenue ] = useLazyGetApCompatibilitiesVenueQuery()
+  const [ getApCompatibilitiesNetwork ] = useLazyGetApCompatibilitiesNetworkQuery()
+  const [ getApFeatureSets ] = useLazyGetApFeatureSetsQuery()
+
+  const getApCompatibilities = useCallback(async () => {
     if (ApCompatibilityType.NETWORK === type) {
       return getApCompatibilitiesNetwork({
         params: { networkId },
@@ -123,49 +154,39 @@ export const ApGeneralCompatibilityDrawer = (props: ApGeneralCompatibilityDrawer
     } as ApCompatibility
 
     return { apCompatibilities: [apCompatibility] } as ApCompatibilityResponse
-  }
+  }, [type, apId, networkId, venueId, featureName, isFeatureEnabledRegardless])
 
   useEffect(() => {
-    if (visible && data?.length === 0 && apCompatibilities?.length === 0) {
+    // reset data when query payload changed
+    setApCompatibilities(undefined)
+  }, [type, apId, networkId, venueId, featureName])
+
+  useEffect(() => {
+    if (visible && isNil(apCompatibilities) && !isInitializing) {
+      if (data?.length) {
+        setApCompatibilities(data)
+        return
+      }
+
       const fetchApCompatibilities = async () => {
         try {
+          setIsInitializing(true)
           const apCompatibilitiesResponse = await getApCompatibilities()
           setApCompatibilities(apCompatibilitiesResponse?.apCompatibilities ?? [])
           setIsInitializing(false)
         } catch (e) {
           // eslint-disable-next-line no-console
           console.error('ApCompatibilityDrawer api error:', e)
+          setIsInitializing(false)
         }
       }
+
       fetchApCompatibilities()
     }
-  }, [visible, apCompatibilities])
+  }, [visible, data, apCompatibilities, isInitializing, getApCompatibilities])
 
-  useEffect(() => {
-    if (isInitializing && data?.length !== 0) {
-      setIsInitializing(false)
-      setApCompatibilities(data)
-    }
-  }, [data])
-
-  return (
-    <CompatibilityDrawer
-      data-testid={'ap-compatibility-drawer'}
-      visible={visible}
-      title={title}
-      compatibilityType={apId
-        ? CompatibilityType.DEVICE
-        : (featureName ? CompatibilityType.FEATURE : CompatibilityType.VENUE)
-      }
-      data={apCompatibilities}
-      onClose={props.onClose}
-      isLoading={isInitializing}
-
-      venueId={venueId}
-      venueName={venueName}
-      featureName={featureName}
-    />
-  )
+  return useMemo(() => ({ apCompatibilities, isLoading: isInitializing }),
+    [apCompatibilities, isInitializing])
 }
 
 // eslint-disable-next-line max-len

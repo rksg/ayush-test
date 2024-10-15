@@ -1,6 +1,4 @@
 /* eslint-disable max-len */
-import moment from 'moment-timezone'
-
 import { getIntl } from '@acx-ui/utils'
 
 export function transformDisplayText (value?: string) {
@@ -11,6 +9,12 @@ export function transformDisplayOnOff (value: boolean) {
   const { $t } = getIntl()
   return value ? $t({ defaultMessage: 'ON' }) :
     $t({ defaultMessage: 'OFF' })
+}
+
+export function transformDisplayEnabledDisabled (value: boolean) {
+  const { $t } = getIntl()
+  return value ? $t({ defaultMessage: 'Enabled' }) :
+    $t({ defaultMessage: 'Disabled' })
 }
 
 export function transformDisplayNumber (value?: number) {
@@ -47,9 +51,4 @@ export function transformByte (bytes: string| number, perSecondFlag: boolean = f
   }
 
   return (bytes as number / Math.pow(1024, Math.floor(number))).toFixed(precision) + ' ' + units[number]
-}
-
-export function transformTimezoneDifference (timeOffset: number){
-  return 'UTC ' + (timeOffset >= 0 ? '+' : '-') + moment.utc(Math.abs(timeOffset) * 1000)
-    .format('HH:mm')
 }

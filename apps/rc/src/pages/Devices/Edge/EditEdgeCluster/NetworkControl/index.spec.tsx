@@ -1,11 +1,12 @@
 import userEvent from '@testing-library/user-event'
+import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                                                                        from '@acx-ui/feature-toggle'
-import { edgeApi, edgeDhcpApi, edgeQosProfilesApi }                                                                            from '@acx-ui/rc/services'
-import { EdgeClusterStatus, EdgeDHCPFixtures, EdgeDhcpUrls, EdgeGeneralFixtures, EdgeQosProfileFixtures, EdgeQosProfilesUrls } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                                     from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }                                                                                 from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                                                                          from '@acx-ui/feature-toggle'
+import { edgeApi, edgeDhcpApi, edgeHqosProfilesApi }                                                                             from '@acx-ui/rc/services'
+import { EdgeClusterStatus, EdgeDHCPFixtures, EdgeDhcpUrls, EdgeGeneralFixtures, EdgeHqosProfileFixtures, EdgeHqosProfilesUrls } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                                       from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }                                                                                   from '@acx-ui/test-utils'
 
 import { mockDhcpPoolStatsData } from '../../../../Services/DHCP/Edge/__tests__/fixtures'
 
@@ -13,7 +14,7 @@ import { EdgeNetworkControl } from '.'
 
 const { mockEdgeClusterList } = EdgeGeneralFixtures
 const { mockDhcpStatsData, mockEdgeDhcpDataList } = EdgeDHCPFixtures
-const { mockEdgeQosProfileStatusList } = EdgeQosProfileFixtures
+const { mockEdgeHqosProfileStatusList } = EdgeHqosProfileFixtures
 
 const mockedUsedNavigate = jest.fn()
 const mockedActivateEdgeDhcp = jest.fn()
@@ -31,7 +32,9 @@ jest.mock('@acx-ui/rc/components', () => ({
   useEdgeDhcpActions: () => ({
     activateEdgeDhcp: mockedActivateEdgeDhcp,
     deactivateEdgeDhcp: mockedDeactivateEdgeDhcp
-  })
+  }),
+  ApCompatibilityToolTip: () => <div data-testid='ApCompatibilityToolTip' />,
+  EdgeCompatibilityDrawer: () => <div data-testid='EdgeCompatibilityDrawer' />
 }))
 
 type MockSelectProps = React.PropsWithChildren<{
@@ -56,13 +59,14 @@ jest.mock('antd', () => {
 
 describe('Edge Cluster Network Control Tab', () => {
   let params: { tenantId: string, clusterId: string, activeTab?: string }
-
+  const mockEdgeClusterListForHqos = _.cloneDeep(mockEdgeClusterList.data[0])
+  mockEdgeClusterListForHqos.edgeList.forEach(e => e.cpuCores = 4)
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     store.dispatch(edgeApi.util.resetApiState())
     store.dispatch(edgeDhcpApi.util.resetApiState())
-    store.dispatch(edgeQosProfilesApi.util.resetApiState())
+    store.dispatch(edgeHqosProfilesApi.util.resetApiState())
 
     params = {
       tenantId: '1ecc2d7cf9d2342fdb31ae0e24958fcac',
@@ -87,26 +91,26 @@ describe('Edge Cluster Network Control Tab', () => {
         (_, res, ctx) => res(ctx.json(mockEdgeDhcpDataList.content[0]))
       ),
       rest.post(
-        EdgeQosProfilesUrls.getEdgeQosProfileViewDataList.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeQosProfileStatusList))
+        EdgeHqosProfilesUrls.getEdgeHqosProfileViewDataList.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeHqosProfileStatusList))
       ),
       rest.put(
-        EdgeQosProfilesUrls.activateEdgeCluster.url,
+        EdgeHqosProfilesUrls.activateEdgeCluster.url,
         (req, res, ctx) => {
           mockedActivateEdgeQosFn(req.params)
           return res(ctx.status(202))
         }
       ),
       rest.delete(
-        EdgeQosProfilesUrls.deactivateEdgeCluster.url,
+        EdgeHqosProfilesUrls.deactivateEdgeCluster.url,
         (req, res, ctx) => {
           mockedDeactivateEdgeQosFn(req.params)
           return res(ctx.status(202))
         }
       ),
       rest.get(
-        EdgeQosProfilesUrls.getEdgeQosProfileById.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeQosProfileStatusList.data[1]))
+        EdgeHqosProfilesUrls.getEdgeHqosProfileById.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeHqosProfileStatusList.data[1]))
       )
     )
   })
@@ -143,7 +147,7 @@ describe('Edge Cluster Network Control Tab', () => {
   it('HQoS toggle should be off when no HQoS returned', async () => {
     mockServer.use(
       rest.post(
-        EdgeQosProfilesUrls.getEdgeQosProfileViewDataList.url,
+        EdgeHqosProfilesUrls.getEdgeHqosProfileViewDataList.url,
         (_, res, ctx) => res(ctx.json({
           data: []
         }))
@@ -185,9 +189,6 @@ describe('Edge Cluster Network Control Tab', () => {
     await waitFor(() => {
       expect(screen.getAllByRole('switch')[0]).toBeChecked()
     })
-    await waitFor(() => {
-      expect(screen.getAllByRole('switch')[1]).toBeChecked()
-    })
     const comboboxArray = await screen.findAllByRole('combobox')
     expect(comboboxArray[0]).toBeInTheDocument()
     expect(comboboxArray[1]).toBeInTheDocument()
@@ -204,7 +205,7 @@ describe('Edge Cluster Network Control Tab', () => {
           path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab'
         }
       })
-    expect(await screen.findByText('TestDHCP-1')).toBeVisible()
+    expect(await screen.findByText('TestDhcp-1')).toBeVisible()
     expect(await screen.findByText('Test-QoS-1')).toBeVisible()
   })
 
@@ -232,7 +233,7 @@ describe('Edge Cluster Network Control Tab', () => {
     mockedActivateEdgeDhcp.mockReturnValue(Promise.resolve())
     mockServer.use(
       rest.post(
-        EdgeQosProfilesUrls.getEdgeQosProfileViewDataList.url,
+        EdgeHqosProfilesUrls.getEdgeHqosProfileViewDataList.url,
         (_, res, ctx) => res(ctx.json({
           data: []
         }))
@@ -248,9 +249,9 @@ describe('Edge Cluster Network Control Tab', () => {
           path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab'
         }
       })
-    expect(await screen.findByText('TestDHCP-1')).toBeVisible()
+    expect(await screen.findByText('TestDhcp-1')).toBeVisible()
     await userEvent.selectOptions(await screen.findByRole('combobox'),
-      await screen.findByRole('option', { name: 'TestDHCP-2' })
+      await screen.findByRole('option', { name: 'TestDhcp-2' })
     )
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
     expect(mockedActivateEdgeDhcp).toBeCalledWith(
@@ -288,7 +289,7 @@ describe('Edge Cluster Network Control Tab', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
     expect(mockedActivateEdgeQosFn).toBeCalledWith({
       edgeClusterId: params.clusterId,
-      policyId: mockEdgeQosProfileStatusList.data[1].id,
+      policyId: mockEdgeHqosProfileStatusList.data[1].id,
       venueId: mockEdgeClusterList.data[0]?.venueId }
     )
   })
@@ -297,7 +298,7 @@ describe('Edge Cluster Network Control Tab', () => {
     mockedDeactivateEdgeDhcp.mockReturnValue(Promise.resolve())
     mockServer.use(
       rest.post(
-        EdgeQosProfilesUrls.getEdgeQosProfileViewDataList.url,
+        EdgeHqosProfilesUrls.getEdgeHqosProfileViewDataList.url,
         (_, res, ctx) => res(ctx.json({
           data: []
         }))
@@ -313,7 +314,7 @@ describe('Edge Cluster Network Control Tab', () => {
           path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab'
         }
       })
-    expect(await screen.findByText('TestDHCP-1')).toBeVisible()
+    expect(await screen.findByText('TestDhcp-1')).toBeVisible()
     const switchBtn = screen.getAllByRole('switch')[0]
     expect(switchBtn).toBeChecked()
     await userEvent.click(switchBtn)
@@ -334,6 +335,57 @@ describe('Edge Cluster Network Control Tab', () => {
     render(
       <Provider>
         <EdgeNetworkControl
+          currentClusterStatus={mockEdgeClusterListForHqos as EdgeClusterStatus} />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab'
+        }
+      })
+
+    expect(await screen.findByText('Hierarchical QoS')).toBeVisible()
+    const switchBtn = await screen.findAllByRole('switch')
+    expect(switchBtn[1]).not.toBeDisabled()
+    expect(await screen.findByText('Test-QoS-1')).toBeVisible()
+    expect(switchBtn[1]).toBeChecked()
+    await userEvent.click(switchBtn[1])
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
+    expect(mockedDeactivateEdgeQosFn).toBeCalled()
+
+  })
+
+  it('should disabed HQoS swtich button', async () => {
+    render(
+      <Provider>
+        <EdgeNetworkControl
+          currentClusterStatus={mockEdgeClusterList.data[0] as EdgeClusterStatus} />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(await screen.findByText('Hierarchical QoS')).toBeVisible()
+    const switchBtn = await screen.findAllByRole('switch')
+    expect(switchBtn[1]).toBeDisabled()
+  })
+
+  it('should enabled HQoS swtich button', async () => {
+    render(
+      <Provider>
+        <EdgeNetworkControl
+          currentClusterStatus={mockEdgeClusterListForHqos as EdgeClusterStatus} />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(await screen.findByText('Hierarchical QoS')).toBeVisible()
+    const switchBtn = await screen.findAllByRole('switch')
+    expect(switchBtn[1]).not.toBeDisabled()
+  })
+
+  it('should show compatibility component', async () => {
+    render(
+      <Provider>
+        <EdgeNetworkControl
           currentClusterStatus={mockEdgeClusterList.data[0] as EdgeClusterStatus} />
       </Provider>, {
         route: {
@@ -341,13 +393,7 @@ describe('Edge Cluster Network Control Tab', () => {
           path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab'
         }
       })
-    await screen.findAllByRole('button')
-    expect(await screen.findByText('Test-QoS-1')).toBeVisible()
-    const switchBtn = screen.getAllByRole('switch')[1]
-    expect(switchBtn).toBeChecked()
-    await userEvent.click(switchBtn)
-    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
-    expect(mockedDeactivateEdgeQosFn).toBeCalled()
+    expect(await screen.findByTestId('ApCompatibilityToolTip')).toBeVisible()
+    expect(await screen.findByTestId('EdgeCompatibilityDrawer')).toBeVisible()
   })
-
 })

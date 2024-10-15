@@ -14,10 +14,10 @@ import {
 import {
   SmsProviderType,
   NotificationSmsConfig,
-  URLRegExp
+  URLRegExp,
+  ErrorsResult,
+  ErrorDetails
 } from '@acx-ui/rc/utils'
-
-import { MessageMapping } from '../MessageMapping'
 
 import { SmsProviderData, getProviderQueryParam, isTwilioFromNumber } from '.'
 
@@ -43,11 +43,14 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
   const [form] = Form.useForm()
   const [isValidTwiliosNumber, setIsValidTwiliosNumber] = useState(false)
   const [isValidTwiliosService, setIsValidTwiliosService] = useState(false)
+  const [isValidAccountSID, setIsValidAccountSID] = useState(false)
   const [isValidAuthToken, setIsValidAuthToken] = useState(false)
   const [phoneNumbers, setPhoneNumbers] = useState<string[]>()
   const [messagingServices, setMessagingServices] = useState<string[]>()
   const [messageMethod, setMessageMethod] = useState<MessageMethod>()
   const [twilioEditMethod, setTwilioEditMethod] = useState<MessageMethod>()
+  const [phoneNumberErrorMessage, setPhoneNumberErrorMessage] = useState<string>()
+  const [messagingServiceErrorMessage, setMessagingServiceErrorMessage] = useState<string>()
   const isSmsMessagingServiceEnabled = useIsSplitOn(Features.NUVO_SMS_MESSAGING_SERVICE_TOGGLE)
 
   const [updateSmsProvider] = useUpdateNotificationSmsProviderMutation()
@@ -76,6 +79,21 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
     }
   }, [providerType])
 
+  useEffect(() => {
+    form.validateFields(['phoneNumber', 'messagingService'])
+  }, [phoneNumbers, messagingServices])
+
+  useEffect(() => {
+    if (providerType === SmsProviderType.TWILIO && isValidAccountSID && isValidAuthToken) {
+      if (messageMethod === MessageMethod.MessagingService) {
+        handleGetTwiliosIncomingServices()
+      }
+      else {
+        handleGetTwiliosIncomingPhoneNumbers()
+      }
+    }
+  }, [isValidAccountSID, isValidAuthToken, messageMethod])
+
   const onClose = () => {
     setVisible(false)
     form.resetFields()
@@ -83,7 +101,6 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
 
   const handleGetTwiliosIncomingPhoneNumbers = async () => {
     try {
-      await form.validateFields(['accountSid', 'authToken'])
       const payload: NotificationSmsConfig = {
         accountSid: form.getFieldValue('accountSid'),
         authToken: form.getFieldValue('authToken')
@@ -91,10 +108,15 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
       const phoneList = await getTwiliosIncomingPhoneNumbers({
         params: params, payload: payload })
       const myNumber = phoneList.data?.incommingPhoneNumbers ?? []
+      if (phoneList.error) {
+        const error = phoneList.error as ErrorsResult<ErrorDetails>
+        setPhoneNumberErrorMessage(error.data.errorMessage ?? '')
+      }
       setPhoneNumbers(myNumber)
       setIsValidTwiliosNumber(myNumber.length > 0)
       form.setFieldValue('phoneNumber', myNumber.length > 0
-        ? (isEditMode && twilioEditMethod === MessageMethod.PhoneNumber)
+        ? (isEditMode && twilioEditMethod === MessageMethod.PhoneNumber
+          && myNumber.includes(editData?.providerData.fromNumber ?? ''))
           ? editData?.providerData.fromNumber ?? myNumber[0]
           : myNumber[0]
         : '')
@@ -106,7 +128,6 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
 
   const handleGetTwiliosIncomingServices = async () => {
     try {
-      await form.validateFields(['accountSid', 'authToken'])
       const payload: NotificationSmsConfig = {
         accountSid: form.getFieldValue('accountSid'),
         authToken: form.getFieldValue('authToken')
@@ -114,10 +135,15 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
       const servicesList = await getTwiliosIncomingServices({
         params: params, payload: payload })
       const myServices = servicesList.data?.messagingServiceResources ?? []
+      if (servicesList.error) {
+        const error = servicesList.error as ErrorsResult<ErrorDetails>
+        setMessagingServiceErrorMessage(error.data.errorMessage ?? '')
+      }
       setMessagingServices(myServices)
       setIsValidTwiliosService(myServices.length > 0)
       form.setFieldValue('messagingService', myServices.length > 0
-        ? (isEditMode && twilioEditMethod === MessageMethod.MessagingService)
+        ? (isEditMode && twilioEditMethod === MessageMethod.MessagingService
+          && myServices.includes(editData?.providerData.fromNumber ?? ''))
           ? editData?.providerData.fromNumber ?? myServices[0]
           : myServices[0]
         : '')
@@ -184,12 +210,6 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
 
   const handleMessageMethodChange = (e: RadioChangeEvent) => {
     setMessageMethod(e.target.value)
-    if (e.target.value === MessageMethod.MessagingService) {
-      handleGetTwiliosIncomingServices()
-    }
-    if (e.target.value === MessageMethod.PhoneNumber) {
-      handleGetTwiliosIncomingPhoneNumbers()
-    }
   }
 
   const formContent = <Form layout='vertical' form={form} >
@@ -219,14 +239,16 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
           { required: true },
           { validator: (_, value) => {
             if(value.length !== 34 || !value.startsWith('AC')) {
+              setIsValidAccountSID(false)
               return Promise.reject(
                 `${$t({ defaultMessage: 'This is not a valid account SID' })} `
               )
             }
+            setIsValidAccountSID(true)
             return Promise.resolve()}
           }
         ]}
-        children={<Input onBlur={handleGetTwiliosIncomingPhoneNumbers}/>}
+        children={<Input />}
       />
       <Form.Item
         name='authToken'
@@ -245,7 +267,7 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
             return Promise.resolve()}
           }
         ]}
-        children={<PasswordInput onBlur={handleGetTwiliosIncomingPhoneNumbers}/>}
+        children={<PasswordInput />}
       />
       {isSmsMessagingServiceEnabled && <>
         <Form.Item
@@ -276,9 +298,9 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
           rules={[
             { validator: () => {
               const hasService = form.getFieldValue('messagingService')
-              return !isValidTwiliosService && hasService === '' ? Promise.reject(
-                `${$t(MessageMapping.received_invalid_twilios_service)}`
-              ) : Promise.resolve()}
+              return !isValidTwiliosService && hasService === ''
+                ? Promise.reject(messagingServiceErrorMessage)
+                : Promise.resolve()}
             }
           ]}
           children={<Select
@@ -299,9 +321,9 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
            rules={[
              { validator: () => {
                const hasNumber = form.getFieldValue('phoneNumber')
-               return !isValidTwiliosNumber && hasNumber === '' ? Promise.reject(
-                 `${$t(MessageMapping.received_invalid_twilios_number)}`
-               ) : Promise.resolve()}
+               return !isValidTwiliosNumber && hasNumber === ''
+                 ? Promise.reject(phoneNumberErrorMessage)
+                 : Promise.resolve()}
              }
            ]}
            children={<Select

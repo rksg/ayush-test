@@ -1,17 +1,22 @@
-import React, { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 import { gql }                       from 'graphql-request'
 import moment, { Moment }            from 'moment-timezone'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { showToast }         from '@acx-ui/components'
-import { useNavigateToPath } from '@acx-ui/react-router-dom'
-import { intentAIApi }       from '@acx-ui/store'
+import { showToast }                                     from '@acx-ui/components'
+import { useNavigate, useNavigateToPath, useTenantLink } from '@acx-ui/react-router-dom'
+import { intentAIApi }                                   from '@acx-ui/store'
+import { encodeParameter }                               from '@acx-ui/utils'
 
-import { states } from '../Recommendations/states'
-
-import { validateScheduleTiming }                 from './common/ScheduleTiming'
-import { aiFeaturesLabel, codes, Intent }         from './config'
+import { validateScheduleTiming } from './common/ScheduleTiming'
+import {
+  aiFeaturesLabel,
+  codes,
+  stateToGroupedStates,
+  Intent
+} from './config'
+import { Wlan }                                   from './EquiFlex/IntentAIForm/WlanSelection'
 import { useIntentContext }                       from './IntentContext'
 import { DisplayStates, Statuses, StatusReasons } from './states'
 import { IntentWlan }                             from './utils'
@@ -30,6 +35,7 @@ export type FormValues <Preferences> = {
   displayStatus?: DisplayStates
   preferences?: Preferences
   settings: SettingsType
+  wlans?: Wlan[]
 }
 
 export type IntentTransitionPayload <Preferences = unknown> = {
@@ -73,39 +79,13 @@ const { useIntentTransitionMutation } = intentAIApi.injectEndpoints({
   })
 })
 
-/**
- * TODO:
- * Temp helper to convert recommendation status to intent status
- */
-/* istanbul ignore next */
-export function recToIntentStatues (intent: Pick<Intent, 'status'>) {
-  let result: { status: Statuses, statusReason?: StatusReasons } = {
-    status: intent.status as Statuses,
-    statusReason: undefined
-  }
-  switch (intent.status as typeof states[keyof typeof states]) {
-    case states.new:
-      result = { status: Statuses.new, statusReason: undefined }
-      break
-    case states.applyScheduled:
-    case states.applied:
-      result = { status: Statuses.active, statusReason: undefined }
-      break
-  }
-  return result
-}
-
 export function useInitialValues <Preferences> () {
-  const { id, metadata, status, displayStatus } = useIntentContext().intent as unknown as Intent
-  return {
-    id,
-    ...recToIntentStatues({ status }),
-    displayStatus,
-    settings: metadata?.scheduledAt ? {
-      date: moment(metadata.scheduledAt),
-      time: moment.duration(moment(metadata.scheduledAt).format('HH:mm:ss')).asHours()
-    } : { date: undefined, time: undefined }
-  } as FormValues<Preferences>
+  const { id, metadata, status, statusReason, displayStatus } = useIntentContext().intent
+  const settings = metadata?.scheduledAt ? {
+    date: moment(metadata.scheduledAt),
+    time: moment.duration(moment(metadata.scheduledAt).format('HH:mm:ss')).asHours()
+  } : { date: undefined, time: undefined }
+  return { id, status, statusReason, displayStatus, settings } as FormValues<Preferences>
 }
 
 export function createUseIntentTransition <Preferences> (
@@ -114,7 +94,10 @@ export function createUseIntentTransition <Preferences> (
   return function useIntentTransition () {
     const { $t } = useIntl()
     const { intent } = useIntentContext()
-    const navigate = useNavigateToPath('/analytics/intentAI')
+    const intentRef = useRef(intent)
+    const basePath = useTenantLink('/intentAI')
+    const navigate = useNavigate()
+    const navigateToTable = useNavigateToPath('/analytics/intentAI')
     const [doSubmit, response] = useIntentTransitionMutation()
 
     const submit = useCallback(async (values: FormValues<Preferences>) => {
@@ -125,23 +108,50 @@ export function createUseIntentTransition <Preferences> (
       if (!response.data) return
 
       if (response.data.success) {
-        const feature = codes[intent.code]
+        const featureValue = $t(aiFeaturesLabel[codes[intentRef.current.code].aiFeature])
+        const intentValue = $t(codes[intentRef.current.code].intent)
+        const sliceValue = intentRef.current.sliceValue
         showToast({
           type: 'success',
           content: <FormattedMessage
             defaultMessage='{feature}: {intent} for {sliceValue} has been updated'
             values={{
-              feature: $t(aiFeaturesLabel[feature.aiFeature]),
-              intent: $t(feature.intent),
-              sliceValue: intent.sliceValue
+              feature: featureValue,
+              intent: intentValue,
+              sliceValue: sliceValue
             }}
           />
+          ,
+          link: {
+            text: 'View',
+            onClick: () => {
+              const { status, statusReason } = response.originalArgs!
+              const key = [status, statusReason].filter(Boolean).join('-')
+              const statusLabel = stateToGroupedStates[key as unknown as DisplayStates]?.key || key
+              const intentFilter = {
+                aiFeature: [featureValue],
+                intent: [intentValue],
+                category: [$t(codes[intentRef.current.code].category)],
+                sliceValue: [intentRef.current.sliceId],
+                statusLabel: [statusLabel]
+              }
+              const encodedParameters = encodeParameter(intentFilter)
+              const newSearch =
+                new URLSearchParams(basePath.search)
+              newSearch.set('intentTableFilters', encodedParameters)
+              navigate({
+                ...basePath,
+                search: newSearch.toString()
+              })
+            }
+          }
         })
-        navigate()
+        navigateToTable()
       } else {
         showToast({ type: 'error', content: response.data.errorMsg })
       }
-    }, [$t, navigate, intent, response])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [$t, navigate, response])
 
     return { submit, response }
   }

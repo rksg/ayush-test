@@ -23,7 +23,7 @@ describe('EditEdge - ClusterNavigateWarning', () => {
         route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab' }
       })
     expect(container).toHaveTextContent('This node has already been a part of the cluster')
-    const link = screen.getByRole('link', { name: 'Cluster & SmartEdge configuration wizard' }) as HTMLAnchorElement
+    const link = screen.getByRole('link', { name: 'Cluster & RUCKUS Edge configuration wizard' }) as HTMLAnchorElement
     expect(link.href).toContain('/devices/edge/cluster/t-clusterId/configure')
   })
 })
