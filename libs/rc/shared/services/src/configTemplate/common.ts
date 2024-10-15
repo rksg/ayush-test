@@ -372,7 +372,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
         }))
         return batchApi(ConfigTemplateUrlsInfo.patchDriftReport, requests, fetchWithBQ)
       },
-      invalidatesTags: [{ type: 'ConfigTemplate', id: 'DRIFT' }]
+      invalidatesTags: [{ type: 'ConfigTemplate', id: 'DRIFT' }, { type: 'ConfigTemplate', id: 'LIST' }]
     })
   })
 })
