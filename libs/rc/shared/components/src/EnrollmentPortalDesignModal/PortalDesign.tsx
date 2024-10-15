@@ -63,9 +63,9 @@ function PortalComponentList (props: {
               }}
             />
             {PortalComponentEnum[key] ===PortalComponentEnum.wifi4eu &&
-               <WiFi4euModal wifi4eu={value.uiStyleSchema.wifi4EUNetworkId}
+               <WiFi4euModal wifi4eu={value.uiStyleSchema.wifi4EuNetworkId}
                  onChange={(v) => onValueChange({ ...value,
-                   uiStyleSchema: { ...value.uiStyleSchema, wifi4EUNetworkId: v }
+                   uiStyleSchema: { ...value.uiStyleSchema, wifi4EuNetworkId: v }
                  })}/>
             }
           </UI.CommonLabel>
@@ -93,7 +93,7 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
   const [display, setDisplay] = useState<Map<keyof typeof PortalComponentEnum, boolean>>(new Map([
     ['logo', value.uiStyleSchema.logoImageFileName !== undefined],
     ['poweredBy', !value.disablePoweredBy],
-    ['wifi4eu', !!value.uiStyleSchema.wifi4EUNetworkId]
+    ['wifi4eu', !!value.uiStyleSchema.wifi4EuNetworkId]
   ]))
 
   const reset = () => {
@@ -101,7 +101,7 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
     setDisplay(new Map([
       ['logo', original.current!!.uiStyleSchema.logoImageFileName !== undefined],
       ['poweredBy', !(original.current!!.disablePoweredBy)],
-      ['wifi4eu', !!original.current!!.uiStyleSchema.wifi4EUNetworkId]
+      ['wifi4eu', !!original.current!!.uiStyleSchema.wifi4EuNetworkId]
     ]))
   }
 
@@ -144,7 +144,7 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
       setDisplay(new Map([
         ['logo', configurationQuery.data.uiStyleSchema.logoImageFileName !== undefined],
         ['poweredBy', !(configurationQuery.data.disablePoweredBy)],
-        ['wifi4eu', !!configurationQuery.data.uiStyleSchema.wifi4EUNetworkId]
+        ['wifi4eu', !!configurationQuery.data.uiStyleSchema.wifi4EuNetworkId]
       ]))
     }
   }, [configurationQuery])
@@ -153,7 +153,7 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
     if (!value) return
     let data: UIConfiguration = { ...value }
     if (!display.get('wifi4eu')) {
-      data.uiStyleSchema = { ...data.uiStyleSchema, wifi4EUNetworkId: '' }
+      data.uiStyleSchema = { ...data.uiStyleSchema, wifi4EuNetworkId: '' }
     }
     if (!display.get('logo')) {
       data.logoImage = undefined

@@ -37,7 +37,7 @@ export interface UIStyleSchema {
   headerFontSize: number
   logoImageFileName?: string
   backgroundImageName?: string
-  wifi4EUNetworkId?: string
+  wifi4EuNetworkId?: string
 }
 
 export interface UIConfiguration {

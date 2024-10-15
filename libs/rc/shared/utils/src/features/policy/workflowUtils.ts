@@ -231,7 +231,7 @@ export const DefaultUIConfiguration : UIConfiguration = {
   uiStyleSchema: {
     logoSize: 'MEDIUM',
     headerFontSize: 16,
-    wifi4EUNetworkId: ''
+    wifi4EuNetworkId: ''
   },
   welcomeName: '',
   welcomeTitle: ''
