@@ -46,8 +46,7 @@ describe('ServerCertificatesDetailDrawer', () => {
     await userEvent.click(screen.getByText('Download'))
     expect(await screen.findByText('View Public Key')).toBeVisible()
     expect(await screen.findByText('View Chain')).toBeVisible()
-    expect(await screen.findByText('Download DER')).toBeVisible()
-    expect(await screen.findByText('Download PKCS7')).toBeVisible()
+    expect(await screen.findAllByText('Download PEM')).toHaveLength(2)
 
     await userEvent.click(screen.getByText('Usage'))
     expect(await screen.findByText('Issued')).toBeVisible()

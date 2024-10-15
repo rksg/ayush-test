@@ -164,7 +164,7 @@ export const CertificateUrls: { [key: string]: ApiInfo } = {
     url: '/certificates/query'
   },
   updateServerCertificate: {
-    method: 'patch',
+    method: 'PATCH',
     newApi: true,
     url: '/certificates/:certId'
   },

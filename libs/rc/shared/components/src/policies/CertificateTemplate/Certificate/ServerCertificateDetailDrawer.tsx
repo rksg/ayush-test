@@ -1,16 +1,14 @@
 import { useEffect, useState } from 'react'
 
-import { Button, Col, Divider, Form, Row } from 'antd'
-import { useIntl }                         from 'react-intl'
+import { Button, Col, Divider, Row } from 'antd'
+import { useIntl }                   from 'react-intl'
 
 import { Collapse, Drawer, Loader }                                                      from '@acx-ui/components'
 import { CollapseActive, CollapseInactive }                                              from '@acx-ui/icons'
-import { useUploadCaPrivateKeyMutation }                                                 from '@acx-ui/rc/services'
 import { Certificate, CertificateAuthority, CertificateCategoryType, ServerCertificate } from '@acx-ui/rc/utils'
 import { TenantLink }                                                                    from '@acx-ui/react-router-dom'
 import { noDataDisplay }                                                                 from '@acx-ui/utils'
 
-import { UploadCaSettings }                                                                                                   from '../CertificateAuthorityForm/CertificateAuthoritySettings/UploadCaSettings'
 import { certDetailTitle }                                                                                                    from '../contentsMap'
 import { CollapsePanelContentWrapper, CollapseTitle, CollapseWrapper, Description, DescriptionRow, DescriptionText, RawInfo } from '../styledComponents'
 
@@ -28,17 +26,12 @@ interface DetailDrawerProps {
 export function ServerCertificateDetailDrawer (
   { open = false, setOpen, data, type }: DetailDrawerProps) {
   const { $t } = useIntl()
-  const [uploadDrawerOpen, setUploadDrawerOpen] = useState(false)
-  const [uploadPrivateKeyForm] = Form.useForm()
   const [rawInfoDrawerOpen, setRawInfoDrawerOpen] = useState(false)
   const [rawInfoDrawerData, setRawInfoDrawerData] = useState('')
   const [rawInfoDrawerTitle, setRawInfoDrawerTitle] = useState('')
-  const [uploadPrivateKey] = useUploadCaPrivateKeyMutation()
 
   useEffect(() => {
     setRawInfoDrawerOpen(false)
-    setUploadDrawerOpen(false)
-    uploadPrivateKeyForm.resetFields()
   }, [data])
 
   const setRawInfoDrawer = (title: string = '', data: string = '', open: boolean) => {
@@ -112,28 +105,10 @@ export function ServerCertificateDetailDrawer (
           type={CertificateCategoryType.SERVER_CERTIFICATES}
           data={data}
           setRawInfoDrawer={setRawInfoDrawer}
-          setUploadDrawerOpen={setUploadDrawerOpen} />
+          setUploadDrawerOpen={()=>{}} />
       default:
         return null
     }
-  }
-
-  const onSaveUploadPrivateKey = async () => {
-    try {
-      await uploadPrivateKeyForm.validateFields()
-      const formData = uploadPrivateKeyForm.getFieldsValue()
-      const uploadCaData = new FormData()
-      uploadCaData.append('password', formData.password)
-      uploadCaData.append('privateKey', formData.privateKey.file)
-      await uploadPrivateKey({
-        params: { caId: data!.id },
-        payload: uploadCaData,
-        customHeaders: {
-          'Content-Type': undefined,
-          'Accept': '*/*'
-        }
-      }).unwrap()
-    } catch (ignore) { }
   }
 
   return (
@@ -186,26 +161,6 @@ export function ServerCertificateDetailDrawer (
           {rawInfoDrawerData || $t({ defaultMessage: 'No Details' })}
         </RawInfo>
       </Drawer >
-      <Drawer
-        forceRender
-        title={$t({ defaultMessage: 'Upload Private Key' })}
-        visible={uploadDrawerOpen}
-        onClose={() => setUploadDrawerOpen(false)}
-        destroyOnClose={true}
-        width={550}
-        zIndex={2000}
-        footer={
-          <Drawer.FormFooter
-            onCancel={() => setUploadDrawerOpen(false)}
-            onSave={async () => {
-              await onSaveUploadPrivateKey()
-              setUploadDrawerOpen(false)
-            }}
-          />}
-        children={<Form layout='vertical' form={uploadPrivateKeyForm}>
-          <UploadCaSettings showPublicKeyUpload={false} />
-        </Form>}
-      />
     </>
   )
 }

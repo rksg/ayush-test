@@ -4,12 +4,11 @@ import { Modal as AntModal }        from 'antd'
 import moment                       from 'moment'
 import { RawIntlProvider, useIntl } from 'react-intl'
 
-import { Loader, TableProps, Table, Button }                                                                                                                  from '@acx-ui/components'
-import { certificateStatusTypeLabel, getCertificateStatus, issuedByLabel, RevokeForm, ServerCertificateDetailDrawer }                                         from '@acx-ui/rc/components'
-import { useGetServerCertificatesQuery, useUpdateServerCertificateMutation }                                                                                  from '@acx-ui/rc/services'
-import { CertificateCategoryType, CertificateStatusType, EnrollmentType, PolicyOperation, PolicyType, ServerCertificate, getScopeKeyByPolicy, useTableQuery } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess }                                                                                                                          from '@acx-ui/user'
-import { getIntl, noDataDisplay }                                                                                                                             from '@acx-ui/utils'
+import { Loader, TableProps, Table, Button }                                                                                                                                                          from '@acx-ui/components'
+import { certificateStatusTypeLabel, getCertificateStatus, issuedByLabel, RevokeForm, ServerCertificateDetailDrawer }                                                                                 from '@acx-ui/rc/components'
+import { useGetServerCertificatesQuery, useUpdateServerCertificateMutation }                                                                                                                          from '@acx-ui/rc/services'
+import { CertificateCategoryType, CertificateStatusType, EnrollmentType, PolicyOperation, PolicyType, ServerCertificate, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, useTableQuery } from '@acx-ui/rc/utils'
+import { getIntl, noDataDisplay }                                                                                                                                                                     from '@acx-ui/utils'
 
 
 export default function ServerCertificatesTable () {
@@ -130,8 +129,8 @@ export default function ServerCertificatesTable () {
     {
       scopeKey: getScopeKeyByPolicy(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Revoke' }),
-      disabled: (selectedRows: ServerCertificate[]) => selectedRows?.length > 1
-      && getCertificateStatus(selectedRows[0]) !== CertificateStatusType.VALID,
+      disabled: ([selectedRow]) =>
+        getCertificateStatus(selectedRow) !== CertificateStatusType.VALID,
       onClick: ([selectedRow], clearSelection) => {
         showRevokeModal(selectedRow.commonName, async (revocationReason) => {
           editCertificate({
@@ -150,12 +149,16 @@ export default function ServerCertificatesTable () {
         getCertificateStatus(selectedRow) !== CertificateStatusType.REVOKED,
       onClick: ([selectedRow], clearSelection) => {
         editCertificate({
-          params: { certificateId: selectedRow.id },
-          payload: { certId: selectedRow.id, revocationReason: null }
+          params: {
+            certId: selectedRow.id
+          },
+          payload: { revocationReason: null }
         }).then(clearSelection)
       }
     }
   ]
+
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
   return (
     <>
@@ -166,8 +169,8 @@ export default function ServerCertificatesTable () {
           dataSource={tableQuery?.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'checkbox' }}
+          rowActions={allowedRowActions}
+          rowSelection={allowedRowActions.length > 0 && { type: 'radio' }}
           rowKey='id'
           searchableWidth={430}
           enableApiFilter={true}

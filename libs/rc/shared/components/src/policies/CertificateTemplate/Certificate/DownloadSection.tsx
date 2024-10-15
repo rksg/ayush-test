@@ -311,14 +311,18 @@ export default function DownloadSection (props: DownloadDrawerProps) {
     })
   }
 
+  const isServerCertificate = type === CertificateCategoryType.SERVER_CERTIFICATES
+
   return (
     <>
       {renderSection(SectionType.PUBLIC_KEY,
-        [CertDownloadType.PEM, CertDownloadType.DER], data?.publicKeyBase64)}
+        isServerCertificate ? [CertDownloadType.PEM]
+          : [CertDownloadType.PEM, CertDownloadType.DER], data?.publicKeyBase64)}
       {renderSection(SectionType.CHAINS,
-        [CertDownloadType.PEM, CertDownloadType.PKCS7], data?.chain)}
-      {renderPrivateKeySection(SectionType.PRIVATE_KEY)}
-      {renderSection(SectionType.P12,
+        isServerCertificate ? [CertDownloadType.PEM]
+          : [CertDownloadType.PEM, CertDownloadType.PKCS7], data?.chain)}
+      {!isServerCertificate && renderPrivateKeySection(SectionType.PRIVATE_KEY)}
+      {!isServerCertificate && renderSection(SectionType.P12,
         [CertDownloadType.PKCS12, CertDownloadType.PKCS12_CHAIN],
         data?.privateKeyBase64, false)}
     </>
