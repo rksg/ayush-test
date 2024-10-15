@@ -88,11 +88,12 @@ import { useParams } from '@acx-ui/react-router-dom'
 
 import { useIsConfigTemplateEnabledByType }               from '../configTemplates'
 import { useEdgeMvSdLanActions }                          from '../EdgeSdLan/useEdgeSdLanActions'
-import { NetworkTunnelActionModalProps }                  from '../NetworkTunnelActionModal'
 import { NetworkTunnelActionForm, NetworkTunnelTypeEnum } from '../NetworkTunnelActionModal/types'
 import { getNetworkTunnelType }                           from '../NetworkTunnelActionModal/utils'
 import { useLazyGetAAAPolicyInstance }                    from '../policies/AAAForm/aaaPolicyQuerySwitcher'
 import { useIsEdgeReady }                                 from '../useEdgeActions'
+
+import type { NetworkTunnelActionModalProps } from '../NetworkTunnelActionModal'
 
 export const TMP_NETWORK_ID = 'tmpNetworkId'
 export interface NetworkVxLanTunnelProfileInfo {
@@ -858,18 +859,18 @@ export const useUpdateSoftGreActivations = () => {
 export const getNetworkTunnelSdLanUpdateData = (
   modalFormValues: NetworkTunnelActionForm,
   sdLanAssociationUpdates: NetworkTunnelSdLanAction[],
-  tunnelModalProps: NetworkTunnelActionModalProps,
+  networkInfo: NetworkTunnelActionModalProps['network'],
   venueSdLanInfo: EdgeMvSdLanViewData
 ) => {
   // networkId is undefined in Add mode.
-  const networkId = tunnelModalProps.network?.id ?? TMP_NETWORK_ID
-  const networkVenueId = tunnelModalProps.network?.venueId
+  const networkId = networkInfo?.id ?? TMP_NETWORK_ID
+  const networkVenueId = networkInfo?.venueId
 
   const formTunnelType = modalFormValues.tunnelType
   const sdLanTunneled = formTunnelType === NetworkTunnelTypeEnum.SdLan
   const sdLanTunnelGuest = modalFormValues.sdLan?.isGuestTunnelEnabled
 
-  const tunnelTypeInitVal = getNetworkTunnelType(tunnelModalProps.network, [], venueSdLanInfo)
+  const tunnelTypeInitVal = getNetworkTunnelType(networkInfo, [], venueSdLanInfo)
   const isFwdGuest = sdLanTunneled ? sdLanTunnelGuest : false
   let isNeedUpdate: boolean = false
 

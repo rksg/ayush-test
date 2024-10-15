@@ -1,29 +1,105 @@
 /* eslint-disable max-len */
 import { cloneDeep, findIndex } from 'lodash'
 
-import { EdgeMvSdLanViewData, EdgeSdLanTunneledWlan, NetworkTunnelSdLanAction, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { useGetEdgePinViewDataListQuery }                                                                                          from '@acx-ui/rc/services'
+import { EdgeMvSdLanViewData, EdgeSdLanTunneledWlan, NetworkTunnelSdLanAction, NetworkTypeEnum, PersonalIdentityNetworksViewData } from '@acx-ui/rc/utils'
+import { getIntl }                                                                                                                 from '@acx-ui/utils'
 
 import { isGuestTunnelUtilized, isSdLanLastNetworkInVenue, showSdLanVenueDissociateModal } from '../EdgeSdLan/edgeSdLanUtils'
 import { showSdLanGuestFwdConflictModal }                                                  from '../EdgeSdLan/SdLanGuestFwdConflictModal'
 import { useEdgeMvSdLanActions }                                                           from '../EdgeSdLan/useEdgeSdLanActions'
 
+import { NetworkTunnelActionModalProps }                  from './NetworkTunnelActionModal'
 import { NetworkTunnelTypeEnum, NetworkTunnelActionForm } from './types'
+import { useEdgeMvSdLanData }                             from './useEdgeMvSdLanData'
+import { SoftGreNetworkTunnel, useSoftGreTunnelActions }  from './useSoftGreTunnelActions'
 
-import { NetworkTunnelActionModalProps } from '.'
+
+interface useTunnelInfosProps {
+  network?: {
+    id: string,
+    type: NetworkTypeEnum,
+    venueId: string,
+    venueName?: string,
+  }
+  cachedActs?: NetworkTunnelSdLanAction[]
+  cachedSoftGre?: SoftGreNetworkTunnel[]
+}
+export const useTunnelInfos = (props: useTunnelInfosProps) => {
+  const { network, cachedActs, cachedSoftGre } = props
+  const networkVenueId = network?.venueId
+
+  const { venueSdLan, networkVlanPool } = useEdgeMvSdLanData(network)
+
+  let venueSdLanInfo = venueSdLan
+  if (venueSdLan && cachedActs)
+    venueSdLanInfo = mergeSdLanCacheAct(venueSdLan, cachedActs)
+
+  const {
+    venuePinInfo
+  } = useGetEdgePinViewDataListQuery({
+    payload: {
+      fields: ['id', 'name', 'tunneledWlans'],
+      filters: { 'tunneledWlans.venueId': [networkVenueId!] }
+    }
+  }, {
+    skip: !network,
+    selectFromResult: ({ data }) => {
+      return {
+        venuePinInfo: data?.data[0]
+      }
+    }
+  })
+
+  const tunnelType = getNetworkTunnelType(network, cachedSoftGre, venueSdLanInfo, venuePinInfo)
+  const tunnelData = tunnelType === NetworkTunnelTypeEnum.SdLan ? venueSdLanInfo
+    : (tunnelType === NetworkTunnelTypeEnum.Pin
+      ? venuePinInfo
+      :(tunnelType === NetworkTunnelTypeEnum.SoftGre ? cachedSoftGre : undefined))
+
+  return {
+    tunnelData,
+    tunnelType,
+
+    venueSdLanInfo,
+    networkVlanPool,
+    venuePinInfo
+  }
+}
 
 export const getNetworkTunnelType = (
   network: NetworkTunnelActionModalProps['network'],
   softGreInfo?: NetworkTunnelActionModalProps['cachedSoftGre'],
-  venueSdLanInfo?: EdgeMvSdLanViewData
-) => {
+  venueSdLanInfo?: EdgeMvSdLanViewData,
+  venuePinInfo?: PersonalIdentityNetworksViewData
+): NetworkTunnelTypeEnum => {
   const isSdLanTunneled = Boolean(venueSdLanInfo?.tunneledWlans?.find(wlan =>
     wlan.networkId === network?.id && wlan.venueId === network?.venueId))
+    ? NetworkTunnelTypeEnum.SdLan : false
+
+  const isPinTunneled = Boolean(venuePinInfo?.tunneledWlans?.find(wlan =>
+    wlan.networkId === network?.id)) ? NetworkTunnelTypeEnum.Pin : false
 
   const isSoftGreTunneled = Boolean(softGreInfo?.find(sg =>
     sg.venueId === network?.venueId && sg.networkIds.includes(network?.id!))?.profileId)
+    ? NetworkTunnelTypeEnum.SoftGre : false
 
-  return isSdLanTunneled ? NetworkTunnelTypeEnum.SdLan :
-    (isSoftGreTunneled ? NetworkTunnelTypeEnum.SoftGre : NetworkTunnelTypeEnum.None)
+  return isSdLanTunneled || isPinTunneled || isSoftGreTunneled || NetworkTunnelTypeEnum.None
+}
+
+export const getTunnelTypeDisplayText = (tunnelType: NetworkTunnelTypeEnum | undefined) => {
+  const { $t } = getIntl()
+
+  switch (tunnelType) {
+    case NetworkTunnelTypeEnum.SdLan:
+      return $t({ defaultMessage: 'SD-LAN' })
+    case NetworkTunnelTypeEnum.SoftGre:
+      return $t({ defaultMessage: 'SoftGRE' })
+    case NetworkTunnelTypeEnum.Pin:
+      return $t({ defaultMessage: 'PIN' })
+    default:
+      return ''
+  }
 }
 
 export const useUpdateNetworkTunnelAction = () => {
@@ -31,7 +107,7 @@ export const useUpdateNetworkTunnelAction = () => {
 
   const updateSdLanNetworkTunnel = async (
     formValues: NetworkTunnelActionForm,
-    network: NetworkTunnelActionModalProps['network'] ,
+    network: NetworkTunnelActionModalProps['network'],
     tunnelTypeInitVal: NetworkTunnelTypeEnum,
     venueSdLanInfo?: EdgeMvSdLanViewData
   ) => {
@@ -122,6 +198,37 @@ export const useUpdateNetworkTunnelAction = () => {
   }
 
   return updateSdLanNetworkTunnel
+}
+
+export const useDeactivateNetworkTunnelByType = () => {
+  const { dectivateSoftGreTunnel } = useSoftGreTunnelActions()
+  const updateSdLanNetworkTunnel = useUpdateNetworkTunnelAction()
+
+  const deactivateNetworkTunnelByType = (
+    tunnelType: NetworkTunnelTypeEnum,
+    formValues: NetworkTunnelActionForm,
+    network: NetworkTunnelActionModalProps['network'],
+    venueSdLanInfo?: EdgeMvSdLanViewData
+  ) => {
+    switch (tunnelType) {
+      case NetworkTunnelTypeEnum.SdLan:
+        updateSdLanNetworkTunnel(
+          formValues,
+          network,
+          tunnelType,
+          venueSdLanInfo
+        )
+        return
+      case NetworkTunnelTypeEnum.SoftGre:
+        dectivateSoftGreTunnel(network!.venueId, network!.id, formValues)
+        return
+      case NetworkTunnelTypeEnum.Pin:
+      default:
+        return
+    }
+  }
+
+  return deactivateNetworkTunnelByType
 }
 
 // eslint-disable-next-line max-len

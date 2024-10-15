@@ -212,7 +212,8 @@ export {
   checkSdLanScopedNetworkDeactivateAction
 } from './EdgeSdLan/useEdgeSdLanActions'
 export type {
-  SdLanScopedNetworkVenuesData
+  SdLanScopedNetworkVenuesData,
+  SdLanScopedVenueNetworksData
 } from './EdgeSdLan/useEdgeSdLanActions'
 export { useEdgePinActions } from './EdgePersonalIdentityNetwork/useEdgePinActions'
 export { SdLanTopologyDiagram } from './EdgeSdLan/SdLanTopologyDiagram'

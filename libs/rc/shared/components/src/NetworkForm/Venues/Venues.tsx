@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext, useRef, ReactNode } from 'react'
+import { useEffect, useState, useContext, useRef } from 'react'
 
 import { Form, Switch } from 'antd'
 import _                from 'lodash'
@@ -29,25 +29,22 @@ import {
   IsNetworkSupport6g,
   ApGroupModalState,
   SchedulerTypeEnum, useConfigTemplate, EdgeMvSdLanViewData,
-  NetworkTunnelSdLanAction,
   NetworkTunnelSoftGreAction
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
-import { isSdLanGuestUtilizedOnDiffVenue, isSdLanLastNetworkInVenue, showSdLanVenueDissociateModal } from '../../EdgeSdLan/edgeSdLanUtils'
-import { showSdLanGuestFwdConflictModal }                                                            from '../../EdgeSdLan/SdLanGuestFwdConflictModal'
-import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedNetworkVenues }                      from '../../EdgeSdLan/useEdgeSdLanActions'
-import { NetworkApGroupDialog }                                                                      from '../../NetworkApGroupDialog'
-import { NetworkTunnelActionModal, NetworkTunnelActionModalProps, useGetSoftGreScopeVenueMap }       from '../../NetworkTunnelActionModal'
-import { NetworkTunnelActionForm, NetworkTunnelTypeEnum }                                            from '../../NetworkTunnelActionModal/types'
-import { NetworkVenueScheduleDialog }                                                                from '../../NetworkVenueScheduleDialog'
-import { transformAps, transformRadios, transformScheduling }                                        from '../../pipes/apGroupPipes'
-import { useIsEdgeFeatureReady }                                                                     from '../../useEdgeActions'
-import NetworkFormContext                                                                            from '../NetworkFormContext'
-import { TMP_NETWORK_ID, getNetworkTunnelSdLanUpdateData }                                           from '../utils'
+import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedNetworkVenues }                from '../../EdgeSdLan/useEdgeSdLanActions'
+import { NetworkApGroupDialog }                                                                from '../../NetworkApGroupDialog'
+import { NetworkTunnelActionModal, NetworkTunnelActionModalProps, useGetSoftGreScopeVenueMap } from '../../NetworkTunnelActionModal'
+import { NetworkTunnelActionForm }                                                             from '../../NetworkTunnelActionModal/types'
+import { NetworkVenueScheduleDialog }                                                          from '../../NetworkVenueScheduleDialog'
+import { transformAps, transformRadios, transformScheduling }                                  from '../../pipes/apGroupPipes'
+import { useIsEdgeFeatureReady }                                                               from '../../useEdgeActions'
+import NetworkFormContext                                                                      from '../NetworkFormContext'
 
-import { NetworkTunnelInfoButtonFormItem } from './NetworkTunnelInfoButtonFormItem'
+import { useTunnelColumn }                                    from './TunnelColumn/useTunnelColumn'
+import { handleSdLanTunnelAction, handleSoftGreTunnelAction } from './TunnelColumn/utils'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
@@ -158,8 +155,9 @@ interface VenuesProps {
 export function Venues (props: VenuesProps) {
   const { defaultActiveVenues } = props
 
-  const { isTemplate } = useConfigTemplate()
+  // const { isTemplate } = useConfigTemplate()
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
+  const isEdgePinEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
   const form = Form.useFormInstance()
   const { cloneMode, data, setData, editMode } = useContext(NetworkFormContext)
@@ -188,9 +186,19 @@ export function Venues (props: VenuesProps) {
   const [tunnelModalState, setTunnelModalState] = useState<NetworkTunnelActionModalProps>({
     visible: false
   } as NetworkTunnelActionModalProps)
+
   const isDefaultVenueSetted = useRef(false)
+
+  // hooks for tunnel column - start
   const sdLanScopedNetworkVenues = useSdLanScopedNetworkVenues(params.networkId)
   const softGreVenueMap = useGetSoftGreScopeVenueMap()
+  const tunnelColumn = useTunnelColumn({
+    network: data,
+    sdLanScopedNetworkVenues,
+    // tunnelModalState,
+    setTunnelModalState
+  })
+  // hooks for tunnel column - end
 
   useEffect(() => {
     // need to make sure table data is ready.
@@ -468,27 +476,7 @@ export function Venues (props: VenuesProps) {
           getCurrentVenue(row), scheduleSlotIndexMap[row.id], (e) => handleClickScheduling(row, e))
       }
     },
-    ...(!isTemplate && (isEdgeSdLanMvEnabled || isSoftGreEnabled) ? [{
-      key: 'tunneledInfo',
-      title: $t({ defaultMessage: 'Tunnel' }),
-      dataIndex: 'tunneledInfo',
-      render: function (_: ReactNode, row: Venue) {
-        const currentNetwork = data
-
-        return currentNetwork
-          ? <Form.Item noStyle name={['sdLanAssociationUpdate']}>
-            <NetworkTunnelInfoButtonFormItem
-              currentVenue={row}
-              currentNetwork={currentNetwork}
-              sdLanScopedNetworkVenues={sdLanScopedNetworkVenues}
-              softGreVenueMap={softGreVenueMap}
-              softGreAssociationUpdate={softGreAssociationUpdate}
-              onClick={handleClickNetworkTunnel}
-            />
-          </Form.Item>
-          : ''
-      }
-    }]: [])
+    ...tunnelColumn
   ]
 
   const getCurrentVenue = (row: Venue) => {
@@ -498,39 +486,6 @@ export function Venues (props: VenuesProps) {
     const venueId = row.id
     // Need to get deepVenue from data(NetworkFormContext) since this table doesn't post data immediately
     return data?.venues?.find(v => v.venueId === venueId)
-  }
-
-  const getCachedSoftGre = (venueId: string, networkId: string) => {
-    const updateSoftGre = softGreAssociationUpdate && softGreAssociationUpdate[venueId]
-    if (updateSoftGre) {
-      return [{ venueId,
-        networkIds: [networkId],
-        profileId: updateSoftGre.newProfileId,
-        profileName: updateSoftGre.newProfileName }]
-    } else if (networkId !== TMP_NETWORK_ID) {
-      const softGreVenue = softGreVenueMap?.[venueId]?.find(sg => sg.networkIds.includes(networkId))
-      if (softGreVenue) return [softGreVenue]
-    }
-    return []
-  }
-
-  const handleClickNetworkTunnel = (row: Venue, currentNetwork: NetworkSaveData) => {
-    const cachedActs = form.getFieldValue('sdLanAssociationUpdate') as NetworkTunnelSdLanAction[]
-    const venueId = row.id
-    const networkId = currentNetwork?.id ?? TMP_NETWORK_ID
-    const cachedSoftGre = getCachedSoftGre(venueId, networkId)
-    // show modal
-    setTunnelModalState({
-      visible: true,
-      network: {
-        id: currentNetwork?.id ?? TMP_NETWORK_ID,
-        type: currentNetwork?.type,
-        venueId,
-        venueName: row.name
-      },
-      cachedActs,
-      cachedSoftGre
-    } as NetworkTunnelActionModalProps)
   }
 
   const handleClickScheduling = (row: Venue, e: React.MouseEvent<HTMLElement, MouseEvent>) => {
@@ -632,94 +587,6 @@ export function Venues (props: VenuesProps) {
     })
   }
 
-  const handleSdLanTunnelAction = async (
-    modalFormValues: NetworkTunnelActionForm,
-    otherData: {
-      network: NetworkTunnelActionModalProps['network'],
-      venueSdLan?: EdgeMvSdLanViewData
-    }
-  ) => {
-    const networkVenueId = tunnelModalState.network?.venueId
-    const { network, venueSdLan } = otherData
-
-    if (!networkVenueId || !venueSdLan) return
-
-    const updateContent = getNetworkTunnelSdLanUpdateData(
-      modalFormValues,
-      form.getFieldValue('sdLanAssociationUpdate'),
-      tunnelModalState,
-      venueSdLan
-    )
-    if (!updateContent) return
-
-    return await new Promise<void | boolean>((resolve) => {
-    // eslint-disable-next-line max-len
-      if (modalFormValues.tunnelType !== NetworkTunnelTypeEnum.SdLan && isSdLanLastNetworkInVenue(venueSdLan.tunneledWlans, network!.venueId)) {
-        showSdLanVenueDissociateModal(async () => {
-          form.setFieldValue('sdLanAssociationUpdate', updateContent)
-          resolve()
-        }, () => resolve(false))
-      } else {
-        // eslint-disable-next-line max-len
-        const needSdLanConfigConflictCheck = modalFormValues.tunnelType === NetworkTunnelTypeEnum.SdLan
-          && isSdLanGuestUtilizedOnDiffVenue(venueSdLan!, network!.id, network!.venueId)
-
-        if (needSdLanConfigConflictCheck) {
-          showSdLanGuestFwdConflictModal({
-            currentNetworkVenueId: network?.venueId!,
-            currentNetworkId: network?.id!,
-            currentNetworkName: '',
-            activatedGuest: modalFormValues.sdLan.isGuestTunnelEnabled,
-            tunneledWlans: venueSdLan!.tunneledWlans,
-            tunneledGuestWlans: venueSdLan!.tunneledGuestWlans,
-            onOk: async (impactVenueIds: string[]) => {
-              if (impactVenueIds.length) {
-                // has conflict and confirmed
-
-                let updates: NetworkTunnelSdLanAction[] = updateContent
-                impactVenueIds.forEach(impactVenueId => {
-                  updates = getNetworkTunnelSdLanUpdateData(
-                    modalFormValues,
-                    updates,
-                    {
-                      ...tunnelModalState,
-                      network: {
-                        ...tunnelModalState.network!,
-                        venueId: impactVenueId
-                      }
-                    },
-                    venueSdLan) ?? []
-                })
-
-                form.setFieldValue('sdLanAssociationUpdate', updates)
-              } else {
-                form.setFieldValue('sdLanAssociationUpdate', updateContent)
-              }
-
-              resolve()
-            },
-            onCancel: () => resolve(false)
-          })
-        } else {
-          form.setFieldValue('sdLanAssociationUpdate', updateContent)
-          resolve()
-        }
-      }
-    })
-  }
-
-  const handleSoftGreTunnelAction = (modalFormValues: NetworkTunnelActionForm) => {
-    if (!isSoftGreEnabled) return
-    const networkVenueId = tunnelModalState.network?.venueId
-    const softGreAssociationUpdate = form.getFieldValue('softGreAssociationUpdate') ??
-    {} as NetworkTunnelSoftGreAction
-    const updateContent = {
-      ...softGreAssociationUpdate,
-      [`${networkVenueId}`]: { ...modalFormValues.softGre }
-    }
-    form.setFieldValue('softGreAssociationUpdate', updateContent)
-  }
-
   const handleNetworkTunnelActionFinish = async (
     modalFormValues: NetworkTunnelActionForm,
     otherData: {
@@ -727,10 +594,16 @@ export function Venues (props: VenuesProps) {
       venueSdLan?: EdgeMvSdLanViewData
     }
   ) => {
-
-    try{
-      handleSoftGreTunnelAction(modalFormValues)
-      const shouldCloseModal = await handleSdLanTunnelAction(modalFormValues, otherData)
+    try {
+      const args = {
+        form,
+        modalFormValues,
+        networkInfo: otherData.network,
+        otherData
+      }
+      if (isSoftGreEnabled)
+        handleSoftGreTunnelAction(args)
+      const shouldCloseModal = await handleSdLanTunnelAction(args)
       if (shouldCloseModal !== false)
         handleCloseTunnelModal()
     }catch (e) {
@@ -789,6 +662,7 @@ export function Venues (props: VenuesProps) {
           }
         </Loader>
       </Form.Item>
+      {isEdgePinEnabled && <Form.Item hidden name={['sdLanAssociationUpdate']}></Form.Item>}
       {isSoftGreEnabled && <Form.Item hidden name={['softGreAssociationUpdate']}></Form.Item>}
     </>
   )
