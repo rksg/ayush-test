@@ -198,7 +198,7 @@ describe('ApplicationTokensTable', () => {
 
         mockServer.use(
           rest.delete(
-            `${rbacApiURL}/applicationTokens/${applicationToken.camId}`,
+            `${rbacApiURL}/applicationTokens/${applicationToken.id}`,
             (_, res, ctx) => res(ctx.json({ success: true }))
           ),
           mockApplicationTokens(applicationTokens.filter(item => item.id !== applicationToken.id))
@@ -218,7 +218,7 @@ describe('ApplicationTokensTable', () => {
 
         mockServer.use(
           rest.delete(
-            `${rbacApiURL}/applicationTokens/${applicationToken.camId}`,
+            `${rbacApiURL}/applicationTokens/${applicationToken.id}`,
             (_, res) => res.networkError('Failed to connect'))
         )
 
@@ -232,7 +232,7 @@ describe('ApplicationTokensTable', () => {
         const [status, error] = [500, 'Error from API']
         mockServer.use(
           rest.delete(
-            `${rbacApiURL}/applicationTokens/${applicationToken.camId}`,
+            `${rbacApiURL}/applicationTokens/${applicationToken.id}`,
             (_, res, ctx) => res(
               ctx.status(status),
               ctx.json({ error })

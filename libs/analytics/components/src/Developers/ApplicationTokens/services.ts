@@ -2,31 +2,21 @@ import { rbacApi } from '@acx-ui/analytics/services'
 
 export type ApplicationToken = {
   id: string
-  camId: string
-  name: string
-  clientId: string
-  clientSecret: string
-}
-
-export type ApplicationTokenResponse = {
-  id?: string
-  camId?: string
   name: string
   clientId: string
   clientSecret: string
 }
 
 export const applicationTokenDtoKeys = [
-  'id', 'camId', 'name', 'clientId', 'clientSecret'
+  'id', 'name', 'clientId', 'clientSecret'
 ] as const
 
-const omittedKeys = ['id', 'camId', 'clientId', 'clientSecret'] as const
+const omittedKeys = ['id', 'clientId', 'clientSecret'] as const
 
 export type ApplicationTokenDto = Omit<
 Pick<ApplicationToken, typeof applicationTokenDtoKeys[number]>, typeof omittedKeys[number]
 > & {
   id?: string
-  camId?: string
   clientId?: string
 }
 
@@ -43,12 +33,7 @@ export const {
         method: 'GET',
         credentials: 'include'
       }),
-      providesTags: [{ type: 'ApplicationToken', id: 'LIST' }],
-      transformResponse: (response: ApplicationTokenResponse[]) => response.map((item) => ({
-        id: item.camId!,
-        camId: item.camId!,
-        ...item
-      }))
+      providesTags: [{ type: 'ApplicationToken', id: 'LIST' }]
     }),
     createApplicationToken: build.mutation<void, ApplicationTokenDto>({
       query: (applicationToken) => ({
@@ -61,7 +46,7 @@ export const {
     }),
     deleteApplicationToken: build.mutation<void, ApplicationTokenDto>({
       query: (applicationToken) => ({
-        url: `/applicationTokens/${applicationToken.camId}`,
+        url: `/applicationTokens/${applicationToken.id}`,
         method: 'DELETE',
         credentials: 'include'
       }),
@@ -69,16 +54,11 @@ export const {
     }),
     rotateApplicationToken: build.mutation<ApplicationToken, ApplicationTokenDto>({
       query: (applicationToken) => ({
-        url: `/applicationTokens/${applicationToken.camId}`,
+        url: `/applicationTokens/${applicationToken.id}`,
         method: 'PATCH',
         credentials: 'include'
       }),
-      invalidatesTags: [{ type: 'ApplicationToken', id: 'LIST' }],
-      transformResponse: (response: ApplicationTokenResponse) => ({
-        id: response.id!,
-        camId: response.id!,
-        ...response
-      })
+      invalidatesTags: [{ type: 'ApplicationToken', id: 'LIST' }]
     })
   })
 })

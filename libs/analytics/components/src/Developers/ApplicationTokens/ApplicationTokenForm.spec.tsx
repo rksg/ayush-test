@@ -61,7 +61,7 @@ describe('ApplicationTokenForm', () => {
 
     const onClose = jest.fn()
     render(
-      <ApplicationTokenForm {...{ onClose, applicationToken: applicationToken }} />,
+      <ApplicationTokenForm {...{ onClose, applicationToken }} />,
       { wrapper: Provider }
     )
 
@@ -164,7 +164,7 @@ describe('ApplicationTokenForm', () => {
       const { dto, onClose } = await renderEditAndRotate()
 
       mockServer.use(
-        rest.patch(`${rbacApiURL}/applicationTokens/${dto.camId}`,
+        rest.patch(`${rbacApiURL}/applicationTokens/${dto.id}`,
           (req, res, ctx) => {
             return res(ctx.json({
               ...dto,
@@ -181,7 +181,7 @@ describe('ApplicationTokenForm', () => {
       const { dto, onClose } = await renderEditAndRotate()
 
       mockServer.use(
-        rest.patch(`${rbacApiURL}/applicationTokens/${dto.camId}`,
+        rest.patch(`${rbacApiURL}/applicationTokens/${dto.id}`,
           (req, res) => {
             return res.networkError('Failed to connect')
           })
@@ -196,7 +196,7 @@ describe('ApplicationTokenForm', () => {
 
       const [status, error] = [500, 'Error from API']
       mockServer.use(
-        rest.patch(`${rbacApiURL}/applicationTokens/${dto.camId}`,
+        rest.patch(`${rbacApiURL}/applicationTokens/${dto.id}`,
           (req, res, ctx) => {
             return res(ctx.status(status), ctx.json({ error }))
           })
