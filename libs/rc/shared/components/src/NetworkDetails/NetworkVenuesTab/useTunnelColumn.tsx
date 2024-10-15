@@ -2,9 +2,9 @@ import { ReactNode } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Table }                  from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { NetworkSaveData, Venue } from '@acx-ui/rc/utils'
+import { Table }                                       from '@acx-ui/components'
+import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
+import { EdgeMvSdLanViewData, NetworkSaveData, Venue } from '@acx-ui/rc/utils'
 
 import { SdLanScopedNetworkVenuesData } from '../../EdgeSdLan/useEdgeSdLanActions'
 import {
@@ -94,7 +94,8 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
           venueId: row.id,
           venueName: row.name
         }
-        const venueSdLanInfo = sdLanScopedNetworkVenues.sdLansVenueMap[row.id]?.[0]
+        // eslint-disable-next-line max-len
+        const venueSdLanInfo = (sdLanScopedNetworkVenues.sdLansVenueMap[row.id] as EdgeMvSdLanViewData[])?.[0]
         const venueSoftGre = softGreVenueMap[row.id]
         const targetSoftGre = venueSoftGre?.filter(sg => sg.networkIds.includes(row.id))
 
@@ -106,7 +107,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
 
         return row.activated?.isActivated
           ? <NetworkTunnelSwitchBtn
-            checked={tunnelType !== NetworkTunnelTypeEnum.None}
+            tunnelType={tunnelType}
             disabled={disabled}
             tooltip={isTheLastSdLanWlan
               // eslint-disable-next-line max-len

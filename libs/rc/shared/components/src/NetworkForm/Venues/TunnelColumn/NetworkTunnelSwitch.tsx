@@ -1,4 +1,5 @@
-import { Form } from 'antd'
+import { Form }    from 'antd'
+import { useIntl } from 'react-intl'
 
 import { EdgeMvSdLanViewData, NetworkSaveData, PersonalIdentityNetworksViewData, Venue } from '@acx-ui/rc/utils'
 
@@ -22,6 +23,7 @@ interface NetworkTunnelSwitchProps {
 }
 
 export const NetworkTunnelSwitch = (props: NetworkTunnelSwitchProps) => {
+  const { $t } = useIntl()
   const {
     currentVenue, currentNetwork,
     venueSdLanInfo, venuePinInfo, venueSoftGre,
@@ -46,7 +48,7 @@ export const NetworkTunnelSwitch = (props: NetworkTunnelSwitchProps) => {
   const disabled = isTheLastSdLanWlan || tunnelType === NetworkTunnelTypeEnum.Pin
 
   return <NetworkTunnelSwitchBtn
-    checked={tunnelType !== NetworkTunnelTypeEnum.None}
+    tunnelType={tunnelType}
     disabled={disabled}
     tooltip={isTheLastSdLanWlan
       // eslint-disable-next-line max-len
