@@ -297,7 +297,11 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
             onImageChange={(url, file)=> {
               setValue({ ...value,
                 backgroundImage: url,
-                backgroundImageFile: file
+                backgroundImageFile: file,
+                uiColorSchema: {
+                  ...value.uiColorSchema,
+                  backgroundColor: '#ECECEC'
+                }
               })
             }}
           />}
