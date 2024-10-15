@@ -39,6 +39,7 @@ import {
   MultipleEditPortMessages,
   poeBudgetRegExp,
   PORT_SPEED,
+  SwitchDefaultVlan,
   SwitchPortViewModel,
   SwitchVlanUnion,
   SWITCH_DEFAULT_VLAN_NAME,
@@ -171,7 +172,8 @@ export function EditPortDrawer ({
     tagsCheckbox,
     profileName,
     // Flex auth
-    switchLevelAuthDefaultVlan,
+    switchLevelAuthDefaultVlanObj,
+    untaggedVlansObj,
     flexibleAuthenticationEnabled,
     flexibleAuthenticationEnabledCheckbox,
     authenticationType,
@@ -503,8 +505,9 @@ export function EditPortDrawer ({
           (portSetting?.taggedVlans ? portSetting.untaggedVlan : defaultVlan)),
       voiceVlan: (portSetting.revert ? voice
         : (portSetting?.voiceVlan === 0 ? '' : portSetting?.voiceVlan)),
-      switchLevelAuthDefaultVlan: portSetting.switchLevelAuthDefaultVlan
-        ? [Number(portSetting.switchLevelAuthDefaultVlan)] : []
+      switchLevelAuthDefaultVlanObj: portSetting.switchLevelAuthDefaultVlan
+        ? { [switchDetail?.switchMac as string]: [Number(portSetting.switchLevelAuthDefaultVlan)] }
+        : {}
     })
     checkIsVoiceVlanInvalid(true, portSetting?.revert)
   }
@@ -515,10 +518,11 @@ export function EditPortDrawer ({
       ? multiPortsSetting : multiPortsSetting?.response) as PortSettingModel[]
 
     //TODO: wait for API
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     portsSetting = portsSetting.map((p, index) => {
       return {
         ...p,
-        switchLevelAuthDefaultVlan: (3 + index),
+        switchLevelAuthDefaultVlan: (3),
         shouldAlertAaaAndRadiusNotApply: false
       }
     })
@@ -540,6 +544,25 @@ export function EditPortDrawer ({
 
     const hasEqualValueFields = _.xor(allMultipleEditableFields, hasMultipleValueFields)
     const portSetting = _.pick(portsSetting?.[0], [...hasEqualValueFields, 'profileName'])
+    const { untaggedVlans, switchLevelAuthDefaultVlan } = portsSetting.reduce(
+      (result, { switchMac, untaggedVlan, switchLevelAuthDefaultVlan }) => {
+        const index = switchMac as string
+        if (!result.untaggedVlans) result.untaggedVlans = {}
+        if (!result.untaggedVlans[index]) result.untaggedVlans[index] = [] as string[]
+        if (!result.switchLevelAuthDefaultVlan) result.switchLevelAuthDefaultVlan = {}
+
+        const untaggedVlansBySwitch = result.untaggedVlans[index] as string[]
+        if (!untaggedVlansBySwitch.includes(untaggedVlan as string)) {
+          untaggedVlansBySwitch.push(untaggedVlan as string)
+        }
+
+        result.switchLevelAuthDefaultVlan[index] = switchLevelAuthDefaultVlan
+        return result
+      }, {} as {
+        untaggedVlans: Record<string, string[]>
+        switchLevelAuthDefaultVlan: Record<string, number | undefined>
+      }
+    ) // TODO
 
     setDisablePoeCapability(poeCapabilityDisabled)
     setDisableCyclePoeCapability(cyclePoeMultiPortsDisabled)
@@ -567,7 +590,9 @@ export function EditPortDrawer ({
       untaggedVlan: (!hasMultipleValueFields?.includes('untaggedVlan')
         && vlansValue.untagged) || (portSetting.untaggedVlan ? portSetting.untaggedVlan :
         (portSetting?.taggedVlans ? portSetting.untaggedVlan : defaultVlan)),
-      switchLevelAuthDefaultVlan: portsSetting.map(p => Number(p.switchLevelAuthDefaultVlan))
+      // flex auth
+      untaggedVlansObj: untaggedVlans ?? {},
+      switchLevelAuthDefaultVlanObj: switchLevelAuthDefaultVlan ?? {}
     })
   }
 
@@ -582,17 +607,15 @@ export function EditPortDrawer ({
             : $t(EditPortMessages.POE_CAPABILITY_DISABLE)
           ) : ''
       case 'useVenuesettings':
-        return disabledUseVenueSetting ? $t(EditPortMessages.USE_VENUE_SETTINGS_DISABLE) : ''
+        return flexibleAuthenticationEnabled
+          ? $t(EditPortMessages.USE_VENUE_SETTINGS_DISABLED_WHEN_FLEX_AUTH_ENABLED)
+          : (disabledUseVenueSetting ? $t(EditPortMessages.USE_VENUE_SETTINGS_DISABLE) : '')
       case 'ingressAcl': return !hasSwitchProfile ? $t(EditPortMessages.ADD_ACL_DISABLE) : ''
       case 'egressAcl': return !hasSwitchProfile ? $t(EditPortMessages.ADD_ACL_DISABLE) : ''
       case 'portSpeed': return hasBreakoutPort ? $t(EditPortMessages.PORT_SPEED_TOOLTIP) : ''
       case 'flexibleAuthenticationEnabled':
-        return (switchLevelAuthDefaultVlan?.length !== switches?.length)
-          ? $t(EditPortMessages.SHOULD_ENABLE_SWITCH_LEVEL_FIRST)
-          : (untaggedVlan && (Number(untaggedVlan) !== Number(defaultVlan))
-            ? $t(EditPortMessages.UNTAGGED_PORT_CANNOT_ENABLE_FLEX_AUTH)
-            : ''
-          )
+        const disableKey = getFlexAuthButtonStatus()
+        return disableKey ? $t(EditPortMessages[disableKey as keyof typeof EditPortMessages]) : ''
       default: return ''
     }
   }
@@ -618,7 +641,8 @@ export function EditPortDrawer ({
         || disablePoeCapability
         || !poeEnable
         || (poeClass !== 'ZERO' && poeClass !== 'UNSET')
-      case 'useVenuesettings': return disabledUseVenueSetting || switchData?.vlanCustomize
+      case 'useVenuesettings':
+        return flexibleAuthenticationEnabled || disabledUseVenueSetting || switchData?.vlanCustomize
       case 'portSpeed':
         return (isMultipleEdit && !portSpeedCheckbox) || disablePortSpeed || hasBreakoutPort
       case 'ingressAcl': return (isMultipleEdit && !ingressAclCheckbox) || ipsg
@@ -626,8 +650,7 @@ export function EditPortDrawer ({
       // Flex auth
       case 'flexibleAuthenticationEnabled':
         return (isMultipleEdit && !checkboxEnabled)
-          || (switchLevelAuthDefaultVlan?.length !== switches?.length)
-          || untaggedVlan && (Number(untaggedVlan) !== Number(defaultVlan))
+          || !!getFlexAuthButtonStatus()
       case 'authDefaultVlan':
       case 'changeAuthOrder':
       case 'dot1xPortControl':
@@ -652,7 +675,7 @@ export function EditPortDrawer ({
       case 'voiceVlan': return vlansOptions?.length === 1
       case 'portSpeed': return !portSpeedOptions.length || disablePortSpeed || hasBreakoutPort
       case 'flexibleAuthenticationEnabled':
-        return untaggedVlan && (Number(untaggedVlan) !== Number(defaultVlan))
+        return !!getFlexAuthButtonStatus()
       default: return false
     }
   }
@@ -953,12 +976,51 @@ export function EditPortDrawer ({
     setIsVoiceVlanInvalid(isInvalid)
   }
 
-  const getFlexAuthStatus = () => {
+  const getSwitchLevelAuthDefaultVlans = () => {
+    return Object.values(switchLevelAuthDefaultVlanObj ?? {})
+  }
+  // const getUntaggedVlans = () => {
+  //   return Object.values(untaggedVlansObj ?? {}).flat() as string[]
+  // }
+
+  const getFlexAuthButtonStatus = () => {
+    // const switchLevelAuthDefaultVlans = Object.values(switchLevelAuthDefaultVlan)
+    const isSwitchLevelAuthNotEnabled
+      = getSwitchLevelAuthDefaultVlans()?.length !== switches?.length
+    // const isUntaggedPort = false
+    const switchIds = Object.keys(untaggedVlansObj ?? {})
+    const isUntaggedPort = isMultipleEdit
+      ? switchIds.map(id => {
+        const defaultVlan = switchesDefaultVlan?.filter((s: SwitchDefaultVlan) => {
+          return s.switchId === id
+        })?.[0]?.defaultVlanId
+        return !hasMultipleValue.includes('untaggedVlan')
+          ? (untaggedVlan && (Number(untaggedVlan) !== Number(defaultVlan)))
+          : untaggedVlansObj[id].find((vlan: string) => {
+            return Number(vlan) !== Number(defaultVlan)
+          })
+      })?.filter(s => s)?.length > 0
+      : (untaggedVlan && (Number(untaggedVlan) !== Number(defaultVlan)))
+
+    if (isSwitchLevelAuthNotEnabled) {
+      return 'SWITCH_LEVEL_AUTH_NOT_ENABLED'
+    }
+    if (isUntaggedPort) {
+      return 'UNTAGGED_PORT_CANNOT_ENABLE_FLEX_AUTH'
+    }
+    return ''
+  }
+
+  const showLinkToSwitchPage = () => {
+    const isSwitchLevelAuthEnabled = getFlexAuthButtonStatus() === 'SWITCH_LEVEL_AUTH_NOT_ENABLED'
+    return (!isMultipleEdit || switches?.length === 1) && isSwitchLevelAuthEnabled
+  }
+
+  const getFlexAuthStatus = () => { //TODO
     const isEnabled
       = flexibleAuthenticationEnabled && (!isMultipleEdit || flexibleAuthenticationEnabledCheckbox)
 
     return {
-      disabled: switchLevelAuthDefaultVlan?.length !== switches?.length, //TODO
       enabled: isEnabled,
       defaultVlan: isEnabled ? undefined : authDefaultVlan
     }
@@ -1074,7 +1136,7 @@ export function EditPortDrawer ({
                   ? <MultipleText />
                   : <Tooltip title={getFieldTooltip('flexibleAuthenticationEnabled')}>
                     <Space style={{ display: 'flex', flex: '1',
-                      justifyContent: getFlexAuthStatus()?.disabled ? '' : 'space-between'
+                      justifyContent: !!getFlexAuthButtonStatus() ? '' : 'space-between'
                     }}>
                       <Form.Item
                         name='flexibleAuthenticationEnabled'
@@ -1089,11 +1151,18 @@ export function EditPortDrawer ({
                             // eslint-disable-next-line max-len
                             getToggleClassName('flexibleAuthenticationEnabled', isMultipleEdit, hasMultipleValue)
                           }
+                          onChange={async (checked) => {
+                            if (checked && useVenueSettings) {
+                              onValuesChange({
+                                untaggedVlan: defaultVlan,
+                                revert: true, status: 'port'
+                              })
+                            }
+                          }}
                         />
 
                       </Form.Item>
-                      { (!isMultipleEdit || switches?.length === 1)
-                        && getFlexAuthStatus()?.disabled && <Button
+                      { showLinkToSwitchPage() && <Button
                         type='link'
                         size='small'
                         onClick={() => navigate({ //TODO
@@ -1118,11 +1187,8 @@ export function EditPortDrawer ({
             />,
             'flexibleAuthenticationEnabled', $t({ defaultMessage: 'Flexible Authentication' }), true
           )}
-          { <Form.Item
-            name='switchLevelAuthDefaultVlan'
-            hidden
-            children={<></>}
-          />}
+          { <Form.Item name='untaggedVlansObj' hidden children={<></>} /> }
+          { <Form.Item name='switchLevelAuthDefaultVlanObj' hidden children={<></>} /> }
           { flexibleAuthenticationEnabled &&
           <Space style={{ display: 'block', marginLeft: isMultipleEdit ? '24px' : '0' }}>
             { getFieldTemplate(
@@ -1286,7 +1352,7 @@ export function EditPortDrawer ({
                         return Promise.resolve()
                       } },
                       { validator: (_:unknown, value: string) => {
-                        if (switchLevelAuthDefaultVlan.includes(Number(value))) {
+                        if (getSwitchLevelAuthDefaultVlans().includes(Number(value))) {
                           return Promise.reject(
                             $t(FlexAuthMessages.CANNOT_SAME_AS_SWITCH_LEVEL_AUTH_DEFAULT_VLAN)
                           )
@@ -1357,7 +1423,7 @@ export function EditPortDrawer ({
                         return Promise.resolve()
                       } },
                       { validator: (_:unknown, value: string) => {
-                        if (switchLevelAuthDefaultVlan.includes(Number(value))) {
+                        if (getSwitchLevelAuthDefaultVlans().includes(Number(value))) {
                           return Promise.reject(
                             $t(FlexAuthMessages.CANNOT_SAME_AS_SWITCH_LEVEL_AUTH_DEFAULT_VLAN)
                           )

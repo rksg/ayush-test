@@ -245,6 +245,9 @@ export const EditPortMessages = {
   USE_VENUE_SETTINGS_DISABLE: defineMessage({
     defaultMessage: '<VenueSingular></VenueSingular> settings default VLAN ID is the same as one of switch VLANs'
   }),
+  USE_VENUE_SETTINGS_DISABLED_WHEN_FLEX_AUTH_ENABLED: defineMessage({
+    defaultMessage: 'Can not use <venueSingular></venueSingular> setting when Flexible Authentication enabled'
+  }),
   POE_CAPABILITY_DISABLE: defineMessage({
     defaultMessage: 'Can not configure PoE configurations(PoE Enable, PoE Class, and PoE Priority) since this port doesn\'t have PoE capability.'
   }),
@@ -267,7 +270,7 @@ export const EditPortMessages = {
   UNTAGGED_PORT_CANNOT_ENABLE_FLEX_AUTH: defineMessage({
     defaultMessage: 'This port is Untagged port. So can not enable Flexible Authentication.'
   }),
-  SHOULD_ENABLE_SWITCH_LEVEL_FIRST: defineMessage({
+  SWITCH_LEVEL_AUTH_NOT_ENABLED: defineMessage({
     defaultMessage: 'Before enable Flexible Authentication on port, please go to Edit Switch page to apply global level\'s Auth Default VLAN.'
   })
 }
