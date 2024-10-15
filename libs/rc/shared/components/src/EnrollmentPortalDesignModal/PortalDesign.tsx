@@ -92,7 +92,7 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
   const [value, setValue] = useState<UIConfiguration>(DefaultUIConfiguration)
   const [display, setDisplay] = useState<Map<keyof typeof PortalComponentEnum, boolean>>(new Map([
     ['logo', value.uiStyleSchema.logoImageFileName !== undefined],
-    ['poweredBy', !value.disablePoweredBy],
+    ['poweredBy', !value.uiStyleSchema.disablePoweredBy],
     ['wifi4eu', !!value.uiStyleSchema.wifi4EuNetworkId]
   ]))
 
@@ -100,7 +100,7 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
     setValue(original.current!!)
     setDisplay(new Map([
       ['logo', original.current!!.uiStyleSchema.logoImageFileName !== undefined],
-      ['poweredBy', !(original.current!!.disablePoweredBy)],
+      ['poweredBy', !(original.current!!.uiStyleSchema.disablePoweredBy)],
       ['wifi4eu', !!original.current!!.uiStyleSchema.wifi4EuNetworkId]
     ]))
   }
@@ -143,7 +143,7 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
       setValue(configurationQuery.data)
       setDisplay(new Map([
         ['logo', configurationQuery.data.uiStyleSchema.logoImageFileName !== undefined],
-        ['poweredBy', !(configurationQuery.data.disablePoweredBy)],
+        ['poweredBy', !(configurationQuery.data.uiStyleSchema.disablePoweredBy)],
         ['wifi4eu', !!configurationQuery.data.uiStyleSchema.wifi4EuNetworkId]
       ]))
     }
@@ -169,7 +169,10 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
     }
 
     if (!display.get('poweredBy')) {
-      data.disablePoweredBy = true
+      data.uiStyleSchema = {
+        ...data.uiStyleSchema,
+        disablePoweredBy: true
+      }
     }
 
     if (!_.isEqual(data, original.current)) {

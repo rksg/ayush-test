@@ -22,8 +22,7 @@ export function ContentPreview (props: ContentPreviewProps) {
   const { uiConfiguration, title, body, extra, hideNavigation = false, ...rest } = props
   const {
     uiColorSchema,
-    uiStyleSchema,
-    disablePoweredBy
+    uiStyleSchema
   } = uiConfiguration ?? DefaultUIConfiguration
 
   return (
@@ -68,7 +67,7 @@ export function ContentPreview (props: ContentPreviewProps) {
 
       {!hideNavigation && <StepNavigation {...rest} config={uiColorSchema} />}
 
-      {!disablePoweredBy &&
+      {!uiStyleSchema.disablePoweredBy &&
         <UI.PoweredByContainer>
           <PoweredBy/>
         </UI.PoweredByContainer>

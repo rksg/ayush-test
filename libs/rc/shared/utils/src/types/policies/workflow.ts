@@ -38,10 +38,10 @@ export interface UIStyleSchema {
   logoImageFileName?: string
   backgroundImageName?: string
   wifi4EuNetworkId?: string
+  disablePoweredBy: boolean
 }
 
 export interface UIConfiguration {
-  disablePoweredBy: boolean
   logoImage?: string
   logoFile?: RcFile
   backgroundImage?: string
