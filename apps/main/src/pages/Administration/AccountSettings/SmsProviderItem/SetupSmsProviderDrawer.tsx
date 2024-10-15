@@ -45,6 +45,8 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
   const [isValidTwiliosService, setIsValidTwiliosService] = useState(false)
   const [isValidAccountSID, setIsValidAccountSID] = useState<boolean>()
   const [isValidAuthToken, setIsValidAuthToken] = useState<boolean>()
+  const [validAccountSID, setValidAccountSID] = useState<string>()
+  const [validAuthToken, setValidAuthToken] = useState<string>()
   const [phoneNumbers, setPhoneNumbers] = useState<string[]>()
   const [messagingServices, setMessagingServices] = useState<string[]>()
   const [messageMethod, setMessageMethod] = useState<MessageMethod>()
@@ -104,7 +106,7 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
         handleGetTwiliosIncomingPhoneNumbers()
       }
     }
-  }, [isValidAccountSID, isValidAuthToken, messageMethod])
+  }, [isValidAccountSID, isValidAuthToken, messageMethod, validAccountSID, validAuthToken])
 
   const onClose = () => {
     setVisible(false)
@@ -257,6 +259,8 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
               )
             }
             setIsValidAccountSID(true)
+            // In scenario where account sid is changed from one valid sid immediately to another valid sid
+            setValidAccountSID(value)
             return Promise.resolve()}
           }
         ]}
@@ -276,6 +280,8 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
               )
             }
             setIsValidAuthToken(true)
+            // In scenario where account sid is changed from one valid token immediately to another valid token
+            setValidAuthToken(value)
             return Promise.resolve()}
           }
         ]}
