@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { memo, useEffect } from 'react'
 
 import { Typography } from 'antd'
 import moment         from 'moment-timezone'
@@ -118,10 +118,10 @@ const defaultFilters = {
   eventId: ['204', '205', '208', '218']
 }
 
-export function HistoricalClientsTable
-({ searchString, setHistoricalClientCount } :
+export const HistoricalClientsTable =
+memo(({ searchString, setHistoricalClientCount } :
   { searchString: string, setHistoricalClientCount: (historicalClientCount: number) => void
-  }) {
+  }) => {
   const { $t } = useIntl()
   const params = useParams()
 
@@ -179,7 +179,7 @@ export function HistoricalClientsTable
   return (
     <HistoricalClientsTable />
   )
-}
+})
 
 export const GlobalSearchHistoricalClientsTable = (props: {
   tableQuery?: TableQuery<Client, RequestPayload<unknown>, unknown>
