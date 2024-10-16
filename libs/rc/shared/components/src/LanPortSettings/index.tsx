@@ -67,6 +67,8 @@ export function LanPortSettings (props: {
   isTrunkPortUntaggedVlanEnabled?: boolean,
   readOnly?: boolean,
   useVenueSettings?: boolean,
+  venueId?: string,
+  serialNumber?: string
 }) {
   const { $t } = useIntl()
   const {
@@ -79,11 +81,12 @@ export function LanPortSettings (props: {
     isDhcpEnabled,
     isTrunkPortUntaggedVlanEnabled,
     readOnly,
-    useVenueSettings
+    useVenueSettings,
+    venueId,
+    serialNumber
   } = props
 
   const [ drawerVisible, setDrawerVisible ] = useState(false)
-  const { venueId, serialNumber } = useParams()
   const form = Form.useFormInstance()
   const lan = form?.getFieldValue('lan')?.[index]
 
@@ -170,8 +173,8 @@ export function LanPortSettings (props: {
   // AP level
   const { data: apEthPortSettings, isLoading: isApEthPortSettingsLoading } =
     useGetEthernetPortProfileSettingsByApPortIdQuery({
-      params: { venueId, serialNumber, portId: index as unknown as string }
-    }, { skip: isTemplate || !isEthernetPortProfileEnabled || !serialNumber })
+      params: { venueId, serialNumber, portId: lan?.portId }
+    }, { skip: isTemplate || !isEthernetPortProfileEnabled || !serialNumber || !venueId })
 
   useEffect(() => {
     if (!isApEthPortSettingsLoading && apEthPortSettings) {
