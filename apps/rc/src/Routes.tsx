@@ -1290,6 +1290,11 @@ function PolicyRoutes () {
           element={<CertificateTemplateList tabKey={CertificateCategoryType.CERTIFICATE}/>}
         />
         <Route
+          path={getPolicyRoutePath({ type: PolicyType.SERVER_CERTIFICATES,
+            oper: PolicyOperation.LIST })}
+          element={<CertificateTemplateList tabKey={CertificateCategoryType.SERVER_CERTIFICATES}/>}
+        />
+        <Route
           // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.CREATE })}
           element={

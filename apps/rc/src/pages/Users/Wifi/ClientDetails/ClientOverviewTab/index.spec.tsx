@@ -593,7 +593,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
       })
 
       it('should render correctly when search parameters is disappeared', async () => {
-        jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('')
+        jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('historical')
         jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_RBAC_API)
         store.dispatch(dataApi.util.resetApiState())
         mockServer.use(
