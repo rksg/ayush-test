@@ -59,7 +59,7 @@ interface ScheduleCardProps extends AntdModalProps {
   disabled: boolean
   readonly?: boolean
   timelineLabelTop?: boolean
-  intervalUnit: 15 | 60 | number
+  intervalUnit: 15 | 60
   loading: boolean
   title?: string
   isShowTips?: boolean
