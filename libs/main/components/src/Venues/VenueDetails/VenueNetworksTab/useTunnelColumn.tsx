@@ -89,13 +89,11 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
       key: 'tunneledInfo',
       title: $t({ defaultMessage: 'Tunnel' }),
       dataIndex: 'tunneledInfo',
-      width: 180,
       children: [{
         key: 'tunneledInfo.activated',
         title: <Table.SubTitle>{$t({ defaultMessage: 'Activated' })}</Table.SubTitle>,
         dataIndex: 'tunneledInfo.activated',
         align: 'center',
-        // width: 80,
         render: function (_: ReactNode, row: Network) {
           const networkInfo = {
             id: row.id,
@@ -123,17 +121,14 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
                   } as Venue,
                   row)
                 } else {
-                  const formValues: NetworkTunnelActionForm = {
+                  const formValues = {
                     tunnelType: NetworkTunnelTypeEnum.None,
-                    sdLan: {
-                      isGuestTunnelEnabled: venueSdLanInfo.isGuestTunnelEnabled!
-                    },
                     softGre: {
                       newProfileId: targetSoftGre?.[0].profileId,
                       newProfileName: targetSoftGre?.[0].profileName,
                       oldProfileId: targetSoftGre?.[0].profileId
                     }
-                  }
+                  } as NetworkTunnelActionForm
 
                   // deactivate depending on current tunnel type
                   deactivateNetworkTunnelByType(tunnelType, formValues, networkInfo, venueSdLanInfo)
@@ -149,7 +144,6 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
           // eslint-disable-next-line max-len
           'Network traffic can be tunneled using SoftGRE or VxLAN. For VxLAN, in a <venueSingular></venueSingular>, you can choose either SD-LAN or Personal Identity Network (PIN) for DPSK network services, but not both.' }),
         dataIndex: 'tunneledInfo.networkTopology',
-        width: 100,
         render: function (_: ReactNode, row: Network) {
           const networkInfo = {
             id: row.id,

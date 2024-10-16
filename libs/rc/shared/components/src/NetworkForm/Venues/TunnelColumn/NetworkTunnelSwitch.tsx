@@ -49,17 +49,14 @@ export const NetworkTunnelSwitch = (props: NetworkTunnelSwitchProps) => {
       if (checked) {
         onClick(currentVenue, currentNetwork)
       } else {
-        const formValues: NetworkTunnelActionForm = {
+        const formValues = {
           tunnelType: NetworkTunnelTypeEnum.None,
-          sdLan: {
-            isGuestTunnelEnabled: venueSdLanInfo.isGuestTunnelEnabled!
-          },
           softGre: {
             newProfileId: venueSoftGre?.[0]?.profileId,
             newProfileName: venueSoftGre?.[0]?.profileName,
             oldProfileId: venueSoftGre?.[0]?.profileId
           }
-        }
+        } as NetworkTunnelActionForm
 
         const args = {
           form,

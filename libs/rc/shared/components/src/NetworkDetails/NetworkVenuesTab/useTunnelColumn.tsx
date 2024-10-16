@@ -118,17 +118,14 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
               if (checked) {
                 handleClickNetworkTunnel(row, network)()
               } else {
-                const formValues: NetworkTunnelActionForm = {
+                const formValues = {
                   tunnelType: NetworkTunnelTypeEnum.None,
-                  sdLan: {
-                    isGuestTunnelEnabled: venueSdLanInfo.isGuestTunnelEnabled!
-                  },
                   softGre: {
                     newProfileId: targetSoftGre?.[0].profileId,
                     newProfileName: targetSoftGre?.[0].profileName,
                     oldProfileId: targetSoftGre?.[0].profileId
                   }
-                }
+                } as NetworkTunnelActionForm
 
                 // deactivate depending on current tunnel type
                 deactivateNetworkTunnelByType(tunnelType, formValues, networkInfo, venueSdLanInfo)
