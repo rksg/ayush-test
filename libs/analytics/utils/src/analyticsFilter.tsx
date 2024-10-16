@@ -138,17 +138,15 @@ export const pathToFilter = (networkPath: NetworkPath): NodesFilter => {
     }
   })
 
-  const switchfFilter: NodeFilter = filter.map(node => {
-    if (node.type === 'zone') {
-      node.type = 'switchGroup'
-    }
-    return node
-  })
-
-
   return { // at ap/switch level we want to see only data for that device, so we set the other path to filter everything out
     networkNodes: [filter],
-    switchNodes: [!get('IS_MLISA_SA') ? switchfFilter : filter]
+    switchNodes: [!get('IS_MLISA_SA') ? filter.map(node => {
+      // https://jira.ruckuswireless.com/browse/RSA-7013
+      if (node.type === 'zone') {
+        node.type = 'switchGroup'
+      }
+      return node
+    }) : filter]
   }
 }
 
