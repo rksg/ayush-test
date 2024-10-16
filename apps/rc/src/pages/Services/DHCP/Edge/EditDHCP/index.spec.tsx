@@ -77,7 +77,7 @@ describe('EditEdgeDhcp', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
   })
 
-  it('should correctly render `use for NSG` when relay is on', async () => {
+  it('should correctly render `use for PIN` when relay is on', async () => {
     const mockedReqFn = jest.fn()
     const mockedData = { ...mockEdgeDhcpData, dhcpPools: [] }
 
@@ -100,9 +100,9 @@ describe('EditEdgeDhcp', () => {
     await waitFor(() => expect(mockedReqFn).toBeCalled())
     await screen.findByRole('textbox', { name: 'FQDN Name or IP Address' })
     // eslint-disable-next-line max-len
-    const usedForNSG = await screen.findByRole('switch', { name: 'Use for Personal Identity Network' })
+    const usedForPin = await screen.findByRole('switch', { name: 'Use for Personal Identity Network' })
     const poolsRow = screen.queryAllByRole('row')
-    expect(usedForNSG).not.toBeChecked()
+    expect(usedForPin).not.toBeChecked()
     expect(poolsRow.length).toBe(0)
     expect(screen.queryAllByRole('alert').length).toBe(0)
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
@@ -122,7 +122,7 @@ describe('EditEdgeDhcp', () => {
       name: 'My Services'
     })).toBeVisible()
     expect(screen.getByRole('link', {
-      name: 'DHCP for SmartEdge'
+      name: 'DHCP for RUCKUS Edge'
     })).toBeVisible()
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
   })

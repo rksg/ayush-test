@@ -13,13 +13,14 @@ import {
   EdgePortInfo,
   EdgePortTypeEnum,
   VirtualIpSetting,
+  filterByAccessForServicePolicyMutation,
   getEdgePortIpFromStatusIp,
   validateClusterInterface,
   validateSubnetIsConsistent
 } from '@acx-ui/rc/utils'
-import { useTenantLink }                 from '@acx-ui/react-router-dom'
-import { EdgeScopes }                    from '@acx-ui/types'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { useTenantLink }                           from '@acx-ui/react-router-dom'
+import { EdgeScopes }                              from '@acx-ui/types'
+import { hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 
 import * as CommUI from '../styledComponents'
 
@@ -93,19 +94,22 @@ export const ClusterInterface = (props: ClusterInterfaceProps) => {
     navigate(clusterListPage)
   }
 
+  const hasUpdatePermission =!!hasCrossVenuesPermission({ needGlobalPermission: true })
+  && hasPermission({ scopes: [EdgeScopes.UPDATE] })
+
   return (
     <Loader states={[{ isLoading: isInterfaceDataLoading, isFetching: isInterfaceDataFetching }]}>
       <CommUI.Mt15>
         {
           // eslint-disable-next-line max-len
-          $t({ defaultMessage: 'Cluster interface will be used as a communication channel between SmartEdges. Please select the cluster interfaces for all SmartEdges in this cluster:' })
+          $t({ defaultMessage: 'Cluster interface will be used as a communication channel between RUCKUS Edges. Please select the cluster interfaces for all RUCKUS Edges in this cluster:' })
         }
       </CommUI.Mt15>
       <StepsForm
         form={form}
         onFinish={handleFinish}
         onCancel={handleCancel}
-        buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
+        buttonLabel={{ submit: hasUpdatePermission ? $t({ defaultMessage: 'Apply' }) : '' }}
       >
         <StepsForm.StepForm>
           <Form.Item
@@ -199,10 +203,7 @@ const ClusterInterfaceTable = (props: ClusterInterfaceTableProps) => {
       }
     }
   ]
-
-  const isSelectionVisible = hasPermission({
-    scopes: [EdgeScopes.UPDATE]
-  })
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
   return (
     <>
@@ -210,8 +211,8 @@ const ClusterInterfaceTable = (props: ClusterInterfaceTableProps) => {
         rowKey='serialNumber'
         columns={columns}
         dataSource={value}
-        rowActions={filterByAccess(rowActions)}
-        rowSelection={isSelectionVisible && { type: 'radio' }}
+        rowActions={allowedRowActions}
+        rowSelection={allowedRowActions.length > 0 && { type: 'radio' }}
       />
       <EditClusterInterfaceDrawer
         visible={editDrawerVisible}

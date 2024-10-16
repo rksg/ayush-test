@@ -11,6 +11,7 @@ describe('ChromebookTab', () => {
       caType: 'caTypeValue',
       keyLength: 2048,
       algorithm: AlgorithmType.SHA_256,
+      identityGroupId: '123',
       chromebook: {
         enrollmentType: ChromebookEnrollmentType.DEVICE,
         certRemovalType: ChromebookCertRemovalType.NONE,

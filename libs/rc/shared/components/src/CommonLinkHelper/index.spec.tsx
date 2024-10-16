@@ -16,8 +16,11 @@ import {
   MacRegistrationPoolLink,
   NetworkSegmentationLink,
   IdentityDetailsLink,
-  IdentityGroupLink, PropertyUnitLink,
-  VenueLink
+  IdentityGroupLink,
+  PropertyUnitLink,
+  VenueLink,
+  CertTemplateLink,
+  ResidentPortalLink
 } from './index'
 
 const mockedUsedNavigate = jest.fn()
@@ -139,7 +142,7 @@ describe('Common Link Helper', () => {
     const expectedHref = getServiceDetailsLink({
       serviceId: 'nsg-id',
       oper: ServiceOperation.DETAIL,
-      type: ServiceType.NETWORK_SEGMENTATION
+      type: ServiceType.PIN
     })
 
     const link = await screen.findByRole('link', { name: 'nsg-name' })
@@ -183,6 +186,50 @@ describe('Common Link Helper', () => {
     })
 
     const link = await screen.findByRole('link', { name: 'connection-metering-name' })
+    expect(link).toBeVisible()
+    expect(link).toHaveAttribute(
+      'href',
+      `${tenantPrefix}/${expectedHref}`
+    )
+  })
+
+  it('should render ResidentPortalLink correctly', async () => {
+    render(
+      <ResidentPortalLink
+        id={'resident-portal-id'}
+        name={'resident-portal-name'}
+      />,
+      { route: { params } }
+    )
+    const expectedHref = getServiceDetailsLink({
+      type: ServiceType.RESIDENT_PORTAL,
+      oper: ServiceOperation.DETAIL,
+      serviceId: 'resident-portal-id'
+    })
+
+    const link = await screen.findByRole('link', { name: 'resident-portal-name' })
+    expect(link).toBeVisible()
+    expect(link).toHaveAttribute(
+      'href',
+      `${tenantPrefix}/${expectedHref}`
+    )
+  })
+
+  it('should render CertTemplateLink correctly', async () => {
+    render(
+      <CertTemplateLink
+        id={'cert-template-id'}
+        name={'cert-template-name'}
+      />,
+      { route: { params } }
+    )
+    const expectedHref = getPolicyDetailsLink({
+      type: PolicyType.CERTIFICATE_TEMPLATE,
+      oper: PolicyOperation.DETAIL,
+      policyId: 'cert-template-id'
+    })
+
+    const link = await screen.findByRole('link', { name: 'cert-template-name' })
     expect(link).toBeVisible()
     expect(link).toHaveAttribute(
       'href',

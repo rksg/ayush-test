@@ -2,9 +2,9 @@
 import { QueryReturnValue }                                   from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import { MaybePromise }                                       from '@reduxjs/toolkit/dist/query/tsHelpers'
 import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
-import { reduce }                                             from 'lodash'
+import { omit, reduce }                                       from 'lodash'
 
-import { Filter }          from '@acx-ui/components'
+import { Filter }     from '@acx-ui/components'
 import {
   AFCInfo,
   AFCPowerMode,
@@ -77,13 +77,22 @@ import {
   onActivityMessageReceived,
   onSocketActivityChanged,
   NewApGroupViewModelResponseType,
+  EthernetPortProfileUrls,
   SystemCommands,
   StickyClientSteering,
-  ApStickyClientSteering
+  ApStickyClientSteering,
+  SwitchRbacUrlsInfo,
+  SwitchClient,
+  SwitchInformation
 } from '@acx-ui/rc/utils'
-import { baseApApi }                                    from '@acx-ui/store'
-import { RequestPayload }                               from '@acx-ui/types'
-import { ApiInfo, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
+import { baseApApi }      from '@acx-ui/store'
+import { RequestPayload } from '@acx-ui/types'
+import {
+  ApiInfo,
+  batchApi,
+  createHttpRequest,
+  ignoreErrorModal
+} from '@acx-ui/utils'
 
 import {
   addApGroupFn,
@@ -94,6 +103,7 @@ import {
 import {
   aggregateApGroupInfo,
   aggregatePoePortInfo,
+  aggregateSwitchInfo,
   aggregateVenueInfo,
   getApListFn,
   getApViewmodelListFn,
@@ -159,7 +169,7 @@ export const apApi = baseApApi.injectEndpoints({
         let venueIds
         let groupIds
         let apGroupList
-        if(groupByField) {
+        if (groupByField) {
           apList = apListRes.data as TableResult<NewAPExtendedGrouped, ApExtraParams>
           venueIds = apList?.data.flatMap(item => item.aps.map(item => item.venueId))
           groupIds = groupByField === 'apGroupId' ?
@@ -170,7 +180,7 @@ export const apApi = baseApApi.injectEndpoints({
           venueIds = apList?.data.map(item => item.venueId).filter(item => item)
           groupIds = apList?.data.map(item => item.apGroupId).filter(item => item)
         }
-        if(venueIds.length > 0) {
+        if (venueIds.length > 0) {
           const venuePayload = {
             fields: ['name', 'id'],
             pageSize: 10000,
@@ -180,7 +190,7 @@ export const apApi = baseApApi.injectEndpoints({
           const venueList = venueListRes.data as TableResult<Venue>
           aggregateVenueInfo(apList, venueList)
         }
-        if(groupIds.length > 0) {
+        if (groupIds.length > 0) {
           const apGroupPayload = {
             fields: ['name', 'id', 'wifiNetworkIds'],
             pageSize: 10000,
@@ -193,6 +203,44 @@ export const apApi = baseApApi.injectEndpoints({
           apGroupList = apGroupListRes.data as TableResult<NewApGroupViewModelResponseType>
           aggregateApGroupInfo(apList, apGroupList)
         }
+
+        if (apList && apList.data.length > 0) {
+          const apMacSwitchMap = new Map<string, SwitchInformation>()
+          const unqueClientApMacs: Set<string> = new Set()
+          apList?.data.forEach((item) => {
+            const { macAddress } = item
+            if (macAddress) {
+              unqueClientApMacs.add(macAddress)
+            }
+          })
+          const switchClientMacs: string[] = Array.from(unqueClientApMacs)
+          const switchApiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+          const switchClientPayload = {
+            fields: ['clientMac', 'switchId', 'switchName', 'switchSerialNumber'],
+            page: 1,
+            pageSize: 10000,
+            filters: { clientMac: switchClientMacs }
+          }
+          const switchClistInfo = {
+            ...createHttpRequest(SwitchRbacUrlsInfo.getSwitchClientList, {}, switchApiCustomHeader),
+            body: JSON.stringify(switchClientPayload)
+          }
+          const switchClientsQuery = await fetchWithBQ(switchClistInfo)
+          const switchClients = switchClientsQuery.data as TableResult<SwitchClient>
+
+          switchClients?.data?.forEach((switchInfo) => {
+            const { clientMac, switchId, switchName, switchSerialNumber } = switchInfo
+            apMacSwitchMap.set(clientMac, {
+              id: switchId,
+              name: switchName,
+              serialNumber: switchSerialNumber
+            })
+          })
+
+          aggregateSwitchInfo(apList, apMacSwitchMap)
+        }
+
+
         const capabilitiesRes = await fetchWithBQ(createHttpRequest(WifiRbacUrlsInfo.getWifiCapabilities, apiCustomHeader))
         const capabilities = capabilitiesRes.data as Capabilities
         aggregatePoePortInfo(apList, capabilities)
@@ -382,9 +430,9 @@ export const apApi = baseApApi.injectEndpoints({
           apData.serialNumber = params?.serialNumber ?? ''
           apData.venueId = params?.venueId ?? ''
           const mDnsProxyPayload = {
-            fields: ['id', 'apSerialNumbers'],
+            fields: ['name', 'activations', 'rules', 'id'],
             filters: {
-              apSerialNumbers: [params?.serialNumber]
+              'activations.apSerialNumbers': [params?.serialNumber]
             }
           }
           const mDnsProxyListReq = createHttpRequest(MdnsProxyUrls.queryMdnsProxy, undefined, apiCustomHeader)
@@ -865,6 +913,48 @@ export const apApi = baseApApi.injectEndpoints({
         return {
           ...req,
           body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'Details' }, { type: 'Ap', id: 'LanPorts' }]
+    }),
+    updateApEthernetPorts: build.mutation<WifiApSetting, RequestPayload>({
+      queryFn: async ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) => {
+        try {
+          const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+          const activateRequests = (payload as WifiApSetting)?.lanPorts
+            ?.filter(l => l.ethernetPortProfileId ).map(l => ({
+              params: {
+                venueId: params!.venueId,
+                serialNumber: params!.serialNumber,
+                portId: l.portId,
+                id: l.ethernetPortProfileId
+              }
+            }))
+          const overwriteRequests = (payload as WifiApSetting)?.lanPorts
+            ?.filter(l => l.ethernetPortProfileId ).map(l => ({
+              params: {
+                venueId: params!.venueId,
+                serialNumber: params!.serialNumber,
+                portId: l.portId
+              },
+              payload: {
+                enabled: l.enabled,
+                overwriteUntagId: l.untagId,
+                overwriteVlanMembers: l.vlanMembers
+              }
+            }))
+          await batchApi(EthernetPortProfileUrls.activateEthernetPortProfileOnApPortId,
+            activateRequests!, fetchWithBQ, customHeaders)
+          await batchApi(EthernetPortProfileUrls.updateEthernetPortSettingsByApPortId,
+            overwriteRequests!, fetchWithBQ, customHeaders)
+          const res = await batchApi(WifiRbacUrlsInfo.updateApLanPorts, [{
+            params,
+            payload: omit(payload as WifiApSetting, 'lanPorts')
+          }], fetchWithBQ, customHeaders)
+
+          return { data: res.data as WifiApSetting }
+        } catch (err) {
+          return { error: err as FetchBaseQueryError }
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'Details' }, { type: 'Ap', id: 'LanPorts' }]
@@ -1439,6 +1529,7 @@ export const {
   useGetDefaultApLanPortsQuery,
   useGetApLanPortsQuery,
   useUpdateApLanPortsMutation,
+  useUpdateApEthernetPortsMutation,
   useResetApLanPortsMutation,
   useGetApLedQuery,
   useUpdateApLedMutation,

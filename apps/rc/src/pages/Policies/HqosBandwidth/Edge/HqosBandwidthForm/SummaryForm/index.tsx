@@ -33,7 +33,7 @@ export const SummaryForm = () => {
     return result
   }
   const genBandwidthValue = (bandwidth?:number) => {
-    return bandwidth ? bandwidth + ' %' : ''
+    return bandwidth !== undefined || bandwidth !== null ? bandwidth + ' %' : ''
   }
 
   const activateEdgeClusterNames = getActivateEdgeClusterNames()

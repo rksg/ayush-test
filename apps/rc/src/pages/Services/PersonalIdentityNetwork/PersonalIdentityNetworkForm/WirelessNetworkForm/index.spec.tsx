@@ -2,21 +2,25 @@
 
 import userEvent from '@testing-library/user-event'
 
-import { StepsForm } from '@acx-ui/components'
-import { Provider }  from '@acx-ui/store'
+import { StepsForm }       from '@acx-ui/components'
+import { EdgePinFixtures } from '@acx-ui/rc/utils'
+import { Provider }        from '@acx-ui/store'
 import {
   render,
   screen
 } from '@acx-ui/test-utils'
 
 import {
-  mockContextData,
-  mockNetworkGroup,
-  mockNsgStatsList
+  mockContextData
 } from '../../__tests__/fixtures'
 import { PersonalIdentityNetworkFormContext } from '../PersonalIdentityNetworkFormContext'
 
 import { WirelessNetworkForm } from '.'
+
+const {
+  mockNetworkGroup,
+  mockPinStatsList
+} = EdgePinFixtures
 
 const tenantId = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 const mockedUsedNavigate = jest.fn()
@@ -52,7 +56,7 @@ jest.mock('antd', () => {
 
 const mockedFinishFn = jest.fn()
 
-const createNsgPath = '/:tenantId/services/personalIdentityNetwork/create'
+const createPinPath = '/:tenantId/services/personalIdentityNetwork/create'
 
 describe('PersonalIdentityNetworkForm - WirelessNetworkForm', () => {
   let params: { tenantId: string, serviceId: string }
@@ -80,14 +84,14 @@ describe('PersonalIdentityNetworkForm - WirelessNetworkForm', () => {
           </StepsForm>
         </PersonalIdentityNetworkFormContext.Provider>
       </Provider>,
-      { route: { params, path: createNsgPath } })
+      { route: { params, path: createPinPath } })
     await user.selectOptions(
       await screen.findByRole('combobox', { name: 'Tunnel Profile' }),
       await screen.findByRole('option', { name: 'Default' })
     )
 
     const checkboxs = await screen.findAllByRole('checkbox', { name: /Network /i })
-    const usedNetowrkIds = mockNsgStatsList.data.flatMap(item => item.networkIds)
+    const usedNetowrkIds = mockPinStatsList.data.flatMap(item => item.networkIds)
     const unusedNetworkOptions = mockNetworkGroup.response.length - usedNetowrkIds.length
     expect(checkboxs.length).toBe(unusedNetworkOptions)
     await user.click(await screen.findByRole('checkbox', { name: 'Network 1' }))
@@ -110,7 +114,7 @@ describe('PersonalIdentityNetworkForm - WirelessNetworkForm', () => {
           </StepsForm>
         </PersonalIdentityNetworkFormContext.Provider>
       </Provider>,
-      { route: { params, path: createNsgPath } })
+      { route: { params, path: createPinPath } })
 
     await screen.findByRole('checkbox', { name: 'Network 1' })
     const addButtons = await screen.findAllByRole('button', { name: 'Add' })

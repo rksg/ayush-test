@@ -10,7 +10,6 @@ import {
   useGetBetaStatusQuery,
   useGetUserProfileQuery,
   useFeatureFlagStatesQuery,
-  useGetPrivilegeGroupsQuery,
   useGetVenuesListQuery
 } from './services'
 import { UserProfile }                         from './types'
@@ -47,24 +46,20 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
 
   let abacEnabled = false, isCustomRole = false
   const abacFF = 'abac-policies-toggle'
-  const ptenantRbacFF = 'acx-ui-rbac-api-ptenant-toggle'
 
   const { data: featureFlagStates, isLoading: isFeatureFlagStatesLoading }
     = useFeatureFlagStatesQuery(
-      { params: { tenantId }, payload: [abacFF, ptenantRbacFF] },
+      { params: { tenantId }, payload: [abacFF] },
       { skip: !Boolean(profile) }
     )
-  const ptenantRbacEnable = featureFlagStates?.[ptenantRbacFF] ?? false
   abacEnabled = featureFlagStates?.[abacFF] ?? false
 
-  const { data: pgList } = useGetPrivilegeGroupsQuery({}, { skip: !abacEnabled })
-
   const { data: beta } = useGetBetaStatusQuery(
-    { params: { tenantId }, enableRbac: ptenantRbacEnable },
+    { params: { tenantId }, enableRbac: abacEnabled },
     { skip: !Boolean(profile) })
   const betaEnabled = beta?.enabled === 'true'
   const { data: accTierResponse } = useGetAccountTierQuery(
-    { params: { tenantId }, enableRbac: ptenantRbacEnable },
+    { params: { tenantId }, enableRbac: abacEnabled },
     { skip: !Boolean(profile) })
   const accountTier = accTierResponse?.acx_account_tier
 
@@ -72,9 +67,8 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
   const allowedOperations = [] as string[]
 
   const getHasAllVenues = () => {
-    if(pgList) {
-      const pg = pgList.find(item => item.name === profile?.role)
-      return pg?.allVenues
+    if(abacEnabled && profile?.scopes?.includes('venue' as never)) {
+      return false
     }
     return true
   }

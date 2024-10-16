@@ -2,11 +2,11 @@ import userEvent    from '@testing-library/user-event'
 import { rest }     from 'msw'
 import { Path, To } from 'react-router-dom'
 
-import { CertificateUrls, CommonUrlsInfo, PolicyOperation, PolicyType, getPolicyDetailsLink } from '@acx-ui/rc/utils'
-import { Provider }                                                                           from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within }             from '@acx-ui/test-utils'
-import { RolesEnum, WifiScopes }                                                              from '@acx-ui/types'
-import { setUserProfile, getUserProfile }                                                     from '@acx-ui/user'
+import { CertificateUrls, CommonUrlsInfo, PersonaUrls, PolicyOperation, PolicyType, getPolicyDetailsLink } from '@acx-ui/rc/utils'
+import { Provider }                                                                                        from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within }                          from '@acx-ui/test-utils'
+import { RolesEnum, WifiScopes }                                                                           from '@acx-ui/types'
+import { setUserProfile, getUserProfile }                                                                  from '@acx-ui/user'
 
 import { certificateAuthorityList, certificateTemplate, certificateTemplateList } from '../__test__/fixtures'
 
@@ -45,6 +45,10 @@ describe('CertificateTemplateTable', () => {
             { name: 'testAAA-ct', id: 'testNetworkId1' },
             { name: 'testAAA-ct2', id: 'testNetworkId2' }]
         }))
+      ),
+      rest.post(
+        PersonaUrls.searchPersonaGroupList.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json([]))
       )
     )
   })
@@ -66,6 +70,7 @@ describe('CertificateTemplateTable', () => {
     expect(within(row[0]).getByText('Common Name')).toBeInTheDocument()
     expect(within(row[0]).getByText('Certificate Authority')).toBeInTheDocument()
     expect(within(row[0]).getByText('Adaptive Policy Set')).toBeInTheDocument()
+    expect(within(row[0]).getByText('Identity Group')).toBeInTheDocument()
   })
 
   it('should show tooltip when hover over templates', async () => {
@@ -139,10 +144,10 @@ describe('CertificateTemplateTable', () => {
     await userEvent.click(screen.getByRole('button', { name: 'OK' }))
 
     // should delete selected row
-    const row2 = await screen.findByRole('row', { name: /certificateTemplate1/ })
+    const row2 = await screen.findByRole('row', { name: /certificateTemplate3/ })
     await userEvent.click(within(row2).getByRole('radio'))
     await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
-    expect(await screen.findByText('Delete "certificateTemplate1"?')).toBeVisible()
+    expect(await screen.findByText('Delete "certificateTemplate3"?')).toBeVisible()
     const deleteInput = await screen.findByLabelText('Type the word "Delete" to confirm')
     await userEvent.type(deleteInput, 'Delete')
     await userEvent.click(await screen.findByRole('button', { name: 'Delete template' }))

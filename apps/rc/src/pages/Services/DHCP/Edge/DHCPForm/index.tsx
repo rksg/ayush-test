@@ -49,7 +49,7 @@ export const EdgeDhcpForm = (props: EdgeDhcpFormProps) => {
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          { text: $t({ defaultMessage: 'DHCP for SmartEdge' }), link: tablePath }
+          { text: $t({ defaultMessage: 'DHCP for RUCKUS Edge' }), link: tablePath }
         ]}
       />
       <Loader states={[{ isLoading: isDataLoading, isFetching: isSubmiting }]}>

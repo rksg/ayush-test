@@ -1,13 +1,15 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Tabs }                                                                                                                                      from '@acx-ui/components'
-import { useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery, useGetCertificatesQuery }                                                                   from '@acx-ui/rc/services'
-import { CertificateCategoryType, PolicyOperation, PolicyType, filterByAccessForServicePolicyMutation, getPolicyListRoutePath, getPolicyRoutePath, getScopeKeyByPolicy } from '@acx-ui/rc/utils'
-import { Path, TenantLink, useNavigate, useTenantLink }                                                                                                                  from '@acx-ui/react-router-dom'
+import { Button, PageHeader, Tabs }                                                                                                                                                     from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                                                                                       from '@acx-ui/feature-toggle'
+import { CertificateTable }                                                                                                                                                             from '@acx-ui/rc/components'
+import { useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery, useGetCertificatesQuery, useGetServerCertificatesQuery }                                                   from '@acx-ui/rc/services'
+import { CertificateCategoryType, PolicyOperation, PolicyType, filterByAccessForServicePolicyMutation, getPolicyListRoutePath, getPolicyRoutePath, getScopeKeyByPolicy, useTableQuery } from '@acx-ui/rc/utils'
+import { Path, TenantLink, useNavigate, useTenantLink }                                                                                                                                 from '@acx-ui/react-router-dom'
 
 import CertificateAuthorityTable from '../CertificateTemplateTable/CertificateAuthorityTable'
-import CertificateTable          from '../CertificateTemplateTable/CertificateTable'
 import CertificateTemplateTable  from '../CertificateTemplateTable/CertificateTemplateTable'
+import ServerCertificatesTable   from '../ServerCertificates'
 
 
 export default function CertificateTemplateList (props: { tabKey: CertificateCategoryType }) {
@@ -18,11 +20,20 @@ export default function CertificateTemplateList (props: { tabKey: CertificateCat
   const getCertificateAuthorities =
     useGetCertificateAuthoritiesQuery({ payload: { pageSize: 1, page: 1 } })
   const getCertificates = useGetCertificatesQuery({ payload: { pageSize: 1, page: 1 } })
+  const certificateTableQuery = useTableQuery({
+    useQuery: useGetCertificatesQuery,
+    defaultPayload: {}
+  })
+
+  const getServerCertificates = useGetServerCertificatesQuery({ payload: { pageSize: 1, page: 1 } })
+
+  const isServerCertificateFFToggle = useIsSplitOn(Features.SERVER_CERTIFICATE_MANAGEMENT_UI_TOGGLE)
 
   const tabs: Record<CertificateCategoryType, JSX.Element> = {
     [CertificateCategoryType.CERTIFICATE_TEMPLATE]: <CertificateTemplateTable/>,
     [CertificateCategoryType.CERTIFICATE_AUTHORITY]: <CertificateAuthorityTable/>,
-    [CertificateCategoryType.CERTIFICATE]: <CertificateTable />
+    [CertificateCategoryType.CERTIFICATE]: <CertificateTable tableQuery={certificateTableQuery}/>,
+    [CertificateCategoryType.SERVER_CERTIFICATES]: <ServerCertificatesTable/>
   }
 
   const tabsPathMapping: Record<CertificateCategoryType, Path> = {
@@ -37,6 +48,10 @@ export default function CertificateTemplateList (props: { tabKey: CertificateCat
     [CertificateCategoryType.CERTIFICATE]: useTenantLink(getPolicyRoutePath({
       type: PolicyType.CERTIFICATE,
       oper: PolicyOperation.LIST
+    })),
+    [CertificateCategoryType.SERVER_CERTIFICATES]: useTenantLink(getPolicyRoutePath({
+      type: PolicyType.SERVER_CERTIFICATES,
+      oper: PolicyOperation.LIST
     }))
   }
 
@@ -45,7 +60,9 @@ export default function CertificateTemplateList (props: { tabKey: CertificateCat
       $t({ defaultMessage: 'Add Certificate Template' }),
     [CertificateCategoryType.CERTIFICATE_AUTHORITY]:
       $t({ defaultMessage: 'Add Certificate Authority' }),
-    [CertificateCategoryType.CERTIFICATE]: $t({ defaultMessage: 'Generate Certificate' })
+    [CertificateCategoryType.CERTIFICATE]: $t({ defaultMessage: 'Generate Certificate' }),
+    [CertificateCategoryType.SERVER_CERTIFICATES]:
+      $t({ defaultMessage: 'Generate Server Certificate' })
   }
 
   const buttonLinkMapping: Record<CertificateCategoryType, string> = {
@@ -54,7 +71,9 @@ export default function CertificateTemplateList (props: { tabKey: CertificateCat
     [CertificateCategoryType.CERTIFICATE_AUTHORITY]:
       getPolicyRoutePath({ type: PolicyType.CERTIFICATE_AUTHORITY, oper: PolicyOperation.CREATE }),
     [CertificateCategoryType.CERTIFICATE]:
-      getPolicyRoutePath({ type: PolicyType.CERTIFICATE, oper: PolicyOperation.CREATE })
+      getPolicyRoutePath({ type: PolicyType.CERTIFICATE, oper: PolicyOperation.CREATE }),
+    [CertificateCategoryType.SERVER_CERTIFICATES]:
+      getPolicyRoutePath({ type: PolicyType.SERVER_CERTIFICATES, oper: PolicyOperation.CREATE })
   }
 
   const onTabChange = (tab: string) => {
@@ -96,6 +115,13 @@ export default function CertificateTemplateList (props: { tabKey: CertificateCat
                 { count: getCertificateAuthorities.data?.totalCount || 0 })}
               key={CertificateCategoryType.CERTIFICATE_AUTHORITY}
             />
+            { isServerCertificateFFToggle &&
+            <Tabs.TabPane
+              tab={$t({ defaultMessage: 'Server Certificates ({count})' },
+                { count: getServerCertificates.data?.totalCount || 0 })}
+              key={CertificateCategoryType.SERVER_CERTIFICATES}
+            />
+            }
           </Tabs>
         }
       />

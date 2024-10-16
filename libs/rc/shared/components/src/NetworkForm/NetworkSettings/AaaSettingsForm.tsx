@@ -27,6 +27,7 @@ import {
   AAAWlanSecurityEnum,
   MacAuthMacFormatEnum,
   ManagementFrameProtectionEnum,
+  NetworkSaveData,
   PolicyOperation,
   PolicyType,
   WifiNetworkMessages,
@@ -52,9 +53,10 @@ const { useWatch } = Form
 export function AaaSettingsForm () {
   const { editMode, cloneMode, data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   useEffect(()=>{
-    if(data && (editMode || cloneMode)){
+    if(data && (editMode || cloneMode)) {
 
       form.setFieldsValue({
         enableAuthProxy: data.enableAuthProxy,
@@ -69,7 +71,8 @@ export function AaaSettingsForm () {
         wlan: {
           wlanSecurity: data.wlan?.wlanSecurity,
           managementFrameProtection: data.wlan?.managementFrameProtection,
-          macAddressAuthenticationConfiguration: data.wlan?.macAddressAuthenticationConfiguration
+          // eslint-disable-next-line max-len
+          macAddressAuthenticationConfiguration: resolveMacAddressAuthenticationConfiguration(data, isWifiRbacEnabled)
         }
       })
     }
@@ -96,6 +99,7 @@ function SettingsForm () {
   const { $t } = useIntl()
   const { editMode, cloneMode } = useContext(NetworkFormContext)
   const { disableMLO } = useContext(MLOContext)
+  const form = Form.useFormInstance()
   const wlanSecurity = useWatch(['wlan', 'wlanSecurity'])
   const useCertificateTemplate = useWatch('useCertificateTemplate')
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
@@ -123,7 +127,6 @@ function SettingsForm () {
     defaultMessage: 'WPA3 is the highest level of Wi-Fi security available but is supported only by devices manufactured after 2019.'
   })
 
-  const form = Form.useFormInstance()
   useEffect(() => {
     if (!editMode && !cloneMode) {
       if (!wlanSecurity || !Object.keys(AAAWlanSecurityEnum).includes(wlanSecurity)) {
@@ -139,6 +142,7 @@ function SettingsForm () {
       disableMLO(true)
       form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
     }
+
 
   }, [cloneMode, editMode, form, wlanSecurity])
 
@@ -191,184 +195,203 @@ function SettingsForm () {
       </> : <AaaService />}
     </Space>
   )
+}
 
-  function CertAuth () {
-    const [certTempModalVisible, setCertTempModalVisible] = useState(false)
-    const { certTemplateOptions } =
-    useGetCertificateTemplatesQuery({ payload: { pageSize: MAX_CERTIFICATE_PER_TENANT, page: 1 } },
-      { selectFromResult: ({ data }) => {
-        return {
-          certTemplateOptions: data?.data.map(d => ({ value: d.id, label: d.name })) }} })
-    return (
-      <>
-        <GridRow>
-          <GridCol col={{ span: 12 }}>
-            <Form.Item
-              label={$t({ defaultMessage: 'Certificate Template' })}
-              name='certificateTemplateId'
-              rules={[{ required: true }]}
-            >
-              <Select
-                placeholder={$t({ defaultMessage: 'Select...' })}
-                options={certTemplateOptions}>
-              </Select>
-            </Form.Item>
-          </GridCol>
-          { hasPolicyPermission({
-            type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.CREATE }) &&
-          <Button
-            type='link'
-            style={{ top: '28px' }}
-            onClick={() => setCertTempModalVisible(true)}
+function CertAuth () {
+  const { $t } = useIntl()
+  const form = Form.useFormInstance()
+  const [certTempModalVisible, setCertTempModalVisible] = useState(false)
+  const { certTemplateOptions } =
+  useGetCertificateTemplatesQuery({ payload: { pageSize: MAX_CERTIFICATE_PER_TENANT, page: 1 } },
+    { selectFromResult: ({ data }) => {
+      return {
+        certTemplateOptions: data?.data.map(d => ({ value: d.id, label: d.name })) }} })
+  return (
+    <>
+      <GridRow>
+        <GridCol col={{ span: 12 }}>
+          <Form.Item
+            label={$t({ defaultMessage: 'Certificate Template' })}
+            name='certificateTemplateId'
+            rules={[{ required: true }]}
           >
-            { $t({ defaultMessage: 'Add' }) }
-          </Button> }
-        </GridRow>
-        <Modal
-          title={$t({ defaultMessage: 'Add Certificate Template' })}
-          visible={certTempModalVisible}
-          type={ModalType.ModalStepsForm}
-          children={<CertificateTemplateForm
-            modalMode={true}
-            modalCallBack={(id) => {
-              if (id) {
-                form.setFieldValue('certificateTemplateId', id)
-              }
-              setCertTempModalVisible(false)
-            }}
-          />}
-          onCancel={() => setCertTempModalVisible(false)}
-          width={1200}
-          destroyOnClose={true}
-        />
-      </ >
-    )
+            <Select
+              placeholder={$t({ defaultMessage: 'Select...' })}
+              options={certTemplateOptions}>
+            </Select>
+          </Form.Item>
+        </GridCol>
+        { hasPolicyPermission({
+          type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.CREATE }) &&
+        <Button
+          type='link'
+          style={{ top: '28px' }}
+          onClick={() => setCertTempModalVisible(true)}
+        >
+          { $t({ defaultMessage: 'Add' }) }
+        </Button> }
+      </GridRow>
+      <Modal
+        title={$t({ defaultMessage: 'Add Certificate Template' })}
+        visible={certTempModalVisible}
+        type={ModalType.ModalStepsForm}
+        children={<CertificateTemplateForm
+          modalMode={true}
+          modalCallBack={(id) => {
+            if (id) {
+              form.setFieldValue('certificateTemplateId', id)
+            }
+            setCertTempModalVisible(false)
+          }}
+        />}
+        onCancel={() => setCertTempModalVisible(false)}
+        width={1200}
+        destroyOnClose={true}
+      />
+    </ >
+  )
+}
+
+function AaaService () {
+  const { $t } = useIntl()
+  const { editMode, setData, data } = useContext(NetworkFormContext)
+  const form = Form.useFormInstance()
+  const enableAccountingService = useWatch('enableAccountingService', form)
+  const enableMacAuthentication = useWatch<boolean>(
+    ['wlan', 'macAddressAuthenticationConfiguration', 'macAddressAuthentication'])
+  const support8021xMacAuth = useIsSplitOn(Features.WIFI_8021X_MAC_AUTH_TOGGLE)
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const labelWidth = '250px'
+
+  const onProxyChange = (value: boolean, fieldName: string) => {
+    setData && setData({ ...data, [fieldName]: value })
   }
 
-  function AaaService () {
-    const { $t } = useIntl()
-    const { setData, data } = useContext(NetworkFormContext)
-    const form = Form.useFormInstance()
-    const enableAccountingService = useWatch('enableAccountingService', form)
-    const enableMacAuthentication = useWatch<boolean>(
-      ['wlan', 'macAddressAuthenticationConfiguration', 'macAddressAuthentication'])
-    const support8021xMacAuth = useIsSplitOn(Features.WIFI_8021X_MAC_AUTH_TOGGLE)
-    const labelWidth = '250px'
-
-    const onProxyChange = (value: boolean, fieldName: string) => {
-      setData && setData({ ...data, [fieldName]: value })
-    }
-
-    const onMacAuthChange = (checked: boolean) => {
-      setData && setData({
-        ...data,
-        ...{
-          wlan: {
-            ...data?.wlan,
-            macAddressAuthenticationConfiguration: {
+  const onMacAuthChange = (checked: boolean) => {
+    setData && setData({
+      ...data,
+      ...{
+        wlan: {
+          ...data?.wlan,
+          ...(isWifiRbacEnabled
+            ? { macAddressAuthentication: checked }
+            : { macAddressAuthenticationConfiguration: {
               ...data?.wlan?.macAddressAuthenticationConfiguration,
               macAddressAuthentication: checked
-            }
-          }
+            } })
         }
-      })
-    }
+      }
+    })
+  }
 
-    const proxyServiceTooltip = <Tooltip.Question
-      placement='bottom'
-      title={$t({
-        // eslint-disable-next-line max-len
-        defaultMessage: 'Use the controller as proxy in 802.1X networks. A proxy AAA server is used when APs send authentication/accounting messages to the controller and the controller forwards these messages to an external AAA server.'
-      })}
-      iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
-    />
+  const proxyServiceTooltip = <Tooltip.Question
+    placement='bottom'
+    title={$t({
+      // eslint-disable-next-line max-len
+      defaultMessage: 'Use the controller as proxy in 802.1X networks. A proxy AAA server is used when APs send authentication/accounting messages to the controller and the controller forwards these messages to an external AAA server.'
+    })}
+    iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+  />
 
-    const macAuthOptions = Object.keys(macAuthMacFormatOptions).map((key =>
-      <Option key={key}>
-        { macAuthMacFormatOptions[key as keyof typeof macAuthMacFormatOptions] }
-      </Option>
-    ))
+  const macAuthOptions = Object.keys(macAuthMacFormatOptions).map((key =>
+    <Option key={key}>
+      { macAuthMacFormatOptions[key as keyof typeof macAuthMacFormatOptions] }
+    </Option>
+  ))
 
-    return (
-      <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
-        <div>
-          <Subtitle level={3}>{ $t({ defaultMessage: 'Authentication Service' }) }</Subtitle>
-          <AAAInstance serverLabel={$t({ defaultMessage: 'Authentication Server' })}
-            type='authRadius'/>
+  return (
+    <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
+      <div>
+        <Subtitle level={3}>{ $t({ defaultMessage: 'Authentication Service' }) }</Subtitle>
+        <AAAInstance serverLabel={$t({ defaultMessage: 'Authentication Server' })}
+          type='authRadius'/>
+        <UI.FieldLabel width={labelWidth}>
+          <Space align='start'>
+            { $t({ defaultMessage: 'Proxy Service' }) }
+            {proxyServiceTooltip}
+          </Space>
+          <Form.Item
+            name='enableAuthProxy'
+            valuePropName='checked'
+            initialValue={false}
+            children={<Switch onChange={(value) => onProxyChange(value,'enableAuthProxy')}/>}
+          />
+        </UI.FieldLabel>
+      </div>
+      <div>
+        <UI.FieldLabel width={labelWidth}>
+          <Subtitle level={3}>{ $t({ defaultMessage: 'Accounting Service' }) }</Subtitle>
+          <Form.Item
+            name='enableAccountingService'
+            valuePropName='checked'
+            initialValue={false}
+            style={{ marginTop: '-5px', marginBottom: '0' }}
+            children={<Switch
+              onChange={(value)=>onProxyChange(value,'enableAccountingService')}
+            />}
+          />
+        </UI.FieldLabel>
+        {enableAccountingService && <>
+          <AAAInstance serverLabel={$t({ defaultMessage: 'Accounting Server' })}
+            type='accountingRadius'/>
           <UI.FieldLabel width={labelWidth}>
             <Space align='start'>
               { $t({ defaultMessage: 'Proxy Service' }) }
               {proxyServiceTooltip}
             </Space>
             <Form.Item
-              name='enableAuthProxy'
+              name='enableAccountingProxy'
               valuePropName='checked'
               initialValue={false}
-              children={<Switch onChange={(value) => onProxyChange(value,'enableAuthProxy')}/>}
-            />
-          </UI.FieldLabel>
-        </div>
-        <div>
-          <UI.FieldLabel width={labelWidth}>
-            <Subtitle level={3}>{ $t({ defaultMessage: 'Accounting Service' }) }</Subtitle>
-            <Form.Item
-              name='enableAccountingService'
-              valuePropName='checked'
-              initialValue={false}
-              style={{ marginTop: '-5px', marginBottom: '0' }}
               children={<Switch
-                onChange={(value)=>onProxyChange(value,'enableAccountingService')}
-              />}
+                onChange={(value) => onProxyChange(value,'enableAccountingProxy')}/>}
             />
           </UI.FieldLabel>
-          {enableAccountingService && <>
-            <AAAInstance serverLabel={$t({ defaultMessage: 'Accounting Server' })}
-              type='accountingRadius'/>
-            <UI.FieldLabel width={labelWidth}>
-              <Space align='start'>
-                { $t({ defaultMessage: 'Proxy Service' }) }
-                {proxyServiceTooltip}
-              </Space>
-              <Form.Item
-                name='enableAccountingProxy'
-                valuePropName='checked'
-                initialValue={false}
-                children={<Switch
-                  onChange={(value) => onProxyChange(value,'enableAccountingProxy')}/>}
-              />
-            </UI.FieldLabel>
-          </>}
-        </div>
-        {support8021xMacAuth && <>
-          <UI.FieldLabel width={labelWidth}>
-            <Space align='start'>
-              { $t({ defaultMessage: 'MAC Authentication' }) }
-              <Tooltip.Question
-                title={$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
-                placement='bottom'
-                iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
-              />
-            </Space>
-            <Form.Item
-              name={['wlan', 'macAddressAuthenticationConfiguration', 'macAddressAuthentication']}
-              initialValue={false}
-              valuePropName='checked'
-              children={<Switch
-                disabled={editMode}
-                onChange={onMacAuthChange}
-                data-testid='macAuth8021x'/>}
-            />
-          </UI.FieldLabel>
-          {enableMacAuthentication &&
-            <Form.Item
-              label={$t({ defaultMessage: 'MAC Address Format' })}
-              name={['wlan', 'macAddressAuthenticationConfiguration', 'macAuthMacFormat']}
-              initialValue={MacAuthMacFormatEnum.UpperDash}
-              children={<Select children={macAuthOptions} />}
-            />
-          }
         </>}
-      </Space>
-    )
+      </div>
+      {support8021xMacAuth && <>
+        <UI.FieldLabel width={labelWidth}>
+          <Space align='start'>
+            { $t({ defaultMessage: 'MAC Authentication' }) }
+            <Tooltip.Question
+              title={$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
+              placement='bottom'
+              iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+            />
+          </Space>
+          <Form.Item
+            name={['wlan', 'macAddressAuthenticationConfiguration', 'macAddressAuthentication']}
+            initialValue={false}
+            valuePropName='checked'
+            children={<Switch
+              disabled={editMode}
+              onChange={onMacAuthChange}
+              data-testid='macAuth8021x'/>}
+          />
+        </UI.FieldLabel>
+        {enableMacAuthentication &&
+          <Form.Item
+            label={$t({ defaultMessage: 'MAC Address Format' })}
+            name={['wlan', 'macAddressAuthenticationConfiguration', 'macAuthMacFormat']}
+            initialValue={MacAuthMacFormatEnum.UpperDash}
+            children={<Select children={macAuthOptions} />}
+          />
+        }
+      </>}
+    </Space>
+  )
+}
+
+export function resolveMacAddressAuthenticationConfiguration (
+  data: NetworkSaveData,
+  isWifiRbacEnabled: boolean
+) : NonNullable<NetworkSaveData['wlan']>['macAddressAuthenticationConfiguration'] {
+  const config = data.wlan?.macAddressAuthenticationConfiguration
+
+  if (!isWifiRbacEnabled) return config
+
+  return {
+    ...(config ?? {}),
+    macAddressAuthentication: data.wlan?.macAddressAuthentication
   }
 }

@@ -26,7 +26,7 @@ import {
   baseMspApi as mspApi,
   baseNetworkApi as networkApi,
   notificationApi,
-  baseNsgApi as nsgApi,
+  basePinApi as pinApi,
   basePersonaApi as personaApi,
   basePolicyApi as policyApi,
   rbacApi,
@@ -43,7 +43,9 @@ import {
   baseTimelineApi as timelineApi,
   baseTunnelProfileApi as tunnelProfileApi,
   userApi,
+  baseEthernetPortProfileApi as ethernetPortProfileApi,
   baseVenueApi as venueApi,
+  baseWorkflowApi,
   videoCallQoeApi
 } from './baseApi'
 
@@ -78,7 +80,7 @@ export const store = configureStore({
     [edgeDhcpApi.reducerPath]: edgeDhcpApi.reducer,
     [personaApi.reducerPath]: personaApi.reducer,
     [serviceGuardApi.reducerPath]: serviceGuardApi.reducer,
-    [nsgApi.reducerPath]: nsgApi.reducer,
+    [pinApi.reducerPath]: pinApi.reducer,
     [tunnelProfileApi.reducerPath]: tunnelProfileApi.reducer,
     [softGreApi.reducerPath]: softGreApi.reducer,
     [msgTemplateApi.reducerPath]: msgTemplateApi.reducer,
@@ -91,7 +93,9 @@ export const store = configureStore({
     [notificationApi.reducerPath]: notificationApi.reducer,
     [baseEdgeSdLanApi.reducerPath]: baseEdgeSdLanApi.reducer,
     [baseConfigTemplateApi.reducerPath]: baseConfigTemplateApi.reducer,
+    [baseWorkflowApi.reducerPath]: baseWorkflowApi.reducer,
     [smartZoneApi.reducerPath]: smartZoneApi.reducer,
+    [ethernetPortProfileApi.reducerPath]: ethernetPortProfileApi.reducer,
     [edgeHqosProfilesApi.reducerPath]: edgeHqosProfilesApi.reducer
   },
 
@@ -128,7 +132,7 @@ export const store = configureStore({
       edgeDhcpApi.middleware,
       personaApi.middleware,
       serviceGuardApi.middleware,
-      nsgApi.middleware,
+      pinApi.middleware,
       tunnelProfileApi.middleware,
       softGreApi.middleware,
       msgTemplateApi.middleware,
@@ -141,7 +145,9 @@ export const store = configureStore({
       notificationApi.middleware,
       baseEdgeSdLanApi.middleware,
       baseConfigTemplateApi.middleware,
+      baseWorkflowApi.middleware,
       smartZoneApi.middleware,
+      ethernetPortProfileApi.middleware,
       edgeHqosProfilesApi.middleware
     ])
   },

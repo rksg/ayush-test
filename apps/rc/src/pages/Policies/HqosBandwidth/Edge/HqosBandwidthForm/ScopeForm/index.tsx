@@ -1,16 +1,21 @@
 
-import { Col, Form, Row, Switch } from 'antd'
-import { useIntl }                from 'react-intl'
+import { Col, Row, Space, Switch } from 'antd'
+import { useIntl }                 from 'react-intl'
 
-import { StepsForm, Table, TableProps, useStepFormContext }                          from '@acx-ui/components'
-import { useGetEdgeClusterListQuery }                                                from '@acx-ui/rc/services'
-import { EdgeClusterStatus, EdgeHqosViewData, defaultSort, sortProp, useTableQuery } from '@acx-ui/rc/utils'
+import { StepsForm, Table, TableProps, Tooltip, useStepFormContext }                                              from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                 from '@acx-ui/feature-toggle'
+import { CompatibilityWarningCircleIcon }                                                                         from '@acx-ui/rc/components'
+import { useGetEdgeClusterListQuery, useGetEdgeFeatureSetsQuery, useGetEdgeListQuery }                            from '@acx-ui/rc/services'
+import { EdgeClusterStatus, EdgeFeatureEnum, EdgeHqosViewData, EdgeStatus, defaultSort, sortProp, useTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                             from '@acx-ui/react-router-dom'
+import { compareVersions }                                                                                        from '@acx-ui/utils'
 
 import * as UI from '../styledComponents'
 
 export const ScopeForm = () => {
   const { $t } = useIntl()
   const { form } = useStepFormContext<EdgeHqosViewData>()
+  const isEdgeCompatibilityEnabled = useIsSplitOn(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
   const tableQuery = useTableQuery({
     useQuery: useGetEdgeClusterListQuery,
@@ -19,7 +24,9 @@ export const ScopeForm = () => {
         'name',
         'clusterId',
         'venueId',
-        'venueName'
+        'venueName',
+        'activeAps',
+        'edgeList'
       ]
     },
     sorter: {
@@ -28,6 +35,50 @@ export const ScopeForm = () => {
     }
   })
 
+  const edgeClusterList = tableQuery.data?.data
+  const clusterIds = edgeClusterList?.map(item => item.clusterId)
+  const { clusterNodesMap = {} } = useGetEdgeListQuery({
+    payload: {
+      fields: [
+        'serialNumber',
+        'firmwareVersion',
+        'clusterId'
+      ],
+      filters: { clusterId: clusterIds }
+    } }, {
+    skip: !clusterIds?.length || !isEdgeCompatibilityEnabled,
+    selectFromResult: ({ data }) => {
+      return { clusterNodesMap: clusterIds?.reduce((acc, curr = '') => {
+        return {
+          ...acc, [curr]: data?.data?.filter(item => item.clusterId === curr) || []
+        }
+      }, {}) as { [clusterId: string]: EdgeStatus[] } }
+    }
+  })
+
+  const { requiredFw } = useGetEdgeFeatureSetsQuery({
+    payload: {
+      filters: {
+        featureNames: ['HQoS']
+      }
+    } }, {
+    skip: !isEdgeCompatibilityEnabled,
+    selectFromResult: ({ data }) => {
+      return {
+        requiredFw: data?.featureSets
+          ?.find(item => item.featureName === EdgeFeatureEnum.HQOS)?.requiredFw
+      }
+    }
+  })
+
+  const showHqosReadOnlyToolTipMessage = (hqosReadOnly : boolean) => {
+    if (hqosReadOnly === true) {
+      return $t({ defaultMessage:
+        'Insufficient CPU cores have been detected on this cluster' })
+    }
+    return ''
+  }
+
   const columns: TableProps<EdgeClusterStatus>['columns'] = [
     {
       title: $t({ defaultMessage: 'Cluster' }),
@@ -35,10 +86,39 @@ export const ScopeForm = () => {
       dataIndex: 'name',
       sorter: { compare: sortProp('name', defaultSort) },
       defaultSortOrder: 'ascend',
-      fixed: 'left'
+      fixed: 'left',
+      render: (_, row) => {
+        // eslint-disable-next-line max-len
+        const edgesData = clusterNodesMap[row.clusterId as keyof typeof clusterNodesMap]?.sort((n1, n2) =>
+          compareVersions(n1.firmwareVersion, n2.firmwareVersion))
+        const minNodeVersion = edgesData?.[0]?.firmwareVersion
+        const isLower = !!minNodeVersion && compareVersions(minNodeVersion, requiredFw) < 0
+        return <Space size='small'>
+          {row.name}
+          {isLower && <Tooltip
+            title={
+              <>
+                {$t({ defaultMessage: `HQoS feature requires your RUCKUS Edge cluster
+                running firmware version <b>{requiredFw}</b> or higher. You may upgrade your
+                <venueSingular></venueSingular> firmware from {targetLink}` },
+                {
+                  b: (txt) => <b>{txt}</b>,
+                  requiredFw,
+                  targetLink: <TenantLink to='/administration/fwVersionMgmt/edgeFirmware'>
+                    {/* eslint-disable-next-line max-len*/}
+                    {$t({ defaultMessage: 'Administration > Version Management > RUCKUS Edge Firmware' })}
+                  </TenantLink>
+                })}
+              </>
+            }>
+            <CompatibilityWarningCircleIcon />
+          </Tooltip>
+          }
+        </Space>
+      }
     },
     {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       key: 'venueName',
       dataIndex: 'venueName',
       sorter: true,
@@ -47,8 +127,8 @@ export const ScopeForm = () => {
     },
     {
       title: $t({ defaultMessage: 'APs' }),
-      key: 'activeAp',
-      dataIndex: 'activeAp',
+      key: 'activeAps',
+      dataIndex: 'activeAps',
       fixed: 'left',
       width: 50
     },
@@ -58,13 +138,20 @@ export const ScopeForm = () => {
       key: 'activate',
       align: 'center',
       render: (_, row) => {
-        return <Form.Item
-          name={['activateChangedClusters', row.clusterId??'']}
-          valuePropName='checked'
-          noStyle
-          children={<Switch onChange={() =>
-            setActivateChangedClustersInfo(row.clusterId??'', row.name??'', row.venueId??'')}/>}
-        />
+        const hqosReadOnly =
+          row.edgeList?.find(e => e.cpuCores === undefined || e.cpuCores < 4) ? true : false
+        return <Tooltip title={showHqosReadOnlyToolTipMessage(hqosReadOnly)}>
+          <UI.StyledFormItem
+            name={['activateChangedClusters', row.clusterId??'']}
+            valuePropName='checked'
+            children={
+              <Switch disabled={hqosReadOnly}
+                onChange={() =>
+                // eslint-disable-next-line max-len
+                  setActivateChangedClustersInfo(row.clusterId??'', row.name??'', row.venueId??'')}/>
+            }
+          />
+        </Tooltip>
       }
     }
   ]
@@ -93,8 +180,9 @@ export const ScopeForm = () => {
         </UI.FieldText>
         <Table
           columns={columns}
-          dataSource={tableQuery.data?.data}
+          dataSource={edgeClusterList}
           pagination={tableQuery.pagination}
+          onChange={tableQuery.handleTableChange}
           rowKey='clusterId'
         />
       </Col>

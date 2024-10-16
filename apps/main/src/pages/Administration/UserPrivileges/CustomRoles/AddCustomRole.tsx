@@ -117,6 +117,13 @@ export function AddCustomRole () {
       form.setFieldValue('name', isClone ? (location?.name + ' - copy') : location?.name)
       form.setFieldValue('description', location?.description)
     }
+    if (location && location?.scopes && (isEditMode || isClone)) {
+      const scopes = location.scopes
+      scopes.map(s => form.setFieldValue(s, true))
+    }
+    form.setFieldValue(WifiScopes.READ, true)
+    form.setFieldValue(SwitchScopes.READ, true)
+    form.setFieldValue(EdgeScopes.READ, true)
   }, [form, location])
 
   const CustomRoleForm = () => {
@@ -199,16 +206,6 @@ export function AddCustomRole () {
   }
 
   const PermissionsTechForm = () => {
-    useEffect(() => {
-      if (location && location?.scopes && (isEditMode || isClone)) {
-        const scopes = location.scopes
-        scopes.map(s => form.setFieldValue(s, true))
-      }
-      form.setFieldValue(WifiScopes.READ, true)
-      form.setFieldValue(SwitchScopes.READ, true)
-      form.setFieldValue(EdgeScopes.READ, true)
-    }, [form, location])
-
     return <div >
       <UI.FieldLabelPermission width='270'>
         <label></label>
@@ -332,15 +329,15 @@ export function AddCustomRole () {
       <UI.FieldLabelAttributes width='660'>
         <div className='grid-item'>
           <label style={{ width: '68px', marginLeft: '10px' }}>
-            {intl.$t({ defaultMessage: 'SmartEdge' })}</label>
+            {intl.$t({ defaultMessage: 'RUCKUS Edge' })}</label>
           <Tooltip.Question iconStyle={{ width: '20px' }}
             title={<>
               <div style={{ fontWeight: 800 }}>
                 {intl.$t({ defaultMessage: 'What is included?' })}</div>
               <div>{intl.$t({ defaultMessage: '<VenueSingular></VenueSingular> Management' })}</div>
-              <div >{intl.$t({ defaultMessage: 'SmartEdge Devices' })}</div>
-              <div >{intl.$t({ defaultMessage: 'SmartEdge Network Control' })}</div>
-              <div >{intl.$t({ defaultMessage: 'SmartEdge Version Management' })}</div>
+              <div >{intl.$t({ defaultMessage: 'RUCKUS Edge Devices' })}</div>
+              <div >{intl.$t({ defaultMessage: 'RUCKUS Edge Network Control' })}</div>
+              <div >{intl.$t({ defaultMessage: 'RUCKUS Edge Version Management' })}</div>
             </>}
             placement='right'
           />
@@ -443,7 +440,7 @@ export function AddCustomRole () {
               children={wiredPermissions} />
 
             <Descriptions.Item
-              label={intl.$t({ defaultMessage: 'SmartEdge' })}
+              label={intl.$t({ defaultMessage: 'RUCKUS Edge' })}
               labelStyle={{ fontWeight: 800 }}
               children={smartEdgePermissions} />
 

@@ -40,7 +40,7 @@ describe('Intent services', () => {
 > zone-1 (Venue)`,
         status: Statuses.active,
         statusLabel: 'Active',
-        statusTooltip: 'IntentAI is active and has successfully applied the changes to the Venue zone-1.'
+        statusTooltip: 'IntentAI is active on Venue zone-1.'
       },
       {
         ...intentListResult.intents.data[1],
@@ -52,7 +52,7 @@ describe('Intent services', () => {
 > 01-Alethea-WiCheck Test (Venue)`,
         status: Statuses.na,
         statusLabel: 'No Recommendation, Not Enough License',
-        statusTooltip: 'No recommendation was generated because IntentAI did not find sufficient licenses for the Venue 01-Alethea-WiCheck Test.'
+        statusTooltip: 'No recommendation was generated because IntentAI did not find sufficient licenses for Venue 01-Alethea-WiCheck Test.'
       },
       {
         ...intentListResult.intents.data[2],
@@ -79,7 +79,7 @@ describe('Intent services', () => {
       statuses: [
         { value: 'New', key: 'new' },
         { value: 'No Recommendation, No APs', key: 'na-no-aps' },
-        { value: 'Paused', key: 'paused-from-active+paused-by-default' }
+        { value: 'Paused', key: 'paused-from-inactive+paused-from-active+paused-by-default' }
       ],
       zones: [
         {
@@ -88,6 +88,16 @@ describe('Intent services', () => {
         }, {
           key: 'zone',
           value: 'zone'
+        }
+      ],
+      intents: [
+        {
+          value: 'Client Density vs Throughput for 5 GHz radio',
+          key: 'Client Density vs Throughput for 5 GHz radio'
+        },
+        {
+          value: 'Secure AP firmware vs Client Device Compatibility',
+          key: 'Secure AP firmware vs Client Device Compatibility'
         }
       ]
     }
@@ -147,9 +157,10 @@ describe('Intent services', () => {
       const { result } = renderHook(useIntentAITableQuery, { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
       const customFilter = {
         sliceValue: ['1'],
-        category: ['Wi-Fi Experience'],
+        category: ['Wi-Fi Experience', 'Sustainability'],
         aiFeature: ['AI-Driven RRM'],
-        statusLabel: ['new', 'na-no-aps', 'paused-from-active+paused-by-default']
+        statusLabel: ['new', 'na-no-aps', 'paused-from-active+paused-by-default'],
+        intent: ['Client Density vs Throughput for 5 GHz radio']
       }
       act(() => {
         result.current.onFilterChange(customFilter, {})
@@ -177,9 +188,10 @@ describe('Intent services', () => {
             'c-probeflex-24g',
             'c-probeflex-5g',
             'c-probeflex-6g',
-            'eco-flex-code'
+            'i-ecoflex'
           ]
         },
+        { col: 'code', values: [ 'c-crrm-channel5g-auto' ] },
         {
           col: 'code',
           values: [
@@ -208,7 +220,8 @@ describe('Intent services', () => {
         sliceValue: null,
         category: null,
         aiFeature: null,
-        statusLabel: null
+        statusLabel: null,
+        intent: null
       }
       act(() => {
         result.current.onFilterChange(customFilter, {})
@@ -216,7 +229,7 @@ describe('Intent services', () => {
       expect(result.current.tableQuery.originalArgs?.filterBy).toEqual([])
     })
 
-    it('handleFilterChange should handle feature filter case from url(AirFlexAI)', () => {
+    it('handleFilterChange should handle feature filter case from url(EquiFlex)', () => {
       mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
         data: intentListResult
 
@@ -229,15 +242,16 @@ describe('Intent services', () => {
           wrapper: Provider,
           route: {
             params: { tenantId: 'tenant-id' },
-            search: '?selectedTenants=tenantId&intentTableFilters=%7B%22feature%22%3A%22AirFlexAI%22%7D',
+            search: '?selectedTenants=tenantId&intentTableFilters=%7B%22feature%22%3A%22EquiFlex%22%7D',
             path: '/intentAI'
           }
         })
       const customFilter = {
         sliceValue: null,
         category: null,
-        aiFeature: ['AirFlexAI'],
-        statusLabel: null
+        aiFeature: ['EquiFlex'],
+        statusLabel: null,
+        intent: null
       }
       act(() => {
         result.current.onFilterChange(customFilter, {})
@@ -544,42 +558,42 @@ describe('Intent services', () => {
           ...expectedCommonResult,
           status: Statuses.scheduled,
           statusLabel: 'Scheduled',
-          statusTooltip: 'The change recommendation has been scheduled via the user action "Optimize".'
+          statusTooltip: 'The change recommendation has been scheduled for 06/17/2023 00:00, via the user action "Optimize".'
         },
         {
           ...intentListWithAllStatus.intents.data[2],
           ...expectedCommonResult,
           status: Statuses.scheduled,
           statusLabel: 'Scheduled',
-          statusTooltip: 'The change recommendation has been scheduled via the user action "1-Click Optimize".'
+          statusTooltip: 'The change recommendation has been scheduled for 06/17/2023 00:00, via the user action "1-Click Optimize".'
         },
         {
           ...intentListWithAllStatus.intents.data[3],
           ...expectedCommonResult,
           status: Statuses.applyScheduled,
           statusLabel: 'Scheduled',
-          statusTooltip: 'The change recommendation has been automatically scheduled by IntentAI.'
+          statusTooltip: 'The change recommendation has been automatically scheduled for 06/17/2023 00:00, by IntentAI.'
         },
         {
           ...intentListWithAllStatus.intents.data[4],
           ...expectedCommonResult,
           status: Statuses.applyScheduleInProgress,
           statusLabel: 'Apply In Progress',
-          statusTooltip: 'IntentAI recommended changes are getting applied to the Venue zone-1.'
+          statusTooltip: 'IntentAI recommended changes are getting applied to Venue zone-1.'
         },
         {
           ...intentListWithAllStatus.intents.data[5],
           ...expectedCommonResult,
           status: Statuses.active,
           statusLabel: 'Active',
-          statusTooltip: 'IntentAI is active and has successfully applied the changes to the Venue zone-1.'
+          statusTooltip: 'IntentAI is active on Venue zone-1.'
         },
         {
           ...intentListWithAllStatus.intents.data[6],
           ...expectedCommonResult,
           status: Statuses.paused,
           statusLabel: 'Paused, Applied Failed',
-          statusTooltip: `IntentAI recommended changes failed to apply to the Venue zone-1 due to:
+          statusTooltip: `IntentAI recommended changes failed to apply to Venue zone-1 due to:
  - errMsg from the notification service
 
  The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.`
@@ -596,7 +610,7 @@ describe('Intent services', () => {
           ...expectedCommonResult,
           status: Statuses.revertScheduleInProgress,
           statusLabel: 'Revert In Progress',
-          statusTooltip: 'IntentAI recommended changes are getting reverted, to the earlier configuration, on the Venue zone-1.'
+          statusTooltip: 'IntentAI recommended changes are getting reverted, to the earlier configuration, on Venue zone-1.'
         },
         {
           ...intentListWithAllStatus.intents.data[9],
@@ -658,7 +672,7 @@ describe('Intent services', () => {
           ...expectedCommonResult,
           status: Statuses.na,
           statusLabel: 'No Recommendation, Not Enough License',
-          statusTooltip: 'No recommendation was generated because IntentAI did not find sufficient licenses for the Venue zone-1.'
+          statusTooltip: 'No recommendation was generated because IntentAI did not find sufficient licenses for Venue zone-1.'
         },
         {
           ...intentListWithAllStatus.intents.data[17],
@@ -666,7 +680,7 @@ describe('Intent services', () => {
           status: Statuses.na,
           statusLabel: 'No Recommendation, Not Enough Data',
           statusTooltip: `No recommendation was generated. Reason:
- - Insufficient data on neighboring APs.
+ - Insufficient data on neighbour APs.
 
 `
         },
@@ -675,7 +689,7 @@ describe('Intent services', () => {
           ...expectedCommonResult,
           status: Statuses.na,
           statusLabel: 'Verified',
-          statusTooltip: 'IntentAI has validated the Venue zone-1 configurations. No new changes have been recommended.'
+          statusTooltip: 'IntentAI has validated Venue zone-1 configurations. No new changes have been recommended.'
         },
         {
           ...intentListWithAllStatus.intents.data[19],
@@ -750,7 +764,7 @@ describe('Intent services', () => {
         new: 4,
         active: 8
       },
-      airflex: {
+      probeflex: {
         new: 5,
         active: 10
       },

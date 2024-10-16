@@ -16,18 +16,24 @@ import {
 } from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
-import { Intent } from '../../useIntentDetailsQuery'
+import { useIntentContext }  from '../../IntentContext'
+import { Intent }            from '../../useIntentDetailsQuery'
+import { dataRetentionText } from '../../utils'
 
 import { Legend } from './Legend'
 import * as UI    from './styledComponents'
 
-function useGraph (
+const ImageGraph = ({ beforeSrc, afterSrc }: { beforeSrc?: string, afterSrc?: string }) => <>
+  {beforeSrc && <img src={beforeSrc} alt='rrm-graph-before' width='100%' height='100%' />}
+  <UI.CrrmArrow children={<UI.RightArrow/>} />
+  {afterSrc && <img src={afterSrc} alt='rrm-graph-after' width='100%' height='100%' />}
+  <Legend />
+</>
+
+function DataGraph (props: {
   graphs: ProcessedCloudRRMGraph[],
-  zoomScale: ScalePower<number, number, never>,
-  isDrawer: boolean,
-  summaryUrlBefore?: string,
-  summaryUrlAfter?: string
-) {
+  zoomScale: ScalePower<number, number, never>
+}) {
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
       const instance = chart.getEchartsInstance()
@@ -36,46 +42,28 @@ function useGraph (
   }
   useEffect(() => { connect('graphGroup') }, [])
 
-  const beforeGraph = <div key='crrm-graph-before'><AutoSizer>{({ height, width }) => <BasicGraph
-    style={{ width, height }}
-    chartRef={connectChart}
-    title=''
-    data={graphs[0]}
-    zoomScale={zoomScale}
-    backgroundColor='transparent'
-  />}</AutoSizer></div>
-  const beforeImage = <img
-    key={'crrm-graph-before-image'}
-    src={summaryUrlBefore}
-    alt='summary-before'
-    width={'100%'}
-    height={'100%'}
-  />
-  const afterGraph = <div key='crrm-graph-after'><AutoSizer>{({ height, width }) => <BasicGraph
-    style={{ width, height }}
-    chartRef={connectChart}
-    title=''
-    data={graphs[1]}
-    zoomScale={zoomScale}
-    backgroundColor='transparent'
-  />}</AutoSizer></div>
-  const afterImage = <img
-    key={'crrm-graph-after-image'}
-    src={summaryUrlAfter}
-    alt='summary-after'
-    width={'100%'}
-    height={'100%'}
-  />
+  if (!props.graphs?.length) return null
 
-  return (graphs?.length)
-    ? [ isDrawer ? beforeGraph : beforeImage,
-      <UI.CrrmArrow key='crrm-graph-arrow'>
-        <UI.RightArrow/>
-      </UI.CrrmArrow>,
-      isDrawer ? afterGraph : afterImage,
-      <Legend key='crrm-graph-legend' />
-    ]
-    : []
+  return <>
+    <div><AutoSizer>{({ height, width }) => <BasicGraph
+      style={{ width, height }}
+      chartRef={connectChart}
+      title=''
+      data={props.graphs[0]}
+      zoomScale={props.zoomScale}
+      backgroundColor='transparent'
+    />}</AutoSizer></div>
+    <UI.CrrmArrow children={<UI.RightArrow/>} />
+    <div><AutoSizer>{({ height, width }) => <BasicGraph
+      style={{ width, height }}
+      chartRef={connectChart}
+      title=''
+      data={props.graphs[1]}
+      zoomScale={props.zoomScale}
+      backgroundColor='transparent'
+    />}</AutoSizer></div>
+    <Legend />
+  </>
 }
 
 const detailsZoomScale = scalePow()
@@ -102,30 +90,47 @@ const GraphTitle = ({ details }: { details: Intent }) => {
   </UI.GraphTitleWrapper>
 }
 
-export const IntentAIRRMGraph = ({
-  details, crrmData, summaryUrlBefore, summaryUrlAfter } : {
-    details: Intent,
-    crrmData: ProcessedCloudRRMGraph[],
-    summaryUrlBefore?: string,
-    summaryUrlAfter?: string
-  }) => {
+export const IntentAIRRMGraph: React.FC<{
+  crrmData: ProcessedCloudRRMGraph[],
+  summaryUrlBefore?: string,
+  summaryUrlAfter?: string,
+}> = ({ crrmData, summaryUrlBefore, summaryUrlAfter }) => {
   const { $t } = useIntl()
-  const title = $t({ defaultMessage: 'Key Performance Indications' })
+  const { intent, state, isDataRetained } = useIntentContext()
   const [ visible, setVisible ] = useState<boolean>(false)
   const [ key, setKey ] = useState(0)
 
   const showDrawer = () => setVisible(true)
   const closeDrawer = () => setVisible(false)
   useEffect(() => setKey(Math.random()), [visible]) // to reset graph zoom
+
+  const title = $t({ defaultMessage: 'Key Performance Indications' })
+  const noData = state === 'no-data'
+
+  if (!isDataRetained) return <Card>{$t(dataRetentionText)}</Card>
+  if (noData) {
+    return <Card>
+      {$t({ defaultMessage: 'Graph modeling will be generated once Intent is activated.' })}
+    </Card>
+  }
+
   return <UI.Wrapper>
     <Card>
-      <UI.GraphWrapper key={'graph-details'}>
-        {useGraph(crrmData, detailsZoomScale, false,
-          summaryUrlBefore, summaryUrlAfter)}
-        <GraphTitle details={details} />
+      <UI.GraphWrapper data-testid='graph-wrapper'
+        key={'graph-details'}
+      >
+        <ImageGraph
+          beforeSrc={summaryUrlBefore}
+          afterSrc={summaryUrlAfter}
+        />
+        <GraphTitle details={intent} />
       </UI.GraphWrapper>
     </Card>
-    <UI.ViewMoreButton onClick={showDrawer} children={$t({ defaultMessage: 'View More' })} />
+    <UI.ViewMoreButton
+      hidden={noData}
+      onClick={showDrawer}
+      children={$t({ defaultMessage: 'View More' })}
+    />
     <Drawer
       key={key}
       drawerType={DrawerTypes.FullHeight}
@@ -135,8 +140,8 @@ export const IntentAIRRMGraph = ({
       onClose={closeDrawer}
       children={
         <UI.GraphWrapper>
-          {useGraph(crrmData, drawerZoomScale, true)}
-          <GraphTitle details={details} />
+          <DataGraph {...{ graphs: crrmData, zoomScale: drawerZoomScale }} />
+          <GraphTitle details={intent} />
         </UI.GraphWrapper>
       }
     />

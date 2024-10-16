@@ -48,7 +48,8 @@ export function NetworkingTab (props: {
     enableJoinRSSIThreshold,
     enableTransientClientManagement,
     enableOce,
-    pskProtocol
+    pskProtocol,
+    overTheDS
   ] = [
     useWatch<boolean>(['wlan', 'advancedCustomization', 'enableFastRoaming']),
     useWatch<boolean>(['wlan', 'advancedCustomization', 'enableAirtimeDecongestion']),
@@ -56,7 +57,9 @@ export function NetworkingTab (props: {
     useWatch<boolean>(['wlan', 'advancedCustomization', 'enableTransientClientManagement']),
     useWatch<boolean>(['wlan', 'advancedCustomization',
       'enableOptimizedConnectivityExperience']),
-    useWatch<WlanSecurityEnum>(['pskProtocol'])
+    useWatch<WlanSecurityEnum>(['pskProtocol']),
+    useWatch<boolean>(['wlan','advancedCustomization','fastRoamingOptions',
+      'statisticsOverDistributedSystemEnabled'])
   ]
   useEffect(() => {
     if(enableAirtimeDecongestion === true) {
@@ -218,7 +221,7 @@ export function NetworkingTab (props: {
             children={<Switch data-testid='over-the-ds-input' />}
           />
         </UI.FieldLabel>
-        <Form.Item
+        { overTheDS && <Form.Item
           name={['wlan','advancedCustomization','fastRoamingOptions', 'reassociationTimeout']}
           label={<>
             {$t({ defaultMessage: 'Re-association Timeout' })}
@@ -244,7 +247,7 @@ export function NetworkingTab (props: {
             <Input data-testid='reassociation-timeout-input'
               style={{ width: '150px' }}
             />}
-        />
+        />}
       </>
       }
 

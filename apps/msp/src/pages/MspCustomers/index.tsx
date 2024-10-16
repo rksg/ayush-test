@@ -11,8 +11,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                from '@acx-ui/formatter'
 import {
   ManageAdminsDrawer,
   ManageDelegateAdminDrawer,
@@ -77,10 +77,13 @@ export function MspCustomers () {
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
   const isSupportEcAlarmCount = useIsSplitOn(Features.MSPEC_ALARM_COUNT_SUPPORT_TOGGLE)
   const isTechPartnerQueryEcsEnabled = useIsSplitOn(Features.TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE)
-  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
+  const isRbacEarlyAccessEnable = useIsTierAllowed(Features.RBAC_IMPLICIT_P1)
+  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const createEcWithTierEnabled = useIsSplitOn(Features.MSP_EC_CREATE_WITH_TIER)
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
   const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
+  const isvViewModelTpLoginEnabled = useIsSplitOn(Features.VIEWMODEL_TP_LOGIN_ADMIN_COUNT)
+  const isMspSortOnTpEnabled = useIsSplitOn(Features.MSP_SORT_ON_TP_COUNT_TOGGLE)
 
   const [ecTenantId, setTenantId] = useState('')
   const [selectedTenantType, setTenantType] = useState(AccountType.MSP_INTEGRATOR)
@@ -157,6 +160,8 @@ export function MspCustomers () {
       'alarmCount',
       'mspAdminCount',
       'mspEcAdminCount',
+      'integratorCount',
+      'installerCount',
       'creationDate',
       'expirationDate',
       'wifiLicense',
@@ -219,6 +224,10 @@ export function MspCustomers () {
   }
 
   function useColumns (mspEcAlarmList?: MspEcAlarmList, isSupportTier?: boolean) {
+    const mspAdminCountIndex = isvViewModelTpLoginEnabled ?
+      (tenantType === AccountType.MSP_INTEGRATOR ? 'mspIntegratorAdminCount'
+        : (tenantType === AccountType.MSP_INSTALLER ? 'mspInstallerAdminCount'
+          : 'mspAdminCount' )) : 'mspAdminCount'
 
     const columns: TableProps<MspEc>['columns'] = [
       {
@@ -263,9 +272,9 @@ export function MspCustomers () {
       {
         title: $t({ defaultMessage: '{adminCountHeader}' }, { adminCountHeader:
             mspUtils.transformAdminCountHeader(tenantType) }),
-        dataIndex: 'mspAdminCount',
+        dataIndex: mspAdminCountIndex,
         align: 'center',
-        key: 'mspAdminCount',
+        key: mspAdminCountIndex,
         sorter: true,
         width: 140,
         onCell: (data) => {
@@ -305,8 +314,9 @@ export function MspCustomers () {
         title: techPartnerAssignEcsEanbled
           ? $t({ defaultMessage: 'Integrator Count' })
           : $t({ defaultMessage: 'Integrator' }),
-        dataIndex: 'integrator',
-        key: 'integrator',
+        dataIndex: isMspSortOnTpEnabled ? 'integratorCount' : 'integrator',
+        key: isMspSortOnTpEnabled ? 'integratorCount' : 'integrator',
+        sorter: isMspSortOnTpEnabled,
         width: 130,
         onCell: (data: MspEc) => {
           return allowSelectTechPartner ? {
@@ -332,8 +342,9 @@ export function MspCustomers () {
         title: techPartnerAssignEcsEanbled
           ? $t({ defaultMessage: 'Installer Count' })
           : $t({ defaultMessage: 'Installer' }),
-        dataIndex: 'installer',
-        key: 'installer',
+        dataIndex: isMspSortOnTpEnabled ? 'installerCount' : 'installer',
+        key: isMspSortOnTpEnabled ? 'installerCount' : 'installer',
+        sorter: isMspSortOnTpEnabled,
         width: 120,
         onCell: (data: MspEc) => {
           return allowSelectTechPartner ? {

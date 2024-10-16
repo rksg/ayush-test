@@ -1,4 +1,4 @@
-import { useIntl, FormattedMessage } from 'react-intl'
+import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
 import { sortProp, defaultSort  } from '@acx-ui/analytics/utils'
 import {
@@ -89,24 +89,18 @@ export const ImpactedClientsTable = ({
           {row.switchName}
         </TenantLink>
       ),
-      disable: true,
-      fixed: 'left',
       sorter: { compare: sortProp('switchName', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Local Port' }),
       dataIndex: 'localPortName',
       key: 'localPortName',
-      fixed: 'left',
-      width: 160,
-      disable: true,
       sorter: { compare: sortProp('localPortName', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Switch MAC' }),
       dataIndex: 'switchId',
       key: 'switchId',
-      show: false,
       sorter: { compare: sortProp('switchId', defaultSort) }
     },
     {
@@ -125,22 +119,17 @@ export const ImpactedClientsTable = ({
       title: $t({ defaultMessage: 'Device Port' }),
       dataIndex: 'devicePort',
       key: 'devicePort',
-      width: 160,
-      show: false,
       sorter: { compare: sortProp('devicePort', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Device Port MAC' }),
       dataIndex: 'devicePortMac',
       key: 'devicePortMac',
-      width: 150,
-      show: false,
       sorter: { compare: sortProp('devicePortMac', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Device Port Type' }),
       dataIndex: 'devicePortType',
-      width: 150,
       key: 'devicePortType',
       sorter: { compare: sortProp('devicePortType', defaultSort) }
     }
@@ -156,19 +145,19 @@ export const ImpactedClientsTable = ({
     <Loader states={[impactedClients, impactedSwitches]}>
       <ChartTitle>
         <FormattedMessage
-          defaultMessage={`<b>{count}</b> Impacted {totalCount, plural,
-            one {Uplink Port}
-            other {Uplink Ports}
-          }`}
+          {...(queryType === 'portStorm'
+            ? defineMessage({ defaultMessage:
+              '<b>{count}</b> Impacted Storm  {totalCount, plural, one {Port} other {Ports}}' })
+            : defineMessage({ defaultMessage:
+               '<b>{count}</b> Impacted Uplink  {totalCount, plural, one {Port} other {Ports}}' }))
+          }
           values={{
             count: showTopNTableResult($t, totalCount, topImpactedSwitchesLimit),
             totalCount,
             b: (chunk) => <b>{chunk}</b>
-          }}
-        />
+          }}/>
       </ChartTitle>
       <Table<ImpactedClients>
-        settingsId='switch-health-impacted-devices-table'
         columns={columns}
         dataSource={data}
         pagination={{
@@ -176,7 +165,7 @@ export const ImpactedClientsTable = ({
           total: totalCount
         }}
         rowKey='rowId'
-        type='tall'
+        type='compactBordered'
       />
     </Loader>
   )

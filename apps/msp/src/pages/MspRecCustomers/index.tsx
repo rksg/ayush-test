@@ -10,7 +10,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   ManageAdminsDrawer,
   ManageDelegateAdminDrawer,
@@ -60,8 +60,11 @@ export function MspRecCustomers () {
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
   const [techParnersData, setTechPartnerData] = useState([] as MspEc[])
-  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
+  const isRbacEarlyAccessEnable = useIsTierAllowed(Features.RBAC_IMPLICIT_P1)
+  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
+  const isvViewModelTpLoginEnabled = useIsSplitOn(Features.VIEWMODEL_TP_LOGIN_ADMIN_COUNT)
+  const isMspSortOnTpEnabled = useIsSplitOn(Features.MSP_SORT_ON_TP_COUNT_TOGGLE)
 
   const { data: userProfile } = useUserProfileContext()
   const { data: mspLabel } = useGetMspLabelQuery({ params, enableRbac: isRbacEnabled })
@@ -187,6 +190,11 @@ export function MspRecCustomers () {
     }
   }
 
+  const mspAdminCountIndex = isvViewModelTpLoginEnabled ?
+    (tenantType === AccountType.MSP_INTEGRATOR ? 'mspIntegratorAdminCount'
+      : (tenantType === AccountType.MSP_INSTALLER ? 'mspInstallerAdminCount'
+        : 'mspAdminCount' )) : 'mspAdminCount'
+
   const columns: TableProps<MspEc>['columns'] = [
     {
       title: $t({ defaultMessage: 'Customers' }),
@@ -223,9 +231,9 @@ export function MspRecCustomers () {
     {
       title: $t({ defaultMessage: '{adminCountHeader}' }, { adminCountHeader:
         mspUtils.transformAdminCountHeader(tenantType) }),
-      dataIndex: 'mspAdminCount',
+      dataIndex: mspAdminCountIndex,
       align: 'center',
-      key: 'mspAdminCount',
+      key: mspAdminCountIndex,
       sorter: true,
       width: 140,
       onCell: (data) => {
@@ -248,8 +256,9 @@ export function MspRecCustomers () {
       title: techPartnerAssignEcsEanbled
         ? $t({ defaultMessage: 'Integrator Count' })
         : $t({ defaultMessage: 'Integrator' }),
-      dataIndex: 'integrator',
-      key: 'integrator',
+      dataIndex: isMspSortOnTpEnabled ? 'integratorCount' : 'integrator',
+      key: isMspSortOnTpEnabled ? 'integratorCount' : 'integrator',
+      sorter: isMspSortOnTpEnabled,
       width: 130,
       onCell: (data: MspEc) => {
         return (isPrimeAdmin || isAdmin) && !drawerIntegratorVisible ? {
@@ -275,8 +284,9 @@ export function MspRecCustomers () {
       title: techPartnerAssignEcsEanbled
         ? $t({ defaultMessage: 'Installer Count' })
         : $t({ defaultMessage: 'Installer' }),
-      dataIndex: 'installer',
-      key: 'installer',
+      dataIndex: isMspSortOnTpEnabled ? 'installerCount' : 'installer',
+      key: isMspSortOnTpEnabled ? 'installerCount' : 'installer',
+      sorter: isMspSortOnTpEnabled,
       width: 120,
       onCell: (data: MspEc) => {
         return (isPrimeAdmin || isAdmin) && !drawerIntegratorVisible ? {

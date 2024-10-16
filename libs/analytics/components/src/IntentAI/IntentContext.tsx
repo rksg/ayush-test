@@ -6,7 +6,14 @@ import { MessageDescriptor } from 'react-intl'
 import { Loader }    from '@acx-ui/components'
 import { formatter } from '@acx-ui/formatter'
 
-import { Intent, IntentKPIConfig, useIntentDetailsQuery, useIntentParams } from './useIntentDetailsQuery'
+import {
+  Intent,
+  IntentKPIConfig,
+  intentState,
+  useIntentDetailsQuery,
+  useIntentParams
+} from './useIntentDetailsQuery'
+import { isDataRetained } from './utils'
 
 export type IntentConfigurationConfig = {
   label: MessageDescriptor
@@ -18,6 +25,8 @@ type IIntentContext = {
   intent: Intent
   configuration?: IntentConfigurationConfig
   kpis: IntentKPIConfig[]
+  isDataRetained: boolean
+  state: ReturnType<typeof intentState>
 }
 
 export const IntentContext = createContext({} as IIntentContext)
@@ -46,9 +55,18 @@ export function createIntentContextProvider (
     if (!spec) return null // no matching spec
     if (query.isSuccess && !query.data) return null // 404
 
+    const intent = query.data
+    const context: IIntentContext = {
+      intent: intent!,
+      configuration: spec.configuration,
+      kpis: spec.kpis,
+      isDataRetained: (intent && isDataRetained(intent.metadata.dataEndTime))!,
+      state: (intent && intentState(intent))!
+    }
+
     return <Loader states={[query]}>
       <IntentContext.Provider
-        value={{ intent: query.data!, configuration: spec.configuration, kpis: spec.kpis }}
+        value={context}
         children={React.createElement(spec[of])}
       />
     </Loader>

@@ -156,7 +156,7 @@ export const mockDhcpPoolStatsData = {
 export const mockDhcpStatsData = {
   fields: [
     'tenantId','id','serviceName','serviceType','dhcpRelay','dhcpPoolNum',
-    'edgeNum','venueNum','leaseTime', 'currentVersion', 'targetVersion',
+    'edgeClusterIds','leaseTime', 'currentVersion', 'targetVersion',
     'tags'
   ],
   totalCount: 3,
@@ -169,8 +169,7 @@ export const mockDhcpStatsData = {
       serviceType: 'DHCP',
       dhcpRelay: 'true',
       dhcpPoolNum: 3,
-      edgeNum: 3,
-      venueNum: 3,
+      edgeClusterIds: ['clusterId_1','clusterId_2'],
       leaseTime: '24 hours',
       health: 'Good',
       currentVersion: '1.0.1',
@@ -184,8 +183,7 @@ export const mockDhcpStatsData = {
       serviceType: 'DHCP',
       dhcpRelay: 'false',
       dhcpPoolNum: 3,
-      edgeNum: 3,
-      venueNum: 3,
+      edgeClusterIds: [],
       leaseTime: '24 hours',
       health: 'Good',
       currentVersion: '1.0.1, 1.0.2',
@@ -198,8 +196,7 @@ export const mockDhcpStatsData = {
       serviceType: 'DHCP',
       dhcpRelay: 'false',
       dhcpPoolNum: 3,
-      edgeNum: 3,
-      venueNum: 3,
+      edgeClusterIds: [],
       leaseTime: '24 hours',
       health: 'Good',
       currentVersion: '1.0.2',
@@ -212,7 +209,7 @@ export const mockDhcpStatsData = {
       serviceType: 'DHCP',
       dhcpRelay: 'false',
       dhcpPoolNum: 3,
-      edgeNum: 3,
+      edgeClusterIds: [],
       venueNum: 3,
       leaseTime: '24 hours',
       health: 'Good',
@@ -239,21 +236,23 @@ export const mockDhcpUeSummaryStatsData = {
       edgeId: '1',
       dhcpId: '1',
       edgeName: 'Edge-dhcp-1',
-      venueId: '1',
+      venueId: 'mock_venue_1',
       venueName: 'Edge-venue-1',
       successfulAllocation: 7,
       remainsIps: 151,
-      droppedPackets: 0
+      droppedPackets: 0,
+      edgeClusterId: 'clusterId_1'
     },
     {
       edgeId: '2',
       dhcpId: '1',
       edgeName: 'Edge-dhcp-2',
-      venueId: '2',
+      venueId: 'mock_venue_2',
       venueName: 'Edge-venue-2',
       successfulAllocation: 1,
       remainsIps: 151,
-      droppedPackets: 0
+      droppedPackets: 0,
+      edgeClusterId: 'clusterId_2'
     }
   ]
 }

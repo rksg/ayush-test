@@ -7,15 +7,19 @@ import { Checkbox, Col, Form, Row, Select, Space } from 'antd'
 import { CheckboxValueType }                       from 'antd/lib/checkbox/Group'
 import { useIntl }                                 from 'react-intl'
 
-import { Button, Loader, StepsForm, useStepFormContext } from '@acx-ui/components'
-import { TunnelProfileAddModal }                         from '@acx-ui/rc/components'
-import { TunnelProfileFormType, TunnelTypeEnum }         from '@acx-ui/rc/utils'
+import { Button, Loader, StepsForm, useStepFormContext }                          from '@acx-ui/components'
+import { TunnelProfileAddModal }                                                  from '@acx-ui/rc/components'
+import { TunnelProfileFormType, TunnelTypeEnum, PersonalIdentityNetworkFormData } from '@acx-ui/rc/utils'
 
-import { PersonalIdentityNetworkFormData }    from '..'
 import { PersonalIdentityNetworkFormContext } from '../PersonalIdentityNetworkFormContext'
 
 import { AddDpskModal } from './AddDpskModal'
 import * as UI          from './styledComponents'
+
+const tunnelProfileFormInitValues ={
+  type: TunnelTypeEnum.VXLAN,
+  disabledFields: ['type']
+}
 
 export const WirelessNetworkForm = () => {
 
@@ -31,7 +35,6 @@ export const WirelessNetworkForm = () => {
   const [dpskModalVisible, setDpskModalVisible] = useState(false)
   const venueId = form.getFieldValue('venueId')
 
-
   const onNetworkChange = (values: CheckboxValueType[]) => {
     form.setFieldValue('networkNames', values.map(item =>
       (networkOptions?.find(network =>
@@ -41,11 +44,6 @@ export const WirelessNetworkForm = () => {
 
   const openDpskModal = () => {
     setDpskModalVisible(true)
-  }
-
-  const formInitValues ={
-    type: TunnelTypeEnum.VXLAN,
-    disabledFields: ['type']
   }
 
   return(
@@ -66,7 +64,9 @@ export const WirelessNetworkForm = () => {
             }
           />
         </Col>
-        <TunnelProfileAddModal initialValues={formInitValues as TunnelProfileFormType} />
+        <TunnelProfileAddModal
+          initialValues={tunnelProfileFormInitValues as TunnelProfileFormType}
+        />
       </Row>
       <Row gutter={20}>
         <Col>

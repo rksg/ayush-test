@@ -29,9 +29,9 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { WifiScopes }     from '@acx-ui/types'
-import { filterByAccess } from '@acx-ui/user'
-import { useDateFilter }  from '@acx-ui/utils'
+import { RolesEnum, WifiScopes }                   from '@acx-ui/types'
+import { hasRoles, hasPermission, filterByAccess } from '@acx-ui/user'
+import { useDateFilter }                           from '@acx-ui/utils'
 
 import { useGetApCapabilities } from '../hooks'
 
@@ -73,7 +73,9 @@ function ApPageHeader () {
   const location = useLocation()
   const basePath = useTenantLink(`/devices/wifi/${serialNumber}`)
   const linkToWifi = useTenantLink('/devices/wifi/')
-
+  const isReadOnly = hasRoles([RolesEnum.READ_ONLY])
+  // eslint-disable-next-line max-len
+  const operationRoles = [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]
   const status = data?.headers.overview as ApDeviceStatusEnum
   const currentApOperational = status === ApDeviceStatusEnum.OPERATIONAL
   const ApStatusData = apStatusData as ApStatus
@@ -98,29 +100,62 @@ function ApPageHeader () {
   const menu = (
     <Menu
       onClick={handleMenuClick}
-      items={[{
-        label: $t({ defaultMessage: 'Reboot' }),
-        key: 'reboot'
-      }, {
+      items={(isReadOnly ? [{
         label: $t({ defaultMessage: 'Download Log' }),
-        key: 'downloadLog'
+        key: 'downloadLog',
+        scopeKey: [WifiScopes.READ],
+        roles: [RolesEnum.READ_ONLY]
       }, {
         label: $t({ defaultMessage: 'Blink LEDs' }),
-        key: 'blinkLed'
+        key: 'blinkLed',
+        scopeKey: [WifiScopes.READ],
+        roles: [RolesEnum.READ_ONLY]
+      }] : [{
+        label: $t({ defaultMessage: 'Reboot' }),
+        key: 'reboot',
+        scopeKey: [WifiScopes.UPDATE],
+        roles: operationRoles
+      }, {
+        label: $t({ defaultMessage: 'Download Log' }),
+        key: 'downloadLog',
+        scopeKey: [WifiScopes.READ],
+        roles: [RolesEnum.READ_ONLY, ...operationRoles]
+      }, {
+        label: $t({ defaultMessage: 'Blink LEDs' }),
+        key: 'blinkLed',
+        scopeKey: [WifiScopes.READ],
+        roles: [RolesEnum.READ_ONLY, ...operationRoles]
       }, {
         type: 'divider',
         key: 'divider'
       }, {
         label: $t({ defaultMessage: 'Delete AP' }),
-        key: 'delete'
-      }].filter(item => (currentApOperational || item.key === 'delete' ||
-        (item.key === 'downloadLog' && status === ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED)
-      ))}
+        key: 'delete',
+        scopeKey: [WifiScopes.DELETE],
+        roles: operationRoles
+      }]).filter(item => {
+        return (
+          (currentApOperational && hasPermission({ scopes: item.scopeKey, roles: item.roles })) ||
+          (item.key === 'delete' && hasPermission({ scopes: item.scopeKey, roles: item.roles })) ||
+          (item.key === 'downloadLog' && status === ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED)
+        )
+      })}
     />
   )
 
   const enableTimeFilter = () =>
     !['clients', 'networks', 'troubleshooting'].includes(activeTab as string)
+
+  const dropdown = [<Dropdown
+    scopeKey={[WifiScopes.READ, WifiScopes.DELETE, WifiScopes.UPDATE]}
+    overlay={menu}>{()=>
+      <Button>
+        <Space>
+          {$t({ defaultMessage: 'More Actions' })}
+          <CaretDownSolidIcon />
+        </Space>
+      </Button>}
+  </Dropdown>]
 
   return (
     <PageHeader
@@ -146,17 +181,8 @@ function ApPageHeader () {
             selectionType={range}
           />
           : <></>,
+        ...((isReadOnly) ? dropdown : filterByAccess(dropdown)),
         ...filterByAccess([
-          <Dropdown
-            scopeKey={[WifiScopes.DELETE, WifiScopes.UPDATE]}
-            overlay={menu}>{()=>
-              <Button>
-                <Space>
-                  {$t({ defaultMessage: 'More Actions' })}
-                  <CaretDownSolidIcon />
-                </Space>
-              </Button>}
-          </Dropdown>,
           <Button
             type='primary'
             scopeKey={[WifiScopes.UPDATE]}

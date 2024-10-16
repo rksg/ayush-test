@@ -56,8 +56,8 @@ import {
   PowerSavingStatusEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { RequestPayload, WifiScopes }                                     from '@acx-ui/types'
-import { filterByAccess }                                                 from '@acx-ui/user'
+import { RequestPayload, WifiScopes, RolesEnum }                          from '@acx-ui/types'
+import { filterByAccess, hasPermission }                                  from '@acx-ui/user'
 import { exportMessageMapping }                                           from '@acx-ui/utils'
 
 import { ApCompatibilityDrawer, ApCompatibilityFeature, ApCompatibilityType } from '../ApCompatibility'
@@ -107,7 +107,9 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const apUptimeFlag = useIsSplitOn(Features.AP_UPTIME_TOGGLE)
   const apMgmtVlanFlag = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
+  const apTxPowerFlag = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
   const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+  const operationRoles = [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]
 
   const [ getApCompatibilitiesVenue ] = useLazyGetApCompatibilitiesVenueQuery()
   const [ getApCompatibilitiesNetwork ] = useLazyGetApCompatibilitiesNetworkQuery()
@@ -222,6 +224,14 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       channel60: false
     }
 
+    const actualTxPowerChannelMap = {
+      channel24: 'actualTxPower24',
+      channel50: 'actualTxPower50',
+      channelL50: 'actualTxPowerL50',
+      channelU50: 'actualTxPowerU50',
+      channel60: 'actualTxPower60'
+    }
+
     const columns: TableProps<NewAPModelExtended|NewAPExtendedGrouped>['columns'] = [{
       key: 'name',
       title: $t({ defaultMessage: 'AP Name' }),
@@ -334,13 +344,13 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       sorter: true,
       render: (_: ReactNode, { meshRole }) => transformMeshRole(meshRole as APMeshRole)
     }, {
-      key: 'clients',
+      key: 'clientCount',
       title: $t({ defaultMessage: 'Clients' }),
-      dataIndex: 'clients',
+      dataIndex: 'clientCount',
       align: 'center',
       render: (_: ReactNode, row: NewAPModelExtended) => {
         return <TenantLink to={`/devices/wifi/${row.serialNumber}/details/clients`}>
-          {transformDisplayNumber(row.clients)}
+          {transformDisplayNumber(row.clientCount)}
         </TenantLink>
       }
     },
@@ -514,6 +524,24 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
           }} />
         )
       }
+    }] : []),
+    ...(apTxPowerFlag ? [{
+      key: 'actualTxPower',
+      dataIndex: 'actualTxPower',
+      title: $t({ defaultMessage: 'Tx Power' }),
+      children: Object.entries(extraParams).reduce((acc, [channel, visible]) => {
+        if (!visible) return acc
+        const channelKey = channel as keyof ApExtraParams
+        const key = actualTxPowerChannelMap[channelKey]
+        acc.push({
+          key: key,
+          width: 80,
+          dataIndex: key,
+          title: <Table.SubTitle children={channelTitleMap[channelKey]} />,
+          align: 'center'
+        })
+        return acc
+      }, [] as TableProps<NewAPModelExtended|NewAPExtendedGrouped>['columns'])
     }] : [])
     ]
     return columns
@@ -535,6 +563,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const rowActions: TableProps<NewAPModelExtended>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     scopeKey: [WifiScopes.UPDATE],
+    roles: [...operationRoles],
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
     onClick: (rows) => {
       navigate(`${linkToEditAp.pathname}/${rows[0].serialNumber}/edit/general`, { replace: false })
@@ -542,6 +571,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   }, {
     label: $t({ defaultMessage: 'Delete' }),
     scopeKey: [WifiScopes.DELETE],
+    roles: [...operationRoles],
     onClick: async (rows, clearSelection) => {
       apAction.showDeleteAps(rows, params.tenantId, clearSelection)
     }
@@ -554,6 +584,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
     // }, {
     label: $t({ defaultMessage: 'Reboot' }),
     scopeKey: [WifiScopes.UPDATE],
+    roles: [...operationRoles],
     visible: (rows) => isActionVisible(rows, { selectOne: true, deviceStatus: [ ApDeviceStatusEnum.OPERATIONAL ] }),
     onClick: (rows, clearSelection) => {
       const showSendingToast = () => {
@@ -573,6 +604,8 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
     }
   }, {
     label: $t({ defaultMessage: 'Download Log' }),
+    scopeKey: [WifiScopes.READ],
+    roles: [RolesEnum.READ_ONLY, ...operationRoles],
     visible: (rows) => isActionVisible(rows, { selectOne: true, deviceStatus: [ ApDeviceStatusEnum.OPERATIONAL, ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED ] }),
     onClick: (rows) => {
       apAction.showDownloadApLog(rows[0].serialNumber, params.tenantId, rows[0].venueId)
@@ -651,7 +684,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
         onChange={handleTableChange}
         onFilterChange={handleFilterChange}
         enableApiFilter={true}
-        rowActions={filterByAccess(rowActions)}
+        rowActions={rowActions?.filter((item) => hasPermission({ scopes: item.scopeKey, roles: item.roles }))}
         actions={props.enableActions ? filterByAccess([{
           label: $t({ defaultMessage: 'Add AP' }),
           scopeKey: [WifiScopes.CREATE],
@@ -744,8 +777,9 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       {isEdgeCompatibilityEnabled && <EnhancedApCompatibilityDrawer
         visible={compatibilitiesDrawerVisible}
         isMultiple
-        type={ApCompatibilityType.VENUE}
+        type={params.venueId?ApCompatibilityType.VENUE:ApCompatibilityType.NETWORK}
         venueId={params.venueId}
+        networkId={params.networkId}
         apId={selectedApSN}
         apName={selectedApName}
         onClose={() => setCompatibilitiesDrawerVisible(false)}

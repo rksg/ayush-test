@@ -23,10 +23,10 @@ import {
   getOsTypeIcon,
   usePollingTableQuery,
   networkTypes } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { WifiScopes }            from '@acx-ui/types'
-import { filterByAccess }        from '@acx-ui/user'
-import { noDataDisplay }         from '@acx-ui/utils'
+import { TenantLink, useParams }         from '@acx-ui/react-router-dom'
+import { WifiScopes }                    from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { noDataDisplay }                 from '@acx-ui/utils'
 
 import { ClientHealthIcon } from '../ClientHealthIcon'
 
@@ -83,8 +83,13 @@ function GetNetworkFilterOptions (tenantId: string|undefined) {
 const AsyncLoadingInColumn = (
   row: ClientList,
   callBack: Function,
-  loadingCondition?: (row: ClientList) => boolean
+  loadingCondition?: (row: ClientList) => boolean,
+  animation?: boolean
 ): React.ReactNode => {
+  if (!animation) {
+    return callBack()
+  }
+
   const defaultCondition = (row: ClientList) =>
     row.apName === undefined && row.venueName === undefined
 
@@ -679,6 +684,9 @@ export const ClientsTable = (props: ClientsTableProps<ClientList>) => {
     }
   ]
 
+  const showRowSelection = (wifiEDAClientRevokeToggle &&
+    hasPermission({ scopes: [ WifiScopes.UPDATE, WifiScopes.DELETE] }) )
+
   return (
     <UI.ClientTableDiv>
       <Loader states={[
@@ -688,7 +696,7 @@ export const ClientsTable = (props: ClientsTableProps<ClientList>) => {
           {$t({ defaultMessage: 'Connected Clients' })}
         </Subtitle>
         <Table<ClientList>
-          rowSelection={(wifiEDAClientRevokeToggle ? rowSelection : undefined)}
+          rowSelection={(showRowSelection && rowSelection)}
           rowActions={(wifiEDAClientRevokeToggle ? filterByAccess(rowActions) : undefined)}
           settingsId={settingsId}
           columns={GetCols(useIntl(), showAllColumns)}

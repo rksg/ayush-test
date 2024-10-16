@@ -1,11 +1,11 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn, useIsTierAllowed }      from '@acx-ui/feature-toggle'
-import { MspUrlsInfo }                         from '@acx-ui/msp/utils'
-import { Provider }                            from '@acx-ui/store'
-import { render, screen, cleanup, mockServer } from '@acx-ui/test-utils'
-import { RolesEnum }                           from '@acx-ui/types'
-import { getUserProfile, setUserProfile }      from '@acx-ui/user'
+import { useIsSplitOn, useIsTierAllowed }                              from '@acx-ui/feature-toggle'
+import { MspUrlsInfo }                                                 from '@acx-ui/msp/utils'
+import { Provider }                                                    from '@acx-ui/store'
+import { render, screen, cleanup, mockServer }                         from '@acx-ui/test-utils'
+import { RolesEnum }                                                   from '@acx-ui/types'
+import { getUserProfile, MFAStatus, setUserProfile, UserRbacUrlsInfo } from '@acx-ui/user'
 
 import AllRoutes from './AllRoutes'
 
@@ -101,6 +101,15 @@ describe('AllRoutes', () => {
       rest.post(
         MspUrlsInfo.getVarDelegations.url,
         (req, res, ctx) => res(ctx.json([]))
+      ),
+      rest.get(
+        UserRbacUrlsInfo.getMfaTenantDetails.url,
+        (_req, res, ctx) => res(ctx.json({
+          tenantStatus: MFAStatus.DISABLED,
+          mfaMethods: [],
+          userId: 'userId',
+          enabled: false
+        }))
       )
     )
   })
@@ -176,19 +185,6 @@ describe('AllRoutes', () => {
     expect(await screen.findByTestId('services')).toBeInTheDocument()
   })
 
-  test('should not navigate to services/* if the feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-
-    render(<Provider><AllRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/services/some-page',
-        wrapRoutes: false
-      }
-    })
-
-    expect(await screen.findByText('Services is not enabled')).toBeInTheDocument()
-  })
-
   test('should navigate to policies/* if the feature flag is on', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
@@ -200,19 +196,6 @@ describe('AllRoutes', () => {
     })
 
     expect(await screen.findByTestId('policies')).toBeInTheDocument()
-  })
-
-  test('should not navigate to policies/* if the feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-
-    render(<Provider><AllRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/policies/some-page',
-        wrapRoutes: false
-      }
-    })
-
-    expect(await screen.findByText('Policies is not enabled')).toBeInTheDocument()
   })
 
   test('should navigate to venues/*', async () => {

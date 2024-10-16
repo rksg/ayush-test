@@ -60,9 +60,9 @@ import {
   SwitchPortViewModelQueryFields,
   TroubleshootingResponse
 } from '@acx-ui/rc/utils'
-import { baseSwitchApi }               from '@acx-ui/store'
-import { RequestPayload }              from '@acx-ui/types'
-import { createHttpRequest, batchApi } from '@acx-ui/utils'
+import { baseSwitchApi }                                     from '@acx-ui/store'
+import { RequestPayload }                                    from '@acx-ui/types'
+import { createHttpRequest, batchApi, APT_QUERY_CACHE_TIME } from '@acx-ui/utils'
 
 export type SwitchsExportPayload = {
   filters: Filter
@@ -155,7 +155,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
 
         return { data: aggregatedList }
       },
-      keepUnusedDataFor: 0,
+      keepUnusedDataFor: APT_QUERY_CACHE_TIME,
       providesTags: [{ type: 'Switch', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -353,7 +353,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           })
         })
       },
-      keepUnusedDataFor: 0,
+      keepUnusedDataFor: APT_QUERY_CACHE_TIME,
       providesTags: [{ type: 'SwitchPort', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
@@ -369,6 +369,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
+      keepUnusedDataFor: APT_QUERY_CACHE_TIME,
       providesTags: [{ type: 'SwitchProfiles', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -422,7 +423,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      keepUnusedDataFor: 0,
+      keepUnusedDataFor: APT_QUERY_CACHE_TIME,
       providesTags: [{ type: 'SwitchOnDemandCli', id: 'LIST' }]
     }),
     deleteCliTemplates: build.mutation<SwitchCliTemplateModel, RequestPayload>({
@@ -470,7 +471,6 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const res = _.get(result, 'response')
         return Array.isArray(res) ? res.pop() : result
       },
-      keepUnusedDataFor: 0,
       providesTags: [{ type: 'SwitchPort', id: 'Setting' }]
     }),
     getPortsSetting: build.query<PortsSetting, RequestPayload>({
@@ -487,7 +487,6 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      keepUnusedDataFor: 0,
       providesTags: [{ type: 'SwitchPort', id: 'Setting' }]
     }),
     cyclePoe: build.mutation<Switch, RequestPayload>({
@@ -515,7 +514,6 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      keepUnusedDataFor: 5,
       providesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
     }),
     getSwitchVlanUnionByVenue: build.query<SwitchVlan[], RequestPayload>({
@@ -537,7 +535,6 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req
         }
       },
-      keepUnusedDataFor: 0,
       providesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
     }),
     getSwitchVlans: build.query<Vlan[], RequestPayload>({
@@ -549,7 +546,6 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req
         }
       },
-      keepUnusedDataFor: 5,
       providesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
     }),
     addSwitchVlans: build.mutation<Vlan[], RequestPayload>({
@@ -603,7 +599,6 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      keepUnusedDataFor: 5,
       providesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
     }),
     getTaggedVlansByVenue: build.query<SwitchVlans[], RequestPayload>({
@@ -644,11 +639,13 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     }),
 
     importSwitches: build.mutation<{}, RequestFormData>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.importSwitches, params, {
-          'Content-Type': undefined,
-          'Accept': '*/*'
-        })
+      query: ({ params, payload, enableRbac }) => {
+        const headers = {
+          ...(enableRbac ? customHeaders.v1 : { Accept: '*/*' }),
+          'Content-Type': undefined
+        }
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.importSwitches, params, headers)
         return {
           ...req,
           body: payload
@@ -689,6 +686,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
             })) : []
         }
       },
+      keepUnusedDataFor: APT_QUERY_CACHE_TIME,
       providesTags: [{ type: 'SwitchBackup', id: 'LIST' }]
     }),
     addConfigBackup: build.mutation<ConfigurationBackup, RequestPayload>({
@@ -774,8 +772,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     addStackMember: build.mutation<{}, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.addStackMember, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.addStackMember, params, headers)
         return {
           ...req
           // body:
@@ -792,7 +792,6 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req
         }
       },
-      keepUnusedDataFor: 0,
       providesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
     }),
     getSwitchRoutedList: build.query<TableResult<VeViewModel>, RequestPayload>({
@@ -1081,7 +1080,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ? { data: aggregatedList }
           : { error: listQuery.error as FetchBaseQueryError }
       },
-      keepUnusedDataFor: 0,
+      keepUnusedDataFor: APT_QUERY_CACHE_TIME,
       providesTags: [{ type: 'SwitchClient', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
@@ -1173,6 +1172,16 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const headers = enableRbac ? customHeaders.v1 : {}
         const switchUrls = getSwitchUrls(enableRbac)
         const req = createHttpRequest(switchUrls.ipRoute, params, headers)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    cableTest: build.mutation<TroubleshootingResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const headers = customHeaders.v1
+        const req = createHttpRequest(SwitchRbacUrlsInfo.cableTest, params, headers)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -1353,8 +1362,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req,
           body: payload
         }
-      },
-      keepUnusedDataFor: 0
+      }
     }),
     addCliTemplate: build.mutation<CliConfiguration, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
@@ -1759,6 +1767,7 @@ export const {
   usePingMutation,
   useTraceRouteMutation,
   useIpRouteMutation,
+  useCableTestMutation,
   useMacAddressTableMutation,
   useGetTroubleshootingCleanQuery,
   useLazyGetTroubleshootingCleanQuery,

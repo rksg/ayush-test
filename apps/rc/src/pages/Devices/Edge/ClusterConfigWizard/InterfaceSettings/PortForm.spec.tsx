@@ -55,7 +55,7 @@ describe('InterfaceSettings - PortForm', () => {
       })
 
     expect(screen.getByText('Port General Settings')).toBeVisible()
-    expect(screen.getByText(/all SmartEdges in this cluster/)).toBeVisible()
+    expect(screen.getByText(/all RUCKUS Edges in this cluster/)).toBeVisible()
     expect(screen.getAllByRole('tab').length).toBe(2)
     const tab = screen.getByRole('tab', { name: 'Smart Edge 1' })
     expect(tab.getAttribute('aria-selected')).toBeTruthy()

@@ -3,13 +3,12 @@ import _ from 'lodash'
 import { intentAIUrl, Provider, store, intentAIApi } from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, within }  from '@acx-ui/test-utils'
 
-import { useIntentContext } from '../IntentContext'
-import { Intent }           from '../useIntentDetailsQuery'
+import { mockIntentContext } from '../__tests__/fixtures'
+import { Statuses }          from '../states'
+import { Intent }            from '../useIntentDetailsQuery'
 
 import { mockedCRRMGraphs, mockedIntentCRRM } from './__tests__/fixtures'
-import * as CCrrmChannel24gAuto               from './CCrrmChannel24gAuto'
-import * as CCrrmChannel5gAuto                from './CCrrmChannel5gAuto'
-import * as CCrrmChannel6gAuto                from './CCrrmChannel6gAuto'
+import * as CCrrmChannelAuto                  from './CCrrmChannelAuto'
 import { kpis }                               from './common'
 
 jest.mock('../IntentContext')
@@ -23,16 +22,9 @@ jest.mock('./RRMGraph/DownloadRRMComparison', () => ({
 }))
 
 const mockIntentContextWith = (data: Partial<Intent>) => {
-  let intent = mockedIntentCRRM
-  intent = _.merge({}, intent, data) as typeof intent
-  jest.mocked(useIntentContext).mockReturnValue({ intent, kpis })
-  return {
-    params: {
-      code: mockedIntentCRRM.code,
-      root: '33707ef3-b8c7-4e70-ab76-8e551343acb4',
-      sliceId: '4e3f1fbc-63dd-417b-b69d-2b08ee0abc52'
-    }
-  }
+  const intent = _.merge({}, mockedIntentCRRM, data) as Intent
+  const context = mockIntentContext({ intent, kpis })
+  return { params: _.pick(context.intent, ['code', 'root', 'sliceId']) }
 }
 
 describe('IntentAIDetails', () => {
@@ -46,7 +38,7 @@ describe('IntentAIDetails', () => {
   it('handle beyond data retention', async () => {
     const { params } = mockIntentContextWith({
       code: 'c-crrm-channel5g-auto',
-      status: 'applied',
+      status: Statuses.active,
       kpi_number_of_interfering_links: {
         data: {
           timestamp: null,
@@ -58,18 +50,18 @@ describe('IntentAIDetails', () => {
         }
       },
       metadata: {
-        algorithmData: { isCrrmFullOptimization: true }
+        preferences: {
+          crrmFullOptimization: true
+        }
       } as unknown as Intent['metadata']
     })
     render(
-      <CCrrmChannel5gAuto.IntentAIDetails />,
+      <CCrrmChannelAuto.IntentAIDetails />,
       { route: { params }, wrapper: Provider }
     )
 
     expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
-    expect(await screen.findByTestId('Benefits'))
-      .toHaveTextContent('Beyond data retention period')
-    expect(await screen.findByTestId('Key Performance Indications'))
+    expect(await screen.findByTestId('Details'))
       .toHaveTextContent('Beyond data retention period')
   })
 
@@ -81,45 +73,47 @@ describe('IntentAIDetails', () => {
     async function assertRenderCorrectly () {
       expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
       expect(await screen.findByTestId('IntentAIRRMGraph')).toBeVisible()
-      expect(await screen.findByTestId('DownloadRRMComparison')).toBeVisible()
-      const benefits = await screen.findByTestId('Benefits')
-      expect(await within(benefits).findAllByTestId('KPI')).toHaveLength(1)
+      const details = await screen.findByTestId('Details')
+      expect(await within(details).findAllByTestId('KPI')).toHaveLength(1)
     }
 
-    it('handle 2.4 GHz', async () => {
+    it('handles 2.4 GHz', async () => {
       const { params } = mockIntentContextWith({ code: 'c-crrm-channel24g-auto' })
       render(
-        <CCrrmChannel24gAuto.IntentAIDetails />,
+        <CCrrmChannelAuto.IntentAIDetails />,
         { route: { params }, wrapper: Provider }
       )
 
       await assertRenderCorrectly()
+      expect(await screen.findByTestId('DownloadRRMComparison')).toBeVisible()
     })
 
-    it('handle 5 GHz', async () => {
+    it('handles 5 GHz', async () => {
       const { params } = mockIntentContextWith({ code: 'c-crrm-channel5g-auto' })
       render(
-        <CCrrmChannel5gAuto.IntentAIDetails />,
+        <CCrrmChannelAuto.IntentAIDetails />,
         { route: { params }, wrapper: Provider }
       )
 
       await assertRenderCorrectly()
+      expect(await screen.findByTestId('DownloadRRMComparison')).toBeVisible()
     })
 
-    it('handle 6 GHz', async () => {
+    it('handles 6 GHz', async () => {
       const { params } = mockIntentContextWith({ code: 'c-crrm-channel5g-auto' })
       render(
-        <CCrrmChannel6gAuto.IntentAIDetails />,
+        <CCrrmChannelAuto.IntentAIDetails />,
         { route: { params }, wrapper: Provider }
       )
 
       await assertRenderCorrectly()
+      expect(await screen.findByTestId('DownloadRRMComparison')).toBeVisible()
     })
 
-    it('handle new rrm', async () => {
+    it('handles new rrm', async () => {
       const { params } = mockIntentContextWith({
         code: 'c-crrm-channel5g-auto',
-        status: 'new',
+        status: Statuses.new,
         kpi_number_of_interfering_links: {
           data: {
             timestamp: null,
@@ -129,57 +123,28 @@ describe('IntentAIDetails', () => {
             timestamp: '2024-08-14T00:00:00.000Z',
             result: 2
           }
-        },
-        metadata: {
-          algorithmData: { isCrrmFullOptimization: true }
-        } as unknown as Intent['metadata']
+        }
       })
       render(
-        <CCrrmChannel5gAuto.IntentAIDetails />,
+        <CCrrmChannelAuto.IntentAIDetails />,
         { route: { params }, wrapper: Provider }
       )
 
       await assertRenderCorrectly()
+      expect(await screen.findByTestId('DownloadRRMComparison')).toBeVisible()
 
-      expect(await screen.findByTestId('Why the intent?'))
-        .toHaveTextContent(/interfering links from 2 to 0/)
-    })
+      expect(await screen.findByText('IntentAI ensures that only the existing channels configured for this network are utilized in the channel planning process.')).toBeVisible() // eslint-disable-line max-len
 
-    it('handle active full rrm', async () => {
-      const { params } = mockIntentContextWith({
-        code: 'c-crrm-channel5g-auto',
-        status: 'applied',
-        kpi_number_of_interfering_links: {
-          data: {
-            timestamp: null,
-            result: 0
-          },
-          compareData: {
-            timestamp: '2024-08-14T00:00:00.000Z',
-            result: 2
-          }
-        },
-        metadata: {
-          algorithmData: { isCrrmFullOptimization: true }
-        } as unknown as Intent['metadata']
-      })
-      render(
-        <CCrrmChannel5gAuto.IntentAIDetails />,
-        { route: { params }, wrapper: Provider }
-      )
-
-      await assertRenderCorrectly()
-
-      expect(await screen.findByTestId('Why the intent?'))
-        .toHaveTextContent(/adjust the channel plan, bandwidth and AP transmit power when necessary to/) // eslint-disable-line max-len
+      expect(await screen.findByTestId('Benefits'))
+        .toHaveTextContent('Low interference fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.') // eslint-disable-line max-len
       expect(await screen.findByTestId('Potential trade-off'))
-        .toHaveTextContent(/for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten/) // eslint-disable-line max-len
+        .toHaveTextContent('In the quest for minimizing interference between access points (APs), AI algorithms may opt to narrow channel widths. While this can enhance spectral efficiency and alleviate congestion, it also heightens vulnerability to noise, potentially reducing throughput. Narrow channels limit data capacity, which could lower overall throughput.') // eslint-disable-line max-len
     })
 
-    it('handle active partial rrm', async () => {
+    it('handles active full rrm', async () => {
       const { params } = mockIntentContextWith({
         code: 'c-crrm-channel5g-auto',
-        status: 'applied',
+        status: Statuses.active,
         kpi_number_of_interfering_links: {
           data: {
             timestamp: null,
@@ -191,20 +156,93 @@ describe('IntentAIDetails', () => {
           }
         },
         metadata: {
-          algorithmData: { isCrrmFullOptimization: false }
+          preferences: {
+            crrmFullOptimization: true
+          }
         } as unknown as Intent['metadata']
       })
       render(
-        <CCrrmChannel5gAuto.IntentAIDetails />,
+        <CCrrmChannelAuto.IntentAIDetails />,
         { route: { params }, wrapper: Provider }
       )
 
       await assertRenderCorrectly()
+      expect(await screen.findByTestId('DownloadRRMComparison')).toBeVisible()
 
-      expect(await screen.findByTestId('Why the intent?'))
-        .toHaveTextContent(/adjust the channel plan when necessary to/)
+      expect(await screen.findByText('IntentAI ensures that only the existing channels configured for this network are utilized in the channel planning process.')).toBeVisible() // eslint-disable-line max-len
+
+      expect(await screen.findByTestId('Benefits'))
+        .toHaveTextContent('Low interference fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.') // eslint-disable-line max-len
       expect(await screen.findByTestId('Potential trade-off'))
-        .toHaveTextContent(/for channel and Auto Channel Selection will potentially be overwritten/)
+        .toHaveTextContent('In the quest for minimizing interference between access points (APs), AI algorithms may opt to narrow channel widths. While this can enhance spectral efficiency and alleviate congestion, it also heightens vulnerability to noise, potentially reducing throughput. Narrow channels limit data capacity, which could lower overall throughput.') // eslint-disable-line max-len
+    })
+
+    it('handles active partial rrm', async () => {
+      const { params } = mockIntentContextWith({
+        code: 'c-crrm-channel5g-auto',
+        status: Statuses.active,
+        kpi_number_of_interfering_links: {
+          data: {
+            timestamp: null,
+            result: 0
+          },
+          compareData: {
+            timestamp: '2024-08-14T00:00:00.000Z',
+            result: 2
+          }
+        },
+        metadata: {
+          preferences: {
+            crrmFullOptimization: false
+          }
+        } as unknown as Intent['metadata']
+      })
+      render(
+        <CCrrmChannelAuto.IntentAIDetails />,
+        { route: { params }, wrapper: Provider }
+      )
+
+      await assertRenderCorrectly()
+      expect(await screen.findByTestId('DownloadRRMComparison')).toBeVisible()
+
+      expect(await screen.findByText('IntentAI ensures that only the existing channels configured for this network are utilized in the channel planning process.')).toBeVisible() // eslint-disable-line max-len
+
+      expect(await screen.findByTestId('Benefits'))
+        .toHaveTextContent('Low interference fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.')  // eslint-disable-line max-len
+      expect(await screen.findByTestId('Potential trade-off'))
+        .toHaveTextContent('In the quest for minimizing interference between access points (APs), AI algorithms may opt to narrow channel widths. While this can enhance spectral efficiency and alleviate congestion, it also heightens vulnerability to noise, potentially reducing throughput. Narrow channels limit data capacity, which could lower overall throughput.') // eslint-disable-line max-len
+    })
+
+    it('handles paused rrm', async () => {
+      const { params } = mockIntentContextWith({
+        code: 'c-crrm-channel5g-auto',
+        status: Statuses.paused,
+        kpi_number_of_interfering_links: {
+          data: {
+            timestamp: null,
+            result: 0
+          },
+          compareData: {
+            timestamp: '2024-08-14T00:00:00.000Z',
+            result: 2
+          }
+        }
+      })
+      render(
+        <CCrrmChannelAuto.IntentAIDetails />,
+        { route: { params }, wrapper: Provider }
+      )
+
+      await assertRenderCorrectly()
+      expect(screen.queryByTestId('DownloadRRMComparison')).not.toBeInTheDocument()
+
+      /* eslint-disable max-len */
+      expect(await screen.findByText('When activated, this Intent takes over the automatic channel planning in the network.')).toBeVisible()
+      expect(await screen.findByTestId('Benefits'))
+        .toHaveTextContent('Low interference fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.')
+      expect(await screen.findByTestId('Potential trade-off'))
+        .toHaveTextContent('In the quest for minimizing interference between access points (APs), AI algorithms may opt to narrow channel widths. While this can enhance spectral efficiency and alleviate congestion, it also heightens vulnerability to noise, potentially reducing throughput. Narrow channels limit data capacity, which could lower overall throughput.')
+      /* eslint-enable max-len */
     })
   })
 })

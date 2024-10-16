@@ -3,20 +3,21 @@ import { useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, Loader, PageHeader, SummaryCard, Tabs }                                                                                                              from '@acx-ui/components'
-import { caTypeShortLabel }                                                                                                                                           from '@acx-ui/rc/components'
-import { useGetAdaptivePolicySetQuery, useGetCertificateAuthorityQuery, useGetCertificateTemplateQuery, useGetSpecificTemplateCertificatesQuery }                     from '@acx-ui/rc/services'
-import { PolicyOperation, PolicyType, filterByAccessForServicePolicyMutation, getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath, getScopeKeyByPolicy } from '@acx-ui/rc/utils'
-import { TenantLink }                                                                                                                                                 from '@acx-ui/react-router-dom'
-import { noDataDisplay }                                                                                                                                              from '@acx-ui/utils'
+import { Button, Loader, PageHeader, SummaryCard, Tabs }                                                                                                                             from '@acx-ui/components'
+import { caTypeShortLabel, CertificateTable }                                                                                                                                        from '@acx-ui/rc/components'
+import { useGetAdaptivePolicySetQuery, useGetCertificateTemplateQuery, useGetPersonaGroupByIdQuery, useGetSpecificTemplateCertificatesQuery, useGetSpecificTemplateScepKeysQuery }   from '@acx-ui/rc/services'
+import { PolicyOperation, PolicyType, filterByAccessForServicePolicyMutation, getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath, getScopeKeyByPolicy, useTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                                                                                                from '@acx-ui/react-router-dom'
+import { noDataDisplay }                                                                                                                                                             from '@acx-ui/utils'
 
-import CertificateTable from '../CertificateTemplateTable/CertificateTable'
-import { Section }      from '../styledComponents'
+import { Section } from '../styledComponents'
 
 import ChromebookTab from './ChromebookTab'
+import ScepTable     from './ScepTable'
 
 enum TabKeyType {
   CERTIFICATE = 'certificate',
+  SCEP = 'scep',
   CHROMEBOOK = 'chromebook'
 }
 
@@ -28,6 +29,9 @@ export default function CertificateTemplateDetail () {
     params: { templateId: params.policyId },
     payload: { pageSize: 1, page: 1 }
   })
+  const scepKey = useGetSpecificTemplateScepKeysQuery({
+    params: { templateId: params.policyId, pageSize: '1', page: '0' }
+  })
   const { data: certificateTemplateData, isLoading } = useGetCertificateTemplateQuery({ params })
   const { policySetName } = useGetAdaptivePolicySetQuery(
     { params: { policySetId: certificateTemplateData?.policySetId } },
@@ -37,14 +41,22 @@ export default function CertificateTemplateDetail () {
         policySetName: data?.name || certificateTemplateData?.policySetId
       })
     })
-  const { privateKeyBase64 } = useGetCertificateAuthorityQuery(
-    { params: { caId: certificateTemplateData?.onboard?.certificateAuthorityId } },
+  const { identityGroupName } = useGetPersonaGroupByIdQuery(
+    { params: { groupId: certificateTemplateData?.identityGroupId } },
     {
-      skip: !certificateTemplateData?.onboard?.certificateAuthorityId,
+      skip: !certificateTemplateData?.identityGroupId,
       selectFromResult: ({ data }) => ({
-        privateKeyBase64: data?.privateKeyBase64
+        identityGroupName: data?.name || certificateTemplateData?.identityGroupId
       })
     })
+  const certificateTableQuery = useTableQuery({
+    useQuery: useGetSpecificTemplateCertificatesQuery,
+    defaultPayload: {},
+    apiParams: { templateId: certificateTemplateData?.id! },
+    option: {
+      skip: !certificateTemplateData?.id
+    }
+  })
 
   const summaryInfo = [
     {
@@ -60,6 +72,11 @@ export default function CertificateTemplateDetail () {
       colSpan: 4
     },
     {
+      title: $t({ defaultMessage: 'Identity Group' }),
+      content: identityGroupName || certificateTemplateData?.identityGroupId || noDataDisplay,
+      colSpan: 4
+    },
+    {
       title: $t({ defaultMessage: 'Adaptive Policy Set' }),
       content: policySetName || certificateTemplateData?.policySetId || noDataDisplay,
       colSpan: 4
@@ -68,14 +85,18 @@ export default function CertificateTemplateDetail () {
 
   const tabMapping = {
     [TabKeyType.CERTIFICATE]: <CertificateTable
+      tableQuery={certificateTableQuery}
       templateData={certificateTemplateData}
-      showGenerateCert={!!privateKeyBase64} />,
+      showGenerateCert={true} />,
+    [TabKeyType.SCEP]: <ScepTable templateId={certificateTemplateData?.id}/>,
     [TabKeyType.CHROMEBOOK]: <ChromebookTab data={certificateTemplateData} />
   }
 
   const tabTitle = {
     [TabKeyType.CERTIFICATE]: $t({ defaultMessage: 'Certificate ({count})' },
       { count: certificate.data?.totalCount || 0 }),
+    [TabKeyType.SCEP]: $t({ defaultMessage: 'SCEP Keys ({count})' },
+      { count: scepKey.data?.totalCount || 0 }),
     [TabKeyType.CHROMEBOOK]: $t({ defaultMessage: 'Chromebook Enrollment' })
   }
 

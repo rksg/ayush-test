@@ -2,7 +2,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { PageHeader }                                                                  from '@acx-ui/components'
-import { useCreateNetworkSegmentationGroupMutation }                                   from '@acx-ui/rc/services'
+import { useEdgePinActions }                                                           from '@acx-ui/rc/components'
 import { getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
 
 import { PersonalIdentityNetworkForm }             from '../PersonalIdentityNetworkForm'
@@ -14,15 +14,14 @@ import { SmartEdgeForm }                           from '../PersonalIdentityNetw
 import { SummaryForm }                             from '../PersonalIdentityNetworkForm/SummaryForm'
 import { WirelessNetworkForm }                     from '../PersonalIdentityNetworkForm/WirelessNetworkForm'
 
-
-
 const AddPersonalIdentityNetwork = () => {
 
   const { tenantId } = useParams()
   const { $t } = useIntl()
-  const [createNetworkSegmentationGroup] = useCreateNetworkSegmentationGroupMutation()
+  const { addPin } = useEdgePinActions()
+
   const tablePath = getServiceRoutePath(
-    { type: ServiceType.NETWORK_SEGMENTATION, oper: ServiceOperation.LIST })
+    { type: ServiceType.PIN, oper: ServiceOperation.LIST })
 
   const steps = [
     {
@@ -30,7 +29,7 @@ const AddPersonalIdentityNetwork = () => {
       content: <GeneralSettingsForm />
     },
     {
-      title: $t({ defaultMessage: 'SmartEdge' }),
+      title: $t({ defaultMessage: 'RUCKUS Edge' }),
       content: <SmartEdgeForm />
     },
     {
@@ -67,7 +66,7 @@ const AddPersonalIdentityNetwork = () => {
           initialValues={{
             vxlanTunnelProfileId: tenantId
           }}
-          onFinish={createNetworkSegmentationGroup}
+          onFinish={addPin}
         />
       </PersonalIdentityNetworkFormDataProvider>
     </>

@@ -41,7 +41,7 @@ export interface BaseNetwork {
   nwSubType: string
   ssid: string
   vlan: number
-  aps: number
+  aps: number // non-RBAC only
   clients?: number  // non-RBAC only
   venues: { count: number, names: string[], ids: string[] }
   captiveType?: GuestNetworkTypeEnum
@@ -75,6 +75,7 @@ export interface Network extends BaseNetwork{
 }
 
 export interface WifiNetwork extends Network{
+  apCount: number, // RBAC API only: replace the aps field
   clientCount: number,  // RBAC API only: replace the client field
   venueApGroups: VenueApGroup[], // RBAC API only: replace the venues field
   tunnelWlanEnable?: boolean
@@ -130,6 +131,8 @@ export interface NetworkSaveData {
   enableDhcp?: boolean
   enableDeviceOs?: boolean
   wlan?: {
+    accessControlEnabled?: boolean
+    accessControlProfileId?: string
     ssid?: string
     vlanId?: number
     enable?: boolean

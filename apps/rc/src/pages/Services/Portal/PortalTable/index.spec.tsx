@@ -18,8 +18,8 @@ import {
   waitFor,
   within
 } from '@acx-ui/test-utils'
-import { WifiScopes }                     from '@acx-ui/types'
-import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import { RolesEnum, WifiScopes }                          from '@acx-ui/types'
+import { CustomRoleType, getUserProfile, setUserProfile } from '@acx-ui/user'
 
 
 import { mockedPortalList, networksResponse } from './__tests__/fixtures'
@@ -164,12 +164,14 @@ describe('PortalTable', () => {
     it('should dispaly with custom scopeKeys', async () => {
       setUserProfile({
         profile: {
-          ...getUserProfile().profile
+          ...getUserProfile().profile,
+          customRoleType: CustomRoleType.SYSTEM,
+          customRoleName: RolesEnum.ADMINISTRATOR
         },
         allowedOperations: [],
         abacEnabled: true,
-        isCustomRole: true,
-        scopes: [WifiScopes.CREATE]
+        isCustomRole: false,
+        hasAllVenues: true
       })
 
       render(

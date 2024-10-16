@@ -1,7 +1,5 @@
 import { IntlShape } from 'react-intl'
 
-import { SwitchStatusEnum } from '..'
-
 export interface UpgradePreferences {
   days?: Array<string>,
   times?: Array<string>,
@@ -379,12 +377,26 @@ export enum SwitchFwStatusEnum {
   FW_UPD_PRE_DOWNLOAD_COMPLETE = 'FW_UPD_PRE_DOWNLOAD_COMPLETE',
   FW_UPD_WAITING_RESPONSE = 'FW_UPD_WAITING_RESPONSE'
 }
+
+export enum SwitchStatusRdbEnum {
+  OPERATIONAL = 'ONLINE',
+  DISCONNECTED = 'OFFLINE',
+  PROVISION = 'PROVISION',
+  DISCOVERY = 'DISCOVERY',
+  HBLOST = 'HBLOST',
+  REBOOTING = 'REBOOTING',
+  FIRMWARE_UPGRADING = 'FIRMWARE_UPGRADING',
+  UNRECOGNIZED = 'UNRECOGNIZED',
+  RELOADING = 'RELOADING',
+  PRIME_UPGRADE_COMPLETED = 'PRIME_UPGRADE_COMPLETED'
+}
+
 export interface SwitchFirmwareStatus {
   switchId: string;
   switchName: string;
   status: SwitchFwStatusEnum;
   targetFirmware: string;
-  switchStatus: SwitchStatusEnum;
+  switchStatus: SwitchStatusRdbEnum;
   lastStatusUpdateTime?: string;
 }
 
@@ -487,4 +499,30 @@ export interface ApFirmwareStartBatchOperationResult {
   response: {
     batchId: string
   }
+}
+
+export enum EdgeFirmwareBatchOperationType {
+  UPDATE_NOW = 'UPDATE_NOW',
+  SKIP_SCHEDULE = 'SKIP_SCHEDULE',
+  CHANGE_SCHEDULE = 'CHANGE_SCHEDULE'
+}
+
+export interface EdgeFirmwareStartBatchOperationResult {
+  requestId: string;
+  response: {
+    batchId: string;
+  }
+}
+
+export interface StartEdgeFirmwareVenueUpdateNowPayload {
+  venueIds: string[];
+  version: string;
+  state: string;
+}
+
+export interface UpdateEdgeFirmwareVenueSchedulePayload {
+  date?: string;
+  time?: string;
+  version?: string
+  venueIds: string[]
 }

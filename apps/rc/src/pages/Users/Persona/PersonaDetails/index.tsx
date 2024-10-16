@@ -1,12 +1,13 @@
-import { useEffect, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 
 import { Col, Row, Space, Tag, Typography } from 'antd'
 import { useIntl }                          from 'react-intl'
 import { useParams }                        from 'react-router-dom'
 
-import { Button, cssStr, Loader, PageHeader, showActionModal, Subtitle } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                      from '@acx-ui/feature-toggle'
+import { Button, cssStr, Loader, PageHeader, showActionModal, Subtitle, Tabs } from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                            from '@acx-ui/feature-toggle'
 import {
+  CertificateTable,
   ConnectionMeteringLink,
   DpskPoolLink,
   IdentityGroupLink,
@@ -20,37 +21,46 @@ import {
 } from '@acx-ui/rc/components'
 import {
   useAllocatePersonaVniMutation,
+  useGetCertificatesByIdentityIdQuery,
+  useGetCertificateTemplateQuery,
   useGetPersonaByIdQuery,
   useLazyGetConnectionMeteringByIdQuery,
   useLazyGetDpskQuery,
   useLazyGetMacRegListQuery,
-  useLazyGetNetworkSegmentationGroupByIdQuery,
+  useLazyGetEdgePinByIdQuery,
   useLazyGetPersonaGroupByIdQuery,
   useLazyGetPropertyUnitByIdQuery,
   useUpdatePersonaMutation
 } from '@acx-ui/rc/services'
-import { ConnectionMetering, PersonaGroup } from '@acx-ui/rc/utils'
-import { hasCrossVenuesPermission }         from '@acx-ui/user'
-import { noDataDisplay }                    from '@acx-ui/utils'
+import { ConnectionMetering, PersonaGroup, useTableQuery } from '@acx-ui/rc/utils'
+import { hasCrossVenuesPermission }                        from '@acx-ui/user'
+import { noDataDisplay }                                   from '@acx-ui/utils'
 
 import { blockedTagStyle, PersonaBlockedIcon } from '../styledComponents'
 
 import { PersonaDevicesTable } from './PersonaDevicesTable'
 
+export const IdentityDeviceContext = createContext({} as {
+  setDeviceCount: (data: number) => void
+})
 
 function PersonaDetails () {
   const { $t } = useIntl()
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isCertTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
   const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const { tenantId, personaGroupId, personaId } = useParams()
+  const [activeTab, setActiveTab] = useState('device')
   const [personaGroupData, setPersonaGroupData] = useState<PersonaGroup>()
   const [connectionMetering, setConnectionMetering] = useState<ConnectionMetering>()
   const [macPoolData, setMacPoolData] = useState({} as { id?: string, name?: string } | undefined)
   const [dpskPoolData, setDpskPoolData] = useState({} as { id?: string, name?: string } | undefined)
-  const [nsgData, setNsgData] = useState({} as { id?: string, name?: string } | undefined)
+  const [pinData, setPinData] = useState({} as { id?: string, name?: string } | undefined)
   const [unitData, setUnitData] =
     useState({} as { venueId?: string, unitId?: string, name?: string } | undefined)
   const [editDrawerVisible, setEditDrawerVisible] = useState(false)
+
+  const [deviceCount, setDeviceCount] = useState(0)
 
   // TODO: isLoading state?
   const [updatePersona] = useUpdatePersonaMutation()
@@ -58,11 +68,25 @@ function PersonaDetails () {
   const [getPersonaGroupById] = useLazyGetPersonaGroupByIdQuery()
   const [getMacRegistrationById] = useLazyGetMacRegListQuery()
   const [getDpskPoolById] = useLazyGetDpskQuery()
-  const [getNsgById] = useLazyGetNetworkSegmentationGroupByIdQuery()
+  const [getPinById] = useLazyGetEdgePinByIdQuery()
   const [getUnitById] = useLazyGetPropertyUnitByIdQuery()
   const personaDetailsQuery = useGetPersonaByIdQuery({
     params: { groupId: personaGroupId, id: personaId }
   })
+  const { data: certTemplateData } = useGetCertificateTemplateQuery({
+    params: { policyId: personaGroupData?.certificateTemplateId! }
+  }, { skip: !personaGroupData?.certificateTemplateId || !isCertTemplateEnabled })
+  const certTableQuery = useTableQuery({
+    useQuery: useGetCertificatesByIdentityIdQuery,
+    apiParams: {
+      templateId: personaGroupData?.certificateTemplateId!,
+      personaId: personaId!
+    },
+    defaultPayload: {},
+    option: {
+      skip: !isCertTemplateEnabled || !personaGroupData?.certificateTemplateId || !personaId
+    } })
+
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const [getConnectionMeteringById] = useLazyGetConnectionMeteringByIdQuery()
   const [vniRetryable, setVniRetryable] = useState<boolean>(false)
@@ -110,9 +134,9 @@ function PersonaDetails () {
 
     if (personaGroupData.personalIdentityNetworkId && networkSegmentationEnabled) {
       let name: string | undefined
-      getNsgById({ params: { tenantId, serviceId: personaGroupData.personalIdentityNetworkId } })
+      getPinById({ params: { tenantId, serviceId: personaGroupData.personalIdentityNetworkId } })
         .then(result => name = result.data?.name)
-        .finally(() => setNsgData({ id: personaGroupData.personalIdentityNetworkId, name }))
+        .finally(() => setPinData({ id: personaGroupData.personalIdentityNetworkId, name }))
     }
 
     if (propertyEnabled && personaGroupData.propertyId && personaDetailsQuery?.data?.identityId) {
@@ -129,9 +153,9 @@ function PersonaDetails () {
   useEffect(() => {
     if (!personaGroupData || !personaDetailsQuery.data) return
     const { primary = true, revoked } = personaDetailsQuery.data
-    const hasNSG = !!personaGroupData?.personalIdentityNetworkId
+    const hasPin = !!personaGroupData?.personalIdentityNetworkId
 
-    setVniRetryable(hasNSG && primary && !revoked)
+    setVniRetryable(hasPin && primary && !revoked)
   }, [personaGroupData, personaDetailsQuery])
 
   const revokePersona = async () => {
@@ -212,7 +236,7 @@ function PersonaDetails () {
       personaGroupData?.personalIdentityNetworkId
         && <NetworkSegmentationLink
           showNoData={true}
-          name={nsgData?.name}
+          name={pinData?.name}
           id={personaGroupData?.personalIdentityNetworkId}
         />
     },
@@ -312,12 +336,39 @@ function PersonaDetails () {
           }
         </Row>
 
-
-        <PersonaDevicesTable
-          disableAddButton={!personaGroupData?.macRegistrationPoolId}
-          persona={personaDetailsQuery.data}
-          dpskPoolId={personaGroupData?.dpskPoolId}
-        />
+        <Tabs onChange={setActiveTab} activeKey={activeTab}>
+          <Tabs.TabPane
+            key={'device'}
+            tab={$t(
+              { defaultMessage: 'Devices ({deviceCount})' },
+              { deviceCount }
+            )}
+          >
+            <IdentityDeviceContext.Provider value={{ setDeviceCount }}>
+              <PersonaDevicesTable
+                disableAddButton={!personaGroupData?.macRegistrationPoolId}
+                persona={personaDetailsQuery.data}
+                dpskPoolId={personaGroupData?.dpskPoolId}
+              />
+            </IdentityDeviceContext.Provider>
+          </Tabs.TabPane>
+          {(isCertTemplateEnabled && personaGroupData?.certificateTemplateId && certTemplateData) &&
+            <Tabs.TabPane
+              key={'certificate'}
+              tab={$t(
+                { defaultMessage: 'Certificates ({certificateCount})' },
+                { certificateCount: certTableQuery?.data?.totalCount ?? 0 }
+              )}
+            >
+              <CertificateTable
+                showGenerateCert={!personaDetailsQuery.data?.revoked ?? false}
+                templateData={certTemplateData}
+                tableQuery={certTableQuery}
+                specificIdentity={personaId}
+              />
+            </Tabs.TabPane>
+          }
+        </Tabs>
       </Space>
 
       {personaDetailsQuery.data &&

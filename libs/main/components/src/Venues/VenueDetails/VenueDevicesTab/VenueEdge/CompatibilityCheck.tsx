@@ -9,7 +9,9 @@ import {
 } from '@acx-ui/rc/utils'
 
 
-export const CompatibilityCheck = ({ data }: { data: EntityCompatibility[] }) => {
+export const CompatibilityCheck = ({ data, venueId }:
+  { data: EntityCompatibility[], venueId?: string }
+) => {
   const { $t } = useIntl()
   const [drawerFeature, setDrawerFeature] = useState<boolean>(false)
 
@@ -24,9 +26,9 @@ export const CompatibilityCheck = ({ data }: { data: EntityCompatibility[] }) =>
       <CompatibleAlertBanner
         title={$t({
           defaultMessage: `{edgeCount} { edgeCount, plural,
-                  one {SmartEdge is}
-                  other {SmartEdges are}
-                } not compatible with certain SmartEdge features.`
+                  one {RUCKUS Edge is}
+                  other {RUCKUS Edges are}
+                } not compatible with certain RUCKUS Edge features.`
         },
         {
           edgeCount: incompatibleCount
@@ -38,6 +40,7 @@ export const CompatibilityCheck = ({ data }: { data: EntityCompatibility[] }) =>
         visible={drawerFeature}
         title={$t({ defaultMessage: 'Incompatibility Details' })}
         type={EdgeCompatibilityType.VENUE}
+        venueId={venueId}
         data={data}
         onClose={() => toggleCompatibilityDrawer(false)}
         width={700}
