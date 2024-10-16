@@ -22,6 +22,29 @@ export const CustomizedSubtitle = styled(Subtitle)`
   gap: 4px;
 `
 
+export const CustomizedFieldsWrapper = styled.div`
+  .ant-collapse {
+    .ant-collapse-header {
+      padding: 0;
+      font-size: var(--acx-body-4-font-size);
+      font-weight: var(--acx-subtitle-6-font-weight-bold);
+      color: var(--acx-neutrals-60);
+      display: flex;
+      flex-direction: row-reverse;
+      .ant-collapse-header-text {
+        flex: none;
+        margin-right: 4px;
+      }
+      .ant-collapse-expand-icon {
+        flex: 1;
+      }
+    }
+    .ant-collapse-content-box {
+      padding: 4px 0 0 !important;
+    }
+  }
+`
+
 export const CustomizedFields = styled(Space)`
   display: grid;
   grid-template-columns: 1fr 4px 1fr 24px;

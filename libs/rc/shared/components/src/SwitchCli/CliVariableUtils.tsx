@@ -1,9 +1,9 @@
-import { Fragment } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 
-import { Divider, Form, FormInstance, FormListFieldData, Input, Select, Space } from 'antd'
-import { RuleObject }                                                           from 'antd/lib/form'
-import _                                                                        from 'lodash'
-import { intersection, isArray }                                                from 'lodash'
+import { Collapse, Divider, Form, FormInstance, FormListFieldData, Input, Select, Space } from 'antd'
+import { RuleObject }                                                                     from 'antd/lib/form'
+import _                                                                                  from 'lodash'
+import { intersection, isArray }                                                          from 'lodash'
 
 import {
   Button,
@@ -27,6 +27,8 @@ import * as UI from './styledComponents'
 
 import { SwitchSettings } from './'
 
+import type { CollapseProps } from 'antd'
+
 export const MAX_VARIABLE_COUNT = 200
 export const MAX_LENGTH_OF_STRING = 20
 export const MAX_LENGTH_OF_CUSTOMIZED_STRING = 10000
@@ -47,11 +49,12 @@ export interface variableFormData {
   subMask?: string
   rangeStart?: number
   rangeEnd?: number
-  string?:string
+  string?: string
 }
 
 export interface ExtendedSwitchViewModel extends SwitchViewModel {
   isApplied: boolean
+  isModalOverlap?: boolean
   isConfigured?: boolean
 }
 
@@ -110,7 +113,7 @@ export function getVariableSeparator (type: string) {
 
 export function getVariableColor (type: string) {
   const variableType = type.toUpperCase()
-  const colorMap:{ [key:string]: string } = {
+  const colorMap: { [key: string]: string } = {
     ADDRESS: 'var(--acx-semantics-green-40)',
     RANGE: 'var(--acx-accents-blue-50)',
     STRING: 'var(--acx-accents-orange-50)'
@@ -179,8 +182,10 @@ export const getVariableFields = (
             />
           </>}
           rules={[
-            { required: true,
-              message: $t({ defaultMessage: 'Please enter Start Value' }) },
+            {
+              required: true,
+              message: $t({ defaultMessage: 'Please enter Start Value' })
+            },
             {
               type: 'integer', transform: Number, min: 0, max: 65535,
               message: $t(validationMessages.numberRangeInvalid, { from: 0, to: 65535 })
@@ -212,8 +217,10 @@ export const getVariableFields = (
             />
           </>}
           rules={[
-            { required: true,
-              message: $t({ defaultMessage: 'Please enter End Value' }) },
+            {
+              required: true,
+              message: $t({ defaultMessage: 'Please enter End Value' })
+            },
             {
               type: 'integer', transform: Number, min: 0, max: 65535,
               message: $t(validationMessages.numberRangeInvalid, { from: 0, to: 65535 })
@@ -246,11 +253,14 @@ export const getVariableFields = (
           />
         </>}
         rules={[
-          { required: true,
-            message: $t({ defaultMessage: 'Please enter String' }) },
-          { validator: (_, value) => isCustomizedVariableEnabled
-            ? specialCharactersWithNewLineRegExp(value)
-            : specialCharactersRegExp(value)
+          {
+            required: true,
+            message: $t({ defaultMessage: 'Please enter String' })
+          },
+          {
+            validator: (_, value) => isCustomizedVariableEnabled
+              ? specialCharactersWithNewLineRegExp(value)
+              : specialCharactersRegExp(value)
           }
         ]}
         validateFirst
@@ -270,8 +280,8 @@ export const getCustomizeFieldsText = (type: string) => {
   switch (type) {
     case VariableType.ADDRESS:
       return <UI.CustomizedSubtitle level={5}>
-        { $t({ defaultMessage: 'IP Address' }) }
-        { getRequiredMark() }
+        {$t({ defaultMessage: 'IP Address' })}
+        {getRequiredMark()}
         <Tooltip
           title={$t(SwitchCliMessages.ALLOW_CUSTOMIZED_ADDRESS_TOOLTIP)}
           placement='top'
@@ -281,19 +291,19 @@ export const getCustomizeFieldsText = (type: string) => {
       </UI.CustomizedSubtitle>
     case VariableType.RANGE:
       return <UI.CustomizedSubtitle level={5}>
-        { $t({ defaultMessage: 'Value' }) }
-        { getRequiredMark() }
+        {$t({ defaultMessage: 'Value' })}
+        {getRequiredMark()}
         <Tooltip
           title={$t(SwitchCliMessages.ALLOW_CUSTOMIZED_RANGE_TOOLTIP)}
           placement='top'
         >
-          <QuestionMarkCircleOutlined size='sm'/>
+          <QuestionMarkCircleOutlined size='sm' />
         </Tooltip>
       </UI.CustomizedSubtitle>
     default:
       return <UI.CustomizedSubtitle level={5}>
-        { $t({ defaultMessage: 'String' }) }
-        { getRequiredMark() }
+        {$t({ defaultMessage: 'String' })}
+        {getRequiredMark()}
         <Tooltip
           title={$t(SwitchCliMessages.ALLOW_CUSTOMIZED_CLI_TOOLTIP)}
           placement='top'
@@ -330,172 +340,400 @@ export const getCustomizeFields = (
   switchList: AllowedSwitchObjList,
   type: string,
   customizedRequiredFields: string[],
+  hasCustomize: boolean,
   form: FormInstance
 ) => {
   const { $t } = getIntl()
-  return <Form.List name='switchVariables'>
-    {
-      (fields, { add, remove }) => (
-        <>
-          {!!fields?.length && <Divider />}
-          <UI.CustomizedFields data-testid='customized-form'>
-            {!!fields?.length && <>
-              <UI.CustomizedSubtitle level={5}>
-                { $t({ defaultMessage: 'Switch' }) }
-                { getRequiredMark() }
-                <Tooltip
-                  title={$t(SwitchCliMessages.PREPROVISIONED_SWITCH_LIST_TOOLTIP)}
-                  placement='top'
-                >
-                  <QuestionMarkCircleOutlined size='sm'/>
-                </Tooltip>
-              </UI.CustomizedSubtitle>
-              <Space> </Space>
-              { getCustomizeFieldsText(type) }
-              <Space> </Space>
-            </>}
-            {fields.map(({ key, name, ...restField }, index) => (<Fragment key={key}>
-              <Form.Item
-                {...restField}
-                name={[name, 'serialNumbers']}
-                validateFirst
-                rules={[{
-                  required: true,
-                  message: $t({ defaultMessage: 'Please enter Switch' })
-                }, {
-                  validator: (_: RuleObject, value: string) => {
-                    const currentSerialNumbers = isArray(value) ? value : [value]
-                    const switchVariables = form.getFieldValue('switchVariables') as {
-                      serialNumbers: string[],
-                      value: string
-                    }[]
-                    const serialNumbers = switchVariables
-                      .filter((switchVariable, i) => i !== index && switchVariable?.serialNumbers)
-                      .map(switchVariable => switchVariable?.serialNumbers).flat()
-                    // eslint-disable-next-line max-len
-                    const isValid = intersection(currentSerialNumbers, serialNumbers)?.length === 0
+  const { configuredSwitchVariables, preprovisionedSwitchVariables }
+    = form.getFieldsValue(['configuredSwitchVariables', 'preprovisionedSwitchVariables'])
+  console.log('variables: ', configuredSwitchVariables, preprovisionedSwitchVariables)
+  const hasConfiguredSwitchVariables = !!configuredSwitchVariables?.length
+  const hasPreprovisionedSwitchVariables = !!preprovisionedSwitchVariables?.length
+  const hasCustomizeVariables = hasConfiguredSwitchVariables || hasPreprovisionedSwitchVariables || false
 
-                    if (isValid) {
-                      return Promise.resolve()
-                    }
-                    return Promise.reject()
-                  },
-                  message: $t({ defaultMessage: 'Serial Numbers should be unique' })
-                }]}
-                children={
-                  <UI.Select
-                    data-testid={`customized-select-${key}`}
-                    showSearch
-                    showArrow={false}
-                    className={type === VariableType.STRING ? 'string-type' : ''}
-                    mode={type !== VariableType.ADDRESS ? 'multiple' : undefined}
-                    type={type === VariableType.ADDRESS ? 'radio' : undefined}
-                    dropdownMatchSelectWidth={false}
-                    maxTagCount='responsive'
-                    placeholder={$t({ defaultMessage: 'Search Switch' })}
-                    optionFilterProp='key'
-                  >{
-                      Object.keys(switchList).map(model => (
-                        <Select.OptGroup
-                          key={model}
-                          label={model}
-                          children={switchList[model]?.map(s => {
-                            const hasSwitchName = s.name !== s.serialNumber
-                            const name
-                              = hasSwitchName ? `${s.serialNumber} (${s.name})` : (s.name ?? '')
 
-                            return <Select.Option
-                              disabled={s.isApplied} // TODO
-                              key={name}
-                              value={s.serialNumber}
-                              label={name}
-                            >
-                              <Tooltip
-                                title={s?.isApplied ?
-                                  $t(SwitchCliMessages.NOT_ALLOWED_APPLY_PROFILE) : ''
-                                }
-                                placement='top'
-                              >
-                                <Space className='option-label'>
-                                  <div className='label'>
-                                    <div className='title'>{ name }</div>
-                                    <div className='subtitle'>{ s.venueName }</div>
-                                  </div>
-                                </Space>
-                              </Tooltip>
-                            </Select.Option>
-                          })
-                          }
-                        />
-                      ))
-                    }</UI.Select>
-                }
-              />
-              <Space style={{
-                textAlign: 'center',
-                height: type === VariableType.STRING ? '50.5px' : '32px'
-              }}>:</Space>
-              <Form.Item
-                {...restField}
-                name={[name, 'value']}
-                validateFirst
-                rules={[{
-                  required: true,
-                  message: $t({ defaultMessage: 'Please enter Value' })
-                },
-                ...( type === VariableType.ADDRESS ? [{
-                  validator: () => validateRequiredAddress(form)
-                }, {
-                  validator: (_:RuleObject, value:string) => validateValidIp(value, form),
-                  message: $t({ defaultMessage: 'Please enter valid value' })
-                }, {
-                  // eslint-disable-next-line max-len
-                  validator: (_:RuleObject, value:string) => validateDuplicateIp(value, index, form)
-                }] : []),
-                ...( type === VariableType.RANGE ? [{
-                  validator: (_:RuleObject, value:number) => {
-                    // eslint-disable-next-line max-len
-                    const isValid = validateInRange(value, form.getFieldValue('rangeStart'), form.getFieldValue('rangeEnd'))
-                    return isValid
-                      ? Promise.resolve()
-                      : Promise.reject($t({ defaultMessage: 'Please enter valid value' }))
-                  }
-                }] : [])
-                ]}
-              >
-                { type === VariableType.STRING
-                  ? <Input.TextArea
-                    data-testid={`customized-textarea-${key}`}
-                    maxLength={MAX_LENGTH_OF_CUSTOMIZED_STRING}
-                  />
-                  : <Input data-testid={`customized-input-${key}`} />
-                }
-              </Form.Item>
-              <Button
-                key={`delete${key}`}
-                role='deleteBtn'
-                type='link'
-                icon={<DeleteOutlined size='sm' />}
-                style={{
-                  display: 'flex', height: type === VariableType.STRING ? '50.5px' : ''
-                }}
-                onClick={() => remove(name)}
-              />
-            </Fragment>
-            ))}
-          </UI.CustomizedFields>
-          <Button type='link'
-            size='small'
-            disabled={getCustomizeButtonDisabled(type, fields, customizedRequiredFields)}
-            onClick={() => add()}
-          >{ !!fields?.length
-              ? $t({ defaultMessage: 'Add Switch' })
-              : $t({ defaultMessage: 'Customize' })
+  console.log('*** ', configuredSwitchVariables, preprovisionedSwitchVariables)
+
+  const renderFields = (
+    fields: FormListFieldData[],
+    remove: (index: number | number[]) => void,
+    enableEdit: boolean = true
+  ) => {
+    return fields.map(({ key, name, ...restField }, index) => (<Fragment key={key}>
+      <Form.Item
+        {...restField}
+        name={[name, 'serialNumbers']}
+        validateFirst
+        rules={[{
+          required: true,
+          message: $t({ defaultMessage: 'Please enter Switch' })
+        }, {
+          validator: (_: RuleObject, value: string) => {
+            const currentSerialNumbers = isArray(value) ? value : [value]
+            const switchVariables = form.getFieldValue('preprovisionedSwitchVariables') as {
+              serialNumbers: string[],
+              value: string
+            }[]
+            const serialNumbers = switchVariables
+              .filter((switchVariable, i) => i !== index && switchVariable?.serialNumbers)
+              .map(switchVariable => switchVariable?.serialNumbers).flat()
+            // eslint-disable-next-line max-len
+            const isValid = intersection(currentSerialNumbers, serialNumbers)?.length === 0
+
+            if (isValid) {
+              return Promise.resolve()
             }
-          </Button>
-        </>
-      )}
-  </Form.List>
+            return Promise.reject()
+          },
+          message: $t({ defaultMessage: 'Serial Numbers should be unique' })
+        }]}
+        children={
+          <UI.Select
+            data-testid={`customized-select-${key}`}
+            showSearch
+            showArrow={false}
+            className={type === VariableType.STRING ? 'string-type' : ''}
+            mode={type !== VariableType.ADDRESS ? 'multiple' : undefined}
+            type={type === VariableType.ADDRESS ? 'radio' : undefined}
+            dropdownMatchSelectWidth={false}
+            maxTagCount='responsive'
+            placeholder={$t({ defaultMessage: 'Search Switch' })}
+            optionFilterProp='key'
+            // disabled={!enableEdit}
+          >{
+              Object.keys(switchList).map(model => (
+                <Select.OptGroup
+                  key={model}
+                  label={model}
+                  children={switchList[model]?.map(s => {
+                    const hasSwitchName = s.name !== s.serialNumber
+                    const name
+                      = hasSwitchName ? `${s.serialNumber} (${s.name})` : (s.name ?? '')
+
+                    return <Select.Option
+                      disabled={s.isApplied || s.isModalOverlap}
+                      key={name}
+                      value={s.serialNumber}
+                      label={name}
+                    >
+                      <Tooltip
+                        title={s?.isApplied
+                          ? $t(SwitchCliMessages.NOT_ALLOWED_APPLY_PROFILE)
+                          : (s?.isModalOverlap ? $t(SwitchCliMessages.OVERLAPPING_MODELS_TOOLTIP) : '')
+                        }
+                        placement='top'
+                      >
+                        <Space className='option-label'>
+                          <div className='label'>
+                            <div className='title'>{ name }</div>
+                            <div className='subtitle'>{ s.venueName }</div>
+                          </div>
+                        </Space>
+                      </Tooltip>
+                    </Select.Option>
+                  })
+                  }
+                />
+              ))
+            }</UI.Select>
+        }
+      />
+      <Space style={{
+        textAlign: 'center',
+        height: type === VariableType.STRING ? '50.5px' : '32px'
+      }}>:</Space>
+      <Form.Item
+        {...restField}
+        name={[name, 'value']}
+        validateFirst
+        rules={[{
+          required: true,
+          message: $t({ defaultMessage: 'Please enter Value' })
+        },
+        ...( type === VariableType.ADDRESS ? [{
+          validator: () => validateRequiredAddress(form)
+        }, {
+          validator: (_:RuleObject, value:string) => validateValidIp(value, form),
+          message: $t({ defaultMessage: 'Please enter valid value' })
+        }, {
+          // eslint-disable-next-line max-len
+          validator: (_:RuleObject, value:string) => validateDuplicateIp(value, index, enableEdit, form)
+        }] : []),
+        ...( type === VariableType.RANGE ? [{
+          validator: (_:RuleObject, value:number) => {
+            // eslint-disable-next-line max-len
+            const isValid = validateInRange(value, form.getFieldValue('rangeStart'), form.getFieldValue('rangeEnd'))
+            return isValid
+              ? Promise.resolve()
+              : Promise.reject($t({ defaultMessage: 'Please enter valid value' }))
+          }
+        }] : [])
+        ]}
+      >
+        { type === VariableType.STRING
+          ? <Input.TextArea
+            data-testid={`customized-textarea-${key}`}
+            maxLength={MAX_LENGTH_OF_CUSTOMIZED_STRING}
+            disabled={!enableEdit}
+          />
+          : <Input data-testid={`customized-input-${key}`} disabled={!enableEdit} />
+        }
+      </Form.Item>
+      <Tooltip title={!enableEdit
+        ? $t({ defaultMessage: 'This switch is already provisioned with the custom value.' })
+        : ''
+      }>
+        <Button
+          key={`delete${key}`}
+          role='deleteBtn'
+          type='link'
+          icon={<DeleteOutlined size='sm' />}
+          style={{
+            display: 'flex', height: type === VariableType.STRING ? '50.5px' : ''
+          }}
+          disabled={!enableEdit}
+          onClick={() => {
+            remove(name)
+            console.log( form.getFieldsValue(['configuredSwitchVariables', 'preprovisionedSwitchVariables']) )
+            const values = form.getFieldsValue(['configuredSwitchVariables', 'preprovisionedSwitchVariables'])
+            const customize = Object.values(values).flat()
+            console.log(values, customize)
+            // setIsCustomize(hasCustomizeVariables)
+          }}
+        />
+      </Tooltip>
+    </Fragment>
+    ))
+  }
+
+  return <>
+    {hasCustomize && <Divider />}
+    <UI.CustomizedFieldsWrapper data-testid='customized-form'>
+      {hasCustomize && <UI.CustomizedFields>
+        <UI.CustomizedSubtitle level={5}>
+          {$t({ defaultMessage: 'Switch' })}
+          {getRequiredMark()}
+          <Tooltip
+            title={$t(SwitchCliMessages.PREPROVISIONED_SWITCH_LIST_TOOLTIP)}
+            placement='top'
+          >
+            <QuestionMarkCircleOutlined size='sm' />
+          </Tooltip>
+        </UI.CustomizedSubtitle>
+        <Space> </Space>
+        {getCustomizeFieldsText(type)}
+        <Space> </Space>
+      </UI.CustomizedFields>}
+
+      <Collapse defaultActiveKey={['1', '2']} ghost>
+        { hasConfiguredSwitchVariables &&
+        <Collapse.Panel header={$t({ defaultMessage: 'Online Devices' })} key='1'>
+          <Form.List name='configuredSwitchVariables'>{
+            (fields, { add, remove }) => (<UI.CustomizedFields>
+              { renderFields(fields, remove, false) }
+            </UI.CustomizedFields>)
+          }</Form.List>
+        </Collapse.Panel>}
+        <Collapse.Panel header={
+          hasCustomize ? $t({ defaultMessage: 'Devices to be provisioned' }) : ''}
+        key='2'
+        showArrow={hasCustomize}
+        collapsible={hasCustomize ? undefined : 'disabled'}
+        >
+          <Form.List name='preprovisionedSwitchVariables'>{
+            (fields, { add, remove }) => (<><UI.CustomizedFields>
+              { renderFields(fields, remove) }
+            </UI.CustomizedFields>
+            <Button type='link'
+              size='small'
+              disabled={getCustomizeButtonDisabled(type, fields, customizedRequiredFields)}
+              onClick={() => add()}
+            >{!!fields?.length || hasCustomize
+                ? $t({ defaultMessage: 'Add Switch' })
+                : $t({ defaultMessage: 'Customize' })
+              }
+            </Button>
+            </>
+            )
+          }</Form.List>
+        </Collapse.Panel>
+      </Collapse>
+    </UI.CustomizedFieldsWrapper>
+    {/* <Button type='link'
+      size='small'
+      disabled={getCustomizeButtonDisabled(type, fields, customizedRequiredFields)}
+      onClick={() => add()}
+    >{hasCustomizeVariables
+      ? $t({ defaultMessage: 'Add Switch' })
+      : $t({ defaultMessage: 'Customize' })
+      }
+    </Button> */}
+  </>
+
+  // return <Form.List name='switchVariables'>
+  //   {
+  //     (fields, { add, remove }) => (
+  //       <>
+  //         {!!fields?.length && <Divider />}
+  //         <UI.CustomizedFields data-testid='customized-form'>
+  //           {!!fields?.length && <>
+  //             <UI.CustomizedSubtitle level={5}>
+  //               { $t({ defaultMessage: 'Switch' }) }
+  //               { getRequiredMark() }
+  //               <Tooltip
+  //                 title={$t(SwitchCliMessages.PREPROVISIONED_SWITCH_LIST_TOOLTIP)}
+  //                 placement='top'
+  //               >
+  //                 <QuestionMarkCircleOutlined size='sm'/>
+  //               </Tooltip>
+  //             </UI.CustomizedSubtitle>
+  //             <Space> </Space>
+  //             { getCustomizeFieldsText(type) }
+  //             <Space> </Space>
+  //           </>}
+  //           {fields.map(({ key, name, ...restField }, index) => (<Fragment key={key}>
+  //             <Form.Item
+  //               {...restField}
+  //               name={[name, 'serialNumbers']}
+  //               validateFirst
+  //               rules={[{
+  //                 required: true,
+  //                 message: $t({ defaultMessage: 'Please enter Switch' })
+  //               }, {
+  //                 validator: (_: RuleObject, value: string) => {
+  //                   const currentSerialNumbers = isArray(value) ? value : [value]
+  //                   const switchVariables = form.getFieldValue('switchVariables') as {
+  //                     serialNumbers: string[],
+  //                     value: string
+  //                   }[]
+  //                   const serialNumbers = switchVariables
+  //                     .filter((switchVariable, i) => i !== index && switchVariable?.serialNumbers)
+  //                     .map(switchVariable => switchVariable?.serialNumbers).flat()
+  //                   // eslint-disable-next-line max-len
+  //                   const isValid = intersection(currentSerialNumbers, serialNumbers)?.length === 0
+
+  //                   if (isValid) {
+  //                     return Promise.resolve()
+  //                   }
+  //                   return Promise.reject()
+  //                 },
+  //                 message: $t({ defaultMessage: 'Serial Numbers should be unique' })
+  //               }]}
+  //               children={
+  //                 <UI.Select
+  //                   data-testid={`customized-select-${key}`}
+  //                   showSearch
+  //                   showArrow={false}
+  //                   className={type === VariableType.STRING ? 'string-type' : ''}
+  //                   mode={type !== VariableType.ADDRESS ? 'multiple' : undefined}
+  //                   type={type === VariableType.ADDRESS ? 'radio' : undefined}
+  //                   dropdownMatchSelectWidth={false}
+  //                   maxTagCount='responsive'
+  //                   placeholder={$t({ defaultMessage: 'Search Switch' })}
+  //                   optionFilterProp='key'
+  //                 >{
+  //                     Object.keys(switchList).map(model => (
+  //                       <Select.OptGroup
+  //                         key={model}
+  //                         label={model}
+  //                         children={switchList[model]?.map(s => {
+  //                           const hasSwitchName = s.name !== s.serialNumber
+  //                           const name
+  //                             = hasSwitchName ? `${s.serialNumber} (${s.name})` : (s.name ?? '')
+
+  //                           return <Select.Option
+  //                             disabled={s.isApplied} // TODO
+  //                             key={name}
+  //                             value={s.serialNumber}
+  //                             label={name}
+  //                           >
+  //                             <Tooltip
+  //                               title={s?.isApplied
+  //                                 ? $t(SwitchCliMessages.NOT_ALLOWED_APPLY_PROFILE)
+  //                                 : (s?.isModalOverlap ? $t(SwitchCliMessages.OVERLAPPING_MODELS_TOOLTIP) : '')
+  //                               }
+  //                               placement='top'
+  //                             >
+  //                               <Space className='option-label'>
+  //                                 <div className='label'>
+  //                                   <div className='title'>{ name }</div>
+  //                                   <div className='subtitle'>{ s.venueName }</div>
+  //                                 </div>
+  //                               </Space>
+  //                             </Tooltip>
+  //                           </Select.Option>
+  //                         })
+  //                         }
+  //                       />
+  //                     ))
+  //                   }</UI.Select>
+  //               }
+  //             />
+  //             <Space style={{
+  //               textAlign: 'center',
+  //               height: type === VariableType.STRING ? '50.5px' : '32px'
+  //             }}>:</Space>
+  //             <Form.Item
+  //               {...restField}
+  //               name={[name, 'value']}
+  //               validateFirst
+  //               rules={[{
+  //                 required: true,
+  //                 message: $t({ defaultMessage: 'Please enter Value' })
+  //               },
+  //               ...( type === VariableType.ADDRESS ? [{
+  //                 validator: () => validateRequiredAddress(form)
+  //               }, {
+  //                 validator: (_:RuleObject, value:string) => validateValidIp(value, form),
+  //                 message: $t({ defaultMessage: 'Please enter valid value' })
+  //               }, {
+  //                 // eslint-disable-next-line max-len
+  //                 validator: (_:RuleObject, value:string) => validateDuplicateIp(value, index, form)
+  //               }] : []),
+  //               ...( type === VariableType.RANGE ? [{
+  //                 validator: (_:RuleObject, value:number) => {
+  //                   // eslint-disable-next-line max-len
+  //                   const isValid = validateInRange(value, form.getFieldValue('rangeStart'), form.getFieldValue('rangeEnd'))
+  //                   return isValid
+  //                     ? Promise.resolve()
+  //                     : Promise.reject($t({ defaultMessage: 'Please enter valid value' }))
+  //                 }
+  //               }] : [])
+  //               ]}
+  //             >
+  //               { type === VariableType.STRING
+  //                 ? <Input.TextArea
+  //                   data-testid={`customized-textarea-${key}`}
+  //                   maxLength={MAX_LENGTH_OF_CUSTOMIZED_STRING}
+  //                 />
+  //                 : <Input data-testid={`customized-input-${key}`} />
+  //               }
+  //             </Form.Item>
+  //             <Button
+  //               key={`delete${key}`}
+  //               role='deleteBtn'
+  //               type='link'
+  //               icon={<DeleteOutlined size='sm' />}
+  //               style={{
+  //                 display: 'flex', height: type === VariableType.STRING ? '50.5px' : ''
+  //               }}
+  //               onClick={() => remove(name)}
+  //             />
+  //           </Fragment>
+  //           ))}
+  //         </UI.CustomizedFields>
+  //         <Button type='link'
+  //           size='small'
+  //           disabled={getCustomizeButtonDisabled(type, fields, customizedRequiredFields)}
+  //           onClick={() => add()}
+  //         >{ !!fields?.length
+  //             ? $t({ defaultMessage: 'Add Switch' })
+  //             : $t({ defaultMessage: 'Customize' })
+  //           }
+  //         </Button>
+  //       </>
+  //     )}
+  // </Form.List>
 }
 
 export const getCustomizedSwitchVenues = (
@@ -587,17 +825,25 @@ export function validateValidIp (ip: string, form: FormInstance) {
     : Promise.reject($t({ defaultMessage: 'Please enter valid value' }))
 }
 
-export function validateDuplicateIp (ip: string, index: number, form: FormInstance) {
+export function validateDuplicateIp (
+  ip: string, index: number, isPreprovisionedFields: boolean, form: FormInstance
+) {
   const { $t } = getIntl()
-  const customizeIpList
-    = form.getFieldValue('switchVariables')
-      .filter((ip: { value: string }, i: number) => i !== index && ip?.value)
+  const configuredIpList
+    = form.getFieldValue('configuredSwitchVariables')
       .map((ip: { value: string }) => ip?.value)
+  const customizeIpList
+    = form.getFieldValue('preprovisionedSwitchVariables')
+      .filter((ip: { value: string }, i: number) => (i !== index && ip?.value))
+      .map((ip: { value: string }) => ip?.value)
+      .concat(configuredIpList)
   const isValid = !customizeIpList.includes(ip)
 
-  return isValid
+  return !isPreprovisionedFields
     ? Promise.resolve()
-    : Promise.reject($t({ defaultMessage: 'IP already exists' }))
+    : (isValid
+      ? Promise.resolve()
+      : Promise.reject($t({ defaultMessage: 'IP already exists' })))
 }
 
 // TODO: remove after RBAC enabled
@@ -669,7 +915,7 @@ export function renderVariableValue (
         size='small'
         onClick={() => {
           const switchVariables
-            = convertedVariable?.switchVariables?.map((switchVariable)=> {
+            = convertedVariable?.switchVariables?.map((switchVariable) => {
               if (Array.isArray(switchVariable.serialNumbers)) {
                 return switchVariable.serialNumbers.map(s => ({
                   serialNumber: s, value: switchVariable.value
@@ -698,7 +944,7 @@ export function renderVariableValue (
           setSwitchSettingType(type)
           setSwitchSettingDrawerVisible(true)
         }}>
-        { $t({ defaultMessage: '{count} Switch(es)' }, { count: switchCount }) }
+        {$t({ defaultMessage: '{count} Switch(es)' }, { count: switchCount })}
       </Button>
     </UI.VariableContent>
   </>
@@ -706,29 +952,29 @@ export function renderVariableValue (
   switch (type) {
     case VariableType.ADDRESS:
       return <>
-        <UI.VariableTitle>{ $t({ defaultMessage: 'Start - End IP Address' }) }</UI.VariableTitle>
+        <UI.VariableTitle>{$t({ defaultMessage: 'Start - End IP Address' })}</UI.VariableTitle>
         <UI.VariableContent>{
           $t({ defaultMessage: '{start} - {end}' }, {
             start: convertedVariable?.ipAddressStart, end: convertedVariable?.ipAddressEnd
           })
         }</UI.VariableContent>
-        <UI.VariableTitle>{ $t({ defaultMessage: 'Network Mask' }) }</UI.VariableTitle>
-        <UI.VariableContent>{ convertedVariable?.subMask }</UI.VariableContent>
-        { customizedSwitches }
+        <UI.VariableTitle>{$t({ defaultMessage: 'Network Mask' })}</UI.VariableTitle>
+        <UI.VariableContent>{convertedVariable?.subMask}</UI.VariableContent>
+        {customizedSwitches}
       </>
     case VariableType.RANGE:
       return <>
-        <UI.VariableTitle>{ $t({ defaultMessage: 'Start - End Value' }) }</UI.VariableTitle>
+        <UI.VariableTitle>{$t({ defaultMessage: 'Start - End Value' })}</UI.VariableTitle>
         <UI.VariableContent>{
           $t({ defaultMessage: '{start} - {end}' }, {
             start: convertedVariable?.rangeStart, end: convertedVariable?.rangeEnd
           })
         }</UI.VariableContent>
-        { customizedSwitches }
+        {customizedSwitches}
       </>
     default:
       return <>
-        <UI.VariableTitle>{ $t({ defaultMessage: 'String' }) }</UI.VariableTitle>
+        <UI.VariableTitle>{$t({ defaultMessage: 'String' })}</UI.VariableTitle>
         <UI.VariableContent>
           <Tooltip title={
             formatContentWithLimit(convertedVariable?.value, MAX_LINES, MAX_CONTENT_LENGTH)
@@ -739,7 +985,7 @@ export function renderVariableValue (
             }</UI.CliVariableContent>
           </Tooltip>
         </UI.VariableContent>
-        { customizedSwitches }
+        {customizedSwitches}
       </>
   }
 }

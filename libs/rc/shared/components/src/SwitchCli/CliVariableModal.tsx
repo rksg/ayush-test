@@ -45,6 +45,7 @@ export function CliVariableModal (props: {
   const [form] = Form.useForm()
   const [selectType, setSelectType] = useState('')
   const [switchList, setSwitchList] = useState<AllowedSwitchObjList>({})
+  const [hasCustomize, setHasCustomize] = useState(false)
 
   const {
     data, editMode, modalvisible, setModalvisible, variableList, setVariableList,
@@ -60,6 +61,17 @@ export function CliVariableModal (props: {
     useWatch<string>('rangeEnd', form),
     useWatch<string>('string', form)
   ]
+  const switchVariables = [
+    useWatch<string>('configuredSwitchVariables', form),
+    useWatch<string>('preprovisionedSwitchVariables', form)
+  ]
+
+  useEffect(() => {
+    console.log('switchVariables: ', switchVariables)
+    const customize = switchVariables.filter(v => v).flat().length > 0
+    setHasCustomize(customize)
+  }, [switchVariables])
+
 
   useEffect(() => {
     if (venueAppliedModels && allowedSwitchList && isCustomizedVariableEnabled) {
@@ -74,16 +86,19 @@ export function CliVariableModal (props: {
         }) as SwitchViewModel[]
       }
 
+      console.log('switchVariables: ', data?.switchVariables )
+
       // TODO
       const switches = [
         ...allowedSwitchList,
         ...configuredSwitchList
       ].map(s => {
-        const isModalOverlap = venueAppliedModels?.[s.venueId]?.includes(s.model || '')
-          || !!intersection(venueAppliedModels?.[s.venueId], selectedModels)?.length
+        const isApplied = venueAppliedModels?.[s.venueId]?.includes(s.model || '')
+        const isModalOverlap = !!intersection(venueAppliedModels?.[s.venueId], selectedModels)?.length
         return {
           ...s,
-          isApplied: isModalOverlap || false,
+          isApplied: isApplied,
+          isModalOverlap: isModalOverlap,
           isConfigured: s.deviceStatus !== SwitchStatusEnum.NEVER_CONTACTED_CLOUD
         }
       }).filter(s => selectedModels?.includes(s.model || '')
@@ -165,7 +180,7 @@ export function CliVariableModal (props: {
         ? <UI.CustomizedSection>
           { getVariableFields(VariableType.ADDRESS, form) }
           { getCustomizeFields(
-            switchList, VariableType.ADDRESS, customizedRequiredFields, form)
+            switchList, VariableType.ADDRESS, customizedRequiredFields, hasCustomize, form)
           }
         </UI.CustomizedSection>
         : getVariableFields(VariableType.ADDRESS, form)
@@ -176,7 +191,7 @@ export function CliVariableModal (props: {
         ? <UI.CustomizedSection>
           { getVariableFields(VariableType.RANGE, form) }
           { getCustomizeFields(
-            switchList, VariableType.RANGE, customizedRequiredFields, form)
+            switchList, VariableType.RANGE, customizedRequiredFields, hasCustomize, form)
           }
         </UI.CustomizedSection>
         : getVariableFields(VariableType.RANGE, form)
@@ -187,7 +202,7 @@ export function CliVariableModal (props: {
         ? <UI.CustomizedSection>
           { getVariableFields(VariableType.STRING, form, isCustomizedVariableEnabled) }
           { getCustomizeFields(
-            switchList, VariableType.STRING, customizedRequiredFields, form)
+            switchList, VariableType.STRING, customizedRequiredFields, hasCustomize, form)
           }
         </UI.CustomizedSection>
         : getVariableFields(VariableType.STRING, form)
@@ -217,11 +232,49 @@ export function CliVariableModal (props: {
   const transformToFormData = (data: CliTemplateVariable) => {
     const separator = getVariableSeparator(data.type)
     const values = data.value.split(separator)
+
+    console.log('allSwitchList: ', allSwitchList)
+    const switchStatusMapping = allSwitchList?.reduce((result, s) => ({
+      ...result, [s.id]: s.deviceStatus
+    }), {})
+
+    //TODO
+    const transformArrayTo = (switchVariables: CliTemplateVariable['switchVariables'], isConfigured: boolean) => {
+      return switchVariables?.map((v, index) => {
+        if (Array.isArray(v.serialNumbers)) {
+          const serialNumbers = v.serialNumbers?.filter(s =>
+            isConfigured
+              ? switchStatusMapping?.[s as keyof typeof switchStatusMapping] !== SwitchStatusEnum.NEVER_CONTACTED_CLOUD
+              : switchStatusMapping?.[s as keyof typeof switchStatusMapping] === SwitchStatusEnum.NEVER_CONTACTED_CLOUD
+          )
+          return {
+            serialNumbers: serialNumbers, value: v.value, key: `${index}_${v.value}`
+          }
+        }
+        const serialNumbers = [v.serialNumbers]?.filter(s =>
+          isConfigured
+            ? switchStatusMapping?.[s as keyof typeof switchStatusMapping] !== SwitchStatusEnum.NEVER_CONTACTED_CLOUD
+            : switchStatusMapping?.[s as keyof typeof switchStatusMapping] === SwitchStatusEnum.NEVER_CONTACTED_CLOUD
+        )
+        return {
+          serialNumbers: serialNumbers?.[0], value: v.value, key: `${index}_${v.value}`
+        }
+
+      }).filter((v, index) => !!(v.serialNumbers?.toString()))
+    }
+
     let fieldsValue: variableFormData = {
       name: data.name,
       type: data.type.toUpperCase(),
       ...(data?.switchVariables ? {
-        switchVariables: data?.switchVariables
+        switchVariables: data?.switchVariables.map((v, index) => {
+          return {
+            ...v,
+            key: `${index}_${v.value}`
+          }
+        }),
+        configuredSwitchVariables: transformArrayTo(data?.switchVariables, true),
+        preprovisionedSwitchVariables: transformArrayTo(data?.switchVariables, false)
       } : {})
     }
     switch (data.type) {
@@ -260,17 +313,20 @@ export function CliVariableModal (props: {
       const valid = await form.validateFields()
       if (valid) {
         const variable = transformToRawData(form.getFieldsValue())
-        if (editMode) {
-          setVariableList(variableList.map(v => (
-            v.name === variable.name ? variable : v
-          )))
-        } else {
-          setVariableList([ ...variableList, variable ])
-        }
 
-        form.resetFields()
-        setModalvisible(false)
-        setSelectType('')
+        console.log('handleOk; ', variable)
+
+        // if (editMode) {
+        //   setVariableList(variableList.map(v => (
+        //     v.name === variable.name ? variable : v
+        //   )))
+        // } else {
+        //   setVariableList([ ...variableList, variable ])
+        // }
+
+        // form.resetFields()
+        // setModalvisible(false)
+        // setSelectType('')
       }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -283,6 +339,7 @@ export function CliVariableModal (props: {
 
     if (data && editMode && modalvisible) {
       const fieldsValue = transformToFormData(data)
+      console.log('fieldsValue: ', fieldsValue)
       form.setFieldsValue(fieldsValue)
       setSelectType(data.type)
     }

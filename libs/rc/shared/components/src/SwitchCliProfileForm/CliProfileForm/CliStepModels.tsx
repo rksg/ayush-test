@@ -4,13 +4,15 @@ import { Col, Checkbox, Form, Input, Row, Space, Typography } from 'antd'
 import _                                                      from 'lodash'
 import { useIntl }                                            from 'react-intl'
 
-import { Button, cssStr, StepsForm, useStepFormContext }                   from '@acx-ui/components'
+import { Button, cssStr, StepsForm, Tooltip, useStepFormContext }          from '@acx-ui/components'
 import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
 import { useGetProfilesQuery, useGetSwitchConfigProfileTemplateListQuery } from '@acx-ui/rc/services'
 import {
   checkObjectNotExists,
+  CliTemplateVariable,
   SwitchProfileModel,
   TableResult,
+  getSwitchModel,
   useConfigTemplateQueryFnSwitcher,
   whitespaceOnlyRegExp,
   ICX_MODELS_MODULES
@@ -46,6 +48,7 @@ export function CliStepModels () {
 
   const [count, setCount] = useState(0)
   const [filteredModelFamily, setFilteredModelFamily] = useState([] as CheckboxValueType[])
+  const [appliedModels, setAppliedModels] = useState([] as string[])
 
   const allFamilyModels = transformIcxModels(ICX_MODELS_MODULES)
   const allModels:string[] = allFamilyModels.map((m) => m.models).flat()
@@ -55,9 +58,20 @@ export function CliStepModels () {
   ).map(t => t.name) ?? []
 
   useEffect(() => {
+    const { variables } = form.getFieldsValue(true)
+    const appliedSerialNumbers = (variables as CliTemplateVariable[])
+      .filter(v => v?.switchVariables)
+      .map(v => v?.switchVariables?.map(
+        switchVariable => switchVariable?.serialNumbers
+      ).flat()).flat()
+    const modelList = _.uniq(
+      appliedSerialNumbers.map(serial => getSwitchModel(serial as string))
+    ) as string[]
+
     const allFamily = Object.keys(ICX_MODELS_MODULES)
     form.setFieldValue('selectedFamily', allFamily)
     setFilteredModelFamily(allFamily)
+    setAppliedModels(modelList)
     setCount(form.getFieldValue('models')?.length)
   }, [])
 
@@ -176,11 +190,18 @@ export function CliStepModels () {
             }}>
             {
               allModels.map(model =>
-                <Checkbox
-                  value={model}
-                  key={model}
-                  style={{ display: checkModelOptionVisiable(model, filteredModelFamily) }}
-                >{model}</Checkbox>
+                <Tooltip title={appliedModels.includes(model)
+                  // eslint-disable-next-line max-len
+                  ? $t({ defaultMessage: 'This switch model is already selected for variable customization in the next step.' })
+                  : ''
+                }>
+                  <Checkbox
+                    value={model}
+                    key={model}
+                    disabled={appliedModels.includes(model)}
+                    style={{ display: checkModelOptionVisiable(model, filteredModelFamily) }}
+                  >{model}</Checkbox>
+                </Tooltip>
               )
             }
           </UI.FamilyModelsGroup>}
