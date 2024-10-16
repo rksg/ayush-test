@@ -265,7 +265,8 @@ export function useMenuConfig () {
         openNewTab: true
       }, isJwtEnabled ? {
         uri: '/admin/developers/applicationTokens',
-        label: $t({ defaultMessage: 'Developers' })
+        label: $t({ defaultMessage: 'Developers' }),
+        isActiveCheck: new RegExp('^/admin/developers')
       } : {
         permission: 'READ_WEBHOOKS',
         uri: '/admin/webhooks',
