@@ -103,7 +103,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
         // eslint-disable-next-line max-len
         const venueSdLanInfo = (sdLanScopedNetworkVenues.sdLansVenueMap[row.id] as EdgeMvSdLanViewData[])?.[0]
         const venueSoftGre = softGreVenueMap[row.id]
-        const targetSoftGre = venueSoftGre?.filter(sg => sg.networkIds.includes(row.id))
+        const targetSoftGre = venueSoftGre?.filter(sg => sg.networkIds.includes(networkId))
         // eslint-disable-next-line max-len
         const venuePinInfo = (pinScopedNetworkVenues[row.id] as PersonalIdentityNetworksViewData[])?.[0]
 
@@ -151,10 +151,9 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
         }
         const venueSdLanInfo = sdLanScopedNetworkVenues.sdLansVenueMap[row.id]?.[0]
         const venueSoftGre = softGreVenueMap[row.id]
-        const targetSoftGre = venueSoftGre?.filter(sg => sg.networkIds.includes(row.id))
+        const targetSoftGre = venueSoftGre?.filter(sg => sg.networkIds.includes(networkId))
         // eslint-disable-next-line max-len
         const venuePinInfo = (pinScopedNetworkVenues[row.id] as PersonalIdentityNetworksViewData[])?.[0]
-
         return <NetworkTunnelInfoLabel
           network={networkInfo}
           isVenueActivated={Boolean(row.activated?.isActivated)}
