@@ -5,7 +5,8 @@ import { ExpirationDateEntity } from '../components/expirationDateSelector'
 export enum CertificateCategoryType {
   CERTIFICATE_TEMPLATE = 'certificateTemplate',
   CERTIFICATE_AUTHORITY = 'certificateAuthority',
-  CERTIFICATE = 'certificate'
+  CERTIFICATE = 'certificate',
+  SERVER_CERTIFICATES = 'serverCertificates'
 }
 
 export enum CertificateAuthorityType {
@@ -33,6 +34,7 @@ export enum CertificateStatusType {
 }
 
 export enum AlgorithmType {
+  SHA_1 = 'SHA_1',
   SHA_256 = 'SHA_256',
   SHA_384 = 'SHA_384',
   SHA_512 = 'SHA_512'
@@ -269,4 +271,19 @@ export enum EnrollmentType {
   NONE = 'NONE',
   CHROMEBOOK = 'CHROMEBOOK',
   SCEP = 'SCEP'
+}
+
+export interface ServerCertificate extends Certificate{
+  name: string
+  status: CertificateStatusType[]
+  title?: string
+  algorithm?: AlgorithmType
+  csrString?: string
+  extendedKeyUsages?: string
+}
+
+export const serverCertStatusColors = {
+  [CertificateStatusType.VALID]: '--acx-semantics-green-50',
+  [CertificateStatusType.REVOKED]: '--acx-neutrals-20',
+  [CertificateStatusType.EXPIRED]: '--acx-semantics-red-50'
 }
