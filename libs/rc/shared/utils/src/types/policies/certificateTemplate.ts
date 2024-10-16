@@ -195,6 +195,7 @@ export interface CertificateAuthorityFormData extends CertificateAuthority {
 
 export interface Certificate {
   id: string
+  name: string
   commonName: string
   createDate: string
   notBeforeDate: string
@@ -223,7 +224,8 @@ export interface Certificate {
   enrollmentType?: EnrollmentType
   identityId?: string
   identityName?: string
-  identityGroupId?: string
+  identityGroupId?: string,
+  status?: CertificateStatusType[]
 }
 
 export interface CertificateFormData {

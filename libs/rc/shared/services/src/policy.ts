@@ -132,6 +132,11 @@ const LbsServerProfileMutationUseCases = [
   'DectivateLbsServerProfileOnVenue'
 ]
 
+const CertificateMutationUseCases = [
+  'ActivateCertificateOnRadius',
+  'DectivateCertificateOnRadius'
+]
+
 const L2AclUseCases = [
   'AddL2AclPolicy',
   'UpdateL2AclPolicy',
@@ -1623,6 +1628,28 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    getCertificateList: build.query<TableResult<Certificate>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(CertificateUrls.getCertificateList, params, customHeaders)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      providesTags: [{ type: 'Certificate', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, CertificateMutationUseCases, () => {
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'Policy', id: 'LIST' },
+              { type: 'Certificate', id: 'LIST' }
+            ]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     // eslint-disable-next-line max-len
     getVLANPoolPolicyViewModelList: build.query<TableResult<VLANPoolViewModelType>, RequestPayload>({
@@ -3492,6 +3519,8 @@ export const {
   useGetLbsServerProfileListQuery,
   useActivateLbsServerProfileOnVenueMutation,
   useDeactivateLbsServerProfileOnVenueMutation,
+  // Certificate
+  useGetCertificateListQuery,
   useLazyGetMacRegListQuery,
   useUploadMacRegistrationMutation,
   useAddSyslogPolicyMutation,

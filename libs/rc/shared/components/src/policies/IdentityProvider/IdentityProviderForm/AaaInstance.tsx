@@ -27,6 +27,7 @@ const radiusTypeMap: { [key:string]: string } = {
 type AaaInstanceProps = {
    serverLabel: string,
    type: 'authRadius' | 'accountingRadius',
+   tlsEnabled?: boolean,
    onChange?: (radiusId: string) => void
 }
 
@@ -35,6 +36,7 @@ export const AaaInstance = (props: AaaInstanceProps) => {
   const params = useParams()
   const form = Form.useFormInstance()
 
+  // TODO, add tlsEnabled for filtering
   const { type, serverLabel } = props
   const radiusType = radiusTypeMap[type]
   const radiusIdName = type + 'Id'
