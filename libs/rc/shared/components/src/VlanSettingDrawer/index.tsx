@@ -146,6 +146,11 @@ function VlanSettingForm (props: VlanSettingFormProps) {
   const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
   const isSwitchLevel = !!switchFamilyModel
 
+  const multicastVersionEnabled = () : boolean => {
+    const igmpSnooping = form.getFieldValue('igmpSnooping')
+    return (igmpSnooping === 'active' || igmpSnooping === 'passive')
+  }
+
   useEffect(() => {
     form.resetFields()
   }, [])
@@ -166,6 +171,9 @@ function VlanSettingForm (props: VlanSettingFormProps) {
       setRuleList(vlanPortsData as SwitchModelPortData[])
       setArpInspection(vlan.arpInspection || false)
       setIpv4DhcpSnooping(vlan.ipv4DhcpSnooping || false)
+    }
+    if (multicastVersionEnabled()) {
+      setMulticastVersionDisabled(false)
     }
   }, [vlan])
 

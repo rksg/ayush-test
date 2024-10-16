@@ -17,7 +17,6 @@ import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '
 import { WorkflowActionPreview } from './WorkflowActionPreview'
 
 const config: UIConfiguration = {
-  disablePoweredBy: false,
   uiColorSchema: {
     fontHeaderColor: 'var(--acx-neutrals-100)',
     backgroundColor: 'var(--acx-primary-white)',
@@ -30,7 +29,8 @@ const config: UIConfiguration = {
     logoSize: 'MEDIUM',
     headerFontSize: 16,
     logoImageFileName: 'logo',
-    backgroundImageName: 'bgImage'
+    backgroundImageName: 'bgImage',
+    disablePoweredBy: false
   },
   welcomeName: '',
   welcomeTitle: ''
