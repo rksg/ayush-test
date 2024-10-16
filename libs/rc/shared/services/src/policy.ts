@@ -2106,11 +2106,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-    // TODO: Change RBAC API (API Done, Testing pending)
     getApSnmpPolicyList: build.query<ApSnmpPolicy[], RequestPayload>({
-      async queryFn ({ params, enableRbac }, _api, _extraOptions, fetchWithBQ) {
+      async queryFn ({ params, enableRbac, isSNMPv3PassphraseOn }, _api, _extraOptions, fetchWithBQ) {
         if (enableRbac) {
-          const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+          const apiCustomHeader = GetApiVersionHeader((isSNMPv3PassphraseOn? ApiVersionEnum.v1_1 : ApiVersionEnum.v1))
           // eslint-disable-next-line max-len
           const snmpListReq = { ...createHttpRequest(ApSnmpRbacUrls.getApSnmpFromViewModel, params, apiCustomHeader),
             body: enableRbac? JSON.stringify({}) : {}
@@ -2278,12 +2277,11 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'SnmpAgent', id: 'LIST' }]
     }),
-    // TODO: Change RBAC API
     /* eslint-disable max-len */
     getApSnmpViewModel: build.query<TableResult<ApSnmpViewModelData>, RequestPayload>({
-      async queryFn ({ params, payload, enableRbac }, _api, _extraOptions, fetchWithBQ) {
+      async queryFn ({ params, payload, enableRbac, isSNMPv3PassphraseOn }, _api, _extraOptions, fetchWithBQ) {
         if (enableRbac) {
-          const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+          const apiCustomHeader = GetApiVersionHeader((isSNMPv3PassphraseOn? ApiVersionEnum.v1_1 : ApiVersionEnum.v1))
           const req = {
             ...createHttpRequest(ApSnmpRbacUrls.getApSnmpFromViewModel, params, apiCustomHeader),
             body: JSON.stringify({})
