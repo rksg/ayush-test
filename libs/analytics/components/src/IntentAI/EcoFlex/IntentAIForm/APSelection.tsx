@@ -5,11 +5,11 @@ import _                                            from 'lodash'
 import moment                                       from 'moment-timezone'
 import { FormattedMessage, defineMessage, useIntl } from 'react-intl'
 
-import { System, SystemMap, useSystems }                          from '@acx-ui/analytics/services'
+import { NetworkHierarchy, System, SystemMap, useSystems }                          from '@acx-ui/analytics/services'
 import { defaultNetworkPath, meetVersionRequirements, nodeTypes } from '@acx-ui/analytics/utils'
 import { CascaderOption, Loader, StepsForm, useStepFormContext }  from '@acx-ui/components'
 import { get }                                                    from '@acx-ui/config'
-import { FilterListNode, DateRange, PathNode }                    from '@acx-ui/utils'
+import { FilterListNode, DateRange, PathNode, NetworkPath }                    from '@acx-ui/utils'
 
 import { getNetworkFilterData }                                                                        from '../../../NetworkFilter'
 import { useVenuesHierarchyQuery, Child as HierarchyNodeChild, useNetworkHierarchyQuery, NetworkNode } from '../../../NetworkFilter/services'
@@ -22,6 +22,7 @@ import { DeviceRequirementsType, deviceRequirements } from '../../../ServiceGuar
 import type { ServiceGuardFormDto, NetworkNodes, NetworkPaths } from '../../../ServiceGuard/types'
 import type { NamePath }                                        from 'antd/lib/form/interface'
 import { Intent } from '../../config'
+import { useIntentContext } from '../../IntentContext'
 
 const name = ['configs', 0, 'networkPaths', 'networkNodes'] as const
 const label = defineMessage({ defaultMessage: 'APs Selection' })
@@ -29,7 +30,7 @@ const label = defineMessage({ defaultMessage: 'APs Selection' })
 function transformSANetworkHierarchy (
   nodes: NetworkNode[], parentPath: PathNode[]
 ) : CascaderOption[] {
-  return nodes.map(node => {
+  return nodes && nodes.map(node => {
     const path = [
       ...parentPath, { type: node.type, name: node.mac ?? node.name }
     ] as PathNode[]
@@ -43,50 +44,41 @@ function transformSANetworkHierarchy (
   })
 }
 
-function filterSANetworkHierarchy (
-  nodes: NetworkNode[], systemMap: SystemMap, requirements: DeviceRequirementsType
-) {
-  return _.sortBy(nodes.reduce((agg, node) => {
-    const formattedNode = { type: node.type, name: node.name }
-    // const formattedNode = (node.type as string === 'ap')
-    //   ? checkAP(node, requirements)
-    //   : (node.type === 'system')
-    //     ? checkSystem(node, systemMap, requirements)
-    //     : { type: node.type, name: node.name }
-    formattedNode && agg.push({
-      ...formattedNode,
-      ...(node.children && {
-        children: filterSANetworkHierarchy(node.children, systemMap, requirements)
-      })
-    } as NetworkNode)
-    return agg
-  }, [] as NetworkNode[]), node => node.name!.toString().toLocaleLowerCase())
+function filterRAIHierarchy (nodes: NetworkNode[], path: NetworkPath) {
+  let pathNode
+  for (const pathSlice of path) {
+    pathNode = _.find(nodes, o => o.name === pathSlice.name && o.type === pathSlice.type)
+    nodes = pathNode?.children as NetworkNode []
+  }
+  const data =  {
+    ...pathNode,
+    children: pathNode?.children?.map(apGroup => ({
+      ...apGroup,
+      children: apGroup?.children?.map(({ name, mac }) => ({ type: 'AP', name, mac }))
+    }))
+  }
+  return data
 }
-
 function useSANetworkHierarchy () {
   const filter = useMemo(() => ({
     startDate: moment().subtract(1, 'day').format(),
     endDate: moment().format(),
     range: DateRange.last24Hours
   }), [])
-  // const { form } = useStepFormContext<ServiceGuardFormDto>()
   const { form } = useStepFormContext<Intent>()
   const systems = useSystems()
+  const { intent: { path } } = useIntentContext()
   const response = useNetworkHierarchyQuery(
     { ...filter, shouldQueryAp: true, shouldQuerySwitch: false }, {
       skip: !get('IS_MLISA_SA') || !systems.data,
-      selectFromResult: ({ data, ...rest }) => ({
-        ...rest,
-        data: { ...defaultNetworkPath[0], children: filterSANetworkHierarchy(
-          data?.children ?? [],
-          systems.data!,
-          deviceRequirements[
-            form.getFieldValue(ClientType.fieldName) as keyof typeof deviceRequirements
-          ] as DeviceRequirementsType)
+      selectFromResult: ({ data, ...rest }) => { 
+        const zoneHierarchy = filterRAIHierarchy(data?.children ?? [], path)
+        return {
+          ...rest,
+          data: zoneHierarchy as unknown as { name: string, type: string, children: NetworkNode[] }
         }
-      })
+    }
     })
-
   return {
     ...response,
     options: transformSANetworkHierarchy(response.data?.children, defaultNetworkPath)
@@ -100,7 +92,6 @@ function useR1NetworkHierarchy () {
     endDate: moment().format(),
     range: DateRange.last24Hours
   }), [])
-  // const { form } = useStepFormContext<ServiceGuardFormDto>()
   const { form } = useStepFormContext<Intent>()
   const response = useVenuesHierarchyQuery(filter, { skip: !!get('IS_MLISA_SA') })
   return { ...response, options: getNetworkFilterData(
@@ -144,13 +135,13 @@ export function APsSelection () {
       name={name as unknown as NamePath}
       rules={[{
         required: true,
-        message: $t({ defaultMessage: 'Please select APs to test' })
+        message: $t({ defaultMessage: 'Select APs to exclude' })
       }]}
       children={<APsSelectionInput
         autoFocus
         placeholder={get('IS_MLISA_SA')
-          ? $t({ defaultMessage: 'Select APs to test' })
-          : $t({ defaultMessage: 'Select <VenuePlural></VenuePlural> / APs to test' })}
+          ? $t({ defaultMessage: 'Select APs to exclude' })
+          : $t({ defaultMessage: 'Select <VenuePlural></VenuePlural> / APs to exclude' })}
         options={response.options}
       />}
     />
