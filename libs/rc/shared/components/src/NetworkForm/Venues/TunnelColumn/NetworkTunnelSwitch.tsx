@@ -52,8 +52,6 @@ export const NetworkTunnelSwitch = (props: NetworkTunnelSwitchProps) => {
         const formValues = {
           tunnelType: NetworkTunnelTypeEnum.None,
           softGre: {
-            newProfileId: venueSoftGre?.[0]?.profileId,
-            newProfileName: venueSoftGre?.[0]?.profileName,
             oldProfileId: venueSoftGre?.[0]?.profileId
           }
         } as NetworkTunnelActionForm

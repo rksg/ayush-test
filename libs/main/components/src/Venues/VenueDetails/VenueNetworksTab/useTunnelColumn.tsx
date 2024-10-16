@@ -124,8 +124,6 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
                   const formValues = {
                     tunnelType: NetworkTunnelTypeEnum.None,
                     softGre: {
-                      newProfileId: targetSoftGre?.[0].profileId,
-                      newProfileName: targetSoftGre?.[0].profileName,
                       oldProfileId: targetSoftGre?.[0].profileId
                     }
                   } as NetworkTunnelActionForm
