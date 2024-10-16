@@ -37,11 +37,11 @@ export interface UIStyleSchema {
   headerFontSize: number
   logoImageFileName?: string
   backgroundImageName?: string
-  wifi4EUNetworkId?: string
+  wifi4EuNetworkId?: string
+  disablePoweredBy: boolean
 }
 
 export interface UIConfiguration {
-  disablePoweredBy: boolean
   logoImage?: string
   logoFile?: RcFile
   backgroundImage?: string

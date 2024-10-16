@@ -1,7 +1,8 @@
 import { useState } from 'react'
 
-import { Upload } from 'antd'
-import { RcFile } from 'antd/lib/upload'
+import { Upload }  from 'antd'
+import { RcFile }  from 'antd/lib/upload'
+import { useIntl } from 'react-intl'
 
 import { getLogoImageSize, LogoSize, UIConfiguration } from '@acx-ui/rc/utils'
 
@@ -90,6 +91,7 @@ export function LogoContent (props: LogoContentProps) {
   const [outline, setOutline] = useState('none')
   const [clicked, setClicked] = useState(false)
   const { value, onLogoChange, onSizeChange, onDisabled } = props
+  const { $t } = useIntl()
   return(<PopOver visible={clicked}
     onVisibleChange={(v)=> setClicked(v)}
     content={<Widget
@@ -103,31 +105,36 @@ export function LogoContent (props: LogoContentProps) {
       height: 30, width: value.logoImage ? 130 : 100
     }}
   >
-    <UI.Img
-      src={value.logoImage ?? RuckusCloud}
-      style={{
-        height: getLogoImageSize(value.uiStyleSchema.logoSize),
-        width: getLogoImageSize(value.uiStyleSchema.logoSize),
-        cursor: cursor,
-        outline: outline,
-        maxHeight: '425',
-        marginTop: '50',
-        marginBottom: '20'
-      }}
-      alt={'logo'}
-      onMouseOver={()=> {
-        setCursor('poiinter')
-        setOutline(UI.hoverOutline)
-      }}
-      onMouseLeave={()=>{
-        if (!clicked) setOutline('none')
-        setCursor('none')
-      }}
-      onClick={()=>{
-        setClicked(true)
-        setOutline(UI.hoverOutline)
-      }}
-    >
-    </UI.Img>
+    <div>
+      <UI.Img
+        src={value.logoImage ?? RuckusCloud}
+        style={{
+          height: getLogoImageSize(value.uiStyleSchema.logoSize),
+          width: getLogoImageSize(value.uiStyleSchema.logoSize),
+          cursor: cursor,
+          outline: outline,
+          maxHeight: '425',
+          marginTop: '50',
+          marginBottom: '20'
+        }}
+        alt={'logo'}
+        onMouseOver={()=> {
+          setCursor('poiinter')
+          setOutline(UI.hoverOutline)
+        }}
+        onMouseLeave={()=>{
+          if (!clicked) setOutline('none')
+          setCursor('none')
+        }}
+        onClick={()=>{
+          setClicked(true)
+          setOutline(UI.hoverOutline)
+        }}
+      >
+      </UI.Img>
+      <UI.CommonHints style={{ textAlign: 'center' }}>
+        {$t({ defaultMessage: 'Maximum size: 8MB ' })}
+      </UI.CommonHints>
+    </div>
   </PopOver>)
 }

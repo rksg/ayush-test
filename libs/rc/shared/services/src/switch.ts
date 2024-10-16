@@ -639,11 +639,13 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     }),
 
     importSwitches: build.mutation<{}, RequestFormData>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.importSwitches, params, {
-          'Content-Type': undefined,
-          'Accept': '*/*'
-        })
+      query: ({ params, payload, enableRbac }) => {
+        const headers = {
+          ...(enableRbac ? customHeaders.v1 : { Accept: '*/*' }),
+          'Content-Type': undefined
+        }
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.importSwitches, params, headers)
         return {
           ...req,
           body: payload
