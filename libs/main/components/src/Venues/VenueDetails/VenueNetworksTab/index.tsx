@@ -45,7 +45,7 @@ import {
   useScheduleSlotIndexMap,
   useGetVLANPoolPolicyViewModelListQuery,
   useNewVenueNetworkTableQuery,
-  useVenuesListQuery
+  useVenuesListQuery, useGetEnhancedVlanPoolPolicyTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -59,9 +59,18 @@ import {
   ApGroupModalState,
   NetworkExtended,
   SchedulerTypeEnum,
-  SchedulingModalState, ConfigTemplateType, useConfigTemplate,
-  useConfigTemplateMutationFnSwitcher, useConfigTemplateTenantLink,
-  KeyValue, VLANPoolViewModelType, Venue, EdgeMvSdLanViewData, EdgeSdLanViewDataP2
+  SchedulingModalState,
+  ConfigTemplateType,
+  useConfigTemplate,
+  useConfigTemplateMutationFnSwitcher,
+  useConfigTemplateTenantLink,
+  KeyValue,
+  VLANPoolViewModelType,
+  Venue,
+  EdgeMvSdLanViewData,
+  EdgeSdLanViewDataP2,
+  useConfigTemplateQueryFnSwitcher,
+  TableResult
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink }       from '@acx-ui/react-router-dom'
 import { WifiScopes }                                              from '@acx-ui/types'
@@ -215,24 +224,25 @@ export function VenueNetworksTab () {
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
   const updateSdLanNetworkTunnel = useUpdateNetworkTunnelAction()
 
-  const { vlanPoolingNameMap }: { vlanPoolingNameMap: KeyValue<string, string>[] } = useGetVLANPoolPolicyViewModelListQuery({
-    params: { tenantId: params.tenantId },
+  const [vlanPoolingNameMap, setVlanPoolingNameMap] = useState<KeyValue<string, string>[]>([])
+  const { data: instanceListResult } = useConfigTemplateQueryFnSwitcher<TableResult<VLANPoolViewModelType>>({
+    useQueryFn: useGetVLANPoolPolicyViewModelListQuery,
+    useTemplateQueryFn: useGetEnhancedVlanPoolPolicyTemplateListQuery,
+    skip: !tableData.length,
     payload: {
-      fields: ['name', 'id'],
-      sortField: 'name',
-      sortOrder: 'ASC',
-      page: 1,
-      pageSize: 10000
+      fields: ['name', 'id', 'vlanMembers'], sortField: 'name',
+      sortOrder: 'ASC', page: 1, pageSize: 10000
     },
     enableRbac: useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  }, {
-    skip: !tableData.length,
-    selectFromResult: ({ data }: { data?: { data: VLANPoolViewModelType[] } }) => ({
-      vlanPoolingNameMap: data?.data
-        ? data.data.map(vlanPool => ({ key: vlanPool.id!, value: vlanPool.name }))
-        : [] as KeyValue<string, string>[]
-    })
   })
+
+  useEffect(() => {
+    if (instanceListResult?.data) {
+      setVlanPoolingNameMap(instanceListResult.data
+        ? instanceListResult.data.map(vlanPool => ({ key: vlanPool.id!, value: vlanPool.name }))
+        : [])
+    }
+  },[instanceListResult])
 
   useEffect(()=>{
     if (tableQuery.data) {
