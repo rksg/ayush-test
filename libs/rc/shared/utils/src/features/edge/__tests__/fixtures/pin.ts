@@ -89,7 +89,6 @@ export const mockPinData = {
   distributionSwitchInfos: [
     {
       id: 'c8:03:f5:3a:95:c6',
-      siteName: '964fe8920291194e208b6d22370c2cc82c',
       loopbackInterfaceId: '12',
       loopbackInterfaceIp: '1.2.3.4',
       loopbackInterfaceSubnetMask: '255.255.255.0',
@@ -163,7 +162,6 @@ export const mockPinSwitchInfoData: {
 } = {
   distributionSwitches: [{
     id: 'c8:03:f5:3a:95:c6',
-    siteName: '964fe8920291194e208b6d22370c2cc82c',
     siteIp: '10.206.78.150',
     vlans: '23',
     siteKeepAlive: '5',
