@@ -121,7 +121,7 @@ describe('DataPromptSettings', () => {
     expect(screen.queryByTestId('field1')).toBeVisible()
     formRef.current.submit()
     expect(await screen.findByText('Please enter title')).toBeVisible()
-    expect(await screen.findByText('Please enter messageHtml')).toBeVisible()
+    expect(await screen.findByText('Please enter page intro text')).toBeVisible()
     const nodes = await screen.findAllByText('Field type already selected')
     expect(nodes).toHaveLength(2)
     expect(nodes[0]).toBeVisible()
@@ -149,7 +149,7 @@ describe('DataPromptSettings', () => {
 
     formRef.current.submit()
     expect(await screen.findByText('Please enter title')).toBeVisible()
-    expect(await screen.findByText('Please enter messageHtml')).toBeVisible()
+    expect(await screen.findByText('Please enter page intro text')).toBeVisible()
     expect(await screen.findByText('Please enter Label')).toBeVisible()
   })
 
