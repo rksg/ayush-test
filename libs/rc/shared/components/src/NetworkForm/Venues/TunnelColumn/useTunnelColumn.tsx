@@ -4,22 +4,34 @@ import { Form }      from 'antd'
 import { cloneDeep } from 'lodash'
 import { useIntl }   from 'react-intl'
 
-import { Table }                                                                                                 from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                from '@acx-ui/feature-toggle'
-import { NetworkSaveData, NetworkTunnelSdLanAction, Venue, useConfigTemplate, PersonalIdentityNetworksViewData } from '@acx-ui/rc/utils'
+import { Table }                     from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import {
+  NetworkSaveData,
+  NetworkTunnelSdLanAction,
+  Venue,
+  useConfigTemplate,
+  PersonalIdentityNetworksViewData
+} from '@acx-ui/rc/utils'
 
-import { SdLanScopedNetworkVenuesData }                                                                                         from '../../../EdgeSdLan/useEdgeSdLanActions'
-import { NetworkTunnelActionModalProps, NetworkTunnelInfoLabel, useEdgePinScopedNetworkVenueMap, useGetSoftGreScopeNetworkMap } from '../../../NetworkTunnelActionModal'
-import { mergeSdLanCacheAct }                                                                                                   from '../../../NetworkTunnelActionModal/utils'
-import { useIsEdgeFeatureReady }                                                                                                from '../../../useEdgeActions'
-import { TMP_NETWORK_ID }                                                                                                       from '../../utils'
-import { NetworkTunnelInfoButtonFormItem }                                                                                      from '../NetworkTunnelInfoButtonFormItem'
+import { SdLanScopedNetworkVenuesData } from '../../../EdgeSdLan/useEdgeSdLanActions'
+import {
+  NetworkTunnelActionModalProps,
+  NetworkTunnelInfoLabel,
+  SoftGreNetworkTunnel,
+  useEdgePinScopedNetworkVenueMap
+} from '../../../NetworkTunnelActionModal'
+import { mergeSdLanCacheAct }              from '../../../NetworkTunnelActionModal/utils'
+import { useIsEdgeFeatureReady }           from '../../../useEdgeActions'
+import { TMP_NETWORK_ID }                  from '../../utils'
+import { NetworkTunnelInfoButtonFormItem } from '../NetworkTunnelInfoButtonFormItem'
 
 import { NetworkTunnelSwitch } from './NetworkTunnelSwitch'
 
 interface useTunnelColumnProps {
   network: NetworkSaveData | null | undefined
   sdLanScopedNetworkVenues: SdLanScopedNetworkVenuesData
+  softGreVenueMap: Record<string, SoftGreNetworkTunnel[]>
   setTunnelModalState: (state: NetworkTunnelActionModalProps) => void
 }
 export const useTunnelColumn = (props: useTunnelColumnProps) => {
@@ -32,12 +44,12 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
   const {
     network,
     sdLanScopedNetworkVenues,
+    softGreVenueMap,
     setTunnelModalState
   } = props
   const form = Form.useFormInstance()
   const networkId = network?.id ?? TMP_NETWORK_ID
 
-  const softGreVenueMap = useGetSoftGreScopeNetworkMap(networkId)
   const pinScopedNetworkVenues = useEdgePinScopedNetworkVenueMap(networkId)
 
   const softGreAssociationUpdate = Form.useWatch('softGreAssociationUpdate')
