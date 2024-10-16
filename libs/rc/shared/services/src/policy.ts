@@ -2281,9 +2281,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
     getApSnmpViewModel: build.query<TableResult<ApSnmpViewModelData>, RequestPayload>({
       async queryFn ({ params, payload, enableRbac, isSNMPv3PassphraseOn, customHeaders }, _api, _extraOptions, fetchWithBQ) {
         if (enableRbac) {
+          const viewmodelHeader = GetApiVersionHeader(ApiVersionEnum.v1)
           const apiCustomHeader = customHeaders ? customHeaders : GetApiVersionHeader((isSNMPv3PassphraseOn? ApiVersionEnum.v1_1 : ApiVersionEnum.v1))
           const req = {
-            ...createHttpRequest(ApSnmpRbacUrls.getApSnmpFromViewModel, params, apiCustomHeader),
+            ...createHttpRequest(ApSnmpRbacUrls.getApSnmpFromViewModel, params, viewmodelHeader),
             body: JSON.stringify({})
           }
           const res = await fetchWithBQ(req)
