@@ -271,6 +271,8 @@ export {
 } from './EdgeFirmware/UpdateNowDialog'
 export type { EdgeUpdateApNowDialogProps } from './EdgeFirmware/UpdateNowDialog'
 
+export * from './ApFirmware/VenueFirmwareListPerApModel'
+
 export * from './services'
 export * from './policies'
 export * from './EdgeStatisticWidget'

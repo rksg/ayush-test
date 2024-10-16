@@ -12,7 +12,14 @@ import {
   UpdateNowRequest
 } from '@acx-ui/rc/utils'
 
-import { findMaxActiveABFVersion, findMaxEolABFVersions, getActiveApModels, getVersionLabel, isBetaFirmware, MaxABFVersionMap } from '../../FirmwareUtils'
+import {
+  findMaxActiveABFVersion,
+  findMaxEolABFVersions,
+  getActiveApModels,
+  getVersionLabel,
+  isBetaFirmware,
+  MaxABFVersionMap
+} from '../../FirmwareUtils'
 
 import * as UI                                                                                       from './styledComponents'
 import { firmwareNote1, firmwareNote2 }                                                              from './UpdateNowDialog'

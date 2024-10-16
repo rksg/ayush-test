@@ -6,18 +6,28 @@ import { sumBy }             from 'lodash'
 //import moment                from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
-import { useGetApModelFamiliesQuery } from '@acx-ui/rc/services'
+import { Table, TableProps, Tooltip }   from '@acx-ui/components'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import {
+  useGetApModelFamiliesQuery,
+  useGetVenueApModelFirmwareListQuery
+} from '@acx-ui/rc/services'
 import {
   ApModelFamily,
   ApRequirement,
   CompatibilitySelectedApInfo,
+  FirmwareVenuePerApModel,
   IncompatibleFeature
 } from '@acx-ui/rc/utils'
 import { WifiScopes }                    from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
 
+import {
+  ChangeSchedulePerApModelDialog,
+  UpdateNowPerApModelDialog,
+  useChangeScheduleVisiblePerApModel,
+  useUpdateNowPerApModel
+} from '../../ApFirmware/VenueFirmwareListPerApModel'
 import { SimpleListTooltip }    from '../../SimpleListTooltip'
 import { ApModelFamiliesItem }  from '../ApModelFamiliesItem'
 import { getFeatureTypeTag }    from '../CompatibilityDrawer/utils'
@@ -109,6 +119,8 @@ interface ApCompatibilityDetailTableProps {
 
 export const ApCompatibilityDetailTable = (props: ApCompatibilityDetailTableProps) => {
   const isSupportedFwModels = useIsSplitOn(Features.WIFI_EDA_BRANCH_LEVEL_SUPPORTED_MODELS_TOGGLE)
+  const isUpgradeByModelEnabled = useIsSplitOn(Features.AP_FW_MGMT_UPGRADE_BY_MODEL)
+
   const { $t } = useIntl()
 
   const { data, requirementOnly = false, venueId, apInfo } = props
@@ -119,107 +131,69 @@ export const ApCompatibilityDetailTable = (props: ApCompatibilityDetailTableProp
     refetchOnMountOrArgChange: false
   })
 
-  //const [updateNowFwVer, setUpdateNowFwVer] = useState<string|undefined>()
-  //const [scheduleUpdateFwVer, setScheduleUpdateFwVer] = useState<string|undefined>()
-  const [selectedRowKeys, setSelectedRowKeys] = useState([])
+  const { data: venueFirmware } = useGetVenueApModelFirmwareListQuery({ payload: {
+    fields: [
+      'name', 'id', 'isApFirmwareUpToDate',
+      'currentApFirmwares', 'lastApFirmwareUpdate', 'nextApFirmwareSchedules'
+    ],
+    filters: { id: [venueId] }
+  } }, {
+    skip: requirementOnly || !isUpgradeByModelEnabled
+  })
 
-  /*
-  const [updateNow] = useUpdateApFirmwareNowMutation()
-  const [updateSchedule] = useUpdateApVenueSchedulesMutation()
-  const { latestReleaseVersion } = useGetLatestApFirmwareQuery({}, {
-    skip: requirementOnly,
-    selectFromResult: ({ data }) => ({
-      latestReleaseVersion: data?.[0]
-    })
-  })
-  const { data: availableVersions } = useGetAvailableApFirmwareVersionsQuery({},
-    { skip: requirementOnly })
-  const { venueFirmware } = useGetVenueApFirmwareListQuery({
-    payload: {
-      filter: { venueId }
-    }
-  }, {
-    skip: requirementOnly,
-    selectFromResult: ({ data }) => {
-      return { venueFirmware: data?.[0] }
-    }
-  })
- */
+  const [ selectedRowKeys, setSelectedRowKeys ] = useState([])
+  const [ selectedRows, setSelectedRows ] = useState<FirmwareVenuePerApModel[]>([])
+  const { updateNowVisible, setUpdateNowVisible, handleUpdateNowCancel } = useUpdateNowPerApModel()
+  // eslint-disable-next-line max-len
+  const { changeScheduleVisible, setChangeScheduleVisible, handleChangeScheduleCancel } = useChangeScheduleVisiblePerApModel()
+
+  const clearSelection = () => {
+    setSelectedRowKeys([])
+  }
+
+  const afterAction = () => {
+    clearSelection()
+  }
 
   const columns = useColumns(apModelFamilies)
-
-  /*
-  const handleUpdateNowSubmit = async (data: string) => {
-    const payload = { version: data }
-
-    try {
-      await updateNow({
-        params: { venueId },
-        payload
-      })
-      setSelectedRowKeys([])
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
-    }
-  }
-
-  const handleScheduleSubmit = async (value: ApUpdateScheduleRequest) => {
-    const payload = {
-      ...value,
-      date: moment(value.date).format('yyyy-MM-DD')
-    }
-
-    try {
-      await updateSchedule({
-        params: { venueId },
-        payload
-      })
-      setSelectedRowKeys([])
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
-    }
-  }
-*/
 
   const rowActions: TableProps<IncompatibleFeature>['rowActions'] = [{
     label: $t({ defaultMessage: 'Update Version Now' }),
     scopeKey: [WifiScopes.UPDATE],
-    visible: (selectedRows) => {
-      if (!selectedRows?.length) return false
+    visible: (rows) => {
+      if (!rows?.length || !venueFirmware?.data[0] ||
+        venueFirmware.data[0].isApFirmwareUpToDate === true) return false
 
       return true
-
-      /*
-      return Boolean(latestReleaseVersion?.id &&
-            ((venueFirmware?.versions?.[0].id
-              && compareVersions(venueFirmware?.versions?.[0].id, latestReleaseVersion?.id) <= 0)
-            || !venueFirmware?.versions?.[0].id))
-      */
+      // return (!rows?.length) ? false : true
     },
-    onClick: (selectedRows) => {
-      //setUpdateNowFwVer(selectedRows[0].requiredFw)
+    onClick: (rows) => {
+      if (venueFirmware?.data) {
+        setSelectedRows(venueFirmware.data)
+        setUpdateNowVisible(true)
+      }
     }
   }, {
     label: $t({ defaultMessage: 'Schedule Version Update' }),
     scopeKey: [WifiScopes.UPDATE],
-    visible: (selectedRows) => {
-      if (!selectedRows?.length) return false
+    visible: (rows) => {
+      if (!rows?.length || !venueFirmware?.data[0] ||
+        venueFirmware.data[0].isApFirmwareUpToDate === true) return false
 
-      return true//!!venueFirmware?.nextSchedule
+      return true
+      // return (!rows?.length) ? false : true
     },
-    onClick: (selectedRows) => {
-      //setScheduleUpdateFwVer(selectedRows[0].requiredFw)
+    onClick: (rows) => {
+      if (venueFirmware?.data) {
+        setSelectedRows(venueFirmware.data)
+        setChangeScheduleVisible(true)
+      }
     }
   }]
 
-  /*
-  const transformed = data.map(feature => ({
-    ...feature.featureRequirement,
-    incompatible: sumBy(feature.incompatibleDevices, (d) => d.count)
-  })) as ApCompatibilityDetailTableData[]
-   */
-
-  const showCheckbox = hasPermission({ scopes: [WifiScopes.UPDATE] }) && !requirementOnly
+  const showCheckbox = hasPermission({ scopes: [WifiScopes.UPDATE] })
+    && !requirementOnly
+    && isUpgradeByModelEnabled
 
   return <>
     {requirementOnly ?
@@ -248,30 +222,26 @@ export const ApCompatibilityDetailTable = (props: ApCompatibilityDetailTableProp
         selectedRowKeys
       }}
     />
-    {/*
-    <UpdateNowDialogSwitcher
-      visible={!!updateNowFwVer}
-      onCancel={() => setUpdateNowFwVer(undefined)}
-      onSubmit={handleUpdateNowSubmit}
-      availableVersions={availableVersions}
-    />
-    <ApChangeScheduleDialog
-      visible={!!scheduleUpdateFwVer}
-      onCancel={() => setScheduleUpdateFwVer(undefined)}
-      onSubmit={handleScheduleSubmit}
-      availableVersions={getFilteredScheduleVersions(availableVersions, venueFirmware)}
-    />
-    */}
+    {updateNowVisible && selectedRows && <UpdateNowPerApModelDialog
+      onCancel={handleUpdateNowCancel}
+      afterSubmit={afterAction}
+      selectedVenuesFirmwares={selectedRows}
+    />}
+    {changeScheduleVisible && selectedRows && <ChangeSchedulePerApModelDialog
+      onCancel={handleChangeScheduleCancel}
+      afterSubmit={afterAction}
+      selectedVenuesFirmwares={selectedRows}
+    />}
   </>
 }
 
-// eslint-disable-next-line max-len
 /*
-const getFilteredScheduleVersions = (availableVersions?: EdgeFirmwareVersion[], venueFirmware?: EdgeVenueFirmware) => {
-  if (!availableVersions || !venueFirmware) return availableVersions
-
-  return availableVersions.filter(availableVersion => {
-    return !venueFirmware.versions.some(version => version.id === availableVersion.id)
+const getUpgradeFwModels = (rows: IncompatibleFeature[], venueFwData: FirmwareVenuePerApModel) => {
+  const models = new Set<string>()
+  rows.forEach(row => {
+    row.incompatibleDevices?.forEach(device => {
+      models.add(device.model)
+    })
   })
 }
 */

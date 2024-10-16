@@ -3,14 +3,18 @@ import { useState } from 'react'
 import { Col, Divider, Row, Space } from 'antd'
 import { useIntl }                  from 'react-intl'
 
-import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
+import { DateFormatEnum, formatter }      from '@acx-ui/formatter'
+import {
+  ApFirmwareUpdateGroupType,
+  ExpandableApModelList,
+  convertApModelFirmwaresToUpdateGroups
+} from '@acx-ui/rc/components'
 import { useGetAllApModelFirmwareListQuery } from '@acx-ui/rc/services'
 import { ApModelFirmware }                   from '@acx-ui/rc/utils'
 import { noDataDisplay }                     from '@acx-ui/utils'
 
-import { VersionLabelType }                                                                        from '../../FirmwareUtils'
-import * as UI                                                                                     from '../../styledComponents'
-import { ApFirmwareUpdateGroupType, ExpandableApModelList, convertApModelFirmwaresToUpdateGroups } from '../VenueFirmwareListPerApModel/venueFirmwareListPerApModelUtils'
+import { VersionLabelType } from '../../FirmwareUtils'
+import * as UI              from '../../styledComponents'
 
 export function VersionBannerPerApModel () {
   const { $t } = useIntl()
