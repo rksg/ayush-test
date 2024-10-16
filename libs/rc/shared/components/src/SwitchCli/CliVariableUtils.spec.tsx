@@ -246,9 +246,9 @@ describe('Test validateDuplicateIp function', () => {
       return form
     })
     formRef.current.setFieldsValue({
-      switchVariables: [{ value: '1.1.1.1' }, { value: '1.1.1.2' }]
+      preprovisionedSwitchVariables: [{ value: '1.1.1.1' }, { value: '1.1.1.2' }]
     })
-    await expect(validateDuplicateIp('1.1.1.1', 0, formRef.current)).resolves.toBeUndefined()
+    await expect(validateDuplicateIp('1.1.1.1', 0, true, formRef.current)).resolves.toBeUndefined()
   })
   it('should reject correctly', async () => {
     const { result: formRef } = renderHook(() => {
@@ -256,9 +256,9 @@ describe('Test validateDuplicateIp function', () => {
       return form
     })
     formRef.current.setFieldsValue({
-      switchVariables: [{ value: '1.1.1.1' }, { value: '1.1.1.1' }]
+      preprovisionedSwitchVariables: [{ value: '1.1.1.1' }, { value: '1.1.1.1' }]
     })
-    await expect(validateDuplicateIp('1.1.1.1', 0, formRef.current)).rejects.toEqual('IP already exists')
+    await expect(validateDuplicateIp('1.1.1.1', 0, true, formRef.current)).rejects.toEqual('IP already exists')
   })
 })
 

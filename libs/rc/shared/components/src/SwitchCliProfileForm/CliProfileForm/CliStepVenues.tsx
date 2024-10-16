@@ -56,7 +56,12 @@ export function CliStepVenues (props: {
     key: 'name',
     dataIndex: 'name',
     sorter: true,
-    defaultSortOrder: 'ascend'
+    defaultSortOrder: 'ascend',
+    render: function (_, data) {
+      // eslint-disable-next-line max-len
+      const postfix = (data as VenueExtend)?.inactiveTooltip === $t(SwitchCliMessages.PRE_SELECT_VENUE_FOR_CUSTOMIZED) ? '*' : ''
+      return `${data.name}${postfix}`
+    }
   },
   {
     title: $t({ defaultMessage: 'City' }),
@@ -119,13 +124,15 @@ export function CliStepVenues (props: {
         && !(initialValues as CliConfiguration)?.venues?.includes(venue.id))
         && _.intersection(models, venueApplyModels)?.length > 0
 
+      const isPreSelect = customizedSwitchVenues?.includes(venue.id)
+
       return {
         ...venue,
         models: venueApplyModels,
-        inactiveRow: isModelOverlap || customizedSwitchVenues?.includes(venue.id),
+        inactiveRow: isModelOverlap || isPreSelect,
         inactiveTooltip: isModelOverlap
           ? $t(SwitchCliMessages.OVERLAPPING_MODELS_TOOLTIP)
-          : $t(SwitchCliMessages.PRE_SELECT_VENUE_FOR_CUSTOMIZED)
+          : (isPreSelect ? $t(SwitchCliMessages.PRE_SELECT_VENUE_FOR_CUSTOMIZED) : '')
       }
     })
   }

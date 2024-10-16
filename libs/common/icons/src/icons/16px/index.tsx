@@ -3,6 +3,8 @@
  * Please make sure to use the correct icon size and set the stroke/fill to "currentColor."
  */
 
+export { ReactComponent as ArrowCollapse } from './ArrowCollapse.svg'
+export { ReactComponent as ArrowExpand } from './ArrowExpand.svg'
 export { ReactComponent as ConfigurationOutlined } from './ConfigurationOutlined.svg'
 export { ReactComponent as CopyOutlined } from './CopyOutlined.svg'
 export { ReactComponent as DeleteOutlined } from './DeleteOutlined.svg'

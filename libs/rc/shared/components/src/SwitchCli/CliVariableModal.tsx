@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 
 import { Form, Input, Select } from 'antd'
-import { intersection }        from 'lodash'
+import { intersection, omit }  from 'lodash'
 
 import { Modal, Tooltip } from '@acx-ui/components'
 import {
@@ -9,10 +9,11 @@ import {
   checkObjectNotExists,
   cliVariableNameRegExp,
   nameCannotStartWithNumberRegExp,
-  SwitchViewModel,
-  Venue,
   SwitchCliMessages,
-  SwitchStatusEnum
+  SwitchCustomizedVariable,
+  SwitchStatusEnum,
+  SwitchViewModel,
+  Venue
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -45,6 +46,7 @@ export function CliVariableModal (props: {
   const [form] = Form.useForm()
   const [selectType, setSelectType] = useState('')
   const [switchList, setSwitchList] = useState<AllowedSwitchObjList>({})
+  const [configuredSwitchList, setConfiguredSwitchList] = useState<AllowedSwitchObjList>({})
   const [hasCustomize, setHasCustomize] = useState(false)
 
   const {
@@ -67,11 +69,9 @@ export function CliVariableModal (props: {
   ]
 
   useEffect(() => {
-    console.log('switchVariables: ', switchVariables)
     const customize = switchVariables.filter(v => v).flat().length > 0
     setHasCustomize(customize)
   }, [switchVariables])
-
 
   useEffect(() => {
     if (venueAppliedModels && allowedSwitchList && isCustomizedVariableEnabled) {
@@ -86,32 +86,34 @@ export function CliVariableModal (props: {
         }) as SwitchViewModel[]
       }
 
-      console.log('switchVariables: ', data?.switchVariables )
+      const groupSwitchesByModel = (switches: SwitchViewModel[]) => {
+        return switches.map(s => {
+          const venueModels = venueAppliedModels?.[s.venueId] || []
+          return {
+            ...s,
+            isApplied: venueModels?.includes(s.model || ''),
+            isModelOverlap: !!intersection(venueModels, selectedModels)?.length,
+            isConfigured: s.deviceStatus !== SwitchStatusEnum.NEVER_CONTACTED_CLOUD
+          }
+        }).filter(s => selectedModels?.includes(s.model || '')
+        ).reduce((result, item) => {
+          const model = item?.model as string
+          if (!result[model as string]) {
+            result[model] = []
+          }
+          result[model].push(item)
+          return result
+        }, {} as AllowedSwitchObjList)
+      }
 
-      // TODO
-      const switches = [
+      const switches = groupSwitchesByModel(allowedSwitchList)
+      const configuredSwitches = groupSwitchesByModel([
         ...allowedSwitchList,
         ...configuredSwitchList
-      ].map(s => {
-        const isApplied = venueAppliedModels?.[s.venueId]?.includes(s.model || '')
-        const isModalOverlap = !!intersection(venueAppliedModels?.[s.venueId], selectedModels)?.length
-        return {
-          ...s,
-          isApplied: isApplied,
-          isModalOverlap: isModalOverlap,
-          isConfigured: s.deviceStatus !== SwitchStatusEnum.NEVER_CONTACTED_CLOUD
-        }
-      }).filter(s => selectedModels?.includes(s.model || '')
-      ).reduce((result, item) => {
-        const model = item?.model as string
-        if (!result[model as string]) {
-          result[model] = []
-        }
-        result[model].push(item)
-        return result
-      }, {} as AllowedSwitchObjList)
+      ])
 
       setSwitchList(switches)
+      setConfiguredSwitchList(configuredSwitches)
     }
   }, [venueAppliedModels, allowedSwitchList, isCustomizedVariableEnabled])
 
@@ -179,8 +181,10 @@ export function CliVariableModal (props: {
       isCustomizedVariableEnabled
         ? <UI.CustomizedSection>
           { getVariableFields(VariableType.ADDRESS, form) }
-          { getCustomizeFields(
-            switchList, VariableType.ADDRESS, customizedRequiredFields, hasCustomize, form)
+          { getCustomizeFields({
+            switchList, configuredSwitchList, type: VariableType.ADDRESS,
+            customizedRequiredFields, hasCustomize, form
+          })
           }
         </UI.CustomizedSection>
         : getVariableFields(VariableType.ADDRESS, form)
@@ -190,8 +194,10 @@ export function CliVariableModal (props: {
       isCustomizedVariableEnabled
         ? <UI.CustomizedSection>
           { getVariableFields(VariableType.RANGE, form) }
-          { getCustomizeFields(
-            switchList, VariableType.RANGE, customizedRequiredFields, hasCustomize, form)
+          { getCustomizeFields({
+            switchList, configuredSwitchList, type: VariableType.RANGE,
+            customizedRequiredFields, hasCustomize, form
+          })
           }
         </UI.CustomizedSection>
         : getVariableFields(VariableType.RANGE, form)
@@ -201,8 +207,10 @@ export function CliVariableModal (props: {
       isCustomizedVariableEnabled
         ? <UI.CustomizedSection>
           { getVariableFields(VariableType.STRING, form, isCustomizedVariableEnabled) }
-          { getCustomizeFields(
-            switchList, VariableType.STRING, customizedRequiredFields, hasCustomize, form)
+          { getCustomizeFields({
+            switchList, configuredSwitchList, type: VariableType.STRING,
+            customizedRequiredFields, hasCustomize, form
+          })
           }
         </UI.CustomizedSection>
         : getVariableFields(VariableType.STRING, form)
@@ -233,34 +241,35 @@ export function CliVariableModal (props: {
     const separator = getVariableSeparator(data.type)
     const values = data.value.split(separator)
 
-    console.log('allSwitchList: ', allSwitchList)
     const switchStatusMapping = allSwitchList?.reduce((result, s) => ({
       ...result, [s.id]: s.deviceStatus
     }), {})
 
-    //TODO
-    const transformArrayTo = (switchVariables: CliTemplateVariable['switchVariables'], isConfigured: boolean) => {
-      return switchVariables?.map((v, index) => {
-        if (Array.isArray(v.serialNumbers)) {
-          const serialNumbers = v.serialNumbers?.filter(s =>
-            isConfigured
-              ? switchStatusMapping?.[s as keyof typeof switchStatusMapping] !== SwitchStatusEnum.NEVER_CONTACTED_CLOUD
-              : switchStatusMapping?.[s as keyof typeof switchStatusMapping] === SwitchStatusEnum.NEVER_CONTACTED_CLOUD
-          )
-          return {
-            serialNumbers: serialNumbers, value: v.value, key: `${index}_${v.value}`
-          }
-        }
-        const serialNumbers = [v.serialNumbers]?.filter(s =>
-          isConfigured
-            ? switchStatusMapping?.[s as keyof typeof switchStatusMapping] !== SwitchStatusEnum.NEVER_CONTACTED_CLOUD
-            : switchStatusMapping?.[s as keyof typeof switchStatusMapping] === SwitchStatusEnum.NEVER_CONTACTED_CLOUD
-        )
-        return {
-          serialNumbers: serialNumbers?.[0], value: v.value, key: `${index}_${v.value}`
-        }
+    const filterSerialNumbersByStatus = (
+      serialNumbers: SwitchCustomizedVariable['serialNumbers'], isConfigured: boolean
+    ) => {
+      const serialsArray = Array.isArray(serialNumbers) ? serialNumbers : [serialNumbers]
+      return serialsArray.filter(s => {
+        const status = switchStatusMapping?.[s as keyof typeof switchStatusMapping]
+        return isConfigured
+          ? status !== SwitchStatusEnum.NEVER_CONTACTED_CLOUD
+          : status === SwitchStatusEnum.NEVER_CONTACTED_CLOUD
+      })
+    }
 
-      }).filter((v, index) => !!(v.serialNumbers?.toString()))
+    const mapSwitchVariables = (
+      switchVariables: CliTemplateVariable['switchVariables'], isConfigured: boolean
+    ) => {
+      return switchVariables?.map((variable, index) => {
+        const filteredSerialNumbers
+          = filterSerialNumbersByStatus(variable.serialNumbers, isConfigured)
+        return {
+          serialNumbers: Array.isArray(variable.serialNumbers)
+            ? filteredSerialNumbers : filteredSerialNumbers[0],
+          value: variable.value,
+          key: `${index}_${variable.value}`
+        }
+      }).filter(v => !!v.serialNumbers?.toString())
     }
 
     let fieldsValue: variableFormData = {
@@ -273,10 +282,11 @@ export function CliVariableModal (props: {
             key: `${index}_${v.value}`
           }
         }),
-        configuredSwitchVariables: transformArrayTo(data?.switchVariables, true),
-        preprovisionedSwitchVariables: transformArrayTo(data?.switchVariables, false)
+        configuredSwitchVariables: mapSwitchVariables(data?.switchVariables, true),
+        preprovisionedSwitchVariables: mapSwitchVariables(data?.switchVariables, false)
       } : {})
     }
+
     switch (data.type) {
       case VariableType.ADDRESS:
         fieldsValue = {
@@ -313,20 +323,46 @@ export function CliVariableModal (props: {
       const valid = await form.validateFields()
       if (valid) {
         const variable = transformToRawData(form.getFieldsValue())
+        const mergeSwitches = (data: variableFormData) => {
+          const mergedMap = new Map()
+          const mergeData = (switchArray?: SwitchCustomizedVariable[]) => {
+            switchArray?.forEach(({ serialNumbers, value, key }) => {
+              const serials = typeof serialNumbers === 'string' ? [serialNumbers] : serialNumbers
+              const mapKey = `${key}_${value}`
+              if (mergedMap.has(mapKey)) {
+                mergedMap.get(mapKey).serialNumbers.push(...serials)
+              } else {
+                mergedMap.set(mapKey, { serialNumbers: serials, value, key })
+              }
+            })
+          }
+          mergeData(data.configuredSwitchVariables)
+          mergeData(data.preprovisionedSwitchVariables)
 
-        console.log('handleOk; ', variable)
+          return Array.from(mergedMap.values()).map(({ serialNumbers, value, key }) => ({
+            serialNumbers: serialNumbers.length === 1 ? serialNumbers[0] : serialNumbers,
+            value,
+            key
+          }))
+        }
 
-        // if (editMode) {
-        //   setVariableList(variableList.map(v => (
-        //     v.name === variable.name ? variable : v
-        //   )))
-        // } else {
-        //   setVariableList([ ...variableList, variable ])
-        // }
+        const mergedSwitches = mergeSwitches(variable)
+        const mergedVariable = {
+          ...omit(variable, ['configuredSwitchVariables', 'preprovisionedSwitchVariables']),
+          ...(mergedSwitches?.length ? { switchVariables: mergedSwitches } : {})
+        }
 
-        // form.resetFields()
-        // setModalvisible(false)
-        // setSelectType('')
+        if (editMode) {
+          setVariableList(variableList.map(v => (
+            v.name === mergedVariable.name ? mergedVariable : v
+          )))
+        } else {
+          setVariableList([ ...variableList, mergedVariable ])
+        }
+
+        form.resetFields()
+        setModalvisible(false)
+        setSelectType('')
       }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -339,7 +375,6 @@ export function CliVariableModal (props: {
 
     if (data && editMode && modalvisible) {
       const fieldsValue = transformToFormData(data)
-      console.log('fieldsValue: ', fieldsValue)
       form.setFieldsValue(fieldsValue)
       setSelectType(data.type)
     }

@@ -581,6 +581,7 @@ describe('Cli Profile Form', () => {
           rest.post(SwitchUrlsInfo.getSwitchList.url,
             (_, res, ctx) => res(ctx.json({
               data: [{
+                id: 'FMF3250Q04R',
                 serialNumber: 'FMF3250Q04R',
                 model: 'ICX7150-C08P',
                 name: 'FMF3250Q04R',
@@ -588,6 +589,7 @@ describe('Cli Profile Form', () => {
                 venueName: 'My-Venue',
                 tenantId: 'tenant-id'
               }, {
+                id: 'FMF3250Q05R',
                 serialNumber: 'FMF3250Q05R',
                 model: 'ICX7150-C08P',
                 name: 'FMF3250Q05R',
@@ -595,6 +597,7 @@ describe('Cli Profile Form', () => {
                 venueName: 'My-Venue',
                 tenantId: 'tenant-id'
               }, {
+                id: 'FMF3250Q06R',
                 serialNumber: 'FMF3250Q06R',
                 model: 'ICX7150-C08P',
                 name: 'FMF3250Q06R - REAL',
@@ -602,6 +605,7 @@ describe('Cli Profile Form', () => {
                 venueName: 'My-Venue',
                 tenantId: 'tenant-id'
               }, {
+                id: 'FMF3250Q07R',
                 serialNumber: 'FMF3250Q07R',
                 model: 'ICX7150-C08P',
                 name: 'ICX7150-C08P Switch',
@@ -627,7 +631,7 @@ describe('Cli Profile Form', () => {
                   type: 'ADDRESS',
                   switchVariables: [
                     { serialNumbers: ['FMF3250Q05R'], value: '1.1.1.1' },
-                    { serialNumbers: ['FMF3250Q06R'], value: '1.1.1.10' }
+                    { serialNumbers: ['FMF3250Q07R'], value: '1.1.1.10' }
                   ]
                 }, {
                   name: 'test', type: 'RANGE', rangeStart: '3', rangeEnd: '4',
@@ -759,7 +763,7 @@ describe('Cli Profile Form', () => {
         })
       })
 
-      it('should edit custom variable correctly', async () => {
+      it('should edit custom variable correctly (preprovisioned switch)', async () => {
         jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_LEVEL_CLI_PROFILE)
         render(<Provider><CliProfileForm /></Provider>, {
           route: { params, path: '/:tenantId/networks/wired/:configType/cli/:profileId/:action' }
@@ -788,6 +792,46 @@ describe('Cli Profile Form', () => {
         const customizedInput = await within(customizedForm).findByTestId('customized-input-0')
         await userEvent.clear(customizedInput)
         await userEvent.type(customizedInput, '4')
+        await userEvent.click(await within(dialog).findByRole('button', { name: 'OK' }))
+
+        await waitFor(() => {
+          expect(dialog).not.toBeVisible()
+        })
+      })
+
+      it('should edit custom variable correctly (preprovisioned/configured switch)', async () => {
+        jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_LEVEL_CLI_PROFILE)
+        render(<Provider><CliProfileForm /></Provider>, {
+          route: { params, path: '/:tenantId/networks/wired/:configType/cli/:profileId/:action' }
+        })
+
+        await waitFor(() => {
+          expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+        })
+        expect(await screen.findByText('Edit CLI Configuration Profile')).toBeVisible()
+
+        await userEvent.click(await screen.findByRole('button', { name: 'CLI Configuration' }))
+        await screen.findByText('CLI commands')
+
+        // open edit variable modal
+        await userEvent.click(await screen.findByRole('tab', { name: 'Variables' }))
+        await screen.findAllByText(/iptest/)
+        const editVarBtns = await screen.findAllByTestId('edit-var-btn')
+        await userEvent.click(editVarBtns[0]) // IP Address
+        await userEvent.click(await screen.findByRole('menuitem', { name: 'Edit' }))
+
+        const dialog = await screen.findByRole('dialog')
+        await screen.findByText('Edit Variable')
+        expect(within(dialog).queryByRole('button', { name: 'Customize' })).toBeNull()
+
+        const customizedForm = await within(dialog).findByTestId('customized-form')
+        const customizedInput = await within(customizedForm).findByTestId('customized-input-0')
+        expect(await within(customizedForm).findByText('Online Devices')).toBeVisible()
+        expect(await within(customizedForm).findByText('Devices to be provisioned')).toBeVisible()
+        expect(customizedInput).not.toBeDisabled()
+
+        await userEvent.clear(customizedInput)
+        await userEvent.type(customizedInput, '1.1.1.9')
         await userEvent.click(await within(dialog).findByRole('button', { name: 'OK' }))
 
         await waitFor(() => {

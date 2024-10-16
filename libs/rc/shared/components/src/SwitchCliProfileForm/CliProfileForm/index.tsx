@@ -66,10 +66,6 @@ const switchListPayload = {
     'syncedSwitchConfig', 'operationalWarning', 'venueName', 'deviceStatus'
   ],
   pageSize: 9999
-  // TODO
-  // filters: {
-  //   deviceStatus: [SwitchStatusEnum.NEVER_CONTACTED_CLOUD]
-  // }
 }
 
 export function CliProfileForm () {
@@ -261,7 +257,7 @@ export function CliProfileForm () {
       const allowedSwitchList = switchList?.data?.filter(s => (
         s.deviceStatus === SwitchStatusEnum.NEVER_CONTACTED_CLOUD
       )) as SwitchViewModel[]
-      // TODO
+
       const allSwitchSerialNumbers = switchList?.data?.map(s => s.serialNumber)
       const variables = cliProfile?.venueCliTemplate?.variables?.map(v => {
         return {

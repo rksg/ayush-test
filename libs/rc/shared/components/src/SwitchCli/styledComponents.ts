@@ -25,18 +25,27 @@ export const CustomizedSubtitle = styled(Subtitle)`
 export const CustomizedFieldsWrapper = styled.div`
   .ant-collapse {
     .ant-collapse-header {
-      padding: 0;
-      font-size: var(--acx-body-4-font-size);
-      font-weight: var(--acx-subtitle-6-font-weight-bold);
-      color: var(--acx-neutrals-60);
       display: flex;
-      flex-direction: row-reverse;
+      flex-flow: row-reverse !important;
+      padding: 0 !important;
+      border: 0 !important;
+      color: var(--acx-neutrals-60);
+      align-items: center;
+
       .ant-collapse-header-text {
         flex: none;
         margin-right: 4px;
+        font-size: var(--acx-body-4-font-size);
+        font-weight: var(--acx-subtitle-6-font-weight-bold);
       }
-      .ant-collapse-expand-icon {
+      .ant-collapse-expand-icon {      
         flex: 1;
+        .ant-collapse-arrow {
+          position: relative !important;
+          right: 0;
+          top: -1px;
+          transform: none;
+        }
       }
     }
     .ant-collapse-content-box {
@@ -61,6 +70,27 @@ export const Select = styled(AcxSelect)`
       .ant-select-selection-placeholder {
         top: 14px;
       }
+    }
+  }
+  &.ant-select-multiple {
+    .ant-select-selection-item {
+      height: 24px;
+      border-radius: 12px;
+      padding: 4px 8px;
+      background: var(--acx-accents-blue-50);
+      color: var(--acx-primary-white);
+      font-size: var(--acx-body-4-font-size);
+      line-height: 1.2;
+      .ant-select-selection-item-remove {
+        position: relative;
+        top: 1px;
+        color: var(--acx-primary-white);
+      }
+    }
+    &.ant-select-disabled .ant-select-selection-item {
+      color: var(--acx-primary-white);
+      border: 0;
+      opacity: .3;
     }
   }
 `

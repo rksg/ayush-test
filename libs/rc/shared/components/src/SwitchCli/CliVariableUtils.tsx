@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment } from 'react'
 
 import { Collapse, Divider, Form, FormInstance, FormListFieldData, Input, Select, Space } from 'antd'
 import { RuleObject }                                                                     from 'antd/lib/form'
@@ -9,7 +9,12 @@ import {
   Button,
   Tooltip
 } from '@acx-ui/components'
-import { DeleteOutlined, QuestionMarkCircleOutlined } from '@acx-ui/icons-new'
+import {
+  ArrowCollapse,
+  ArrowExpand,
+  DeleteOutlined,
+  QuestionMarkCircleOutlined
+} from '@acx-ui/icons-new'
 import {
   cliIpAddressRegExp,
   CliTemplateVariable,
@@ -18,6 +23,7 @@ import {
   specialCharactersWithNewLineRegExp,
   SwitchCliMessages,
   SwitchViewModel,
+  SwitchCustomizedVariable,
   transformTitleCase,
   IpUtilsService
 } from '@acx-ui/rc/utils'
@@ -26,8 +32,6 @@ import { getIntl, validationMessages } from '@acx-ui/utils'
 import * as UI from './styledComponents'
 
 import { SwitchSettings } from './'
-
-import type { CollapseProps } from 'antd'
 
 export const MAX_VARIABLE_COUNT = 200
 export const MAX_LENGTH_OF_STRING = 20
@@ -50,11 +54,13 @@ export interface variableFormData {
   rangeStart?: number
   rangeEnd?: number
   string?: string
+  preprovisionedSwitchVariables?: SwitchCustomizedVariable[]
+  configuredSwitchVariables?: SwitchCustomizedVariable[]
 }
 
 export interface ExtendedSwitchViewModel extends SwitchViewModel {
   isApplied: boolean
-  isModalOverlap?: boolean
+  isModelOverlap?: boolean
   isConfigured?: boolean
 }
 
@@ -336,108 +342,117 @@ export const getCustomizeButtonDisabled = (
   }
 }
 
-export const getCustomizeFields = (
-  switchList: AllowedSwitchObjList,
+export const getCustomizeFields = (props: {
+  switchList: AllowedSwitchObjList, // only preprovisioned switch
+  configuredSwitchList: AllowedSwitchObjList, // includes configured switch
   type: string,
   customizedRequiredFields: string[],
   hasCustomize: boolean,
   form: FormInstance
-) => {
+}) => {
   const { $t } = getIntl()
-  const { configuredSwitchVariables, preprovisionedSwitchVariables }
-    = form.getFieldsValue(['configuredSwitchVariables', 'preprovisionedSwitchVariables'])
-  console.log('variables: ', configuredSwitchVariables, preprovisionedSwitchVariables)
+  const {
+    switchList, configuredSwitchList, type, customizedRequiredFields, hasCustomize, form
+  } = props
+  const { configuredSwitchVariables } = form.getFieldsValue(['configuredSwitchVariables'])
   const hasConfiguredSwitchVariables = !!configuredSwitchVariables?.length
-  const hasPreprovisionedSwitchVariables = !!preprovisionedSwitchVariables?.length
-  const hasCustomizeVariables = hasConfiguredSwitchVariables || hasPreprovisionedSwitchVariables || false
 
-
-  console.log('*** ', configuredSwitchVariables, preprovisionedSwitchVariables)
+  const getSelectDisabledTooltip = (name: number) => {
+    //TODO: enhance > should show switch name + serial
+    const selectedSerialNumbers
+      = form.getFieldValue(['configuredSwitchVariables', name, 'serialNumbers'])
+    return selectedSerialNumbers.toString()
+  }
+  const getOptionDisabledTooltip = (switchStatus: ExtendedSwitchViewModel) => {
+    return switchStatus?.isApplied
+      ? $t(SwitchCliMessages.NOT_ALLOWED_APPLY_PROFILE)
+      : (switchStatus?.isModelOverlap ? $t(SwitchCliMessages.OVERLAPPING_MODELS_TOOLTIP) : '')
+  }
 
   const renderFields = (
     fields: FormListFieldData[],
     remove: (index: number | number[]) => void,
     enableEdit: boolean = true
   ) => {
+    const switches = enableEdit ? switchList : configuredSwitchList
     return fields.map(({ key, name, ...restField }, index) => (<Fragment key={key}>
-      <Form.Item
-        {...restField}
-        name={[name, 'serialNumbers']}
-        validateFirst
-        rules={[{
-          required: true,
-          message: $t({ defaultMessage: 'Please enter Switch' })
-        }, {
-          validator: (_: RuleObject, value: string) => {
-            const currentSerialNumbers = isArray(value) ? value : [value]
-            const switchVariables = form.getFieldValue('preprovisionedSwitchVariables') as {
+      <Tooltip title={!enableEdit ? getSelectDisabledTooltip(name) : ''}>
+        <Form.Item
+          {...restField}
+          name={[name, 'serialNumbers']}
+          validateFirst
+          rules={[{
+            required: true,
+            message: $t({ defaultMessage: 'Please enter Switch' })
+          }, {
+            validator: (_: RuleObject, value: string) => {
+              const currentSerialNumbers = isArray(value) ? value : [value]
+              const switchVariables = form.getFieldValue('preprovisionedSwitchVariables') as {
               serialNumbers: string[],
               value: string
             }[]
-            const serialNumbers = switchVariables
-              .filter((switchVariable, i) => i !== index && switchVariable?.serialNumbers)
-              .map(switchVariable => switchVariable?.serialNumbers).flat()
-            // eslint-disable-next-line max-len
-            const isValid = intersection(currentSerialNumbers, serialNumbers)?.length === 0
+              const serialNumbers = switchVariables
+                .filter((switchVariable, i) => i !== index && switchVariable?.serialNumbers)
+                .map(switchVariable => switchVariable?.serialNumbers).flat()
+              // eslint-disable-next-line max-len
+              const isValid = intersection(currentSerialNumbers, serialNumbers)?.length === 0
 
-            if (isValid) {
-              return Promise.resolve()
-            }
-            return Promise.reject()
-          },
-          message: $t({ defaultMessage: 'Serial Numbers should be unique' })
-        }]}
-        children={
-          <UI.Select
-            data-testid={`customized-select-${key}`}
-            showSearch
-            showArrow={false}
-            className={type === VariableType.STRING ? 'string-type' : ''}
-            mode={type !== VariableType.ADDRESS ? 'multiple' : undefined}
-            type={type === VariableType.ADDRESS ? 'radio' : undefined}
-            dropdownMatchSelectWidth={false}
-            maxTagCount='responsive'
-            placeholder={$t({ defaultMessage: 'Search Switch' })}
-            optionFilterProp='key'
-            // disabled={!enableEdit}
-          >{
-              Object.keys(switchList).map(model => (
-                <Select.OptGroup
-                  key={model}
-                  label={model}
-                  children={switchList[model]?.map(s => {
-                    const hasSwitchName = s.name !== s.serialNumber
-                    const name
+              if (isValid) {
+                return Promise.resolve()
+              }
+              return Promise.reject()
+            },
+            message: $t({ defaultMessage: 'Serial Numbers should be unique' })
+          }]}
+          children={
+            <UI.Select
+              data-testid={`customized-select-${key}`}
+              showSearch
+              showArrow={false}
+              className={type === VariableType.STRING ? 'string-type' : ''}
+              mode={type !== VariableType.ADDRESS ? 'multiple' : undefined}
+              type={type === VariableType.ADDRESS ? 'radio' : undefined}
+              dropdownMatchSelectWidth={false}
+              maxTagCount='responsive'
+              placeholder={$t({ defaultMessage: 'Search Switch' })}
+              optionFilterProp='key'
+              disabled={!enableEdit}
+            >{
+                Object.keys(switches).map(model => (
+                  <Select.OptGroup
+                    key={model}
+                    label={model}
+                    children={switches[model]?.map(s => {
+                      const hasSwitchName = s.name !== s.serialNumber
+                      const name
                       = hasSwitchName ? `${s.serialNumber} (${s.name})` : (s.name ?? '')
 
-                    return <Select.Option
-                      disabled={s.isApplied || s.isModalOverlap}
-                      key={name}
-                      value={s.serialNumber}
-                      label={name}
-                    >
-                      <Tooltip
-                        title={s?.isApplied
-                          ? $t(SwitchCliMessages.NOT_ALLOWED_APPLY_PROFILE)
-                          : (s?.isModalOverlap ? $t(SwitchCliMessages.OVERLAPPING_MODELS_TOOLTIP) : '')
-                        }
-                        placement='top'
+                      return <Select.Option
+                        disabled={s.isApplied || s.isModelOverlap}
+                        key={name}
+                        value={s.serialNumber}
+                        label={name}
                       >
-                        <Space className='option-label'>
-                          <div className='label'>
-                            <div className='title'>{ name }</div>
-                            <div className='subtitle'>{ s.venueName }</div>
-                          </div>
-                        </Space>
-                      </Tooltip>
-                    </Select.Option>
-                  })
-                  }
-                />
-              ))
-            }</UI.Select>
-        }
-      />
+                        <Tooltip
+                          title={getOptionDisabledTooltip(s)}
+                          placement='top'
+                        >
+                          <Space className='option-label'>
+                            <div className='label'>
+                              <div className='title'>{ name }</div>
+                              <div className='subtitle'>{ s.venueName }</div>
+                            </div>
+                          </Space>
+                        </Tooltip>
+                      </Select.Option>
+                    })
+                    }
+                  />
+                ))
+              }</UI.Select>
+          }
+        />
+      </Tooltip>
       <Space style={{
         textAlign: 'center',
         height: type === VariableType.STRING ? '50.5px' : '32px'
@@ -472,11 +487,17 @@ export const getCustomizeFields = (
       >
         { type === VariableType.STRING
           ? <Input.TextArea
-            data-testid={`customized-textarea-${key}`}
+            data-testid={!enableEdit
+              ? `customized-disabled-textarea-${key}` : `customized-textarea-${key}`
+            }
             maxLength={MAX_LENGTH_OF_CUSTOMIZED_STRING}
             disabled={!enableEdit}
           />
-          : <Input data-testid={`customized-input-${key}`} disabled={!enableEdit} />
+          : <Input
+            data-testid={!enableEdit
+              ? `customized-disabled-input-${key}` : `customized-input-${key}`}
+            disabled={!enableEdit}
+          />
         }
       </Form.Item>
       <Tooltip title={!enableEdit
@@ -492,14 +513,7 @@ export const getCustomizeFields = (
             display: 'flex', height: type === VariableType.STRING ? '50.5px' : ''
           }}
           disabled={!enableEdit}
-          onClick={() => {
-            remove(name)
-            console.log( form.getFieldsValue(['configuredSwitchVariables', 'preprovisionedSwitchVariables']) )
-            const values = form.getFieldsValue(['configuredSwitchVariables', 'preprovisionedSwitchVariables'])
-            const customize = Object.values(values).flat()
-            console.log(values, customize)
-            // setIsCustomize(hasCustomizeVariables)
-          }}
+          onClick={() => remove(name)}
         />
       </Tooltip>
     </Fragment>
@@ -525,20 +539,34 @@ export const getCustomizeFields = (
         <Space> </Space>
       </UI.CustomizedFields>}
 
-      <Collapse defaultActiveKey={['1', '2']} ghost>
-        { hasConfiguredSwitchVariables &&
-        <Collapse.Panel header={$t({ defaultMessage: 'Online Devices' })} key='1'>
+      <Collapse
+        defaultActiveKey={['configured', 'preprovisioned']}
+        expandIcon={({ isActive }) => {
+          return isActive ? <ArrowCollapse size='sm' /> : <ArrowExpand size='sm' />
+        }}
+        expandIconPosition='end'
+        ghost
+      >
+        { hasConfiguredSwitchVariables && <Collapse.Panel
+          header={$t({ defaultMessage: 'Online Devices' })}
+          key='configured'
+          style={{ marginBottom: '4px' }}
+        >
           <Form.List name='configuredSwitchVariables'>{
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             (fields, { add, remove }) => (<UI.CustomizedFields>
               { renderFields(fields, remove, false) }
             </UI.CustomizedFields>)
           }</Form.List>
         </Collapse.Panel>}
-        <Collapse.Panel header={
-          hasCustomize ? $t({ defaultMessage: 'Devices to be provisioned' }) : ''}
-        key='2'
-        showArrow={hasCustomize}
-        collapsible={hasCustomize ? undefined : 'disabled'}
+
+        <Collapse.Panel
+          header={
+            hasCustomize ? $t({ defaultMessage: 'Devices to be provisioned' }) : ''
+          }
+          key='preprovisioned'
+          showArrow={hasCustomize}
+          collapsible={hasCustomize ? undefined : 'disabled'}
         >
           <Form.List name='preprovisionedSwitchVariables'>{
             (fields, { add, remove }) => (<><UI.CustomizedFields>
@@ -559,181 +587,7 @@ export const getCustomizeFields = (
         </Collapse.Panel>
       </Collapse>
     </UI.CustomizedFieldsWrapper>
-    {/* <Button type='link'
-      size='small'
-      disabled={getCustomizeButtonDisabled(type, fields, customizedRequiredFields)}
-      onClick={() => add()}
-    >{hasCustomizeVariables
-      ? $t({ defaultMessage: 'Add Switch' })
-      : $t({ defaultMessage: 'Customize' })
-      }
-    </Button> */}
   </>
-
-  // return <Form.List name='switchVariables'>
-  //   {
-  //     (fields, { add, remove }) => (
-  //       <>
-  //         {!!fields?.length && <Divider />}
-  //         <UI.CustomizedFields data-testid='customized-form'>
-  //           {!!fields?.length && <>
-  //             <UI.CustomizedSubtitle level={5}>
-  //               { $t({ defaultMessage: 'Switch' }) }
-  //               { getRequiredMark() }
-  //               <Tooltip
-  //                 title={$t(SwitchCliMessages.PREPROVISIONED_SWITCH_LIST_TOOLTIP)}
-  //                 placement='top'
-  //               >
-  //                 <QuestionMarkCircleOutlined size='sm'/>
-  //               </Tooltip>
-  //             </UI.CustomizedSubtitle>
-  //             <Space> </Space>
-  //             { getCustomizeFieldsText(type) }
-  //             <Space> </Space>
-  //           </>}
-  //           {fields.map(({ key, name, ...restField }, index) => (<Fragment key={key}>
-  //             <Form.Item
-  //               {...restField}
-  //               name={[name, 'serialNumbers']}
-  //               validateFirst
-  //               rules={[{
-  //                 required: true,
-  //                 message: $t({ defaultMessage: 'Please enter Switch' })
-  //               }, {
-  //                 validator: (_: RuleObject, value: string) => {
-  //                   const currentSerialNumbers = isArray(value) ? value : [value]
-  //                   const switchVariables = form.getFieldValue('switchVariables') as {
-  //                     serialNumbers: string[],
-  //                     value: string
-  //                   }[]
-  //                   const serialNumbers = switchVariables
-  //                     .filter((switchVariable, i) => i !== index && switchVariable?.serialNumbers)
-  //                     .map(switchVariable => switchVariable?.serialNumbers).flat()
-  //                   // eslint-disable-next-line max-len
-  //                   const isValid = intersection(currentSerialNumbers, serialNumbers)?.length === 0
-
-  //                   if (isValid) {
-  //                     return Promise.resolve()
-  //                   }
-  //                   return Promise.reject()
-  //                 },
-  //                 message: $t({ defaultMessage: 'Serial Numbers should be unique' })
-  //               }]}
-  //               children={
-  //                 <UI.Select
-  //                   data-testid={`customized-select-${key}`}
-  //                   showSearch
-  //                   showArrow={false}
-  //                   className={type === VariableType.STRING ? 'string-type' : ''}
-  //                   mode={type !== VariableType.ADDRESS ? 'multiple' : undefined}
-  //                   type={type === VariableType.ADDRESS ? 'radio' : undefined}
-  //                   dropdownMatchSelectWidth={false}
-  //                   maxTagCount='responsive'
-  //                   placeholder={$t({ defaultMessage: 'Search Switch' })}
-  //                   optionFilterProp='key'
-  //                 >{
-  //                     Object.keys(switchList).map(model => (
-  //                       <Select.OptGroup
-  //                         key={model}
-  //                         label={model}
-  //                         children={switchList[model]?.map(s => {
-  //                           const hasSwitchName = s.name !== s.serialNumber
-  //                           const name
-  //                             = hasSwitchName ? `${s.serialNumber} (${s.name})` : (s.name ?? '')
-
-  //                           return <Select.Option
-  //                             disabled={s.isApplied} // TODO
-  //                             key={name}
-  //                             value={s.serialNumber}
-  //                             label={name}
-  //                           >
-  //                             <Tooltip
-  //                               title={s?.isApplied
-  //                                 ? $t(SwitchCliMessages.NOT_ALLOWED_APPLY_PROFILE)
-  //                                 : (s?.isModalOverlap ? $t(SwitchCliMessages.OVERLAPPING_MODELS_TOOLTIP) : '')
-  //                               }
-  //                               placement='top'
-  //                             >
-  //                               <Space className='option-label'>
-  //                                 <div className='label'>
-  //                                   <div className='title'>{ name }</div>
-  //                                   <div className='subtitle'>{ s.venueName }</div>
-  //                                 </div>
-  //                               </Space>
-  //                             </Tooltip>
-  //                           </Select.Option>
-  //                         })
-  //                         }
-  //                       />
-  //                     ))
-  //                   }</UI.Select>
-  //               }
-  //             />
-  //             <Space style={{
-  //               textAlign: 'center',
-  //               height: type === VariableType.STRING ? '50.5px' : '32px'
-  //             }}>:</Space>
-  //             <Form.Item
-  //               {...restField}
-  //               name={[name, 'value']}
-  //               validateFirst
-  //               rules={[{
-  //                 required: true,
-  //                 message: $t({ defaultMessage: 'Please enter Value' })
-  //               },
-  //               ...( type === VariableType.ADDRESS ? [{
-  //                 validator: () => validateRequiredAddress(form)
-  //               }, {
-  //                 validator: (_:RuleObject, value:string) => validateValidIp(value, form),
-  //                 message: $t({ defaultMessage: 'Please enter valid value' })
-  //               }, {
-  //                 // eslint-disable-next-line max-len
-  //                 validator: (_:RuleObject, value:string) => validateDuplicateIp(value, index, form)
-  //               }] : []),
-  //               ...( type === VariableType.RANGE ? [{
-  //                 validator: (_:RuleObject, value:number) => {
-  //                   // eslint-disable-next-line max-len
-  //                   const isValid = validateInRange(value, form.getFieldValue('rangeStart'), form.getFieldValue('rangeEnd'))
-  //                   return isValid
-  //                     ? Promise.resolve()
-  //                     : Promise.reject($t({ defaultMessage: 'Please enter valid value' }))
-  //                 }
-  //               }] : [])
-  //               ]}
-  //             >
-  //               { type === VariableType.STRING
-  //                 ? <Input.TextArea
-  //                   data-testid={`customized-textarea-${key}`}
-  //                   maxLength={MAX_LENGTH_OF_CUSTOMIZED_STRING}
-  //                 />
-  //                 : <Input data-testid={`customized-input-${key}`} />
-  //               }
-  //             </Form.Item>
-  //             <Button
-  //               key={`delete${key}`}
-  //               role='deleteBtn'
-  //               type='link'
-  //               icon={<DeleteOutlined size='sm' />}
-  //               style={{
-  //                 display: 'flex', height: type === VariableType.STRING ? '50.5px' : ''
-  //               }}
-  //               onClick={() => remove(name)}
-  //             />
-  //           </Fragment>
-  //           ))}
-  //         </UI.CustomizedFields>
-  //         <Button type='link'
-  //           size='small'
-  //           disabled={getCustomizeButtonDisabled(type, fields, customizedRequiredFields)}
-  //           onClick={() => add()}
-  //         >{ !!fields?.length
-  //             ? $t({ defaultMessage: 'Add Switch' })
-  //             : $t({ defaultMessage: 'Customize' })
-  //           }
-  //         </Button>
-  //       </>
-  //     )}
-  // </Form.List>
 }
 
 export const getCustomizedSwitchVenues = (
@@ -831,12 +685,13 @@ export function validateDuplicateIp (
   const { $t } = getIntl()
   const configuredIpList
     = form.getFieldValue('configuredSwitchVariables')
-      .map((ip: { value: string }) => ip?.value)
-  const customizeIpList
+      ?.map((ip: { value: string }) => ip?.value) ?? []
+  const preprovisionedIpList
     = form.getFieldValue('preprovisionedSwitchVariables')
-      .filter((ip: { value: string }, i: number) => (i !== index && ip?.value))
-      .map((ip: { value: string }) => ip?.value)
-      .concat(configuredIpList)
+      ?.filter((ip: { value: string }, i: number) => (i !== index && ip?.value))
+      ?.map((ip: { value: string }) => ip?.value) ?? []
+
+  const customizeIpList = preprovisionedIpList.concat(configuredIpList)
   const isValid = !customizeIpList.includes(ip)
 
   return !isPreprovisionedFields

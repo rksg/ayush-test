@@ -60,10 +60,10 @@ export function CliStepModels () {
   useEffect(() => {
     const { variables } = form.getFieldsValue(true)
     const appliedSerialNumbers = (variables as CliTemplateVariable[])
-      .filter(v => v?.switchVariables)
-      .map(v => v?.switchVariables?.map(
+      ?.filter(v => v?.switchVariables)
+      ?.map(v => v?.switchVariables?.map(
         switchVariable => switchVariable?.serialNumbers
-      ).flat()).flat()
+      ).flat()).flat() ?? []
     const modelList = _.uniq(
       appliedSerialNumbers.map(serial => getSwitchModel(serial as string))
     ) as string[]
@@ -190,11 +190,13 @@ export function CliStepModels () {
             }}>
             {
               allModels.map(model =>
-                <Tooltip title={appliedModels.includes(model)
+                <Tooltip
+                  title={appliedModels.includes(model)
                   // eslint-disable-next-line max-len
-                  ? $t({ defaultMessage: 'This switch model is already selected for variable customization in the next step.' })
-                  : ''
-                }>
+                    ? $t({ defaultMessage: 'This switch model is already selected for variable customization in the next step.' })
+                    : ''}
+                  key={`${model}-tip`}
+                >
                   <Checkbox
                     value={model}
                     key={model}
