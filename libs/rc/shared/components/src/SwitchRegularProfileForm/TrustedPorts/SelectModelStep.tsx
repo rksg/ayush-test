@@ -210,13 +210,15 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
     const modelsData = Object.keys(modelsList).map(key => {
       return { label: key, value: key }
     })
-    if (!isSupport8200AV && index === 'ICX8200') {
-      // eslint-disable-next-line max-len
-      const modelDataWithout82Av = modelsData.filter(model => model.value !== '24PV' && model.value !== 'C08PFV')
-      setModels(modelDataWithout82Av)
-    } else {
-      setModels(modelsData)
+
+    const filterModels = (modelsData: { label: string; value: string }[]) => {
+      if (!isSupport8200AV && index === 'ICX8200') {
+        return modelsData.filter(model => model.value !== '24PV' && model.value !== 'C08PFV')
+      }
+      return modelsData
     }
+    const filteredModels = filterModels(modelsData)
+    setModels(filteredModels)
   }
 
   const onModelChange = (e: RadioChangeEvent) => {

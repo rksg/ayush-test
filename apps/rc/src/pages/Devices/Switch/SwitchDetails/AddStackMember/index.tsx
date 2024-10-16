@@ -39,6 +39,8 @@ import {
   TableContainer
 } from './styledComponents'
 
+import type { SwitchModelParams } from '../../StackForm'
+
 export interface AddStackMemberProps {
   visible: boolean
   setVisible: (v: boolean) => void
@@ -149,7 +151,14 @@ function AddMemberForm (props: DefaultVlanFormProps) {
               required: true,
               message: $t({ defaultMessage: 'This field is required' })
             },
-            { validator: (_, value) => validatorSwitchModel(value, isSupport8200AV, switchDetail?.activeSerial ) },
+            { validator: (_, value) => {
+              const switchModelParams: SwitchModelParams = {
+                serialNumber: value,
+                isSupport8200AV: isSupport8200AV,
+                activeSerialNumber: switchDetail?.activeSerial
+              }
+              return validatorSwitchModel(switchModelParams)}
+            },
             { validator: (_, value) => validatorUniqueMember(value, [
               ...tableData.map(d => ({ id: (d.key === row.key) ? value : d.id })),
               ...(switchData?.stackMembers || [])

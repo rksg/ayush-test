@@ -89,16 +89,19 @@ export function ScheduleStep (props: ScheduleStepProps) {
 
   const [switchNoteData, setSwitchNoteData] = useState([] as NoteProps[])
 
+  const payload = {
+    venueIdList: upgradeVenueList.map(item => item.venueId),
+    searchTargetFields: ['model']
+  }
+
   const { data: getSwitchFirmwareList } = useBatchGetSwitchFirmwareListV1001Query(
     [{ payload: {
-      venueIdList: upgradeVenueList.map(item => item.venueId),
-      searchFilter: 'ICX8200-24PV',
-      searchTargetFields: ['model']
+      ...payload,
+      searchFilter: 'ICX8200-24PV'
     } },
     { payload: {
-      venueIdList: upgradeVenueList.map(item => item.venueId),
-      searchFilter: 'ICX8200-C08PFV',
-      searchTargetFields: ['model']
+      ...payload,
+      searchFilter: 'ICX8200-C08PFV'
     } } ]
     , { skip: upgradeVenueList.length === 0 })
 

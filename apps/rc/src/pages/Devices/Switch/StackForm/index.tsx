@@ -102,8 +102,14 @@ const defaultPayload = {
 
 const modelNotSupportStack = ['ICX7150-C08P', 'ICX7150-C08PT']
 
-export const validatorSwitchModel = (serialNumber: string, isSupport8200AV: boolean,
-  activeSerialNumber?: string ) => {
+export type SwitchModelParams = {
+  serialNumber: string;
+  isSupport8200AV: boolean;
+  activeSerialNumber?: string;
+}
+
+export const validatorSwitchModel = ( props: SwitchModelParams ) => {
+  const { serialNumber, isSupport8200AV, activeSerialNumber } = props
   const { $t } = getIntl()
   const re = isSupport8200AV ? new RegExp(SWITCH_SERIAL_PATTERN_INCLUDED_8200AV)
     : new RegExp(SWITCH_SERIAL_PATTERN)
@@ -644,8 +650,13 @@ export function StackForm () {
               message: $t({ defaultMessage: 'This field is required' })
             },
             {
-              validator: (_, value) => validatorSwitchModel(value, isSupport8200AV,
-                activeRow === row.key ? value : activeSerialNumber)
+              validator: (_, value) => {
+                const switchModelParams: SwitchModelParams = {
+                  serialNumber: value,
+                  isSupport8200AV: isSupport8200AV,
+                  activeSerialNumber: activeRow === row.key ? value : activeSerialNumber
+                }
+                return validatorSwitchModel(switchModelParams)}
             },
             {
               validator: (_, value) => validatorUniqueMember(value,

@@ -56,16 +56,19 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
   const ICX82Count = availableVersions?.filter(
     v => v.modelGroup === SwitchFirmwareModelGroup.ICX82)[0]?.switchCount || 0
 
+  const payload = {
+    venueIdList: upgradeVenueList.map(item => item.venueId),
+    searchTargetFields: ['model']
+  }
+
   const { data: getSwitchFirmwareList } = useBatchGetSwitchFirmwareListV1001Query(
     [{ payload: {
-      venueIdList: upgradeVenueList.map(item => item.venueId),
-      searchFilter: 'ICX8200-24PV',
-      searchTargetFields: ['model']
+      ...payload,
+      searchFilter: 'ICX8200-24PV'
     } },
     { payload: {
-      venueIdList: upgradeVenueList.map(item => item.venueId),
-      searchFilter: 'ICX8200-C08PFV',
-      searchTargetFields: ['model']
+      ...payload,
+      searchFilter: 'ICX8200-C08PFV'
     } } ]
     , { skip: upgradeVenueList.length === 0 })
 
