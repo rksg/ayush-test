@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 
-import { Form, Input } from 'antd'
-import { useIntl }     from 'react-intl'
+import { Form, Input, Typography } from 'antd'
+import { useIntl }                 from 'react-intl'
 
 import { Alert, StepsForm, TableProps, useStepFormContext }                  from '@acx-ui/components'
 import { useGetEdgeListQuery }                                               from '@acx-ui/rc/services'
@@ -103,6 +103,10 @@ export function DistributionSwitchForm () {
     <StepsForm.Title>
       {$t({ defaultMessage: 'Distribution Switch Settings' })}
     </StepsForm.Title>
+    <Typography.Paragraph type='secondary'>{$t({ defaultMessage:
+      `Please add distribution switches and connected access switches to the list below,
+      and then configure the VLAN range and loopback settings.`
+    })}</Typography.Paragraph>
     <DistributionSwitchTable rowActions={rowActions}
       actions={[{
         key: 'addDs',
