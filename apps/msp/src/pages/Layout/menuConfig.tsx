@@ -63,7 +63,8 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfoo
   const recCustomerMenu = (!isHspSupportEnabled || isSupport ? [] : [{
     uri: '/dashboard/mspRecCustomers',
     tenantType: 'v' as TenantType,
-    label: $t({ defaultMessage: 'Brand Properties' })
+    label: brand.includes('MDU') ? $t({ defaultMessage: 'MDU Properties' })
+      : $t({ defaultMessage: 'Brand Properties' })
   }])
 
   const hspMspMenues = (isVar || isDogfood)

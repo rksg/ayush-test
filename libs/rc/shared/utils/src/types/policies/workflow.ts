@@ -37,11 +37,11 @@ export interface UIStyleSchema {
   headerFontSize: number
   logoImageFileName?: string
   backgroundImageName?: string
+  wifi4EuNetworkId?: string
+  disablePoweredBy: boolean
 }
 
 export interface UIConfiguration {
-  wifi4EUNetworkId?: string
-  disablePoweredBy: boolean
   logoImage?: string
   logoFile?: RcFile
   backgroundImage?: string
@@ -69,7 +69,8 @@ export enum StepType {
 export enum WorkflowPanelMode {
   Default = 'default',
   Design = 'design',
-  Edit = 'edit'
+  Edit = 'edit',
+  Custom = 'custom'
 }
 
 // Only for Canvas used

@@ -24,7 +24,6 @@ describe('ScepDrawer', () => {
     expect(screen.getByText('Validity Information')).toBeInTheDocument()
     expect(screen.getByText('Configuration Information')).toBeInTheDocument()
     expect(screen.getByLabelText('Name')).toBeInTheDocument()
-    expect(screen.getByLabelText('SCEP Key')).toBeInTheDocument()
     expect(screen.getByLabelText('Challenge Password Type')).toBeInTheDocument()
 
     await fireEvent.click(screen.getByText('Validity Information'))
@@ -35,8 +34,6 @@ describe('ScepDrawer', () => {
     await fireEvent.click(screen.getByText('Configuration Information'))
     expect(screen.getByLabelText('Days of Access')).toBeInTheDocument()
     expect(screen.getByLabelText('Common Name #1 Mapping')).toBeInTheDocument()
-    expect(screen.getByLabelText('Common Name #2 Mapping')).toBeInTheDocument()
-    expect(screen.getByLabelText('Common Name #3 Mapping')).toBeInTheDocument()
   })
 
   it('should add scep key correctly', async () => {

@@ -7,10 +7,15 @@ import moment                       from 'moment'
 import { useIntl }                  from 'react-intl'
 import { useParams }                from 'react-router-dom'
 
-import { Collapse, DatePicker, Drawer, Select }                                                              from '@acx-ui/components'
-import { CollapseInactive, CollapseActive }                                                                  from '@acx-ui/icons'
-import { useAddSpecificTemplateScepKeyMutation, useEditSpecificTemplateScepKeyMutation }                     from '@acx-ui/rc/services'
-import { ChallengePasswordType, EXPIRATION_DATE_FORMAT, ScepKeyCommonNameType, ScepKeyData, generateHexKey } from '@acx-ui/rc/utils'
+import { Collapse, DatePicker, Drawer, Select }                                          from '@acx-ui/components'
+import { CollapseInactive, CollapseActive }                                              from '@acx-ui/icons'
+import { useAddSpecificTemplateScepKeyMutation, useEditSpecificTemplateScepKeyMutation } from '@acx-ui/rc/services'
+import {
+  ChallengePasswordType,
+  EXPIRATION_DATE_FORMAT,
+  ScepKeyCommonNameType,
+  ScepKeyData
+} from '@acx-ui/rc/utils'
 
 import { challengePasswordTypeLabel, scepKeyCommonNameTypeLabel, scepKeysDescription } from '../contentsMap'
 import { CollapseWrapper, CollapseTitle, DrawerTitle, Description }                    from '../styledComponents'
@@ -73,8 +78,10 @@ export default function ScepDrawer
       await form.validateFields()
       const payload = { ...form.getFieldsValue(),
         challengePassword:
-          challengePasswordType === ChallengePasswordType.NONE ?
-            '' : form.getFieldValue('challengePassword') }
+          challengePasswordType !== ChallengePasswordType.STATIC ?
+            null : form.getFieldValue('challengePassword'),
+        expirationDate: moment(form.getFieldValue('expirationDate')).endOf('day').utc()
+      }
       if (!scepData) {
         await addScepKey({ params, payload })
       } else {
@@ -93,7 +100,6 @@ export default function ScepDrawer
     form.resetFields()
     const { expirationDate, ...rest } = scepData || {}
     const initialValues = scepData ? { ...rest, expirationDate: moment(expirationDate) } : {
-      scepKey: generateHexKey(20),
       challengePasswordType: ChallengePasswordType.NONE,
       challengePassword: '',
       allowedSubnets: '*',
@@ -140,14 +146,6 @@ export default function ScepDrawer
               e.preventDefault()
             }
           }}/>
-        </Form.Item>
-        <Form.Item
-          name='scepKey'
-          label={$t({ defaultMessage: 'SCEP Key' })}
-          rules={[{ required: true }]}
-          extra={$t(scepKeysDescription.SCEP_KEY)}
-        >
-          <Input/>
         </Form.Item>
         <Form.Item
           name='challengePasswordType'
@@ -261,24 +259,6 @@ export default function ScepDrawer
               <Form.Item
                 name='cnValue1'
                 label={$t({ defaultMessage: 'Common Name #1 Mapping' })}
-                rules={[{ required: true }]}
-              >
-                <Select
-                  options={commonNameOptions}
-                  placeholder={$t({ defaultMessage: 'Select...' })}/>
-              </Form.Item>
-              <Form.Item
-                name='cnValue2'
-                label={$t({ defaultMessage: 'Common Name #2 Mapping' })}
-                rules={[{ required: true }]}
-              >
-                <Select
-                  options={commonNameOptions}
-                  placeholder={$t({ defaultMessage: 'Select...' })}/>
-              </Form.Item>
-              <Form.Item
-                name='cnValue3'
-                label={$t({ defaultMessage: 'Common Name #3 Mapping' })}
                 rules={[{ required: true }]}
               >
                 <Select

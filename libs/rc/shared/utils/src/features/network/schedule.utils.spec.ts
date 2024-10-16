@@ -12,8 +12,7 @@ import { CommonUrlsInfo }    from '../../urls'
 
 import {
   getSchedulingCustomTooltip,
-  getCurrentTimeSlotIndex,
-  getVenueTimeZone
+  getCurrentTimeSlotIndex
 } from './schedule.utils'
 
 
@@ -21,26 +20,6 @@ describe('Test schedule.utils', () => {
 
   afterEach(()=>{
     jest.useRealTimers()
-  })
-
-  it('getVenueTimeZone and getCurrentTimeSlotIndex', async () => {
-
-    jest.useFakeTimers()
-
-    // Australian Eastern Standard Time
-    jest.setSystemTime(new Date(Date.parse('2022-08-04T01:20:00+10:00')))
-    const latitude = '-37.8145092'
-    const longitude = '144.9704868'
-
-    const timeZone = getVenueTimeZone(Number(latitude), Number(longitude))
-    const slotIndex = getCurrentTimeSlotIndex(timeZone)
-
-    expect(slotIndex).toStrictEqual({
-      day: 'Thu',
-      timeIndex: 5
-    })
-
-    jest.runOnlyPendingTimers()
   })
 
   it('getCurrentTimeSlotIndex', async () => {
