@@ -12,7 +12,9 @@ export const mockEdgeDhcpHostStats = {
       hostMac: '00:0c:29:26:dd:24',
       hostStatus: 'ONLINE',
       hostExpireDate: '2023-04-07 10:39:36',
-      edgeId: '96B341ADD6C16C11ED8B8B000C296600F2'
+      hostRemainingTime: 86400,
+      edgeId: '96B341ADD6C16C11ED8B8B000C296600F2',
+      dhcpId: '1'
     },
     {
       hostName: 'TestHost2',
@@ -21,7 +23,9 @@ export const mockEdgeDhcpHostStats = {
       hostMac: '00:0c:29:26:dd:20',
       hostStatus: 'OFFLINE',
       hostExpireDate: '2023-04-07 10:39:36',
-      edgeId: '96B341ADD6C16C11ED8B8B000C296600F2'
+      hostRemainingTime: 86400,
+      edgeId: '96B341ADD6C16C11ED8B8B000C296600F2',
+      dhcpId: '1'
     }
   ]
 }
@@ -48,7 +52,9 @@ export const mockDhcpStatsData = {
       health: 'Good',
       updateAvailable: 'NO',
       serviceVersion: '0.0.1',
-      tags: ['Tag1']
+      tags: ['Tag1'],
+      edgeAlarmSummary: [],
+      edgeClusterIds: ['clusterId_1']
     },
     {
       tenantId: '1ecc2d7cf9d2342fdb31ae0e24958fcac',
@@ -63,7 +69,9 @@ export const mockDhcpStatsData = {
       health: 'Good',
       updateAvailable: 'NO',
       serviceVersion: '0.0.1',
-      tags: ['Tag1']
+      tags: ['Tag1'],
+      edgeAlarmSummary: [],
+      edgeClusterIds: ['clusterId_2']
     },{
       tenantId: '1ecc2d7cf9d2342fdb31ae0e24958fcac',
       id: '3',
@@ -77,7 +85,9 @@ export const mockDhcpStatsData = {
       health: 'Good',
       updateAvailable: 'NO',
       serviceVersion: '0.0.1',
-      tags: ['Tag1']
+      tags: ['Tag1'],
+      edgeAlarmSummary: [],
+      edgeClusterIds: ['clusterId_3']
     }
   ]
 }
