@@ -43,9 +43,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/viewmodel/:tenantId/dashboard/overview/query',
     newApi: true
   },
-  getAlarmsSummary: {
+  getAlarmSummaries: {
     method: 'post',
-    url: '/dashboards/alarmsSummary/query',
+    url: '/dashboards/alarmSummaries/query',
     newApi: true
   },
   getAlarmsList: {
