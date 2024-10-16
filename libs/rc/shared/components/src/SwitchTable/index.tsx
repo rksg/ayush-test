@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
 import React, { useContext, useEffect, useState, useImperativeHandle, forwardRef, Ref } from 'react'
 
-import { FetchBaseQueryError }    from '@reduxjs/toolkit/dist/query'
-import { Badge }                  from 'antd'
-import _                          from 'lodash'
-import { defineMessage, useIntl } from 'react-intl'
+import { FetchBaseQueryError }          from '@reduxjs/toolkit/dist/query'
+import { Badge, Divider, Form, Select } from 'antd'
+import _                                from 'lodash'
+import { defineMessage, useIntl }       from 'react-intl'
 
 import {
   Table,
@@ -13,7 +13,8 @@ import {
   deviceStatusColors,
   ColumnType,
   PasswordInput,
-  showToast
+  showToast,
+  cssStr
 } from '@acx-ui/components'
 import { showActionModal, Tooltip }  from '@acx-ui/components'
 import type { TableHighlightFnArgs } from '@acx-ui/components'
@@ -141,6 +142,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const [ importCsv, importResult ] = useImportSwitchesMutation()
   const isHospitality = acx_account_vertical === AccountVertical.HOSPITALITY ? AccountVertical.HOSPITALITY.toLowerCase() + '_' : ''
   const importTemplateLink = `assets/templates/${isHospitality}switches_import_template.csv`
+  const importRBACTemplateLink = 'assets/templates/new_switches_import_template.csv'
 
   useImperativeHandle(ref, () => ({
     openImportDrawer: () => {
@@ -555,6 +557,10 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     }
   }
 
+  const venueOptions = filterableKeys?.['venueId'] instanceof Array ?
+    filterableKeys?.['venueId'].map(item => ({ label: item.value, value: item.key })) :
+    []
+
   return <Loader states={[tableQuery]}>
     <div data-testid='switch-table'>
       <Table<SwitchRow>
@@ -640,20 +646,37 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
         maxSize={CsvSize['5MB']}
         maxEntries={50}
         acceptType={['csv']}
-        templateLink={importTemplateLink}
+        templateLink={isSwitchRbacEnabled ? importRBACTemplateLink : importTemplateLink}
         visible={importVisible}
         isLoading={importResult.isLoading}
         importError={importResult.error as FetchBaseQueryError}
-        importRequest={async (formData) => {
-          await importCsv({ params, payload: formData }
-          ).unwrap().then(() => {
+        importRequest={async (formData, values) => {
+          await importCsv({
+            params: {
+              ...params,
+              venueId: isSwitchRbacEnabled ? _.get(values, 'venueId') : params.venueId
+            },
+            payload: formData,
+            enableRbac: isSwitchRbacEnabled
+          }).unwrap().then(() => {
             setImportVisible(false)
           }).catch((error) => {
             console.log(error) // eslint-disable-line no-console
           })
         }}
         onClose={() => setImportVisible(false)}
-      />
+      >
+        {isSwitchRbacEnabled &&
+        <>
+          <Divider style={{ margin: '4px 0px 20px', background: cssStr('--acx-neutrals-30') }} />
+          <Form.Item
+            name={'venueId'}
+            label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
+            rules={[{ required: true }]}
+            children={<Select options={venueOptions} />} />
+        </>
+        }
+      </ImportFileDrawer>
     </div>
   </Loader>
 })

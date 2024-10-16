@@ -27,7 +27,8 @@ export const basePolicyApi = createApi({
     'AdaptivePolicyCondition',
     'CertificateTemplate',
     'CertificateAuthority',
-    'Certificate'
+    'Certificate',
+    'ServerCertificate'
   ],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })

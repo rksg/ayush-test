@@ -27,6 +27,7 @@ export enum PolicyType {
   CERTIFICATE_TEMPLATE = 'Certificate Template',
   CERTIFICATE_AUTHORITY = 'Certificate Authority',
   CERTIFICATE = 'Certificate',
+  SERVER_CERTIFICATES = 'Server Certificates',
   ETHERNET_PORT_PROFILE = 'Ethernet Port Profile',
   WORKFLOW = 'Workflow',
   HQOS_BANDWIDTH = 'HQoS Bandwidth',
@@ -74,7 +75,8 @@ export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.WORKFLOW]: defineMessage({ defaultMessage: 'A customizable onboarding process that provides more control over who is granted network access' }),
   [PolicyType.HQOS_BANDWIDTH]: defineMessage({ defaultMessage: 'HQoS Bandwidth' }),
   [PolicyType.SOFTGRE]: defineMessage({ defaultMessage: 'Tunnel the traffic to a third party WLAN gateway' }),
-  [PolicyType.ETHERNET_PORT_PROFILE]: defineMessage({ defaultMessage: 'An Ethernet port profile is a configuration that specifies how a network port functions and behaves.' })
+  [PolicyType.ETHERNET_PORT_PROFILE]: defineMessage({ defaultMessage: 'An Ethernet port profile is a configuration that specifies how a network port functions and behaves.' }),
+  [PolicyType.SERVER_CERTIFICATES]: defineMessage({ defaultMessage: 'Server Certificates' })
 }
 
 export const downloadCertExtension: Record<CertificateAcceptType, String> = {
