@@ -12,6 +12,7 @@ import { parseExcludedHours, buildExcludedHours }                               
 import { useIntentContext }                                                                 from '../../IntentContext'
 import { createUseIntentTransition, FormValues, IntentTransitionPayload, useInitialValues } from '../../useIntentTransition'
 import { Actions, getTransitionStatus, TransitionIntentItem }                               from '../../utils'
+import { useIntentAIEcoFlexQuery }                                                          from '../ComparisonDonutChart/services'
 
 import { Introduction } from './Introduction'
 import { Priority }     from './Priority'
@@ -59,6 +60,9 @@ export const IntentAIForm: React.FC = () => {
     preferences: { enable: true, excludedHours, enableExcludedHours: !!excludedHours },
     averagePowerPrice
   }
+
+  const queryResult = useIntentAIEcoFlexQuery()
+
   return (<>
     <IntentWizardHeader />
 
@@ -72,7 +76,7 @@ export const IntentAIForm: React.FC = () => {
     >
       <StepsForm.StepForm
         title={$t({ defaultMessage: 'Introduction' })}
-        children={<Introduction/>}
+        children={<Introduction queryResult={queryResult}/>}
       />
       <StepsForm.StepForm
         title={$t({ defaultMessage: 'Intent Priority' })}
@@ -84,7 +88,7 @@ export const IntentAIForm: React.FC = () => {
       />
       <StepsForm.StepForm
         title={$t({ defaultMessage: 'Summary' })}
-        children={<Summary />}
+        children={<Summary queryResult={queryResult}/>}
       />
     </StepsForm>
   </>)

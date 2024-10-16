@@ -1,73 +1,90 @@
 /* eslint-disable max-len */
 
-import { Col, Row, Typography } from 'antd'
-import { useIntl }              from 'react-intl'
+import { Col, Row, Typography }   from 'antd'
+import { defineMessage, useIntl } from 'react-intl'
 
-import { cssStr, DonutChart, DonutChartData, StepsForm } from '@acx-ui/components'
-import { formatter }                                     from '@acx-ui/formatter'
+import { cssNumber, cssStr, DonutChart, DonutChartData, Loader, StepsForm } from '@acx-ui/components'
+import { formatter }                                                        from '@acx-ui/formatter'
 
-import { CompareSlider }    from '../../../CompareSlider'
-import { Icon }             from '../../common/IntentIcon'
-import { IntroSummary }     from '../../common/IntroSummary'
-import { AiFeatures }       from '../../config'
-import { useIntentContext } from '../../IntentContext'
+import { CompareSlider }                              from '../../../CompareSlider'
+import { Icon }                                       from '../../common/IntentIcon'
+import { IntroSummary }                               from '../../common/IntroSummary'
+import { AiFeatures }                                 from '../../config'
+import { useIntentContext }                           from '../../IntentContext'
+import { ecoFlexDonutTooltipFormat }                  from '../ComparisonDonutChart'
+import { KpiDonutChartData, useIntentAIEcoFlexQuery } from '../ComparisonDonutChart/services'
 
 import * as SideNotes from './SideNotes'
 import * as UI        from './styledComponents'
 
 const { Paragraph } = Typography
 
-const ecoFlexDataBefore: DonutChartData[] = [
-  { value: 10,
-    name: '10 APs (16%) are not supporting EcoFlex',
-    color: cssStr('--acx-accents-blue-30') },
-  { value: 50,
-    name: '20 APs (33%) are supporting and disabling EcoFlex',
-    color: cssStr('--acx-accents-orange-30') }
-]
+const titleMsgWithApCount = defineMessage(
+  { defaultMessage: `{apCount} {apCount, plural,
+        one {AP}
+        other {APs}
+  } ({percentValue}%)` }
+)
 
-const ecoFlexDataAfter: DonutChartData[] = [
-  { value: 10,
-    name: '10 APs (16%) are not supporting EcoFlex',
-    color: cssStr('--acx-accents-blue-30') },
-  { value: 20,
-    name: '20 APs (33%) are supporting and disabling EcoFlex',
-    color: cssStr('--acx-accents-orange-30') },
-  { value: 30,
-    name: '30 APs (50%) are supporting and enabling EcoFlex',
-    color: cssStr('--acx-semantics-green-30') }
-]
+const secondTitleMsgWithApCount = defineMessage(
+  { defaultMessage: `{apCount, plural,
+        one {is}
+        other {are}
+    } supporting and enabling EcoFlex` }
+)
 
-const ChartBefore = () => {
+const RenderDonutChart = (
+  { data, titleColor }:
+  { data: DonutChartData[], titleColor: 'black' | 'white' | undefined }
+) => {
   const { $t } = useIntl()
+  const enabledApCount = data[2]?.value || 0
+  const sum = data.reduce((sum, { value }) => sum + value, 0)
+  const percentValue = sum ? (enabledApCount / sum) * 100 : 0
+  const titleMsg = data.length === 0 ? '' : $t(titleMsgWithApCount, {
+    apCount: enabledApCount,
+    percentValue: percentValue.toFixed(0)
+  })
+  const secondTitleMsg = data.length === 0 ? '' : $t(secondTitleMsgWithApCount, {
+    apCount: enabledApCount
+  })
+  const commonFontStyle = {
+    color: titleColor === 'white' ? cssStr('--acx-primary-white') : cssStr('--acx-primary-black'),
+    fontFamily: cssStr('--acx-neutral-brand-font'),
+    width: 100,
+    overflow: 'break' as const
+  }
+  const boldFontStyle = {
+    ...commonFontStyle,
+    fontSize: cssNumber('--acx-headline-5-font-size'),
+    lineHeight: cssNumber('--acx-headline-5-line-height'),
+    fontWeight: cssNumber('--acx-headline-5-font-weight-bold')
+  }
+  const nonBoldFontStyle = {
+    ...commonFontStyle,
+    fontSize: cssNumber('--acx-headline-5-font-size'),
+    lineHeight: cssNumber('--acx-headline-5-line-height'),
+    fontWeight: cssNumber('--acx-headline-5-font-weight')
+  }
+
   return (
     <DonutChart
       showLegend={false}
       style={{ width: 200, height: 200 }}
-      title={$t({ defaultMessage: '0 APs (0%) are supporting and enabling EcoFlex' })}
-      titleColor='white'
       showTotal={false}
+      tooltipFormat={ecoFlexDonutTooltipFormat}
       dataFormatter={formatter('countFormat')}
-      data={ecoFlexDataBefore}
+      data={data}
+      title={titleMsg}
+      titleColor={titleColor}
+      value={secondTitleMsg}
+      titleTextStyle={boldFontStyle}
+      secondaryTitleTextStyle={nonBoldFontStyle}
     />
   )
 }
 
-const ChartAfter = () => {
-  const { $t } = useIntl()
-  return (
-    <DonutChart
-      showLegend={false}
-      style={{ width: 200, height: 200 }}
-      title={$t({ defaultMessage: '30 APs (50%) are supporting and enabling EcoFlex' })}
-      showTotal={false}
-      dataFormatter={formatter('countFormat')}
-      data={ecoFlexDataAfter}
-    />
-  )
-}
-
-export const SliderBefore = () => {
+export const SliderBefore = ({ kpiData }: { kpiData: KpiDonutChartData }) => {
   const { $t } = useIntl()
   return (
     <UI.SliderBefore>
@@ -82,13 +99,13 @@ export const SliderBefore = () => {
       <div style={{
         width: '100%'
       }}>
-        <ChartBefore />
+        <RenderDonutChart data={kpiData.data} titleColor='white' />
       </div>
     </UI.SliderBefore>
   )
 }
 
-export const SliderAfter = () => {
+export const SliderAfter = ({ kpiData }: { kpiData: KpiDonutChartData }) => {
   const { $t } = useIntl()
   return (
     <UI.SliderAfter>
@@ -98,7 +115,7 @@ export const SliderAfter = () => {
       <div style={{
         width: '100%'
       }}>
-        <ChartAfter />
+        <RenderDonutChart data={kpiData.data} titleColor='black' />
       </div>
       <UI.LabelStyleAfter>
         <span>{($t({ defaultMessage: 'Energy' }))}</span>
@@ -110,7 +127,28 @@ export const SliderAfter = () => {
   )
 }
 
+const CompareSliderWithEcoFlex = (queryResult: ReturnType<typeof useIntentAIEcoFlexQuery>) => {
+  return (
+    <Loader states={[queryResult]}>
+      <CompareSlider
+        style={{ width: '50%', height: '100%' }}
+        itemOne={<SliderBefore kpiData={queryResult.data.compareData} />}
+        itemTwo={<SliderAfter kpiData={queryResult.data.data} />}
+        disabled={false}
+        portrait={false}
+        boundsPadding={0}
+        position={50}
+        changePositionOnHover={false}
+        keyboardIncrement={0}
+        onlyHandleDraggable={false}
+      />
+    </Loader>
+  )
+}
+
 export function Introduction (
+  { queryResult }:
+  { queryResult: ReturnType<typeof useIntentAIEcoFlexQuery> }
 ) {
   const { $t } = useIntl()
   const title1 = $t({ defaultMessage: 'Reduction in energy footprint' })
@@ -118,18 +156,6 @@ export function Introduction (
   const title2 = $t({ defaultMessage: 'Operation of the mission critical network' })
   const para2 = $t({ defaultMessage: 'Maintain all access points at normal power continuously to ensure maximum reliability and performance for critical applications, guaranteeing uninterrupted, high-quality connectivity essential for mission-critical operations.' })
   const { isDataRetained: showData } = useIntentContext()
-  const compareSlider = <CompareSlider
-    style={{ width: '50%', height: '100%' }}
-    itemOne={<SliderBefore />}
-    itemTwo={<SliderAfter />}
-    disabled={false}
-    portrait={false}
-    boundsPadding={0}
-    position={50}
-    changePositionOnHover={false}
-    keyboardIncrement={0}
-    onlyHandleDraggable={false}
-  />
 
   return <Row gutter={20}>
     <Col span={15}>
@@ -146,7 +172,7 @@ export function Introduction (
           <b>{title2}:</b> <span>{para2}</span>
         </Paragraph>
       </StepsForm.TextContent>
-      {showData && compareSlider}
+      {showData && CompareSliderWithEcoFlex(queryResult)}
     </Col>
     <Col span={7} offset={2}>
       <SideNotes.Introduction />

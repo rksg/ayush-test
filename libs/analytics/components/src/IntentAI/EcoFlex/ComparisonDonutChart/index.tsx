@@ -14,19 +14,17 @@ import { Legend }  from './Legend'
 import { KpiData } from './services'
 import * as UI     from './styledComponents'
 
-function DataGraph ({ kpiData, isDetail }: { kpiData: KpiData, isDetail: boolean }) {
-  if (!kpiData) return null
-
-  const tooltipFormat = defineMessage({
-    defaultMessage: ` <b>{formattedValue} {value, plural,
+export const ecoFlexDonutTooltipFormat = defineMessage({
+  defaultMessage: ` <b>{formattedValue} {value, plural,
       one {AP}
       other {APs}
       } ({formattedPercent})</b> {value, plural,
       one {is}
       other {are}
     } {name}`
-  })
+})
 
+function DataGraph ({ kpiData, isDetail }: { kpiData: KpiData, isDetail: boolean }) {
   const width = isDetail ? 160 : 120
   const height = width
 
@@ -36,7 +34,7 @@ function DataGraph ({ kpiData, isDetail }: { kpiData: KpiData, isDetail: boolean
         showLegend={false}
         style={{ width , height }}
         showTotal={false}
-        tooltipFormat={tooltipFormat}
+        tooltipFormat={ecoFlexDonutTooltipFormat}
         dataFormatter={formatter('countFormat')}
         data={kpiData.compareData.data}
         size={'large'}
@@ -48,7 +46,7 @@ function DataGraph ({ kpiData, isDetail }: { kpiData: KpiData, isDetail: boolean
         showLegend={false}
         style={{ width, height }}
         showTotal={false}
-        tooltipFormat={tooltipFormat}
+        tooltipFormat={ecoFlexDonutTooltipFormat}
         dataFormatter={formatter('countFormat')}
         data={kpiData.data.data}
         size={'large'}

@@ -52,6 +52,16 @@ const defaultProps: DonutChartOptionalProps = {
 
 DonutChart.defaultProps = { ...defaultProps }
 
+interface TitleTextStyle {
+  fontSize: number,
+  lineHeight: number,
+  fontWeight: number,
+  color: string,
+  fontFamily: string,
+  width: number
+  overflow: 'break' | 'breakAll' | 'truncate' | 'none'
+}
+
 export interface DonutChartProps extends DonutChartOptionalProps,
   Omit<EChartsReactProps, 'option' | 'opts' | 'style'> {
   data: Array<DonutChartData>
@@ -64,7 +74,9 @@ export interface DonutChartProps extends DonutChartOptionalProps,
   dataFormatter?: (value: unknown) => string | null
   onClick?: (params: EventParams) => void
   style: EChartsReactProps['style'] & { width: number, height: number }
-  labelTextStyle?: { overflow?: 'break' | 'breakAll' | 'truncate' | 'none' , width?: number }
+  labelTextStyle?: { overflow?: 'break' | 'breakAll' | 'truncate' | 'none', width?: number }
+  titleTextStyle?: TitleTextStyle
+  secondaryTitleTextStyle?: TitleTextStyle
 }
 
 export const onChartClick = (onClick: DonutChartProps['onClick']) =>
@@ -254,8 +266,12 @@ export function DonutChart ({
       textVerticalAlign: 'top',
       textAlign: props.showLegend && !isEmpty ? 'center' : undefined,
       itemGap: 4,
-      textStyle: { ...styles[props.size].title, width: 80, overflow: 'break' },
-      subtextStyle: styles[props.size].value
+      textStyle: props.titleTextStyle
+        ? { ...props.titleTextStyle }
+        : { ...styles[props.size].title, width: 80, overflow: 'break' },
+      subtextStyle: props.secondaryTitleTextStyle
+        ? { ...props.secondaryTitleTextStyle }
+        : styles[props.size].value
     },
     legend: {
       show: props.showLegend,

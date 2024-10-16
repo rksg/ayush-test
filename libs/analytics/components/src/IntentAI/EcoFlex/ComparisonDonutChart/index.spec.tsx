@@ -41,7 +41,7 @@ describe('ComparisonDonutChart', () => {
 
   it('should render correctly for active states (non-Detail)', async () => {
     // eslint-disable-next-line max-len
-    render(<ComparisonDonutChart kpiData={mockKpiResultData} excludeApCount={1}/>, { wrapper: Provider })
+    render(<ComparisonDonutChart kpiData={mockKpiResultData} />, { wrapper: Provider })
 
     expect(await screen.findByText('(Default)')).toBeVisible()
     expect(await screen.findByText('(EcoFlex projection)')).toBeVisible()
