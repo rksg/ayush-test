@@ -1,0 +1,126 @@
+import {
+  TableResult,
+  CommonResult,
+  onSocketActivityChanged,
+  onActivityMessageReceived,
+  EdgeMdnsProxyUrls,
+  EdgeMdnsProxySetting,
+  EdgeMdnsProxyViewData
+} from '@acx-ui/rc/utils'
+import { baseEdgeMdnsProxyApi } from '@acx-ui/store'
+import { RequestPayload }       from '@acx-ui/types'
+import { createHttpRequest }    from '@acx-ui/utils'
+
+import { serviceApi } from './service'
+
+const versionHeader = {
+  'Content-Type': 'application/vnd.ruckus.v1+json',
+  'Accept': 'application/vnd.ruckus.v1+json'
+}
+
+// TODO: still need to confirm
+enum EdgeMdnsProxyActivityEnum {
+  ADD = 'Add EdgeMdnsProxy',
+  UPDATE = 'Update EdgeMdnsProxy',
+  DELETE = 'Delete EdgeMdnsProxy',
+  ACTIVATE_NETWORK = 'Activate cluster',
+  DEACTIVATE_NETWORK = 'Deactivate cluster',
+}
+
+export const edgeMdnsProxyApi = baseEdgeMdnsProxyApi.injectEndpoints({
+  endpoints: (build) => ({
+    getEdgeMdnsProxyViewDataList:
+      build.query<TableResult<EdgeMdnsProxyViewData>, RequestPayload>({
+        query: ({ payload }) => {
+          const req = createHttpRequest(EdgeMdnsProxyUrls.getEdgeMdnsProxyViewDataList)
+          return {
+            ...req,
+            body: payload
+          }
+        },
+        providesTags: [{ type: 'EdgeMdnsProxy', id: 'LIST' }],
+        async onCacheEntryAdded (requestArgs, api) {
+          await onSocketActivityChanged(requestArgs, api, (msg) => {
+            onActivityMessageReceived(msg, [
+              EdgeMdnsProxyActivityEnum.ADD,
+              EdgeMdnsProxyActivityEnum.UPDATE,
+              EdgeMdnsProxyActivityEnum.DELETE
+            ], () => {
+              api.dispatch(serviceApi.util.invalidateTags([
+                { type: 'Service', id: 'LIST' }
+              ]))
+              api.dispatch(edgeMdnsProxyApi.util.invalidateTags([
+                { type: 'EdgeMdnsProxy', id: 'LIST' }
+              ]))
+            })
+          })
+        },
+        extraOptions: { maxRetries: 5 }
+      }),
+    getEdgeMdnsProxy: build.query<EdgeMdnsProxySetting, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeMdnsProxyUrls.getEdgeMdnsProxy, params)
+        return { ...req }
+      },
+      providesTags: [{ type: 'EdgeMdnsProxy', id: 'DETAIL' }]
+    }),
+    addEdgeMdnsProxy: build.mutation<EdgeMdnsProxySetting, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeMdnsProxyUrls.addEdgeMdnsProxy, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'EdgeMdnsProxy', id: 'LIST' }]
+    }),
+    updateEdgeMdnsProxy: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeMdnsProxyUrls.updateEdgeMdnsProxy, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'EdgeMdnsProxy', id: 'LIST' }]
+    }),
+    deleteEdgeMdnsProxy: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        //delete single row
+        const req = createHttpRequest(EdgeMdnsProxyUrls.deleteEdgeMdnsProxy, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'EdgeMdnsProxy', id: 'LIST' }]
+    }),
+    activateEdgeMdnsProxyCluster: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(EdgeMdnsProxyUrls.activateEdgeMdnsProxyCluster,
+            params,
+            versionHeader)
+        }
+      }
+    }),
+    deactivateEdgeMdnsProxyCluster: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(EdgeMdnsProxyUrls.deactivateEdgeMdnsProxyCluster,
+            params,
+            versionHeader)
+        }
+      }
+    })
+  })
+})
+
+export const {
+  useGetEdgeMdnsProxyViewDataListQuery,
+  useGetEdgeMdnsProxyQuery,
+  useAddEdgeMdnsProxyMutation,
+  useUpdateEdgeMdnsProxyMutation,
+  useDeleteEdgeMdnsProxyMutation,
+  useActivateEdgeMdnsProxyClusterMutation,
+  useDeactivateEdgeMdnsProxyClusterMutation
+} = edgeMdnsProxyApi
