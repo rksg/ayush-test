@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 
-import { useIntl } from 'react-intl'
+import { Typography } from 'antd'
+import { useIntl }    from 'react-intl'
 
 import {
   Button,
@@ -186,8 +187,10 @@ export default function WorkflowTable () {
               })
           },
           containsPublishedWorkflow ?
-            (' ' + $t({ defaultMessage: 'WARNING: This action will delete published workflows.' }))
-            : '')
+            (<p><br/><Typography.Text type='danger'>
+              {$t({ defaultMessage: 'WARNING: This action will delete published workflows.' })}
+            </Typography.Text></p>)
+            : undefined)
       }
     }
   ]

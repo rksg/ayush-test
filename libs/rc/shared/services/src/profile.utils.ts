@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { defineMessage } from 'react-intl'
 
 import { showActionModal } from '@acx-ui/components'
@@ -16,7 +18,7 @@ export function doProfileDelete<T> (
   entityValue: string | undefined,
   instances: { fieldName: keyof T, fieldText: string }[],
   callback: () => Promise<void>,
-  extraContent?: string
+  extraContent?: ReactNode | undefined
 
 ) {
   // eslint-disable-next-line max-len
