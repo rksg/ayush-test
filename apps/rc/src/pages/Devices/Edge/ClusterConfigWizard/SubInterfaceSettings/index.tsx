@@ -11,8 +11,14 @@ import { useTenantLink }                                   from '@acx-ui/react-r
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
-import { EdgeSubInterfaceSettingForm }                                                          from './EdgeSubInterfaceSettingsForm'
-import { SubInterfaceSettingsFormType, transformFromApiToFormData, transformFromFormDataToApi } from './types'
+import {
+  SubInterfaceSettingsForm
+} from './SubInterfaceSettingsForm'
+import {
+  SubInterfaceSettingsFormType,
+  transformFromApiToFormData,
+  transformFromFormDataToApi
+} from './types'
 
 const renderHeader = (title: string, description: string) => {
   return <Space direction='vertical' size={5}>
@@ -34,7 +40,9 @@ export const SubInterfaceSettings = () => {
     clusterNetworkSettings,
     clusterSubInterfaceSettings,
     portsStatus,
-    lagsStatus
+    lagsStatus,
+    isLoading,
+    isFetching
   } = useContext(ClusterConfigWizardContext)
 
   const subInterfaceSettingsFormData = transformFromApiToFormData(clusterSubInterfaceSettings)
@@ -43,17 +51,13 @@ export const SubInterfaceSettings = () => {
     nodeList={clusterInfo?.edgeList}
     content={(serialNumber) => (
       <Col>
-        <EdgeSubInterfaceSettingForm
+        <SubInterfaceSettingsForm
           serialNumber={serialNumber}
           ports={clusterNetworkSettings?.portSettings
             ?.find(settings => settings.serialNumber === serialNumber)
             ?.ports ?? []
           }
           portStatus={portsStatus?.[serialNumber] ?? []}
-          lags={clusterNetworkSettings?.lagSettings
-            ?.find(settings => settings.serialNumber === serialNumber)
-            ?.lags ?? []
-          }
           lagStatus={lagsStatus?.[serialNumber] ?? []}
         />
       </Col>
@@ -93,7 +97,7 @@ export const SubInterfaceSettings = () => {
   }
 
   return (
-    <Loader states={[{ isLoading: false }]}>
+    <Loader states={[{ isLoading: isLoading, isFetching: isFetching }]}>
       <StepsForm<SubInterfaceSettingsFormType>
         form={form}
         onFinish={applyAndFinish}

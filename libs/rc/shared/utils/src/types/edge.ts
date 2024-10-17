@@ -512,6 +512,6 @@ export interface SubInterface {
   vlan: number
   portType: EdgePortTypeEnum
   ipMode: EdgeIpModeEnum
-  ip: string
-  subnet: string
+  ip?: string
+  subnet?: string
 }

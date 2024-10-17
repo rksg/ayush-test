@@ -3,18 +3,23 @@ import { useEffect } from 'react'
 import { Form, Input, InputNumber, Select } from 'antd'
 import { useIntl }                          from 'react-intl'
 
-import { Alert, Drawer }                                                                               from '@acx-ui/components'
-import { EdgeIpModeEnum, EdgePortTypeEnum, SubInterface, edgePortIpValidator, generalSubnetMskRegExp } from '@acx-ui/rc/utils'
-import { validationMessages }                                                                          from '@acx-ui/utils'
+import { Alert, Drawer }   from '@acx-ui/components'
+import {
+  EdgeIpModeEnum,
+  EdgePortTypeEnum,
+  SubInterface,
+  edgePortIpValidator,
+  generalSubnetMskRegExp
+} from '@acx-ui/rc/utils'
+import { validationMessages } from '@acx-ui/utils'
 
 interface SubInterfaceDrawerProps {
-  mac: string
   visible: boolean
   setVisible: (visible: boolean) => void
   data?: SubInterface
   handleAdd: (data: SubInterface) => Promise<unknown>
   handleUpdate: (data: SubInterface) => Promise<unknown>
-  allVlans: number[]
+  allSubInterfaceVlans: { id: String, vlan: number }[]
 }
 
 const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
@@ -73,7 +78,6 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
       ),
       id: id ? id : 'new_' + Date.now()
     }
-    console.log('finish ' + JSON.stringify(payload)) // eslint-disable-line no-console
 
     try {
       if(data) {
@@ -83,25 +87,18 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
       }
     } catch (error) {
       // TODO error message not be defined
-      console.log(error) // eslint-disable-line no-console
     }
     handleClose()
   }
 
-  const validateDuplicate = (vlan: number) => {
-    if (!props.data && props.allVlans.find(item => item === vlan)) {
-      return Promise.reject($t({
-        defaultMessage: 'VLAN should be unique'
-      }))
-    }
+  const validateVlanDuplication = (vlan: number) => {
+    const duplicate = props.data ?
+      props.allSubInterfaceVlans.find(item => item.vlan === vlan && item.id !== props.data?.id) :
+      props.allSubInterfaceVlans.find(item => item.vlan === vlan)
 
-    if (props.data && props.allVlans.filter(item => item === vlan).length > 1) {
-      return Promise.reject($t({
-        defaultMessage: 'VLAN should be unique'
-      }))
-    }
-
-    return Promise.resolve()
+    return duplicate ?
+      Promise.reject($t({ defaultMessage: 'VLAN should be unique' })) :
+      Promise.resolve()
   }
 
   const drawerContent = <Form layout='vertical' form={formRef} onFinish={handleFinish}>
@@ -176,7 +173,7 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
           max: 4094,
           message: $t(validationMessages.vlanRange)
         },
-        { validator: (_, value) => validateDuplicate(formRef.getFieldValue('vlan')) }
+        { validator: (_, value) => validateVlanDuplication(value) }
       ]}
       children={<InputNumber min={1} max={4094} />}
     />

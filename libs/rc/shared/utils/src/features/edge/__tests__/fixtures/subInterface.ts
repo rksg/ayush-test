@@ -1,3 +1,6 @@
+import { ClusterSubInterfaceSettings, LagSubInterface, NodeSubInterfaces, PortSubInterface } from "@acx-ui/rc/utils";
+import { EdgeGeneralFixtures } from "."
+
 export const mockEdgeSubInterfaces = {
   page: 1,
   pageSize: 10,
@@ -135,6 +138,65 @@ export const mockEdgeSubInterfaces = {
     }
   ]
 }
+
+const { mockedHaNetworkSettings } = EdgeGeneralFixtures
+const generateMockedClusterSubInterfaceSettings = (): ClusterSubInterfaceSettings => {
+  const clusterSubInterfaceSettings: ClusterSubInterfaceSettings = {
+    nodes: []
+  }
+
+  // Iterate over the lagSettings and portSettings to generate nodes
+  mockedHaNetworkSettings.lagSettings.forEach((lagSetting, index) => {
+    const node: NodeSubInterfaces = {
+      serialNumber: lagSetting.serialNumber,
+      ports: [],
+      lags: []
+    }
+
+    // Generate LAG sub-interfaces
+    lagSetting.lags.forEach(lag => {
+      const lagSubInterface: LagSubInterface = {
+        lagId: lag.id,
+        subInterfaces: [{
+          id: `sub_if_lag_${lag.id}`,
+          vlan: 200 + index,  // Assign VLANs starting from 200 for LAGs, customizable
+          portType: lag.portType,
+          ipMode: lag.ipMode,
+          ip: lag.ip,
+          subnet: lag.subnet
+        }]
+      }
+      node.lags.push(lagSubInterface);
+    })
+
+    // Find corresponding portSettings and generate port sub-interfaces
+    const portSetting = mockedHaNetworkSettings.portSettings.find(
+      portSetting => portSetting.serialNumber === lagSetting.serialNumber
+    )
+
+    if (portSetting) {
+      portSetting.ports.forEach(port => {
+        const portSubInterface: PortSubInterface = {
+          portId: port.id,
+          subInterfaces: [{
+            id: `sub_if_port_${port.id}`,
+            vlan: 100 + index,  // Assign VLANs starting from 100 for ports, customizable
+            portType: port.portType,
+            ipMode: port.ipMode,
+            ip: port.ip,
+            subnet: port.subnet
+          }]
+        }
+        node.ports.push(portSubInterface)
+      });
+    }
+
+    clusterSubInterfaceSettings.nodes.push(node)
+  });
+
+  return clusterSubInterfaceSettings;
+};
+export const mockedClusterSubInterfaceSettings = generateMockedClusterSubInterfaceSettings()
 
 export const mockEdgeSubInterfacesStatus = {
   fields: ['subnet','vlan','ip','name','serialNumber','type','sortIdx','mac','status','ipMode'],

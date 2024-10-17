@@ -12,7 +12,7 @@ import * as UI from '../styledComponents'
 
 import SubInterfaceDrawer from './SubInterfaceDrawer'
 
-interface SubInterfaceTableProps {
+export interface SubInterfaceTableProps {
   currentTab: string
   ip: string
   mac: string
@@ -157,13 +157,14 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
       <Row>
         <Col span={12}>
           <SubInterfaceDrawer
-            mac={mac}
             visible={drawerVisible}
             setVisible={setDrawerVisible}
             data={currentEditData}
             handleAdd={handleAdd}
             handleUpdate={handleUpdate}
-            allVlans={(form.getFieldValue(props.namePath) as SubInterface[]).map(item => item.vlan)}
+            allSubInterfaceVlans={
+              (form.getFieldValue(props.namePath) as { id: string, vlan: number }[])
+            }
           />
           <Table<SubInterface>
             actions={filterByAccess(actionButtons)}

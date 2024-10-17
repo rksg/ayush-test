@@ -5,7 +5,6 @@ import { useIntl } from 'react-intl'
 
 import { NoData, Tabs, Tooltip } from '@acx-ui/components'
 import {
-  EdgeLag,
   EdgePort,
   EdgePortInfo
 } from '@acx-ui/rc/utils'
@@ -17,16 +16,15 @@ const findPortIdByIfName = (portData: EdgePort[], ifName: string) => {
   return _.find(portData, { interfaceName: ifName })?.id ?? ''
 }
 
-interface EdgeSubInterfaceSettingFormProps {
+export interface SubInterfaceSettingsFormProps {
   serialNumber: string
   ports: EdgePort[],
-  lags: EdgeLag[],
   portStatus: EdgePortInfo[]
   lagStatus: EdgePortInfo[]
 }
 
-export const EdgeSubInterfaceSettingForm = (props: EdgeSubInterfaceSettingFormProps) => {
-  const { serialNumber, ports, lags, portStatus, lagStatus } = props
+export const SubInterfaceSettingsForm = (props: SubInterfaceSettingsFormProps) => {
+  const { serialNumber, ports, portStatus, lagStatus } = props
   const { $t } = useIntl()
   const [currentTab, setCurrentTab] = useState('')
 
@@ -42,7 +40,7 @@ export const EdgeSubInterfaceSettingForm = (props: EdgeSubInterfaceSettingFormPr
     } else {
       setCurrentTab(`lag_${lagStatus?.[0]?.id}`)
     }
-  }, [ports, lags, portStatus, lagStatus])
+  }, [ports, portStatus, lagStatus])
 
   return ports?.length ?
     <Tabs
