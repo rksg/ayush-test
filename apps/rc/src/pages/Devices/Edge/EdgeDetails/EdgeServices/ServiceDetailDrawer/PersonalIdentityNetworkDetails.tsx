@@ -16,7 +16,8 @@ import {
   ServiceOperation,
   ServiceType,
   getPolicyDetailsLink,
-  getServiceDetailsLink
+  getServiceDetailsLink,
+  transformDisplayNumber
 }              from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
@@ -157,7 +158,7 @@ export const PersonalIdentityNetworkDetails = (props: PersonalIdentityNetworkDet
       />
       <Form.Item
         label={$t({ defaultMessage: 'Networks' })}
-        children={pinViewData?.tunneledWlans?.length}
+        children={transformDisplayNumber(pinViewData?.tunneledWlans?.length)}
       />
       <PersonalIdentityNetworkDetailTableGroup pinId={serviceData.serviceId} />
     </Loader>

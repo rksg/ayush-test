@@ -61,19 +61,19 @@ export const EdgeServices = () => {
   const showServiceDetailsDrawer = (data: EdgeService) => {
     switch (data.serviceType) {
       case EdgeServiceTypeEnum.DHCP:
-        setDrawerVisible(isEdgeHaReady && isEdgeDhcpHaReady)
+        if (!isEdgeHaReady || !isEdgeDhcpHaReady) return
         break
       case EdgeServiceTypeEnum.FIREWALL:
-        setDrawerVisible(isEdgeHaReady && isEdgeFirewallHaReady)
+        if (!isEdgeHaReady || !isEdgeFirewallHaReady) return
         break
       case EdgeServiceTypeEnum.PIN:
-        setDrawerVisible(isEdgePinReady)
+        if (!isEdgePinReady) return
         break
       default:
-        setCurrentData(data)
-        setDrawerVisible(true)
-        break
     }
+
+    setCurrentData(data)
+    setDrawerVisible(true)
   }
 
   const columns: TableProps<EdgeService>['columns'] = [
