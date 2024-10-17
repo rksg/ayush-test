@@ -285,7 +285,7 @@ describe('useAnalyticsFilter', () => {
     expect(asFragment()).toMatchSnapshot()
   })
   it('should set filters correctly for mlisa app', () => {
-    mockGet.mockReturnValueOnce('true')
+    mockGet.mockReturnValueOnce('true').mockReturnValueOnce('true')
     const filter = {
       path: [
         { type: 'zone', name: 'Zone' }
@@ -376,11 +376,11 @@ describe('pathToFilter', () => {
       [{ type: 'zone', name: 'z1' }, { type: 'apGroup', name: 'a1' }]
     )).toEqual({
       networkNodes: [[{ type: 'zone', name: 'z1' }, { type: 'apGroup', name: 'a1' }]],
-      switchNodes: [[{ type: 'zone', name: 'z1' }, { type: 'apGroup', name: 'a1' }]]
+      switchNodes: [[{ type: 'switchGroup', name: 'z1' }, { type: 'apGroup', name: 'a1' }]]
     })
   })
   it('returns correct filter for mlisa app', () => {
-    mockGet.mockReturnValueOnce('true')
+    mockGet.mockReturnValueOnce('true').mockReturnValueOnce('true')
     expect(pathToFilter(
       [{ type: 'zone', name: 'z1' }, { type: 'apGroup', name: 'a1' }]
     )).toEqual({
@@ -389,7 +389,7 @@ describe('pathToFilter', () => {
     })
   })
   it('returns correct empty object filter for empty array', () => {
-    mockGet.mockReturnValueOnce('true')
+    mockGet.mockReturnValueOnce('true').mockReturnValueOnce('true')
     expect(pathToFilter(
       []
     )).toEqual({})
@@ -412,7 +412,7 @@ describe('isSwitchPath', () => {
 })
 describe('isApPath', () => {
   it('returns true if is ap path', () => {
-    mockGet.mockReturnValueOnce('true')
+    mockGet.mockReturnValueOnce('true').mockReturnValueOnce('true')
     const path = [
       { type: 'network', name: 'Network' },
       { type: 'system', name: 's1' },
@@ -437,7 +437,7 @@ describe('isApPath', () => {
 })
 describe('isApOrSwitchPath', () => {
   it('returns true if is ap path', () => {
-    mockGet.mockReturnValueOnce('true')
+    mockGet.mockReturnValueOnce('true').mockReturnValueOnce('true')
     const path = [
       { type: 'network', name: 'Network' },
       { type: 'system', name: 's1' },
