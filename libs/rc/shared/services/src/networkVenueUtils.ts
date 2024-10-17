@@ -256,7 +256,7 @@ export const fetchRbacApGroupNetworkVenueList = async (arg:any, fetchWithBQ:any)
       // Get "select specific AP Groups" settings
       const networkApGroupReqs = networkApGroupParamsList.map(params => {
         return fetchWithBQ(createHttpRequest(
-          arg.payload.isTemplate ? ConfigTemplateUrlsInfo.getNetworkVenueTemplateRbac : WifiRbacUrlsInfo.getNetworkVenue,
+          arg.payload.isTemplate ? ConfigTemplateUrlsInfo.getNetworkVenueTemplateRbac : WifiRbacUrlsInfo.getVenueApGroups,
           params,
           GetApiVersionHeader(ApiVersionEnum.v1)
         ))
@@ -306,12 +306,13 @@ export const fetchRbacApGroupNetworkVenueList = async (arg:any, fetchWithBQ:any)
             return undefined
           }
           const networkApGroupRes = networkApGroupList[venueApGroupIdx]
-
+          const apGroupName = apGroupNameMap.find(apg => apg.key === params.apGroupId)?.value ?? ''
           return {
             ...networkApGroupRes,
             ...params,
             radio: 'Both',
-            apGroupName: apGroupNameMap.find(apg => apg.key === params.apGroupId)?.value ?? ''
+            isDefault: !apGroupName,
+            apGroupName
           }
         })
 
@@ -394,7 +395,7 @@ export const fetchRbacAllApGroupNetworkVenueList = async (arg:any, fetchWithBQ:a
       // Get "select specific AP Groups" settings
       const networkApGroupReqs = networkApGroupParamsList.map(params => {
         return fetchWithBQ(createHttpRequest(
-          arg.payload.isTemplate ? ConfigTemplateUrlsInfo.getNetworkVenueTemplateRbac : WifiRbacUrlsInfo.getNetworkVenue,
+          arg.payload.isTemplate ? ConfigTemplateUrlsInfo.getNetworkVenueTemplateRbac : WifiRbacUrlsInfo.getVenueApGroups,
           params,
           GetApiVersionHeader(ApiVersionEnum.v1)
         ))
@@ -444,12 +445,14 @@ export const fetchRbacAllApGroupNetworkVenueList = async (arg:any, fetchWithBQ:a
             return undefined
           }
           const networkApGroupRes = networkApGroupList[venueApGroupIdx]
+          const apGroupName = apGroupNameMap.find(apg => apg.key === params.apGroupId)?.value ?? ''
 
           return {
             ...networkApGroupRes,
             ...params,
             radio: 'Both',
-            apGroupName: apGroupNameMap.find(apg => apg.key === params.apGroupId)?.value ?? ''
+            isDefault: !apGroupName,
+            apGroupName
           }
         })
 
