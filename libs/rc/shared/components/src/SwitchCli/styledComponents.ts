@@ -73,6 +73,9 @@ export const Select = styled(AcxSelect)`
     }
   }
   &.ant-select-multiple {
+    .ant-select-selector {
+      min-height: 35.5px;
+    }
     .ant-select-selection-item {
       height: 24px;
       border-radius: 12px;

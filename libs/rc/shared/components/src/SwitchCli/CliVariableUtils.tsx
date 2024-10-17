@@ -494,6 +494,7 @@ export const getCustomizeFields = (props: {
             disabled={!enableEdit}
           />
           : <Input
+            style={{ minHeight: type === VariableType.RANGE ? '35.5px' : 'auto' }}
             data-testid={!enableEdit
               ? `customized-disabled-input-${key}` : `customized-input-${key}`}
             disabled={!enableEdit}

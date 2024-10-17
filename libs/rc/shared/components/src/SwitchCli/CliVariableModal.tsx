@@ -170,9 +170,9 @@ export function CliVariableModal (props: {
           setSelectType(value)
           form.setFieldsValue({
             ...values,
-            switchVariables: []
+            configuredSwitchVariables: [],
+            preprovisionedSwitchVariables: []
           })
-
         }}
       />}
     />
