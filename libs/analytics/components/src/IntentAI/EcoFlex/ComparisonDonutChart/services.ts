@@ -40,8 +40,12 @@ export const categoryStyles = [
     name: defineMessage({ defaultMessage: 'supporting and enabling EcoFlex.' }),
     color: cssStr('--acx-semantics-green-30')
   }
-// eslint-disable-next-line max-len
-] as { key: keyof KpiResult, legendText: ReturnType<typeof defineMessage>, name: ReturnType<typeof defineMessage>, color: string }[]
+] as {
+  key: keyof KpiResult,
+  legendText: ReturnType<typeof defineMessage>,
+  name: ReturnType<typeof defineMessage>,
+  color: string
+}[]
 
 export interface KpiData {
   data: {
@@ -60,12 +64,12 @@ interface KpiChartData {
   color: string
 }
 
-// eslint-disable-next-line max-len
-const parseChartData = (result?: KpiResult|null): KpiChartData[] => result ? categoryStyles.map(({ key, name, color }) => ({
-  value: result[key] ?? 0,
-  name: name,
-  color: color
-})) : []
+const parseChartData = (result?: KpiResult|null): KpiChartData[] =>
+  result ? categoryStyles.map(({ key, name, color }) => ({
+    value: result[key] ?? 0,
+    name: name,
+    color: color
+  })) : []
 
 export const { useIntentAIEcoKpiQuery } = intentAIApi.injectEndpoints({
   endpoints: (build) => ({
@@ -106,8 +110,10 @@ export const { useIntentAIEcoKpiQuery } = intentAIApi.injectEndpoints({
       ) => {
         const { $t } = getIntl()
         const kpi = response.intent?.kpi
-        // eslint-disable-next-line max-len
-        if (!kpi) return { data: { timestamp: '', data: [] }, compareData: { timestamp: '', data: [] } }
+        if (!kpi)
+          return {
+            data: { timestamp: '', data: [] }, compareData: { timestamp: '', data: [] }
+          }
         const { data, compareData } = kpi
 
         const chartData = parseChartData(data?.result)
@@ -120,8 +126,8 @@ export const { useIntentAIEcoKpiQuery } = intentAIApi.injectEndpoints({
           },
           compareData: {
             timestamp: compareData.timestamp,
-            // eslint-disable-next-line max-len
-            data: compareChartData.map(({ value, name, color }) => ({ value, name: $t(name), color }))
+            data: compareChartData.map(({ value, name, color }) =>
+              ({ value, name: $t(name), color }))
           }
         }
       }

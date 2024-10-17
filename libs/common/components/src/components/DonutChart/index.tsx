@@ -111,7 +111,7 @@ export const tooltipFormatter = (
 }
 
 // Adding empty data to show center label
-const buildEmtpyData = () => [{
+const buildEmptyData = () => [{
   name: '',
   value: 0,
   color: cssStr('--acx-primary-white')
@@ -289,7 +289,7 @@ export function DonutChart ({
     series: [
       {
         animation: false,
-        data: data.length === 0 ? buildEmtpyData() : data,
+        data: data.length === 0 ? buildEmptyData() : data,
         type: 'pie',
         cursor: props.onClick ? 'pointer' : 'auto',
         center: [props.showLegend && !isEmpty ? '30%' : '50%', '50%'],
