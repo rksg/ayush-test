@@ -558,18 +558,38 @@ export function MspRecCustomers () {
       {!userProfile?.support && !isIntegrator && <MspEcTable />}
       {!userProfile?.support && isIntegrator && <IntegratorTable />}
       {drawerAdminVisible && (isAbacToggleEnabled
-        ? <ManageDelegateAdminDrawer
-          visible={drawerAdminVisible}
-          setVisible={setDrawerAdminVisible}
-          setSelected={() => {}}
-          tenantId={ecTenantId}
-          tenantType={tenantType}/>
+        ? (isRbacPhase2Enabled
+          ? <ManageMspDelegationDrawer
+            visible={drawerAdminVisible}
+            setVisible={setDrawerAdminVisible}
+            setSelectedUsers={() => {}}
+            setSelectedPrivilegeGroups={() => {}}
+            tenantIds={[ecTenantId]}
+            tenantType={tenantType}/>
+          : <ManageDelegateAdminDrawer
+            visible={drawerAdminVisible}
+            setVisible={setDrawerAdminVisible}
+            setSelected={() => {}}
+            tenantId={ecTenantId}
+            tenantType={tenantType}/>)
         : <ManageAdminsDrawer
           visible={drawerAdminVisible}
           setVisible={setDrawerAdminVisible}
           setSelected={() => {}}
           tenantId={ecTenantId}
           tenantType={tenantType}/>
+        // ? <ManageDelegateAdminDrawer
+        //   visible={drawerAdminVisible}
+        //   setVisible={setDrawerAdminVisible}
+        //   setSelected={() => {}}
+        //   tenantId={ecTenantId}
+        //   tenantType={tenantType}/>
+        // : <ManageAdminsDrawer
+        //   visible={drawerAdminVisible}
+        //   setVisible={setDrawerAdminVisible}
+        //   setSelected={() => {}}
+        //   tenantId={ecTenantId}
+        //   tenantType={tenantType}/>
       )}
       {drawerIntegratorVisible && <SelectIntegratorDrawer
         visible={drawerIntegratorVisible}

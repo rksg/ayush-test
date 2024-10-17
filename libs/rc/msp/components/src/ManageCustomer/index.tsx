@@ -189,7 +189,7 @@ export function ManageCustomer () {
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
   const isExtendedTrialToggleEnabled = useIsSplitOn(Features.ENTITLEMENT_EXTENDED_TRIAL_TOGGLE)
   const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
-  const isRbacPhase2Enabled = true//useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
+  const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
