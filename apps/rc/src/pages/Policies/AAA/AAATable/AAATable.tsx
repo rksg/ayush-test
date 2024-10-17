@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import { AlignType } from 'rc-table/lib/interface'
 import { useIntl }   from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
+import { Button, PageHeader, Table, TableProps, Loader, Tooltip, cssStr } from '@acx-ui/components'
 import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { CheckMark }                                     from '@acx-ui/icons'
 import { CertificateToolTip, SimpleListTooltip }         from '@acx-ui/rc/components'
@@ -287,14 +287,14 @@ function useColumns () {
       title: $t({ defaultMessage: 'Certificate Authority' }),
       dataIndex: 'radSecOptions.certificateAuthorityId',
       filterable: certificateAuthorityNameMap,
-      render: (data: ReactNode, row : AAAViewModalType) => {
+      render: (data: ReactNode, row: AAAViewModalType) => {
         return (!row.radSecOptions?.certificateAuthorityId)
           ? ''
           : (<TenantLink to={getPolicyRoutePath({
             type: PolicyType.CERTIFICATE_AUTHORITY,
             oper: PolicyOperation.LIST })}>
             {certificateAuthorityNameMap.find(
-              c => c.key === row.radSecOptions?.certificateAuthorityId)?.value || ''}
+              c => c.key === row?.radSecOptions?.certificateAuthorityId)?.value || ''}
           </TenantLink>)
       }
     },
@@ -303,8 +303,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Client Certificate' }),
       dataIndex: 'radSecOptions.clientCertificateId',
       filterable: clientCertificateMap,
-      width: 160,
-      render: (data: ReactNode, row : AAAViewModalType) => {
+      render: (data: ReactNode, row: AAAViewModalType) => {
         return (!row.radSecOptions?.clientCertificateId)
           ? ''
           : (<>
@@ -324,6 +323,36 @@ function useColumns () {
                   c => c.key === row.radSecOptions?.clientCertificateId)?.status}
               /> : []}
           </> )
+      }
+    },
+    {
+      key: 'radSecOptions.serverCertificateId',
+      title: $t({ defaultMessage: 'Server Certificate' }),
+      dataIndex: 'radSecOptions.serverCertificateId',
+      filterable: clientCertificateMap,
+      sorter: false,
+      render: (_: ReactNode, row: AAAViewModalType) => {
+        const serverCert = clientCertificateMap.find(
+          cert => cert.key === row.radSecOptions?.serverCertificateId)
+        return (!row.radSecOptions?.serverCertificateId)
+          ? ''
+          : (<>
+              <TenantLink
+                to={getPolicyRoutePath({
+                  type: PolicyType.SERVER_CERTIFICATES,
+                  oper: PolicyOperation.LIST })}>
+                  {serverCert?.value || ''}
+              </TenantLink>
+              {serverCert?.status && !serverCert?.status.includes(CertificateStatusType.VALID) ?
+                <CertificateToolTip
+                  visible={true}
+                  placement='bottom'
+                  policyType={PolicyType.SERVER_CERTIFICATES}
+                  status={serverCert.status}
+                /> : []
+              }
+            </>
+            )
       }
     }] : []),
     {

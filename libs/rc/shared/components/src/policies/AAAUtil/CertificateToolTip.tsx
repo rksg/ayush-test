@@ -13,12 +13,13 @@ export type CertificateToolTipProps = {
     visible: boolean,
     status?: CertificateStatusType[],
     placement?: TooltipPlacement,
+    policyType?: PolicyType,
     icon?: ReactElement
 }
 
 export function CertificateToolTip (props: CertificateToolTipProps) {
   const { $t } = useIntl()
-  const { visible, status, placement, icon } = props
+  const { visible, status, placement, policyType, icon } = props
 
   const certificateToolTipInfo = $t({
     defaultMessage:
@@ -51,7 +52,7 @@ export function CertificateToolTip (props: CertificateToolTipProps) {
           certificateToolTip: ()=> (visible?
             <TenantLink
               to={getPolicyRoutePath({
-                type: PolicyType.CERTIFICATE,
+                type: policyType ?? PolicyType.CERTIFICATE,
                 oper: PolicyOperation.LIST
               })}>
               {certificateToolTipInfo}
@@ -63,7 +64,13 @@ export function CertificateToolTip (props: CertificateToolTipProps) {
     placement={placement ?? 'right'}>
     {icon ?? <Tooltip.Warning
       placement='right'
-      iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px', marginLeft: '4px', fill: cssStr('--acx-semantics-red-60') }}
+      iconStyle={{
+        height: '16px',
+        width: '16px',
+        marginBottom: '-3px',
+        marginLeft: '4px',
+        fill: cssStr('--acx-semantics-red-60')
+      }}
     />}
   </Tooltip>)
 }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { Form, Input, InputNumber, Radio, RadioChangeEvent, Space, Switch } from 'antd'
-import { useIntl }                                                          from 'react-intl'
+import { FormattedMessage, useIntl }                                                          from 'react-intl'
 
 import { Button, Fieldset, GridCol, GridRow, StepsFormLegacy, PasswordInput, Tooltip, Select } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
@@ -14,9 +14,10 @@ import {
   useConfigTemplate,
   hasPolicyPermission,
   PolicyOperation,
-  CertificateStatusType
+  CertificateStatusType,
+  getPolicyRoutePath
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 import { CertificateWarning }                                     from '../AAAUtil/CertificateWarning'
 import { CERTIFICATE_AUTHORITY_MAX_COUNT, CERTIFICATE_MAX_COUNT } from '../CertificateTemplate'
@@ -85,22 +86,30 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
   // TODO 3. Generate Certificate: if a certificate is generated from here, the Client or Server auth option in Extended key usage area should be forced to ‘enabled’,
   //         depending on which selector user generates, “Certificate with Client Auth Key” or “Certificate with Server Auth Key”.
   //         so that user can select it from the dropdown list then
-  const { clientCertSelectOptions, selectedClientCertId } = useGetCertificateListQuery(
+  const { clientCertSelectOptions } = useGetCertificateListQuery(
     { payload: defaultPayload }, {
       selectFromResult: ({ data }) => {
-        const d = edit ? data?.data
-          : data?.data?.filter(item => item.status?.includes(CertificateStatusType.VALID))
-        const clientCertOptions = d?.map(item => ({
-          label: item.commonName, value: item.id, status: item.status })) ?? []
-        const selectedClientCert = radiusId && d?.filter(item => item.commonName
-          ?.includes(radiusId)).map(item => item.id)?.at(0) // TODO : replace item.id by item.radiusIds when ca query API ready
-        return { clientCertSelectOptions: clientCertOptions,
-          selectedClientCertId: selectedClientCert }
+        // const d = edit ? data?.data
+        //   : data?.data.filter(item => item.status?.includes(CertificateStatusType.VALID))
+        const clientCertOptions = data?.data?.map(item => ({ label: item.commonName, value: item.id, certStates: item.status })) ?? []
+        return { clientCertSelectOptions: clientCertOptions }
       }
     })
 
-  const clientCertStatus = clientCertSelectOptions?.find(
-    c => c.value === clientCertId)?.status ?? []
+  const getCertState = (certStatuses: CertificateStatusType[]) => {
+    const isExpired = certStatuses.includes(CertificateStatusType.EXPIRED)
+    const isRevoked = certStatuses.includes(CertificateStatusType.REVOKED)
+    if (isExpired && isRevoked) {
+      return 'revoked and expired'
+    }
+    if (isExpired) {
+      return 'expired'
+    }
+    if (isRevoked) {
+      return 'revoked'
+    }
+    return ''
+  }
 
   const nameValidator = async (value: string) => {
     const policyList = instanceListResult?.data!
@@ -166,7 +175,7 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
   }
 
   const certificateValidator = (id: string) => {
-    const status = clientCertSelectOptions.find(c => c.value === id)?.status
+    const status = clientCertSelectOptions.find(c => c.value === id)?.certStates
     return status?.includes(CertificateStatusType.EXPIRED) ||
       status?.includes(CertificateStatusType.REVOKED) ?
       Promise.reject() : Promise.resolve()
@@ -200,9 +209,9 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
     form.setFieldValue(['radSecOptions', 'originalCertificateAuthorityId'], selectedCaId)
   }, [selectedCaId])
 
-  useEffect(() => {
-    form.setFieldValue(['radSecOptions', 'originalClientCertificateId'], selectedClientCertId)
-  }, [selectedClientCertId])
+  // useEffect(() => {
+  //   form.setFieldValue('clientCertificateId', selectedClientCertId)
+  // }, [selectedClientCertId])
 
   useEffect(() => {
     if ( edit && !form.isFieldsTouched() && selectedCaId &&
@@ -211,12 +220,12 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
     }
   }, [edit, selectedCaId])
 
-  useEffect(() => {
-    if ( edit && !form.isFieldsTouched() && selectedClientCertId &&
-     !(instanceListResult?.data ?? []).map(data => data.radSecOptions?.clientCertificateId)) {
-      form.setFieldValue(['radSecOptions', 'clientCertificateId'], selectedClientCertId)
-    }
-  }, [edit, selectedClientCertId])
+  // useEffect(() => {
+  //   if ( edit && !form.isFieldsTouched() && selectedClientCertId &&
+  //    !(instanceListResult?.data ?? []).map(data => data.radSecOptions?.clientCertificateId)) {
+  //     form.setFieldValue(['radSecOptions', 'clientCertificateId'], selectedClientCertId)
+  //   }
+  // }, [edit, selectedClientCertId])
 
   useEffect(() => {
     if (edit && saveState) {
@@ -372,14 +381,49 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
               ]}
             />
           </Form.Item>
-          { clientCertStatus.includes(CertificateStatusType.EXPIRED) ||
+          {/* { clientCertStatus.includes(CertificateStatusType.EXPIRED) ||
             clientCertStatus.includes(CertificateStatusType.REVOKED) ?
-            <CertificateWarning status={clientCertStatus}/> : []}
+            <CertificateWarning status={clientCertStatus}/> : []} */}
           <Button type='link'
             disabled={clientCertSelectOptions.length >= CERTIFICATE_MAX_COUNT}
             onClick={handleAddClientCertificate}
-            children={$t({ defaultMessage: 'Generate new client certificate' })}
-            hidden={true}/>
+            children={$t({ defaultMessage: 'Generate New Certificate' })} />
+          {/* </Space> */}
+          <Form.Item
+            label={$t({ defaultMessage: 'Server Certificate' })}
+            name={['radSecOptions', 'serverCertificateId']}
+            initialValue={null}
+            rules={[
+              { required: false },
+              { validator: (_, certStates) => {
+                if (!certStates.includes(CertificateStatusType.VALID)) {
+                  return Promise.reject(<FormattedMessage
+                    defaultMessage={
+                      'This certificate has {certState}.  Please go to <certificateGuide></certificateGuide> to renew it.'
+                    }
+                    values={{
+                      certState: getCertState(certStates),
+                      certificateGuide: ()=> (
+                        <TenantLink
+                          to={getPolicyRoutePath({
+                            type: PolicyType.SERVER_CERTIFICATES,
+                            oper: PolicyOperation.LIST
+                          })}>
+                          {'Server & Client Certificates'}
+                        </TenantLink>
+                      )
+                    }}
+                  />)
+                }
+                return Promise.resolve()
+              }}
+            ]}>
+            <Select
+              options={[
+                { label: $t({ defaultMessage: 'None' }), value: null },
+                ...clientCertSelectOptions
+              ]} />
+          </Form.Item>
         </UI.RacSecDiv>
         }
         <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
