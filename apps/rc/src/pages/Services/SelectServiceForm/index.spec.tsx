@@ -46,6 +46,7 @@ describe('Select Service Form', () => {
       }
     )
 
+    expect(screen.getByText('mDNS Proxy for RUCKUS Edge')).toBeVisible()
     const wifiCallingRadio = screen.getByDisplayValue(/Wi-Fi Calling/)
     const submitButton = screen.getByRole('button', { name: 'Next' })
 
@@ -95,11 +96,9 @@ describe('Select Service Form', () => {
         || featureFlag !== Features.EDGE_DHCP_HA_TOGGLE
     })
 
-    render(
-      <SelectServiceForm />, {
-        route: { params, path }
-      }
-    )
+    render(<SelectServiceForm />, {
+      route: { params, path }
+    })
 
     expect(screen.queryByText('DHCP for SmartEdge')).toBeNull()
   })
@@ -111,12 +110,23 @@ describe('Select Service Form', () => {
         || featureFlag !== Features.EDGE_PIN_HA_TOGGLE
     })
 
-    render(
-      <SelectServiceForm />, {
-        route: { params, path }
-      }
-    )
+    render(<SelectServiceForm />, {
+      route: { params, path }
+    })
 
+    expect(screen.queryByText('Personal Identity Network')).toBeNull()
+    expect(screen.getByText('mDNS Proxy for RUCKUS Edge')).toBeVisible()
+  })
+
+  it('should not render features bound with FF when FF OFF', async () => {
+    jest.mocked(useIsTierAllowed).mockReturnValue(false)
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+
+    render(<SelectServiceForm />, {
+      route: { params, path }
+    })
+
+    expect(screen.queryByText('mDNS Proxy for RUCKUS Edge')).toBeNull()
     expect(screen.queryByText('Personal Identity Network')).toBeNull()
   })
 })
