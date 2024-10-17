@@ -46,7 +46,7 @@ const modifiedMockEdgeHqosProfileStatusList = {
     if(index === 1) {
       return {
         ...item,
-        id: 'testPolicyId'
+        id: mockEdgeHqosCompatibilities.compatibilities[0].serviceId
       }
     }
     return item
