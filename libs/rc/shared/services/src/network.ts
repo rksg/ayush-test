@@ -448,7 +448,10 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     }),
     networkDetailHeader: build.query<NetworkDetailHeader, RequestPayload>({
       query: ({ params }) => {
-        const networkDetailReq = createHttpRequest(CommonUrlsInfo.getNetworksDetailHeader, params)
+        const networkDetailReq = createHttpRequest(
+          CommonRbacUrlsInfo.getNetworksDetailHeader,
+          params,
+          GetApiVersionHeader(ApiVersionEnum.v1))
         return {
           ...networkDetailReq
         }
@@ -892,6 +895,15 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       query: ({ params, payload }) => {
         return {
           ...createHttpRequest(CommonUrlsInfo.getDashboardV2Overview, params),
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Network', id: 'Overview' }]
+    }),
+    alarmSummaries: build.query<Dashboard, RequestPayload>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(CommonUrlsInfo.getAlarmSummaries, params),
           body: payload
         }
       },
@@ -1402,6 +1414,7 @@ export const {
   useGetApCompatibilitiesNetworkQuery,
   useLazyGetApCompatibilitiesNetworkQuery,
   useDashboardV2OverviewQuery,
+  useAlarmSummariesQuery,
   useExternalProvidersQuery,
   useGetCertificateTemplateNetworkBindingQuery,
   useActivateCertificateTemplateMutation,

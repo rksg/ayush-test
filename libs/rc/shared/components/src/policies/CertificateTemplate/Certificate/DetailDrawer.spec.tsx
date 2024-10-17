@@ -97,7 +97,7 @@ describe('DetailDrawer', () => {
     expect(await screen.findByText('Algorithm')).toBeVisible()
     expect(await screen.findByText('Serial Number')).toBeVisible()
     expect(await screen.findByText('Description')).toBeVisible()
-    expect(await screen.findByText('Download')).toBeVisible()
+    expect(await screen.findByText('View & Upload')).toBeVisible()
     expect(await screen.findByText('Sub CAs (3)')).toBeVisible()
     expect(await screen.findByText('Certificate Templates (3)')).toBeVisible()
   })

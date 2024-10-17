@@ -5,7 +5,6 @@ import { Path }      from 'react-router-dom'
 import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ActionType,
-  AupActionContext,
   GenericActionData,
   StepType,
   UIConfiguration,
@@ -18,7 +17,6 @@ import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '
 import { WorkflowActionPreview } from './WorkflowActionPreview'
 
 const config: UIConfiguration = {
-  disablePoweredBy: false,
   uiColorSchema: {
     fontHeaderColor: 'var(--acx-neutrals-100)',
     backgroundColor: 'var(--acx-primary-white)',
@@ -31,7 +29,8 @@ const config: UIConfiguration = {
     logoSize: 'MEDIUM',
     headerFontSize: 16,
     logoImageFileName: 'logo',
-    backgroundImageName: 'bgImage'
+    backgroundImageName: 'bgImage',
+    disablePoweredBy: false
   },
   welcomeName: '',
   welcomeTitle: ''
@@ -61,13 +60,12 @@ const steps: WorkflowStep[] = [
   }
 ]
 
-const actionData: AupActionContext = {
-  title: '',
-  messageHtml: '',
-  checkboxText: '',
-  bottomLabel: '',
-  backButtonText: '',
-  continueButtonText: ''
+const actionData = {
+  id: 'actionId',
+  actionType: ActionType.AUP,
+  name: 'action name',
+  description: '',
+  version: 0
 }
 
 

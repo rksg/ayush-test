@@ -107,7 +107,8 @@ export function useMenuConfig () {
       children: [{
         permission: 'READ_HEALTH',
         uri: isSwitchHealthEnabled ? '/health/overview' : '/health',
-        label: $t({ defaultMessage: 'Health' })
+        label: $t({ defaultMessage: 'Health' }),
+        isActiveCheck: new RegExp('^/health')
       }, {
         permission: 'READ_SERVICE_VALIDATION',
         uri: '/serviceValidation',
@@ -265,7 +266,8 @@ export function useMenuConfig () {
         openNewTab: true
       }, isJwtEnabled ? {
         uri: '/admin/developers/applicationTokens',
-        label: $t({ defaultMessage: 'Developers' })
+        label: $t({ defaultMessage: 'Developers' }),
+        isActiveCheck: new RegExp('^/admin/developers')
       } : {
         permission: 'READ_WEBHOOKS',
         uri: '/admin/webhooks',

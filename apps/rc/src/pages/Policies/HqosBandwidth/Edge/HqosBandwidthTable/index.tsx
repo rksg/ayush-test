@@ -14,16 +14,17 @@ import {
 } from '@acx-ui/rc/services'
 import {
   EdgeHqosViewData,
+  filterByAccessForServicePolicyMutation,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
+  getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { EdgeScopes }                             from '@acx-ui/types'
-import { filterByAccess, hasPermission }          from '@acx-ui/user'
 
 import * as UI from '../styledComponents'
 
@@ -171,7 +172,7 @@ const EdgeHqosBandwidthTable = () => {
 
   const rowActions: TableProps<EdgeHqosViewData>['rowActions'] = [
     {
-      scopeKey: [EdgeScopes.UPDATE],
+      scopeKey: getScopeKeyByPolicy(PolicyType.HQOS_BANDWIDTH, PolicyOperation.EDIT),
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -187,7 +188,7 @@ const EdgeHqosBandwidthTable = () => {
       }
     },
     {
-      scopeKey: [EdgeScopes.DELETE],
+      scopeKey: getScopeKeyByPolicy(PolicyType.HQOS_BANDWIDTH, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         showActionModal({
@@ -206,6 +207,7 @@ const EdgeHqosBandwidthTable = () => {
       }
     }
   ]
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
   return (
     <>
@@ -221,7 +223,7 @@ const EdgeHqosBandwidthTable = () => {
             link: getPolicyListRoutePath(true)
           }
         ]}
-        extra={filterByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             scopeKey={[EdgeScopes.CREATE]}
             to={getPolicyRoutePath({
@@ -240,10 +242,8 @@ const EdgeHqosBandwidthTable = () => {
           settingsId={settingsId}
           rowKey='id'
           columns={columns}
-          rowSelection={hasPermission({
-            scopes: [EdgeScopes.UPDATE, EdgeScopes.DELETE]
-          }) && { type: 'radio' }}
-          rowActions={filterByAccess(rowActions)}
+          rowSelection={allowedRowActions.length > 0 && { type: 'radio' }}
+          rowActions={allowedRowActions}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}

@@ -4,11 +4,10 @@ import { Provider }                                                      from '@
 import { mockRestApiQuery, render, screen, renderHook, waitFor, within } from '@acx-ui/test-utils'
 import { RequestPayload }                                                from '@acx-ui/types'
 
-
 import { mockedApList }               from './__tests__/fixtures'
 import { ApsTable, defaultApPayload } from './ApsTable'
 
-describe('NetworkSegmentationDetailTableGroup - ApsTable', () => {
+describe('PersonalIdentityNetwork DetailTableGroup - ApsTable', () => {
   let params: { tenantId: string, serviceId: string }
   beforeEach(() => {
     params = {

@@ -1,63 +1,7 @@
-import { AccessSwitch, DistributionSwitch, LeaseTimeUnit, NewTablePageable } from '@acx-ui/rc/utils'
+import { LeaseTimeUnit, NewTablePageable } from '@acx-ui/rc/utils'
 
 const paginationPattern = '?size=:pageSize&page=:page&sort=:sort'
 export const replacePagination = (url: string) => url.replace(paginationPattern, '')
-
-export const mockedNsgSwitchInfoData: {
-  distributionSwitches: DistributionSwitch[],
-  accessSwitches: AccessSwitch[]
-} = {
-  distributionSwitches: [{
-    id: 'c8:03:f5:3a:95:c6',
-    siteName: '964fe8920291194e208b6d22370c2cc82c',
-    siteIp: '10.206.78.150',
-    vlans: '23',
-    siteKeepAlive: '5',
-    siteRetry: '3',
-    loopbackInterfaceId: '12',
-    loopbackInterfaceIp: '1.2.3.4',
-    loopbackInterfaceSubnetMask: '255.255.255.0',
-    forwardingProfile: '2',
-    siteConnection: 'Disconnected',
-    siteActive: '10.206.78.150',
-    dispatchMessage: '[SUCCESS]',
-    model: 'ICX7550-48P',
-    name: 'FMN4221R00H---DS---3',
-    familyId: 'ICX7550',
-    firmwareVersion: 'GZR09010f_b40.bin'
-  }],
-  accessSwitches: [{
-    id: 'c0:c5:20:aa:35:fd',
-    vlanId: 111,
-    webAuthPageType: 'TEMPLATE',
-    templateId: '723250a97f3a4c3780e70c83c5b095ba',
-    webAuthPasswordLabel: 'password-Ken-0209',
-    webAuthCustomTitle: 'title-Ken-0209',
-    webAuthCustomTop: 'top-Ken-0209',
-    webAuthCustomLoginButton: 'login-Ken-0209',
-    webAuthCustomBottom: 'bottom-Ken-0209',
-    uplinkInfo: {
-      uplinkType: 'PORT',
-      uplinkId: '1/1/1'
-    },
-    distributionSwitchId: 'c8:03:f5:3a:95:c6',
-    dispatchMessage: '[SUCCESS]',
-    model: 'ICX7150-C12P',
-    name: 'FEK3224R09N---AS---3',
-    familyId: 'ICX7150',
-    firmwareVersion: 'SPR09010f_b32.bin'
-  }]
-}
-
-export const webAuthList = [{
-  id: '723250a97f3a4c3780e70c83c5b095ba',
-  name: 'Template-Ken-0209',
-  webAuthPasswordLabel: 'password-Ken-0209',
-  webAuthCustomTitle: 'title-Ken-0209',
-  webAuthCustomTop: 'top-Ken-0209',
-  webAuthCustomLoginButton: 'login-Ken-0209',
-  webAuthCustomBottom: 'bottom-Ken-0209'
-}]
 
 export const mockedApList = {
   totalCount: 2,

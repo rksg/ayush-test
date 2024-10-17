@@ -14,13 +14,22 @@ import {
 }                                                   from '@acx-ui/utils'
 import type { PathFilter } from '@acx-ui/utils'
 
-import { states, codes, aiFeaturesLabel, groupedStates, IntentListItem, Intent, failureCodes } from './config'
-import { DisplayStates }                                                                       from './states'
+import {
+  states,
+  codes,
+  aiFeaturesLabel,
+  stateToGroupedStates,
+  IntentListItem,
+  Intent,
+  failureCodes
+} from './config'
+import { DisplayStates } from './states'
 import {
   Actions,
   IntentWlan,
   parseTransitionGQLByAction,
-  TransitionIntentItem } from './utils'
+  TransitionIntentItem
+} from './utils'
 
 type Metadata = {
   failures?: (keyof typeof failureCodes)[]
@@ -253,20 +262,12 @@ export const api = intentAIApi.injectEndpoints({
           return data
         }, { aiFeatures: [] as string[], categories: [] as string[], intents: [] as string[] })
 
-        const displayStatuses = statuses.reduce((data, { id, label }) => {
-          const groupedState = groupedStates.find(({ states }) => states.includes(id as string))
-          if (groupedState) {
-            const found = data.find(({ value }) => value === $t(groupedState.group))
-            if (!found) {
-              data.push({ key: id, value: $t(groupedState.group) })
-            } else { // state from same group
-              found.key = `${found.key}+${id}`
-            }
-          } else {
-            data.push(
-              { key: id, value: $t(states[label as unknown as keyof typeof states].text) }
-            )
-          }
+        const displayStatuses = statuses.reduce((data, { id }) => {
+          const stateKey = id as unknown as DisplayStates
+          const groupedState = stateToGroupedStates[stateKey]
+          const key = groupedState ? groupedState.key : id
+          const value = groupedState ? $t(groupedState.group) : $t(states[stateKey].text)
+          if (!data.find(({ key: dataKey }) => dataKey === key)) data.push({ key, value })
           return data
         }, [] as DisplayOption[])
           .sort((a, b) => a.value.localeCompare(b.value))

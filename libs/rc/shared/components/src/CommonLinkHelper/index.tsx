@@ -114,7 +114,7 @@ export function NetworkSegmentationLink (props: {
       ? <TenantLink to={getServiceDetailsLink({
         serviceId: id,
         oper: ServiceOperation.DETAIL,
-        type: ServiceType.NETWORK_SEGMENTATION
+        type: ServiceType.PIN
       })}>
         {name ?? id}
       </TenantLink>

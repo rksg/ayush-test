@@ -5,8 +5,8 @@ import {
   EdgeDHCPFixtures,
   EdgeDhcpUrls,
   EdgeGeneralFixtures,
-  EdgeNSGFixtures,
-  NetworkSegmentationUrls,
+  EdgePinFixtures,
+  EdgePinUrls,
   PersonaUrls,
   TunnelProfileUrls,
   EdgeUrlsInfo,
@@ -17,28 +17,27 @@ import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/t
 
 import {
   mockedApList,
-  mockedNsgSwitchInfoData,
   mockedPersonaGroup,
   mockedTunnelProfileData
 } from './__tests__/fixtures'
 
 import { PersonalIdentityNetworkServiceInfo } from '.'
 
-const { mockNsgStatsList, mockNsgData } = EdgeNSGFixtures
+const { mockPinStatsList, mockPinData, mockPinSwitchInfoData } = EdgePinFixtures
 const { mockEdgeClusterList } = EdgeGeneralFixtures
 const { mockEdgeDhcpDataList } = EdgeDHCPFixtures
 
-describe('NetworkSegmentationServiceInfo', () => {
+describe('PersonalIdentityNetwork ServiceInfo', () => {
 
   beforeEach(() => {
     mockServer.use(
       rest.get(
-        NetworkSegmentationUrls.getNetworkSegmentationGroupById.url,
-        (_req, res, ctx) => res(ctx.json(mockNsgData))
+        EdgePinUrls.getEdgePinById.url,
+        (_req, res, ctx) => res(ctx.json(mockPinData))
       ),
       rest.post(
-        NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
-        (_req, res, ctx) => res(ctx.json(mockNsgStatsList))
+        EdgePinUrls.getEdgePinStatsList.url,
+        (_req, res, ctx) => res(ctx.json(mockPinStatsList))
       ),
       rest.post(
         EdgeUrlsInfo.getEdgeClusterStatusList.url,
@@ -49,8 +48,8 @@ describe('NetworkSegmentationServiceInfo', () => {
         (_req, res, ctx) => res(ctx.json(mockedApList))
       ),
       rest.get(
-        NetworkSegmentationUrls.getSwitchInfoByNSGId.url,
-        (_req, res, ctx) => res(ctx.json(mockedNsgSwitchInfoData))
+        EdgePinUrls.getSwitchInfoByPinId.url,
+        (_req, res, ctx) => res(ctx.json(mockPinSwitchInfoData))
       ),
       rest.get(
         EdgeDhcpUrls.getDhcp.url,
@@ -71,13 +70,13 @@ describe('NetworkSegmentationServiceInfo', () => {
     )
   })
 
-  it('Should render NetworkSegmentationServiceInfo successfully', async () => {
+  it('Should render PersonalIdentityNetwork ServiceInfo successfully', async () => {
     const params = {
       tenantId: 'tenant-id'
     }
     render(
       <Provider>
-        <PersonalIdentityNetworkServiceInfo nsgId='test' />
+        <PersonalIdentityNetworkServiceInfo pinId='test' />
       </Provider>,{
         route: { params }
       }

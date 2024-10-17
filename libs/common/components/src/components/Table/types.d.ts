@@ -7,7 +7,7 @@ import {
 }                    from '@ant-design/pro-utils/'
 import { DataIndex } from 'rc-table/lib/interface'
 
-import { ScopeKeys } from '@acx-ui/types'
+import { RolesEnum, ScopeKeys } from '@acx-ui/types'
 
 import type {
   ProColumnType,
@@ -187,6 +187,7 @@ export type TableAction = {
 export type TableRowAction<RecordType> = {
   key?: string
   scopeKey?: ScopeKeys
+  roles?: RolesEnum[]
   allowedOperationUrl?: string
   label: string
   disabled?: boolean | ((selectedItems: RecordType[]) => boolean)
