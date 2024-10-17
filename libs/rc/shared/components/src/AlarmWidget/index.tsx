@@ -1,12 +1,13 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { cssStr, Loader , Card, DonutChart, NoActiveData } from '@acx-ui/components'
-import type { DonutChartData }                             from '@acx-ui/components'
-import { useDashboardV2OverviewQuery }                     from '@acx-ui/rc/services'
-import { AlaramSeverity, Dashboard }                       from '@acx-ui/rc/utils'
-import { useParams }                                       from '@acx-ui/react-router-dom'
-import { useDashboardFilter }                              from '@acx-ui/utils'
+import { cssStr, Loader , Card, DonutChart, NoActiveData }     from '@acx-ui/components'
+import type { DonutChartData }                                 from '@acx-ui/components'
+import { useIsSplitOn, Features }                              from '@acx-ui/feature-toggle'
+import { useAlarmSummariesQuery, useDashboardV2OverviewQuery } from '@acx-ui/rc/services'
+import { AlaramSeverity, Dashboard }                           from '@acx-ui/rc/utils'
+import { useParams }                                           from '@acx-ui/react-router-dom'
+import { useDashboardFilter }                                  from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -40,8 +41,10 @@ export function AlarmWidgetV2 () {
 
   // Dashboard overview query
   const { venueIds } = useDashboardFilter()
+  const isNewAlarmQueryEnabled = useIsSplitOn(Features.ALARM_NEW_API_TOGGLE)
+  const query = isNewAlarmQueryEnabled ? useAlarmSummariesQuery : useDashboardV2OverviewQuery
 
-  const overviewV2Query = useDashboardV2OverviewQuery({
+  const overviewV2Query = query({
     params: useParams(),
     payload: {
       filters: {

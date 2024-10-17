@@ -10,12 +10,6 @@ import { useFilters }  from './useFilters'
 
 describe('ApTable > useFilters', () => {
 
-  const params = {
-    venueId: 'venue-id',
-    networkId: 'network-id',
-    apGroupId: 'ap-group-id'
-  }
-
   beforeEach(() => {
     mockServer.use(
       rest.post(
@@ -33,7 +27,11 @@ describe('ApTable > useFilters', () => {
     )
   })
 
-  it('should get filters correctly', async () => {
+  it('should get filters correctly with the networkId', async () => {
+    const params = {
+      venueId: 'venue-id',
+      networkId: 'network-id'
+    }
     const { result } = renderHook(() => useFilters(params), {
       wrapper: ({ children }) => <Provider children={children} />
     })
@@ -42,7 +40,26 @@ describe('ApTable > useFilters', () => {
       () => {
         const { filters } = result.current
         expect(filters).toMatchObject({
-          serialNumber: ['123456789005', '302002030366'],
+          venueId: ['venue-id'],
+          apGroupId: [ '_apGroupId_1_', '_apGroupId_2_' ]
+        })
+      }
+    )
+  })
+
+  it('should get filters correctly with ApGroupID', async () => {
+    const params = {
+      venueId: 'venue-id',
+      apGroupId: 'ap-group-id'
+    }
+    const { result } = renderHook(() => useFilters(params), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+
+    await waitFor(
+      () => {
+        const { filters } = result.current
+        expect(filters).toMatchObject({
           venueId: ['venue-id'],
           apGroupId: ['ap-group-id']
         })
