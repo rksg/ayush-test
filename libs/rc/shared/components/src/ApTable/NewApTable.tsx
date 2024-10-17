@@ -125,8 +125,8 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       searchTargetFields: newDefaultApPayload.searchTargetFields
     },
     option: { skip: Boolean(props.tableQuery) || isNetworkLoading },
-    enableSelectAllPagesData: ['id', 'name', 'serialNumber', 'apGroupId',
-      'status', 'firmwareVersion'],
+    // enableSelectAllPagesData: ['id', 'name', 'serialNumber', 'apGroupId',
+    //   'status', 'firmwareVersion'],
     pagination: { settingsId }
   })
   const tableQuery = props.tableQuery || apListTableQuery
@@ -647,9 +647,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   ) => {
     const customSorter = Array.isArray(sorter)
       ? sorter[0] : sorter
-    if ('IP'.includes(customSorter.field as string)) {
-      customSorter.field = 'IP.keyword'
-    }
+
     tableQuery.handleTableChange?.(pagination, filters, customSorter, extra)
   }
 
@@ -678,7 +676,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
         columns={columns}
         columnState={enableApCompatibleCheck?{ onChange: handleColumnStateChange } : {}}
         dataSource={tableData}
-        getAllPagesData={tableQuery.getAllPagesData}
+        // getAllPagesData={tableQuery.getAllPagesData}
         rowKey='serialNumber'
         pagination={tableQuery.pagination}
         onChange={handleTableChange}
