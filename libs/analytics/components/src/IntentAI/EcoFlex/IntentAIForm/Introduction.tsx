@@ -128,7 +128,7 @@ const CompareSliderWithEcoFlex: React.FC<ReturnType<typeof useIntentAIEcoFlexQue
   return (
     <Loader states={[queryResult]}>
       <CompareSlider
-        style={{ width: '50%', height: '100%' }}
+        style={{ width: '300px', height: '100%' }}
         itemOne={<SliderBefore kpiData={queryResult.data.compareData} />}
         itemTwo={<SliderAfter kpiData={queryResult.data.data} />}
         disabled={false}
