@@ -62,7 +62,7 @@ export const CustomizedFields = styled(Space)`
 `
 
 export const Select = styled(AcxSelect)`
-  max-width: 238px;
+  max-width: 230.5px;
   &.string-type {
     .ant-select-selector {
       height: 50.5px;

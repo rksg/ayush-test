@@ -14,6 +14,14 @@ export function WithOptionGroup () {
       />
     </div>
     <div>
+      <p>Radio:</p>
+      <Select
+        {...defaultProps}
+        type='radio'
+        options={normalGroupOption}
+      />
+    </div>
+    <div>
       <p>Multiple:</p>
       <Select
         {...defaultProps}
