@@ -301,3 +301,19 @@ export const mockApModelFamilies: ApModelFamily[] = [{
   displayName: 'Wi-Fi 7',
   apModels: [ 'R770', 'H670', 'T670SN', 'T670', 'R670']
 }]
+
+export const mockedFirmwareVenuesPerApModel = {
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      id: '90b0b0cd6c3a44a894fe73e210b1a4c1',
+      name: 'venueBBB-upToDate',
+      isApFirmwareUpToDate: true,
+      currentApFirmwares: [
+        { apModel: 'R550', firmware: '7.0.0.104.1220' }
+      ],
+      lastScheduleUpdate: '2024-02-22T14:00:01.099-08:00'
+    }
+  ]
+}

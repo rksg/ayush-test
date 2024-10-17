@@ -1,11 +1,13 @@
 import { rest } from 'msw'
 
+import { useIsSplitOn }                                  from '@acx-ui/feature-toggle'
 import { CompatibilitySelectedApInfo, FirmwareUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                      from '@acx-ui/store'
 import { mockServer, render, screen }                    from '@acx-ui/test-utils'
 
 import {
   mockApModelFamilies,
+  mockedFirmwareVenuesPerApModel,
   mockNetworkApCompatibilities,
   mockVenueApCompatibilities
 } from '../ApCompatibilityDrawer/__test__/fixtures'
@@ -14,11 +16,17 @@ import { ApCompatibilityDetailTable } from '.'
 
 
 describe('ApCompatibilityDetailTable', () => {
+  jest.mocked(useIsSplitOn).mockReturnValue(true)
   beforeEach(() => {
     mockServer.use(
       rest.post(
         FirmwareUrlsInfo.getApModelFamilies.url,
-        (_, res, ctx) => res(ctx.json(mockApModelFamilies)))
+        (_, res, ctx) => res(ctx.json(mockApModelFamilies))
+      ),
+      rest.post(
+        FirmwareUrlsInfo.getVenueApModelFirmwareList.url,
+        (_, res, ctx) => res(ctx.json(mockedFirmwareVenuesPerApModel))
+      )
     )
   })
   it('should render correctly with Venue compatibility data', async () => {

@@ -139,3 +139,142 @@ export const mockedApModelFirmwares = [
 ]
 
 export const mockedFirmwareVersionIdList = mockedApModelFirmwares.map(fw => fw.id)
+
+export const preference = {
+  days: [
+    'Sunday',
+    'Saturday'
+  ],
+  times: [
+    '00:00-02:00',
+    '02:00-04:00',
+    '04:00-06:00'
+  ],
+  autoSchedule: true,
+  betaProgram: false
+}
+
+export const venue = [
+  {
+    id: '0842f2133565438d85e1e46103889744',
+    name: 'Peter-Venue',
+    apCount: 1,
+    apModels: ['R750'],
+    versions: [
+      {
+        version: '6.2.1.103.1580',
+        type: 'AP_FIRMWARE_UPGRADE',
+        sequence: 2,
+        category: 'RECOMMENDED'
+      }
+    ]
+  },
+  {
+    id: '8ee8acc996734a5dbe43777b72469857',
+    name: 'Ben-Venue-US',
+    apCount: 1,
+    apModels: ['R610', 'R770'],
+    currentVenueUnsupportedApModels: ['R770'],
+    versions: [
+      {
+        version: '6.2.1.103.1580',
+        type: 'AP_FIRMWARE_UPGRADE',
+        sequence: 2,
+        category: 'RECOMMENDED'
+      }
+    ],
+    eolApFirmwares: [
+      {
+        name: 'eol-ap-2021-05',
+        currentEolVersion: '6.1.0.10.413',
+        latestEolVersion: '6.1.0.10.453',
+        apCount: 1,
+        apModels: ['T300'],
+        sequence: 1,
+        isAbfGreaterThanVenueCurrentAbf: false
+      }
+    ],
+    lastScheduleUpdate: '2023-02-18T01:07:33.203-08:00'
+  },
+  {
+    id: '02b81f0e31e34921be5cf47e6dce1f3f',
+    name: 'My-Venue',
+    apCount: 0,
+    versions: [
+      {
+        version: '6.2.1.103.1580',
+        type: 'AP_FIRMWARE_UPGRADE',
+        sequence: 2,
+        category: 'RECOMMENDED'
+      }
+    ],
+    eolApFirmwares: [
+      {
+        name: 'eol-ap-2021-05',
+        currentEolVersion: '6.1.0.10.433',
+        latestEolVersion: '6.1.0.10.453',
+        apCount: 1,
+        apModels: ['T300'],
+        sequence: 1,
+        isAbfGreaterThanVenueCurrentAbf: false
+      },
+      {
+        name: 'eol-ap-2022-12',
+        currentEolVersion: '6.2.0.103.533',
+        latestEolVersion: '6.2.0.103.533',
+        apCount: 1,
+        apModels: ['R550'],
+        sequence: 1,
+        isAbfGreaterThanVenueCurrentAbf: false
+      },
+      {
+        name: 'ABF2-3R',
+        currentEolVersion: '6.2.3.103.200',
+        latestEolVersion: '6.2.3.103.200',
+        apCount: 1,
+        apModels: ['H550'],
+        sequence: 2,
+        isAbfGreaterThanVenueCurrentAbf: true
+      }
+    ]
+  },
+  {
+    id: 'aaa2f2133565438d85e1e46103889999',
+    name: 'Legacy-Venue',
+    apCount: 1,
+    apModels: ['R512'],
+    versions: [
+      {
+        version: '6.1.0.10.433',
+        type: 'AP_FIRMWARE_UPGRADE',
+        sequence: 1,
+        category: 'RECOMMENDED'
+      }
+    ],
+    eolApFirmwares: [
+      {
+        name: 'eol-ap-2022-12',
+        currentEolVersion: '6.2.0.103.513',
+        latestEolVersion: '6.2.0.103.533',
+        apCount: 1,
+        apModels: ['T300'],
+        sequence: 1,
+        isAbfGreaterThanVenueCurrentAbf: true
+      }
+    ]
+  },
+  {
+    id: 'zzz2f2133565438d85e1e46103889999',
+    name: 'Latest-Venue',
+    apCount: 1,
+    apModels: ['R599'],
+    versions: [
+      {
+        version: '7.0.0.103.288',
+        type: 'AP_FIRMWARE_UPGRADE',
+        sequence: 3,
+        category: 'RECOMMENDED'
+      }
+    ]
+  }
+]
