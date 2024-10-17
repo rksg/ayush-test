@@ -142,11 +142,11 @@ export const pathToFilter = (networkPath: NetworkPath): NodesFilter => {
     networkNodes: [filter],
     switchNodes: [!get('IS_MLISA_SA') ? filter.map(node => {
       // https://jira.ruckuswireless.com/browse/RSA-7013
-      const newNode = { ...node };
+      const newNode = { ...node }
       if (newNode.type === 'zone') {
-        newNode.type = 'switchGroup';
+        newNode.type = 'switchGroup'
       }
-      return newNode;
+      return newNode
     }) : filter]
   }
 }
