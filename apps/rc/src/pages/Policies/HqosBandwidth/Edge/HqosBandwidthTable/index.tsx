@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl'
 
 import { Button, cssStr, Loader, PageHeader, showActionModal, Table, TableProps, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
-import { TrafficClassSettingsTable }                                                       from '@acx-ui/rc/components'
+import { SimpleListTooltip, TrafficClassSettingsTable }                                    from '@acx-ui/rc/components'
 import {
   useDeleteEdgeHqosProfileMutation,
   useGetEdgeClusterListQuery,
@@ -71,7 +71,7 @@ const EdgeHqosBandwidthTable = () => {
     pageSize: 10000
   }
 
-  const { clusterOptions } = useGetEdgeClusterListQuery(
+  const { clusterOptions = [] } = useGetEdgeClusterListQuery(
     { payload: clusterOptionsDefaultPayload },
     {
       selectFromResult: ({ data, isLoading }) => {
@@ -166,7 +166,12 @@ const EdgeHqosBandwidthTable = () => {
       sorter: true,
       filterable: clusterOptions,
       render: function (_, row) {
-        return row?.edgeClusterIds?.length
+        const edgeClusterIds = row?.edgeClusterIds
+        const tooltipItems = clusterOptions
+          .filter(v => v.key && edgeClusterIds!.includes(v.key))
+          .map(v => v.value)
+          .filter((item): item is string => item !== undefined)
+        return <SimpleListTooltip items={tooltipItems} displayText={edgeClusterIds?.length??0} />
       }
     }
   ]
