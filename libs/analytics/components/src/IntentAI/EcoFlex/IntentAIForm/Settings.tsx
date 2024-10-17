@@ -15,6 +15,7 @@ export function Settings () {
   const { $t } = useIntl()
   const { form } = useStepFormContext<Intent>()
   const enableExcludedHours = Form.useWatch(['preferences', 'enableExcludedHours'])
+  const enableExcludedAPs = Form.useWatch(['preferences', 'enableExcludedAPs'])
   const isEnabled = form.getFieldValue('preferences').enable
   const excludedHours = form.getFieldValue('preferences').excludedHours
 
@@ -46,7 +47,15 @@ export function Settings () {
         excludedHours={excludedHours}
         readonly={!isEnabled}
       />}
-       <APsSelection />
+      <Form.Item
+        name={['preferences','enableExcludedAPs']}
+        valuePropName='checked'>
+        <Checkbox
+          children={content.option2}
+          disabled={!isEnabled}
+        />
+      </Form.Item>
+      {enableExcludedAPs && <APsSelection isDisabled={!isEnabled}/>}
     </Col>
 
   </Row>

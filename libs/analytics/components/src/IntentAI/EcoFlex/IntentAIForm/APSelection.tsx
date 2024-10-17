@@ -13,18 +13,20 @@ import { FilterListNode, DateRange, PathNode, NetworkPath }                    f
 
 import { getNetworkFilterData }                                                                        from '../../../NetworkFilter'
 import { useVenuesHierarchyQuery, Child as HierarchyNodeChild, useNetworkHierarchyQuery, NetworkNode } from '../../../NetworkFilter/services'
-import { isAPListNodes, isNetworkNodes, ClientType as ClientTypeEnum }                                 from '../../../ServiceGuard/types'
+import { ClientType as ClientTypeEnum }                                 from '../../../ServiceGuard/types'
 import { ClientType }                                                                                  from '../../../ServiceGuard/ServiceGuardForm/FormItems/ClientType'
 
-import { APsSelectionInput }                          from '../../../ServiceGuard/ServiceGuardForm/FormItems/APsSelection/APsSelectionInput'
+import { APsSelectionInput }                          from '../../../APsSelectionInput'
 import { DeviceRequirementsType, deviceRequirements } from '../../../ServiceGuard/ServiceGuardForm/FormItems/APsSelection/deviceRequirements'
 
-import type { ServiceGuardFormDto, NetworkNodes, NetworkPaths } from '../../../ServiceGuard/types'
+import { isAPListNodes, isNetworkNodes }    from '../../../APsSelectionInput/types'
+
+import type { NetworkNodes, NetworkPaths } from '../../../APsSelectionInput/types'
 import type { NamePath }                                        from 'antd/lib/form/interface'
 import { Intent } from '../../config'
 import { useIntentContext } from '../../IntentContext'
 
-const name = ['configs', 0, 'networkPaths', 'networkNodes'] as const
+const name = ['preferences','excludedAPs'] as const
 const label = defineMessage({ defaultMessage: 'APs Selection' })
 
 function transformSANetworkHierarchy (
@@ -122,11 +124,10 @@ function filterAPwithDeviceRequirements (data: HierarchyNodeChild[], clientType:
   }, [] as HierarchyNodeChild[])
 }
 
-export function APsSelection () {
+export function APsSelection ({ isDisabled }: { isDisabled: boolean }) {
   const { $t } = useIntl()
   const response = useOptions()
   const { form } = useStepFormContext<Intent>()
-  form.setFieldValue('clientType', 'virtual-wireless-client')
   return <Loader
     states={[_.omit(response, ['options'])]}
     style={{ height: 'auto', minHeight: 346 }}
@@ -138,6 +139,7 @@ export function APsSelection () {
         message: $t({ defaultMessage: 'Select APs to exclude' })
       }]}
       children={<APsSelectionInput
+        disabled={isDisabled}
         autoFocus
         placeholder={get('IS_MLISA_SA')
           ? $t({ defaultMessage: 'Select APs to exclude' })

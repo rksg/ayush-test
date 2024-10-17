@@ -14,6 +14,8 @@ export function Summary () {
   const { form } = useStepFormContext<Intent>()
   const isEnabled = form.getFieldValue('preferences').enable
   const enableExcludedHours = form.getFieldValue('preferences').enableExcludedHours
+  const enableExcludedAPs = form.getFieldValue('preferences').enableExcludedAPs
+  
   return <Row gutter={20}>
     <Col span={16}>
       <StepsForm.Title children={$t({ defaultMessage: 'Summary' })} />
@@ -24,6 +26,12 @@ export function Summary () {
             label={$t({ defaultMessage: 'Hours not applied for EcoFlex' })}
           >
             {$t({ defaultMessage: 'PowerSave will not be triggered during specific hours set in the Settings.' })}
+          </Form.Item>
+          }
+          {enableExcludedAPs && <Form.Item
+            label={$t({ defaultMessage: 'APs/AP Group not applied for EcoFlex' })}
+          >
+            {$t({ defaultMessage: 'PowerSave will not be triggered for the specific AP/AP Group set in the Settings.' })}
           </Form.Item>
           }
         </>

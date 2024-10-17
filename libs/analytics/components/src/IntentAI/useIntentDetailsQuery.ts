@@ -12,6 +12,7 @@ import { getIntl, NetworkPath, noDataDisplay, NodeType } from '@acx-ui/utils'
 
 import { DisplayStates, Statuses, StatusReasons }        from './states'
 import { dataRetentionText, IntentWlan, isDataRetained } from './utils'
+import { NetworkNode } from '../NetworkFilter/services'
 
 export type IntentKPIConfig = {
   key: string;
@@ -58,6 +59,7 @@ export type Intent = {
         currency: string
         value: number
       }
+      excludedAPs?: [NetworkNode[]]
     }
   }
   sliceType: NodeType
