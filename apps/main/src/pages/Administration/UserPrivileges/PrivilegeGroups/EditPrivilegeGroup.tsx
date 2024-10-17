@@ -541,6 +541,7 @@ export function EditPrivilegeGroup () {
             />
             <CustomRoleSelector
               isOnboardedMsp={isOnboardedMsp}
+              disabled={privilegeGroup?.roleName === RolesEnum.PRIME_ADMIN}
               setSelected={setSelectedRole}
             />
           </Col>
