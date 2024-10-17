@@ -8,7 +8,7 @@ import {
   ConnectedClientsTable,
   defaultApPayload,
   defaultClientPayload,
-  defaultHistoricalClientPayload,
+  // defaultHistoricalClientPayload,
   defaultNetworkPayload,
   defaultRbacClientPayload,
   defaultRbacNetworkPayload,
@@ -16,7 +16,7 @@ import {
   defaultSwitchPayload,
   eventDefaultSearch,
   EventTable,
-  GlobalSearchHistoricalClientsTable,
+  // GlobalSearchHistoricalClientsTable,
   NetworkTable,
   newDefaultApPayload,
   ClientsTable as SwitchClientTable,
@@ -27,7 +27,7 @@ import {
   useApListQuery,
   useGetClientListQuery,
   useGetClientsQuery,
-  useGetHistoricalClientListQuery,
+  // useGetHistoricalClientListQuery,
   useGetSwitchClientListQuery,
   useNetworkListQuery,
   useNewApListQuery,
@@ -38,7 +38,7 @@ import {
 import {
   APExtended,
   ApExtraParams,
-  Client,
+  // Client,
   ClientInfo,
   ClientList,
   Network,
@@ -188,21 +188,21 @@ const searches = [
     }
   },
 
-  (searchString: string, $t: IntlShape['$t']) => {
-    const result = useTableQuery<Client, RequestPayload<unknown>, unknown>({
-      useQuery: useGetHistoricalClientListQuery,
-      defaultPayload: {
-        ...defaultHistoricalClientPayload,
-        searchString
-      },
-      pagination
-    })
-    return {
-      result,
-      title: $t({ defaultMessage: 'Historical Clients' }),
-      component: <GlobalSearchHistoricalClientsTable tableQuery={result} />
-    }
-  },
+  // (searchString: string, $t: IntlShape['$t']) => {
+  //   const result = useTableQuery<Client, RequestPayload<unknown>, unknown>({
+  //     useQuery: useGetHistoricalClientListQuery,
+  //     defaultPayload: {
+  //       ...defaultHistoricalClientPayload,
+  //       searchString
+  //     },
+  //     pagination
+  //   })
+  //   return {
+  //     result,
+  //     title: $t({ defaultMessage: 'Historical Clients' }),
+  //     component: <GlobalSearchHistoricalClientsTable tableQuery={result} />
+  //   }
+  // },
 
   (searchString: string, $t: IntlShape['$t']) => {
     const result = useTableQuery<SwitchClient, RequestPayload<unknown>, unknown>({

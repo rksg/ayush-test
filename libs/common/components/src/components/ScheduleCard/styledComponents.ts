@@ -117,7 +117,7 @@ const marginLeftChildSecond = `
 
 const marginLeftChildSecondUnit60 = `
   &:nth-child(2) {
-    margin-left: -3px;
+    margin-left: 16px;
   }
   &:last-child {
     width: 20px;
