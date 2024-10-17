@@ -1,3 +1,12 @@
+export const mockAuthRadiusId = '__Auth_Radius_ID__'
+export const mockAuthRadiusId2 = '__Auth_Radius_ID_2__'
+export const mockAuthRadiusName = '__Auth_Radius_Name__'
+export const mockAuthRadiusName2 = '__Auth_Radius_Name_2__'
+export const mockAccountingRadiusId = '__Accounting_Radius_ID_1__'
+export const mockAccountingRadiusId2 = '__Accounting_Radius_ID_2__'
+export const mockAccuntingRadiusName = '__Accounting_Radius_Name_1__'
+
+
 export const ethernetPortProfileList = [
   {
     id: '34a1d209ccab49b98138cdf5d73f0a7a',
@@ -25,3 +34,36 @@ export const ethernetPortProfileList = [
     ]
   }
 ]
+
+export const dummyRadiusServiceList = {
+  totalCount: 3,
+  page: 1,
+  data: [{
+    id: mockAuthRadiusId,
+    name: mockAuthRadiusName,
+    type: 'AUTHENTICATION',
+    primary: '192.168.0.100:1812',
+    secondary: '192.168.0.101:1812',
+    networkCount: 0,
+    networkIds: [],
+    tenantId: '83a98239787940188137242bdf6795e9'
+  }, {
+    id: mockAuthRadiusId2,
+    name: mockAuthRadiusName2,
+    type: 'AUTHENTICATION',
+    primary: '192.168.0.200:1812',
+    secondary: '192.168.0.210:1812',
+    networkCount: 0,
+    networkIds: [],
+    tenantId: '83a98239787940188137242bdf6795e9'
+  }, {
+    id: mockAccountingRadiusId,
+    name: mockAccuntingRadiusName,
+    type: 'ACCOUNTING',
+    primary: '192.168.0.201:1813',
+    secondary: '',
+    networkCount: 0,
+    networkIds: [],
+    tenantId: '83a98239787940188137242bdf6795e9'
+  }]
+}
