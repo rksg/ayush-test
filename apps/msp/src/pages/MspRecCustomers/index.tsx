@@ -14,7 +14,8 @@ import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle
 import {
   ManageAdminsDrawer,
   ManageDelegateAdminDrawer,
-  SelectIntegratorDrawer
+  SelectIntegratorDrawer,
+  ManageMspDelegationDrawer
 } from '@acx-ui/msp/components'
 import {
   useDeleteMspEcMutation,
@@ -65,6 +66,7 @@ export function MspRecCustomers () {
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
   const isvViewModelTpLoginEnabled = useIsSplitOn(Features.VIEWMODEL_TP_LOGIN_ADMIN_COUNT)
   const isMspSortOnTpEnabled = useIsSplitOn(Features.MSP_SORT_ON_TP_COUNT_TOGGLE)
+  const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
 
   const { data: userProfile } = useUserProfileContext()
   const { data: mspLabel } = useGetMspLabelQuery({ params, enableRbac: isRbacEnabled })
@@ -454,12 +456,20 @@ export function MspRecCustomers () {
           rowActions={filterByAccess(rowActions)}
           rowSelection={hasAccess() && { type: isAssignMultipleEcEnabled ? 'checkbox' : 'radio' }}
         />
-        {drawerAssignEcMspAdminsVisible && <AssignEcMspAdminsDrawer
-          visible={drawerAssignEcMspAdminsVisible}
-          tenantIds={selEcTenantIds}
-          setVisible={setDrawerAssignEcMspAdminsVisible}
-          setSelected={() => {}}
-        />}
+        {drawerAssignEcMspAdminsVisible && (isAbacToggleEnabled && isRbacPhase2Enabled
+          ? <ManageMspDelegationDrawer
+            visible={drawerAssignEcMspAdminsVisible}
+            tenantIds={selEcTenantIds}
+            setVisible={setDrawerAssignEcMspAdminsVisible}
+            setSelectedUsers={() => {}}
+            setSelectedPrivilegeGroups={() => {}}/>
+          :
+          <AssignEcMspAdminsDrawer
+            visible={drawerAssignEcMspAdminsVisible}
+            tenantIds={selEcTenantIds}
+            setVisible={setDrawerAssignEcMspAdminsVisible}
+            setSelected={() => {}}
+          />)}
       </Loader>
     )
   }

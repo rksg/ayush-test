@@ -64,15 +64,16 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { RolesEnum }                   from '@acx-ui/types'
-import { useUserProfileContext }       from '@acx-ui/user'
-import { AccountType, noDataDisplay  } from '@acx-ui/utils'
+import { RolesEnum }                             from '@acx-ui/types'
+import { PrivilegeGroup, useUserProfileContext } from '@acx-ui/user'
+import { AccountType, noDataDisplay  }           from '@acx-ui/utils'
 
 import { AssignEcDrawer }            from '../AssignEcDrawer'
 import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'
 import { ManageDelegateAdminDrawer } from '../ManageDelegateAdminDrawer'
 // eslint-disable-next-line import/order
-import * as UI from '../styledComponents'
+import { ManageMspDelegationDrawer } from '../ManageMspDelegations'
+import * as UI                       from '../styledComponents'
 
 interface AddressComponent {
   long_name?: string;
@@ -164,6 +165,7 @@ export function ManageIntegrator () {
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
   const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
+  const isRbacPhase2Enabled = true//useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
 
   const navigate = useNavigate()
   const linkToIntegrators = useTenantLink('/integrators', 'v')
@@ -172,6 +174,7 @@ export function ManageIntegrator () {
 
   const [mspAdmins, setAdministrator] = useState([] as MspAdministrator[])
   const [mspEcAdmins, setMspEcAdmins] = useState([] as MspAdministrator[])
+  const [privilegeGroups, setPrivilegeGroups] = useState([] as PrivilegeGroup[])
   const [availableWifiLicense, setAvailableWifiLicense] = useState(0)
   const [availableSwitchLicense, setAvailableSwitchLicense] = useState(0)
   const [availableApswLicense, setAvailableApswLicense] = useState(0)
@@ -1194,11 +1197,20 @@ export function ManageIntegrator () {
       </StepsFormLegacy>
 
       {drawerAdminVisible && (isAbacToggleEnabled
-        ? <ManageDelegateAdminDrawer
-          visible={drawerAdminVisible}
-          setVisible={setDrawerAdminVisible}
-          setSelected={selectedMspAdmins}
-          tenantId={mspEcTenantId}/>
+        ? (isRbacPhase2Enabled
+          ? <ManageMspDelegationDrawer
+            visible={drawerAdminVisible}
+            setVisible={setDrawerAdminVisible}
+            setSelectedUsers={selectedMspAdmins}
+            selectedUsers={mspAdmins}
+            setSelectedPrivilegeGroups={setPrivilegeGroups}
+            selectedPrivilegeGroups={privilegeGroups}
+            tenantIds={mspEcTenantId ? [mspEcTenantId] : undefined}/>
+          : <ManageDelegateAdminDrawer
+            visible={drawerAdminVisible}
+            setVisible={setDrawerAdminVisible}
+            setSelected={selectedMspAdmins}
+            tenantId={mspEcTenantId}/>)
         : <ManageAdminsDrawer
           visible={drawerAdminVisible}
           setVisible={setDrawerAdminVisible}

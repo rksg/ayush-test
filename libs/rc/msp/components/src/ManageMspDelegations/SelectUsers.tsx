@@ -54,7 +54,7 @@ export const SelectUsers = (props: SelectUsersProps) => {
       const selRoles = delegatedAdminsData.map((admin) => {
         return { id: admin.msp_admin_id, role: admin.msp_admin_role }
       })
-      // TODO: check if this functionality is correct
+      // If given selected users, i.e. edit, then set selected rows to those users
       if (selected && selected.length > 0) {
         setSelectedKeys(selected.map(sel => sel.email))
         setSelectedRows(selected)
@@ -64,6 +64,7 @@ export const SelectUsers = (props: SelectUsersProps) => {
           ...selected.map(sel => { return { id: sel.id, role: sel.role as string } })
         ])
       }
+      // Otherwise set selected rows according to delegated admins data
       else {
         const admins = delegatedAdminsData.map((admin: MspEcDelegatedAdmins) => admin.msp_admin_id)
         setSelectedKeys(getSelectedKeys(usersData, admins))
