@@ -45,8 +45,7 @@ function transformSANetworkHierarchy (
     }
   })
 }
-
-function filterRAIHierarchy (nodes: NetworkNode[], path: NetworkPath) {
+function filterRAIHierarchy (nodes: NetworkNode[], path: NetworkPath, unsupportedAPs: string[]) {
   let pathNode
   for (const pathSlice of path) {
     pathNode = _.find(nodes, o => o.name === pathSlice.name && o.type === pathSlice.type)
@@ -56,7 +55,14 @@ function filterRAIHierarchy (nodes: NetworkNode[], path: NetworkPath) {
     ...pathNode,
     children: pathNode?.children?.map(apGroup => ({
       ...apGroup,
-      children: apGroup?.children?.map(({ name, mac }) => ({ type: 'AP', name, mac }))
+      children: apGroup?.children
+        ?.reduce((aps, ap) => {
+          const { name, mac } = ap
+          if (!unsupportedAPs.includes(mac as string)) aps.push({ type: 'AP', name, mac })
+          return aps
+        },
+        [] as NetworkNode []
+        )
     }))
   }
   return data
@@ -67,17 +73,19 @@ function useSANetworkHierarchy () {
     endDate: moment().format(),
     range: DateRange.last24Hours
   }), [])
-  const { form } = useStepFormContext<Intent>()
-  const systems = useSystems()
-  const { intent: { path } } = useIntentContext()
+  const { intent: { path, metadata } } = useIntentContext()
   const response = useNetworkHierarchyQuery(
     { ...filter, shouldQueryAp: true, shouldQuerySwitch: false }, {
-      skip: !get('IS_MLISA_SA') || !systems.data,
+      skip: !get('IS_MLISA_SA'),
       selectFromResult: ({ data, ...rest }) => { 
-        const zoneHierarchy = filterRAIHierarchy(data?.children ?? [], path)
+        const zoneHierarchy = filterRAIHierarchy(
+          data?.children ?? [], path, metadata?.unsupportedAPs ?? []
+        )
         return {
           ...rest,
-          data: zoneHierarchy as unknown as { name: string, type: string, children: NetworkNode[] }
+          data: zoneHierarchy as unknown as { 
+            name: string, type: string, children: NetworkNode[]
+          }
         }
     }
     })
@@ -152,86 +160,3 @@ export function APsSelection ({ isDisabled }: { isDisabled: boolean }) {
 
 APsSelection.fieldName = name
 APsSelection.label = label
-
-APsSelection.FieldSummary = function APsSelectionFieldSummary () {
-  const { $t } = useIntl()
-  const response = useOptions()
-  const convert = (value: unknown) => {
-    const paths = value as NetworkPaths
-    const nodes = paths
-      .filter(isNetworkNodes)
-      .map(path => get('IS_MLISA_SA')
-        ? getSAHierarchyCount(path, path, response.data! as NetworkNode)
-        : getHierarchyCount(path, response.data! as HierarchyNodeChild[]))
-
-    const aps = paths
-      .filter(isAPListNodes)
-      .map((path) => ({
-        count: (path.at(-1)! as FilterListNode).list.length,
-        name: hierarchyName(path.slice(0, -1) as NetworkNodes, !!get('IS_MLISA_SA'))
-      }))
-
-    const list = nodes.filter(Boolean)
-      .concat(aps)
-      .map(item => <FormattedMessage
-        key={`${item!.name}-${item!.count}`}
-        defaultMessage='{name} — {count} {count, plural, one {AP} other {APs}}{br}'
-        description='Translation strings - AP, APs'
-        values={{ ...item, br: <br/> }}
-      />)
-
-    return list
-  }
-
-  return <Loader states={[response]} style={{ height: 'auto' }}>
-    <Form.Item
-      name={name as unknown as NamePath}
-      label={$t(label)}
-      children={<StepsForm.FieldSummary convert={convert} />}
-    />
-  </Loader>
-
-  function getSAHierarchyCount (
-    path: NetworkNodes,
-    subPath: NetworkNodes,
-    hierarchies: NetworkNode
-  ): { name: string, count: number } | null {
-    if(subPath.length === 0) {
-      return {
-        name: hierarchyName(path, true),
-        count: getSAAPCount(hierarchies)
-      }
-    }
-    const [ target, ...rest ] = subPath
-    const current = hierarchies.children?.find(
-      (node: NetworkNode) => node.name === target.name && node.type === target.type)
-    return current ? getSAHierarchyCount(path, rest, current) : null
-  }
-
-  function getSAAPCount (hierarchies: NetworkNode) : number {
-    if(hierarchies.type === 'AP') return 1
-    if(hierarchies.children && hierarchies.children.length > 0) {
-      return hierarchies.children.map(getSAAPCount).reduce((sum, count) => {
-        sum = sum + count
-        return sum
-      }, 0)
-    }
-    return 0
-  }
-
-  function getHierarchyCount (
-    path: NetworkNodes,
-    hierarchies: HierarchyNodeChild[]
-  ) {
-    const matched = hierarchies.find(({ name }) => path.some(p => name === p.name)) // TODO should be using ID as renaming venues breaks edit
-    return {
-      name: hierarchyName(path),
-      count: matched!.aps!.length
-    }
-  }
-}
-
-function hierarchyName (nodes: NetworkNodes, withNodeType: boolean = false) {
-  return nodes.map(node =>
-    withNodeType ? `${node.name} (${nodeTypes(node.type)})` :`${node.name}`).join(' > ')
-}

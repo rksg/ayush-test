@@ -60,7 +60,8 @@ export type Intent = {
         value: number
       }
       excludedAPs?: [NetworkNode[]]
-    }
+    },
+    unsupportedAPs?: string[]
   }
   sliceType: NodeType
   sliceValue: string
