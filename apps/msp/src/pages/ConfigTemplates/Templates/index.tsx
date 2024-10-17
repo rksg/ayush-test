@@ -212,6 +212,10 @@ function useColumns (props: TemplateColumnProps) {
     ({ key: type[1], value: getConfigTemplateTypeLabel(type[1]) })
   ))
 
+  const driftStatusFilterOptions = Object.entries(ConfigTemplateDriftType).map((status =>
+    ({ key: status[1], value: $t(configTemplateDriftTypeLabelMap[status[1]]) })
+  ))
+
   const columns: TableProps<ConfigTemplate>['columns'] = [
     {
       key: 'name',
@@ -297,6 +301,7 @@ function useColumns (props: TemplateColumnProps) {
       key: 'driftStatus',
       title: $t({ defaultMessage: 'Drift Status' }),
       dataIndex: 'driftStatus',
+      filterable: driftStatusFilterOptions,
       sorter: true,
       render: function (_: ReactNode, row: ConfigTemplate) {
         return row.driftStatus ? $t(configTemplateDriftTypeLabelMap[row.driftStatus]) : ''
