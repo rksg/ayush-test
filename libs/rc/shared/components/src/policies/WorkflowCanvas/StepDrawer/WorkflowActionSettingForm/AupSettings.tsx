@@ -9,7 +9,6 @@ import { useUploadFileMutation, useDeleteFileMutation } from '@acx-ui/rc/service
 import {
   ActionType,
   FileContext,
-  FileDto,
   FileType,
   trailingNorLeadingSpaces
 } from '@acx-ui/rc/utils'
@@ -28,6 +27,8 @@ export function AupSettings () {
   const aupFormatSwitch = () => {
     setDisplayFileOption(!displayFileOption)
   }
+
+  useEffect(() => {formInstance.validateFields()}, [aupFormatSwitch])
 
   useEffect(() => {
     setDisplayFileOption(formInstance.getFieldValue('useAupFile'))
@@ -79,13 +80,7 @@ export function AupSettings () {
   const fileDelete = async () => {
     const fileToDelete:string = formInstance.getFieldValue('aupFileLocation')
     if (null !== fileToDelete && '' !== fileToDelete && fileToDelete !== undefined) {
-      const fileDto: FileDto = {
-        url: fileToDelete,
-        type: FileType.AUP_FILE
-      }
-      await deleteFile({
-        payload: fileDto
-      })
+      await deleteFile({ params: { fileId: fileToDelete } })
     }
   }
 
@@ -98,7 +93,7 @@ export function AupSettings () {
       label={$t({ defaultMessage: 'Title' })}
       rules={[
         { required: true },
-        { min: 1 },
+        { min: 2 },
         { max: 100 },
         { validator: (_, value) => trailingNorLeadingSpaces(value) }
       ]}

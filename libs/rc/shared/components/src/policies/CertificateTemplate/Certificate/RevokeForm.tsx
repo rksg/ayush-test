@@ -5,7 +5,7 @@ import { Form, Input } from 'antd'
 import { ModalRef }                    from '@acx-ui/components'
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
-export default function RevokeForm (props: {
+export function RevokeForm (props: {
   modal: ModalRef,
   onFinish: (revocationReason: string) => Promise<void>
 }) {

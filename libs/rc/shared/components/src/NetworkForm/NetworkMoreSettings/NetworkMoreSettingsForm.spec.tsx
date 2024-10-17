@@ -9,7 +9,7 @@ import {
   AccessControlUrls,
   CommonUrlsInfo,
   NetworkSaveData,
-  NetworkSegmentationUrls,
+  EdgePinUrls,
   BasicServiceSetPriorityEnum,
   OpenWlanAdvancedCustomization,
   TunnelProfileUrls,
@@ -78,7 +78,7 @@ describe('NetworkMoreSettingsForm', () => {
         (_, res, ctx) => res(ctx.json(externalProviders))),
       rest.post(TunnelProfileUrls.getTunnelProfileViewDataList.url,
         (_, res, ctx) => res(ctx.json(mockedTunnelProfileViewData))),
-      rest.post(NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
+      rest.post(EdgePinUrls.getEdgePinStatsList.url,
         (_, res, ctx) => res(ctx.json({ data: [] }))
       )
     )

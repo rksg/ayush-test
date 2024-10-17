@@ -57,6 +57,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
 
   const {
     currentEdgeDhcp,
+    currentEdgeDhcpIsRelay,
     isGetDhcpByEdgeIdFail,
     isGetDhcpByEdgeIdFetching
   } = useGetDhcpStatsQuery(
@@ -74,6 +75,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
       selectFromResult: ({ data, isFetching }) => {
         return {
           currentEdgeDhcp: data?.data[0],
+          currentEdgeDhcpIsRelay: data?.data[0]?.dhcpRelay === 'true',
           isGetDhcpByEdgeIdFail: (data?.totalCount ?? 0) < 1,
           isGetDhcpByEdgeIdFetching: isFetching
         }
@@ -91,7 +93,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
       }
     }
 
-    form.setFieldValue('dhcpRelay', dhcpRelay || currentEdgeDhcp?.dhcpRelay)
+    form.setFieldValue('dhcpRelay', dhcpRelay || currentEdgeDhcpIsRelay)
     setShouldDhcpDisabled(!isGetDhcpByEdgeIdFail)
 
   }, [
@@ -119,7 +121,6 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
 
   const onDhcpChange = (value: string) => {
     const dhcpProfile = dhcpList?.find(item => item.id === value)
-
     form.setFieldsValue({
       poolId: undefined,
       dhcpRelay: dhcpProfile?.dhcpRelay === 'true'
@@ -140,7 +141,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
       {
         ...tenantBasePath,
         pathname: `${tenantBasePath.pathname}/` + getServiceDetailsLink({
-          type: ServiceType.NETWORK_SEGMENTATION,
+          type: ServiceType.PIN,
           oper: ServiceOperation.DETAIL,
           serviceId: params.serviceId!
         })

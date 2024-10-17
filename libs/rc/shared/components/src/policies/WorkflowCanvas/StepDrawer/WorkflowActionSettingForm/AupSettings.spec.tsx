@@ -18,7 +18,7 @@ describe('AupSettings', () => {
   beforeEach(() => {
     mockServer.use(rest.post(WorkflowUrls.uploadFile.url, (req, res, ctx) => {
       uploadFile()
-      return res(ctx.json('{url: \'7c1a1cb9-548c-446e-b4dc-07d498759d9b-text.docs\'}'))
+      return res(ctx.json({ url: '7c1a1cb9-548c-446e-b4dc-07d498759d9b-text.docs' }))
     }), rest.delete(WorkflowUrls.deleteFile.url, (req, res, ctx) => {
       deleteFile()
       return res(ctx.status(200))
@@ -356,6 +356,8 @@ describe('AupSettings', () => {
     await userEvent.upload(testfile, file)
     await waitFor(() => expect(uploadFile).toHaveBeenCalled())
     expect(await screen.findByText('hello.pdf')).toBeVisible()
+    await waitFor(() => expect(formRef.current.getFieldValue('aupFileLocation'))
+      .toBe('7c1a1cb9-548c-446e-b4dc-07d498759d9b-text.docs'))
   })
 
 })

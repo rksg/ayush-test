@@ -8,8 +8,8 @@ import {
   screen } from '@acx-ui/test-utils'
 import { RolesEnum } from '@acx-ui/types'
 
-import { UserUrlsInfo }                from './services'
-import { CustomRoleType, UserProfile } from './types'
+import { UserRbacUrlsInfo, UserUrlsInfo } from './services'
+import { CustomRoleType, UserProfile }    from './types'
 import {
   useUserProfileContext,
   UserProfileProvider,
@@ -106,7 +106,10 @@ describe('UserProfileContext', () => {
       rest.put(UserUrlsInfo.toggleBetaStatus.url,
         (_req, res, ctx) => res(ctx.json({}))),
       rest.post(UserUrlsInfo.getVenuesList.url,
-        (_req, res, ctx) => res(ctx.json(fakedVenueList)))
+        (_req, res, ctx) => res(ctx.json(fakedVenueList))),
+      rest.get(UserRbacUrlsInfo.getAccountTier.url.split('?')[0],
+        (_req, res, ctx) => res(ctx.json({ acx_account_tier: 'Gold' }))
+      )
     )
   })
 

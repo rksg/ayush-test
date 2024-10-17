@@ -8,7 +8,6 @@ import { ButtonContent } from './ButtonContent'
 
 const expectedColor = '#111222'
 const defaultUIConfiguration: UIConfiguration = {
-  disablePoweredBy: false,
   uiColorSchema: {
     fontHeaderColor: expectedColor,
     fontColor: expectedColor,
@@ -18,7 +17,8 @@ const defaultUIConfiguration: UIConfiguration = {
   },
   uiStyleSchema: {
     logoSize: 'MEDIUM',
-    headerFontSize: 16
+    headerFontSize: 16,
+    disablePoweredBy: false
   },
   welcomeTitle: 'welcomeTitle',
   welcomeName: 'welcomeName'
