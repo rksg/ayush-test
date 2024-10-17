@@ -1,0 +1,9 @@
+# Venue is mandatory,,,
+"# Serial number is mandatory	",,,
+# Status - leave empty,,,
+# Reason - leave empty,,,
+,,,
+Switch Name,Serial Number,Status,Reason
+Switch-01,FEK3204N001,,
+Switch-02,FEK3204N002,,
+Switch-03,FEK3204N003,,

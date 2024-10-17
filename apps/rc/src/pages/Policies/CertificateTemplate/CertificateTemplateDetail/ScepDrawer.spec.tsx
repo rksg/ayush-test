@@ -34,8 +34,6 @@ describe('ScepDrawer', () => {
     await fireEvent.click(screen.getByText('Configuration Information'))
     expect(screen.getByLabelText('Days of Access')).toBeInTheDocument()
     expect(screen.getByLabelText('Common Name #1 Mapping')).toBeInTheDocument()
-    expect(screen.getByLabelText('Common Name #2 Mapping')).toBeInTheDocument()
-    expect(screen.getByLabelText('Common Name #3 Mapping')).toBeInTheDocument()
   })
 
   it('should add scep key correctly', async () => {
@@ -156,7 +154,8 @@ describe('ScepDrawer', () => {
     await userEvent.tab() // Trigger validation
 
     await waitFor(() => {
-      expect(screen.getByText('Subnets cannot be both allowed and blocked')).toBeInTheDocument()
+      // eslint-disable-next-line max-len
+      expect(screen.getByText('Same subnet values cannot be given in allowed and blocked')).toBeInTheDocument()
     })
   })
 
@@ -173,7 +172,7 @@ describe('ScepDrawer', () => {
 
     await waitFor(() => {
       // eslint-disable-next-line max-len
-      expect(screen.queryByText('Subnets cannot be both allowed and blocked')).not.toBeInTheDocument()
+      expect(screen.queryByText('Same subnet values cannot be given in allowed and blocked')).not.toBeInTheDocument()
     })
   })
 })

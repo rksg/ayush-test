@@ -8,7 +8,6 @@ import { BodyContent } from './BodyContent'
 
 
 const config: UIConfiguration = {
-  disablePoweredBy: false,
   uiColorSchema: {
     fontHeaderColor: 'var(--acx-neutrals-100)',
     backgroundColor: 'var(--acx-primary-white)',
@@ -21,7 +20,8 @@ const config: UIConfiguration = {
     logoSize: 'MEDIUM',
     headerFontSize: 16,
     logoImageFileName: 'logo',
-    backgroundImageName: 'bgImage'
+    backgroundImageName: 'bgImage',
+    disablePoweredBy: false
   },
   welcomeName: '',
   welcomeTitle: ''
@@ -36,7 +36,7 @@ describe('BodyContent', () => {
     render(<Provider>
       <BodyContent value={config} onColorChange={()=>{}}/>
     </Provider>)
-    await screen.findByText('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await screen.findByText('Body text style')
     const body = await screen.findByPlaceholderText('bodytext')
     await fireEvent.mouseOver(body)
     await fireEvent.mouseLeave(body)

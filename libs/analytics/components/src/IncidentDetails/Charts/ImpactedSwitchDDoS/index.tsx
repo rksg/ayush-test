@@ -52,13 +52,21 @@ export function ImpactedSwitchDDoSDonut ({ incident }: ChartProps) {
     defaultMessage: 'This incident impacted {impactedSwitchCount} switch{plural}' },
   { impactedSwitchCount, plural: impactedSwitchCount > 1 ? 'es' : '' })
 
+  const impactedCountText = $t({
+    defaultMessage: 'Impacted Switch{plural}' },
+  { impactedSwitchCount, plural: impactedSwitchCount > 1 ? 'es' : '' })
+
+  const nonImpactedCountText = $t({
+    defaultMessage: 'Non-impacted Switch{plural}' },
+  { impactedSwitchCount, plural: (totalSwitchCount - impactedSwitchCount) > 1 ? 'es' : '' })
+
   const transformData = (data:{ impactedCount:number,totalCount:number })=>{
     return [
       { value: data.impactedCount,
-        name: 'Impacted Switches',
+        name: impactedCountText,
         color: cssStr('--acx-semantics-red-50') },
-      { value: (data.totalCount - data.impactedCount), // Math.ceil(data.impactedCount * 0.3),
-        name: 'Non-impacted Switches',
+      { value: (data.totalCount - data.impactedCount),
+        name: nonImpactedCountText,
         color: cssStr('--acx-semantics-green-50') }
     ]
   }

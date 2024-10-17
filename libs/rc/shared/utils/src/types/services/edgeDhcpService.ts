@@ -72,6 +72,7 @@ export interface DhcpStats {
 }
 
 export interface DhcpHostStats {
+  hostName: string
   dhcpPoolName: string
   hostIpAddr: string
   hostMac: string
@@ -79,13 +80,13 @@ export interface DhcpHostStats {
   hostExpireDate: Date
   hostRemainingTime: number
   edgeId: string
+  venueId: string
+  dhcpId: string
 }
 
 export interface DhcpUeSummaryStats {
-  edgeName?: string
-  edgeId?: string
+  edgeClusterId?: string
   venueId?: string
-  venueName?: string
   successfulAllocation?: number
   remainsIps?: number
   droppedPackets?: number

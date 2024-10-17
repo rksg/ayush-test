@@ -8,7 +8,7 @@ import {
   Table,
   TableProps,
   Loader } from '@acx-ui/components'
-import { EnrollmentPortalLink, WorkflowActionPreviewModal } from '@acx-ui/rc/components'
+import { EnrollmentPortalLink, WorkflowActionPreviewModal, WorkflowDrawer } from '@acx-ui/rc/components'
 import {
   useDeleteWorkflowsMutation,
   useSearchInProgressWorkflowListQuery,
@@ -30,9 +30,7 @@ import {
   getScopeKeyByPolicy
 } from '@acx-ui/rc/utils'
 import {
-  TenantLink,
-  useNavigate,
-  useTenantLink
+  TenantLink
 } from '@acx-ui/react-router-dom'
 function useColumns (workflowMap: Map<string, Workflow>) {
   const { $t } = useIntl()
@@ -72,6 +70,11 @@ function useColumns (workflowMap: Map<string, Workflow>) {
       })
     },
     {
+      key: 'description',
+      title: $t({ defaultMessage: 'Description' }),
+      dataIndex: 'description'
+    },
+    {
       key: 'url',
       title: $t({ defaultMessage: 'URL' }),
       dataIndex: 'url',
@@ -91,8 +94,6 @@ function useColumns (workflowMap: Map<string, Workflow>) {
 
 export default function WorkflowTable () {
   const { $t } = useIntl()
-  const tenantBasePath = useTenantLink('')
-  const navigate = useNavigate()
   const [workflowMap, setWorkflowMap] = useState(new Map<string, Workflow>())
   const [deleteWorkflows,
     { isLoading: isDeleteWorkflowing }
@@ -101,6 +102,8 @@ export default function WorkflowTable () {
   const settingsId = 'workflow-table'
   const [previewVisible, setPreviewVisible] = useState(false)
   const [previewId, setPreviewId] = useState<string>()
+  // eslint-disable-next-line max-len
+  const [drawerState, setDrawerState] = useState<{ visible: boolean, data?: Workflow }> ({ visible: false })
   const tableQuery = useTableQuery( {
     useQuery: useSearchInProgressWorkflowListQuery,
     apiParams: { sort: 'name,ASC', excludeContent: 'false' },
@@ -125,8 +128,9 @@ export default function WorkflowTable () {
 
   useEffect(() => {
     if (tableQuery.isLoading || tableQuery.isFetching) return
+    setWorkflowMap(new Map())
     fetchVersionHistory(tableQuery.data?.data ?? [])
-  }, [tableQuery.data])
+  }, [tableQuery.data, tableQuery.isFetching])
 
 
   const rowActions: TableProps<Workflow>['rowActions'] = [
@@ -134,14 +138,8 @@ export default function WorkflowTable () {
       scopeKey: getScopeKeyByPolicy(PolicyType.WORKFLOW, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([data],clearSelection) => {
-        navigate({
-          ...tenantBasePath,
-          pathname: `${tenantBasePath.pathname}/` + getPolicyDetailsLink({
-            type: PolicyType.WORKFLOW,
-            oper: PolicyOperation.EDIT,
-            policyId: data.id !!
-          })
-        })
+        setPreviewVisible(false)
+        setDrawerState({ visible: true, data: data })
         clearSelection()
       },
       visible: (selectedItems => selectedItems.length === 1)
@@ -151,6 +149,7 @@ export default function WorkflowTable () {
       label: $t({ defaultMessage: 'Preview' }),
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       onClick: ([data], clearSelection) => {
+        setDrawerState({ visible: false })
         setPreviewId(workflowMap.get(data.id!)?.id ?? data.id)
         setPreviewVisible(true)
         clearSelection()
@@ -248,6 +247,14 @@ export default function WorkflowTable () {
           setPreviewVisible(false)
           setPreviewId(undefined)
         }}/>}
+      {
+        drawerState.visible &&
+        <WorkflowDrawer
+          onClose={()=>{setDrawerState({ visible: false })}}
+          visible={true}
+          data={drawerState.data!}
+        />
+      }
     </Loader>
   )
 }

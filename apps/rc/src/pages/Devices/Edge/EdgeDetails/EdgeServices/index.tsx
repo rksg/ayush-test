@@ -249,7 +249,7 @@ export const EdgeServices = () => {
                   await restartEdgeDhcp(
                     selectedRows[0].serviceId,
                     currentEdgeStatus?.venueId ?? '',
-                    selectedRows[0].edgeId
+                    currentEdgeStatus?.clusterId ?? ''
                   )
                   clearSelection()
                 }

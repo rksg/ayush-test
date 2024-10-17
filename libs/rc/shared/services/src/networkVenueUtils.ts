@@ -134,6 +134,7 @@ export const aggregatedRbacVenueNetworksData = (
 
     data.push({
       ...(item as Network),
+      clients: item.clientCount ?? 0,
       activated: calculateRbacNetworkActivated(item, venueId),
       deepNetwork: deepNetwork,
       incompatible: apCompatibilities[item.id] ?? 0
@@ -255,7 +256,7 @@ export const fetchRbacApGroupNetworkVenueList = async (arg:any, fetchWithBQ:any)
       // Get "select specific AP Groups" settings
       const networkApGroupReqs = networkApGroupParamsList.map(params => {
         return fetchWithBQ(createHttpRequest(
-          arg.payload.isTemplate ? ConfigTemplateUrlsInfo.getNetworkVenueTemplateRbac : WifiRbacUrlsInfo.getNetworkVenue,
+          arg.payload.isTemplate ? ConfigTemplateUrlsInfo.getNetworkVenueTemplateRbac : WifiRbacUrlsInfo.getVenueApGroups,
           params,
           GetApiVersionHeader(ApiVersionEnum.v1)
         ))
@@ -305,12 +306,13 @@ export const fetchRbacApGroupNetworkVenueList = async (arg:any, fetchWithBQ:any)
             return undefined
           }
           const networkApGroupRes = networkApGroupList[venueApGroupIdx]
-
+          const apGroupName = apGroupNameMap.find(apg => apg.key === params.apGroupId)?.value ?? ''
           return {
             ...networkApGroupRes,
             ...params,
             radio: 'Both',
-            apGroupName: apGroupNameMap.find(apg => apg.key === params.apGroupId)?.value ?? ''
+            isDefault: !apGroupName,
+            apGroupName
           }
         })
 
@@ -393,7 +395,7 @@ export const fetchRbacAllApGroupNetworkVenueList = async (arg:any, fetchWithBQ:a
       // Get "select specific AP Groups" settings
       const networkApGroupReqs = networkApGroupParamsList.map(params => {
         return fetchWithBQ(createHttpRequest(
-          arg.payload.isTemplate ? ConfigTemplateUrlsInfo.getNetworkVenueTemplateRbac : WifiRbacUrlsInfo.getNetworkVenue,
+          arg.payload.isTemplate ? ConfigTemplateUrlsInfo.getNetworkVenueTemplateRbac : WifiRbacUrlsInfo.getVenueApGroups,
           params,
           GetApiVersionHeader(ApiVersionEnum.v1)
         ))
@@ -443,12 +445,14 @@ export const fetchRbacAllApGroupNetworkVenueList = async (arg:any, fetchWithBQ:a
             return undefined
           }
           const networkApGroupRes = networkApGroupList[venueApGroupIdx]
+          const apGroupName = apGroupNameMap.find(apg => apg.key === params.apGroupId)?.value ?? ''
 
           return {
             ...networkApGroupRes,
             ...params,
             radio: 'Both',
-            apGroupName: apGroupNameMap.find(apg => apg.key === params.apGroupId)?.value ?? ''
+            isDefault: !apGroupName,
+            apGroupName
           }
         })
 
@@ -901,7 +905,7 @@ export const fetchRbacNetworkVenueList = async (queryArgs: RequestPayload<{ isTe
           }
         })
 
-        const networkVlanPoolId = networkVlanPoolList?.data?.find(vlanPool => vlanPool.wifiNetworkIds?.includes(networkId))?.id
+        const networkVlanPool = networkVlanPoolList?.data?.find(vlanPool => vlanPool.wifiNetworkIds?.includes(networkId))
 
         return {
           ...defaultNetworkVenue,
@@ -909,7 +913,11 @@ export const fetchRbacNetworkVenueList = async (queryArgs: RequestPayload<{ isTe
           ...(venueApGroups && { apGroups: venueApGroups }),
           networkId,
           venueId,
-          ...(networkVlanPoolId && { vlanPoolId: networkVlanPoolId })
+          ...(networkVlanPool && {
+            vlanPoolId: networkVlanPool.id,
+            vlanPoolName: networkVlanPool.name,
+            vlanMembers: networkVlanPool.vlanMembers
+          })
         }
 
       })

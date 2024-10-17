@@ -9,6 +9,7 @@ import {
   allowRebootShutdownForStatus,
   allowResetForStatus,
   edgeSerialNumberValidator,
+  genExpireTimeString,
   getEdgeServiceHealth,
   getIpWithBitMask,
   getSuggestedIpRange,
@@ -258,6 +259,12 @@ describe('Edge utils', () => {
       'port3',
       mockedHaNetworkSettings.virtualIpSettings
     )).toBeFalsy()
+  })
+
+  it('Test genExpireTimeString', async () => {
+    expect(genExpireTimeString(86400)).toBe('1 Day 00:00:00')
+    expect(genExpireTimeString(172801)).toBe('2 Days 00:00:01')
+    expect(genExpireTimeString(70000)).toBe(' 19:26:40')
   })
 })
 
