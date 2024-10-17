@@ -154,6 +154,7 @@ describe('ScepDrawer', () => {
     await userEvent.tab() // Trigger validation
 
     await waitFor(() => {
+      // eslint-disable-next-line max-len
       expect(screen.getByText('Same subnet values cannot be given in allowed and blocked')).toBeInTheDocument()
     })
   })
