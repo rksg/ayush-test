@@ -177,4 +177,20 @@ describe('HqosBandwidthTable', () => {
     await waitFor(() => expect(dialog).not.toBeVisible())
   })
 
+  it('Edit and Delete button not visible', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <HqosBandwidthTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[2]).getByRole('cell', { name: /Test-QoS-2/i })).toBeVisible()
+    await user.click(within(rows[2]).getByRole('radio'))
+    expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Delete' })).toBeNull()
+  })
+
 })

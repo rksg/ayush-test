@@ -90,7 +90,6 @@ const EdgeHqosBandwidthTable = () => {
   const currentServiceIds = useMemo(
     () => tableQuery.data?.data?.map(i => i.id!) ?? [],
     [tableQuery.data?.data])
-
   const { hqosCompatibilityData = [] } = useGetHqosEdgeCompatibilitiesQuery({
     payload: { filters: { serviceIds: currentServiceIds } } }, {
     skip: !isEdgeCompatibilityEnabled || !currentServiceIds.length,
@@ -168,9 +167,8 @@ const EdgeHqosBandwidthTable = () => {
       render: function (_, row) {
         const edgeClusterIds = row?.edgeClusterIds
         const tooltipItems = clusterOptions
-          .filter(v => v.key && edgeClusterIds!.includes(v.key))
-          .map(v => v.value)
-          .filter((item): item is string => item !== undefined)
+          .filter(option => option.key && edgeClusterIds!.includes(option.key))
+          .map(option => option.value)
         return <SimpleListTooltip items={tooltipItems} displayText={edgeClusterIds?.length??0} />
       }
     }
