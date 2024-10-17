@@ -389,7 +389,7 @@ describe('pathToFilter', () => {
     })
   })
   it('returns correct empty object filter for empty array', () => {
-    mockGet.mockReturnValueOnce('true').mockReturnValueOnce('true')
+    mockGet.mockReturnValueOnce('true')
     expect(pathToFilter(
       []
     )).toEqual({})
@@ -412,7 +412,7 @@ describe('isSwitchPath', () => {
 })
 describe('isApPath', () => {
   it('returns true if is ap path', () => {
-    mockGet.mockReturnValueOnce('true').mockReturnValueOnce('true')
+    mockGet.mockReturnValueOnce('true')
     const path = [
       { type: 'network', name: 'Network' },
       { type: 'system', name: 's1' },
@@ -437,7 +437,7 @@ describe('isApPath', () => {
 })
 describe('isApOrSwitchPath', () => {
   it('returns true if is ap path', () => {
-    mockGet.mockReturnValueOnce('true').mockReturnValueOnce('true')
+    mockGet.mockReturnValueOnce('true')
     const path = [
       { type: 'network', name: 'Network' },
       { type: 'system', name: 's1' },
