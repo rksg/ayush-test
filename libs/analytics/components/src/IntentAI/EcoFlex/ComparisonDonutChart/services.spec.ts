@@ -18,13 +18,13 @@ describe('useIntentAIEcoKpiQuery', () => {
     }
     const { result } = renderHook(() => useIntentAIEcoKpiQuery(params), { wrapper: Provider })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
-    // eslint-disable-next-line max-len
-    expect(result.current.data?.compareData.timestamp).toEqual(mockKpiData.kpi.compareData.timestamp)
-    // eslint-disable-next-line max-len
-    expect(result.current.data?.compareData.data[0].value).toEqual(mockKpiData.kpi.compareData.result.unsupported)
+    expect(result.current.data?.compareData.timestamp)
+      .toEqual(mockKpiData.kpi.compareData.timestamp)
+    expect(result.current.data?.compareData.data[0].value)
+      .toEqual(mockKpiData.kpi.compareData.result.unsupported)
     expect(result.current.data?.data.timestamp).toEqual(mockKpiData.kpi.data.timestamp)
-    // eslint-disable-next-line max-len
-    expect(result.current.data?.data.data[0].value).toEqual(mockKpiData.kpi.data.result.unsupported)
+    expect(result.current.data?.data.data[0].value)
+      .toEqual(mockKpiData.kpi.data.result.unsupported)
   })
   it('should return correct data for applied status', async () => {
     mockGraphqlQuery(intentAIUrl, 'IntentAIEcoKpi', {

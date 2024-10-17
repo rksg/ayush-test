@@ -64,6 +64,7 @@ export function MspRecCustomers () {
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
   const isvViewModelTpLoginEnabled = useIsSplitOn(Features.VIEWMODEL_TP_LOGIN_ADMIN_COUNT)
+  const isMspSortOnTpEnabled = useIsSplitOn(Features.MSP_SORT_ON_TP_COUNT_TOGGLE)
 
   const { data: userProfile } = useUserProfileContext()
   const { data: mspLabel } = useGetMspLabelQuery({ params, enableRbac: isRbacEnabled })
@@ -255,8 +256,9 @@ export function MspRecCustomers () {
       title: techPartnerAssignEcsEanbled
         ? $t({ defaultMessage: 'Integrator Count' })
         : $t({ defaultMessage: 'Integrator' }),
-      dataIndex: 'integrator',
-      key: 'integrator',
+      dataIndex: isMspSortOnTpEnabled ? 'integratorCount' : 'integrator',
+      key: isMspSortOnTpEnabled ? 'integratorCount' : 'integrator',
+      sorter: isMspSortOnTpEnabled,
       width: 130,
       onCell: (data: MspEc) => {
         return (isPrimeAdmin || isAdmin) && !drawerIntegratorVisible ? {
@@ -282,8 +284,9 @@ export function MspRecCustomers () {
       title: techPartnerAssignEcsEanbled
         ? $t({ defaultMessage: 'Installer Count' })
         : $t({ defaultMessage: 'Installer' }),
-      dataIndex: 'installer',
-      key: 'installer',
+      dataIndex: isMspSortOnTpEnabled ? 'installerCount' : 'installer',
+      key: isMspSortOnTpEnabled ? 'installerCount' : 'installer',
+      sorter: isMspSortOnTpEnabled,
       width: 120,
       onCell: (data: MspEc) => {
         return (isPrimeAdmin || isAdmin) && !drawerIntegratorVisible ? {
