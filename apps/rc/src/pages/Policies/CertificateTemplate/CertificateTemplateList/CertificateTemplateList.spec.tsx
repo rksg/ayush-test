@@ -1,12 +1,13 @@
 import { rest } from 'msw'
 
+import { useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
 import { CertificateCategoryType, CertificateUrls, CommonUrlsInfo, PersonaUrls } from '@acx-ui/rc/utils'
 import { Provider }                                                              from '@acx-ui/store'
 import { mockServer, render, screen }                                            from '@acx-ui/test-utils'
 import { RolesEnum, WifiScopes }                                                 from '@acx-ui/types'
 import { setUserProfile, getUserProfile }                                        from '@acx-ui/user'
 
-import { certificateAuthorityList, certificateList, certificateTemplateList } from '../__test__/fixtures'
+import { certificateAuthorityList, certificateList, certificateTemplateList, serverCertificateList } from '../__test__/fixtures'
 
 import CertificateTemplateList from './CertificateTemplateList'
 
@@ -42,6 +43,10 @@ describe('CertificateTemplateList', () => {
       rest.post(
         PersonaUrls.searchPersonaGroupList.url.split('?')[0],
         (req, res, ctx) => res(ctx.json([]))
+      ),
+      rest.post(
+        CertificateUrls.getServerCertificates.url,
+        (req, res, ctx) => res(ctx.json(serverCertificateList))
       )
     )
   })
@@ -142,6 +147,25 @@ describe('CertificateTemplateList', () => {
       })
 
     expect(screen.queryByText('Add Certificate Template')).not.toBeInTheDocument()
+  })
+
+  it('should render component with server certificates tab', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <CertificateTemplateList tabKey={CertificateCategoryType.SERVER_CERTIFICATES} />
+      </Provider>,
+      {
+        route: {
+          params: { tenantId: 't-id' },
+          path: '/:tenantId/serverCertificates/list'
+        }
+      })
+    expect(await screen.findByText('Certificate Template (3)')).toBeInTheDocument()
+    expect(await screen.findByText('Certificate Authority (3)')).toBeInTheDocument()
+    expect(await screen.findByText('Certificate (2)')).toBeInTheDocument()
+    expect(await screen.findByText('Server Certificates (2)')).toBeInTheDocument()
+    expect(await screen.findByText('Generate Server Certificate')).toBeInTheDocument()
   })
 })
 

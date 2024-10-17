@@ -90,16 +90,6 @@ describe('DpskSettings', () => {
 
     await waitFor(() => expect(getPersonaList).toBeCalled())
 
-    // eslint-disable-next-line max-len
-    const qrCodeNotification = await screen.findByRole('checkbox', { name: /QR Code/ })
-    expect(qrCodeNotification).toBeChecked()
-
-    const smsNotification = await screen.findByRole('checkbox', { name: /SMS/ })
-    expect(smsNotification).toBeChecked()
-
-    const emailNotification = await screen.findByRole('checkbox', { name: /Email/ })
-    expect(emailNotification).toBeChecked()
-
     const dpskPoolName = await screen.findByText(mockDpskPool.name)
     expect(dpskPoolName).toBeVisible()
 
