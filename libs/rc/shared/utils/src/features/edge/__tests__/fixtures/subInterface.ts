@@ -1,10 +1,7 @@
-import {
-  ClusterSubInterfaceSettings,
-  LagSubInterface,
-  NodeSubInterfaces,
-  PortSubInterface
-} from "@acx-ui/rc/utils"
-import { EdgeGeneralFixtures } from "."
+
+import { ClusterSubInterfaceSettings, LagSubInterface, NodeSubInterfaces, PortSubInterface } from '../../../../types/edge'
+
+import { EdgeGeneralFixtures } from '.'
 
 export const mockEdgeSubInterfaces = {
   page: 1,
