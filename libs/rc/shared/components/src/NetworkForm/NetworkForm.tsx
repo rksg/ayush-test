@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars, max-len */
 import { useEffect, useRef, useState, createContext } from 'react'
 
-import { Form }                                                             from 'antd'
-import _, { get, isEqual, isNil, isNull, isUndefined, merge, omit, omitBy } from 'lodash'
-import { defineMessage, useIntl }                                           from 'react-intl'
+import { Form }                                                                     from 'antd'
+import { get, isEqual, isNil, isNull, isUndefined, merge, omit, omitBy, cloneDeep } from 'lodash'
+import { defineMessage, useIntl }                                                   from 'react-intl'
 
 import { PageHeader, StepsForm, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
@@ -881,7 +881,7 @@ export function NetworkForm (props:{
   const handleEditNetwork = async (formData: NetworkSaveData) => {
     try {
       processEditData(formData)
-      const oldData = _.cloneDeep(saveContextRef.current)
+      const oldData = cloneDeep(saveContextRef.current)
       const payload = updateClientIsolationAllowlist(saveContextRef.current as NetworkSaveData)
       await updateNetworkInstance({
         params,
