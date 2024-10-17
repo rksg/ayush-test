@@ -15,7 +15,7 @@ import {
   TTC
 } from './config'
 import { FunnelChart }                                       from './funnelChart'
-import { HealthPieChart }                                    from './healthPieChart'
+import { HealthPieChart, TabKeyType }                        from './healthPieChart'
 import { ImpactedClientsTable }                              from './impactedClientTable'
 import { useTtcDrilldownQuery, useConnectionDrilldownQuery } from './services'
 import { Point, Separator }                                  from './styledComponents'
@@ -25,6 +25,7 @@ const HealthDrillDown = (props: {
   drilldownSelection: DrilldownSelection;
 }) => {
   const [pieFilter, setPieFilter] = useState('')
+  const [chartKey, setChartKey] = useState<TabKeyType>('wlans')
 
   const { drilldownSelection, filters } = props
   const colors = [
@@ -134,14 +135,18 @@ const HealthDrillDown = (props: {
                 valueFormatter={format}
                 pieFilter={pieFilter}
                 setPieFilter={setPieFilter}
+                chartKey={chartKey}
+                setChartKey={setChartKey}
               />
             }</AutoSizer>
           </GridCol>
           <GridCol col={{ span: 15 }}>
-            <ImpactedClientsTable filters={filters}
+            <ImpactedClientsTable
+              filters={filters}
               selectedStage={selectedStage}
               drillDownSelection={drilldownSelection}
               pieFilter={pieFilter}
+              chartKey={chartKey}
             />
           </GridCol>
         </>

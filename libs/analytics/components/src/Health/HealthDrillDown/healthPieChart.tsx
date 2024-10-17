@@ -37,7 +37,8 @@ type PieChartData = {
   color: string
 }
 
-type TabKeyType = 'wlans' | 'nodes' | 'events' | 'osManufacturers'
+export type TabKeyType = 'wlans' | 'nodes' | 'events' | 'osManufacturers'
+
 type NodeData = {
   key: string
   value: number
@@ -74,6 +75,16 @@ export const transformData = (
       }))
       : []
     const osManufacturersData = getTopPieChartData(osManufacturers)
+
+    // const nameToCode = data.network.hierarchyNode.events?.map(t1 => {
+    //   const match = events.find(t2 => t2.value === t1.value)
+    //   return {
+    //     name: match?.name,
+    //     key: t1.key
+    //   }
+    // }) || []
+
+    // setNameToCode(nameToCode)
 
     return { nodes, wlans, events, osManufacturers: osManufacturersData }
   }
@@ -134,7 +145,7 @@ function getHealthPieChart (
   dataFormatter: (value: unknown, tz?: string | undefined) => string,
   size: { width: number; height: number },
   pieFilter: string,
-  setPieFilter: (filter: string) => void
+  setPieFilter: (filter: string) => void,
 ) {
 
   let tops = data.slice(0, topCount)
@@ -156,7 +167,7 @@ function getHealthPieChart (
       showTotal={false}
       labelTextStyle={{ overflow: 'truncate', width: size.width * 0.5 }} // 50% of width
       dataFormatter={tooltipFormatter(total, dataFormatter)}
-      onClick={(e) => e.name === pieFilter ? setPieFilter('') : setPieFilter(e.name) }
+      onClick={(e) => e.name === pieFilter ? setPieFilter('') : setPieFilter(e.name)}
     /> : <NoData />
   )
 }
@@ -168,7 +179,9 @@ export const HealthPieChart = ({
   selectedStage,
   valueFormatter,
   pieFilter,
-  setPieFilter
+  setPieFilter,
+  chartKey,
+  setChartKey
 }: {
   size: { width: number; height: number }
   filters: AnalyticsFilter
@@ -177,6 +190,8 @@ export const HealthPieChart = ({
   valueFormatter: (value: unknown, tz?: string | undefined) => string
   pieFilter: string
   setPieFilter: (filter: string) => void
+  chartKey: TabKeyType
+  setChartKey: (key: TabKeyType) => void
 }) => {
   const { $t } = useIntl()
   const { startDate: start, endDate: end, filter } = filters
@@ -189,7 +204,6 @@ export const HealthPieChart = ({
       queryFilter: stageNameToCodeMap[selectedStage]
     }
   )
-  const [chartKey, setChartKey] = useState<TabKeyType>('wlans')
   const { nodes, wlans, events, osManufacturers } = transformData(queryResults.data)
 
   const titleMap = {

@@ -5,6 +5,7 @@ import { find } from 'lodash'
 import { getFilterPayload, getSelectedNodePath } from '@acx-ui/analytics/utils'
 import { dataApi }                               from '@acx-ui/store'
 import { NodesFilter }                           from '@acx-ui/utils'
+import { TabKeyType } from './healthPieChart'
 
 export interface ConnectionDrilldown {
   network: {
@@ -173,13 +174,21 @@ export const api = dataApi.injectEndpoints({
     }),
     healthImpactedClients: build.query<
       ImpactedClients,
-      RequestPayload & { field: string; topImpactedClientLimit: number; stage: string }
+      RequestPayload & {
+        field: string;
+        topImpactedClientLimit: number;
+        stage: string;
+        pieFilter: string;
+        chartKey: TabKeyType
+      }
     >({
       query: (payload) => {
-        const impactedClientQuery = (type : string, stage : string) => {
+        const impactedClientQuery = (type : string, stage : string, pieFilter: string, chartKey: TabKeyType) => {
           return `impactedClients: ${type}(n: ${
             payload.topImpactedClientLimit + 1
-          }, stage: "${stage}") {
+          }, stage: "${stage}",
+          pieFilter: "${pieFilter}",
+          chartKey: "${chartKey}") {
                 mac
                 manufacturer
                 ssid
@@ -198,7 +207,7 @@ export const api = dataApi.injectEndpoints({
             ) {
               network(start: $start, end: $end, filter: $filter) {
                 hierarchyNode(path: $path) {
-                  ${impactedClientQuery(payload.field, payload.stage)}
+                  ${impactedClientQuery(payload.field, payload.stage, payload.pieFilter, payload.chartKey)}
                 }
               }
             }
