@@ -187,6 +187,10 @@ export default function DownloadSection (props: DownloadDrawerProps) {
     <Row style={{ marginBottom: '8px' }} key={type}>
       <ButtonWrapper>
         <Button
+          style={{
+            minWidth: '142px',
+            height: '28px'
+          }}
           type='default'
           onClick={onClick}>
           {$t(downloadButtonLabel[type])}
