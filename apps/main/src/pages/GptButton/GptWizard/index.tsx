@@ -14,6 +14,7 @@ import { WlanDetailStep } from './Steps/WlanDetailStep'
 import { VlanStep } from './Steps/VlanStep'
 import { SummaryStep } from './Steps/SummaryStep'
 import { useUpdateSsidMutation, useUpdateSsidProfileMutation, useUpdateVlanMutation, useApplyConversationsMutation } from '@acx-ui/rc/services'
+import { Button } from 'antd'
 
 type FormValue = {
   jobInfo: {
@@ -65,6 +66,7 @@ export default function GptWizard(props: {
   }
 
   const step1payload = JSON.parse(props.payload) as NetworkConfig[]
+  const [isLoading, setIsLoading] = useState(false as boolean)
 
   const [step2payload, setStep2payload] = useState({} as GptConversation)
 
@@ -89,16 +91,47 @@ export default function GptWizard(props: {
     })
   }, [])
 
+const previout = function() {
+  if (props.currentStep === 0) {
+    props.setStep('basic')
+  } else {
+    props.setCurrentStep(props.currentStep - 1)
+  }
+
+}
 
 
   return (
     <StepsForm
       formMapRef={formMapRef}
       containerStyle={{ width: '100%', padding: '0 30px' }}
+      current={props.currentStep}
       onCurrentChange={(current) => {
         props.setCurrentStep(current)
       }}
+      submitter={{
+        submitButtonProps: {},
+        render: (renderProps, doms) => {
+          return [
+            <Button
+              key="pre"
+              disabled={isLoading}
+              onClick={() => {previout()}}
+            >
+              Back
+            </Button>,
 
+            <Button
+              type='primary'
+              key='next'
+              loading={isLoading}
+              onClick={() => renderProps.form?.submit?.()}
+            >
+              {(props.currentStep)===3 ? 'Apply': 'Next'}
+            </Button>
+          ];
+        },
+      }}
       stepsRender={() => null}
       onFinish={(values) => {
         console.log(values)
@@ -109,6 +142,7 @@ export default function GptWizard(props: {
         name='step1'
         title=''
         onFinish={async () => {
+          setIsLoading(true)
           try {
             const values = formMapRef.current[0].current?.getFieldsValue();
             const updatedValues = values.step1payload
@@ -129,11 +163,12 @@ export default function GptWizard(props: {
               console.error('Failed to update SSID:', error);
             }
 
+            setIsLoading(false)
             return true
 
           } catch (error) {
+            setIsLoading(false)
             return false
-            console.log(error);
           }
         }}>
         <WlanStep
@@ -146,6 +181,7 @@ export default function GptWizard(props: {
         name='step2'
         title=''
         onFinish={async () => {
+          setIsLoading(true)
           try {
             console.log(formMapRef.current[1].current?.getFieldsValue());
             const values = formMapRef.current[1].current?.getFieldsValue();
@@ -164,12 +200,10 @@ export default function GptWizard(props: {
             } catch (error) {
               console.error('Failed to update SSID:', error);
             }
-
+            setIsLoading(false)
             return true
-
-
-
           } catch (error) {
+            setIsLoading(false)
             return false
           }
         }}
@@ -181,6 +215,7 @@ export default function GptWizard(props: {
       <GptStepsForm.StepForm name='step3'
         title={''}
         onFinish={async () => {
+          setIsLoading(true)
           try {
             const values = formMapRef.current[2].current?.getFieldsValue();
             const updatedValues = values.step3payload
@@ -200,9 +235,10 @@ export default function GptWizard(props: {
             } catch (error) {
               console.error('Failed to update SSID:', error);
             }
-
+            setIsLoading(false)
             return true
           } catch (error) {
+            setIsLoading(false)
             return false
           }
         }}
@@ -216,6 +252,7 @@ export default function GptWizard(props: {
       <GptStepsForm.StepForm name='step4'
         title={''}
         onFinish={async () => {
+          setIsLoading(true)
           try {
             const response = await applyConversations({
               params: { sessionId: props.sessionId }
@@ -227,6 +264,7 @@ export default function GptWizard(props: {
             alert('Please try again.')
             console.log(error);
           }
+          setIsLoading(false)
         }}>
           <SummaryStep payload={step4payload.payload}/>
       </GptStepsForm.StepForm>

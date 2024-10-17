@@ -66,6 +66,11 @@ export const GptModal = styled(Modal)<{ titleType: string }>`
         margin-right: -35px;
         margin-bottom: 10px;
       }
+
+      .ant-space.ant-space-horizontal.ant-space-align-center {
+        display: flex;
+        justify-content: center;
+      }
     }
   }
   .ant-btn.ant-btn-primary {

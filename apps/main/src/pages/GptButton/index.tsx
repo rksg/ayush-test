@@ -35,6 +35,7 @@ export default function RuckusGptButton () {
     basicFormRef.resetFields()
     setStep('welcome')
     setVisible(false)
+    setCurrentStep(0)
   }
   return <>
     <UI.ButtonSolid
@@ -81,7 +82,7 @@ export default function RuckusGptButton () {
               lineHeight: '28px',
               marginBottom: '8px',
               fontFamily: cssStr('--acx-accent-brand-font')
-            }}>Onboarding Asistent</div>
+            }}>Onboarding Assistant</div>
             <div
               style={{
                 fontFamily: cssStr('--acx-neutral-brand-font'),
