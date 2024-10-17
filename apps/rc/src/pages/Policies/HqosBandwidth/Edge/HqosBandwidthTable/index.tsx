@@ -43,7 +43,8 @@ const EdgeHqosBandwidthTable = () => {
       'name',
       'description',
       'trafficClassSettings',
-      'edgeClusterIds'
+      'edgeClusterIds',
+      'isDefault'
     ]
   }
   const settingsId = 'profiles-edge-qos-bandwidth-table'
@@ -173,7 +174,7 @@ const EdgeHqosBandwidthTable = () => {
   const rowActions: TableProps<EdgeHqosViewData>['rowActions'] = [
     {
       scopeKey: getScopeKeyByPolicy(PolicyType.HQOS_BANDWIDTH, PolicyOperation.EDIT),
-      visible: (selectedRows) => selectedRows.length === 1,
+      visible: (selectedRows) => selectedRows.length === 1 && selectedRows[0]?.isDefault !== true,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
         navigate({
@@ -189,6 +190,7 @@ const EdgeHqosBandwidthTable = () => {
     },
     {
       scopeKey: getScopeKeyByPolicy(PolicyType.HQOS_BANDWIDTH, PolicyOperation.DELETE),
+      visible: (selectedRows) => selectedRows[0]?.isDefault !== true,
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         showActionModal({
