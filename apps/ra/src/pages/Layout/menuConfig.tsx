@@ -107,7 +107,8 @@ export function useMenuConfig () {
       children: [{
         permission: 'READ_HEALTH',
         uri: isSwitchHealthEnabled ? '/health/overview' : '/health',
-        label: $t({ defaultMessage: 'Health' })
+        label: $t({ defaultMessage: 'Health' }),
+        isActiveCheck: new RegExp('^/health')
       }, {
         permission: 'READ_SERVICE_VALIDATION',
         uri: '/serviceValidation',
