@@ -61,7 +61,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
         ConfigTemplateUrlsInfo.applyConfigTemplate,
         ConfigTemplateUrlsInfo.applyConfigTemplateRbac
       ),
-      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'ConfigTemplate', id: 'DRIFT' }]
+      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }]
     }),
     addNetworkTemplate: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(
@@ -374,12 +374,10 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
         }
 
         return { data: (driftInstancesRes.data as TableResult<MspEc>).data }
-      },
-      providesTags: [{ type: 'ConfigTemplate', id: 'DRIFT' }]
+      }
     }),
     getDriftReport: build.query<ConfigTemplateDriftsResponse, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.getDriftReport),
-      providesTags: [{ type: 'ConfigTemplate', id: 'DRIFT' }]
+      query: commonQueryFn(ConfigTemplateUrlsInfo.getDriftReport)
     }),
     patchDriftReport: build.mutation<CommonResult, RequestPayload<{ templateId: string, tenantIds: string[] }>>({
       async queryFn (args, _queryApi, _extraOptions, fetchWithBQ) {
@@ -388,8 +386,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
           params: { templateId: payload!.templateId, tenantId }
         }))
         return batchApi(ConfigTemplateUrlsInfo.patchDriftReport, requests, fetchWithBQ)
-      },
-      invalidatesTags: [{ type: 'ConfigTemplate', id: 'DRIFT' }, { type: 'ConfigTemplate', id: 'LIST' }]
+      }
     })
   })
 })
