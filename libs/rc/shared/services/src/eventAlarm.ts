@@ -69,6 +69,16 @@ export const eventAlarmApi = baseEventAlarmApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Alarms', id: 'OVERVIEW' }]
+    }),
+    getAlarmsCount: build.query<Dashboard, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getAlarmSummaries, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Alarms', id: 'OVERVIEW' }]
     })
   })
 })
@@ -76,7 +86,8 @@ export const {
   useAlarmsListQuery,
   useClearAlarmMutation,
   useClearAlarmByVenueMutation,
-  useGetAlarmCountQuery
+  useGetAlarmCountQuery,
+  useGetAlarmsCountQuery
 } = eventAlarmApi
 
 export const getAggregatedList = function (
