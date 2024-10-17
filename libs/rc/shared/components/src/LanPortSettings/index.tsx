@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { Form, Input, InputNumber, Select, Space, Switch } from 'antd'
 import { DefaultOptionType }                               from 'antd/lib/select'
 import { FormattedMessage, useIntl }                       from 'react-intl'
-import { useParams }                                       from 'react-router-dom'
 
 import { cssStr, Tooltip }                     from '@acx-ui/components'
 import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
