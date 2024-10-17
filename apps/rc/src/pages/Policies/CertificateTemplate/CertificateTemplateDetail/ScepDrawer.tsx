@@ -249,9 +249,9 @@ export default function ScepDrawer
                 style={{ marginTop: 8, display: 'inline-block' }}
                 name='overrideDays'
                 label={$t({ defaultMessage: 'Days of Access' })}
-                rules={[{ required: true }]}
+                rules={[{ required: true, type: 'number', min: 0, max: 365 }]}
               >
-                <InputNumber min={0} max={365}/>
+                <InputNumber min={0}/>
               </Form.Item>
               <Description style={{ marginTop: 38, marginLeft: 10, display: 'inline-block' }}>
                 {$t({ defaultMessage: 'Days' })}
