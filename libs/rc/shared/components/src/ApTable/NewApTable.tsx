@@ -125,8 +125,8 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       searchTargetFields: newDefaultApPayload.searchTargetFields
     },
     option: { skip: Boolean(props.tableQuery) || isNetworkLoading },
-    enableSelectAllPagesData: ['id', 'name', 'serialNumber', 'apGroupId',
-      'status', 'firmwareVersion'],
+    // enableSelectAllPagesData: ['id', 'name', 'serialNumber', 'apGroupId',
+    //   'status', 'firmwareVersion'],
     pagination: { settingsId }
   })
   const tableQuery = props.tableQuery || apListTableQuery
@@ -676,7 +676,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
         columns={columns}
         columnState={enableApCompatibleCheck?{ onChange: handleColumnStateChange } : {}}
         dataSource={tableData}
-        getAllPagesData={tableQuery.getAllPagesData}
+        // getAllPagesData={tableQuery.getAllPagesData}
         rowKey='serialNumber'
         pagination={tableQuery.pagination}
         onChange={handleTableChange}
