@@ -17,6 +17,15 @@ export const ruckusAssistantApi = baseRuckusAssistantApi.injectEndpoints({
         }
       }
     }),
+    updateConversations: build.mutation<GptConversation, RequestPayload>({
+      query: ({ payload, params }) => {
+        const req = createHttpRequest(RuckusAssistantUrlInfo.updateConversations, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     updateSsidProfile: build.mutation<GptConversation, RequestPayload>({
       query: ({ payload, params }) => {
         const req = createHttpRequest(RuckusAssistantUrlInfo.updateSsidProfile, params)
@@ -61,5 +70,6 @@ export const {
   useApplyConversationsMutation,
   useUpdateSsidProfileMutation,
   useUpdateSsidMutation,
-  useUpdateVlanMutation
+  useUpdateVlanMutation,
+  useUpdateConversationsMutation
 } = ruckusAssistantApi

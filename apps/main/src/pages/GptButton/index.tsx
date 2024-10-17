@@ -17,13 +17,18 @@ import * as UI                    from './styledComponents'
 import VerticalPage               from './VerticalPage'
 import WelcomePage                from './WelcomePage'
 
+export enum GptStepsEnum {
+  WELCOME = 'WELCOME',
+  VERTICAL = 'VERTICAL',
+  BASIC = 'BASIC',
+  CONFIGURATION = 'CONFIGURATION',
+  FINISHED= 'FINISHED'
+}
+
 export default function RuckusGptButton () {
   const [visible, setVisible] = useState(false)
   const { $t } = useIntl()
-
-  const [step, setStep] = useState('welcome' as string)
-
-
+  const [step, setStep] = useState(GptStepsEnum.WELCOME as GptStepsEnum)
   const [currentStep, setCurrentStep] = useState(0 as number)
   const [basicFormRef] = Form.useForm()
   const [startConversations] = useStartConversationsMutation()
@@ -31,40 +36,12 @@ export default function RuckusGptButton () {
   const [nextStep, setNextStep] = useState({} as GptConversation)
   const [isLoading, setIsLoading] = useState(false as boolean)
 
-  const closeModal = () => {
-    basicFormRef.resetFields()
-    setStep('welcome')
-    setVisible(false)
-    setCurrentStep(0)
-  }
-  return <>
-    <UI.ButtonSolid
-      icon={<Logo />}
-      onClick={() => {
-        setVisible(!visible)
-      }}
-    />
-    <UI.GptModal
-      titleType={step === 'wizard' ? 'wizard' : 'default'}
-      title={(step === 'welcome' || step === 'congratulations') ? null : (step === 'wizard') ?
-        <div
-          style={{ width: '250px' }}>
-          <UI.GptStep
-            current={currentStep}
-            percent={100}
-            size='small'
-            type='default'>
-            {[
-              { key: 'step1' },
-              { key: 'step2' },
-              { key: 'step3' },
-              { key: 'step4' }
-            ].map((item) => (
-              <Steps.Step key={item.key} />
-            ))}
-          </UI.GptStep>
-        </div> :
-        <div style={{ display: 'flex', padding: '20px 20px 0px 20px' }}>
+
+  const getWizardTitle = function () {
+    switch(step){
+      case GptStepsEnum.BASIC:
+      case GptStepsEnum.VERTICAL:
+        return <div style={{ display: 'flex', padding: '20px 20px 0px 20px' }}>
           <div style={{
             display: 'flex',
             alignItems: 'center',
@@ -92,24 +69,65 @@ export default function RuckusGptButton () {
               }}
             >Please answer the following questions for optimal network recommendations.</div>
           </div>
-        </div>}
+        </div>
+      case GptStepsEnum.CONFIGURATION:
+        return <div
+          style={{ width: '250px' }}>
+          <UI.GptStep
+            current={currentStep}
+            percent={100}
+            size='small'
+            type='default'>
+            {[
+              { key: 'step1' },
+              { key: 'step2' },
+              { key: 'step3' },
+              { key: 'step4' }
+            ].map((item) => (
+              <Steps.Step key={item.key} />
+            ))}
+          </UI.GptStep>
+        </div>
+      case GptStepsEnum.WELCOME:
+      case GptStepsEnum.FINISHED:
+      default:
+        return null
+    }
+  }
+
+  const closeModal = () => {
+    basicFormRef.resetFields()
+    setStep(GptStepsEnum.WELCOME)
+    setVisible(false)
+    setCurrentStep(0)
+  }
+  return <>
+    <UI.ButtonSolid
+      icon={<Logo />}
+      onClick={() => {
+        setVisible(!visible)
+      }}
+    />
+    <UI.GptModal
+      titleType={step === GptStepsEnum.CONFIGURATION ? 'wizard' : 'default'}
+      title={getWizardTitle()}
       visible={visible}
-      footer={step == 'congratulations' ?
+      footer={step == GptStepsEnum.FINISHED ?
         <Button key='back'
           onClick={() => {
             closeModal()
           }}>
           {$t({ defaultMessage: 'Finish' })}
         </Button>
-        : step === 'wizard' ? null : <>
-          {step !== 'welcome' &&
+        : step === GptStepsEnum.CONFIGURATION ? null : <>
+          {step !== GptStepsEnum.WELCOME &&
             <Button key='back'
               onClick={
                 () => {
-                  if (step === 'basic') {
-                    setStep('vertical')
-                  } else if (step === 'vertical') {
-                    setStep('welcome')
+                  if (step === GptStepsEnum.BASIC) {
+                    setStep(GptStepsEnum.VERTICAL)
+                  } else if (step === GptStepsEnum.VERTICAL) {
+                    setStep(GptStepsEnum.WELCOME)
                   }
                 }
               }>
@@ -120,19 +138,19 @@ export default function RuckusGptButton () {
             type='primary'
             loading={isLoading}
             onClick={async () => {
-              if (step === 'vertical') {
+              if (step === GptStepsEnum.VERTICAL) {
                 basicFormRef.validateFields().then(() => {
                   const result = basicFormRef.getFieldsValue()
                   const type = result.venueType === 'OTHER' ? result.othersValue : result.venueType
                   setVenueType(type)
-                  setStep('basic')
+                  setStep(GptStepsEnum.BASIC)
                 }).catch(() => {
                   return
                 })
 
-              } else if (step === 'welcome') {
-                setStep('vertical')
-              } else if (step === 'basic') {
+              } else if (step === GptStepsEnum.WELCOME) {
+                setStep(GptStepsEnum.VERTICAL)
+              } else if (step === GptStepsEnum.BASIC) {
                 basicFormRef.validateFields().then(
 
                   async () => {
@@ -149,7 +167,7 @@ export default function RuckusGptButton () {
                         }
                       }).unwrap()
                       setIsLoading(false)
-                      setStep('wizard')
+                      setStep(GptStepsEnum.CONFIGURATION)
                       setNextStep(response)
                     } catch (error) {
                       setIsLoading(false)
@@ -176,11 +194,11 @@ export default function RuckusGptButton () {
             layout={'vertical'}
             labelAlign='left'>
 
-            {step === 'welcome' && <WelcomePage />}
-            {step === 'vertical' && <VerticalPage />}
-            {step === 'basic' && <BasicInformationPage />}
+            {step === GptStepsEnum.WELCOME && <WelcomePage />}
+            {step === GptStepsEnum.VERTICAL && <VerticalPage />}
+            {step === GptStepsEnum.BASIC && <BasicInformationPage />}
           </Form>
-          {step === 'wizard' && <GptWizard
+          {step === GptStepsEnum.CONFIGURATION && <GptWizard
             sessionId={nextStep.sessionId}
             requestId={nextStep.sessionId}
             actionType={nextStep.nextStep}
@@ -191,7 +209,7 @@ export default function RuckusGptButton () {
             step={step}
             setCurrentStep={setCurrentStep}
           />}
-          {step === 'congratulations' && <Congratulations closeModal={closeModal} />}
+          {step === GptStepsEnum.FINISHED && <Congratulations closeModal={closeModal} />}
         </>
       }
     />

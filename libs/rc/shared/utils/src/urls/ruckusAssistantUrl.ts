@@ -6,6 +6,11 @@ export const RuckusAssistantUrlInfo: { [key: string]: ApiInfo } = {
     url: '/ruckusAssistant/conversations/start',
     newApi: true
   },
+  updateConversations: {
+    method: 'post',
+    url: '/ruckusAssistant/conversations/:sessionId/:type',
+    newApi: true
+  },
   updateSsidProfile: {
     method: 'post',
     url: '/ruckusAssistant/conversations/:sessionId/ssidProfile',
