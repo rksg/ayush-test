@@ -21,7 +21,7 @@ import {
 
 import { SettingsForm } from '.'
 
-const { mockTrafficClassSettings, mockEdgeHqosProfileStatusList } = EdgeHqosProfileFixtures
+const { mockTrafficClassSettings } = EdgeHqosProfileFixtures
 
 const mockedSetFieldValue = jest.fn()
 
