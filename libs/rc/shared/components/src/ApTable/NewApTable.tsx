@@ -647,9 +647,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   ) => {
     const customSorter = Array.isArray(sorter)
       ? sorter[0] : sorter
-    if ('IP'.includes(customSorter.field as string)) {
-      customSorter.field = 'IP.keyword'
-    }
+
     tableQuery.handleTableChange?.(pagination, filters, customSorter, extra)
   }
 
