@@ -7,16 +7,19 @@ import { genTimeTicks, shouldStartSelecting, dayIndex, onSelectionChange, parseN
 describe('ScheduleCard-utils', () => {
   describe('genTimeTicks', () => {
     it('should generate 12-hour time ticks', () => {
-      const result = genTimeTicks(true)
+      const result = genTimeTicks(15)
       expect(result).toEqual([
         // eslint-disable-next-line max-len
         'Midnight', '2 AM', '4 AM', '6 AM', '8 AM', '10 AM', 'Noon', '2 PM', '4 PM', '6 PM', '8 PM', '10 PM', 'Midnight'
       ])
     })
 
-    it('should generate 24-hour time ticks', () => {
-      const result = genTimeTicks(false)
-      expect(result).toEqual(['0', '3', '6', '9', '12', '15', '18', '21', '24'])
+    it('should generate 12-hour time ticks (1hour unit)', () => {
+      const result = genTimeTicks(60)
+      expect(result).toEqual([
+        // eslint-disable-next-line max-len
+        'Midnight', '3 AM', '6 AM', '9 AM', 'Noon', '3 PM', '6 PM', '9 PM', 'Midnight'
+      ])
     })
   })
 

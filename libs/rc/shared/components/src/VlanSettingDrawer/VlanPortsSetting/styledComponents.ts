@@ -8,7 +8,7 @@ export const GroupListLayout = styled('div')`
   flex-direction: column;
   margin: 10px 0;
   max-height: calc( 100vh - 450px);
-  min-height: 350px;
+  min-height: 450px;
 
   div.ant-radio-group{
     width: 100%
@@ -34,7 +34,7 @@ export const GroupListLayout = styled('div')`
   }
 
   .ant-card{
-    min-height: 320px;
+    min-height: 420px;
     padding-left: 0;
     padding-right: 0;
   }
