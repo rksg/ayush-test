@@ -135,7 +135,7 @@ export const SettingsForm = () => {
             name={['trafficClassSettings', index, 'priorityScheduling']}
             valuePropName='checked'
             noStyle>
-            <Checkbox disabled={isDefaultProfile === true}/>
+            <Checkbox disabled={isDefaultProfile}/>
           </Form.Item>
         </Space>
       }
@@ -163,7 +163,7 @@ export const SettingsForm = () => {
               children={<InputNumber style={{ width: '70px' }}
                 min={0}
                 max={100}
-                disabled={isDefaultProfile === true} />}
+                disabled={isDefaultProfile} />}
               validateFirst
             />
             <span> % </span>
@@ -203,7 +203,7 @@ export const SettingsForm = () => {
               children={<InputNumber style={{ width: '70px' }}
                 min={1}
                 max={100}
-                disabled={isDefaultProfile === true} />}
+                disabled={isDefaultProfile} />}
               validateFirst
             />
             <span> % </span>
@@ -243,13 +243,13 @@ export const SettingsForm = () => {
                       { min: 2, max: 32 },
                       { validator: (_, value) => servicePolicyNameRegExp(value) }
                     ]}
-                    children={<Input disabled={isDefaultProfile === true} />}
+                    children={<Input disabled={isDefaultProfile} />}
                   />
                   <Form.Item
                     name='description'
                     label={$t({ defaultMessage: 'Description' })}
                     rules={[{ max: 255 }]}
-                    children={<Input disabled={isDefaultProfile === true} />}
+                    children={<Input disabled={isDefaultProfile} />}
                   />
                 </Col>
                 <Form.Item

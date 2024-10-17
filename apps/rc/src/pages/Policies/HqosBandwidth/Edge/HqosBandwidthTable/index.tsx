@@ -71,7 +71,7 @@ const EdgeHqosBandwidthTable = () => {
     pageSize: 10000
   }
 
-  const { clusterOptions = [] } = useGetEdgeClusterListQuery(
+  const { clusterOptions } = useGetEdgeClusterListQuery(
     { payload: clusterOptionsDefaultPayload },
     {
       selectFromResult: ({ data, isLoading }) => {
@@ -79,7 +79,7 @@ const EdgeHqosBandwidthTable = () => {
           clusterOptions: data?.data.map(item => ({
             value: item.name!,
             key: item.clusterId!
-          })),
+          })) ?? [],
           isLoading
         }
       }
