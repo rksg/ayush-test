@@ -165,11 +165,11 @@ const EdgeHqosBandwidthTable = () => {
       sorter: true,
       filterable: clusterOptions,
       render: function (_, row) {
-        const edgeClusterIds = row?.edgeClusterIds
+        const edgeClusterIds = row?.edgeClusterIds??[]
         const tooltipItems = clusterOptions
           .filter(option => option.key && edgeClusterIds!.includes(option.key))
           .map(option => option.value)
-        return <SimpleListTooltip items={tooltipItems} displayText={edgeClusterIds?.length??0} />
+        return <SimpleListTooltip items={tooltipItems} displayText={edgeClusterIds?.length} />
       }
     }
   ]
