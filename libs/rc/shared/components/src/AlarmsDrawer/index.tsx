@@ -28,10 +28,10 @@ import {
   EventSeverityEnum,
   EventTypeEnum
 } from '@acx-ui/rc/utils'
-import { useParams, TenantLink }              from '@acx-ui/react-router-dom'
-import { store }                              from '@acx-ui/store'
-import { RolesEnum }                          from '@acx-ui/types'
-import { hasCrossVenuesPermission, hasRoles } from '@acx-ui/user'
+import { useParams, TenantLink } from '@acx-ui/react-router-dom'
+import { store }                 from '@acx-ui/store'
+import { RolesEnum }             from '@acx-ui/types'
+import { hasRoles }              from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
@@ -231,8 +231,7 @@ export function AlarmsDrawer (props: AlarmsType) {
     return venueIds
   }
 
-  const hasPermission = hasCrossVenuesPermission() &&
-  hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const hasPermission = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const alarmList = <>
     <UI.FilterRow>
@@ -338,6 +337,7 @@ export function AlarmsDrawer (props: AlarmsType) {
                 arrowPointAtCenter>
                 <UI.ClearButton
                   ghost={true}
+                  disabled={!hasPermission}
                   icon={<UI.AcknowledgeCircle/>}
                   onClick={async ()=>{
                     await clearAlarm({ params: { ...params, alarmId: alarm.id } })

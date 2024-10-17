@@ -7,7 +7,9 @@ import {
   ApVenueStatusEnum,
   EdgeStatusEnum,
   EdgeUrlsInfo,
-  EdgeGeneralFixtures
+  EdgeGeneralFixtures,
+  EdgeDHCPFixtures,
+  EdgeDhcpUrls
 } from '@acx-ui/rc/utils'
 import { Provider  } from '@acx-ui/store'
 import {
@@ -17,9 +19,12 @@ import {
   mockServer
 } from '@acx-ui/test-utils'
 
+import { EdgeDetailsDataContext } from '../EdgeDetailsDataProvider'
+
 import  EdgeDetailsTabs from './EdgeDetailsTabs'
 
-const { mockEdgeServiceList } = EdgeGeneralFixtures
+const { mockEdgeServiceList, mockEdgeList } = EdgeGeneralFixtures
+const { mockDhcpStatsData } = EdgeDHCPFixtures
 const currentEdge:EdgeStatus = {
   name: 'edge-01',
   serialNumber: 'edge-111000001',
@@ -56,6 +61,10 @@ describe('Edge Details Tabs', () => {
       rest.post(
         EdgeUrlsInfo.getEdgeServiceList.url,
         (req, res, ctx) => res(ctx.json(mockEdgeServiceList))
+      ),
+      rest.post(
+        EdgeDhcpUrls.getDhcpStats.url,
+        (_req, res, ctx) => res(ctx.json(mockDhcpStatsData))
       )
     )
   })
@@ -63,9 +72,16 @@ describe('Edge Details Tabs', () => {
   it('should not have troubleshooting tab if not OPERATIONAL', async () => {
     render(
       <Provider>
-        <EdgeDetailsTabs
-          isOperational={currentEdge.deviceStatus=== EdgeStatusEnum.OPERATIONAL}
-        />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            isEdgeStatusLoading: false
+          }}
+        >
+          <EdgeDetailsTabs
+            isOperational={currentEdge.deviceStatus=== EdgeStatusEnum.OPERATIONAL}
+          />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -77,9 +93,16 @@ describe('Edge Details Tabs', () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGE_DHCP_HA_TOGGLE)
     render(
       <Provider>
-        <EdgeDetailsTabs
-          isOperational={true}
-        />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            isEdgeStatusLoading: false
+          }}
+        >
+          <EdgeDetailsTabs
+            isOperational={true}
+          />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -91,9 +114,16 @@ describe('Edge Details Tabs', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(
       <Provider>
-        <EdgeDetailsTabs
-          isOperational={true}
-        />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            isEdgeStatusLoading: false
+          }}
+        >
+          <EdgeDetailsTabs
+            isOperational={true}
+          />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -104,8 +134,15 @@ describe('Edge Details Tabs', () => {
   it('should redirect to timeline tab', async () => {
     render(
       <Provider>
-        <EdgeDetailsTabs
-          isOperational={currentEdge.deviceStatus=== EdgeStatusEnum.OPERATIONAL}/>
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            isEdgeStatusLoading: false
+          }}
+        >
+          <EdgeDetailsTabs
+            isOperational={currentEdge.deviceStatus=== EdgeStatusEnum.OPERATIONAL}/>
+        </EdgeDetailsDataContext.Provider>
       </Provider>
       , {
         route: { params }
@@ -122,8 +159,15 @@ describe('Edge Details Tabs', () => {
   it('should render correctly', async () => {
     render(
       <Provider>
-        <EdgeDetailsTabs
-          isOperational={true} />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            isEdgeStatusLoading: false
+          }}
+        >
+          <EdgeDetailsTabs
+            isOperational={true} />
+        </EdgeDetailsDataContext.Provider>
       </Provider>
       , {
         route: { params }

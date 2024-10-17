@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps }         from '@acx-ui/components'
@@ -15,6 +17,7 @@ export const EthernetPortProfileInstanceTable = (props: EthernetPortTableProps) 
   const { apSerialNumbers } = props
   const { tenantId } = useParams()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const [isApNumersLoading, setIsApNumbersLoading ] = useState(true)
   const defaultTablePayload = {
     fields: [
       'name',
@@ -37,9 +40,18 @@ export const EthernetPortProfileInstanceTable = (props: EthernetPortTableProps) 
     },
     enableRbac: isWifiRbacEnabled,
     option: {
-      skip: apSerialNumbers.length === 0
+      skip: isApNumersLoading
     }
   })
+
+  useEffect(()=>{
+    if(apSerialNumbers.length > 0) {
+
+      tableQuery.setPayload({ ...tableQuery.payload, filters: { serialNumber: apSerialNumbers } })
+      setIsApNumbersLoading(false)
+    }
+
+  }, [apSerialNumbers])
 
   const emptyVenues: { key: string, value: string }[] = []
   const { venueNameMap } = useGetVenuesQuery({

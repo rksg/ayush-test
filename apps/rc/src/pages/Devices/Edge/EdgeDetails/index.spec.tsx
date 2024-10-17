@@ -1,16 +1,15 @@
-import { ReactNode } from 'react'
-
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                      from '@acx-ui/feature-toggle'
-import { EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                          from '@acx-ui/store'
-import { mockServer, render, screen }        from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
+import { EdgeDHCPFixtures, EdgeDhcpUrls, EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                          from '@acx-ui/store'
+import { mockServer, render, screen }                                        from '@acx-ui/test-utils'
 
 import EdgeDetails from '.'
 
 const { mockEdgeList, mockEdgeServiceList, mockEdgeCluster } = EdgeGeneralFixtures
+const { mockDhcpStatsData } = EdgeDHCPFixtures
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
@@ -35,10 +34,6 @@ const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
-}))
-jest.mock('./EdgeDetailsDataProvider', () => ({
-  EdgeDetailsDataProvider: ({ children }: { children: ReactNode }) =>
-    <div data-testid='EdgeDetailsDataProvider' children={children} />
 }))
 
 describe('EdgeDetails', () => {
@@ -65,6 +60,10 @@ describe('EdgeDetails', () => {
       rest.get(
         EdgeUrlsInfo.getEdgeCluster.url,
         (_req, res, ctx) => res(ctx.json(mockEdgeCluster))
+      ),
+      rest.post(
+        EdgeDhcpUrls.getDhcpStats.url,
+        (_req, res, ctx) => res(ctx.json(mockDhcpStatsData))
       )
     )
   })
@@ -78,7 +77,6 @@ describe('EdgeDetails', () => {
 
     const tab = await screen.findByText('Overview')
     expect(tab.getAttribute('aria-selected')).toBe('true')
-    expect(screen.getByTestId('EdgeDetailsDataProvider')).toBeVisible()
   })
 
   it('should display troubleshooting tab correctly', async () => {

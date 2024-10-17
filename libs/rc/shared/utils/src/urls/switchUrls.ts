@@ -631,5 +631,10 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/switches/query/csvFiles',
     oldUrl: '/switches/query/csvFiles',
     newApi: true
+  },
+  getSwitchFeatureSets: {
+    method: 'get',
+    url: '/switchFeatureSets/:featureName',
+    newApi: true
   }
 }

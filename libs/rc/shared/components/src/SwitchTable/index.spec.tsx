@@ -1,11 +1,12 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { switchApi }              from '@acx-ui/rc/services'
-import { SwitchUrlsInfo }         from '@acx-ui/rc/utils'
-import { Provider, store }        from '@acx-ui/store'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import { switchApi }                          from '@acx-ui/rc/services'
+import { SwitchRbacUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                    from '@acx-ui/store'
 import {
   cleanup,
   mockServer,
@@ -144,6 +145,10 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+const FormComponent = ({ children }: React.PropsWithChildren) => {
+  return <Form>{children}</Form>
+}
+
 type MockDrawerProps = React.PropsWithChildren<{
   visible: boolean
   importRequest: () => void
@@ -151,8 +156,9 @@ type MockDrawerProps = React.PropsWithChildren<{
 }>
 jest.mock('../ImportFileDrawer', () => ({
   ...jest.requireActual('../ImportFileDrawer'),
-  ImportFileDrawer: ({ importRequest, onClose, visible }: MockDrawerProps) =>
+  ImportFileDrawer: ({ importRequest, onClose, visible, children }: MockDrawerProps) =>
     visible && <div data-testid={'ImportFileDrawer'}>
+      <FormComponent>{children}</FormComponent>
       <button onClick={(e)=>{
         e.preventDefault()
         importRequest()
@@ -209,11 +215,23 @@ describe('SwitchTable', () => {
           id_token: 'id_token',
           type: 'JWT'
         }))
+      ),
+      rest.post(
+        SwitchRbacUrlsInfo.getSwitchList.url,
+        (req, res, ctx) => res(ctx.json({
+          ...switchList,
+          data: [switchList?.data?.[1]]
+        }))
+      ),
+      rest.post(
+        SwitchRbacUrlsInfo.importSwitches.url,
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
   })
   const params = {
-    tenantId: 'tenant-Id'
+    tenantId: 'tenant-Id',
+    venueId: 'venue-Id'
   }
 
   it('should render correctly', async () => {
@@ -350,6 +368,33 @@ describe('SwitchTable', () => {
 
     await waitFor(() => expect(drawer).not.toBeVisible())
   })
+  it('should clicks Import with selected venue for RBAC correctly', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_RBAC_API)
+    mockServer.use(
+      rest.post(
+        SwitchRbacUrlsInfo.getSwitchList.url,
+        (req, res, ctx) => res(ctx.json({
+          ...switchList,
+          data: [switchList?.data?.[1]]
+        }))
+      ),
+      rest.post(
+        SwitchRbacUrlsInfo.importSwitches.url,
+        (req, res, ctx) => res(ctx.json({}))
+      )
+    )
+    render(<Provider><SwitchTable showAllColumns={true} enableActions={true} /></Provider>, {
+      route: { params, path: '/:tenantId/t' }
+    })
+
+    expect(await screen.findByText('Import from file')).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: 'Import from file' }))
+
+    const drawer = await screen.findByTestId('ImportFileDrawer')
+    expect(drawer).toBeVisible()
+
+    expect(within(drawer).getByRole('combobox', { name: 'Venue' })).toBeInTheDocument()
+  })
 
   it('should clicks add stack correctly', async () => {
     mockServer.use(
@@ -376,6 +421,7 @@ describe('SwitchTable', () => {
   })
 
   it('Table action bar Delete', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
     render(<Provider><SwitchTable/></Provider>, {
       route: { params, path: '/:tenantId/t' }
     })

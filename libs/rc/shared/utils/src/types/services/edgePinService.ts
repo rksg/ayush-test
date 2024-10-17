@@ -119,7 +119,6 @@ export interface DistributionSwitch extends
 
 export interface DistributionSwitchSaveData {
   id: string
-  siteName: string
   vlans: string
   siteKeepAlive: string
   siteRetry: string

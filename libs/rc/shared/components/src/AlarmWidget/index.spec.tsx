@@ -1,8 +1,9 @@
 import { omit } from 'lodash'
 import { rest } from 'msw'
 
-import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider  }          from '@acx-ui/store'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo }         from '@acx-ui/rc/utils'
+import { Provider  }              from '@acx-ui/store'
 import { render,
   mockServer,
   screen,
@@ -68,10 +69,10 @@ describe('getAlarmsDonutChartData', () => {
 
 describe('Alarm widget v2', () => {
   let params: { tenantId: string }
-
+  jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.ALARM_NEW_API_TOGGLE)
   it('should render donut chart and alarm list', async () => {
     mockServer.use(
-      rest.post(CommonUrlsInfo.getDashboardV2Overview.url,
+      rest.post(CommonUrlsInfo.getAlarmSummaries.url,
         (req, res, ctx) => res(ctx.json(data)))
     )
 
@@ -93,7 +94,7 @@ describe('Alarm widget v2', () => {
 
   it('should render "No active alarms" when no alarms exist', async () => {
     mockServer.use(
-      rest.post(CommonUrlsInfo.getDashboardV2Overview.url,
+      rest.post(CommonUrlsInfo.getAlarmSummaries.url,
         (req, res, ctx) => res(ctx.json(noAlarms)))
     )
     params = {

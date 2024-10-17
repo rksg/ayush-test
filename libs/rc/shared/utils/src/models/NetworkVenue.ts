@@ -42,6 +42,10 @@ export class NetworkVenue {
 
   id?: string
 
+  vlanPoolName?: string
+
+  vlanMembers?: string[]
+
   constructor () {
     this.dual5gEnabled = true
 

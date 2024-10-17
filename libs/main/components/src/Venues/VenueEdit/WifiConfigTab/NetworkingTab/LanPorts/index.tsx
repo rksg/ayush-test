@@ -446,6 +446,7 @@ export function LanPorts () {
                     isTrunkPortUntaggedVlanEnabled={supportTrunkPortUntaggedVlan}
                     onGUIChanged={handleGUIChanged}
                     index={index}
+                    venueId={venueId}
                   />
                 </Col>
               </Row>

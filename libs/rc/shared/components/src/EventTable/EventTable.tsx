@@ -16,7 +16,7 @@ import { DownloadOutlined }                                               from '
 import { useAddExportSchedulesMutation }                                  from '@acx-ui/rc/services'
 import { Event, EventExportSchedule, EventScheduleFrequency, TableQuery } from '@acx-ui/rc/utils'
 import { RequestPayload }                                                 from '@acx-ui/types'
-import { useUserProfileContext }                                          from '@acx-ui/user'
+import { hasCrossVenuesPermission, useUserProfileContext }                from '@acx-ui/user'
 import { computeRangeFilter, DateRangeFilter, exportMessageMapping }      from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
@@ -286,7 +286,8 @@ export const EventTable = ({
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
       enableApiFilter={true}
-      iconButton={!isCustomRole ? tableIconButtonConfig : {} as IconButtonProps}
+      iconButton={!isCustomRole && hasCrossVenuesPermission()
+        ? tableIconButtonConfig : {} as IconButtonProps}
     />
     {current && <TimelineDrawer
       title={defineMessage({ defaultMessage: 'Event Details' })}
