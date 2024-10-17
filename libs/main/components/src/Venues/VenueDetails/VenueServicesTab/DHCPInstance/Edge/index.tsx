@@ -1,129 +1,71 @@
+import { useMemo } from 'react'
+
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { ContentSwitcher, ContentSwitcherProps, GridCol, GridRow, Loader, SummaryCard }            from '@acx-ui/components'
-import { EdgeDhcpLeaseTable, EdgeDhcpPoolTable, EdgeServiceStatusLight, useIsEdgeReady }           from '@acx-ui/rc/components'
-import { useGetDhcpHostStatsQuery, useGetDhcpStatsQuery, useGetEdgeListQuery }                     from '@acx-ui/rc/services'
-import { EdgeDhcpHostStatus, LeaseTimeType, ServiceOperation, ServiceType, getServiceDetailsLink } from '@acx-ui/rc/utils'
-import { TenantLink }                                                                              from '@acx-ui/react-router-dom'
+import { GridCol, GridRow, Loader, Subtitle }                                         from '@acx-ui/components'
+import { useGetDhcpHostStatsQuery, useGetDhcpStatsQuery, useGetEdgeClusterListQuery } from '@acx-ui/rc/services'
+import { EdgeDhcpHostStatus }                                                         from '@acx-ui/rc/utils'
+
+import { DhcpTable }  from './DhcpTable'
+import { LeaseTable } from './LeaseTable'
 
 const EdgeDhcpTab = () => {
 
   const { $t } = useIntl()
-  const { venueId } = useParams()
-  const isEdgeReady = useIsEdgeReady()
+  const { venueId = '' } = useParams()
 
-  const edgeDataPayload = {
+  const edgeClusterDataPayload = {
     filters: { venueId: [venueId] }
   }
-  const { edgeData, isEdgeLoading } = useGetEdgeListQuery(
-    { payload: edgeDataPayload },
+  const { clusterList, clusterIds, isEdgeLoading } = useGetEdgeClusterListQuery(
+    { payload: edgeClusterDataPayload },
     {
       skip: !!!venueId,
       selectFromResult: ({ data, isLoading }) => ({
-        edgeData: data?.data[0],
+        clusterList: data?.data,
+        clusterIds: data?.data?.map(item => item.clusterId ?? ''),
         isEdgeLoading: isLoading
       })
     }
   )
   const getDhcpStatsPayload = {
-    filters: { edgeClusterIds: [edgeData?.clusterId] }
+    filters: { edgeClusterIds: clusterIds },
+    pageSize: 10000
   }
-  const { dhcpData, isDhcpStatsLoading } = useGetDhcpStatsQuery(
+  const { dhcpList, isDhcpStatsLoading } = useGetDhcpStatsQuery(
     { payload: getDhcpStatsPayload },
     {
-      skip: !Boolean(edgeData?.clusterId),
+      skip: !Boolean(clusterIds?.length),
       selectFromResult: ({ data, isLoading }) => ({
-        dhcpData: data?.data[0],
+        dhcpList: data?.data.map(item => ({
+          ...item,
+          edgeClusterIds: item.edgeClusterIds?.filter(clusterId => clusterIds?.includes(clusterId))
+        })),
         isDhcpStatsLoading: isLoading
       })
     }
   )
   const getDhcpHostStatsPayload = {
-    filters: { edgeId: [edgeData?.serialNumber], hostStatus: [EdgeDhcpHostStatus.ONLINE] },
-    sortField: 'name',
-    sortOrder: 'ASC'
+    fields: ['id'],
+    filters: {
+      venueId: [venueId],
+      hostStatus: [EdgeDhcpHostStatus.ONLINE]
+    }
   }
   const { data: dhcpHostStats } = useGetDhcpHostStatsQuery({
     payload: getDhcpHostStatsPayload
   }, {
-    skip: !isEdgeReady
+    skip: !clusterIds?.length
   })
 
-  const tabDetails: ContentSwitcherProps['tabDetails'] = [
-    {
-      label: $t({ defaultMessage: 'Pools ({count})' },
-        { count: dhcpData?.dhcpPoolNum || 0 }),
-      value: 'pools',
-      children: (
-        <GridCol col={{ span: 24 }}>
-          <EdgeDhcpPoolTable edgeId={edgeData?.serialNumber}
-            settingsId={'venue-edge-dhcp-pools-table'} />
-        </GridCol>
-      )
-    },
-    {
-      label: $t({ defaultMessage: 'Leases ({count} online)' },
-        { count: dhcpHostStats?.totalCount || 0 }),
-      value: 'leases',
-      children: (
-        <GridCol col={{ span: 24 }}>
-          <EdgeDhcpLeaseTable
-            edgeId={edgeData?.serialNumber}
-            isInfinite={dhcpData?.leaseTime === LeaseTimeType.INFINITE}
-          />
-        </GridCol>
-      )
-    }
-  ]
-
-  const dhcpInfo = [
-    {
-      title: $t({ defaultMessage: 'Service Name' }),
-      content: (
-        dhcpData &&
-          <TenantLink
-            to={getServiceDetailsLink({
-              type: ServiceType.EDGE_DHCP,
-              oper: ServiceOperation.DETAIL,
-              serviceId: dhcpData?.id!
-            })}>
-            {dhcpData?.serviceName}
-          </TenantLink>
-      )
-    },
-    {
-      title: $t({ defaultMessage: 'Service Health' }),
-      content: dhcpData &&
-      (dhcpData.edgeNum ?? 0) ?
-        <EdgeServiceStatusLight data={dhcpData?.edgeAlarmSummary} /> :
-        '--'
-    },
-    {
-      title: $t({ defaultMessage: 'DHCP Relay' }),
-      content: (
-        dhcpData?.dhcpRelay === 'true' ?
-          $t({ defaultMessage: 'ON' }) :
-          $t({ defaultMessage: 'OFF' })
-      )
-    },
-    {
-      title: $t({ defaultMessage: 'DHCP Pools' }),
-      content: dhcpData?.dhcpPoolNum
-    },
-    {
-      title: $t({ defaultMessage: 'Lease Time' }),
-      content: dhcpData?.leaseTime
-    },
-    {
-      title: $t({ defaultMessage: 'RUCKUS Edge' }),
-      content: (
-        <TenantLink to={`/devices/edge/${edgeData?.serialNumber}/details/overview`}>
-          {edgeData?.name}
-        </TenantLink>
-      )
-    }
-  ]
+  const dhcpTableData = useMemo(() => {
+    return dhcpList?.map(item => ({
+      ...item,
+      clusterIdNameList: item.edgeClusterIds?.map(id => ({
+        id, name: clusterList?.find(c => c.clusterId === id)?.name ?? '' }))
+    }))
+  }, [dhcpList, clusterList])
 
   return (
     <Loader states={[{
@@ -132,9 +74,22 @@ const EdgeDhcpTab = () => {
     }]}>
       <GridRow>
         <GridCol col={{ span: 24 }}>
-          <SummaryCard data={dhcpInfo} />
+          <DhcpTable data={dhcpTableData} />
         </GridCol>
-        <ContentSwitcher tabDetails={tabDetails} size='large' />
+      </GridRow>
+      <GridRow style={{ marginTop: '50px' }}>
+        <GridCol col={{ span: 24 }}>
+          <Subtitle level={4}>
+            {$t(
+              { defaultMessage: 'Lease Table ({count} Online)' },
+              { count: dhcpHostStats?.totalCount ?? 0 }
+            )}
+          </Subtitle>
+          <LeaseTable
+            venueId={venueId}
+            dhcpStats={dhcpList}
+          />
+        </GridCol>
       </GridRow>
     </Loader>
   )

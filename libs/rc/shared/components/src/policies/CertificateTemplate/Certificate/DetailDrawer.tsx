@@ -17,6 +17,7 @@ import { CollapsePanelContentWrapper, CollapseTitle, CollapseWrapper, Descriptio
 
 import { getCertificateAuthorityDetails, getCertificateDetails } from './DetailDrawerHelper'
 import DownloadSection                                           from './DownloadSection'
+import ViewUploadSection                                         from './ViewUploadSection'
 
 interface DetailDrawerProps {
   open?: boolean;
@@ -32,7 +33,8 @@ export enum RenderType {
   CONTENT_WITH_DETAILS,
   DIVIDER,
   DOWNLOAD,
-  LINK
+  LINK,
+  VIEW_UPLOAD = 7
 }
 
 export interface Content {
@@ -182,6 +184,11 @@ export function DetailDrawer ({ open = false, setOpen, data, type }: DetailDrawe
         return <DownloadSection
           type={item.content as CertificateCategoryType}
           data={data}
+          setRawInfoDrawer={setRawInfoDrawer}
+          setUploadDrawerOpen={setUploadDrawerOpen} />
+      case RenderType.VIEW_UPLOAD:
+        return <ViewUploadSection
+          data={data as CertificateAuthority}
           setRawInfoDrawer={setRawInfoDrawer}
           setUploadDrawerOpen={setUploadDrawerOpen} />
       default:

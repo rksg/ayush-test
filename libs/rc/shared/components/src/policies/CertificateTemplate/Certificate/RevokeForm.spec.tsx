@@ -3,7 +3,7 @@ import { Modal as AntModal } from 'antd'
 
 import { render, screen } from '@acx-ui/test-utils'
 
-import RevokeForm from './RevokeForm'
+import { RevokeForm } from './RevokeForm'
 
 describe('RevokeForm', () => {
   it('should validate the form correctly', async () => {
