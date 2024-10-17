@@ -64,7 +64,7 @@ export default function ScepDrawer
 
         if (overlappingSubnets.length > 0) {
           // eslint-disable-next-line max-len
-          return Promise.reject(new Error($t({ defaultMessage: 'Subnets cannot be both allowed and blocked' })))
+          return Promise.reject(new Error($t({ defaultMessage: 'Same subnet values cannot be given in allowed and blocked' })))
         }
       }
 

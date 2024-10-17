@@ -154,7 +154,7 @@ describe('ScepDrawer', () => {
     await userEvent.tab() // Trigger validation
 
     await waitFor(() => {
-      expect(screen.getByText('Subnets cannot be both allowed and blocked')).toBeInTheDocument()
+      expect(screen.getByText('Same subnet values cannot be given in allowed and blocked')).toBeInTheDocument()
     })
   })
 
@@ -171,7 +171,7 @@ describe('ScepDrawer', () => {
 
     await waitFor(() => {
       // eslint-disable-next-line max-len
-      expect(screen.queryByText('Subnets cannot be both allowed and blocked')).not.toBeInTheDocument()
+      expect(screen.queryByText('Same subnet values cannot be given in allowed and blocked')).not.toBeInTheDocument()
     })
   })
 })
