@@ -14,7 +14,7 @@ import { Legend }  from './Legend'
 import { KpiData } from './services'
 import * as UI     from './styledComponents'
 
-export const ecoFlexDonutTooltipFormat = defineMessage({
+const ecoFlexDonutTooltipFormat = defineMessage({
   defaultMessage: ` <b>{formattedValue} {value, plural,
       one {AP}
       other {APs}

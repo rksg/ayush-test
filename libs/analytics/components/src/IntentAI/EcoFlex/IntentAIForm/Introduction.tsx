@@ -4,14 +4,12 @@ import { Col, Row, Typography }   from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { cssNumber, cssStr, DonutChart, DonutChartData, Loader, StepsForm } from '@acx-ui/components'
-import { formatter }                                                        from '@acx-ui/formatter'
 
 import { CompareSlider }                              from '../../../CompareSlider'
 import { Icon }                                       from '../../common/IntentIcon'
 import { IntroSummary }                               from '../../common/IntroSummary'
 import { AiFeatures }                                 from '../../config'
 import { useIntentContext }                           from '../../IntentContext'
-import { ecoFlexDonutTooltipFormat }                  from '../ComparisonDonutChart'
 import { KpiDonutChartData, useIntentAIEcoFlexQuery } from '../ComparisonDonutChart/services'
 
 import * as SideNotes from './SideNotes'
@@ -72,14 +70,13 @@ const RenderDonutChart = (
       showLegend={false}
       style={{ width: 200, height: 200 }}
       showTotal={false}
-      tooltipFormat={ecoFlexDonutTooltipFormat}
-      dataFormatter={formatter('countFormat')}
       data={data}
       title={titleMsg}
       titleColor={titleColor}
       value={secondTitleMsg}
       titleTextStyle={boldFontStyle}
       secondaryTitleTextStyle={nonBoldFontStyle}
+      isShowTooltip={false}
     />
   )
 }
@@ -127,7 +124,7 @@ export const SliderAfter = ({ kpiData }: { kpiData: KpiDonutChartData }) => {
   )
 }
 
-const CompareSliderWithEcoFlex = (queryResult: ReturnType<typeof useIntentAIEcoFlexQuery>) => {
+const CompareSliderWithEcoFlex: React.FC<ReturnType<typeof useIntentAIEcoFlexQuery>> = (queryResult) => {
   return (
     <Loader states={[queryResult]}>
       <CompareSlider
@@ -172,7 +169,7 @@ export function Introduction (
           <b>{title2}:</b> <span>{para2}</span>
         </Paragraph>
       </StepsForm.TextContent>
-      {showData && CompareSliderWithEcoFlex(queryResult)}
+      {showData && <CompareSliderWithEcoFlex {...queryResult} />}
     </Col>
     <Col span={7} offset={2}>
       <SideNotes.Introduction />

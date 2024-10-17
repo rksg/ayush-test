@@ -77,6 +77,7 @@ export interface DonutChartProps extends DonutChartOptionalProps,
   labelTextStyle?: { overflow?: 'break' | 'breakAll' | 'truncate' | 'none', width?: number }
   titleTextStyle?: TitleTextStyle
   secondaryTitleTextStyle?: TitleTextStyle
+  isShowTooltip?: boolean
 }
 
 export const onChartClick = (onClick: DonutChartProps['onClick']) =>
@@ -142,6 +143,7 @@ export function DonutChart ({
   const isSmall = props.size === 'small'
   const isCustomEmptyStatus = isEmpty && !!props.value
   const isWhiteTitle = props.titleColor === 'white'
+  const isShowTooltip = props.isShowTooltip ?? true
 
   const legendStyles = {
     color: cssStr('--acx-primary-black'),
@@ -317,7 +319,7 @@ export function DonutChart ({
         },
         tooltip: {
           ...tooltipOptions(),
-          show: !isEmpty,
+          show: isShowTooltip && !isEmpty,
           formatter: tooltipFormatter(
             dataFormatter,
             sum,
@@ -325,7 +327,7 @@ export function DonutChart ({
           )
         },
         emphasis: {
-          disabled: isEmpty,
+          disabled: !isShowTooltip || isEmpty,
           scaleSize: 5
         },
         labelLine: {
