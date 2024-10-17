@@ -144,8 +144,8 @@ export interface BetaStatus {
 }
 
 export interface FeatureAPIResults {
-  key: string,
-  enabled: boolean
+  id: string,
+  isEnabled: boolean
 }
 
 export interface Feature extends FeatureAPIResults {

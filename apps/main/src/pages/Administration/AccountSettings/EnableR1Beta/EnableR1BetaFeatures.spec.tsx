@@ -16,16 +16,16 @@ import { EnableR1BetaFeatures } from './EnableR1BetaFeatures'
 
 const fakeFeatures: FeatureAPIResults[] = [
   {
-    key: 'BETA-DPSK3',
-    enabled: true
+    id: 'BETA-DPSK3',
+    isEnabled: true
   },
   {
-    key: 'PLCY-EDGE',
-    enabled: false
+    id: 'PLCY-EDGE',
+    isEnabled: false
   },
   {
-    key: 'SAMPLE',
-    enabled: true
+    id: 'SAMPLE',
+    isEnabled: true
   }
 ]
 const user = require('@acx-ui/user')

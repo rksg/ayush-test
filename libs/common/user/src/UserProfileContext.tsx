@@ -10,12 +10,11 @@ import {
   useGetBetaStatusQuery,
   useGetUserProfileQuery,
   useFeatureFlagStatesQuery,
-  useGetVenuesListQuery
-  // useGetBetaFeatureListQuery
+  useGetVenuesListQuery,
+  useGetBetaFeatureListQuery
 } from './services'
 import { FeatureAPIResults, UserProfile }      from './types'
 import { setUserProfile, hasRoles, hasAccess } from './userProfile'
-import { mockedBetaFeatures }                  from './utils'
 
 export interface UserProfileContextProps {
   data: UserProfile | undefined
@@ -90,8 +89,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
   const venuesList: string[] = (venues?.data.map(item => item.id)
     .filter((id): id is string => id !== undefined)) || []
 
-  // const { data: betaFeatures } = useGetBetaFeatureListQuery({ params })
-  const betaFeatures = mockedBetaFeatures
+  const { data: betaFeatures } = useGetBetaFeatureListQuery({ params })
   const betaFeaturesList: FeatureAPIResults[] = (betaFeatures?.filter((feature):
     feature is FeatureAPIResults => feature !== undefined)) || []
 

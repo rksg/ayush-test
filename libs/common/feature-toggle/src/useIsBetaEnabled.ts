@@ -4,6 +4,6 @@ import { TierFeatures } from './features'
 
 export function useIsBetaEnabled (featureKey: TierFeatures): boolean {
   const { betaEnabled, betaFeaturesList } = useUserProfileContext()
-  return (betaEnabled ?? false) && (betaFeaturesList?.filter(feature => feature.key === featureKey)
-    .some(feature => feature.enabled) ?? false)
+  return (betaEnabled ?? false) && (betaFeaturesList?.filter(feature => feature.id === featureKey)
+    .some(feature => feature.isEnabled) ?? false)
 }

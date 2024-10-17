@@ -10,16 +10,16 @@ jest.mock('@acx-ui/user', () => ({
 
 const featuresList = [
   {
-    key: TierFeatures.AP_70,
-    enabled: true
+    id: TierFeatures.AP_70,
+    isEnabled: true
   },
   {
-    key: TierFeatures.BETA_DPSK3,
-    enabled: false
+    id: TierFeatures.BETA_DPSK3,
+    isEnabled: false
   },
   {
-    key: TierFeatures.CONFIG_TEMPLATE,
-    enabled: true
+    id: TierFeatures.CONFIG_TEMPLATE,
+    isEnabled: true
   }
 ]
 describe('Test useIsBetaEnabled function', () => {

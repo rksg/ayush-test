@@ -8,8 +8,8 @@ import {
   screen } from '@acx-ui/test-utils'
 import { RolesEnum } from '@acx-ui/types'
 
-import { UserRbacUrlsInfo, UserUrlsInfo } from './services'
-import { CustomRoleType, UserProfile }    from './types'
+import { UserRbacUrlsInfo, UserUrlsInfo }                 from './services'
+import { CustomRoleType, FeatureAPIResults, UserProfile } from './types'
 import {
   useUserProfileContext,
   UserProfileProvider,
@@ -82,6 +82,21 @@ const fakedVenueList = {
   ]
 }
 
+const mockedBetaFeatures: FeatureAPIResults[] = [
+  {
+    id: 'BETA-DPSK3',
+    isEnabled: true
+  },
+  {
+    id: 'PLCY-EDGE',
+    isEnabled: false
+  },
+  {
+    id: 'SAMPLE',
+    isEnabled: true
+  }
+]
+
 describe('UserProfileContext', () => {
   const wrapper = (props: { children: React.ReactNode }) => (
     <Provider>
@@ -97,6 +112,9 @@ describe('UserProfileContext', () => {
     services.useFeatureFlagStatesQuery = jest.fn().mockImplementation(() => {
       return { data: { 'abac-policies-toggle': false,
         'allowed-operations-toggle': false } }
+    })
+    services.useGetBetaFeatureListQuery = jest.fn().mockImplementation(() => {
+      return { data: mockedBetaFeatures }
     })
     mockServer.use(
       rest.get(UserUrlsInfo.getAccountTier.url as string,

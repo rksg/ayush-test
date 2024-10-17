@@ -2,17 +2,16 @@ import { useEffect, useState } from 'react'
 
 import { Typography } from 'antd'
 import { useIntl }    from 'react-intl'
-// import { useParams }  from 'react-router-dom'
+import { useParams }  from 'react-router-dom'
 
 import { BetaIndicator, Button, Drawer, showActionModal } from '@acx-ui/components'
 import { BetaListDetails }                                from '@acx-ui/feature-toggle'
 import {
   Feature,
   FeatureAPIResults,
-  updateMockedBetaFeatures,
+  useGetBetaFeatureListQuery,
   useToggleBetaStatusMutation,
-  // useUpdateBetaFeatureListMutation,
-  useUserProfileContext
+  useUpdateBetaFeatureListMutation
 } from '@acx-ui/user'
 
 import { MessageMapping } from '../MessageMapping'
@@ -31,12 +30,12 @@ function R1FeatureListDrawer (
 ) {
   const { $t } = useIntl()
   const { visible, setVisible, editMode } = props
-  // const params = useParams()
+  const params = useParams()
   const [resetField, setResetField] = useState(false)
   const [featureList, setFeatureList] = useState<Feature[]>([])
   const [toggleBetaStatus ] = useToggleBetaStatusMutation()
-  const { betaFeaturesList } = useUserProfileContext()
-  // const [updateBetaFeatures] = useUpdateBetaFeatureListMutation()
+  const { data: betaFeaturesList } = useGetBetaFeatureListQuery({ params })
+  const [updateBetaFeatures] = useUpdateBetaFeatureListMutation()
 
   const onSave = async () => {
     onClose()
@@ -46,8 +45,8 @@ function R1FeatureListDrawer (
           enable: true + ''
         }
       }).unwrap()
-      // await updateBetaFeatures({ params, payload: featureList as FeatureAPIResults[] }).unwrap()
-      updateMockedBetaFeatures(featureList as FeatureAPIResults[])
+      await updateBetaFeatures({ params, payload: featureList as FeatureAPIResults[] }).unwrap()
+      // updateMockedBetaFeatures(featureList as FeatureAPIResults[])
       // eslint-disable-next-line no-console
       console.log(featureList)
     } catch (error) {
@@ -63,7 +62,7 @@ function R1FeatureListDrawer (
   useEffect(() => {
     if (betaFeaturesList) {
       const features = betaFeaturesList.map(f => {
-        const desc = $t(BetaListDetails.filter(detail => detail.key === f.key)[0].description)
+        const desc = $t(BetaListDetails.filter(detail => detail.key === f.id)[0].description)
         const updatedFeature: Feature = {
           name: desc.split(': ')[0],
           desc: desc.split(': ')[1],
@@ -77,8 +76,8 @@ function R1FeatureListDrawer (
 
   const onFeatureToggle = (checked: boolean, e: React.MouseEvent, feature: string) => {
     const features = featureList.map(f => {
-      if (f.key === feature) {
-        f.enabled = checked
+      if (f.id === feature) {
+        f.isEnabled = checked
       }
       return f
     })
@@ -106,15 +105,15 @@ function R1FeatureListDrawer (
     children={
       <UI.DrawerContentWrapper>
         {featureList.map(feature => {
-          return <UI.DrawerContent key={feature.key}>
+          return <UI.DrawerContent key={feature.id}>
             <UI.FeatureTitleWrapper>
               <UI.FeatureTitle>{feature.name}</UI.FeatureTitle>
               <UI.EarlyAccessFeatureSwitch
                 checkedChildren='ON'
                 unCheckedChildren='OFF'
-                defaultChecked={feature.enabled}
-                checked={feature.enabled}
-                onChange={(checked, e) => onFeatureToggle(checked, e, feature.key)} />
+                defaultChecked={feature.isEnabled}
+                checked={feature.isEnabled}
+                onChange={(checked, e) => onFeatureToggle(checked, e, feature.id)} />
             </UI.FeatureTitleWrapper>
             <UI.FeatureDescription>{feature.desc}</UI.FeatureDescription>
           </UI.DrawerContent>

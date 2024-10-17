@@ -197,12 +197,12 @@ export const UserRbacUrlsInfo = {
   },
   getBetaFeatureList: {
     method: 'get',
-    url: '/tenants/betaFeatureList',
+    url: '/tenants/beta/feature-ids',
     newApi: true
   },
   updateBetaFeatureList: {
     method: 'put',
-    url: '/tenants/betaFeatureList',
+    url: '/tenants/beta/feature-ids',
     newApi: true
   }
 }
