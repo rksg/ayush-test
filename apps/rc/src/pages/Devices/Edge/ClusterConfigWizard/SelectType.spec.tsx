@@ -231,7 +231,7 @@ describe('SelectType', () => {
       })
     await checkDataRendered()
     expect(screen.queryByText('Incompatible Hardware warning:')).toBeValid()
-    expect(screen.getAllByTestId('antd-disabled-frame').length).toBe(2)
+    expect(screen.getAllByTestId('antd-disabled-frame').length).toBe(3)
     expect(screen.getByRole('button', { name: 'Next' })).toBeDisabled()
   })
   it('should be no hardware compatible issue when only 1 node', async () => {
@@ -279,7 +279,7 @@ describe('SelectType', () => {
       })
     await checkDataRendered()
     expect(screen.queryByText('Incompatible Hardware warning:')).toBeNull()
-    await waitFor(() => expect(screen.queryAllByTestId('antd-disabled-frame').length).toBe(1))
+    await waitFor(() => expect(screen.queryAllByTestId('antd-disabled-frame').length).toBe(2))
     const cardIcon = screen.getAllByRole('radio').filter(i =>
       i.getAttribute('value') === 'clusterInterface'
     )[0]

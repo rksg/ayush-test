@@ -110,7 +110,7 @@ export const SelectType = () => {
       }
     ]
   },
-  isEdgeHaSubInterfaceReady && {
+  ...(isEdgeHaSubInterfaceReady ? [{
     id: 'subInterface',
     title: $t({ defaultMessage: 'Sub-interface Settings' }),
     icon: <SubInterfaceIcon />,
@@ -130,7 +130,7 @@ export const SelectType = () => {
         tooltip: $t({ defaultMessage: 'Please complete the LAG and port settings first' })
       }
     ]
-  },
+  }] : []),
   {
     id: 'clusterInterface',
     title: $t({ defaultMessage: 'Cluster Interface Settings' }),
