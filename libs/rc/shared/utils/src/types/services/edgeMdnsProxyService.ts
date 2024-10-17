@@ -1,9 +1,10 @@
-import { BonjourGatewayRule } from '../../models/BonjourGatewayRule'
-import { BridgeServiceEnum }  from '../../models/BridgeServiceEnum'
+import { BridgeServiceEnum } from '../../models/BridgeServiceEnum'
+
+import { NewMdnsProxyForwardingRule } from './mdnsProxyService'
 
 export interface EdgeMdnsProxySetting {
-  serviceName: string
-  forwardingProxyRules: Omit<BonjourGatewayRule, 'service'> & {
+  name: string
+  forwardingRules: Omit<NewMdnsProxyForwardingRule, 'service'> & {
     serviceType: BridgeServiceEnum
   }[]
 }
@@ -11,11 +12,13 @@ export interface EdgeMdnsProxySetting {
 export interface EdgeMdnsProxyViewData {
   id?: string
   name?: string
-  forwardingProxyRules?: BonjourGatewayRule[]
-  venueInfo?: EdgeMdnsProxyVenueInfo[]
+  forwardingRules?: NewMdnsProxyForwardingRule[]
+  activations?: EdgeMdnsProxyActivation[]
 }
 
-export interface EdgeMdnsProxyVenueInfo {
+export interface EdgeMdnsProxyActivation {
   venueId: string,
-  venueName: string
+  venueName: string,
+  edgeClusterId: string,
+  edgeClusterName: string
 }

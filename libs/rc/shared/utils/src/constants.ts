@@ -212,6 +212,11 @@ export enum CellularNetworkSelectionEnum {
   ThreeG = 'ThreeG',
 }
 
+export enum MdnsProxyFeatureTypeEnum {
+  WIFI = 'WIFI',
+  EDGE = 'EDGE',
+}
+
 export enum ConfigTypeEnum {
   AAA_SERVER = 'AAA_SERVER',
   AAA_SETTING = 'AAA_SETTING',

@@ -21,7 +21,8 @@ import {
   getServiceRoutePath,
   MdnsProxyViewModel,
   getScopeKeyByService,
-  filterByAccessForServicePolicyMutation
+  filterByAccessForServicePolicyMutation,
+  MdnsProxyFeatureTypeEnum
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -105,6 +106,7 @@ export default function MdnsProxyTable () {
           </TenantLink>
         ])}
       />
+
       <Loader states={[tableQuery]}>
         <Table<MdnsProxyViewModel>
           columns={useColumns()}
@@ -173,14 +175,16 @@ function useColumns () {
       render: function (_, { rules }) {
         return (rules && rules.length > 0
           ? <Tooltip
-            overlayInnerStyle={{ minWidth: '380px' }}
             title={<MdnsProxyForwardingRulesTable
+              featureType={MdnsProxyFeatureTypeEnum.WIFI}
               readonly={true}
               tableType={'compactBordered'}
               rules={rules}
             />}
             children={rules.length}
             dottedUnderline={true}
+            placement='bottom'
+            overlayInnerStyle={{ minWidth: '380px' }}
           />
           : 0
         )

@@ -10,8 +10,8 @@ import {
   showActionModal,
   Tooltip
 } from '@acx-ui/components'
-import { MdnsProxyForwardingRulesTable, SimpleListTooltip }                                        from '@acx-ui/rc/components'
-import { useDeleteEdgeMdnsProxyMutation, useGetEdgeMdnsProxyViewDataListQuery, useGetVenuesQuery } from '@acx-ui/rc/services'
+import { CountAndNamesTooltip, MdnsProxyForwardingRulesTable }                                      from '@acx-ui/rc/components'
+import { useDeleteEdgeMdnsProxyMutation, useGetEdgeMdnsProxyViewDataListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
   getServiceDetailsLink,
@@ -21,14 +21,17 @@ import {
   getScopeKeyByService,
   filterByAccessForServicePolicyMutation,
   useTableQuery,
-  EdgeMdnsProxyViewData
+  EdgeMdnsProxyViewData,
+  defaultSort,
+  MdnsProxyFeatureTypeEnum
 } from '@acx-ui/rc/utils'
-import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+
+import * as UI from './styledComponents'
 
 const settingsId = 'services-edge-mdns-proxy-table'
 export function EdgeMdnsProxyTable () {
   const { $t } = useIntl()
-  const { tenantId } = useParams()
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn, { isLoading: isDeleting } ] = useDeleteEdgeMdnsProxyMutation()
@@ -36,7 +39,7 @@ export function EdgeMdnsProxyTable () {
   const tableQuery = useTableQuery({
     useQuery: useGetEdgeMdnsProxyViewDataListQuery,
     defaultPayload: {
-      fields: ['id', 'name', 'forwardingProxyRules', 'venueInfo'],
+      fields: ['id', 'name', 'forwardingRules', 'activations'],
       filters: {}
     },
     sorter: {
@@ -66,18 +69,18 @@ export function EdgeMdnsProxyTable () {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ id, name }], clearSelection) => {
+      onClick: (rows, clearSelection) => {
         showActionModal({
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Service' }),
-            entityValue: name
+            entityName: $t({ defaultMessage: 'Edge mDNS Proxy' }),
+            entityValue: rows.length === 1 ? rows[0].name : undefined,
+            numOfEntities: rows.length
           },
           onOk: () => {
-            deleteFn({
-              params: { tenantId, serviceId: id }
-            }).unwrap().then(clearSelection)
+            Promise.all(rows.map(row => deleteFn({ params: { serviceId: row.id } }).unwrap()))
+              .then(clearSelection)
           }
         })
       },
@@ -110,6 +113,7 @@ export function EdgeMdnsProxyTable () {
         ])}
       />
       <Loader states={[tableQuery, { isLoading: false, isFetching: isDeleting }]}>
+        <UI.ToolTipStyle/>
         <Table
           rowKey='id'
           settingsId={settingsId}
@@ -117,7 +121,7 @@ export function EdgeMdnsProxyTable () {
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           rowActions={allowedRowActions}
-          rowSelection={(allowedRowActions.length > 0) && { type: 'radio' }}
+          rowSelection={(allowedRowActions.length > 0) && { type: 'checkbox' }}
           onChange={tableQuery.handleTableChange}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter
@@ -129,16 +133,14 @@ export function EdgeMdnsProxyTable () {
 
 function useColumns () {
   const { $t } = useIntl()
-  const params = useParams()
   const emptyVenues: { key: string, value: string }[] = []
-  const { venueNameMap } = useGetVenuesQuery({
-    params: { tenantId: params.tenantId },
+  const { venueNameMap } = useVenuesListQuery({
     payload: {
-      fields: ['name', 'id'],
+      fields: ['id', 'name'],
       sortField: 'name',
       sortOrder: 'ASC',
       page: 1,
-      pageSize: 2048
+      pageSize: 10000
     }
   }, {
     selectFromResult: ({ data }) => ({
@@ -170,40 +172,47 @@ function useColumns () {
       }
     },
     {
-      key: 'forwardingProxyRules',
+      key: 'forwardingRules',
       title: $t({ defaultMessage: 'Forwarding Rules' }),
-      dataIndex: 'forwardingProxyRules',
+      dataIndex: 'forwardingRules',
       align: 'center',
       sorter: true,
-      render: function (_, { forwardingProxyRules }) {
-        return forwardingProxyRules?.length
+      render: function (_, { forwardingRules }) {
+        return forwardingRules?.length
           ? <Tooltip
-            overlayInnerStyle={{ minWidth: '380px' }}
             title={<MdnsProxyForwardingRulesTable
+              featureType={MdnsProxyFeatureTypeEnum.EDGE}
+              rowKey='ruleIndex'
               readonly
               tableType={'compactBordered'}
-              rules={forwardingProxyRules}
+              rules={forwardingRules}
             />}
-            children={forwardingProxyRules.length}
+            children={forwardingRules.length}
             dottedUnderline
+            placement='bottom'
+            overlayClassName={UI.toolTipClassName}
+            overlayInnerStyle={{ minWidth: 380 }}
           />
           : 0
       }
     },
     {
-      key: 'venueInfo',
+      key: 'activations',
       title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
-      dataIndex: 'venueInfo',
+      dataIndex: 'activations',
       align: 'center',
-      filterKey: 'venueInfo.venueId',
+      filterKey: 'activations.venueId',
       filterable: venueNameMap,
       sorter: true,
       render: function (_, row) {
-        if (!row.venueInfo || row.venueInfo.length === 0) return 0
+        if (!row.activations || row.activations.length === 0) return 0
 
-        const venueIds = Object.keys(groupBy(row.venueInfo, 'venueId'))
-        const tooltipItems = venueNameMap.filter(v => venueIds!.includes(v.key)).map(v => v.value)
-        return <SimpleListTooltip items={tooltipItems} displayText={venueIds.length} />
+        const venueIds = Object.keys(groupBy(row.activations, 'venueId'))
+        const venueNames = venueNameMap.filter(v => venueIds!.includes(v.key)).map(v => v.value)
+        return <CountAndNamesTooltip data={{
+          count: venueIds.length, names: venueNames.sort(defaultSort) as string[]
+        }}
+        />
       }
     }
   ]
