@@ -5,6 +5,7 @@ import { Row, Col, Form, Radio, Typography, RadioChangeEvent, Checkbox, Select, 
 import { CheckboxChangeEvent }                                                          from 'antd/lib/checkbox'
 
 import { Card, Tooltip }                                        from '@acx-ui/components'
+import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
 import { ICX_MODELS_MODULES, TrustedPort, TrustedPortTypeEnum } from '@acx-ui/rc/utils'
 import { getIntl }                                              from '@acx-ui/utils'
 
@@ -42,6 +43,8 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
   const [optionListForSlot2, setOptionListForSlot2] = useState<ModelsType[]>([])
   const [optionListForSlot3, setOptionListForSlot3] = useState<ModelsType[]>([])
   const [optionListForSlot4, setOptionListForSlot4] = useState<ModelsType[]>([])
+
+  const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
 
   const [trustedPorts, setTrustedPorts] =
     useState<TrustedPort>({
@@ -207,7 +210,15 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
     const modelsData = Object.keys(modelsList).map(key => {
       return { label: key, value: key }
     })
-    setModels(modelsData)
+
+    const filterModels = (modelsData: { label: string; value: string }[]) => {
+      if (!isSupport8200AV && index === 'ICX8200') {
+        return modelsData.filter(model => model.value !== '24PV' && model.value !== 'C08PFV')
+      }
+      return modelsData
+    }
+    const filteredModels = filterModels(modelsData)
+    setModels(filteredModels)
   }
 
   const onModelChange = (e: RadioChangeEvent) => {

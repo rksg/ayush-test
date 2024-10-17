@@ -29,7 +29,7 @@ const getRadioDescription = (radioTypes: RadioTypeEnum[]) => {
   if (radioTypes.length === 3) {
     return 'All'
   } else if (radioTypes.length === 2) {
-    return radioTypes.join('/ ')
+    return radioTypes.join(', ')
   } else {
     return radioTypes[0]
   }

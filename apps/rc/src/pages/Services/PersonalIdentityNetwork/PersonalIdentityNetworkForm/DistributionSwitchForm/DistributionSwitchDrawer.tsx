@@ -5,8 +5,10 @@ import _                                                     from 'lodash'
 import { useIntl }                                           from 'react-intl'
 import styled                                                from 'styled-components'
 
-import { Button, Drawer, Modal, Subtitle, Table, Transfer, useStepFormContext } from '@acx-ui/components'
-import { useValidateDistributionSwitchInfoMutation }                            from '@acx-ui/rc/services'
+import { Button, Drawer, Modal, Subtitle, Table, Tooltip, Transfer, useStepFormContext } from '@acx-ui/components'
+import {
+  useValidateDistributionSwitchInfoMutation
+} from '@acx-ui/rc/services'
 import {
   AccessSwitch,
   checkVlanMember,
@@ -14,9 +16,10 @@ import {
   DistributionSwitchSaveData,
   networkWifiIpRegExp,
   SwitchLite,
-  PersonalIdentityNetworkFormData
+  PersonalIdentityNetworkFormData,
+  isVerGEVer
 } from '@acx-ui/rc/utils'
-import { useParams }                   from '@acx-ui/react-router-dom'
+import { TenantLink, useParams }       from '@acx-ui/react-router-dom'
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
 const RequiredMark = styled.span`
@@ -43,7 +46,8 @@ export function DistributionSwitchDrawer (props: {
   const venueId = pinForm.getFieldValue('venueId')
   const edgeClusterId = pinForm.getFieldValue('edgeClusterId')
 
-  const defaultRecord = { siteKeepAlive: '5', siteRetry: '3', siteName: edgeClusterId }
+  const defaultRecord = { siteKeepAlive: '5', siteRetry: '3' }
+  const requiredFw = '10.0.10f'
 
   const [openModal, setOpenModal] = useState(false)
   const [availableSwitchList, setAvailableSwitchList] = useState<SwitchLite[]>([])
@@ -69,6 +73,9 @@ export function DistributionSwitchDrawer (props: {
     const inUseSwitchIds = (accessSwitches || []).map(sw=>sw.id).concat(dsId)
     const availableSwitchList =
       availableSwitches.concat(removedSwitchList).filter(sw=>!inUseSwitchIds.includes(sw.id))
+        .filter(item =>
+          item.firmwareVersion && !isVerGEVer(requiredFw, item.firmwareVersion, true)
+        )
     setAvailableSwitchList(availableSwitchList)
   }, [pinForm, availableSwitches, dsId, accessSwitches])
 
@@ -95,7 +102,7 @@ export function DistributionSwitchDrawer (props: {
           try {
             await validateDistributionSwitchInfo({
               params: { tenantId, venueId },
-              payload: values
+              payload: { ...values, siteName: edgeClusterId }
             }).unwrap()
             form.submit()
           } catch (error) {
@@ -107,9 +114,24 @@ export function DistributionSwitchDrawer (props: {
         layout='vertical'
         initialValues={editRecord || defaultRecord}>
 
-        <Form.Item name='siteName' hidden children={<Input />} />
         <Form.Item name='id'
-          label={$t({ defaultMessage: 'Distribution Switch' })}
+          label={<>{ $t({ defaultMessage: 'Distribution Switch' }) }
+            <Tooltip.Question
+              placement='bottom'
+              title={$t({
+                defaultMessage: `Only the {supportedModels} distribution switches support PIN,
+                and the firmware must be version {requiredFw} or higher.{br}
+                You may upgrade your firmware from {firmwareLink}`
+              }, {
+                br: <br />,
+                firmwareLink: <TenantLink to='/administration/fwVersionMgmt/switchFirmware'>
+                  {$t({ defaultMessage: 'Administration > Version Management > Switch Firmware' })}
+                </TenantLink>,
+                requiredFw,
+                supportedModels: ['ICX-7550', 'ICX-7650', 'ICX-7850'].join(', ')
+              })}
+            />
+          </>}
           rules={[{ required: true }]}
           hidden={!!editRecord}
         >
@@ -163,7 +185,19 @@ export function DistributionSwitchDrawer (props: {
         <Row justify='space-between' style={{ padding: '30px 0 10px' }}>
           <Col>
             <Subtitle level={4}>
-              {$t({ defaultMessage: 'Select Access Switches' })} <RequiredMark />
+              {$t({ defaultMessage: 'Select Access Switches' })}
+              <RequiredMark style={{ margin: '0 5px' }}/>
+              <Tooltip.Question iconStyle={{ width: '20px', marginBottom: '-7px' }}
+                title={$t({ defaultMessage: `
+                  PIN feature requires your switch running firmware version {requiredFw} or higher.
+                  You may upgrade your firmware from {firmwareLink}`
+                }, {
+                  firmwareLink: <TenantLink to='/administration/fwVersionMgmt/switchFirmware'>{
+                    $t({ defaultMessage: 'Administration > Version Management > Switch Firmware' })
+                  }</TenantLink>,
+                  requiredFw
+                })}
+              />
             </Subtitle>
           </Col>
           <Col>
