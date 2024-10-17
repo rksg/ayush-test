@@ -85,8 +85,11 @@ export function CliStepModels () {
       ? [
         ...selected,
         ...getVisibleModelList(allFamilyModels, filteredModelFamily)]
-      : selected.filter((m: string) =>
-        !getVisibleModelList(allFamilyModels, filteredModelFamily).includes(m))
+      : selected.filter((m: string) => {
+        const visibleModelList = getVisibleModelList(allFamilyModels, filteredModelFamily)
+        const removeableModelList = _.difference(visibleModelList, appliedModels)
+        return !removeableModelList.includes(m)
+      })
     const updateSelected = _.uniq(selectedModels)
 
     form.setFieldValue('models', updateSelected)

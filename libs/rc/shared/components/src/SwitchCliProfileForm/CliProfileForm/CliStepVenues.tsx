@@ -49,7 +49,7 @@ export function CliStepVenues (props: {
   })
 
   const [selectedRows, setSelectedRows] = useState<React.Key[]>([])
-  const [customizedSwitchVenues, setCustomizedSwitchVenues] = useState<string[]>([])
+  const [preselectedRows, setPreselectedRows] = useState<string[]>([])
 
   const columns: TableProps<Venue>['columns'] = [{
     title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
@@ -103,15 +103,16 @@ export function CliStepVenues (props: {
   })
 
   const onChangeVenues = (values?: React.Key[] | string[]) => {
-    setSelectedRows(values as React.Key[])
-    form?.setFieldValue('venues', values)
+    const selected = _.uniq([...preselectedRows, ...(values ?? [])])
+    setSelectedRows(selected as React.Key[])
+    form?.setFieldValue('venues', selected)
   }
 
   const transformData = (
     list?: Venue[],
     models?: string[],
     selectedVenues?: React.Key[],
-    customizedSwitchVenues?: string[]
+    preselectedRows?: string[]
   ) => {
     return list?.map(venue => {
       const venueApplyModels = cliFamilyModels
@@ -124,7 +125,7 @@ export function CliStepVenues (props: {
         && !(initialValues as CliConfiguration)?.venues?.includes(venue.id))
         && _.intersection(models, venueApplyModels)?.length > 0
 
-      const isPreSelect = customizedSwitchVenues?.includes(venue.id)
+      const isPreSelect = preselectedRows?.includes(venue.id)
 
       return {
         ...venue,
@@ -138,23 +139,23 @@ export function CliStepVenues (props: {
   }
 
   useEffect(() => {
-    const customizedSwitchVenues = getCustomizedSwitchVenues(
+    const preselectedRows = getCustomizedSwitchVenues(
       data?.variables, props?.allowedSwitchList
     )
-    setCustomizedSwitchVenues(customizedSwitchVenues)
+    setPreselectedRows(preselectedRows)
   }, [data?.variables, props?.allowedSwitchList])
 
   useEffect(() => {
     onChangeVenues(data?.venues)
-  }, [data])
+  }, [])
 
   useEffect(() => {
     if (!tableQuery.isLoading) {
       // eslint-disable-next-line max-len
-      const list = transformData(tableQuery?.data?.data, data?.models, selectedRows, customizedSwitchVenues)
+      const list = transformData(tableQuery?.data?.data, data?.models, selectedRows, preselectedRows)
       const venues = _.uniq([
         ...( form?.getFieldValue('venues') || []),
-        ...customizedSwitchVenues
+        ...preselectedRows
       ])
 
       const updateVenues = venues?.filter((vId:string) => {
@@ -162,11 +163,11 @@ export function CliStepVenues (props: {
         const excludeApplyingModels = venueApplyModels?.filter(m => !data?.models?.includes(m))
         const isModelOverlap = _.intersection(data?.models, excludeApplyingModels)?.length > 0
         return !isModelOverlap
-      })
+      }) ?? []
       setSelectedRows(updateVenues as React.Key[])
       form?.setFieldValue('venues', updateVenues)
     }
-  }, [data?.models, tableQuery.isLoading, customizedSwitchVenues])
+  }, [data?.models, tableQuery.isLoading, preselectedRows])
 
   return <Row gutter={24}>
     <Col span={24}>
@@ -194,7 +195,7 @@ export function CliStepVenues (props: {
         <Table
           columns={columns}
           dataSource={transformData(
-            tableQuery?.data?.data, data?.models, selectedRows, customizedSwitchVenues
+            tableQuery?.data?.data, data?.models, selectedRows, preselectedRows
           )}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}

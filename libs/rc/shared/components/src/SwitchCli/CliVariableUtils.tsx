@@ -504,17 +504,19 @@ export const getCustomizeFields = (props: {
         ? $t({ defaultMessage: 'This switch is already provisioned with the custom value.' })
         : ''
       }>
-        <Button
-          key={`delete${key}`}
-          role='deleteBtn'
-          type='link'
-          icon={<DeleteOutlined size='sm' />}
-          style={{
-            display: 'flex', height: type === VariableType.STRING ? '50.5px' : ''
-          }}
-          disabled={!enableEdit}
-          onClick={() => remove(name)}
-        />
+        <Space>
+          <Button
+            key={`delete${key}`}
+            role='deleteBtn'
+            type='link'
+            icon={<DeleteOutlined size='sm' />}
+            style={{
+              display: 'flex', height: type === VariableType.STRING ? '50.5px' : ''
+            }}
+            disabled={!enableEdit}
+            onClick={() => remove(name)}
+          />
+        </Space>
       </Tooltip>
     </Fragment>
     ))
