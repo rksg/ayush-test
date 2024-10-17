@@ -1,4 +1,9 @@
-import { ClusterSubInterfaceSettings, LagSubInterface, NodeSubInterfaces, PortSubInterface } from "@acx-ui/rc/utils";
+import {
+  ClusterSubInterfaceSettings,
+  LagSubInterface,
+  NodeSubInterfaces,
+  PortSubInterface
+} from "@acx-ui/rc/utils"
 import { EdgeGeneralFixtures } from "."
 
 export const mockEdgeSubInterfaces = {
@@ -145,7 +150,6 @@ const generateMockedClusterSubInterfaceSettings = (): ClusterSubInterfaceSetting
     nodes: []
   }
 
-  // Iterate over the lagSettings and portSettings to generate nodes
   mockedHaNetworkSettings.lagSettings.forEach((lagSetting, index) => {
     const node: NodeSubInterfaces = {
       serialNumber: lagSetting.serialNumber,
@@ -153,23 +157,21 @@ const generateMockedClusterSubInterfaceSettings = (): ClusterSubInterfaceSetting
       lags: []
     }
 
-    // Generate LAG sub-interfaces
     lagSetting.lags.forEach(lag => {
       const lagSubInterface: LagSubInterface = {
         lagId: lag.id,
         subInterfaces: [{
           id: `sub_if_lag_${lag.id}`,
-          vlan: 200 + index,  // Assign VLANs starting from 200 for LAGs, customizable
+          vlan: 200 + index,
           portType: lag.portType,
           ipMode: lag.ipMode,
           ip: lag.ip,
           subnet: lag.subnet
         }]
       }
-      node.lags.push(lagSubInterface);
+      node.lags.push(lagSubInterface)
     })
 
-    // Find corresponding portSettings and generate port sub-interfaces
     const portSetting = mockedHaNetworkSettings.portSettings.find(
       portSetting => portSetting.serialNumber === lagSetting.serialNumber
     )
@@ -180,7 +182,7 @@ const generateMockedClusterSubInterfaceSettings = (): ClusterSubInterfaceSetting
           portId: port.id,
           subInterfaces: [{
             id: `sub_if_port_${port.id}`,
-            vlan: 100 + index,  // Assign VLANs starting from 100 for ports, customizable
+            vlan: 100 + index,
             portType: port.portType,
             ipMode: port.ipMode,
             ip: port.ip,
@@ -188,14 +190,14 @@ const generateMockedClusterSubInterfaceSettings = (): ClusterSubInterfaceSetting
           }]
         }
         node.ports.push(portSubInterface)
-      });
+      })
     }
 
     clusterSubInterfaceSettings.nodes.push(node)
-  });
+  })
 
-  return clusterSubInterfaceSettings;
-};
+  return clusterSubInterfaceSettings
+}
 export const mockedClusterSubInterfaceSettings = generateMockedClusterSubInterfaceSettings()
 
 export const mockEdgeSubInterfacesStatus = {
