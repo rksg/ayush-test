@@ -344,7 +344,7 @@ export interface NewApGroupViewModelResponseType {
   venueId?: string,
   apSerialNumbers?: string[],
   wifiNetworkIds?: string[],
-  clientCount?: number,
+  clientCount?: number
 }
 
 export interface NewGetApGroupResponseType {

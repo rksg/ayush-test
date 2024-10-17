@@ -3,6 +3,7 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 /* eslint-disable max-len */
 export enum Features {
   ABAC_POLICIES_TOGGLE = 'abac-policies-toggle',
+  ALARM_NEW_API_TOGGLE = 'acx-ui-new-alarm-api-toggle',
   ALLOWED_OPERATIONS_TOGGLE = 'allowed-operations-toggle',
   AP_FIRMWARE_UPGRADE_BY_MODEL_TOGGLE = 'ap-fw-mgmt-upgrade-by-model',
   AP_GPS = 'ap-gps-toggle',
@@ -195,7 +196,8 @@ export enum Features {
   WIFI_OVER_THE_DS_FT_SUPPORT_TOGGLE = 'wifi-over-the-ds-ft-support-toggle',
   WIFI_COMPATIBILITY_BY_MODEL = 'wifi-compatibility-check-by-model-toggle',
   ENTITLEMENT_LICENSE_COMPLIANCE_PHASE2_TOGGLE = 'entitlement-license-compliance-phase2-toggle',
-  BRAND360_MDU_TOGGLE = 'acx-ui-brand360-mdu-toggle'
+  BRAND360_MDU_TOGGLE = 'acx-ui-brand360-mdu-toggle',
+  SERVER_CERTIFICATE_MANAGEMENT_UI_TOGGLE = 'server-certificate-management-ui-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
