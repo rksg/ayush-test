@@ -132,7 +132,9 @@ export const tooltipFormatter = (
 function getHealthPieChart (
   data: { key: string; value: number; name: string; color: string }[],
   dataFormatter: (value: unknown, tz?: string | undefined) => string,
-  size: { width: number; height: number }
+  size: { width: number; height: number },
+  pieFilter: string,
+  setPieFilter: (filter: string) => void
 ) {
 
   let tops = data.slice(0, topCount)
@@ -154,6 +156,7 @@ function getHealthPieChart (
       showTotal={false}
       labelTextStyle={{ overflow: 'truncate', width: size.width * 0.5 }} // 50% of width
       dataFormatter={tooltipFormatter(total, dataFormatter)}
+      onClick={(e) => e.name === pieFilter ? setPieFilter('') : setPieFilter(e.name) }
     /> : <NoData />
   )
 }
@@ -163,13 +166,17 @@ export const HealthPieChart = ({
   filters,
   queryType,
   selectedStage,
-  valueFormatter
+  valueFormatter,
+  pieFilter,
+  setPieFilter
 }: {
   size: { width: number; height: number }
   filters: AnalyticsFilter
   queryType: DrilldownSelection
   selectedStage: Stages
   valueFormatter: (value: unknown, tz?: string | undefined) => string
+  pieFilter: string
+  setPieFilter: (filter: string) => void
 }) => {
   const { $t } = useIntl()
   const { startDate: start, endDate: end, filter } = filters
@@ -203,7 +210,7 @@ export const HealthPieChart = ({
     .map(({ key, data }) => ({
       label: titleMap[key as TabKeyType],
       value: key,
-      children: getHealthPieChart(data, valueFormatter, size)
+      children: getHealthPieChart(data, valueFormatter, size, pieFilter, setPieFilter)
     }))
   const count = showTopNPieChartResult(
     $t,
@@ -212,6 +219,7 @@ export const HealthPieChart = ({
   )
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { setChartKey(tabDetails?.[0]?.value as TabKeyType) }, [tabDetails.length])
+  useEffect(() => { setPieFilter('') }, [chartKey])
 
   return (
     <Loader states={[queryResults]} style={size}>

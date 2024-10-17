@@ -24,11 +24,13 @@ import { TableHeading }                                  from './styledComponent
 export const ImpactedClientsTable = ({
   filters,
   selectedStage,
-  drillDownSelection
+  drillDownSelection,
+  pieFilter
 }: {
   filters: AnalyticsFilter;
   selectedStage: Stages;
   drillDownSelection: DrilldownSelection;
+  pieFilter: string;
 }) => {
   const { $t } = useIntl()
   const fieldMap = {
@@ -46,7 +48,8 @@ export const ImpactedClientsTable = ({
       ...payload,
       field: field,
       stage: (selectedStage && stageNameToCodeMap[selectedStage]) as string,
-      topImpactedClientLimit: topImpactedClientLimit
+      topImpactedClientLimit: topImpactedClientLimit,
+      pieFilter: pieFilter
     },
     {
       selectFromResult: (result) => {
@@ -131,16 +134,26 @@ export const ImpactedClientsTable = ({
     }
   ]
   const totalCount = queryResults?.data?.length ?? 0
+
+  const filteredText = $t({ defaultMessage: `{count} Impacted {totalCount, plural,
+    one {Client}
+    other {Clients}
+  } filtered by: {pieFilter}` }, {
+    count: showTopNPieChartResult($t, totalCount, topImpactedClientLimit), totalCount, pieFilter
+  })
+
+  const unfilteredText = $t({ defaultMessage: `{count} Impacted {totalCount, plural,
+    one {Client}
+    other {Clients}
+  }` }, {
+    count: showTopNPieChartResult($t, totalCount, topImpactedClientLimit), totalCount
+  })
+
   return (
     <Loader states={[queryResults]}>
       <TableHeading>
         <b>{selectedStage && $t(stageLabels[selectedStage])} </b>
-        {$t({ defaultMessage: `{count} Impacted {totalCount, plural,
-          one {Client}
-          other {Clients}
-        }` }, {
-          count: showTopNPieChartResult($t, totalCount, topImpactedClientLimit), totalCount
-        })}
+        {pieFilter ? filteredText : unfilteredText}
       </TableHeading>
       <Table
         columns={columns}

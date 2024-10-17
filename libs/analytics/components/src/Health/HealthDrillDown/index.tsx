@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { isNull } from 'lodash'
 import AutoSizer  from 'react-virtualized-auto-sizer'
@@ -24,6 +24,8 @@ const HealthDrillDown = (props: {
   filters: AnalyticsFilter;
   drilldownSelection: DrilldownSelection;
 }) => {
+  const [pieFilter, setPieFilter] = useState('')
+
   const { drilldownSelection, filters } = props
   const colors = [
     cssStr('--acx-accents-blue-80'),
@@ -97,6 +99,9 @@ const HealthDrillDown = (props: {
   const isConnectionFailure = drilldownSelection === CONNECTIONFAILURE
   const funnelChartData = isConnectionFailure ? connectionFailureResults : ttcResults
   const format = formatter(isConnectionFailure ? 'countFormat' : 'durationFormat')
+
+  useEffect(() => { setPieFilter('') }, [selectedStage])
+
   return drilldownSelection ? (
     <GridRow>
       <GridCol col={{ span: 24 }}>
@@ -127,6 +132,8 @@ const HealthDrillDown = (props: {
                 queryType={drilldownSelection}
                 selectedStage={selectedStage}
                 valueFormatter={format}
+                pieFilter={pieFilter}
+                setPieFilter={setPieFilter}
               />
             }</AutoSizer>
           </GridCol>
@@ -134,6 +141,7 @@ const HealthDrillDown = (props: {
             <ImpactedClientsTable filters={filters}
               selectedStage={selectedStage}
               drillDownSelection={drilldownSelection}
+              pieFilter={pieFilter}
             />
           </GridCol>
         </>
