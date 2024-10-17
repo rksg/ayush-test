@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import { CommonRbacUrlsInfo, CommonUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                           from '@acx-ui/store'
 import {
@@ -10,10 +11,9 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { alarmList }         from './__tests__/alarmListFixtures'
-import { alarmMeta }         from './__tests__/alarmMetaFixtures'
-import { dashboardOverview } from './__tests__/dashboardOverviewFixtures'
-import AlarmsButton          from './AlarmsButton'
+import { alarmList } from './__tests__/alarmListFixtures'
+import { alarmMeta } from './__tests__/alarmMetaFixtures'
+import AlarmsButton  from './AlarmsButton'
 
 const params = { tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1' }
 
@@ -39,12 +39,24 @@ const venueList = {
   ]
 }
 
+const alarmsData = {
+  summary: {
+    alarms: {
+      summary: {
+        major: 1
+      },
+      totalCount: 1
+    }
+  }
+}
+
 describe('AlarmsButton', () => {
+  jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.ALARM_NEW_API_TOGGLE)
   beforeEach(async () => {
     mockServer.use(
-      rest.get(
-        CommonUrlsInfo.getDashboardOverview.url,
-        (req, res, ctx) => res(ctx.json(dashboardOverview))
+      rest.post(
+        CommonUrlsInfo.getAlarmSummaries.url,
+        (req, res, ctx) => res(ctx.json(alarmsData))
       ),
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
