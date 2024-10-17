@@ -6,7 +6,7 @@ import { useIntl }   from 'react-intl'
 import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
 import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { CheckMark }                                     from '@acx-ui/icons'
-import { SimpleListTooltip }                             from '@acx-ui/rc/components'
+import { CertificateToolTip, SimpleListTooltip }         from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeleteAAAPolicyListMutation,
@@ -32,9 +32,6 @@ import {
   CertificateStatusType
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
-
-import { CertificateToolTip } from '../CertificateToolTip/Index'
-
 
 export default function AAATable () {
   const { $t } = useIntl()

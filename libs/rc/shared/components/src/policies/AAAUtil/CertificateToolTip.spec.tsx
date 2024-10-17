@@ -1,7 +1,7 @@
 import { CertificateStatusType } from '@acx-ui/rc/utils'
 import { render, screen }        from '@acx-ui/test-utils'
 
-import { CertificateToolTip } from './Index'
+import { CertificateToolTip } from './CertificateToolTip'
 
 describe('CertificateToolTip', () => {
   it('should visible render correctly', async () => {
