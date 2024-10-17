@@ -8,6 +8,7 @@ import { useIntl }                         from 'react-intl'
 import {
   Drawer,
   DrawerProps,
+  Loader,
   showToast
 } from '@acx-ui/components'
 
@@ -57,7 +58,7 @@ export function ApplicationTokenForm (props: {
     // reset mutation response everytime submission ended
     const isEnded = createResponse.isSuccess || createResponse.isError
     if (isEnded) createResponse.reset()
-  }, [$t, onClose, createResponse, applicationToken?.id])
+  }, [$t, onClose, createResponse])
 
   useEffect(() => {
     if (rotateResponse.isSuccess) {
@@ -77,7 +78,7 @@ export function ApplicationTokenForm (props: {
     // reset mutation response everytime submission ended
     const isEnded = rotateResponse.isSuccess || rotateResponse.isError
     if (isEnded) rotateResponse.reset()
-  }, [$t, rotateResponse, applicationToken?.clientSecret])
+  }, [$t, rotateResponse])
 
   const formProps: FormProps<ApplicationTokenDto> = {
     layout: 'vertical',
@@ -94,14 +95,6 @@ export function ApplicationTokenForm (props: {
       await form.validateFields()
       const values = form.getFieldsValue()
       await doCreate(values).unwrap()
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
-    }
-  }
-
-  const onRotate = async () => {
-    try {
-      await doRotate(applicationToken!).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -146,44 +139,48 @@ export function ApplicationTokenForm (props: {
           label={$t({ defaultMessage: 'Client ID' })}
           rules={[{ required: true }]}
           children={
-            <Label>{applicationToken?.clientId}</Label>
+            <>
+              <Label>{applicationToken?.clientId}</Label>
+              <TransparentButton
+                type='link'
+                data-testid='copy-client-id'
+                onClick={() => {
+                  handleClickCopy(form.getFieldValue('clientId'))
+                }}>
+                {$t({ defaultMessage: 'Copy' })}
+              </TransparentButton>
+            </>
           }
         />
-        <TransparentButton
-          type='link'
-          data-testid='copy-client-id'
-          onClick={() => {
-            handleClickCopy(form.getFieldValue('clientId'))
-          }}>
-          {$t({ defaultMessage: 'Copy' })}
-        </TransparentButton>
         <Form.Item
           validateFirst
           name='clientSecret'
-          style={{ marginTop: '13px' }}
+          style={{ marginTop: '21px' }}
           label={$t({ defaultMessage: 'Client Secret' })}
           rules={[{ required: true }]}
           children={
-            <SecretInput
-              bordered={false}
-              value={applicationToken?.clientSecret}
-            />
+            <Loader states={[rotateResponse]}>
+              <SecretInput
+                bordered={false}
+                value={applicationToken?.clientSecret}
+              />
+              <Row>
+                <TransparentButton
+                  type='link'
+                  onClick={() => doRotate(applicationToken!)}>
+                  {$t({ defaultMessage: 'Rotate Secret' })}
+                </TransparentButton>
+                <Divider type='vertical'/>
+                <TransparentButton
+                  type='link'
+                  data-testid='copy-client-secret'
+                  onClick={() => handleClickCopy(form.getFieldValue('clientSecret'))}>
+                  {$t({ defaultMessage: 'Copy' })}
+                </TransparentButton>
+              </Row>
+            </Loader>
           }
         />
-        <Row>
-          <TransparentButton
-            type='link'
-            onClick={onRotate}>
-            {$t({ defaultMessage: 'Rotate Secret' })}
-          </TransparentButton>
-          <Divider type='vertical'/>
-          <TransparentButton
-            type='link'
-            data-testid='copy-client-secret'
-            onClick={() => handleClickCopy(form.getFieldValue('clientSecret'))}>
-            {$t({ defaultMessage: 'Copy' })}
-          </TransparentButton>
-        </Row>
       </>)}
     </Form>
   </Drawer>
