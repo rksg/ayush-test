@@ -151,7 +151,8 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
           if (!network) return
 
           const cachedSoftGre = getCachedSoftGre(row.id, networkId)
-          const venueSdLanInfo = cachedSdLanNetworkVenues.sdLansVenueMap[row.id]?.[0]
+          const cachedVenueSdLanInfo = cachedSdLanNetworkVenues.sdLansVenueMap[row.id]?.[0]
+          const venueSdLanInfo = sdLanScopedNetworkVenues.sdLansVenueMap[row.id]?.[0]
           // eslint-disable-next-line max-len
           const venuePinInfo = (pinScopedNetworkVenues[row.id] as PersonalIdentityNetworksViewData[])?.[0]
 
@@ -162,6 +163,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
                 ...network,
                 id: networkId
               }}
+              cachedVenueSdLanInfo={cachedVenueSdLanInfo}
               venueSdLanInfo={venueSdLanInfo}
               venuePinInfo={venuePinInfo}
               venueSoftGre={cachedSoftGre}

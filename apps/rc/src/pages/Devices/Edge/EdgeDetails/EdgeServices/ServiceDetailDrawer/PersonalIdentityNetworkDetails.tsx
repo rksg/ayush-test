@@ -27,6 +27,7 @@ const defaultFields = [
   'personaGroupId',
   'vxlanTunnelProfileId',
   'tunneledWlans',
+  'tunnelNumber',
   'edgeAlarmSummary'
 ]
 interface PersonalIdentityNetworkDetailsProps {

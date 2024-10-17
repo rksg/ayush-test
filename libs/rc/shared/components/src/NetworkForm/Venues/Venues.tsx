@@ -603,7 +603,11 @@ export function Venues (props: VenuesProps) {
       }
       if (isSoftGreEnabled)
         handleSoftGreTunnelAction(args)
-      const shouldCloseModal = await handleSdLanTunnelAction(args)
+
+      const networkVenueId = otherData.network?.venueId ?? ''
+      // eslint-disable-next-line max-len
+      const originalVenueSdLan = sdLanScopedNetworkVenues.sdLansVenueMap[networkVenueId]?.[0]
+      const shouldCloseModal = await handleSdLanTunnelAction(originalVenueSdLan, args)
       if (shouldCloseModal !== false)
         handleCloseTunnelModal()
     }catch (e) {

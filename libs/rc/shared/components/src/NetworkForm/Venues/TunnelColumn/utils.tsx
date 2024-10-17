@@ -1,6 +1,8 @@
-import { FormInstance } from 'antd'
+/* eslint-disable max-len */
+import { FormInstance }                            from 'antd'
+import { cloneDeep, find, findIndex, isNil, pick } from 'lodash'
 
-import { EdgeMvSdLanViewData, NetworkTunnelSdLanAction, NetworkTunnelSoftGreAction } from '@acx-ui/rc/utils'
+import { EdgeMvSdLanViewData, EdgeSdLanTunneledWlan, NetworkTunnelSdLanAction, NetworkTunnelSoftGreAction } from '@acx-ui/rc/utils'
 
 import {
   isSdLanGuestUtilizedOnDiffVenue,
@@ -9,15 +11,18 @@ import {
 } from '../../../EdgeSdLan/edgeSdLanUtils'
 import { showSdLanGuestFwdConflictModal }                                                from '../../../EdgeSdLan/SdLanGuestFwdConflictModal'
 import { NetworkTunnelActionForm, NetworkTunnelActionModalProps, NetworkTunnelTypeEnum } from '../../../NetworkTunnelActionModal'
+import { mergeSdLanCacheAct }                                                            from '../../../NetworkTunnelActionModal/utils'
 import { getNetworkTunnelSdLanUpdateData }                                               from '../../utils'
 
 
-export const handleSdLanTunnelAction = async (props: {
+export const handleSdLanTunnelAction = async (
+  originalVenueSdLan: EdgeMvSdLanViewData | undefined,
+  props: {
   form: FormInstance,
   modalFormValues: NetworkTunnelActionForm,
   otherData: {
     network: NetworkTunnelActionModalProps['network'],
-    venueSdLan?: EdgeMvSdLanViewData
+    venueSdLan?: EdgeMvSdLanViewData,
   }
 }) => {
   const { form, modalFormValues, otherData } = props
@@ -35,15 +40,23 @@ export const handleSdLanTunnelAction = async (props: {
 
   if (!updateContent) return
 
+  const mergedSdlan = mergeSdLanCacheAct(cloneDeep(venueSdLan), updateContent ?? [])
+  const isNoChange = isEqualSdLanTunneling(network, originalVenueSdLan, mergedSdlan)
+
+  if(isNoChange) {
+    const dataIdx = findIndex(updateContent, { serviceId: venueSdLan.id, venueId: networkVenueId })
+    updateContent.splice(dataIdx, 1)
+    form.setFieldValue('sdLanAssociationUpdate', updateContent)
+  }
+
   return await new Promise<void | boolean>((resolve) => {
-  // eslint-disable-next-line max-len
     if (modalFormValues.tunnelType !== NetworkTunnelTypeEnum.SdLan && isSdLanLastNetworkInVenue(venueSdLan.tunneledWlans, network!.venueId)) {
       showSdLanVenueDissociateModal(async () => {
         form.setFieldValue('sdLanAssociationUpdate', updateContent)
         resolve()
       }, () => resolve(false))
     } else {
-      // eslint-disable-next-line max-len
+
       const needSdLanConfigConflictCheck = modalFormValues.tunnelType === NetworkTunnelTypeEnum.SdLan
         && isSdLanGuestUtilizedOnDiffVenue(venueSdLan!, network!.id, network!.venueId)
 
@@ -86,6 +99,30 @@ export const handleSdLanTunnelAction = async (props: {
       }
     }
   })
+}
+
+const isTunneledWlansEqual = (wlans1: EdgeSdLanTunneledWlan[] | undefined, wlans2: EdgeSdLanTunneledWlan[] | undefined) => {
+  if (wlans1?.length !== wlans2?.length)
+    return false
+
+  return wlans1 ? wlans1.every(item => find(wlans2, pick(item, ['venueId', 'networkId']) )) : true
+}
+const isEqualSdLanTunneling = (
+  network: NetworkTunnelActionModalProps['network'],
+  original: EdgeMvSdLanViewData | undefined,
+  modified: EdgeMvSdLanViewData
+) => {
+  // `original` will be undefined when the networkVenue is not bounded to SDLAN
+  if (isNil(original)) {
+    const isNotTunneled = !find(modified.tunneledWlans, { networkId: network?.id, venueId: network?.venueId })
+    return isNotTunneled
+  }
+
+  const isTunnelWlansNoChange = isTunneledWlansEqual(original?.tunneledWlans, modified.tunneledWlans)
+  if(!isTunnelWlansNoChange) return false
+
+  const isTunnelGuestWlansNoChange = isTunneledWlansEqual(original?.tunneledGuestWlans, modified.tunneledGuestWlans)
+  return isTunnelGuestWlansNoChange
 }
 
 export const handleSoftGreTunnelAction = (props: {

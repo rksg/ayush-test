@@ -15,6 +15,9 @@ import { handleSdLanTunnelAction, handleSoftGreTunnelAction } from './utils'
 interface NetworkTunnelSwitchProps {
   currentVenue: Venue
   currentNetwork: NetworkSaveData
+  // cachedVenueSdLanInfo is latest state with all actions applied on SD-LAN in NetworkForm
+  cachedVenueSdLanInfo: EdgeMvSdLanViewData
+  // venueSdLanInfo is the API responded data
   venueSdLanInfo: EdgeMvSdLanViewData
   venuePinInfo: PersonalIdentityNetworksViewData
   venueSoftGre: SoftGreNetworkTunnel[]
@@ -24,7 +27,9 @@ interface NetworkTunnelSwitchProps {
 export const NetworkTunnelSwitch = (props: NetworkTunnelSwitchProps) => {
   const {
     currentVenue, currentNetwork,
-    venueSdLanInfo, venuePinInfo, venueSoftGre,
+    cachedVenueSdLanInfo, venueSdLanInfo,
+    venuePinInfo,
+    venueSoftGre,
     onClick
   } = props
 
@@ -40,11 +45,11 @@ export const NetworkTunnelSwitch = (props: NetworkTunnelSwitchProps) => {
   }
 
   // eslint-disable-next-line max-len
-  const tunnelType = getNetworkTunnelType(networkInfo, venueSoftGre, venueSdLanInfo, venuePinInfo)
+  const tunnelType = getNetworkTunnelType(networkInfo, venueSoftGre, cachedVenueSdLanInfo, venuePinInfo)
 
   return <NetworkTunnelSwitchBtn
     tunnelType={tunnelType}
-    venueSdLanInfo={venueSdLanInfo}
+    venueSdLanInfo={cachedVenueSdLanInfo}
     onClick={(checked) => {
       if (checked) {
         onClick(currentVenue, currentNetwork)
@@ -60,12 +65,12 @@ export const NetworkTunnelSwitch = (props: NetworkTunnelSwitchProps) => {
           form,
           modalFormValues: formValues,
           networkInfo: networkInfo,
-          otherData: { network: networkInfo, venueSdLan: venueSdLanInfo }
+          otherData: { network: networkInfo, venueSdLan: cachedVenueSdLanInfo }
         }
 
         switch (tunnelType) {
           case NetworkTunnelTypeEnum.SdLan:
-            handleSdLanTunnelAction(args)
+            handleSdLanTunnelAction(venueSdLanInfo, args)
             return
           case NetworkTunnelTypeEnum.SoftGre:
             handleSoftGreTunnelAction(args)
