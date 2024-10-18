@@ -5,7 +5,10 @@ export const edgePinDefaultPayloadFields = [
   'personaGroupId',
   'vxlanTunnelProfileId',
   'tunneledWlans',
+  'distributionSwitchInfos',
+  'accessSwitchInfos',
   'serviceStatus',
+  'tunnelNumber',
   'edgeAlarmSummary'
 ]
 

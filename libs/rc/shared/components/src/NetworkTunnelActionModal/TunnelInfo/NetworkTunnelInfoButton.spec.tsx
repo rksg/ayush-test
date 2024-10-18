@@ -7,7 +7,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { NetworkTunnelInfoButton } from '.'
+import { NetworkTunnelInfoButton } from './NetworkTunnelInfoButton'
 
 const { mockedMvSdLanDataList } = EdgeSdLanFixtures
 const defaultVenueData = { activated: { isActivated: true } }

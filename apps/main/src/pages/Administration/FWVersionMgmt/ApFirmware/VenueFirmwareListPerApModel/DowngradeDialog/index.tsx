@@ -3,13 +3,15 @@ import { useState } from 'react'
 import { Form, Typography } from 'antd'
 import { useIntl }          from 'react-intl'
 
-import { Button, Modal }                                            from '@acx-ui/components'
+import { Button, Modal }                    from '@acx-ui/components'
+import {
+  UpdateFirmwarePerApModelFirmware,
+  UpdateFirmwarePerApModelIndividualPanel
+} from '@acx-ui/rc/components'
 import { usePatchVenueApModelFirmwaresMutation }                    from '@acx-ui/rc/services'
 import { FirmwareVenuePerApModel, UpdateFirmwarePerApModelPayload } from '@acx-ui/rc/utils'
 
-import * as UI                                     from '../styledComponents'
-import { UpdateFirmwarePerApModelFirmware }        from '../UpdateNowDialog'
-import { UpdateFirmwarePerApModelIndividualPanel } from '../UpdateNowDialog/UpdateFirmwarePerApModelIndividualPanel'
+import * as UI from '../styledComponents'
 
 enum DowngradeSteps {
   INTRODUCTION,

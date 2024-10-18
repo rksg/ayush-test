@@ -11,6 +11,7 @@ import {
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import { useSwitchActions, useSwitchFirmwareUtils } from '@acx-ui/rc/components'
+import { toUserDate }                               from '@acx-ui/rc/components'
 import { useLazyGetSwitchFirmwareStatusListQuery }  from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenue,
@@ -23,8 +24,7 @@ import {
 import { useParams }                                        from '@acx-ui/react-router-dom'
 import { TABLE_QUERY_LONG_POLLING_INTERVAL, noDataDisplay } from '@acx-ui/utils'
 
-import { toUserDate } from '../../../FirmwareUtils'
-import * as UI        from '../styledComponents'
+import * as UI from '../styledComponents'
 
 export interface VenueStatusDrawerProps {
   visible: boolean,

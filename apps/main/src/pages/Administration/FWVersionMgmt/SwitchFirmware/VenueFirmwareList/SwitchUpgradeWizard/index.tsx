@@ -12,6 +12,7 @@ import {
 import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
 import { WarningCircleOutlined }               from '@acx-ui/icons'
 import { useSwitchFirmwareUtils }              from '@acx-ui/rc/components'
+import { getReleaseFirmware }                  from '@acx-ui/rc/components'
 import {
   useGetSwitchAvailableFirmwareListQuery,
   useGetSwitchDefaultFirmwareListQuery,
@@ -28,8 +29,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { getReleaseFirmware } from '../../../FirmwareUtils'
-import * as UI                from '../styledComponents'
+import * as UI from '../styledComponents'
 
 import { ScheduleStep }     from './ScheduleStep'
 import { SelectSwitchStep } from './SelectSwitchStep'
