@@ -423,7 +423,7 @@ describe('verify replacement with * in R1', () => {
       basePath: 'dashboard'
     })
   })
-  it('should replace correctly in R1 for intentAI path with intentCode', () => {
+  it('should replace correctly in R1 for intentAI detail page with intentCode', () => {
     const { result } = renderHook(() => {
       return useHelpPageLinkBasePath()
     }, {
@@ -438,7 +438,7 @@ describe('verify replacement with * in R1', () => {
       basePath: 'analytics/intentAI/*/*'
     })
   })
-  it('should replace correctly in R1 for intentAI path without intentCode', () => {
+  it('should replace correctly in R1 for intentAI page without intentCode', () => {
     const { result } = renderHook(() => {
       return useHelpPageLinkBasePath()
     }, {
