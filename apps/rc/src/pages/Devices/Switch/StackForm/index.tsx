@@ -72,7 +72,8 @@ import {
   getStackUnitsMinLimitation,
   convertInputToUppercase,
   FirmwareSwitchVenueVersionsV1002,
-  getStackUnitsMinLimitationV1002
+  getStackUnitsMinLimitationV1002,
+  SWITCH_SERIAL_PATTERN_INCLUDED_8200AV
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -103,11 +104,18 @@ const defaultPayload = {
 const modelNotSupportStack = ['ICX7150-C08P', 'ICX7150-C08PT', 'ICX8100-24', 'ICX8100-24P',
   'ICX8100-48', 'ICX8100-48P', 'ICX8100-C08PF']
 
-export const validatorSwitchModel = (serialNumber: string, isSupport8100: boolean,
-  activeSerialNumber?: string) => {
+export type SwitchModelParams = {
+  serialNumber: string;
+  isSupport8200AV: boolean;
+  isSupport8100: boolean;
+  activeSerialNumber?: string;
+}
+
+export const validatorSwitchModel = ( props: SwitchModelParams ) => {
+  const { serialNumber, isSupport8200AV, isSupport8100, activeSerialNumber } = props
   const { $t } = getIntl()
-  const re = isSupport8100 ?
-    new RegExp(SWITCH_SERIAL_PATTERN_INCLUDED_8100) : new RegExp(SWITCH_SERIAL_PATTERN)
+  const re = isSupport8200AV ? new RegExp(SWITCH_SERIAL_PATTERN_INCLUDED_8200AV)
+    : new RegExp(SWITCH_SERIAL_PATTERN)
   if (serialNumber && !re.test(serialNumber)) {
     return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
   }
@@ -153,6 +161,7 @@ export function StackForm () {
   const enableSwitchStackNameDisplayFlag = useIsSplitOn(Features.SWITCH_STACK_NAME_DISPLAY_TOGGLE)
   const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
   const isSwitchFirmwareV1002Enabled = useIsSplitOn(Features.SWITCH_FIRMWARE_V1002_TOGGLE)
+  const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
 
   const [getSwitchList] = useLazyGetSwitchListQuery()
@@ -645,8 +654,14 @@ export function StackForm () {
               message: $t({ defaultMessage: 'This field is required' })
             },
             {
-              validator: (_, value) => validatorSwitchModel(value, isSupport8100,
-                activeRow === row.key ? value : activeSerialNumber)
+              validator: (_, value) => {
+                const switchModelParams: SwitchModelParams = {
+                  serialNumber: value,
+                  isSupport8200AV: isSupport8200AV,
+                  isSupport8200AV: isSupport8100,
+                  activeSerialNumber: activeRow === row.key ? value : activeSerialNumber
+                }
+                return validatorSwitchModel(switchModelParams)}
             },
             {
               validator: (_, value) => validatorUniqueMember(value,

@@ -127,7 +127,7 @@ export const getCertificateDetails =
             content: certificateData?.certificateAuthoritiesName
           },
           {
-            type: RenderType.LINK,
+            type: certificateData?.identityName ? RenderType.LINK : RenderType.CONTENT,
             title: $t({ defaultMessage: 'Identity' }),
             // eslint-disable-next-line max-len
             link: `users/identity-management/identity-group/${certificateData?.identityGroupId}/identity/${certificateData?.identityId}`,

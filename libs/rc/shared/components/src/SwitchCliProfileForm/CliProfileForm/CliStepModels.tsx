@@ -40,6 +40,7 @@ export function CliStepModels () {
   const { $t } = useIntl()
   const params = useParams()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
 
   const { form, editMode } = useStepFormContext()
@@ -54,21 +55,23 @@ export function CliStepModels () {
   const [count, setCount] = useState(0)
   const [filteredModelFamily, setFilteredModelFamily] = useState([] as CheckboxValueType[])
 
-  const getAllFamilyModel = (isSupport8100: boolean) => {
+  const getAllFamilyModel = (isSupport8200AV: boolean) => {
     let allFamilyModel = transformIcxModels(ICX_MODELS_MODULES)
-    // if (!isSupport8200AV) {
-    //   allFamilyModel = allFamilyModel.map(family => ({
-    //     ...family,
-    //     models: family.models.filter(model =>
-    //       model !== 'ICX8200-24PV' && model !== 'ICX8200-C08PFV') }))
-    // }
+    if (!isSupport8200AV) {
+      allFamilyModel = allFamilyModel.map(family => ({
+        ...family,
+        models: family.models.filter(model =>
+          model !== 'ICX8200-24PV' && model !== 'ICX8200-C08PFV') }))
+    }
     if (!isSupport8100) {
-      allFamilyModel = allFamilyModel.filter(family => family.family !== 'ICX8100')
+      allFamilyModel = allFamilyModel.map(family => ({
+        ...family,
+        models: family.models.filter(family => family.family !== 'ICX8100') }))
     }
     return allFamilyModel
   }
 
-  const allFamilyModels = getAllFamilyModel(isSupport8100)
+  const allFamilyModels = getAllFamilyModel(isSupport8200AV)
   const allModels:string[] = allFamilyModels.map((m) => m.models).flat()
 
   const existingProfileNameList = profiles?.data?.filter(

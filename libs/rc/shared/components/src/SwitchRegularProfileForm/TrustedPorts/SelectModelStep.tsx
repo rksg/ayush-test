@@ -44,6 +44,7 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
   const [optionListForSlot3, setOptionListForSlot3] = useState<ModelsType[]>([])
   const [optionListForSlot4, setOptionListForSlot4] = useState<ModelsType[]>([])
 
+  const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
 
   const [trustedPorts, setTrustedPorts] =
@@ -218,7 +219,15 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
     const modelsData = Object.keys(modelsList).map(key => {
       return { label: key, value: key }
     })
-    setModels(modelsData)
+
+    const filterModels = (modelsData: { label: string; value: string }[]) => {
+      if (!isSupport8200AV && index === 'ICX8200') {
+        return modelsData.filter(model => model.value !== '24PV' && model.value !== 'C08PFV')
+      }
+      return modelsData
+    }
+    const filteredModels = filterModels(modelsData)
+    setModels(filteredModels)
   }
 
   const onModelChange = (e: RadioChangeEvent) => {

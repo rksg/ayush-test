@@ -39,6 +39,8 @@ import {
   TableContainer
 } from './styledComponents'
 
+import type { SwitchModelParams } from '../../StackForm'
+
 export interface AddStackMemberProps {
   visible: boolean
   setVisible: (v: boolean) => void
@@ -124,6 +126,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
 
   const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
 
   const { data: switchData } =
@@ -149,7 +152,15 @@ function AddMemberForm (props: DefaultVlanFormProps) {
               required: true,
               message: $t({ defaultMessage: 'This field is required' })
             },
-            { validator: (_, value) => validatorSwitchModel(value, isSupport8100, switchDetail?.activeSerial) },
+            { validator: (_, value) => {
+              const switchModelParams: SwitchModelParams = {
+                serialNumber: value,
+                isSupport8200AV: isSupport8200AV,
+                isSupport8100: isSupport8100,
+                activeSerialNumber: switchDetail?.activeSerial
+              }
+              return validatorSwitchModel(switchModelParams)}
+            },
             { validator: (_, value) => validatorUniqueMember(value, [
               ...tableData.map(d => ({ id: (d.key === row.key) ? value : d.id })),
               ...(switchData?.stackMembers || [])

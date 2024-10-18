@@ -39,8 +39,7 @@ export function MacRegistrationSettings () {
 
   const loadIdentities = useCallback((identityGroupId: string) => {
     fetchIdentities({
-      params: { size: '2147483647', page: '0' },
-      payload: { groupId: identityGroupId }
+      payload: { pageSize: '2147483647', groupId: identityGroupId }
     })
   }, [fetchIdentities])
 
