@@ -2,6 +2,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { PageHeader, Button, GridRow, Loader, GridCol } from '@acx-ui/components'
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { useGetApSnmpViewModelQuery }                   from '@acx-ui/rc/services'
 import {
   ApSnmpViewModelData,
@@ -12,7 +13,9 @@ import {
   getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType,
-  useTableQuery
+  useTableQuery,
+  GetApiVersionHeader,
+  ApiVersionEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
@@ -31,6 +34,9 @@ const defaultPayload = {
 export default function SnmpAgentDetail () {
   const { $t } = useIntl()
   const params = useParams()
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  // eslint-disable-next-line
+  const isSNMPv3PassphraseOn = useIsSplitOn(Features.WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE)
   const tablePath = getPolicyRoutePath(
     { type: PolicyType.SNMP_AGENT, oper: PolicyOperation.LIST })
 
@@ -41,7 +47,11 @@ export default function SnmpAgentDetail () {
       filters: {
         id: [params.policyId]
       }
-    }
+    },
+    customHeaders:
+    ( isUseRbacApi ?
+      GetApiVersionHeader((isSNMPv3PassphraseOn? ApiVersionEnum.v1_1 : ApiVersionEnum.v1)):
+      undefined)
   })
 
   const basicData = tableQuery.data?.data?.[0]
