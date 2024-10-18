@@ -274,4 +274,19 @@ describe('IntentAIForm', () => {
 
     expect(await screen.findByText(/Please select at least one network in Settings/)).toBeVisible()
   })
+
+  it('handle cancel button', async () => {
+    mockGet.mockReturnValue('true') // RAI
+
+    const { params } = mockIntentContextWith({ status: Statuses.new })
+    render(<IntentAIForm />, { route: { params }, wrapper: Provider })
+    const form = within(await screen.findByTestId('steps-form'))
+    const actions = within(form.getByTestId('steps-form-actions'))
+
+    expect(await screen.findByRole('heading', { name: 'Introduction' })).toBeVisible()
+    await click(actions.getByRole('button', { name: 'Next' }))
+    expect(await screen.findByRole('heading', { name: 'Intent Priority' })).toBeVisible()
+    await click(actions.getByRole('button', { name: 'Cancel' }))
+    expect(mockNavigate).toBeCalled()
+  })
 })

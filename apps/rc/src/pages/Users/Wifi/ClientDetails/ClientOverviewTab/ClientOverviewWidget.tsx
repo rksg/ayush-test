@@ -1,8 +1,10 @@
 import { CallbackDataParams } from 'echarts/types/dist/shared'
+import { divide, round }      from 'lodash'
 import { useIntl }            from 'react-intl'
 
 import { ClientHealth }                                                 from '@acx-ui/analytics/components'
 import { BarChart, cssStr, cssNumber, Loader, Card, GridRow, Subtitle } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import { formatter, convertEpochToRelativeTime }                        from '@acx-ui/formatter'
 import { Client, ClientStatistic }                                      from '@acx-ui/rc/utils'
 import { useParams }                                                    from '@acx-ui/react-router-dom'
@@ -10,14 +12,31 @@ import type { AnalyticsFilter }                                         from '@a
 
 import * as UI from './styledComponents'
 
-export function ClientOverviewWidget ({ clientStatistic, clientStatus, clientDetails, filters }: {
+// eslint-disable-next-line
+export function ClientOverviewWidget ({ clientStatistic, clientStatus, clientDetails, filters, connectedTimeStamp }: {
   clientStatistic: ClientStatistic | undefined,
   clientStatus: string,
-  clientDetails: Client,
-  filters: AnalyticsFilter
+  clientDetails?: Client,
+  filters: AnalyticsFilter,
+  connectedTimeStamp: string
 }) {
   const { $t } = useIntl()
   const { clientId } = useParams()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
+  const getTime = () => {
+    if(isWifiRbacEnabled) {
+      const timeInSeconds = round(divide(Date.parse(connectedTimeStamp), 1000))
+      const timestamp = convertEpochToRelativeTime(timeInSeconds)
+      return formatter('durationFormat')(timestamp)
+    } else {
+      return formatter('durationFormat')(
+        clientDetails?.timeConnectedMs ?
+          convertEpochToRelativeTime(clientDetails?.timeConnectedMs) :
+          (clientDetails?.sessionDuration ? clientDetails?.sessionDuration * 1000 : 0 )
+      )
+    }
+  }
 
   return <Card type='solid-bg'>
     <Loader states={[{
@@ -63,16 +82,7 @@ export function ClientOverviewWidget ({ clientStatistic, clientStatus, clientDet
           <UI.Title>{
             $t({ defaultMessage: 'Current Connected Time' })
           }</UI.Title>
-          <Subtitle level={2}>{
-            formatter('durationFormat')(
-              clientDetails?.timeConnectedMs
-                ? convertEpochToRelativeTime(clientDetails?.timeConnectedMs)
-                : (clientDetails?.sessionDuration
-                  ? clientDetails?.sessionDuration * 1000
-                  : 0
-                )
-            )
-          }</Subtitle>
+          <Subtitle level={2}>{getTime()}</Subtitle>
         </UI.GridCol>
       </GridRow>
       <GridRow style={{ flexGrow: '1' }}>

@@ -4,7 +4,7 @@ import AutoSizer                  from 'react-virtualized-auto-sizer'
 import { incidentSeverities, IncidentFilter }                                       from '@acx-ui/analytics/utils'
 import { HistoricalCard, Loader, NoActiveData, DonutChart, DonutChartData, cssStr } from '@acx-ui/components'
 import { useNavigateToPath }                                                        from '@acx-ui/react-router-dom'
-import { hasAccess }                                                                from '@acx-ui/user'
+import { hasRaiPermission }                                                         from '@acx-ui/user'
 
 import { useIncidentToggles } from '../useIncidentToggles'
 
@@ -39,15 +39,15 @@ export function IncidentsDashboardv2 ({ filters }: { filters: IncidentFilter }) 
 
   return <Loader states={[response]}>
     <HistoricalCard title={$t(defineMessage({ defaultMessage: 'Incidents' }))}
-      onArrowClick={hasAccess() ? onArrowClick : undefined}>
+      onArrowClick={hasRaiPermission('READ_INCIDENTS') ? onArrowClick : undefined}>
       <AutoSizer>
         {({ width, height }) => (
           noData
             ? <NoActiveData text={$t({ defaultMessage: 'No reported incidents' })} />
             : <UI.Container
-              hasAccess={hasAccess()}
+              hasAccess={hasRaiPermission('READ_INCIDENTS')}
               style={{ width, height }}
-              onClick={hasAccess() ? onArrowClick : undefined}
+              onClick={hasRaiPermission('READ_INCIDENTS') ? onArrowClick : undefined}
             >
               <DonutChart
                 style={{ width, height }}

@@ -29,6 +29,7 @@ import {
 import {
   useImportApMutation,
   useLazyGetApCompatibilitiesNetworkQuery,
+  useLazyGetApCompatibilitiesQuery,
   useLazyGetApCompatibilitiesVenueQuery,
   useLazyImportResultQuery,
   useNewApListQuery,
@@ -53,11 +54,15 @@ import {
   transformDisplayNumber,
   transformDisplayText,
   usePollingTableQuery,
-  PowerSavingStatusEnum
+  PowerSavingStatusEnum,
+  IncompatibleFeatureLevelEnum,
+  CompatibilityResponse,
+  Compatibility,
+  CompatibilitySelectedApInfo
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { RequestPayload, WifiScopes }                                     from '@acx-ui/types'
-import { filterByAccess }                                                 from '@acx-ui/user'
+import { RequestPayload, WifiScopes, RolesEnum }                          from '@acx-ui/types'
+import { filterByAccess, hasPermission }                                  from '@acx-ui/user'
 import { exportMessageMapping }                                           from '@acx-ui/utils'
 
 import { ApCompatibilityDrawer, ApCompatibilityFeature, ApCompatibilityType } from '../ApCompatibility'
@@ -89,6 +94,13 @@ export const newDefaultApPayload = {
   ]
 }
 
+const DefaultSelectedApInfo = {
+  serialNumber: '',
+  name: '',
+  model: '',
+  firmwareVersion: ''
+} as CompatibilitySelectedApInfo
+
 export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|NewAPExtendedGrouped>, ref?: Ref<ApTableRefType>) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
@@ -97,8 +109,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const { filters, isNetworkLoading } = useFilters(params)
   const { searchable, filterables, enableGroups=true, enableApCompatibleCheck=false, settingsId = 'ap-table' } = props
   const [ compatibilitiesDrawerVisible, setCompatibilitiesDrawerVisible ] = useState(false)
-  const [ selectedApSN, setSelectedApSN ] = useState('')
-  const [ selectedApName, setSelectedApName ] = useState('')
+  const [ selectedApInfo, setSelectedApInfo ] = useState<CompatibilitySelectedApInfo>(DefaultSelectedApInfo)
   const [ tableData, setTableData ] = useState([] as (NewAPModelExtended|NewAPExtendedGrouped)[])
   const [ hasGroupBy, setHasGroupBy ] = useState(false)
   const [ showFeatureCompatibilitiy, setShowFeatureCompatibilitiy ] = useState(false)
@@ -109,9 +120,15 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
   const apTxPowerFlag = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
   const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+  const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
+  const operationRoles = [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]
 
+  // old API
   const [ getApCompatibilitiesVenue ] = useLazyGetApCompatibilitiesVenueQuery()
   const [ getApCompatibilitiesNetwork ] = useLazyGetApCompatibilitiesNetworkQuery()
+  // new API
+  const [ getApCompatibilities] = useLazyGetApCompatibilitiesQuery()
+
   const { data: wifiCapabilities } = useWifiCapabilitiesQuery({ params: { }, enableRbac: true })
 
   const apListTableQuery = usePollingTableQuery({
@@ -124,8 +141,8 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       searchTargetFields: newDefaultApPayload.searchTargetFields
     },
     option: { skip: Boolean(props.tableQuery) || isNetworkLoading },
-    enableSelectAllPagesData: ['id', 'name', 'serialNumber', 'apGroupId',
-      'status', 'firmwareVersion'],
+    // enableSelectAllPagesData: ['id', 'name', 'serialNumber', 'apGroupId',
+    //   'status', 'firmwareVersion'],
     pagination: { settingsId }
   })
   const tableQuery = props.tableQuery || apListTableQuery
@@ -139,56 +156,118 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
     const fetchApCompatibilitiesAndSetData = async () => {
       const result:React.SetStateAction<(NewAPModelExtended|NewAPExtendedGrouped)[]> = []
       const apIdsToIncompatible:{ [key:string]: number } = {}
+
       if (tableQuery.data?.data) {
-        let apCompatibilitiesResponse:ApCompatibilityResponse = { apCompatibilities: [] }
-        let apCompatibilities:ApCompatibility[] = []
         let apIds:string[] = []
-        if (enableApCompatibleCheck && showFeatureCompatibilitiy) {
-          const aps = tableQuery.data as TableResult<NewAPModelExtended|NewAPExtendedGrouped, ApExtraParams>
-          apIds = retriedApIds(aps, !!hasGroupBy)
-          try {
-            if (apIds.length > 0) {
+
+        const aps = tableQuery.data as TableResult<NewAPModelExtended|NewAPExtendedGrouped, ApExtraParams>
+        apIds = retriedApIds(aps, !!hasGroupBy)
+
+        if (apIds.length > 0) {
+          if (isApCompatibilitiesByModel) {
+            let compatibilitiesResponse: CompatibilityResponse = {} as CompatibilityResponse
+            let compatibilities: Compatibility[] = []
+            try {
+              if (params.venueId) {
+                compatibilitiesResponse = await getApCompatibilities({
+                  params: {},
+                  payload: {
+                    filters: {
+                      apIds: apIds,
+                      venueIds: [params.venueId],
+                      featureLevels: [IncompatibleFeatureLevelEnum.VENUE]
+                    },
+                    page: 1,
+                    pageSize: 10
+                  }
+                }).unwrap()
+              } else if (params.networkId) {
+                compatibilitiesResponse = await getApCompatibilities({
+                  params: {},
+                  payload: {
+                    filters: {
+                      apIds: apIds,
+                      wifiNetworkIds: [params.networkId],
+                      featureLevels: [IncompatibleFeatureLevelEnum.WIFI_NETWORK]
+                    },
+                    page: 1,
+                    pageSize: 10
+                  }
+                }).unwrap()
+              }
+
+              compatibilities = compatibilitiesResponse?.compatibilities
+
+              if (compatibilities?.length > 0) {
+                apIds.forEach((id:string) => {
+                  const apIncompatible = find(compatibilities, ap => id===ap.id)
+                  if (apIncompatible) {
+                    const { incompatibleFeatures, incompatible } = apIncompatible
+                    apIdsToIncompatible[id] = incompatibleFeatures?.length ?? incompatible ?? 0
+                  }
+                })
+              }
+            } catch (e) {
+              // eslint-disable-next-line no-console
+              console.error('fetchApCompatibilitiesAndSetData error:', e)
+            }
+          } else {
+            let apCompatibilitiesResponse:ApCompatibilityResponse = { apCompatibilities: [] }
+            let apCompatibilities:ApCompatibility[] = []
+            try {
               if (params.venueId) {
                 apCompatibilitiesResponse = await getApCompatibilitiesVenue({
                   params: { venueId: params.venueId },
                   payload: { filters: { apIds } }
                 }).unwrap()
+
               } else if (params.networkId) {
                 apCompatibilitiesResponse = await getApCompatibilitiesNetwork({
                   params: { networkId: params.networkId },
                   payload: { filters: { apIds } }
                 }).unwrap()
               }
-            }
-          } catch (e) {
-            // eslint-disable-next-line no-console
-            console.error('fetchApCompatibilitiesAndSetData error:', e)
-          }
-          apCompatibilities = apCompatibilitiesResponse.apCompatibilities
-        }
 
-        if (apCompatibilities?.length > 0) {
-          apIds.forEach((id:string) => {
-            const apIncompatible = find(apCompatibilities, ap => id===ap.id)
-            if (apIncompatible) {
-              apIdsToIncompatible[id] = apIncompatible?.incompatibleFeatures?.length ?? apIncompatible?.incompatible ?? 0
+              apCompatibilities = apCompatibilitiesResponse.apCompatibilities
+            } catch (e) {
+              // eslint-disable-next-line no-console
+              console.error('fetchApCompatibilitiesAndSetData error:', e)
             }
-          })
-          // TODO Need more discuss wether groupBy feature is necessary
-          if (hasGroupBy) {
-            tableQuery.data.data?.forEach(item => {
-              const children = (item as unknown as { aps: NewAPModelExtended[] }).aps?.map(ap => ({ ...ap, incompatible: apIdsToIncompatible[ap.serialNumber] }))
-              result.push({ ...item, aps: children, children })
-            })
-          } else {
-            tableQuery.data.data?.forEach(ap => (result.push({ ...ap, incompatible: apIdsToIncompatible[ap.serialNumber] })))
+
+            if (apCompatibilities?.length > 0) {
+              apIds.forEach((id:string) => {
+                const apIncompatible = find(apCompatibilities, ap => id===ap.id)
+                if (apIncompatible) {
+                  apIdsToIncompatible[id] = apIncompatible?.incompatibleFeatures?.length ?? apIncompatible?.incompatible ?? 0
+                }
+              })
+            }
           }
-          setTableData(result)
-        } else {
-          setTableData(tableQuery.data?.data)
+
+          if (Object.keys(apIdsToIncompatible).length > 0) {
+            // TODO Need more discuss wether groupBy feature is necessary
+            if (hasGroupBy) {
+              tableQuery.data.data?.forEach(item => {
+                const children = (item as unknown as { aps: NewAPModelExtended[] }).aps?.map(ap => ({
+                  ...ap,
+                  incompatible: apIdsToIncompatible[ap.serialNumber]
+                }))
+                result.push({ ...item, aps: children, children })
+              })
+            } else {
+              tableQuery.data.data?.forEach(ap => (result.push({
+                ...ap,
+                incompatible: apIdsToIncompatible[ap.serialNumber]
+              })))
+            }
+            setTableData(result)
+          } else {
+            setTableData(tableQuery.data?.data)
+          }
         }
       }
     }
+
     if (tableQuery.data) {
       if (enableApCompatibleCheck && showFeatureCompatibilitiy) {
         fetchApCompatibilitiesAndSetData()
@@ -513,12 +592,13 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       show: false,
       sorter: false,
       render: (_: ReactNode, row: NewAPModelExtended) => {
+        const { incompatible, status } = row || {}
         return (<ApCompatibilityFeature
-          count={row?.incompatible}
-          deviceStatus={row?.status}
+          count={incompatible}
+          deviceStatus={status}
           onClick={() => {
-            setSelectedApSN(row?.serialNumber)
-            setSelectedApName(row?.name ?? '')
+            const { serialNumber, name='', model='', firmwareVersion='' } = row || {}
+            setSelectedApInfo({ serialNumber, name, model, firmwareVersion })
             setCompatibilitiesDrawerVisible(true)
           }} />
         )
@@ -562,6 +642,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const rowActions: TableProps<NewAPModelExtended>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     scopeKey: [WifiScopes.UPDATE],
+    roles: [...operationRoles],
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
     onClick: (rows) => {
       navigate(`${linkToEditAp.pathname}/${rows[0].serialNumber}/edit/general`, { replace: false })
@@ -569,6 +650,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   }, {
     label: $t({ defaultMessage: 'Delete' }),
     scopeKey: [WifiScopes.DELETE],
+    roles: [...operationRoles],
     onClick: async (rows, clearSelection) => {
       apAction.showDeleteAps(rows, params.tenantId, clearSelection)
     }
@@ -581,6 +663,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
     // }, {
     label: $t({ defaultMessage: 'Reboot' }),
     scopeKey: [WifiScopes.UPDATE],
+    roles: [...operationRoles],
     visible: (rows) => isActionVisible(rows, { selectOne: true, deviceStatus: [ ApDeviceStatusEnum.OPERATIONAL ] }),
     onClick: (rows, clearSelection) => {
       const showSendingToast = () => {
@@ -600,6 +683,8 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
     }
   }, {
     label: $t({ defaultMessage: 'Download Log' }),
+    scopeKey: [WifiScopes.READ],
+    roles: [RolesEnum.READ_ONLY, ...operationRoles],
     visible: (rows) => isActionVisible(rows, { selectOne: true, deviceStatus: [ ApDeviceStatusEnum.OPERATIONAL, ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED ] }),
     onClick: (rows) => {
       apAction.showDownloadApLog(rows[0].serialNumber, params.tenantId, rows[0].venueId)
@@ -641,9 +726,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   ) => {
     const customSorter = Array.isArray(sorter)
       ? sorter[0] : sorter
-    if ('IP'.includes(customSorter.field as string)) {
-      customSorter.field = 'IP.keyword'
-    }
+
     tableQuery.handleTableChange?.(pagination, filters, customSorter, extra)
   }
 
@@ -672,13 +755,13 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
         columns={columns}
         columnState={enableApCompatibleCheck?{ onChange: handleColumnStateChange } : {}}
         dataSource={tableData}
-        getAllPagesData={tableQuery.getAllPagesData}
+        // getAllPagesData={tableQuery.getAllPagesData}
         rowKey='serialNumber'
         pagination={tableQuery.pagination}
         onChange={handleTableChange}
         onFilterChange={handleFilterChange}
         enableApiFilter={true}
-        rowActions={filterByAccess(rowActions)}
+        rowActions={rowActions?.filter((item) => hasPermission({ scopes: item.scopeKey, roles: item.roles }))}
         actions={props.enableActions ? filterByAccess([{
           label: $t({ defaultMessage: 'Add AP' }),
           scopeKey: [WifiScopes.CREATE],
@@ -763,8 +846,8 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
         type={params.venueId?ApCompatibilityType.VENUE:ApCompatibilityType.NETWORK}
         venueId={params.venueId}
         networkId={params.networkId}
-        apIds={selectedApSN ? [selectedApSN] : []}
-        apName={selectedApName}
+        apIds={selectedApInfo?.serialNumber ? [selectedApInfo.serialNumber] : []}
+        apName={selectedApInfo?.name}
         isMultiple
         onClose={() => setCompatibilitiesDrawerVisible(false)}
       />}
@@ -774,8 +857,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
         type={params.venueId?ApCompatibilityType.VENUE:ApCompatibilityType.NETWORK}
         venueId={params.venueId}
         networkId={params.networkId}
-        apId={selectedApSN}
-        apName={selectedApName}
+        apInfo={selectedApInfo}
         onClose={() => setCompatibilitiesDrawerVisible(false)}
       />}
     </Loader>

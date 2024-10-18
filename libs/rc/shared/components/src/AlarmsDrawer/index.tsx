@@ -28,10 +28,10 @@ import {
   EventSeverityEnum,
   EventTypeEnum
 } from '@acx-ui/rc/utils'
-import { useParams, TenantLink }              from '@acx-ui/react-router-dom'
-import { store }                              from '@acx-ui/store'
-import { RolesEnum }                          from '@acx-ui/types'
-import { hasCrossVenuesPermission, hasRoles } from '@acx-ui/user'
+import { useParams, TenantLink } from '@acx-ui/react-router-dom'
+import { store }                 from '@acx-ui/store'
+import { RolesEnum }             from '@acx-ui/types'
+import { hasRoles }              from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
@@ -143,7 +143,7 @@ export function AlarmsDrawer (props: AlarmsType) {
     { skip: !visible })
 
   useEffect(()=>{
-    const { payload } = tableQuery
+    const { payload, pagination: paginationValue } = tableQuery
     let filters = severity === 'all' ? {} : { severity: [severity] }
     tableQuery.setPayload({
       ...payload,
@@ -165,7 +165,25 @@ export function AlarmsDrawer (props: AlarmsType) {
         filters
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    if(tableQuery.data?.totalCount && tableQuery.data?.data.length === 0){
+      const totalPage = Math.ceil(tableQuery.data.totalCount / paginationValue.pageSize)
+      if(paginationValue.page > totalPage){
+        const pagination = {
+          current: totalPage,
+          pageSize: paginationValue.pageSize
+        }
+        const sorter = {
+          field: 'startTime',
+          order: 'descend'
+        } as SorterResult<Alarm>
+        const extra = {
+          currentDataSource: [] as Alarm[],
+          action: 'paginate' as const
+        }
+        tableQuery?.handleTableChange?.(pagination, {}, sorter, extra)
+      }
+    }
   }, [tableQuery.data, severity, serialNumber, venueId])
 
   const getIconBySeverity = (severity: EventSeverityEnum)=>{
@@ -213,8 +231,7 @@ export function AlarmsDrawer (props: AlarmsType) {
     return venueIds
   }
 
-  const hasPermission = hasCrossVenuesPermission() &&
-  hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const hasPermission = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const alarmList = <>
     <UI.FilterRow>
@@ -320,6 +337,7 @@ export function AlarmsDrawer (props: AlarmsType) {
                 arrowPointAtCenter>
                 <UI.ClearButton
                   ghost={true}
+                  disabled={!hasPermission}
                   icon={<UI.AcknowledgeCircle/>}
                   onClick={async ()=>{
                     await clearAlarm({ params: { ...params, alarmId: alarm.id } })

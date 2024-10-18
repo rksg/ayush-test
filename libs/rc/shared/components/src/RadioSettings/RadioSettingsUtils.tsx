@@ -15,18 +15,30 @@ export const CorrectRadioChannels = (radioParams: any, supportChArray: any) => {
   let newRadioRarams = { ...radioParams }
   const bandwidth = (channelBandwidth === 'AUTO')? 'auto' : channelBandwidth
 
-  if (allowedIndoorChannels) {
-    const supportIndoorChannels = supportChArray?.['indoor']?.[bandwidth] ?? []
-    newRadioRarams.allowedIndoorChannels = intersection(allowedIndoorChannels, supportIndoorChannels)
+  if (allowedIndoorChannels || allowedOutdoorChannels) {
+    if (allowedIndoorChannels) {
+      const supportIndoorChannels = supportChArray?.['indoor']?.[bandwidth]
+      if (supportIndoorChannels) {
+        newRadioRarams.allowedIndoorChannels = intersection(allowedIndoorChannels, supportIndoorChannels)
+      } else {
+        delete newRadioRarams.allowedIndoorChannels
+      }
+    }
 
     if (allowedOutdoorChannels) {
-      const supportOutdoorChannels = supportChArray?.['outdoor']?.[bandwidth] ?? []
-      newRadioRarams.allowedOutdoorChannels = intersection(allowedOutdoorChannels, supportOutdoorChannels)
+      const supportOutdoorChannels = supportChArray?.['outdoor']?.[bandwidth]
+      if (supportOutdoorChannels) {
+        newRadioRarams.allowedOutdoorChannels = intersection(allowedOutdoorChannels, supportOutdoorChannels)
+      } else {
+        delete newRadioRarams.allowedOutdoorChannels
+      }
     }
-  } else {
-    if (allowedChannels) {
-      const supportChannels = supportChArray?.[bandwidth] ?? []
+  } else if (allowedChannels) { // 2.4G or legacy 6G allowedChannels
+    const supportChannels = supportChArray?.[bandwidth]
+    if (supportChannels) {
       newRadioRarams.allowedChannels = intersection(allowedChannels, supportChannels)
+    } else {
+      delete newRadioRarams.allowedChannels
     }
   }
   return newRadioRarams

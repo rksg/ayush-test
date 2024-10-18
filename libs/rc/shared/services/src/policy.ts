@@ -72,7 +72,8 @@ import {
   VenueDetail,
   Network,
   TxStatus,
-  ScepKeyData
+  ScepKeyData,
+  ServerCertificate
 } from '@acx-ui/rc/utils'
 import { basePolicyApi }                                 from '@acx-ui/store'
 import { RequestPayload }                                from '@acx-ui/types'
@@ -2105,13 +2106,13 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-    // TODO: Change RBAC API (API Done, Testing pending)
     getApSnmpPolicyList: build.query<ApSnmpPolicy[], RequestPayload>({
-      async queryFn ({ params, enableRbac }, _api, _extraOptions, fetchWithBQ) {
+      async queryFn ({ params, enableRbac, isSNMPv3PassphraseOn }, _api, _extraOptions, fetchWithBQ) {
         if (enableRbac) {
-          const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+          const viewModelHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+          const apiCustomHeader = GetApiVersionHeader((isSNMPv3PassphraseOn? ApiVersionEnum.v1_1 : ApiVersionEnum.v1))
           // eslint-disable-next-line max-len
-          const snmpListReq = { ...createHttpRequest(ApSnmpRbacUrls.getApSnmpFromViewModel, params, apiCustomHeader),
+          const snmpListReq = { ...createHttpRequest(ApSnmpRbacUrls.getApSnmpFromViewModel, params, viewModelHeader),
             body: enableRbac? JSON.stringify({}) : {}
           }
           const res = await fetchWithBQ(snmpListReq)
@@ -2151,15 +2152,15 @@ export const policyApi = basePolicyApi.injectEndpoints({
         })
       }
     }),
-    // TODO: Change RBAC API (API Done, Testing pending)
     getApSnmpPolicy: build.query<ApSnmpPolicy, RequestPayload>({
-      async queryFn ({ params, enableRbac }, _api, _extraOptions, fetchWithBQ) {
+      async queryFn ({ params, enableRbac, isSNMPv3PassphraseOn }, _api, _extraOptions, fetchWithBQ) {
         const urlsInfo = enableRbac? ApSnmpRbacUrls : ApSnmpUrls
         const customParams = {
           ...params,
           profileId: params?.policyId
         }
-        const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
+        const rbacApiVersion =
+          enableRbac ? (isSNMPv3PassphraseOn? ApiVersionEnum.v1_1 : ApiVersionEnum.v1) : undefined
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
         const req = createHttpRequest(urlsInfo.getApSnmpPolicy, customParams, apiCustomHeader)
         const res = await fetchWithBQ(req)
@@ -2277,14 +2278,14 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'SnmpAgent', id: 'LIST' }]
     }),
-    // TODO: Change RBAC API
     /* eslint-disable max-len */
     getApSnmpViewModel: build.query<TableResult<ApSnmpViewModelData>, RequestPayload>({
-      async queryFn ({ params, payload, enableRbac }, _api, _extraOptions, fetchWithBQ) {
+      async queryFn ({ params, payload, enableRbac, isSNMPv3PassphraseOn, customHeaders }, _api, _extraOptions, fetchWithBQ) {
         if (enableRbac) {
-          const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+          const viewmodelHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+          const apiCustomHeader = customHeaders ? customHeaders : GetApiVersionHeader((isSNMPv3PassphraseOn? ApiVersionEnum.v1_1 : ApiVersionEnum.v1))
           const req = {
-            ...createHttpRequest(ApSnmpRbacUrls.getApSnmpFromViewModel, params, apiCustomHeader),
+            ...createHttpRequest(ApSnmpRbacUrls.getApSnmpFromViewModel, params, viewmodelHeader),
             body: JSON.stringify({})
           }
           const res = await fetchWithBQ(req)
@@ -3293,6 +3294,76 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Certificate', id: 'LIST' }]
+    }),
+    getServerCertificates: build.query<TableResult<ServerCertificate>, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.getServerCertificates, params, defaultCertTempVersioningHeaders)
+        return {
+          ...req,
+          body: JSON.stringify({
+            ...(payload as TableChangePayload),
+            // eslint-disable-next-line max-len
+            ...transferToNewTablePaginationParams({ ...payload as TableChangePayload, pageStartZero: false })
+          })
+        }
+      },
+      providesTags: [{ type: 'ServerCertificate', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'AddServerCertificate',
+            'UpdateServerCertificate'
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'ServerCertificate', id: 'LIST' }
+            ]))
+          })
+        })
+      }
+    }),
+    updateServerCertificate: build.mutation<ServerCertificate, RequestPayload>({
+      query: ({ params, payload }) => {
+        const headers = { ...defaultCertTempVersioningHeaders }
+        const req = createHttpRequest(CertificateUrls.updateServerCertificate, params, headers)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'ServerCertificate', id: 'LIST' }]
+    }),
+    downloadServerCertificate: build.query<Blob, RequestPayload>({
+      query: ({ params, customHeaders }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.downloadServerCertificate, params, { ...defaultCertTempVersioningHeaders, ...customHeaders })
+        return {
+          ...req,
+          responseHandler: async (response) => {
+            let extension = downloadCertExtension[customHeaders?.Accept as CertificateAcceptType]
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1] : `Certificate.${extension}`
+            downloadFile(response, fileName)
+          }
+        }
+      }
+    }),
+    downloadServerCertificateChains: build.query<Blob, RequestPayload>({
+      query: ({ params, customHeaders }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.downloadServerCertificate, params, { ...defaultCertTempVersioningHeaders, ...customHeaders })
+        return {
+          ...req,
+          responseHandler: async (response) => {
+            const extension = customHeaders?.Accept === CertificateAcceptType.PEM ? 'chain' : 'p7b'
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent ?
+              headerContent.split('filename=')[1] : `CertificateChain.${extension}`
+            downloadFile(response, fileName)
+          }
+        }
+      }
     })
   })
 })
@@ -3527,5 +3598,9 @@ export const {
   useDeleteCertificateAuthorityMutation,
   useGetCertificatesByIdentityIdQuery,
   useLazyGetCertificatesByIdentityIdQuery,
-  useGenerateCertificateToIdentityMutation
+  useGenerateCertificateToIdentityMutation,
+  useGetServerCertificatesQuery,
+  useUpdateServerCertificateMutation,
+  useLazyDownloadServerCertificateQuery,
+  useLazyDownloadServerCertificateChainsQuery
 } = policyApi

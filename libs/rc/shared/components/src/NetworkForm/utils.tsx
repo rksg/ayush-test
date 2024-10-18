@@ -88,11 +88,12 @@ import { useParams } from '@acx-ui/react-router-dom'
 
 import { useIsConfigTemplateEnabledByType }               from '../configTemplates'
 import { useEdgeMvSdLanActions }                          from '../EdgeSdLan/useEdgeSdLanActions'
-import { NetworkTunnelActionModalProps }                  from '../NetworkTunnelActionModal'
 import { NetworkTunnelActionForm, NetworkTunnelTypeEnum } from '../NetworkTunnelActionModal/types'
 import { getNetworkTunnelType }                           from '../NetworkTunnelActionModal/utils'
 import { useLazyGetAAAPolicyInstance }                    from '../policies/AAAForm/aaaPolicyQuerySwitcher'
 import { useIsEdgeReady }                                 from '../useEdgeActions'
+
+import type { NetworkTunnelActionModalProps } from '../NetworkTunnelActionModal'
 
 export const TMP_NETWORK_ID = 'tmpNetworkId'
 export interface NetworkVxLanTunnelProfileInfo {
@@ -509,7 +510,7 @@ export function useVlanPool () {
     if (!vlanPool && !originalPoolId) return
     if (originalPoolId && !vlanPool) await deactivateVlanPool(networkId, originalPoolId)
     // eslint-disable-next-line max-len
-    if (vlanPool && originalPoolId !== vlanPool.id) await activateVlanPool(vlanPool, networkId, vlanPool.id)
+    if (vlanPool && originalPoolId !== vlanPool.id)  await activateVlanPool(vlanPool, networkId, vlanPool.id)
   }
 
   return {
@@ -852,13 +853,13 @@ export const useUpdateSoftGreActivations = () => {
   const [ dectivateSoftGre ] = useDectivateSoftGreMutation()
 
   // eslint-disable-next-line max-len
-  const updateSoftGreActivations = async (networkId: string, updates: NetworkTunnelSoftGreAction, activatedVenues: NetworkVenue[], cloneMode: boolean) => {
+  const updateSoftGreActivations = async (networkId: string, updates: NetworkTunnelSoftGreAction, activatedVenues: NetworkVenue[], cloneMode: boolean, editMode: boolean) => {
     const actions = Object.keys(updates).filter(venueId => {
       return _.find(activatedVenues, { venueId })
     }).map((venueId) => {
       // eslint-disable-next-line max-len
       const action = updates[venueId]
-      if (!cloneMode && !action.newProfileId && action.oldProfileId) {
+      if (editMode && !cloneMode && !action.newProfileId && action.oldProfileId) {
         return dectivateSoftGre({ params: { venueId, networkId, policyId: action.oldProfileId } })
       } else if (action.newProfileId && action.newProfileId !== action.oldProfileId) {
         return activateSoftGre({ params: { venueId, networkId, policyId: action.newProfileId } })
@@ -876,18 +877,18 @@ export const useUpdateSoftGreActivations = () => {
 export const getNetworkTunnelSdLanUpdateData = (
   modalFormValues: NetworkTunnelActionForm,
   sdLanAssociationUpdates: NetworkTunnelSdLanAction[],
-  tunnelModalProps: NetworkTunnelActionModalProps,
+  networkInfo: NetworkTunnelActionModalProps['network'],
   venueSdLanInfo: EdgeMvSdLanViewData
 ) => {
   // networkId is undefined in Add mode.
-  const networkId = tunnelModalProps.network?.id ?? TMP_NETWORK_ID
-  const networkVenueId = tunnelModalProps.network?.venueId
+  const networkId = networkInfo?.id ?? TMP_NETWORK_ID
+  const networkVenueId = networkInfo?.venueId
 
   const formTunnelType = modalFormValues.tunnelType
   const sdLanTunneled = formTunnelType === NetworkTunnelTypeEnum.SdLan
   const sdLanTunnelGuest = modalFormValues.sdLan?.isGuestTunnelEnabled
 
-  const tunnelTypeInitVal = getNetworkTunnelType(tunnelModalProps.network, [], venueSdLanInfo)
+  const tunnelTypeInitVal = getNetworkTunnelType(networkInfo, [], venueSdLanInfo)
   const isFwdGuest = sdLanTunneled ? sdLanTunnelGuest : false
   let isNeedUpdate: boolean = false
 
