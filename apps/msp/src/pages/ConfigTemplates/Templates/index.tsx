@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { ReactNode, useState } from 'react'
 
 import { MutationTrigger }    from '@reduxjs/toolkit/dist/query/react/buildHooks'
 import { MutationDefinition } from '@reduxjs/toolkit/query'
@@ -48,21 +48,25 @@ import {
   ConfigTemplate,
   ConfigTemplateType,
   getConfigTemplateEditPath,
-  PolicyType
+  PolicyType,
+  ConfigTemplateDriftType
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }               from '@acx-ui/user'
 
-import { AppliedToTenantDrawer }      from './AppliedToTenantDrawer'
-import { ApplyTemplateDrawer }        from './ApplyTemplateDrawer'
-import { getConfigTemplateTypeLabel } from './templateUtils'
-import { useAddTemplateMenuProps }    from './useAddTemplateMenuProps'
+import { AppliedToTenantDrawer }           from './AppliedToTenantDrawer'
+import { ApplyTemplateDrawer }             from './ApplyTemplateDrawer'
+import { ShowDriftsDrawer }                from './ShowDriftsDrawer'
+import { configTemplateDriftTypeLabelMap } from './ShowDriftsDrawer/contents'
+import { getConfigTemplateTypeLabel }      from './templateUtils'
+import { useAddTemplateMenuProps }         from './useAddTemplateMenuProps'
 
 export function ConfigTemplateList () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const location = useLocation()
   const [ applyTemplateDrawerVisible, setApplyTemplateDrawerVisible ] = useState(false)
+  const [ showDriftsDrawerVisible, setShowDriftsDrawerVisible ] = useState(false)
   const [ appliedToTenantDrawerVisible, setAppliedToTenantDrawerVisible ] = useState(false)
   const [ selectedTemplates, setSelectedTemplates ] = useState<ConfigTemplate[]>([])
   const deleteMutationMap = useDeleteMutation()
@@ -70,6 +74,7 @@ export function ConfigTemplateList () {
   // eslint-disable-next-line max-len
   const [ accessControlSubPolicyVisible, setAccessControlSubPolicyVisible ] = useAccessControlSubPolicyVisible()
   const enableRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const driftsEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_DRIFTS)
 
   const tableQuery = useTableQuery({
     useQuery: useGetConfigTemplateListQuery,
@@ -106,6 +111,15 @@ export function ConfigTemplateList () {
         setApplyTemplateDrawerVisible(true)
       }
     },
+    ...(driftsEnabled ? [{
+      // eslint-disable-next-line max-len
+      visible: (selectedRows: ConfigTemplate[]) => selectedRows[0]?.driftStatus === ConfigTemplateDriftType.DRIFT_DETECTED,
+      label: $t({ defaultMessage: 'Show Drifts' }),
+      onClick: (rows: ConfigTemplate[]) => {
+        setSelectedTemplates(rows)
+        setShowDriftsDrawerVisible(true)
+      }
+    }] : []),
     {
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedRows) => selectedRows[0] && !!deleteMutationMap[selectedRows[0].type],
@@ -159,6 +173,11 @@ export function ConfigTemplateList () {
         setVisible={setApplyTemplateDrawerVisible}
         selectedTemplate={selectedTemplates[0]}
       />}
+      {showDriftsDrawerVisible &&
+      <ShowDriftsDrawer
+        setVisible={setShowDriftsDrawerVisible}
+        selectedTemplate={selectedTemplates[0]}
+      />}
       {appliedToTenantDrawerVisible &&
       <AppliedToTenantDrawer
         setVisible={setAppliedToTenantDrawerVisible}
@@ -187,6 +206,7 @@ function useColumns (props: TemplateColumnProps) {
     setAccessControlSubPolicyVisible
   } = props
   const dateFormat = userDateTimeFormat(DateFormatEnum.DateTimeFormatWithSeconds)
+  const driftsEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_DRIFTS)
 
   const typeFilterOptions = Object.entries(ConfigTemplateType).map((type =>
     ({ key: type[1], value: getConfigTemplateTypeLabel(type[1]) })
@@ -273,6 +293,15 @@ function useColumns (props: TemplateColumnProps) {
         return moment(row.lastModified).format(dateFormat)
       }
     },
+    ...(driftsEnabled ? [{
+      key: 'driftStatus',
+      title: $t({ defaultMessage: 'Drift Status' }),
+      dataIndex: 'driftStatus',
+      sorter: true,
+      render: function (_: ReactNode, row: ConfigTemplate) {
+        return row.driftStatus ? $t(configTemplateDriftTypeLabelMap[row.driftStatus]) : ''
+      }
+    }] : []),
     {
       key: 'lastApplied',
       title: $t({ defaultMessage: 'Last Applied' }),
