@@ -14,7 +14,8 @@ import {
 
 import { mockedDpskEnrollmentAction,
   mockedMacRegData,
-  mockedIdentityGroupData } from './__tests__/fixtures'
+  mockedIdentityGroupData, 
+  mockedMacRegActionInvalid} from './__tests__/fixtures'
 import { MacRegistrationNode } from './MacRegistrationNode'
 
 describe('MacRegistrationNode', () => {
@@ -30,6 +31,8 @@ describe('MacRegistrationNode', () => {
         (req, res, ctx) => {
           if(req.params.actionId === enrollmentActionIdWithData) {
             return res(ctx.json(mockedDpskEnrollmentAction))
+          } else if(req.params.actionId === mockedMacRegActionInvalid.id) {
+            return res(ctx.json(mockedMacRegActionInvalid))
           } else {
             return res(ctx.status(404))
           }
@@ -55,6 +58,44 @@ describe('MacRegistrationNode', () => {
             data={{
               id: 'test-id',
               enrollmentActionId: enrollmentActionIdWithoutData,
+              mode: WorkflowPanelMode.Design
+            }}
+            selected={false}
+            type={''}
+            zIndex={0}
+            isConnectable={false}
+            xPos={0}
+            yPos={0}
+            dragging={false}/>
+        </ReactFlowProvider>
+      </Provider>
+    )
+
+
+    const dpskIcon = await screen.findByTestId('MacRegActionTypeIcon')
+    expect(dpskIcon).toBeVisible()
+
+    const detailsPopoverLabel = await screen.findByText('Details')
+    await userEvent.hover(detailsPopoverLabel)
+
+    const popover = await screen.findByRole('tooltip')
+    expect(popover).toHaveTextContent('Mac Registration')
+    expect(popover).toHaveTextContent('Identity Group')
+
+    const noneText = await screen.findAllByText('None')
+    expect(noneText.length).toBe(2)
+
+  })
+
+  it('should show the MacReg Node WITHOUT details when INVALID', async () => {
+
+    render(
+      <Provider>
+        <ReactFlowProvider>
+          <MacRegistrationNode id='test-id'
+            data={{
+              id: 'test-id',
+              enrollmentActionId: mockedMacRegActionInvalid.id,
               mode: WorkflowPanelMode.Design
             }}
             selected={false}
