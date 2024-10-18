@@ -14,6 +14,13 @@ import {
   ChangeSchedulePerApModelDialog
 } from '@acx-ui/rc/components'
 import {
+  compareVersions,
+  getApNextScheduleTpl,
+  getApSchedules,
+  getNextSchedulesTooltip,
+  toUserDate
+} from '@acx-ui/rc/components'
+import {
   useGetVenueApModelFirmwareListQuery,
   useSkipVenueSchedulesPerApModelMutation
 } from '@acx-ui/rc/services'
@@ -27,15 +34,8 @@ import {
 import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
 import { isApFirmwareUpToDate } from '../..'
-import {
-  compareVersions,
-  getApNextScheduleTpl,
-  getApSchedules,
-  getNextSchedulesTooltip,
-  toUserDate
-} from '../../FirmwareUtils'
-import { PreferencesDialog } from '../../PreferencesDialog'
-import * as UI               from '../../styledComponents'
+import { PreferencesDialog }    from '../../PreferencesDialog'
+import * as UI                  from '../../styledComponents'
 
 import { DowngradePerApModelDialog } from './DowngradeDialog'
 

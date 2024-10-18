@@ -6,20 +6,20 @@ import { defineMessage, useIntl }         from 'react-intl'
 
 import { Modal }     from '@acx-ui/components'
 import {
-  FirmwareCategory,
-  FirmwareVenue,
-  FirmwareVersion,
-  UpdateNowRequest
-} from '@acx-ui/rc/utils'
-
-import {
   findMaxActiveABFVersion,
   findMaxEolABFVersions,
   getActiveApModels,
   getVersionLabel,
   isBetaFirmware,
   MaxABFVersionMap
-} from '../../FirmwareUtils'
+} from '@acx-ui/rc/components'
+import {
+  FirmwareCategory,
+  FirmwareVenue,
+  FirmwareVersion,
+  UpdateNowRequest
+} from '@acx-ui/rc/utils'
+
 
 import * as UI                                                                                       from './styledComponents'
 import { firmwareNote1, firmwareNote2 }                                                              from './UpdateNowDialog'

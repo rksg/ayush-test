@@ -9,12 +9,12 @@ import {
   ExpandableApModelList,
   convertApModelFirmwaresToUpdateGroups
 } from '@acx-ui/rc/components'
+import { VersionLabelType }                  from '@acx-ui/rc/components'
 import { useGetAllApModelFirmwareListQuery } from '@acx-ui/rc/services'
 import { ApModelFirmware }                   from '@acx-ui/rc/utils'
 import { noDataDisplay }                     from '@acx-ui/utils'
 
-import { VersionLabelType } from '../../FirmwareUtils'
-import * as UI              from '../../styledComponents'
+import * as UI from '../../styledComponents'
 
 export function VersionBannerPerApModel () {
   const { $t } = useIntl()
