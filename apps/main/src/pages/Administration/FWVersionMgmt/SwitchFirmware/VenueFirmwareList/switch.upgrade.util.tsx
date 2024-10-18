@@ -4,13 +4,13 @@ import moment        from 'moment'
 import { IntlShape } from 'react-intl'
 
 import {
+  SCHEDULE_END_TIME_FORMAT,
+  SCHEDULE_START_TIME_FORMAT
+} from '@acx-ui/rc/components'
+import {
   SwitchFirmware
 } from '@acx-ui/rc/utils'
 
-import {
-  SCHEDULE_END_TIME_FORMAT,
-  SCHEDULE_START_TIME_FORMAT
-} from '../../FirmwareUtils'
 
 export const enableSwitchScheduleTooltip = (s: SwitchFirmware) => {
   return s.switchNextSchedule

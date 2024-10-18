@@ -1,14 +1,18 @@
 import { Form } from 'antd'
 import { omit } from 'lodash'
 
-import { Drawer, Loader } from '@acx-ui/components'
+import { Drawer, Loader }         from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ApCompatibility,
   IncompatibilityFeatures,
   CompatibilityDeviceEnum,
-  CompatibilityType } from '@acx-ui/rc/utils'
+  CompatibilityType,
+  Compatibility,
+  CompatibilitySelectedApInfo
+} from '@acx-ui/rc/utils'
 
-import { compatibilityDataGroupByFeatureDeviceType } from '../utils'
+import { apCompatibilityDataGroupByFeatureDeviceType, compatibilityDataGroupByFeatureDeviceType } from '../utils'
 
 import { CompatibilityItem }           from './CompatibilityItem'
 import { SameDeviceTypeCompatibility } from './SameDeviceTypeCompatibility'
@@ -21,13 +25,14 @@ import { useDescription }              from './utils'
 export type CompatibilityDrawerProps = {
   visible: boolean,
   title: string,
-  data: ApCompatibility[],
+  data: Compatibility[] | ApCompatibility[],
   compatibilityType: CompatibilityType,
 
   onClose: () => void
   isLoading?: boolean,
   deviceType?: CompatibilityDeviceEnum,
 
+  apInfo?: CompatibilitySelectedApInfo,
   venueId?: string,
   venueName?: string,
   featureName?: IncompatibilityFeatures,
@@ -46,6 +51,7 @@ export const CompatibilityDrawer = (props: CompatibilityDrawerProps) => {
     width = 500,
     ...others
   } = props
+
 
   return (
     <Drawer
@@ -72,18 +78,22 @@ export const CompatibilityDrawer = (props: CompatibilityDrawerProps) => {
 
 // eslint-disable-next-line max-len
 interface DrawerContentUnitProps extends Omit<CompatibilityDrawerProps, 'data' | 'visible' | 'isLoading' | 'onClose' | 'title'> {
-  data: ApCompatibility,
+  data: Compatibility | ApCompatibility,
   deviceType: CompatibilityDeviceEnum,
 }
 const DrawerContentUnit = (props: DrawerContentUnitProps ) => {
+  const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
   const { data, deviceType = CompatibilityDeviceEnum.AP, ...others } = props
   const description = useDescription(omit(props, 'data'))
 
-  const compatibilityData = compatibilityDataGroupByFeatureDeviceType(data)
+  // eslint-disable-next-line max-len
+  const compatibilityData = (isApCompatibilitiesByModel && (deviceType === CompatibilityDeviceEnum.AP))
+    ? compatibilityDataGroupByFeatureDeviceType(data as Compatibility)
+    : apCompatibilityDataGroupByFeatureDeviceType(data as ApCompatibility)
   const deviceTypes = Object.keys(compatibilityData)
   const isCrossDevices = deviceTypes.length > 1
 
-  if ((isCrossDevices && deviceType === CompatibilityDeviceEnum.AP)
+  if (((isApCompatibilitiesByModel || isCrossDevices) && deviceType === CompatibilityDeviceEnum.AP)
   // eslint-disable-next-line max-len
   || (deviceType === CompatibilityDeviceEnum.EDGE && (props.compatibilityType === CompatibilityType.VENUE || props.compatibilityType === CompatibilityType.DEVICE))) {
     return <SameDeviceTypeCompatibility

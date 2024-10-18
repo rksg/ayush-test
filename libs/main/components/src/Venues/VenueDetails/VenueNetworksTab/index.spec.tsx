@@ -58,6 +58,7 @@ const disabledFFs = [
   Features.EDGES_SD_LAN_HA_TOGGLE,
   Features.WIFI_RBAC_API,
   Features.RBAC_CONFIG_TEMPLATE_TOGGLE,
+  Features.WIFI_COMPATIBILITY_BY_MODEL,
   Features.EDGE_SD_LAN_MV_TOGGLE,
   Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE,
   Features.EDGE_PIN_HA_TOGGLE
@@ -416,6 +417,7 @@ describe('VenueNetworksTab', () => {
         && ff !== Features.WIFI_RBAC_API
         && ff !== Features.EDGE_SD_LAN_MV_TOGGLE
         && ff !== Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE
+        && ff !== Features.WIFI_COMPATIBILITY_BY_MODEL
         && ff !== Features.EDGE_PIN_HA_TOGGLE)
     })
     const mockedSdLanScopeData = {
@@ -478,6 +480,7 @@ describe('VenueNetworksTab', () => {
     beforeEach(() => {
       jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP
         && ff !== Features.WIFI_RBAC_API
+        && ff !== Features.WIFI_COMPATIBILITY_BY_MODEL
         && ff !== Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE
         && ff !== Features.EDGE_PIN_HA_TOGGLE)
     })
@@ -628,6 +631,7 @@ describe('VenueNetworksTab', () => {
         ff !== Features.EDGES_SD_LAN_TOGGLE &&
         ff !== Features.EDGES_SD_LAN_HA_TOGGLE &&
         ff !== Features.EDGE_SD_LAN_MV_TOGGLE &&
+        ff !== Features.WIFI_COMPATIBILITY_BY_MODEL &&
         ff !== Features.EDGE_PIN_HA_TOGGLE)
     })
 

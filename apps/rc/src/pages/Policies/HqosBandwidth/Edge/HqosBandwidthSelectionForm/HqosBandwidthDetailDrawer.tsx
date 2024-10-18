@@ -15,7 +15,7 @@ export const HqosBandwidthDeatilDrawer = () => {
   const form = Form.useFormInstance()
   const qosId = form.getFieldValue('qosId')
 
-  const { data: detailData, isLoading } = useGetEdgeHqosProfileByIdQuery({ params: { policyId: qosId } })
+  const { data: detailData, isLoading } = useGetEdgeHqosProfileByIdQuery({ params: { policyId: qosId } }, { skip: !qosId })
 
   const onClose = () => {
     setVisible(false)

@@ -15,6 +15,9 @@ import { useIsSplitOn, Features }                    from '@acx-ui/feature-toggl
 import { ArrowExpand, SearchOutlined, ChevronRight } from '@acx-ui/icons'
 import { useSwitchFirmwareUtils }                    from '@acx-ui/rc/components'
 import {
+  getNextScheduleTpl
+} from '@acx-ui/rc/components'
+import {
   useLazyGetSwitchFirmwareListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -26,10 +29,7 @@ import { RequestPayload } from '@acx-ui/types'
 import { noDataDisplay }  from '@acx-ui/utils'
 
 import { SwitchFirmwareWizardType } from '..'
-import {
-  getNextScheduleTpl
-} from '../../../../FirmwareUtils'
-import * as UI               from '../../styledComponents'
+import * as UI                      from '../../styledComponents'
 import {
   getHightlightSearch,
   getSwitchNextScheduleTpl
