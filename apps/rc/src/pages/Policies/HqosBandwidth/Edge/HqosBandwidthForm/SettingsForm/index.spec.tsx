@@ -37,7 +37,18 @@ const MockedTargetComponent = (props: Partial<StepsFormProps>) => {
   return <Provider>
     <StepsForm form={props.form}
       editMode={props.editMode}
-      initialValues={{ trafficClassSettings: getDefaultTrafficClassListData() }}
+      initialValues={{ trafficClassSettings: getDefaultTrafficClassListData(), isDefault: false }}
+    >
+      <SettingsForm />
+    </StepsForm>
+  </Provider>
+}
+
+const MockedDefaultComponent = (props: Partial<StepsFormProps>) => {
+  return <Provider>
+    <StepsForm form={props.form}
+      editMode={props.editMode}
+      initialValues={{ trafficClassSettings: getDefaultTrafficClassListData(), isDefault: true }}
     >
       <SettingsForm />
     </StepsForm>
@@ -147,6 +158,31 @@ describe('HQoS Settings Form', () => {
     const minBandwidthSum = minBandwidthArray?.reduce((a, b) => (a??0) + (b??0)) ?? 0 as number
     const remaining = 100 - minBandwidthSum
     expect(await screen.findByText(`Remaining:${remaining}%`)).toBeVisible()
+  })
+
+  it('all fields should be grey out when it is default profile', async () => {
+    const { result: stepFormRef } = renderHook(useMockedFormHook)
+    render(<MockedDefaultComponent
+      form={stepFormRef.current}
+      editMode={false}
+
+    />, { route: { params: { tenantId: 't-id' } } })
+
+    await screen.findByText(/Configure the HQoS bandwidth settings for each traffic class/i)
+    await screen.findByText(/Note: Total guaranteed bandwidth across all classes must NOT exceed 100%. Max bandwidth must exceed minimal guaranteed bandwidth in each class/i)
+
+    expect(screen.getByRole('columnheader', { name: /Traffic Class/i })).toBeTruthy()
+
+    const rows = await screen.findAllByRole('row', { name: /Best effort/i })
+    await waitFor(()=>{
+      expect(rows.length).toBe(2)
+    })
+    await (await screen.findAllByRole('textbox')).forEach(item => {
+      expect(item).toBeDisabled()
+    })
+    await (await screen.findAllByRole('spinbutton')).forEach(item => {
+      expect(item).toBeDisabled()
+    })
   })
 
 })
