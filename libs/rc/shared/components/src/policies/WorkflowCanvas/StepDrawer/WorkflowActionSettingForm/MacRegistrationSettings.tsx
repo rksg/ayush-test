@@ -20,7 +20,7 @@ import { CommonActionSettings } from './CommonActionSettings'
 export function MacRegistrationSettings () {
   const { $t } = useIntl()
   const form = useFormInstance()
-  const identityGroupId = form.getFieldValue('identityGroupId')
+  const [identityGroupId, setIdentityGroupId] = useState<string|undefined>(undefined)
   const [macRegPoolName, setMacRegPoolName] = useState('')
   const [networkList, setNetworkList] = useState<string[]>([])
 
@@ -36,6 +36,19 @@ export function MacRegistrationSettings () {
       return data?.data.map(network => network.ssid) ?? []
     }
   })
+
+  useEffect(() => {
+    const formIdentityGroupId = form.getFieldValue('identityGroupId')
+    if(formIdentityGroupId && identityGroupList) {
+      const selectedIdentityGroup =
+        identityGroupList?.data.find((identityGroup) => identityGroup.id === formIdentityGroupId)
+      if(selectedIdentityGroup) {
+        setIdentityGroupId(selectedIdentityGroup.id)
+      } else {
+        form.setFieldValue('identityGroupId', undefined)
+      }
+    }
+  }, [identityGroupList])
 
   const loadIdentities = useCallback((identityGroupId: string) => {
     fetchIdentities({
@@ -69,10 +82,7 @@ export function MacRegistrationSettings () {
 
   const onIdentityGroupChange = useCallback((identityGroupId: string) => {
     form.setFieldValue('identityId', null)
-    if (identityGroupId) {
-      loadIdentities(identityGroupId)
-      loadMacRegNetworks(identityGroupId)
-    }
+    setIdentityGroupId(identityGroupId)
   }, [form, loadIdentities, loadMacRegNetworks])
 
   useEffect(() => {

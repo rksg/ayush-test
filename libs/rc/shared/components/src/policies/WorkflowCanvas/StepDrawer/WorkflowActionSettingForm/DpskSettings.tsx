@@ -84,9 +84,7 @@ export function DpskSettings () {
 
   const onIdentityGroupChange = useCallback((identityGroupId: string) => {
     form.setFieldValue('identityId', null)
-    if (identityGroupId) {
-      setIdentityGroupId(identityGroupId)
-    }
+    setIdentityGroupId(identityGroupId)
   }, [form, loadIdentities, loadDpskNetworks])
 
   useEffect(() => {
