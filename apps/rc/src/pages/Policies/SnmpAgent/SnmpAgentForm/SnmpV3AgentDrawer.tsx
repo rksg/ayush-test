@@ -61,7 +61,7 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
 
   const RULE_MESSAGES = [
     // eslint-disable-next-line
-    $t({ defaultMessage: 'No other characters are allowed except uppercase, lowercase, digits and special characters, valid special characters are ~!@#$%^&*_-+=|\()\'{}[]:;"\'<>,.?/' }),
+    $t({ defaultMessage: 'Please use only letters, digits, and these special characters: ~!@#$%^&*_-+=|()\'{}[]:;"<>,.?/. Other characters are not allowed.' }),
     $t({ defaultMessage: '~ cannot be used as the first character of the password' }),
     $t({ defaultMessage: '` is not valid to be part of the password' }),
     $t({ defaultMessage: 'The sequence of $( is not valid to be part of the password' })
