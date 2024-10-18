@@ -59,6 +59,12 @@ export const mockTrafficClassSettings = [
   }
 ]
 
+export const mockEdgeHqosData = {
+  trafficClassSettings: mockTrafficClassSettings,
+  name: 'Test-QoS-1',
+  description: 'description'
+}
+
 export const mockEdgeHqosProfileStatusList = {
   fields: null,
   totalCount: 2,
