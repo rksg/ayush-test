@@ -770,7 +770,7 @@ const ICX_MODELS_PORTSPEED: Record<string, MODELS_PORTSPEED | MODELS_PORTSPEED[]
       capacity: ['NONE', 'ONE_HUNDRED_M_FULL', 'ONE_G_FULL']
     }
   ],
-  
+
   'ICX8100-C08PF': [
     {
       start: '1/1/1', end: '1/1/8',
