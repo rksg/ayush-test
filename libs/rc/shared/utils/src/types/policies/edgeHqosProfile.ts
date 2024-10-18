@@ -9,6 +9,7 @@ export interface EdgeHqosConfig {
     name?: string
     description?: string
     trafficClassSettings?: TrafficClassSetting[]
+    isDefault?: boolean
 }
 
 export interface EdgeHqosViewData extends EdgeHqosConfig {

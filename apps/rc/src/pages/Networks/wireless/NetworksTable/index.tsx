@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { useState, useEffect } from 'react'
 
 import { defineMessage, useIntl } from 'react-intl'
@@ -5,7 +6,7 @@ import { defineMessage, useIntl } from 'react-intl'
 import { Button }                                                                            from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
 import { NetworkTabContext, NetworkTable, defaultNetworkPayload, defaultRbacNetworkPayload } from '@acx-ui/rc/components'
-import { useNetworkTableQuery, useWifiNetworkTableQuery }                                    from '@acx-ui/rc/services'
+import { useEnhanceWifiNetworkTableQuery, useNetworkTableQuery, useWifiNetworkTableQuery }   from '@acx-ui/rc/services'
 import { Network, usePollingTableQuery, WifiNetwork }                                        from '@acx-ui/rc/utils'
 import { TenantLink }                                                                        from '@acx-ui/react-router-dom'
 import { WifiScopes }                                                                        from '@acx-ui/types'
@@ -13,14 +14,15 @@ import { hasCrossVenuesPermission }                                             
 
 export default function useNetworksTable () {
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
 
   const { $t } = useIntl()
   const [ networkCount, setNetworkCount ] = useState(0)
 
   const settingsId = 'network-table'
   const tableQuery = usePollingTableQuery<Network|WifiNetwork>({
-    useQuery: isWifiRbacEnabled? useWifiNetworkTableQuery : useNetworkTableQuery,
-    defaultPayload: isWifiRbacEnabled? defaultRbacNetworkPayload : defaultNetworkPayload,
+    useQuery: isApCompatibilitiesByModel? useEnhanceWifiNetworkTableQuery : (isWifiRbacEnabled? useWifiNetworkTableQuery : useNetworkTableQuery),
+    defaultPayload: (isApCompatibilitiesByModel || isWifiRbacEnabled)? defaultRbacNetworkPayload : defaultNetworkPayload,
     pagination: { settingsId }
   })
 

@@ -27,6 +27,11 @@ export enum AccessControlPolicyForTemplateCheckType {
   APPLICATION_POLICY = 'APPLICATION_POLICY'
 }
 
+export enum ConfigTemplateDriftType {
+  DRIFT_DETECTED = 'DRIFT_DETECTED',
+  IN_SYNC = 'IN_SYNC'
+}
+
 export interface ConfigTemplate {
   id?: string,
   name: string,
@@ -35,9 +40,68 @@ export interface ConfigTemplate {
   appliedOnTenants?: string[],
   type: ConfigTemplateType,
   lastModified: number,
-  lastApplied: number
+  lastApplied: number,
+  driftStatus?: ConfigTemplateDriftType
 }
 
 export interface ApplyConfigTemplatePaylod {
   overrides: Array<{ [key in string]: string | number | boolean | [] }>
 }
+
+export type ConfigTemplateDriftValueType = string | number | boolean | null | undefined
+
+// eslint-disable-next-line max-len
+export type ConfigTemplateDriftPair = { template: ConfigTemplateDriftValueType, instance: ConfigTemplateDriftValueType }
+
+export type ConfigTemplateDriftRecord = {
+  path: string,
+  data: ConfigTemplateDriftPair
+}
+
+export type ConfigTemplateDriftSet = {
+  diffName: string,
+  diffData: ConfigTemplateDriftRecord[]
+}
+
+// ----- ConfigTemplateDriftsResponse example -----
+// [
+//   {
+//     diffName: 'WifiNetwork',
+//     diffData: [
+//       {
+//         path: '/wlan/advancedCustomization/qosMirroringEnabled',
+//         data: {
+//           template: true,
+//           instance: false
+//         }
+//       },
+//       {
+//         path: '/wlan/ssid',
+//         data: {
+//           template: 'test-int',
+//           instance: 'nms-test-int'
+//         }
+//       }
+//     ]
+//   },
+//   {
+//     diffName: 'RadiusOnWifiNetwork',
+//     diffData: [
+//       {
+//         path: '/id',
+//         data: {
+//           template: 'radius-template-id',
+//           instance: 'radius-server-id'
+//         }
+//       },
+//       {
+//         path: '/idName',
+//         data: {
+//           template: 'radius-template-name',
+//           instance: 'radius-server-name'
+//         }
+//       }
+//     ]
+//   }
+// ]
+export type ConfigTemplateDriftsResponse = ConfigTemplateDriftSet[]
