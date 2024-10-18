@@ -31,6 +31,7 @@ type SnmpV3AgentDrawerProps = {
 const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
   const { $t } = useIntl()
   const { state, dispatch } = useContext(SnmpAgentFormContext)
+  const [ forceFocusOn, setForceFocusOn ] = useState<boolean>(false)
   // eslint-disable-next-line
   const isSNMPv3PassphraseOn = useIsSplitOn(Features.WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE)
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
@@ -62,7 +63,7 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
 
   const RULE_MESSAGES = [
     // eslint-disable-next-line
-    $t({ defaultMessage: 'No other characters are allowed except uppercase, lowercase, digits and special characters, valid special characters are ~!@#$%^&*_-+=|\()\'{}[]:;"\'<>,.?/' }),
+    $t({ defaultMessage: 'Please use only letters, digits, and these special characters: ~!@#$%^&*_-+=|()\'{}[]:;"<>,.?/. Other characters are not allowed.' }),
     $t({ defaultMessage: '~ cannot be used as the first character of the password' }),
     $t({ defaultMessage: '` is not valid to be part of the password' }),
     $t({ defaultMessage: 'The sequence of $( is not valid to be part of the password' })
@@ -181,6 +182,8 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
         children={
           ((isUseRbacApi && isSNMPv3PassphraseOn) ?
             <PasswordInputStrength
+              forceFocusOn={forceFocusOn}
+              setForceFocusOn={setForceFocusOn}
               data-testid={'password-input-strength'}/> :
             <PasswordInput />
           )
@@ -253,6 +256,7 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
         }
       }
     } catch (error) {
+      form.validateFields(['authPassword']).catch(() => setForceFocusOn(true))
       if (error instanceof Error) throw error
     }
   }
