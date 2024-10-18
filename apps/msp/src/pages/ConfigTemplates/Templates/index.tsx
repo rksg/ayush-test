@@ -58,8 +58,16 @@ import { AppliedToTenantDrawer }           from './AppliedToTenantDrawer'
 import { ApplyTemplateDrawer }             from './ApplyTemplateDrawer'
 import { ShowDriftsDrawer }                from './ShowDriftsDrawer'
 import { configTemplateDriftTypeLabelMap } from './ShowDriftsDrawer/contents'
-import { getConfigTemplateTypeLabel }      from './templateUtils'
+import { getConfigTemplateDriftStatusLabel, getConfigTemplateTypeLabel }      from './templateUtils'
 import { useAddTemplateMenuProps }         from './useAddTemplateMenuProps'
+
+const typeFilterOptions = Object.entries(ConfigTemplateType).map((type =>
+  ({ key: type[1], value: getConfigTemplateTypeLabel(type[1]) })
+))
+
+const driftStatusFilterOptions = Object.entries(ConfigTemplateDriftType).map((status =>
+  ({ key: status[1], value: getConfigTemplateDriftStatusLabel(status[1]) })
+))
 
 export function ConfigTemplateList () {
   const { $t } = useIntl()
@@ -208,14 +216,6 @@ function useColumns (props: TemplateColumnProps) {
   const dateFormat = userDateTimeFormat(DateFormatEnum.DateTimeFormatWithSeconds)
   const driftsEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_DRIFTS)
 
-  const typeFilterOptions = Object.entries(ConfigTemplateType).map((type =>
-    ({ key: type[1], value: getConfigTemplateTypeLabel(type[1]) })
-  ))
-
-  const driftStatusFilterOptions = Object.entries(ConfigTemplateDriftType).map((status =>
-    ({ key: status[1], value: $t(configTemplateDriftTypeLabelMap[status[1]]) })
-  ))
-
   const columns: TableProps<ConfigTemplate>['columns'] = [
     {
       key: 'name',
@@ -304,7 +304,7 @@ function useColumns (props: TemplateColumnProps) {
       filterable: driftStatusFilterOptions,
       sorter: true,
       render: function (_: ReactNode, row: ConfigTemplate) {
-        return row.driftStatus ? $t(configTemplateDriftTypeLabelMap[row.driftStatus]) : ''
+        return getConfigTemplateDriftStatusLabel(row.driftStatus)
       }
     }] : []),
     {
