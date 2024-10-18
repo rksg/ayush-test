@@ -11,7 +11,7 @@ exports[`useAnalyticsFilter changes filter value 1`] = `
 exports[`useAnalyticsFilter gets initial value from search parameters 1`] = `
 <DocumentFragment>
   <div>
-    {"startDate":"2021-12-31T00:01:00+00:00","endDate":"2022-01-01T00:01:00+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"zone","name":"A-T-Venue"},{"type":"apMac","list":["D8:38:FC:36:78:D0"]}]],"switchNodes":[[{"type":"zone","name":"A-T-Venue"},{"type":"apMac","list":["D8:38:FC:36:78:D0"]}]]}} | {"startDate":"2021-12-31T00:01:00+00:00","endDate":"2022-01-01T00:01:00+00:00","range":"Last 24 Hours","path":[{"type":"zone","name":"A-T-Venue"},{"type":"AP","name":"D8:38:FC:36:78:D0"}]}
+    {"startDate":"2021-12-31T00:01:00+00:00","endDate":"2022-01-01T00:01:00+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"zone","name":"A-T-Venue"},{"type":"apMac","list":["D8:38:FC:36:78:D0"]}]],"switchNodes":[[{"type":"switchGroup","name":"A-T-Venue"},{"type":"apMac","list":["D8:38:FC:36:78:D0"]}]]}} | {"startDate":"2021-12-31T00:01:00+00:00","endDate":"2022-01-01T00:01:00+00:00","range":"Last 24 Hours","path":[{"type":"zone","name":"A-T-Venue"},{"type":"AP","name":"D8:38:FC:36:78:D0"}]}
   </div>
 </DocumentFragment>
 `;

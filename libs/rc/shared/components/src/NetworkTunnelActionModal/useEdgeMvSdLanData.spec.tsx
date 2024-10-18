@@ -1,8 +1,8 @@
 import { rest } from 'msw'
 
-import { EdgeSdLanUrls, EdgeSdLanFixtures, VlanPoolRbacUrls } from '@acx-ui/rc/utils'
-import { Provider }                                           from '@acx-ui/store'
-import { mockServer, renderHook, waitFor }                    from '@acx-ui/test-utils'
+import { EdgeSdLanUrls, EdgeSdLanFixtures, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { Provider }                                          from '@acx-ui/store'
+import { mockServer, renderHook, waitFor }                   from '@acx-ui/test-utils'
 
 import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
@@ -19,9 +19,12 @@ jest.mock('../useEdgeActions', () => ({
 const services = require('@acx-ui/rc/services')
 
 const mockedReqFn = jest.fn()
+const mockedReqVlanPool = jest.fn()
+
 describe('NetworkTunnelActionModal - useEdgeSdLanData', () => {
   beforeEach(() => {
     mockedReqFn.mockReset()
+    mockedReqVlanPool.mockReset()
 
     mockServer.use(
       rest.post(
@@ -29,71 +32,63 @@ describe('NetworkTunnelActionModal - useEdgeSdLanData', () => {
         (_, res, ctx) => {
           mockedReqFn()
           return res(ctx.json({ data: mockedMvSdLanDataList }))
-        }
-      )
+        })
     )
+
+    services.useGetVLANPoolPolicyViewModelListQuery = jest.fn()
+      .mockImplementation((_reqArgs, options) => {
+        if (options.skip) {
+          return {
+            networkVlanPool: undefined,
+            isLoading: false,
+            isFetching: false
+          }
+        } else {
+          mockedReqVlanPool(options)
+          return {
+            networkVlanPool: mockVlanPoolList[0],
+            isLoading: false,
+            isFetching: false
+          }
+        }
+      })
   })
 
   it('should correctly response data', async () => {
-    const { result } = renderHook(() => useEdgeMvSdLanData(), {
-      wrapper: ({ children }) => <Provider children={children} />
-    })
-
-    await waitFor(() => expect(result.current.allSdLans.length).toBe(mockedMvSdLanDataList.length))
-    const networkVenueId = mockedMvSdLanDataList[0].tunneledWlans![0].venueId
-    const venueSdlan = result.current.getVenueSdLan(networkVenueId)
-    expect(venueSdlan?.id).toBe(mockedMvSdLanDataList[0].id)
-  })
-
-  it('should not trigger API when FF is not on', () => {
-    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
-    const { result } = renderHook(() => useEdgeMvSdLanData(), {
-      wrapper: ({ children }) => <Provider children={children} />
-    })
-
-    expect(result.current.allSdLans).toStrictEqual([])
-    expect(mockedReqFn).toBeCalledTimes(0)
-  })
-
-  it('should not trigger API when skip is true', () => {
-    const mockedReqVlanPool = jest.fn()
-    mockServer.use(
-      rest.post(
-        VlanPoolRbacUrls.getVLANPoolPolicyList.url,
-        (_, res, ctx) => {
-          mockedReqVlanPool()
-          return res(ctx.json({ data: mockVlanPoolList }))
-        }
-      )
-    )
-
-    const { result } = renderHook(() => useEdgeMvSdLanData({ sdLanQueryOptions: { skip: true } }), {
-      wrapper: ({ children }) => <Provider children={children} />
-    })
-
-    expect(result.current.allSdLans).toStrictEqual([])
-    expect(mockedReqFn).toBeCalledTimes(0)
-    expect(mockedReqVlanPool).toBeCalledTimes(0)
-  })
-
-  it('should query vlanPool data when networkId is given', async () => {
-    services.useGetVLANPoolPolicyViewModelListQuery = jest.fn().mockImplementation(() => {
-      return {
-        networkVlanPool: mockVlanPoolList[0],
-        isLoading: false,
-        isFetching: false
-      }
-    })
-
     const { result } = renderHook(() => useEdgeMvSdLanData({
-      sdLanQueryOptions: { skip: true },
-      networkId: 'network_4'
+      id: 'mock-network',
+      type: NetworkTypeEnum.AAA,
+      venueId: 'mock-venue'
     }), {
       wrapper: ({ children }) => <Provider children={children} />
     })
 
-    await waitFor(() => expect(result.current.networkVlanPool).not.toBeUndefined())
-    expect(result.current.allSdLans).toStrictEqual([])
+    await waitFor(() => expect(result.current.venueSdLan?.id).toBe(mockedMvSdLanDataList[0].id))
+    const vlanPool = result.current.networkVlanPool
+    await waitFor(() => expect(vlanPool?.id).toBe(mockVlanPoolList[0].id))
+  })
+
+  it('should not trigger API when FF is not on', () => {
+    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
+    const { result } = renderHook(() => useEdgeMvSdLanData({
+      id: 'mock-network',
+      type: NetworkTypeEnum.AAA,
+      venueId: 'mock-venue'
+    }), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+
+    expect(result.current.venueSdLan).toStrictEqual(undefined)
     expect(mockedReqFn).toBeCalledTimes(0)
+  })
+
+  it('should not trigger API when network is undefined', () => {
+    const { result } = renderHook(() => useEdgeMvSdLanData(undefined), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+
+    expect(result.current.venueSdLan).toStrictEqual(undefined)
+    expect(mockedReqFn).toBeCalledTimes(0)
+    expect(mockedReqVlanPool).toBeCalledTimes(0)
   })
 })
