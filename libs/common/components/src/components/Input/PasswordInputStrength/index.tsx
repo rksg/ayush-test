@@ -56,14 +56,14 @@ export const PasswordInputStrength = ({
     (isAllConditionsMet && isAllConditionsMet > 4 ? 4 : isAllConditionsMet) || 4
 
   const RULE_REGEX = regExRules || [
-    /^.{8,}$/,
+    /^.{8,32}$/,
     /(?=.*[a-z])(?=.*[A-Z])/,
     /(?=.*\d)/,
     /(?=.*[^\w\d\s])/
   ]
 
   const RULE_MESSAGES = regExErrorMessages || [
-    $t({ defaultMessage: '8 characters' }),
+    $t({ defaultMessage: 'Between 8 and 32 characters' }),
     $t({ defaultMessage: 'One uppercase and one lowercase letters' }),
     $t({ defaultMessage: 'One number' }),
     $t({ defaultMessage: 'One special symbol' })
