@@ -95,11 +95,9 @@ describe('Select Service Form', () => {
         || featureFlag !== Features.EDGE_DHCP_HA_TOGGLE
     })
 
-    render(
-      <SelectServiceForm />, {
-        route: { params, path }
-      }
-    )
+    render(<SelectServiceForm />, {
+      route: { params, path }
+    })
 
     expect(screen.queryByText('DHCP for SmartEdge')).toBeNull()
   })
@@ -111,12 +109,34 @@ describe('Select Service Form', () => {
         || featureFlag !== Features.EDGE_PIN_HA_TOGGLE
     })
 
-    render(
-      <SelectServiceForm />, {
-        route: { params, path }
-      }
-    )
+    render(<SelectServiceForm />, {
+      route: { params, path }
+    })
 
     expect(screen.queryByText('Personal Identity Network')).toBeNull()
+  })
+
+  it('should not render features bound with FF when FF OFF', async () => {
+    jest.mocked(useIsTierAllowed).mockReturnValue(false)
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+
+    render(<SelectServiceForm />, {
+      route: { params, path }
+    })
+
+    expect(screen.queryByText('mDNS Proxy for RUCKUS Edge')).toBeNull()
+    expect(screen.queryByText('Personal Identity Network')).toBeNull()
+  })
+
+  it('should display Edge mDNS service when its FF ON', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(featureFlag => {
+      return featureFlag === Features.EDGE_MDNS_PROXY_TOGGLE
+        || featureFlag === Features.EDGES_TOGGLE
+    })
+    render(<SelectServiceForm />, {
+      route: { params, path }
+    })
+
+    expect(screen.getByText('mDNS Proxy for RUCKUS Edge')).toBeVisible()
   })
 })

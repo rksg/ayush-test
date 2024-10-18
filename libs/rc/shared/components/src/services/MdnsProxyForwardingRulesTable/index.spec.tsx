@@ -6,7 +6,8 @@ import { useIntl } from 'react-intl'
 import {
   MdnsProxyForwardingRule,
   BridgeServiceEnum,
-  mdnsProxyRuleTypeLabelMapping
+  mdnsProxyRuleTypeLabelMapping,
+  MdnsProxyFeatureTypeEnum
 } from '@acx-ui/rc/utils'
 import { render, renderHook, screen, waitFor, within } from '@acx-ui/test-utils'
 
@@ -56,7 +57,10 @@ const mockedRules: MdnsProxyForwardingRule[] = [
 
 describe('MdnsProxyForwardingRulesTable', () => {
   it('should render the table with the given data', async () => {
-    render(<MdnsProxyForwardingRulesTable rules={mockedRules} />)
+    render(<MdnsProxyForwardingRulesTable
+      featureType={MdnsProxyFeatureTypeEnum.WIFI}
+      rules={mockedRules}
+    />)
 
     const { result: targetTypeLabel } = renderHook(() => {
       const { $t } = useIntl()
@@ -71,6 +75,7 @@ describe('MdnsProxyForwardingRulesTable', () => {
   it('should render the readonly table', async () => {
     render(
       <MdnsProxyForwardingRulesTable
+        featureType={MdnsProxyFeatureTypeEnum.WIFI}
         rules={mockedRules}
         readonly={true}
       />
@@ -100,7 +105,9 @@ describe('MdnsProxyForwardingRulesTable', () => {
     })
 
     render(
-      <MdnsProxyForwardingRulesTable rules={[ruleToAdd]} />
+      <MdnsProxyForwardingRulesTable
+        featureType={MdnsProxyFeatureTypeEnum.WIFI}
+        rules={[ruleToAdd]} />
     )
 
     await userEvent.click(await screen.findByRole('button', { name: 'Add Rule' }))
@@ -142,6 +149,7 @@ describe('MdnsProxyForwardingRulesTable', () => {
 
       return (
         <MdnsProxyForwardingRulesTable
+          featureType={MdnsProxyFeatureTypeEnum.WIFI}
           rules={rules}
           setRules={setRules}
         />
@@ -189,6 +197,7 @@ describe('MdnsProxyForwardingRulesTable', () => {
 
       return (
         <MdnsProxyForwardingRulesTable
+          featureType={MdnsProxyFeatureTypeEnum.WIFI}
           rules={rules}
           setRules={setRules}
         />
@@ -223,6 +232,7 @@ describe('MdnsProxyForwardingRulesTable', () => {
 
       return (
         <MdnsProxyForwardingRulesTable
+          featureType={MdnsProxyFeatureTypeEnum.WIFI}
           rules={rules}
           setRules={setRules}
         />
