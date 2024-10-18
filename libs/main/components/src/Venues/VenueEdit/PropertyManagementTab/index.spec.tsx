@@ -8,7 +8,6 @@ import {
   MacRegListUrlsInfo,
   MsgTemplateUrls,
   NewDpskBaseUrl,
-  NewPersonaBaseUrl,
   PersonaUrls,
   PropertyUrlsInfo
 } from '@acx-ui/rc/utils'
@@ -89,8 +88,8 @@ describe('Property Config Tab', () => {
         replacePagination(PropertyUrlsInfo.getResidentPortalList.url),
         (req, res, ctx) => res(ctx.json(mockResidentPortalProfileList))
       ),
-      rest.get(
-        NewPersonaBaseUrl,
+      rest.post(
+        PersonaUrls.searchPersonaGroupList.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(mockPersonaGroupList))
       ),
       rest.get(
