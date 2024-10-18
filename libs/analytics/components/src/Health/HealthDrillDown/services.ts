@@ -179,7 +179,7 @@ export const api = dataApi.injectEndpoints({
         topImpactedClientLimit: number;
         stage: string;
         pieFilter: string;
-        chartKey: TabKeyType
+        chartKey: TabKeyType;
       }
     >({
       query: (payload) => {

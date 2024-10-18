@@ -24,8 +24,9 @@ const HealthDrillDown = (props: {
   filters: AnalyticsFilter;
   drilldownSelection: DrilldownSelection;
 }) => {
-  const [pieFilter, setPieFilter] = useState('')
+  const [pieFilter, setPieFilter] = useState<string>('')
   const [chartKey, setChartKey] = useState<TabKeyType>('wlans')
+  const [eventCode, setEventCode] = useState<string>('')
 
   const { drilldownSelection, filters } = props
   const colors = [
@@ -137,6 +138,7 @@ const HealthDrillDown = (props: {
                 setPieFilter={setPieFilter}
                 chartKey={chartKey}
                 setChartKey={setChartKey}
+                setEventCode={setEventCode}
               />
             }</AutoSizer>
           </GridCol>
@@ -147,6 +149,7 @@ const HealthDrillDown = (props: {
               drillDownSelection={drilldownSelection}
               pieFilter={pieFilter}
               chartKey={chartKey}
+              eventCode={eventCode}
             />
           </GridCol>
         </>

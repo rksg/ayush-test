@@ -30,11 +30,12 @@ import * as UI                                from './styledComponents'
 
 const topCount = 5
 
-type PieChartData = {
+export type PieChartData = {
   key: string
   value: number
   name: string
   color: string
+  code?: string
 }
 
 export type TabKeyType = 'wlans' | 'nodes' | 'events' | 'osManufacturers'
@@ -71,21 +72,12 @@ export const transformData = (
       ? getTopPieChartData(data.network.hierarchyNode.events).map((event) => ({
         ...event,
         key: mapCodeToReason(event.key),
-        name: mapCodeToReason(event.name)
+        name: mapCodeToReason(event.name),
+        code: event.key
       }))
       : []
     const osManufacturersData = getTopPieChartData(osManufacturers)
-
-    // const nameToCode = data.network.hierarchyNode.events?.map(t1 => {
-    //   const match = events.find(t2 => t2.value === t1.value)
-    //   return {
-    //     name: match?.name,
-    //     key: t1.key
-    //   }
-    // }) || []
-
-    // setNameToCode(nameToCode)
-
+    
     return { nodes, wlans, events, osManufacturers: osManufacturersData }
   }
   return { nodes: [], wlans: [], events: [], osManufacturers: [] }
@@ -145,7 +137,7 @@ function getHealthPieChart (
   dataFormatter: (value: unknown, tz?: string | undefined) => string,
   size: { width: number; height: number },
   pieFilter: string,
-  setPieFilter: (filter: string) => void,
+  setPieFilter: (filter: string) => void
 ) {
 
   let tops = data.slice(0, topCount)
@@ -181,7 +173,8 @@ export const HealthPieChart = ({
   pieFilter,
   setPieFilter,
   chartKey,
-  setChartKey
+  setChartKey,
+  setEventCode
 }: {
   size: { width: number; height: number }
   filters: AnalyticsFilter
@@ -192,6 +185,7 @@ export const HealthPieChart = ({
   setPieFilter: (filter: string) => void
   chartKey: TabKeyType
   setChartKey: (key: TabKeyType) => void
+  setEventCode: (code: string) => void
 }) => {
   const { $t } = useIntl()
   const { startDate: start, endDate: end, filter } = filters
@@ -234,6 +228,10 @@ export const HealthPieChart = ({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { setChartKey(tabDetails?.[0]?.value as TabKeyType) }, [tabDetails.length])
   useEffect(() => { setPieFilter('') }, [chartKey])
+  useEffect(() => {
+    const selectedCode = events.find(event => event.name === pieFilter)?.code || ''
+    setEventCode(selectedCode)
+  }, [pieFilter])
 
   return (
     <Loader states={[queryResults]} style={size}>

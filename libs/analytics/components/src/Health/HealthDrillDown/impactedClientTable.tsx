@@ -20,20 +20,22 @@ import {
 } from './config'
 import { useHealthImpactedClientsQuery, ImpactedClient } from './services'
 import { TableHeading }                                  from './styledComponents'
-import { TabKeyType }   from './healthPieChart'
+import { TabKeyType }                                    from './healthPieChart'
 
 export const ImpactedClientsTable = ({
   filters,
   selectedStage,
   drillDownSelection,
   pieFilter,
-  chartKey
+  chartKey,
+  eventCode
 }: {
   filters: AnalyticsFilter;
   selectedStage: Stages;
   drillDownSelection: DrilldownSelection;
   pieFilter: string;
   chartKey: TabKeyType;
+  eventCode: string;
 }) => {
   const { $t } = useIntl()
   const fieldMap = {
@@ -52,7 +54,7 @@ export const ImpactedClientsTable = ({
       field: field,
       stage: (selectedStage && stageNameToCodeMap[selectedStage]) as string,
       topImpactedClientLimit: topImpactedClientLimit,
-      pieFilter: pieFilter,
+      pieFilter: eventCode === '' ? pieFilter : eventCode,
       chartKey: chartKey
     },
     {
