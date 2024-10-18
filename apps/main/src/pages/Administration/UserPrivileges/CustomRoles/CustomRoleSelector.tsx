@@ -13,6 +13,7 @@ import { roleStringMap }          from '@acx-ui/user'
 
 export interface CustomRoleSelectorProps {
     disabled?: boolean;
+    isEditMode?: boolean;
     isOnboardedMsp?: boolean;
     setSelected: (selected: RolesEnum) => void
   }
@@ -25,13 +26,13 @@ const NonSupportedRoles = [
 
 const CustomRoleSelector = (props: CustomRoleSelectorProps) => {
   const { $t } = useIntl()
-  const { disabled, isOnboardedMsp, setSelected } = props
+  const { disabled, isEditMode, isOnboardedMsp, setSelected } = props
   const params = useParams()
-  const isRbacP2Enabled = useIsSplitOn(Features.RBAC_IMPLICIT_P2)
+  const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
 
   const { data: roleList } = useGetCustomRolesQuery({ params })
 
-  const rolesToBeRemoved = (isRbacP2Enabled && isOnboardedMsp)
+  const rolesToBeRemoved = ((isRbacPhase2Enabled && isOnboardedMsp && !isEditMode) || disabled)
     ? [...without(NonSupportedRoles, RolesEnum.PRIME_ADMIN)] : NonSupportedRoles
 
   const rolesList = roleList?.filter(item =>
