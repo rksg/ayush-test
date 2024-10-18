@@ -550,8 +550,8 @@ export function RadioSettings () {
       if (is6gChannelSeparation) {
         radioParams6G.allowedIndoorChannels =
           curForm?.getFieldValue(['radioParams6G', 'allowedIndoorChannels'])
-        radioParams6G.allowedOutdoorChannels =
-          curForm?.getFieldValue(['radioParams6G', 'allowedOutdoorChannels'])
+        radioParams6G.allowedOutdoorChannels = supportRadioChannels[ApRadioTypeEnum.Radio6G]?.['outdoor'] ?
+          curForm?.getFieldValue(['radioParams6G', 'allowedOutdoorChannels']) : undefined
       } else {
         radioParams6G.allowedChannels = curForm?.getFieldValue(['radioParams6G', 'allowedChannels'])
       }
