@@ -334,5 +334,30 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/templates/networkActivations/mappings',
     newApi: true
+  },
+  getDriftTenants: {
+    method: 'get',
+    url: '/templates/:templateId/driftTenants?page=1&pageSize=1000',
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1+json'
+    }
+  },
+  getDriftReport: {
+    method: 'get',
+    url: '/templates/:templateId/tenants/:tenantId/diffReport',
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1+json'
+    }
+  },
+  patchDriftReport: {
+    method: 'PATCH',
+    url: '/templates/:templateId/tenants/:tenantId/diffReport',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }
