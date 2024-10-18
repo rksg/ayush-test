@@ -106,7 +106,9 @@ export const ComparisonDonutChart: React.FC<{
   if (!isDataRetained) return <Card>{$t(dataRetentionText)}</Card>
   if (noData || !kpiQuery?.data) {
     return <Card>
-      {$t({ defaultMessage: 'Graph modeling will be generated once Intent is activated.' })}
+      {$t({
+        defaultMessage: 'Key Performance Indications will be generated once Intent is activated.'
+      })}
     </Card>
   }
 

@@ -44,7 +44,7 @@ describe('ComparisonDonutChart', () => {
 
     render(<ComparisonDonutChart kpiQuery={mockedQueryResult} isDetail />, { wrapper: Provider })
     // eslint-disable-next-line max-len
-    expect(await screen.findByText('Graph modeling will be generated once Intent is activated.')).toBeVisible()
+    expect(await screen.findByText('Key Performance Indications will be generated once Intent is activated.')).toBeVisible()
   })
 
   it('should render correctly for active states (non-Detail)', async () => {
