@@ -9,7 +9,7 @@ import {
   getServiceDetailsLink,
   CommonUrlsInfo,
   CountAndNames,
-  EdgeMdnsFxtures,
+  EdgeMdnsFixtures,
   EdgeMdnsProxyUrls,
   VenueFixtures
 } from '@acx-ui/rc/utils'
@@ -18,7 +18,7 @@ import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within 
 
 import { EdgeMdnsProxyTable } from '.'
 
-const { mockEdgeMdnsViewDataList } = EdgeMdnsFxtures
+const { mockEdgeMdnsViewDataList } = EdgeMdnsFixtures
 const { mockVenueOptions } = VenueFixtures
 const mockPath = '/:tenantId/services/edgeMdnsProxy/list'
 

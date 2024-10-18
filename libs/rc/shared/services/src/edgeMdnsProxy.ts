@@ -13,11 +13,6 @@ import { createHttpRequest }    from '@acx-ui/utils'
 
 import { serviceApi } from './service'
 
-const versionHeader = {
-  'Content-Type': 'application/vnd.ruckus.v1+json',
-  'Accept': 'application/vnd.ruckus.v1+json'
-}
-
 // TODO: still need to confirm
 enum EdgeMdnsProxyActivityEnum {
   ADD = 'Add EdgeMdnsProxy',

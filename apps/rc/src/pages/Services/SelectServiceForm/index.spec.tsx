@@ -46,7 +46,6 @@ describe('Select Service Form', () => {
       }
     )
 
-    expect(screen.getByText('mDNS Proxy for RUCKUS Edge')).toBeVisible()
     const wifiCallingRadio = screen.getByDisplayValue(/Wi-Fi Calling/)
     const submitButton = screen.getByRole('button', { name: 'Next' })
 
@@ -115,7 +114,6 @@ describe('Select Service Form', () => {
     })
 
     expect(screen.queryByText('Personal Identity Network')).toBeNull()
-    expect(screen.getByText('mDNS Proxy for RUCKUS Edge')).toBeVisible()
   })
 
   it('should not render features bound with FF when FF OFF', async () => {
@@ -128,5 +126,17 @@ describe('Select Service Form', () => {
 
     expect(screen.queryByText('mDNS Proxy for RUCKUS Edge')).toBeNull()
     expect(screen.queryByText('Personal Identity Network')).toBeNull()
+  })
+
+  it('should display Edge mDNS service when its FF ON', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(featureFlag => {
+      return featureFlag === Features.EDGE_MDNS_PROXY_TOGGLE
+        || featureFlag === Features.EDGES_TOGGLE
+    })
+    render(<SelectServiceForm />, {
+      route: { params, path }
+    })
+
+    expect(screen.getByText('mDNS Proxy for RUCKUS Edge')).toBeVisible()
   })
 })

@@ -1,9 +1,9 @@
 import { rest } from 'msw'
 
-import { Features }                                                                                                                          from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                                                                                             from '@acx-ui/rc/components'
-import { DHCPUrls, DpskUrls, EdgeMdnsFxtures, EdgeMdnsProxyUrls, getSelectServiceRoutePath, MdnsProxyUrls, PortalUrlsInfo, WifiCallingUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                                          from '@acx-ui/store'
+import { Features }                                                                                                                           from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                                                                                              from '@acx-ui/rc/components'
+import { DHCPUrls, DpskUrls, EdgeMdnsFixtures, EdgeMdnsProxyUrls, getSelectServiceRoutePath, MdnsProxyUrls, PortalUrlsInfo, WifiCallingUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                                           from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -20,7 +20,7 @@ jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
-const { mockEdgeMdnsViewDataList } = EdgeMdnsFxtures
+const { mockEdgeMdnsViewDataList } = EdgeMdnsFixtures
 describe('MyServices', () => {
   const params = {
     tenantId: '15320bc221d94d2cb537fa0189fee742'
