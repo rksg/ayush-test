@@ -126,19 +126,22 @@ export interface FirmwareVersion {
 export enum SwitchFirmwareModelGroup {
   ICX71 = 'ICX71',
   ICX7X = 'ICX7X',
-  ICX82 = 'ICX82'
+  ICX82 = 'ICX82',
+  ICX81 = 'ICX81'
 }
 
 export const SwitchModelGroupDisplayText: { [key in SwitchFirmwareModelGroup]: string } = {
   [SwitchFirmwareModelGroup.ICX71]: '(7150)' ,
   [SwitchFirmwareModelGroup.ICX7X]: '(7550-7850)',
-  [SwitchFirmwareModelGroup.ICX82]: '(8200)'
+  [SwitchFirmwareModelGroup.ICX82]: '(8200)',
+  [SwitchFirmwareModelGroup.ICX81]: '(8100)'
 }
 
 export const SwitchModelGroupDisplayTextValue: { [key in SwitchFirmwareModelGroup]: string } = {
   [SwitchFirmwareModelGroup.ICX71]: 'ICX 7150' ,
   [SwitchFirmwareModelGroup.ICX7X]: 'ICX 7550-7850',
-  [SwitchFirmwareModelGroup.ICX82]: 'ICX 8200'
+  [SwitchFirmwareModelGroup.ICX82]: 'ICX 8200',
+  [SwitchFirmwareModelGroup.ICX81]: 'ICX 8100'
 }
 
 export interface SwitchVersion1002 {

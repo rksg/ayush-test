@@ -1,6 +1,7 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import { useSwitchFirmwareUtils }            from '@acx-ui/rc/components'
 import {
   useGetSwitchDefaultFirmwareListV1001Query,
@@ -15,10 +16,12 @@ export const VersionBanner = () => {
   const params = useParams()
 
   const { $t } = useIntl()
+  const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const modelGroupDisplayText: { [key in SwitchFirmwareModelGroup]: string } = {
     [SwitchFirmwareModelGroup.ICX71]: $t({ defaultMessage: 'ICX Models (7150)' }),
     [SwitchFirmwareModelGroup.ICX7X]: $t({ defaultMessage: 'ICX Models (7550-7850)' }),
-    [SwitchFirmwareModelGroup.ICX82]: $t({ defaultMessage: 'ICX Models (8200)' })
+    [SwitchFirmwareModelGroup.ICX82]: $t({ defaultMessage: 'ICX Models (8200)' }),
+    [SwitchFirmwareModelGroup.ICX81]: $t({ defaultMessage: 'ICX Models (8100)' })
   }
 
   const { data: latestVersions } = useGetSwitchLatestFirmwareListV1001Query({ params })
@@ -30,6 +33,9 @@ export const VersionBanner = () => {
   const versionInfo = []
 
   for (const key in SwitchFirmwareModelGroup) {
+    if(!isSupport8100 && key === SwitchFirmwareModelGroup.ICX81) {
+      continue
+    }
     const modelGroupValue = SwitchFirmwareModelGroup[key as keyof typeof SwitchFirmwareModelGroup]
     const latestVersion = latestVersions?.filter(
       v => v.modelGroup === modelGroupValue)[0]

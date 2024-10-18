@@ -35,6 +35,7 @@ export interface UpdateNowStepProps {
 }
 
 export function UpdateNowStep (props: UpdateNowStepProps) {
+
   const { $t } = useIntl()
   const intl = useIntl()
   const { form, current } = useStepFormContext()
@@ -42,10 +43,12 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
     upgradeVenueList, upgradeSwitchList } = props
   const { getVersionOptionV1002 } = useSwitchFirmwareUtils()
   const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
+  const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
 
   const [selectedICX71Version, setSelecteedICX71Version] = useState('')
   const [selectedICX7XVersion, setSelecteedICX7XVersion] = useState('')
   const [selectedICX82Version, setSelecteedICX82Version] = useState('')
+  const [selectedICX81Version, setSelecteedICX81Version] = useState('')
 
   const [switchNoteData, setSwitchNoteData] = useState([] as NoteProps[])
 
@@ -55,6 +58,8 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
     v => v.modelGroup === SwitchFirmwareModelGroup.ICX7X)[0]?.switchCount || 0
   const ICX82Count = availableVersions?.filter(
     v => v.modelGroup === SwitchFirmwareModelGroup.ICX82)[0]?.switchCount || 0
+  const ICX81Count = availableVersions?.filter(
+    v => v.modelGroup === SwitchFirmwareModelGroup.ICX81)[0]?.switchCount || 0
 
   const payload = {
     venueIdList: upgradeVenueList.map(item => item.venueId),
@@ -107,6 +112,11 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
   const handleICX82Change = (value: RadioChangeEvent) => {
     setSelecteedICX82Version(value.target.value)
     form.setFieldValue('selectedICX82Version', value.target.value)
+    form.validateFields()
+  }
+  const handleICX81Change = (value: RadioChangeEvent) => {
+    setSelecteedICX81Version(value.target.value)
+    form.setFieldValue('selectedICX81Version', value.target.value)
     form.validateFields()
   }
 
@@ -172,7 +182,8 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
                 const selectedVersions = [
                   form.getFieldValue('selectedICX82Version'),
                   form.getFieldValue('selectedICX71Version'),
-                  form.getFieldValue('selectedICX7XVersion')
+                  form.getFieldValue('selectedICX7XVersion'),
+                  form.getFieldValue('selectedICX81Version')
                 ]
                 if (selectedVersions.every(_.isEmpty)) {
                   return Promise.reject('Please select at least 1 firmware version')
@@ -248,6 +259,29 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
             <Space direction={'vertical'}>
               { // eslint-disable-next-line max-len
                 getAvailableVersions(SwitchFirmwareModelGroup.ICX71)?.map(v =>
+                  <Radio value={v.id} key={v.id} disabled={v.inUse}>
+                    {getVersionOptionV1002(intl, v)}
+                  </Radio>)}
+              <Radio value='' key='0' style={{ fontSize: 'var(--acx-body-3-font-size)' }}>
+                {intl.$t({ defaultMessage: 'Do not update firmware on these switches' })}
+              </Radio>
+            </Space>
+          </Radio.Group>
+        </>}
+
+        {isSupport8100 && (hasVenue || ICX81Count > 0) && <>
+          <Subtitle level={4}>
+            {intl.$t({ defaultMessage: 'Firmware available for ICX 8100 Series' })}
+            &nbsp;
+            ({ICX81Count} {intl.$t({ defaultMessage: 'switches' })})
+          </Subtitle>
+          <Radio.Group
+            style={{ margin: '5px 0 20px 0', fontSize: '14px' }}
+            onChange={handleICX81Change}
+            value={selectedICX81Version}>
+            <Space direction={'vertical'}>
+              { // eslint-disable-next-line max-len
+                getAvailableVersions(SwitchFirmwareModelGroup.ICX81)?.map(v =>
                   <Radio value={v.id} key={v.id} disabled={v.inUse}>
                     {getVersionOptionV1002(intl, v)}
                   </Radio>)}

@@ -40,6 +40,7 @@ import {
 export function useSwitchFirmwareUtils () {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchFirmwareV1002Enabled = useIsSplitOn(Features.SWITCH_FIRMWARE_V1002_TOGGLE)
+  const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
 
   const switchVersions = useGetSwitcDefaultVersionsQuery({
     enableRbac: isSwitchRbacEnabled || isSwitchFirmwareV1002Enabled,
@@ -158,7 +159,8 @@ export function useSwitchFirmwareUtils () {
       const modelGroupDisplayText: { [key in SwitchFirmwareModelGroup]: string } = {
         [SwitchFirmwareModelGroup.ICX71]: intl.$t({ defaultMessage: 'ICX Models (7150)' }),
         [SwitchFirmwareModelGroup.ICX7X]: intl.$t({ defaultMessage: 'ICX Models (7550-7850)' }),
-        [SwitchFirmwareModelGroup.ICX82]: intl.$t({ defaultMessage: 'ICX Models (8200)' })
+        [SwitchFirmwareModelGroup.ICX82]: intl.$t({ defaultMessage: 'ICX Models (8200)' }),
+        [SwitchFirmwareModelGroup.ICX81]: intl.$t({ defaultMessage: 'ICX Models (8100)' })
       }
 
       for (const key in SwitchFirmwareModelGroup) {
@@ -196,7 +198,8 @@ export function useSwitchFirmwareUtils () {
        const modelGroupDisplayText: { [key in SwitchFirmwareModelGroup]: string } = {
          [SwitchFirmwareModelGroup.ICX71]: intl.$t({ defaultMessage: 'ICX Models (7150)' }),
          [SwitchFirmwareModelGroup.ICX7X]: intl.$t({ defaultMessage: 'ICX Models (7550-7850)' }),
-         [SwitchFirmwareModelGroup.ICX82]: intl.$t({ defaultMessage: 'ICX Models (8200)' })
+         [SwitchFirmwareModelGroup.ICX82]: intl.$t({ defaultMessage: 'ICX Models (8200)' }),
+         [SwitchFirmwareModelGroup.ICX81]: intl.$t({ defaultMessage: 'ICX Models (8100)' })
        }
 
        for (const key in SwitchFirmwareModelGroup) {
@@ -411,6 +414,10 @@ export function useSwitchFirmwareUtils () {
       return SwitchFirmwareModelGroup.ICX82
     }
 
+    if (switchModel?.includes(SwitchFirmwareModelGroup.ICX81)) {
+      return SwitchFirmwareModelGroup.ICX81
+    }
+
     return SwitchFirmwareModelGroup.ICX7X
   }
 
@@ -431,6 +438,9 @@ export function useSwitchFirmwareUtils () {
         (v: { modelGroup: SwitchFirmwareModelGroup }) => v.modelGroup === modelGroupValue)[0]
 
       if (versionGroup) {
+        if(!isSupport8100 && key === SwitchFirmwareModelGroup.ICX81) {
+          continue
+        }
         const modelGroupTooltipText = SwitchModelGroupDisplayText[modelGroupValue]
         const modelGroupText = SwitchModelGroupDisplayTextValue[modelGroupValue]
         const switchVersion = parseSwitchVersion(versionGroup.version)
