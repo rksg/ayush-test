@@ -22,11 +22,11 @@ export function DpskNode (props: NodeProps<WorkflowStep>) {
 
   const { data: dpskData } =
     useGetDpskQuery({ params: { serviceId: data?.dpskPoolId } },
-      { skip: !isDesignMode || !data?.dpskPoolId })
+      { skip: !isDesignMode || !data?.dpskPoolId || !data.valid })
   const { data: identityGroupData } =
     useGetPersonaGroupByIdQuery(
       { params: { groupId: data?.identityGroupId } },
-      { skip: !isDesignMode || !data?.identityGroupId })
+      { skip: !isDesignMode || !data?.identityGroupId || !data.valid })
 
   return (
     <BaseStepNode {...{ ...props }}>
