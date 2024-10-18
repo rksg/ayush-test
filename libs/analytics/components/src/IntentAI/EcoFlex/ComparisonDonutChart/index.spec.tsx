@@ -8,12 +8,20 @@ import { Statuses }                               from '../../states'
 import { mocked, mockKpiData, mockKpiResultData } from '../__tests__/mockedEcoFlex'
 
 
+import { useIntentAIEcoFlexQuery } from './services'
+
 import { ComparisonDonutChart } from '.'
 
 jest.mock('../../IntentContext')
 jest.mock('./Legend', () => ({
   Legend: () => <div data-testid='ecoflex-legend' />
 }))
+
+const mockedQueryResult = {
+  isFetching: false,
+  isLoading: false,
+  data: mockKpiResultData
+} as ReturnType<typeof useIntentAIEcoFlexQuery>
 
 describe('ComparisonDonutChart', () => {
   beforeEach(() => {
@@ -25,7 +33,7 @@ describe('ComparisonDonutChart', () => {
   })
 
   it('should render correctly for active states (Detail)', async () => {
-    render(<ComparisonDonutChart kpiData={mockKpiResultData} isDetail />, { wrapper: Provider })
+    render(<ComparisonDonutChart kpiQuery={mockedQueryResult} isDetail />, { wrapper: Provider })
 
     expect(await screen.findByText('Before')).toBeVisible()
     expect(await screen.findByText('Recommended')).toBeVisible()
@@ -34,14 +42,14 @@ describe('ComparisonDonutChart', () => {
   it('should render correctly for non-active states (Detail)', async () => {
     mockIntentContext({ intent: { ...mocked, status: Statuses.na } })
 
-    render(<ComparisonDonutChart kpiData={mockKpiResultData} isDetail />, { wrapper: Provider })
+    render(<ComparisonDonutChart kpiQuery={mockedQueryResult} isDetail />, { wrapper: Provider })
     // eslint-disable-next-line max-len
     expect(await screen.findByText('Graph modeling will be generated once Intent is activated.')).toBeVisible()
   })
 
   it('should render correctly for active states (non-Detail)', async () => {
     // eslint-disable-next-line max-len
-    render(<ComparisonDonutChart kpiData={mockKpiResultData} excludeApCount={1}/>, { wrapper: Provider })
+    render(<ComparisonDonutChart kpiQuery={mockedQueryResult} />, { wrapper: Provider })
 
     expect(await screen.findByText('(Default)')).toBeVisible()
     expect(await screen.findByText('(EcoFlex projection)')).toBeVisible()
@@ -50,7 +58,7 @@ describe('ComparisonDonutChart', () => {
   it('handle beyond data retention', async () => {
     jest.mocked(Date.now).mockRestore()
     mockIntentContext({ intent: mocked })
-    const { container } = render(<ComparisonDonutChart kpiData={mockKpiResultData}/>, {
+    const { container } = render(<ComparisonDonutChart kpiQuery={mockedQueryResult}/>, {
       wrapper: Provider
     })
     expect(container).toHaveTextContent('Beyond data retention period')

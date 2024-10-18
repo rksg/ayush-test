@@ -9,6 +9,8 @@ import {
 import { intentAIApi } from '@acx-ui/store'
 import { getIntl }     from '@acx-ui/utils'
 
+import { useIntentParams } from '../../useIntentDetailsQuery'
+
 const Type = {
   Unsupported: 'unsupported',
   Enabled: 'enabled',
@@ -71,7 +73,11 @@ const parseChartData = (result?: KpiResult|null): KpiChartData[] =>
     color: color
   })) : []
 
-export const { useIntentAIEcoKpiQuery } = intentAIApi.injectEndpoints({
+const emptyKpiResult: KpiData = {
+  data: { timestamp: '', data: [] }, compareData: { timestamp: '', data: [] }
+}
+
+const { useIntentAIEcoKpiQuery } = intentAIApi.injectEndpoints({
   endpoints: (build) => ({
     intentAIEcoKpi: build.query<KpiData,
     { root: string, sliceId: string, code: string }>({
@@ -110,10 +116,7 @@ export const { useIntentAIEcoKpiQuery } = intentAIApi.injectEndpoints({
       ) => {
         const { $t } = getIntl()
         const kpi = response.intent?.kpi
-        if (!kpi)
-          return {
-            data: { timestamp: '', data: [] }, compareData: { timestamp: '', data: [] }
-          }
+        if (!kpi) return emptyKpiResult
         const { data, compareData } = kpi
 
         const chartData = parseChartData(data?.result)
@@ -134,3 +137,8 @@ export const { useIntentAIEcoKpiQuery } = intentAIApi.injectEndpoints({
     })
   })
 })
+
+export function useIntentAIEcoFlexQuery () {
+  const params = useIntentParams()
+  return useIntentAIEcoKpiQuery(params)
+}

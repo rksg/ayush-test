@@ -1,12 +1,23 @@
-import { Provider, intentAIUrl }                 from '@acx-ui/store'
-import { mockGraphqlQuery, renderHook, waitFor } from '@acx-ui/test-utils'
+import { Provider, intentAIApi, intentAIUrl, store } from '@acx-ui/store'
+import { mockGraphqlQuery, renderHook, waitFor }     from '@acx-ui/test-utils'
 
 
 import { mocked, mockKpiData } from '../__tests__/mockedEcoFlex'
 
-import { useIntentAIEcoKpiQuery } from './services'
+import { useIntentAIEcoFlexQuery } from './services'
 
-describe('useIntentAIEcoKpiQuery', () => {
+const mockedIntentParams = jest.fn()
+
+jest.mock('../../useIntentDetailsQuery', () => ({
+  ...jest.requireActual('../../useIntentDetailsQuery'),
+  useIntentParams: () => mockedIntentParams
+}))
+
+describe('useIntentAIEcoFlexQuery', () => {
+  beforeEach(() => {
+    mockedIntentParams.mockReset()
+    store.dispatch(intentAIApi.util.resetApiState())
+  })
   afterEach(() => jest.resetAllMocks())
   it('should return correct data', async () => {
     mockGraphqlQuery(intentAIUrl, 'IntentAIEcoKpi', {
@@ -17,7 +28,10 @@ describe('useIntentAIEcoKpiQuery', () => {
       sliceId: mocked.sliceId,
       code: mocked.code
     }
-    const { result } = renderHook(() => useIntentAIEcoKpiQuery(params), { wrapper: Provider })
+
+    mockedIntentParams.mockReturnValue(params)
+
+    const { result } = renderHook(() => useIntentAIEcoFlexQuery(), { wrapper: Provider })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
     expect(result.current.data?.compareData.timestamp)
       .toEqual(mockKpiData.kpi.compareData.timestamp)
@@ -27,6 +41,7 @@ describe('useIntentAIEcoKpiQuery', () => {
     expect(result.current.data?.data.data[0].value)
       .toEqual(mockKpiData.kpi.data.result.unsupported)
   })
+
   it('should return correct data for applied status', async () => {
     mockGraphqlQuery(intentAIUrl, 'IntentAIEcoKpi', {
       data: { intent: {} }
@@ -36,10 +51,11 @@ describe('useIntentAIEcoKpiQuery', () => {
       sliceId: 'noo-kpi-data-slice-id',
       code: mocked.code
     }
-    const { result } = renderHook(() => useIntentAIEcoKpiQuery(params), { wrapper: Provider })
+    mockedIntentParams.mockReturnValue(params)
+
+    const { result } = renderHook(() => useIntentAIEcoFlexQuery(), { wrapper: Provider })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
     expect(result.current.data?.data.timestamp).toEqual('')
     expect(result.current.data?.compareData.timestamp).toEqual('')
   })
-
 })
