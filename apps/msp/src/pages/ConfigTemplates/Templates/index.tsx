@@ -60,14 +60,6 @@ import { ShowDriftsDrawer }                                              from '.
 import { getConfigTemplateDriftStatusLabel, getConfigTemplateTypeLabel } from './templateUtils'
 import { useAddTemplateMenuProps }                                       from './useAddTemplateMenuProps'
 
-const typeFilterOptions = Object.entries(ConfigTemplateType).map((type =>
-  ({ key: type[1], value: getConfigTemplateTypeLabel(type[1]) })
-))
-
-const driftStatusFilterOptions = Object.entries(ConfigTemplateDriftType).map((status =>
-  ({ key: status[1], value: getConfigTemplateDriftStatusLabel(status[1]) })
-))
-
 export function ConfigTemplateList () {
   const { $t } = useIntl()
   const navigate = useNavigate()
@@ -214,6 +206,14 @@ function useColumns (props: TemplateColumnProps) {
   } = props
   const dateFormat = userDateTimeFormat(DateFormatEnum.DateTimeFormatWithSeconds)
   const driftsEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_DRIFTS)
+
+  const typeFilterOptions = Object.entries(ConfigTemplateType).map((type =>
+    ({ key: type[1], value: getConfigTemplateTypeLabel(type[1]) })
+  ))
+
+  const driftStatusFilterOptions = Object.entries(ConfigTemplateDriftType).map((status =>
+    ({ key: status[1], value: getConfigTemplateDriftStatusLabel(status[1]) })
+  ))
 
   const columns: TableProps<ConfigTemplate>['columns'] = [
     {
