@@ -55,6 +55,7 @@ export function getConfigTemplateTypeLabel (configTemplateType: ConfigTemplateTy
   return configTemplateType
 }
 
+// eslint-disable-next-line max-len
 export function getConfigTemplateDriftStatusLabel (driftStatus: ConfigTemplateDriftType | undefined): string {
   const { $t } = getIntl()
 
