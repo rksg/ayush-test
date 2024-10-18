@@ -26,6 +26,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
+import * as UI from '../styledComponents'
+
 const defaultPayload = {
   fields: ['id', 'name', 'rules', 'venueIds', 'activations'],
   searchString: '',
@@ -108,6 +110,7 @@ export default function MdnsProxyTable () {
       />
 
       <Loader states={[tableQuery]}>
+        <UI.ToolTipStyle/>
         <Table<MdnsProxyViewModel>
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
@@ -184,6 +187,7 @@ function useColumns () {
             children={rules.length}
             dottedUnderline={true}
             placement='bottom'
+            overlayClassName={UI.toolTipClassName}
             overlayInnerStyle={{ minWidth: '380px' }}
           />
           : 0

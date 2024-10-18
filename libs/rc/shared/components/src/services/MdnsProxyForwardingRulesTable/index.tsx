@@ -74,7 +74,7 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
   const getRuleTypeLabel = (rule: MdnsProxyForwardingRule): string => {
     if (rule.service === BridgeServiceEnum.OTHER) {
       // eslint-disable-next-line max-len
-      return `_${rule.mdnsName}._${rule.mdnsProtocol?.toLowerCase()} (${$t(mdnsProxyRuleTypeLabelMapping[rule.service])})`
+      return `_${rule.mdnsName}._${rule.mdnsProtocol?.toLowerCase()}. (${$t(mdnsProxyRuleTypeLabelMapping[rule.service])})`
     }
     return $t(mdnsProxyRuleTypeLabelMapping[rule.service])
   }

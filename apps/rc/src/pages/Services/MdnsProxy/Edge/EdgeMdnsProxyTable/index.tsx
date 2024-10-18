@@ -27,7 +27,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
-import * as UI from './styledComponents'
+import * as UI from '../../styledComponents'
 
 const settingsId = 'services-edge-mdns-proxy-table'
 export function EdgeMdnsProxyTable () {
@@ -119,11 +119,11 @@ export function EdgeMdnsProxyTable () {
           settingsId={settingsId}
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
-          pagination={tableQuery.pagination}
           rowActions={allowedRowActions}
           rowSelection={(allowedRowActions.length > 0) && { type: 'checkbox' }}
           onChange={tableQuery.handleTableChange}
           onFilterChange={tableQuery.handleFilterChange}
+          pagination={tableQuery.pagination}
           enableApiFilter
         />
       </Loader>
