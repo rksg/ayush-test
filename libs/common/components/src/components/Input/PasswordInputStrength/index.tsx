@@ -36,7 +36,7 @@ const usedBarColor: string[] = [
   cssStr('--acx-neutrals-20'),
   cssStr('--acx-semantics-red-50'),
   cssStr('--acx-semantics-yellow-50'),
-  cssStr('--acx-semantics-yellow-50'),
+  cssStr('--acx-accents-blue-50'),
   cssStr('--acx-semantics-green-50')
 ]
 
