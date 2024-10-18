@@ -6,11 +6,7 @@ import Meta             from 'antd/lib/card/Meta'
 
 import { GptBackground, GptWhiteicon } from '@acx-ui/icons'
 
-
-
-
 function WelcomePage () {
-
   return <>
     <GptBackground
       style={{
@@ -47,15 +43,15 @@ function WelcomePage () {
 
     <div
       style={{
-        position: 'absolute', // 绝对定位
-        bottom: '30px',        // 固定在底部
-        left: '50%',        // 水平居中
-        transform: 'translateX(-50%)', // 精确居中
+        position: 'absolute',
+        bottom: '30px',
+        left: '50%',
+        transform: 'translateX(-50%)',
         display: 'flex',
-        flexDirection: 'column', // 垂直排列
-        alignItems: 'center',   // 水平居中内容
-        padding: '16px',        // 增加内边距
-        backgroundColor: 'white' // 可选：按钮背景色
+        flexDirection: 'column',
+        alignItems: 'center',
+        padding: '16px',
+        backgroundColor: 'white'
       }}
     >
       <Card

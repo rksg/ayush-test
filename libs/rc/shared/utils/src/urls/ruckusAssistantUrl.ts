@@ -11,21 +11,6 @@ export const RuckusAssistantUrlInfo: { [key: string]: ApiInfo } = {
     url: '/ruckusAssistant/conversations/:sessionId/:type',
     newApi: true
   },
-  updateSsidProfile: {
-    method: 'post',
-    url: '/ruckusAssistant/conversations/:sessionId/ssidProfile',
-    newApi: true
-  },
-  updateSsid: {
-    method: 'post',
-    url: '/ruckusAssistant/conversations/:sessionId/ssid',
-    newApi: true
-  },
-  updateVlan: {
-    method: 'post',
-    url: '/ruckusAssistant/conversations/:sessionId/vlan',
-    newApi: true
-  },
   applyConversations: {
     method: 'post',
     url: '/ruckusAssistant/conversations/:sessionId/apply',

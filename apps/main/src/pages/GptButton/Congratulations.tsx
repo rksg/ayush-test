@@ -1,16 +1,12 @@
-/* eslint-disable max-len */
+import { Button, Card } from 'antd'
 
-
-import { Avatar, Button, Card } from 'antd'
-import Meta             from 'antd/lib/card/Meta'
-
-import { GptBackground, GptSuccess, GptWhiteicon } from '@acx-ui/icons'
-import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { GptSuccess }                 from '@acx-ui/icons'
+import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 
 
 
-function Congratulations(props: {
+function Congratulations (props: {
   closeModal: () => void
 }) {
   const navigate = useNavigate()
@@ -33,7 +29,10 @@ function Congratulations(props: {
       <GptSuccess style={{
         width: '50px', height: '50px'
       }} />
-      <span style={{ fontSize: '28px', fontWeight: 600, marginTop: '30px', fontFamily: 'Montserrat' }}>
+      <span style={{ fontSize: '28px',
+        fontWeight: 600,
+        marginTop: '30px',
+        fontFamily: 'Montserrat' }}>
       Congratulations!
       </span>
       <span style={{ fontSize: '14px', color: '#808284', marginTop: '15px' }}>

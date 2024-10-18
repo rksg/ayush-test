@@ -1,8 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 
 import { ProFormInstance, StepsForm } from '@ant-design/pro-form'
 import { Button }                     from 'antd'
-import dayjs                          from 'dayjs'
 
 import { useApplyConversationsMutation, useUpdateConversationsMutation } from '@acx-ui/rc/services'
 import { GptConfigurationStepsEnum, GptConversation }                    from '@acx-ui/rc/utils'
@@ -14,36 +13,6 @@ import { SummaryStep }    from './Steps/SummaryStep'
 import { VlanStep }       from './Steps/VlanStep'
 import { WlanDetailStep } from './Steps/WlanDetailStep'
 import { WlanStep }       from './Steps/WlanStep'
-
-type FormValue = {
-  jobInfo: {
-    name: string;
-    type: number;
-  };
-  syncTableInfo: {
-    timeRange: [dayjs.Dayjs, dayjs.Dayjs];
-    title: string;
-  };
-}
-const formValue: FormValue = {
-  jobInfo: {
-    name: 'normal job',
-    type: 1
-  },
-  syncTableInfo: {
-    timeRange: [dayjs().subtract(1, 'm'), dayjs()],
-    title: 'example table title'
-  }
-}
-const waitTime = (time: number = 100) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(formValue)
-    }, time)
-  })
-}
-
-
 
 export default function GptWizard (props: {
   sessionId: string;
@@ -70,13 +39,6 @@ export default function GptWizard (props: {
     React.MutableRefObject<ProFormInstance<any> | undefined>[]
   >([])
 
-  useEffect(() => {
-    waitTime(1000).then(() => {
-      formMapRef?.current?.forEach((formInstanceRef) => {
-        formInstanceRef?.current?.setFieldsValue(formValue)
-      })
-    })
-  }, [])
 
   const onPrevious = function () {
     if (props.currentStep === firstPageIndex) {
