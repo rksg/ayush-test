@@ -30,7 +30,7 @@ export const edgeMdnsProxyApi = baseEdgeMdnsProxyApi.injectEndpoints({
           const req = createHttpRequest(EdgeMdnsProxyUrls.getEdgeMdnsProxyViewDataList)
           return {
             ...req,
-            body: payload
+            body: JSON.stringify(payload)
           }
         },
         providesTags: [{ type: 'EdgeMdnsProxy', id: 'LIST' }],
@@ -54,8 +54,7 @@ export const edgeMdnsProxyApi = baseEdgeMdnsProxyApi.injectEndpoints({
       }),
     getEdgeMdnsProxy: build.query<EdgeMdnsProxySetting, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(EdgeMdnsProxyUrls.getEdgeMdnsProxy, params)
-        return { ...req }
+        return createHttpRequest(EdgeMdnsProxyUrls.getEdgeMdnsProxy, params)
       },
       providesTags: [{ type: 'EdgeMdnsProxy', id: 'DETAIL' }]
     }),
@@ -64,7 +63,7 @@ export const edgeMdnsProxyApi = baseEdgeMdnsProxyApi.injectEndpoints({
         const req = createHttpRequest(EdgeMdnsProxyUrls.addEdgeMdnsProxy, params)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'EdgeMdnsProxy', id: 'LIST' }]
@@ -74,7 +73,7 @@ export const edgeMdnsProxyApi = baseEdgeMdnsProxyApi.injectEndpoints({
         const req = createHttpRequest(EdgeMdnsProxyUrls.updateEdgeMdnsProxy, params)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'EdgeMdnsProxy', id: 'LIST' }]
@@ -82,29 +81,18 @@ export const edgeMdnsProxyApi = baseEdgeMdnsProxyApi.injectEndpoints({
     deleteEdgeMdnsProxy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         //delete single row
-        const req = createHttpRequest(EdgeMdnsProxyUrls.deleteEdgeMdnsProxy, params)
-        return {
-          ...req
-        }
+        return createHttpRequest(EdgeMdnsProxyUrls.deleteEdgeMdnsProxy, params)
       },
       invalidatesTags: [{ type: 'EdgeMdnsProxy', id: 'LIST' }]
     }),
     activateEdgeMdnsProxyCluster: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        return {
-          ...createHttpRequest(EdgeMdnsProxyUrls.activateEdgeMdnsProxyCluster,
-            params,
-            versionHeader)
-        }
+        return createHttpRequest(EdgeMdnsProxyUrls.activateEdgeMdnsProxyCluster, params)
       }
     }),
     deactivateEdgeMdnsProxyCluster: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        return {
-          ...createHttpRequest(EdgeMdnsProxyUrls.deactivateEdgeMdnsProxyCluster,
-            params,
-            versionHeader)
-        }
+        return createHttpRequest(EdgeMdnsProxyUrls.deactivateEdgeMdnsProxyCluster, params)
       }
     })
   })
