@@ -29,24 +29,20 @@ const fakeFeatures: FeatureAPIResults[] = [
   }
 ]
 const user = require('@acx-ui/user')
-jest.mock('@acx-ui/user', () => ({
-  ...jest.requireActual('@acx-ui/user'),
-  useUserProfileContext: jest.fn(() => ({ betaFeaturesList: fakeFeatures }))
-}))
 
 describe('Enable RUCKUS One Beta Feature List Checkbox', () => {
   jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.NUVO_SMS_PROVIDER_TOGGLE)
   const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
   jest.spyOn(user, 'useUpdateBetaFeatureListMutation')
   beforeEach(() => {
+    user.useGetBetaFeatureListQuery = jest.fn().mockImplementation(() => {
+      return { data: fakeFeatures }
+    })
+    user.hasCrossVenuesPermission = jest.fn().mockReturnValue(true)
     mockServer.use(
       rest.put(
         UserUrlsInfo.toggleBetaStatus.url,
         (_req, res, ctx) => res(ctx.status(204))
-      ),
-      rest.get(
-        UserUrlsInfo.getBetaStatus.url,
-        (_req, res, ctx) => res(ctx.status(200))
       ),
       rest.put(
         UserRbacUrlsInfo.updateBetaFeatureList.url,
@@ -136,11 +132,11 @@ describe('Enable RUCKUS One Beta Feature List Checkbox', () => {
     await userEvent.click(screen.getAllByRole('switch')[0])
     await userEvent.click(save)
 
-    // const value: [Function, Object] = [expect.any(Function), expect.objectContaining({
-    //   data: { requestId: '123' },
-    //   status: 'fulfilled'
-    // })]
-    // await waitFor(() => expect(user.useUpdateBetaFeatureListMutation).toHaveLastReturnedWith(value))
+    const value: [Function, Object] = [expect.any(Function), expect.objectContaining({
+      data: { requestId: '123' },
+      status: 'fulfilled'
+    })]
+    await waitFor(() => expect(user.useUpdateBetaFeatureListMutation).toHaveLastReturnedWith(value))
   })
 
   it('should show terms and conditions when link clicked', async () => {
@@ -163,6 +159,25 @@ describe('Enable RUCKUS One Beta Feature List Checkbox', () => {
     expect(await screen.findByText('Early Access Terms & Conditions')).toBeVisible()
     await userEvent.click(screen.getByRole('button', { name: 'OK' }))
     await waitFor(() => expect(screen.queryByText('Early Access Terms & Conditions')).toBeNull())
+  })
+
+  it('should show tooltip when disabled', async () => {
+    user.hasCrossVenuesPermission = jest.fn().mockReturnValue(false)
+    render(
+      <Provider>
+        <EnableR1BetaFeatures
+          betaStatus={false}
+          isPrimeAdminUser={true}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    const checkbox = await screen.findByRole('checkbox',
+      { name: /Enable RUCKUS One Early Access features/i })
+    expect(checkbox).toBeDisabled()
+    await userEvent.hover(checkbox)
+    expect(await screen.findByText('You are not allowed to change this')).toBeInTheDocument()
   })
 
   xit('updates betaList status based on useGetBetaList', () => {

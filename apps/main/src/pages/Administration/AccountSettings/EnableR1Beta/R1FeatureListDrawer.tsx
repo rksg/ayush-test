@@ -46,9 +46,6 @@ function R1FeatureListDrawer (
         }
       }).unwrap()
       await updateBetaFeatures({ params, payload: featureList as FeatureAPIResults[] }).unwrap()
-      // updateMockedBetaFeatures(featureList as FeatureAPIResults[])
-      // eslint-disable-next-line no-console
-      console.log(featureList)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
