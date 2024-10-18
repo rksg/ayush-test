@@ -18,6 +18,8 @@ interface PasswordStrengthProps extends InputProps {
   isAllConditionsMet: number
   onConditionCountMet: (newLevel: boolean) => void
   value: string
+  forceFocusOn: boolean
+  setForceFocusOn: (toggle: boolean) => void
 }
 
 interface PasswordStrengthIndicatorProps {
@@ -46,6 +48,8 @@ export const PasswordInputStrength = ({
     regExErrorMessages,
     isAllConditionsMet,
     onConditionCountMet,
+    forceFocusOn,
+    setForceFocusOn,
     ...others
   } = props
   const { value } = others
@@ -75,6 +79,12 @@ export const PasswordInputStrength = ({
     }
   }, [value])
 
+  useEffect(() => {
+    if(forceFocusOn) {
+      setFocus(true)
+    }
+  }, [forceFocusOn])
+
   return (
     <>
       <PasswordInput
@@ -86,7 +96,10 @@ export const PasswordInputStrength = ({
           props?.onChange?.(e)
         }}
         onFocus={() => setFocus(true)}
-        onBlur={() => setFocus(false)}
+        onBlur={() => {
+          setFocus(false)
+          if (setForceFocusOn) setForceFocusOn(false)
+        }}
       />
       <PasswordStrengthIndicator
         input={input}

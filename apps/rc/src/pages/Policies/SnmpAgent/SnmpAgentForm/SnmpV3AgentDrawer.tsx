@@ -31,6 +31,7 @@ type SnmpV3AgentDrawerProps = {
 const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
   const { $t } = useIntl()
   const { state, dispatch } = useContext(SnmpAgentFormContext)
+  const [ forceFocusOn, setForceFocusOn ] = useState<boolean>(false)
   // eslint-disable-next-line
   const isSNMPv3PassphraseOn = useIsSplitOn(Features.WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE)
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
@@ -181,6 +182,8 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
         children={
           ((isUseRbacApi && isSNMPv3PassphraseOn) ?
             <PasswordInputStrength
+              forceFocusOn={forceFocusOn}
+              setForceFocusOn={setForceFocusOn}
               data-testid={'password-input-strength'}/> :
             <PasswordInput />
           )
@@ -253,6 +256,7 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
         }
       }
     } catch (error) {
+      form.validateFields(['authPassword']).catch(() => setForceFocusOn(true))
       if (error instanceof Error) throw error
     }
   }
