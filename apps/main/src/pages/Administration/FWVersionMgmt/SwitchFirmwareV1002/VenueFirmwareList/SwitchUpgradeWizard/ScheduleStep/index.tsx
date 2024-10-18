@@ -49,7 +49,6 @@ export function ScheduleStep (props: ScheduleStepProps) {
   const intl = useIntl()
   const { form, current } = useStepFormContext()
   const { getVersionOptionV1002 } = useSwitchFirmwareUtils()
-  
 
   const getCurrentSchedule = function () {
     if (upgradeVenueList.length + upgradeSwitchList.length === 1) {
