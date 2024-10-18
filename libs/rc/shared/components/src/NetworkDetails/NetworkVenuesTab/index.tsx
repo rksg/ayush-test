@@ -1,7 +1,7 @@
 import React, { ReactNode, useEffect, useState } from 'react'
 
 import { Form, Switch }           from 'antd'
-import _                          from 'lodash'
+import { assign, cloneDeep }      from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import {
@@ -31,6 +31,7 @@ import {
   useGetVLANPoolPolicyViewModelListQuery,
   useNewNetworkVenueTableQuery,
   useNetworkDetailHeaderQuery,
+  useEnhanceNetworkVenueTableQuery,
   useGetEnhancedVlanPoolPolicyTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -61,19 +62,21 @@ import { transformToCityListOptions }    from '@acx-ui/utils'
 
 import { useGetNetworkTunnelInfo }                                              from '../../EdgeSdLan/edgeSdLanUtils'
 import { useSdLanScopedNetworkVenues, checkSdLanScopedNetworkDeactivateAction } from '../../EdgeSdLan/useEdgeSdLanActions'
+import { NetworkApGroupDialog }                                                 from '../../NetworkApGroupDialog'
 import {
-  NetworkApGroupDialog } from '../../NetworkApGroupDialog'
-import { NetworkTunnelActionModal, NetworkTunnelActionModalProps, useSoftGreTunnelActions } from '../../NetworkTunnelActionModal'
-import { NetworkTunnelActionForm, NetworkTunnelTypeEnum }                                   from '../../NetworkTunnelActionModal/types'
-import { useUpdateNetworkTunnelAction }                                                     from '../../NetworkTunnelActionModal/utils'
-import {
-  NetworkVenueScheduleDialog
-} from '../../NetworkVenueScheduleDialog'
+  NetworkTunnelActionModal,
+  NetworkTunnelActionModalProps,
+  useSoftGreTunnelActions
+} from '../../NetworkTunnelActionModal'
+import { NetworkTunnelActionForm, NetworkTunnelTypeEnum } from '../../NetworkTunnelActionModal/types'
+import { useUpdateNetworkTunnelAction }                   from '../../NetworkTunnelActionModal/utils'
+import { NetworkVenueScheduleDialog }                     from '../../NetworkVenueScheduleDialog'
 import {
   transformVLAN,
   transformAps,
   transformRadios,
-  transformScheduling } from '../../pipes/apGroupPipes'
+  transformScheduling
+} from '../../pipes/apGroupPipes'
 import { useIsEdgeFeatureReady } from '../../useEdgeActions'
 import { useGetNetwork }         from '../services'
 
@@ -123,6 +126,7 @@ const useNetworkVenueList = (props: { settingsId: string, networkId?: string } )
   const { settingsId, networkId } = props
   const { isTemplate } = useConfigTemplate()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
 
@@ -137,7 +141,7 @@ const useNetworkVenueList = (props: { settingsId: string, networkId?: string } )
       searchTargetFields: defaultPayload.searchTargetFields as string[]
     },
     pagination: { settingsId },
-    option: { skip: resolvedRbacEnabled }
+    option: { skip: isApCompatibilitiesByModel || resolvedRbacEnabled }
   })
 
   const rbacTableQuery = useTableQuery({
@@ -152,10 +156,26 @@ const useNetworkVenueList = (props: { settingsId: string, networkId?: string } )
       searchTargetFields: defaultRbacPayload.searchTargetFields as string[]
     },
     pagination: { settingsId },
-    option: { skip: !resolvedRbacEnabled || !networkId }
+    option: { skip: isApCompatibilitiesByModel || !resolvedRbacEnabled || !networkId }
   })
 
-  return resolvedRbacEnabled ? rbacTableQuery : nonRbacTableQuery
+  const enhancedRbacTableQuery = useTableQuery({
+    useQuery: useEnhanceNetworkVenueTableQuery,
+    apiParams: { networkId: networkId! },
+    defaultPayload: {
+      ...defaultRbacPayload,
+      isTemplate: isTemplate,
+      isTemplateRbacEnabled: isConfigTemplateRbacEnabled
+    },
+    search: {
+      searchTargetFields: defaultRbacPayload.searchTargetFields as string[]
+    },
+    pagination: { settingsId },
+    option: { skip: !isApCompatibilitiesByModel || !resolvedRbacEnabled || !networkId }
+  })
+
+  return isApCompatibilitiesByModel ? enhancedRbacTableQuery
+    : (resolvedRbacEnabled ? rbacTableQuery : nonRbacTableQuery)
 }
 
 const defaultArray: Venue[] = []
@@ -672,7 +692,7 @@ export function NetworkVenuesTab () {
 
   const handleFormFinish = (name: string, newData: FormFinishInfo) => {
     if (name === 'networkApGroupForm') {
-      let oldData = _.cloneDeep(apGroupModalState.networkVenue)
+      let oldData = cloneDeep(apGroupModalState.networkVenue)
       const payload = aggregateApGroupPayload(newData, oldData)
 
       updateNetworkVenue({
@@ -699,7 +719,7 @@ export function NetworkVenuesTab () {
   }
 
   const handleScheduleFormFinish = (name: string, info: FormFinishInfo) => {
-    let data = _.cloneDeep(scheduleModalState.networkVenue)
+    let data = cloneDeep(scheduleModalState.networkVenue)
 
     const scheduler = info.values?.scheduler
     const { type, ...weekdaysData } = scheduler || {}
@@ -730,7 +750,7 @@ export function NetworkVenuesTab () {
       }
     }
 
-    const payload = _.assign(data, { scheduler: tmpScheduleList })
+    const payload = assign(data, { scheduler: tmpScheduleList })
 
     updateNetworkVenue({
       params: {
