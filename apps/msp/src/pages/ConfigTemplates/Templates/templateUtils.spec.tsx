@@ -1,8 +1,8 @@
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { ConfigTemplateDriftType, ConfigTemplateType }     from '@acx-ui/rc/utils'
-import { renderHook }             from '@acx-ui/test-utils'
-import { hasRoles }               from '@acx-ui/user'
-import { isDelegationMode }       from '@acx-ui/utils'
+import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
+import { ConfigTemplateDriftType, ConfigTemplateType } from '@acx-ui/rc/utils'
+import { renderHook }                                  from '@acx-ui/test-utils'
+import { hasRoles }                                    from '@acx-ui/user'
+import { isDelegationMode }                            from '@acx-ui/utils'
 
 import { getConfigTemplateDriftStatusLabel, getConfigTemplateTypeLabel, useEcFilters } from './templateUtils'
 

@@ -54,12 +54,12 @@ import {
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }               from '@acx-ui/user'
 
-import { AppliedToTenantDrawer }           from './AppliedToTenantDrawer'
-import { ApplyTemplateDrawer }             from './ApplyTemplateDrawer'
-import { ShowDriftsDrawer }                from './ShowDriftsDrawer'
-import { configTemplateDriftTypeLabelMap } from './ShowDriftsDrawer/contents'
-import { getConfigTemplateDriftStatusLabel, getConfigTemplateTypeLabel }      from './templateUtils'
-import { useAddTemplateMenuProps }         from './useAddTemplateMenuProps'
+import { AppliedToTenantDrawer }                                         from './AppliedToTenantDrawer'
+import { ApplyTemplateDrawer }                                           from './ApplyTemplateDrawer'
+import { ShowDriftsDrawer }                                              from './ShowDriftsDrawer'
+import { configTemplateDriftTypeLabelMap }                               from './ShowDriftsDrawer/contents'
+import { getConfigTemplateDriftStatusLabel, getConfigTemplateTypeLabel } from './templateUtils'
+import { useAddTemplateMenuProps }                                       from './useAddTemplateMenuProps'
 
 const typeFilterOptions = Object.entries(ConfigTemplateType).map((type =>
   ({ key: type[1], value: getConfigTemplateTypeLabel(type[1]) })
