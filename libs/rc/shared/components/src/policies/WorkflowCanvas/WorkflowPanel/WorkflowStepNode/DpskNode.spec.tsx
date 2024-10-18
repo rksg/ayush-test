@@ -14,8 +14,8 @@ import {
 
 import { mockedDpskEnrollmentAction,
   mockedDpskData,
-  mockedIdentityGroupData, 
-  mockedDpskActionInvalid} from './__tests__/fixtures'
+  mockedIdentityGroupData,
+  mockedDpskActionInvalid } from './__tests__/fixtures'
 import { DpskNode } from './DpskNode'
 
 describe('DpskNode', () => {

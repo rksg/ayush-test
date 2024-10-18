@@ -126,11 +126,11 @@ describe('DpskSettings', () => {
 
     await waitFor(() => expect(getPersonaList).toBeCalled())
 
-    expect(await screen.queryByText(mockDpskPool.name)).toBeNull()
+    expect(screen.queryByText(mockDpskPool.name)).toBeNull()
 
     // Test if the identityGroup is selected
-    expect(await screen.queryByText(mockPersonaGroupTableResult.content[0].name)).not.toBeInTheDocument()
-    expect(await screen.queryByText(mockPersonaTableResult.content[0].name)).not.toBeInTheDocument()
+    expect(screen.queryByText(mockPersonaGroupTableResult.content[0].name)).not.toBeInTheDocument()
+    expect(screen.queryByText(mockPersonaTableResult.content[0].name)).not.toBeInTheDocument()
 
     expect(getDpsk).not.toHaveBeenCalled()
   })

@@ -126,10 +126,10 @@ describe('MacRegistrationSettings', () => {
     await waitFor(() => expect(getPersonaList).toBeCalled())
     await waitFor(() => expect(getMacRegList).not.toHaveBeenCalled())
 
-    expect(await screen.queryByText(mockMacRegList.name)).toBeNull()
+    expect(screen.queryByText(mockMacRegList.name)).toBeNull()
 
-    expect(await screen.queryByText(mockPersonaGroupTableResult.content[1].name)).not.toBeInTheDocument()
-    expect(await screen.queryByText(mockPersonaTableResult.content[0].name)).not.toBeInTheDocument()
+    expect(screen.queryByText(mockPersonaGroupTableResult.content[1].name)).not.toBeInTheDocument()
+    expect(screen.queryByText(mockPersonaTableResult.content[0].name)).not.toBeInTheDocument()
   })
 
   it('should render the component after identity group selected', async () => {

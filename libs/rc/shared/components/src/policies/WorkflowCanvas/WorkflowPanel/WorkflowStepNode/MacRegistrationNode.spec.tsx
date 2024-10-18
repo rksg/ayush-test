@@ -14,8 +14,8 @@ import {
 
 import { mockedDpskEnrollmentAction,
   mockedMacRegData,
-  mockedIdentityGroupData, 
-  mockedMacRegActionInvalid} from './__tests__/fixtures'
+  mockedIdentityGroupData,
+  mockedMacRegActionInvalid } from './__tests__/fixtures'
 import { MacRegistrationNode } from './MacRegistrationNode'
 
 describe('MacRegistrationNode', () => {
