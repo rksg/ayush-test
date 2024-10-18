@@ -12,6 +12,12 @@ import {
 import { Features, useIsSplitOn }                                                                       from '@acx-ui/feature-toggle'
 import { EdgeChangeScheduleDialog, EdgeUpdateNowDialog, useIsEdgeFeatureReady, useSwitchFirmwareUtils } from '@acx-ui/rc/components'
 import {
+  compareVersions,
+  getNextScheduleTpl,
+  isSwitchNextScheduleTooltipDisabled,
+  toUserDate
+} from '@acx-ui/rc/components'
+import {
   useGetAvailableEdgeFirmwareVersionsQuery,
   useGetEdgeUpgradePreferencesQuery,
   useGetLatestEdgeFirmwareQuery,
@@ -44,12 +50,6 @@ import {
 } from '@acx-ui/user'
 import { noDataDisplay } from '@acx-ui/utils'
 
-import {
-  compareVersions,
-  getNextScheduleTpl,
-  isSwitchNextScheduleTooltipDisabled,
-  toUserDate
-} from '../../FirmwareUtils'
 import { PreferencesDialog } from '../../PreferencesDialog'
 import * as UI               from '../../styledComponents'
 

@@ -7,6 +7,11 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { InformationSolid }       from '@acx-ui/icons'
 import { useIsEdgeReady }         from '@acx-ui/rc/components'
 import {
+  compareVersions,
+  getApVersion,
+  getReleaseFirmware
+} from '@acx-ui/rc/components'
+import {
   useGetLatestEdgeFirmwareQuery,
   useGetLatestFirmwareListQuery,
   useGetSigPackQuery,
@@ -23,13 +28,8 @@ import { useNavigate, useParams, useTenantLink }                                
 
 import ApplicationPolicyMgmt from '../ApplicationPolicyMgmt'
 
-import ApFirmware      from './ApFirmware'
-import EdgeFirmware    from './EdgeFirmware'
-import {
-  compareVersions,
-  getApVersion,
-  getReleaseFirmware
-} from './FirmwareUtils'
+import ApFirmware          from './ApFirmware'
+import EdgeFirmware        from './EdgeFirmware'
 import * as UI             from './styledComponents'
 import SwitchFirmware      from './SwitchFirmware'
 import SwitchFirmwareV1002 from './SwitchFirmwareV1002'

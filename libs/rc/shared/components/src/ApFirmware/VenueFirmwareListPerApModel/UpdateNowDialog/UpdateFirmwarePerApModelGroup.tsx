@@ -4,7 +4,7 @@ import { Radio, RadioChangeEvent, Space } from 'antd'
 import { DefaultOptionType }              from 'antd/lib/select'
 import { useIntl }                        from 'react-intl'
 
-import * as UI                   from '../../VenueFirmwareList/styledComponents'
+import * as UI                   from '../styledComponents'
 import { ExpandableApModelList } from '../venueFirmwareListPerApModelUtils'
 
 interface UpdateFirmwarePerApModelGroupProps {

@@ -9,8 +9,12 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { InformationOutlined }                 from '@acx-ui/icons'
-import { useSwitchFirmwareUtils }              from '@acx-ui/rc/components'
+import { InformationOutlined }    from '@acx-ui/icons'
+import { useSwitchFirmwareUtils } from '@acx-ui/rc/components'
+import {
+  getNextScheduleTplV1002,
+  toUserDate
+} from '@acx-ui/rc/components'
 import {
   useGetSwitchUpgradePreferencesQuery,
   useUpdateSwitchUpgradePreferencesMutation,
@@ -42,10 +46,6 @@ import {
 } from '@acx-ui/user'
 import { noDataDisplay } from '@acx-ui/utils'
 
-import {
-  getNextScheduleTplV1002,
-  toUserDate
-} from '../../FirmwareUtils'
 import { PreferencesDialog } from '../../PreferencesDialog'
 
 import * as UI                                           from './styledComponents'

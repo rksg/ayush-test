@@ -3,13 +3,13 @@ import { useParams } from 'react-router-dom'
 
 import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { useSwitchFirmwareUtils }       from '@acx-ui/rc/components'
+import { getReleaseFirmware }           from '@acx-ui/rc/components'
 import {
   useGetSwitchDefaultFirmwareListQuery,
   useGetSwitchLatestFirmwareListQuery
 } from '@acx-ui/rc/services'
 import { FirmwareCategory } from '@acx-ui/rc/utils'
 
-import { getReleaseFirmware }   from '../../FirmwareUtils'
 import { SwitchFirmwareBanner } from '../../SwitchFirmwareBanner'
 
 export const VersionBanner = () => {
