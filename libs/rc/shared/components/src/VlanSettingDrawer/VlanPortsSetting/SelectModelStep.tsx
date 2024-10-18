@@ -48,8 +48,8 @@ export function SelectModelStep (props: { editMode: boolean }) {
   const [optionListForSlot3, setOptionListForSlot3] = useState<ModelsType[]>([])
   const [optionListForSlot4, setOptionListForSlot4] = useState<ModelsType[]>([])
 
-  const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
+  const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
 
   const [switchFamilyModels, setSwitchFamilyModels] =
     useState<SwitchModelPortData>({

@@ -57,6 +57,8 @@ import {
   getSwitchModel,
   SWITCH_SERIAL_PATTERN,
   SWITCH_SERIAL_PATTERN_INCLUDED_8100,
+  SWITCH_SERIAL_PATTERN_INCLUDED_8200AV,
+  SWITCH_SERIAL_PATTERN_INCLUDED_8100_8200AV,
   SwitchTable,
   SwitchStatusEnum,
   isOperationalSwitch,
@@ -72,9 +74,7 @@ import {
   getStackUnitsMinLimitation,
   convertInputToUppercase,
   FirmwareSwitchVenueVersionsV1002,
-  getStackUnitsMinLimitationV1002,
-  SWITCH_SERIAL_PATTERN_INCLUDED_8200AV,
-  SWITCH_SERIAL_PATTERN_INCLUDED_8100_8200AV
+  getStackUnitsMinLimitationV1002
 } from '@acx-ui/rc/utils'
 import {
   useLocation,

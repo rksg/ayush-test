@@ -64,9 +64,7 @@ export function CliStepModels () {
           model !== 'ICX8200-24PV' && model !== 'ICX8200-C08PFV') }))
     }
     if (!isSupport8100) {
-      allFamilyModel = allFamilyModel.map(family => ({
-        ...family,
-        models: family.models.filter(family => family.family !== 'ICX8100') }))
+      allFamilyModel = allFamilyModel.filter(family => family.family !== 'ICX8100')
     }
     return allFamilyModel
   }
