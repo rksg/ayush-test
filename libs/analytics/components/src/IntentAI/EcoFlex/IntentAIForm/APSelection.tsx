@@ -1,30 +1,21 @@
 import { useMemo } from 'react'
 
-import { Form }                                     from 'antd'
-import _                                            from 'lodash'
-import moment                                       from 'moment-timezone'
-import { FormattedMessage, defineMessage, useIntl } from 'react-intl'
+import { Form }                   from 'antd'
+import _                          from 'lodash'
+import moment                     from 'moment-timezone'
+import { defineMessage, useIntl } from 'react-intl'
 
-import { NetworkHierarchy, System, SystemMap, useSystems }                          from '@acx-ui/analytics/services'
-import { defaultNetworkPath, meetVersionRequirements, nodeTypes } from '@acx-ui/analytics/utils'
-import { CascaderOption, Loader, StepsForm, useStepFormContext }  from '@acx-ui/components'
-import { get }                                                    from '@acx-ui/config'
-import { FilterListNode, DateRange, PathNode, NetworkPath }                    from '@acx-ui/utils'
+import { defaultNetworkPath, nodeTypes }     from '@acx-ui/analytics/utils'
+import { CascaderOption, Loader }            from '@acx-ui/components'
+import { get }                               from '@acx-ui/config'
+import {  DateRange, PathNode, NetworkPath } from '@acx-ui/utils'
 
-import { getNetworkFilterData }                                                                        from '../../../NetworkFilter'
-import { useVenuesHierarchyQuery, Child as HierarchyNodeChild, useNetworkHierarchyQuery, NetworkNode } from '../../../NetworkFilter/services'
-import { ClientType as ClientTypeEnum }                                 from '../../../ServiceGuard/types'
-import { ClientType }                                                                                  from '../../../ServiceGuard/ServiceGuardForm/FormItems/ClientType'
+import { APsSelectionInput }                                                                 from '../../../APsSelectionInput'
+import { getNetworkFilterData }                                                              from '../../../NetworkFilter'
+import { useVenuesHierarchyQuery, useNetworkHierarchyQuery, NetworkNode, Child, ApOrSwitch } from '../../../NetworkFilter/services'
+import { useIntentContext }                                                                  from '../../IntentContext'
 
-import { APsSelectionInput }                          from '../../../APsSelectionInput'
-import { DeviceRequirementsType, deviceRequirements } from '../../../ServiceGuard/ServiceGuardForm/FormItems/APsSelection/deviceRequirements'
-
-import { isAPListNodes, isNetworkNodes }    from '../../../APsSelectionInput/types'
-
-import type { NetworkNodes, NetworkPaths } from '../../../APsSelectionInput/types'
-import type { NamePath }                                        from 'antd/lib/form/interface'
-import { Intent } from '../../config'
-import { useIntentContext } from '../../IntentContext'
+import type { NamePath } from 'antd/lib/form/interface'
 
 const name = ['preferences','excludedAPs'] as const
 const label = defineMessage({ defaultMessage: 'APs Selection' })
@@ -51,7 +42,7 @@ function filterRAIHierarchy (nodes: NetworkNode[], path: NetworkPath, unsupporte
     pathNode = _.find(nodes, o => o.name === pathSlice.name && o.type === pathSlice.type)
     nodes = pathNode?.children as NetworkNode []
   }
-  const data =  {
+  const data = {
     ...pathNode,
     children: pathNode?.children?.map(apGroup => ({
       ...apGroup,
@@ -77,17 +68,17 @@ function useSANetworkHierarchy () {
   const response = useNetworkHierarchyQuery(
     { ...filter, shouldQueryAp: true, shouldQuerySwitch: false }, {
       skip: !get('IS_MLISA_SA'),
-      selectFromResult: ({ data, ...rest }) => { 
+      selectFromResult: ({ data, ...rest }) => {
         const zoneHierarchy = filterRAIHierarchy(
           data?.children ?? [], path, metadata?.unsupportedAPs ?? []
         )
         return {
           ...rest,
-          data: zoneHierarchy as unknown as { 
+          data: zoneHierarchy as unknown as {
             name: string, type: string, children: NetworkNode[]
           }
         }
-    }
+      }
     })
   return {
     ...response,
@@ -102,12 +93,31 @@ function useR1NetworkHierarchy () {
     endDate: moment().format(),
     range: DateRange.last24Hours
   }), [])
-  const { form } = useStepFormContext<Intent>()
-  const response = useVenuesHierarchyQuery(filter, { skip: !!get('IS_MLISA_SA') })
-  return { ...response, options: getNetworkFilterData(
-    filterAPwithDeviceRequirements(response.data ?? [], form.getFieldValue(ClientType.fieldName)),
-    {}, false
-  ) }
+  const { intent: { sliceId, metadata } } = useIntentContext()
+  const response = useVenuesHierarchyQuery(filter, {
+    skip: !!get('IS_MLISA_SA'),
+    selectFromResult: ({ data, ...rest }) => {
+      let filteredAPs = [] as ApOrSwitch[] | undefined
+      const venueHierarchy = data?.filter(({ id }) => id === sliceId)
+        .map((venue: Child) => {
+          const { aps } = venue
+          filteredAPs = aps?.filter(
+            ({ mac }: { mac: string }) => !metadata.unsupportedAPs?.includes(mac)
+          )
+          return { ...venue, aps: filteredAPs }
+        })
+
+      return {
+        ...rest,
+        data: filteredAPs?.length ? venueHierarchy as unknown as Child[] : []
+      }
+    }
+  })
+
+  return {
+    ...response,
+    options: getNetworkFilterData(response.data ?? [], {}, false)
+  }
 }
 
 function useOptions () {
@@ -116,36 +126,15 @@ function useOptions () {
   return get('IS_MLISA_SA') ? SAOptions : R1Options
 }
 
-function filterAPwithDeviceRequirements (data: HierarchyNodeChild[], clientType: ClientTypeEnum ) {
-  const { requiredAPFirmware, excludedTargetAPs } = deviceRequirements[clientType || 'virtual-wireless-client']
-  return data.reduce((venues, { aps, ...rest }) => {
-    const validAPs = aps!.filter(ap => {
-      if (!ap.serial) return false
-      if (excludedTargetAPs.find(a =>
-        _.get(a, 'model') === ap.model &&
-          !meetVersionRequirements(_.get(a, 'requiredAPFirmware'), ap.firmware)
-      )) return false
-      return meetVersionRequirements(requiredAPFirmware, ap.firmware)
-    })
-    validAPs.length && venues.push({ ...rest, aps: validAPs })
-    return venues
-  }, [] as HierarchyNodeChild[])
-}
-
 export function APsSelection ({ isDisabled }: { isDisabled: boolean }) {
   const { $t } = useIntl()
   const response = useOptions()
-  const { form } = useStepFormContext<Intent>()
   return <Loader
     states={[_.omit(response, ['options'])]}
     style={{ height: 'auto', minHeight: 346 }}
   >
     <Form.Item
       name={name as unknown as NamePath}
-      rules={[{
-        required: true,
-        message: $t({ defaultMessage: 'Select APs to exclude' })
-      }]}
       children={<APsSelectionInput
         disabled={isDisabled}
         autoFocus

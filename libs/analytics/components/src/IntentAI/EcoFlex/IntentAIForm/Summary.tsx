@@ -15,7 +15,7 @@ export function Summary () {
   const isEnabled = form.getFieldValue('preferences').enable
   const enableExcludedHours = form.getFieldValue('preferences').enableExcludedHours
   const enableExcludedAPs = form.getFieldValue('preferences').enableExcludedAPs
-  
+
   return <Row gutter={20}>
     <Col span={16}>
       <StepsForm.Title children={$t({ defaultMessage: 'Summary' })} />
@@ -31,7 +31,7 @@ export function Summary () {
           {enableExcludedAPs && <Form.Item
             label={$t({ defaultMessage: 'APs/AP Group not applied for EcoFlex' })}
           >
-            {$t({ defaultMessage: 'PowerSave will not be triggered for the specific AP/AP Group set in the Settings.' })}
+            {$t({ defaultMessage: 'PowerSave will not be triggered for the specific APs set in the Settings.' })}
           </Form.Item>
           }
         </>

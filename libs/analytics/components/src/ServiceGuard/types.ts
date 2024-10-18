@@ -1,5 +1,4 @@
 import { TypedUseMutationResult } from '@reduxjs/toolkit/dist/query/react'
-import _                          from 'lodash'
 
 import { DayAndTimeDropdownTypes }     from '@acx-ui/components'
 import { ServiceGuardBaseQuery }       from '@acx-ui/store'

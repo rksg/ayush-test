@@ -11,13 +11,14 @@ import { CascaderOption, Loader, StepsForm, useStepFormContext }  from '@acx-ui/
 import { get }                                                    from '@acx-ui/config'
 import { FilterListNode, DateRange, PathNode }                    from '@acx-ui/utils'
 
+import { APsSelectionInput }                                                                           from '../../../../APsSelectionInput'
+import { isAPListNodes, isNetworkNodes }                                                               from '../../../../APsSelectionInput/types'
 import { getNetworkFilterData }                                                                        from '../../../../NetworkFilter'
 import { useVenuesHierarchyQuery, Child as HierarchyNodeChild, useNetworkHierarchyQuery, NetworkNode } from '../../../../NetworkFilter/services'
-import { ClientType as ClientTypeEnum }                                 from '../../../types'
+import { ClientType as ClientTypeEnum }                                                                from '../../../types'
 import { ClientType }                                                                                  from '../ClientType'
-import { isAPListNodes, isNetworkNodes }                                 from '../../../../APsSelectionInput/types'
 
-import { APsSelectionInput }                          from '../../../../APsSelectionInput'
+
 import { DeviceRequirementsType, deviceRequirements } from './deviceRequirements'
 
 import type { ServiceGuardFormDto, NetworkNodes, NetworkPaths } from '../../../types'

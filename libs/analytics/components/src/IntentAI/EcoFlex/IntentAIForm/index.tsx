@@ -5,6 +5,7 @@ import { useIntl } from 'react-intl'
 
 import { StepsForm } from '@acx-ui/components'
 
+import { NetworkNode }                                                                      from '../../../NetworkFilter/services'
 import { IntentWizardHeader }                                                               from '../../common/IntentWizardHeader'
 import { getScheduledAt }                                                                   from '../../common/ScheduleTiming'
 import { parseExcludedHours, buildExcludedHours }                                           from '../../common/ScheduleWeekly'
@@ -16,7 +17,6 @@ import { Introduction } from './Introduction'
 import { Priority }     from './Priority'
 import { Settings }     from './Settings'
 import { Summary }      from './Summary'
-import { NetworkNode } from '../../../NetworkFilter/services'
 
 type FormVal = {
   enable: boolean,
@@ -66,7 +66,7 @@ export const IntentAIForm: React.FC = () => {
   // always enable = true, because only new, scheduled, active, applyscheduled can open wizard
   const initialValues = {
     ...useInitialValues(),
-    preferences: { 
+    preferences: {
       enable: true,
       excludedHours,
       enableExcludedHours: !!excludedHours,
