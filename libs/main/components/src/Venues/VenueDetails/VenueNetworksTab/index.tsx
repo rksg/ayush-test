@@ -26,13 +26,10 @@ import {
   useIsEdgeFeatureReady,
   NetworkTunnelActionModalProps,
   NetworkTunnelActionModal,
-  tansformSdLanScopedVenueMap,
   NetworkTunnelActionForm,
   useUpdateNetworkTunnelAction,
   NetworkTunnelTypeEnum,
-  useGetSoftGreScopeVenueMap,
-  useSoftGreTunnelActions
-} from '@acx-ui/rc/components'
+  useSoftGreTunnelActions } from '@acx-ui/rc/components'
 import {
   useAddNetworkVenueMutation,
   useUpdateNetworkVenueMutation,
@@ -45,7 +42,6 @@ import {
   useScheduleSlotIndexMap,
   useGetVLANPoolPolicyViewModelListQuery,
   useNewVenueNetworkTableQuery,
-  useVenuesListQuery,
   useEnhanceVenueNetworkTableQuery
 } from '@acx-ui/rc/services'
 import {
@@ -62,13 +58,14 @@ import {
   SchedulerTypeEnum,
   SchedulingModalState, ConfigTemplateType, useConfigTemplate,
   useConfigTemplateMutationFnSwitcher, useConfigTemplateTenantLink,
-  KeyValue, VLANPoolViewModelType, Venue, EdgeMvSdLanViewData, EdgeSdLanViewDataP2
+  KeyValue, VLANPoolViewModelType, EdgeMvSdLanViewData, EdgeSdLanViewDataP2
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink }       from '@acx-ui/react-router-dom'
 import { WifiScopes }                                              from '@acx-ui/types'
 import { filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 
-import { NetworkTunnelButton } from './NetworkTunnelButton'
+
+import { useTunnelColumn } from './useTunnelColumn'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
@@ -181,15 +178,6 @@ export function VenueNetworksTab () {
   const settingsId = 'venue-networks-table'
 
   const tableQuery = useVenueNetworkList({ settingsId, venueId })
-  const { venueInfo } = useVenuesListQuery({ payload: {
-    fields: ['name', 'id'],
-    filters: { id: [venueId] }
-  } }, {
-    skip: !venueId,
-    selectFromResult: ({ data }) => ({
-      venueInfo: data?.data[0]
-    })
-  })
 
   const [tableData, setTableData] = useState(defaultArray)
   const [apGroupModalState, setApGroupModalState] = useState<ApGroupModalState>({
@@ -222,11 +210,17 @@ export function VenueNetworksTab () {
   const isEdgeMvSdLanReady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
 
+  // hooks for tunnel column - start
   const sdLanScopedNetworks = useSdLanScopedVenueNetworks(params.venueId, tableQuery.data?.data.map(item => item.id))
-  const softGreVenueMap = useGetSoftGreScopeVenueMap()
   const softGreTunnelActions = useSoftGreTunnelActions()
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
   const updateSdLanNetworkTunnel = useUpdateNetworkTunnelAction()
+  const tunnelColumn = useTunnelColumn({
+    venueId: venueId!,
+    sdLanScopedNetworks,
+    setTunnelModalState
+  })
+  // hooks for tunnel column - end
 
   const { vlanPoolingNameMap }: { vlanPoolingNameMap: KeyValue<string, string>[] } = useGetVLANPoolPolicyViewModelListQuery({
     params: { tenantId: params.tenantId },
@@ -497,26 +491,7 @@ export function VenueNetworksTab () {
           isReadOnly)
       }
     },
-    ...(isEdgeMvSdLanReady || isSoftGreEnabled ? [{
-      key: 'tunneledInfo',
-      title: $t({ defaultMessage: 'Tunnel' }),
-      dataIndex: 'tunneledInfo',
-      render: function (_: ReactNode, row: Network) {
-        const sdLanVenueMap = tansformSdLanScopedVenueMap(sdLanScopedNetworks.sdLans as EdgeMvSdLanViewData[])
-
-        return <NetworkTunnelButton
-          currentVenue={{
-            id: venueId,
-            name: venueInfo?.name,
-            activated: { isActivated: row.activated?.isActivated }
-          } as Venue}
-          currentNetwork={row}
-          sdLanVenueMap={sdLanVenueMap}
-          softGreVenueMap={softGreVenueMap}
-          onClick={handleClickNetworkTunnel}
-        />
-      }
-    }]: [])
+    ...tunnelColumn
   ]
 
   const handleClickScheduling = (row: Network, e: React.MouseEvent<HTMLElement, MouseEvent>) => {
@@ -537,20 +512,6 @@ export function VenueNetworksTab () {
       network: row.deepNetwork,
       networkVenue: getCurrentVenue(row)
     })
-  }
-
-  const handleClickNetworkTunnel = (currentVenue: Venue, currentNetwork: Network) => {
-    const cachedSoftGre = softGreVenueMap[currentVenue.id]?.filter(sg => sg.networkIds.includes(currentNetwork.id))
-    setTunnelModalState({
-      visible: true,
-      network: {
-        id: currentNetwork.id,
-        type: currentNetwork.nwSubType,
-        venueId: currentVenue.id,
-        venueName: currentVenue.name
-      },
-      cachedSoftGre: cachedSoftGre ?? []
-    } as NetworkTunnelActionModalProps)
   }
 
   const handleCancel = () => {

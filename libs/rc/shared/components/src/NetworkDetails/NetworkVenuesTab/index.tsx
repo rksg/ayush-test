@@ -66,8 +66,6 @@ import { NetworkApGroupDialog }                                                 
 import {
   NetworkTunnelActionModal,
   NetworkTunnelActionModalProps,
-  NetworkTunnelInfoButton,
-  useGetSoftGreScopeNetworkMap,
   useSoftGreTunnelActions
 } from '../../NetworkTunnelActionModal'
 import { NetworkTunnelActionForm, NetworkTunnelTypeEnum } from '../../NetworkTunnelActionModal/types'
@@ -81,6 +79,8 @@ import {
 } from '../../pipes/apGroupPipes'
 import { useIsEdgeFeatureReady } from '../../useEdgeActions'
 import { useGetNetwork }         from '../services'
+
+import { useTunnelColumn } from './useTunnelColumn'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
@@ -257,11 +257,17 @@ export function NetworkVenuesTab () {
     useTemplateMutationFn: useDeleteNetworkVenuesTemplateMutation
   })
 
+  // hooks for tunnel column - start
   const sdLanScopedNetworkVenues = useSdLanScopedNetworkVenues(networkId)
-  const softGreVenueMap = useGetSoftGreScopeNetworkMap(networkId)
   const softGreTunnelActions = useSoftGreTunnelActions()
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
   const updateSdLanNetworkTunnel = useUpdateNetworkTunnelAction()
+  const tunnelColumn = useTunnelColumn({
+    network: networkQuery.data,
+    sdLanScopedNetworkVenues,
+    setTunnelModalState
+  })
+  // hooks for tunnel column - end
 
   const [vlanPoolingNameMap, setVlanPoolingNameMap] = useState<KeyValue<string, string>[]>([])
   const { data: instanceListResult } = useConfigTemplateQueryFnSwitcher<TableResult<VLANPoolViewModelType>>({
@@ -650,37 +656,7 @@ export function NetworkVenuesTab () {
           (!hasUpdatePermission || systemNetwork))
       }
     },
-    ...((isEdgeMvSdLanReady || isSoftGreEnabled) ? [{
-      key: 'tunneledInfo',
-      title: $t({ defaultMessage: 'Tunnel' }),
-      dataIndex: 'tunneledInfo',
-      render: function (_: ReactNode, row: Venue) {
-        const currentNetwork = networkQuery.data
-        const networkId = currentNetwork?.id ?? ''
-        const cachedSoftGre = networkId && softGreVenueMap[row.id] ?
-          softGreVenueMap[row.id].filter(sg => sg.networkIds.includes(networkId)) : undefined
-
-        return <NetworkTunnelInfoButton
-          network={currentNetwork}
-          currentVenue={row}
-          venueSdLan={sdLanScopedNetworkVenues.sdLansVenueMap[row.id]?.[0]}
-          venueSoftGre={cachedSoftGre?.[0]}
-          onClick={() => {
-            // show modal
-            setTunnelModalState({
-              visible: true,
-              network: {
-                id: networkId,
-                type: currentNetwork?.type,
-                venueId: row.id,
-                venueName: row.name
-              },
-              cachedSoftGre: cachedSoftGre ?? []
-            } as NetworkTunnelActionModalProps)
-          }}
-        />
-      }
-    }]: [])
+    ...tunnelColumn
   ]
 
   const handleClickScheduling = (row: Venue, e: React.MouseEvent<HTMLElement, MouseEvent>) => {

@@ -1,13 +1,14 @@
 export enum NetworkTunnelTypeEnum {
   None = 'None',
   SdLan = 'SdLan',
-  SoftGre = 'SoftGre'
+  SoftGre = 'SoftGre',
+  Pin = 'Pin'
 }
 
 export interface NetworkTunnelActionForm {
   tunnelType: NetworkTunnelTypeEnum
   sdLan: {
-    isGuestTunnelEnabled: boolean
+    isGuestTunnelEnabled: boolean,
   },
   softGre: {
     newProfileId: string,
