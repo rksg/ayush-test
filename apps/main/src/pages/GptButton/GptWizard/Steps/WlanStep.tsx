@@ -21,7 +21,7 @@ type NetworkConfig = {
 export function WlanStep (props: {
   payload: string,
   description: string }) {
-  const step1payload = JSON.parse(props.payload) as NetworkConfig[]
+  const data = JSON.parse(props.payload) as NetworkConfig[]
   const objectiveOptions = [
     {
       value: 'Internal',
@@ -91,7 +91,7 @@ export function WlanStep (props: {
       </div>
 
 
-      {step1payload.map((item, index) => (
+      {data.map((item, index) => (
         <React.Fragment key={index}>
 
           <div style={{
@@ -100,7 +100,7 @@ export function WlanStep (props: {
           }}>
             <div style={{ display: 'flex' }}>
               <ProFormCheckbox
-                name={['step1payload', index, 'Checked']}
+                name={['data', index, 'Checked']}
                 initialValue={true}
               ></ProFormCheckbox>
               <div style={{
@@ -121,12 +121,12 @@ export function WlanStep (props: {
             <div >
 
               <ProFormText
-                name={['step1payload', index, 'id']}
+                name={['data', index, 'id']}
                 initialValue={item['id']}
                 hidden
               />
               <ProFormText
-                name={['step1payload', index, 'Purpose']}
+                name={['data', index, 'Purpose']}
                 initialValue={item['Purpose']}
                 hidden
               />
@@ -134,7 +134,7 @@ export function WlanStep (props: {
               <ProFormText
                 width={200}
                 label='Network Name'
-                name={['step1payload', index, 'SSID Name']}
+                name={['data', index, 'SSID Name']}
                 initialValue={item['SSID Name']}
               />
               <ProFormSelect
@@ -160,7 +160,7 @@ export function WlanStep (props: {
                 }}
                 width={200}
                 label='Network Objective'
-                name={['step1payload', index, 'SSID Objective']} // 设置 name 对应原始数据结构
+                name={['data', index, 'SSID Objective']} // 设置 name 对应原始数据结构
                 initialValue={item['SSID Objective']}
                 options={objectiveOptions}
               />

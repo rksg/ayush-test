@@ -22,7 +22,7 @@ export function VlanStep ( props: {
     payload: string
   }
 ) {
-  const step3payload = props.payload ? JSON.parse(props.payload) as NetworkConfig[] : []
+  const data = props.payload ? JSON.parse(props.payload) as NetworkConfig[] : []
 
   return <div style={{ display: 'flex', flexDirection: 'column' }}>
     <div style={{
@@ -44,7 +44,7 @@ export function VlanStep ( props: {
       </span>
 
 
-      {step3payload.map((item, index) => (
+      {data.map((item, index) => (
         <React.Fragment key={index}>
 
           <div style={{
@@ -53,7 +53,7 @@ export function VlanStep ( props: {
           }}>
             <div style={{ display: 'flex' }}>
               <ProFormCheckbox
-                name={['step3payload', index, 'Checked']}
+                name={['data', index, 'Checked']}
                 initialValue={true}
               ></ProFormCheckbox>
               <div style={{
@@ -74,19 +74,19 @@ export function VlanStep ( props: {
             <div >
 
               <ProFormText
-                name={['step3payload', index, 'id']}
+                name={['data', index, 'id']}
                 initialValue={item['id']}
                 hidden
               />
               <ProFormText
-                name={['step3payload', index, 'Purpose']}
+                name={['data', index, 'Purpose']}
                 initialValue={item['Purpose']}
                 hidden
               />
 
               <ProFormText
                 label='VLAN Name'
-                name={['step3payload', index, 'VLAN Name']}
+                name={['data', index, 'VLAN Name']}
                 initialValue={item['VLAN Name']}
               />
 
@@ -118,7 +118,7 @@ export function VlanStep ( props: {
                 </div>
               </div>
               <ProFormText label='VLAN ID'
-                name={['step3payload', index, 'VLAN ID']}
+                name={['data', index, 'VLAN ID']}
                 initialValue={item['VLAN ID']}
               />
             </div>

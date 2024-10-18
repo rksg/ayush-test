@@ -4,8 +4,8 @@ import { ProFormInstance, StepsForm } from '@ant-design/pro-form'
 import { Button }                     from 'antd'
 import dayjs                          from 'dayjs'
 
-import { useUpdateSsidMutation, useUpdateSsidProfileMutation, useUpdateVlanMutation, useApplyConversationsMutation, useUpdateConversationsMutation } from '@acx-ui/rc/services'
-import { GptConversation }                                                                                                                           from '@acx-ui/rc/utils'
+import { useApplyConversationsMutation, useUpdateConversationsMutation } from '@acx-ui/rc/services'
+import { GptConfigurationStepsEnum, GptConversation }                    from '@acx-ui/rc/utils'
 
 import { GptStepsEnum } from '..'
 import { GptStepsForm } from '../styledComponents'
@@ -43,12 +43,7 @@ const waitTime = (time: number = 100) => {
   })
 }
 
-export enum GptConfigurationStepsEnum {
-  WLANS = 'ssidProfile',
-  WLANDETAIL = 'ssid',
-  VLAN = 'vlan',
-  SUMMARY = 'apply'
-}
+
 
 export default function GptWizard (props: {
   sessionId: string;
@@ -67,6 +62,9 @@ export default function GptWizard (props: {
   const [applyConversations] = useApplyConversationsMutation()
   const [updateConversations] = useUpdateConversationsMutation()
 
+  const lastPageIndex = Object.values(GptConfigurationStepsEnum).length - 1
+  const firstPageIndex = 0
+
   const formMapRef = useRef<
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     React.MutableRefObject<ProFormInstance<any> | undefined>[]
@@ -81,10 +79,10 @@ export default function GptWizard (props: {
   }, [])
 
   const onPrevious = function () {
-    if (props.currentStep === 0) {
+    if (props.currentStep === firstPageIndex) {
       props.setStep(GptStepsEnum.BASIC)
-    } else if (props.currentStep === 3) {
-      props.setCurrentStep(0)
+    } else if (props.currentStep === lastPageIndex) {
+      props.setCurrentStep(firstPageIndex)
     } else {
       props.setCurrentStep(props.currentStep - 1)
     }
@@ -97,6 +95,45 @@ export default function GptWizard (props: {
     }, {} as Record<GptConfigurationStepsEnum, GptConversation>)
   )
 
+  const handleOnFinish = async (
+    stepType: GptConfigurationStepsEnum) => {
+    setIsLoading(true)
+    try {
+      const stepIndex = steps.findIndex(s => s.name === stepType)
+
+      if (stepIndex === -1) {
+        return false
+      }
+
+      const values = formMapRef.current[stepIndex].current?.getFieldsValue()
+      let updatedValues
+
+      if (values.data && values.data.some((item: { Checked?: unknown }) =>
+        item['Checked'] !== undefined)) {
+        updatedValues = values.data
+          .filter((item: { Checked: unknown }) => item['Checked'])
+          .map(({ Checked, ...rest }: { Checked?: boolean; [key: string]: unknown }) => rest)
+      } else {
+        updatedValues = values.data
+      }
+
+      const response = await updateConversations({
+        params: { sessionId: props.sessionId, type: stepType },
+        payload: JSON.stringify(updatedValues)
+      }).unwrap()
+
+      setPayloads((prevPayloads) => ({
+        ...prevPayloads,
+        [response.nextStep]: response
+      }))
+
+      setIsLoading(false)
+      return true
+    } catch (error) {
+      setIsLoading(false)
+      return false
+    }
+  }
 
   const steps = [
     {
@@ -105,90 +142,23 @@ export default function GptWizard (props: {
       component: (
         <WlanStep payload={props.payload} description={props.description} />
       ),
-      onFinish: async () => {
-        setIsLoading(true)
-        try {
-          const values = formMapRef.current[0].current?.getFieldsValue()
-          const updatedValues = values.step1payload
-            .filter((item: { Checked: unknown }) => item['Checked'])
-            .map(({ Checked, ...rest }: { Checked?: boolean; [key: string]: unknown }) => rest)
-
-          const response = await updateConversations({
-            params: { sessionId: props.sessionId, type: GptConfigurationStepsEnum.WLANS },
-            payload: JSON.stringify(updatedValues)
-          }).unwrap()
-
-          setPayloads((prevPayloads) => ({
-            ...prevPayloads,
-            [GptConfigurationStepsEnum.WLANDETAIL]: response // 更新 Step 2 payload
-          }))
-
-          setIsLoading(false)
-          return true
-        } catch (error) {
-          setIsLoading(false)
-          return false
-        }
-      }
+      onFinish: async () =>
+        handleOnFinish(GptConfigurationStepsEnum.WLANS)
     },
     {
       name: GptConfigurationStepsEnum.WLANDETAIL,
       title: '',
       component: <WlanDetailStep
         payload={payloads[GptConfigurationStepsEnum.WLANDETAIL].payload} />,
-      onFinish: async () => {
-        setIsLoading(true)
-        try {
-          const values = formMapRef.current[1].current?.getFieldsValue()
-          const updatedValues = values.step2payload
-
-          const response = await updateConversations({
-            params: { sessionId: props.sessionId, type: GptConfigurationStepsEnum.WLANDETAIL },
-            payload: JSON.stringify(updatedValues)
-          }).unwrap()
-
-          setPayloads((prevPayloads) => ({
-            ...prevPayloads,
-            [GptConfigurationStepsEnum.VLAN]: response // 更新 Step 3 payload
-          }))
-
-          setIsLoading(false)
-          return true
-        } catch (error) {
-          setIsLoading(false)
-          return false
-        }
-      }
+      onFinish: async () =>
+        handleOnFinish(GptConfigurationStepsEnum.WLANDETAIL)
     },
     {
       name: GptConfigurationStepsEnum.VLAN,
       title: '',
       component: <VlanStep payload={payloads[GptConfigurationStepsEnum.VLAN].payload} />,
-      onFinish: async () => {
-        setIsLoading(true)
-        try {
-          const values = formMapRef.current[2].current?.getFieldsValue()
-          const updatedValues = values.step3payload
-            .filter((item: { Checked: unknown }) => item['Checked'])
-            .map(({ Checked, ...rest }: { Checked?: boolean; [key: string]: unknown }) => rest)
-
-          const response = await updateConversations({
-            params: { sessionId: props.sessionId, type: GptConfigurationStepsEnum.VLAN },
-            payload: JSON.stringify(updatedValues)
-          }).unwrap()
-
-          setPayloads((prevPayloads) => ({
-            ...prevPayloads,
-            [GptConfigurationStepsEnum.SUMMARY]: response // 更新 Step 4 payload
-          }))
-
-          setIsLoading(false)
-          return true
-        } catch (error) {
-          setIsLoading(false)
-          return false
-        }
-      }
+      onFinish: async () =>
+        handleOnFinish(GptConfigurationStepsEnum.VLAN)
     },
     {
       name: GptConfigurationStepsEnum.SUMMARY,
@@ -232,7 +202,7 @@ export default function GptWizard (props: {
               loading={isLoading}
               onClick={() => renderProps.form?.submit?.()}
             >
-              {props.currentStep === 3 ? 'Apply' : 'Next'}
+              {props.currentStep === lastPageIndex ? 'Apply' : 'Next'}
             </Button>
           ]
         }

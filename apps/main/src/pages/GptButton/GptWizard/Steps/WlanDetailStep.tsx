@@ -18,7 +18,7 @@ export function WlanDetailStep (props: {
   payload: string
 }) {
 
-  const step2payload = props.payload ? JSON.parse(props.payload) as NetworkConfig[] : []
+  const data = props.payload ? JSON.parse(props.payload) as NetworkConfig[] : []
 
   const networkOptions = [
     {
@@ -57,8 +57,8 @@ export function WlanDetailStep (props: {
       </span>
 
 
-      {step2payload &&
-       step2payload.map((item, index: number) => (
+      {data &&
+       data.map((item, index: number) => (
          <React.Fragment key={index}>
            <div style={{
              display: 'grid',
@@ -82,29 +82,29 @@ export function WlanDetailStep (props: {
              </div>
              <div >
                <ProFormText
-                 name={['step2payload', index, 'id']}
+                 name={['data', index, 'id']}
                  initialValue={item['id']}
                  hidden
                />
                <ProFormText
-                 name={['step2payload', index, 'Purpose']}
+                 name={['data', index, 'Purpose']}
                  initialValue={item['Purpose']}
                  hidden
                />
                <ProFormText
-                 name={['step2payload', index, 'SSID Objective']}
+                 name={['data', index, 'SSID Objective']}
                  initialValue={item['SSID Objective']}
                  hidden
                />
 
                <ProFormText label='SSID name'
-                 name={['step2payload', index, 'SSID Name']}
+                 name={['data', index, 'SSID Name']}
                  initialValue={item['SSID Name']}
                  children={item['SSID Name']}
                />
                <ProFormSelect
                  label='Network Type'
-                 name={['step2payload', index, 'SSID Type']}
+                 name={['data', index, 'SSID Type']}
                  initialValue={item['SSID Type']}
                  options={networkOptions}
                />

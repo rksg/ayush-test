@@ -6,7 +6,7 @@ export function SummaryStep (props: {
   payload: string
 }) {
 
-  const step4payload = props.payload ? JSON.parse(props.payload) : {}
+  const data = props.payload ? JSON.parse(props.payload) : {}
 
 
   const getNetworkTypeDescription = (type: string) => {
@@ -45,7 +45,7 @@ export function SummaryStep (props: {
       <span style={{ fontSize: '16px', color: '#808284', margin: '20px 0' }}>
       Alright, we have completed the setup for your network. Below is a summary.<br />
       Would you like me to create these configurations and apply them to the venue <b>{
-          step4payload?.venue?.venueName}</b>?
+          data?.venue?.venueName}</b>?
       </span>
 
 
@@ -54,7 +54,7 @@ export function SummaryStep (props: {
         children={<ul>
           {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            step4payload?.wlan?.map((item: any, index: number) => (
+            data?.wlan?.map((item: any, index: number) => (
               <li key={index}>
                 {`${item['SSID Name']} with ${getNetworkTypeDescription(item['SSID Type'])}`}</li>
             ))}
@@ -65,7 +65,7 @@ export function SummaryStep (props: {
         label={'VLAN Configuration'}
         children={<ul>
           {// eslint-disable-next-line @typescript-eslint/no-explicit-any
-            step4payload?.vlan?.map((item: any, index: number) => (
+            data?.vlan?.map((item: any, index: number) => (
               <li key={index}>{`${item['VLAN Name']} @ VLAN  ${item['VLAN ID']}`}</li>
             ))}
         </ul>}
