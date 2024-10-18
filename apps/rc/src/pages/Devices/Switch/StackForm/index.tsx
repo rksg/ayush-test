@@ -73,7 +73,8 @@ import {
   convertInputToUppercase,
   FirmwareSwitchVenueVersionsV1002,
   getStackUnitsMinLimitationV1002,
-  SWITCH_SERIAL_PATTERN_INCLUDED_8200AV
+  SWITCH_SERIAL_PATTERN_INCLUDED_8200AV,
+  SWITCH_SERIAL_PATTERN_INCLUDED_8100_8200AV
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -114,8 +115,15 @@ export type SwitchModelParams = {
 export const validatorSwitchModel = ( props: SwitchModelParams ) => {
   const { serialNumber, isSupport8200AV, isSupport8100, activeSerialNumber } = props
   const { $t } = getIntl()
-  const re = isSupport8200AV ? new RegExp(SWITCH_SERIAL_PATTERN_INCLUDED_8200AV)
-    : new RegExp(SWITCH_SERIAL_PATTERN)
+
+  const switchSerialPatterns = [
+    // eslint-disable-next-line max-len
+    { condition: isSupport8100 && isSupport8200AV, pattern: SWITCH_SERIAL_PATTERN_INCLUDED_8100_8200AV },
+    { condition: isSupport8100, pattern: SWITCH_SERIAL_PATTERN_INCLUDED_8100 },
+    { condition: isSupport8200AV, pattern: SWITCH_SERIAL_PATTERN_INCLUDED_8200AV }
+  ]
+  const matchedPattern = switchSerialPatterns.find(p => p.condition)
+  const re = new RegExp(matchedPattern ? matchedPattern.pattern : SWITCH_SERIAL_PATTERN)
   if (serialNumber && !re.test(serialNumber)) {
     return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
   }
@@ -658,7 +666,7 @@ export function StackForm () {
                 const switchModelParams: SwitchModelParams = {
                   serialNumber: value,
                   isSupport8200AV: isSupport8200AV,
-                  isSupport8200AV: isSupport8100,
+                  isSupport8100: isSupport8100,
                   activeSerialNumber: activeRow === row.key ? value : activeSerialNumber
                 }
                 return validatorSwitchModel(switchModelParams)}
