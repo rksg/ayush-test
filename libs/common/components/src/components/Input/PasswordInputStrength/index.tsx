@@ -34,7 +34,7 @@ const usedBarColor: string[] = [
   cssStr('--acx-neutrals-20'),
   cssStr('--acx-semantics-red-50'),
   cssStr('--acx-semantics-yellow-50'),
-  cssStr('--acx-accents-blue-50'),
+  cssStr('--acx-semantics-yellow-50'),
   cssStr('--acx-semantics-green-50')
 ]
 
@@ -116,7 +116,7 @@ export const PasswordStrengthIndicator = ({
         borderRadius: [2, 0, 0, 2]
       }
     },
-    { name: 'fair', value: 4,
+    { name: 'poor', value: 4,
       itemStyle: {
         borderRadius: [0, 2, 2, 0]
       }
@@ -127,7 +127,7 @@ export const PasswordStrengthIndicator = ({
     $t({ defaultMessage: 'Insecure' }),
     $t({ defaultMessage: 'Very Weak' }),
     $t({ defaultMessage: 'Weak' }),
-    $t({ defaultMessage: 'Fair' }),
+    $t({ defaultMessage: 'Poor' }),
     $t({ defaultMessage: 'Strong' })
   ]
 
@@ -158,7 +158,7 @@ export const PasswordStrengthIndicator = ({
       { name: 'weak', value: passedRulesRatio, itemStyle: {
         borderRadius: passedRulesRatio > 0 && passedRulesRatio < 4 ? [2, 0, 0, 2] : [2, 2, 2, 2]
       } },
-      { name: 'fair', value: 4-passedRulesRatio, itemStyle: {
+      { name: 'poor', value: 4-passedRulesRatio, itemStyle: {
         borderRadius: passedRulesRatio > 0 && passedRulesRatio < 4 ? [0, 2, 2, 0] : [2, 2, 2, 2]
       } }
     ])
