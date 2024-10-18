@@ -2,12 +2,27 @@
 import { DefaultOptionType } from 'antd/lib/select'
 import _                     from 'lodash'
 
-import { Features, useIsSplitOn }                                                                        from '@acx-ui/feature-toggle'
-import { useGetApModelFamiliesQuery, useGetAvailableABFListQuery }                                       from '@acx-ui/rc/services'
-import { ABFVersion, ApModelFamilyType, EolApFirmware, FirmwareVenue, defaultApModelFamilyDisplayNames } from '@acx-ui/rc/utils'
-import { getIntl }                                                                                       from '@acx-ui/utils'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  MaxABFVersionEntity,
+  compactEolApFirmwares,
+  compareABFSequence,
+  compareVersions,
+  findMaxEolABFVersions,
+  getActiveApModels,
+  getVersionLabel,
+  isBetaFirmware
+} from '@acx-ui/rc/components'
+import { useGetApModelFamiliesQuery, useGetAvailableABFListQuery } from '@acx-ui/rc/services'
+import {
+  ABFVersion,
+  ApModelFamilyType,
+  EolApFirmware,
+  FirmwareVenue,
+  defaultApModelFamilyDisplayNames
+} from '@acx-ui/rc/utils'
+import { getIntl } from '@acx-ui/utils'
 
-import { MaxABFVersionEntity, compactEolApFirmwares, compareABFSequence, compareVersions, findMaxEolABFVersions, getActiveApModels, getVersionLabel, isBetaFirmware } from '../../FirmwareUtils'
 
 export type EolApFirmwareGroup = {
   name: string,

@@ -5,6 +5,22 @@ import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps, Tooltip, showActionModal } from '@acx-ui/components'
 import {
+  renderCurrentFirmwaresColumn,
+  useChangeScheduleVisiblePerApModel,
+  useUpdateNowPerApModel,
+  useUpgradePerferences,
+  useDowngradePerApModel,
+  UpdateNowPerApModelDialog,
+  ChangeSchedulePerApModelDialog
+} from '@acx-ui/rc/components'
+import {
+  compareVersions,
+  getApNextScheduleTpl,
+  getApSchedules,
+  getNextSchedulesTooltip,
+  toUserDate
+} from '@acx-ui/rc/components'
+import {
   useGetVenueApModelFirmwareListQuery,
   useSkipVenueSchedulesPerApModelMutation
 } from '@acx-ui/rc/services'
@@ -17,21 +33,11 @@ import {
 }                                                               from '@acx-ui/user'
 import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
-import { isApFirmwareUpToDate }                                                                       from '../..'
-import { compareVersions, getApNextScheduleTpl, getApSchedules, getNextSchedulesTooltip, toUserDate } from '../../FirmwareUtils'
-import { PreferencesDialog }                                                                          from '../../PreferencesDialog'
-import * as UI                                                                                        from '../../styledComponents'
+import { isApFirmwareUpToDate } from '../..'
+import { PreferencesDialog }    from '../../PreferencesDialog'
+import * as UI                  from '../../styledComponents'
 
-import { ChangeSchedulePerApModelDialog } from './ChangeScheduleDialog'
-import { DowngradePerApModelDialog }      from './DowngradeDialog'
-import { UpdateNowPerApModelDialog }      from './UpdateNowDialog'
-import {
-  renderCurrentFirmwaresColumn,
-  useChangeScheduleVisiblePerApModel,
-  useUpdateNowPerApModel,
-  useUpgradePerferences,
-  useDowngradePerApModel
-} from './venueFirmwareListPerApModelUtils'
+import { DowngradePerApModelDialog } from './DowngradeDialog'
 
 export function VenueFirmwareListPerApModel () {
   const { $t } = useIntl()

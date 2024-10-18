@@ -59,8 +59,7 @@ interface ScheduleCardProps extends AntdModalProps {
   disabled: boolean
   readonly?: boolean
   timelineLabelTop?: boolean
-  intervalUnit: 15 | 60 | number
-  is12H?: boolean
+  intervalUnit: 15 | 60
   loading: boolean
   title?: string
   isShowTips?: boolean
@@ -71,6 +70,39 @@ interface ScheduleCardProps extends AntdModalProps {
 interface Schedule {
   key: string,
   value: string[]
+}
+
+interface ScheduleTimeTickProps {
+  top: boolean
+  showBorder: boolean
+  index: number
+  length: number
+  timeTicks: string[]
+  intervalUnit: 15 | 60
+  intervalsCount: number
+}
+
+const ScheduleTimeTick: React.FC<ScheduleTimeTickProps> =
+({ top, showBorder, index, length, timeTicks, intervalUnit, intervalsCount }) => {
+  const timetickJSX = (<div style={{ width: '100%', height: '25px', marginLeft: '-30px' }}>
+    {timeTicks.map((item: string, i: number) => {
+      return (
+        <UI.Timetick intervalunit={intervalUnit} key={`timetick_${i}`}>{item}</UI.Timetick>
+      )
+    })}
+  </div>)
+  const timetickborderJSX = ( <div style={{ width: '980px', height: '5px' }}>
+    { Array((intervalsCount/2 + 1)).fill(0).map((_: number, i: number) => {
+      return (<UI.Timetickborder intervalunit={intervalUnit} key={`timetick_div_${i}`} />)
+    }) }
+  </div>)
+
+  if (top && index === 0) {
+    return (<>{timetickJSX}{showBorder && timetickborderJSX}</>)
+  } else if (!top && index === length - 1) {
+    return (<>{showBorder && timetickborderJSX}{timetickJSX}</>)
+  }
+  return null
 }
 
 export const parseNetworkVenueScheduler = (scheduler: NetworkVenueScheduler) => {
@@ -91,7 +123,7 @@ export function ScheduleCard (props: ScheduleCardProps) {
   const { $t } = useIntl()
   const { scheduler, venue, disabled, readonly=false, form, fieldNamePath, lazyQuery: getTimezone,
     localTimeZone=false, isShowTips=true, isShowTimezone=true, timelineLabelTop= true,
-    intervalUnit, is12H=true, prefix=true } = props
+    intervalUnit, prefix=true } = props
   const editabled = !disabled && !readonly
 
   const [scheduleList, setScheduleList] = useState<Schedule[]>([])
@@ -207,19 +239,16 @@ export function ScheduleCard (props: ScheduleCardProps) {
     let hour = Math.floor(index / unit)
     const min = (index % unit) * intervalUnit
     const minString = (min === 0) ? '00' : min.toString()
-    if (is12H) {
-      const latinAbbr = (hour < 12)? 'AM' : 'PM'
-      if (hour === 0) { // 12 AM
-        hour = 12
-      } else if (hour > 12) {
-        hour = hour - 12
-      }
-      return `${hour.toString()}:${minString} ${latinAbbr}`
+    const latinAbbr = (hour < 12)? 'AM' : 'PM'
+    if (hour === 0) { // 12 AM
+      hour = 12
+    } else if (hour > 12) {
+      hour = hour - 12
     }
-    return `${hour.toString()}:${minString}`
+    return `${hour.toString()}:${minString} ${latinAbbr}`
   }
   const _genTimeTicks = () => {
-    setTimeTicks(genTimeTicks(is12H))
+    setTimeTicks(genTimeTicks(intervalUnit))
   }
 
   const onChange = (list: CheckboxValueType[], key:string) => {
@@ -297,21 +326,16 @@ export function ScheduleCard (props: ScheduleCardProps) {
                   <UI.DaySpan>{$t({ defaultMessage: '{day}' }, { day: item.key })}</UI.DaySpan>
                 </Col>
                 <Col flex='auto' key={`col2_${item.key}`}>
-                  { timelineLabelTop && i === 0 &&
-                          <div style={{ width: '100%', height: '25px', marginLeft: intervalUnit === 15 ? '-30px' : '-2px' }}>
-                            {timeTicks.map((item: string, i: number) => {
-                              return (
-                                <UI.Timetick intervalunit={intervalUnit} key={`timetick_${i}`}>{item}</UI.Timetick>
-                              )
-                            })}
-                          </div>
-                  }
-                  { i === 0 && intervalUnit ===15 &&
-                          <div style={{ width: '980px', height: '5px' }}>
-                            { Array((intervalsCount/2 + 1)).fill(0).map((_: number, i: number) => {
-                              return (<UI.Timetickborder intervalunit={intervalUnit} key={`timetick_div_${i}`} />)
-                            }) }
-                          </div>}
+                  {timelineLabelTop && <ScheduleTimeTick
+                    key={`scheduleTimeTick_${i}_top`}
+                    top={timelineLabelTop}
+                    showBorder={intervalUnit === 15}
+                    index={i}
+                    length={scheduleList.length}
+                    timeTicks={timeTicks}
+                    intervalUnit={intervalUnit}
+                    intervalsCount={intervalsCount}
+                  />}
                   <Form.Item
                     key={`checkboxGroup_form_${item.key}`}
                     name={fieldNamePath.concat(item.key)}
@@ -339,15 +363,16 @@ export function ScheduleCard (props: ScheduleCardProps) {
                     }
                   />
                   <DragSelection />
-                  { !timelineLabelTop && i === scheduleList.length -1 &&
-                          <div style={{ width: '100%', height: '25px', marginLeft: intervalUnit === 15 ? '-30px' : '-2px' }}>
-                            {timeTicks.map((item: string, i: number) => {
-                              return (
-                                <UI.Timetick intervalunit={intervalUnit} key={`timetick_${i}`}>{item}</UI.Timetick>
-                              )
-                            })}
-                          </div>
-                  }
+                  {!timelineLabelTop && <ScheduleTimeTick
+                    key={`scheduleTimeTick_${i}_bottom`}
+                    top={timelineLabelTop}
+                    showBorder={intervalUnit === 15}
+                    index={i}
+                    length={scheduleList.length}
+                    timeTicks={timeTicks}
+                    intervalUnit={intervalUnit}
+                    intervalsCount={intervalsCount}
+                  />}
                   {localTimeZone && i === scheduleList.length -1 &&
                   <div style={{ width: '100%', height: '25px' }}>
                     <UI.LocalTimeZone key={'schedule_localtime'}>
