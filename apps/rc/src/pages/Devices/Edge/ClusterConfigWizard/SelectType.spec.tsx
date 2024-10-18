@@ -1,6 +1,8 @@
 import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 
+import { Features }                                                                from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                                   from '@acx-ui/rc/components'
 import { edgeApi }                                                                 from '@acx-ui/rc/services'
 import { ClusterHighAvailabilityModeEnum, EdgeClusterStatus, EdgeGeneralFixtures } from '@acx-ui/rc/utils'
 import { Provider, store }                                                         from '@acx-ui/store'
@@ -27,6 +29,11 @@ jest.mock('antd', () => ({
   </div>
 }))
 
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+}))
+
 const { mockEdgeClusterList, mockedHaNetworkSettings } = EdgeGeneralFixtures
 
 describe('SelectType', () => {
@@ -37,6 +44,7 @@ describe('SelectType', () => {
       clusterId: 'mocked_cluster_id'
     }
     mockedUsedNavigate.mockReset()
+    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
     store.dispatch(edgeApi.util.resetApiState())
   })
 
@@ -216,6 +224,9 @@ describe('SelectType', () => {
     mockedIncompatibleData.data[0].edgeList[0].memoryTotalKb = 26156250
     mockedIncompatibleData.data[0].edgeList[1].memoryTotalKb = 22250000
 
+    jest.mocked(useIsEdgeFeatureReady).mockImplementation((feature) =>
+      feature === Features.EDGE_HA_SUB_INTERFACE_TOGGLE)
+
     render(
       <Provider>
         <ClusterConfigWizardContext.Provider value={{
@@ -264,6 +275,9 @@ describe('SelectType', () => {
   it('cluster interface card should be disabled when there is no gateway', async () => {
     const mockedOneNodeData = _.cloneDeep(mockEdgeClusterList)
     mockedOneNodeData.data[0].edgeList.splice(1, 1)
+
+    jest.mocked(useIsEdgeFeatureReady).mockImplementation((feature) =>
+      feature === Features.EDGE_HA_SUB_INTERFACE_TOGGLE)
 
     render(
       <Provider>
