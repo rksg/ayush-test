@@ -9,9 +9,9 @@ import {
 import { Row, Col, Form, Typography, Checkbox, Input } from 'antd'
 import _                                               from 'lodash'
 
-import { Tooltip }                                                           from '@acx-ui/components'
-import { SwitchSlot2 as SwitchSlot, getSwitchPortLabel, PortStatusMessages } from '@acx-ui/rc/utils'
-import { getIntl }                                                           from '@acx-ui/utils'
+import { Tooltip }                                                                                from '@acx-ui/components'
+import { SwitchSlot2 as SwitchSlot, getSwitchPortLabel, PortStatusMessages, SwitchPortViewModel } from '@acx-ui/rc/utils'
+import { getIntl }                                                                                from '@acx-ui/utils'
 
 import { getTooltipTemplate } from '../'
 
@@ -19,9 +19,10 @@ import * as UI                                                                  
 import VlanPortsContext                                                                       from './VlanPortsContext'
 import { getPortsModule, getUnit, getUnitTitle, getModule, PortsType, selectedGroupByPrefix } from './VlanPortsModal.utils'
 
-export function UntaggedPortsStep () {
+export function UntaggedPortsStep (props:{ portsData: SwitchPortViewModel[] }) {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
+  const { portsData } = props
   const {
     vlanSettingValues, setVlanSettingValues, vlanList, isSwitchLevel, portsUsedBy
   } = useContext(VlanPortsContext)
@@ -151,6 +152,7 @@ export function UntaggedPortsStep () {
   }
 
   const getDisabledPorts = (timeslot: string) => {
+    const portData = portsData.find(i => i.portIdentifier === timeslot)
     const vlanSelectedPorts = vlanList ? vlanList.map(item => item.switchFamilyModels
       ?.filter(obj => obj.model === vlanSettingValues.switchFamilyModels?.model)) : []
 
@@ -166,6 +168,7 @@ export function UntaggedPortsStep () {
       || Object.keys(portsUsedBy?.lag ?? {})?.includes(timeslot)
       || Object.keys(portsUsedBy?.untagged ?? {})?.includes(timeslot)
       || portExists || false
+      || portData?.isAuthPort
 
     return disabledPorts
   }

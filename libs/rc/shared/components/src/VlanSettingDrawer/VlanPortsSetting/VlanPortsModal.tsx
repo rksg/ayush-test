@@ -5,14 +5,18 @@ import _                    from 'lodash'
 import { useIntl }          from 'react-intl'
 
 import { Modal, ModalType, StepsForm } from '@acx-ui/components'
+import { useSwitchPortlistQuery }      from '@acx-ui/rc/services'
 import {
   SwitchModelPortData,
   TrustedPort,
   Vlan,
   SwitchSlot,
   SwitchSlot2,
-  StackMember
+  StackMember,
+  SwitchPortViewModelQueryFields,
+  SwitchPortViewModel
 } from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { PortsUsedByProps } from '..'
 
@@ -47,6 +51,7 @@ export function VlanPortsModal (props: {
   stackMember?: StackMember[]
 }) {
   const { $t } = useIntl()
+  const { tenantId, serialNumber } = useParams()
   const { open, editRecord, onSave, onCancel,
     vlanList, switchFamilyModel, portSlotsData = [], portsUsedBy, stackMember } = props
   const [form] = Form.useForm()
@@ -60,6 +65,20 @@ export function VlanPortsModal (props: {
     })
 
   const isSwitchLevel = !!switchFamilyModel
+
+  const portPayload = {
+    page: 1,
+    pageSize: 10000,
+    filters: { switchId: [serialNumber] },
+    sortField: 'portIdentifierFormatted',
+    sortOrder: 'ASC',
+    fields: [...SwitchPortViewModelQueryFields, 'portSpeedConfig', 'portConnectorType']
+  }
+  const { data: portList } = useSwitchPortlistQuery({
+    params: { tenantId },
+    payload: portPayload,
+    enableRbac: true
+  })
 
   useEffect(()=>{
     setEditMode(open && !!editRecord)
@@ -247,7 +266,7 @@ export function VlanPortsModal (props: {
             title={$t({ defaultMessage: 'Untagged Ports' })}
             onFinish={onSaveUntagged}
           >
-            <UntaggedPortsStep />
+            <UntaggedPortsStep portsData={portList?.data as SwitchPortViewModel[]}/>
           </StepsForm.StepForm>
           <StepsForm.StepForm
             title={$t({ defaultMessage: 'Tagged Ports' })}

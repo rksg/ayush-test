@@ -7,10 +7,10 @@ import { debounce }                           from 'lodash'
 import { rest }                               from 'msw'
 import { IntlProvider }                       from 'react-intl'
 
-import { StepsForm }      from '@acx-ui/components'
-import { SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider  }      from '@acx-ui/store'
-import { mockServer }     from '@acx-ui/test-utils'
+import { StepsForm }                           from '@acx-ui/components'
+import { SwitchPortViewModel, SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider  }                           from '@acx-ui/store'
+import { mockServer }                          from '@acx-ui/test-utils'
 
 import { vlans, records, portSlotsData, vlanSettingValues } from '../__tests__/fixtures'
 
@@ -384,6 +384,11 @@ describe('VlanPortsModal', () => {
   })
 
   it('should render untagged ports step correctly', async () => {
+    const portsData = [{
+      name: 'GigabitEthernet1/1/9',
+      portIdentifier: '1/1/9',
+      isAuthPort: true
+    }]
     render(<IntlProvider locale='en'>
       <VlanPortsContext.Provider
         value={{
@@ -401,7 +406,7 @@ describe('VlanPortsModal', () => {
       >
         <StepsForm onFinish={jest.fn()}>
           <StepsForm.StepForm>
-            <UntaggedPortsStep />
+            <UntaggedPortsStep portsData={portsData as SwitchPortViewModel[]}/>
           </StepsForm.StepForm>
         </StepsForm>
       </VlanPortsContext.Provider>
@@ -410,6 +415,8 @@ describe('VlanPortsModal', () => {
     await screen.findByText(
       /Select the untagged ports \(access ports\) for this model \(ICX7150-48\)/i
     )
+    expect(
+      await screen.findByTestId('untagged_module1_1_9')).toHaveAttribute('data-disabled', 'true')
   })
 
   it('should render tagged ports step correctly', async () => {
