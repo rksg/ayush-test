@@ -285,7 +285,7 @@ describe('useAnalyticsFilter', () => {
     expect(asFragment()).toMatchSnapshot()
   })
   it('should set filters correctly for mlisa app', () => {
-    mockGet.mockReturnValueOnce('true')
+    mockGet.mockReturnValueOnce('true').mockReturnValueOnce('true')
     const filter = {
       path: [
         { type: 'zone', name: 'Zone' }
@@ -376,11 +376,11 @@ describe('pathToFilter', () => {
       [{ type: 'zone', name: 'z1' }, { type: 'apGroup', name: 'a1' }]
     )).toEqual({
       networkNodes: [[{ type: 'zone', name: 'z1' }, { type: 'apGroup', name: 'a1' }]],
-      switchNodes: [[{ type: 'zone', name: 'z1' }, { type: 'apGroup', name: 'a1' }]]
+      switchNodes: [[{ type: 'switchGroup', name: 'z1' }, { type: 'apGroup', name: 'a1' }]]
     })
   })
   it('returns correct filter for mlisa app', () => {
-    mockGet.mockReturnValueOnce('true')
+    mockGet.mockReturnValueOnce('true').mockReturnValueOnce('true')
     expect(pathToFilter(
       [{ type: 'zone', name: 'z1' }, { type: 'apGroup', name: 'a1' }]
     )).toEqual({

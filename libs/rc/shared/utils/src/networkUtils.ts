@@ -32,12 +32,12 @@ export const transformNetwork = (item: Network) => {
 }
 
 export const transformWifiNetwork = (item: WifiNetwork) => {
-  const { clientCount, venueApGroups, apCount } = item
+  const { clientCount, venueApGroups, apSerialNumbers, apCount } = item
   const venues = transVenuesForNetwork(venueApGroups)
 
   return {
     ...item,
-    aps: apCount ?? 0,
+    aps: apCount ?? apSerialNumbers?.length ?? 0,
     clients: clientCount ?? 0,
     venues: venues,
     activated: item.activated ?? { isActivated: false },

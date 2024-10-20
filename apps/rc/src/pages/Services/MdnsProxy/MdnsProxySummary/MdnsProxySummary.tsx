@@ -5,6 +5,7 @@ import { useIntl }               from 'react-intl'
 
 import { StepsFormLegacy, Subtitle }     from '@acx-ui/components'
 import { MdnsProxyForwardingRulesTable } from '@acx-ui/rc/components'
+import { MdnsProxyFeatureTypeEnum }      from '@acx-ui/rc/utils'
 
 import MdnsProxyFormContext from '../MdnsProxyForm/MdnsProxyFormContext'
 
@@ -37,6 +38,7 @@ export function MdnsProxySummary () {
               label={$t({ defaultMessage: 'Forwarding Rules:' })}
             >
               <MdnsProxyForwardingRulesTable
+                featureType={MdnsProxyFeatureTypeEnum.WIFI}
                 readonly={true}
                 rules={currentData.rules}
               />

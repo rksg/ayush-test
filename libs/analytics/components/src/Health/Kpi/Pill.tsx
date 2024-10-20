@@ -9,7 +9,7 @@ import {
 } from '@acx-ui/analytics/services'
 import { kpiConfig, productNames }       from '@acx-ui/analytics/utils'
 import { Tooltip, ProgressPill, Loader } from '@acx-ui/components'
-import { formatter }                     from '@acx-ui/formatter'
+import { formatter, FormatterType }      from '@acx-ui/formatter'
 import { InformationOutlined }           from '@acx-ui/icons'
 import { TimeStampRange }                from '@acx-ui/types'
 import type { AnalyticsFilter }          from '@acx-ui/utils'
@@ -54,9 +54,11 @@ export const tranformHistResponse = (
   return { success, total }
 }
 
-const formatPillText = (value: number = 0, suffix: string) => suffix
-  ? `${formatter('percentFormatRound')(value / 100)} ${suffix}`
-  : `${formatter('percentFormatRound')(value / 100)}`
+const formatPillText = (
+  value: number = 0, suffix: string, valueFormatter: FormatterType = 'percentFormatRound'
+) => suffix
+  ? `${formatter(valueFormatter)(value / 100)} ${suffix}`
+  : `${formatter(valueFormatter)(value / 100)}`
 
 type PillQueryProps = {
   kpi: string
@@ -110,7 +112,14 @@ function HealthPill ({ filters, kpi, timeWindow, threshold }: {
   // We need this check in case if wrong data is reported by an ICX.
   if ( success > total) success = total
 
-  const { pillSuffix, description, thresholdDesc, thresholdFormatter, tooltip } = pill
+  const {
+    pillSuffix,
+    description,
+    thresholdDesc,
+    thresholdFormatter,
+    tooltip,
+    valueFormatter
+  } = pill
   const countFormat = formatter('countFormat')
   const translatedDesc = description
     ? $t(description, { successCount: countFormat(success), totalCount: countFormat(total),
@@ -142,7 +151,7 @@ function HealthPill ({ filters, kpi, timeWindow, threshold }: {
     <UI.PillWrap>
       <ProgressPill
         percent={percent * 100}
-        formatter={value => formatPillText(value, pillSuffix && $t(pillSuffix))}
+        formatter={value => formatPillText(value, pillSuffix && $t(pillSuffix), valueFormatter)}
       />
     </UI.PillWrap>
     <UI.PillDesc>{translatedDesc}</UI.PillDesc>

@@ -6,7 +6,7 @@ import { render, screen, within } from '@acx-ui/test-utils'
 
 import {
   mockApCompatibilitiesVenue,
-  mockFeatureCompatibilities
+  mockApFeatureCompatibilities
 } from '../../ApCompatibilityDrawer/__test__/fixtures'
 import {
   transformedMockEdgeCompatibilitiesVenue
@@ -58,7 +58,7 @@ describe('CompatibilityItem', () => {
   })
 
   it('should not display incompatible count when it is not given', async () => {
-    const mockData = mockFeatureCompatibilities
+    const mockData = mockApFeatureCompatibilities
 
     render(
       <Provider>

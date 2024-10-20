@@ -10,10 +10,11 @@ import { useGetAllApModelFirmwareListQuery, useGetUpgradePreferencesQuery, useUp
 import { ApModelFirmware, FirmwareVenuePerApModel, UpgradePreferences }                                          from '@acx-ui/rc/utils'
 import { getIntl }                                                                                               from '@acx-ui/utils'
 
-import { VersionLabelType, compareVersions, getVersionLabel } from '../../FirmwareUtils'
-import * as UI                                                from '../../styledComponents'
+import { VersionLabelType, compareVersions, getVersionLabel } from '../FirmwareUtils'
 
+import * as UI                              from './styledComponents'
 import { UpdateFirmwarePerApModelFirmware } from './UpdateNowDialog'
+
 
 export function useUpdateNowPerApModel () {
   const [ updateNowVisible, setUpdateNowVisible ] = useState(false)

@@ -19,11 +19,17 @@ const SnmpAgentSettingForm = () => {
   const params = useParams()
   const { dispatch } = useContext(SnmpAgentFormContext)
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  // eslint-disable-next-line
+  const isSNMPv3PassphraseOn = useIsSplitOn(Features.WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE)
 
   const [ getApSnmpPolicyList ] = useLazyGetApSnmpPolicyListQuery()
 
   const nameValidator = async (value: string) => {
-    const list = (await getApSnmpPolicyList({ params, enableRbac: isUseRbacApi }).unwrap())
+    const list = (await getApSnmpPolicyList({
+      params,
+      enableRbac: isUseRbacApi,
+      isSNMPv3PassphraseOn
+    }).unwrap())
       .filter(policy => policy.id !== params.policyId)
       .map(policy => policy.policyName)
 

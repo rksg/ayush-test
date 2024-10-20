@@ -3,20 +3,28 @@ import userEvent           from '@testing-library/user-event'
 import { cloneDeep, find } from 'lodash'
 import { rest }            from 'msw'
 
-import { useIsSplitOn }                                    from '@acx-ui/feature-toggle'
-import { softGreApi }                                      from '@acx-ui/rc/services'
-import { EdgeSdLanFixtures, NetworkTypeEnum, SoftGreUrls } from '@acx-ui/rc/utils'
-import { Provider, store }                                 from '@acx-ui/store'
+import { useIsSplitOn, Features }                                                        from '@acx-ui/feature-toggle'
+import { softGreApi }                                                                    from '@acx-ui/rc/services'
+import { EdgeSdLanFixtures, EdgePinFixtures, NetworkTypeEnum, SoftGreUrls, EdgePinUrls } from '@acx-ui/rc/utils'
+import { Provider, store }                                                               from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
 
+import { useIsEdgeFeatureReady } from '../useEdgeActions'
+
 import { mockDeepNetworkList, mockSoftGreTable } from './__tests__/fixtures'
+import { useEdgeMvSdLanData }                    from './useEdgeMvSdLanData'
 
 import { NetworkTunnelActionModal, NetworkTunnelTypeEnum } from '.'
 
+const { mockedMvSdLanDataList } = EdgeSdLanFixtures
+const { mockPinStatsList } = EdgePinFixtures
+
+const mockedNetworksData = mockDeepNetworkList
+const mockedSdLan = mockedMvSdLanDataList[0]
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
   useHelpPageLink: () => ''
@@ -24,7 +32,7 @@ jest.mock('@acx-ui/rc/utils', () => ({
 
 jest.mock('../useEdgeActions', () => ({
   ...jest.requireActual('../useEdgeActions'),
-  useIsEdgeFeatureReady: jest.fn().mockReturnValue(true)
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
 
 const mockedActivateReq = jest.fn()
@@ -33,16 +41,12 @@ const mockedGetVenueSdLanFn = jest.fn()
 const mockedOnFinish = jest.fn()
 jest.mock('./useEdgeMvSdLanData', () => ({
   ...jest.requireActual('./useEdgeMvSdLanData'),
-  useEdgeMvSdLanData: () => ({
-    getVenueSdLan: mockedGetVenueSdLanFn
+  useEdgeMvSdLanData: jest.fn().mockReturnValue({
+    venueSdLan: undefined
   })
 }))
 
 const { click } = userEvent
-const { mockedMvSdLanDataList } = EdgeSdLanFixtures
-
-const mockedNetworksData = mockDeepNetworkList
-const mockedSdLan = mockedMvSdLanDataList[0]
 
 describe('NetworkTunnelModal', () => {
   beforeEach(() => {
@@ -50,6 +54,10 @@ describe('NetworkTunnelModal', () => {
     mockedDeactivateReq.mockReset()
     mockedGetVenueSdLanFn.mockReset()
     mockedOnFinish.mockReset()
+
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_SD_LAN_MV_TOGGLE)
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
   })
 
   describe('SD-LAN exist', () => {
@@ -63,7 +71,7 @@ describe('NetworkTunnelModal', () => {
       const sdlanVenueName = mockedDcSdlan.tunneledWlans![0].venueName
 
       beforeEach(() => {
-        mockedGetVenueSdLanFn.mockReturnValue(mockedDcSdlan)
+        jest.mocked(useEdgeMvSdLanData).mockImplementation(() => ({ venueSdLan: mockedDcSdlan }))
       })
 
       it('should correctly render DC case', async () => {
@@ -96,6 +104,9 @@ describe('NetworkTunnelModal', () => {
         within(destinationInfo).getByText(new RegExp(mockedDcSdlan.edgeClusterName!))
         expect(screen.queryByRole('switch')).toBeNull()
         expect(screen.queryByText('Forward guest traffic to DMZ')).toBeNull()
+
+        // should not have PIN note when pin FF is not ON
+        expect(screen.queryByRole(/please go to the PIN wizard/)).toBeNull()
       })
 
       it('should change tunnel from local breakout into DC', async () => {
@@ -152,7 +163,7 @@ describe('NetworkTunnelModal', () => {
       }
 
       beforeEach(() => {
-        mockedGetVenueSdLanFn.mockReturnValue(mockedSdLan)
+        jest.mocked(useEdgeMvSdLanData).mockReturnValue({ venueSdLan: mockedSdLan })
       })
 
       it('should correctly render DMZ case', async () => {
@@ -229,7 +240,7 @@ describe('NetworkTunnelModal', () => {
       it('should change tunnel from DC into DMZ', async () => {
         const mockedNoGuestNetwork = cloneDeep(mockedSdLan)
         mockedNoGuestNetwork.tunneledGuestWlans = []
-        mockedGetVenueSdLanFn.mockReturnValue(mockedNoGuestNetwork)
+        jest.mocked(useEdgeMvSdLanData).mockReturnValue({ venueSdLan: mockedNoGuestNetwork })
 
         render(
           <Provider>
@@ -315,7 +326,8 @@ describe('NetworkTunnelModal', () => {
         // eslint-disable-next-line max-len
         mockData.tunneledWlans!.splice(mockData.tunneledWlans!.findIndex(i => i.networkId === 'network_1'), 1)
 
-        mockedGetVenueSdLanFn.mockReturnValue(mockData)
+        // mockedGetVenueSdLanFn.mockReturnValue(mockData)
+        jest.mocked(useEdgeMvSdLanData).mockReturnValue({ venueSdLan: mockData })
 
         render(
           <Provider>
@@ -358,7 +370,7 @@ describe('NetworkTunnelModal', () => {
 
   describe('No existing SD-LAN', () => {
     beforeEach(() => {
-      mockedGetVenueSdLanFn.mockReturnValue(undefined)
+      jest.mocked(useEdgeMvSdLanData).mockReturnValue({})
     })
     it('should correctly display when no SDLAN run on this venue', async () => {
       const mockedNetworkData = {
@@ -387,43 +399,49 @@ describe('NetworkTunnelModal', () => {
       expect(tunneling).toBeDisabled()
       screen.getByText('See more information')
     })
+
+
+    it('should do nothing when given network data is undefined', async () => {
+      render(
+        <Provider>
+          <NetworkTunnelActionModal
+            visible={true}
+            onClose={jest.fn()}
+            network={undefined}
+            onFinish={mockedOnFinish}
+            cachedSoftGre={[]}
+          />
+        </Provider>, { route: { params: { tenantId: 't-id' } } })
+
+      await screen.findByRole('radio', { name: 'Local Breakout' })
+      expect(mockedGetVenueSdLanFn).toBeCalledTimes(0)
+      const venueNameSentence = screen.getByText(/Define how this network traffic/)
+      // eslint-disable-next-line testing-library/no-node-access
+      expect(venueNameSentence?.textContent)
+        .toBe('Define how this network traffic will be tunnelled at venue "":')
+    })
   })
 
-  it('should do nothing when given network data is undefined', async () => {
-    render(
-      <Provider>
-        <NetworkTunnelActionModal
-          visible={true}
-          onClose={jest.fn()}
-          network={undefined}
-          onFinish={mockedOnFinish}
-          cachedSoftGre={[]}
-        />
-      </Provider>, { route: { params: { tenantId: 't-id' } } })
-
-    await screen.findByRole('radio', { name: 'Local Breakout' })
-    expect(mockedGetVenueSdLanFn).toBeCalledTimes(0)
-    const venueNameSentence = screen.getByText(/Define how this network traffic/)
-    // eslint-disable-next-line testing-library/no-node-access
-    expect(venueNameSentence?.textContent)
-      .toBe('Define how this network traffic will be tunnelled at venue "":')
-  })
 
   describe('SoftGRE', () => {
     const mockedGetFn = jest.fn()
     beforeEach(() => {
-      mockedGetVenueSdLanFn.mockReturnValue(undefined)
+      jest.mocked(useEdgeMvSdLanData).mockReturnValue({})
       mockedGetFn.mockClear()
       store.dispatch(softGreApi.util.resetApiState())
-      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
       mockServer.use(
         rest.post(
           SoftGreUrls.getSoftGreViewDataList.url,
-          (_, res, ctx) => res(ctx.json(mockSoftGreTable))
+          (_, res, ctx) => {
+            mockedGetFn()
+            return res(ctx.json(mockSoftGreTable))
+          }
         )
       )
     })
-    it('should correctly display when SoftGRE run on this venue', async () => {
+    it('should not display when SoftGRE run on this venue', async () => {
       const venueId = 'venueId-1'
       const networkId = 'network_1'
       const tenantId = 'tenantId-1'
@@ -461,6 +479,7 @@ describe('NetworkTunnelModal', () => {
       expect(localBreakout).not.toBeChecked()
       const sdlanTunneling = screen.getByRole('radio', { name: 'SD-LAN Tunneling' })
       expect(sdlanTunneling).not.toBeChecked()
+      await waitFor(() => expect(mockedGetFn).toBeCalled())
     })
 
     it('should correctly hidden when SoftGRE run on this venue (CAPTIVEPORTAL)', async () => {
@@ -499,8 +518,47 @@ describe('NetworkTunnelModal', () => {
       await waitFor(() => expect(softGreTunneling).toBeNull())
       const localBreakout = screen.getByRole('radio', { name: 'Local Breakout' })
       expect(localBreakout).not.toBeChecked()
+      await waitFor(() => expect(mockedGetFn).not.toBeCalled())
     })
   })
+
+  describe('PIN', () => {
+    beforeEach(() => {
+      jest.mocked(useIsEdgeFeatureReady).mockReturnValue(true)
+      jest.mocked(useEdgeMvSdLanData).mockImplementation(() => ({}))
+
+      mockServer.use(
+        rest.post(
+          EdgePinUrls.getEdgePinStatsList.url,
+          (_req, res, ctx) => res(ctx.json(mockPinStatsList))
+        )
+      )
+    })
+    it('should correctly dispaly for PIN', async () => {
+      const targetNetwork = mockedNetworksData.response[0]
+
+      render(
+        <Provider>
+          <NetworkTunnelActionModal
+            visible={true}
+            onClose={() => {}}
+            network={{
+              id: targetNetwork.id,
+              type: targetNetwork!.type,
+              venueId: mockPinStatsList.data[0].venueId,
+              venueName: mockPinStatsList.data[0].venueName
+            }}
+            onFinish={mockedOnFinish}
+          />
+        </Provider>,
+        { route: { params: { tenantId: 't-id' } } }
+      )
+
+      await screen.findByText(/please go to the PIN wizard/)
+      expect(screen.queryByRole('radio', { name: 'Local Breakout' })).toBeNull()
+    })
+  })
+
 })
 
 const checkPageLoaded = async (venueName: string) => {
