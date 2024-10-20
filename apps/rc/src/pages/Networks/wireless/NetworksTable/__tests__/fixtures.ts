@@ -1,3 +1,9 @@
+import {
+  CompatibilityResponse,
+  IncompatibleFeatureLevelEnum,
+  IncompatibleFeatureTypeEnum
+} from '@acx-ui/rc/utils'
+
 export const networklist = {
   totalCount: 10,
   page: 1,
@@ -351,4 +357,27 @@ export const networksApCompatibilities = {
       incompatible: 0
     }
   ]
+}
+export const newNetworkApCompatibilities: CompatibilityResponse = {
+  compatibilities: [{
+    id: 'c9d5f4c771c34ad2898f7078cebbb191',
+    incompatibleFeatures: [{
+      featureName: 'EXAMPLE-FEATURE-3',
+      featureType: IncompatibleFeatureTypeEnum.WIFI,
+      featureLevel: IncompatibleFeatureLevelEnum.WIFI_NETWORK,
+      requirements: [{
+        firmware: '6.2.3.103.251',
+        models: ['R750', 'R770']
+      }],
+      incompatibleDevices: [{
+        firmware: '6.2.3.103.233',
+        model: 'R550',
+        count: 1
+      }]
+    }],
+    total: 1,
+    incompatible: 1
+  }],
+  page: 1,
+  totalCount: 1
 }

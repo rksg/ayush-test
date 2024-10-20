@@ -18,7 +18,8 @@ import {
   ServiceType,
   getPolicyDetailsLink,
   getServiceDetailsLink,
-  edgePinDefaultPayloadFields
+  edgePinDefaultPayloadFields,
+  transformDisplayNumber
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { noDataDisplay }         from '@acx-ui/utils'
@@ -174,7 +175,7 @@ export const PersonalIdentityNetworkServiceInfo = styled((
               oper: ServiceOperation.DETAIL,
               serviceId: dhcpId!
             })}>
-              {`${dhcpName}(${dhcpPool?.poolName})`}
+              {`${dhcpName} (${dhcpPool?.poolName})`}
             </TenantLink>
           )
         }
@@ -209,7 +210,7 @@ export const PersonalIdentityNetworkServiceInfo = styled((
     },
     {
       title: $t({ defaultMessage: 'Networks' }),
-      content: pinViewData?.tunneledWlans?.length
+      content: transformDisplayNumber(pinViewData?.tunneledWlans?.length)
     },
     {
       title: $t({ defaultMessage: 'APs' }),

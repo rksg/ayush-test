@@ -518,6 +518,33 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         } as unknown as TableResult<SwitchFirmwareV1002>
       }
     }),
+    // eslint-disable-next-line max-len
+    batchGetSwitchFirmwareListV1001: build.query<TableResult<SwitchFirmwareV1002>, RequestPayload[]>({
+      async queryFn (requests, _queryApi, _extraOptions, fetchWithBQ) {
+        const promises = requests.map((arg) => {
+          const req = createHttpRequest(FirmwareRbacUrlsInfo.getSwitchFirmwareList,
+            arg.params, v1_1Header)
+          return fetchWithBQ({
+            ...req,
+            body: JSON.stringify(arg.payload)
+          })
+        })
+        return Promise.all(promises)
+          .then((results) => {
+            const error = results.find(i => i.error)
+            if(error) {
+              return { error }
+            }
+            return {
+              data: { data: results.flatMap(result => { return result.data }) }
+            }
+          })
+          .catch((error)=>{
+            return error
+          })
+      },
+      providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
+    }),
     getSwitchFirmwarePredownload: build.query<PreDownload, RequestPayload>({
       query: ({ params, enableRbac }) => {
         const headers = enableRbac ? v1_1Header : v1Header
@@ -880,6 +907,7 @@ export const {
   useGetSwitchFirmwareListQuery,
   useLazyGetSwitchFirmwareListQuery,
   useGetSwitchFirmwareListV1001Query,
+  useBatchGetSwitchFirmwareListV1001Query,
   useLazyGetSwitchFirmwareListV1001Query,
   useGetSwitchFirmwareStatusListQuery,
   useLazyGetSwitchFirmwareStatusListQuery,
