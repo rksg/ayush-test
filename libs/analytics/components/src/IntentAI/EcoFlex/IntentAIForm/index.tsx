@@ -50,6 +50,7 @@ export const IntentAIForm: React.FC = () => {
   const navigate = useNavigate()
   const { submit } = useIntentTransition()
   const { intent: { metadata: { preferences } } } = useIntentContext()
+  const kpiQuery = useIntentAIEcoFlexQuery()
   const averagePowerPrice = preferences?.averagePowerPrice
     ? preferences.averagePowerPrice
     : { currency: 'USD', value: 0.131 }
@@ -88,7 +89,7 @@ export const IntentAIForm: React.FC = () => {
       />
       <StepsForm.StepForm
         title={$t({ defaultMessage: 'Summary' })}
-        children={<Summary queryResult={queryResult}/>}
+        children={<Summary kpiQuery={kpiQuery} />}
       />
     </StepsForm>
   </>)

@@ -11,10 +11,7 @@ import { Intent }                  from '../../useIntentDetailsQuery'
 import { ComparisonDonutChart }    from '../ComparisonDonutChart'
 import { useIntentAIEcoFlexQuery } from '../ComparisonDonutChart/services'
 
-export function Summary (
-  { queryResult }:
-  { queryResult: ReturnType<typeof useIntentAIEcoFlexQuery> }
-) {
+export const Summary:React.FC<{ kpiQuery:ReturnType<typeof useIntentAIEcoFlexQuery> }> = (props) => {
   const { $t } = useIntl()
   const { form } = useStepFormContext<Intent>()
   const isEnabled = form.getFieldValue('preferences').enable
@@ -27,7 +24,7 @@ export function Summary (
         ? <><ScheduleTiming.FieldSummary />
           <Form.Item
             label={$t({ defaultMessage: 'Projected energy reduction' })}
-            children={<ComparisonDonutChart kpiData={queryResult.data} />}
+            children={<ComparisonDonutChart kpiQuery={props.kpiQuery} />}
           />
           {enableExcludedHours && <Form.Item
             label={$t({ defaultMessage: 'Hours not applied for EcoFlex' })}

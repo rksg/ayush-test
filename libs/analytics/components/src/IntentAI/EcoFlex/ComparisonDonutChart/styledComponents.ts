@@ -4,7 +4,7 @@ import { ArrowChevronRight } from '@acx-ui/icons'
 
 export const Wrapper = styled.div<{ isDetail: boolean }>`
   position: relative;
-  height: ${(props) => props.isDetail? '243px': '180px'};
+  min-height: ${(props) => props.isDetail? '243px': '180px'};
 `
 
 export const GraphWrapper = styled.div`
@@ -34,7 +34,7 @@ export const GraphTitle = styled.div`
 
 export const GraphSubTitleWrapper = styled.div`
   width: 100%;
-  position: absolute;
+  position: relative;
   text-align: center;
   bottom: 0px;
   left: 0px;
@@ -54,9 +54,10 @@ export const DonutChartWrapper = styled.div<{ isDetail: boolean }>`
   margin-top: ${(props) => props.isDetail? '40px': '0px'};
 `
 
-export const ArrowWrapper = styled.div`
+export const ArrowWrapper = styled.div<{ isDetail: boolean }>`
   align-self: center;
   justify-self: center;
+  margin-top: ${(props) => props.isDetail? '40px': '0px'};
 `
 
 export const RightArrow = styled(ArrowChevronRight)`

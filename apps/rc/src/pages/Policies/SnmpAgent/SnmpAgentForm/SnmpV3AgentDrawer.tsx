@@ -33,6 +33,7 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
   const { state, dispatch } = useContext(SnmpAgentFormContext)
   // eslint-disable-next-line
   const isSNMPv3PassphraseOn = useIsSplitOn(Features.WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE)
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const [ othersData, setOthersData ] = useState<SnmpV3Agent[]>([])
   const usedUserName = othersData.map(d => d.userName) ?? []
   const hasOtherReadPrivilegeEnabled = HasReadPrivilegeEnabled(othersData)
@@ -178,7 +179,7 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
           ])
         ]}
         children={
-          (isSNMPv3PassphraseOn ?
+          ((isUseRbacApi && isSNMPv3PassphraseOn) ?
             <PasswordInputStrength
               data-testid={'password-input-strength'}/> :
             <PasswordInput />

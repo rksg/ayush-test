@@ -82,7 +82,7 @@ const emptyKpiResult: KpiData = {
   data: { timestamp: '', data: [] }, compareData: { timestamp: '', data: [] }
 }
 
-export const { useIntentAIEcoKpiQuery } = intentAIApi.injectEndpoints({
+const { useIntentAIEcoKpiQuery } = intentAIApi.injectEndpoints({
   endpoints: (build) => ({
     intentAIEcoKpi: build.query<KpiData,
     { root: string, sliceId: string, code: string }>({
@@ -121,8 +121,7 @@ export const { useIntentAIEcoKpiQuery } = intentAIApi.injectEndpoints({
       ) => {
         const { $t } = getIntl()
         const kpi = response.intent?.kpi
-        if (!kpi)
-          return emptyKpiResult
+        if (!kpi) return emptyKpiResult
         const { data, compareData } = kpi
 
         const chartData = parseChartData(data?.result)
@@ -143,6 +142,11 @@ export const { useIntentAIEcoKpiQuery } = intentAIApi.injectEndpoints({
     })
   })
 })
+
+export function useIntentAIEcoFlexQuery () {
+  const params = useIntentParams()
+  return useIntentAIEcoKpiQuery(params)
+}
 
 export function useIntentAIEcoFlexQuery () {
   const params = useIntentParams()

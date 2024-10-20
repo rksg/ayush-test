@@ -1,18 +1,20 @@
 
 import { defineMessage, useIntl } from 'react-intl'
+import AutoSizer                  from 'react-virtualized-auto-sizer'
 
 import {
   Card,
-  DonutChart
+  DonutChart,
+  Loader
 } from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
 import { useIntentContext }  from '../../IntentContext'
 import { dataRetentionText } from '../../utils'
 
-import { Legend }  from './Legend'
-import { KpiData } from './services'
-import * as UI     from './styledComponents'
+import { Legend }                           from './Legend'
+import { KpiData, useIntentAIEcoFlexQuery } from './services'
+import * as UI                              from './styledComponents'
 
 const ecoFlexDonutTooltipFormat = defineMessage({
   defaultMessage: ` <b>{formattedValue} {value, plural,
@@ -24,33 +26,29 @@ const ecoFlexDonutTooltipFormat = defineMessage({
     } {name}`
 })
 
-function DataGraph ({ kpiData, isDetail }: { kpiData: KpiData, isDetail: boolean }) {
-  const width = isDetail ? 160 : 120
-  const height = width
-
   return <>
     <UI.DonutChartWrapper isDetail={isDetail}>
-      <DonutChart
-        showLegend={false}
-        style={{ width , height }}
-        showTotal={false}
-        tooltipFormat={ecoFlexDonutTooltipFormat}
-        dataFormatter={formatter('countFormat')}
-        data={kpiData.compareData.data}
-        size={'large'}
-      />
+      <AutoSizer>{({ height, width }) =>
+        <DonutChart
+          showLegend={false}
+          style={{ width , height }}
+          showTotal={false}
+          tooltipFormat={ecoFlexDonutTooltipFormat}
+          dataFormatter={formatter('countFormat')}
+          data={kpiData.compareData.data}
+        />}</AutoSizer>
     </UI.DonutChartWrapper>
-    <UI.ArrowWrapper children={<UI.RightArrow/>} />
+    <UI.ArrowWrapper isDetail={isDetail} children={<UI.RightArrow/>} />
     <UI.DonutChartWrapper isDetail={isDetail}>
-      <DonutChart
-        showLegend={false}
-        style={{ width, height }}
-        showTotal={false}
-        tooltipFormat={ecoFlexDonutTooltipFormat}
-        dataFormatter={formatter('countFormat')}
-        data={kpiData.data.data}
-        size={'large'}
-      />
+      <AutoSizer>{({ height, width }) =>
+        <DonutChart
+          showLegend={false}
+          style={{ width, height }}
+          showTotal={false}
+          tooltipFormat={ecoFlexDonutTooltipFormat}
+          dataFormatter={formatter('countFormat')}
+          data={kpiData.data.data}
+        />}</AutoSizer>
     </UI.DonutChartWrapper>
     <Legend />
   </>
@@ -95,29 +93,35 @@ const GraphSubTitle = () => {
 }
 
 export const ComparisonDonutChart: React.FC<{
-  kpiData?: KpiData
+  kpiQuery: ReturnType<typeof useIntentAIEcoFlexQuery>
   isDetail?: boolean
-}> = ({ kpiData, isDetail=false }) => {
+}> = ({ kpiQuery, isDetail=false }) => {
   const { $t } = useIntl()
   const { state, isDataRetained } = useIntentContext()
 
   const noData = state === 'no-data'
   if (!isDataRetained) return <Card>{$t(dataRetentionText)}</Card>
-  if (noData || !kpiData) {
+  if (noData || !kpiQuery?.data) {
     return <Card>
-      {$t({ defaultMessage: 'Graph modeling will be generated once Intent is activated.' })}
+      {$t({
+        defaultMessage: 'Key Performance Indications will be generated once Intent is activated.'
+      })}
     </Card>
   }
 
-  return <UI.Wrapper isDetail={isDetail}>
-    <Card>
-      <UI.GraphWrapper data-testid='graph-wrapper'
-        key={'graph-details'}
-      >
-        <DataGraph kpiData={kpiData} isDetail={isDetail} />
-        {isDetail ? null: <GraphSubTitle /> }
-        {isDetail ? <GraphTitle kpiData={kpiData} /> : null}
-      </UI.GraphWrapper>
-    </Card>
-  </UI.Wrapper>
+  return <Loader states={[kpiQuery]}>
+    <UI.Wrapper isDetail={isDetail}>
+      <Card>
+        <UI.GraphWrapper data-testid='graph-wrapper'
+          key={'graph-details'}
+        >
+          <DataGraph kpiData={kpiQuery.data} isDetail={isDetail} />
+          {isDetail ? <GraphTitle kpiData={kpiQuery.data} /> : null}
+        </UI.GraphWrapper>
+        <div>
+          {isDetail ? null: <GraphSubTitle /> }
+        </div>
+      </Card>
+    </UI.Wrapper>
+  </Loader>
 }
