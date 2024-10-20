@@ -62,8 +62,6 @@ export const IntentAIForm: React.FC = () => {
     averagePowerPrice
   }
 
-  const queryResult = useIntentAIEcoFlexQuery()
-
   return (<>
     <IntentWizardHeader />
 
@@ -77,7 +75,7 @@ export const IntentAIForm: React.FC = () => {
     >
       <StepsForm.StepForm
         title={$t({ defaultMessage: 'Introduction' })}
-        children={<Introduction queryResult={queryResult}/>}
+        children={<Introduction kpiQuery={kpiQuery}/>}
       />
       <StepsForm.StepForm
         title={$t({ defaultMessage: 'Intent Priority' })}

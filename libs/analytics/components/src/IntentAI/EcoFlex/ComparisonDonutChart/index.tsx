@@ -16,15 +16,16 @@ import { Legend }                           from './Legend'
 import { KpiData, useIntentAIEcoFlexQuery } from './services'
 import * as UI                              from './styledComponents'
 
-const ecoFlexDonutTooltipFormat = defineMessage({
-  defaultMessage: ` <b>{formattedValue} {value, plural,
+function DataGraph ({ kpiData, isDetail }: { kpiData: KpiData, isDetail: boolean }) {
+  const tooltipFormat = defineMessage({
+    defaultMessage: ` <b>{formattedValue} {value, plural,
       one {AP}
       other {APs}
       } ({formattedPercent})</b> {value, plural,
       one {is}
       other {are}
     } {name}`
-})
+  })
 
   return <>
     <UI.DonutChartWrapper isDetail={isDetail}>
@@ -33,7 +34,7 @@ const ecoFlexDonutTooltipFormat = defineMessage({
           showLegend={false}
           style={{ width , height }}
           showTotal={false}
-          tooltipFormat={ecoFlexDonutTooltipFormat}
+          tooltipFormat={tooltipFormat}
           dataFormatter={formatter('countFormat')}
           data={kpiData.compareData.data}
         />}</AutoSizer>
@@ -45,7 +46,7 @@ const ecoFlexDonutTooltipFormat = defineMessage({
           showLegend={false}
           style={{ width, height }}
           showTotal={false}
-          tooltipFormat={ecoFlexDonutTooltipFormat}
+          tooltipFormat={tooltipFormat}
           dataFormatter={formatter('countFormat')}
           data={kpiData.data.data}
         />}</AutoSizer>

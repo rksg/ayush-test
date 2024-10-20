@@ -31,10 +31,10 @@ const secondTitleMsgWithApCount = defineMessage(
     } supporting and enabling EcoFlex` }
 )
 
-const RenderDonutChart = (
-  { data, titleColor }:
-  { data: DonutChartData[], titleColor: 'black' | 'white' | undefined }
-) => {
+export const RenderDonutChart: React.FC<{
+  data: DonutChartData[],
+  titleColor: 'black' | 'white' | undefined
+}> = ({ data, titleColor }) => {
   const { $t } = useIntl()
   const enabledApCount = data[2]?.value || 0
   const sum = data.reduce((sum, { value }) => sum + value, 0)
@@ -81,7 +81,7 @@ const RenderDonutChart = (
   )
 }
 
-export const SliderBefore = ({ kpiData }: { kpiData: KpiDonutChartData }) => {
+export const SliderBefore: React.FC<{ kpiData: KpiDonutChartData }> = ({ kpiData }) => {
   const { $t } = useIntl()
   return (
     <UI.SliderBefore>
@@ -102,7 +102,7 @@ export const SliderBefore = ({ kpiData }: { kpiData: KpiDonutChartData }) => {
   )
 }
 
-export const SliderAfter = ({ kpiData }: { kpiData: KpiDonutChartData }) => {
+export const SliderAfter: React.FC<{ kpiData: KpiDonutChartData }> = ({ kpiData }) => {
   const { $t } = useIntl()
   return (
     <UI.SliderAfter>
@@ -124,13 +124,13 @@ export const SliderAfter = ({ kpiData }: { kpiData: KpiDonutChartData }) => {
   )
 }
 
-const CompareSliderWithEcoFlex: React.FC<ReturnType<typeof useIntentAIEcoFlexQuery>> = (queryResult) => {
-  return (
-    <Loader states={[queryResult]}>
+const CompareSliderWithEcoFlex: React.FC<ReturnType<typeof useIntentAIEcoFlexQuery>> = (kpiQuery) => {
+  return !kpiQuery.data ? null : (
+    <Loader states={[kpiQuery]}>
       <CompareSlider
         style={{ width: '300px', height: '100%' }}
-        itemOne={<SliderBefore kpiData={queryResult.data.compareData} />}
-        itemTwo={<SliderAfter kpiData={queryResult.data.data} />}
+        itemOne={<SliderBefore kpiData={kpiQuery.data.compareData} />}
+        itemTwo={<SliderAfter kpiData={kpiQuery.data.data} />}
         disabled={false}
         portrait={false}
         boundsPadding={0}
@@ -143,10 +143,9 @@ const CompareSliderWithEcoFlex: React.FC<ReturnType<typeof useIntentAIEcoFlexQue
   )
 }
 
-export function Introduction (
-  { queryResult }:
-  { queryResult: ReturnType<typeof useIntentAIEcoFlexQuery> }
-) {
+export const Introduction: React.FC<{
+  kpiQuery: ReturnType<typeof useIntentAIEcoFlexQuery>
+}> = ({ kpiQuery }) => {
   const { $t } = useIntl()
   const title1 = $t({ defaultMessage: 'Reduction in energy footprint' })
   const para1 = $t({ defaultMessage: 'Enable PowerSave mode for few access points during off-peak hours to conserve energy. This approach may involve some compromises, but overall service quality remains unaffected during these periods.' })
@@ -169,7 +168,7 @@ export function Introduction (
           <b>{title2}:</b> <span>{para2}</span>
         </Paragraph>
       </StepsForm.TextContent>
-      {showData && <CompareSliderWithEcoFlex {...queryResult} />}
+      {showData && <CompareSliderWithEcoFlex {...kpiQuery} />}
     </Col>
     <Col span={7} offset={2}>
       <SideNotes.Introduction />

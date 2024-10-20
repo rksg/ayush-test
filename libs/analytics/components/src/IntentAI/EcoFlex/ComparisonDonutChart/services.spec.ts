@@ -57,6 +57,7 @@ describe('useIntentAIEcoFlexQuery', () => {
     expect(result.current.data?.data.timestamp).toEqual('')
     expect(result.current.data?.compareData.timestamp).toEqual('')
   })
+
   it('should return value as 0 when kpi result field is unknown', async () => {
     mockGraphqlQuery(intentAIUrl, 'IntentAIEcoKpi', {
       data: { intent: mockKpiResultDataWithUnknownField }
@@ -66,7 +67,9 @@ describe('useIntentAIEcoFlexQuery', () => {
       sliceId: 'xxx-data-slice-id',
       code: mocked.code
     }
-    const { result } = renderHook(() => useIntentAIEcoKpiQuery(params), { wrapper: Provider })
+    mockedIntentParams.mockReturnValue(params)
+
+    const { result } = renderHook(() => useIntentAIEcoFlexQuery(), { wrapper: Provider })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
 
     // kpi result has unknown fields

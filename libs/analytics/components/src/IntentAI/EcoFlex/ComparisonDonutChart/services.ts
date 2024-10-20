@@ -147,14 +147,3 @@ export function useIntentAIEcoFlexQuery () {
   const params = useIntentParams()
   return useIntentAIEcoKpiQuery(params)
 }
-
-export function useIntentAIEcoFlexQuery () {
-  const params = useIntentParams()
-  const queryResult = useIntentAIEcoKpiQuery(params, {
-    selectFromResult: result => {
-      const data = result.data ?? emptyKpiResult
-      return { ...result, data }
-    }
-  })
-  return queryResult
-}
