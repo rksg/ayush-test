@@ -111,8 +111,8 @@ const cliTemplatesPayload = {
 
 export function CliStepConfiguration (props: {
   appliedModels?: Record<string, string[]>
-  allSwitchList?: SwitchViewModel[]
   allowedSwitchList?: SwitchViewModel[]
+  configuredSwitchList?: SwitchViewModel[]
 }) {
   const { $t } = useIntl()
   const params = useParams()
@@ -466,6 +466,10 @@ export function CliStepConfiguration (props: {
                 v => !variableFilterType || v.type === variableFilterType)}
               renderItem={(item) => {
                 const variable = item as CliTemplateVariable
+                const allSwitchList = [
+                  ...(props.allowedSwitchList ?? []),
+                  ...(props.configuredSwitchList ?? [])
+                ]
                 return <List.Item
                   actions={[
                     <Button
@@ -503,7 +507,7 @@ export function CliStepConfiguration (props: {
                       isSwitchLevelCliProfileEnabled
                         ? renderVariableValue(
                           variable,
-                          props?.allSwitchList || [],
+                          allSwitchList,
                           setSwitchSettings,
                           setSwitchSettingType,
                           setSwitchSettingDrawerVisible,
@@ -530,8 +534,8 @@ export function CliStepConfiguration (props: {
       isCustomizedVariableEnabled={isCustomizedVariableEnabled}
       venueAppliedModels={venueAppliedModels}
       selectedModels={selectedModels}
-      allSwitchList={props?.allSwitchList}
       allowedSwitchList={props?.allowedSwitchList}
+      configuredSwitchList={props?.configuredSwitchList}
     />}
 
     {isCustomizedVariableEnabled && <CustomizedSettingsDrawer

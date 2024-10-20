@@ -21,7 +21,7 @@ import * as UI from '../SwitchCliTemplateForm/CliTemplateForm/styledComponents'
 
 import { getVariableSeparator, variableFormData } from './CliVariableUtils'
 import {
-  AllowedSwitchObjList,
+  GroupedSwitchesByModel,
   getCustomizeFields,
   getVariableFields,
   VariableType
@@ -38,22 +38,29 @@ export function CliVariableModal (props: {
   isCustomizedVariableEnabled?: boolean
   venueAppliedModels?: Record<string, string[]>
   selectedModels?: string[]
-  allSwitchList?: SwitchViewModel[]
   allowedSwitchList?: SwitchViewModel[]
+  configuredSwitchList?: SwitchViewModel[]
 }) {
   const { $t } = getIntl()
   const { useWatch } = Form
   const [form] = Form.useForm()
   const [selectType, setSelectType] = useState('')
-  const [switchList, setSwitchList] = useState<AllowedSwitchObjList>({})
-  const [configuredSwitchList, setConfiguredSwitchList] = useState<AllowedSwitchObjList>({})
+  const [allowedSwitchesGroupedByModel, setAllowedSwitchesGroupedByModel]
+    = useState<GroupedSwitchesByModel>({})
+  const [configuredSwitchesGroupedByModel, setConfiguredSwitchesGroupedByModel]
+    = useState<GroupedSwitchesByModel>({})
   const [hasCustomize, setHasCustomize] = useState(false)
 
   const {
     data, editMode, modalvisible, setModalvisible, variableList, setVariableList,
     isCustomizedVariableEnabled, venueAppliedModels, selectedModels,
-    allSwitchList, allowedSwitchList
+    allowedSwitchList, configuredSwitchList
   } = props
+
+  const allSwitchList = [
+    ...(allowedSwitchList ?? []),
+    ...(configuredSwitchList ?? [])
+  ]
 
   const customizedRequiredFields = [
     useWatch<string>('ipAddressStart', form),
@@ -75,14 +82,13 @@ export function CliVariableModal (props: {
 
   useEffect(() => {
     if (venueAppliedModels && allowedSwitchList && isCustomizedVariableEnabled) {
-      let configuredSwitchList = [] as SwitchViewModel[]
+      let appliedConfiguredSwitchList = [] as SwitchViewModel[]
       if (editMode) {
         const appliedSerialNumbers = data?.switchVariables?.map(
           switchVariable => switchVariable?.serialNumbers
         ).flat()
-        configuredSwitchList = allSwitchList?.filter(s => {
-          return s.deviceStatus !== SwitchStatusEnum.NEVER_CONTACTED_CLOUD
-            && appliedSerialNumbers?.includes(s?.serialNumber || '')
+        appliedConfiguredSwitchList = configuredSwitchList?.filter(s => {
+          return appliedSerialNumbers?.includes(s?.serialNumber || '')
         }) as SwitchViewModel[]
       }
 
@@ -103,17 +109,13 @@ export function CliVariableModal (props: {
           }
           result[model].push(item)
           return result
-        }, {} as AllowedSwitchObjList)
+        }, {} as GroupedSwitchesByModel)
       }
 
-      const switches = groupSwitchesByModel(allowedSwitchList)
-      const configuredSwitches = groupSwitchesByModel([
-        ...allowedSwitchList,
-        ...configuredSwitchList
-      ])
-
-      setSwitchList(switches)
-      setConfiguredSwitchList(configuredSwitches)
+      const allowedSwitches = groupSwitchesByModel(allowedSwitchList)
+      const configuredSwitches = groupSwitchesByModel(appliedConfiguredSwitchList)
+      setAllowedSwitchesGroupedByModel(allowedSwitches)
+      setConfiguredSwitchesGroupedByModel(configuredSwitches)
     }
   }, [venueAppliedModels, allowedSwitchList, isCustomizedVariableEnabled])
 
@@ -182,7 +184,9 @@ export function CliVariableModal (props: {
         ? <UI.CustomizedSection>
           { getVariableFields(VariableType.ADDRESS, form) }
           { getCustomizeFields({
-            switchList, configuredSwitchList, type: VariableType.ADDRESS,
+            allowedSwitchesGroupedByModel,
+            configuredSwitchesGroupedByModel,
+            type: VariableType.ADDRESS,
             customizedRequiredFields, hasCustomize, form
           })
           }
@@ -195,7 +199,9 @@ export function CliVariableModal (props: {
         ? <UI.CustomizedSection>
           { getVariableFields(VariableType.RANGE, form) }
           { getCustomizeFields({
-            switchList, configuredSwitchList, type: VariableType.RANGE,
+            allowedSwitchesGroupedByModel,
+            configuredSwitchesGroupedByModel,
+            type: VariableType.RANGE,
             customizedRequiredFields, hasCustomize, form
           })
           }
@@ -208,7 +214,9 @@ export function CliVariableModal (props: {
         ? <UI.CustomizedSection>
           { getVariableFields(VariableType.STRING, form, isCustomizedVariableEnabled) }
           { getCustomizeFields({
-            switchList, configuredSwitchList, type: VariableType.STRING,
+            allowedSwitchesGroupedByModel,
+            configuredSwitchesGroupedByModel,
+            type: VariableType.STRING,
             customizedRequiredFields, hasCustomize, form
           })
           }

@@ -79,15 +79,15 @@ export function CliProfileForm () {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const isSwitchLevelCliProfileEnabled = useIsSplitOn(Features.SWITCH_LEVEL_CLI_PROFILE)
-  // eslint-disable-next-line max-len
-  const isCustomizedVariableEnabled = !isTemplate && isSwitchLevelCliProfileEnabled && params?.configType === 'profiles' //TODO
+  const isCustomizedVariableEnabled
+    = !isTemplate && isSwitchLevelCliProfileEnabled && (params?.configType === 'profiles')
 
   const rbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isSwitchRbacEnabled
   const associateEnabled = isCustomizedVariableEnabled || rbacEnabled
 
   const [appliedModels, setAppliedModels] = useState({} as unknown as Record<string, string[]>)
-  const [allSwitchList, setAllSwitchList] = useState([] as SwitchViewModel[])
   const [allowedSwitchList, setAllowedSwitchList] = useState([] as SwitchViewModel[])
+  const [configuredSwitchList, setConfiguredSwitchList] = useState([] as SwitchViewModel[])
 
   const [form] = Form.useForm()
   const [getProfiles] = useConfigTemplateLazyQueryFnSwitcher({
@@ -254,9 +254,15 @@ export function CliProfileForm () {
 
   useEffect(() => {
     if (!isProfileLoading && !isSwitchLoading) {
-      const allowedSwitchList = switchList?.data?.filter(s => (
+      const { allowedSwitches, configuredSwitches } = switchList?.data?.reduce((result, s) => {
         s.deviceStatus === SwitchStatusEnum.NEVER_CONTACTED_CLOUD
-      )) as SwitchViewModel[]
+          ? result.allowedSwitches.push(s)
+          : result.configuredSwitches.push(s)
+        return result
+      }, {
+        allowedSwitches: [] as SwitchViewModel[],
+        configuredSwitches: [] as SwitchViewModel[]
+      }) || { allowedSwitches: [], configuredSwitches: [] }
 
       const allSwitchSerialNumbers = switchList?.data?.map(s => s.serialNumber)
       const variables = cliProfile?.venueCliTemplate?.variables?.map(v => {
@@ -290,8 +296,8 @@ export function CliProfileForm () {
         ...result, [v]: data.models
       }), {}) || {}
 
-      setAllSwitchList(switchList?.data as SwitchViewModel[])
-      setAllowedSwitchList(allowedSwitchList)
+      setAllowedSwitchList(allowedSwitches)
+      setConfiguredSwitchList(configuredSwitches)
       setAppliedModels(venueAppliedModels)
       form?.setFieldsValue(data)
     }
@@ -350,8 +356,8 @@ export function CliProfileForm () {
           >
             <CliStepConfiguration
               appliedModels={appliedModels}
-              allSwitchList={allSwitchList}
               allowedSwitchList={allowedSwitchList}
+              configuredSwitchList={configuredSwitchList}
             />
           </StepsForm.StepForm>
 

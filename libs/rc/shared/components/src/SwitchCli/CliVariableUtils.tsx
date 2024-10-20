@@ -4,6 +4,7 @@ import { Collapse, Divider, Form, FormInstance, FormListFieldData, Input, Select
 import { RuleObject }                                                                     from 'antd/lib/form'
 import _                                                                                  from 'lodash'
 import { intersection, isArray }                                                          from 'lodash'
+import { FormattedMessage }                                                               from 'react-intl'
 
 import {
   Button,
@@ -64,7 +65,7 @@ export interface ExtendedSwitchViewModel extends SwitchViewModel {
   isConfigured?: boolean
 }
 
-export interface AllowedSwitchObjList {
+export interface GroupedSwitchesByModel {
   [model: string]: ExtendedSwitchViewModel[]
 }
 
@@ -108,6 +109,13 @@ export function formatContentWithLimit (content: string, maxLines: number, maxLe
     lines: lineCount - maxLines,
     br: <br />
   })
+}
+
+export const formatSwitchSerialWithName = (switchData: SwitchViewModel) => {
+  const { name, serialNumber } = switchData
+  return name && name !== serialNumber
+    ? `${serialNumber} (${name})`
+    : (name ?? '')
 }
 
 export function getVariableSeparator (type: string) {
@@ -343,8 +351,8 @@ export const getCustomizeButtonDisabled = (
 }
 
 export const getCustomizeFields = (props: {
-  switchList: AllowedSwitchObjList, // only preprovisioned switch
-  configuredSwitchList: AllowedSwitchObjList, // includes configured switch
+  allowedSwitchesGroupedByModel: GroupedSwitchesByModel, // only preprovisioned switch
+  configuredSwitchesGroupedByModel: GroupedSwitchesByModel,
   type: string,
   customizedRequiredFields: string[],
   hasCustomize: boolean,
@@ -352,16 +360,34 @@ export const getCustomizeFields = (props: {
 }) => {
   const { $t } = getIntl()
   const {
-    switchList, configuredSwitchList, type, customizedRequiredFields, hasCustomize, form
+    allowedSwitchesGroupedByModel, configuredSwitchesGroupedByModel,
+    type, customizedRequiredFields, hasCustomize, form
   } = props
   const { configuredSwitchVariables } = form.getFieldsValue(['configuredSwitchVariables'])
   const hasConfiguredSwitchVariables = !!configuredSwitchVariables?.length
 
   const getSelectDisabledTooltip = (name: number) => {
-    //TODO: enhance > should show switch name + serial
+    const configuredSwitches = Object.values(configuredSwitchesGroupedByModel).flat()
     const selectedSerialNumbers
-      = form.getFieldValue(['configuredSwitchVariables', name, 'serialNumbers'])
-    return selectedSerialNumbers.toString()
+      = form.getFieldValue(['configuredSwitchVariables', name, 'serialNumbers']) ?? []
+
+    const selectedSwitch = configuredSwitches
+      .filter(s => selectedSerialNumbers.includes(s.serialNumber))
+      .map(s => {
+        return `${formatSwitchSerialWithName(s)}`
+      })
+
+    return <FormattedMessage
+      defaultMessage={'{switches}'}
+      values={{
+        switches: selectedSwitch.map((item, index) => (
+          <span key={item}>
+            {item}
+            {index < selectedSwitch.length - 1 && <br />}
+          </span>
+        ))
+      }}
+    />
   }
   const getOptionDisabledTooltip = (switchStatus: ExtendedSwitchViewModel) => {
     return switchStatus?.isApplied
@@ -372,11 +398,11 @@ export const getCustomizeFields = (props: {
   const renderFields = (
     fields: FormListFieldData[],
     remove: (index: number | number[]) => void,
-    enableEdit: boolean = true
+    isEditable: boolean = true
   ) => {
-    const switches = enableEdit ? switchList : configuredSwitchList
+    const switches = isEditable ? allowedSwitchesGroupedByModel : configuredSwitchesGroupedByModel
     return fields.map(({ key, name, ...restField }, index) => (<Fragment key={key}>
-      <Tooltip title={!enableEdit ? getSelectDisabledTooltip(name) : ''}>
+      <Tooltip title={!isEditable ? getSelectDisabledTooltip(name) : ''}>
         <Form.Item
           {...restField}
           name={[name, 'serialNumbers']}
@@ -416,17 +442,14 @@ export const getCustomizeFields = (props: {
               maxTagCount='responsive'
               placeholder={$t({ defaultMessage: 'Search Switch' })}
               optionFilterProp='key'
-              disabled={!enableEdit}
+              disabled={!isEditable}
             >{
                 Object.keys(switches).map(model => (
                   <Select.OptGroup
                     key={model}
                     label={model}
                     children={switches[model]?.map(s => {
-                      const hasSwitchName = s.name !== s.serialNumber
-                      const name
-                      = hasSwitchName ? `${s.serialNumber} (${s.name})` : (s.name ?? '')
-
+                      const name = formatSwitchSerialWithName(s)
                       return <Select.Option
                         disabled={s.isApplied || s.isModelOverlap}
                         key={name}
@@ -472,7 +495,7 @@ export const getCustomizeFields = (props: {
           message: $t({ defaultMessage: 'Please enter valid value' })
         }, {
           // eslint-disable-next-line max-len
-          validator: (_:RuleObject, value:string) => validateDuplicateIp(value, index, enableEdit, form)
+          validator: (_:RuleObject, value:string) => validateDuplicateIp(value, index, isEditable, form)
         }] : []),
         ...( type === VariableType.RANGE ? [{
           validator: (_:RuleObject, value:number) => {
@@ -487,21 +510,21 @@ export const getCustomizeFields = (props: {
       >
         { type === VariableType.STRING
           ? <Input.TextArea
-            data-testid={!enableEdit
+            data-testid={!isEditable
               ? `customized-disabled-textarea-${key}` : `customized-textarea-${key}`
             }
             maxLength={MAX_LENGTH_OF_CUSTOMIZED_STRING}
-            disabled={!enableEdit}
+            disabled={!isEditable}
           />
           : <Input
             style={{ minHeight: type === VariableType.RANGE ? '35.5px' : 'auto' }}
-            data-testid={!enableEdit
+            data-testid={!isEditable
               ? `customized-disabled-input-${key}` : `customized-input-${key}`}
-            disabled={!enableEdit}
+            disabled={!isEditable}
           />
         }
       </Form.Item>
-      <Tooltip title={!enableEdit
+      <Tooltip title={!isEditable
         ? $t({ defaultMessage: 'This switch is already provisioned with the custom value.' })
         : ''
       }>
@@ -514,7 +537,7 @@ export const getCustomizeFields = (props: {
             style={{
               display: 'flex', height: type === VariableType.STRING ? '50.5px' : ''
             }}
-            disabled={!enableEdit}
+            disabled={!isEditable}
             onClick={() => remove(name)}
           />
         </Space>
@@ -788,9 +811,7 @@ export function renderVariableValue (
             const switchData = _.find(allSwitchList, (s) => {
               return s.serialNumber === switchVariable?.serialNumber
             })
-            const hasSwitchName = switchData?.name !== switchData?.serialNumber
-            const name = hasSwitchName
-              ? `${switchData?.serialNumber} (${switchData?.name})` : switchData?.name
+            const name = formatSwitchSerialWithName(switchData as SwitchViewModel)
             return {
               ...switchData,
               ...switchVariable,
