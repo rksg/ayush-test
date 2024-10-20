@@ -2,203 +2,127 @@ import React from 'react'
 
 import { ProFormCheckbox, ProFormSelect, ProFormText } from '@ant-design/pro-form'
 import { Divider }                                     from 'antd'
+import { useIntl }                                     from 'react-intl'
 
 import { cssStr }     from '@acx-ui/components'
 import { CrownSolid } from '@acx-ui/icons'
 
-
 import { ReactComponent as Logo } from '../../assets/gptDog.svg'
 
+import * as UI from './styledComponents'
 
 type NetworkConfig = {
   'Purpose': string;
   'SSID Name': string;
   'SSID Objective': string;
   'Checked': boolean;
-  'id':string
+  'id': string;
 }
 
-export function WlanStep (props: {
-  payload: string,
-  description: string }) {
+export function WlanStep (props: { payload: string; description: string }) {
+  const { $t } = useIntl()
   const data = JSON.parse(props.payload) as NetworkConfig[]
   const objectiveOptions = [
-    {
-      value: 'Internal',
-      label: 'Internal'
-    }, {
-      value: 'Guest',
-      label: 'Guest'
-    }, {
-      value: 'VIP',
-      label: 'VIP'
-    }, {
-      value: 'Infrastructure',
-      label: 'Infrastructure'
-    }, {
-      value: 'Personal',
-      label: 'Personal'
-    }, {
-      value: 'Public',
-      label: 'Public'
-    }
+    { value: 'Internal', label: $t({ defaultMessage: 'Internal' }) },
+    { value: 'Guest', label: $t({ defaultMessage: 'Guest' }) },
+    { value: 'VIP', label: $t({ defaultMessage: 'VIP' }) },
+    { value: 'Infrastructure', label: $t({ defaultMessage: 'Infrastructure' }) },
+    { value: 'Personal', label: $t({ defaultMessage: 'Personal' }) },
+    { value: 'Public', label: $t({ defaultMessage: 'Public' }) }
   ]
-  return <div style={{ display: 'flex', flexDirection: 'column' }}>
-    <div style={{
-      flex: '0 1 auto',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center'
-    }}>
-      <span style={{
-        fontSize: '24px',
-        fontWeight: 600,
-        fontFamily: 'Montserrat'
-      }}>
-     Recommended Network Profiles
-      </span>
 
+  return (
+    <UI.Container>
+      <UI.Header>
+        <UI.Title>{$t({ defaultMessage: 'Recommended Network Profiles' })}</UI.Title>
+      </UI.Header>
 
-
-      <div style={{
-        display: 'flex', padding: '15px',
-        backgroundColor: ' #FEF6ED',
-        flexGrow: 1,
-        flexDirection: 'column',
-        borderRadius: '8px',
-        margin: '20px 0px'
-      }}>
-        <div style={{ fontSize: '14px', fontWeight: 600 }}>
-          <CrownSolid style={{
-            width: '20px',
-            height: '20px',
-            verticalAlign: 'text-bottom',
-            color: cssStr('--acx-semantics-yellow-50')
-          }} />
-          <span style={{ marginLeft: '5px' }}>
-         Recommended Network Profiles
-          </span>
-
-        </div>
-        <div style={{
-          fontSize: '14px',
-          margin: '5px 0px 0px 25px'
-        }}>
-          {props.description}
-        </div>
-
-
-      </div>
-
+      <UI.HighlightedBox>
+        <UI.HighlightedTitle>
+          <CrownSolid
+            style={{
+              width: '20px',
+              height: '20px',
+              verticalAlign: 'text-bottom',
+              color: cssStr('--acx-semantics-yellow-50')
+            }}
+          />
+          <span>{$t({ defaultMessage: 'Recommended Network Profiles' })}</span>
+        </UI.HighlightedTitle>
+        <UI.HighlightedDescription>{props.description}</UI.HighlightedDescription>
+      </UI.HighlightedBox>
 
       {data.map((item, index) => (
         <React.Fragment key={index}>
-
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '45px 1fr'
-          }}>
-            <div style={{ display: 'flex' }}>
-              <ProFormCheckbox
-                name={['data', index, 'Checked']}
-                initialValue={true}
-              ></ProFormCheckbox>
-              <div style={{
-                display: 'inline-block',
-                border: '1px solid',
-                borderRadius: '50%',
-                width: '20px',
-                height: '20px',
-                textAlign: 'center',
-                lineHeight: '20px',
-                fontSize: '10px',
-                fontWeight: '600',
-                margin: '7px 5px 5px 5px'
-              }}>
-                {index + 1}
-              </div>
-            </div>
-            <div >
-
+          <UI.VlanContainer>
+            <UI.CheckboxContainer>
+              <ProFormCheckbox name={['data', index, 'Checked']} initialValue={true} />
+              <UI.CheckboxIndexLabel>{index + 1}</UI.CheckboxIndexLabel>
+            </UI.CheckboxContainer>
+            <div>
               <ProFormText
                 name={['data', index, 'id']}
                 initialValue={item['id']}
-                hidden
-              />
+                hidden />
               <ProFormText
                 name={['data', index, 'Purpose']}
                 initialValue={item['Purpose']}
-                hidden
-              />
-
+                hidden />
               <ProFormText
                 width={200}
-                label='Network Name'
+                label={$t({ defaultMessage: 'Network Name' })}
                 name={['data', index, 'SSID Name']}
                 initialValue={item['SSID Name']}
               />
               <ProFormSelect
                 tooltip={{
+                  overlayStyle: { width: '700px' },
                   title: (
-                    // eslint-disable-next-line max-len
-                    <ul style={{ margin: 0, padding: '0 20px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      <li>Internal: For employees, teachers, lecturers, and students.</li>
-                      <li>Guest: For external guests, visitors, and customers.</li>
-                      <li>VIP: For high-priority guests, visitors, and customers.</li>
-                      <li
-                      // eslint-disable-next-line max-len
-                      >Infrastructure: For infrastructure devices, such as VoIP phones, barcode scanners, cameras, printers, security cameras, projectors, point-of-sale system, IoT devices, and smart home devices.</li>
-                      <li
-                      // eslint-disable-next-line max-len
-                      >Personal: For home use, and personal devices, such as smartphones, tablets, and computers.</li>
-                      <li>Public: For open public use without authentication.</li>
+                    <ul style={{
+                      margin: 0, padding: '0 20px',
+                      display: 'flex', flexDirection: 'column', gap: '8px'
+                    }}>
+                      <li>{// eslint-disable-next-line max-len
+                        $t({ defaultMessage: 'Internal: For employees, teachers, lecturers, and students.' })}</li>
+                      <li>{// eslint-disable-next-line max-len
+                        $t({ defaultMessage: 'Guest: For external guests, visitors, and customers.' })}</li>
+                      <li>{// eslint-disable-next-line max-len
+                        $t({ defaultMessage: 'VIP: For high-priority guests, visitors, and customers.' })}</li>
+                      <li>{ // eslint-disable-next-line max-len
+                        $t({ defaultMessage: 'Infrastructure: For infrastructure devices, such as VoIP phones, barcode scanners, cameras, printers, security cameras, projectors, point-of-sale system, IoT devices, and smart home devices.' })}</li>
+                      <li>{ // eslint-disable-next-line max-len
+                        $t({ defaultMessage: 'Personal: For home use, and personal devices, such as smartphones, tablets, and computers.' })}</li>
+                      <li>{ // eslint-disable-next-line max-len
+                        $t({ defaultMessage: 'Public: For open public use without authentication.' })}</li>
                     </ul>
-                  ),
-                  overlayStyle: { width: '700px' }
-
-
+                  )
                 }}
                 width={200}
-                label='Network Objective'
-                name={['data', index, 'SSID Objective']} // 设置 name 对应原始数据结构
+                label={$t({ defaultMessage: 'Network Objective' })}
+                name={['data', index, 'SSID Objective']}
                 initialValue={item['SSID Objective']}
                 options={objectiveOptions}
               />
 
-
-              <div style={{
-                display: 'flex',
-                backgroundColor: '#F7F7F7',
-                padding: '10px 20px',
-                flexGrow: 1,
-                flexDirection: 'column',
-                borderRadius: '8px'
-              }}>
-                <div style={{ fontSize: '12px', fontWeight: 600 }}>
-                  <Logo style={{
-                    width: '20px',
-                    height: '20px',
-                    verticalAlign: 'text-bottom',
-                    color: cssStr('--acx-semantics-yellow-50')
-                  }} />
-                  <span style={{ marginLeft: '5px' }}>
-                 Recommended Network Profiles
-                  </span>
-
-                </div>
-                <div style={{
-                  fontSize: '12px',
-                  margin: '5px 0px 0px 25px'
-                }}>
-                  {item['Purpose']}
-                </div>
-              </div>
+              <UI.PurposeContainer>
+                <UI.PurposeHeader>
+                  <Logo
+                    style={{
+                      width: '20px',
+                      height: '20px',
+                      verticalAlign: 'text-bottom',
+                      color: cssStr('--acx-semantics-yellow-50')
+                    }}
+                  />
+                  <span>{$t({ defaultMessage: 'Recommended Network Profiles' })}</span>
+                </UI.PurposeHeader>
+                <UI.PurposeText>{item['Purpose']}</UI.PurposeText>
+              </UI.PurposeContainer>
             </div>
-            <Divider dashed />
-          </div>
-
+          </UI.VlanContainer>
+          <Divider dashed />
         </React.Fragment>
       ))}
-    </div>
-  </div>
+    </UI.Container>
+  )
 }

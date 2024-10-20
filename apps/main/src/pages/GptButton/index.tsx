@@ -5,9 +5,9 @@ import { Button, Form, Steps } from 'antd'
 import { useIntl }             from 'react-intl'
 
 
-import { cssStr }                        from '@acx-ui/components'
-import { useStartConversationsMutation } from '@acx-ui/rc/services'
-import { GptConversation }               from '@acx-ui/rc/utils'
+import { cssStr }                                     from '@acx-ui/components'
+import { useStartConversationsMutation }              from '@acx-ui/rc/services'
+import { GptConfigurationStepsEnum, GptConversation } from '@acx-ui/rc/utils'
 
 import { ReactComponent as Logo } from './assets/gptDog.svg'
 import BasicInformationPage       from './BasicInformationPage'
@@ -26,16 +26,18 @@ export enum GptStepsEnum {
 }
 
 export default function RuckusGptButton () {
-  const [visible, setVisible] = useState(false)
   const { $t } = useIntl()
-  const [step, setStep] = useState(GptStepsEnum.WELCOME as GptStepsEnum)
-  const [currentStep, setCurrentStep] = useState(0 as number)
   const [basicFormRef] = Form.useForm()
-  const [startConversations] = useStartConversationsMutation()
-  const [venueType, setVenueType] = useState('' as string)
-  const [nextStep, setNextStep] = useState({} as GptConversation)
+
+  const [visible, setVisible] = useState(false)
   const [isLoading, setIsLoading] = useState(false as boolean)
 
+  const [step, setStep] = useState(GptStepsEnum.WELCOME as GptStepsEnum)
+  const [nextStep, setNextStep] = useState({} as GptConversation)
+  const [currentStep, setCurrentStep] = useState(0 as number)
+  const [venueType, setVenueType] = useState('' as string)
+
+  const [startConversations] = useStartConversationsMutation()
 
   const getWizardTitle = function () {
     switch(step){
@@ -59,15 +61,18 @@ export default function RuckusGptButton () {
               lineHeight: '28px',
               marginBottom: '8px',
               fontFamily: cssStr('--acx-accent-brand-font')
-            }}>Onboarding Assistant</div>
+            }}>{$t({ defaultMessage: 'Onboarding Assistant' })}</div>
             <div
               style={{
                 fontFamily: cssStr('--acx-neutral-brand-font'),
                 color: '#808284',
                 fontSize: '12px',
-                lineHeight: '16px',flexGrow: 1
-              }}
-            >Please answer the following questions for optimal network recommendations.</div>
+                lineHeight: '16px',
+                flexGrow: 1
+              }}>
+              { // eslint-disable-next-line max-len
+                $t({ defaultMessage: 'Please answer the following questions for optimal network recommendations.' })}
+            </div>
           </div>
         </div>
       case GptStepsEnum.CONFIGURATION:
@@ -79,10 +84,10 @@ export default function RuckusGptButton () {
             size='small'
             type='default'>
             {[
-              { key: 'step1' },
-              { key: 'step2' },
-              { key: 'step3' },
-              { key: 'step4' }
+              { key: GptConfigurationStepsEnum.WLANS },
+              { key: GptConfigurationStepsEnum.WLANDETAIL },
+              { key: GptConfigurationStepsEnum.VLAN },
+              { key: GptConfigurationStepsEnum.SUMMARY }
             ].map((item) => (
               <Steps.Step key={item.key} />
             ))}

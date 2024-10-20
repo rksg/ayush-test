@@ -1,32 +1,18 @@
-import { Form } from 'antd'
+import { Form }    from 'antd'
+import { useIntl } from 'react-intl'
 
-import { NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { NetworkTypeEnum, networkTypes } from '@acx-ui/rc/utils'
 
+// Waiting for new UX design
 export function SummaryStep (props: {
   payload: string
 }) {
-
+  const { $t } = useIntl()
   const data = props.payload ? JSON.parse(props.payload) : {}
 
-
-  const getNetworkTypeDescription = (type: string) => {
-    if (type === NetworkTypeEnum.OPEN) {
-      return 'Open Network'
-    } else if (type === NetworkTypeEnum.PSK) {
-      return 'Passphrase (PSK/SAE)'
-    } else if (type === NetworkTypeEnum.DPSK) {
-      return 'Dynamic Pre-Shared Key (DPSK)'
-    } else if (type === NetworkTypeEnum.AAA) {
-      return 'Enterprise AAA (802.1X)'
-    } else if (type === NetworkTypeEnum.HOTSPOT20) {
-      return 'Hotspot 2.0 Access'
-    } else if (type === NetworkTypeEnum.CAPTIVEPORTAL) {
-      return 'Captive Portal'
-    } else {
-      return 'Unknown Type' // 默认值
-    }
+  const getNetworkTypeDescription = (type: NetworkTypeEnum) => {
+    return $t(networkTypes[type]) || 'Unknown Type'
   }
-
 
   return <div style={{ display: 'flex', flexDirection: 'column' }}>
     <div style={{

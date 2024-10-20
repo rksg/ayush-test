@@ -1,78 +1,49 @@
-
 import React from 'react'
 
 import { ProFormCheckbox, ProFormText } from '@ant-design/pro-form'
 import { Divider }                      from 'antd'
+import { useIntl }                      from 'react-intl'
 
 import { cssStr } from '@acx-ui/components'
 
-
 import { ReactComponent as Logo } from '../../assets/gptDog.svg'
 
+import * as UI from './styledComponents'
 
 type NetworkConfig = {
   'Purpose': string;
   'VLAN ID': string;
   'VLAN Name': string;
   'Checked': boolean;
-  'id':string
+  'id': string;
 }
 
-export function VlanStep ( props: {
-    payload: string
-  }
-) {
+export function VlanStep (props: { payload: string }) {
+  const { $t } = useIntl()
   const data = props.payload ? JSON.parse(props.payload) as NetworkConfig[] : []
 
-  return <div style={{ display: 'flex', flexDirection: 'column' }}>
-    <div style={{
-      flex: '0 1 auto',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center'
-    }}>
-      <span style={{
-        fontSize: '24px',
-        fontWeight: 600,
-        fontFamily: 'Montserrat'
-      }}>
-     Recommended VLANs
-      </span>
-      <span style={{ fontSize: '12px', color: '#808284', margin: '5px 0px 30px 0px' }}
-      // eslint-disable-next-line max-len
-      >Now, let us set up the VLANs for your school network. Setting up VLANs effectively will help in managing and segmenting your network traffic efficiently in your educational environment. Here’s how you can structure your VLANs for different use cases.
-      </span>
-
+  return (
+    <UI.Container>
+      <UI.Header>
+        <UI.Title>{$t({ defaultMessage: 'Recommended VLANs' })}</UI.Title>
+        <UI.Description>
+          { // eslint-disable-next-line max-len
+            $t({ defaultMessage: 'Now, let us set up the VLANs for your school network. Setting up VLANs effectively will help in managing and segmenting your network traffic efficiently in your educational environment. Here’s how you can structure your VLANs for different use cases.'
+            })}
+        </UI.Description>
+      </UI.Header>
 
       {data.map((item, index) => (
         <React.Fragment key={index}>
-
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '45px 1fr'
-          }}>
-            <div style={{ display: 'flex' }}>
+          <UI.VlanContainer>
+            <UI.CheckboxContainer>
               <ProFormCheckbox
                 name={['data', index, 'Checked']}
                 initialValue={true}
-              ></ProFormCheckbox>
-              <div style={{
-                display: 'inline-block',
-                border: '1px solid',
-                borderRadius: '50%',
-                width: '20px',
-                height: '20px',
-                textAlign: 'center',
-                lineHeight: '20px',
-                fontSize: '10px',
-                fontWeight: '600',
-                margin: '7px 5px 5px 5px'
-              }}>
-                {index + 1}
-              </div>
-            </div>
-            <div >
-
+              />
+              <UI.CheckboxIndexLabel>{index + 1}</UI.CheckboxIndexLabel>
+            </UI.CheckboxContainer>
+            <UI.VlanDetails>
               <ProFormText
                 name={['data', index, 'id']}
                 initialValue={item['id']}
@@ -85,48 +56,33 @@ export function VlanStep ( props: {
               />
 
               <ProFormText
-                label='VLAN Name'
+                label={$t({ defaultMessage: 'VLAN Name' })}
                 name={['data', index, 'VLAN Name']}
                 initialValue={item['VLAN Name']}
               />
 
-              <div style={{
-                display: 'flex',
-                backgroundColor: '#F7F7F7',
-                padding: '10px 20px',
-                flexGrow: 1,
-                flexDirection: 'column',
-                borderRadius: '8px'
-              }}>
-                <div style={{ fontSize: '12px', fontWeight: 600 }}>
+              <UI.PurposeContainer>
+                <UI.PurposeHeader>
                   <Logo style={{
                     width: '20px',
                     height: '20px',
                     verticalAlign: 'text-bottom',
-                    color: cssStr('--acx-semantics-yellow-50')
-                  }} />
-                  <span style={{ marginLeft: '5px' }}>
-                 Purpose
-                  </span>
+                    color: cssStr('--acx-semantics-yellow-50') }} />
+                  <span>{$t({ defaultMessage: 'Purpose' })}</span>
+                </UI.PurposeHeader>
+                <UI.PurposeText>{item['Purpose']}</UI.PurposeText>
+              </UI.PurposeContainer>
 
-                </div>
-                <div style={{
-                  fontSize: '12px',
-                  margin: '5px 0px 0px 25px'
-                }}>
-                  {item['Purpose']}
-                </div>
-              </div>
-              <ProFormText label='VLAN ID'
+              <ProFormText
+                label={$t({ defaultMessage: 'VLAN ID' })}
                 name={['data', index, 'VLAN ID']}
                 initialValue={item['VLAN ID']}
               />
-            </div>
+            </UI.VlanDetails>
             <Divider dashed />
-          </div>
-
+          </UI.VlanContainer>
         </React.Fragment>
       ))}
-    </div>
-  </div>
+    </UI.Container>
+  )
 }

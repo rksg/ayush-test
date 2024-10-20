@@ -1,11 +1,10 @@
-/* eslint-disable max-len */
-
-
 import { Avatar, Card } from 'antd'
 import Meta             from 'antd/lib/card/Meta'
 
 import { GptBackground, GptWhiteicon } from '@acx-ui/icons'
 
+
+// Waiting for new UX design
 function WelcomePage () {
   return <>
     <GptBackground
@@ -32,8 +31,12 @@ function WelcomePage () {
       <GptWhiteicon style={{
         width: '90px', height: '90px'
       }} />
-      <span style={{ fontSize: '28px', fontWeight: 600, marginTop: '30px', fontFamily: 'Montserrat' }}>
-    Hi, I’m RuckusGPT
+      <span style={{
+        fontSize: '28px',
+        fontWeight: 600, marginTop: '30px',
+        fontFamily: 'Montserrat'
+      }}>
+        Hi, I’m RuckusGPT
       </span>
       <span style={{ fontSize: '14px', color: '#808284', marginTop: '15px' }}>
     Your new personal network assistant
@@ -61,6 +64,7 @@ function WelcomePage () {
           avatar={<Avatar src='https://api.dicebear.com/7.x/miniavs/svg?seed=8' />}
           title='About RuckusGPT'
           style={{ fontFamily: 'Montserrat' }}
+          // eslint-disable-next-line max-len
           description='RuckusGPT helps you efficiently build vertical networks tailored to your specific needs, guiding you step-by-step for optimal performance and scalability.'
         />
       </Card>

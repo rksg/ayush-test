@@ -43,8 +43,6 @@ export default function GptWizard (props: {
   const onPrevious = function () {
     if (props.currentStep === firstPageIndex) {
       props.setStep(GptStepsEnum.BASIC)
-    } else if (props.currentStep === lastPageIndex) {
-      props.setCurrentStep(firstPageIndex)
     } else {
       props.setCurrentStep(props.currentStep - 1)
     }
@@ -134,14 +132,13 @@ export default function GptWizard (props: {
           }).unwrap()
           props.setStep(GptStepsEnum.FINISHED)
         } catch (error) {
+          //TODO: Waiting for UX design and backend integration.
           alert('Please try again.')
         }
         setIsLoading(false)
       }
     }
   ]
-
-
 
   return (
     <StepsForm

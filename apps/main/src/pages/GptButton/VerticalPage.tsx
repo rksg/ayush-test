@@ -3,11 +3,13 @@
 import { useState } from 'react'
 
 import { Form, Input, Radio, RadioChangeEvent } from 'antd'
+import { useIntl }                              from 'react-intl'
 
-
-import { cssStr }              from '@acx-ui/components'
+import { cssStr } from '@acx-ui/components'
+// TODO: Move this component to common-components
 import { EdgeClusterTypeCard } from '@acx-ui/rc/components'
 
+// TOOD: Waiting for the new SVG export
 import { ReactComponent as GptHotel }         from './assets/gptHotel.svg'
 import { ReactComponent as GptMultiDwelling } from './assets/gptMultiDwelling.svg'
 import { ReactComponent as GptOffice }        from './assets/gptOffice.svg'
@@ -20,6 +22,7 @@ import * as UI                                from './styledComponents'
 
 
 function VerticalPage () {
+  const { $t } = useIntl()
   const [selected, setSelected] = useState(undefined)
   const onChange = (e: RadioChangeEvent) => {
     setSelected(e.target.value)
@@ -32,7 +35,7 @@ function VerticalPage () {
       fontWeight: 600,
       margin: '0px 0px 10px 85px'
     }}>
-      Vertical Type
+      {$t({ defaultMessage: 'Vertical Type' })}
     </div>
 
     <Form.Item
@@ -52,7 +55,7 @@ function VerticalPage () {
             <EdgeClusterTypeCard
               className='typeCard'
               id='school'
-              title='School'
+              title={$t({ defaultMessage: 'School' })}
               icon={<GptSchool />}
             />
           </UI.VirticalBox>
@@ -60,7 +63,7 @@ function VerticalPage () {
             <EdgeClusterTypeCard
               className='typeCard'
               id='stadium'
-              title='Stadium'
+              title={$t({ defaultMessage: 'Stadium' })}
               icon={<GptStadium />}
             />
           </UI.VirticalBox>
@@ -69,7 +72,7 @@ function VerticalPage () {
             <EdgeClusterTypeCard
               className='typeCard'
               id='hotel'
-              title='Hotel'
+              title={$t({ defaultMessage: 'Hotel' })}
               icon={<GptHotel />}
             />
           </UI.VirticalBox>
@@ -77,7 +80,7 @@ function VerticalPage () {
             <EdgeClusterTypeCard
               className='typeCard'
               id='transport'
-              title='Transport Hub'
+              title={$t({ defaultMessage: 'Transport Hub' })}
               icon={<GptTransport />}
             />
           </UI.VirticalBox>
@@ -86,7 +89,7 @@ function VerticalPage () {
             <EdgeClusterTypeCard
               className='typeCard'
               id='office'
-              title='Office'
+              title={$t({ defaultMessage: 'Office' })}
               icon={<GptOffice />}
             />
           </UI.VirticalBox>
@@ -94,7 +97,7 @@ function VerticalPage () {
             <EdgeClusterTypeCard
               className='typeCard'
               id='wareHouse'
-              title='Warehouse'
+              title={$t({ defaultMessage: 'Warehouse' })}
               icon={<GptWareHouse />}
             />
           </UI.VirticalBox>
@@ -103,7 +106,7 @@ function VerticalPage () {
             <EdgeClusterTypeCard
               className='typeCard'
               id='shop'
-              title='Shop'
+              title={$t({ defaultMessage: 'Shop' })}
               icon={<GptShop />}
             />
           </UI.VirticalBox>
@@ -111,13 +114,13 @@ function VerticalPage () {
             <EdgeClusterTypeCard
               className='typeCard'
               id='multiDwelling'
-              title='Multi-Dwelling Unit'
+              title={$t({ defaultMessage: 'Multi-Dwelling Unit' })}
               icon={<GptMultiDwelling />}
             />
           </UI.VirticalBox>
         </UI.VirticalContainer>
         <Radio value={'OTHER'} style={{ marginLeft: '100px' }}>
-          {'Others'}
+          {$t({ defaultMessage: 'Others' })}
           {selected === 'OTHER' &&
           <Form.Item
             name={'othersValue'}
@@ -126,14 +129,9 @@ function VerticalPage () {
             <Input />
           </Form.Item>
           }
-
         </Radio>
-
       </Radio.Group>
-
     </Form.Item>
-
-
   </div>
 }
 
