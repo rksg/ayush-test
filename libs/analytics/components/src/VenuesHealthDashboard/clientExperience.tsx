@@ -4,7 +4,7 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { GridCol, GridRow, HistoricalCard, Loader, ProgressBarV2 } from '@acx-ui/components'
 import { useNavigateToPath }                                       from '@acx-ui/react-router-dom'
-import { hasAccess }                                               from '@acx-ui/user'
+import { hasRaiPermission }                                        from '@acx-ui/user'
 import type { AnalyticsFilter }                                    from '@acx-ui/utils'
 
 import { HealthData, useHealthQuery } from './services'
@@ -62,7 +62,7 @@ export function ClientExperience ({
 
   return(<Loader states={[queryResults]}>
     <HistoricalCard title={$t({ defaultMessage: 'Client Experience' })}
-      onArrowClick={hasAccess() ? onArrowClick : undefined}>
+      onArrowClick={hasRaiPermission('READ_HEALTH') ? onArrowClick : undefined}>
       <AutoSizer>
         {({ height, width }) => (
           <div style={{

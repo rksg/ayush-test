@@ -11,8 +11,14 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
-import { useSwitchFirmwareUtils }        from '@acx-ui/rc/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useSwitchFirmwareUtils } from '@acx-ui/rc/components'
+import {
+  getNextScheduleTpl,
+  getReleaseFirmware,
+  isSwitchNextScheduleTooltipDisabled,
+  toUserDate
+} from '@acx-ui/rc/components'
 import {
   useGetSwitchUpgradePreferencesQuery,
   useUpdateSwitchUpgradePreferencesMutation,
@@ -42,12 +48,6 @@ import { RequestPayload, SwitchScopes }                         from '@acx-ui/ty
 import { filterByAccess, hasPermission, useUserProfileContext } from '@acx-ui/user'
 import { noDataDisplay }                                        from '@acx-ui/utils'
 
-import {
-  getNextScheduleTpl,
-  getReleaseFirmware,
-  isSwitchNextScheduleTooltipDisabled,
-  toUserDate
-} from '../../FirmwareUtils'
 import { PreferencesDialog } from '../../PreferencesDialog'
 import * as UI               from '../../styledComponents'
 

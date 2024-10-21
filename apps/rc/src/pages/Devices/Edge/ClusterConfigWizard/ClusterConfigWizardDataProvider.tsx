@@ -1,16 +1,28 @@
 import { createContext } from 'react'
 
-import { Loader }                                                                                        from '@acx-ui/components'
-import { useGetEdgeSdLanByEdgeOrClusterId }                                                              from '@acx-ui/rc/components'
-import { useGetEdgeClusterListQuery, useGetEdgeClusterNetworkSettingsQuery, useGetEdgesPortStatusQuery } from '@acx-ui/rc/services'
-import { ClusterNetworkSettings, EdgeClusterStatus, EdgeNodesPortsInfo, EdgeSdLanViewDataP2 }            from '@acx-ui/rc/utils'
-
+import { Loader }                           from '@acx-ui/components'
+import { useGetEdgeSdLanByEdgeOrClusterId } from '@acx-ui/rc/components'
+import {
+  useGetEdgeClusterListQuery,
+  useGetEdgeClusterNetworkSettingsQuery,
+  useGetEdgeClusterSubInterfaceSettingsQuery,
+  useGetEdgesPortStatusQuery
+} from '@acx-ui/rc/services'
+import {
+  ClusterNetworkSettings,
+  ClusterSubInterfaceSettings,
+  EdgeClusterStatus,
+  EdgeNodesPortsInfo,
+  EdgeSdLanViewDataP2
+} from '@acx-ui/rc/utils'
 
 export interface ClusterConfigWizardContextType {
   clusterInfo?: EdgeClusterStatus
   portsStatus?: EdgeNodesPortsInfo
+  lagsStatus?: EdgeNodesPortsInfo
   edgeSdLanData?: EdgeSdLanViewDataP2
   clusterNetworkSettings?: ClusterNetworkSettings
+  clusterSubInterfaceSettings? : ClusterSubInterfaceSettings
   isLoading: boolean
   isFetching: boolean
 }
@@ -54,7 +66,8 @@ export const ClusterConfigWizardDataProvider = (props: ClusterConfigWizardDataPr
     isLoading: isPortStatusLoading,
     isFetching: isPortStatusFetching } = useGetEdgesPortStatusQuery({
     payload: {
-      edgeIds: clusterInfo?.edgeList?.map(node => node.serialNumber)
+      edgeIds: clusterInfo?.edgeList?.map(node => node.serialNumber),
+      includeLags: true
     }
   }, {
     skip: !Boolean(clusterInfo?.edgeList?.length)
@@ -79,16 +92,41 @@ export const ClusterConfigWizardDataProvider = (props: ClusterConfigWizardDataPr
     skip: !Boolean(clusterInfo)
   })
 
+  const {
+    data: clusterSubInterfaceSettings,
+    isLoading: isClusterSubInterfaceSettingsLoading,
+    isFetching: isClusterSubInterfaceSettingsFetching
+  } = useGetEdgeClusterSubInterfaceSettingsQuery({
+    params: {
+      venueId: clusterInfo?.venueId,
+      clusterId: clusterInfo?.clusterId
+    }
+  },{
+    skip: !Boolean(clusterInfo)
+  })
+
   const isLoading = isClusterInfoLoading || isPortStatusLoading || isEdgeSdLanLoading ||
-    isClusterNetworkSettingsLoading
+    isClusterNetworkSettingsLoading || isClusterSubInterfaceSettingsLoading
   const isFetching = isClusterInfoFetching || isPortStatusFetching || isEdgeSdLanFetching ||
-    isClusterNetworkSettingsFetching
+    isClusterNetworkSettingsFetching || isClusterSubInterfaceSettingsFetching
 
   return <ClusterConfigWizardContext.Provider value={{
     clusterInfo,
-    portsStatus,
+    portsStatus: portsStatus ? Object.fromEntries(
+      Object.entries(portsStatus).map(([serial, ports]) => [
+        serial,
+        ports.filter(portInfo => !portInfo.isLag)
+      ])
+    ) : undefined,
+    lagsStatus: portsStatus ? Object.fromEntries(
+      Object.entries(portsStatus).map(([serial, ports]) => [
+        serial,
+        ports.filter(portInfo => portInfo.isLag)
+      ])
+    ) : undefined,
     edgeSdLanData,
     clusterNetworkSettings,
+    clusterSubInterfaceSettings,
     isLoading,
     isFetching
   }}>
