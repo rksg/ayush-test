@@ -3,17 +3,23 @@ import { useEffect } from 'react'
 import { Form, Input, InputNumber, Select } from 'antd'
 import { useIntl }                          from 'react-intl'
 
-import { Alert, Drawer }                                                                                   from '@acx-ui/components'
-import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeSubInterface, edgePortIpValidator, generalSubnetMskRegExp } from '@acx-ui/rc/utils'
-import { getIntl, validationMessages }                                                                     from '@acx-ui/utils'
+import { Alert, Drawer }   from '@acx-ui/components'
+import {
+  EdgeIpModeEnum,
+  EdgePortTypeEnum,
+  SubInterface,
+  edgePortIpValidator,
+  generalSubnetMskRegExp
+} from '@acx-ui/rc/utils'
+import { getIntl, validationMessages } from '@acx-ui/utils'
 
-interface StaticRoutesDrawerProps {
-  mac: string
+interface SubInterfaceDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
-  data?: EdgeSubInterface
-  handleAdd: (data: EdgeSubInterface) => Promise<unknown>
-  handleUpdate: (data: EdgeSubInterface) => Promise<unknown>
+  data?: SubInterface
+  handleAdd: (data: SubInterface) => Promise<unknown>
+  handleUpdate: (data: SubInterface) => Promise<unknown>
+  allSubInterfaceVlans: { id: String, vlan: number }[]
 }
 
 const getPortTypeOptions = () => {
@@ -31,10 +37,10 @@ const getIpModeOptions = () => {
   ]
 }
 
-const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
+const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
 
   const { $t } = useIntl()
-  const { mac, visible, setVisible, data, handleAdd, handleUpdate } = props
+  const { visible, setVisible, data, handleAdd, handleUpdate } = props
   const [formRef] = Form.useForm()
 
   useEffect(() => {
@@ -60,16 +66,14 @@ const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
 
   const handleFinish = async () => {
     const formData = formRef.getFieldsValue(true)
-    const { ip, subnet, ...rest } = formData
+    const { id, ip, subnet, ...rest } = formData
     const payload = {
       ...rest,
       ...(
         rest.ipMode === EdgeIpModeEnum.STATIC ?
           { ip, subnet } : {}
       ),
-      name: data?.name || '',
-      mac: mac,
-      enabled: true
+      id: id ? id : 'new_' + Date.now()
     }
 
     try {
@@ -80,9 +84,18 @@ const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
       }
     } catch (error) {
       // TODO error message not be defined
-      console.log(error) // eslint-disable-line no-console
     }
     handleClose()
+  }
+
+  const validateVlanDuplication = (vlan: number) => {
+    const duplicate = props.data ?
+      props.allSubInterfaceVlans.find(item => item.vlan === vlan && item.id !== props.data?.id) :
+      props.allSubInterfaceVlans.find(item => item.vlan === vlan)
+
+    return duplicate ?
+      Promise.reject($t({ defaultMessage: 'VLAN should be unique' })) :
+      Promise.resolve()
   }
 
   const drawerContent = <Form layout='vertical' form={formRef} onFinish={handleFinish}>
@@ -156,9 +169,10 @@ const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
           min: 1,
           max: 4094,
           message: $t(validationMessages.vlanRange)
-        }
+        },
+        { validator: (_, value) => validateVlanDuplication(value) }
       ]}
-      children={<InputNumber />}
+      children={<InputNumber min={1} max={4094} />}
     />
   </Form>
 
