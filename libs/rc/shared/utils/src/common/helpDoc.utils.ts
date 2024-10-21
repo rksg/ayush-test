@@ -52,20 +52,10 @@ export const fetchDocsURLMapping = async (
   return result[mapKey as keyof typeof result]
 }
 
-export const replaceIntentCode = (url: string) => {
-  return url.replaceAll(/[ci]-[a-zA-Z0-9-]+$/g, '*')
-}
-
 export const useHelpPageLinkBasePath = (targetPathname?: string) => {
   const location = useLocation()
   const [, tenantType, pathname] = location.pathname.match(/^\/[a-f0-9]{32}\/(v|t)\/(.+)$/) || []
-
-  let originalPath = (targetPathname || pathname)
-  if (originalPath?.includes('analytics/intentAI')) {
-    originalPath = replaceIntentCode(originalPath)
-  }
-  const basePath = originalPath?.replaceAll(/([A-Z0-9]{11,})|([0-9a-fA-F]{1,2}[:]){5}([0-9a-fA-F]{1,2})|([a-f-\d]{32,36}|[A-F-\d]{32,36})|([a-zA-Z0-9+\=]{84})|\d+/g, '*') // eslint-disable-line max-len
-
+  const basePath = (targetPathname || pathname)?.replaceAll(/([A-Z0-9]{11,})|([0-9a-fA-F]{1,2}[:]){5}([0-9a-fA-F]{1,2})|([a-f-\d]{32,36}|[A-F-\d]{32,36})|([a-zA-Z0-9+\=]{84})|[ci]-[a-zA-Z0-9-]+|\d+/g, '*') // eslint-disable-line max-len
   const isMspUser = tenantType === 'v'
 
   return {

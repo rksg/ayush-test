@@ -3,7 +3,7 @@ import { rest } from 'msw'
 import { get }                             from '@acx-ui/config'
 import { mockServer, renderHook, waitFor } from '@acx-ui/test-utils'
 
-import { DOCS_HOME_URL, getDocsMappingURL, getDocsURL, getRaiDocsMappingURL, getRaiDocsURL, replaceIntentCode, useHelpPageLink, useHelpPageLinkBasePath, useRaiR1HelpPageLink } from './helpDoc.utils'
+import { DOCS_HOME_URL, getDocsMappingURL, getDocsURL, getRaiDocsMappingURL, getRaiDocsURL, useHelpPageLink, useHelpPageLinkBasePath, useRaiR1HelpPageLink } from './helpDoc.utils'
 
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
@@ -386,28 +386,6 @@ describe('HelpPage Component URLs', () => {
   })
 })
 
-describe('verify intent code replacement with *', () => {
-  it.each([
-    {
-      intentCode: 'c-bgscan24g-enable'
-    },
-    {
-      intentCode: 'c-dfschannels-enable'
-    },
-    {
-      intentCode: 'c-bandbalancing-enable-below-61'
-    },
-    {
-      intentCode: 'i-zonefirmware-upgrade'
-    },
-    {
-      intentCode: 'i-ecoflex'
-    }
-  ])('should replace with * when intentCode is $intentCode', ({ intentCode }) => {
-    expect(replaceIntentCode(intentCode)).toEqual('*')
-  })
-})
-
 describe('verify replacement with * in R1', () => {
   it('should replace correctly in R1 for non intentAI path', () => {
     const { result } = renderHook(() => {
@@ -421,21 +399,6 @@ describe('verify replacement with * in R1', () => {
     expect(result.current).toEqual({
       isMspUser: false,
       basePath: 'dashboard'
-    })
-  })
-  it('should replace correctly in R1 for intentAI detail page with intentCode', () => {
-    const { result } = renderHook(() => {
-      return useHelpPageLinkBasePath()
-    }, {
-      route: {
-        // eslint-disable-next-line max-len
-        path: '/a5804cffcefd408c8d36aca5bd112838/t/analytics/intentAI/1844726260b54553be67f64a5b7bcfe4/c-bandbalancing-enable-below-61',
-        wrapRoutes: false
-      }
-    })
-    expect(result.current).toEqual({
-      isMspUser: false,
-      basePath: 'analytics/intentAI/*/*'
     })
   })
   it('should replace correctly in R1 for intentAI page without intentCode', () => {
@@ -452,5 +415,37 @@ describe('verify replacement with * in R1', () => {
       basePath: 'analytics/intentAI'
     })
   })
+  it.each([
+    {
+      intentCode: 'c-bgscan24g-enable'
+    },
+    {
+      intentCode: 'c-dfschannels-enable'
+    },
+    {
+      intentCode: 'c-bandbalancing-enable-below-61'
+    },
+    {
+      intentCode: 'i-zonefirmware-upgrade'
+    },
+    {
+      intentCode: 'i-ecoflex'
+    }
+  ])('should replace correctly in R1 for intentAI detail page with intentCode $intentCode',
+    ({ intentCode }) => {
+      const { result } = renderHook(() => {
+        return useHelpPageLinkBasePath()
+      }, {
+        route: {
+          // eslint-disable-next-line max-len
+          path: `/a5804cffcefd408c8d36aca5bd112838/t/analytics/intentAI/1844726260b54553be67f64a5b7bcfe4/${intentCode}`,
+          wrapRoutes: false
+        }
+      })
+      expect(result.current).toEqual({
+        isMspUser: false,
+        basePath: 'analytics/intentAI/*/*'
+      })
+    })
 
 })
