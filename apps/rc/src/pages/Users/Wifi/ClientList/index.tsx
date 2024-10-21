@@ -52,7 +52,7 @@ const useTabs = () : WirelessTab[] => {
   const payload = {
     searchString: '',
     filters: {},
-    fields: ['hostname','osType','ipAddress', 'macAddress', 'clientMac']
+    fields: ['hostname', 'osType', 'ipAddress', 'macAddress', 'clientMac']
   }
 
   // eslint-disable-next-line max-len

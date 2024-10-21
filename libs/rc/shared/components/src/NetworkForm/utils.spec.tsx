@@ -878,7 +878,7 @@ describe('Network utils test', () => {
       )}
     )
 
-    it('useUpdateSoftGreActivations(create/edit)', async () => {
+    it('useUpdateSoftGreActivations(edit)', async () => {
       const profileId = 'profile-id'
       const profileName = 'profileName'
       const updates = {
@@ -891,7 +891,7 @@ describe('Network utils test', () => {
         { route: { params: { networkId: 'networkId' } }, wrapper: Provider })
 
       // eslint-disable-next-line max-len
-      await result.current(networkId, updates, activatedVenues, false)
+      await result.current(networkId, updates, activatedVenues, false, true)
 
       expect(mockedActivateSoftGre).toBeCalledTimes(1)
       expect(mockedDeactivateSoftGre).toBeCalledTimes(1)
@@ -910,7 +910,7 @@ describe('Network utils test', () => {
         { route: { params: { networkId: 'networkId' } }, wrapper: Provider })
 
       // eslint-disable-next-line max-len
-      await result.current(networkId, updates, activatedVenues, true)
+      await result.current(networkId, updates, activatedVenues, true, false)
 
       expect(mockedActivateSoftGre).toBeCalledTimes(1)
       expect(mockedDeactivateSoftGre).not.toBeCalled()

@@ -4,9 +4,9 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
-import { EthernetPortProfileUrls } from '@acx-ui/rc/utils'
-import { Provider }                from '@acx-ui/store'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { AaaUrls, EthernetPortProfileUrls } from '@acx-ui/rc/utils'
+import { Provider }                         from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -14,9 +14,11 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { ethernetPortProfileList } from './__tests__/fixtures'
+import { dummyRadiusServiceList, ethernetPortProfileList } from './__tests__/fixtures'
 
 import { LanPortSettings } from '.'
+
+const venueId='mock-venue-id'
 
 const selectedModelCaps = {
   canSupportPoeMode: true,
@@ -193,6 +195,19 @@ describe('LanPortSettings - Ethernet Port Profile', () => {
         (_, res, ctx) => res(ctx.json({
           data: ethernetPortProfileList
         }))
+      ),
+      rest.get(
+        EthernetPortProfileUrls.getEthernetPortSettingsByApPortId.url,
+        (_, res, ctx) => res(ctx.json({
+          data: {
+            enabled: true
+          }
+        }))
+      ),
+      rest.post(AaaUrls.getAAAPolicyViewModelList.url,
+        (_, res, ctx) => {
+          return res(ctx.json(dummyRadiusServiceList))
+        }
       )
     )
   })
@@ -223,6 +238,8 @@ describe('LanPortSettings - Ethernet Port Profile', () => {
           isDhcpEnabled={false}
           isTrunkPortUntaggedVlanEnabled={true}
           useVenueSettings={false}
+          serialNumber={apParams.serialNumber}
+          venueId={venueId}
         />
       </Form>
     </Provider>, {

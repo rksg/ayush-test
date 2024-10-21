@@ -26,7 +26,10 @@ import {
   getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType,
-  useTableQuery } from '@acx-ui/rc/utils'
+  useTableQuery,
+  GetApiVersionHeader,
+  ApiVersionEnum
+} from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink } from '@acx-ui/react-router-dom'
 
 const defaultPayload = {
@@ -51,7 +54,8 @@ export default function SnmpAgentTable () {
   const tenantBasePath: Path = useTenantLink('')
 
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-
+  // eslint-disable-next-line
+  const isSNMPv3PassphraseOn = useIsSplitOn(Features.WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE)
   const filterResults = useTableQuery({
     useQuery: useGetApSnmpViewModelQuery,
     enableRbac: isUseRbacApi,
@@ -62,7 +66,11 @@ export default function SnmpAgentTable () {
       sortField: 'name',
       sortOrder: 'ASC'
     },
-    defaultPayload: filterPayload
+    defaultPayload: filterPayload,
+    customHeaders:
+    ( isUseRbacApi ?
+      GetApiVersionHeader((isSNMPv3PassphraseOn? ApiVersionEnum.v1_1 : ApiVersionEnum.v1)):
+      undefined)
   })
 
   const list = filterResults.data
@@ -87,7 +95,11 @@ export default function SnmpAgentTable () {
     defaultPayload,
     search: {
       searchTargetFields: defaultPayload.searchTargetFields as string[]
-    }
+    },
+    customHeaders:
+    ( isUseRbacApi ?
+      GetApiVersionHeader((isSNMPv3PassphraseOn? ApiVersionEnum.v1_1 : ApiVersionEnum.v1)):
+      undefined)
   })
 
   const [ deleteFn ] = useDeleteApSnmpPolicyMutation()

@@ -800,7 +800,7 @@ export function NetworkForm (props:{
 
         if (isSoftGreEnabled && formData['softGreAssociationUpdate']) {
         // eslint-disable-next-line max-len
-          afterVenueActivationRequest.push(updateSoftGreActivations(networkId, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode))
+          afterVenueActivationRequest.push(updateSoftGreActivations(networkId, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode, false))
         }
       }
       await Promise.all(afterVenueActivationRequest)
@@ -931,7 +931,7 @@ export function NetworkForm (props:{
       if (isSoftGreEnabled && formData['softGreAssociationUpdate'] && payload.id && payload.venues) {
         allRequests.push(
           // eslint-disable-next-line max-len
-          updateSoftGreActivations(payload.id, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode)
+          updateSoftGreActivations(payload.id, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode, true)
         )
       }
 
