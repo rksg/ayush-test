@@ -12,8 +12,7 @@ import {
   SwitchCliMessages,
   SwitchCustomizedVariable,
   SwitchStatusEnum,
-  SwitchViewModel,
-  Venue
+  SwitchViewModel
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -34,10 +33,10 @@ export function CliVariableModal (props: {
   variableList: CliTemplateVariable[],
   setModalvisible: (visible: boolean) => void
   setVariableList: (data: CliTemplateVariable[]) => void
-  venueList?: Venue[]
   isCustomizedVariableEnabled?: boolean
   venueAppliedModels?: Record<string, string[]>
   selectedModels?: string[]
+  selectedVenues?: string[]
   allowedSwitchList?: SwitchViewModel[]
   configuredSwitchList?: SwitchViewModel[]
 }) {
@@ -53,7 +52,7 @@ export function CliVariableModal (props: {
 
   const {
     data, editMode, modalvisible, setModalvisible, variableList, setVariableList,
-    isCustomizedVariableEnabled, venueAppliedModels, selectedModels,
+    isCustomizedVariableEnabled, venueAppliedModels, selectedModels, selectedVenues,
     allowedSwitchList, configuredSwitchList
   } = props
 
@@ -98,7 +97,8 @@ export function CliVariableModal (props: {
           return {
             ...s,
             isApplied: venueModels?.includes(s.model || ''),
-            isModelOverlap: !!intersection(venueModels, selectedModels)?.length,
+            isModelOverlap: !selectedVenues?.includes(s.venueId)
+              && !!intersection(venueModels, selectedModels)?.length,
             isConfigured: s.deviceStatus !== SwitchStatusEnum.NEVER_CONTACTED_CLOUD
           }
         }).filter(s => selectedModels?.includes(s.model || '')

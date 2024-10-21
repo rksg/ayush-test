@@ -134,6 +134,7 @@ export function CliStepConfiguration (props: {
   const [initVariableList, setInitVariableList] = useState(false)
 
   const [selectedModels, setSelectedModels] = useState([] as string[])
+  const [selectedVenues, setSelectedVenues] = useState([] as string[])
   const [venueAppliedModels, setVenueAppliedModels]
     = useState({} as unknown as Record<string, string[]>)
 
@@ -204,6 +205,7 @@ export function CliStepConfiguration (props: {
 
       setVariableList((transformVariables ?? []) as CliTemplateVariable[])
       setSelectedModels(data?.models)
+      setSelectedVenues(data?.venues)
       setInitVariableList(true)
     }
   }, [])
@@ -534,6 +536,7 @@ export function CliStepConfiguration (props: {
       isCustomizedVariableEnabled={isCustomizedVariableEnabled}
       venueAppliedModels={venueAppliedModels}
       selectedModels={selectedModels}
+      selectedVenues={selectedVenues}
       allowedSwitchList={props?.allowedSwitchList}
       configuredSwitchList={props?.configuredSwitchList}
     />}
