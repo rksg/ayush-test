@@ -84,7 +84,7 @@ export const DcSdLanDetailContent = (props: { data?: EdgeMvSdLanViewData }) => {
         <Tabs type='third'>
           <Tabs.TabPane
             tab={$t(
-              { defaultMessage: '<VenuePlural></VenuePlural>({count})' },
+              { defaultMessage: '<VenuePlural></VenuePlural> ({count})' },
               { count: venueTableData?.length ?? 0 }
             )}
             key='venues'
@@ -93,7 +93,7 @@ export const DcSdLanDetailContent = (props: { data?: EdgeMvSdLanViewData }) => {
           </Tabs.TabPane>
           <Tabs.TabPane
             tab={$t(
-              { defaultMessage: 'AP({count})' },
+              { defaultMessage: 'AP ({count})' },
               { count: apListTableQuery?.data?.totalCount ?? 0 }
             )}
             key='ap'
@@ -105,7 +105,7 @@ export const DcSdLanDetailContent = (props: { data?: EdgeMvSdLanViewData }) => {
             />
           </Tabs.TabPane>
           <Tabs.TabPane
-            tab={$t({ defaultMessage: 'RUCKUS Edges({count})' },
+            tab={$t({ defaultMessage: 'RUCKUS Edges ({count})' },
               { count: data?.edgeClusterId ? 1 : 0 })}
             key='se'
           >

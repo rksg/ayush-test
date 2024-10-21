@@ -61,6 +61,8 @@ export function ApSnmp () {
   } = useContext(ApEditContext)
 
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  // eslint-disable-next-line
+  const isSNMPv3PassphraseOn = useIsSplitOn(Features.WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE)
 
   const { venueData } = useContext(ApDataContext)
   const venueId = venueData?.id
@@ -76,7 +78,7 @@ export function ApSnmp () {
   const [isApSnmpEnable, setIsApSnmpEnable] = useState(false)
   const [formInitializing, setFormInitializing] = useState(true)
   // eslint-disable-next-line max-len
-  const getApSnmpAgentList = useGetApSnmpPolicyListQuery({ params: { tenantId }, enableRbac: isUseRbacApi })
+  const getApSnmpAgentList = useGetApSnmpPolicyListQuery({ params: { tenantId }, enableRbac: isUseRbacApi, isSNMPv3PassphraseOn })
   // eslint-disable-next-line max-len
   const getApSnmpSettings = useGetApSnmpSettingsQuery({ params: { serialNumber, venueId }, enableRbac: isUseRbacApi },
     { skip: !venueId })

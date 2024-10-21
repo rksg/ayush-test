@@ -11,6 +11,16 @@ import {
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
+  compareVersions,
+  getApVersion,
+  getApSequence,
+  getApNextScheduleTpl,
+  getNextSchedulesTooltip,
+  toUserDate,
+  getApSchedules,
+  findMaxActiveABFVersion
+} from '@acx-ui/rc/components'
+import {
   useGetUpgradePreferencesQuery,
   useUpdateUpgradePreferencesMutation,
   useGetVenueVersionListQuery,
@@ -42,16 +52,6 @@ import { useParams }                 from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 import { noDataDisplay }             from '@acx-ui/utils'
 
-import {
-  compareVersions,
-  getApVersion,
-  getApSequence,
-  getApNextScheduleTpl,
-  getNextSchedulesTooltip,
-  toUserDate,
-  getApSchedules,
-  findMaxActiveABFVersion
-} from '../../FirmwareUtils'
 import { PreferencesDialog } from '../../PreferencesDialog'
 import * as UI               from '../../styledComponents'
 
