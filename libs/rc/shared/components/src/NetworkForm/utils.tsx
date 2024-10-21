@@ -418,15 +418,15 @@ export function useClientIsolationActivations (shouldSkipMode: boolean,
 
     const bindData = _.filter(saveData?.venues, v =>
       v.clientIsolationAllowlistId != null &&
-        (!_.some(oldSaveData?.venues, { id: v.id }) ||
-          _.some(oldSaveData?.venues, ov => ov.id === v.id
+        (!_.some(oldSaveData?.venues, { venueId: v.venueId }) ||
+          _.some(oldSaveData?.venues, ov => ov.venueId === v.venueId
             && ov.clientIsolationAllowlistId !== v.clientIsolationAllowlistId)
         )
     )
 
     const unbindData = _.filter(oldSaveData?.venues, ov =>
       ov.clientIsolationAllowlistId != null &&
-        _.some(saveData?.venues, v => v.id === ov.id && !v.clientIsolationAllowlistId)
+        _.some(saveData?.venues, v => v.venueId === ov.venueId && !v.clientIsolationAllowlistId)
     )
 
     const bindMutations = createMutationPromises(bindData, bindClientIsolation)
