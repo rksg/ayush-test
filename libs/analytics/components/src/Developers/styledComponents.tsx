@@ -14,9 +14,14 @@ export const TransparentButton = styled(Button)`
   display: flex;
   align-items: center;
   justify-content: center;
-  
+
   &:hover, &:focus {
     background-color: transparent;
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
   }
 `
 
