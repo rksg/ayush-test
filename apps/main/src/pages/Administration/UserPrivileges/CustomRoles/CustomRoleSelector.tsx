@@ -6,7 +6,7 @@ import { without }   from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+// import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { useGetCustomRolesQuery } from '@acx-ui/rc/services'
 import { RolesEnum }              from '@acx-ui/types'
 import { roleStringMap }          from '@acx-ui/user'
@@ -28,11 +28,11 @@ const CustomRoleSelector = (props: CustomRoleSelectorProps) => {
   const { $t } = useIntl()
   const { disabled, isEditMode, isOnboardedMsp, setSelected } = props
   const params = useParams()
-  const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
+  // const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
 
   const { data: roleList } = useGetCustomRolesQuery({ params })
 
-  const rolesToBeRemoved = ((isRbacPhase2Enabled && isOnboardedMsp && !isEditMode) || disabled)
+  const rolesToBeRemoved = ((isOnboardedMsp && !isEditMode) || disabled)
     ? [...without(NonSupportedRoles, RolesEnum.PRIME_ADMIN)] : NonSupportedRoles
 
   const rolesList = roleList?.filter(item =>
