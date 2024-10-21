@@ -1,19 +1,73 @@
-import { Col, DatePicker, Form, Input, Radio, Row, Space, Typography } from 'antd'
-import moment                                                          from 'moment'
-import { useIntl }                                                     from 'react-intl'
+import { useState } from 'react'
 
-import { Button } from '@acx-ui/components'
+import { Col, DatePicker, Form, InputNumber, Radio, Row, Space, Typography } from 'antd'
+import { isNumber }                                                          from 'lodash'
+import moment                                                                from 'moment'
+import { useIntl }                                                           from 'react-intl'
 
-export default function MaxPeriod () {
+import { Button, Loader, showToast }        from '@acx-ui/components'
+import { useGetCalculatedLicencesMutation } from '@acx-ui/msp/services'
+import { LicenseCalculatorData }            from '@acx-ui/msp/utils'
+import { EntitlementDeviceType }            from '@acx-ui/rc/utils'
+import { noDataDisplay }                    from '@acx-ui/utils'
+
+export default function MaxPeriod (props: { showExtendedTrial: boolean }) {
   const { $t } = useIntl()
   const [form] = Form.useForm()
+  const [ maxPeriod, setMaxPeriod ] = useState<string>()
+
+  const [
+    getCalculatedLicense,
+    { isLoading }
+  ] = useGetCalculatedLicencesMutation()
+
+  async function calculatePeriod () {
+    form.validateFields()
+    const startDate = form.getFieldsValue().startDate
+    const noOfLicenses = form.getFieldsValue().noOfLicenses
+    const isTrial = form.getFieldsValue().licenses === 'extendedTrialLicenses'
+    if (startDate && isNumber(noOfLicenses)) {
+      const payload = {
+        operator: 'MAX_PERIOD',
+        effectiveDate: moment(startDate).format('YYYY-MM-DD'),
+        quantity: noOfLicenses,
+        filters: {
+          usageType: 'ASSIGNED',
+          licenseType: EntitlementDeviceType.APSW,
+          isTrial
+        }
+      }
+      await getCalculatedLicense({ payload })
+        .unwrap()
+        .then(( { data, message }: { data: LicenseCalculatorData, message: string }) => {
+          if (!message) {
+            setMaxPeriod(data?.expirationDate)
+          } else {
+            setMaxPeriod('')
+            showError(message)
+          }
+        }).catch(error => {
+          if(error.data.message) {
+            showError(error.data.message)
+          }
+        })
+    }
+  }
+
+  function showError (errorMessage: string) {
+    showToast({
+      type: 'error',
+      content: errorMessage
+    })
+  }
   return <div>
     <Form
       form={form}
       layout='vertical'
-      size={'small'}
+      size={'middle'}
+      onFinish={calculatePeriod}
     >
-      <Form.Item
+      { props.showExtendedTrial && <Form.Item
         name={'licenses'}
         initialValue={'paidLicenses'}
         children={<Radio.Group>
@@ -22,25 +76,47 @@ export default function MaxPeriod () {
             <Radio value={'extendedTrialLicenses'}>{
               $t({ defaultMessage: 'Extended Trial Licenses' }) }</Radio>
           </Space>
-        </Radio.Group>}/>
+        </Radio.Group>}/> }
       <Form.Item
         name={'startDate'}
-        style={{ display: 'inline-block', width: '80px' }}
+        label={$t({ defaultMessage: 'Start Date' })}
+        style={{ display: 'inline-block', width: '90px' }}
+        rules={[
+          { required: true }
+        ]}
         children={<DatePicker
           allowClear={false}
-          disabledDate={(current) => {
-            return current && current < moment().endOf('day')
+          suffixIcon={null}
+          style={{
+            height: '28px'
           }}
-          style={{ marginLeft: '4px' }}
+          disabledDate={(current) => {
+            return current && current <= moment().startOf('day')
+          }}
         />}/>
       <Form.Item
-        name={'endDate'}
-        style={{ display: 'inline-block', width: '80px', margin: '0 6px' }}
-        children={<Input />}/>
+        name={'noOfLicenses'}
+        label={$t({ defaultMessage: '# of Licenses' })}
+        style={{ display: 'inline-block', width: '90px', margin: '0 6px' }}
+        rules={[
+          { required: true },
+          { type: 'number', min: 1, max: 10000 }
+        ]}
+        children={<InputNumber
+          style={{
+            height: '28px'
+          }}/>}/>
       <Form.Item
         name={'calculate'}
-        style={{ display: 'inline-block', width: '80px', margin: '0 6px' }}
-        children={<Button type='default'>CALCULATE</Button>}/>
+        style={{ display: 'inline-block', width: '90px',
+          margin: '22px 6px 0px 0px' }}
+        children={<Button style={{
+          background: 'var(--acx-primary-black)',
+          color: 'var(--acx-primary-white)',
+          minHeight: '28px'
+        }}
+        htmlType='submit'
+        type='default'>{ $t({ defaultMessage: 'CALCULATE' }) }</Button>}/>
     </Form>
     <Row style={{
       alignItems: 'baseline'
@@ -53,7 +129,9 @@ export default function MaxPeriod () {
         </Typography.Text>
       </Col>
       <Col>
-        <Typography.Title> 05/12/2025 </Typography.Title>
+        <Typography.Title> <Loader states={[{ isLoading }]}>
+          {maxPeriod || noDataDisplay}
+        </Loader> </Typography.Title>
       </Col>
     </Row>
   </div>

@@ -4,28 +4,80 @@ import { Col, DatePickerProps, Form, Radio, Row, Space, Typography } from 'antd'
 import moment                                                        from 'moment'
 import { useIntl }                                                   from 'react-intl'
 
-import { Button, DatePicker } from '@acx-ui/components'
+import { Button, DatePicker, Loader, showToast } from '@acx-ui/components'
+import { useGetCalculatedLicencesMutation }      from '@acx-ui/msp/services'
+import { LicenseCalculatorData }                 from '@acx-ui/msp/utils'
+import { EntitlementDeviceType }                 from '@acx-ui/rc/utils'
+import { noDataDisplay }                         from '@acx-ui/utils'
 
-export default function MaxLicenses () {
+export default function MaxLicenses (props: { showExtendedTrial: boolean }) {
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const [ selectedDate, setSelectedDate ] = useState(moment().endOf('day'))
+  const [ maxLicenceCount, setMaxLicenceCount ] = useState<number>()
 
   const onDateChange: DatePickerProps['onChange'] = (dateString: moment.Moment | null) => {
     if (dateString) {
       setSelectedDate(dateString)
-      if (dateString.isBefore(moment(selectedDate).add(1, 'days'))) {
-        form.setFieldValue('endDate', moment(selectedDate).add(1, 'days'))
+      form.setFieldValue('endDate', '')
+    }
+  }
+
+  const [
+    getCalculatedLicense,
+    { isLoading }
+  ] = useGetCalculatedLicencesMutation()
+
+  async function calculateLicences () {
+    form.validateFields()
+    const startDate = form.getFieldsValue().startDate
+    const endDate = form.getFieldsValue().endDate
+    const isTrial = form.getFieldsValue().licenses === 'extendedTrialLicenses'
+    if (startDate && endDate) {
+      const diff = startDate.diff(endDate)
+      if (diff < 0) {
+        const payload = {
+          operator: 'MAX_QUANTITY',
+          effectiveDate: moment(startDate).format('YYYY-MM-DD'),
+          expirationDate: moment(endDate).format('YYYY-MM-DD'),
+          filters: {
+            usageType: 'ASSIGNED',
+            licenseType: EntitlementDeviceType.APSW,
+            isTrial
+          }
+        }
+
+        await getCalculatedLicense({ payload })
+          .unwrap()
+          .then(( { data, message }: { data: LicenseCalculatorData, message: string }) => {
+            if (!message) {
+              setMaxLicenceCount(data?.quantity || 0)
+            } else {
+              setMaxLicenceCount(undefined)
+              showError(message)
+            }
+          }).catch(error => {
+            if(error.data.message) {
+              showError(error.data.message)
+            }
+          })
       }
     }
+  }
+
+  function showError (errorMessage: string) {
+    showToast({
+      type: 'error',
+      content: errorMessage
+    })
   }
   return <div>
     <Form
       form={form}
       layout='vertical'
-      size={'small'}
+      size={'middle'}
     >
-      <Form.Item
+      { props.showExtendedTrial && <Form.Item
         name={'licenses'}
         initialValue={'paidLicenses'}
         children={<Radio.Group>
@@ -34,33 +86,52 @@ export default function MaxLicenses () {
             <Radio value={'extendedTrialLicenses'}>{
               $t({ defaultMessage: 'Extended Trial Licenses' }) }</Radio>
           </Space>
-        </Radio.Group>}/>
+        </Radio.Group>}/>}
       <Form.Item
         name={'startDate'}
         label={$t({ defaultMessage: 'Start Date' })}
-        style={{ display: 'inline-block', width: '80px' }}
+        style={{ display: 'inline-block', width: '90px' }}
+        validateFirst
+        rules={[
+          { required: true }
+        ]}
         children={<DatePicker
+          suffixIcon={null}
           allowClear={false}
+          style={{
+            height: '28px'
+          }}
           onChange={onDateChange}
           disabledDate={(current) => {
-            return current && current < moment().add(1, 'day')
+            return current && current <= moment().startOf('day')
           }}
         />}/>
       <Form.Item
         name={'endDate'}
         label={$t({ defaultMessage: 'End Date' })}
-        style={{ display: 'inline-block', width: '80px', margin: '0 6px' }}
+        style={{ display: 'inline-block', width: '90px', margin: '0 6px' }}
+        validateFirst
+        rules={[
+          { required: true }
+        ]}
         children={<DatePicker
           allowClear={false}
+          suffixIcon={null}
+          style={{
+            height: '28px'
+          }}
           disabledDate={(date) => date.isBefore(moment(selectedDate).add(1, 'days'))}
         />}/>
       <Form.Item
         name={'calculate'}
-        style={{ display: 'inline-block', width: '80px', margin: '27px 6px 0px 0px' }}
+        style={{ display: 'inline-block', width: '90px',
+          margin: '22px 6px 0px 0px' }}
         children={<Button style={{
           background: 'var(--acx-primary-black)',
-          color: 'var(--acx-primary-white)'
+          color: 'var(--acx-primary-white)',
+          minHeight: '28px'
         }}
+        onClick={calculateLicences}
         type='default'>{ $t({ defaultMessage: 'CALCULATE' }) }</Button>}/>
     </Form>
     <Row style={{
@@ -74,7 +145,9 @@ export default function MaxLicenses () {
         </Typography.Text>
       </Col>
       <Col>
-        <Typography.Title> 34 </Typography.Title>
+        <Typography.Title> <Loader states={[{ isLoading }]}>
+          {maxLicenceCount || noDataDisplay}
+        </Loader> </Typography.Title>
       </Col>
     </Row>
   </div>
