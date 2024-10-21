@@ -1,3 +1,8 @@
+
+import { ClusterSubInterfaceSettings, LagSubInterface, NodeSubInterfaces, PortSubInterface } from '../../../../types/edge'
+
+import { EdgeGeneralFixtures } from '.'
+
 export const mockEdgeSubInterfaces = {
   page: 1,
   pageSize: 10,
@@ -135,6 +140,62 @@ export const mockEdgeSubInterfaces = {
     }
   ]
 }
+
+const { mockedHaNetworkSettings } = EdgeGeneralFixtures
+const generateMockedClusterSubInterfaceSettings = (): ClusterSubInterfaceSettings => {
+  const clusterSubInterfaceSettings: ClusterSubInterfaceSettings = {
+    nodes: []
+  }
+
+  mockedHaNetworkSettings.lagSettings.forEach((lagSetting, index) => {
+    const node: NodeSubInterfaces = {
+      serialNumber: lagSetting.serialNumber,
+      ports: [],
+      lags: []
+    }
+
+    lagSetting.lags.forEach(lag => {
+      const lagSubInterface: LagSubInterface = {
+        lagId: lag.id,
+        subInterfaces: [{
+          id: `sub_if_lag_${lag.id}`,
+          vlan: 200 + index,
+          portType: lag.portType,
+          ipMode: lag.ipMode,
+          ip: lag.ip,
+          subnet: lag.subnet
+        }]
+      }
+      node.lags.push(lagSubInterface)
+    })
+
+    const portSetting = mockedHaNetworkSettings.portSettings.find(
+      portSetting => portSetting.serialNumber === lagSetting.serialNumber
+    )
+
+    if (portSetting) {
+      portSetting.ports.forEach(port => {
+        const portSubInterface: PortSubInterface = {
+          portId: port.id,
+          subInterfaces: [{
+            id: `sub_if_port_${port.id}`,
+            vlan: 100 + index,
+            portType: port.portType,
+            ipMode: port.ipMode,
+            ip: port.ip,
+            subnet: port.subnet
+          }]
+        }
+        node.ports.push(portSubInterface)
+      })
+    }
+
+    clusterSubInterfaceSettings.nodes.push(node)
+  })
+
+  return clusterSubInterfaceSettings
+}
+export const mockedClusterSubInterfaceSettings = generateMockedClusterSubInterfaceSettings()
 
 export const mockEdgeSubInterfacesStatus = {
   fields: ['subnet','vlan','ip','name','serialNumber','type','sortIdx','mac','status','ipMode'],
