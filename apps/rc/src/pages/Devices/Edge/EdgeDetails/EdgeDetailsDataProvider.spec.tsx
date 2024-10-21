@@ -9,7 +9,7 @@ import { mockServer, renderHook, waitFor }   from '@acx-ui/test-utils'
 
 import { EdgeDetailsDataContext, EdgeDetailsDataProvider } from './EdgeDetailsDataProvider'
 
-const { mockEdgeList } = EdgeGeneralFixtures
+const { mockEdgeList, mockEdgeCluster } = EdgeGeneralFixtures
 
 describe('EdgeDetails - EdgeDetailsDataProvider', () => {
   beforeEach(() => {
@@ -18,6 +18,10 @@ describe('EdgeDetails - EdgeDetailsDataProvider', () => {
       rest.post(
         EdgeUrlsInfo.getEdgeList.url,
         (req, res, ctx) => res(ctx.json(mockEdgeList))
+      ),
+      rest.get(
+        EdgeUrlsInfo.getEdgeCluster.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeCluster))
       )
     )
   })
@@ -33,5 +37,6 @@ describe('EdgeDetails - EdgeDetailsDataProvider', () => {
       </Provider>
     })
     await waitFor(() => expect(result.current.currentEdgeStatus?.name).toBe('Smart Edge 1'))
+    await waitFor(() => expect(result.current.currentCluster?.name).toBe('Edge Cluster 1'))
   })
 })

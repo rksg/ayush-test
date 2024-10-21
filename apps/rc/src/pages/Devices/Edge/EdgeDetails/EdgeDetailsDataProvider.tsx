@@ -1,11 +1,14 @@
 import { createContext } from 'react'
 
-import { useEdgeBySerialNumberQuery } from '@acx-ui/rc/services'
-import { EdgeStatus }                 from '@acx-ui/rc/utils'
+import { Loader }                                             from '@acx-ui/components'
+import { useEdgeBySerialNumberQuery, useGetEdgeClusterQuery } from '@acx-ui/rc/services'
+import { EdgeCluster, EdgeStatus }                            from '@acx-ui/rc/utils'
 
 export interface EdgeDetailsDataContextType {
   currentEdgeStatus?: EdgeStatus
+  currentCluster?: EdgeCluster
   isEdgeStatusLoading: boolean
+  isClusterLoading: boolean
 }
 
 export const EdgeDetailsDataContext = createContext({} as EdgeDetailsDataContextType)
@@ -40,7 +43,8 @@ export const EdgeDetailsDataProvider = (props:EdgeDetailsDataProviderProps) => {
       'diskUsedKb',
       'diskTotalKb',
       'description',
-      'isHqosEnabled'
+      'isHqosEnabled',
+      'haStatus'
     ],
     filters: { serialNumber: [serialNumber] } }
 
@@ -52,12 +56,20 @@ export const EdgeDetailsDataProvider = (props:EdgeDetailsDataProviderProps) => {
     payload: edgeStatusPayload
   }, { skip: !serialNumber })
 
+  const { data: currentCluster, isLoading: isClusterLoading } = useGetEdgeClusterQuery({
+    params: { venueId: currentEdgeStatus?.venueId, clusterId: currentEdgeStatus?.clusterId }
+  }, { skip: !Boolean(currentEdgeStatus?.clusterId) || !Boolean(currentEdgeStatus?.venueId) })
+
   return <EdgeDetailsDataContext.Provider
     value={{
       currentEdgeStatus,
-      isEdgeStatusLoading
+      currentCluster,
+      isEdgeStatusLoading,
+      isClusterLoading
     }}
   >
-    {children}
+    <Loader states={[{ isLoading: isEdgeStatusLoading || isClusterLoading }]}>
+      {children}
+    </Loader>
   </EdgeDetailsDataContext.Provider>
 }

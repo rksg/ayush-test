@@ -486,3 +486,32 @@ export interface ClusterNetworkSettings {
     loadDistribution: ClusterHaLoadDistributionEnum
   }
 }
+
+export interface ClusterSubInterfaceSettings {
+  nodes: NodeSubInterfaces[]
+}
+
+export interface NodeSubInterfaces {
+  serialNumber: EdgeSerialNumber
+  ports: PortSubInterface[]
+  lags: LagSubInterface[]
+}
+
+export interface PortSubInterface {
+  portId: string
+  subInterfaces: SubInterface[]
+}
+
+export interface LagSubInterface {
+  lagId: number
+  subInterfaces: SubInterface[]
+}
+
+export interface SubInterface {
+  id?: string
+  vlan: number
+  portType: EdgePortTypeEnum
+  ipMode: EdgeIpModeEnum
+  ip?: string
+  subnet?: string
+}
