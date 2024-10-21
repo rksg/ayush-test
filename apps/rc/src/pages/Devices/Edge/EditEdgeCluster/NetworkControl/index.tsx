@@ -58,7 +58,7 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
     })
   })
 
-  const { currentQos, isQosLoading } = useGetEdgeHqosProfileViewDataListQuery({
+  const { currentHqos, isHqosLoading } = useGetEdgeHqosProfileViewDataListQuery({
     payload: {
       fields: [
         'id'
@@ -69,8 +69,8 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
   {
     skip: !Boolean(clusterId),
     selectFromResult: ({ data, isLoading }) => ({
-      currentQos: data?.data[0],
-      isQosLoading: isLoading
+      currentHqos: data?.data[0],
+      isHqosLoading: isLoading
     })
   })
   const handleApply = async () => {
@@ -96,19 +96,19 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
   }
 
   const handleApplyQos = async () => {
-    const isQosProfileActive = form.getFieldValue('qosSwitch')
-    const currentQosId = currentQos?.id??''
+    const isQosProfileActive = form.getFieldValue('hqosSwitch')
+    const currentHqosId = currentHqos?.id??''
     if (!isQosProfileActive) {
-      if(currentQosId!== ''){
+      if(currentHqosId!== ''){
         await removeQosProfile()
       }
       return
     } else {
-      const selectedQosId = form.getFieldValue('qosId') || ''
-      if(selectedQosId === currentQosId) {
+      const selectedHqosId = form.getFieldValue('hqosId') || ''
+      if(selectedHqosId === currentHqosId) {
         return
       }
-      await applyQosProfile(selectedQosId)
+      await applyQosProfile(selectedHqosId)
     }
   }
 
@@ -136,10 +136,10 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
     }
   }
 
-  const applyQosProfile = async (qosId: string) => {
+  const applyQosProfile = async (hqosId: string) => {
     try {
       await activateEdgeQos({ params: {
-        policyId: qosId,
+        policyId: hqosId,
         venueId: currentClusterStatus?.venueId,
         edgeClusterId: clusterId
       } }).unwrap()
@@ -151,7 +151,7 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
   const removeQosProfile = async () => {
     try {
       await deactivateEdgeQos({ params: {
-        policyId: currentQos?.id,
+        policyId: currentHqos?.id,
         venueId: currentClusterStatus?.venueId,
         edgeClusterId: clusterId
       } }).unwrap()
@@ -164,7 +164,7 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
   && hasPermission({ scopes: [EdgeScopes.UPDATE] })
 
   return (
-    <Loader states={[{ isLoading: isQosLoading || isDhcpLoading }]}>
+    <Loader states={[{ isLoading: isHqosLoading || isDhcpLoading }]}>
       <StepsForm
         form={form}
         onFinish={handleApply}
@@ -172,68 +172,73 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
         buttonLabel={{ submit: hasUpdatePermission ? $t({ defaultMessage: 'Apply' }) : '' }}
         initialValues={{
           dhcpSwitch: Boolean(currentDhcp), dhcpId: currentDhcp?.id,
-          qosSwitch: Boolean(currentQos), qosId: currentQos?.id }}
+          hqosSwitch: Boolean(currentHqos), hqosId: currentHqos?.id
+        }}
       >
         <StepsForm.StepForm>
           <Row gutter={20}>
             <Col span={7}>
-              {isEdgeDhcpHaReady &&
-            <StepsForm.FieldLabel width='50%'>
-              {$t({ defaultMessage: 'DHCP Service' })}
-              <Form.Item
-                name='dhcpSwitch'
-                valuePropName='checked'
-                children={
-                  <Switch />
-                }
-              />
-            </StepsForm.FieldLabel>
+              {
+                isEdgeDhcpHaReady &&
+                <StepsForm.FieldLabel width='50%'>
+                  {$t({ defaultMessage: 'DHCP Service' })}
+                  <Form.Item
+                    name='dhcpSwitch'
+                    valuePropName='checked'
+                    children={<Switch />}
+                  />
+                </StepsForm.FieldLabel>
               }
-              {isEdgeDhcpHaReady &&
-            <Form.Item
-              dependencies={['dhcpSwitch']}
-            >
-              {({ getFieldValue }) => {
-                return getFieldValue('dhcpSwitch') ?<EdgeDhcpSelectionForm hasPin={false} />:<></>
-              }}
-            </Form.Item>}
+              {
+                isEdgeDhcpHaReady &&
+                <Form.Item
+                  dependencies={['dhcpSwitch']}
+                >
+                  {
+                    ({ getFieldValue }) => {
+                      return getFieldValue('dhcpSwitch') && <EdgeDhcpSelectionForm hasPin={false} />
+                    }
+                  }
+                </Form.Item>
+              }
             </Col>
           </Row>
           <Row gutter={20}>
             <Col span={7}>
-              {isEdgeHqosEnabled &&
-              <StepsForm.FieldLabel width='50%'>
-                <Space>
-                  {$t({ defaultMessage: 'Hierarchical QoS' })}
-                  {
-                    isEdgeCompatibilityEnabled &&
-                    <ApCompatibilityToolTip
-                      title=''
-                      visible
-                      onClick={() => setEdgeFeatureName(IncompatibilityFeatures.HQOS)}
-                    />
-                  }
-                </Space>
-                <Space>
-                  <Tooltip title={hqosReadOnlyToolTipMessage}>
-                    <Form.Item
-                      name='qosSwitch'
-                      valuePropName='checked'
-                    >
-                      <Switch disabled={hqosReadOnly} />
-                    </Form.Item>
-                  </Tooltip>
-                </Space>
+              {
+                isEdgeHqosEnabled &&
+                <StepsForm.FieldLabel width='50%'>
+                  <Space>
+                    {$t({ defaultMessage: 'Hierarchical QoS' })}
+                    {
+                      isEdgeCompatibilityEnabled &&
+                      <ApCompatibilityToolTip
+                        title=''
+                        visible
+                        onClick={() => setEdgeFeatureName(IncompatibilityFeatures.HQOS)}
+                      />
+                    }
+                  </Space>
+                  <Space>
+                    <Tooltip title={hqosReadOnlyToolTipMessage}>
+                      <Form.Item
+                        name='hqosSwitch'
+                        valuePropName='checked'
+                      >
+                        <Switch disabled={hqosReadOnly} />
+                      </Form.Item>
+                    </Tooltip>
+                  </Space>
 
-              </StepsForm.FieldLabel>
+                </StepsForm.FieldLabel>
               }
               {
                 isEdgeHqosEnabled &&
                 <Form.Item
-                  dependencies={['qosSwitch']}
+                  dependencies={['hqosSwitch']}
                 >
                   {({ getFieldValue }) => {
-                    return getFieldValue('qosSwitch') ?<EdgeQosProfileSelectionForm />:<></>
+                    return getFieldValue('hqosSwitch') && <EdgeQosProfileSelectionForm />
                   }}
                 </Form.Item>
               }
@@ -242,13 +247,16 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
         </StepsForm.StepForm>
 
       </StepsForm>
-      {isEdgeCompatibilityEnabled && <EdgeCompatibilityDrawer
-        visible={!!edgeFeatureName}
-        type={EdgeCompatibilityType.ALONE}
-        title={$t({ defaultMessage: 'Compatibility Requirement' })}
-        featureName={edgeFeatureName}
-        onClose={() => setEdgeFeatureName(undefined)}
-      />}
+      {
+        isEdgeCompatibilityEnabled &&
+        <EdgeCompatibilityDrawer
+          visible={!!edgeFeatureName}
+          type={EdgeCompatibilityType.ALONE}
+          title={$t({ defaultMessage: 'Compatibility Requirement' })}
+          featureName={edgeFeatureName}
+          onClose={() => setEdgeFeatureName(undefined)}
+        />
+      }
     </Loader>
   )
 }
