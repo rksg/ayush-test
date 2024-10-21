@@ -86,13 +86,14 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
   // TODO 3. Generate Certificate: if a certificate is generated from here, the Client or Server auth option in Extended key usage area should be forced to ‘enabled’,
   //         depending on which selector user generates, “Certificate with Client Auth Key” or “Certificate with Server Auth Key”.
   //         so that user can select it from the dropdown list then
-  const { clientCertSelectOptions } = useGetCertificateListQuery(
+  const { certSelectOptions } = useGetCertificateListQuery(
     { payload: defaultPayload }, {
       selectFromResult: ({ data }) => {
         // const d = edit ? data?.data
         //   : data?.data.filter(item => item.status?.includes(CertificateStatusType.VALID))
-        const clientCertOptions = data?.data?.map(item => ({ label: item.commonName, value: item.id, certStates: item.status })) ?? []
-        return { clientCertSelectOptions: clientCertOptions }
+        const certOptions = data?.data?.map(
+          item => ({ label: item.commonName, value: item.id, certStates: item.status })) ?? []
+        return { certSelectOptions: certOptions }
       }
     })
 
@@ -109,6 +110,33 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
       return 'revoked'
     }
     return ''
+  }
+
+  const clientCertStatus = certSelectOptions?.find(
+    c => c.value === clientCertId)?.certStates ?? []
+
+  const certificateStatusValidator = (certStates: CertificateStatusType[] | undefined) => {
+    if (certStates && !certStates.includes(CertificateStatusType.VALID)) {
+      return Promise.reject(<FormattedMessage
+        defaultMessage={
+          // eslint-disable-next-line max-len
+          'This certificate has {certState}.  Please go to <certificateGuide></certificateGuide> to renew it.'
+        }
+        values={{
+          certState: getCertState(certStates),
+          certificateGuide: ()=> (
+            <TenantLink
+              to={getPolicyRoutePath({
+                type: PolicyType.SERVER_CERTIFICATES,
+                oper: PolicyOperation.LIST
+              })}>
+              {'Server & Client Certificates'}
+            </TenantLink>
+          )
+        }}
+      />)
+    }
+    return Promise.resolve()
   }
 
   const nameValidator = async (value: string) => {
@@ -175,7 +203,7 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
   }
 
   const certificateValidator = (id: string) => {
-    const status = clientCertSelectOptions.find(c => c.value === id)?.certStates
+    const status = certSelectOptions.find(c => c.value === id)?.certStates
     return status?.includes(CertificateStatusType.EXPIRED) ||
       status?.includes(CertificateStatusType.REVOKED) ?
       Promise.reject() : Promise.resolve()
@@ -194,6 +222,10 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
   }
 
   const handleAddClientCertificate = () => {
+    setShowCertificateDrawer(true)
+  }
+
+  const handleAddServerCertificate = () => {
     setShowCertificateDrawer(true)
   }
 
@@ -354,7 +386,6 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
                 }
               ]}>
               <Select
-                style={{ width: '280px' }}
                 options={caSelectOptions} />
             </Form.Item>
             { hasPolicyPermission({
@@ -374,54 +405,51 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
               { validator: (_, value) => certificateValidator(value) }
             ]}>
             <Select
-              style={{ width: '280px' }}
               options={[
                 { label: $t({ defaultMessage: 'None' }), value: null },
-                ...clientCertSelectOptions
-              ]}
-            />
+                ...certSelectOptions
+              ]} />
           </Form.Item>
           {/* { clientCertStatus.includes(CertificateStatusType.EXPIRED) ||
             clientCertStatus.includes(CertificateStatusType.REVOKED) ?
             <CertificateWarning status={clientCertStatus}/> : []} */}
           <Button type='link'
-            disabled={clientCertSelectOptions.length >= CERTIFICATE_MAX_COUNT}
+            disabled={certSelectOptions.length >= CERTIFICATE_MAX_COUNT}
             onClick={handleAddClientCertificate}
             children={$t({ defaultMessage: 'Generate New Certificate' })} />
           {/* </Space> */}
           <Form.Item
-            label={$t({ defaultMessage: 'Server Certificate' })}
+            label={
+              <>{$t({ defaultMessage: 'Server Certificate' })}
+                <Tooltip.Question
+                  placement='right'
+                  title={$t(MessageMapping.server_certificate_tooltip)}/>
+              </>}
+            extra={
+              <div>
+                { hasPolicyPermission({
+                  type: PolicyType.SERVER_CERTIFICATES, oper: PolicyOperation.CREATE }) &&
+              <Button type='link'
+                style={{ marginTop: '-25px' }}
+                disabled={certSelectOptions.length >= CERTIFICATE_MAX_COUNT} // TODO
+                onClick={handleAddServerCertificate}>
+                {$t({ defaultMessage: 'Generate new server certificate' })}
+              </Button>}
+              </div>
+            }
             name={['radSecOptions', 'serverCertificateId']}
             initialValue={null}
             rules={[
               { required: false },
-              { validator: (_, certStates) => {
-                if (!certStates.includes(CertificateStatusType.VALID)) {
-                  return Promise.reject(<FormattedMessage
-                    defaultMessage={
-                      'This certificate has {certState}.  Please go to <certificateGuide></certificateGuide> to renew it.'
-                    }
-                    values={{
-                      certState: getCertState(certStates),
-                      certificateGuide: ()=> (
-                        <TenantLink
-                          to={getPolicyRoutePath({
-                            type: PolicyType.SERVER_CERTIFICATES,
-                            oper: PolicyOperation.LIST
-                          })}>
-                          {'Server & Client Certificates'}
-                        </TenantLink>
-                      )
-                    }}
-                  />)
-                }
-                return Promise.resolve()
-              }}
+              { validator: (_, certId) => {
+                const certStates = certSelectOptions.find(cert => cert.value === certId)?.certStates
+                return certificateStatusValidator(certStates)
+              } }
             ]}>
             <Select
               options={[
                 { label: $t({ defaultMessage: 'None' }), value: null },
-                ...clientCertSelectOptions
+                ...certSelectOptions
               ]} />
           </Form.Item>
         </UI.RacSecDiv>
