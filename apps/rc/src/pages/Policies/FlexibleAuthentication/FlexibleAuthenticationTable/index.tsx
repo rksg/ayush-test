@@ -2,7 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { Button, Loader, PageHeader, Table, TableProps, showActionModal } from '@acx-ui/components'
 import {
-  useDeleteFlexAuthenticationProfilesMutation,
+  useDeleteFlexAuthenticationProfileMutation,
   useGetFlexAuthenticationProfilesQuery
 }                     from '@acx-ui/rc/services'
 import {
@@ -23,7 +23,7 @@ const FlexibleAuthenticationTable = () => {
   const params = useParams()
   const basePath: Path = useTenantLink('')
   const navigate = useNavigate()
-  const [deleteFlexAuthenticationProfiles] = useDeleteFlexAuthenticationProfilesMutation()
+  const [deleteFlexAuthenticationProfile] = useDeleteFlexAuthenticationProfileMutation()
 
   const tableQuery = useTableQuery({
     useQuery: useGetFlexAuthenticationProfilesQuery,
@@ -99,7 +99,7 @@ const FlexibleAuthenticationTable = () => {
             numOfEntities: rows.length
           },
           onOk: () => {
-            deleteFlexAuthenticationProfiles({ params, payload: rows.map(item => item.profileId) })
+            deleteFlexAuthenticationProfile({ params, payload: rows.map(item => item.profileId) })
               .then(clearSelection)
           }
         })

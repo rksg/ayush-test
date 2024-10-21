@@ -1589,10 +1589,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Switch', id: 'FlexAuthProfile' }]
     }),
-    deleteFlexAuthenticationProfiles: build.mutation<FlexibleAuthentication, RequestPayload>({
+    deleteFlexAuthenticationProfile: build.mutation<FlexibleAuthentication, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(
-          SwitchUrlsInfo.deleteFlexAuthenticationProfiles, params, customHeaders.v1002
+          SwitchUrlsInfo.deleteFlexAuthenticationProfile, params, customHeaders.v1002
         )
         return {
           ...req
@@ -1886,7 +1886,7 @@ export const {
   useBatchDeleteProfilesMutation,
   useGetFlexAuthenticationProfilesQuery,
   useUpdateFlexAuthenticationProfileMutation,
-  useDeleteFlexAuthenticationProfilesMutation,
+  useDeleteFlexAuthenticationProfileMutation,
   useGetSwitchAuthenticationQuery,
   useUpdateSwitchAuthenticationMutation
 } = switchApi

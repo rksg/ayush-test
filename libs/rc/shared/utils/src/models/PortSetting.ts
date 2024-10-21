@@ -26,17 +26,23 @@ export class PortSettingModel {
   ingressAcl?: string
   switchSerialNumber: string
   status?: string // ignore
+  // Flex auth
   switchLevelAuthDefaultVlan?: number
   shouldAlertAaaAndRadiusNotApply?: boolean
   flexibleAuthenticationEnabled?: boolean
+  isFlexibleAuthCustomized?: boolean
+  authenticationProfileId?: string
+  profileAuthDefaultVlan?: string
   authenticationType?: string
   changeAuthOrder?: boolean
   dot1xPortControl?: string
   authDefaultVlan?: number
   restrictedVlan?: number
   criticalVlan?: number
+  guestVlan?: number
   authFailAction?: string
   authTimeoutAction?: string
+  enableAuthPorts?: string[]
 
   constructor () {
     this.dhcpSnoopingTrust = false

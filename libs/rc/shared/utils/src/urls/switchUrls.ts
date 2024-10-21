@@ -632,19 +632,24 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/switches/query/csvFiles',
     newApi: true
   },
-  getFlexAuthenticationProfiles: {
-    method: 'post',
-    url: '/flexibleAuthentication/profiles',
-    newApi: true
-  },
-  updateFlexAuthenticationProfile: {
+  addFlexAuthenticationProfile: {
     method: 'post',
     url: '/flexibleAuthentication/profile',
     newApi: true
   },
-  deleteFlexAuthenticationProfiles: {
+  getFlexAuthenticationProfiles: {
+    method: 'post',
+    url: '/flexibleAuthentication/profiles/query',
+    newApi: true
+  },
+  updateFlexAuthenticationProfile: {
+    method: 'put',
+    url: '/flexibleAuthentication/profile',
+    newApi: true
+  },
+  deleteFlexAuthenticationProfile: {
     method: 'delete',
-    url: '/flexibleAuthentication/profiles',
+    url: '/flexibleAuthentication/profile/:profileId',
     newApi: true
   },
   getSwitchAuthentication: {
