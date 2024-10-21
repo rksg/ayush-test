@@ -162,6 +162,7 @@ memo(({ searchString, setHistoricalClientCount } :
             pagination={tableQuery.pagination}
             onChange={tableQuery.handleTableChange}
             rowKey='clientMac'
+            filterPersistence={true}
           />
           {!!tableQuery.data?.data?.length && <Typography.Text style={{
             fontSize: '10px',

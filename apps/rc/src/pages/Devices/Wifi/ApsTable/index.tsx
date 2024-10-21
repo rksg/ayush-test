@@ -119,6 +119,7 @@ export default function useApsTable () {
         rowSelection={{
           type: 'checkbox'
         }}
+        filterPersistence={true}
       />
     </ApsTabContext.Provider>
 

@@ -141,7 +141,9 @@ export function renderFilter <RecordType> (
   filterValues: Filter,
   setFilterValues: Function,
   enableApiFilter: boolean,
-  width: number
+  width: number,
+  settingsId?: string,
+  filterPersistence?: boolean
 ) {
   const renderCheckbox = (column: TableColumn<RecordType, 'text'>) => {
     return <Checkbox
@@ -222,6 +224,9 @@ export function renderFilter <RecordType> (
         delete filters[key]
       })
 
+      if(filterPersistence){
+        sessionStorage.setItem(`${settingsId}-filter`, JSON.stringify(filters))
+      }
       setFilterValues(filters)
     }}
     filterOption={filterOption}

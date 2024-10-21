@@ -723,6 +723,7 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
           enableApiFilter={true}
           floatRightFilters={true}
           rowKey='macAddress'
+          filterPersistence={true}
         />
       </Loader>
     </UI.ClientTableDiv>
