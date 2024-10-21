@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { ProFormCheckbox, ProFormText } from '@ant-design/pro-form'
-import { Divider }                      from 'antd'
+import { Button, Divider }              from 'antd'
 import { useIntl }                      from 'react-intl'
 
 import { cssStr } from '@acx-ui/components'
@@ -25,7 +25,15 @@ export function VlanStep (props: { payload: string }) {
   return (
     <UI.Container>
       <UI.Header>
-        <UI.Title>{$t({ defaultMessage: 'Recommended VLANs' })}</UI.Title>
+        <UI.HeaderWithAddButton>
+          <UI.Title>{$t({ defaultMessage: 'Recommended VLANs' })}</UI.Title>
+          <Button type='link'
+            size='small'
+            onClick={() => {
+            }}>
+            {$t({ defaultMessage: 'Add VLAN' })}
+          </Button>
+        </UI.HeaderWithAddButton>
         <UI.Description>
           { // eslint-disable-next-line max-len
             $t({ defaultMessage: 'Now, let us set up the VLANs for your school network. Setting up VLANs effectively will help in managing and segmenting your network traffic efficiently in your educational environment. Here’s how you can structure your VLANs for different use cases.'

@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { ProFormCheckbox, ProFormSelect, ProFormText } from '@ant-design/pro-form'
-import { Divider }                                     from 'antd'
+import { Button, Divider }                             from 'antd'
 import { useIntl }                                     from 'react-intl'
 
 import { cssStr }     from '@acx-ui/components'
@@ -33,9 +33,15 @@ export function WlanStep (props: { payload: string; description: string }) {
 
   return (
     <UI.Container>
-      <UI.Header>
+      <UI.HeaderWithAddButton>
         <UI.Title>{$t({ defaultMessage: 'Recommended Network Profiles' })}</UI.Title>
-      </UI.Header>
+        <Button type='link'
+          size='small'
+          onClick={() => {
+          }}>
+          {$t({ defaultMessage: 'Add Network Profile' })}
+        </Button>
+      </UI.HeaderWithAddButton>
 
       <UI.HighlightedBox>
         <UI.HighlightedTitle>
@@ -116,7 +122,7 @@ export function WlanStep (props: { payload: string; description: string }) {
                       color: cssStr('--acx-semantics-yellow-50')
                     }}
                   />
-                  <span>{$t({ defaultMessage: 'Recommended Network Profiles' })}</span>
+                  <span>{$t({ defaultMessage: 'Purpose' })}</span>
                 </UI.PurposeHeader>
                 <UI.PurposeText>{item['Purpose']}</UI.PurposeText>
               </UI.PurposeContainer>

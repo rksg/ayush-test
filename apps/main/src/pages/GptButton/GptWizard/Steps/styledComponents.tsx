@@ -25,6 +25,12 @@ export const Header = styled.div`
   justify-content: center;
 `
 
+export const HeaderWithAddButton = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`
+
 export const Title = styled.span`
   font-size: 24px;
   font-weight: 600;
