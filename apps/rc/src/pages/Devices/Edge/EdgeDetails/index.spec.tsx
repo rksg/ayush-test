@@ -39,6 +39,15 @@ jest.mock('react-router-dom', () => ({
 describe('EdgeDetails', () => {
   const currentEdge = mockEdgeList.data[0]
   let params: { tenantId: string, serialNumber: string, activeTab: string }
+  const currentCluster = {
+    ...mockEdgeCluster,
+    smartEdges: [
+      {
+        serialNumber: 'serialNumber-1',
+        name: 'Smart Edge 1'
+      }
+    ]
+  }
 
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -59,7 +68,7 @@ describe('EdgeDetails', () => {
       ),
       rest.get(
         EdgeUrlsInfo.getEdgeCluster.url,
-        (_req, res, ctx) => res(ctx.json(mockEdgeCluster))
+        (_req, res, ctx) => res(ctx.json(currentCluster))
       ),
       rest.post(
         EdgeDhcpUrls.getDhcpStats.url,
@@ -115,7 +124,6 @@ describe('EdgeDetails', () => {
     })
 
     const target = await screen.findByRole('tab', { name: 'DHCP' })
-    expect(target).not.toBeNull()
     expect(target?.getAttribute('aria-selected')).toBe('true')
   })
 
@@ -129,7 +137,6 @@ describe('EdgeDetails', () => {
     })
 
     const target = await screen.findByRole('tab', { name: 'Timeline' })
-    expect(target).not.toBeNull()
     expect(target?.getAttribute('aria-selected')).toBe('true')
   })
 
@@ -147,7 +154,7 @@ describe('EdgeDetails', () => {
       hash: '',
       search: ''
     })
-    await user.click(screen.getByRole('tab', { name: 'DHCP' }))
+    await user.click(await screen.findByRole('tab', { name: 'DHCP' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/details/dhcp/pools`,
       hash: '',

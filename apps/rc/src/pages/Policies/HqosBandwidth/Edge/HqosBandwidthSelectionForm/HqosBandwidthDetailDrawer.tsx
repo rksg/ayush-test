@@ -1,21 +1,27 @@
 /* eslint-disable max-len */
 import { useState } from 'react'
 
-import { Form, Space } from 'antd'
-import { useIntl }     from 'react-intl'
+import { Space }   from 'antd'
+import { useIntl } from 'react-intl'
 
 import { Button, Drawer, Loader, Table, TableProps }                     from '@acx-ui/components'
 import { CheckMark }                                                     from '@acx-ui/icons'
 import { useGetEdgeHqosProfileByIdQuery }                                from '@acx-ui/rc/services'
 import { TrafficClassSetting, priorityToDisplay, trafficClassToDisplay } from '@acx-ui/rc/utils'
 
-export const HqosBandwidthDeatilDrawer = () => {
+interface HqosBandwidthDetailDrawerProps {
+  hqosId?: string
+}
+
+export const HqosBandwidthDetailDrawer = (props: HqosBandwidthDetailDrawerProps) => {
+  const { hqosId } = props
   const { $t } = useIntl()
   const [visible, setVisible]=useState(false)
-  const form = Form.useFormInstance()
-  const qosId = form.getFieldValue('qosId')
 
-  const { data: detailData, isLoading } = useGetEdgeHqosProfileByIdQuery({ params: { policyId: qosId } }, { skip: !qosId })
+  const { data: detailData, isLoading } = useGetEdgeHqosProfileByIdQuery(
+    { params: { policyId: hqosId } },
+    { skip: !hqosId }
+  )
 
   const onClose = () => {
     setVisible(false)
