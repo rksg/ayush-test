@@ -75,8 +75,7 @@ export default function SnmpAgentDetail () {
               oper: PolicyOperation.EDIT,
               policyId: params.policyId as string
             })}
-            scopeKey={getScopeKeyByPolicy(PolicyType.SNMP_AGENT, PolicyOperation.EDIT)}
-            key='edit'>
+            scopeKey={getScopeKeyByPolicy(PolicyType.SNMP_AGENT, PolicyOperation.EDIT)}>
             <Button key={'configure'} type={'primary'}>
               {$t({ defaultMessage: 'Configure' })}
             </Button>

@@ -1,3 +1,5 @@
+import { useContext } from 'react'
+
 import {
   Col,
   Menu,
@@ -8,12 +10,9 @@ import {
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Button, CaretDownSolidIcon, Dropdown, PageHeader, RangePicker } from '@acx-ui/components'
-import { Features }                                                      from '@acx-ui/feature-toggle'
-import { EdgeStatusLight, useEdgeActions, useIsEdgeFeatureReady }        from '@acx-ui/rc/components'
-import {
-  useEdgeBySerialNumberQuery, useGetEdgeClusterQuery
-} from '@acx-ui/rc/services'
+import { Button, CaretDownSolidIcon, Dropdown, PageHeader, RangePicker }       from '@acx-ui/components'
+import { Features }                                                            from '@acx-ui/feature-toggle'
+import { EdgeStatusLight, useEdgeActions, useIsEdgeFeatureReady }              from '@acx-ui/rc/components'
 import {
   EdgeStatusEnum, rebootShutdownEdgeStatusWhiteList, resettabaleEdgeStatuses
 } from '@acx-ui/rc/utils'
@@ -26,7 +25,8 @@ import { EdgeScopes, ScopeKeys }         from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
 import { useDateFilter }                 from '@acx-ui/utils'
 
-import { HaStatusBadge } from '../../HaStatusBadge'
+import { HaStatusBadge }          from '../../HaStatusBadge'
+import { EdgeDetailsDataContext } from '../EdgeDetailsDataProvider'
 
 import EdgeDetailsTabs from './EdgeDetailsTabs'
 
@@ -35,33 +35,7 @@ export const EdgeDetailsPageHeader = () => {
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
   const params = useParams()
   const { serialNumber } = params
-
-  const edgeStatusPayload = {
-    fields: [
-      'name',
-      'venueId',
-      'venueName',
-      'type',
-      'serialNumber',
-      'ports',
-      'ip',
-      'model',
-      'firmwareVersion',
-      'deviceStatus',
-      'deviceSeverity',
-      'venueId',
-      'tags',
-      'haStatus',
-      'clusterId'
-    ],
-    filters: { serialNumber: [serialNumber] } }
-  const { data: currentEdge }
-  = useEdgeBySerialNumberQuery({
-    params, payload: edgeStatusPayload
-  })
-  const { data: currentCluster } = useGetEdgeClusterQuery({
-    params: { venueId: currentEdge?.venueId, clusterId: currentEdge?.clusterId }
-  }, { skip: !Boolean(currentEdge?.clusterId) || !Boolean(currentEdge?.venueId) })
+  const { currentEdgeStatus: currentEdge, currentCluster } = useContext(EdgeDetailsDataContext)
 
   const navigate = useNavigate()
   const basePath = useTenantLink('')
@@ -148,7 +122,7 @@ export const EdgeDetailsPageHeader = () => {
           </Col>
           <Col>
             {
-              (currentCluster?.smartEdges.length ?? 0) >= 2 &&
+              (currentCluster?.smartEdges.length ?? 0) > 1 &&
               <HaStatusBadge
                 haStatus={currentEdge?.haStatus}
                 needPostFix
