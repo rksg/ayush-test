@@ -1,7 +1,10 @@
 import { Typography } from 'antd'
 import { useIntl }    from 'react-intl'
 
-import { UpdateFirmwarePerApModelPanel, UpdateFirmwarePerApModelPanelProps } from '../UpdateNowDialog/UpdateFirmwarePerApModelPanel'
+import {
+  UpdateFirmwarePerApModelPanel,
+  UpdateFirmwarePerApModelPanelProps
+} from '../UpdateNowDialog/UpdateFirmwarePerApModelPanel'
 
 export default function FirmwareSelectorPanel (props: UpdateFirmwarePerApModelPanelProps) {
   const { $t } = useIntl()
