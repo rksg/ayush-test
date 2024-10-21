@@ -41,7 +41,10 @@ import {
   useDeleteNetworkVenueTemplateMutation,
   useScheduleSlotIndexMap,
   useGetVLANPoolPolicyViewModelListQuery,
-  useNewVenueNetworkTableQuery } from '@acx-ui/rc/services'
+  useNewVenueNetworkTableQuery,
+  useEnhanceVenueNetworkTableQuery,
+  useGetEnhancedVlanPoolPolicyTemplateListQuery
+} from '@acx-ui/rc/services'
 import {
   useTableQuery,
   NetworkType,
@@ -54,9 +57,17 @@ import {
   ApGroupModalState,
   NetworkExtended,
   SchedulerTypeEnum,
-  SchedulingModalState, ConfigTemplateType, useConfigTemplate,
-  useConfigTemplateMutationFnSwitcher, useConfigTemplateTenantLink,
-  KeyValue, VLANPoolViewModelType, EdgeMvSdLanViewData, EdgeSdLanViewDataP2
+  SchedulingModalState,
+  ConfigTemplateType,
+  useConfigTemplate,
+  useConfigTemplateMutationFnSwitcher,
+  useConfigTemplateTenantLink,
+  KeyValue,
+  VLANPoolViewModelType,
+  EdgeMvSdLanViewData,
+  EdgeSdLanViewDataP2,
+  useConfigTemplateQueryFnSwitcher,
+  TableResult
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink }       from '@acx-ui/react-router-dom'
 import { WifiScopes }                                              from '@acx-ui/types'
@@ -116,6 +127,7 @@ const useVenueNetworkList = (props: { settingsId: string, venueId?: string } ) =
   const { settingsId, venueId } = props
   const { isTemplate } = useConfigTemplate()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
 
@@ -126,7 +138,7 @@ const useVenueNetworkList = (props: { settingsId: string, venueId?: string } ) =
       isTemplate: isTemplate
     },
     pagination: { settingsId },
-    option: { skip: resolvedRbacEnabled }
+    option: { skip: isApCompatibilitiesByModel || resolvedRbacEnabled }
   })
 
   const rbacTableQuery = useTableQuery({
@@ -136,10 +148,21 @@ const useVenueNetworkList = (props: { settingsId: string, venueId?: string } ) =
       isTemplate: isTemplate
     },
     pagination: { settingsId },
-    option: { skip: !resolvedRbacEnabled || !venueId }
+    option: { skip: isApCompatibilitiesByModel || !resolvedRbacEnabled || !venueId }
   })
 
-  return resolvedRbacEnabled ? rbacTableQuery : nonRbacTableQuery
+  const enhancedRbacTableQuery = useTableQuery({
+    useQuery: useEnhanceVenueNetworkTableQuery,
+    defaultPayload: {
+      ...defaultRbacPayload,
+      isTemplate: isTemplate
+    },
+    pagination: { settingsId },
+    option: { skip: !isApCompatibilitiesByModel || !resolvedRbacEnabled || !venueId }
+  })
+
+  return isApCompatibilitiesByModel ? enhancedRbacTableQuery
+    : (resolvedRbacEnabled ? rbacTableQuery : nonRbacTableQuery)
 }
 
 const defaultArray: NetworkExtended[] = []
@@ -208,24 +231,25 @@ export function VenueNetworksTab () {
   })
   // hooks for tunnel column - end
 
-  const { vlanPoolingNameMap }: { vlanPoolingNameMap: KeyValue<string, string>[] } = useGetVLANPoolPolicyViewModelListQuery({
-    params: { tenantId: params.tenantId },
+  const [vlanPoolingNameMap, setVlanPoolingNameMap] = useState<KeyValue<string, string>[]>([])
+  const { data: instanceListResult } = useConfigTemplateQueryFnSwitcher<TableResult<VLANPoolViewModelType>>({
+    useQueryFn: useGetVLANPoolPolicyViewModelListQuery,
+    useTemplateQueryFn: useGetEnhancedVlanPoolPolicyTemplateListQuery,
+    skip: !tableData.length,
     payload: {
-      fields: ['name', 'id'],
-      sortField: 'name',
-      sortOrder: 'ASC',
-      page: 1,
-      pageSize: 10000
+      fields: ['name', 'id', 'vlanMembers'], sortField: 'name',
+      sortOrder: 'ASC', page: 1, pageSize: 10000
     },
     enableRbac: useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  }, {
-    skip: !tableData.length,
-    selectFromResult: ({ data }: { data?: { data: VLANPoolViewModelType[] } }) => ({
-      vlanPoolingNameMap: data?.data
-        ? data.data.map(vlanPool => ({ key: vlanPool.id!, value: vlanPool.name }))
-        : [] as KeyValue<string, string>[]
-    })
   })
+
+  useEffect(() => {
+    if (instanceListResult?.data) {
+      setVlanPoolingNameMap(instanceListResult.data
+        ? instanceListResult.data.map(vlanPool => ({ key: vlanPool.id!, value: vlanPool.name }))
+        : [])
+    }
+  },[instanceListResult])
 
   useEffect(()=>{
     if (tableQuery.data) {

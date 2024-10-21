@@ -7,6 +7,7 @@ import { Tabs }                                             from '@acx-ui/compon
 import { Features }                                         from '@acx-ui/feature-toggle'
 import { useIsEdgeFeatureReady, useIsEdgeReady }            from '@acx-ui/rc/components'
 import { useGetDhcpStatsQuery, useGetEdgeServiceListQuery } from '@acx-ui/rc/services'
+import { NodeClusterRoleEnum }                              from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }            from '@acx-ui/react-router-dom'
 import { EdgeScopes }                                       from '@acx-ui/types'
 import { hasPermission }                                    from '@acx-ui/user'
@@ -16,7 +17,7 @@ import { EdgeDetailsDataContext } from '../EdgeDetailsDataProvider'
 const EdgeDetailsTabs = (props: { isOperational: boolean }) => {
   const { $t } = useIntl()
   const params = useParams()
-  const { currentEdgeStatus: currentEdge } = useContext(EdgeDetailsDataContext)
+  const { currentEdgeStatus: currentEdge, currentCluster } = useContext(EdgeDetailsDataContext)
   const { serialNumber } = params
   const basePath = useTenantLink(`/devices/edge/${params.serialNumber}/details`)
   const navigate = useNavigate()
@@ -54,6 +55,8 @@ const EdgeDetailsTabs = (props: { isOperational: boolean }) => {
   })
 
   const showTroubleshooting = isEdgePingTraceRouteReady && props.isOperational && hasPermission({ scopes: [EdgeScopes.UPDATE] })
+  const showDhcp = isEdgeHaReady && isEdgeDhcpHaReady && hasDhcpService &&
+    ((currentCluster?.smartEdges.length ?? 0) > 1 ? currentEdge?.haStatus === NodeClusterRoleEnum.CLUSTER_ROLE_ACTIVE : true)
 
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
@@ -70,7 +73,7 @@ const EdgeDetailsTabs = (props: { isOperational: boolean }) => {
         />
       }
       {
-        isEdgeHaReady && isEdgeDhcpHaReady && hasDhcpService &&
+        showDhcp &&
         <Tabs.TabPane tab={$t({ defaultMessage: 'DHCP' })} key='dhcp' />
       }
       <Tabs.TabPane tab={$t({ defaultMessage: 'Timeline' })} key='timeline' />

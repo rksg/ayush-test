@@ -15,7 +15,7 @@ import { FeatureItemProps }       from '../CompatibilityDrawer/CompatibilityItem
 import {
   mockApCompatibilitiesVenue,
   mockApCompatibilitiesNetwork,
-  mockFeatureCompatibilities
+  mockApFeatureCompatibilities
 } from './__test__/fixtures'
 
 import { ApGeneralCompatibilityDrawer, ApCompatibilityType } from '.'
@@ -66,7 +66,7 @@ describe('ApGeneralCompatibilityDrawer', () => {
         (_, res, ctx) => res(ctx.json(mockApCompatibilitiesNetwork))),
       rest.get(
         WifiUrlsInfo.getApFeatureSets.url.split('?')[0],
-        (_, res, ctx) => res(ctx.json(mockFeatureCompatibilities))),
+        (_, res, ctx) => res(ctx.json(mockApFeatureCompatibilities))),
       rest.get(
         CommonUrlsInfo.getVenue.url.split('?')[0],
         (_, res, ctx) => {
@@ -198,8 +198,7 @@ describe('ApGeneralCompatibilityDrawer', () => {
           isMultiple
           visible={true}
           venueId={params.venueId}
-          apId={'001001001'}
-          apName={apName}
+          apInfo={{ serialNumber: '001001001', name: apName }}
           onClose={mockedCloseDrawer}
         />
       </Provider>, {
@@ -237,8 +236,7 @@ describe('ApGeneralCompatibilityDrawer', () => {
           visible={false}
           type={ApCompatibilityType.VENUE}
           venueId={params.venueId}
-          apId={undefined}
-          apName={undefined}
+          apInfo={{ serialNumber: '', name: '' }}
           onClose={mockedCloseDrawer}
         />
       </Provider>, {
@@ -252,8 +250,7 @@ describe('ApGeneralCompatibilityDrawer', () => {
           visible={true}
           type={ApCompatibilityType.VENUE}
           venueId={params.venueId}
-          apId={'001001001'}
-          apName={apName}
+          apInfo={{ serialNumber: '001001001', name: apName }}
           onClose={mockedCloseDrawer}
         />
       </Provider>)
@@ -274,8 +271,7 @@ describe('ApGeneralCompatibilityDrawer', () => {
           visible={true}
           type={ApCompatibilityType.VENUE}
           venueId={params.venueId}
-          apId={'001002222'}
-          apName={'AP2-Test'}
+          apInfo={{ serialNumber: '001002222', name: 'AP2-Test' }}
           onClose={mockedCloseDrawer}
         />
       </Provider>)

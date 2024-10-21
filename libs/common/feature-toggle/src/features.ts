@@ -47,7 +47,9 @@ export enum Features {
   EDGE_COMPATIBILITY_CHECK_TOGGLE = 'edge-compatibility-check-toggle',
   EDGE_HA_AA_FALLBACK_TOGGLE = 'edge-ha-aa-fallback-toggle',
   EDGE_HA_AA_DMZ_TOGGLE = 'edge-ha-aa-dmz-toggle',
+  EDGE_HA_SUB_INTERFACE_TOGGLE = 'edge-ha-sub-interface-toggle',
   EDGE_FIRMWARE_NOTIFICATION_BATCH_OPERATION_TOGGLE= 'edge-firmware-notification-batch-operation-toggle',
+  EDGE_MDNS_PROXY_TOGGLE = 'edge-mdns-proxy-toggle',
   ENTITLEMENT_EXTENDED_TRIAL_TOGGLE = 'entitlement-acx-extended-trial-toggle',
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
@@ -196,6 +198,7 @@ export enum Features {
   WIFI_CAPTIVE_PORTAL_OWE = 'wifi-captive-portal-owe',
   WIFI_WLAN_DEPRECATE_WEP = 'wifi-wlan-deprecate-wpa',
   WIFI_OVER_THE_DS_FT_SUPPORT_TOGGLE = 'wifi-over-the-ds-ft-support-toggle',
+  WIFI_COMPATIBILITY_BY_MODEL = 'wifi-compatibility-check-by-model-toggle',
   ENTITLEMENT_LICENSE_COMPLIANCE_PHASE2_TOGGLE = 'entitlement-license-compliance-phase2-toggle',
   BRAND360_MDU_TOGGLE = 'acx-ui-brand360-mdu-toggle',
   SERVER_CERTIFICATE_MANAGEMENT_UI_TOGGLE = 'server-certificate-management-ui-toggle'
