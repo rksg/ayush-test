@@ -32,7 +32,7 @@ interface VenueExtend extends Venue {
 }
 
 export function CliStepVenues (props: {
-  allowedSwitchList?: SwitchViewModel[]
+  allSwitchList?: SwitchViewModel[]
 }) {
   const { $t } = useIntl()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
@@ -125,25 +125,26 @@ export function CliStepVenues (props: {
         && !(initialValues as CliConfiguration)?.venues?.includes(venue.id))
         && _.intersection(models, venueApplyModels)?.length > 0
 
-      const isPreSelect = preselectedRows?.includes(venue.id)
+      const isPreselect = preselectedRows?.includes(venue.id)
 
       return {
         ...venue,
         models: venueApplyModels,
-        inactiveRow: isModelOverlap || isPreSelect,
+        inactiveRow: isModelOverlap || isPreselect,
         inactiveTooltip: isModelOverlap
           ? $t(SwitchCliMessages.OVERLAPPING_MODELS_TOOLTIP)
-          : (isPreSelect ? $t(SwitchCliMessages.PRE_SELECT_VENUE_FOR_CUSTOMIZED) : '')
+          : (isPreselect ? $t(SwitchCliMessages.PRE_SELECT_VENUE_FOR_CUSTOMIZED) : '')
       }
     })
   }
 
   useEffect(() => {
-    const preselectedRows = getCustomizedSwitchVenues(
-      data?.variables, props?.allowedSwitchList
-    )
-    setPreselectedRows(preselectedRows)
-  }, [data?.variables, props?.allowedSwitchList])
+    if (data?.variables?.length && props?.allSwitchList?.length) {
+      // eslint-disable-next-line max-len
+      const preselectedRows = getCustomizedSwitchVenues(data?.variables, props?.allSwitchList)
+      setPreselectedRows(preselectedRows)
+    }
+  }, [data?.variables, props?.allSwitchList])
 
   useEffect(() => {
     onChangeVenues(data?.venues)

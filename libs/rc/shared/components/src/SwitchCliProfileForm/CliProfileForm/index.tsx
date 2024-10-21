@@ -176,7 +176,11 @@ export function CliProfileForm () {
   const handleEditCliProfile = async (data: CliConfiguration) => {
     try {
       const orinAppliedVenues = cliProfile?.venues as string[]
-      const appliedVenues = data.venues as string[]
+      const customizedSwitchVenues = getCustomizedSwitchVenues(data?.variables, allowedSwitchList)
+      const appliedVenues = _.uniq([
+        ...( data?.venues || []),
+        ...customizedSwitchVenues
+      ])
       const disassociateSwitch = _.difference(orinAppliedVenues, appliedVenues)
       const diffAssociatedSwitch = _.difference(appliedVenues, orinAppliedVenues)
 
@@ -365,7 +369,10 @@ export function CliProfileForm () {
             name='venues'
             title={$t({ defaultMessage: '<VenuePlural></VenuePlural>' })}
           >
-            <CliStepVenues allowedSwitchList={allowedSwitchList} />
+            <CliStepVenues allSwitchList={[
+              ...allowedSwitchList,
+              ...configuredSwitchList
+            ]} />
           </StepsForm.StepForm>
 
           {!editMode &&

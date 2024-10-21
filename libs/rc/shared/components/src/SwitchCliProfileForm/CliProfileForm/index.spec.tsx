@@ -587,6 +587,7 @@ describe('Cli Profile Form', () => {
                 name: 'FMF3250Q04R',
                 deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
                 venueName: 'My-Venue',
+                venueId: 'a98653366d2240b9ae370e48fab3a9a1',
                 tenantId: 'tenant-id'
               }, {
                 id: 'FMF3250Q05R',
@@ -595,6 +596,7 @@ describe('Cli Profile Form', () => {
                 name: 'FMF3250Q05R',
                 deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
                 venueName: 'My-Venue',
+                venueId: 'a98653366d2240b9ae370e48fab3a9a1',
                 tenantId: 'tenant-id'
               }, {
                 id: 'FMF3250Q06R',
@@ -603,6 +605,7 @@ describe('Cli Profile Form', () => {
                 name: 'FMF3250Q06R - REAL',
                 deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
                 venueName: 'My-Venue',
+                venueId: 'a98653366d2240b9ae370e48fab3a9a1',
                 tenantId: 'tenant-id'
               }, {
                 id: 'FMF3250Q07R',
@@ -611,6 +614,7 @@ describe('Cli Profile Form', () => {
                 name: 'ICX7150-C08P Switch',
                 deviceStatus: SwitchStatusEnum.OPERATIONAL,
                 venueName: 'My-Venue',
+                venueId: 'a98653366d2240b9ae370e48fab3a9a1',
                 tenantId: 'tenant-id'
               }]
             }))
