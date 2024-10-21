@@ -3,38 +3,29 @@ import { useEffect } from 'react'
 import { Form, Input, InputNumber, Select } from 'antd'
 import { useIntl }                          from 'react-intl'
 
-import { Alert, Drawer }                                                                                   from '@acx-ui/components'
-import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeSubInterface, edgePortIpValidator, generalSubnetMskRegExp } from '@acx-ui/rc/utils'
-import { validationMessages }                                                                              from '@acx-ui/utils'
+import { Alert, Drawer }   from '@acx-ui/components'
+import {
+  EdgeIpModeEnum,
+  EdgePortTypeEnum,
+  SubInterface,
+  edgePortIpValidator,
+  generalSubnetMskRegExp
+} from '@acx-ui/rc/utils'
+import { validationMessages } from '@acx-ui/utils'
 
-interface StaticRoutesDrawerProps {
-  mac: string
+interface SubInterfaceDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
-  data?: EdgeSubInterface
-  handleAdd: (data: EdgeSubInterface) => Promise<unknown>
-  handleUpdate: (data: EdgeSubInterface) => Promise<unknown>
+  data?: SubInterface
+  handleAdd: (data: SubInterface) => Promise<unknown>
+  handleUpdate: (data: SubInterface) => Promise<unknown>
+  allSubInterfaceVlans: { id: String, vlan: number }[]
 }
 
-const useGetPortTypeOptions = () => {
-  const { $t } = useIntl()
-  return [
-    { label: $t({ defaultMessage: 'LAN' }), value: EdgePortTypeEnum.LAN }
-  ]
-}
-
-const useGetIpModeOptions = () => {
-  const { $t } = useIntl()
-  return [
-    { lable: $t({ defaultMessage: 'DHCP' }), value: EdgeIpModeEnum.DHCP },
-    { lable: $t({ defaultMessage: 'Static IP' }), value: EdgeIpModeEnum.STATIC }
-  ]
-}
-
-const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
+const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
 
   const { $t } = useIntl()
-  const { mac, visible, setVisible, data, handleAdd, handleUpdate } = props
+  const { visible, setVisible, data, handleAdd, handleUpdate } = props
   const [formRef] = Form.useForm()
 
   useEffect(() => {
@@ -43,6 +34,24 @@ const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
       formRef.setFieldsValue(data)
     }
   }, [visible, formRef, data])
+
+  const portTypeOptions = [
+    {
+      label: $t({ defaultMessage: 'LAN' }),
+      value: EdgePortTypeEnum.LAN
+    }
+  ]
+
+  const ipModeOptions = [
+    {
+      label: $t({ defaultMessage: 'DHCP' }),
+      value: EdgeIpModeEnum.DHCP
+    },
+    {
+      label: $t({ defaultMessage: 'Static IP' }),
+      value: EdgeIpModeEnum.STATIC
+    }
+  ]
 
   const getTitle = () => {
     return $t({ defaultMessage: '{operation} Sub-interface' },
@@ -60,16 +69,14 @@ const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
 
   const handleFinish = async () => {
     const formData = formRef.getFieldsValue(true)
-    const { ip, subnet, ...rest } = formData
+    const { id, ip, subnet, ...rest } = formData
     const payload = {
       ...rest,
       ...(
         rest.ipMode === EdgeIpModeEnum.STATIC ?
           { ip, subnet } : {}
       ),
-      name: data?.name || '',
-      mac: mac,
-      enabled: true
+      id: id ? id : 'new_' + Date.now()
     }
 
     try {
@@ -80,9 +87,18 @@ const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
       }
     } catch (error) {
       // TODO error message not be defined
-      console.log(error) // eslint-disable-line no-console
     }
     handleClose()
+  }
+
+  const validateVlanDuplication = (vlan: number) => {
+    const duplicate = props.data ?
+      props.allSubInterfaceVlans.find(item => item.vlan === vlan && item.id !== props.data?.id) :
+      props.allSubInterfaceVlans.find(item => item.vlan === vlan)
+
+    return duplicate ?
+      Promise.reject($t({ defaultMessage: 'VLAN should be unique' })) :
+      Promise.resolve()
   }
 
   const drawerContent = <Form layout='vertical' form={formRef} onFinish={handleFinish}>
@@ -91,14 +107,14 @@ const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
       initialValue={EdgePortTypeEnum.LAN}
       label={$t({ defaultMessage: 'Port Type' })}
       rules={[{ required: true }]}
-      children={<Select options={useGetPortTypeOptions()} />}
+      children={<Select options={portTypeOptions} />}
     />
     <Form.Item
       name='ipMode'
       initialValue={EdgeIpModeEnum.DHCP}
       label={$t({ defaultMessage: 'IP Assignment Type' })}
       rules={[{ required: true }]}
-      children={<Select options={useGetIpModeOptions()} />}
+      children={<Select options={ipModeOptions} />}
     />
     <Form.Item
       noStyle
@@ -156,9 +172,10 @@ const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
           min: 1,
           max: 4094,
           message: $t(validationMessages.vlanRange)
-        }
+        },
+        { validator: (_, value) => validateVlanDuplication(value) }
       ]}
-      children={<InputNumber />}
+      children={<InputNumber min={1} max={4094} />}
     />
   </Form>
 
