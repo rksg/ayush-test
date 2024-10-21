@@ -16,6 +16,21 @@ interface StaticRoutesDrawerProps {
   handleUpdate: (data: EdgeSubInterface) => Promise<unknown>
 }
 
+const useGetPortTypeOptions = () => {
+  const { $t } = useIntl()
+  return [
+    { label: $t({ defaultMessage: 'LAN' }), value: EdgePortTypeEnum.LAN }
+  ]
+}
+
+const useGetIpModeOptions = () => {
+  const { $t } = useIntl()
+  return [
+    { lable: $t({ defaultMessage: 'DHCP' }), value: EdgeIpModeEnum.DHCP },
+    { lable: $t({ defaultMessage: 'Static IP' }), value: EdgeIpModeEnum.STATIC }
+  ]
+}
+
 const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
 
   const { $t } = useIntl()
@@ -28,24 +43,6 @@ const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
       formRef.setFieldsValue(data)
     }
   }, [visible, formRef, data])
-
-  const portTypeOptions = [
-    {
-      label: $t({ defaultMessage: 'LAN' }),
-      value: EdgePortTypeEnum.LAN
-    }
-  ]
-
-  const ipModeOptions = [
-    {
-      label: $t({ defaultMessage: 'DHCP' }),
-      value: EdgeIpModeEnum.DHCP
-    },
-    {
-      label: $t({ defaultMessage: 'Static IP' }),
-      value: EdgeIpModeEnum.STATIC
-    }
-  ]
 
   const getTitle = () => {
     return $t({ defaultMessage: '{operation} Sub-interface' },
@@ -94,14 +91,14 @@ const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
       initialValue={EdgePortTypeEnum.LAN}
       label={$t({ defaultMessage: 'Port Type' })}
       rules={[{ required: true }]}
-      children={<Select options={portTypeOptions} />}
+      children={<Select options={useGetPortTypeOptions()} />}
     />
     <Form.Item
       name='ipMode'
       initialValue={EdgeIpModeEnum.DHCP}
       label={$t({ defaultMessage: 'IP Assignment Type' })}
       rules={[{ required: true }]}
-      children={<Select options={ipModeOptions} />}
+      children={<Select options={useGetIpModeOptions()} />}
     />
     <Form.Item
       noStyle
