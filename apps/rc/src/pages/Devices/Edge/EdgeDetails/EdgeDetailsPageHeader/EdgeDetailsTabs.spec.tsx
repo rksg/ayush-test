@@ -23,7 +23,7 @@ import { EdgeDetailsDataContext } from '../EdgeDetailsDataProvider'
 
 import  EdgeDetailsTabs from './EdgeDetailsTabs'
 
-const { mockEdgeServiceList, mockEdgeList } = EdgeGeneralFixtures
+const { mockEdgeServiceList, mockEdgeList, mockEdgeCluster } = EdgeGeneralFixtures
 const { mockDhcpStatsData } = EdgeDHCPFixtures
 const currentEdge:EdgeStatus = {
   name: 'edge-01',
@@ -75,7 +75,9 @@ describe('Edge Details Tabs', () => {
         <EdgeDetailsDataContext.Provider
           value={{
             currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
-            isEdgeStatusLoading: false
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
           }}
         >
           <EdgeDetailsTabs
@@ -96,7 +98,9 @@ describe('Edge Details Tabs', () => {
         <EdgeDetailsDataContext.Provider
           value={{
             currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
-            isEdgeStatusLoading: false
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
           }}
         >
           <EdgeDetailsTabs
@@ -117,7 +121,9 @@ describe('Edge Details Tabs', () => {
         <EdgeDetailsDataContext.Provider
           value={{
             currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
-            isEdgeStatusLoading: false
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
           }}
         >
           <EdgeDetailsTabs
@@ -137,7 +143,9 @@ describe('Edge Details Tabs', () => {
         <EdgeDetailsDataContext.Provider
           value={{
             currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
-            isEdgeStatusLoading: false
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
           }}
         >
           <EdgeDetailsTabs
@@ -162,7 +170,9 @@ describe('Edge Details Tabs', () => {
         <EdgeDetailsDataContext.Provider
           value={{
             currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
-            isEdgeStatusLoading: false
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
           }}
         >
           <EdgeDetailsTabs
