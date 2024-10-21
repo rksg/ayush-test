@@ -2,9 +2,9 @@ import { Form, FormItemProps, Select } from 'antd'
 import { useIntl }                     from 'react-intl'
 import { useParams }                   from 'react-router-dom'
 
-import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
-import { useGetMdnsProxyListQuery } from '@acx-ui/rc/services'
-import { MdnsProxyFormData }        from '@acx-ui/rc/utils'
+import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
+import { useGetMdnsProxyListQuery }                    from '@acx-ui/rc/services'
+import { MdnsProxyFeatureTypeEnum, MdnsProxyFormData } from '@acx-ui/rc/utils'
 
 import { MdnsProxyForwardingRulesTable } from '../MdnsProxyForwardingRulesTable'
 
@@ -50,6 +50,7 @@ export function MdnsProxySelector (props: MdnsProxySelectorProps) {
         </Select>
       </Form.Item>
       <MdnsProxyForwardingRulesTable
+        featureType={MdnsProxyFeatureTypeEnum.WIFI}
         readonly={true}
         rules={selectedMdnsProxy?.rules}
       />

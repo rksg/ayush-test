@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { isNil }        from 'lodash'
 import { useIntl }      from 'react-intl'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -9,9 +10,10 @@ import {
   BridgeServiceEnum,
   mdnsProxyRuleTypeLabelMapping,
   sortProp,
-  defaultSort
+  defaultSort,
+  MdnsProxyFeatureTypeEnum
 } from '@acx-ui/rc/utils'
-import { WifiScopes }                    from '@acx-ui/types'
+import { EdgeScopes, WifiScopes }        from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 import { MdnsProxyForwardingRuleDrawer } from '../MdnsProxyForwardingRuleDrawer'
@@ -21,15 +23,26 @@ import { RULES_MAX_COUNT } from './constants'
 export * from './constants'
 
 interface MdnsProxyForwardingRulesTableProps {
+  featureType: MdnsProxyFeatureTypeEnum
   readonly?: boolean;
   tableType?: TableProps<MdnsProxyForwardingRule>['type'];
   rules?: MdnsProxyForwardingRule[];
   setRules?: (r: MdnsProxyForwardingRule[]) => void;
+  rowKey?: string
 }
 
 export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTableProps) {
-  const { readonly = false, tableType, rules = [], setRules = () => null } = props
+  const {
+    featureType,
+    readonly = false,
+    tableType,
+    rules,
+    setRules = () => null,
+    rowKey
+  } = props
   const { $t } = useIntl()
+  const featureRbacScope = (featureType === MdnsProxyFeatureTypeEnum.WIFI ? WifiScopes : EdgeScopes)
+
   const [ drawerFormRule, setDrawerFormRule ] = useState<MdnsProxyForwardingRule>()
   const [ drawerEditMode, setDrawerEditMode ] = useState(false)
   const [ drawerVisible, setDrawerVisible ] = useState(false)
@@ -61,12 +74,13 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
   const getRuleTypeLabel = (rule: MdnsProxyForwardingRule): string => {
     if (rule.service === BridgeServiceEnum.OTHER) {
       // eslint-disable-next-line max-len
-      return `_${rule.mdnsName}._${rule.mdnsProtocol?.toLowerCase()} (${$t(mdnsProxyRuleTypeLabelMapping[rule.service])})`
+      return `_${rule.mdnsName}._${rule.mdnsProtocol?.toLowerCase()}. (${$t(mdnsProxyRuleTypeLabelMapping[rule.service])})`
     }
     return $t(mdnsProxyRuleTypeLabelMapping[rule.service])
   }
 
-  const hasReachedMaxLimit = (rules: MdnsProxyForwardingRule[]) => {
+  const hasReachedMaxLimit = (rules: MdnsProxyForwardingRule[] | undefined) => {
+    if (isNil(rules)) return false
     return rules.length >= RULES_MAX_COUNT
   }
 
@@ -101,7 +115,7 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
       setDrawerEditMode(true)
       setDrawerFormRule(selectedRows[0])
     },
-    scopeKey: [WifiScopes.UPDATE]
+    scopeKey: [featureRbacScope.UPDATE]
   },{
     label: $t({ defaultMessage: 'Delete' }),
     onClick: (selectedRows: MdnsProxyForwardingRule[], clearSelection) => {
@@ -113,16 +127,16 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
           entityValue: getRuleTypeLabel(selectedRows[0])
         },
         onOk: () => {
-          const newRules = rules.filter((r: MdnsProxyForwardingRule) => {
+          const newRules = rules?.filter((r: MdnsProxyForwardingRule) => {
             return selectedRows[0].id !== r.id
           })
 
-          setRules(newRules)
+          setRules(newRules ?? [])
           clearSelection()
         }
       })
     },
-    scopeKey: [WifiScopes.DELETE]
+    scopeKey: [featureRbacScope.DELETE]
   }]
 
   const actions = [{
@@ -133,7 +147,7 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
       // eslint-disable-next-line max-len
       ? $t({ defaultMessage: 'The rule has reached the limit ({maxCount}).' }, { maxCount: RULES_MAX_COUNT })
       : undefined,
-    scopeKey: [WifiScopes.CREATE]
+    scopeKey: [featureRbacScope.CREATE]
   }]
 
   return (
@@ -146,7 +160,7 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
           setVisible={setDrawerVisible}
           setRule={handleSetRule}
           isRuleUnique={(comingRule: MdnsProxyForwardingRule) => {
-            const hasDuplicationRule = rules.some((rule: MdnsProxyForwardingRule) => {
+            const hasDuplicationRule = rules?.some((rule: MdnsProxyForwardingRule) => {
               return comingRule.service === rule.service
                 && comingRule.fromVlan === rule.fromVlan
                 && comingRule.toVlan === rule.toVlan
@@ -159,11 +173,12 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
         columns={columns}
         dataSource={rules}
         type={tableType}
-        rowKey='id'
+        rowKey={rowKey || 'id'}
         actions={readonly ? [] : filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
         rowSelection={readonly ? false :
-          hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'radio' }
+          // eslint-disable-next-line max-len
+          hasPermission({ scopes: [featureRbacScope.UPDATE, featureRbacScope.DELETE] }) && { type: 'radio' }
         }
       />
     </>

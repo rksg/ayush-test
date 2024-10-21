@@ -140,6 +140,7 @@ export const useCasesToRefreshApGroupTemplateList = [
 
 export const useCasesToRefreshTemplateList = [
   'ApplyTemplate',
+  'SyncTemplate',
   ...useCasesToRefreshNetworkTemplateList,
   ...useCasesToRefreshVenueTemplateList,
   ...useCasesToRefreshDpskTemplateList,

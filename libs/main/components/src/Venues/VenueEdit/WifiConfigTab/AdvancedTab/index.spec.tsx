@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
 import { venueApi }                                                                  from '@acx-ui/rc/services'
 import { CommonRbacUrlsInfo, CommonUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo }        from '@acx-ui/rc/utils'
 import { Provider, store }                                                           from '@acx-ui/store'
@@ -179,7 +179,7 @@ describe('AdvancedTab', () => {
   })
 
   it('should show BssColoring', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_COMPATIBILITY_BY_MODEL)
     const advanceSettingContext = {
       updateAccessPointLED: jest.fn(),
       updateBssColoring: jest.fn()
@@ -206,7 +206,7 @@ describe('AdvancedTab', () => {
   })
 
   it('should render AP Management VLAN if feature flag is On', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_COMPATIBILITY_BY_MODEL)
     const mockUpdateApManagementVlan = jest.fn()
     const advanceSettingContext = {
       updateAccessPointLED: jest.fn(),

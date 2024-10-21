@@ -410,6 +410,8 @@ export function LanPorts () {
                           isTrunkPortUntaggedVlanEnabled={supportTrunkPortUntaggedVlan}
                           index={index}
                           useVenueSettings={useVenueSettings}
+                          venueId={venueId}
+                          serialNumber={serialNumber}
                         />
                       </Col>
                     </Row>

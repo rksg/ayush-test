@@ -134,24 +134,27 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
   }
 
   useEffect(()=>{
-    if(portType === EthernetPortType.TRUNK) {
-      formRef.setFieldsValue({
-        untagId: 1,
-        vlanMembers: '1-4094',
-        authTypeRole: EthernetPortAuthType.SUPPLICANT
-      })
+    if (!isEditMode) {
+      if(portType === EthernetPortType.TRUNK) {
+        formRef.setFieldsValue({
+          untagId: 1,
+          vlanMembers: '1-4094',
+          authTypeRole: EthernetPortAuthType.SUPPLICANT
+        })
+      }
+
+      if(portType === EthernetPortType.ACCESS) {
+        formRef.setFieldsValue({
+          vlanMembers: untagId,
+          authTypeRole: EthernetPortAuthType.PORT_BASED
+        })
+      }
+
+      if(portType === EthernetPortType.SELECTIVE_TRUNK) {
+        formRef.setFieldValue('authTypeRole', EthernetPortAuthType.PORT_BASED)
+      }
     }
 
-    if(portType === EthernetPortType.ACCESS) {
-      formRef.setFieldsValue({
-        vlanMembers: untagId,
-        authTypeRole: EthernetPortAuthType.PORT_BASED
-      })
-    }
-
-    if(portType === EthernetPortType.SELECTIVE_TRUNK) {
-      formRef.setFieldValue('authTypeRole', EthernetPortAuthType.PORT_BASED)
-    }
   }, [portType])
 
   useEffect(()=>{

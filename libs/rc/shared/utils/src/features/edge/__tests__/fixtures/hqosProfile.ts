@@ -85,7 +85,8 @@ export const mockEdgeHqosProfileStatusList = {
       name: 'Test-QoS-1',
       description: 'description',
       id: '3bdd22df-aeab-430a-badd-9a04ae3683f1',
-      edgeClusterIds: ['aa05c121-9e9e-4d98-b3b2-84d5acedee1c']
+      edgeClusterIds: ['aa05c121-9e9e-4d98-b3b2-84d5acedee1c'],
+      isDefault: false
     },
     {
       trafficClassSettings: mockTrafficClassSettings,
@@ -93,7 +94,8 @@ export const mockEdgeHqosProfileStatusList = {
       name: 'Test-QoS-2',
       description: 'des-22',
       id: 'e8c3d230-fa19-4841-96d2-c5ab6b311d93',
-      edgeClusterIds: []
+      edgeClusterIds: [],
+      isDefault: true
     }
   ]
 }

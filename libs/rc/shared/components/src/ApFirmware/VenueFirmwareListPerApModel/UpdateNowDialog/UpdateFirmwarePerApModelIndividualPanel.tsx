@@ -9,7 +9,7 @@ import { useIntl }             from 'react-intl'
 import { Loader }                            from '@acx-ui/components'
 import { useGetAllApModelFirmwareListQuery } from '@acx-ui/rc/services'
 
-import * as UI                                                                     from '../../VenueFirmwareList/styledComponents'
+import * as UI                                                                     from '../styledComponents'
 import { ApModelIndividualDisplayDataType, convertToApModelIndividualDisplayData } from '../venueFirmwareListPerApModelUtils'
 
 import { UpdateFirmwarePerApModelIndividual } from './UpdateFirmwarePerApModelIndividual'
