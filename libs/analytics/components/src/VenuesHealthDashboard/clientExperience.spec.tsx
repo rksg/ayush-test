@@ -1,16 +1,19 @@
 /* eslint-disable testing-library/no-node-access */
-import { dataApiURL, Provider, store }      from '@acx-ui/store'
-import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
-import { RolesEnum }                        from '@acx-ui/types'
-import { getUserProfile, setUserProfile }   from '@acx-ui/user'
-import { DateRange }                        from '@acx-ui/utils'
-import type { AnalyticsFilter }             from '@acx-ui/utils'
+import { get }                               from '@acx-ui/config'
+import { dataApiURL, Provider, store }       from '@acx-ui/store'
+import { render, screen, mockGraphqlQuery }  from '@acx-ui/test-utils'
+import { RaiPermissions, setRaiPermissions } from '@acx-ui/user'
+import { DateRange }                         from '@acx-ui/utils'
+import type { AnalyticsFilter }              from '@acx-ui/utils'
 
 import { healthWidgetFixture } from './__tests__/fixtures'
 import { ClientExperience }    from './clientExperience'
 import { api }                 from './services'
 
-
+const mockGet = get as jest.Mock
+jest.mock('@acx-ui/config', () => ({
+  get: jest.fn()
+}))
 describe('Client Experience', () => {
   let params = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
   const filters:AnalyticsFilter = {
@@ -44,11 +47,9 @@ describe('Client Experience', () => {
     await screen.findByText('Connection Success')
     expect(asFragment()).toMatchSnapshot()
   })
-  it('should hide arrow button when role is READ_ONLY', async () => {
-    setUserProfile({
-      allowedOperations: [],
-      profile: { ...getUserProfile().profile, roles: [RolesEnum.READ_ONLY] }
-    })
+  it('should hide arrow button when READ_HEALTH permission is false', async () => {
+    mockGet.mockReturnValue('true')
+    setRaiPermissions({ READ_HEALTH: false } as RaiPermissions)
     mockGraphqlQuery(dataApiURL, 'HealthWidget', {
       data: { network: { hierarchyNode: healthWidgetFixture } }
     })

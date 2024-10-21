@@ -67,8 +67,8 @@ describe('Edge SD-LAN Detail - DMZ', () => {
       policyId: mockedSdLanData.tunnelProfileId!
     }))
     expect(screen.getByText('Instances')).toBeVisible()
-    expect(screen.getByRole('tab', { name: 'Venues(1)' })).toBeVisible()
-    expect(screen.getByRole('tab', { name: 'AP(2)' })).toBeVisible()
-    expect(screen.getByRole('tab', { name: 'RUCKUS Edges(2)' })).toBeVisible()
+    expect(screen.getByRole('tab', { name: 'Venues (1)' })).toBeVisible()
+    expect(screen.getByRole('tab', { name: 'AP (2)' })).toBeVisible()
+    expect(screen.getByRole('tab', { name: 'RUCKUS Edges (2)' })).toBeVisible()
   })
 })

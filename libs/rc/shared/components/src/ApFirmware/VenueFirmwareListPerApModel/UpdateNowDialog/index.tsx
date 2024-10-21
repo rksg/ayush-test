@@ -3,12 +3,13 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
+
 import { Modal }                                                    from '@acx-ui/components'
 import { usePatchVenueApModelFirmwaresMutation }                    from '@acx-ui/rc/services'
 import { FirmwareVenuePerApModel, UpdateFirmwarePerApModelPayload } from '@acx-ui/rc/utils'
 
-import * as UI                          from '../../VenueFirmwareList/styledComponents'
-import { firmwareNote1, firmwareNote2 } from '../../VenueFirmwareList/UpdateNowDialog'
+import { firmwareNote1, firmwareNote2 } from '../contents'
+import * as UI                          from '../styledComponents'
 
 import { UpdateFirmwarePerApModelPanel } from './UpdateFirmwarePerApModelPanel'
 
