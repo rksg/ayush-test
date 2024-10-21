@@ -198,18 +198,17 @@ const EdgeDHCPDetail = () => {
     },
     {
       title: $t({ defaultMessage: 'DHCP Relay' }),
-      content: dhcpStats &&
-        (dhcpStats?.dhcpRelay === 'true' ?
-          $t({ defaultMessage: 'ON' }) :
-          $t({ defaultMessage: 'OFF' }))
+      content: dhcpStats?.dhcpRelay === 'true' ?
+        $t({ defaultMessage: 'ON' }) :
+        $t({ defaultMessage: 'OFF' })
     },
     {
       title: $t({ defaultMessage: 'DHCP Pools' }),
-      content: dhcpStats && dhcpStats?.dhcpPoolNum
+      content: dhcpStats?.dhcpPoolNum ?? 0
     },
     {
       title: $t({ defaultMessage: 'Lease Time' }),
-      content: dhcpStats && (dhcpStats?.leaseTime)
+      content: dhcpStats?.leaseTime || noDataDisplay
     }
   ]
 
