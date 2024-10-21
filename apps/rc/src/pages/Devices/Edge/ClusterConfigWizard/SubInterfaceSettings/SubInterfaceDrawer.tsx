@@ -11,7 +11,7 @@ import {
   edgePortIpValidator,
   generalSubnetMskRegExp
 } from '@acx-ui/rc/utils'
-import { validationMessages } from '@acx-ui/utils'
+import { getIntl, validationMessages } from '@acx-ui/utils'
 
 interface SubInterfaceDrawerProps {
   visible: boolean
@@ -20,6 +20,21 @@ interface SubInterfaceDrawerProps {
   handleAdd: (data: SubInterface) => Promise<unknown>
   handleUpdate: (data: SubInterface) => Promise<unknown>
   allSubInterfaceVlans: { id: String, vlan: number }[]
+}
+
+const getPortTypeOptions = () => {
+  const { $t } = getIntl()
+  return [
+    { label: $t({ defaultMessage: 'LAN' }), value: EdgePortTypeEnum.LAN }
+  ]
+}
+
+const getIpModeOptions = () => {
+  const { $t } = getIntl()
+  return [
+    { label: $t({ defaultMessage: 'DHCP' }), value: EdgeIpModeEnum.DHCP },
+    { label: $t({ defaultMessage: 'Static IP' }), value: EdgeIpModeEnum.STATIC }
+  ]
 }
 
 const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
@@ -34,24 +49,6 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
       formRef.setFieldsValue(data)
     }
   }, [visible, formRef, data])
-
-  const portTypeOptions = [
-    {
-      label: $t({ defaultMessage: 'LAN' }),
-      value: EdgePortTypeEnum.LAN
-    }
-  ]
-
-  const ipModeOptions = [
-    {
-      label: $t({ defaultMessage: 'DHCP' }),
-      value: EdgeIpModeEnum.DHCP
-    },
-    {
-      label: $t({ defaultMessage: 'Static IP' }),
-      value: EdgeIpModeEnum.STATIC
-    }
-  ]
 
   const getTitle = () => {
     return $t({ defaultMessage: '{operation} Sub-interface' },
@@ -107,14 +104,14 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
       initialValue={EdgePortTypeEnum.LAN}
       label={$t({ defaultMessage: 'Port Type' })}
       rules={[{ required: true }]}
-      children={<Select options={portTypeOptions} />}
+      children={<Select options={getPortTypeOptions()} />}
     />
     <Form.Item
       name='ipMode'
       initialValue={EdgeIpModeEnum.DHCP}
       label={$t({ defaultMessage: 'IP Assignment Type' })}
       rules={[{ required: true }]}
-      children={<Select options={ipModeOptions} />}
+      children={<Select options={getIpModeOptions()} />}
     />
     <Form.Item
       noStyle
