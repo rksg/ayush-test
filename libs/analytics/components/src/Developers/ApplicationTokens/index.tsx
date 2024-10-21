@@ -104,7 +104,6 @@ export const useApplicationTokens = () => {
   }, {
     key: 'clientSecret',
     dataIndex: 'clientSecret',
-    searchable: true,
     title: $t({ defaultMessage: 'Client Secret' }),
     sorter: { compare: sortProp('clientSecret', defaultSort) },
     render: function (_, row) {
