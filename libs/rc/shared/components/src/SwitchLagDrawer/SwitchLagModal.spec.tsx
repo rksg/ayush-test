@@ -202,6 +202,7 @@ describe('SwitchLagModal', () => {
     await userEvent.selectOptions(selector, '1 Gbits per second copper')
 
     expect(await screen.findByText('1/1/1')).toBeVisible()
+    expect(() => screen.getByText('1/1/10')).toThrow()
   })
 
   it('should add lag correctly', async () => {
