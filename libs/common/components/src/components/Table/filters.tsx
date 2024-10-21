@@ -31,11 +31,13 @@ function hasChildrenColumn <RecordType> (
 
 interface RangePickerProps {
   filterValues: Filter,
-  setFilterValues: Function
+  setFilterValues: Function,
+  settingsId?: string,
+  filterPersistence?: boolean
 }
 
 function RangePickerComp (props: RangePickerProps) {
-  const { filterValues, setFilterValues } = props
+  const { filterValues, setFilterValues, settingsId, filterPersistence } = props
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
   return <UI.FilterRangePicker>
     <RangePicker
@@ -48,6 +50,9 @@ function RangePickerComp (props: RangePickerProps) {
             { fromTime: undefined, toTime: undefined } :
             { fromTime: moment(period.startDate).toISOString(),
               toTime: moment(period.endDate).toISOString() })
+        }
+        if(filterPersistence){
+          sessionStorage.setItem(`${settingsId}-filter`, JSON.stringify(filters))
         }
         setFilterValues(filters)
         setDateFilter(date)
@@ -157,6 +162,10 @@ export function renderFilter <RecordType> (
           setFilterValues({ ...filterValues, [key]: undefined })
         } else {
           setFilterValues({ ...filterValues, [key]: [isChecked] })
+          if(filterPersistence){
+            sessionStorage.setItem(`${settingsId}-filter`,
+              JSON.stringify({ ...filterValues, [key]: [isChecked] }))
+          }
         }
       }}>{column?.filterComponent?.label}</Checkbox>
   }
@@ -167,6 +176,8 @@ export function renderFilter <RecordType> (
       key='range-picker'
       filterValues={filterValues}
       setFilterValues={setFilterValues}
+      settingsId={settingsId}
+      filterPersistence={filterPersistence}
     />
   }
   type Type = keyof typeof filterTypeComp
