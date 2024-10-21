@@ -85,6 +85,10 @@ describe('ClusterConfigWizard', () => {
       rest.get(
         EdgeUrlsInfo.getEdgeClusterNetworkSettings.url,
         (_req, res, ctx) => res(ctx.json(mockedHaNetworkSettings))
+      ),
+      rest.get(
+        EdgeUrlsInfo.getEdgeClusterSubInterfaceSettings.url,
+        (_req, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
   })
