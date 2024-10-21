@@ -242,6 +242,22 @@ describe('IntentAIForm', () => {
 
     expect(await screen.findByText(/has been updated/)).toBeVisible()
     await click(await screen.findByText(/View/))
+    expect(await screen.findByRole('heading', { name: 'Intent Priority' })).toBeVisible()
+    await click(actions.getByRole('button', { name: 'Cancel' }))
     expect(mockNavigate).toBeCalled()
+  })
+
+  it('handle cancel button', async () => {
+    const { params } = mockIntentContextWith({ status: Statuses.new })
+    render(<IntentAIForm />, { route: { params }, wrapper: Provider })
+    const form = within(await screen.findByTestId('steps-form'))
+    const actions = within(form.getByTestId('steps-form-actions'))
+
+    expect(await screen.findByRole('heading', { name: 'Introduction' })).toBeVisible()
+    await click(actions.getByRole('button', { name: 'Next' }))
+    expect(await screen.findByRole('heading', { name: 'Intent Priority' })).toBeVisible()
+    await click(actions.getByRole('button', { name: 'Cancel' }))
+    expect(mockNavigate).toBeCalled()
+   
   })
 })

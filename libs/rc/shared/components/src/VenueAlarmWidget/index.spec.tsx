@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {  Alarm, CommonUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider  }              from '@acx-ui/store'
 import { render,
@@ -67,7 +68,7 @@ const data = {
 const params = { venueId: 'venue-id', tenantId: 'tenant-id' }
 
 describe('Venue Overview Alarm Widget', () => {
-
+  jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.ALARM_NEW_API_TOGGLE)
   it('should render chart correctly', async () => {
     mockServer.use(
       rest.post(
@@ -78,7 +79,7 @@ describe('Venue Overview Alarm Widget', () => {
         CommonUrlsInfo.getAlarmsListMeta.url,
         (_, res, ctx) => res(ctx.json(alarmListMeta))
       ),
-      rest.post(CommonUrlsInfo.getDashboardV2Overview.url,
+      rest.post(CommonUrlsInfo.getAlarmSummaries.url,
         (req, res, ctx) => res(ctx.json(data)))
     )
 
@@ -104,7 +105,7 @@ describe('Venue Overview Alarm Widget', () => {
         CommonUrlsInfo.getAlarmsListMeta.url,
         (req, res, ctx) => res(ctx.json({ data: [] }))
       ),
-      rest.post(CommonUrlsInfo.getDashboardV2Overview.url,
+      rest.post(CommonUrlsInfo.getAlarmSummaries.url,
         (req, res, ctx) => res(ctx.json(data)))
     )
 

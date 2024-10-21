@@ -5,17 +5,19 @@ import { Badge } from 'antd'
 
 import {
   LayoutUI } from '@acx-ui/components'
-import { NotificationSolid } from '@acx-ui/icons'
-import { AlarmsDrawer }      from '@acx-ui/rc/components'
+import { useIsSplitOn, Features }                 from '@acx-ui/feature-toggle'
+import { NotificationSolid }                      from '@acx-ui/icons'
+import { AlarmsDrawer }                           from '@acx-ui/rc/components'
 import {
-  useGetAlarmCountQuery }  from '@acx-ui/rc/services'
+  useGetAlarmCountQuery, useGetAlarmsCountQuery }  from '@acx-ui/rc/services'
 import { useParams } from '@acx-ui/react-router-dom'
 
 export default function AlarmsHeaderButton () {
   const params = useParams()
-
   const payload = { filters: { } }
-  const { data } = useGetAlarmCountQuery({ params, payload })
+  const isNewAlarmQueryEnabled = useIsSplitOn(Features.ALARM_NEW_API_TOGGLE)
+  const query = isNewAlarmQueryEnabled ? useGetAlarmsCountQuery : useGetAlarmCountQuery
+  const { data } = query({ params, payload })
 
   const [visible, setVisible] = useState(false)
 

@@ -1,16 +1,15 @@
-import { ReactNode } from 'react'
-
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                      from '@acx-ui/feature-toggle'
-import { EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                          from '@acx-ui/store'
-import { mockServer, render, screen }        from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
+import { EdgeDHCPFixtures, EdgeDhcpUrls, EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                          from '@acx-ui/store'
+import { mockServer, render, screen }                                        from '@acx-ui/test-utils'
 
 import EdgeDetails from '.'
 
 const { mockEdgeList, mockEdgeServiceList, mockEdgeCluster } = EdgeGeneralFixtures
+const { mockDhcpStatsData } = EdgeDHCPFixtures
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
@@ -36,14 +35,19 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
-jest.mock('./EdgeDetailsDataProvider', () => ({
-  EdgeDetailsDataProvider: ({ children }: { children: ReactNode }) =>
-    <div data-testid='EdgeDetailsDataProvider' children={children} />
-}))
 
 describe('EdgeDetails', () => {
   const currentEdge = mockEdgeList.data[0]
   let params: { tenantId: string, serialNumber: string, activeTab: string }
+  const currentCluster = {
+    ...mockEdgeCluster,
+    smartEdges: [
+      {
+        serialNumber: 'serialNumber-1',
+        name: 'Smart Edge 1'
+      }
+    ]
+  }
 
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -64,7 +68,11 @@ describe('EdgeDetails', () => {
       ),
       rest.get(
         EdgeUrlsInfo.getEdgeCluster.url,
-        (_req, res, ctx) => res(ctx.json(mockEdgeCluster))
+        (_req, res, ctx) => res(ctx.json(currentCluster))
+      ),
+      rest.post(
+        EdgeDhcpUrls.getDhcpStats.url,
+        (_req, res, ctx) => res(ctx.json(mockDhcpStatsData))
       )
     )
   })
@@ -78,7 +86,6 @@ describe('EdgeDetails', () => {
 
     const tab = await screen.findByText('Overview')
     expect(tab.getAttribute('aria-selected')).toBe('true')
-    expect(screen.getByTestId('EdgeDetailsDataProvider')).toBeVisible()
   })
 
   it('should display troubleshooting tab correctly', async () => {
@@ -117,7 +124,6 @@ describe('EdgeDetails', () => {
     })
 
     const target = await screen.findByRole('tab', { name: 'DHCP' })
-    expect(target).not.toBeNull()
     expect(target?.getAttribute('aria-selected')).toBe('true')
   })
 
@@ -131,7 +137,6 @@ describe('EdgeDetails', () => {
     })
 
     const target = await screen.findByRole('tab', { name: 'Timeline' })
-    expect(target).not.toBeNull()
     expect(target?.getAttribute('aria-selected')).toBe('true')
   })
 
@@ -149,7 +154,7 @@ describe('EdgeDetails', () => {
       hash: '',
       search: ''
     })
-    await user.click(screen.getByRole('tab', { name: 'DHCP' }))
+    await user.click(await screen.findByRole('tab', { name: 'DHCP' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/details/dhcp/pools`,
       hash: '',
