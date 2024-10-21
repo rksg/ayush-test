@@ -1,26 +1,26 @@
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps }                                                                              from '@acx-ui/components'
-import { useEdgeBySerialNumberQuery, useGetDhcpHostStatsQuery, useGetDhcpStatsQuery, useGetEdgeDhcpServiceQuery } from '@acx-ui/rc/services'
-import { DhcpHostStats, EdgeDhcpHostStatus, useTableQuery }                                                       from '@acx-ui/rc/utils'
-import { RequestPayload }                                                                                         from '@acx-ui/types'
+import { Loader, Table, TableProps }                                                  from '@acx-ui/components'
+import { useGetDhcpHostStatsQuery, useGetDhcpStatsQuery, useGetEdgeDhcpServiceQuery } from '@acx-ui/rc/services'
+import { DhcpHostStats, EdgeDhcpHostStatus, genExpireTimeString, useTableQuery }      from '@acx-ui/rc/utils'
+import { RequestPayload }                                                             from '@acx-ui/types'
 
 import { useIsEdgeReady } from '../useEdgeActions'
 
 interface EdgeDhcpLeaseTableProps {
-  edgeId?: string
   isInfinite?: boolean
   clusterId?: string
 }
 
 export const EdgeDhcpLeaseTable = (props: EdgeDhcpLeaseTableProps) => {
 
+  const { clusterId } = props
   const { $t } = useIntl()
   const isEdgeReady = useIsEdgeReady()
 
   const getDhcpHostStatsPayload = {
-    filters: { edgeId: [props.edgeId] },
+    filters: { edgeClusterId: [clusterId] },
     sortField: 'hostName',
     sortOrder: 'ASC',
     searchTargetFields: ['hostName', 'hostIpAddr', 'hostMac']
@@ -29,20 +29,12 @@ export const EdgeDhcpLeaseTable = (props: EdgeDhcpLeaseTableProps) => {
   const hostTableQuery = useTableQuery<DhcpHostStats, RequestPayload<unknown>, unknown>({
     useQuery: useGetDhcpHostStatsQuery,
     defaultPayload: getDhcpHostStatsPayload,
-    option: { skip: !!!props.edgeId || !isEdgeReady },
+    option: { skip: !!!clusterId || !isEdgeReady },
     search: {
       searchTargetFields: ['hostName', 'hostIpAddr', 'hostMac']
     },
     pagination: { settingsId }
   })
-
-  const { data: currentEdgeStatus } = useEdgeBySerialNumberQuery({
-    payload: {
-      fields: [
-        'clusterId'
-      ],
-      filters: { serialNumber: [props.edgeId] } }
-  }, { skip: Boolean(props.clusterId) })
 
   const { dhcpId } = useGetDhcpStatsQuery(
     {
@@ -50,11 +42,11 @@ export const EdgeDhcpLeaseTable = (props: EdgeDhcpLeaseTableProps) => {
         fields: [
           'id'
         ],
-        filters: { edgeClusterIds: [(props.clusterId || currentEdgeStatus?.clusterId)] }
+        filters: { edgeClusterIds: [clusterId] }
       }
     },
     {
-      skip: !Boolean(props.clusterId) && !Boolean(currentEdgeStatus?.clusterId),
+      skip: !Boolean(clusterId),
       selectFromResult: ({ data }) => ({
         dhcpId: data?.data[0]?.id
       })
@@ -73,18 +65,6 @@ export const EdgeDhcpLeaseTable = (props: EdgeDhcpLeaseTableProps) => {
       })
     }
   )
-
-  const genExpireTimeString = (seconds?: number) => {
-    const days = seconds && seconds > 0 ? Math.floor(seconds/86400) : 0
-    const lessThanADaySec = seconds && seconds > 0 ? Math.floor(seconds%86400) : 0
-    return $t(
-      { defaultMessage: '{days, plural, =0 {} one {# Day} other {# Days}} {time}' },
-      {
-        days,
-        time: new Date(lessThanADaySec * 1000).toISOString().slice(11, 19)
-      }
-    )
-  }
 
   const statusOptions = [
     {

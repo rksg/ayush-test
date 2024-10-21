@@ -41,8 +41,7 @@ import {
   WifiCallingConfigureForm,
   WifiCallingDetailView,
   WifiCallingForm,
-  WifiOperatorForm,
-  WorkflowFormMode
+  WifiOperatorForm
 } from '@acx-ui/rc/components'
 import {
   CertificateCategoryType,
@@ -141,6 +140,7 @@ import EditFirewall                                                     from './
 import FirewallDetail                                                   from './pages/Services/EdgeFirewall/FirewallDetail'
 import FirewallTable                                                    from './pages/Services/EdgeFirewall/FirewallTable'
 import { AddEdgeSdLan, EdgeSdLanDetail, EdgeSdLanTable, EditEdgeSdLan } from './pages/Services/EdgeSdLan/index'
+import { EdgeMdnsProxyTable }                                           from './pages/Services/MdnsProxy/Edge/EdgeMdnsProxyTable'
 import MdnsProxyDetail                                                  from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
 import MdnsProxyForm                                                    from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
 import MdnsProxyTable                                                   from './pages/Services/MdnsProxy/MdnsProxyTable/MdnsProxyTable'
@@ -508,31 +508,31 @@ const edgeFirewallRoutes = () => {
 const edgePinRoutes = () => {
   return <>
     <Route
-      path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
+      path={getServiceRoutePath({ type: ServiceType.PIN,
         oper: ServiceOperation.CREATE })}
       element={
         // eslint-disable-next-line max-len
-        <ServiceAuthRoute serviceType={ServiceType.NETWORK_SEGMENTATION} oper={ServiceOperation.CREATE}>
+        <ServiceAuthRoute serviceType={ServiceType.PIN} oper={ServiceOperation.CREATE}>
           <AddPersonalIdentitNetwork />
         </ServiceAuthRoute>
       }
     />
     <Route
-      path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
+      path={getServiceRoutePath({ type: ServiceType.PIN,
         oper: ServiceOperation.LIST })}
       element={<PersonalIdentityNetworkTable />}
     />
     <Route
-      path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
+      path={getServiceRoutePath({ type: ServiceType.PIN,
         oper: ServiceOperation.DETAIL })}
       element={<PersonalIdentityNetworkDetail />}
     />
     <Route
-      path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
+      path={getServiceRoutePath({ type: ServiceType.PIN,
         oper: ServiceOperation.EDIT })}
       element={
         // eslint-disable-next-line max-len
-        <ServiceAuthRoute serviceType={ServiceType.NETWORK_SEGMENTATION} oper={ServiceOperation.EDIT}>
+        <ServiceAuthRoute serviceType={ServiceType.PIN} oper={ServiceOperation.EDIT}>
           <EditPersonalIdentityNetwork />
         </ServiceAuthRoute>
       }
@@ -540,11 +540,20 @@ const edgePinRoutes = () => {
   </>
 }
 
+const edgeMdnsRoutes = () => {
+  return <Route
+    path={getServiceRoutePath({ type: ServiceType.EDGE_MDNS_PROXY,
+      oper: ServiceOperation.LIST })}
+    element={<EdgeMdnsProxyTable />}
+  />
+}
+
 function ServiceRoutes () {
   const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
   const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+  const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
 
   return rootRoutes(
     <Route path=':tenantId/t'>
@@ -756,6 +765,9 @@ function ServiceRoutes () {
       {(isEdgeHaReady && isEdgeFirewallHaReady)
         && edgeFirewallRoutes()}
 
+
+      {isEdgeMdnsReady && edgeMdnsRoutes()}
+
       <Route
         path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
           oper: ServiceOperation.LIST })}
@@ -791,7 +803,8 @@ function ServiceRoutes () {
 function PolicyRoutes () {
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
-  const isWorkflowEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE)
+  const isWorkflowTierEnabled = useIsTierAllowed(Features.WORKFLOW_ONBOARD)
+  const isWorkflowFFEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE)
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
 
   return rootRoutes(
@@ -1248,7 +1261,7 @@ function PolicyRoutes () {
           element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.ADAPTIVE_POLICY_SET}/>}
         /> </>
       }
-      {isWorkflowEnabled &&
+      {isWorkflowFFEnabled && isWorkflowTierEnabled &&
       <>
         <Route
           path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.LIST })}
@@ -1263,16 +1276,10 @@ function PolicyRoutes () {
           path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.CREATE })}
           element={
             <PolicyAuthRoute policyType={PolicyType.WORKFLOW} oper={PolicyOperation.CREATE}>
-              <WorkflowPageForm mode={WorkflowFormMode.CREATE} />
+              <WorkflowPageForm/>
             </PolicyAuthRoute>
           } />
-        <Route
-          // eslint-disable-next-line max-len
-          path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.EDIT })}
-          element={<PolicyAuthRoute policyType={PolicyType.WORKFLOW} oper={PolicyOperation.EDIT}>
-            <WorkflowPageForm mode={WorkflowFormMode.EDIT} />
-          </PolicyAuthRoute>}
-        /> </>
+      </>
       }
       {isCertificateTemplateEnabled && <>
         <Route
@@ -1289,6 +1296,11 @@ function PolicyRoutes () {
         <Route
           path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE, oper: PolicyOperation.LIST })}
           element={<CertificateTemplateList tabKey={CertificateCategoryType.CERTIFICATE}/>}
+        />
+        <Route
+          path={getPolicyRoutePath({ type: PolicyType.SERVER_CERTIFICATES,
+            oper: PolicyOperation.LIST })}
+          element={<CertificateTemplateList tabKey={CertificateCategoryType.SERVER_CERTIFICATES}/>}
         />
         <Route
           // eslint-disable-next-line max-len

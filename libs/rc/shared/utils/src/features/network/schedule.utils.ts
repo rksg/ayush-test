@@ -1,15 +1,9 @@
 /* eslint-disable max-len */
-import tz_lookup from '@photostructure/tz-lookup'
-import moment    from 'moment-timezone'
+import moment from 'moment-timezone'
+
+import { ITimeZone } from '@acx-ui/types'
 
 import { NetworkVenueScheduler } from '../../models/NetworkVenueScheduler'
-
-export interface ITimeZone {
-  dstOffset: number
-  rawOffset: number
-  timeZoneId: string
-  timeZoneName: string
-}
 
 export interface ISlotIndex {
   day: string,
@@ -36,16 +30,6 @@ export const getCurrentTimeSlotIndex = (timeZone?: ITimeZone): ISlotIndex => {
   const timeIndex = today.hour * 4 + Math.floor(today.min / 15)
 
   return { day, timeIndex }
-}
-
-export const getVenueTimeZone = (lat: number, lng: number): ITimeZone => {
-  const timeZoneId = tz_lookup(lat, lng)
-  const timeZoneName = moment.utc().tz(timeZoneId).zoneAbbr()
-  const rawOffset = moment.utc().tz(timeZoneId).utcOffset()*60
-  return {
-    timeZoneId, timeZoneName: `${timeZoneId} ${timeZoneName}`,
-    rawOffset, dstOffset: 0
-  }
 }
 
 const convertTimeFromScheduleIndex = (scheduleTimeIndex: number) => {

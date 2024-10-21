@@ -39,7 +39,7 @@ describe('EdgeDhcpLeaseTable', () => {
   it('Should render EdgeDhcpPoolTable with edgeId props successfully', async () => {
     render(
       <Provider>
-        <EdgeDhcpLeaseTable edgeId='testId' />
+        <EdgeDhcpLeaseTable clusterId='testId' />
       </Provider>)
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const row = await screen.findAllByRole('row', { name: /TestHost/i })
@@ -49,7 +49,7 @@ describe('EdgeDhcpLeaseTable', () => {
   it('Should render expired time correctly', async () => {
     render(
       <Provider>
-        <EdgeDhcpLeaseTable edgeId='testId' isInfinite />
+        <EdgeDhcpLeaseTable clusterId='testId' isInfinite />
       </Provider>)
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const infiniteText = await screen.findAllByText('Infinite')

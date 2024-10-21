@@ -1,10 +1,10 @@
 import { Row, Col, Divider, Typography, Checkbox, Modal, Form, Input } from 'antd'
 import { MessageDescriptor, defineMessage, useIntl }                   from 'react-intl'
 
-import { Button, ModalRef }                                                                                                                                                                                from '@acx-ui/components'
-import { useDeleteCaPrivateKeyMutation, useLazyDownloadCertificateAuthorityChainsQuery, useLazyDownloadCertificateAuthorityQuery, useLazyDownloadCertificateChainsQuery, useLazyDownloadCertificateQuery } from '@acx-ui/rc/services'
-import { Certificate, CertificateAuthority, CertificateCategoryType, CertificateAcceptType, PolicyOperation, PolicyType, hasPolicyPermission }                                                             from '@acx-ui/rc/utils'
-import { getIntl, validationMessages }                                                                                                                                                                     from '@acx-ui/utils'
+import { Button, ModalRef }                                                                                                                                                                                                                                                                    from '@acx-ui/components'
+import { useDeleteCaPrivateKeyMutation, useLazyDownloadCertificateAuthorityChainsQuery, useLazyDownloadCertificateAuthorityQuery, useLazyDownloadCertificateChainsQuery, useLazyDownloadCertificateQuery, useLazyDownloadServerCertificateChainsQuery, useLazyDownloadServerCertificateQuery } from '@acx-ui/rc/services'
+import { Certificate, CertificateAuthority, CertificateCategoryType, CertificateAcceptType, PolicyOperation, PolicyType, hasPolicyPermission }                                                                                                                                                 from '@acx-ui/rc/utils'
+import { getIntl, validationMessages }                                                                                                                                                                                                                                                         from '@acx-ui/utils'
 
 import { deleteDescription }                                         from '../contentsMap'
 import { ButtonWrapper, CollapseTitle, Description, DescriptionRow } from '../styledComponents'
@@ -40,6 +40,8 @@ export default function DownloadSection (props: DownloadDrawerProps) {
   const [downloadCAChains] = useLazyDownloadCertificateAuthorityChainsQuery()
   const [downloadCertificate] = useLazyDownloadCertificateQuery()
   const [downloadCertificateChains] = useLazyDownloadCertificateChainsQuery()
+  const [downloadServerCertificate] = useLazyDownloadServerCertificateQuery()
+  const [downloadServerCertificateChains] = useLazyDownloadServerCertificateChainsQuery()
   const [deletePrivateKeys] = useDeleteCaPrivateKeyMutation()
   const { Text } = Typography
 
@@ -115,22 +117,64 @@ export default function DownloadSection (props: DownloadDrawerProps) {
     }
   }
 
+  function getParams (format: CertDownloadType,
+    certificateType: CertificateCategoryType, password: string) {
+    switch(certificateType) {
+      case CertificateCategoryType.CERTIFICATE:
+        return {
+          certificateId: data?.id,
+          templateId: (data as Certificate).certificateTemplateId,
+          includeChain: (format === CertDownloadType.PKCS12_CHAIN).toString(),
+          password
+        }
+
+      case CertificateCategoryType.SERVER_CERTIFICATES:
+        return {
+          certId: data?.id,
+          includeChain: (format === CertDownloadType.PKCS12_CHAIN).toString(),
+          password
+        }
+
+      default: return {
+        caId: data?.id,
+        includeChain: (format === CertDownloadType.PKCS12_CHAIN).toString(),
+        password
+      }
+    }
+  }
+
+  function getDownloadAction (certType: CertificateCategoryType) {
+    switch (certType) {
+      case CertificateCategoryType.CERTIFICATE:
+        return downloadCertificate
+
+      case CertificateCategoryType.SERVER_CERTIFICATES:
+        return downloadServerCertificate
+
+      default:
+        return downloadCA
+    }
+  }
+
+  function getDownloadChainsAction (certType: CertificateCategoryType) {
+    switch (certType) {
+      case CertificateCategoryType.CERTIFICATE:
+        return downloadCertificateChains
+
+      case CertificateCategoryType.SERVER_CERTIFICATES:
+        return downloadServerCertificateChains
+
+      default:
+        return downloadCAChains
+    }
+  }
+
   const doDownload = (format: CertDownloadType, downloadType: SectionType, password = '') => {
     const customHeaders = { Accept: certificateAcceptValue[format] }
-    const isCertificate = CertificateCategoryType.CERTIFICATE === type
-    const downloadAction = isCertificate ? downloadCertificate : downloadCA
-    const downloadChainsAction = isCertificate ? downloadCertificateChains : downloadCAChains
+    const downloadAction = getDownloadAction(type)
+    const downloadChainsAction = getDownloadChainsAction(type)
     const downloadTypes = [SectionType.PUBLIC_KEY, SectionType.PRIVATE_KEY, SectionType.P12]
-    const params = isCertificate ? {
-      certificateId: data?.id,
-      templateId: (data as Certificate).certificateTemplateId,
-      includeChain: (format === CertDownloadType.PKCS12_CHAIN).toString(),
-      password
-    } : {
-      caId: data?.id,
-      includeChain: (format === CertDownloadType.PKCS12_CHAIN).toString(),
-      password
-    }
+    const params = getParams(format, type, password)
 
     if (downloadTypes.includes(downloadType)) {
       downloadAction({ params, customHeaders })
@@ -142,7 +186,13 @@ export default function DownloadSection (props: DownloadDrawerProps) {
   const renderDownloadButton = (type: CertDownloadType, onClick: () => void) => (
     <Row style={{ marginBottom: '8px' }} key={type}>
       <ButtonWrapper>
-        <Button type='default' onClick={onClick}>
+        <Button
+          style={{
+            minWidth: '142px',
+            height: '28px'
+          }}
+          type='default'
+          onClick={onClick}>
           {$t(downloadButtonLabel[type])}
         </Button>
       </ButtonWrapper>
@@ -267,14 +317,18 @@ export default function DownloadSection (props: DownloadDrawerProps) {
     })
   }
 
+  const isServerCertificate = type === CertificateCategoryType.SERVER_CERTIFICATES
+
   return (
     <>
       {renderSection(SectionType.PUBLIC_KEY,
-        [CertDownloadType.PEM, CertDownloadType.DER], data?.publicKeyBase64)}
+        isServerCertificate ? [CertDownloadType.PEM]
+          : [CertDownloadType.PEM, CertDownloadType.DER], data?.publicKeyBase64)}
       {renderSection(SectionType.CHAINS,
-        [CertDownloadType.PEM, CertDownloadType.PKCS7], data?.chain)}
-      {renderPrivateKeySection(SectionType.PRIVATE_KEY)}
-      {renderSection(SectionType.P12,
+        isServerCertificate ? [CertDownloadType.PEM]
+          : [CertDownloadType.PEM, CertDownloadType.PKCS7], data?.chain)}
+      {!isServerCertificate && renderPrivateKeySection(SectionType.PRIVATE_KEY)}
+      {!isServerCertificate && renderSection(SectionType.P12,
         [CertDownloadType.PKCS12, CertDownloadType.PKCS12_CHAIN],
         data?.privateKeyBase64, false)}
     </>

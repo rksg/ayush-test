@@ -182,6 +182,7 @@ export const kpiConfig = {
       description: defineMessage({ defaultMessage: '{successCount} of {totalCount} DHCP successful bindings' }),
       thresholdDesc: [],
       thresholdFormatter: null,
+      valueFormatter: 'percentFormat',
       pillSuffix: pillSuffix.success,
       tooltip: defineMessage({ defaultMessage: 'Metric of DHCP successful bindings for switches that have DHCP snooping configured.' })
     }
@@ -555,6 +556,7 @@ export const kpiConfig = {
       ],
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: numberWithPercentSymbol,
+      valueFormatter: 'percentFormat',
       tooltip: defineMessage({ defaultMessage: 'Compliance metric of switches with CPU utilization below a threshold.' })
     }
   },
@@ -602,6 +604,7 @@ export const kpiConfig = {
       ],
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: numberWithPercentSymbol,
+      valueFormatter: 'percentFormat',
       tooltip: defineMessage({ defaultMessage: 'Compliance metric that refers to amount of network traffic that is transmitted effectively through the uplink port of wired switches.' })
     }
   },
@@ -632,6 +635,7 @@ export const kpiConfig = {
       ],
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: numberWithPercentSymbol,
+      valueFormatter: 'percentFormat',
       tooltip: defineMessage({ defaultMessage: 'Compliance metric that refers to traffic being transmitted effectively if its within the network capacity.' })
     }
   },
@@ -679,6 +683,7 @@ export const kpiConfig = {
       ],
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: numberWithPercentSymbol,
+      valueFormatter: 'percentFormat',
       tooltip: defineMessage({ defaultMessage: 'Compliance metric that refers to multicast packets received is >= 80%, when port is at or more than 80% of its in utilization.' })
     }
   },

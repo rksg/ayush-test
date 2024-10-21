@@ -1,12 +1,11 @@
 import { useState } from 'react'
 
-import { Button, Input } from 'antd'
-import moment            from 'moment'
-import { useIntl }       from 'react-intl'
-import { useParams }     from 'react-router-dom'
+import { Input }     from 'antd'
+import moment        from 'moment'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
 import { Loader, PasswordInput, Table, TableProps, showActionModal }                                                                                   from '@acx-ui/components'
-import { CopyOutlined }                                                                                                                                from '@acx-ui/icons'
 import { useDeleteSpecificTemplateScepKeyMutation, useGetSpecificTemplateScepKeysQuery }                                                               from '@acx-ui/rc/services'
 import { ChallengePasswordType, PolicyOperation, PolicyType, ScepKeyData, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, useTableQuery } from '@acx-ui/rc/utils'
 
@@ -57,24 +56,8 @@ export default function ScepTable ({ templateId = '' }) {
       title: $t({ defaultMessage: 'SCEP Enroll URL' }),
       dataIndex: 'enrollmentUrl',
       key: 'enrollmentUrl',
-      render: function (_, row) {
-        return <div>
-          <Input
-            readOnly
-            bordered={false}
-            value={row.enrollmentUrl}
-            style={{ paddingLeft: '0px', width: '270px' }}
-          />
-          <Button
-            ghost
-            data-testid={'copy'}
-            icon={<CopyOutlined />}
-            onClick={() =>
-              navigator.clipboard.writeText(row.enrollmentUrl ?? '')
-            }
-          />
-        </div>
-      }
+      copyable: true,
+      ellipsis: true
     },
     {
       title: $t({ defaultMessage: 'Challenge Password' }),

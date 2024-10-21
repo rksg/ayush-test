@@ -9,7 +9,7 @@ jest.mock('@acx-ui/rc/components', () => ({
   PropertyManagementForm: () => <div data-testid='PropertyManagementForm' />
 }))
 
-describe('NSG GeneralSettings Form - PropertyManagementModal', () => {
+describe('PIN GeneralSettings Form - PropertyManagementModal', () => {
   it('Shuould render PropertyManagementModal successfully', async () => {
     render(
       <PropertyManagementModal

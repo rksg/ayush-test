@@ -117,11 +117,12 @@ export enum ServiceType {
   WIFI_CALLING = 'Wi-Fi Calling',
   MDNS_PROXY = 'mDNS Proxy',
   DPSK = 'DPSK',
-  NETWORK_SEGMENTATION = 'Personal Identity Network',
+  PIN = 'Personal Identity Network',
   WEBAUTH_SWITCH = 'Web Auth',
   RESIDENT_PORTAL = 'Resident Portal',
   EDGE_SD_LAN = 'SD-LAN',
-  EDGE_SD_LAN_P2 = 'SD-LAN-P2' // temporary type before SD-LAN GA2 dev done.
+  EDGE_SD_LAN_P2 = 'SD-LAN-P2', // temporary type before SD-LAN GA2 dev done.
+  EDGE_MDNS_PROXY = 'Edge mDNS Proxy'
 }
 
 export enum ServiceStatus {
@@ -209,6 +210,11 @@ export enum CellularNetworkSelectionEnum {
   AUTO = 'AUTO',
   LTE = 'LTE',
   ThreeG = 'ThreeG',
+}
+
+export enum MdnsProxyFeatureTypeEnum {
+  WIFI = 'WIFI',
+  EDGE = 'EDGE',
 }
 
 export enum ConfigTypeEnum {
@@ -1096,7 +1102,7 @@ export const ICX_MODELS_INFORMATION: SwitchModelInfoMap = {
         { portLabel: PortLabelType.GENERAL },
         { portLabel: PortLabelType.GENERAL }
       ]
-    }
+    },
     // 'C08PT': {
     //   powerSlots: 1, fanSlots: 0, portModuleSlots: [
     //     { portLabel: PortLabelType.GENERAL },
@@ -1109,6 +1115,18 @@ export const ICX_MODELS_INFORMATION: SwitchModelInfoMap = {
     //     { portLabel: PortLabelType.GENERAL }
     //   ]
     // }
+    '24PV': {
+      powerSlots: 1, fanSlots: 2, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    },
+    'C08PFV': {
+      powerSlots: 1, fanSlots: 0, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    }
   }
 }
 

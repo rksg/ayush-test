@@ -257,12 +257,14 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
 function CommonPreviewContainer (props: {
   ui?: UIConfiguration, step?: WorkflowStep, actionData?: GenericActionData
 }) {
-  const { ui, step, actionData } = props
-  const ActionPreview = previewMap[step?.actionType ?? actionData?.actionType ?? ActionType.AUP]
 
+  const { ui, step, actionData } = props
   const { data, isLoading, isFetching } = useGetActionByIdQuery({
     params: { actionId: step?.enrollmentActionId }
   }, { skip: !step?.enrollmentActionId })
+
+  if (!step?.actionType && !actionData?.actionType) return (<></>)
+  const ActionPreview = previewMap[step?.actionType ?? actionData?.actionType ?? ActionType.AUP]
 
   return (
     <Loader states={[{ isLoading, isFetching }]}>

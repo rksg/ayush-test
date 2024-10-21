@@ -15,6 +15,7 @@ import {
   Drawer
 } from '@acx-ui/components'
 import { useSwitchFirmwareUtils }                 from '@acx-ui/rc/components'
+import {  getNextScheduleTplV1002 }               from '@acx-ui/rc/components'
 import { useLazyGetSwitchFirmwareListV1001Query } from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenueV1002,
@@ -24,8 +25,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
 
-import {  getNextScheduleTplV1002 } from '../../../FirmwareUtils'
-import * as UI                      from '../../../styledComponents'
+import * as UI               from '../../../styledComponents'
 import {
   enableSwitchScheduleTooltip,
   getSwitchNextScheduleTpl

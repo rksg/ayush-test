@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl'
 
 import { Button, cssStr, Loader, PageHeader, showActionModal, Table, TableProps, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
-import { TrafficClassSettingsTable }                                                       from '@acx-ui/rc/components'
+import { SimpleListTooltip, TrafficClassSettingsTable }                                    from '@acx-ui/rc/components'
 import {
   useDeleteEdgeHqosProfileMutation,
   useGetEdgeClusterListQuery,
@@ -14,16 +14,17 @@ import {
 } from '@acx-ui/rc/services'
 import {
   EdgeHqosViewData,
+  filterByAccessForServicePolicyMutation,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
+  getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { EdgeScopes }                             from '@acx-ui/types'
-import { filterByAccess, hasPermission }          from '@acx-ui/user'
 
 import * as UI from '../styledComponents'
 
@@ -42,7 +43,8 @@ const EdgeHqosBandwidthTable = () => {
       'name',
       'description',
       'trafficClassSettings',
-      'edgeClusterIds'
+      'edgeClusterIds',
+      'isDefault'
     ]
   }
   const settingsId = 'profiles-edge-qos-bandwidth-table'
@@ -77,7 +79,7 @@ const EdgeHqosBandwidthTable = () => {
           clusterOptions: data?.data.map(item => ({
             value: item.name!,
             key: item.clusterId!
-          })),
+          })) ?? [],
           isLoading
         }
       }
@@ -88,7 +90,6 @@ const EdgeHqosBandwidthTable = () => {
   const currentServiceIds = useMemo(
     () => tableQuery.data?.data?.map(i => i.id!) ?? [],
     [tableQuery.data?.data])
-
   const { hqosCompatibilityData = [] } = useGetHqosEdgeCompatibilitiesQuery({
     payload: { filters: { serviceIds: currentServiceIds } } }, {
     skip: !isEdgeCompatibilityEnabled || !currentServiceIds.length,
@@ -164,15 +165,19 @@ const EdgeHqosBandwidthTable = () => {
       sorter: true,
       filterable: clusterOptions,
       render: function (_, row) {
-        return row?.edgeClusterIds?.length
+        const edgeClusterIds = row?.edgeClusterIds??[]
+        const tooltipItems = clusterOptions
+          .filter(option => option.key && edgeClusterIds.includes(option.key))
+          .map(option => option.value)
+        return <SimpleListTooltip items={tooltipItems} displayText={edgeClusterIds.length} />
       }
     }
   ]
 
   const rowActions: TableProps<EdgeHqosViewData>['rowActions'] = [
     {
-      scopeKey: [EdgeScopes.UPDATE],
-      visible: (selectedRows) => selectedRows.length === 1,
+      scopeKey: getScopeKeyByPolicy(PolicyType.HQOS_BANDWIDTH, PolicyOperation.EDIT),
+      visible: (selectedRows) => selectedRows.length === 1 && selectedRows[0]?.isDefault !== true,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
         navigate({
@@ -187,7 +192,8 @@ const EdgeHqosBandwidthTable = () => {
       }
     },
     {
-      scopeKey: [EdgeScopes.DELETE],
+      scopeKey: getScopeKeyByPolicy(PolicyType.HQOS_BANDWIDTH, PolicyOperation.DELETE),
+      visible: (selectedRows) => selectedRows[0]?.isDefault !== true,
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         showActionModal({
@@ -206,6 +212,7 @@ const EdgeHqosBandwidthTable = () => {
       }
     }
   ]
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
   return (
     <>
@@ -221,7 +228,7 @@ const EdgeHqosBandwidthTable = () => {
             link: getPolicyListRoutePath(true)
           }
         ]}
-        extra={filterByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             scopeKey={[EdgeScopes.CREATE]}
             to={getPolicyRoutePath({
@@ -240,10 +247,8 @@ const EdgeHqosBandwidthTable = () => {
           settingsId={settingsId}
           rowKey='id'
           columns={columns}
-          rowSelection={hasPermission({
-            scopes: [EdgeScopes.UPDATE, EdgeScopes.DELETE]
-          }) && { type: 'radio' }}
-          rowActions={filterByAccess(rowActions)}
+          rowSelection={allowedRowActions.length > 0 && { type: 'radio' }}
+          rowActions={allowedRowActions}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}

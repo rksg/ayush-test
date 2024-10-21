@@ -48,7 +48,7 @@ export enum EdgeStatusSeverityEnum {
 export enum EdgeServiceTypeEnum {
   DHCP = 'DHCP',
   FIREWALL = 'FIREWALL',
-  NETWORK_SEGMENTATION = 'NETWORK_SEGMENTATION',
+  PIN = 'PIN',
   SD_LAN = 'SDLAN',
   SD_LAN_P2 = 'SDLAN_P2',
   MV_SD_LAN = 'MV_SDLAN'

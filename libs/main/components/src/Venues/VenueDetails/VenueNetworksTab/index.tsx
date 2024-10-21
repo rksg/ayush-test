@@ -26,13 +26,10 @@ import {
   useIsEdgeFeatureReady,
   NetworkTunnelActionModalProps,
   NetworkTunnelActionModal,
-  tansformSdLanScopedVenueMap,
   NetworkTunnelActionForm,
   useUpdateNetworkTunnelAction,
   NetworkTunnelTypeEnum,
-  useGetSoftGreScopeVenueMap,
-  useSoftGreTunnelActions
-} from '@acx-ui/rc/components'
+  useSoftGreTunnelActions } from '@acx-ui/rc/components'
 import {
   useAddNetworkVenueMutation,
   useUpdateNetworkVenueMutation,
@@ -45,7 +42,8 @@ import {
   useScheduleSlotIndexMap,
   useGetVLANPoolPolicyViewModelListQuery,
   useNewVenueNetworkTableQuery,
-  useVenuesListQuery
+  useEnhanceVenueNetworkTableQuery,
+  useGetEnhancedVlanPoolPolicyTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -59,15 +57,24 @@ import {
   ApGroupModalState,
   NetworkExtended,
   SchedulerTypeEnum,
-  SchedulingModalState, ConfigTemplateType, useConfigTemplate,
-  useConfigTemplateMutationFnSwitcher, useConfigTemplateTenantLink,
-  KeyValue, VLANPoolViewModelType, Venue, EdgeMvSdLanViewData, EdgeSdLanViewDataP2
+  SchedulingModalState,
+  ConfigTemplateType,
+  useConfigTemplate,
+  useConfigTemplateMutationFnSwitcher,
+  useConfigTemplateTenantLink,
+  KeyValue,
+  VLANPoolViewModelType,
+  EdgeMvSdLanViewData,
+  EdgeSdLanViewDataP2,
+  useConfigTemplateQueryFnSwitcher,
+  TableResult
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink }       from '@acx-ui/react-router-dom'
 import { WifiScopes }                                              from '@acx-ui/types'
 import { filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 
-import { NetworkTunnelButton } from './NetworkTunnelButton'
+
+import { useTunnelColumn } from './useTunnelColumn'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
@@ -120,6 +127,7 @@ const useVenueNetworkList = (props: { settingsId: string, venueId?: string } ) =
   const { settingsId, venueId } = props
   const { isTemplate } = useConfigTemplate()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
 
@@ -130,7 +138,7 @@ const useVenueNetworkList = (props: { settingsId: string, venueId?: string } ) =
       isTemplate: isTemplate
     },
     pagination: { settingsId },
-    option: { skip: resolvedRbacEnabled }
+    option: { skip: isApCompatibilitiesByModel || resolvedRbacEnabled }
   })
 
   const rbacTableQuery = useTableQuery({
@@ -140,10 +148,21 @@ const useVenueNetworkList = (props: { settingsId: string, venueId?: string } ) =
       isTemplate: isTemplate
     },
     pagination: { settingsId },
-    option: { skip: !resolvedRbacEnabled || !venueId }
+    option: { skip: isApCompatibilitiesByModel || !resolvedRbacEnabled || !venueId }
   })
 
-  return resolvedRbacEnabled ? rbacTableQuery : nonRbacTableQuery
+  const enhancedRbacTableQuery = useTableQuery({
+    useQuery: useEnhanceVenueNetworkTableQuery,
+    defaultPayload: {
+      ...defaultRbacPayload,
+      isTemplate: isTemplate
+    },
+    pagination: { settingsId },
+    option: { skip: !isApCompatibilitiesByModel || !resolvedRbacEnabled || !venueId }
+  })
+
+  return isApCompatibilitiesByModel ? enhancedRbacTableQuery
+    : (resolvedRbacEnabled ? rbacTableQuery : nonRbacTableQuery)
 }
 
 const defaultArray: NetworkExtended[] = []
@@ -168,15 +187,6 @@ export function VenueNetworksTab () {
   const settingsId = 'venue-networks-table'
 
   const tableQuery = useVenueNetworkList({ settingsId, venueId })
-  const { venueInfo } = useVenuesListQuery({ payload: {
-    fields: ['name', 'id'],
-    filters: { id: [venueId] }
-  } }, {
-    skip: !venueId,
-    selectFromResult: ({ data }) => ({
-      venueInfo: data?.data[0]
-    })
-  })
 
   const [tableData, setTableData] = useState(defaultArray)
   const [apGroupModalState, setApGroupModalState] = useState<ApGroupModalState>({
@@ -209,31 +219,37 @@ export function VenueNetworksTab () {
   const isEdgeMvSdLanReady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
 
+  // hooks for tunnel column - start
   const sdLanScopedNetworks = useSdLanScopedVenueNetworks(params.venueId, tableQuery.data?.data.map(item => item.id))
-  const softGreVenueMap = useGetSoftGreScopeVenueMap()
   const softGreTunnelActions = useSoftGreTunnelActions()
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
   const updateSdLanNetworkTunnel = useUpdateNetworkTunnelAction()
-  // const { toggleNetwork } = useEdgeMvSdLanActions()
+  const tunnelColumn = useTunnelColumn({
+    venueId: venueId!,
+    sdLanScopedNetworks,
+    setTunnelModalState
+  })
+  // hooks for tunnel column - end
 
-  const { vlanPoolingNameMap }: { vlanPoolingNameMap: KeyValue<string, string>[] } = useGetVLANPoolPolicyViewModelListQuery({
-    params: { tenantId: params.tenantId },
+  const [vlanPoolingNameMap, setVlanPoolingNameMap] = useState<KeyValue<string, string>[]>([])
+  const { data: instanceListResult } = useConfigTemplateQueryFnSwitcher<TableResult<VLANPoolViewModelType>>({
+    useQueryFn: useGetVLANPoolPolicyViewModelListQuery,
+    useTemplateQueryFn: useGetEnhancedVlanPoolPolicyTemplateListQuery,
+    skip: !tableData.length,
     payload: {
-      fields: ['name', 'id'],
-      sortField: 'name',
-      sortOrder: 'ASC',
-      page: 1,
-      pageSize: 10000
+      fields: ['name', 'id', 'vlanMembers'], sortField: 'name',
+      sortOrder: 'ASC', page: 1, pageSize: 10000
     },
     enableRbac: useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  }, {
-    skip: !tableData.length,
-    selectFromResult: ({ data }: { data?: { data: VLANPoolViewModelType[] } }) => ({
-      vlanPoolingNameMap: data?.data
-        ? data.data.map(vlanPool => ({ key: vlanPool.id!, value: vlanPool.name }))
-        : [] as KeyValue<string, string>[]
-    })
   })
+
+  useEffect(() => {
+    if (instanceListResult?.data) {
+      setVlanPoolingNameMap(instanceListResult.data
+        ? instanceListResult.data.map(vlanPool => ({ key: vlanPool.id!, value: vlanPool.name }))
+        : [])
+    }
+  },[instanceListResult])
 
   useEffect(()=>{
     if (tableQuery.data) {
@@ -485,26 +501,7 @@ export function VenueNetworksTab () {
           isReadOnly)
       }
     },
-    ...(isEdgeMvSdLanReady || isSoftGreEnabled ? [{
-      key: 'tunneledInfo',
-      title: $t({ defaultMessage: 'Tunnel' }),
-      dataIndex: 'tunneledInfo',
-      render: function (_: ReactNode, row: Network) {
-        const sdLanVenueMap = tansformSdLanScopedVenueMap(sdLanScopedNetworks.sdLans as EdgeMvSdLanViewData[])
-
-        return <NetworkTunnelButton
-          currentVenue={{
-            id: venueId,
-            name: venueInfo?.name,
-            activated: { isActivated: row.activated?.isActivated }
-          } as Venue}
-          currentNetwork={row}
-          sdLanVenueMap={sdLanVenueMap}
-          softGreVenueMap={softGreVenueMap}
-          onClick={handleClickNetworkTunnel}
-        />
-      }
-    }]: [])
+    ...tunnelColumn
   ]
 
   const handleClickScheduling = (row: Network, e: React.MouseEvent<HTMLElement, MouseEvent>) => {
@@ -525,20 +522,6 @@ export function VenueNetworksTab () {
       network: row.deepNetwork,
       networkVenue: getCurrentVenue(row)
     })
-  }
-
-  const handleClickNetworkTunnel = (currentVenue: Venue, currentNetwork: Network) => {
-    const cachedSoftGre = softGreVenueMap[currentVenue.id]?.filter(sg => sg.networkIds.includes(currentNetwork.id))
-    setTunnelModalState({
-      visible: true,
-      network: {
-        id: currentNetwork.id,
-        type: currentNetwork.nwSubType,
-        venueId: currentVenue.id,
-        venueName: currentVenue.name
-      },
-      cachedSoftGre: cachedSoftGre ?? []
-    } as NetworkTunnelActionModalProps)
   }
 
   const handleCancel = () => {

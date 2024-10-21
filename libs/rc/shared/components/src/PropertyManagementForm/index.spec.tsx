@@ -30,7 +30,7 @@ import {
   mockPersonaGroupList,
   replacePagination,
   mockedTemplateScope,
-  mockEnabledNoNSGPropertyConfig,
+  mockEnabledNoPinPropertyConfig,
   mockPropertyUnitList,
   mockResidentPortalProfileList,
   mockAllTemplates
@@ -62,7 +62,7 @@ describe('Property Config Form', () => {
         PropertyUrlsInfo.getPropertyConfigs.url,
         (req, res, ctx) => {
           if (req.params.venueId === enabledParams.venueId) {
-            return res(ctx.json(mockEnabledNoNSGPropertyConfig))
+            return res(ctx.json(mockEnabledNoPinPropertyConfig))
           } else {
             return res(ctx.status(404))
           }
@@ -247,10 +247,10 @@ describe('Property Config Form', () => {
         PropertyUrlsInfo.getPropertyConfigs.url,
         (req, res, ctx) => {
           return res(ctx.json({
-            ...mockEnabledNoNSGPropertyConfig,
+            ...mockEnabledNoPinPropertyConfig,
             residentPortalId: undefined,
             unitConfig: {
-              ...mockEnabledNoNSGPropertyConfig.unitConfig,
+              ...mockEnabledNoPinPropertyConfig.unitConfig,
               residentApiAllowed: true,
               residentPortalAllowed: false
             }

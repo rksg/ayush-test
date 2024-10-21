@@ -575,10 +575,9 @@ export const useSdLanScopedVenueNetworks = (
         : { networkIds, venueId: [venueId] },
       fields: [
         'id',
+        'name',
         'venueId',
         'isGuestTunnelEnabled',
-        'tunnelProfileId',
-        'guestTunnelProfileId',
         ...(isEdgeSdLanHaReady
           ? ['edgeClusterId', 'edgeClusterName', 'guestEdgeClusterId', 'guestEdgeClusterName']
           : ['edgeId', 'edgeName']),
@@ -627,14 +626,14 @@ export const useSdLanScopedNetworkVenues = (networkId: string | undefined) => {
 
   const { data } = useGetEdgeSdLanP2ViewDataListQuery({
     payload: {
-      filters: { networkIds: [networkId] },
+      filters: isEdgeMvSdLanReady
+        ? { 'tunneledWlans.networkId': [networkId] }
+        : { networkIds: [networkId] },
       fields: [
         'id',
         'name',
         'venueId',
         'isGuestTunnelEnabled',
-        'tunnelProfileId',
-        'guestTunnelProfileId',
         ...(isEdgeSdLanHaReady
           ? ['edgeClusterId', 'edgeClusterName', 'guestEdgeClusterId', 'guestEdgeClusterName']
           : ['edgeId', 'edgeName']),

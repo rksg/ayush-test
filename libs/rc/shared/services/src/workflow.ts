@@ -31,9 +31,9 @@ import {
   WorkflowUrls,
   FileDownloadResponse
 } from '@acx-ui/rc/utils'
-import { baseWorkflowApi }             from '@acx-ui/store'
-import { RequestPayload }              from '@acx-ui/types'
-import { batchApi, createHttpRequest } from '@acx-ui/utils'
+import { baseWorkflowApi }                               from '@acx-ui/store'
+import { RequestPayload }                                from '@acx-ui/types'
+import { batchApi, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 import { CommonAsyncResponse } from './common'
 import { commonQueryFn }       from './servicePolicy.utils'
@@ -133,17 +133,28 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
           try {
             const response = await api.cacheDataLoaded
-
             if (response.data.requestId === msg.requestId
               && msg.status === 'SUCCESS'
               && (msg.useCase === 'INITIATE_PUBLISH_WORKFLOW' ||
-                msg.useCase === 'UPDATE_WORKFLOW')) {
+                msg.useCase === 'UPDATE_WORKFLOW' ||
+                msg.useCase === 'INITIATE_UPDATE_AND_PUBLISH_WORKFLOW')) {
               requestArgs.callback?.()
             }
           } catch { }
         })
       }
     }),
+    updateWorkflowIgnoreErrors: build.mutation<CommonAsyncResponse, RequestPayload<Workflow>
+      & { callback?: () => void }>({
+        query: ({ params, payload }) => {
+          const req =
+            createHttpRequest(WorkflowUrls.updateWorkflow, params, { ...ignoreErrorModal })
+          return {
+            ...req,
+            body: JSON.stringify(payload)
+          }
+        }
+      }),
     searchWorkflowList: build.query<TableResult<Workflow>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createNewTableHttpRequest({
@@ -557,6 +568,7 @@ export const {
   useGetWorkflowByIdQuery,
   useLazyGetWorkflowByIdQuery,
   useUpdateWorkflowMutation,
+  useUpdateWorkflowIgnoreErrorsMutation,
   useSearchWorkflowListQuery,
   useLazySearchWorkflowListQuery,
   useSearchInProgressWorkflowListQuery,

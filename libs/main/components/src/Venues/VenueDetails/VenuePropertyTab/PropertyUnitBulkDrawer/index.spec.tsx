@@ -26,8 +26,8 @@ import { PropertyUnitBulkDrawer } from './index'
 const params = {
   tenantId: '15a04f095a8f4a96acaf17e921e8a6df',
   venueId: 'has-nsg-venue-id',
-  nsgVenueId: 'has-nsg-venue-id',
-  noNsgVenueId: 'no-nsg-venue-id'
+  pinVenueId: 'has-nsg-venue-id',
+  noPinVenueId: 'no-nsg-venue-id'
 }
 
 const current = moment(new Date('11/22/2023')).toISOString()
@@ -99,7 +99,7 @@ describe('Property Unit Bulk Drawer', () => {
       ></UserProfileContext.Provider>
       <PropertyUnitBulkDrawer visible={true}
         onClose={closeFn}
-        venueId={params.noNsgVenueId}
+        venueId={params.noPinVenueId}
         data={data}/>
     </Provider>)
 
@@ -121,7 +121,7 @@ describe('Property Unit Bulk Drawer', () => {
       ></UserProfileContext.Provider>
       <PropertyUnitBulkDrawer visible={true}
         onClose={closeFn}
-        venueId={params.noNsgVenueId}
+        venueId={params.noPinVenueId}
         data={data}/>
     </Provider>)
 
@@ -139,7 +139,7 @@ describe('Property Unit Bulk Drawer', () => {
       ></UserProfileContext.Provider>
       <PropertyUnitBulkDrawer visible={true}
         onClose={closeFn}
-        venueId={params.noNsgVenueId}
+        venueId={params.noPinVenueId}
         data={data}/>
     </Provider>)
 
@@ -189,7 +189,7 @@ describe('Property Unit Bulk Drawer', () => {
       ></UserProfileContext.Provider>
       <PropertyUnitBulkDrawer visible={true}
         onClose={closeFn}
-        venueId={params.noNsgVenueId}
+        venueId={params.noPinVenueId}
         data={data}/>
     </Provider>)
 
