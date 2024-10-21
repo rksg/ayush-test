@@ -673,11 +673,8 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
             'UpdateNetworkDeep',
-            'ActivateWifiNetworkOnVenue',
             'ActivateWifiNetworkTemplateOnVenue',
-            'DeactivateWifiNetworkOnVenue',
             'DeactivateWifiNetworkTemplateOnVenue',
-            'UpdateVenueWifiNetworkSettings',
             'DeactivateApGroupOnWifiNetwork',
             'ActivateApGroupOnWifiNetwork'
           ], () => {
@@ -740,11 +737,8 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
             'UpdateNetworkDeep',
-            'ActivateWifiNetworkOnVenue',
             'ActivateWifiNetworkTemplateOnVenue',
-            'DeactivateWifiNetworkOnVenue',
             'DeactivateWifiNetworkTemplateOnVenue',
-            'UpdateVenueWifiNetworkSettings',
             'DeactivateApGroupOnWifiNetwork',
             'ActivateApGroupOnWifiNetwork'
           ], () => {
@@ -875,11 +869,8 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
             'UpdateNetworkDeep',
-            'ActivateWifiNetworkOnVenue',
             'ActivateWifiNetworkTemplateOnVenue',
-            'DeactivateWifiNetworkOnVenue',
             'DeactivateWifiNetworkTemplateOnVenue',
-            'UpdateVenueWifiNetworkSettings',
             'UpdateVenueWifiNetworkTemplateSettings'
           ], () => {
             api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
@@ -940,11 +931,8 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
             'UpdateNetworkDeep',
-            'ActivateWifiNetworkOnVenue',
             'ActivateWifiNetworkTemplateOnVenue',
-            'DeactivateWifiNetworkOnVenue',
             'DeactivateWifiNetworkTemplateOnVenue',
-            'UpdateVenueWifiNetworkSettings',
             'UpdateVenueWifiNetworkTemplateSettings'
           ], () => {
             api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
