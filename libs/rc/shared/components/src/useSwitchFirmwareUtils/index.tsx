@@ -431,6 +431,9 @@ export function useSwitchFirmwareUtils () {
     let tooltipArray = []
 
     for (const key in SwitchFirmwareModelGroup) {
+      if(!isSupport8100 && key === SwitchFirmwareModelGroup.ICX81) {
+        continue
+      }
       const index = Object.keys(SwitchFirmwareModelGroup).indexOf(key)
       const modelGroupValue =
         SwitchFirmwareModelGroup[key as keyof typeof SwitchFirmwareModelGroup]
@@ -438,9 +441,6 @@ export function useSwitchFirmwareUtils () {
         (v: { modelGroup: SwitchFirmwareModelGroup }) => v.modelGroup === modelGroupValue)[0]
 
       if (versionGroup) {
-        if(!isSupport8100 && key === SwitchFirmwareModelGroup.ICX81) {
-          continue
-        }
         const modelGroupTooltipText = SwitchModelGroupDisplayText[modelGroupValue]
         const modelGroupText = SwitchModelGroupDisplayTextValue[modelGroupValue]
         const switchVersion = parseSwitchVersion(versionGroup.version)
