@@ -8,7 +8,12 @@ import {
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
-import { compareABFSequence, compareVersions, getApVersion, getVersionLabel } from './FirmwareUtils'
+import {
+  compareABFSequence,
+  compareVersions,
+  getApVersion,
+  getVersionLabel
+} from './FirmwareUtils'
 
 
 describe('FirmwareUtils parser', () => {

@@ -17,7 +17,7 @@ import { UpdateFirmwarePerApModelFirmware } from '../UpdateNowDialog'
 import FirmwareSelectorPanel from './FirmwareSelectorPanel'
 import ScheduleSelectorPanel from './ScheduleSelectorPanel'
 
-interface ChangeSchedulePerApModelDialogProps {
+export interface ChangeSchedulePerApModelDialogProps {
   onCancel: () => void
   afterSubmit: () => void
   selectedVenuesFirmwares: FirmwareVenuePerApModel[]
