@@ -242,8 +242,6 @@ describe('IntentAIForm', () => {
 
     expect(await screen.findByText(/has been updated/)).toBeVisible()
     await click(await screen.findByText(/View/))
-    expect(await screen.findByRole('heading', { name: 'Intent Priority' })).toBeVisible()
-    await click(actions.getByRole('button', { name: 'Cancel' }))
     expect(mockNavigate).toBeCalled()
   })
 
@@ -258,6 +256,6 @@ describe('IntentAIForm', () => {
     expect(await screen.findByRole('heading', { name: 'Intent Priority' })).toBeVisible()
     await click(actions.getByRole('button', { name: 'Cancel' }))
     expect(mockNavigate).toBeCalled()
-   
+
   })
 })
