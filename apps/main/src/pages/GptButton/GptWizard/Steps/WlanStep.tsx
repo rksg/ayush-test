@@ -70,11 +70,13 @@ export function WlanStep (props: { payload: string; description: string }) {
                 hidden />
               <ProFormText
                 width={200}
+                rules={[{ required: true }]}
                 label={$t({ defaultMessage: 'Network Name' })}
                 name={['data', index, 'SSID Name']}
                 initialValue={item['SSID Name']}
               />
               <ProFormSelect
+                allowClear={false}
                 tooltip={{
                   overlayStyle: { width: '700px' },
                   title: (

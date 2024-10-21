@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react'
 
 import { ProFormInstance, StepsForm } from '@ant-design/pro-form'
 import { Button }                     from 'antd'
+import { useIntl }                    from 'react-intl'
 
 import { useApplyConversationsMutation, useUpdateConversationsMutation } from '@acx-ui/rc/services'
 import { GptConfigurationStepsEnum, GptConversation }                    from '@acx-ui/rc/utils'
@@ -21,11 +22,11 @@ export default function GptWizard (props: {
   description: string;
   payload: string;
   currentStep: number;
-  setCurrentStep: (currentStep: number) => void;
   step: string;
+  setCurrentStep: (currentStep: number) => void;
   setStep: (step: GptStepsEnum) => void;
 }) {
-
+  const { $t } = useIntl()
   const [isLoading, setIsLoading] = useState(false)
 
   const [applyConversations] = useApplyConversationsMutation()
@@ -68,11 +69,11 @@ export default function GptWizard (props: {
       const values = formMapRef.current[stepIndex].current?.getFieldsValue()
       let updatedValues
 
-      if (values.data && values.data.some((item: { Checked?: unknown }) =>
+      if (values.data && values.data.some((item: { Checked?: boolean }) =>
         item['Checked'] !== undefined)) {
         updatedValues = values.data
-          .filter((item: { Checked: unknown }) => item['Checked'])
-          .map(({ Checked, ...rest }: { Checked?: boolean; [key: string]: unknown }) => rest)
+          .filter((item: { Checked: boolean }) => item['Checked'])
+          .map(({ Checked, ...rest }: { Checked?: boolean;[key: string]: unknown }) => rest)
       } else {
         updatedValues = values.data
       }
@@ -88,11 +89,11 @@ export default function GptWizard (props: {
       }))
 
       setIsLoading(false)
-      return true
     } catch (error) {
       setIsLoading(false)
       return false
     }
+    return true
   }
 
   const steps = [
@@ -153,7 +154,7 @@ export default function GptWizard (props: {
         render: (renderProps) => {
           return [
             <Button key='pre' disabled={isLoading} onClick={onPrevious}>
-              Back
+              {$t({ defaultMessage: 'Back' })}
             </Button>,
             <Button
               type='primary'
@@ -161,7 +162,8 @@ export default function GptWizard (props: {
               loading={isLoading}
               onClick={() => renderProps.form?.submit?.()}
             >
-              {props.currentStep === lastPageIndex ? 'Apply' : 'Next'}
+              {props.currentStep === lastPageIndex ?
+                $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Next' })}
             </Button>
           ]
         }

@@ -81,6 +81,7 @@ export function WlanDetailStep (props: { payload: string }) {
                 name={['data', index, 'SSID Type']}
                 initialValue={item['SSID Type']}
                 options={networkOptions}
+                allowClear={false}
               />
             </UI.VlanDetails>
             <Divider dashed />

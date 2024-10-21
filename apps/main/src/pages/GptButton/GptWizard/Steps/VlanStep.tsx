@@ -59,6 +59,7 @@ export function VlanStep (props: { payload: string }) {
                 label={$t({ defaultMessage: 'VLAN Name' })}
                 name={['data', index, 'VLAN Name']}
                 initialValue={item['VLAN Name']}
+                rules={[{ required: true }]}
               />
 
               <UI.PurposeContainer>
@@ -77,6 +78,7 @@ export function VlanStep (props: { payload: string }) {
                 label={$t({ defaultMessage: 'VLAN ID' })}
                 name={['data', index, 'VLAN ID']}
                 initialValue={item['VLAN ID']}
+                rules={[{ required: true }]}
               />
             </UI.VlanDetails>
             <Divider dashed />

@@ -28,12 +28,12 @@ export const Header = styled.div`
 export const Title = styled.span`
   font-size: 24px;
   font-weight: 600;
-  font-family: 'Montserrat';
+  font-family: var(--acx-accent-brand-font);
 `
 
 export const Description = styled.span`
   font-size: 12px;
-  color: #808284;
+  color: var(--acx-neutrals-60);
   margin: 5px 0 30px 0;
 `
 
@@ -53,7 +53,7 @@ export const VlanDetails = styled.div`
 
 export const PurposeContainer = styled.div`
   display: flex;
-  background-color: #f7f7f7;
+  background-color: var(--acx-neutrals-15);
   padding: 10px 20px;
   flex-grow: 1;
   flex-direction: column;
@@ -79,7 +79,7 @@ export const PurposeText = styled.div`
 export const HighlightedBox = styled.div`
   display: flex;
   padding: 15px;
-  background-color: #fef6ed;
+  background-color: var(--acx-accents-orange-10);
   flex-grow: 1;
   flex-direction: column;
   border-radius: 8px;

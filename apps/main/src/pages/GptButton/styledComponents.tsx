@@ -2,10 +2,13 @@
 import { StepsForm } from '@ant-design/pro-form'
 import {
   Button as AntButton,
+  Card,
   Modal,
   Steps
 } from 'antd'
 import styled from 'styled-components/macro'
+
+import { GptSuccess } from '@acx-ui/icons'
 
 
 const Button = styled(AntButton).attrs({ type: 'primary' })`
@@ -79,6 +82,7 @@ export const GptModal = styled(Modal)<{ titleType: string }>`
   }
 `
 
+
 export const GptStep = styled(Steps)`
   .ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-icon {
     background: var(--acx-accents-blue-50);
@@ -95,15 +99,15 @@ export const GptStep = styled(Steps)`
   }
 
   .ant-steps-item-finish .ant-steps-item-icon {
-    border-color:  #5496EA !important;
+    border-color:  var(--acx-accents-blue-50) !important;
   }
 
   .ant-steps-item-finish .ant-steps-item-icon > .ant-steps-icon {
-    color:  #5496EA !important;
+    color:  var(--acx-accents-blue-50) !important;
   }
 
   .ant-progress-circle-path{
-    stroke: white !important;
+    stroke: var(--acx-primary-white) !important;
   }
 
   .ant-progress-inner {
@@ -121,7 +125,7 @@ export const GptStep = styled(Steps)`
 
   .ant-steps-item-finish > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-title::after {
     left: -5px !important;
-    background-color: #5496EA !important;
+    background-color: var(--acx-accents-blue-50) !important;
     top: 15px !important;
   }
 
@@ -138,25 +142,21 @@ export const GptStep = styled(Steps)`
     padding: 0px !important;
   }
 
-  .ant-steps-item.ant-steps-item-process.ant-steps-item-active {
-    padding-left: 0px !important;
-  }
-
+  .ant-steps-item.ant-steps-item-finish,
+  .ant-steps-item.ant-steps-item-process.ant-steps-item-active,
   .ant-steps-item.ant-steps-item-wait  {
-    padding-left: 0px !important;
-  }
-  .ant-steps-item.ant-steps-item-finish {
     padding-left: 0px !important;
   }
 
   .ant-steps-item-wait .ant-steps-item-icon {
-    background-color: #C4C4C4;
-    border-color: #C4C4C4;
+    background-color: var(--acx-neutrals-40);
+    border-color: var(--acx-neutrals-40);
      > .ant-steps-icon {
-    color: white;
+    color: var(--acx-primary-white);
     }
   }
 `
+
 
 
 export const VirticalContainer = styled.div`
@@ -186,6 +186,66 @@ export const GptStepsForm = styled(StepsForm)`
   position: absolute;
   right: 100px;
  }
+`
 
+export const Container = styled.div`
+  position: relative;
+  margin-top: 100px;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  margin-bottom: 250px;
+`
 
+export const GptSuccessStyled = styled(GptSuccess)`
+  width: 50px;
+  height: 50px;
+`
+
+export const Title = styled.span`
+  font-size: 28px;
+  font-weight: 600;
+  margin-top: 30px;
+  font-family: var(--acx-accent-brand-font);
+`
+
+export const Subtitle = styled.span`
+  font-size: 14px;
+  color:  var(--acx-neutrals-60);
+  margin-top: 15px;
+`
+
+export const BottomSection = styled.div`
+  position: absolute;
+  bottom: 130px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
+  background-color: white;
+`
+
+export const StyledCard = styled(Card)`
+  width: 723px;
+  background-color: var(--acx-neutrals-15);
+  border: 0;
+  border-radius: 8px;
+  height: 90px;
+`
+
+export const StyledList = styled.ul`
+  row-gap: 8px;
+  display: flex;
+  flex-direction: column;
+`
+export const PageTitle = styled.div`
+  font-size: 16px;
+  font-weight: 600;
+  font-family: var('--acx-accent-brand-font');
+  margin-bottom: 15px;
 `

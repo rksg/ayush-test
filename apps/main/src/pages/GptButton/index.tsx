@@ -65,7 +65,7 @@ export default function RuckusGptButton () {
             <div
               style={{
                 fontFamily: cssStr('--acx-neutral-brand-font'),
-                color: '#808284',
+                color: cssStr('--acx-neutrals-60'),
                 fontSize: '12px',
                 lineHeight: '16px',
                 flexGrow: 1
@@ -198,12 +198,12 @@ export default function RuckusGptButton () {
     <UI.GptModal
       titleType={step === GptStepsEnum.CONFIGURATION ? 'wizard' : 'default'}
       title={getWizardTitle()}
-      visible={visible}
       footer={renderFooter()}
+      onCancel={closeModal}
+      visible={visible}
       mask={true}
       maskClosable={false}
       width={1000}
-      onCancel={closeModal}
       children={
         <>
           <Form form={basicFormRef}
