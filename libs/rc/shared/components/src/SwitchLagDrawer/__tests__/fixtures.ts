@@ -269,7 +269,8 @@ export const portlist = {
       signalOut: 0,
       stack: false,
       syncedSwitchConfig: false,
-      usedInFormingStack: false
+      usedInFormingStack: false,
+      isAuthPort: true
     },
     {
       cloudPort: false,

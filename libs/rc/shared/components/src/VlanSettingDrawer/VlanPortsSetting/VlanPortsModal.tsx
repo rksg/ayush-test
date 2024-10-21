@@ -75,7 +75,7 @@ export function VlanPortsModal (props: {
     filters: { switchId: [serialNumber] },
     sortField: 'portIdentifierFormatted',
     sortOrder: 'ASC',
-    fields: [...SwitchPortViewModelQueryFields, 'portSpeedConfig', 'portConnectorType']
+    fields: [...SwitchPortViewModelQueryFields]
   }
   const { data: portList } = useSwitchPortlistQuery({
     params: { tenantId },

@@ -59,7 +59,9 @@ export const SwitchPortViewModelQueryFields = [
   'venueId',
   'vlanIds',
   'vsixEgressAclName',
-  'vsixIngressAclName'
+  'vsixIngressAclName',
+  'isAuthPort',
+  'authDefaultVlan'
 ]
 
 export enum IP_ADDRESS_TYPE {
