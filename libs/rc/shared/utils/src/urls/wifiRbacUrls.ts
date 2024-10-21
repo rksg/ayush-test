@@ -712,13 +712,14 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber/managementTrafficVlanSettings',
     newApi: true
   },
-  /*
   getApFeatureSets: {
-    method: 'get',
-    url: '/wifiFeatureSets/:featureName',
+    method: 'post',
+    url: '/wifiFeatureSets/query',
+    //oldMethod: 'get',
+    //OldUrl: '/wifiFeatureSets/:featureName',
     newApi: true
   },
-  */
+  /*
   getApCompatibilitiesVenue: {
     method: 'post',
     url: '/venues/:venueId/apCompatibilities/query',
@@ -727,6 +728,29 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
   getApCompatibilitiesNetwork: {
     method: 'post',
     url: '/wifiNetworks/:networkId/apCompatibilities/query',
+    newApi: true
+  },
+  */
+  // replace the getApCompatibilitiesVenue
+  getVenueApCompatibilities: {
+    method: 'post',
+    url: '/venues/apCompatibilities/query',
+    newApi: true
+  },
+  getVenuePreCheckApCompatibilities: {
+    method: 'post',
+    url: '/venues/apCompatibilities/query?precheck=ture',
+    newApi: true
+  },
+  getApCompatibilities: {
+    method: 'post',
+    url: '/venues/aps/apCompatibilities/query',
+    newApi: true
+  },
+  // replace the getApCompatibilitiesNetwork
+  getNetworkApCompatibilities: {
+    method: 'post',
+    url: '/wifiNetworks/apCompatibilities/query',
     newApi: true
   },
   activateCertificateTemplate: {

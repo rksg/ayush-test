@@ -5,23 +5,19 @@ import { Box, SelectionBox } from '@air/react-drag-to-select/dist/utils/types'
 import { FormInstance }      from 'antd'
 import _                     from 'lodash'
 
-export const genTimeTicks = (is12H:boolean) => {
+export const genTimeTicks = (intervalUnit:number) => {
   const timeticks: string[] = []
-  if (is12H) {
-    timeticks.push('Midnight')
-    for (let i = 1; i < 6; i++) {
-      timeticks.push((i * 2) + ' AM')
-    }
-    timeticks.push('Noon')
-    for (let i = 1; i < 6; i++) {
-      timeticks.push((i * 2) + ' PM')
-    }
-    timeticks.push('Midnight')
-  } else {
-    for (let i = 0; i <= 8; i++) {
-      timeticks.push(`${i*3}`)
-    }
+  const unit = intervalUnit === 15 ? 2 : 3
+  const range = 12 / unit
+  timeticks.push('Midnight')
+  for (let i = 1; i < range; i++) {
+    timeticks.push((i * unit) + ' AM')
   }
+  timeticks.push('Noon')
+  for (let i = 1; i < range; i++) {
+    timeticks.push((i * unit) + ' PM')
+  }
+  timeticks.push('Midnight')
   return timeticks
 }
 
@@ -86,7 +82,6 @@ export const onSelectionChange =
 export const parseNonePrefixScheduler = (key:string, values: string[]) => {
   return values.map((item: string) => `${key}_${item}`)
 }
-
 
 const memoUniqSchedule = (schedule: string[], handleItems: string[], daykey: string) => {
   // eslint-disable-next-line max-len

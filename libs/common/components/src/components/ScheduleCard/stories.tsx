@@ -49,7 +49,6 @@ const LocalTimeZoneCard = () => {
     loading: false,
     isShowTimezone: false,
     isShowTips: false,
-    is12H: false,
     prefix: false,
     timelineLabelTop: false,
     fieldNamePath: ['scheduler'],

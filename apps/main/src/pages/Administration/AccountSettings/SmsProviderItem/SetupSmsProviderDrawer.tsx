@@ -43,8 +43,10 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
   const [form] = Form.useForm()
   const [isValidTwiliosNumber, setIsValidTwiliosNumber] = useState(false)
   const [isValidTwiliosService, setIsValidTwiliosService] = useState(false)
-  const [isValidAccountSID, setIsValidAccountSID] = useState(false)
-  const [isValidAuthToken, setIsValidAuthToken] = useState(false)
+  const [isValidAccountSID, setIsValidAccountSID] = useState<boolean>()
+  const [isValidAuthToken, setIsValidAuthToken] = useState<boolean>()
+  const [validAccountSID, setValidAccountSID] = useState<string>()
+  const [validAuthToken, setValidAuthToken] = useState<string>()
   const [phoneNumbers, setPhoneNumbers] = useState<string[]>()
   const [messagingServices, setMessagingServices] = useState<string[]>()
   const [messageMethod, setMessageMethod] = useState<MessageMethod>()
@@ -65,16 +67,26 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
   }, [])
 
   useEffect(() => {
-    if(isEditMode && editData?.providerType === SmsProviderType.TWILIO) {
-      form.validateFields(['authToken'])
-      if (isTwilioFromNumber(editData.providerData.fromNumber ?? '')) {
-        setMessageMethod(MessageMethod.PhoneNumber)
-        setTwilioEditMethod(MessageMethod.PhoneNumber)
-        handleGetTwiliosIncomingPhoneNumbers()
-      } else {
-        setMessageMethod(MessageMethod.MessagingService)
-        setTwilioEditMethod(MessageMethod.MessagingService)
-        handleGetTwiliosIncomingServices()
+    if (providerType) {
+      if(providerType === SmsProviderType.TWILIO) {
+        if(isEditMode) {
+          form.validateFields(['accountSid','authToken'])
+          const fromNumber = editData?.providerData.fromNumber ?? ''
+          const messageMethod = isTwilioFromNumber(fromNumber)
+            ? MessageMethod.PhoneNumber
+            : MessageMethod.MessagingService
+          setMessageMethod(messageMethod)
+          setTwilioEditMethod(messageMethod)
+          form.setFieldValue('messageMethod', messageMethod)
+        }
+        else if (isValidAccountSID === false && isValidAuthToken === false) {
+          // If add twilio form was touched and provider was changed, validate sid and token again
+          form.validateFields(['accountSid','authToken'])
+        }
+      }
+      else {
+        setIsValidAccountSID(false)
+        setIsValidAuthToken(false)
       }
     }
   }, [providerType])
@@ -92,7 +104,7 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
         handleGetTwiliosIncomingPhoneNumbers()
       }
     }
-  }, [isValidAccountSID, isValidAuthToken, messageMethod])
+  }, [isValidAccountSID, isValidAuthToken, messageMethod, validAccountSID, validAuthToken])
 
   const onClose = () => {
     setVisible(false)
@@ -245,6 +257,8 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
               )
             }
             setIsValidAccountSID(true)
+            // In scenario where account sid is changed from one valid sid immediately to another valid sid
+            setValidAccountSID(value)
             return Promise.resolve()}
           }
         ]}
@@ -264,6 +278,8 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
               )
             }
             setIsValidAuthToken(true)
+            // In scenario where account sid is changed from one valid token immediately to another valid token
+            setValidAuthToken(value)
             return Promise.resolve()}
           }
         ]}

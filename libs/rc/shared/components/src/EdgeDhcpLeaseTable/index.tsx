@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps }                                                                              from '@acx-ui/components'
 import { useEdgeBySerialNumberQuery, useGetDhcpHostStatsQuery, useGetDhcpStatsQuery, useGetEdgeDhcpServiceQuery } from '@acx-ui/rc/services'
-import { DhcpHostStats, EdgeDhcpHostStatus, useTableQuery }                                                       from '@acx-ui/rc/utils'
+import { DhcpHostStats, EdgeDhcpHostStatus, genExpireTimeString, useTableQuery }                                  from '@acx-ui/rc/utils'
 import { RequestPayload }                                                                                         from '@acx-ui/types'
 
 import { useIsEdgeReady } from '../useEdgeActions'
@@ -73,18 +73,6 @@ export const EdgeDhcpLeaseTable = (props: EdgeDhcpLeaseTableProps) => {
       })
     }
   )
-
-  const genExpireTimeString = (seconds?: number) => {
-    const days = seconds && seconds > 0 ? Math.floor(seconds/86400) : 0
-    const lessThanADaySec = seconds && seconds > 0 ? Math.floor(seconds%86400) : 0
-    return $t(
-      { defaultMessage: '{days, plural, =0 {} one {# Day} other {# Days}} {time}' },
-      {
-        days,
-        time: new Date(lessThanADaySec * 1000).toISOString().slice(11, 19)
-      }
-    )
-  }
 
   const statusOptions = [
     {
