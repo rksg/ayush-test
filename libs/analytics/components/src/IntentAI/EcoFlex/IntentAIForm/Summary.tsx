@@ -29,7 +29,7 @@ export function Summary () {
           </Form.Item>
           }
           {enableExcludedAPs && <Form.Item
-            label={$t({ defaultMessage: 'APs/AP Group not applied for EcoFlex' })}
+            label={$t({ defaultMessage: 'APs not applied for EcoFlex' })}
           >
             {$t({ defaultMessage: 'PowerSave will not be triggered for the specific APs set in the Settings.' })}
           </Form.Item>

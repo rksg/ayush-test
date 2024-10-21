@@ -116,7 +116,7 @@ function useR1NetworkHierarchy () {
 
   return {
     ...response,
-    options: getNetworkFilterData(response.data ?? [], {}, false)
+    options: getNetworkFilterData(response.data, {}, false)
   }
 }
 
@@ -131,7 +131,7 @@ export function APsSelection ({ isDisabled }: { isDisabled: boolean }) {
   const response = useOptions()
   return <Loader
     states={[_.omit(response, ['options'])]}
-    style={{ height: 'auto', minHeight: 346 }}
+    style={{ height: 'auto', minHeight: 200 }}
   >
     <Form.Item
       name={name as unknown as NamePath}
@@ -139,8 +139,8 @@ export function APsSelection ({ isDisabled }: { isDisabled: boolean }) {
         disabled={isDisabled}
         autoFocus
         placeholder={get('IS_MLISA_SA')
-          ? $t({ defaultMessage: 'Select APs to exclude' })
-          : $t({ defaultMessage: 'Select <VenuePlural></VenuePlural> / APs to exclude' })}
+          ? $t({ defaultMessage: 'Select AP Groups / APs to exclude' })
+          : $t({ defaultMessage: 'Select <VenueSingular></VenueSingular> / APs to exclude' })}
         options={response.options}
       />}
     />
