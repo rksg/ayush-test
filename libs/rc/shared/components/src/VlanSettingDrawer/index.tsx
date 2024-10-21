@@ -132,6 +132,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
   const { $t } = useIntl()
   const { Option } = Select
   const [openModal, setOpenModal] = useState(false)
+  const [vlanId, setVlanId] = useState(undefined)
   const [ipv4DhcpSnooping, setIpv4DhcpSnooping] = useState(false)
   const [arpInspection, setArpInspection] = useState(false)
   const [multicastVersionDisabled, setMulticastVersionDisabled] = useState(true)
@@ -223,6 +224,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
         setSelected({
           ...selectedRows[0]
         })
+        setVlanId(form.getFieldValue('vlanId'))
         setOpenModal(true)
       }
     },
@@ -420,6 +422,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
               disabled={isSwitchLevel && ruleList?.length > 0}
               onClick={() => {
                 setSelected(undefined)
+                setVlanId(form.getFieldValue('vlanId'))
                 setOpenModal(true)
               }}
             >
@@ -446,6 +449,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           dataSource={ruleList || undefined}
         />
         <VlanPortsModal
+          vlanId={vlanId}
           open={openModal}
           editRecord={selected}
           currrentRecords={ruleList}

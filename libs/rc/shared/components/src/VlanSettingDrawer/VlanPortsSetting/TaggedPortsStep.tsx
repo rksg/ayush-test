@@ -8,9 +8,9 @@ import {
 import { Row, Col, Form, Typography, Checkbox, Input } from 'antd'
 import _                                               from 'lodash'
 
-import { Tooltip }                                                           from '@acx-ui/components'
-import { SwitchSlot2 as SwitchSlot, getSwitchPortLabel, PortStatusMessages } from '@acx-ui/rc/utils'
-import { getIntl }                                                           from '@acx-ui/utils'
+import { Tooltip }                                                                                from '@acx-ui/components'
+import { SwitchSlot2 as SwitchSlot, getSwitchPortLabel, PortStatusMessages, SwitchPortViewModel } from '@acx-ui/rc/utils'
+import { getIntl }                                                                                from '@acx-ui/utils'
 
 import { getTooltipTemplate } from '../'
 
@@ -18,11 +18,12 @@ import * as UI                                                                  
 import VlanPortsContext                                                                       from './VlanPortsContext'
 import { getPortsModule, getUnit, getUnitTitle, getModule, PortsType, selectedGroupByPrefix } from './VlanPortsModal.utils'
 
-export function TaggedPortsStep () {
+export function TaggedPortsStep (props:{ portsData?: SwitchPortViewModel[] }) {
   const { $t } = getIntl()
+  const { portsData } = props
   const form = Form.useFormInstance()
   const {
-    vlanSettingValues, setVlanSettingValues, vlanList, isSwitchLevel, portsUsedBy
+    vlanSettingValues, setVlanSettingValues, vlanList, isSwitchLevel, portsUsedBy, vlanId
   } = useContext(VlanPortsContext)
 
   const [portsModule, setPortsModule] = useState<PortsType[][][]>([])
@@ -150,13 +151,18 @@ export function TaggedPortsStep () {
   }
 
   const getDisabledPorts = (timeslot: string) => {
+    let isAuthDefaultVlan = false
+    if(portsData && vlanId) {
+      // eslint-disable-next-line max-len
+      isAuthDefaultVlan = portsData.find(i => i.portIdentifier === timeslot)?.authDefaultVlan == vlanId
+    }
     const untaggedPorts =
         vlanSettingValues.switchFamilyModels?.untaggedPorts?.toString().split(',') || []
 
     const disabledPorts
       = untaggedPorts.includes(timeslot)
       || Object.keys(portsUsedBy?.lag ?? {})?.includes(timeslot)
-      || false
+      || isAuthDefaultVlan
 
     return disabledPorts
   }

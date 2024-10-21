@@ -7,10 +7,11 @@ import { debounce }                           from 'lodash'
 import { rest }                               from 'msw'
 import { IntlProvider }                       from 'react-intl'
 
-import { StepsForm }                           from '@acx-ui/components'
-import { SwitchPortViewModel, SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider  }                           from '@acx-ui/store'
-import { mockServer }                          from '@acx-ui/test-utils'
+import { StepsForm }                          from '@acx-ui/components'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import { SwitchRbacUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider  }                          from '@acx-ui/store'
+import { mockServer }                         from '@acx-ui/test-utils'
 
 import { vlans, records, portSlotsData, vlanSettingValues } from '../__tests__/fixtures'
 
@@ -20,14 +21,39 @@ import { UntaggedPortsStep } from './UntaggedPortsStep'
 import VlanPortsContext      from './VlanPortsContext'
 import { VlanPortsModal }    from './VlanPortsModal'
 
+const portlist = {
+  fields: [
+    'portIdentifier',
+    'id'
+  ],
+  totalCount: 16,
+  page: 1,
+  data: [
+    {
+      name: 'GigabitEthernet1/1/9',
+      portIdentifier: '1/1/9',
+      isAuthPort: true
+    },
+    {
+      name: 'GigabitEthernet1/1/10',
+      portIdentifier: '1/1/10',
+      isAuthPort: true,
+      authDefaultVlan: 5
+    }
+  ]
+}
 
 describe('VlanPortsModal', () => {
+  jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   beforeEach(async () => {
     mockServer.use(
       rest.get(
         SwitchUrlsInfo.getLagList.url,
         (req, res, ctx) => res(ctx.json([]))
-      )
+      ),
+      rest.post(
+        SwitchRbacUrlsInfo.getSwitchPortlist.url,
+        (req, res, ctx) => res(ctx.json(portlist)))
     )
   })
 
@@ -320,6 +346,7 @@ describe('VlanPortsModal', () => {
     render(<IntlProvider locale='en'>
       <Provider>
         <VlanPortsModal
+          vlanId={5}
           open={true}
           editRecord={undefined}
           currrentRecords={undefined}
@@ -341,6 +368,8 @@ describe('VlanPortsModal', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
     expect(
+      await screen.findByTestId('untagged_module1_1_9')).toHaveAttribute('data-disabled', 'true')
+    expect(
       await screen.findByTestId('untagged_module1_1_20')).toHaveAttribute('data-disabled', 'true')
     expect(
       await screen.findByTestId('untagged_module1_3_2')).toHaveAttribute('data-disabled', 'true')
@@ -349,6 +378,8 @@ describe('VlanPortsModal', () => {
     fireEvent.mouseOver(await screen.findByTestId('untagged_module1_1_20'))
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    expect(
+      await screen.findByTestId('tagged_module1_1_10')).toHaveAttribute('data-disabled', 'true')
     fireEvent.mouseOver(await screen.findByTestId('tagged_module1_1_21'))
     await userEvent.click(await screen.findByTestId('tagged_module1_1_12'))
 
@@ -384,11 +415,6 @@ describe('VlanPortsModal', () => {
   })
 
   it('should render untagged ports step correctly', async () => {
-    const portsData = [{
-      name: 'GigabitEthernet1/1/9',
-      portIdentifier: '1/1/9',
-      isAuthPort: true
-    }]
     render(<IntlProvider locale='en'>
       <VlanPortsContext.Provider
         value={{
@@ -406,7 +432,7 @@ describe('VlanPortsModal', () => {
       >
         <StepsForm onFinish={jest.fn()}>
           <StepsForm.StepForm>
-            <UntaggedPortsStep portsData={portsData as SwitchPortViewModel[]}/>
+            <UntaggedPortsStep />
           </StepsForm.StepForm>
         </StepsForm>
       </VlanPortsContext.Provider>
@@ -415,8 +441,6 @@ describe('VlanPortsModal', () => {
     await screen.findByText(
       /Select the untagged ports \(access ports\) for this model \(ICX7150-48\)/i
     )
-    expect(
-      await screen.findByTestId('untagged_module1_1_9')).toHaveAttribute('data-disabled', 'true')
   })
 
   it('should render tagged ports step correctly', async () => {

@@ -19,7 +19,7 @@ import * as UI                                                                  
 import VlanPortsContext                                                                       from './VlanPortsContext'
 import { getPortsModule, getUnit, getUnitTitle, getModule, PortsType, selectedGroupByPrefix } from './VlanPortsModal.utils'
 
-export function UntaggedPortsStep (props:{ portsData: SwitchPortViewModel[] }) {
+export function UntaggedPortsStep (props:{ portsData?: SwitchPortViewModel[] }) {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
   const { portsData } = props
@@ -152,7 +152,10 @@ export function UntaggedPortsStep (props:{ portsData: SwitchPortViewModel[] }) {
   }
 
   const getDisabledPorts = (timeslot: string) => {
-    const portData = portsData.find(i => i.portIdentifier === timeslot)
+    let isAuthPort = false
+    if(portsData) {
+      isAuthPort = !!portsData.find(i => i.portIdentifier === timeslot)?.isAuthPort
+    }
     const vlanSelectedPorts = vlanList ? vlanList.map(item => item.switchFamilyModels
       ?.filter(obj => obj.model === vlanSettingValues.switchFamilyModels?.model)) : []
 
@@ -168,7 +171,7 @@ export function UntaggedPortsStep (props:{ portsData: SwitchPortViewModel[] }) {
       || Object.keys(portsUsedBy?.lag ?? {})?.includes(timeslot)
       || Object.keys(portsUsedBy?.untagged ?? {})?.includes(timeslot)
       || portExists || false
-      || portData?.isAuthPort
+      || isAuthPort
 
     return disabledPorts
   }

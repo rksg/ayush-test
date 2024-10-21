@@ -5,6 +5,7 @@ import _                    from 'lodash'
 import { useIntl }          from 'react-intl'
 
 import { Modal, ModalType, StepsForm } from '@acx-ui/components'
+import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
 import { useSwitchPortlistQuery }      from '@acx-ui/rc/services'
 import {
   SwitchModelPortData,
@@ -39,6 +40,7 @@ export interface VlanSettingInterface {
 }
 
 export function VlanPortsModal (props: {
+  vlanId?: number,
   open: boolean,
   onSave:(values: SwitchModelPortData)=>void,
   onCancel?: ()=>void,
@@ -52,8 +54,9 @@ export function VlanPortsModal (props: {
 }) {
   const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()
+  const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   const { open, editRecord, onSave, onCancel,
-    vlanList, switchFamilyModel, portSlotsData = [], portsUsedBy, stackMember } = props
+    vlanList, switchFamilyModel, portSlotsData = [], portsUsedBy, stackMember, vlanId } = props
   const [form] = Form.useForm()
   const [editMode, setEditMode] = useState(false)
   const [noModelMsg, setNoModelMsg] = useState(false)
@@ -78,7 +81,7 @@ export function VlanPortsModal (props: {
     params: { tenantId },
     payload: portPayload,
     enableRbac: true
-  })
+  }, { skip: !isSwitchFlexAuthEnabled })
 
   useEffect(()=>{
     setEditMode(open && !!editRecord)
@@ -237,7 +240,8 @@ export function VlanPortsModal (props: {
         isSwitchLevel,
         switchFamilyModel,
         portSlotsData,
-        portsUsedBy
+        portsUsedBy,
+        vlanId
       }}>
         <StepsForm
           form={form}
@@ -266,13 +270,13 @@ export function VlanPortsModal (props: {
             title={$t({ defaultMessage: 'Untagged Ports' })}
             onFinish={onSaveUntagged}
           >
-            <UntaggedPortsStep portsData={portList?.data as SwitchPortViewModel[]}/>
+            <UntaggedPortsStep portsData={portList?.data as SwitchPortViewModel[]} />
           </StepsForm.StepForm>
           <StepsForm.StepForm
             title={$t({ defaultMessage: 'Tagged Ports' })}
             onFinish={onSaveTagged}
           >
-            <TaggedPortsStep />
+            <TaggedPortsStep portsData={portList?.data as SwitchPortViewModel[]} />
           </StepsForm.StepForm>
         </StepsForm>
       </VlanPortsContext.Provider>
