@@ -336,7 +336,7 @@ export function CliVariableModal (props: {
           const mergeData = (switchArray?: SwitchCustomizedVariable[]) => {
             switchArray?.forEach(({ serialNumbers, value, key }) => {
               const serials = typeof serialNumbers === 'string' ? [serialNumbers] : serialNumbers
-              const mapKey = `${key}_${value}`
+              const mapKey = value //`${key}_${value}`
               if (mergedMap.has(mapKey)) {
                 mergedMap.get(mapKey).serialNumbers.push(...serials)
               } else {

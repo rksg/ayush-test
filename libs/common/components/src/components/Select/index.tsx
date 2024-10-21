@@ -27,6 +27,7 @@ export function Select (props: SelectProps) {
   const getGroupOptions = () => {
     return isSelectOptGroup
       ? children?.map(({ props }) => ({
+        title: props?.label,
         label: <span>{props?.label}</span>,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         options: props?.children?.map(({ props }: any) => ({
@@ -37,10 +38,10 @@ export function Select (props: SelectProps) {
         }))
       }))
       : options?.map(opt => ({
+        title: opt?.label,
         label: <span>{opt?.label}</span>,
         ...(opt.options ? { options: opt.options } : null),
         ...(opt.value ? { value: opt.value } : null)
-        //...(opt.disabled ? { disabled: opt.disabled } : null)
       }))
   }
 
