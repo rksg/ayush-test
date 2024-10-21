@@ -5,7 +5,7 @@ import { useIntl }                          from 'react-intl'
 
 import { Alert, Drawer }                                                                                   from '@acx-ui/components'
 import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeSubInterface, edgePortIpValidator, generalSubnetMskRegExp } from '@acx-ui/rc/utils'
-import { validationMessages }                                                                              from '@acx-ui/utils'
+import { getIntl, validationMessages }                                                                     from '@acx-ui/utils'
 
 interface StaticRoutesDrawerProps {
   mac: string
@@ -16,18 +16,18 @@ interface StaticRoutesDrawerProps {
   handleUpdate: (data: EdgeSubInterface) => Promise<unknown>
 }
 
-const useGetPortTypeOptions = () => {
-  const { $t } = useIntl()
+const getPortTypeOptions = () => {
+  const { $t } = getIntl()
   return [
     { label: $t({ defaultMessage: 'LAN' }), value: EdgePortTypeEnum.LAN }
   ]
 }
 
-const useGetIpModeOptions = () => {
-  const { $t } = useIntl()
+const getIpModeOptions = () => {
+  const { $t } = getIntl()
   return [
-    { lable: $t({ defaultMessage: 'DHCP' }), value: EdgeIpModeEnum.DHCP },
-    { lable: $t({ defaultMessage: 'Static IP' }), value: EdgeIpModeEnum.STATIC }
+    { label: $t({ defaultMessage: 'DHCP' }), value: EdgeIpModeEnum.DHCP },
+    { label: $t({ defaultMessage: 'Static IP' }), value: EdgeIpModeEnum.STATIC }
   ]
 }
 
@@ -91,14 +91,14 @@ const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
       initialValue={EdgePortTypeEnum.LAN}
       label={$t({ defaultMessage: 'Port Type' })}
       rules={[{ required: true }]}
-      children={<Select options={useGetPortTypeOptions()} />}
+      children={<Select options={getPortTypeOptions()} />}
     />
     <Form.Item
       name='ipMode'
       initialValue={EdgeIpModeEnum.DHCP}
       label={$t({ defaultMessage: 'IP Assignment Type' })}
       rules={[{ required: true }]}
-      children={<Select options={useGetIpModeOptions()} />}
+      children={<Select options={getIpModeOptions()} />}
     />
     <Form.Item
       noStyle
