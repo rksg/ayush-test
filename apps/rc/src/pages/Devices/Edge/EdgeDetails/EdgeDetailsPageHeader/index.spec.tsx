@@ -2,8 +2,8 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeGeneralFixtures, EdgeStatusEnum, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                          from '@acx-ui/store'
+import { EdgeDHCPFixtures, EdgeDhcpUrls, EdgeGeneralFixtures, EdgeStatus, EdgeStatusEnum, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                                                      from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -12,9 +12,12 @@ import {
   within
 } from '@acx-ui/test-utils'
 
+import { EdgeDetailsDataContext } from '../EdgeDetailsDataProvider'
+
 import { EdgeDetailsPageHeader } from '.'
 
 const { mockEdgeList, mockEdgeServiceList, mockEdgeCluster } = EdgeGeneralFixtures
+const { mockDhcpStatsData } = EdgeDHCPFixtures
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -72,12 +75,8 @@ describe('Edge Detail Page Header', () => {
         }
       ),
       rest.post(
-        EdgeUrlsInfo.getEdgeServiceList.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeServiceList))
-      ),
-      rest.get(
-        EdgeUrlsInfo.getEdgeCluster.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeCluster))
+        EdgeDhcpUrls.getDhcpStats.url,
+        (_req, res, ctx) => res(ctx.json(mockDhcpStatsData))
       )
     )
   })
@@ -85,7 +84,16 @@ describe('Edge Detail Page Header', () => {
   it('should more actions to be clickable', async () => {
     render(
       <Provider>
-        <EdgeDetailsPageHeader />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: currentEdge as EdgeStatus,
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
+          }}
+        >
+          <EdgeDetailsPageHeader />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -97,7 +105,16 @@ describe('Edge Detail Page Header', () => {
   it('should redirect to edge general setting page after clicked configure', async () => {
     render(
       <Provider>
-        <EdgeDetailsPageHeader />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: currentEdge as EdgeStatus,
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
+          }}
+        >
+          <EdgeDetailsPageHeader />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -115,7 +132,16 @@ describe('Edge Detail Page Header', () => {
   it('should redirect to edge list after deleted edge', async () => {
     render(
       <Provider>
-        <EdgeDetailsPageHeader />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: currentEdge as EdgeStatus,
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
+          }}
+        >
+          <EdgeDetailsPageHeader />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -144,7 +170,16 @@ describe('Edge Detail Page Header', () => {
   it('should reboot edge correctly', async () => {
     render(
       <Provider>
-        <EdgeDetailsPageHeader />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: currentEdge as EdgeStatus,
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
+          }}
+        >
+          <EdgeDetailsPageHeader />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -169,7 +204,16 @@ describe('Edge Detail Page Header', () => {
   it('should shutdown edge correctly', async () => {
     render(
       <Provider>
-        <EdgeDetailsPageHeader />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: currentEdge as EdgeStatus,
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
+          }}
+        >
+          <EdgeDetailsPageHeader />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -194,7 +238,16 @@ describe('Edge Detail Page Header', () => {
   it('should factory rest edge correctly', async () => {
     render(
       <Provider>
-        <EdgeDetailsPageHeader />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: currentEdge as EdgeStatus,
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
+          }}
+        >
+          <EdgeDetailsPageHeader />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -219,7 +272,16 @@ describe('Edge Detail Page Header', () => {
   it('should render HaStatusBadge', async () => {
     render(
       <Provider>
-        <EdgeDetailsPageHeader />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: currentEdge as EdgeStatus,
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
+          }}
+        >
+          <EdgeDetailsPageHeader />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -264,9 +326,9 @@ describe('Edge Detail Page Header - action show up logic', () => {
         EdgeUrlsInfo.getEdgeServiceList.url,
         (req, res, ctx) => res(ctx.json(mockEdgeServiceList))
       ),
-      rest.get(
-        EdgeUrlsInfo.getEdgeCluster.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeCluster))
+      rest.post(
+        EdgeDhcpUrls.getDhcpStats.url,
+        (_req, res, ctx) => res(ctx.json(mockDhcpStatsData))
       )
     )
   })
@@ -286,7 +348,16 @@ describe('Edge Detail Page Header - action show up logic', () => {
       ))
     render(
       <Provider>
-        <EdgeDetailsPageHeader />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: currentEdge as EdgeStatus,
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
+          }}
+        >
+          <EdgeDetailsPageHeader />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -313,7 +384,16 @@ describe('Edge Detail Page Header - action show up logic', () => {
       ))
     render(
       <Provider>
-        <EdgeDetailsPageHeader />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: currentEdge as EdgeStatus,
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
+          }}
+        >
+          <EdgeDetailsPageHeader />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -340,7 +420,16 @@ describe('Edge Detail Page Header - action show up logic', () => {
       ))
     render(
       <Provider>
-        <EdgeDetailsPageHeader />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: currentEdge as EdgeStatus,
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
+          }}
+        >
+          <EdgeDetailsPageHeader />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })

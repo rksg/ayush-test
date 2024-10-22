@@ -4,6 +4,7 @@ import { MessageDescriptor, defineMessage } from 'react-intl'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
+  ConfigTemplateDriftType,
   ConfigTemplateType, configTemplatePolicyTypeMap,
   configTemplateServiceTypeMap, policyTypeLabelMapping,
   serviceTypeLabelMapping
@@ -11,6 +12,8 @@ import {
 import { RolesEnum }                              from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }        from '@acx-ui/user'
 import { AccountType, getIntl, isDelegationMode } from '@acx-ui/utils'
+
+import { configTemplateDriftTypeLabelMap } from './ShowDriftsDrawer/contents'
 
 
 export const useEcFilters = () => {
@@ -50,4 +53,13 @@ export function getConfigTemplateTypeLabel (configTemplateType: ConfigTemplateTy
     return $t(restTypeLabel)
   }
   return configTemplateType
+}
+
+// eslint-disable-next-line max-len
+export function getConfigTemplateDriftStatusLabel (driftStatus: ConfigTemplateDriftType | undefined): string {
+  const { $t } = getIntl()
+
+  if (!driftStatus) return ''
+
+  return $t(configTemplateDriftTypeLabelMap[driftStatus])
 }
