@@ -2,10 +2,10 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { AaaUrls, ConfigTemplateContext, ConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                               from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
-import { UserUrlsInfo }                                           from '@acx-ui/user'
+import { AaaUrls, CertificateUrls, ConfigTemplateContext, ConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                                from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor, within }                  from '@acx-ui/test-utils'
+import { UserUrlsInfo }                                                            from '@acx-ui/user'
 
 import { aaaData, successResponse, aaaList, aaaTemplateList } from './__tests__/fixtures'
 import { AAAForm }                                            from './AAAForm'
@@ -46,6 +46,14 @@ describe('AAAForm', () => {
       ),
       rest.post(
         ConfigTemplateUrlsInfo.getAAAPolicyTemplateList.url,
+        (_, res, ctx) => res(ctx.json(aaaTemplateList))
+      ),
+      rest.post(
+        CertificateUrls.getCAs.url,
+        (_, res, ctx) => res(ctx.json(aaaTemplateList))
+      ),
+      rest.post(
+        CertificateUrls.getCertificateList.url,
         (_, res, ctx) => res(ctx.json(aaaTemplateList))
       )
     )
