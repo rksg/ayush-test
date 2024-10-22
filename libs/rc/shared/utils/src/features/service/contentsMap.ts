@@ -29,6 +29,7 @@ export const serviceTypeLabelMapping: Record<ServiceType, MessageDescriptor> = {
     defaultMessage: 'SD-LAN P2' }),
   [ServiceType.WIFI_CALLING]: defineMessage({ defaultMessage: 'Wi-Fi Calling' }),
   [ServiceType.MDNS_PROXY]: defineMessage({ defaultMessage: 'mDNS Proxy' }),
+  [ServiceType.EDGE_MDNS_PROXY]: defineMessage({ defaultMessage: 'mDNS Proxy for RUCKUS Edge' }),
   [ServiceType.DPSK]: defineMessage({ defaultMessage: 'DPSK' }),
   [ServiceType.PIN]: defineMessage(
     { defaultMessage: 'Personal Identity Network' }),
@@ -54,6 +55,8 @@ export const serviceTypeDescMapping: Record<ServiceType, MessageDescriptor> = {
   [ServiceType.WIFI_CALLING]: defineMessage({ defaultMessage: 'Identify clients using Wi-Fi calling and provide enhanced QoS' }),
   // eslint-disable-next-line max-len
   [ServiceType.MDNS_PROXY]: defineMessage({ defaultMessage: 'Proxy multicast DNS for discovery of layer 2 services' }),
+  // eslint-disable-next-line max-len
+  [ServiceType.EDGE_MDNS_PROXY]: defineMessage({ defaultMessage: 'Proxy multicast DNS for discovery of layer 2 services' }),
   [ServiceType.DPSK]: defineMessage({ defaultMessage: 'RUCKUS Dynamic Pre Shared Key Service' }),
   [ServiceType.PIN]: defineMessage(
     { defaultMessage: 'Controls network traffic by different segments' }),

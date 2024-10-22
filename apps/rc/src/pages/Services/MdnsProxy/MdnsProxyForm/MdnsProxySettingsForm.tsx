@@ -10,6 +10,7 @@ import { MdnsProxyForwardingRulesTable, RULES_MAX_COUNT } from '@acx-ui/rc/compo
 import { useLazyGetMdnsProxyListQuery }                   from '@acx-ui/rc/services'
 import {
   checkObjectNotExists,
+  MdnsProxyFeatureTypeEnum,
   MdnsProxyForwardingRule,
   servicePolicyNameRegExp
 }  from '@acx-ui/rc/utils'
@@ -84,6 +85,7 @@ export function MdnsProxySettingsForm () {
               })}
             </UI.TableSubLabel>
             <MdnsProxyForwardingRulesTable
+              featureType={MdnsProxyFeatureTypeEnum.WIFI}
               readonly={false}
               rules={rules}
               setRules={handleSetRules}
