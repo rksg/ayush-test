@@ -3,6 +3,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { DateFormatEnum, formatter }                                        from '@acx-ui/formatter'
 import { MspRbacUrlsInfo }                                                  from '@acx-ui/msp/utils'
 import { Provider }                                                         from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
@@ -57,7 +58,9 @@ describe('MaxPeriod Card', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    expect(await screen.findByText('2025-10-21')).toBeVisible()
+    const date = formatter(DateFormatEnum.DateFormat)(response.data.expirationDate)
+
+    await expect(await screen.findByText(date)).toBeVisible()
   })
 
   it('should render Max Period Card with no radio options', async () => {
