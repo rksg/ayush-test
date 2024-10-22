@@ -1,8 +1,4 @@
-import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
-import _                       from 'lodash'
-
 import { useGetResourceGroupsQuery } from '@acx-ui/analytics/services'
-import { showToast }                 from '@acx-ui/components'
 import { get }                       from '@acx-ui/config'
 import { notificationApi }           from '@acx-ui/store'
 import { getIntl }                   from '@acx-ui/utils'
@@ -57,7 +53,7 @@ export const {
     webhooks: build.query<ExtendedWebhook[], Record<string, string>>({
       query: () => ({
         url: '/webhooks',
-        method: 'get',
+        method: 'GET',
         credentials: 'include'
       }),
       providesTags: [{ type: 'Webhook', id: 'LIST' }],
@@ -74,7 +70,7 @@ export const {
     createWebhook: build.mutation<void, WebhookDto>({
       query: (webhook) => ({
         url: '/webhooks',
-        method: 'post',
+        method: 'POST',
         credentials: 'include',
         body: webhook
       }),
@@ -83,7 +79,7 @@ export const {
     updateWebhook: build.mutation<void, WebhookDto>({
       query: ({ id, ...webhook }) => ({
         url: `/webhooks/${id}`,
-        method: 'put',
+        method: 'PUT',
         credentials: 'include',
         body: webhook
       }),
@@ -92,7 +88,7 @@ export const {
     deleteWebhook: build.mutation<void, Webhook['id']>({
       query: (id) => ({
         url: `/webhooks/${id}`,
-        method: 'delete',
+        method: 'DELETE',
         credentials: 'include'
       }),
       invalidatesTags: [{ type: 'Webhook', id: 'LIST' }]
@@ -100,7 +96,7 @@ export const {
     sendSample: build.mutation<SampleResponse, SamplePayload>({
       query: (webhook) => ({
         url: '/webhooks/send-sample-incident',
-        method: 'post',
+        method: 'POST',
         credentials: 'include',
         body: webhook
       })
@@ -117,26 +113,3 @@ export const useResourceGroups = () => useGetResourceGroupsQuery(undefined, {
     })
   }
 })
-
-function isApiError (
-  error: FetchBaseQueryError
-): error is ({ status: number, data: { success: boolean, error: string } }) {
-  return _.has(error, 'data.error')
-}
-
-export function handleError (
-  error: FetchBaseQueryError,
-  defaultErrorMessage: string
-) {
-  const { $t } = getIntl()
-  let message: string = defaultErrorMessage
-
-  if (isApiError(error)) {
-    message = $t({ defaultMessage: 'Error: {message}. (status code: {code})' }, {
-      message: error.data.error,
-      code: error.status
-    })
-  }
-
-  showToast({ type: 'error', content: message })
-}

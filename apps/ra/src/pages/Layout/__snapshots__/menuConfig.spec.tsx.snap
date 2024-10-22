@@ -312,6 +312,7 @@ Array [
       Object {
         "children": Array [
           Object {
+            "isActiveCheck": /\\^\\\\/health/,
             "label": Array [
               Object {
                 "type": 0,
@@ -793,6 +794,7 @@ Array [
       Object {
         "children": Array [
           Object {
+            "isActiveCheck": /\\^\\\\/health/,
             "label": Array [
               Object {
                 "type": 0,
@@ -1299,6 +1301,7 @@ Array [
       Object {
         "children": Array [
           Object {
+            "isActiveCheck": /\\^\\\\/health/,
             "label": Array [
               Object {
                 "type": 0,
@@ -1815,6 +1818,7 @@ Array [
       Object {
         "children": Array [
           Object {
+            "isActiveCheck": /\\^\\\\/health/,
             "label": Array [
               Object {
                 "type": 0,
