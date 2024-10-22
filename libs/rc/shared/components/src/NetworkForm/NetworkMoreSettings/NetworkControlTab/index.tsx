@@ -240,7 +240,6 @@ export function NetworkControlTab () {
             valuePropName='checked'
             initialValue={true}
             children={<Switch />}
-            data-testid='arcForm'
           />
         </UI.FieldLabel>
       }
