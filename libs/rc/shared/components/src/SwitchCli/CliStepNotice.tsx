@@ -12,7 +12,7 @@ import * as UI from './styledComponents'
 export function CliStepNotice () {
   const { $t } = useIntl()
   const params = useParams()
-  const isTemplate = params?.configType !== 'profiles'
+  const isCliTemplate = params?.configType !== 'profiles'
   const isSwitchLevelCliProfileEnabled = useIsSplitOn(Features.SWITCH_LEVEL_CLI_PROFILE)
 
   const editMode = params.action === 'edit'
@@ -30,7 +30,7 @@ export function CliStepNotice () {
         {$t({ defaultMessage: 'Read this before you start:' })}
       </Typography.Text>
 
-      {!isTemplate && !isSwitchLevelCliProfileEnabled && <Space style={{
+      {!isCliTemplate && !isSwitchLevelCliProfileEnabled && <Space style={{
         marginBottom: '10px',
         alignItems: 'flex-start', fontSize: '12px' }}
       >
