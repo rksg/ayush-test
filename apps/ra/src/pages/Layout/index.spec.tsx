@@ -10,6 +10,11 @@ jest.mock('@acx-ui/analytics/utils', () => ({
   getUserProfile: () => mockedProfile()
 }))
 
+jest.mock('@acx-ui/analytics/components', () => ({
+  ...jest.requireActual('@acx-ui/analytics/components'),
+  MelissaBot: () => <div data-testid='MelissaBot' />
+}))
+
 describe('Layout', () => {
   const permissions = Object.keys(raiPermissionsList)
     .reduce((permissions, name) => ({ ...permissions, [name]: true }), {})
