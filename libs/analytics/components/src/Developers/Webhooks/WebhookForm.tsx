@@ -18,13 +18,14 @@ import {
 import { get }               from '@acx-ui/config'
 import { URLProtocolRegExp } from '@acx-ui/rc/utils'
 
+import { handleError } from '../utils'
+
 import {
   useCreateWebhookMutation,
   useResourceGroups,
   useUpdateWebhookMutation,
   useSendSampleMutation,
-  webhookDtoKeys,
-  handleError
+  webhookDtoKeys
 } from './services'
 
 import type { Webhook, WebhookDto } from './services'

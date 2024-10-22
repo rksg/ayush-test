@@ -181,6 +181,7 @@ export enum Features {
   WIFI_6G_INDOOR_OUTDOOR_SEPARATION = 'wifi-ap-6g-channel-separation-toggle',
   GUEST_MANUAL_PASSWORD_TOGGLE = 'guest-manual-password-toggle',
   RUCKUS_AI_INTENT_AI_TOGGLE = 'ruckus-ai-intent-ai-toggle',
+  RUCKUS_AI_JWT_TOGGLE = 'ruckus-ai-jwt-toggle',
   INTENT_AI_TOGGLE = 'acx-ui-intent-ai-toggle',
   SWITCH_CLI_MODE = 'switch-consumer-cli-mode-toggle',
   RBAC_CONFIG_TEMPLATE_TOGGLE = 'acx-ui-rbac-config-template-toggle',
@@ -200,7 +201,8 @@ export enum Features {
   WIFI_COMPATIBILITY_BY_MODEL = 'wifi-compatibility-check-by-model-toggle',
   ENTITLEMENT_LICENSE_COMPLIANCE_PHASE2_TOGGLE = 'entitlement-license-compliance-phase2-toggle',
   BRAND360_MDU_TOGGLE = 'acx-ui-brand360-mdu-toggle',
-  SERVER_CERTIFICATE_MANAGEMENT_UI_TOGGLE = 'server-certificate-management-ui-toggle'
+  SERVER_CERTIFICATE_MANAGEMENT_UI_TOGGLE = 'server-certificate-management-ui-toggle',
+  WIFI_NETWORK_APPLICATION_CONTROL = 'wifi-network-application-control'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
