@@ -45,7 +45,7 @@ export function MdnsProxySettingsForm () {
   const handleSetRules = (rules: MdnsProxyForwardingRule[]) => {
     form.setFieldValue('rules', rules)
   }
-  console.log(rules)
+
   return (
     <Row gutter={20}>
       <Col span={10}>

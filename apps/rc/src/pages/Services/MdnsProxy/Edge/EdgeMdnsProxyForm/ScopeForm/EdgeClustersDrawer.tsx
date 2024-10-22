@@ -1,9 +1,9 @@
 /* eslint-disable max-len */
 import { useEffect, useState } from 'react'
 
-import { Typography, Space }            from 'antd'
-import { cloneDeep, findIndex, remove } from 'lodash'
-import { useIntl }                      from 'react-intl'
+import { Typography, Space }                  from 'antd'
+import { cloneDeep, findIndex, pick, remove } from 'lodash'
+import { useIntl }                            from 'react-intl'
 
 import { Drawer }                  from '@acx-ui/components'
 import { EdgeMdnsProxyActivation } from '@acx-ui/rc/utils'
@@ -20,12 +20,13 @@ const toggleItemFromSelected = (
   selectedClusters: EdgeMdnsProxyActivation[]
 ) => {
   let newSelected: EdgeMdnsProxyActivation[] = cloneDeep(selectedClusters)
-  const idx = findIndex(newSelected, { venueId: data.venueId, edgeClusterId: data.edgeClusterId })
+  const condition = pick(data, ['venueId', 'edgeClusterId'])
+  const idx = findIndex(newSelected, condition)
 
   if (checked) {
     idx === -1 && newSelected.push(data)
   } else {
-    remove(newSelected, idx)
+    remove(newSelected, condition)
   }
 
   return newSelected
@@ -33,7 +34,7 @@ const toggleItemFromSelected = (
 
 export interface EdgeClustersDrawerProps {
   onClose: () => void,
-  onSubmit: (updates: EdgeMdnsProxyActivation[] | undefined) => void,
+  onSubmit: (venueId:string, updates: EdgeMdnsProxyActivation[] | undefined) => void,
   activations: EdgeMdnsProxyActivation[],
   venueId?: string,
   availableVenues?: VenueTableDataType[]
@@ -72,10 +73,9 @@ export const EdgeClustersDrawer = (props: EdgeClustersDrawerProps) => {
   }
 
   const handleSubmit = async () => {
-    onSubmit(updateContent)
+    onSubmit(venueId!, updateContent)
   }
 
-  console.log(updateContent)
   return (
     <Drawer
       title={$t({ defaultMessage: '{venueName}: Select RUCKUS Edge Clusters' }, { venueName })}

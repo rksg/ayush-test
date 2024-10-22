@@ -1,16 +1,16 @@
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { MdnsProxyScopeData } from '@acx-ui/rc/utils'
+import { ApMdnsProxyScopeData } from '@acx-ui/rc/utils'
 
-export function MdnsProxySummaryVenues (props: { scope: MdnsProxyScopeData[] }) {
+export function MdnsProxySummaryVenues (props: { scope: ApMdnsProxyScopeData[] }) {
   const { scope } = props
   const { $t } = useIntl()
 
   return (
     <div>
       <Space direction='vertical' size={4}>
-        {scope.map((scopeData: MdnsProxyScopeData) => {
+        {scope.map((scopeData: ApMdnsProxyScopeData) => {
           return (
             <div key={scopeData.venueId}>
               <Space>

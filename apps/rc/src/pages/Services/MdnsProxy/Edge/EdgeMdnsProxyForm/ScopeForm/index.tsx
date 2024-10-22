@@ -98,14 +98,15 @@ export const VenuesTable = (props: VenueNetworksTableProps) => {
     formRef.setFieldValue('selectedVenueId', undefined)
   }
 
-  const handleSubmit = (updates: EdgeMdnsProxyActivation[] | undefined) => {
+  const handleSubmit = (venueId: string, updates: EdgeMdnsProxyActivation[] | undefined) => {
     if (isNil(updates)) return
 
-    // Object.keys(updates).forEach(d => {
-    //   formRef.setFieldValue(d, updates[d])
-    // })
+    // update `updates` on a specific venue
+    const activations = (formRef.getFieldValue('activations') ?? []) as EdgeMdnsProxyActivation[]
+    const updatedActivations = activations.filter(item => item.venueId !== venueId)
+    updatedActivations.push(...updates)
 
-    formRef.setFieldValue('activations', updates)
+    formRef.setFieldValue('activations', updatedActivations)
     formRef.validateFields(['activations'])
     closeDrawer()
   }

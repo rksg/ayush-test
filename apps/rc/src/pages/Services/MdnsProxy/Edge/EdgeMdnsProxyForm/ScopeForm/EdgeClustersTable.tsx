@@ -71,7 +71,7 @@ export const EdgeClustersTable = (props: EdgeClustersTableProps) => {
   return (
     <Loader states={[ tableQuery ]}>
       <Table
-        rowKey='id'
+        rowKey='clusterId'
         columns={columns}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}

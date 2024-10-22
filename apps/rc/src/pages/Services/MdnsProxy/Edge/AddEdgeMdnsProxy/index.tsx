@@ -56,7 +56,7 @@ const AddEdgeMdnsProxy = () => {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Add mDNS Proxy for SmartEdge Service' })}
+        title={$t({ defaultMessage: 'Add mDNS Proxy for RUCKUS Edge Service' })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },

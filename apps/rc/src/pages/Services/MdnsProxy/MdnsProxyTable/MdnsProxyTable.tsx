@@ -50,6 +50,20 @@ export default function MdnsProxyTable () {
 
   const rowActions: TableProps<MdnsProxyViewModel>['rowActions'] = [
     {
+      label: $t({ defaultMessage: 'Edit' }),
+      onClick: ([{ id }]) => {
+        navigate({
+          ...tenantBasePath,
+          pathname: `${tenantBasePath.pathname}/` + getServiceDetailsLink({
+            type: ServiceType.MDNS_PROXY,
+            oper: ServiceOperation.EDIT,
+            serviceId: id!
+          })
+        })
+      },
+      scopeKey: getScopeKeyByService(ServiceType.MDNS_PROXY, ServiceOperation.EDIT)
+    },
+    {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: ([{ id, name }], clearSelection) => {
         showActionModal({
@@ -68,20 +82,6 @@ export default function MdnsProxyTable () {
         })
       },
       scopeKey: getScopeKeyByService(ServiceType.MDNS_PROXY, ServiceOperation.DELETE)
-    },
-    {
-      label: $t({ defaultMessage: 'Edit' }),
-      onClick: ([{ id }]) => {
-        navigate({
-          ...tenantBasePath,
-          pathname: `${tenantBasePath.pathname}/` + getServiceDetailsLink({
-            type: ServiceType.MDNS_PROXY,
-            oper: ServiceOperation.EDIT,
-            serviceId: id!
-          })
-        })
-      },
-      scopeKey: getScopeKeyByService(ServiceType.MDNS_PROXY, ServiceOperation.EDIT)
     }
   ]
 

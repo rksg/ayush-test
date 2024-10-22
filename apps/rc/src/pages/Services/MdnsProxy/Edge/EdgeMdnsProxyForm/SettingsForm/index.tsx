@@ -44,18 +44,18 @@ export const SettingsForm = () => {
               <Form.Item
                 name='forwardingRules'
                 label={<Space direction='vertical' size={0}>
-                  <Form.Item noStyle dependencies={['forwardingRules']}>{
-                    ({ getFieldValue }) =>
-                      $t({ defaultMessage: 'Forwarding Rules ({rulesCount})' },
+                  <Form.Item noStyle shouldUpdate>{
+                    ({ getFieldValue }) => {
+                      return $t({ defaultMessage: 'Forwarding Rules ({rulesCount})' },
                         // eslint-disable-next-line max-len
                         { rulesCount: transformDisplayNumber(getFieldValue('forwardingRules')?.length) })
+                    }
                   }</Form.Item>
                   <Typography.Text type='secondary'>
                     {$t({ defaultMessage: 'Up to {maxCount} rules may be added' },
                       { maxCount: RULES_MAX_COUNT })}
                   </Typography.Text>
-                </Space>
-                }
+                </Space>}
                 rules={[{
                   required: true,
                   message: $t({ defaultMessage: 'Please set forwarding rules' })

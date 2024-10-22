@@ -4,7 +4,7 @@ import { StepsForm }                                                            
 import { EdgeMdnsProxyViewData, ServiceOperation, ServiceType, getServiceRoutePath } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                                                from '@acx-ui/react-router-dom'
 
-interface EdgeMdnsProxyFormProps {
+export interface EdgeMdnsProxyFormProps {
   form: FormInstance
   steps: {
     title: string
@@ -21,14 +21,6 @@ export const EdgeMdnsProxyForm = (props: EdgeMdnsProxyFormProps) => {
     type: ServiceType.EDGE_MDNS_PROXY,
     oper: ServiceOperation.LIST
   }))
-
-  // const initFormValues = useMemo(() => {
-
-  //   if (isEditMode) {
-
-  //   }
-  //   return result
-  // }, [isEditMode, editData])
 
   return (<StepsForm
     form={form}

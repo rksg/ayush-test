@@ -34,7 +34,6 @@ const EditEdgeMdnsProxy = () => {
 
   const linkToServiceList = useTenantLink(routeToList)
   const { editEdgeMdns } = useEdgeMdnsActions()
-
   const { data, isLoading, isFetching } = useGetEdgeMdnsProxyQuery(
     { params },
     { skip: !params.serviceId }
@@ -54,6 +53,7 @@ const EditEdgeMdnsProxy = () => {
     if (!data) return
 
     return {
+      id: params.serviceId,
       ...data,
       forwardingRules: data.forwardingRules.map((r, idx) =>
         ({
@@ -87,7 +87,7 @@ const EditEdgeMdnsProxy = () => {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Edit mDNS Proxy for SmartEdge Service' })}
+        title={$t({ defaultMessage: 'Edit mDNS Proxy for RUCKUS Edge Service' })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },

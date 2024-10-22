@@ -34,7 +34,7 @@ export const useEdgeMdnsActions = () => {
           if (Array.isArray(result)) {
             // do activation
             const actions = formData.activations?.map(item =>
-              activateEdgeMdnsCluster(result[0].id, item.edgeClusterId))
+              activateEdgeMdnsCluster(result[0].id, item.venueId, item.edgeClusterId))
 
             if (actions) {
               Promise.all(actions).then(() => resolve(result))
@@ -53,13 +53,13 @@ export const useEdgeMdnsActions = () => {
 
   // eslint-disable-next-line max-len
   const editEdgeMdns = async (formData: EdgeMdnsProxyViewData, originData: EdgeMdnsProxyViewData): Promise<CommonResult> => {
-    const { id, ...otherFormData } = formData
+    const { id: serviceId, ...otherFormData } = formData
     const payload = edgeMdnsFormRequestPreProcess(otherFormData)
 
-    if (!id) return Promise.reject(new Error('id is required'))
+    if (!serviceId) return Promise.reject(new Error('servcieId is required'))
 
     const actions = [updateEdgeMdns({
-      params: { id },
+      params: { serviceId },
       payload
     }).unwrap()]
 
@@ -67,12 +67,12 @@ export const useEdgeMdnsActions = () => {
     // eslint-disable-next-line max-len
     const activates = differenceVenueClusters(formData.activations ?? [], originData.activations ?? [])
     actions.push(...activates?.map(item =>
-      activateEdgeMdnsCluster(id, item.edgeClusterId)))
+      activateEdgeMdnsCluster(serviceId, item.venueId, item.edgeClusterId)))
 
     // eslint-disable-next-line max-len
     const deactivates = differenceVenueClusters(originData.activations ?? [], formData.activations ?? [])
     actions.push(...deactivates?.map(item =>
-      deactivateEdgeMdnsCluster(id, item.edgeClusterId)))
+      deactivateEdgeMdnsCluster(serviceId, item.venueId, item.edgeClusterId)))
 
     try {
       const results = await Promise.all(actions)
@@ -82,20 +82,23 @@ export const useEdgeMdnsActions = () => {
     }
   }
 
-  const activateEdgeMdnsCluster = (serviceId: string, clusterId: string): Promise<CommonResult> => {
+  // eslint-disable-next-line max-len
+  const activateEdgeMdnsCluster = (serviceId: string, venueId: string, edgeClusterId: string): Promise<CommonResult> => {
     return activateEdgeMdns({
       params: {
         serviceId,
-        clusterId
+        venueId,
+        edgeClusterId
       }
     }).unwrap()
   }
 
   // eslint-disable-next-line max-len
-  const deactivateEdgeMdnsCluster = (serviceId: string, clusterId: string): Promise<CommonResult> => {
+  const deactivateEdgeMdnsCluster = (serviceId: string, venueId: string, edgeClusterId: string): Promise<CommonResult> => {
     return deactivateEdgeMdns({ params: {
       serviceId,
-      clusterId
+      venueId,
+      edgeClusterId
     } }).unwrap()
   }
   return {

@@ -3,12 +3,12 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { BonjourGatewayRule } from '../../models/BonjourGatewayRule'
 import {
+  ApMdnsProxyScopeData,
   MdnsActivation,
   MdnsProxyCreateApiPayload,
   MdnsProxyFormData,
   MdnsProxyForwardingRule,
   MdnsProxyGetApiResponse,
-  MdnsProxyScopeData,
   MdnsProxyViewModel
 } from '../../types/services'
 
@@ -52,19 +52,19 @@ export function convertMdnsProxyViewModelToMdnsProxyFormData (data: MdnsProxyVie
   } as MdnsProxyFormData
 }
 
-function extractScopeFromViewModel (activations: MdnsActivation[] = []): MdnsProxyScopeData[] {
+function extractScopeFromViewModel (activations: MdnsActivation[] = []): ApMdnsProxyScopeData[] {
   return activations.map(activation => ({
     venueId: activation.venueId,
     aps: activation.apSerialNumbers.map(serialNumber => ({ serialNumber }))
   }))
 }
 
-function extractApSerialNumberFromScope (scope: MdnsProxyScopeData[] = []): string[] {
+function extractApSerialNumberFromScope (scope: ApMdnsProxyScopeData[] = []): string[] {
   return scope.flatMap(s => s.aps.map(ap => ap.serialNumber))
 }
 
 // eslint-disable-next-line max-len
-function extractScopeFromApiPayload (aps: { serialNumber: string, venueId: string }[] = []): MdnsProxyScopeData[] {
+function extractScopeFromApiPayload (aps: { serialNumber: string, venueId: string }[] = []): ApMdnsProxyScopeData[] {
   let venueMap: { [key: string]: { serialNumber: string }[] } = {}
 
   aps.forEach(item => {
