@@ -44,7 +44,13 @@ const privilegeGroups = [{
   name: 'admin-test',
   type: 'Custom',
   roleName: 'ADMIN',
-  roleId: '1765e98c7b9446e2a5bdd4720e0e8911'
+  roleId: '1765e98c7b9446e2a5bdd4720e0e8911',
+  admins: [{
+    id: 'de57f509888e4345921cd59a257085f8',
+    email: 'mspReadOnly@mail.com',
+    delegateToAllECs: true,
+    detailLevel: 'debug'
+  }]
 },
 {
   allCustomers: true,
@@ -55,14 +61,19 @@ const privilegeGroups = [{
   name: 'For-All-Customers',
   type: 'Custom',
   roleName: 'custom role 1 for wi-fi',
-  roleId: 'e5e3c5cec88841d7b7fde2982334e35d'
+  roleId: 'e5e3c5cec88841d7b7fde2982334e35d',
+  admins: [{
+    id: 'de57f509888e4345921cd59a257085f8',
+    email: 'mspReadOnly@mail.com',
+    delegateToAllECs: true,
+    detailLevel: 'debug'
+  }]
 }]
-
 const services = require('@acx-ui/msp/services')
 jest.mock('@acx-ui/msp/services', () => ({
   ...jest.requireActual('@acx-ui/msp/services')
 }))
-const user = require('@acx-ui/user')
+const rcServices = require('@acx-ui/rc/services')
 const mockedsetDrawerVisible = jest.fn()
 const mockedsetSelectedUsers = jest.fn()
 const mockedsetSelectedPrivilegeGroups = jest.fn()
@@ -90,7 +101,7 @@ describe('ManageMspDelegations', () => {
     services.useGetMspEcDelegatedAdminsQuery = jest.fn().mockImplementation(() => {
       return { data: delegatedAdmins }
     })
-    user.useGetPrivilegeGroupsQuery = jest.fn().mockImplementation(() => {
+    rcServices.useGetPrivilegeGroupsWithAdminsQuery = jest.fn().mockImplementation(() => {
       return { data: privilegeGroups, isLoading: false, isFetching: false }
     })
 
@@ -134,7 +145,7 @@ describe('ManageMspDelegations', () => {
     expect(await screen.findByText('For-All-Customers')).toBeVisible()
     expect(screen.getAllByRole('checkbox')).toHaveLength(3)
     // eslint-disable-next-line max-len
-    const disabledRow = screen.getByRole('row', { name: 'For-All-Customers b508d86ed2c5474cb309cde10951d7f5' })
+    const disabledRow = screen.getByRole('row', { name: 'For-All-Customers mspReadOnly@mail.com' })
     expect(within(disabledRow).getByRole('checkbox')).toBeDisabled()
     expect(screen.queryByText('johnsmith@mail.com')).toBeNull()
     expect(screen.queryByText('1 selected')).toBeNull()
@@ -172,7 +183,7 @@ describe('ManageMspDelegations', () => {
     expect(await screen.findByText('For-All-Customers')).toBeVisible()
     expect(screen.getAllByRole('checkbox')).toHaveLength(3)
     // eslint-disable-next-line max-len
-    const disabledRow = screen.getByRole('row', { name: 'For-All-Customers b508d86ed2c5474cb309cde10951d7f5' })
+    const disabledRow = screen.getByRole('row', { name: 'For-All-Customers mspReadOnly@mail.com' })
     expect(within(disabledRow).getByRole('checkbox')).toBeDisabled()
     expect(screen.queryByText('johnsmith@mail.com')).toBeNull()
   })

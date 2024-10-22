@@ -20,10 +20,11 @@ import {
   MspEcDelegatedAdmins,
   SelectedMspMspAdmins
 } from '@acx-ui/msp/utils'
-import { useParams }                                  from '@acx-ui/react-router-dom'
-import { RolesEnum }                                  from '@acx-ui/types'
-import { PrivilegeGroup, useGetPrivilegeGroupsQuery } from '@acx-ui/user'
-import { AccountType }                                from '@acx-ui/utils'
+import { useGetPrivilegeGroupsWithAdminsQuery } from '@acx-ui/rc/services'
+import { PrivilegeGroup }                       from '@acx-ui/rc/utils'
+import { useParams }                            from '@acx-ui/react-router-dom'
+import { RolesEnum }                            from '@acx-ui/types'
+import { AccountType }                          from '@acx-ui/utils'
 
 import { SelectPGs }   from './SelectPGs'
 import { SelectUsers } from './SelectUsers'
@@ -68,7 +69,7 @@ export const ManageMspDelegationDrawer = (props: ManageMspDelegationDrawerProps)
   const [privilegeGroupData, setPrivilegeGroupData] = useState([] as PrivilegeGroup[])
 
   const { data: privilegeGroupList, isLoading, isFetching }
-    = useGetPrivilegeGroupsQuery({ params })
+    = useGetPrivilegeGroupsWithAdminsQuery({ params })
 
   useEffect(() => {
     if (privilegeGroupList) {

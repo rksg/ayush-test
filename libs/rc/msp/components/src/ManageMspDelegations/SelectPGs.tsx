@@ -9,9 +9,10 @@ import {
 } from '@acx-ui/components'
 import {
   defaultSort,
+  PrivilegeGroup,
   sortProp
 } from '@acx-ui/rc/utils'
-import { PrivilegeGroup } from '@acx-ui/user'
+import { noDataDisplay } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -36,6 +37,10 @@ export const SelectPGs = (props: SelectPGsProps) => {
     }
   }, [selected])
 
+  const getPrivilegeGroupAdmins = (row: PrivilegeGroup) => {
+    return row.admins ? row.admins.map(admin => admin.email).join(', ') : noDataDisplay
+  }
+
   const columns: TableProps<PrivilegeGroup>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
@@ -49,8 +54,10 @@ export const SelectPGs = (props: SelectPGsProps) => {
       title: $t({ defaultMessage: 'Associated Admins' }),
       dataIndex: 'id',
       key: 'id',
-      sorter: { compare: sortProp('id', defaultSort) },
-      searchable: true
+      searchable: true,
+      render: function (_, row) {
+        return getPrivilegeGroupAdmins(row)
+      }
     }
   ]
 

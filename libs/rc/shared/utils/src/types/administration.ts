@@ -323,8 +323,18 @@ export interface groupMembers {
   lastLoginDate?: string
 }
 
+export interface PgAdmin {
+  id?: string;
+  externalId?: string;
+  email?: string;
+  name?: string;
+  lastName?: string;
+  detailLevel?: string;
+  delegateToAllECs?: boolean;
+}
+
 export interface PrivilegeGroup {
-  id?: string,
+  id: string,
   name?: string,
   type?: string,
   description?: string,
@@ -336,7 +346,8 @@ export interface PrivilegeGroup {
   allVenues?: boolean,
   delegation?: boolean,
   policies?: PrivilegePolicy[],
-  policyEntityDTOS?: PrivilegePolicyEntity[]
+  policyEntityDTOS?: PrivilegePolicyEntity[],
+  admins?: PgAdmin[]
 }
 
 export enum PrivilegePolicyObjectType {
