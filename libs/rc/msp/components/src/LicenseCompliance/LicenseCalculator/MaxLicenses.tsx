@@ -98,6 +98,7 @@ export default function MaxLicenses (props: { showExtendedTrial: boolean }) {
         children={<DatePicker
           suffixIcon={null}
           allowClear={false}
+          size='small'
           style={{
             height: '28px'
           }}
@@ -117,6 +118,7 @@ export default function MaxLicenses (props: { showExtendedTrial: boolean }) {
         children={<DatePicker
           allowClear={false}
           suffixIcon={null}
+          size='small'
           style={{
             height: '28px'
           }}
@@ -124,18 +126,20 @@ export default function MaxLicenses (props: { showExtendedTrial: boolean }) {
         />}/>
       <Form.Item
         name={'calculate'}
-        style={{ display: 'inline-block', width: '90px',
-          margin: '22px 6px 0px 0px' }}
+        style={{ display: 'inline-block',
+          width: '90px',
+          margin: '22px 0px 0px 0px' }}
         children={<Button style={{
           background: 'var(--acx-primary-black)',
           color: 'var(--acx-primary-white)',
-          minHeight: '28px'
+          minHeight: '28px',
+          width: '90px'
         }}
         onClick={calculateLicences}
         type='default'>{ $t({ defaultMessage: 'CALCULATE' }) }</Button>}/>
     </Form>
     <Row style={{
-      alignItems: 'baseline'
+      alignItems: 'center'
     }}>
       <Col style={{
         marginRight: '4px'
@@ -145,9 +149,11 @@ export default function MaxLicenses (props: { showExtendedTrial: boolean }) {
         </Typography.Text>
       </Col>
       <Col>
-        <Typography.Title> <Loader states={[{ isLoading }]}>
-          {maxLicenceCount || noDataDisplay}
-        </Loader> </Typography.Title>
+        <Typography.Title style={{
+          margin: '0px'
+        }}> <Loader states={[{ isLoading }]}>
+            {maxLicenceCount || noDataDisplay}
+          </Loader> </Typography.Title>
       </Col>
     </Row>
   </div>
