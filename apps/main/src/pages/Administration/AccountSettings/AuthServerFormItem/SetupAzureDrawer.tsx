@@ -24,6 +24,7 @@ import { formatter }                                from '@acx-ui/formatter'
 import { useGetMspUploadURLMutation }               from '@acx-ui/msp/services'
 import {
   useAddTenantAuthenticationsMutation,
+  useGetServerCertificatesQuery,
   useUpdateTenantAuthenticationsMutation
 } from '@acx-ui/rc/services'
 import {
@@ -37,8 +38,9 @@ import {
 
 import { reloadAuthTable } from '../AppTokenFormItem'
 
-import AuthTypeSelector from './authTypeSelector'
-import * as UI          from './styledComponents'
+import AuthTypeSelector         from './authTypeSelector'
+import  SelectServerCertificate from './SelectServerCertificate'
+import * as UI                  from './styledComponents'
 
 type AcceptableType = 'xml'
 
@@ -100,8 +102,13 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
   const loginSsoSignatureEnabled = useIsSplitOn(Features.LOGIN_SSO_SIGNATURE_TOGGLE)
   const isRbacEarlyAccessEnable = useIsTierAllowed(Features.RBAC_IMPLICIT_P1)
   const isRbacEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
+  const isSsoEncryptionEnabled = useIsSplitOn(Features.SSO_SAML_ENCRYPTION)
 
   const bytesFormatter = formatter('bytesFormat')
+
+  const { data: certificateList } = useGetServerCertificatesQuery({ payload:
+    { pageSize: 20, page: 1 } }, { skip: !isSsoEncryptionEnabled })
+
   const [addSso] = useAddTenantAuthenticationsMutation()
   const [updateSso] = useUpdateTenantAuthenticationsMutation()
   const [getUploadURL] = useGetMspUploadURLMutation()
@@ -430,7 +437,10 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
         defaultChecked={ssoSignature}
         onChange={onChangeSsoSignature}
       />
-    </Form.Item>}
+    </Form.Item>
+    }
+    {isSsoEncryptionEnabled &&
+      <SelectServerCertificate serverSertificates={certificateList?.data}/>}
     </>
   }
 

@@ -139,7 +139,7 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
           }
         />
 
-        {hasSsoConfigured && <Col style={{ width: '296px', paddingLeft: 0 }}>
+        {hasSsoConfigured && <Col style={{ width: '400px', paddingLeft: 0 }}>
           <Card type='solid-bg' >
             {isGoogleWorkspaceEnabled && <div>
               <Form.Item
