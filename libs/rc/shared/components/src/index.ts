@@ -212,7 +212,8 @@ export {
   checkSdLanScopedNetworkDeactivateAction
 } from './EdgeSdLan/useEdgeSdLanActions'
 export type {
-  SdLanScopedNetworkVenuesData
+  SdLanScopedNetworkVenuesData,
+  SdLanScopedVenueNetworksData
 } from './EdgeSdLan/useEdgeSdLanActions'
 export { useEdgePinActions } from './EdgePersonalIdentityNetwork/useEdgePinActions'
 export { SdLanTopologyDiagram } from './EdgeSdLan/SdLanTopologyDiagram'
@@ -270,6 +271,8 @@ export {
   EdgeUpdateNowDialog
 } from './EdgeFirmware/UpdateNowDialog'
 export type { EdgeUpdateApNowDialogProps } from './EdgeFirmware/UpdateNowDialog'
+
+export * from './ApFirmware'
 
 export * from './services'
 export * from './policies'

@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars, max-len */
 import { useEffect, useRef, useState, createContext } from 'react'
 
-import { Form }                                                          from 'antd'
-import { get, isEqual, isNil, isNull, isUndefined, merge, omit, omitBy } from 'lodash'
-import { defineMessage, useIntl }                                        from 'react-intl'
+import { Form }                                                                     from 'antd'
+import { get, isEqual, isNil, isNull, isUndefined, merge, omit, omitBy, cloneDeep } from 'lodash'
+import { defineMessage, useIntl }                                                   from 'react-intl'
 
 import { PageHeader, StepsForm, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
@@ -800,7 +800,7 @@ export function NetworkForm (props:{
 
         if (isSoftGreEnabled && formData['softGreAssociationUpdate']) {
         // eslint-disable-next-line max-len
-          afterVenueActivationRequest.push(updateSoftGreActivations(networkId, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode))
+          afterVenueActivationRequest.push(updateSoftGreActivations(networkId, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode, false))
         }
       }
       await Promise.all(afterVenueActivationRequest)
@@ -881,6 +881,7 @@ export function NetworkForm (props:{
   const handleEditNetwork = async (formData: NetworkSaveData) => {
     try {
       processEditData(formData)
+      const oldData = cloneDeep(saveContextRef.current)
       const payload = updateClientIsolationAllowlist(saveContextRef.current as NetworkSaveData)
       await updateNetworkInstance({
         params,
@@ -916,7 +917,7 @@ export function NetworkForm (props:{
           allRequests.push(handleNetworkVenues(payload.id, payload.venues, data?.venues))
         }
       }
-      allRequests.push(updateClientIsolationActivations(payload, data, payload.id))
+      allRequests.push(updateClientIsolationActivations(payload, oldData, payload.id))
 
       // eslint-disable-next-line max-len
       if (isEdgeSdLanMvEnabled && form.getFieldValue('sdLanAssociationUpdate') && payload.id && payload.venues) {
@@ -930,7 +931,7 @@ export function NetworkForm (props:{
       if (isSoftGreEnabled && formData['softGreAssociationUpdate'] && payload.id && payload.venues) {
         allRequests.push(
           // eslint-disable-next-line max-len
-          updateSoftGreActivations(payload.id, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode)
+          updateSoftGreActivations(payload.id, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode, true)
         )
       }
 

@@ -18,6 +18,8 @@ interface PasswordStrengthProps extends InputProps {
   isAllConditionsMet: number
   onConditionCountMet: (newLevel: boolean) => void
   value: string
+  forceFocusOn: boolean
+  setForceFocusOn: (toggle: boolean) => void
 }
 
 interface PasswordStrengthIndicatorProps {
@@ -46,6 +48,8 @@ export const PasswordInputStrength = ({
     regExErrorMessages,
     isAllConditionsMet,
     onConditionCountMet,
+    forceFocusOn,
+    setForceFocusOn,
     ...others
   } = props
   const { value } = others
@@ -56,14 +60,14 @@ export const PasswordInputStrength = ({
     (isAllConditionsMet && isAllConditionsMet > 4 ? 4 : isAllConditionsMet) || 4
 
   const RULE_REGEX = regExRules || [
-    /^.{8,}$/,
+    /^.{8,32}$/,
     /(?=.*[a-z])(?=.*[A-Z])/,
     /(?=.*\d)/,
     /(?=.*[^\w\d\s])/
   ]
 
   const RULE_MESSAGES = regExErrorMessages || [
-    $t({ defaultMessage: '8 characters' }),
+    $t({ defaultMessage: 'Between 8 and 32 characters' }),
     $t({ defaultMessage: 'One uppercase and one lowercase letters' }),
     $t({ defaultMessage: 'One number' }),
     $t({ defaultMessage: 'One special symbol' })
@@ -74,6 +78,12 @@ export const PasswordInputStrength = ({
       setInput(value.toString())
     }
   }, [value])
+
+  useEffect(() => {
+    if(forceFocusOn) {
+      setFocus(true)
+    }
+  }, [forceFocusOn])
 
   return (
     <>
@@ -86,7 +96,10 @@ export const PasswordInputStrength = ({
           props?.onChange?.(e)
         }}
         onFocus={() => setFocus(true)}
-        onBlur={() => setFocus(false)}
+        onBlur={() => {
+          setFocus(false)
+          if (setForceFocusOn) setForceFocusOn(false)
+        }}
       />
       <PasswordStrengthIndicator
         input={input}
@@ -116,7 +129,7 @@ export const PasswordStrengthIndicator = ({
         borderRadius: [2, 0, 0, 2]
       }
     },
-    { name: 'fair', value: 4,
+    { name: 'poor', value: 4,
       itemStyle: {
         borderRadius: [0, 2, 2, 0]
       }
@@ -127,7 +140,7 @@ export const PasswordStrengthIndicator = ({
     $t({ defaultMessage: 'Insecure' }),
     $t({ defaultMessage: 'Very Weak' }),
     $t({ defaultMessage: 'Weak' }),
-    $t({ defaultMessage: 'Fair' }),
+    $t({ defaultMessage: 'Poor' }),
     $t({ defaultMessage: 'Strong' })
   ]
 
@@ -158,7 +171,7 @@ export const PasswordStrengthIndicator = ({
       { name: 'weak', value: passedRulesRatio, itemStyle: {
         borderRadius: passedRulesRatio > 0 && passedRulesRatio < 4 ? [2, 0, 0, 2] : [2, 2, 2, 2]
       } },
-      { name: 'fair', value: 4-passedRulesRatio, itemStyle: {
+      { name: 'poor', value: 4-passedRulesRatio, itemStyle: {
         borderRadius: passedRulesRatio > 0 && passedRulesRatio < 4 ? [0, 2, 2, 0] : [2, 2, 2, 2]
       } }
     ])

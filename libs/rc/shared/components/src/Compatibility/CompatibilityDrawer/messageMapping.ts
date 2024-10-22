@@ -4,8 +4,8 @@ import { defineMessage } from 'react-intl'
 export const messageMapping = {
   // TODO: should change `multipleFromAp` when AP compatibility enhancement.
   multipleFromAp: defineMessage({ defaultMessage:
-    'The following features are not enabled on this access point due to firmware or device ' +
-    'incompatibility. Please see the minimum firmware versions required below. Also note that ' +
+    'The following features are not enabled on this access point due to <b>firmware</b> or <b>device ' +
+    'incompatibility</b>. Please see the minimum firmware versions required below. Also note that ' +
     'not all features are available on all access points. You may upgrade your firmware from {apFwLink}'
   }),
   multipleFromEdge: defineMessage({ defaultMessage:
@@ -22,6 +22,11 @@ export const messageMapping = {
     'The following features are unavailable on certain RUCKUS Edges '+
     'in this <venueSingular></venueSingular> due to <b>firmware incompatibility</b>. '+
     'You can upgrade your RUCKUS Edge firmware by selecting these features and choosing to update now or schedule an update below.'
+  }),
+  multipleFromVenueDevice: defineMessage({ defaultMessage:
+    'The following features are unavailable on certain access points ' +
+    'in this <venueSingular></venueSingular> due to <b>firmware</b> or <b>device incompatibility</b>. ' +
+    'You can upgrade your AP firmware by selecting these features and choosing to update now or schedule an update below.'
   }),
   singleApFeature: defineMessage({ defaultMessage:
     'To use the <b>{featureName}</b> feature, ensure that the access points '+

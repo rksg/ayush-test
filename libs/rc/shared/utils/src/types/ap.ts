@@ -196,6 +196,7 @@ export interface NewAPModelExtended extends NewAPModel {
   switchPort?: string
   rogueCategory?: { [key: string]: number }
   incompatible?: number
+  compatibilityStatus?: string
 }
 export interface NewCelluarInfo {
   activeSim: string,
@@ -343,7 +344,7 @@ export interface NewApGroupViewModelResponseType {
   venueId?: string,
   apSerialNumbers?: string[],
   wifiNetworkIds?: string[],
-  clientCount?: number,
+  clientCount?: number
 }
 
 export interface NewGetApGroupResponseType {

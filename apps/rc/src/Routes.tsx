@@ -144,6 +144,7 @@ import EditFirewall                                                     from './
 import FirewallDetail                                                   from './pages/Services/EdgeFirewall/FirewallDetail'
 import FirewallTable                                                    from './pages/Services/EdgeFirewall/FirewallTable'
 import { AddEdgeSdLan, EdgeSdLanDetail, EdgeSdLanTable, EditEdgeSdLan } from './pages/Services/EdgeSdLan/index'
+import { EdgeMdnsProxyTable }                                           from './pages/Services/MdnsProxy/Edge/EdgeMdnsProxyTable'
 import MdnsProxyDetail                                                  from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
 import MdnsProxyForm                                                    from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
 import MdnsProxyTable                                                   from './pages/Services/MdnsProxy/MdnsProxyTable/MdnsProxyTable'
@@ -543,11 +544,20 @@ const edgePinRoutes = () => {
   </>
 }
 
+const edgeMdnsRoutes = () => {
+  return <Route
+    path={getServiceRoutePath({ type: ServiceType.EDGE_MDNS_PROXY,
+      oper: ServiceOperation.LIST })}
+    element={<EdgeMdnsProxyTable />}
+  />
+}
+
 function ServiceRoutes () {
   const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
   const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+  const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
 
   return rootRoutes(
     <Route path=':tenantId/t'>
@@ -758,6 +768,9 @@ function ServiceRoutes () {
 
       {(isEdgeHaReady && isEdgeFirewallHaReady)
         && edgeFirewallRoutes()}
+
+
+      {isEdgeMdnsReady && edgeMdnsRoutes()}
 
       <Route
         path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,

@@ -666,5 +666,10 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/venues/:venueId/switches/:switchId/authentication',
     newApi: true
+  },
+  getSwitchFeatureSets: {
+    method: 'get',
+    url: '/switchFeatureSets/:featureName',
+    newApi: true
   }
 }

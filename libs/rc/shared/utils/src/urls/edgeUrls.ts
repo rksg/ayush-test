@@ -314,6 +314,16 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/edgeClusters/:clusterId/networkSettings',
     newApi: true
   },
+  getEdgeClusterSubInterfaceSettings: {
+    method: 'get',
+    url: '/venues/:venueId/edgeClusters/:clusterId/subInterfaces',
+    newApi: true
+  },
+  patchEdgeClusterSubInterfaceSettings: {
+    method: 'PATCH',
+    url: '/venues/:venueId/edgeClusters/:clusterId/subInterfaces',
+    newApi: true
+  },
   getEdgeFeatureSets: {
     method: 'post',
     url: '/edgeFeatureSets/query',

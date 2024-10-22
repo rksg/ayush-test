@@ -1,10 +1,15 @@
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                     from '@acx-ui/feature-toggle'
-import { networkApi, venueApi }                             from '@acx-ui/rc/services'
-import { CommonRbacUrlsInfo, CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                  from '@acx-ui/store'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { networkApi, venueApi }   from '@acx-ui/rc/services'
+import {
+  CommonRbacUrlsInfo,
+  CommonUrlsInfo,
+  WifiRbacUrlsInfo,
+  WifiUrlsInfo
+} from '@acx-ui/rc/utils'
+import { Provider, store } from '@acx-ui/store'
 import {
   act,
   mockServer,
@@ -13,12 +18,11 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { networklist, networksApCompatibilities, wifiNetworklist } from './__tests__/fixtures'
+import { networklist, networksApCompatibilities, newNetworkApCompatibilities, wifiNetworklist } from './__tests__/fixtures'
 
 import useNetworksTable from '.'
 
 jest.mock('socket.io-client')
-
 
 describe('Networks Table', () => {
   beforeEach(() => {
@@ -43,6 +47,10 @@ describe('Networks Table', () => {
       rest.post(
         WifiUrlsInfo.getApCompatibilitiesNetwork.url,
         (req, res, ctx) => res(ctx.json(networksApCompatibilities))
+      ),
+      rest.post(
+        WifiRbacUrlsInfo.getNetworkApCompatibilities.url,
+        (_, res, ctx) => res(ctx.json(newNetworkApCompatibilities))
       ),
       rest.post(
         CommonRbacUrlsInfo.getWifiNetworksList.url,
@@ -79,6 +87,20 @@ describe('Networks Table', () => {
   })
 
   it('should render page ap compatibility correctly', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_COMPATIBILITY_BY_MODEL)
+    const Component = () => {
+      const { component } = useNetworksTable()
+      return component
+    }
+
+    render(<Component/>, { wrapper: Provider, route: {} })
+
+    const row = await screen.findByRole('row', { name: /network-01/i })
+    const icon = await within(row).findByTestId('InformationSolid')
+    expect(icon).toBeVisible()
+  })
+
+  it('should render page ap compatibility correctly with new API', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     const Component = () => {
       const { component } = useNetworksTable()

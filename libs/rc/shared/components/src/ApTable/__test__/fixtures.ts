@@ -261,7 +261,8 @@ export const getApGroupsList = {
 export const networkList = {
   fields: [
     'id',
-    'apSerialNumbers'
+    'venueApGroups',
+    'apCount'
   ],
   totalCount: 1,
   page: 1,
@@ -271,7 +272,14 @@ export const networkList = {
       apSerialNumbers: [
         '123456789005',
         '302002030366'
-      ]
+      ],
+      apCount: 2,
+      venueApGroups: [{
+        apGroupIds: [
+          '_apGroupId_1_',
+          '_apGroupId_2_'
+        ]
+      }]
     }
   ]
 }
