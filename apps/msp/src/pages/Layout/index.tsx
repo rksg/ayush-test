@@ -17,7 +17,6 @@ import {
   HelpButton,
   UserButton,
   LicenseBanner,
-  Logo,
   HeaderContext,
   RegionButton
 } from '@acx-ui/main/components'
@@ -123,7 +122,10 @@ function Layout () {
 
   return (
     <LayoutComponent
-      logo={<TenantNavLink to={indexPath} tenantType={'v'} children={<Logo />} />}
+      logo={<TenantNavLink
+        to={indexPath}
+        tenantType={'v'}
+        children={<img src='/assets/Logo.svg' alt='logo' width={180} height={60} />} />}
       menuConfig={useMenuConfig(tenantType, hasLicense, isDogfood)}
       content={
         <>
