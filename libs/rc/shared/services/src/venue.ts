@@ -98,7 +98,9 @@ import {
   NetworkDevicePosition,
   RbacAPMesh,
   EthernetPortProfileUrls,
-  EthernetPortProfileViewData
+  EthernetPortProfileViewData,
+  CompatibilityResponse,
+  IncompatibleFeatureLevelEnum
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                                                                          from '@acx-ui/store'
 import { ITimeZone, RequestPayload }                                                             from '@acx-ui/types'
@@ -209,6 +211,76 @@ export const venueApi = baseVenueApi.injectEndpoints({
           : { error: venueListQuery.error as FetchBaseQueryError }
       },
       keepUnusedDataFor: APT_QUERY_CACHE_TIME,
+      providesTags: [{ type: 'Venue', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'AddVenue',
+            'UpdateVenue',
+            'DeleteVenue',
+            'DeleteVenues',
+            'UpdateVenueRogueAp',
+            'AddRoguePolicy',
+            'UpdateRoguePolicy',
+            'UpdateDenialOfServiceProtection'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'LIST' }]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
+    enhanceVenueTable: build.query<TableResult<Venue>, RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const venueListReq = {
+          ...createHttpRequest(CommonUrlsInfo.getVenuesList, arg.params),
+          body: arg.payload
+        }
+        const venueListQuery = await fetchWithBQ(venueListReq)
+        const venueList = venueListQuery.data as TableResult<Venue>
+        const venuesData = venueList?.data as Venue[]
+        const venueIds = venuesData?.filter(v => {
+          if (v.aggregatedApStatus) {
+            return Object.values(v.aggregatedApStatus || {}).reduce((a, b) => a + b, 0) > 0
+          }
+          return false
+        }).map(v => v.id) || []
+
+        const venueIdsToIncompatible:{ [key:string]: number } = {}
+        try {
+          const apCompatibilitiesReq = {
+            ...createHttpRequest(WifiRbacUrlsInfo.getVenueApCompatibilities, undefined, GetApiVersionHeader(ApiVersionEnum.v1)),
+            body: JSON.stringify({
+              filters: {
+                venueIds: venueIds,
+                featureLevels: [IncompatibleFeatureLevelEnum.VENUE]
+              },
+              page: 1,
+              pageSize: 100
+            })
+          }
+
+          const apCompatibilitiesQuery = await fetchWithBQ(apCompatibilitiesReq)
+          const apCompatibilitiesResponse = (apCompatibilitiesQuery.data) as CompatibilityResponse
+          const apCompatibilities = apCompatibilitiesResponse?.compatibilities
+
+          venueIds.forEach((id:string, index:number) => {
+            venueIdsToIncompatible[id] = apCompatibilities?.[index]?.incompatible ?? 0
+          })
+
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.error('enhanceVenuesTable getApCompatibilitiesVenue error:', e)
+        }
+        const aggregatedList = aggregatedVenueCompatibilitiesData(
+          venueList, venueIdsToIncompatible)
+
+        return venueListQuery.data
+          ? { data: aggregatedList }
+          : { error: venueListQuery.error as FetchBaseQueryError }
+      },
+      keepUnusedDataFor: 0,
       providesTags: [{ type: 'Venue', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -928,6 +1000,32 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return{
           ...req,
           body: payload
+        }
+      }
+    }),
+    getVenueApCompatibilities: build.query<CompatibilityResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const apiCustomHeader = {
+          ...GetApiVersionHeader(ApiVersionEnum.v1),
+          ...ignoreErrorModal
+        }
+        const req = createHttpRequest(WifiRbacUrlsInfo.getVenueApCompatibilities, params, apiCustomHeader)
+        return{
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    getVenuePreCheckApCompatibilities: build.query<CompatibilityResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const apiCustomHeader = {
+          ...GetApiVersionHeader(ApiVersionEnum.v1),
+          ...ignoreErrorModal
+        }
+        const req = createHttpRequest(WifiRbacUrlsInfo.getVenuePreCheckApCompatibilities, params, apiCustomHeader)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
         }
       }
     }),
@@ -2051,6 +2149,7 @@ export const {
   useVenuesListQuery,
   useLazyVenuesListQuery,
   useVenuesTableQuery,
+  useEnhanceVenueTableQuery,
   useAddVenueMutation,
   useLazyGetTimezoneQuery,
   useGetVenueQuery,
@@ -2085,6 +2184,10 @@ export const {
   useUpdateRwgPositionMutation,
   useGetApCompatibilitiesVenueQuery,
   useLazyGetApCompatibilitiesVenueQuery,
+  useGetVenueApCompatibilitiesQuery,
+  useLazyGetVenueApCompatibilitiesQuery,
+  useGetVenuePreCheckApCompatibilitiesQuery,
+  useLazyGetVenuePreCheckApCompatibilitiesQuery,
   useGetVenueApModelsQuery,
   useGetVenueLedOnQuery,
   useLazyGetVenueLedOnQuery,

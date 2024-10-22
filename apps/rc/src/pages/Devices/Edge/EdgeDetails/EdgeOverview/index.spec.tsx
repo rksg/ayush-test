@@ -20,7 +20,7 @@ import { EdgeOverview } from '.'
 const { mockEdgeData: currentEdge, mockEdgeList } = EdgeGeneralFixtures
 const { mockEdgePortStatus } = EdgePortConfigFixtures
 const { mockEdgeLagStatusList } = EdgeLagFixtures
-const { mockEdgeClusterList } = EdgeGeneralFixtures
+const { mockEdgeCluster } = EdgeGeneralFixtures
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -84,14 +84,6 @@ describe('Edge Detail Overview', () => {
             ctx.json(mockEdgeLagStatusList)
           )
         }
-      ),
-      rest.get(
-        EdgeUrlsInfo.getEdgeCluster.url,
-        (_req, res, ctx) => {
-          return res(
-            ctx.json(mockEdgeClusterList)
-          )
-        }
       )
     )
   })
@@ -102,7 +94,9 @@ describe('Edge Detail Overview', () => {
         <EdgeDetailsDataContext.Provider
           value={{
             currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
-            isEdgeStatusLoading: false
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
           }}
         >
           <EdgeOverview />
@@ -124,7 +118,9 @@ describe('Edge Detail Overview', () => {
         <EdgeDetailsDataContext.Provider
           value={{
             currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
-            isEdgeStatusLoading: false
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
           }}
         >
           <EdgeOverview />
@@ -160,7 +156,9 @@ describe('Edge Detail Overview', () => {
         <EdgeDetailsDataContext.Provider
           value={{
             currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
-            isEdgeStatusLoading: false
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
           }}
         >
           <EdgeOverview />
@@ -184,7 +182,9 @@ describe('Edge Detail Overview', () => {
         <EdgeDetailsDataContext.Provider
           value={{
             currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
-            isEdgeStatusLoading: false
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
           }}
         >
           <EdgeOverview />
@@ -215,7 +215,9 @@ describe('Edge Detail Overview', () => {
         <EdgeDetailsDataContext.Provider
           value={{
             currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
-            isEdgeStatusLoading: false
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
           }}
         >
           <EdgeOverview />
@@ -242,7 +244,9 @@ describe('Edge Detail Overview', () => {
         <EdgeDetailsDataContext.Provider
           value={{
             currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
-            isEdgeStatusLoading: false
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
           }}
         >
           <EdgeOverview />
@@ -265,7 +269,9 @@ describe('Edge Detail Overview', () => {
         <EdgeDetailsDataContext.Provider
           value={{
             currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
-            isEdgeStatusLoading: false
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
           }}
         >
           <EdgeOverview />

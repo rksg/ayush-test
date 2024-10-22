@@ -7,6 +7,7 @@ export * from './edgePinService'
 export * from './mdnsProxyService'
 export * from './portalService'
 export * from './edgeSdLanService'
+export * from './edgeMdnsProxyService'
 
 export enum AccessEnum {
   ALLOW = 'Allow',

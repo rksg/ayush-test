@@ -121,7 +121,8 @@ export enum ServiceType {
   WEBAUTH_SWITCH = 'Web Auth',
   RESIDENT_PORTAL = 'Resident Portal',
   EDGE_SD_LAN = 'SD-LAN',
-  EDGE_SD_LAN_P2 = 'SD-LAN-P2' // temporary type before SD-LAN GA2 dev done.
+  EDGE_SD_LAN_P2 = 'SD-LAN-P2', // temporary type before SD-LAN GA2 dev done.
+  EDGE_MDNS_PROXY = 'Edge mDNS Proxy'
 }
 
 export enum ServiceStatus {
@@ -209,6 +210,11 @@ export enum CellularNetworkSelectionEnum {
   AUTO = 'AUTO',
   LTE = 'LTE',
   ThreeG = 'ThreeG',
+}
+
+export enum MdnsProxyFeatureTypeEnum {
+  WIFI = 'WIFI',
+  EDGE = 'EDGE',
 }
 
 export enum ConfigTypeEnum {
