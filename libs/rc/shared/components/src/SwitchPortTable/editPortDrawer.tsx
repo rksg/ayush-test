@@ -130,6 +130,7 @@ interface AggregatePortsData {
   defaultVlan: Record<string, number | undefined>
   guestVlan: Record<string, number | undefined>
   switchLevelAuthDefaultVlan: Record<string, number | undefined>
+  hasMultipleValue: string[]
 }
 
 export function EditPortDrawer ({
@@ -233,7 +234,7 @@ export function EditPortDrawer ({
   //Flex auth
   const [aggregatePortsData, setAggregatePortsData] = useState({} as AggregatePortsData)
   const [isFirmwareAbove10010f, setIsFirmwareAbove10010f] = useState(false)
-  const [importDrawerVisible, setImportDrawerVisible] = useState(false)
+  const [isFlexibleAuthCustomized, setIsFlexibleAuthCustomized] = useState(false)
 
   const [venueVlans, setVenueVlans] = useState([] as Vlan[])
   const [venueTaggedVlans, setVenueTaggedVlans] = useState('' as string)
@@ -473,7 +474,7 @@ export function EditPortDrawer ({
 
     const { tagged, untagged, voice } = getPortVenueVlans(vlansByVenue, selectedPorts?.[0])
     const aggregatedData = aggregatePortsDataForFlexAuth([portSetting])
-    // console.log(aggregatedData)
+    // console.log('aggregatedData: ', aggregatedData)
 
     setVenueTaggedVlans(tagged)
     setVenueUntaggedVlan(untagged)
@@ -508,7 +509,9 @@ export function EditPortDrawer ({
     checkIsVoiceVlanInvalid(true, portSetting?.revert)
   }
 
-  const aggregatePortsDataForFlexAuth = (portsSetting: PortSettingModel[]) => {
+  const aggregatePortsDataForFlexAuth = (
+    portsSetting: PortSettingModel[], hasMultipleValue?: string[]
+  ) => {
     return portsSetting.reduce((result, {
       switchMac, taggedVlans = [], untaggedVlan = '', switchLevelAuthDefaultVlan, guestVlan
     }) => {
@@ -527,6 +530,7 @@ export function EditPortDrawer ({
       result.guestVlan[index] = guestVlan
       result.defaultVlan[index] = switchesDefaultVlan
         ?.find((s: SwitchDefaultVlan) => s.switchId === switchMac)?.defaultVlanId
+      result.hasMultipleValue = hasMultipleValue ?? []
 
       return result
     }, {
@@ -534,7 +538,8 @@ export function EditPortDrawer ({
       untaggedVlans: {},
       defaultVlan: {},
       guestVlan: {},
-      switchLevelAuthDefaultVlan: {}
+      switchLevelAuthDefaultVlan: {},
+      hasMultipleValue: []
     } as AggregatePortsData)
   }
 
@@ -572,20 +577,21 @@ export function EditPortDrawer ({
     const hasEqualValueFields = _.xor(allMultipleEditableFields, hasMultipleValueFields)
     const portSetting = _.pick(portsSetting?.[0], [...hasEqualValueFields, 'profileName'])
 
-    const aggregatedData = aggregatePortsDataForFlexAuth(portsSetting)
-    // console.log(aggregatedData)
+    const hasMultipleValue = _.uniq([
+      ...hasMultipleValueFields,
+      ...((!vlansValue.isTagEqual && ['taggedVlans']) || []),
+      ...((!vlansValue.isUntagEqual && ['untaggedVlan']) || []),
+      ...((!vlansValue.isVoiceVlanEqual && ['voiceVlan']) || [])
+    ])
+    const aggregatedData = aggregatePortsDataForFlexAuth(portsSetting, hasMultipleValue)
+    // console.log('aggregatedData: ', aggregatedData)
 
     setDisablePoeCapability(poeCapabilityDisabled)
     setDisableCyclePoeCapability(cyclePoeMultiPortsDisabled)
     setCyclePoeEnable(portsSetting?.filter(s => s?.poeEnable)?.length > 0)
     setAggregatePortsData(aggregatedData)
 
-    setHasMultipleValue(_.uniq([
-      ...hasMultipleValueFields,
-      ...((!vlansValue.isTagEqual && ['taggedVlans']) || []),
-      ...((!vlansValue.isUntagEqual && ['untaggedVlan']) || []),
-      ...((!vlansValue.isVoiceVlanEqual && ['voiceVlan']) || [])
-    ]))
+    setHasMultipleValue(hasMultipleValue)
     setInitPortVlans(vlansValue?.initPortVlans)
     setPortsProfileVlans(vlansValue?.portsProfileVlans as unknown as ProfileVlans)
     setDisableSaveButton(true)
@@ -1003,16 +1009,24 @@ export function EditPortDrawer ({
 
     const checkUntaggedPortMismatch = (id: string) => { //TODO: check untaggedVlansObj
       // eslint-disable-next-line max-len
-      const defaultVlan = aggregatePortsData.defaultVlan[id]
+      const defaultVlan = aggregatePortsData?.defaultVlan?.[id]
       // eslint-disable-next-line max-len
       // const isUntaggedNotMatchDefaultVlan = untaggedVlan && (Number(untaggedVlan) !== Number(defaultVlan))
       const isVlanMismatchDefaultVlan = (vlan: string) => Number(vlan) !== Number(defaultVlan)
 
       // TODO: hasMultipleValue
-      if (!hasMultipleValue.includes('untaggedVlan') || !groupedUntaggedVlansBySwitch[id]?.length) {
+      const isOriginalMultiple = aggregatePortsData?.hasMultipleValue?.includes('untaggedVlan')
+      const hasMultipleUntaggedValue = isOriginalMultiple
+      // eslint-disable-next-line max-len
+        ? !portVlansCheckbox || !(portVlansCheckbox && !shouldRenderMultipleText('untaggedVlan', true))
+        : (!hasMultipleValue.includes('untaggedVlan') || !groupedUntaggedVlansBySwitch[id]?.length)
+
+      if (hasMultipleUntaggedValue) {
+        return groupedUntaggedVlansBySwitch?.[id]?.some(isVlanMismatchDefaultVlan)
+      } else if (!hasMultipleValue.includes('untaggedVlan')) {
         return untaggedVlan && isVlanMismatchDefaultVlan(untaggedVlan)
       }
-      return groupedUntaggedVlansBySwitch[id]?.some(isVlanMismatchDefaultVlan)
+      return groupedUntaggedVlansBySwitch?.[id]?.some(isVlanMismatchDefaultVlan)
     }
 
     const isUntaggedPort = isMultipleEdit
@@ -1188,22 +1202,58 @@ export function EditPortDrawer ({
                         })}
                       >{ $t({ defaultMessage: 'Go to Edit Switch page' })}</Button>
                       }
-                      { flexibleAuthenticationEnabled &&
+                      { flexibleAuthenticationEnabled && <>
+                        <Form.Item
+                          name='isFlexibleAuthCustomized'
+                          hidden
+                          initialValue={false}
+                          children={<Switch />}
+                        />
                         <Button
                           type='link'
                           size='small'
-                          onClick={() => setImportDrawerVisible(true)}
+                          onClick={() => {
+                            setIsFlexibleAuthCustomized(true)
+                            form.setFieldValue('isFlexibleAuthCustomized', true)
+                          }}
                         >{
-                            $t({ defaultMessage: 'Import Flexible Authentication' })
+                            $t({ defaultMessage: 'Customize' })
                           }</Button>
-                      }
+                      </>}
                     </Space>
                   </Tooltip>
               }
             />,
             'flexibleAuthenticationEnabled', $t({ defaultMessage: 'Flexible Authentication' }), true
           )}
+
           { flexibleAuthenticationEnabled &&
+          <Space style={{ display: 'block', marginLeft: isMultipleEdit ? '24px' : '0' }}>
+            { getFieldTemplate(
+              <Form.Item
+                {...getFormItemLayout(isMultipleEdit)}
+                name='authenticationProfileId'
+                label={<>
+                  {$t({ defaultMessage: 'Profile' })}
+                  <Tooltip.Question
+                    title={$t(EditPortMessages.TAGGED_VLAN_VOICE_TOOLTIP)}
+                  />
+                </>}
+                initialValue={AuthenticationType._802_1X}
+                children={shouldRenderMultipleText('authenticationProfileId')
+                  ? <MultipleText />
+                  : <Select
+                    options={[]} // TODO
+                    disabled={getFieldDisabled('authenticationProfileId')}
+                    // eslint-disable-next-line max-len
+                    onChange={(value) => handleAuthFieldChange('authenticationProfileId', value, form)}
+                  />}
+              />,
+              'authenticationProfileId', $t({ defaultMessage: 'Profile' })
+            )}
+          </Space>}
+
+          { isFlexibleAuthCustomized &&
           <Space style={{ display: 'block', marginLeft: isMultipleEdit ? '24px' : '0' }}>
             { getFieldTemplate(
               <Form.Item
@@ -2061,16 +2111,18 @@ export function EditPortDrawer ({
         vlansOptions={vlansOptions}
       />}
 
-      { importDrawerVisible && <Drawer
-        title={$t({ defaultMessage: 'Import Flexible Authentication' })}
-        visible={importDrawerVisible}
-        onClose={() => setImportDrawerVisible(false)}
+
+      {/* { // TODO: enhance ^_^?
+        addDrawerVisible && <Drawer
+        title={$t({ defaultMessage: 'Add Profile' })}
+        visible={addDrawerVisible}
+        onClose={() => setAddDrawerVisible(false)}
         width={580}
         children={<>
         </>
         }
       />
-      }
+      } */}
 
     </Loader>}
     width={'590px'}
