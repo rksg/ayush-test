@@ -45,7 +45,9 @@ function R1FeatureListDrawer (
           enable: true + ''
         }
       }).unwrap()
-      await updateBetaFeatures({ params, payload: featureList as FeatureAPIResults[] }).unwrap()
+      // only send feature that is disabled
+      const payloadList = featureList.filter((feature => feature.isEnabled === false))
+      await updateBetaFeatures({ params, payload: payloadList as FeatureAPIResults[] }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
