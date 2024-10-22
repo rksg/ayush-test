@@ -57,16 +57,17 @@ import {
   useTableQuery,
   EntitlementDeviceType,
   EntitlementDeviceSubType,
-  whitespaceOnlyRegExp
+  whitespaceOnlyRegExp,
+  PrivilegeGroup
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { RolesEnum }                             from '@acx-ui/types'
-import { PrivilegeGroup, useUserProfileContext } from '@acx-ui/user'
-import { AccountType, noDataDisplay  }           from '@acx-ui/utils'
+import { RolesEnum }                   from '@acx-ui/types'
+import { useUserProfileContext }       from '@acx-ui/user'
+import { AccountType, noDataDisplay  } from '@acx-ui/utils'
 
 import { AssignEcDrawer }            from '../AssignEcDrawer'
 import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'

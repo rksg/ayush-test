@@ -32,7 +32,7 @@ interface Venue {
 }
 
 export interface PrivilegeGroup {
-  id: string,
+  id?: string,
   name?: string,
   type?: string,
   description?: string,

@@ -41,15 +41,15 @@ import {
   MspRecCustomer,
   MspRecData
 } from '@acx-ui/msp/utils'
-import { roleDisplayText, useTableQuery } from '@acx-ui/rc/utils'
+import { PrivilegeGroup, roleDisplayText, useTableQuery } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { RolesEnum }                             from '@acx-ui/types'
-import { PrivilegeGroup, useUserProfileContext } from '@acx-ui/user'
-import { AccountType, noDataDisplay }            from '@acx-ui/utils'
+import { RolesEnum }                  from '@acx-ui/types'
+import { useUserProfileContext }      from '@acx-ui/user'
+import { AccountType, noDataDisplay } from '@acx-ui/utils'
 
 import { SelectRecCustomerDrawer } from './SelectRecCustomer'
 import * as UI                     from './styledComponents'
