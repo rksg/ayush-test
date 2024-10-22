@@ -58,7 +58,7 @@ export const edgeMdnsProxyApi = baseEdgeMdnsProxyApi.injectEndpoints({
       },
       providesTags: [{ type: 'EdgeMdnsProxy', id: 'DETAIL' }]
     }),
-    addEdgeMdnsProxy: build.mutation<EdgeMdnsProxySetting, RequestPayload>({
+    addEdgeMdnsProxy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(EdgeMdnsProxyUrls.addEdgeMdnsProxy, params)
         return {

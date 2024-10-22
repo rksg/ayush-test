@@ -130,6 +130,7 @@ export default function MdnsProxyTable () {
 function useColumns () {
   const { $t } = useIntl()
   const params = useParams()
+
   const emptyVenues: { key: string, value: string }[] = []
   const { venueNameMap } = useGetVenuesQuery({
     params: { tenantId: params.tenantId },

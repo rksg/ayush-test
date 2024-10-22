@@ -29,7 +29,8 @@ export function convertApiPayloadToMdnsProxyFormData (response: MdnsProxyGetApiR
   const rules = (response.rules ?? []).map((rule: MdnsProxyForwardingRule) => {
     return {
       ...rule,
-      id: uuidv4()
+      id: uuidv4(),
+      ruleIndex: uuidv4()
     }
   })
 

@@ -4,6 +4,7 @@ import { Col, Form, Row, Space } from 'antd'
 import { useIntl }               from 'react-intl'
 
 import { StepsFormLegacy, Subtitle }     from '@acx-ui/components'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import { MdnsProxyForwardingRulesTable } from '@acx-ui/rc/components'
 import { MdnsProxyFeatureTypeEnum }      from '@acx-ui/rc/utils'
 
@@ -13,6 +14,8 @@ import { MdnsProxySummaryVenues } from './MdnsProxySummaryVenue'
 
 export function MdnsProxySummary () {
   const { currentData } = useContext(MdnsProxyFormContext)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+
   const totalApCount = (currentData.scope ?? []).reduce((accumulator, currentValue) => {
     return accumulator + currentValue.aps.length
   }, 0)

@@ -173,7 +173,7 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
         columns={columns}
         dataSource={rules}
         type={tableType}
-        rowKey={rowKey || 'id'}
+        rowKey={rowKey || 'ruleIndex'}
         actions={readonly ? [] : filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
         rowSelection={readonly ? false :
