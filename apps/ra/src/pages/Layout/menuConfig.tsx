@@ -62,6 +62,7 @@ export function useMenuConfig () {
     useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
   ].some(Boolean)
   const isIntentAIEnabled = useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_TOGGLE)
+  const isJwtEnabled = useIsSplitOn(Features.RUCKUS_AI_JWT_TOGGLE)
   const aiAnalyticsMenu = [{
     permission: 'READ_INCIDENTS',
     uri: '/incidents',
@@ -106,7 +107,8 @@ export function useMenuConfig () {
       children: [{
         permission: 'READ_HEALTH',
         uri: isSwitchHealthEnabled ? '/health/overview' : '/health',
-        label: $t({ defaultMessage: 'Health' })
+        label: $t({ defaultMessage: 'Health' }),
+        isActiveCheck: new RegExp('^/health')
       }, {
         permission: 'READ_SERVICE_VALIDATION',
         uri: '/serviceValidation',
@@ -262,7 +264,11 @@ export function useMenuConfig () {
         uri: legacyLink('/analytics/admin/schedules', search),
         label: $t({ defaultMessage: 'Schedules' }),
         openNewTab: true
-      }, {
+      }, isJwtEnabled ? {
+        uri: '/admin/developers/applicationTokens',
+        label: $t({ defaultMessage: 'Developers' }),
+        isActiveCheck: new RegExp('^/admin/developers')
+      } : {
         permission: 'READ_WEBHOOKS',
         uri: '/admin/webhooks',
         label: $t({ defaultMessage: 'Webhooks' })

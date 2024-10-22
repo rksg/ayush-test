@@ -9,17 +9,17 @@ import {
   Modal
 } from '@acx-ui/components'
 import {
+  getApSequence,
+  getVersionLabel,
+  isBetaFirmware
+} from '@acx-ui/rc/components'
+import {
   EolApFirmware,
   FirmwareVenue,
   FirmwareVersion,
   UpdateNowRequest
 } from '@acx-ui/rc/utils'
 
-import {
-  getApSequence,
-  getVersionLabel,
-  isBetaFirmware
-} from '../../FirmwareUtils'
 
 import * as UI from './styledComponents'
 

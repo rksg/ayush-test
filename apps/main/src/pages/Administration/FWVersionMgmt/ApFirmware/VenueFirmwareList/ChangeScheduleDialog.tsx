@@ -4,7 +4,10 @@ import { DatePicker, Radio, RadioChangeEvent, Space, Typography } from 'antd'
 import dayjs                                                      from 'dayjs'
 import { useIntl }                                                from 'react-intl'
 
-
+import {
+  getVersionLabel,
+  isBetaFirmware
+} from '@acx-ui/rc/components'
 import {
   AVAILABLE_SLOTS,
   FirmwareType,
@@ -12,10 +15,6 @@ import {
   FirmwareVersion,
   UpdateScheduleRequest
 } from '@acx-ui/rc/utils'
-
-import {
-  getVersionLabel, isBetaFirmware
-} from '../../FirmwareUtils'
 
 import { filteredOtherActiveVersions, getDefaultActiveVersion } from './AdvancedUpdateNowDialog'
 import * as UI                                                  from './styledComponents'

@@ -301,6 +301,20 @@ export const mockLanInterfaces = {
   ]
 }
 
+export const mockedLagStatus = {} as EdgeNodesPortsInfo
+mockEdgeClusterList.data[0].edgeList.forEach((item) => {
+  const lagInfo = mockLanInterfaces[item.serialNumber]
+    .filter(port => {
+      return port.portName.startsWith('lag')
+    })
+    .map((lag, idx) => {
+      lag.id = idx + ''
+      return lag
+    }) as EdgePortInfo[]
+
+  mockedLagStatus[item.serialNumber] = lagInfo
+})
+
 export const mockClusterInterfaceOptionData = {
   [mockEdgeClusterList.data[0].edgeList[0].serialNumber]: [
     {
