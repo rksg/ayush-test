@@ -1,0 +1,97 @@
+import { useEffect, useState } from 'react'
+
+import _           from 'lodash'
+import { useIntl } from 'react-intl'
+
+import { NoData, Tabs, Tooltip } from '@acx-ui/components'
+import {
+  EdgePort,
+  EdgePortInfo
+} from '@acx-ui/rc/utils'
+
+import { LagSubInterfaceTable }  from './LagSubInterfaceTable'
+import { PortSubInterfaceTable } from './PortSubInterfaceTable'
+
+const findPortIdByIfName = (portData: EdgePort[], ifName: string) => {
+  return _.find(portData, { interfaceName: ifName })?.id ?? ''
+}
+
+export interface SubInterfaceSettingsFormProps {
+  serialNumber: string
+  ports: EdgePort[],
+  portStatus: EdgePortInfo[]
+  lagStatus: EdgePortInfo[]
+}
+
+export const SubInterfaceSettingsForm = (props: SubInterfaceSettingsFormProps) => {
+  const { serialNumber, ports, portStatus, lagStatus } = props
+  const { $t } = useIntl()
+  const [currentTab, setCurrentTab] = useState('')
+
+  const handleTabChange = (activeKey: string) => {
+    setCurrentTab(activeKey)
+  }
+
+  useEffect(() => {
+    const unLagPortIdx = portStatus.findIndex(item => !item.isLagMember) ?? -1
+    if (unLagPortIdx > -1) {
+      const portId = findPortIdByIfName(ports, portStatus[unLagPortIdx].portName)
+      setCurrentTab(`port_${portId}`)
+    } else {
+      setCurrentTab(`lag_${lagStatus?.[0]?.id}`)
+    }
+  }, [ports, portStatus, lagStatus])
+
+  return ports?.length ?
+    <Tabs
+      type='third'
+      activeKey={currentTab}
+      onChange={handleTabChange}
+    >
+      {
+        portStatus?.map((item) => {
+          const portId = findPortIdByIfName(ports, item.portName)
+
+          return <Tabs.TabPane
+            tab={
+              item.isLagMember
+                ? <Tooltip title={$t({ defaultMessage: `This port is a LAG member 
+                      and is not available for adding sub-interfaces.` })}>
+                  {_.capitalize(item.portName)}
+                </Tooltip>
+                : _.capitalize(item.portName)
+            }
+            key={`port_${portId}`}
+            children={
+              <PortSubInterfaceTable
+                serialNumber={serialNumber}
+                currentTab={currentTab}
+                ip={item.ip!}
+                mac={item.mac}
+                portId={portId}
+              />
+            }
+            disabled={item.isLagMember}
+          />
+        })
+      }
+      {
+        lagStatus?.map(item =>
+          <Tabs.TabPane
+            tab={$t({ defaultMessage: 'LAG {id}' }, { id: item.id })}
+            key={'lag_' + item.id}
+            children={
+              <LagSubInterfaceTable
+                serialNumber={serialNumber}
+                currentTab={currentTab}
+                ip={item.ip ?? ''}
+                mac={item.mac ?? ''}
+                lagId={item.id}
+              />
+            }
+          />
+        )
+      }
+    </Tabs> :
+    <NoData />
+}
