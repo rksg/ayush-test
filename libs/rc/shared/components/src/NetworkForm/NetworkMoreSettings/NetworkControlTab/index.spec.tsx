@@ -287,4 +287,30 @@ describe('Network More settings - Network Control Tab', () => {
     await userEvent.click(downloadLimitCheckbox)
 
   })
+
+  it('user can see ARC option when FF enabled', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <Form>
+          <NetworkControlTab/>
+        </Form>
+      </Provider>,
+      { route: { params } })
+
+    expect(screen.getByText(/Application Recognition & Control/i)).toBeInTheDocument()
+  })
+
+  it('user cannot see ARC option when FF disabled', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <Form>
+          <NetworkControlTab/>
+        </Form>
+      </Provider>,
+      { route: { params } })
+
+    expect(screen.queryByText(/Application Recognition & Control/i)).not.toBeInTheDocument()
+  })
 })
