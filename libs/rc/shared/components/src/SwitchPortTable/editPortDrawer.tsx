@@ -51,11 +51,11 @@ import {
   Vlan,
   VlanModalType
 } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { store }                                 from '@acx-ui/store'
-import { SwitchScopes }                          from '@acx-ui/types'
-import { hasPermission }                         from '@acx-ui/user'
-import { getIntl }                               from '@acx-ui/utils'
+import { useParams }     from '@acx-ui/react-router-dom'
+import { store }         from '@acx-ui/store'
+import { SwitchScopes }  from '@acx-ui/types'
+import { hasPermission } from '@acx-ui/user'
+import { getIntl }       from '@acx-ui/utils'
 
 import {
   AuthenticationType,
@@ -70,8 +70,8 @@ import {
 } from '../FlexibleAuthentication'
 import { handleAuthFieldChange } from '../FlexibleAuthentication'
 
-import { ACLSettingDrawer }       from './ACLSettingDrawer'
-import { EditLldpModal }          from './editLldpModal'
+import { ACLSettingDrawer } from './ACLSettingDrawer'
+import { EditLldpModal }    from './editLldpModal'
 import {
   checkVlanOptions,
   checkLldpListEqual,
@@ -84,19 +84,20 @@ import {
   getFormItemLayout,
   getInitPortVlans,
   getMultipleVlanValue,
+  getMultiPoeCapabilityDisabled,
   getOverrideFields,
   getPoeCapabilityDisabled,
+  getPoeClass,
   getPortEditStatus,
   getPortSpeed,
+  getPortVenueVlans,
   getToggleClassName,
   getVlanOptions,
   sortOptions,
+  renderAuthProfile,
   PortVlan,
   MultipleText,
-  getPoeClass,
-  updateSwitchVlans,
-  getPortVenueVlans,
-  getMultiPoeCapabilityDisabled
+  updateSwitchVlans
 } from './editPortDrawer.utils'
 import { LldpQOSTable }    from './lldpQOSTable'
 import { SelectVlanModal } from './selectVlanModal'
@@ -173,6 +174,8 @@ export function EditPortDrawer ({
     egressAclCheckbox,
     profileName,
     // Flex auth
+    authenticationProfileId,
+    isFlexibleAuthCustomized,
     flexibleAuthenticationEnabled,
     flexibleAuthenticationEnabledCheckbox,
     authenticationType,
@@ -181,10 +184,6 @@ export function EditPortDrawer ({
     authFailAction,
     authTimeoutAction
   } = (useWatch([], form) ?? {})
-
-  const navigate = useNavigate()
-  const basePath = useTenantLink('/devices/switch')
-  // const linkToMigration = useTenantLink('/devices/switch/c0:c5:20:aa:32:79/FEK3224R0AG/stack/edit')
 
   const { tenantId, venueId, serialNumber } = useParams()
   const [ loading, setLoading ] = useState<boolean>(true)
@@ -234,7 +233,7 @@ export function EditPortDrawer ({
   //Flex auth
   const [aggregatePortsData, setAggregatePortsData] = useState({} as AggregatePortsData)
   const [isFirmwareAbove10010f, setIsFirmwareAbove10010f] = useState(false)
-  const [isFlexibleAuthCustomized, setIsFlexibleAuthCustomized] = useState(false)
+  const [isAppliedAuthProfile, setIsAppliedAuthProfile] = useState(false)
 
   const [venueVlans, setVenueVlans] = useState([] as Vlan[])
   const [venueTaggedVlans, setVenueTaggedVlans] = useState('' as string)
@@ -1042,10 +1041,10 @@ export function EditPortDrawer ({
     return ''
   }
 
-  const showLinkToSwitchPage = () => {
-    const isSwitchLevelAuthEnabled = getFlexAuthButtonStatus() === 'SWITCH_LEVEL_AUTH_NOT_ENABLED'
-    return (!isMultipleEdit || switches?.length === 1) && isSwitchLevelAuthEnabled
-  }
+  // const showLinkToSwitchPage = () => {
+  //   const isSwitchLevelAuthEnabled = getFlexAuthButtonStatus() === 'SWITCH_LEVEL_AUTH_NOT_ENABLED'
+  //   return (!isMultipleEdit || switches?.length === 1) && isSwitchLevelAuthEnabled
+  // }
 
   const getFlexAuthStatus = () => { //TODO
     const isEnabled
@@ -1190,9 +1189,8 @@ export function EditPortDrawer ({
                             }
                           }}
                         />
-
                       </Form.Item>
-                      { showLinkToSwitchPage() && <Button
+                      {/* { showLinkToSwitchPage() && <Button
                         type='link'
                         size='small'
                         onClick={() => navigate({ //TODO
@@ -1201,7 +1199,7 @@ export function EditPortDrawer ({
                           pathname: `${basePath.pathname}/${switchDetail?.id}/${switchDetail?.serialNumber}${ switchDetail?.isStack ? '/stack' : 'switch' }/edit`
                         })}
                       >{ $t({ defaultMessage: 'Go to Edit Switch page' })}</Button>
-                      }
+                      } */}
                       { flexibleAuthenticationEnabled && <>
                         <Form.Item
                           name='isFlexibleAuthCustomized'
@@ -1213,11 +1211,20 @@ export function EditPortDrawer ({
                           type='link'
                           size='small'
                           onClick={() => {
-                            setIsFlexibleAuthCustomized(true)
-                            form.setFieldValue('isFlexibleAuthCustomized', true)
+                            const toggleCustomized = !isFlexibleAuthCustomized //
+                            form.setFieldValue('isFlexibleAuthCustomized', toggleCustomized)
+
+                            if (toggleCustomized && !isMultipleEdit && authenticationProfileId) {
+                              form.setFieldsValue({ // TODO
+                                ...form.getFieldsValue(),
+                                authenticationType: 'macauth'
+                              })
+                            }
                           }}
                         >{
-                            $t({ defaultMessage: 'Customize' })
+                            isFlexibleAuthCustomized
+                              ? $t({ defaultMessage: 'Use Profile Settings' })
+                              : $t({ defaultMessage: 'Customize' })
                           }</Button>
                       </>}
                     </Space>
@@ -1227,7 +1234,7 @@ export function EditPortDrawer ({
             'flexibleAuthenticationEnabled', $t({ defaultMessage: 'Flexible Authentication' }), true
           )}
 
-          { flexibleAuthenticationEnabled &&
+          { flexibleAuthenticationEnabled && !isFlexibleAuthCustomized &&
           <Space style={{ display: 'block', marginLeft: isMultipleEdit ? '24px' : '0' }}>
             { getFieldTemplate(
               <Form.Item
@@ -1236,21 +1243,29 @@ export function EditPortDrawer ({
                 label={<>
                   {$t({ defaultMessage: 'Profile' })}
                   <Tooltip.Question
-                    title={$t(EditPortMessages.TAGGED_VLAN_VOICE_TOOLTIP)}
+                    title={$t(EditPortMessages.GUIDE_TO_AUTHENTICATION)}
                   />
                 </>}
-                initialValue={AuthenticationType._802_1X}
+                // style={{ marginBottom: '0' }}
                 children={shouldRenderMultipleText('authenticationProfileId')
                   ? <MultipleText />
                   : <Select
-                    options={[]} // TODO
+                    placeholder={$t({ defaultMessage: 'Select...' })}
+                    options={[ // TODO
+                      { label: 'Profile 1', value: 'p1' },
+                      { label: 'Profile 2', value: 'p2' }
+                    ]}
                     disabled={getFieldDisabled('authenticationProfileId')}
-                    // eslint-disable-next-line max-len
-                    onChange={(value) => handleAuthFieldChange('authenticationProfileId', value, form)}
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    onChange={(value) => {
+                      //TODO
+                      setIsAppliedAuthProfile(true)
+                    }}
                   />}
               />,
               'authenticationProfileId', $t({ defaultMessage: 'Profile' })
             )}
+            { isAppliedAuthProfile && renderAuthProfile() }
           </Space>}
 
           { isFlexibleAuthCustomized &&

@@ -272,6 +272,9 @@ export const EditPortMessages = {
   }),
   SWITCH_LEVEL_AUTH_NOT_ENABLED: defineMessage({
     defaultMessage: 'Before enable Flexible Authentication on port, please go to Edit Switch page to apply global level\'s Auth Default VLAN.'
+  }),
+  GUIDE_TO_AUTHENTICATION: defineMessage({
+    defaultMessage: 'Go to "Network Control --> Policies and profiles --> Authentication"'
   })
 }
 

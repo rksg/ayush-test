@@ -4,7 +4,8 @@ import _                       from 'lodash'
 import { defineMessage }       from 'react-intl'
 
 import {
-  cssStr
+  cssStr,
+  Descriptions
 } from '@acx-ui/components'
 import { switchApi } from '@acx-ui/rc/services'
 import {
@@ -19,9 +20,10 @@ import {
   PortSettingModel,
   Vlan
 } from '@acx-ui/rc/utils'
-import { store }   from '@acx-ui/store'
-import { getIntl } from '@acx-ui/utils'
+import { store }                  from '@acx-ui/store'
+import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
+import * as UI from './styledComponents'
 export interface PortVlan {
   tagged: string[]
   untagged: string
@@ -336,8 +338,6 @@ export const getPoeClass = (selectedPorts: SwitchPortViewModel[]) => {
     : (support5to8PoeClass ? poeClassOptions : poeClassOptions.splice(0,6))
 }
 
-
-
 export const isPortOverride = (portSetting: PortSettingModel) => {
   if (portSetting.revert === false) {
     if (portSetting.hasOwnProperty('taggedVlans') || portSetting.hasOwnProperty('untaggedVlan')) {
@@ -486,4 +486,36 @@ export const getMultipleVlanValue = ( // TODO: rewrite
     isVoiceVlanEqual: voiceVlanEqual,
     portsProfileVlans: portsProfileVlans
   }
+}
+
+export const renderAuthProfile = (data?: SwitchPortViewModel) => {
+  const { $t } = getIntl()
+  return <UI.Card type='solid-bg'>
+    <UI.Descriptions layout='vertical' colon={false} labelWidthPercent={100}>
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Type' })}
+        children={data?.authenticationType ?? noDataDisplay} />
+      <Descriptions.Item
+        label={$t({ defaultMessage: '802.1x Port Control' })}
+        children={'Auto'} />
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Auth Default VLAN' })}
+        children={'5'} />
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Fail Action' })}
+        children={'Restricted VLAN'} />
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Restricted VLAN' })}
+        children={'8'} />
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Timeout Action' })}
+        children={'Critical VLAN'} />
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Critical VLAN' })}
+        children={'9'} />
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Guest VLAN' })}
+        children={'200'} />
+    </UI.Descriptions>
+  </UI.Card>
 }
