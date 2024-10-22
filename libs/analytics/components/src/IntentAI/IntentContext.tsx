@@ -55,7 +55,11 @@ export function createIntentContextProvider (
     if (!spec) return null // no matching spec
     if (query.isSuccess && !query.data) return null // 404
 
-    const intent = query.data
+    const isDetectError = query.isError && !!_.pick(query.error, ['data'])
+
+    // eslint-disable-next-line max-len
+    const intent = isDetectError ? (_.pick(query.error, ['data']) as { data: Intent }).data : query.data
+
     const context: IIntentContext = {
       intent: intent!,
       configuration: spec.configuration,
@@ -64,7 +68,7 @@ export function createIntentContextProvider (
       state: (intent && intentState(intent))!
     }
 
-    return <Loader states={[query]}>
+    return <Loader states={[isDetectError? _.omit(query, ['error']) : query]}>
       <IntentContext.Provider
         value={context}
         children={React.createElement(spec[of])}

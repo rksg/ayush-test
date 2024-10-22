@@ -11,6 +11,7 @@ import { mocked as mockedCBgScanTimer }                from './AIOperations/__te
 import { mocked as mockedCDfschannelsDisable }         from './AIOperations/__tests__/mockedCDfschannelsDisable'
 import { mocked as mockedCDfschannelsEnable }          from './AIOperations/__tests__/mockedCDfschannelsEnable'
 import { mocked as mockedCTxpowerSame }                from './AIOperations/__tests__/mockedCTxpowerSame'
+import {  mockedEtlFail }                              from './AIOperations/__tests__/mockedEtlFail'
 import { mocked as mockedIZoneFirmwareUpgrade }        from './AIOperations/__tests__/mockedIZoneFirmwareUpgrade'
 import { mockedIntentEcoFlex }                         from './EcoFlex/__tests__/fixtures'
 import { mockedIntentEquiFlex }                        from './EquiFlex/__tests__/fixtures'
@@ -179,6 +180,13 @@ describe('IntentAIDetails', () => {
     it('c-bandbalancing-proactive', async () => {
       const intent = mockedCBandbalancingProactive
       mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
+      await doTest([intent.code], intent)
+    })
+
+    it('c-bandbalancing-enable (druid error)', async () => {
+      const intent = mockedCBandbalancingProactive
+      // eslint-disable-next-line max-len
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', { error: { message: 'error' }, data: { intent: mockedEtlFail } })
       await doTest([intent.code], intent)
     })
   })
