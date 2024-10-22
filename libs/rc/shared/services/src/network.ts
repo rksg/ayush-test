@@ -176,7 +176,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         const networkListReq = createHttpRequest(CommonRbacUrlsInfo.getWifiNetworksList, params, apiCustomHeader)
         const networkListQuery = await fetchWithBQ({ ...networkListReq, body: JSON.stringify(payload) })
         const networkList = networkListQuery.data as TableResult<WifiNetwork>
-        const networkIds = networkList?.data?.filter(n => (n.apSerialNumbers && n.apSerialNumbers.length > 0)).map(n => n.id) || []
+        const networkIds = networkList?.data?.filter(n => n.apCount).map(n => n.id) || []
         const networkIdsToIncompatible:{ [key:string]: number } = {}
         try {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -220,7 +220,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         const networkListReq = createHttpRequest(CommonRbacUrlsInfo.getWifiNetworksList, params, apiCustomHeader)
         const networkListQuery = await fetchWithBQ({ ...networkListReq, body: JSON.stringify(payload) })
         const networkList = networkListQuery.data as TableResult<WifiNetwork>
-        const networkIds = networkList?.data?.filter(n => (n.apSerialNumbers && n.apSerialNumbers.length > 0)).map(n => n.id) || []
+        const networkIds = networkList?.data?.filter(n => n.apCount).map(n => n.id) || []
         const networkIdsToIncompatible:{ [key:string]: number } = {}
         try {
           const apCompatibilitiesReq = {
@@ -673,11 +673,6 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
             'UpdateNetworkDeep',
-            'ActivateWifiNetworkOnVenue',
-            'ActivateWifiNetworkTemplateOnVenue',
-            'DeactivateWifiNetworkOnVenue',
-            'DeactivateWifiNetworkTemplateOnVenue',
-            'UpdateVenueWifiNetworkSettings',
             'DeactivateApGroupOnWifiNetwork',
             'ActivateApGroupOnWifiNetwork'
           ], () => {
@@ -740,11 +735,6 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
             'UpdateNetworkDeep',
-            'ActivateWifiNetworkOnVenue',
-            'ActivateWifiNetworkTemplateOnVenue',
-            'DeactivateWifiNetworkOnVenue',
-            'DeactivateWifiNetworkTemplateOnVenue',
-            'UpdateVenueWifiNetworkSettings',
             'DeactivateApGroupOnWifiNetwork',
             'ActivateApGroupOnWifiNetwork'
           ], () => {
@@ -874,13 +864,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'UpdateNetworkDeep',
-            'ActivateWifiNetworkOnVenue',
-            'ActivateWifiNetworkTemplateOnVenue',
-            'DeactivateWifiNetworkOnVenue',
-            'DeactivateWifiNetworkTemplateOnVenue',
-            'UpdateVenueWifiNetworkSettings',
-            'UpdateVenueWifiNetworkTemplateSettings'
+            'UpdateNetworkDeep'
           ], () => {
             api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
           })
@@ -939,13 +923,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'UpdateNetworkDeep',
-            'ActivateWifiNetworkOnVenue',
-            'ActivateWifiNetworkTemplateOnVenue',
-            'DeactivateWifiNetworkOnVenue',
-            'DeactivateWifiNetworkTemplateOnVenue',
-            'UpdateVenueWifiNetworkSettings',
-            'UpdateVenueWifiNetworkTemplateSettings'
+            'UpdateNetworkDeep'
           ], () => {
             api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
           })
