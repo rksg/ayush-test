@@ -50,11 +50,11 @@ describe('AAAForm', () => {
       ),
       rest.post(
         CertificateUrls.getCAs.url,
-        (_, res, ctx) => res(ctx.json(aaaTemplateList))
+        (_, res, ctx) => res(ctx.json({}))
       ),
       rest.post(
         CertificateUrls.getCertificateList.url,
-        (_, res, ctx) => res(ctx.json(aaaTemplateList))
+        (_, res, ctx) => res(ctx.json({}))
       )
     )
   })

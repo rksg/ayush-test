@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { Form, Select, Space } from 'antd'
 import { DefaultOptionType }   from 'antd/lib/select'
-import { get }                 from 'lodash'
+import { get, isEmpty }        from 'lodash'
 import { useIntl }             from 'react-intl'
 import { useParams }           from 'react-router-dom'
 
@@ -54,6 +54,8 @@ export const AaaInstance = (props: AaaInstanceProps) => {
   const isServicePolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const enableRbac = isTemplate ? isConfigTemplateRbacEnabled : isServicePolicyRbacEnabled
+  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
 
   useEffect(()=>{
     if (aaaListQuery?.data) {
@@ -123,6 +125,7 @@ export const AaaInstance = (props: AaaInstanceProps) => {
               bordered={false}
               value={get(watchedRadius, `${AaaServerOrderEnum.PRIMARY}.sharedSecret`)}
             />}
+            hidden={get(watchedRadius, 'radSecOptions.tlsEnabled')}
           /></>}
         {watchedRadius?.[AaaServerOrderEnum.SECONDARY] && <>
           <Form.Item
@@ -138,8 +141,16 @@ export const AaaInstance = (props: AaaInstanceProps) => {
               bordered={false}
               value={get(watchedRadius, `${AaaServerOrderEnum.SECONDARY}.sharedSecret`)}
             />}
+            hidden={get(watchedRadius, 'radSecOptions.tlsEnabled')}
           />
         </>}
+        {supportRadsec && <Form.Item
+          label={$t({ defaultMessage: 'RadSec' })}
+          children={$t({ defaultMessage: '{tlsEnabled}' }, {
+            tlsEnabled: get(watchedRadius, 'radSecOptions.tlsEnabled') ? 'On' : 'Off'
+          })}
+          hidden={isEmpty(get(watchedRadius, 'id'))}
+        />}
       </div>
       <Form.Item
         name={type}

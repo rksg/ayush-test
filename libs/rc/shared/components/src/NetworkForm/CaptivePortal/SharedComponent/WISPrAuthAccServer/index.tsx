@@ -11,10 +11,10 @@ import _                             from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { useParams }                 from 'react-router-dom'
 
-import { Subtitle, Tooltip, PasswordInput }   from '@acx-ui/components'
-import { get }                                from '@acx-ui/config'
-import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
-import { AaaServerOrderEnum, AuthRadiusEnum } from '@acx-ui/rc/utils'
+import { Subtitle, Tooltip, PasswordInput }                      from '@acx-ui/components'
+import { get }                                                   from '@acx-ui/config'
+import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
+import { AaaServerOrderEnum, AuthRadiusEnum, useConfigTemplate } from '@acx-ui/rc/utils'
 
 import { useLazyGetAAAPolicyInstance, useGetAAAPolicyInstanceList } from '../../../../policies/AAAForm/aaaPolicyQuerySwitcher'
 import { AAAInstance }                                              from '../../../AAAInstance'
@@ -42,6 +42,9 @@ export function WISPrAuthAccServer (props : {
   const authDropdownItems = aaaAuthListQuery?.data.map(m => ({ label: m.name, value: m.id })) ?? []
   const [ aaaList, setAaaList ]= useState(authDropdownItems)
   const context = useContext(WISPrAuthAccContext)
+  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const { isTemplate } = useConfigTemplate()
+  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
 
   const [
     enableAccountingService,
@@ -234,6 +237,7 @@ export function WISPrAuthAccServer (props : {
                 value={_.get(authRadius,
                   `${AaaServerOrderEnum.PRIMARY}.sharedSecret`)}
               />}
+              hidden={_.get(authRadius, 'radSecOptions.tlsEnabled')}
             /></>}
           {authRadius?.[AaaServerOrderEnum.SECONDARY]&&<>
             <Form.Item
@@ -252,8 +256,16 @@ export function WISPrAuthAccServer (props : {
                 value={_.get(authRadius,
                   `${AaaServerOrderEnum.SECONDARY}.sharedSecret`)}
               />}
+              hidden={_.get(authRadius, 'radSecOptions.tlsEnabled')}
             />
           </>}
+          {supportRadsec && <Form.Item
+            label={$t({ defaultMessage: 'RadSec' })}
+            children={$t({ defaultMessage: '{tlsEnabled}' }, {
+              tlsEnabled: _.get(authRadius, 'radSecOptions.tlsEnabled') ? 'On' : 'Off'
+            })}
+            hidden={_.isEmpty(_.get(authRadius, 'id'))}
+          />}
         </div>
         <Form.Item
           name={'authRadius'}

@@ -89,7 +89,7 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
     { payload: defaultPayload }, {
       selectFromResult: ({ data }) => {
         const d = edit ? data?.data
-          : data?.data.filter(item => item.status?.includes(CertificateStatusType.VALID))
+          : data?.data?.filter(item => item.status?.includes(CertificateStatusType.VALID))
         const clientCertOptions = d?.map(item => ({
           label: item.name, value: item.id, status: item.status })) ?? []
         const selectedClientCert = radiusId && d?.filter(item => item.name
@@ -356,7 +356,6 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
             children={$t({ defaultMessage: 'Add CA' })} />
             }
           </Space>
-          {/* <Space> */}
           <Form.Item
             label={$t({ defaultMessage: 'Client Certificate' })}
             name={['radSecOptions', 'clientCertificateId']}
