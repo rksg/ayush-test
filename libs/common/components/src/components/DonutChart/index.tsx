@@ -110,6 +110,13 @@ export const tooltipFormatter = (
   )
 }
 
+// Adding empty data to show center label
+const buildEmptyData = () => [{
+  name: '',
+  value: 0,
+  color: cssStr('--acx-primary-white')
+}]
+
 export function DonutChart ({
   data,
   dataFormatter: _dataFormatter,
@@ -123,14 +130,6 @@ export function DonutChart ({
   const isSmall = props.size === 'small'
   const isCustomEmptyStatus = isEmpty && !!props.value
   const isWhiteTitle = props.titleColor === 'white'
-
-  if (data.length === 0) { // Adding empty data to show center label
-    data.push({
-      name: '',
-      value: 0,
-      color: cssStr('--acx-primary-white')
-    })
-  }
 
   const legendStyles = {
     color: cssStr('--acx-primary-black'),
@@ -290,7 +289,7 @@ export function DonutChart ({
     series: [
       {
         animation: false,
-        data,
+        data: data.length === 0 ? buildEmptyData() : data,
         type: 'pie',
         cursor: props.onClick ? 'pointer' : 'auto',
         center: [props.showLegend && !isEmpty ? '30%' : '50%', '50%'],
