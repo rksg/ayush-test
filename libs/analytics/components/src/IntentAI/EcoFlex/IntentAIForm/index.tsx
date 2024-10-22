@@ -63,6 +63,9 @@ export const IntentAIForm: React.FC = () => {
     : { currency: 'USD', value: 0.131 }
   const excludedHours = buildExcludedHours(preferences?.excludedHours)
   const excludedAPs = preferences?.excludedAPs
+    ?.map(path => path.map(
+      ({ type, ...rest }) => ({ type, ...rest }) // APSelectionInput needs type as first key
+    )) as [NetworkNode[]]
   const enableExcludedAPs = Boolean(excludedAPs?.length)
 
   // always enable = true, because only new, scheduled, active, applyscheduled can open wizard

@@ -149,7 +149,8 @@ describe('IntentAIForm', () => {
       metadata: {
         preferences: {
           averagePowerPrice: { currency: 'SGD', value: 0 },
-          crrmFullOptimization: true
+          crrmFullOptimization: true,
+          excludedAPs: [[{ name: 'name', type: 'zone' }]]
         },
         scheduledAt: '',
         dataEndTime: ''
