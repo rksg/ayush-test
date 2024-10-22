@@ -18,9 +18,9 @@ import {
   topImpactedClientLimit,
   stageNameToCodeMap
 } from './config'
+import { TabKeyType }                                    from './healthPieChart'
 import { useHealthImpactedClientsQuery, ImpactedClient } from './services'
 import { TableHeading }                                  from './styledComponents'
-import { TabKeyType }                                    from './healthPieChart'
 
 export const ImpactedClientsTable = ({
   filters,

@@ -17,8 +17,8 @@ import {
   TopNByPortCongestionResult, TopNByStormPortCountResult,
   showTopNTableResult
 } from './config'
-import { usePieChartDataQuery } from './services'
-import { NoDataWrapper, PieChartTitle }        from './styledComponents'
+import { usePieChartDataQuery }         from './services'
+import { NoDataWrapper, PieChartTitle } from './styledComponents'
 
 type PieChartData = {
   mac: string

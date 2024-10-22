@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 import { Space }                                     from 'antd'
 import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
@@ -77,7 +77,7 @@ export const transformData = (
       }))
       : []
     const osManufacturersData = getTopPieChartData(osManufacturers)
-    
+
     return { nodes, wlans, events, osManufacturers: osManufacturersData }
   }
   return { nodes: [], wlans: [], events: [], osManufacturers: [] }

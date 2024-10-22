@@ -42,6 +42,10 @@ describe('HealthPieChart', () => {
     filter: {}
   }
 
+  const mockSetChartKey = jest.fn()
+  const mockSetPieFilter = jest.fn()
+  const mockSetEventCode = jest.fn()
+
   it('should render correctly for many connectionFailures', async () => {
     mockGraphqlQuery(dataApiURL, 'Network', { data: mockConnectionFailureResponse })
     const { asFragment } = render(
@@ -53,6 +57,11 @@ describe('HealthPieChart', () => {
             queryType='connectionFailure'
             selectedStage='Authentication'
             valueFormatter={formatter('durationFormat')}
+            pieFilter=''
+            setPieFilter={mockSetPieFilter}
+            chartKey='nodes'
+            setChartKey={mockSetChartKey}
+            setEventCode={mockSetEventCode}
           />,
         </div>
       </Provider>,
@@ -87,6 +96,11 @@ describe('HealthPieChart', () => {
             queryType='ttc'
             selectedStage='Authentication'
             valueFormatter={formatter('countFormat')}
+            pieFilter=''
+            setPieFilter={mockSetPieFilter}
+            chartKey='nodes'
+            setChartKey={mockSetChartKey}
+            setEventCode={mockSetEventCode}
           />,
         </div>
       </Provider>,
@@ -120,6 +134,11 @@ describe('HealthPieChart', () => {
             queryType='ttc'
             selectedStage='Authentication'
             valueFormatter={formatter('countFormat')}
+            pieFilter=''
+            setPieFilter={mockSetPieFilter}
+            chartKey='wlans'
+            setChartKey={mockSetChartKey}
+            setEventCode={mockSetEventCode}
           />,
         </div>
       </Provider>,
@@ -150,6 +169,11 @@ describe('HealthPieChart', () => {
             queryType='ttc'
             selectedStage='Authentication'
             valueFormatter={formatter('countFormat')}
+            pieFilter=''
+            setPieFilter={mockSetPieFilter}
+            chartKey=''
+            setChartKey={mockSetChartKey}
+            setEventCode={mockSetEventCode}
           />,
         </div>
       </Provider>,
@@ -179,6 +203,11 @@ describe('HealthPieChart', () => {
             queryType='connectionFailure'
             selectedStage='Authentication'
             valueFormatter={formatter('durationFormat')}
+            pieFilter=''
+            setPieFilter={mockSetPieFilter}
+            chartKey='nodes'
+            setChartKey={mockSetChartKey}
+            setEventCode={mockSetEventCode}
           />,
         </div>
       </Provider>,
@@ -214,6 +243,11 @@ describe('HealthPieChart', () => {
             queryType='connectionFailure'
             selectedStage='Authentication'
             valueFormatter={formatter('countFormat')}
+            pieFilter=''
+            setPieFilter={mockSetPieFilter}
+            chartKey='nodes'
+            setChartKey={mockSetChartKey}
+            setEventCode={mockSetEventCode}
           />,
         </div>
       </Provider>,
@@ -284,6 +318,7 @@ describe('transformData', () => {
     expect(
       transformData(mockConnectionFailureResponse as ImpactedEntities).events[0]
     ).toEqual({
+      code: 'CCD_REASON_PREV_AUTH_NOT_VALID',
       color: '#66B1E8',
       key: 'Previous Auth Invalid',
       name: 'Previous Auth Invalid',
