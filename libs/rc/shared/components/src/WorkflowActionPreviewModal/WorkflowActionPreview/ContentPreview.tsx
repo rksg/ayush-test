@@ -1,6 +1,5 @@
 import React from 'react'
 
-import { PoweredBy, WiFi4EuBanner }                                  from '@acx-ui/icons'
 import { DefaultUIConfiguration, getLogoImageSize, UIConfiguration } from '@acx-ui/rc/utils'
 
 import { StepNavigation } from './StepNavigation'
@@ -29,9 +28,12 @@ export function ContentPreview (props: ContentPreviewProps) {
     <UI.PreviewContainer
       hasBackgroundImage={!!uiConfiguration?.logoImage}
     >
-      {!!uiStyleSchema.wifi4EuNetworkId &&
-        <WiFi4EuBanner />
-      }
+      {!!uiStyleSchema.wifi4EuNetworkId && <img
+        src='/assets/images/portal/WiFi4euBanner.png'
+        alt='WiFi4EU Banner'
+        width='420'
+        height='120'
+      />}
 
       {uiConfiguration?.logoImage &&
         <img
@@ -69,7 +71,12 @@ export function ContentPreview (props: ContentPreviewProps) {
 
       {!uiStyleSchema.disablePoweredBy &&
         <UI.PoweredByContainer>
-          <PoweredBy/>
+          <img
+            src='/assets/images/portal/PoweredBy.png'
+            alt='Powered by RUCKUS'
+            width='126'
+            height='30'
+          />
         </UI.PoweredByContainer>
       }
     </UI.PreviewContainer>

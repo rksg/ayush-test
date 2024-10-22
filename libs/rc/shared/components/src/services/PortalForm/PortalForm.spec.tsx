@@ -11,9 +11,10 @@ import { mockServer, render, screen, waitForElementToBeRemoved, waitFor }       
 import { UserUrlsInfo }                                                                 from '@acx-ui/user'
 
 import { portalResponse, portalTemaplteResponse, createPath } from './__tests__/fixtures'
-import Logo                                                   from './assets/images/portal-demo/RuckusCloud.svg'
 import PortalForm                                             from './PortalForm'
 export const successResponse = { requestId: 'request-id' }
+
+const Logo = '/assets/images/portal/RuckusCloud.png'
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {

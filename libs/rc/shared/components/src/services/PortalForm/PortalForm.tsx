@@ -50,11 +50,12 @@ import { getImageDownloadUrl } from '@acx-ui/utils'
 
 import { PortalDemoDefaultSize, getImageBase64 } from '../PortalDemo/commonUtils'
 
-import Photo             from './assets/images/portal-demo/PortalPhoto.svg'
-import Powered           from './assets/images/portal-demo/PoweredLogo.svg'
-import Logo              from './assets/images/portal-demo/RuckusCloud.svg'
 import PortalFormContext from './PortalFormContext'
 import PortalSettingForm from './PortalSettingForm'
+
+const Photo = '/assets/images/portal/PortalPhoto.jpg'
+const Powered = '/assets/images/portal/PoweredLogo.png'
+const Logo = '/assets/images/portal/RuckusCloud.png'
 
 export const initialPortalData: Portal = {
   network: [],

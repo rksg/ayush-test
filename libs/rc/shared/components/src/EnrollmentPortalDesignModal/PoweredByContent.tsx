@@ -1,5 +1,7 @@
-import PoweredLogo from './images/PoweredLogo.svg'
-import * as UI     from './styledComponents'
+import * as UI from './styledComponents'
+
+const PoweredLogo = '/assets/images/portal/PoweredLogo.png'
+
 export function PoweredByContent () {
   return (
     <UI.SelectedDiv style={{}}>

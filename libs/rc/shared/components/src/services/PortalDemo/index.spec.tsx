@@ -9,12 +9,13 @@ import { defaultComDisplay, PortalUrlsInfo
 import { Provider }                              from '@acx-ui/store'
 import { render, fireEvent, screen, mockServer } from '@acx-ui/test-utils'
 
-import Photo                     from './assets/images/portal-demo/PortalPhoto.svg'
-import Powered                   from './assets/images/portal-demo/PoweredLogo.svg'
-import Logo                      from './assets/images/portal-demo/RuckusCloud.svg'
 import { PortalDemoDefaultSize } from './commonUtils'
 
 import { PortalDemo } from './index'
+
+const Photo = '/assets/images/portal/PortalPhoto.jpg'
+const Powered = '/assets/images/portal/PoweredLogo.png'
+const Logo = '/assets/images/portal/RuckusCloud.png'
 
 const mockDemo = {
   bgColor: 'var(--acx-primary-white)',

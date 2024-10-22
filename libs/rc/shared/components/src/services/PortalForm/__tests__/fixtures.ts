@@ -7,9 +7,11 @@ import {
 } from '@acx-ui/rc/utils'
 
 import { PortalDemoDefaultSize } from '../../PortalDemo/commonUtils'
-import Photo                     from '../assets/images/portal-demo/PortalPhoto.svg'
-import Powered                   from '../assets/images/portal-demo/PoweredLogo.svg'
-import Logo                      from '../assets/images/portal-demo/RuckusCloud.svg'
+
+const Photo = '/assets/images/portal/PortalPhoto.jpg'
+const Powered = '/assets/images/portal/PoweredLogo.png'
+const Logo = '/assets/images/portal/RuckusCloud.png'
+
 export const portalResponse: Portal = {
   id: '1',
   serviceName: 'test111',

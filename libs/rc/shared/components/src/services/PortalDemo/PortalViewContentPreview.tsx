@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
 import { Demo, GuestNetworkTypeEnum, PortalViewEnum } from '@acx-ui/rc/utils'
 
-import Wifi4eu                    from './assets/images/portal-demo/WiFi4euBanner.svg'
 import { PortalDemoDefaultSize }  from './commonUtils'
 import PortalViewConfirm          from './PortalViewConfirm'
 import PortalViewGoThrough        from './PortalViewGoThrough'
@@ -56,9 +55,12 @@ export default function PortalViewContentPreview (props:{
     !componentDisplay.wifi4eu
   return (
     <UI.LayoutViewContent isbg={isbg} style={isLogoPhotoHide?{ paddingTop: 150 }:{}}>
-      {componentDisplay.wifi4eu && <UI.Img src={Wifi4eu}
-        alt={'Wifi4eu'}
-        height={120} />}
+      {componentDisplay.wifi4eu && <UI.Img
+        src='/assets/images/portal/WiFi4euBanner.png'
+        alt='Wifi4eu'
+        width={420}
+        height={120}
+      />}
       {componentDisplay.logo &&<UI.Img src={demoValue.logo}
         alt={'Logo'}
         style={{ height: (demoValue.logoRatio||PortalDemoDefaultSize.logoRatio) ,maxWidth: 425,

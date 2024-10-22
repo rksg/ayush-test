@@ -12,9 +12,10 @@ import { getImageDownloadUrl }      from '@acx-ui/utils'
 
 import { initialPortalData }               from '../../services/PortalForm'
 import { PortalPreviewModal, getLanguage } from '../PortalDemo'
-import Photo                               from '../PortalForm/assets/images/portal-demo/PortalPhoto.svg'
-import Powered                             from '../PortalForm/assets/images/portal-demo/PoweredLogo.svg'
-import Logo                                from '../PortalForm/assets/images/portal-demo/RuckusCloud.svg'
+
+const Photo = '/assets/images/portal/PortalPhoto.jpg'
+const Powered = '/assets/images/portal/PoweredLogo.png'
+const Logo = '/assets/images/portal/RuckusCloud.png'
 
 export function PortalOverview (props: { demoValue: Demo }) {
   const { $t } = useIntl()

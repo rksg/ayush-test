@@ -8,11 +8,9 @@ import { Loader }                                                               
 import { useGetUIConfigurationQuery, useUpdateUIConfigurationMutation, useLazyGetUIConfigurationLogoImageQuery, useLazyGetUIConfigurationBackgroundImageQuery } from '@acx-ui/rc/services'
 import { DefaultUIConfiguration, UIConfiguration }                                                                                                              from '@acx-ui/rc/utils'
 
-
 import { BackgroundContent } from './BackgroundContent'
 import { BodyContent }       from './BodyContent'
 import { ButtonContent }     from './ButtonContent'
-import Wifi4eu               from './images/WiFi4euBanner.svg'
 import { LogoContent }       from './LogoContent'
 import { PopOver }           from './PopOver'
 import { PoweredByContent }  from './PoweredByContent'
@@ -314,7 +312,12 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
                 $isbg={value?.backgroundImage !== undefined ? true : false}
                 style={display.get('logo') || display.get('wifi4eu') ? {}: { paddingTop: '15' }}
               >
-                {display.get('wifi4eu') && <UI.Img src={Wifi4eu} alt={'Wifi4eu'} height={120}/> }
+                {display.get('wifi4eu') && <UI.Img
+                  src='/assets/images/portal/WiFi4euBanner.png'
+                  alt='Wifi4eu'
+                  width={420}
+                  height={120}
+                />}
                 {display.get('logo') && <LogoContent
                   value={value}
                   onDisabled={()=> {
