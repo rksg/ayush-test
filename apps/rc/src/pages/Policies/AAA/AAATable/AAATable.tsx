@@ -301,7 +301,7 @@ function useColumns () {
     },
     {
       key: 'radSecOptions?.clientCertificateId',
-      title: $t({ defaultMessage: 'Certificate with Client Auth' }),
+      title: $t({ defaultMessage: 'Client Certificate' }),
       dataIndex: 'clientCertificateId',
       filterKey: 'clientCertificateId',
       filterable: clientCertificateMap,

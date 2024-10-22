@@ -177,5 +177,25 @@ export const CertificateUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     newApi: true,
     url: '/certificates/query'
+  },
+  activateCertificateAuthorityOnRadius: {
+    method: 'put',
+    url: '/radiusServerProfiles/:radiusId/certificateAuthorities/:certificateAuthorityId',
+    newApi: true
+  },
+  deactivateCertificateAuthorityOnRadius: {
+    method: 'delete',
+    url: '/radiusServerProfiles/:radiusId/certificateAuthorities/:certificateAuthorityId',
+    newApi: true
+  },
+  activateCertificateOnRadius: {
+    method: 'put',
+    url: '/radiusServerProfiles/:radiusId/certificates/:certificateId',
+    newApi: true
+  },
+  deactivateCertificateOnRadius: {
+    method: 'delete',
+    url: '/radiusServerProfiles/:radiusId/certificates/:certificateId',
+    newApi: true
   }
 }

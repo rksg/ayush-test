@@ -133,6 +133,8 @@ const LbsServerProfileMutationUseCases = [
 ]
 
 const CertificateMutationUseCases = [
+  'ActivateCertificateAuthorityOnRadius',
+  'DectivateCertificateAuthorityOnRadius',
   'ActivateCertificateOnRadius',
   'DectivateCertificateOnRadius'
 ]
@@ -1650,6 +1652,46 @@ export const policyApi = basePolicyApi.injectEndpoints({
         })
       },
       extraOptions: { maxRetries: 5 }
+    }),
+    activateCertificateAuthorityOnRadius: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(
+          CertificateUrls.activateCertificateAuthorityOnRadius, params, customHeaders)
+        return {
+          ...req
+        }
+      }
+    }),
+    deactivateCertificateAuthorityOnRadius: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(
+          CertificateUrls.deactivateCertificateAuthorityOnRadius, params, customHeaders)
+        return {
+          ...req
+        }
+      }
+    }),
+    activateCertificateOnRadius: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(
+          CertificateUrls.activateCertificateOnRadius, params, customHeaders)
+        return {
+          ...req
+        }
+      }
+    }),
+    deactivateCertificateOnRadius: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(
+          CertificateUrls.deactivateCertificateOnRadius, params, customHeaders)
+        return {
+          ...req
+        }
+      }
     }),
     // eslint-disable-next-line max-len
     getVLANPoolPolicyViewModelList: build.query<TableResult<VLANPoolViewModelType>, RequestPayload>({
@@ -3521,6 +3563,9 @@ export const {
   useDeactivateLbsServerProfileOnVenueMutation,
   // Certificate
   useGetCertificateListQuery,
+  useActivateCertificateAuthorityOnRadiusMutation,
+  useActivateCertificateOnRadiusMutation,
+  useDeactivateCertificateOnRadiusMutation,
   useLazyGetMacRegListQuery,
   useUploadMacRegistrationMutation,
   useAddSyslogPolicyMutation,

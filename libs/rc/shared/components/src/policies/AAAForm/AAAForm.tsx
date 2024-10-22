@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from 'react'
 
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
@@ -7,14 +8,17 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import {
   useAaaPolicyQuery,
   useAddAAAPolicyMutation,
   useUpdateAAAPolicyMutation,
   useAddAAAPolicyTemplateMutation,
   useGetAAAPolicyTemplateQuery,
-  useUpdateAAAPolicyTemplateMutation
+  useUpdateAAAPolicyTemplateMutation,
+  useActivateCertificateAuthorityOnRadiusMutation,
+  useActivateCertificateOnRadiusMutation,
+  useDeactivateCertificateOnRadiusMutation
 } from '@acx-ui/rc/services'
 import {
   AAAPolicyType,
@@ -52,6 +56,10 @@ export const AAAForm = (props: AAAFormProps) => {
   const isServicePolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const enableRbac = isTemplate ? isConfigTemplateRbacEnabled : isServicePolicyRbacEnabled
+  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+  const addCertificateActivations = useAddCertificateActivations()
+  const updateCertificateActivations = useUpdateCertificateActivations()
   const { data } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useAaaPolicyQuery,
     useTemplateQueryFn: useGetAAAPolicyTemplateQuery,
@@ -83,9 +91,18 @@ export const AAAForm = (props: AAAFormProps) => {
     try {
       if (isEdit) {
         await updateInstance(requestPayload).unwrap()
+        if (supportRadsec) {
+          updateCertificateActivations(data, data.id)
+        }
       } else {
-        await createInstance(requestPayload).unwrap().then(res => data.id = res?.response?.id)
+        await createInstance(requestPayload).unwrap().then(res => {
+          data.id = res?.response?.id
+          if (supportRadsec) {
+            addCertificateActivations(data, res?.response?.id)
+          }
+        })
       }
+
       networkView ? backToNetwork?.(data) : navigate(linkToInstanceList, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -94,6 +111,75 @@ export const AAAForm = (props: AAAFormProps) => {
 
   const onCancel = () => {
     networkView ? backToNetwork?.() : navigate(linkToInstanceList)
+  }
+
+  function useCertificateAuthorityActivation () {
+    const [activate] = useActivateCertificateAuthorityOnRadiusMutation()
+    const activateCertificateAuthority =
+      async (radiusId?: string, certificateAuthorityId?: string) => {
+        return radiusId && certificateAuthorityId ?
+          await activate({ params: { radiusId, certificateAuthorityId } }).unwrap() : null
+      }
+    return activateCertificateAuthority
+  }
+
+  function useCertificateActivation () {
+    const [activate] = useActivateCertificateOnRadiusMutation()
+    const activateCertificate =
+      async (radiusId?: string, certificateId?: string) => {
+        return radiusId && certificateId ?
+          await activate({ params: { radiusId, certificateId } }).unwrap() : null
+      }
+    return activateCertificate
+  }
+
+  function useCertificateDeactivation () {
+    const [deactivate] = useDeactivateCertificateOnRadiusMutation()
+    const deactivateCertificate =
+      async (radiusId?: string, certificateId?: string) => {
+        return radiusId && certificateId ?
+          await deactivate({ params: { radiusId, certificateId } }).unwrap() : null
+      }
+    return deactivateCertificate
+  }
+
+  function useAddCertificateActivations () {
+    const activateCertificateAuthority = useCertificateAuthorityActivation()
+    const activateCertificate = useCertificateActivation()
+    const addCertificateActivations =
+      async (aaa?: AAAPolicyType, radiusId?: string) => {
+        const radSecOptions = aaa?.radSecOptions
+
+        await activateCertificateAuthority(radiusId, aaa?.radSecOptions?.clientCertificateId)
+        if (!_.isEmpty(radSecOptions?.clientCertificateId)) {
+          await activateCertificate(radiusId, aaa?.radSecOptions?.clientCertificateId)
+        }
+      }
+    return addCertificateActivations
+  }
+
+  function useUpdateCertificateActivations () {
+    const activateCertificateAuthority = useCertificateAuthorityActivation()
+    const activateCertificate = useCertificateActivation()
+    const deactivateCertificate = useCertificateDeactivation()
+    const addCertificateActivations =
+      async (aaa?: AAAPolicyType, radiusId?: string) => {
+        const radSecOptions = aaa?.radSecOptions
+
+        if (radSecOptions?.originalCertificateAuthorityId &&
+          radSecOptions?.originalCertificateAuthorityId !== radSecOptions?.certificateAuthorityId) {
+          await activateCertificateAuthority(radiusId, aaa?.radSecOptions?.clientCertificateId)
+        }
+        if (radSecOptions?.originalClientCertificateId &&
+          radSecOptions?.originalClientCertificateId !== radSecOptions?.clientCertificateId) {
+          if (!_.isEmpty(radSecOptions?.clientCertificateId)) {
+            await activateCertificate(radiusId, aaa?.radSecOptions?.clientCertificateId)
+          } else {
+            await deactivateCertificate(radiusId, aaa?.radSecOptions?.clientCertificateId)
+          }
+        }
+      }
+    return addCertificateActivations
   }
 
   return (
