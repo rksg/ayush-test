@@ -20,6 +20,6 @@ export const rbacApi = createApi({
   }),
   reducerPath: 'rbacApi',
   refetchOnMountOrArgChange: true,
-  tagTypes: ['RBAC'],
+  tagTypes: ['RBAC', 'ApplicationToken'],
   endpoints: () => ({ })
 })
