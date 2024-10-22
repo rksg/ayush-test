@@ -1,6 +1,4 @@
 import { Col, Form, Input } from 'antd'
-import { number }           from 'echarts'
-import { isNumber }         from 'lodash'
 import { useIntl }          from 'react-intl'
 
 

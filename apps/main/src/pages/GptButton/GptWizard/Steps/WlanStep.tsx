@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import { ProFormCheckbox, ProFormSelect, ProFormText } from '@ant-design/pro-form'
 import { Button, Divider }                             from 'antd'
@@ -21,7 +21,9 @@ type NetworkConfig = {
 
 export function WlanStep (props: { payload: string; description: string }) {
   const { $t } = useIntl()
-  const data = JSON.parse(props.payload) as NetworkConfig[]
+  const initialData = JSON.parse(props.payload || '[]') as NetworkConfig[]
+  const [data, setData] = useState<NetworkConfig[]>(initialData)
+
   const objectiveOptions = [
     { value: 'Internal', label: $t({ defaultMessage: 'Internal' }) },
     { value: 'Guest', label: $t({ defaultMessage: 'Guest' }) },
@@ -31,14 +33,26 @@ export function WlanStep (props: { payload: string; description: string }) {
     { value: 'Public', label: $t({ defaultMessage: 'Public' }) }
   ]
 
+  const addNetworkProfile = () => {
+    const newProfile: NetworkConfig = {
+      'Purpose': '',
+      'SSID Name': '',
+      'SSID Objective': 'Internal',
+      'Checked': false,
+      'id': ''
+    }
+    setData([...data, newProfile])
+  }
+
   return (
     <UI.Container>
       <UI.HeaderWithAddButton>
         <UI.Title>{$t({ defaultMessage: 'Recommended Network Profiles' })}</UI.Title>
-        <Button type='link'
+        <Button
+          type='link'
           size='small'
-          onClick={() => {
-          }}>
+          disabled={data.length >= 5}
+          onClick={addNetworkProfile}>
           {$t({ defaultMessage: 'Add Network Profile' })}
         </Button>
       </UI.HeaderWithAddButton>
@@ -58,7 +72,7 @@ export function WlanStep (props: { payload: string; description: string }) {
         <UI.HighlightedDescription>{props.description}</UI.HighlightedDescription>
       </UI.HighlightedBox>
 
-      {data.map((item, index) => (
+      {data?.map((item, index) => (
         <React.Fragment key={index}>
           <UI.VlanContainer>
             <UI.CheckboxContainer>
@@ -111,8 +125,7 @@ export function WlanStep (props: { payload: string; description: string }) {
                 initialValue={item['SSID Objective']}
                 options={objectiveOptions}
               />
-
-              <UI.PurposeContainer>
+              {item['Purpose'] && <UI.PurposeContainer>
                 <UI.PurposeHeader>
                   <Logo
                     style={{
@@ -125,7 +138,7 @@ export function WlanStep (props: { payload: string; description: string }) {
                   <span>{$t({ defaultMessage: 'Purpose' })}</span>
                 </UI.PurposeHeader>
                 <UI.PurposeText>{item['Purpose']}</UI.PurposeText>
-              </UI.PurposeContainer>
+              </UI.PurposeContainer>}
             </div>
           </UI.VlanContainer>
           <Divider dashed />
