@@ -84,7 +84,6 @@ const defaultApPayload = {
 
 export function ApForm () {
   const { $t } = useIntl()
-  const isApGpsFeatureEnabled = useIsSplitOn(Features.AP_GPS)
   const supportVenueMgmtVlan = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
   const supportApMgmtVlan = useIsSplitOn(Features.AP_MANAGEMENT_VLAN_AP_LEVEL_TOGGLE)
   const supportMgmtVlan = supportVenueMgmtVlan && supportApMgmtVlan
@@ -201,7 +200,7 @@ export function ApForm () {
 
         formRef?.current?.setFieldsValue({ description: '', ...apDetails })
         // eslint-disable-next-line
-        const afcEnabled = (await getApValidChannel({ 
+        const afcEnabled = (await getApValidChannel({
           params: { venueId, serialNumber },
           enableRbac: isUseWifiRbacApi
         })).data?.afcEnabled
@@ -715,7 +714,7 @@ export function ApForm () {
                 }]}
                 children={<Select mode='tags' maxLength={24} />}
               />
-              {isApGpsFeatureEnabled && <GpsCoordinatesFormItem />}
+              <GpsCoordinatesFormItem />
             </Loader>
           </Col>
         </Row>
