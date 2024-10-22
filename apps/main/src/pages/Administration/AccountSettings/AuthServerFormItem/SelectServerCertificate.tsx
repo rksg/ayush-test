@@ -10,30 +10,34 @@ import { MessageMapping } from '../MessageMapping'
 
 export interface CertificateSelectorProps {
     serverSertificates?: ServerCertificate[];
+    setSelected: (certificateId: string) => void
 }
+
 
 const SelectServerCertificate = (props: CertificateSelectorProps) => {
   const { $t } = useIntl()
-  const { serverSertificates } = props
+  const { serverSertificates, setSelected } = props
 
   const certificateData = serverSertificates?.map((item) => ({
     label: `${item.name} - ${item.id}`,
     value: item.id
   }))
 
-  //   const handleCertificateChange = (certificate: string) => {
-  //   }
+  const handleChange = (certificate: string) => {
+    setSelected(certificate)
+  }
 
-  return (<>
+  return (
     <Row gutter={24}>
-      <Col span={10}>
+      <Col span={24}>
         <Form.Item
           name='serverCertificate'
           label={$t({ defaultMessage: 'Configure a Server Certificate' })}
         >
           <Select style={{ width: '400px' }}
             //   value={currentMapRegion}
-            // onChange={handleCertificateChange}
+            onChange={handleChange}
+            allowClear={true}
             showSearch
             optionFilterProp='children'
             disabled={!hasCrossVenuesPermission()}
@@ -43,14 +47,14 @@ const SelectServerCertificate = (props: CertificateSelectorProps) => {
             )}
           </Select>
         </Form.Item>
+        <SpaceWrapper full className='indent' justifycontent='flex-start'>
+          <Typography.Paragraph className='greyText'>
+            {$t(MessageMapping.configure_a_server_certificate, { br: <br/> })}
+          </Typography.Paragraph>
+        </SpaceWrapper>
+
       </Col>
     </Row>
-    <SpaceWrapper full className='indent' justifycontent='flex-start'>
-      <Typography.Paragraph className='greyText'>
-        {$t(MessageMapping.configure_a_server_certificate, { br: <br/> })}
-      </Typography.Paragraph>
-    </SpaceWrapper></>
-
   )
 }
 
