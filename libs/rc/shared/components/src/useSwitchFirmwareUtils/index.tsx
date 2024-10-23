@@ -159,8 +159,8 @@ export function useSwitchFirmwareUtils () {
       const modelGroupDisplayText: { [key in SwitchFirmwareModelGroup]: string } = {
         [SwitchFirmwareModelGroup.ICX71]: intl.$t({ defaultMessage: 'ICX Models (7150)' }),
         [SwitchFirmwareModelGroup.ICX7X]: intl.$t({ defaultMessage: 'ICX Models (7550-7850)' }),
-        [SwitchFirmwareModelGroup.ICX82]: intl.$t({ defaultMessage: 'ICX Models (8200)' }),
-        [SwitchFirmwareModelGroup.ICX81]: intl.$t({ defaultMessage: 'ICX Models (8100)' })
+        [SwitchFirmwareModelGroup.ICX81]: intl.$t({ defaultMessage: 'ICX Models (8100)' }),
+        [SwitchFirmwareModelGroup.ICX82]: intl.$t({ defaultMessage: 'ICX Models (8200)' })
       }
 
       for (const key in SwitchFirmwareModelGroup) {
@@ -198,8 +198,8 @@ export function useSwitchFirmwareUtils () {
        const modelGroupDisplayText: { [key in SwitchFirmwareModelGroup]: string } = {
          [SwitchFirmwareModelGroup.ICX71]: intl.$t({ defaultMessage: 'ICX Models (7150)' }),
          [SwitchFirmwareModelGroup.ICX7X]: intl.$t({ defaultMessage: 'ICX Models (7550-7850)' }),
-         [SwitchFirmwareModelGroup.ICX82]: intl.$t({ defaultMessage: 'ICX Models (8200)' }),
-         [SwitchFirmwareModelGroup.ICX81]: intl.$t({ defaultMessage: 'ICX Models (8100)' })
+         [SwitchFirmwareModelGroup.ICX81]: intl.$t({ defaultMessage: 'ICX Models (8100)' }),
+         [SwitchFirmwareModelGroup.ICX82]: intl.$t({ defaultMessage: 'ICX Models (8200)' })
        }
 
        for (const key in SwitchFirmwareModelGroup) {

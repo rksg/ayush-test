@@ -55,7 +55,7 @@ export function CliStepModels () {
   const [count, setCount] = useState(0)
   const [filteredModelFamily, setFilteredModelFamily] = useState([] as CheckboxValueType[])
 
-  const getAllFamilyModel = (isSupport8200AV: boolean) => {
+  const getAllFamilyModel = (isSupport8200AV: boolean, isSupport8100: boolean) => {
     let allFamilyModel = transformIcxModels(ICX_MODELS_MODULES)
     if (!isSupport8200AV) {
       allFamilyModel = allFamilyModel.map(family => ({
@@ -69,7 +69,7 @@ export function CliStepModels () {
     return allFamilyModel
   }
 
-  const allFamilyModels = getAllFamilyModel(isSupport8200AV)
+  const allFamilyModels = getAllFamilyModel(isSupport8200AV, isSupport8100)
   const allModels:string[] = allFamilyModels.map((m) => m.models).flat()
 
   const existingProfileNameList = profiles?.data?.filter(

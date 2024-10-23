@@ -222,6 +222,28 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
           </Radio.Group>
         </>}
 
+        {isSupport8100 && (hasVenue || ICX81Count > 0) && <>
+          <Subtitle level={4}>
+            {intl.$t({ defaultMessage: 'Firmware available for ICX 8100 Series' })}
+            &nbsp;
+            ({ICX81Count} {intl.$t({ defaultMessage: 'switches' })})
+          </Subtitle>
+          <Radio.Group
+            style={{ margin: '5px 0 40px 0', fontSize: '14px' }}
+            onChange={handleICX81Change}
+            value={selectedICX81Version}>
+            <Space direction={'vertical'}>
+              { // eslint-disable-next-line max-len
+                getAvailableVersions(SwitchFirmwareModelGroup.ICX81)?.map(v =>
+                  <Radio value={v.id} key={v.id} disabled={v.inUse}>
+                    {getVersionOptionV1002(intl, v)}
+                  </Radio>)}
+              <Radio value='' key='0' style={{ fontSize: 'var(--acx-body-3-font-size)' }}>
+                {intl.$t({ defaultMessage: 'Do not update firmware on these switches' })}
+              </Radio>
+            </Space>
+          </Radio.Group>
+        </>}
 
         {(hasVenue || ICX7XCount > 0) && <>
           <Subtitle level={4}>
@@ -259,29 +281,6 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
             <Space direction={'vertical'}>
               { // eslint-disable-next-line max-len
                 getAvailableVersions(SwitchFirmwareModelGroup.ICX71)?.map(v =>
-                  <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                    {getVersionOptionV1002(intl, v)}
-                  </Radio>)}
-              <Radio value='' key='0' style={{ fontSize: 'var(--acx-body-3-font-size)' }}>
-                {intl.$t({ defaultMessage: 'Do not update firmware on these switches' })}
-              </Radio>
-            </Space>
-          </Radio.Group>
-        </>}
-
-        {isSupport8100 && (hasVenue || ICX81Count > 0) && <>
-          <Subtitle level={4}>
-            {intl.$t({ defaultMessage: 'Firmware available for ICX 8100 Series' })}
-            &nbsp;
-            ({ICX81Count} {intl.$t({ defaultMessage: 'switches' })})
-          </Subtitle>
-          <Radio.Group
-            style={{ margin: '5px 0 20px 0', fontSize: '14px' }}
-            onChange={handleICX81Change}
-            value={selectedICX81Version}>
-            <Space direction={'vertical'}>
-              { // eslint-disable-next-line max-len
-                getAvailableVersions(SwitchFirmwareModelGroup.ICX81)?.map(v =>
                   <Radio value={v.id} key={v.id} disabled={v.inUse}>
                     {getVersionOptionV1002(intl, v)}
                   </Radio>)}

@@ -60,10 +60,10 @@ export function ScheduleStep (props: ScheduleStepProps) {
             v => v.modelGroup === SwitchFirmwareModelGroup.ICX71)[0]?.version || '',
           [SwitchFirmwareModelGroup.ICX7X]: nextScheduleModelGroup.filter(
             v => v.modelGroup === SwitchFirmwareModelGroup.ICX7X)[0]?.version || '',
-          [SwitchFirmwareModelGroup.ICX82]: nextScheduleModelGroup.filter(
-            v => v.modelGroup === SwitchFirmwareModelGroup.ICX82)[0]?.version || '',
           [SwitchFirmwareModelGroup.ICX81]: nextScheduleModelGroup.filter(
-            v => v.modelGroup === SwitchFirmwareModelGroup.ICX81)[0]?.version || ''
+            v => v.modelGroup === SwitchFirmwareModelGroup.ICX81)[0]?.version || '',
+          [SwitchFirmwareModelGroup.ICX82]: nextScheduleModelGroup.filter(
+            v => v.modelGroup === SwitchFirmwareModelGroup.ICX82)[0]?.version || ''
         }
       } else {
         const modelGroup = getSwitchModelGroup(upgradeSwitchList[0].model)
@@ -290,6 +290,29 @@ export function ScheduleStep (props: ScheduleStepProps) {
             </Radio.Group>
           </>}
 
+          { isSupport8100 && (hasVenue || ICX81Count > 0) && <>
+            <Subtitle level={4}>
+              {intl.$t({ defaultMessage: 'Firmware available for ICX 8100 Series' })}
+              &nbsp;
+              ({ICX81Count} {intl.$t({ defaultMessage: 'switches' })})
+            </Subtitle>
+            <Radio.Group
+              style={{ margin: '5px 0 40px 0', fontSize: '14px' }}
+              onChange={handleICX81Change}
+              value={selectedICX81Version}>
+              <Space direction={'vertical'}>
+                { // eslint-disable-next-line max-len
+                  getAvailableVersions(SwitchFirmwareModelGroup.ICX81)?.map(v =>
+                    <Radio value={v.id} key={v.id} disabled={v.inUse}>
+                      {getVersionOptionV1002(intl, v)}
+                    </Radio>)}
+                <Radio value='' key='0' style={{ fontSize: 'var(--acx-body-3-font-size)' }}>
+                  {intl.$t({ defaultMessage: 'Do not update firmware on these switches' })}
+                </Radio>
+              </Space>
+            </Radio.Group>
+          </>}
+
           {(hasVenue || ICX7XCount > 0) && <>
             <Subtitle level={4}>
               {intl.$t({ defaultMessage: 'Firmware available for ICX 7550-7850 Series' })}
@@ -325,29 +348,6 @@ export function ScheduleStep (props: ScheduleStepProps) {
               <Space direction={'vertical'}>
                 { // eslint-disable-next-line max-len
                   getAvailableVersions(SwitchFirmwareModelGroup.ICX71)?.map(v =>
-                    <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                      {getVersionOptionV1002(intl, v)}
-                    </Radio>)}
-                <Radio value='' key='0' style={{ fontSize: 'var(--acx-body-3-font-size)' }}>
-                  {intl.$t({ defaultMessage: 'Do not update firmware on these switches' })}
-                </Radio>
-              </Space>
-            </Radio.Group>
-          </>}
-
-          { isSupport8100 && (hasVenue || ICX81Count > 0) && <>
-            <Subtitle level={4}>
-              {intl.$t({ defaultMessage: 'Firmware available for ICX 8100 Series' })}
-              &nbsp;
-              ({ICX81Count} {intl.$t({ defaultMessage: 'switches' })})
-            </Subtitle>
-            <Radio.Group
-              style={{ margin: '5px 0 20px 0', fontSize: '14px' }}
-              onChange={handleICX81Change}
-              value={selectedICX81Version}>
-              <Space direction={'vertical'}>
-                { // eslint-disable-next-line max-len
-                  getAvailableVersions(SwitchFirmwareModelGroup.ICX81)?.map(v =>
                     <Radio value={v.id} key={v.id} disabled={v.inUse}>
                       {getVersionOptionV1002(intl, v)}
                     </Radio>)}

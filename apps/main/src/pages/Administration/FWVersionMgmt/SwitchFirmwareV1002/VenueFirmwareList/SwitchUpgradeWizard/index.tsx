@@ -80,8 +80,8 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
   }
 
   const wizardWidth = {
-    [SwitchFirmwareWizardType.update]: '1180px',
-    [SwitchFirmwareWizardType.schedule]: '1180px',
+    [SwitchFirmwareWizardType.update]: '1450px',
+    [SwitchFirmwareWizardType.schedule]: '1450px',
     [SwitchFirmwareWizardType.skip]: '1120px'
   }
 
