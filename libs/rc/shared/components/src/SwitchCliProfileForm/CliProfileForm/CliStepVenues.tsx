@@ -35,10 +35,11 @@ export function CliStepVenues (props: {
   allSwitchList?: SwitchViewModel[]
 }) {
   const { $t } = useIntl()
+  const { isTemplate: isConfigTemplate } = useConfigTemplate()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchLevelCliProfileEnabled = useIsSplitOn(Features.SWITCH_LEVEL_CLI_PROFILE)
+  const isCustomizedVariableEnabled = isSwitchLevelCliProfileEnabled && !isConfigTemplate
 
-  const { isTemplate } = useConfigTemplate()
   const { form, initialValues } = useStepFormContext()
   const data = (form?.getFieldsValue(true) as CliConfiguration)
 
@@ -94,7 +95,7 @@ export function CliStepVenues (props: {
   }]
 
   const tableQuery = useTableQuery<Venue>({
-    useQuery: isTemplate ? useGetVenuesTemplateListQuery : useVenuesListQuery,
+    useQuery: isConfigTemplate ? useGetVenuesTemplateListQuery : useVenuesListQuery,
     defaultPayload: {
       pageSize: 10,
       sortField: 'name',
@@ -215,7 +216,7 @@ export function CliStepVenues (props: {
             }),
             onChange: onChangeVenues
           }}
-          footer={() => isSwitchLevelCliProfileEnabled
+          footer={() => isCustomizedVariableEnabled
             ? <Typography.Text style={{ fontSize: cssStr('--acx-body-5-font-size') }}>{
               // eslint-disable-next-line max-len
               $t({ defaultMessage: '* Switches from this <venuePlural></venuePlural> were selected during variable customization in the previous step.' })

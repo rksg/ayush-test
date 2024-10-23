@@ -41,6 +41,7 @@ import {
   SwitchViewModel,
   SwitchCliMessages,
   transformTitleCase,
+  useConfigTemplate,
   whitespaceOnlyRegExp
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
@@ -116,12 +117,15 @@ export function CliStepConfiguration (props: {
 }) {
   const { $t } = useIntl()
   const params = useParams()
+  const { isTemplate: isConfigTemplate } = useConfigTemplate()
   const { form, editMode } = useStepFormContext()
-  const isTemplate = params?.configType !== 'profiles'
-  const cliDefaultString = isTemplate ? '' : 'manager registrar'
+
+  const isCliTemplate = params?.configType !== 'profiles'
+  const cliDefaultString = isCliTemplate ? '' : 'manager registrar'
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchLevelCliProfileEnabled = useIsSplitOn(Features.SWITCH_LEVEL_CLI_PROFILE)
-  const isCustomizedVariableEnabled = isSwitchLevelCliProfileEnabled && !isTemplate
+  const isCustomizedVariableEnabled
+    = isSwitchLevelCliProfileEnabled && !isCliTemplate && !isConfigTemplate
 
   const [cli, setCli] = useState('')
   const [cliFontSize, setCliFontSize] = useState('14')
@@ -150,7 +154,7 @@ export function CliStepConfiguration (props: {
       params,
       payload: cliTemplatesPayload,
       enableRbac: isSwitchRbacEnabled
-    }, { skip: !isTemplate })
+    }, { skip: !isCliTemplate })
 
   const { data: cliFamilyModels } = useGetCliFamilyModelsQuery({
     params,
@@ -181,7 +185,7 @@ export function CliStepConfiguration (props: {
 
       const cli = form?.getFieldValue('cli')
       codeMirrorInstance?.setValue(cli ?? cliDefaultString)
-      !isTemplate && markCodeMirrorReadOnlyText(codeMirrorInstance)
+      !isCliTemplate && markCodeMirrorReadOnlyText(codeMirrorInstance)
 
       const validation = validateCLI(codeMirrorEl, variableList, cliDefaultString)
       form?.setFieldsValue({
@@ -273,7 +277,7 @@ export function CliStepConfiguration (props: {
     <Row gutter={24}>
       <Col span={8}>
         <StepsForm.Title children={$t({ defaultMessage: 'CLI Configuration' })} />
-        {isTemplate && <Form.Item
+        {isCliTemplate && <Form.Item
           name='name'
           label={$t({ defaultMessage: 'Template Name' })}
           rules={[
@@ -292,7 +296,7 @@ export function CliStepConfiguration (props: {
           children={<Input />}
         />}
 
-        {isTemplate && <Form.Item
+        {isCliTemplate && <Form.Item
           noStyle
           children={<UI.ToggleWrapper>
             <Form.Item
@@ -307,7 +311,7 @@ export function CliStepConfiguration (props: {
           </UI.ToggleWrapper>}
         />}
 
-        {!isTemplate && <Form.Item
+        {!isCliTemplate && <Form.Item
           noStyle
           children={<UI.ToggleWrapper>
             <Form.Item

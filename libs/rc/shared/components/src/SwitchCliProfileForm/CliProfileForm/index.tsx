@@ -75,14 +75,13 @@ export function CliProfileForm () {
   const linkToProfiles = usePathBasedOnConfigTemplate('/networks/wired/profiles', '')
   const editMode = params.action === 'edit'
 
-  const { isTemplate } = useConfigTemplate()
+  const { isTemplate: isConfigTemplate } = useConfigTemplate()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const isSwitchLevelCliProfileEnabled = useIsSplitOn(Features.SWITCH_LEVEL_CLI_PROFILE)
-  const isCustomizedVariableEnabled
-    = !isTemplate && isSwitchLevelCliProfileEnabled && (params?.configType === 'profiles')
+  const isCustomizedVariableEnabled = !isConfigTemplate && isSwitchLevelCliProfileEnabled
 
-  const rbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isSwitchRbacEnabled
+  const rbacEnabled = isConfigTemplate ? isConfigTemplateRbacEnabled : isSwitchRbacEnabled
   const associateEnabled = isCustomizedVariableEnabled || rbacEnabled
 
   const [appliedModels, setAppliedModels] = useState({} as unknown as Record<string, string[]>)
@@ -128,7 +127,7 @@ export function CliProfileForm () {
     payload: switchListPayload,
     enableRbac: isSwitchRbacEnabled
   }, {
-    skip: !isCustomizedVariableEnabled || isTemplate
+    skip: !isCustomizedVariableEnabled || isConfigTemplate
   })
 
   // Config Template related states
