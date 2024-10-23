@@ -386,6 +386,11 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/entitlements/attentionNotes/query',
     newApi: true
   },
+  getCalculatedLicences: {
+    method: 'post',
+    url: '/entitlements/availabilityReports/query',
+    newApi: true
+  },
   updateMspEcDelegations: {
     method: 'put',
     url: '/tenants/:mspEcTenantId/adminDelegations',
@@ -396,4 +401,5 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/adminDelegations',
     newApi: true
   }
+
 }
