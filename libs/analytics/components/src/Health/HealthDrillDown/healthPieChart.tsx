@@ -8,6 +8,7 @@ import {
   ContentSwitcher,
   ContentSwitcherProps,
   DonutChart,
+  EventParams,
   Loader,
   NoData,
   qualitativeColorSet
@@ -35,7 +36,7 @@ export type PieChartData = {
   value: number
   name: string
   color: string
-  code?: string
+  rawKey: string
 }
 
 export type TabKeyType = 'wlans' | 'nodes' | 'events' | 'osManufacturers'
@@ -52,6 +53,7 @@ function getTopPieChartData (nodeData: NodeData[])
     .map((val, index) => ({
       ...val,
       name: val.name ? `${val.name} (${val.key})` : val.key,
+      rawKey: val.key,
       color: colors[index]
     }))
 }
@@ -72,8 +74,7 @@ export const transformData = (
       ? getTopPieChartData(data.network.hierarchyNode.events).map((event) => ({
         ...event,
         key: mapCodeToReason(event.key),
-        name: mapCodeToReason(event.name),
-        code: event.key
+        name: mapCodeToReason(event.name)
       }))
       : []
     const osManufacturersData = getTopPieChartData(osManufacturers)
@@ -133,11 +134,10 @@ export const tooltipFormatter = (
   `${formatter('percentFormat')(value as number / total)}(${dataFormatter(value)})`
 
 function getHealthPieChart (
-  data: { key: string; value: number; name: string; color: string }[],
+  data: { key: string; value: number; name: string; color: string, code?: string }[],
   dataFormatter: (value: unknown, tz?: string | undefined) => string,
   size: { width: number; height: number },
-  pieFilter: string,
-  setPieFilter: (filter: string) => void
+  onPieClick: (e: EventParams) => void
 ) {
 
   let tops = data.slice(0, topCount)
@@ -159,7 +159,7 @@ function getHealthPieChart (
       showTotal={false}
       labelTextStyle={{ overflow: 'truncate', width: size.width * 0.5 }} // 50% of width
       dataFormatter={tooltipFormatter(total, dataFormatter)}
-      onClick={(e) => e.name === pieFilter ? setPieFilter('') : setPieFilter(e.name)}
+      onClick={onPieClick}
     /> : <NoData />
   )
 }
@@ -170,22 +170,20 @@ export const HealthPieChart = ({
   queryType,
   selectedStage,
   valueFormatter,
-  pieFilter,
   setPieFilter,
   chartKey,
   setChartKey,
-  setEventCode
+  onPieClick
 }: {
   size: { width: number; height: number }
   filters: AnalyticsFilter
   queryType: DrilldownSelection
   selectedStage: Stages
   valueFormatter: (value: unknown, tz?: string | undefined) => string
-  pieFilter: string
-  setPieFilter: (filter: string) => void
+  setPieFilter: (data: PieChartData | null) => void
   chartKey: TabKeyType
   setChartKey: (key: TabKeyType) => void
-  setEventCode: (code: string) => void
+  onPieClick: (e: EventParams) => void
 }) => {
   const { $t } = useIntl()
   const { startDate: start, endDate: end, filter } = filters
@@ -218,7 +216,7 @@ export const HealthPieChart = ({
     .map(({ key, data }) => ({
       label: titleMap[key as TabKeyType],
       value: key,
-      children: getHealthPieChart(data, valueFormatter, size, pieFilter, setPieFilter)
+      children: getHealthPieChart(data, valueFormatter, size, onPieClick)
     }))
   const count = showTopNPieChartResult(
     $t,
@@ -227,11 +225,7 @@ export const HealthPieChart = ({
   )
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { setChartKey(tabDetails?.[0]?.value as TabKeyType) }, [tabDetails.length])
-  useEffect(() => { setPieFilter('') }, [chartKey])
-  useEffect(() => {
-    const selectedCode = events.find(event => event.name === pieFilter)?.code || ''
-    setEventCode(selectedCode)
-  }, [pieFilter])
+  useEffect(() => { setPieFilter(null) }, [chartKey])
 
   return (
     <Loader states={[queryResults]} style={size}>

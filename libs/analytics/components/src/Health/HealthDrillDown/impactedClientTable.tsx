@@ -18,7 +18,7 @@ import {
   topImpactedClientLimit,
   stageNameToCodeMap
 } from './config'
-import { TabKeyType }                                    from './healthPieChart'
+import { PieChartData, TabKeyType }                      from './healthPieChart'
 import { useHealthImpactedClientsQuery, ImpactedClient } from './services'
 import { TableHeading }                                  from './styledComponents'
 
@@ -27,15 +27,13 @@ export const ImpactedClientsTable = ({
   selectedStage,
   drillDownSelection,
   pieFilter,
-  chartKey,
-  eventCode
+  chartKey
 }: {
   filters: AnalyticsFilter;
   selectedStage: Stages;
   drillDownSelection: DrilldownSelection;
-  pieFilter: string;
+  pieFilter: PieChartData | null;
   chartKey: TabKeyType;
-  eventCode: string;
 }) => {
   const { $t } = useIntl()
   const fieldMap = {
@@ -54,7 +52,7 @@ export const ImpactedClientsTable = ({
       field: field,
       stage: (selectedStage && stageNameToCodeMap[selectedStage]) as string,
       topImpactedClientLimit: topImpactedClientLimit,
-      pieFilter: eventCode === '' ? pieFilter : eventCode,
+      pieFilter: pieFilter?.rawKey ?? '',
       chartKey: chartKey
     },
     {
@@ -145,7 +143,8 @@ export const ImpactedClientsTable = ({
     one {Client}
     other {Clients}
   } filtered by: {pieFilter}` }, {
-    count: showTopNPieChartResult($t, totalCount, topImpactedClientLimit), totalCount, pieFilter
+    count: showTopNPieChartResult($t, totalCount, topImpactedClientLimit),
+    totalCount, pieFilter: pieFilter?.name
   })
 
   const unfilteredText = $t({ defaultMessage: `{count} Impacted {totalCount, plural,

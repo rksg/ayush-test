@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react'
 import { isNull } from 'lodash'
 import AutoSizer  from 'react-virtualized-auto-sizer'
 
-import { GridCol, GridRow, Loader, cssStr } from '@acx-ui/components'
-import { formatter }                        from '@acx-ui/formatter'
-import type { AnalyticsFilter }             from '@acx-ui/utils'
+import { EventParams, GridCol, GridRow, Loader, cssStr } from '@acx-ui/components'
+import { formatter }                                     from '@acx-ui/formatter'
+import type { AnalyticsFilter }                          from '@acx-ui/utils'
 
 import {
   Stages,
@@ -15,7 +15,7 @@ import {
   TTC
 } from './config'
 import { FunnelChart }                                       from './funnelChart'
-import { HealthPieChart, TabKeyType }                        from './healthPieChart'
+import { HealthPieChart, PieChartData, TabKeyType }          from './healthPieChart'
 import { ImpactedClientsTable }                              from './impactedClientTable'
 import { useTtcDrilldownQuery, useConnectionDrilldownQuery } from './services'
 import { Point, Separator }                                  from './styledComponents'
@@ -24,9 +24,14 @@ const HealthDrillDown = (props: {
   filters: AnalyticsFilter;
   drilldownSelection: DrilldownSelection;
 }) => {
-  const [pieFilter, setPieFilter] = useState<string>('')
+  const [pieFilter, setPieFilter] = useState<PieChartData | null>(null)
   const [chartKey, setChartKey] = useState<TabKeyType>('wlans')
-  const [eventCode, setEventCode] = useState<string>('')
+  const onPieClick = (e: EventParams) => {
+    if(e.name === 'Others') {
+      return
+    }
+    setPieFilter(e.data as PieChartData)
+  }
 
   const { drilldownSelection, filters } = props
   const colors = [
@@ -102,7 +107,7 @@ const HealthDrillDown = (props: {
   const funnelChartData = isConnectionFailure ? connectionFailureResults : ttcResults
   const format = formatter(isConnectionFailure ? 'countFormat' : 'durationFormat')
 
-  useEffect(() => { setPieFilter('') }, [selectedStage])
+  useEffect(() => { setPieFilter(null) }, [selectedStage])
 
   return drilldownSelection ? (
     <GridRow>
@@ -134,11 +139,10 @@ const HealthDrillDown = (props: {
                 queryType={drilldownSelection}
                 selectedStage={selectedStage}
                 valueFormatter={format}
-                pieFilter={pieFilter}
                 setPieFilter={setPieFilter}
                 chartKey={chartKey}
                 setChartKey={setChartKey}
-                setEventCode={setEventCode}
+                onPieClick={onPieClick}
               />
             }</AutoSizer>
           </GridCol>
@@ -149,7 +153,6 @@ const HealthDrillDown = (props: {
               drillDownSelection={drilldownSelection}
               pieFilter={pieFilter}
               chartKey={chartKey}
-              eventCode={eventCode}
             />
           </GridCol>
         </>
