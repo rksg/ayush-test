@@ -1,12 +1,14 @@
 
-import { Col, Select, Form, Row, Typography } from 'antd'
-import { useIntl }                            from 'react-intl'
+import { Col, Select, Form, Row } from 'antd'
+import { useIntl }                from 'react-intl'
 
 import { SpaceWrapper }             from '@acx-ui/rc/components'
 import { ServerCertificate }        from '@acx-ui/rc/utils'
 import { hasCrossVenuesPermission } from '@acx-ui/user'
 
 import { MessageMapping } from '../MessageMapping'
+
+import * as UI from './styledComponents'
 
 export interface CertificateSelectorProps {
     serverSertificates?: ServerCertificate[];
@@ -47,10 +49,10 @@ const SelectServerCertificate = (props: CertificateSelectorProps) => {
             )}
           </Select>
         </Form.Item>
-        <SpaceWrapper full className='indent' justifycontent='flex-start'>
-          <Typography.Paragraph className='greyText'>
+        <SpaceWrapper className='indent' justifycontent='flex-start'>
+          <UI.DrawerParagraph>
             {$t(MessageMapping.configure_a_server_certificate, { br: <br/> })}
-          </Typography.Paragraph>
+          </UI.DrawerParagraph>
         </SpaceWrapper>
 
       </Col>

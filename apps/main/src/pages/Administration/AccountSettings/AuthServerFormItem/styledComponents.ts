@@ -1,7 +1,13 @@
-import { Space } from 'antd'
-import styled    from 'styled-components/macro'
+import { Space, Typography } from 'antd'
+import styled                from 'styled-components/macro'
 
-import {  Drawer } from '@acx-ui/components'
+import { Drawer } from '@acx-ui/components'
+
+export const DrawerParagraph = styled(Typography.Paragraph)`
+  &.ant-typography {
+    color: var(--acx-neutrals-50)
+  }
+`
 
 export const ImportFileDrawer = styled(Drawer)`
   .ant-drawer-body > span {
