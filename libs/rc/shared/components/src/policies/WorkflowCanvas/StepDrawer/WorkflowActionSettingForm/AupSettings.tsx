@@ -186,7 +186,8 @@ export function AupSettings () {
                 {$t({ defaultMessage: 'Drag & drop file here or' })}
               </Typography.Text>}
             <Button
-              type='primary' loading={fileLoading}>{formInstance.getFieldValue('aupFileName')
+              type='primary'
+              loading={fileLoading}>{formInstance.getFieldValue('aupFileName')
                 ? $t({ defaultMessage: 'Change File' })
                 : $t({ defaultMessage: 'Browse' })}
             </Button>
