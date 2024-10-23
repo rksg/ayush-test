@@ -54,8 +54,11 @@ import {
   fetchRbacVenueNetworkList,
   getNetworkDeepList, updateNetworkVenueFn
 } from './networkVenueUtils'
-import { commonQueryFn }     from './servicePolicy.utils'
-import { isPayloadHasField } from './utils'
+import { commonQueryFn } from './servicePolicy.utils'
+import {
+  handleCallbackWhenActivityDone,
+  isPayloadHasField
+} from './utils'
 
 
 const RKS_NEW_UI = {
@@ -318,16 +321,35 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Network', id: 'LIST' }]
     }),
-    addNetworkVenue: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload, enableRbac }) => {
-        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
-
-        const apiCustomHeader = enableRbac? GetApiVersionHeader(ApiVersionEnum.v1) : RKS_NEW_UI
-
-        const req = createHttpRequest(urlsInfo.addNetworkVenue, params, apiCustomHeader)
+    addRbacNetworkVenue: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.addNetworkVenue, params, apiCustomHeader)
         return {
           ...req,
           body: JSON.stringify(payload)
+        }
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          const targetUseCase = 'ActivateWifiNetworkOnVenue'
+          await handleCallbackWhenActivityDone({
+            api,
+            activityData: msg,
+            useCase: targetUseCase,
+            callback: requestArgs.callback,
+            failedCallback: requestArgs.failedCallback
+          })
+        })
+      }
+    }),
+    // non-RBAC API
+    addNetworkVenue: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.addNetworkVenue, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
         }
       },
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'DETAIL' }]
@@ -358,13 +380,31 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'DETAIL' }]
     }),
+    deleteRbacNetworkVenue: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.deleteNetworkVenue, params, apiCustomHeader)
+        return {
+          ...req
+        }
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          const targetUseCase = 'DeactivateWifiNetworkOnVenue'
+          await handleCallbackWhenActivityDone({
+            api,
+            activityData: msg,
+            useCase: targetUseCase,
+            callback: requestArgs.callback,
+            failedCallback: requestArgs.failedCallback
+          })
+        })
+      }
+    }),
+    // non-RBAC API
     deleteNetworkVenue: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, enableRbac }) => {
-        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
-
-        const apiCustomHeader = enableRbac? GetApiVersionHeader(ApiVersionEnum.v1) : RKS_NEW_UI
-
-        const req = createHttpRequest(urlsInfo.deleteNetworkVenue, params, apiCustomHeader)
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.deleteNetworkVenue, params, RKS_NEW_UI)
         return {
           ...req
         }
@@ -673,6 +713,11 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
             'UpdateNetworkDeep',
+            'ActivateWifiNetworkOnVenue',
+            'ActivateWifiNetworkTemplateOnVenue',
+            'DeactivateWifiNetworkOnVenue',
+            'DeactivateWifiNetworkTemplateOnVenue',
+            'UpdateVenueWifiNetworkSettings',
             'DeactivateApGroupOnWifiNetwork',
             'ActivateApGroupOnWifiNetwork'
           ], () => {
@@ -735,6 +780,11 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
             'UpdateNetworkDeep',
+            'ActivateWifiNetworkOnVenue',
+            'ActivateWifiNetworkTemplateOnVenue',
+            'DeactivateWifiNetworkOnVenue',
+            'DeactivateWifiNetworkTemplateOnVenue',
+            'UpdateVenueWifiNetworkSettings',
             'DeactivateApGroupOnWifiNetwork',
             'ActivateApGroupOnWifiNetwork'
           ], () => {
@@ -864,7 +914,12 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'UpdateNetworkDeep'
+            'UpdateNetworkDeep',
+            'ActivateWifiNetworkOnVenue',
+            'ActivateWifiNetworkTemplateOnVenue',
+            'DeactivateWifiNetworkOnVenue',
+            'DeactivateWifiNetworkTemplateOnVenue',
+            'UpdateVenueWifiNetworkSettings'
           ], () => {
             api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
           })
@@ -923,7 +978,13 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'UpdateNetworkDeep'
+            'UpdateNetworkDeep',
+            'ActivateWifiNetworkOnVenue',
+            'ActivateWifiNetworkTemplateOnVenue',
+            'DeactivateWifiNetworkOnVenue',
+            'DeactivateWifiNetworkTemplateOnVenue',
+            'UpdateVenueWifiNetworkSettings',
+            'UpdateVenueWifiNetworkTemplateSettings'
           ], () => {
             api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
           })
@@ -1574,10 +1635,12 @@ export const {
   useAddNetworkMutation,
   useUpdateNetworkMutation,
   useDeleteNetworkMutation,
+  useAddRbacNetworkVenueMutation,
   useAddNetworkVenueMutation,
   useAddNetworkVenuesMutation,
   useUpdateNetworkVenueMutation,
   useUpdateNetworkVenuesMutation,
+  useDeleteRbacNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
   useDeleteNetworkVenuesMutation,
   useApNetworkListQuery,
