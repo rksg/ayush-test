@@ -5,8 +5,14 @@ import { Form }                                                                 
 import { get, isEqual, isNil, isNull, isUndefined, merge, omit, omitBy, cloneDeep } from 'lodash'
 import { defineMessage, useIntl }                                                   from 'react-intl'
 
-import { PageHeader, StepsForm, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
+import {
+  Loader,
+  PageHeader,
+  StepsForm,
+  StepsFormLegacy,
+  StepsFormLegacyInstance
+} from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useAddNetworkMutation,
   useAddNetworkVenuesMutation,
@@ -254,7 +260,7 @@ export function NetworkForm (props:{
     })
   }
 
-  const { data } = useGetNetwork()
+  const { data, isLoading } = useGetNetwork()
   const networkVxLanTunnelProfileInfo = useNetworkVxLanTunnelProfileInfo(data ?? null)
   const { certificateTemplateId } = useGetCertificateTemplateNetworkBindingQuery(
     { params: { networkId: data?.id } },
@@ -1033,6 +1039,7 @@ export function NetworkForm (props:{
         </NetworkFormContext.Provider>
       }
       {editMode &&
+      <Loader states={[{ isLoading: isLoading }]}>
         <NetworkFormContext.Provider value={{
           modalMode,
           createType,
@@ -1116,6 +1123,7 @@ export function NetworkForm (props:{
             </StepsForm>
           </MLOContext.Provider>
         </NetworkFormContext.Provider>
+      </Loader>
       }
     </>
   )
