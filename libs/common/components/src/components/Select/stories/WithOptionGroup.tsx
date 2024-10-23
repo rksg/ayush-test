@@ -14,11 +14,21 @@ export function WithOptionGroup () {
       />
     </div>
     <div>
+      <p>Radio:</p>
+      <Select
+        {...defaultProps}
+        type='radio'
+        options={normalGroupOption}
+      />
+    </div>
+    <div>
       <p>Multiple:</p>
       <Select
         {...defaultProps}
         mode='multiple'
         options={normalGroupOption}
+        optionFilterProp='label'
+        defaultValue={[1]}
       />
     </div>
   </Space>

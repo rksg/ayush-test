@@ -15,13 +15,15 @@ import {
 import {
   CliConfiguration,
   CliFamilyModels,
+  SwitchCliMessages,
+  SwitchViewModel,
   Venue,
   useConfigTemplate,
   useConfigTemplateQueryFnSwitcher,
   useTableQuery
 }            from '@acx-ui/rc/utils'
 
-import { cliFormMessages } from './'
+import { getCustomizedSwitchVenues } from '../../SwitchCli/CliVariableUtils'
 
 interface VenueExtend extends Venue {
   models: string[],
@@ -29,9 +31,14 @@ interface VenueExtend extends Venue {
   inactiveTooltip?: string
 }
 
-export function CliStepVenues () {
+export function CliStepVenues (props: {
+  allSwitchList?: SwitchViewModel[]
+}) {
   const { $t } = useIntl()
+  const { isTemplate: isConfigTemplate } = useConfigTemplate()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isSwitchLevelCliProfileEnabled = useIsSplitOn(Features.SWITCH_LEVEL_CLI_PROFILE)
+  const isCustomizedVariableEnabled = isSwitchLevelCliProfileEnabled && !isConfigTemplate
 
   const { form, initialValues } = useStepFormContext()
   const data = (form?.getFieldsValue(true) as CliConfiguration)
@@ -43,14 +50,19 @@ export function CliStepVenues () {
   })
 
   const [selectedRows, setSelectedRows] = useState<React.Key[]>([])
-  const { isTemplate } = useConfigTemplate()
+  const [preselectedRows, setPreselectedRows] = useState<string[]>([])
 
   const columns: TableProps<Venue>['columns'] = [{
     title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
     key: 'name',
     dataIndex: 'name',
     sorter: true,
-    defaultSortOrder: 'ascend'
+    defaultSortOrder: 'ascend',
+    render: function (_, data) {
+      // eslint-disable-next-line max-len
+      const postfix = (data as VenueExtend)?.inactiveTooltip === $t(SwitchCliMessages.PRE_SELECT_VENUE_FOR_CUSTOMIZED) ? '*' : ''
+      return `${data.name}${postfix}`
+    }
   },
   {
     title: $t({ defaultMessage: 'City' }),
@@ -83,7 +95,7 @@ export function CliStepVenues () {
   }]
 
   const tableQuery = useTableQuery<Venue>({
-    useQuery: isTemplate ? useGetVenuesTemplateListQuery : useVenuesListQuery,
+    useQuery: isConfigTemplate ? useGetVenuesTemplateListQuery : useVenuesListQuery,
     defaultPayload: {
       pageSize: 10,
       sortField: 'name',
@@ -92,11 +104,17 @@ export function CliStepVenues () {
   })
 
   const onChangeVenues = (values?: React.Key[] | string[]) => {
-    setSelectedRows(values as React.Key[])
-    form?.setFieldValue('venues', values)
+    const selected = _.uniq([...preselectedRows, ...(values ?? [])])
+    setSelectedRows(selected as React.Key[])
+    form?.setFieldValue('venues', selected)
   }
 
-  const transformData = (list?: Venue[], models?: string[], selectedVenues?: React.Key[]) => {
+  const transformData = (
+    list?: Venue[],
+    models?: string[],
+    selectedVenues?: React.Key[],
+    preselectedRows?: string[]
+  ) => {
     return list?.map(venue => {
       const venueApplyModels = cliFamilyModels
         ?.find(familyModel => familyModel.venueId === venue.id)?.familyModels
@@ -108,33 +126,50 @@ export function CliStepVenues () {
         && !(initialValues as CliConfiguration)?.venues?.includes(venue.id))
         && _.intersection(models, venueApplyModels)?.length > 0
 
+      const isPreselect = preselectedRows?.includes(venue.id)
+
       return {
         ...venue,
         models: venueApplyModels,
-        inactiveRow: isModelOverlap,
-        inactiveTooltip: $t(cliFormMessages.OVERLAPPING_MODELS_TOOLTIP)
+        inactiveRow: isModelOverlap || isPreselect,
+        inactiveTooltip: isModelOverlap
+          ? $t(SwitchCliMessages.OVERLAPPING_MODELS_TOOLTIP)
+          : (isPreselect ? $t(SwitchCliMessages.PRE_SELECT_VENUE_FOR_CUSTOMIZED) : '')
       }
     })
   }
 
   useEffect(() => {
+    if (data?.variables?.length && props?.allSwitchList?.length) {
+      // eslint-disable-next-line max-len
+      const preselectedRows = getCustomizedSwitchVenues(data?.variables, props?.allSwitchList)
+      setPreselectedRows(preselectedRows)
+    }
+  }, [data?.variables, props?.allSwitchList])
+
+  useEffect(() => {
     onChangeVenues(data?.venues)
-  }, [data])
+  }, [])
 
   useEffect(() => {
     if (!tableQuery.isLoading) {
-      const list = transformData(tableQuery?.data?.data, data?.models, selectedRows)
-      const venues = form?.getFieldValue('venues')
+      // eslint-disable-next-line max-len
+      const list = transformData(tableQuery?.data?.data, data?.models, selectedRows, preselectedRows)
+      const venues = _.uniq([
+        ...( form?.getFieldValue('venues') || []),
+        ...preselectedRows
+      ])
+
       const updateVenues = venues?.filter((vId:string) => {
         const venueApplyModels = list?.find(v => v.id === vId)?.models
         const excludeApplyingModels = venueApplyModels?.filter(m => !data?.models?.includes(m))
         const isModelOverlap = _.intersection(data?.models, excludeApplyingModels)?.length > 0
         return !isModelOverlap
-      })
+      }) ?? []
       setSelectedRows(updateVenues as React.Key[])
       form?.setFieldValue('venues', updateVenues)
     }
-  }, [data?.models, tableQuery.isLoading])
+  }, [data?.models, tableQuery.isLoading, preselectedRows])
 
   return <Row gutter={24}>
     <Col span={24}>
@@ -150,7 +185,7 @@ export function CliStepVenues () {
         display: 'block', margin: '4px 0 12px',
         fontSize: cssStr('--acx-body-3-font-size')
       }}>
-        {$t(cliFormMessages.VENUE_STEP_DESP)}
+        {$t(SwitchCliMessages.VENUE_STEP_DESP)}
       </Typography.Text>
       <Form.Item
         hidden={true}
@@ -161,7 +196,9 @@ export function CliStepVenues () {
       <Loader states={[{ isLoading: tableQuery.isLoading || tableQuery.isFetching }]}>
         <Table
           columns={columns}
-          dataSource={transformData(tableQuery?.data?.data, data?.models, selectedRows)}
+          dataSource={transformData(
+            tableQuery?.data?.data, data?.models, selectedRows, preselectedRows
+          )}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
@@ -179,6 +216,12 @@ export function CliStepVenues () {
             }),
             onChange: onChangeVenues
           }}
+          footer={() => isCustomizedVariableEnabled
+            ? <Typography.Text style={{ fontSize: cssStr('--acx-body-5-font-size') }}>{
+              // eslint-disable-next-line max-len
+              $t({ defaultMessage: '* Switches from this <venuePlural></venuePlural> were selected during variable customization in the previous step.' })
+            }</Typography.Text> : <></>
+          }
         />
       </Loader>
 
