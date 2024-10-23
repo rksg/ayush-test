@@ -106,6 +106,7 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
   const { $t } = useIntl()
   const params = useParams()
   const wifiEDAClientRevokeToggle = useIsSplitOn(Features.WIFI_EDA_CLIENT_REVOKE_TOGGLE)
+  const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
 
   const { showAllColumns, searchString, setConnectedClientCount } = props
   const [ tableSelected, setTableSelected] = useState({
@@ -723,7 +724,7 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
           enableApiFilter={true}
           floatRightFilters={true}
           rowKey='macAddress'
-          filterPersistence={true}
+          filterPersistence={enabledUXOptFeature && true}
         />
       </Loader>
     </UI.ClientTableDiv>
