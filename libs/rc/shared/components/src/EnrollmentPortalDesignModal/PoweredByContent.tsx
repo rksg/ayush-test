@@ -1,6 +1,8 @@
+import { baseUrlFor } from '@acx-ui/config'
+
 import * as UI from './styledComponents'
 
-const PoweredLogo = '/assets/images/portal/PoweredLogo.png'
+const PoweredLogo = baseUrlFor('/assets/images/portal/PoweredLogo.png')
 
 export function PoweredByContent () {
   return (

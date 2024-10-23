@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { SummaryCard }              from '@acx-ui/components'
+import { baseUrlFor }               from '@acx-ui/config'
 import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { useGetPortalLangMutation } from '@acx-ui/rc/services'
 import { Demo, PortalLanguageEnum } from '@acx-ui/rc/utils'
@@ -13,9 +14,9 @@ import { getImageDownloadUrl }      from '@acx-ui/utils'
 import { initialPortalData }               from '../../services/PortalForm'
 import { PortalPreviewModal, getLanguage } from '../PortalDemo'
 
-const Photo = '/assets/images/portal/PortalPhoto.jpg'
-const Powered = '/assets/images/portal/PoweredLogo.png'
-const Logo = '/assets/images/portal/RuckusCloud.png'
+const Photo = baseUrlFor('/assets/images/portal/PortalPhoto.jpg')
+const Powered = baseUrlFor('/assets/images/portal/PoweredLogo.png')
+const Logo = baseUrlFor('/assets/images/portal/RuckusCloud.png')
 
 export function PortalOverview (props: { demoValue: Demo }) {
   const { $t } = useIntl()

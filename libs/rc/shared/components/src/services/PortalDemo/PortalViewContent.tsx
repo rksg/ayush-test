@@ -2,6 +2,7 @@
 
 import { useContext, useState } from 'react'
 
+import { baseUrlFor }                   from '@acx-ui/config'
 import { Demo, Portal, PortalViewEnum } from '@acx-ui/rc/utils'
 
 import PortalFormContext from '../PortalForm/PortalFormContext'
@@ -83,7 +84,7 @@ export default function PortalViewContent (props:{
   return (
     <UI.LayoutViewContent isbg={isbg} style={isLogoPhotoHide?{ paddingTop: 150 }:{}}>
       {componentDisplay.wifi4eu && <UI.Img
-        src='/assets/images/portal/WiFi4euBanner.png'
+        src={baseUrlFor('/assets/images/portal/WiFi4euBanner.png')}
         alt='Wifi4eu'
         width={420}
         height={120}

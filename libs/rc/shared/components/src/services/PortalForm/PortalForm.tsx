@@ -10,6 +10,7 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
+import { baseUrlFor }                   from '@acx-ui/config'
 import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
   useGetPortalQuery,
@@ -53,9 +54,9 @@ import { PortalDemoDefaultSize, getImageBase64 } from '../PortalDemo/commonUtils
 import PortalFormContext from './PortalFormContext'
 import PortalSettingForm from './PortalSettingForm'
 
-const Photo = '/assets/images/portal/PortalPhoto.jpg'
-const Powered = '/assets/images/portal/PoweredLogo.png'
-const Logo = '/assets/images/portal/RuckusCloud.png'
+const Photo = baseUrlFor('/assets/images/portal/PortalPhoto.jpg')
+const Powered = baseUrlFor('/assets/images/portal/PoweredLogo.png')
+const Logo = baseUrlFor('/assets/images/portal/RuckusCloud.png')
 
 export const initialPortalData: Portal = {
   network: [],

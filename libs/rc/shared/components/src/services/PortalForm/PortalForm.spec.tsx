@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { baseUrlFor }                                                                   from '@acx-ui/config'
 import { Features, useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
 import { servicesConfigTemplateApi, serviceApi }                                        from '@acx-ui/rc/services'
 import { ServicesConfigTemplateUrlsInfo, CommonUrlsInfo, PortalUrlsInfo, Portal, Demo } from '@acx-ui/rc/utils'
@@ -14,7 +15,7 @@ import { portalResponse, portalTemaplteResponse, createPath } from './__tests__/
 import PortalForm                                             from './PortalForm'
 export const successResponse = { requestId: 'request-id' }
 
-const Logo = '/assets/images/portal/RuckusCloud.png'
+const Logo = baseUrlFor('/assets/images/portal/RuckusCloud.png')
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {

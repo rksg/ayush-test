@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
+import { baseUrlFor }                        from '@acx-ui/config'
 import { defaultComDisplay, PortalUrlsInfo
 }     from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
@@ -14,9 +15,9 @@ import PortalViewText            from './PortalViewText'
 
 import { PortalDemo } from './index'
 
-const Photo = '/assets/images/portal/PortalPhoto.jpg'
-const Powered = '/assets/images/portal/PoweredLogo.png'
-const Logo = '/assets/images/portal/RuckusCloud.png'
+const Photo = baseUrlFor('/assets/images/portal/PortalPhoto.jpg')
+const Powered = baseUrlFor('/assets/images/portal/PoweredLogo.png')
+const Logo = baseUrlFor('/assets/images/portal/RuckusCloud.png')
 
 const mockDemo = {
   bgColor: 'var(--acx-primary-white)',

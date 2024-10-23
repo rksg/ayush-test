@@ -5,6 +5,7 @@ import _                                             from 'lodash'
 import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 
 import { Loader }                                                                                                                                               from '@acx-ui/components'
+import { baseUrlFor }                                                                                                                                           from '@acx-ui/config'
 import { useGetUIConfigurationQuery, useUpdateUIConfigurationMutation, useLazyGetUIConfigurationLogoImageQuery, useLazyGetUIConfigurationBackgroundImageQuery } from '@acx-ui/rc/services'
 import { DefaultUIConfiguration, UIConfiguration }                                                                                                              from '@acx-ui/rc/utils'
 
@@ -313,7 +314,7 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
                 style={display.get('logo') || display.get('wifi4eu') ? {}: { paddingTop: '15' }}
               >
                 {display.get('wifi4eu') && <UI.Img
-                  src='/assets/images/portal/WiFi4euBanner.png'
+                  src={baseUrlFor('/assets/images/portal/WiFi4euBanner.png')}
                   alt='Wifi4eu'
                   width={420}
                   height={120}

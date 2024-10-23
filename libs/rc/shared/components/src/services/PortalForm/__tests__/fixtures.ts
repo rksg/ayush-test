@@ -1,4 +1,5 @@
 /* eslint-disable max-len */
+import { baseUrlFor }                                from '@acx-ui/config'
 import { defaultComDisplay, Portal, PortalSaveData } from '@acx-ui/rc/utils'
 import {
   ServiceType,
@@ -8,9 +9,9 @@ import {
 
 import { PortalDemoDefaultSize } from '../../PortalDemo/commonUtils'
 
-const Photo = '/assets/images/portal/PortalPhoto.jpg'
-const Powered = '/assets/images/portal/PoweredLogo.png'
-const Logo = '/assets/images/portal/RuckusCloud.png'
+const Photo = baseUrlFor('/assets/images/portal/PortalPhoto.jpg')
+const Powered = baseUrlFor('/assets/images/portal/PoweredLogo.png')
+const Logo = baseUrlFor('/assets/images/portal/RuckusCloud.png')
 
 export const portalResponse: Portal = {
   id: '1',

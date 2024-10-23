@@ -8,6 +8,7 @@ import {
   Layout as LayoutComponent,
   LayoutUI
 } from '@acx-ui/components'
+import { baseUrlFor }                               from '@acx-ui/config'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { AdminSolid, HomeSolid }                    from '@acx-ui/icons'
 import {
@@ -125,7 +126,12 @@ function Layout () {
       logo={<TenantNavLink
         to={indexPath}
         tenantType={'v'}
-        children={<img src='/assets/Logo.svg' alt='logo' width={180} height={60} />} />}
+        children={<img
+          src={baseUrlFor('/assets/Logo.svg')}
+          alt='logo'
+          width={180}
+          height={60}
+        />} />}
       menuConfig={useMenuConfig(tenantType, hasLicense, isDogfood)}
       content={
         <>

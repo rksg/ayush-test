@@ -4,13 +4,14 @@ import { Upload }  from 'antd'
 import { RcFile }  from 'antd/lib/upload'
 import { useIntl } from 'react-intl'
 
+import { baseUrlFor }                                  from '@acx-ui/config'
 import { getLogoImageSize, LogoSize, UIConfiguration } from '@acx-ui/rc/utils'
 
 import * as Utils  from './commonUtils'
 import { PopOver } from './PopOver'
 import * as UI     from './styledComponents'
 
-const RuckusCloud = '/assets/images/portal/RuckusCloud.png'
+const RuckusCloud = baseUrlFor('/assets/images/portal/RuckusCloud.png')
 
 export interface LogoContentProps {
   value: UIConfiguration

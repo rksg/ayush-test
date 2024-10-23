@@ -6,6 +6,7 @@ import { useIntl }           from 'react-intl'
 import { useParams }         from 'react-router-dom'
 
 import { GridCol, GridRow, StepsFormLegacy } from '@acx-ui/components'
+import { baseUrlFor }                        from '@acx-ui/config'
 import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import {
   useGetPortalLangMutation,
@@ -30,9 +31,9 @@ import NetworkFormContext    from '../NetworkFormContext'
 
 import PortalServiceModal from './PortalServiceModal'
 
-const Photo = '/assets/images/portal/PortalPhoto.jpg'
-const Powered = '/assets/images/portal/PoweredLogo.png'
-const Logo = '/assets/images/portal/RuckusCloud.png'
+const Photo = baseUrlFor('/assets/images/portal/PortalPhoto.jpg')
+const Powered = baseUrlFor('/assets/images/portal/PoweredLogo.png')
+const Logo = baseUrlFor('/assets/images/portal/RuckusCloud.png')
 
 type ImagePortalData = {
   poweredImg: string,

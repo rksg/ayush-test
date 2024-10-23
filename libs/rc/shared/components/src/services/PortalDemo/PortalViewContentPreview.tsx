@@ -1,4 +1,5 @@
 /* eslint-disable max-len */
+import { baseUrlFor }                                 from '@acx-ui/config'
 import { Demo, GuestNetworkTypeEnum, PortalViewEnum } from '@acx-ui/rc/utils'
 
 import { PortalDemoDefaultSize }  from './commonUtils'
@@ -56,7 +57,7 @@ export default function PortalViewContentPreview (props:{
   return (
     <UI.LayoutViewContent isbg={isbg} style={isLogoPhotoHide?{ paddingTop: 150 }:{}}>
       {componentDisplay.wifi4eu && <UI.Img
-        src='/assets/images/portal/WiFi4euBanner.png'
+        src={baseUrlFor('/assets/images/portal/WiFi4euBanner.png')}
         alt='Wifi4eu'
         width={420}
         height={120}
