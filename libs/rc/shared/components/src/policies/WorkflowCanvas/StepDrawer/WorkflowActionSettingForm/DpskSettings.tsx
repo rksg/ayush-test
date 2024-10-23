@@ -94,6 +94,17 @@ export function DpskSettings () {
   }, [identityGroupId, loadIdentities])
 
   useEffect(() => {
+    const identityIdValue = form.getFieldValue('identityId')
+    if(identityIdValue && identitiesResponse.data) {
+      const selectedIdentity = identitiesResponse.data?.data
+        .find((identity) => identity.id === identityIdValue)
+      if(!selectedIdentity) {
+        form.setFieldValue('identityId', null)
+      }
+    }
+  }, [identitiesResponse])
+
+  useEffect(() => {
     if (identityGroupId && identityGroupList) {
       loadDpskNetworks(identityGroupId)
     }
