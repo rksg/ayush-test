@@ -12,6 +12,7 @@ import {
   TriBandSettings,
   Venue,
   VenueApModelBandModeSettings,
+  VenueApSmartMonitor,
   VenueBssColoring,
   VenueClientAdmissionControl,
   VenueConfigTemplateUrlsInfo,
@@ -534,6 +535,25 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
         VenueConfigTemplateUrlsInfo.updateVenueSwitchAaaServerRbac
       ),
       invalidatesTags: [{ type: 'VenueTemplateSwitchAAA', id: 'LIST' }]
+    }),
+    getVenueTemplateApSmartMonitorSettings: build.query<VenueApSmartMonitor, RequestPayload>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        return createHttpRequest(VenueConfigTemplateUrlsInfo.getVenueApSmartMonitorSettings, params)
+      },
+      providesTags: [{ type: 'VenueTemplate', id: 'SmartMonitorSettings' }]
+    }),
+    // eslint-disable-next-line max-len
+    updateVenueTemplateApSmartMonitorSettings: build.mutation<CommonResult, RequestPayload<VenueApSmartMonitor>>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(VenueConfigTemplateUrlsInfo.updateVenueApSmartMonitorSettings, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'VenueTemplate', id: 'SmartMonitorSettings' }]
     })
   })
 })
@@ -589,5 +609,7 @@ export const {
   useDeleteVenueTemplateSwitchAAAServerMutation,
   useBulkDeleteVenueTemplateSwitchAAAServerMutation,
   useAddVenueTemplateSwitchAAAServerMutation,
-  useUpdateVenueTemplateSwitchAAAServerMutation
+  useUpdateVenueTemplateSwitchAAAServerMutation,
+  useGetVenueTemplateApSmartMonitorSettingsQuery,
+  useUpdateVenueTemplateApSmartMonitorSettingsMutation
 } = venueConfigTemplateApi

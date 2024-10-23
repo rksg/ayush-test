@@ -581,3 +581,17 @@ export const MspAttentionNotesPayload = {
     licenseCheck: true
   }
 }
+
+export interface LicenseCalculatorData {
+    effectiveDate: string,
+    expirationDate: string,
+    quantity: number,
+    licenseType: EntitlementDeviceType,
+    isTrial: boolean,
+    maxQuantity: number
+}
+
+export interface LicenseCalculatorDataResponse {
+  data: LicenseCalculatorData,
+  message: string
+}

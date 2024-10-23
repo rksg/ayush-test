@@ -5,8 +5,8 @@ import { Form }                                                                 
 import { get, isEqual, isNil, isNull, isUndefined, merge, omit, omitBy, cloneDeep } from 'lodash'
 import { defineMessage, useIntl }                                                   from 'react-intl'
 
-import { PageHeader, StepsForm, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
+import { PageHeader, StepsForm, StepsFormLegacy, StepsFormLegacyInstance }      from '@acx-ui/components'
+import { Features, useIsSplitOn }                                               from '@acx-ui/feature-toggle'
 import {
   useAddNetworkMutation,
   useAddNetworkVenuesMutation,
@@ -36,7 +36,7 @@ import {
   useActivatePortalTemplateMutation,
   useGetEnhancedPortalProfileListQuery,
   useGetEnhancedPortalTemplateListQuery,
-  useUpdateNetworkVenueMutation
+  useUpdateNetworkVenueMutation, useGetMacRegistrationPoolNetworkBindingQuery
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -56,7 +56,7 @@ import {
   useConfigTemplatePageHeaderTitle,
   useConfigTemplateQueryFnSwitcher,
   NetworkTunnelSdLanAction,
-  NetworkTunnelSoftGreAction
+  NetworkTunnelSoftGreAction, MacRegistrationPool
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
@@ -262,6 +262,12 @@ export function NetworkForm (props:{
       skip: !(editMode || cloneMode) || !data?.useCertificateTemplate,
       selectFromResult: ({ data }) => ({ certificateTemplateId: data?.id })
     })
+
+  const { data: macRegistrationPool } = useGetMacRegistrationPoolNetworkBindingQuery(
+    { params: { networkId: data?.id } },
+    { skip: !data?.wlan?.macAddressAuthentication }
+  )
+
   const { data: dpskService } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetDpskServiceQuery,
     useTemplateQueryFn: useGetDpskServiceTemplateQuery,
@@ -360,6 +366,20 @@ export function NetworkForm (props:{
 
     updateSaveData(fullNetworkSaveData)
   }, [wifiCallingIds])
+
+  useEffect(() => {
+    if (!macRegistrationPool?.data?.length) return
+
+    const fullNetworkSaveData = merge({}, saveState, {
+      wlan: {
+        macRegistrationListId: (macRegistrationPool?.data as MacRegistrationPool[])[0].id || ''
+      }
+    })
+
+    form.setFieldValue('wlan.macRegistrationListId', (macRegistrationPool?.data as MacRegistrationPool[])[0].id || '')
+
+    updateSaveData(fullNetworkSaveData)
+  }, [macRegistrationPool])
 
   useEffect(() => {
     if (!radiusServerConfigurations) return
