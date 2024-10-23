@@ -80,19 +80,19 @@ export function ScheduleStep (props: ScheduleStepProps) {
     currentSchedule[SwitchFirmwareModelGroup.ICX71] || '')
   const [selectedICX7XVersion, setSelecteedICX7XVersion] = useState(
     currentSchedule[SwitchFirmwareModelGroup.ICX7X] || '')
-  const [selectedICX82Version, setSelecteedICX82Version] = useState(
-    currentSchedule[SwitchFirmwareModelGroup.ICX82] || '')
   const [selectedICX81Version, setSelecteedICX81Version] = useState(
     currentSchedule[SwitchFirmwareModelGroup.ICX81] || '')
+  const [selectedICX82Version, setSelecteedICX82Version] = useState(
+    currentSchedule[SwitchFirmwareModelGroup.ICX82] || '')
 
   const ICX71Count = availableVersions?.filter(
     v => v.modelGroup === SwitchFirmwareModelGroup.ICX71)[0]?.switchCount || 0
   const ICX7XCount = availableVersions?.filter(
     v => v.modelGroup === SwitchFirmwareModelGroup.ICX7X)[0]?.switchCount || 0
-  const ICX82Count = availableVersions?.filter(
-    v => v.modelGroup === SwitchFirmwareModelGroup.ICX82)[0]?.switchCount || 0
   const ICX81Count = availableVersions?.filter(
     v => v.modelGroup === SwitchFirmwareModelGroup.ICX81)[0]?.switchCount || 0
+  const ICX82Count = availableVersions?.filter(
+    v => v.modelGroup === SwitchFirmwareModelGroup.ICX82)[0]?.switchCount || 0
 
 
   const [switchNoteData, setSwitchNoteData] = useState([] as NoteProps[])
@@ -143,17 +143,16 @@ export function ScheduleStep (props: ScheduleStepProps) {
     form.setFieldValue('selectedICX7XVersion', value.target.value)
     form.validateFields(['selectVersionStep'])
   }
-  const handleICX82Change = (value: RadioChangeEvent) => {
-    setSelecteedICX82Version(value.target.value)
-    form.setFieldValue('selectedICX82Version', value.target.value)
-    form.validateFields(['selectVersionStep'])
-  }
   const handleICX81Change = (value: RadioChangeEvent) => {
     setSelecteedICX81Version(value.target.value)
     form.setFieldValue('selectedICX81Version', value.target.value)
     form.validateFields(['selectVersionStep'])
   }
-
+  const handleICX82Change = (value: RadioChangeEvent) => {
+    setSelecteedICX82Version(value.target.value)
+    form.setFieldValue('selectedICX82Version', value.target.value)
+    form.validateFields(['selectVersionStep'])
+  }
 
   const [hasSelectedDate, setHasSelectedDate] = useState<boolean>(false)
   const getCurrentChecked = function () {

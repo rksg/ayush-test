@@ -150,8 +150,8 @@ export function VenueFirmwareList () {
         const modelGroups = [
           SwitchFirmwareModelGroup.ICX71,
           SwitchFirmwareModelGroup.ICX7X,
-          SwitchFirmwareModelGroup.ICX82,
-          SwitchFirmwareModelGroup.ICX81
+          SwitchFirmwareModelGroup.ICX81,
+          SwitchFirmwareModelGroup.ICX82
         ]
 
         const getRecommendedVersion = (modelGroup: SwitchFirmwareModelGroup) => {

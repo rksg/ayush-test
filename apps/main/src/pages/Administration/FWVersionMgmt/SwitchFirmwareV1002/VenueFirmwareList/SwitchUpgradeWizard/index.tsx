@@ -102,16 +102,16 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
         version: form.getFieldValue('selectedICX7XVersion')
       })
     }
-    if (form.getFieldValue('selectedICX82Version')) {
-      versionsPayload.push({
-        modelGroup: SwitchFirmwareModelGroup.ICX82,
-        version: form.getFieldValue('selectedICX82Version')
-      })
-    }
     if (form.getFieldValue('selectedICX81Version')) {
       versionsPayload.push({
         modelGroup: SwitchFirmwareModelGroup.ICX81,
         version: form.getFieldValue('selectedICX81Version')
+      })
+    }
+    if (form.getFieldValue('selectedICX82Version')) {
+      versionsPayload.push({
+        modelGroup: SwitchFirmwareModelGroup.ICX82,
+        version: form.getFieldValue('selectedICX82Version')
       })
     }
     return versionsPayload

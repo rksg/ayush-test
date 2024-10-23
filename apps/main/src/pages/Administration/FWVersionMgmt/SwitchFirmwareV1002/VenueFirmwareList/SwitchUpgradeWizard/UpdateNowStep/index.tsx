@@ -47,8 +47,8 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
 
   const [selectedICX71Version, setSelecteedICX71Version] = useState('')
   const [selectedICX7XVersion, setSelecteedICX7XVersion] = useState('')
-  const [selectedICX82Version, setSelecteedICX82Version] = useState('')
   const [selectedICX81Version, setSelecteedICX81Version] = useState('')
+  const [selectedICX82Version, setSelecteedICX82Version] = useState('')
 
   const [switchNoteData, setSwitchNoteData] = useState([] as NoteProps[])
 
@@ -56,10 +56,10 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
     v => v.modelGroup === SwitchFirmwareModelGroup.ICX71)[0]?.switchCount || 0
   const ICX7XCount = availableVersions?.filter(
     v => v.modelGroup === SwitchFirmwareModelGroup.ICX7X)[0]?.switchCount || 0
-  const ICX82Count = availableVersions?.filter(
-    v => v.modelGroup === SwitchFirmwareModelGroup.ICX82)[0]?.switchCount || 0
   const ICX81Count = availableVersions?.filter(
     v => v.modelGroup === SwitchFirmwareModelGroup.ICX81)[0]?.switchCount || 0
+  const ICX82Count = availableVersions?.filter(
+    v => v.modelGroup === SwitchFirmwareModelGroup.ICX82)[0]?.switchCount || 0
 
   const payload = {
     venueIdList: upgradeVenueList.map(item => item.venueId),
@@ -109,14 +109,14 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
     form.setFieldValue('selectedICX7XVersion', value.target.value)
     form.validateFields()
   }
-  const handleICX82Change = (value: RadioChangeEvent) => {
-    setSelecteedICX82Version(value.target.value)
-    form.setFieldValue('selectedICX82Version', value.target.value)
-    form.validateFields()
-  }
   const handleICX81Change = (value: RadioChangeEvent) => {
     setSelecteedICX81Version(value.target.value)
     form.setFieldValue('selectedICX81Version', value.target.value)
+    form.validateFields()
+  }
+  const handleICX82Change = (value: RadioChangeEvent) => {
+    setSelecteedICX82Version(value.target.value)
+    form.setFieldValue('selectedICX82Version', value.target.value)
     form.validateFields()
   }
 
