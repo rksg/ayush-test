@@ -3,7 +3,11 @@ import { useIntl }             from 'react-intl'
 
 import { Check } from '@acx-ui/icons'
 
-import type { SelectProps } from 'antd'
+import type { SelectProps as AntSelectProps } from 'antd'
+
+export interface SelectProps extends AntSelectProps {
+  type?: string
+}
 
 export function Select (props: SelectProps) {
   const { options = [], children = [], ...restProps } = props
@@ -16,20 +20,25 @@ export function Select (props: SelectProps) {
   const extraClassName = [
     ...(props?.dropdownClassName?.split(' ') ?? []),
     isGroupingDropdown ? 'grouping-dropdown' : '',
-    props?.mode === 'multiple' ? 'multiple-dropdown' : ''
+    props?.mode === 'multiple' ? 'multiple-dropdown' : '',
+    props?.type === 'radio' && !props?.mode ? 'radio-type' : ''
   ].filter(cls => cls).join(' ')
 
   const getGroupOptions = () => {
     return isSelectOptGroup
       ? children?.map(({ props }) => ({
+        title: props?.label,
         label: <span>{props?.label}</span>,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         options: props?.children?.map(({ props }: any) => ({
           label: props?.children,
-          value: props?.value
+          value: props?.value,
+          key: props?.label,
+          disabled: props?.disabled
         }))
       }))
       : options?.map(opt => ({
+        title: opt?.label,
         label: <span>{opt?.label}</span>,
         ...(opt.options ? { options: opt.options } : null),
         ...(opt.value ? { value: opt.value } : null)
@@ -37,8 +46,8 @@ export function Select (props: SelectProps) {
   }
 
   const selectProps = isGroupingDropdown ? {
-    ...restProps,
     showArrow: true,
+    ...restProps,
     options: getGroupOptions()
   } : props
 
