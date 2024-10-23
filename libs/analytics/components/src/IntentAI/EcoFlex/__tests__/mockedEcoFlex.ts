@@ -63,6 +63,18 @@ export const mockKpiData = {
   }
 }
 
+export const mockKpiResultDataWithUnknownField = {
+  kpi: {
+    data: {
+      result: {
+        xxx: 10
+      }
+    },
+    compareData: {
+    }
+  }
+}
+
 export const mockKpiResultData = {
   data: {
     timestamp: '2024-09-25T03:16:17.999Z',

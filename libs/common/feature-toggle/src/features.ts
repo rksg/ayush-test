@@ -107,6 +107,7 @@ export enum Features {
   PTENANT_RBAC_API = 'abac-policies-toggle',
   RADIO6G_RATE_CONTROL = 'radio6g-rate-control-toggle',
   RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
+  RBAC_PHASE2_TOGGLE = 'acx-ui-rbac-phase2-toggle',
   REC_TO_MSP_CONVERSION_TOGGLE = 'acx-rec-to-msp-conversion-toggle',
   RECOMMENDATION_DELETE = 'acx-ui-recommendation-delete-toggle',
   RECOMMENDATION_REVERT = 'acx-ui-recommendation-revert-toggle',
