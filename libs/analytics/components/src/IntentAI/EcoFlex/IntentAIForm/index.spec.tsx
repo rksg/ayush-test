@@ -180,7 +180,7 @@ describe('IntentAIForm', () => {
           excludedAPs: [[{ name: 'name', type: 'zone' }]]
         },
         scheduledAt: '',
-        dataEndTime: ''
+        dataEndTime: '2024-08-08T12:00:00.000Z'
       }
     })
     render(<IntentAIForm />, { route: { params }, wrapper: Provider })
