@@ -1,8 +1,22 @@
 import { useState, useRef, useEffect } from 'react'
 
-import { Col, Dropdown, Form, Input, List, Menu, MenuProps, Row, Space, Select, Switch, Typography, FormInstance } from 'antd'
-import { useIntl, FormattedMessage }                                                                               from 'react-intl'
-
+import {
+  Col,
+  Dropdown,
+  Form,
+  FormInstance,
+  Input,
+  List,
+  Menu,
+  MenuProps,
+  Row,
+  Space,
+  Select,
+  Switch,
+  Typography
+} from 'antd'
+import _                             from 'lodash'
+import { useIntl, FormattedMessage } from 'react-intl'
 import 'codemirror/addon/hint/show-hint.js'
 
 import {
@@ -14,27 +28,40 @@ import {
   useStepFormContext
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { MoreVertical, Plus }     from '@acx-ui/icons-new'
 import {
   useGetCliConfigExamplesQuery,
+  useGetCliFamilyModelsQuery,
   useGetCliTemplatesQuery
 } from '@acx-ui/rc/services'
 import {
   checkObjectNotExists,
   CliTemplateExample,
   CliTemplateVariable,
+  SwitchViewModel,
+  SwitchCliMessages,
   transformTitleCase,
+  useConfigTemplate,
   whitespaceOnlyRegExp
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 import { getIntl }   from '@acx-ui/utils'
 
-import { CodeMirrorWidget }                                from '../../CodeMirrorWidget'
-import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../../ImportFileDrawer'
+import { CodeMirrorWidget }                                from '../CodeMirrorWidget'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../ImportFileDrawer'
 
 import { CliVariableModal } from './CliVariableModal'
-import * as UI              from './styledComponents'
+import {
+  getVariableSeparator,
+  MAX_VARIABLE_COUNT,
+  renderVariableTitle,
+  renderVariableValue,
+  VariableType
+} from './CliVariableUtils'
+import { CustomizedSettingsDrawer } from './CustomizedSettingsDrawer'
+import * as UI                      from './styledComponents'
 
-import { tooltip, getVariableSeparator, VariableType } from './'
+import { SwitchSettings } from './'
 
 interface codeMirrorElement {
   current: {
@@ -76,7 +103,6 @@ const cliExamplesTooltip = <FormattedMessage
   }}
 />
 
-export const maxVariableCount = 200
 const cliTemplatesPayload = {
   fields: ['name', 'id', 'venueSwitches'],
   pageSize: 9999,
@@ -84,14 +110,22 @@ const cliTemplatesPayload = {
   sortOrder: 'DESC'
 }
 
-// TODO: move to rc/components
-export function CliStepConfiguration () {
+export function CliStepConfiguration (props: {
+  appliedModels?: Record<string, string[]>
+  allowedSwitchList?: SwitchViewModel[]
+  configuredSwitchList?: SwitchViewModel[]
+}) {
   const { $t } = useIntl()
   const params = useParams()
+  const { isTemplate: isConfigTemplate } = useConfigTemplate()
   const { form, editMode } = useStepFormContext()
-  const isTemplate = params?.configType !== 'profiles'
-  const cliDefaultString = isTemplate ? '' : 'manager registrar'
+
+  const isCliTemplate = params?.configType !== 'profiles'
+  const cliDefaultString = isCliTemplate ? '' : 'manager registrar'
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isSwitchLevelCliProfileEnabled = useIsSplitOn(Features.SWITCH_LEVEL_CLI_PROFILE)
+  const isCustomizedVariableEnabled
+    = isSwitchLevelCliProfileEnabled && !isCliTemplate && !isConfigTemplate
 
   const [cli, setCli] = useState('')
   const [cliFontSize, setCliFontSize] = useState('14')
@@ -103,6 +137,15 @@ export function CliStepConfiguration () {
   const [importModalvisible, setImportModalvisible] = useState(false)
   const [initVariableList, setInitVariableList] = useState(false)
 
+  const [selectedModels, setSelectedModels] = useState([] as string[])
+  const [selectedVenues, setSelectedVenues] = useState([] as string[])
+  const [venueAppliedModels, setVenueAppliedModels]
+    = useState({} as unknown as Record<string, string[]>)
+
+  const [switchSettings, setSwitchSettings] = useState([] as SwitchSettings[])
+  const [switchSettingType, setSwitchSettingType] = useState('')
+  const [switchSettingDrawerVisible, setSwitchSettingDrawerVisible] = useState(false)
+
   const { data: configExamples } = useGetCliConfigExamplesQuery({
     params, enableRbac: isSwitchRbacEnabled
   })
@@ -111,7 +154,14 @@ export function CliStepConfiguration () {
       params,
       payload: cliTemplatesPayload,
       enableRbac: isSwitchRbacEnabled
-    }, { skip: !isTemplate })
+    }, { skip: !isCliTemplate })
+
+  const { data: cliFamilyModels } = useGetCliFamilyModelsQuery({
+    params,
+    enableRbac: isSwitchRbacEnabled
+  }, {
+    skip: !isCustomizedVariableEnabled
+  })
 
   const codeMirrorEl = useRef(null as unknown as {
     getInstance: Function,
@@ -135,7 +185,7 @@ export function CliStepConfiguration () {
 
       const cli = form?.getFieldValue('cli')
       codeMirrorInstance?.setValue(cli ?? cliDefaultString)
-      !isTemplate && markCodeMirrorReadOnlyText(codeMirrorInstance)
+      !isCliTemplate && markCodeMirrorReadOnlyText(codeMirrorInstance)
 
       const validation = validateCLI(codeMirrorEl, variableList, cliDefaultString)
       form?.setFieldsValue({
@@ -148,7 +198,7 @@ export function CliStepConfiguration () {
   useEffect(() => {
     const data = form?.getFieldsValue(true)
     if (data) {
-      const transformVariables = !isSwitchRbacEnabled
+      const transformVariables = !isSwitchRbacEnabled && !isCustomizedVariableEnabled
         ? data?.variables
         : data?.variables.map((variable: CliTemplateVariable) => {
           return {
@@ -158,6 +208,8 @@ export function CliStepConfiguration () {
         })
 
       setVariableList((transformVariables ?? []) as CliTemplateVariable[])
+      setSelectedModels(data?.models)
+      setSelectedVenues(data?.venues)
       setInitVariableList(true)
     }
   }, [])
@@ -171,6 +223,23 @@ export function CliStepConfiguration () {
       })
     }
   }, [variableList])
+
+  useEffect(() => {
+    if (cliFamilyModels) {
+      const venueAppliedModels = cliFamilyModels?.reduce((result, v) => {
+        const venueId = v.venueId as unknown as string
+        const models = v.familyModels?.map(f => f.models).flat()?.map(m => m.model) ?? []
+        const appliedModels = props?.appliedModels?.[venueId]
+        const diffModels = appliedModels ? _.difference(models, appliedModels) : models
+        return {
+          ...result,
+          [v.venueId]: diffModels
+        }
+      }, {}) as Record<string, string[]>
+
+      setVenueAppliedModels(venueAppliedModels)
+    }
+  }, [cliFamilyModels])
 
   useEffect(() => {
     if (codeMirrorInstance) {
@@ -208,7 +277,7 @@ export function CliStepConfiguration () {
     <Row gutter={24}>
       <Col span={8}>
         <StepsForm.Title children={$t({ defaultMessage: 'CLI Configuration' })} />
-        {isTemplate && <Form.Item
+        {isCliTemplate && <Form.Item
           name='name'
           label={$t({ defaultMessage: 'Template Name' })}
           rules={[
@@ -227,7 +296,7 @@ export function CliStepConfiguration () {
           children={<Input />}
         />}
 
-        {isTemplate && <Form.Item
+        {isCliTemplate && <Form.Item
           noStyle
           children={<UI.ToggleWrapper>
             <Form.Item
@@ -242,7 +311,7 @@ export function CliStepConfiguration () {
           </UI.ToggleWrapper>}
         />}
 
-        {!isTemplate && <Form.Item
+        {!isCliTemplate && <Form.Item
           noStyle
           children={<UI.ToggleWrapper>
             <Form.Item
@@ -289,7 +358,7 @@ export function CliStepConfiguration () {
           <Space style={{ display: 'flex', fontWeight: 600 }}>
             {$t({ defaultMessage: 'CLI commands' })}
             <Tooltip
-              title={$t(tooltip.cliCommands)}
+              title={$t(SwitchCliMessages.CLI_COMMANDS)}
               placement='bottom'
             >
               <UI.QuestionMarkIcon />
@@ -366,15 +435,15 @@ export function CliStepConfiguration () {
           <Tabs.TabPane tab={$t({ defaultMessage: 'Variables' })} key='variables'>
             <Space style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <Tooltip
-                title={variableList?.length >= maxVariableCount
-                  ? $t(tooltip.cliVariablesReachMax) : ''
+                title={variableList?.length >= MAX_VARIABLE_COUNT
+                  ? $t(SwitchCliMessages.CLI_VARIABLES_REACH_MAX) : ''
                 }
               >
                 <Space>
                   <Button type='link'
                     data-testid='add-variable-btn'
                     size='small'
-                    disabled={variableList?.length >= maxVariableCount}
+                    disabled={variableList?.length >= MAX_VARIABLE_COUNT}
                     onClick={() => {
                       setVariableModalvisible(true)
                       setVariableModalEditMode(false)
@@ -403,23 +472,27 @@ export function CliStepConfiguration () {
                 v => !variableFilterType || v.type === variableFilterType)}
               renderItem={(item) => {
                 const variable = item as CliTemplateVariable
+                const allSwitchList = [
+                  ...(props.allowedSwitchList ?? []),
+                  ...(props.configuredSwitchList ?? [])
+                ]
                 return <List.Item
                   actions={[
                     <Button
                       data-testid='add-var-btn'
+                      type='link'
                       size='small'
-                      ghost={true}
+                      icon={<Plus size='sm' />}
                       onClick={() => {
                         appendContentToCliEditor(codeMirrorInstance, 'var', variable.name)
-                      }}>
-                      <UI.PlusIcon />
-                    </Button>,
+                      }}
+                    />,
                     <Dropdown overlay={variableActionMenu} trigger={['click']} key='actionMenu'>
                       <Button
                         data-testid='edit-var-btn'
+                        type='link'
                         size='small'
-                        ghost={true}
-                        icon={<UI.MoreVerticalIcon />}
+                        icon={<MoreVertical size='sm' />}
                         onClick={() => {
                           setSelectedEditVariable(variable)
                         }}
@@ -428,11 +501,26 @@ export function CliStepConfiguration () {
                   ]}
                 >
                   <List.Item.Meta
-                    title={<Space size={0} split={<UI.Divider type='vertical' />}>
-                      <Space style={{ fontWeight: 600 }}>{variable.name}</Space>
-                      {transformTitleCase(variable.type)}</Space>
+                    title={
+                      isSwitchLevelCliProfileEnabled
+                        ? renderVariableTitle(variable)
+                        : <Space size={0} split={<UI.Divider type='vertical' />}>
+                          <Space style={{ fontWeight: 600 }}>{variable.name}</Space>
+                          {transformTitleCase(variable?.type || '')}
+                        </Space>
                     }
-                    description={transformVariableValue(variable.type, variable.value)}
+                    description={
+                      isSwitchLevelCliProfileEnabled
+                        ? renderVariableValue(
+                          variable,
+                          allSwitchList,
+                          setSwitchSettings,
+                          setSwitchSettingType,
+                          setSwitchSettingDrawerVisible,
+                          isSwitchRbacEnabled || isCustomizedVariableEnabled
+                        )
+                        : transformVariableValue(variable.type, variable.value)
+                    }
                   />
                 </List.Item>
               }}
@@ -449,6 +537,19 @@ export function CliStepConfiguration () {
       setModalvisible={setVariableModalvisible}
       variableList={variableList}
       setVariableList={setVariableList}
+      isCustomizedVariableEnabled={isCustomizedVariableEnabled}
+      venueAppliedModels={venueAppliedModels}
+      selectedModels={selectedModels}
+      selectedVenues={selectedVenues}
+      allowedSwitchList={props?.allowedSwitchList}
+      configuredSwitchList={props?.configuredSwitchList}
+    />}
+
+    {isCustomizedVariableEnabled && <CustomizedSettingsDrawer
+      type={switchSettingType}
+      switchSettings={switchSettings}
+      switchSettingDrawerVisible={switchSettingDrawerVisible}
+      setSwitchSettingDrawerVisible={setSwitchSettingDrawerVisible}
     />}
 
     <ImportFileDrawer
@@ -486,11 +587,11 @@ function CliTemplateExampleList (props: {
               data-testid='add-example-btn'
               type='link'
               size='small'
+              icon={<Plus size='sm' />}
               onClick={() => {
                 appendContentToCliEditor(codeMirrorInstance, 'example', `\n${example.cli}\n`)
-              }}>
-              <UI.PlusIcon />
-            </Button>
+              }}
+            />
           ]}
         >{example.name}</List.Item>
       </Tooltip>
@@ -661,3 +762,4 @@ function htmlDecode (code: string) {
   div.innerHTML = code
   return div.innerText?.replace(/↵/g, '\n') || div?.textContent?.replace(/↵/g, '')
 }
+

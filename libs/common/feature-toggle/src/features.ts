@@ -140,6 +140,7 @@ export enum Features {
   SWITCH_FIRMWARE_V1002_TOGGLE= 'switch-firmware-management-for-10010d-toggle',
   SWITCH_PROFILE_ONBOARD_ONLY= 'switch-config-profile-onboarding-only-toggle',
   SWITCH_NTP_SERVER = 'switch-consumer-apply-ntp-server-toggle',
+  SWITCH_LEVEL_CLI_PROFILE = 'switch-consumer-switch-level-cli-profile-toggle',
   SWITCH_CABLE_TEST = 'switch-cable-testing-toggle',
   SWITCH_SUPPORT_ICX8200AV= 'switch-support-icx8200av-toggle',
   TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs',
