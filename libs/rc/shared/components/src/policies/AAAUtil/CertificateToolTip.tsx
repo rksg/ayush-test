@@ -4,10 +4,10 @@ import { ReactElement } from 'react'
 import { TooltipPlacement }          from 'antd/lib/tooltip'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Tooltip, cssStr }                                                        from '@acx-ui/components'
+import { Tooltip }                                                                from '@acx-ui/components'
 import { CertificateStatusType, getPolicyRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
 import { TenantLink }                                                             from '@acx-ui/react-router-dom'
-
+import * as UI                                                                    from './styledComponents'
 
 export type CertificateToolTipProps = {
     visible: boolean,
@@ -61,16 +61,15 @@ export function CertificateToolTip (props: CertificateToolTipProps) {
         }}
       />
     }
+    overlayClassName={UI.toolTipClassName}
     placement={placement ?? 'right'}>
-    {icon ?? <Tooltip.Warning
-      placement='right'
-      iconStyle={{
-        height: '16px',
-        width: '16px',
-        marginBottom: '-3px',
-        marginLeft: '4px',
-        fill: cssStr('--acx-semantics-red-60')
-      }}
-    />}
+    {icon ??
+      <UI.WarningCircleRed
+        style={{
+          height: '18px',
+          width: '18px',
+          marginBottom: '-4px',
+          marginLeft: '4px'
+        }}/>}
   </Tooltip>)
 }

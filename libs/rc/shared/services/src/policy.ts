@@ -1633,7 +1633,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       }
     }),
-    getCertificateList: build.query<TableResult<Certificate>, RequestPayload>({
+    getCertificateList: build.query<TableResult<ServerCertificate>, RequestPayload>({
       query: ({ params, payload }) => {
         const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
         const req = createHttpRequest(CertificateUrls.getCertificateList, params, customHeaders)

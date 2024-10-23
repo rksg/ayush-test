@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import { AlignType } from 'rc-table/lib/interface'
 import { useIntl }   from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader, Tooltip, cssStr } from '@acx-ui/components'
+import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
 import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { CheckMark }                                     from '@acx-ui/icons'
 import { CertificateToolTip, SimpleListTooltip }         from '@acx-ui/rc/components'
@@ -292,7 +292,8 @@ function useColumns () {
           ? ''
           : (<TenantLink to={getPolicyRoutePath({
             type: PolicyType.CERTIFICATE_AUTHORITY,
-            oper: PolicyOperation.LIST })}>
+            oper: PolicyOperation.LIST
+          })}>
             {certificateAuthorityNameMap.find(
               c => c.key === row?.radSecOptions?.certificateAuthorityId)?.value || ''}
           </TenantLink>)
@@ -337,22 +338,21 @@ function useColumns () {
         return (!row.radSecOptions?.serverCertificateId)
           ? ''
           : (<>
-              <TenantLink
-                to={getPolicyRoutePath({
-                  type: PolicyType.SERVER_CERTIFICATES,
-                  oper: PolicyOperation.LIST })}>
-                  {serverCert?.value || ''}
-              </TenantLink>
-              {serverCert?.status && !serverCert?.status.includes(CertificateStatusType.VALID) ?
-                <CertificateToolTip
-                  visible={true}
-                  placement='bottom'
-                  policyType={PolicyType.SERVER_CERTIFICATES}
-                  status={serverCert.status}
-                /> : []
-              }
-            </>
-            )
+            <TenantLink
+              to={getPolicyRoutePath({
+                type: PolicyType.SERVER_CERTIFICATES,
+                oper: PolicyOperation.LIST
+              })}>
+              {serverCert?.value || ''}
+            </TenantLink>
+            {serverCert?.status && !serverCert?.status.includes(CertificateStatusType.VALID) ?
+              <CertificateToolTip
+                visible={true}
+                placement='bottom'
+                policyType={PolicyType.SERVER_CERTIFICATES}
+                status={serverCert.status} /> : []}
+          </>
+          )
       }
     }] : []),
     {
