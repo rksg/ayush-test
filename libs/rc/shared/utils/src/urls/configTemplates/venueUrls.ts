@@ -605,7 +605,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   },
   updateVenueApSmartMonitorSettings: {
     method: 'put',
-    url: '/templates/venues/:venueId/apSmartMontiorSettings',
+    url: '/templates/venues/:venueId/apSmartMonitorSettings',
     newApi: true
   }
 }
