@@ -287,24 +287,45 @@ export const MultipleEditPortMessages = {
   })
 }
 
+export const FlexAuthVlanLabel = {
+  SWITCH_AUTH_DEFAULT_VLAN: defineMessage({ defaultMessage: 'Switch Level Auth Default VLAN' }),
+  DEFAULT_VLAN: defineMessage({ defaultMessage: 'Default VLAN' }),
+  AUTH_DEFAULT_VLAN: defineMessage({ defaultMessage: 'Auth Default VLAN' }),
+  CRITICAL_VLAN: defineMessage({ defaultMessage: 'Critical VLAN' }),
+  RESTRICTED_VLAN: defineMessage({ defaultMessage: 'Restricted VLAN' }),
+  TAGGED_VLANS: defineMessage({ defaultMessage: 'Tagged VLANs' })
+}
+
 export const FlexAuthMessages = {
   CANNOT_SAME_AS_SWITCH_DEFAULT_VLAN: defineMessage({
-    defaultMessage: 'VLAN ID can not be same as Default VLAN'
+    defaultMessage: 'VLAN ID can not be the same as Default VLAN'
   }),
   CANNOT_SAME_AS_AUTH_DEFAULT_VLAN: defineMessage({
-    defaultMessage: 'VLAN ID can not be same as Auth Default VLAN'
+    defaultMessage: 'VLAN ID can not be the same as Auth Default VLAN'
   }),
   CANNOT_SAME_AS_SWITCH_LEVEL_AUTH_DEFAULT_VLAN: defineMessage({
-    defaultMessage: 'VLAN ID can not be same as Switch Level Auth Default VLAN'
+    defaultMessage: 'VLAN ID can not be the same as Switch Level Auth Default VLAN'
   }),
   CANNOT_SAME_AS_TAGGED_VLAN: defineMessage({
-    defaultMessage: 'VLAN ID can not be same as Tagged VLANs'
+    defaultMessage: 'VLAN ID can not be the same as Tagged VLANs'
   }),
   CANNOT_SET_DIFF_PROFILE_AUTH_DEFAULT_VLAN: defineMessage({
     defaultMessage: 'Another Auth-Default VLAN ({profileAuthDefaultVlan}) is already defined on this switch. Either select a different profile that has a matching Auth-Default VLAN or use the customize option to set the Auth-Default VLAN to {applyProfileAuthDefaultVlan}'
   }),
   CANNOT_SET_DIFF_GUEST_VLAN: defineMessage({
     defaultMessage: 'Either select a different profile that has a matching Guest VLAN number or use the customize option to set the Guest VLAN to {applyGuestVlan}'
+  }),
+  // VLAN_CANNOT_SAME_AS_SWITCH_DEFAULT_VLAN: defineMessage({
+  //   defaultMessage: '{vlanName} can not be the same as Default VLAN'
+  // }),
+  // VLAN_CANNOT_SAME_AS_SWITCH_LEVEL_AUTH_DEFAULT_VLAN: defineMessage({
+  //   defaultMessage: '{vlanName} can not be the same as Switch Level Auth Default VLAN'
+  // }),
+  // AUTH_VLAN_CANNOT_SAME_AS_TAGGED_VLAN: defineMessage({
+  //   defaultMessage: 'Auth Default VLAN can not be the same as Tagged VLANs'
+  // }),
+  VLAN_CANNOT_SAME_AS_TARGET_VLAN: defineMessage({
+    defaultMessage: '{sourceVlan} can not be the same as {targetVlan}'
   })
 }
 

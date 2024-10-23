@@ -3,14 +3,10 @@ import { DefaultOptionType }   from 'antd/lib/select'
 import _                       from 'lodash'
 import { defineMessage }       from 'react-intl'
 
-import {
-  cssStr,
-  Descriptions
-} from '@acx-ui/components'
+import { cssStr }    from '@acx-ui/components'
 import { switchApi } from '@acx-ui/rc/services'
 import {
   AclUnion,
-  FlexibleAuthentication,
   getPortSpeedOptions,
   getSwitchModel,
   LldpQosModel,
@@ -21,17 +17,9 @@ import {
   PortSettingModel,
   Vlan
 } from '@acx-ui/rc/utils'
-import { store }                  from '@acx-ui/store'
-import { getIntl, noDataDisplay } from '@acx-ui/utils'
+import { store }   from '@acx-ui/store'
+import { getIntl } from '@acx-ui/utils'
 
-import {
-  authenticationTypeLabel,
-  authFailActionTypeLabel,
-  authTimeoutActionTypeLabel,
-  portControlTypeLabel
-} from '../FlexibleAuthentication'
-
-import * as UI from './styledComponents'
 export interface PortVlan {
   tagged: string[]
   untagged: string
@@ -494,52 +482,4 @@ export const getMultipleVlanValue = ( // TODO: rewrite
     isVoiceVlanEqual: voiceVlanEqual,
     portsProfileVlans: portsProfileVlans
   }
-}
-
-export const renderAuthProfile = (data?: FlexibleAuthentication) => {
-  const { $t } = getIntl()
-  return <UI.Card type='solid-bg'>
-    <UI.Descriptions layout='vertical' colon={false} labelWidthPercent={100}>
-      <Descriptions.Item
-        label={$t({ defaultMessage: 'Type' })}
-        children={data?.authenticationType
-          ? $t(authenticationTypeLabel[data.authenticationType as keyof typeof authenticationTypeLabel])
-          : noDataDisplay
-        }
-      />
-      <Descriptions.Item
-        label={$t({ defaultMessage: '802.1x Port Control' })}
-        children={data?.dot1xPortControl
-          ? $t(portControlTypeLabel[data.dot1xPortControl as keyof typeof portControlTypeLabel])
-          : noDataDisplay
-        }
-      />
-      <Descriptions.Item
-        label={$t({ defaultMessage: 'Auth Default VLAN' })}
-        children={data?.authDefaultVlan ?? noDataDisplay} />
-      <Descriptions.Item
-        label={$t({ defaultMessage: 'Fail Action' })}
-        children={data?.authFailAction
-          ? $t(authFailActionTypeLabel[data.authFailAction as keyof typeof authFailActionTypeLabel])
-          : noDataDisplay
-        }
-      />
-      <Descriptions.Item
-        label={$t({ defaultMessage: 'Restricted VLAN' })}
-        children={data?.restrictedVlan} />
-      <Descriptions.Item
-        label={$t({ defaultMessage: 'Timeout Action' })}
-        children={data?.authTimeoutAction
-          ? $t(authTimeoutActionTypeLabel[data.authTimeoutAction as keyof typeof authTimeoutActionTypeLabel])
-          : noDataDisplay
-        }
-      />
-      <Descriptions.Item
-        label={$t({ defaultMessage: 'Critical VLAN' })}
-        children={data?.criticalVlan} />
-      <Descriptions.Item
-        label={$t({ defaultMessage: 'Guest VLAN' })}
-        children={data?.guestVlan} />
-    </UI.Descriptions>
-  </UI.Card>
 }

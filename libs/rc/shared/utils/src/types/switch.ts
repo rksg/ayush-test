@@ -943,7 +943,7 @@ export interface FlexibleAuthentication {
 	authenticationType: string
 	changeAuthOrder: boolean
 	dot1xPortControl: string
-	authDefaultVlan?: number
+	authDefaultVlan: number
 	restrictedVlan?: number
 	criticalVlan?: number
 	authFailAction: string
