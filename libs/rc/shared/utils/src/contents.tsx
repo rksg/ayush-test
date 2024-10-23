@@ -299,6 +299,12 @@ export const FlexAuthMessages = {
   }),
   CANNOT_SAME_AS_TAGGED_VLAN: defineMessage({
     defaultMessage: 'VLAN ID can not be same as Tagged VLANs'
+  }),
+  CANNOT_SET_DIFF_PROFILE_AUTH_DEFAULT_VLAN: defineMessage({
+    defaultMessage: 'Another Auth-Default VLAN ({profileAuthDefaultVlan}) is already defined on this switch. Either select a different profile that has a matching Auth-Default VLAN or use the customize option to set the Auth-Default VLAN to {applyProfileAuthDefaultVlan}'
+  }),
+  CANNOT_SET_DIFF_GUEST_VLAN: defineMessage({
+    defaultMessage: 'Either select a different profile that has a matching Guest VLAN number or use the customize option to set the Guest VLAN to {applyGuestVlan}'
   })
 }
 

@@ -32,7 +32,7 @@ export class PortSettingModel {
   flexibleAuthenticationEnabled?: boolean
   isFlexibleAuthCustomized?: boolean
   authenticationProfileId?: string
-  profileAuthDefaultVlan?: string
+  profileAuthDefaultVlan?: number
   authenticationType?: string
   changeAuthOrder?: boolean
   dot1xPortControl?: string

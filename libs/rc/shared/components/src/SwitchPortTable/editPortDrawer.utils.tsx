@@ -10,6 +10,7 @@ import {
 import { switchApi } from '@acx-ui/rc/services'
 import {
   AclUnion,
+  FlexibleAuthentication,
   getPortSpeedOptions,
   getSwitchModel,
   LldpQosModel,
@@ -22,6 +23,13 @@ import {
 } from '@acx-ui/rc/utils'
 import { store }                  from '@acx-ui/store'
 import { getIntl, noDataDisplay } from '@acx-ui/utils'
+
+import {
+  authenticationTypeLabel,
+  authFailActionTypeLabel,
+  authTimeoutActionTypeLabel,
+  portControlTypeLabel
+} from '../FlexibleAuthentication'
 
 import * as UI from './styledComponents'
 export interface PortVlan {
@@ -488,34 +496,50 @@ export const getMultipleVlanValue = ( // TODO: rewrite
   }
 }
 
-export const renderAuthProfile = (data?: SwitchPortViewModel) => {
+export const renderAuthProfile = (data?: FlexibleAuthentication) => {
   const { $t } = getIntl()
   return <UI.Card type='solid-bg'>
     <UI.Descriptions layout='vertical' colon={false} labelWidthPercent={100}>
       <Descriptions.Item
         label={$t({ defaultMessage: 'Type' })}
-        children={data?.authenticationType ?? noDataDisplay} />
+        children={data?.authenticationType
+          ? $t(authenticationTypeLabel[data.authenticationType as keyof typeof authenticationTypeLabel])
+          : noDataDisplay
+        }
+      />
       <Descriptions.Item
         label={$t({ defaultMessage: '802.1x Port Control' })}
-        children={'Auto'} />
+        children={data?.dot1xPortControl
+          ? $t(portControlTypeLabel[data.dot1xPortControl as keyof typeof portControlTypeLabel])
+          : noDataDisplay
+        }
+      />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Auth Default VLAN' })}
-        children={'5'} />
+        children={data?.authDefaultVlan ?? noDataDisplay} />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Fail Action' })}
-        children={'Restricted VLAN'} />
+        children={data?.authFailAction
+          ? $t(authFailActionTypeLabel[data.authFailAction as keyof typeof authFailActionTypeLabel])
+          : noDataDisplay
+        }
+      />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Restricted VLAN' })}
-        children={'8'} />
+        children={data?.restrictedVlan} />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Timeout Action' })}
-        children={'Critical VLAN'} />
+        children={data?.authTimeoutAction
+          ? $t(authTimeoutActionTypeLabel[data.authTimeoutAction as keyof typeof authTimeoutActionTypeLabel])
+          : noDataDisplay
+        }
+      />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Critical VLAN' })}
-        children={'9'} />
+        children={data?.criticalVlan} />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Guest VLAN' })}
-        children={'200'} />
+        children={data?.guestVlan} />
     </UI.Descriptions>
   </UI.Card>
 }

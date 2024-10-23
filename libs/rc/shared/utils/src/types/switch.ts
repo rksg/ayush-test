@@ -948,7 +948,9 @@ export interface FlexibleAuthentication {
 	criticalVlan?: number
 	authFailAction: string
 	authTimeoutAction: string
+  guestVlan?: number
 }
+
 export interface SwitchFeatureSet {
   featureName: string,
   requiredFw?: string,

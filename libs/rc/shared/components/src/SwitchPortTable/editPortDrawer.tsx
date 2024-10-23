@@ -35,6 +35,7 @@ import {
 import {
   EditPortMessages,
   FlexAuthMessages,
+  FlexibleAuthentication,
   LldpQosModel,
   MultipleEditPortMessages,
   poeBudgetRegExp,
@@ -115,7 +116,10 @@ const allMultipleEditableFields = [
   'rstpAdminEdgePort', 'stpBpduGuard', 'stpRootGuard', 'taggedVlans', 'voiceVlan',
   'lldpQos', 'tags', 'untaggedVlan', 'poeBudget', 'portProtected',
   // Flex auth
-  'flexibleAuthenticationEnabled', 'authenticationType', 'changeAuthOrder', 'dot1xPortControl',
+  'flexibleAuthenticationEnabled', 'isFlexibleAuthCustomized', 'enableAuthPorts',
+  'switchLevelAuthDefaultVlan', 'guestVlan',
+  'authenticationProfileId', 'profileAuthDefaultVlan',
+  'authenticationType', 'changeAuthOrder', 'dot1xPortControl',
   'authDefaultVlan', 'restrictedVlan', 'criticalVlan', 'authFailAction', 'authTimeoutAction'
 ]
 
@@ -132,6 +136,8 @@ interface AggregatePortsData {
   guestVlan: Record<string, number | undefined>
   switchLevelAuthDefaultVlan: Record<string, number | undefined>
   hasMultipleValue: string[]
+  seledtedPortIdentifier: Record<string, string[]>
+  enableAuthPorts: Record<string, string[]>
 }
 
 export function EditPortDrawer ({
@@ -175,6 +181,8 @@ export function EditPortDrawer ({
     profileName,
     // Flex auth
     authenticationProfileId,
+    profileAuthDefaultVlan,
+    guestVlan,
     isFlexibleAuthCustomized,
     flexibleAuthenticationEnabled,
     flexibleAuthenticationEnabledCheckbox,
@@ -364,6 +372,45 @@ export function EditPortDrawer ({
     )?.length > 0
   }
 
+  //TODO:
+  const authProfiles = [{
+    profileId: 'p01',
+    profileName: 'FlexProfile 1 (auth=10,guest=4)',
+    authenticationType: '802.1x',
+    changeAuthOrder: false,
+    dot1xPortControl: 'auto',
+    authDefaultVlan: 10,
+    restrictedVlan: 30,
+    criticalVlan: 40,
+    guestVlan: 3,
+    authFailAction: 'restricted_vlan',
+    authTimeoutAction: 'critical_vlan'
+  }, {
+    profileId: 'p02',
+    profileName: 'FlexProfile 2 (auth=3,guest=6)',
+    authenticationType: '802.1x',
+    changeAuthOrder: false,
+    dot1xPortControl: 'auto',
+    authDefaultVlan: 3,
+    restrictedVlan: 4,
+    criticalVlan: 5,
+    guestVlan: 6,
+    authFailAction: 'restricted_vlan',
+    authTimeoutAction: 'critical_vlan'
+  }, {
+    profileId: 'p03',
+    profileName: 'FlexProfile 3 (auth=10,guest=6)',
+    authenticationType: '802.1x',
+    changeAuthOrder: false,
+    dot1xPortControl: 'auto',
+    authDefaultVlan: 10,
+    restrictedVlan: 4,
+    criticalVlan: 5,
+    guestVlan: 6,
+    authFailAction: 'restricted_vlan',
+    authTimeoutAction: 'critical_vlan'
+  }] as FlexibleAuthentication[]
+
   useEffect(() => {
     const setData = async () => {
       const aclUnion = await getAclUnion({
@@ -468,7 +515,14 @@ export function EditPortDrawer ({
       ...portSetting,
       switchLevelAuthDefaultVlan: 2,
       guestVlan: 3,
-      shouldAlertAaaAndRadiusNotApply: false
+      shouldAlertAaaAndRadiusNotApply: false,
+      isFlexibleAuthCustomized: false,
+      authenticationProfileId: 'p01',
+      profileAuthDefaultVlan: 10,
+      authDefaultVlan: 10,
+      restrictedVlan: 30,
+      criticalVlan: 40,
+      enableAuthPorts: ['1/1/2']
     }
 
     const { tagged, untagged, voice } = getPortVenueVlans(vlansByVenue, selectedPorts?.[0])
@@ -511,8 +565,12 @@ export function EditPortDrawer ({
   const aggregatePortsDataForFlexAuth = (
     portsSetting: PortSettingModel[], hasMultipleValue?: string[]
   ) => {
+
+    // console.log('portsSetting: ', portsSetting)
+
     return portsSetting.reduce((result, {
-      switchMac, taggedVlans = [], untaggedVlan = '', switchLevelAuthDefaultVlan, guestVlan
+      switchMac, port, taggedVlans = [], untaggedVlan = '',
+      switchLevelAuthDefaultVlan, guestVlan, enableAuthPorts
     }) => {
       const index = switchMac as string
       const untagged = untaggedVlan as string
@@ -530,6 +588,11 @@ export function EditPortDrawer ({
       result.defaultVlan[index] = switchesDefaultVlan
         ?.find((s: SwitchDefaultVlan) => s.switchId === switchMac)?.defaultVlanId
       result.hasMultipleValue = hasMultipleValue ?? []
+      result.enableAuthPorts[index] = enableAuthPorts ?? []
+      result.seledtedPortIdentifier[index] = [
+        ...(result.seledtedPortIdentifier[index] || []),
+        port
+      ]
 
       return result
     }, {
@@ -538,7 +601,9 @@ export function EditPortDrawer ({
       defaultVlan: {},
       guestVlan: {},
       switchLevelAuthDefaultVlan: {},
-      hasMultipleValue: []
+      hasMultipleValue: [],
+      seledtedPortIdentifier: {},
+      enableAuthPorts: {}
     } as AggregatePortsData)
   }
 
@@ -553,8 +618,16 @@ export function EditPortDrawer ({
       return {
         ...p,
         switchLevelAuthDefaultVlan: (3),
-        guestVlan: (3 + index),
-        shouldAlertAaaAndRadiusNotApply: false
+        guestVlan: (4 + index),
+        shouldAlertAaaAndRadiusNotApply: false,
+        enableAuthPorts: index === 0 ? ['1/1/2'] : ['1/1/3'],
+
+        isFlexibleAuthCustomized: false,
+        authenticationProfileId: 'p01',
+        profileAuthDefaultVlan: 10,
+        authDefaultVlan: 10,
+        restrictedVlan: 30,
+        criticalVlan: 40
       }
     })
 
@@ -1006,12 +1079,9 @@ export function EditPortDrawer ({
     const groupedUntaggedVlansBySwitch = aggregatePortsData.untaggedVlans
     const switchIds = Object.keys(groupedUntaggedVlansBySwitch ?? {})
 
-    const checkUntaggedPortMismatch = (id: string) => { //TODO: check untaggedVlansObj
-      // eslint-disable-next-line max-len
+    const checkUntaggedPortMismatch = (id: string) => {
       const defaultVlan = aggregatePortsData?.defaultVlan?.[id]
-      // eslint-disable-next-line max-len
-      // const isUntaggedNotMatchDefaultVlan = untaggedVlan && (Number(untaggedVlan) !== Number(defaultVlan))
-      const isVlanMismatchDefaultVlan = (vlan: string) => Number(vlan) !== Number(defaultVlan)
+      const isVlanMismatchDefaultVlan = (vlan: string) => defaultVlan && (Number(vlan) !== Number(defaultVlan))
 
       // TODO: hasMultipleValue
       const isOriginalMultiple = aggregatePortsData?.hasMultipleValue?.includes('untaggedVlan')
@@ -1020,7 +1090,7 @@ export function EditPortDrawer ({
         ? !portVlansCheckbox || !(portVlansCheckbox && !shouldRenderMultipleText('untaggedVlan', true))
         : (!hasMultipleValue.includes('untaggedVlan') || !groupedUntaggedVlansBySwitch[id]?.length)
 
-      if (hasMultipleUntaggedValue) {
+      if (isMultipleEdit && hasMultipleUntaggedValue) {
         return groupedUntaggedVlansBySwitch?.[id]?.some(isVlanMismatchDefaultVlan)
       } else if (!hasMultipleValue.includes('untaggedVlan')) {
         return untaggedVlan && isVlanMismatchDefaultVlan(untaggedVlan)
@@ -1160,37 +1230,36 @@ export function EditPortDrawer ({
             <Form.Item
               noStyle
               label={false}
-              children={
-                shouldRenderMultipleText('flexibleAuthenticationEnabled')
-                  ? <MultipleText />
-                  : <Tooltip title={getFieldTooltip('flexibleAuthenticationEnabled')}>
-                    <Space style={{ display: 'flex', flex: '1',
-                      justifyContent: !!getFlexAuthButtonStatus() ? '' : 'space-between'
-                    }}>
-                      <Form.Item
-                        name='flexibleAuthenticationEnabled'
-                        noStyle
-                        valuePropName='checked'
-                        initialValue={false}
-                      >
-                        <Switch
-                          data-testid='flex-enable-switch'
-                          disabled={getFieldDisabled('flexibleAuthenticationEnabled')}
-                          className={
-                            // eslint-disable-next-line max-len
-                            getToggleClassName('flexibleAuthenticationEnabled', isMultipleEdit, hasMultipleValue)
+              children={shouldRenderMultipleText('flexibleAuthenticationEnabled')
+                ? <MultipleText />
+                : <Tooltip title={getFieldTooltip('flexibleAuthenticationEnabled')}>
+                  <Space style={{ display: 'flex', flex: '1',
+                    justifyContent: !!getFlexAuthButtonStatus() ? '' : 'space-between'
+                  }}>
+                    <Form.Item
+                      name='flexibleAuthenticationEnabled'
+                      noStyle
+                      valuePropName='checked'
+                      initialValue={false}
+                    >
+                      <Switch
+                        data-testid='flex-enable-switch'
+                        disabled={getFieldDisabled('flexibleAuthenticationEnabled')}
+                        className={
+                          // eslint-disable-next-line max-len
+                          getToggleClassName('flexibleAuthenticationEnabled', isMultipleEdit, hasMultipleValue)
+                        }
+                        onChange={async (checked) => {
+                          if (checked && useVenueSettings) {
+                            onValuesChange({
+                              untaggedVlan: defaultVlan,
+                              revert: true, status: 'port'
+                            })
                           }
-                          onChange={async (checked) => {
-                            if (checked && useVenueSettings) {
-                              onValuesChange({
-                                untaggedVlan: defaultVlan,
-                                revert: true, status: 'port'
-                              })
-                            }
-                          }}
-                        />
-                      </Form.Item>
-                      {/* { showLinkToSwitchPage() && <Button
+                        }}
+                      />
+                    </Form.Item>
+                    {/* { showLinkToSwitchPage() && <Button
                         type='link'
                         size='small'
                         onClick={() => navigate({ //TODO
@@ -1200,35 +1269,36 @@ export function EditPortDrawer ({
                         })}
                       >{ $t({ defaultMessage: 'Go to Edit Switch page' })}</Button>
                       } */}
-                      { flexibleAuthenticationEnabled && <>
-                        <Form.Item
-                          name='isFlexibleAuthCustomized'
-                          hidden
-                          initialValue={false}
-                          children={<Switch />}
-                        />
-                        <Button
-                          type='link'
-                          size='small'
-                          onClick={() => {
-                            const toggleCustomized = !isFlexibleAuthCustomized //
-                            form.setFieldValue('isFlexibleAuthCustomized', toggleCustomized)
+                    { flexibleAuthenticationEnabled && <>
+                      <Form.Item
+                        name='isFlexibleAuthCustomized'
+                        hidden
+                        initialValue={false}
+                        valuePropName='checked'
+                        children={<Switch />}
+                      />
+                      <Button
+                        type='link'
+                        size='small'
+                        onClick={() => {
+                          const toggleCustomized = !isFlexibleAuthCustomized //
+                          form.setFieldValue('isFlexibleAuthCustomized', toggleCustomized)
 
-                            if (toggleCustomized && !isMultipleEdit && authenticationProfileId) {
-                              form.setFieldsValue({ // TODO
-                                ...form.getFieldsValue(),
-                                authenticationType: 'macauth'
-                              })
-                            }
-                          }}
-                        >{
-                            isFlexibleAuthCustomized
-                              ? $t({ defaultMessage: 'Use Profile Settings' })
-                              : $t({ defaultMessage: 'Customize' })
-                          }</Button>
-                      </>}
-                    </Space>
-                  </Tooltip>
+                          if (toggleCustomized && !isMultipleEdit && authenticationProfileId) {
+                            form.setFieldsValue({ // TODO
+                              ...form.getFieldsValue(),
+                              authenticationType: 'macauth'
+                            })
+                          }
+                        }}
+                      >{
+                          isFlexibleAuthCustomized
+                            ? $t({ defaultMessage: 'Use Profile Settings' })
+                            : $t({ defaultMessage: 'Customize' })
+                        }</Button>
+                    </>}
+                  </Space>
+                </Tooltip>
               }
             />,
             'flexibleAuthenticationEnabled', $t({ defaultMessage: 'Flexible Authentication' }), true
@@ -1236,6 +1306,8 @@ export function EditPortDrawer ({
 
           { flexibleAuthenticationEnabled && !isFlexibleAuthCustomized &&
           <Space style={{ display: 'block', marginLeft: isMultipleEdit ? '24px' : '0' }}>
+            <Form.Item name='profileAuthDefaultVlan' hidden children={<></>} />
+            <Form.Item name='guestVlan' hidden children={<></>} />
             { getFieldTemplate(
               <Form.Item
                 {...getFormItemLayout(isMultipleEdit)}
@@ -1246,15 +1318,43 @@ export function EditPortDrawer ({
                     title={$t(EditPortMessages.GUIDE_TO_AUTHENTICATION)}
                   />
                 </>}
+                initialValue=''
+                rules={[
+                  { validator: (rule, value) => {
+                    const authProfile = authProfiles.find(p => p.profileId === value)
+                    const isSelectedPortsEqualAuthPort = selectedPorts.filter(p => {
+                      const seledtedPorts = (aggregatePortsData.seledtedPortIdentifier[p.switchMac]).sort()
+                      const authPorts = (aggregatePortsData.enableAuthPorts[p.switchMac]).sort()
+                      return _.isEqual(seledtedPorts, authPorts)
+                    })
+                    const isEditAllAuthPort = isSelectedPortsEqualAuthPort.length === selectedPorts.length
+
+                    if (!isEditAllAuthPort && authProfile?.authDefaultVlan !== profileAuthDefaultVlan) {
+                      return Promise.reject(
+                        $t(FlexAuthMessages.CANNOT_SET_DIFF_PROFILE_AUTH_DEFAULT_VLAN, {
+                          profileAuthDefaultVlan: profileAuthDefaultVlan,
+                          applyProfileAuthDefaultVlan: authProfile?.authDefaultVlan
+                        })
+                      )
+                    } else if (!isEditAllAuthPort && authProfile?.guestVlan !== guestVlan) { //TODO
+                      return Promise.reject(
+                        $t(FlexAuthMessages.CANNOT_SET_DIFF_GUEST_VLAN, {
+                          applyGuestVlan: authProfile?.guestVlan
+                        })
+                      )
+                    }
+                    return Promise.resolve()
+                  } }
+                ]}
                 // style={{ marginBottom: '0' }}
                 children={shouldRenderMultipleText('authenticationProfileId')
                   ? <MultipleText />
                   : <Select
                     placeholder={$t({ defaultMessage: 'Select...' })}
-                    options={[ // TODO
-                      { label: 'Profile 1', value: 'p1' },
-                      { label: 'Profile 2', value: 'p2' }
-                    ]}
+                    options={authProfiles.map(p => ({
+                      label: p.profileName,
+                      value: p.profileId
+                    }))}
                     disabled={getFieldDisabled('authenticationProfileId')}
                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     onChange={(value) => {
@@ -1265,7 +1365,9 @@ export function EditPortDrawer ({
               />,
               'authenticationProfileId', $t({ defaultMessage: 'Profile' })
             )}
-            { isAppliedAuthProfile && renderAuthProfile() }
+            { isAppliedAuthProfile
+              && renderAuthProfile(authProfiles.find(p => p.profileId === authenticationProfileId))
+            }
           </Space>}
 
           { isFlexibleAuthCustomized &&
