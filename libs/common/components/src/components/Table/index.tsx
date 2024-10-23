@@ -71,6 +71,7 @@ export interface TableProps <RecordType>
       & { alwaysShowAlert?: boolean }
     )
     extraSettings?: React.ReactNode[]
+    footer?: () => JSX.Element
     onResetState?: CallableFunction
     enableApiFilter?: boolean
     floatRightFilters?: boolean
