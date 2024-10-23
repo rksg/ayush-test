@@ -19,7 +19,8 @@ export interface ActionBase {
   name: string,
   description: string,
   actionType: ActionType,
-  version: number
+  version: number,
+  valid: boolean
 }
 
 export interface AupAction extends ActionBase {
