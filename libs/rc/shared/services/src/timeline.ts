@@ -161,6 +161,32 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
+    adminLogsOnly: build.query<TableResult<AdminLog>, RequestPayload>({
+      providesTags: [{ type: 'AdminLog', id: 'LIST' }],
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const adminlogListInfo = {
+          ...createHttpRequest(CommonUrlsInfo.getEventList, arg.params),
+          body: latestTimeFilter(arg.payload)
+        }
+        const baseListQuery = await fetchWithBQ(adminlogListInfo)
+        const baseList = baseListQuery.data as TableResult<AdminLogBase>
+        if(!baseList) return { error: baseListQuery.error as FetchBaseQueryError }
+
+        const { data: baseListData } = baseList
+
+        return {
+          data: {
+            ...baseList,
+            data: baseListData.map((base) => ({
+              ...base,
+              ...{ entity_type: base.entity_type.toUpperCase() },
+              ...{ tableKey: base.event_datetime + base.id }
+            })) as AdminLog[]
+          }
+        }
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
     downloadEventsCSV: build.mutation<Blob, EventsExportPayload>({
       query: (payload) => {
         const req = createHttpRequest(CommonUrlsInfo.downloadCSV,
@@ -225,6 +251,7 @@ export const {
   useActivityApCompatibilitiesQuery,
   useEventsQuery,
   useAdminLogsQuery,
+  useAdminLogsOnlyQuery,
   useDownloadEventsCSVMutation,
   useAddExportSchedulesMutation,
   useUpdateExportSchedulesMutation,
