@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+
 import { Switch }  from 'antd'
 import { useIntl } from 'react-intl'
 
@@ -12,13 +14,13 @@ interface EdgeClustersTableProps {
   onActivateChange: (value: boolean, clusterId: string, clusterName: string) => void
 }
 export const EdgeClustersTable = (props: EdgeClustersTableProps) => {
+  const { $t } = useIntl()
   const {
     venueId,
     activated,
     onActivateChange
   } = props
 
-  const { $t } = useIntl()
   const tableQuery = useTableQuery<EdgeClusterStatus>({
     useQuery: useGetEdgeClusterListQuery,
     defaultPayload: {
@@ -36,9 +38,18 @@ export const EdgeClustersTable = (props: EdgeClustersTableProps) => {
       filters: { venueId: [venueId] }
     },
     option: {
-      skip: !Boolean(venueId)
+      skip: !venueId
     }
   })
+
+  useEffect(() => {
+    if (venueId) {
+      tableQuery.setPayload({
+        ...tableQuery.payload,
+        filters: { venueId: [venueId] }
+      })
+    }
+  }, [venueId])
 
   const columns: TableProps<EdgeClusterStatus>['columns'] = [{
     title: $t({ defaultMessage: 'Cluster' }),
