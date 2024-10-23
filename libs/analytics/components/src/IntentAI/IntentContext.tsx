@@ -57,8 +57,9 @@ export function createIntentContextProvider (
 
     const isDetectError = query.isError && !!_.pick(query.error, ['data'])
 
-    // eslint-disable-next-line max-len
-    const intent = isDetectError ? (_.pick(query.error, ['data']) as { data: Intent }).data : query.data
+    const intent = isDetectError ?
+      (_.pick(query.error, ['data']) as { data: Intent }).data
+      : query.data
 
     const context: IIntentContext = {
       intent: intent!,

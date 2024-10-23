@@ -202,12 +202,9 @@ export const api = intentAIApi.injectEndpoints({
         variables: { root, sliceId, code }
       }),
 
-      transformResponse: (response: { intent?: Intent }) =>
-        response.intent
-      ,
-      transformErrorResponse: (error, meta) => {
-        return { ...error, data: meta?.response?.data?.intent }
-      },
+      transformResponse: (response: { intent?: Intent }) => response.intent,
+      transformErrorResponse: (error, meta) =>
+        ({ ...error, data: meta?.response?.data?.intent }),
       providesTags: [{ type: 'Intent', id: 'INTENT_DETAILS' }]
     })
   })

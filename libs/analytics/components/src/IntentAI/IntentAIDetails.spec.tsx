@@ -185,8 +185,10 @@ describe('IntentAIDetails', () => {
 
     it('c-bandbalancing-enable (druid error)', async () => {
       const intent = mockedCBandbalancingProactive
-      // eslint-disable-next-line max-len
-      mockGraphqlQuery(intentAIUrl, 'IntentDetails', { error: { message: 'error' }, data: { intent: mockedEtlFail } })
+      mockGraphqlQuery(
+        intentAIUrl,
+        'IntentDetails',
+        { error: { message: 'error' }, data: { intent: mockedEtlFail } })
       await doTest([intent.code], intent)
     })
   })
