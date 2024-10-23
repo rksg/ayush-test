@@ -14,7 +14,8 @@ import {
 
 import { mockedDpskEnrollmentAction,
   mockedDpskData,
-  mockedIdentityGroupData } from './__tests__/fixtures'
+  mockedIdentityGroupData,
+  mockedDpskActionInvalid } from './__tests__/fixtures'
 import { DpskNode } from './DpskNode'
 
 describe('DpskNode', () => {
@@ -30,6 +31,8 @@ describe('DpskNode', () => {
         (req, res, ctx) => {
           if(req.params.actionId === enrollmentActionIdWithData) {
             return res(ctx.json(mockedDpskEnrollmentAction))
+          } else if (req.params.actionId === mockedDpskActionInvalid.id) {
+            return res(ctx.json(mockedDpskActionInvalid))
           } else {
             return res(ctx.status(404))
           }
@@ -55,6 +58,46 @@ describe('DpskNode', () => {
             data={{
               id: 'test-id',
               enrollmentActionId: enrollmentActionIdWithoutData,
+              mode: WorkflowPanelMode.Design
+            }}
+            selected={false}
+            type={''}
+            zIndex={0}
+            isConnectable={false}
+            xPos={0}
+            yPos={0}
+            dragging={false}/>
+        </ReactFlowProvider>
+      </Provider>
+    )
+
+    const label = await screen.findByText('Provide DPSK')
+    expect(label).toBeVisible()
+
+    const dpskIcon = await screen.findByTestId('DpskActionTypeIcon')
+    expect(dpskIcon).toBeVisible()
+
+    const detailsPopoverLabel = await screen.findByText('Details')
+    await userEvent.hover(detailsPopoverLabel)
+
+    const popover = await screen.findByRole('tooltip')
+    expect(popover).toHaveTextContent('DPSK Service')
+    expect(popover).toHaveTextContent('Identity Group')
+
+    const noneText = await screen.findAllByText('None')
+    expect(noneText.length).toBe(2)
+
+  })
+
+  it('should show the DPSK Node WITHOUT details when INVALID', async () => {
+
+    render(
+      <Provider>
+        <ReactFlowProvider>
+          <DpskNode id='test-id'
+            data={{
+              id: 'test-id',
+              enrollmentActionId: mockedDpskActionInvalid.id,
               mode: WorkflowPanelMode.Design
             }}
             selected={false}

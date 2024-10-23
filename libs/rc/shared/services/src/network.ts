@@ -40,7 +40,10 @@ import {
   ExternalWifiProviders,
   CompatibilityResponse,
   Compatibility,
-  IncompatibleFeatureLevelEnum
+  IncompatibleFeatureLevelEnum,
+  NewTableResult,
+  transferToTableResult,
+  MacRegistrationPool
 } from '@acx-ui/rc/utils'
 import { baseNetworkApi }                      from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -176,7 +179,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         const networkListReq = createHttpRequest(CommonRbacUrlsInfo.getWifiNetworksList, params, apiCustomHeader)
         const networkListQuery = await fetchWithBQ({ ...networkListReq, body: JSON.stringify(payload) })
         const networkList = networkListQuery.data as TableResult<WifiNetwork>
-        const networkIds = networkList?.data?.filter(n => (n.apSerialNumbers && n.apSerialNumbers.length > 0)).map(n => n.id) || []
+        const networkIds = networkList?.data?.filter(n => n.apCount).map(n => n.id) || []
         const networkIdsToIncompatible:{ [key:string]: number } = {}
         try {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -220,7 +223,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         const networkListReq = createHttpRequest(CommonRbacUrlsInfo.getWifiNetworksList, params, apiCustomHeader)
         const networkListQuery = await fetchWithBQ({ ...networkListReq, body: JSON.stringify(payload) })
         const networkList = networkListQuery.data as TableResult<WifiNetwork>
-        const networkIds = networkList?.data?.filter(n => (n.apSerialNumbers && n.apSerialNumbers.length > 0)).map(n => n.id) || []
+        const networkIds = networkList?.data?.filter(n => n.apCount).map(n => n.id) || []
         const networkIdsToIncompatible:{ [key:string]: number } = {}
         try {
           const apCompatibilitiesReq = {
@@ -1115,6 +1118,17 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         return response?.data[0]
       }
     }),
+    getMacRegistrationPoolNetworkBinding: build.query<TableResult<MacRegistrationPool>, RequestPayload> ({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.queryMacRegistrationPool, params)
+        return {
+          ...req
+        }
+      },
+      transformResponse (result: NewTableResult<MacRegistrationPool>) {
+        return transferToTableResult<MacRegistrationPool>(result)
+      }
+    }),
     activateCertificateTemplate: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.activateCertificateTemplate, params)
@@ -1599,6 +1613,7 @@ export const {
   useAlarmSummariesQuery,
   useExternalProvidersQuery,
   useGetCertificateTemplateNetworkBindingQuery,
+  useGetMacRegistrationPoolNetworkBindingQuery,
   useActivateCertificateTemplateMutation,
   useActivateDpskServiceMutation,
   useGetDpskServiceQuery,
