@@ -61,6 +61,7 @@ export const IntentAIForm: React.FC = () => {
     preferences: { enable: true, excludedHours, enableExcludedHours: !!excludedHours },
     averagePowerPrice
   }
+
   return (<>
     <IntentWizardHeader />
 
@@ -74,7 +75,7 @@ export const IntentAIForm: React.FC = () => {
     >
       <StepsForm.StepForm
         title={$t({ defaultMessage: 'Introduction' })}
-        children={<Introduction/>}
+        children={<Introduction kpiQuery={kpiQuery}/>}
       />
       <StepsForm.StepForm
         title={$t({ defaultMessage: 'Intent Priority' })}
