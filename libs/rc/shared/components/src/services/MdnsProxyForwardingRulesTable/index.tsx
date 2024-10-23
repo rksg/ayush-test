@@ -6,7 +6,6 @@ import { v4 as uuidv4 }    from 'uuid'
 
 import { showActionModal, Table, TableProps } from '@acx-ui/components'
 import {
-  // MdnsProxyForwardingRule,
   BridgeServiceEnum,
   mdnsProxyRuleTypeLabelMapping,
   sortProp,
