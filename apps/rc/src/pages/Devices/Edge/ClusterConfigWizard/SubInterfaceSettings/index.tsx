@@ -1,6 +1,7 @@
-import { useContext } from 'react'
+import { useCallback, useContext } from 'react'
 
 import { Col, Form, Space, Typography } from 'antd'
+import _                                from 'lodash'
 import { useIntl }                      from 'react-intl'
 import { useParams, useNavigate }       from 'react-router-dom'
 
@@ -96,6 +97,10 @@ export const SubInterfaceSettings = () => {
     navigate(clusterListPage)
   }
 
+  const doCompatibleCheck = (): void => {
+    console.log('doCompatibleCheck')
+  }
+
   return (
     <Loader states={[{ isLoading: isLoading, isFetching: isFetching }]}>
       <StepsForm<SubInterfaceSettingsFormType>
@@ -111,7 +116,9 @@ export const SubInterfaceSettings = () => {
           onCustomFinish: applyAndContinue
         }}
       >
-        <StepsForm.StepForm>
+        <StepsForm.StepForm
+          onValuesChange={doCompatibleCheck}
+        >
           <TypeForm
             header={renderHeader(
               $t({ defaultMessage: 'Sub-interface Settings' }),

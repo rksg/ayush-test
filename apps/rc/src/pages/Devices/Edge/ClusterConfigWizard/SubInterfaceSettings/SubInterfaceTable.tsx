@@ -18,6 +18,7 @@ export interface SubInterfaceTableProps {
   ip: string
   mac: string
   namePath: string[]
+  onChange?: (data: SubInterface[]) => void
 }
 
 export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
@@ -124,6 +125,7 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
     form.setFieldValue(
       props.namePath,
       [...form.getFieldValue(props.namePath), data])
+    props.onChange?.(form.getFieldValue(props.namePath))
     return
   }
 
@@ -133,6 +135,7 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
       item.id === data.id ? data : item
     )
     form.setFieldValue(props.namePath, updatedData)
+    props.onChange?.(form.getFieldValue(props.namePath))
     return
   }
 
@@ -140,6 +143,7 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
     const existingData = form.getFieldValue(props.namePath)
     const updatedData = existingData.filter((item: SubInterface) => item.id !== data.id)
     form.setFieldValue(props.namePath, updatedData)
+    props.onChange?.(form.getFieldValue(props.namePath))
     return
   }
 
