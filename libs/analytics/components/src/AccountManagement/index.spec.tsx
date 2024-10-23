@@ -33,16 +33,38 @@ jest.mock('../Users', () => ({
   })
 }))
 
-jest.mock('../Webhooks', () => ({
-  ...jest.requireActual('../Webhooks'),
+jest.mock('../Developers/Webhooks', () => ({
+  ...jest.requireActual('../Developers/Webhooks'),
   useWebhooks: () => ({
     title: 'Webhooks (0)',
     component: <div data-testid='Webhooks' />
   })
 }))
 
+jest.mock('../Developers', () => ({
+  ...jest.requireActual('../Developers'),
+  useWebhooks: () => ({
+    title: 'Developers',
+    component: <div data-testid='Developers' />
+  })
+}))
+
 describe('AccountManagement', () => {
-  it('should render', async () => {
+  it('should render Developers if RUCKUS_AI_JWT_TOGGLE is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<AccountManagement tab={AccountManagementTabEnum.SUPPORT}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    expect(await screen.findByText('Onboarded Systems (0)')).toBeVisible()
+    expect(await screen.findByText('Users (0)')).toBeVisible()
+    expect(await screen.findByText('Labels')).toBeVisible()
+    expect(await screen.findByText('Resource Groups')).toBeVisible()
+    expect(await screen.findByText('Support')).toBeVisible()
+    expect(await screen.findByText('Licenses')).toBeVisible()
+    expect(await screen.findByText('Schedules')).toBeVisible()
+    expect(await screen.findByText('Developers')).toBeVisible()
+  })
+  it('should render Webhooks if RUCKUS_AI_JWT_TOGGLE is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(<AccountManagement tab={AccountManagementTabEnum.SUPPORT}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     expect(await screen.findByText('Onboarded Systems (0)')).toBeVisible()

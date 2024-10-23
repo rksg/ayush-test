@@ -1,13 +1,14 @@
 import _ from 'lodash'
 
-import { Provider, store, intentAIApi } from '@acx-ui/store'
-import { render, screen }               from '@acx-ui/test-utils'
+import { Provider, store, intentAIApi, intentAIUrl } from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen }          from '@acx-ui/test-utils'
 
 import { mockIntentContext } from '../__tests__/fixtures'
 import { Statuses }          from '../states'
 import { Intent }            from '../useIntentDetailsQuery'
 
 import { mockedIntentEcoFlex } from './__tests__/fixtures'
+import { mockKpiData }         from './__tests__/mockedEcoFlex'
 import { configuration, kpis } from './common'
 import * as EcoFlex            from './IEcoFlex'
 
@@ -44,6 +45,9 @@ describe('IntentAIDetails', () => {
   describe('renders correctly', () => {
     beforeEach(() => {
       jest.spyOn(Date, 'now').mockReturnValue(+new Date('2023-07-15T14:15:00.000Z'))
+      mockGraphqlQuery(intentAIUrl, 'IntentAIEcoKpi', {
+        data: { intent: mockKpiData }
+      })
     })
 
     async function assertRenderCorrectly () {
