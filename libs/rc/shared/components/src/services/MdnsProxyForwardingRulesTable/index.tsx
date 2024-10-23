@@ -165,7 +165,6 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
               return comingRule.service === rule.service
                 && comingRule.fromVlan === rule.fromVlan
                 && comingRule.toVlan === rule.toVlan
-                && get(comingRule, rowKey) !== get(rule, rowKey)
             })
             return !hasDuplicationRule
           }} />
