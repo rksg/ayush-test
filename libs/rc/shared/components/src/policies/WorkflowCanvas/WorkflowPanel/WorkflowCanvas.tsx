@@ -125,6 +125,7 @@ export default function WorkflowCanvas (props: WorkflowProps) {
       attributionPosition={'bottom-left'}
       elementsSelectable={isDesignMode}
       style={{ background: isDesignMode ? 'var(--acx-neutrals-15)' : '' }}
+      proOptions={{ hideAttribution: true }}
     >
       { isDesignMode &&
         <>
