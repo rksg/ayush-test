@@ -77,7 +77,7 @@ export function MdnsProxyScope () {
   const getActivatedApsId = (venueId: string): string[] => {
     const scope: ApMdnsProxyScopeData[] = form.getFieldValue('scope')
     const target = scope.find(s => s.venueId === venueId)
-    return target ? target.aps?.map(ap => ap.serialNumber) : []
+    return target ? target.aps.map(ap => ap.serialNumber) : []
   }
 
   const rowActions: TableProps<Venue>['rowActions'] = [
@@ -111,7 +111,7 @@ export function MdnsProxyScope () {
         const scope: ApMdnsProxyScopeData[] = form.getFieldValue('scope') ?? []
         const target = scope.find(v => v.venueId === row.id)
 
-        return target ? target.aps?.length : 0
+        return target ? target.aps.length : 0
       }
     }
   ]

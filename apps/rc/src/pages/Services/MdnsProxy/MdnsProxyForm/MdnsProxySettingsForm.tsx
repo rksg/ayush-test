@@ -37,7 +37,6 @@ export function MdnsProxySettingsForm () {
     const list = (await mdnsProxyList({ params, enableRbac }).unwrap())
       .filter(mdnsProxy => mdnsProxy.id !== id)
       .map(mdnsProxy => ({ serviceName: mdnsProxy.name }))
-
     // eslint-disable-next-line max-len
     return checkObjectNotExists(list, { serviceName: value } , $t({ defaultMessage: 'mDNS Proxy service' }))
   }
