@@ -697,10 +697,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const [ importQuery ] = useLazyImportResultQuery()
   const [ importResult, setImportResult ] = useState<ImportErrorRes>({} as ImportErrorRes)
   const [ importErrors, setImportErrors ] = useState<FetchBaseQueryError>({} as FetchBaseQueryError)
-  const apGpsFlag = useIsSplitOn(Features.AP_GPS)
-  const importTemplateLink = apGpsFlag ?
-    'assets/templates/new_aps_import_template_with_gps.csv' :
-    'assets/templates/new_aps_import_template.csv'
+  const importTemplateLink = 'assets/templates/new_aps_import_template_with_gps.csv'
   // eslint-disable-next-line max-len
   const { exportCsv, disabled } = useExportCsv<NewAPModelExtended>(tableQuery as TableQuery<NewAPModelExtended, RequestPayload<unknown>, unknown>)
   const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
