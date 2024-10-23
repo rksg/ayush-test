@@ -1,11 +1,11 @@
-import { cloneDeep } from 'lodash'
-import { rest }      from 'msw'
+import { cloneDeep, omit, pick } from 'lodash'
+import { rest }                  from 'msw'
 
-import { edgeMdnsProxyApi }                                                  from '@acx-ui/rc/services'
-import { EdgeMdnsProxyActivation, EdgeMdnsProxyUrls, EdgeMdnsProxyViewData } from '@acx-ui/rc/utils'
-import { Provider, store }                                                   from '@acx-ui/store'
-import { mockServer, renderHook, waitFor }                                   from '@acx-ui/test-utils'
-import { RequestPayload }                                                    from '@acx-ui/types'
+import { edgeMdnsProxyApi }                                                                     from '@acx-ui/rc/services'
+import { BridgeServiceEnum, EdgeMdnsProxyActivation, EdgeMdnsProxyUrls, EdgeMdnsProxyViewData } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                      from '@acx-ui/store'
+import { mockServer, renderHook }                                                               from '@acx-ui/test-utils'
+import { RequestPayload }                                                                       from '@acx-ui/types'
 
 import { differenceVenueClusters, useEdgeMdnsActions } from './useEdgeMdnsActions'
 
@@ -43,9 +43,9 @@ describe('differenceVenueClusters', () => {
   })
 })
 
-const mockedCallback = jest.fn()
 const mockedActivateEdgeClusterReq = jest.fn()
 const mockedDeactivateEdgeClusterReq = jest.fn()
+const mockedCreateFn = jest.fn()
 const mockedUpdateReq = jest.fn()
 
 jest.mock('@acx-ui/rc/services', () => ({
@@ -55,7 +55,9 @@ jest.mock('@acx-ui/rc/services', () => ({
       return { unwrap: () => new Promise((resolve) => {
         resolve(true)
         setTimeout(() => {
-          (req.callback as Function)({
+          mockedCreateFn()
+          const cbFn = (req.callback as Function)
+          cbFn({
             response: { id: 'mocked_service_id' }
           })
         }, 300)
@@ -68,9 +70,9 @@ describe('useEdgeMdnsActions', () => {
   beforeEach(() => {
     store.dispatch(edgeMdnsProxyApi.util.resetApiState())
 
-    mockedCallback.mockClear()
     mockedActivateEdgeClusterReq.mockClear()
     mockedDeactivateEdgeClusterReq.mockClear()
+    mockedCreateFn.mockClear()
     mockedUpdateReq.mockClear()
 
     mockServer.use(
@@ -102,61 +104,180 @@ describe('useEdgeMdnsActions', () => {
     const mockedAddData = {
       name: 'testAddMdns',
       forwardingRules: [{
-        serviceType: 'BRIDGE',
+        service: BridgeServiceEnum.AIRTUNES,
         fromVlan: 1,
         toVlan: 2
       }]
     } as EdgeMdnsProxyViewData
 
-    it('should add successfully', async () => {
+    it('should add successfully with NO clusters scoped', async () => {
+      const { result } = renderHook(() => useEdgeMdnsActions(), {
+        wrapper: ({ children }) => <Provider children={children} />
+      })
+      const { createEdgeMdns } = result.current
+      let error
+      try {
+        await createEdgeMdns(mockedAddData)
+      } catch(err) {
+        error = err
+      }
+
+      expect(error).toBeUndefined()
+      expect(mockedCreateFn).toBeCalled()
+      expect(mockedActivateEdgeClusterReq).toBeCalledTimes(0)
+    })
+
+    it('should add successfully with clusters scoped', async () => {
       const mockedData = {
         ...mockedAddData,
-        networks: { mocked_venue_id: ['network_1', 'network_3'] }
+        activations: [{
+          venueId: 'mock_venue_1',
+          venueName: 'Mock Venue 1',
+          edgeClusterId: 'clusterId_1',
+          edgeClusterName: 'Edge Cluster 1'
+        }]
       }
       const { result } = renderHook(() => useEdgeMdnsActions(), {
         wrapper: ({ children }) => <Provider children={children} />
       })
       const { createEdgeMdns } = result.current
-      await createEdgeMdns({
-        payload: mockedData,
-        callback: mockedCallback
+      let error
+      try {
+        await createEdgeMdns(mockedData)
+      } catch(err) {
+        error = err
+      }
+
+      expect(error).toBeUndefined()
+      expect(mockedCreateFn).toBeCalled()
+      expect(mockedActivateEdgeClusterReq).toBeCalledTimes(1)
+      expect(mockedActivateEdgeClusterReq).toBeCalledWith({
+        serviceId: 'mocked_service_id',
+        venueId: 'mock_venue_1',
+        edgeClusterId: 'clusterId_1'
       })
-      await waitFor(() =>
-        expect(mockedActivateEdgeClusterReq).toBeCalledWith({
-          edgeClusterId: '0000000005',
-          serviceId: 'mocked_service_id',
-          venueId: 'mocked_venue_id'
-        }))
-      await waitFor(() => expect(mockedCallback).toBeCalledTimes(1))
     })
   })
 
   describe('editEdgeMdns', () => {
     const mockedEditData = {
+      id: 'testEditMdnsId',
       name: 'testEditMdns',
       forwardingRules: [{
-        serviceType: 'BRIDGE',
+        service: BridgeServiceEnum.GOOGLE_CHROMECAST,
         fromVlan: 1,
         toVlan: 2
       }]
     } as EdgeMdnsProxyViewData
 
-    it('should update successfully', async () => {
+    it('should update profile successfully', async () => {
       const mockedData = {
         ...mockedEditData,
-        networks: { mocked_venue_id: ['network_1', 'network_3'] }
+        forwardingRules: [{
+          service: BridgeServiceEnum.AIRPLAY,
+          fromVlan: 10,
+          toVlan: 20
+        },{
+          service: BridgeServiceEnum.APPLETV,
+          fromVlan: 1,
+          toVlan: 2
+        }],
+        activations: [{
+          venueId: 'mock_venue_1',
+          venueName: 'Mock Venue 1',
+          edgeClusterId: 'clusterId_1',
+          edgeClusterName: 'Edge Cluster 1'
+        }]
       }
       const { result } = renderHook(() => useEdgeMdnsActions(), {
         wrapper: ({ children }) => <Provider children={children} />
       })
       const { editEdgeMdns } = result.current
-      await editEdgeMdns(mockedData, mockedEditData)
-      await waitFor(() =>
-        expect(mockedActivateEdgeClusterReq).toBeCalledWith({
-          edgeClusterId: '0000000005',
-          serviceId: 'mocked_service_id'
-        }))
-      await waitFor(() => expect(mockedCallback).toBeCalledTimes(1))
+      let error
+      try {
+        await editEdgeMdns(mockedData, mockedEditData)
+      } catch(err) {
+        error = err
+      }
+
+      expect(error).toBeUndefined()
+      const expected = cloneDeep(mockedData)
+      expected.forwardingRules = mockedData.forwardingRules.map(i => ({
+        ...omit(i, 'service'),
+        serviceType: i.service
+      }))
+      expect(mockedUpdateReq).toBeCalledTimes(1)
+      expect(mockedUpdateReq).toBeCalledWith(pick(expected, 'name', 'forwardingRules'))
+      expect(mockedActivateEdgeClusterReq).toBeCalledWith({
+        serviceId: 'testEditMdnsId',
+        venueId: 'mock_venue_1',
+        edgeClusterId: 'clusterId_1'
+      })
+      expect(mockedDeactivateEdgeClusterReq).toBeCalledTimes(0)
+    })
+
+    it('should update activations successfully', async () => {
+      const mockedOriginData = cloneDeep(mockedEditData)
+      mockedOriginData.activations = [{
+        venueId: 'mock_venue_1',
+        venueName: 'Mock Venue 1',
+        edgeClusterId: 'clusterId_1',
+        edgeClusterName: 'Edge Cluster 1'
+      }]
+
+      const mockedData = {
+        ...mockedEditData,
+        forwardingRules: [{
+          service: BridgeServiceEnum.AIRPLAY,
+          fromVlan: 10,
+          toVlan: 20
+        },{
+          service: BridgeServiceEnum.APPLETV,
+          fromVlan: 1,
+          toVlan: 2
+        }],
+        activations: [{
+          venueId: 'mock_venue_2',
+          venueName: 'Mock Venue 2',
+          edgeClusterId: 'clusterId_2',
+          edgeClusterName: 'Edge Cluster 2'
+        }, {
+          venueId: 'mock_venue_3',
+          venueName: 'Mock Venue 3',
+          edgeClusterId: 'clusterId_4',
+          edgeClusterName: 'Edge Cluster 4'
+        }]
+      }
+      const { result } = renderHook(() => useEdgeMdnsActions(), {
+        wrapper: ({ children }) => <Provider children={children} />
+      })
+      const { editEdgeMdns } = result.current
+      let error
+      try {
+        await editEdgeMdns(mockedData, mockedOriginData)
+      } catch(err) {
+        error = err
+      }
+
+      expect(error).toBeUndefined()
+      expect(mockedUpdateReq).toBeCalledTimes(1)
+      expect(mockedActivateEdgeClusterReq).toBeCalledTimes(2)
+      expect(mockedActivateEdgeClusterReq).toBeCalledWith({
+        serviceId: 'testEditMdnsId',
+        venueId: 'mock_venue_2',
+        edgeClusterId: 'clusterId_2'
+      })
+      expect(mockedActivateEdgeClusterReq).toBeCalledWith({
+        serviceId: 'testEditMdnsId',
+        venueId: 'mock_venue_3',
+        edgeClusterId: 'clusterId_4'
+      })
+      expect(mockedDeactivateEdgeClusterReq).toBeCalledTimes(1)
+      expect(mockedDeactivateEdgeClusterReq).toBeCalledWith({
+        serviceId: 'testEditMdnsId',
+        venueId: 'mock_venue_1',
+        edgeClusterId: 'clusterId_1'
+      })
     })
   })
 })

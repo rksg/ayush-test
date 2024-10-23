@@ -35,7 +35,7 @@ const toggleItemFromSelected = (
 export interface EdgeClustersDrawerProps {
   onClose: () => void,
   onSubmit: (venueId:string, updates: EdgeMdnsProxyActivation[] | undefined) => void,
-  activations: EdgeMdnsProxyActivation[],
+  activations: EdgeMdnsProxyActivation[] | undefined,
   venueId?: string,
   availableVenues?: VenueTableDataType[]
 }
@@ -59,7 +59,7 @@ export const EdgeClustersDrawer = (props: EdgeClustersDrawerProps) => {
     if (visible) {
       setUpdateContent(activations?.filter(item => item.venueId === venueId))
     }
-  }, [visible, activations])
+  }, [visible, venueId, activations])
 
   const handleActivateChange = (checked: boolean, edgeClusterId: string, edgeClusterName: string) => {
     setUpdateContent((prev) => {

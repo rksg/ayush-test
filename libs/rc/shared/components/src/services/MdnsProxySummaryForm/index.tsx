@@ -20,7 +20,7 @@ interface MdnsProxySummaryProps {
   scope: (ApMdnsProxyScopeData | EdgeMdnsProxyScopeData)[]
 }
 
-export const MdnsProxySummary = (props: MdnsProxySummaryProps) => {
+export const MdnsProxySummaryForm = (props: MdnsProxySummaryProps) => {
   const { $t } = useIntl()
   const { featureType, name, rules, scope } = props
 

@@ -29,20 +29,21 @@ export const useEdgeMdnsActions = () => {
     return new Promise(async (resolve, reject) => {
       await addEdgeMdns({
         payload,
-        callback: (result: CommonResult) => {
-          // callback is after all RBAC related APIs sent
-          if (Array.isArray(result)) {
+        callback: (response: CommonResult) => {
+          const serviceId = response.response?.id
+
+          if (serviceId) {
             // do activation
             const actions = formData.activations?.map(item =>
-              activateEdgeMdnsCluster(result[0].id, item.venueId, item.edgeClusterId))
+              activateEdgeMdnsCluster(serviceId, item.venueId, item.edgeClusterId))
 
             if (actions) {
-              Promise.all(actions).then(() => resolve(result))
+              Promise.all(actions).then(() => resolve(response))
             } else {
-              resolve(result)
+              resolve(response)
             }
           } else {
-            reject(result)
+            reject(new Error('empty service id'))
           }
         }
         // need to catch basic service profile failed

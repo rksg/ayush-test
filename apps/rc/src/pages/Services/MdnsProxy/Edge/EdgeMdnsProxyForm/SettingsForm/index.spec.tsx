@@ -1,23 +1,26 @@
-import userEvent     from '@testing-library/user-event'
-import { Form }      from 'antd'
-import { cloneDeep } from 'lodash'
+import userEvent                from '@testing-library/user-event'
+import { Form }                 from 'antd'
+import { cloneDeep, find, set } from 'lodash'
 
 import { StepsForm, StepsFormProps } from '@acx-ui/components'
 import {
-  ClusterHighAvailabilityModeEnum,
-  EdgeGeneralFixtures
+  EdgeMdnsFixtures,
+  EdgeMdnsProxyViewData
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
   render,
   renderHook,
-  screen
+  screen,
+  within
 } from '@acx-ui/test-utils'
 
 import { SettingsForm } from '.'
 
-const mockEdgeClusterList = cloneDeep(EdgeGeneralFixtures.mockEdgeClusterList)
-mockEdgeClusterList.data[4].highAvailabilityMode = ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY
+const { mockEdgeMdnsViewDataList } = EdgeMdnsFixtures
+const originData = mockEdgeMdnsViewDataList[0]
+
+const mockedSetFieldValue = jest.fn()
 
 jest.mock('antd', () => {
   const components = jest.requireActual('antd')
@@ -59,25 +62,43 @@ const MockedTargetComponent = (props: MockedTargetComponentType) => {
   </Provider>
 }
 
-const useMockedFrom = () => {
+const useMockedFrom = (data?: EdgeMdnsProxyViewData) => {
   const [ form ] = Form.useForm()
-  jest.spyOn(form, 'setFieldsValue').mockImplementation(mockedSetFieldsValue)
+  form.setFieldsValue(data ?? originData)
+  jest.spyOn(form, 'setFieldValue').mockImplementation(mockedSetFieldValue)
   return form
 }
 
-const mockedSetFieldsValue = jest.fn()
-
 describe('EdgeMdnsProxyForm: settings', () => {
   beforeEach(() => {
-    mockedSetFieldsValue.mockClear()
+    mockedSetFieldValue.mockClear()
   })
 
   it('should render correctly', async () => {
     const { result: stepFormRef } = renderHook(useMockedFrom)
     render(<MockedTargetComponent form={stepFormRef.current} />)
 
-    await checkBasicSettings()
+    const formBody = await checkBasicSettings()
+    screen.getByText('Forwarding Rules (3)')
 
+    const row = within(formBody).getByRole('row', { name: '_testCXCX._tcp. (Other) 5 120' })
+    await userEvent.click(within(row).getByRole('radio'))
+    await userEvent.click(await within(formBody).findByRole('button', { name: 'Edit' }))
+
+    const dialog = await screen.findByRole('dialog')
+    await userEvent.selectOptions(
+      within(dialog).getByRole('combobox', { name: 'Transport Protocol' }),
+      within(dialog).getByRole('option', { name: 'UDP' }))
+
+    await userEvent.type(within(dialog).getByRole('spinbutton', { name: /To VLAN/i }), '1')
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Save' }))
+
+    const expected = cloneDeep(originData.forwardingRules)
+    const target = find(expected, { ruleIndex: 2 })
+    set(target!, 'mdnsProtocol', 'UDP')
+    set(target!, 'toVlan', 1201)
+
+    expect(mockedSetFieldValue).toBeCalledWith('forwardingRules', expected)
   })
 
   it('Input invalid service name should show error message', async () => {
@@ -96,6 +117,7 @@ describe('EdgeMdnsProxyForm: settings', () => {
 
 const checkBasicSettings = async () => {
   const formBody = await screen.findByTestId('steps-form-body')
-
+  const nameField = screen.getByRole('textbox', { name: 'Service Name' })
+  expect(nameField).toHaveValue(originData.name)
   return formBody
 }

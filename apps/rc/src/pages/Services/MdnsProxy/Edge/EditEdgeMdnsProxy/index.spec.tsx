@@ -1,6 +1,6 @@
-import userEvent         from '@testing-library/user-event'
-import { omit, unionBy } from 'lodash'
-import { rest }          from 'msw'
+import userEvent           from '@testing-library/user-event'
+import { find, omit, set } from 'lodash'
+import { rest }            from 'msw'
 
 import {
   ServiceType,
@@ -106,26 +106,23 @@ describe('MdnsProxyForm', () => {
     await userEvent.click(await within(formBody).findByRole('button', { name: 'Edit' }))
 
     const dialog = await screen.findByRole('dialog')
-    await userEvent.type(within(dialog).getByRole('spinbutton', { name: /To VLAN/i }), '250')
+    await userEvent.type(within(dialog).getByRole('spinbutton', { name: /To VLAN/i }), '5')
 
     await userEvent.click(within(dialog).getByRole('button', { name: 'Save' }))
 
     await(userEvent.click(screen.getByRole('button', { name: 'Apply' })))
 
-    const originRules = originData.forwardingRules.map(i => ({
+    const expected = originData.forwardingRules.map(i => ({
       ...omit(i, 'service'),
       serviceType: i.service
     }))
+    const target = find(expected, { ruleIndex: 0 })
+    set(target!, 'toVlan', 2005)
+
     await waitFor(() =>
       expect(mockUpdateReq).toBeCalledWith({
         name: 'edge-mdns-proxy-1testEdit',
-        forwardingRules: unionBy(originRules,
-          [{
-            ruleIndex: 0,
-            fromVlan: 10,
-            toVlan: 250,
-            serviceType: 'APPLETV'
-          }], 'ruleIndex')
+        forwardingRules: expected
       }))
   })
 

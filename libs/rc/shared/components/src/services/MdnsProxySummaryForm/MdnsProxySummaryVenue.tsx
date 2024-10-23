@@ -28,9 +28,9 @@ export function MdnsProxySummaryVenues (props: {
                 <span>
                   ({deviceCount=== 1
                     ? scopedDevices[0].name
-                    : $t({ defaultMessage: '{apCount} {featureType}' },
+                    : $t({ defaultMessage: '{deviceCount} {featureType}' },
                       {
-                        apCount: deviceCount,
+                        deviceCount,
                         featureType: featureType === MdnsProxyFeatureTypeEnum.EDGE
                           ? $t({ defaultMessage: 'RUCKUS Edges' })
                           : $t({ defaultMessage: 'APs' })

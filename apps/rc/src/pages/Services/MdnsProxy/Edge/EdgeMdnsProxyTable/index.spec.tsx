@@ -202,6 +202,7 @@ describe('Edge mDNS Proxy Table', () => {
     mockList[1].name = 'testZero'
     mockList[1].forwardingRules = undefined
     mockList[1].activations = undefined
+
     mockServer.use(
       rest.post(
         EdgeMdnsProxyUrls.getEdgeMdnsProxyViewDataList.url,

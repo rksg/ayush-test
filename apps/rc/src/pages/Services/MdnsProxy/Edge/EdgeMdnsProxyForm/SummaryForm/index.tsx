@@ -1,12 +1,12 @@
 import { groupBy } from 'lodash'
 
 import { useStepFormContext }                              from '@acx-ui/components'
-import { MdnsProxySummary as GeneralMdnsProxySummary }     from '@acx-ui/rc/components'
+import { MdnsProxySummaryForm }                            from '@acx-ui/rc/components'
 import { EdgeMdnsProxyViewData, MdnsProxyFeatureTypeEnum } from '@acx-ui/rc/utils'
 
 export function SummaryForm () {
   const { form } = useStepFormContext<EdgeMdnsProxyViewData>()
-  const formValues = form.getFieldsValue(true) as EdgeMdnsProxyViewData
+  const formValues = form.getFieldsValue(true)
 
   const venueGrouped = groupBy(formValues.activations, 'venueId')
   const scopeData = Object.entries(venueGrouped).map(([venueId, activations]) => {
@@ -18,10 +18,10 @@ export function SummaryForm () {
     }
   })
 
-  return <GeneralMdnsProxySummary
+  return <MdnsProxySummaryForm
     featureType={MdnsProxyFeatureTypeEnum.EDGE}
-    name={formValues.name ?? ''}
-    rules={formValues.forwardingRules ?? []}
+    name={formValues.name}
+    rules={formValues.forwardingRules}
     scope={scopeData}
   />
 }

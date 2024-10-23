@@ -3,11 +3,11 @@ import { render, screen }           from '@acx-ui/test-utils'
 
 import { mockedFormData } from './__tests__/fixtures'
 
-import { MdnsProxySummary } from './'
+import { MdnsProxySummaryForm } from './'
 
-describe('MdnsProxySummary', () => {
+describe('MdnsProxySummaryForm', () => {
   it('should render the summary', async () => {
-    render(<MdnsProxySummary
+    render(<MdnsProxySummaryForm
       featureType={MdnsProxyFeatureTypeEnum.WIFI}
       {...mockedFormData}
     />)

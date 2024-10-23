@@ -22,12 +22,12 @@ export interface VenueTableDataType {
 }
 
 export interface VenueNetworksTableProps {
-  activated?: EdgeMdnsProxyActivation[],
+  activations?: EdgeMdnsProxyActivation[],
 }
 
 export const VenuesTable = (props: VenueNetworksTableProps) => {
   const { $t } = useIntl()
-  const { activated } = props
+  const { activations } = props
   const { form: formRef } = useStepFormContext<EdgeMdnsProxyViewData>()
 
   const { availableVenues, isLoading, isFetching } = useVenuesListQuery({
@@ -44,11 +44,10 @@ export const VenuesTable = (props: VenueNetworksTableProps) => {
       availableVenues: data?.data.map(item => ({
         ...pick(item, ['id', 'name']),
         address: `${item.country}, ${item.city}`,
-        selectedClusters: get(groupBy(activated, 'venueId'), item.id) ?? []
+        selectedClusters: get(groupBy(activations, 'venueId'), item.id) ?? []
       }))
     })
   })
-
 
   const columns: TableProps<VenueTableDataType>['columns'] = useMemo(() => ([{
     title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
@@ -85,7 +84,7 @@ export const VenuesTable = (props: VenueNetworksTableProps) => {
         />
         : clusterCount
     }
-  }]), [activated])
+  }]), [activations])
 
   const rowActions: TableProps<VenueTableDataType>['rowActions'] = [{
     label: $t({ defaultMessage: 'Select RUCKUS Edge clusters' }),
@@ -126,7 +125,7 @@ export const VenuesTable = (props: VenueNetworksTableProps) => {
         <EdgeClustersDrawer
           onClose={closeDrawer}
           onSubmit={handleSubmit}
-          activations={activated ?? []}
+          activations={activations}
           availableVenues={availableVenues}
         />
       </Form.Item>
@@ -151,7 +150,7 @@ export const ScopeForm = () => {
 
         <Form.Item
           name='activations'
-          valuePropName='activated'
+          valuePropName='activations'
         >
           <VenuesTable />
         </Form.Item>

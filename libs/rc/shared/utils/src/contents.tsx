@@ -401,7 +401,6 @@ export const mdnsProxyRuleTypeLabelMapping: Record<BridgeServiceEnum, MessageDes
   [BridgeServiceEnum.OPEN_DIRECTORY_MASTER]: defineMessage({ defaultMessage: 'Open Directory Master' }),
   // eslint-disable-next-line max-len
   [BridgeServiceEnum.OPTICAL_DISK_SHARING]: defineMessage({ defaultMessage: 'Optical Disk Sharing' }),
-  [BridgeServiceEnum.OTHER]: defineMessage({ defaultMessage: 'Other' }),
   // eslint-disable-next-line max-len
   [BridgeServiceEnum.SCREEN_SHARING]: defineMessage({ defaultMessage: 'Screen Sharing' }),
   // eslint-disable-next-line max-len
@@ -409,7 +408,8 @@ export const mdnsProxyRuleTypeLabelMapping: Record<BridgeServiceEnum, MessageDes
   [BridgeServiceEnum.SECURE_SHELL]: defineMessage({ defaultMessage: 'Secure Shell' }),
   [BridgeServiceEnum.WWW_HTTP]: defineMessage({ defaultMessage: 'WWW HTTP' }),
   [BridgeServiceEnum.WWW_HTTPS]: defineMessage({ defaultMessage: 'WWW HTTPs' }),
-  [BridgeServiceEnum.XGRID]: defineMessage({ defaultMessage: 'Xgrid' })
+  [BridgeServiceEnum.XGRID]: defineMessage({ defaultMessage: 'Xgrid' }),
+  [BridgeServiceEnum.OTHER]: defineMessage({ defaultMessage: 'Other' })
 }
 
 export const EditPropertyConfigMessages = {
