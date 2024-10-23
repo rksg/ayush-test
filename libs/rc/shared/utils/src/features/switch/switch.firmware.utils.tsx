@@ -142,7 +142,7 @@ export const getSwitchModelGroup = (model: string): SwitchFirmwareModelGroup => 
     return SwitchFirmwareModelGroup.ICX81
   } else if (modelLowerCase.startsWith(SwitchFirmwareModelGroup.ICX82.toLowerCase())) {
     return SwitchFirmwareModelGroup.ICX82
-  }  else {
+  } else {
     return SwitchFirmwareModelGroup.ICX7X // Others
   }
 }

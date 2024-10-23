@@ -35,7 +35,6 @@ export interface UpdateNowStepProps {
 }
 
 export function UpdateNowStep (props: UpdateNowStepProps) {
-
   const { $t } = useIntl()
   const intl = useIntl()
   const { form, current } = useStepFormContext()

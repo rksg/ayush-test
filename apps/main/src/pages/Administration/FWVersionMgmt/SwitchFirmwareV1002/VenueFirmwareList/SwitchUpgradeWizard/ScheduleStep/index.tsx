@@ -94,7 +94,6 @@ export function ScheduleStep (props: ScheduleStepProps) {
   const ICX82Count = availableVersions?.filter(
     v => v.modelGroup === SwitchFirmwareModelGroup.ICX82)[0]?.switchCount || 0
 
-
   const [switchNoteData, setSwitchNoteData] = useState([] as NoteProps[])
 
   const payload = {
