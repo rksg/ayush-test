@@ -21,7 +21,8 @@ import {
   useVenuesTableQuery,
   useDeleteVenueMutation,
   useGetVenueCityListQuery,
-  useLazyGetVenueEdgeCompatibilitiesQuery
+  useLazyGetVenueEdgeCompatibilitiesQuery,
+  useEnhanceVenueTableQuery
 } from '@acx-ui/rc/services'
 import {
   Venue,
@@ -319,12 +320,13 @@ export const VenueTable = ({ settingsId = 'venues-table',
 }
 
 export function VenuesTable () {
+  const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
   const { $t } = useIntl()
   const venuePayload = useDefaultVenuePayload()
 
   const settingsId = 'venues-table'
   const tableQuery = usePollingTableQuery<Venue>({
-    useQuery: useVenuesTableQuery,
+    useQuery: isApCompatibilitiesByModel? useEnhanceVenueTableQuery: useVenuesTableQuery,
     defaultPayload: venuePayload,
     search: {
       searchTargetFields: venuePayload.searchTargetFields as string[]

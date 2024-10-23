@@ -1,10 +1,10 @@
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { ConfigTemplateType }     from '@acx-ui/rc/utils'
-import { renderHook }             from '@acx-ui/test-utils'
-import { hasRoles }               from '@acx-ui/user'
-import { isDelegationMode }       from '@acx-ui/utils'
+import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
+import { ConfigTemplateDriftType, ConfigTemplateType } from '@acx-ui/rc/utils'
+import { renderHook }                                  from '@acx-ui/test-utils'
+import { hasRoles }                                    from '@acx-ui/user'
+import { isDelegationMode }                            from '@acx-ui/utils'
 
-import { getConfigTemplateTypeLabel, useEcFilters } from './templateUtils'
+import { getConfigTemplateDriftStatusLabel, getConfigTemplateTypeLabel, useEcFilters } from './templateUtils'
 
 const userProfileContextMockValues = {
   region: '[NA, EU, ASIA]',
@@ -112,6 +112,18 @@ describe('TemplateUtils', () => {
 
     it('should return the configTemplateType if no mappings exist', () => {
       expect(getConfigTemplateTypeLabel('UNKNOWN_TYPE' as ConfigTemplateType)).toBe('UNKNOWN_TYPE')
+    })
+  })
+
+  describe('getConfigTemplateDriftStatusLabel', () => {
+    it('should return an empty string when driftStatus is undefined', () => {
+      expect(getConfigTemplateDriftStatusLabel(undefined)).toBe('')
+    })
+
+    it('should return the corresponding label when driftStatus is defined', () => {
+      // eslint-disable-next-line max-len
+      expect(getConfigTemplateDriftStatusLabel(ConfigTemplateDriftType.DRIFT_DETECTED)).toBe('Drift Detected')
+      expect(getConfigTemplateDriftStatusLabel(ConfigTemplateDriftType.IN_SYNC)).toBe('In Sync')
     })
   })
 })
