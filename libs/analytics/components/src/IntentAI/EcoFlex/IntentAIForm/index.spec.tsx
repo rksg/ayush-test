@@ -7,11 +7,11 @@ import { get }                                                                  
 import { dataApi, dataApiURL, intentAIApi, intentAIUrl, Provider, store }                                      from '@acx-ui/store'
 import { fireEvent, mockGraphqlMutation, mockGraphqlQuery, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
-import { mockIntentContext }                             from '../../__tests__/fixtures'
-import { Statuses }                                      from '../../states'
-import { Intent }                                        from '../../useIntentDetailsQuery'
-import { mocked, mockApHierarchy, mockNetworkHierarchy } from '../__tests__/mockedEcoFlex'
-import { kpis }                                          from '../common'
+import { mockIntentContext }                                          from '../../__tests__/fixtures'
+import { Statuses }                                                   from '../../states'
+import { Intent }                                                     from '../../useIntentDetailsQuery'
+import { mocked, mockApHierarchy, mockNetworkHierarchy, mockKpiData } from '../__tests__/mockedEcoFlex'
+import { kpis }                                                       from '../common'
 
 import { IntentAIForm } from '.'
 
@@ -58,6 +58,32 @@ jest.mock('@acx-ui/config', () => ({
 }))
 
 window.ResizeObserver = ResizeObserver
+
+beforeEach(() => {
+  store.dispatch(intentAIApi.util.resetApiState())
+  moment.tz.setDefault('Asia/Singapore')
+  const now = +new Date('2024-08-08T12:00:00.000Z')
+  jest.spyOn(Date, 'now').mockReturnValue(now)
+
+  mockGraphqlMutation(intentAIUrl, 'IntentTransition', {
+    data: { transition: { success: true, errorMsg: '' , errorCode: '' } }
+  })
+  mockGraphqlQuery(intentAIUrl, 'IntentAIEcoKpi', {
+    data: { intent: mockKpiData }
+  })
+})
+
+afterEach((done) => {
+  jest.clearAllMocks()
+  jest.restoreAllMocks()
+  const toast = screen.queryByRole('img', { name: 'close' })
+  if (toast) {
+    waitForElementToBeRemoved(toast).then(done)
+    message.destroy()
+  } else {
+    done()
+  }
+})
 
 const mockIntentContextWith = (data: Partial<Intent> = {}) => {
   const intent = { ...mocked, ...data }
@@ -137,6 +163,7 @@ describe('IntentAIForm', () => {
     expect(await screen.findByText(/PowerSave will not be triggered during specific hours set in the Settings/)).toBeVisible()
     expect(await screen.findByText(/PowerSave will not be triggered for the specific APs set in the Settings./)).toBeVisible()
 
+    expect(await screen.findByText('Projected energy reduction')).toBeVisible()
     await click(actions.getByRole('button', { name: 'Apply' }))
 
     expect(await screen.findByText(/has been updated/)).toBeVisible()

@@ -150,6 +150,7 @@ export const wifiNetworklist = {
   data: [
     {
       apSerialNumbers: ['apSerialNumber1'],
+      apCount: 1,
       clientCount: 0,
       id: 'c9d5f4c771c34ad2898f7078cebbb191',
       name: 'network-01',
@@ -170,6 +171,7 @@ export const wifiNetworklist = {
     },
     {
       apSerialNumbers: [],
+      apCount: 0,
       captiveType: 'ClickThrough',
       clientCount: 0,
       id: 'ad850ca8595d4f2f9e7f208664cd8798',
@@ -181,6 +183,7 @@ export const wifiNetworklist = {
     },
     {
       apSerialNumbers: ['apSerialNumber1'],
+      apCount: 0,
       clientCount: 0,
       id: '373377b0cb6e46ea8982b1c80aabe1fa',
       name: 'network-03',
@@ -199,6 +202,7 @@ export const wifiNetworklist = {
     },
     {
       apSerialNumbers: [],
+      apCount: 0,
       captiveType: 'GuestPass',
       clientCount: 0,
       id: 'ad850ca8595d4f2f9e7f208664cd8898',
@@ -210,6 +214,7 @@ export const wifiNetworklist = {
     },
     {
       apSerialNumbers: ['apSerialNumber1'],
+      apCount: 1,
       clientCount: 0,
       id: '373377b0cb6e46ea8982b1c80aabe2fa',
       name: 'network-05',
@@ -227,6 +232,7 @@ export const wifiNetworklist = {
     },
     {
       apSerialNumbers: [],
+      apCount: 0,
       captiveType: 'SelfSignIn',
       clientCount: 0,
       id: 'ad850ca8595d4f2f9e7f208664cd8998',
@@ -238,6 +244,7 @@ export const wifiNetworklist = {
     },
     {
       apSerialNumbers: [],
+      apCount: 0,
       captiveType: 'HostApproval',
       clientCount: 0,
       id: 'ad850ca8595d4f2f9e7f208664cd9098',
@@ -249,6 +256,7 @@ export const wifiNetworklist = {
     },
     {
       apSerialNumbers: [],
+      apCount: 0,
       captiveType: 'WISPr',
       clientCount: 0,
       id: 'ad850ca8595d4f2f9e7f208664cd9198',
@@ -260,6 +268,7 @@ export const wifiNetworklist = {
     },
     {
       apSerialNumbers: [],
+      apCount: 0,
       clientCount: 0,
       description: '',
       id: '3c62b3818d194022b8dd35852c66f646',
@@ -272,6 +281,7 @@ export const wifiNetworklist = {
     },
     {
       apSerialNumbers: [],
+      apCount: 0,
       captiveType: '',
       clientCount: 0,
       id: 'ad850ca8595d4f2f9e7f208664cd9398',

@@ -13,6 +13,7 @@ import { parseExcludedHours, buildExcludedHours }                               
 import { useIntentContext }                                                                 from '../../IntentContext'
 import { createUseIntentTransition, FormValues, IntentTransitionPayload, useInitialValues } from '../../useIntentTransition'
 import { Actions, getTransitionStatus, TransitionIntentItem }                               from '../../utils'
+import { useIntentAIEcoFlexQuery }                                                          from '../ComparisonDonutChart/services'
 
 import { Introduction } from './Introduction'
 import { Priority }     from './Priority'
@@ -58,6 +59,7 @@ export const IntentAIForm: React.FC = () => {
   const navigate = useNavigate()
   const { submit } = useIntentTransition()
   const { intent: { metadata: { preferences } } } = useIntentContext()
+  const kpiQuery = useIntentAIEcoFlexQuery()
   const averagePowerPrice = preferences?.averagePowerPrice
     ? preferences.averagePowerPrice
     : { currency: 'USD', value: 0.131 }
@@ -80,6 +82,7 @@ export const IntentAIForm: React.FC = () => {
     },
     averagePowerPrice
   }
+
   return (<>
     <IntentWizardHeader />
 
@@ -93,7 +96,7 @@ export const IntentAIForm: React.FC = () => {
     >
       <StepsForm.StepForm
         title={$t({ defaultMessage: 'Introduction' })}
-        children={<Introduction/>}
+        children={<Introduction kpiQuery={kpiQuery}/>}
       />
       <StepsForm.StepForm
         title={$t({ defaultMessage: 'Intent Priority' })}
@@ -105,7 +108,7 @@ export const IntentAIForm: React.FC = () => {
       />
       <StepsForm.StepForm
         title={$t({ defaultMessage: 'Summary' })}
-        children={<Summary />}
+        children={<Summary kpiQuery={kpiQuery} />}
       />
     </StepsForm>
   </>)

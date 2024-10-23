@@ -63,13 +63,14 @@ describe('IntentAITabContent', () => {
     range: DateRange.last24Hours,
     filter: {}
   }
+  const now = new Date('2024-07-20T04:01:00.000Z').getTime()
 
   const resp = { t1: { success: true, errorMsg: '' , errorCode: '' } } as TransitionMutationResponse
 
   beforeEach(() => {
     setRaiPermissions({ WRITE_AI_OPERATIONS: true, WRITE_INTENT_AI: true } as RaiPermissions)
     store.dispatch(api.util.resetApiState())
-
+    jest.spyOn(Date, 'now').mockReturnValue(now)
     const pathFilters = { ...filters, path: defaultNetworkPath }
     jest.mocked(useAnalyticsFilter).mockReturnValue({
       filters,
@@ -370,7 +371,7 @@ describe('IntentAITabContent', () => {
     await userEvent.click((await screen.findAllByText('Revert'))[0])
     await userEvent.click((await screen.findAllByText('Apply'))[0])
     await waitFor(() =>
-      expect(screen.queryByText('Revert')).toBeNull()
+      expect(screen.queryByRole('button', { name: 'Revert' })).toBeNull()
     )
   })
 
