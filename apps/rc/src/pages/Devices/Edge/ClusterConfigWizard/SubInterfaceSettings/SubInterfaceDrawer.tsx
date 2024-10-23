@@ -1,19 +1,30 @@
-import { useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 
 import { Form, Input, InputNumber, Select } from 'antd'
 import { useIntl }                          from 'react-intl'
 
-import { Alert, Drawer }   from '@acx-ui/components'
+import { Alert, Drawer, useStepFormContext } from '@acx-ui/components'
 import {
   EdgeIpModeEnum,
+  EdgePortInfo,
   EdgePortTypeEnum,
   SubInterface,
   edgePortIpValidator,
-  generalSubnetMskRegExp
+  generalSubnetMskRegExp,
+  lanPortsubnetValidator
 } from '@acx-ui/rc/utils'
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
+import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
+
+import { SubInterfaceSettingsFormType } from './types'
+import {
+  extractSubnetFromEdgePortInfo,
+  extractSubnetFromSubInterface
+} from './utils'
+
 interface SubInterfaceDrawerProps {
+  serialNumber: string
   visible: boolean
   setVisible: (visible: boolean) => void
   data?: SubInterface
@@ -42,6 +53,13 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
   const { $t } = useIntl()
   const { visible, setVisible, data, handleAdd, handleUpdate } = props
   const [formRef] = Form.useForm()
+  const { form: stepFormRef } = useStepFormContext<SubInterfaceSettingsFormType>()
+  const { portsStatus, lagsStatus } = useContext(ClusterConfigWizardContext)
+
+  const allEdgePortInfo = [
+    ...(portsStatus?.[props.serialNumber] || []),
+    ...(lagsStatus?.[props.serialNumber] || [])
+  ] as EdgePortInfo[]
 
   useEffect(() => {
     if(visible) {
@@ -98,6 +116,35 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
       Promise.resolve()
   }
 
+  const getCurrentSubnetInfo = () => {
+    const { ip, subnet } = formRef.getFieldsValue(true)
+    return { ip, subnetMask: subnet }
+  }
+
+  const getSubnetInfoWithoutCurrent = () => {
+    const currentSubInterfaceId = formRef.getFieldValue('id') || ''
+
+    const allPhysicalInterfaceSubnets = allEdgePortInfo
+      .map(item => extractSubnetFromEdgePortInfo(item))
+      .filter(Boolean) as { id?: string, ip: string, subnetMask: string }[]
+
+    const allSubInterfaceSubnets = getAllSubInterfacesFromForm()
+      .filter(item => item.id !== currentSubInterfaceId)
+      .map(item => extractSubnetFromSubInterface(item))
+      .filter(Boolean) as { ip: string, subnetMask: string }[]
+
+    return [...allPhysicalInterfaceSubnets, ...allSubInterfaceSubnets]
+  }
+
+  const getAllSubInterfacesFromForm = () => {
+    const value = stepFormRef.getFieldsValue(true) as SubInterfaceSettingsFormType
+    const portsSubInterfaces = Object.values(value.portSubInterfaces[props.serialNumber] || {})
+      .flat() as SubInterface[]
+    const lagsSubInterfaces = Object.values(value.lagSubInterfaces[props.serialNumber] || {})
+      .flat() as SubInterface[]
+    return [...portsSubInterfaces, ...lagsSubInterfaces]
+  }
+
   const drawerContent = <Form layout='vertical' form={formRef} onFinish={handleFinish}>
     <Form.Item
       name='portType'
@@ -141,7 +188,11 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
               validateFirst
               rules={[
                 { required: true },
-                { validator: (_, value) => edgePortIpValidator(value, getFieldValue('subnet')) }
+                { validator: (_, value) => edgePortIpValidator(value, getFieldValue('subnet')) },
+                {
+                  validator: () =>
+                    lanPortsubnetValidator(getCurrentSubnetInfo(), getSubnetInfoWithoutCurrent())
+                }
               ]}
               children={<Input />}
               dependencies={['subnet']}

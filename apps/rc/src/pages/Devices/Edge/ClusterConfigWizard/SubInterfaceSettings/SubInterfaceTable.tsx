@@ -13,6 +13,7 @@ import * as UI from '../styledComponents'
 import SubInterfaceDrawer from './SubInterfaceDrawer'
 
 export interface SubInterfaceTableProps {
+  serialNumber: string
   currentTab: string
   ip: string
   mac: string
@@ -157,6 +158,7 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
       <Row>
         <Col span={12}>
           <SubInterfaceDrawer
+            serialNumber={props.serialNumber}
             visible={drawerVisible}
             setVisible={setDrawerVisible}
             data={currentEditData}
