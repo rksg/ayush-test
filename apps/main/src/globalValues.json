@@ -1,7 +1,7 @@
 {
   "GOOGLE_MAPS": "AIzaSyB2tIww5SYmX8xjJVdzEUIuwtZyS5TXnhI",
-  "SPLIT_IO": "54426nn43sd814m9drt1lg1jeupgr06jd9st",
-  "SPLIT_PROXY_ENDPOINT": "https://splitproxy.int.ruckus.cloud/api",
+  "SPLIT_IO": "s56i5harnvpksqb6a5kom1phqncj9d6ujf92",
+  "SPLIT_PROXY_ENDPOINT": "https://splitproxy.dev.ruckus.cloud/api",
   "PENDO_API": "b775f526-720b-449c-7fca-f45b7c3df0ae",
   "DISABLE_PENDO": "true",
   "CAPTIVE_PORTAL_DOMAIN_NAME": "dev.ruckus.cloud",
