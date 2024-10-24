@@ -8,11 +8,7 @@ export const userLogout = () => {
   sessionStorage.removeItem('ACX-ap-compatibiliy-note-hidden') // clear ap compatibiliy banner display condition
 
   Object.keys(localStorage)
-    ?.filter(s => s.includes('SPLITIO'))
-    ?.forEach(s => localStorage.removeItem(s))
-
-  Object.keys(localStorage)
-    ?.filter(s => s.includes('-content-switcher'))
+    ?.filter(s => s.includes('SPLITIO') || s.includes('-content-switcher'))
     ?.forEach(s => localStorage.removeItem(s))
 
   if (Boolean(get('IS_MLISA_SA'))) {
