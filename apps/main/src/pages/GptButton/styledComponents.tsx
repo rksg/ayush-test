@@ -76,10 +76,6 @@ export const GptModal = styled(Modal)<{ titleType: string }>`
       }
     }
   }
-  .ant-btn.ant-btn-primary {
-    border-color: var(--acx-accents-blue-50) !important;
-    background-color: var(--acx-accents-blue-50) !important;
-  }
 `
 
 

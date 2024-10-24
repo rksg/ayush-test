@@ -64,6 +64,8 @@ export const PurposeContainer = styled.div`
   flex-grow: 1;
   flex-direction: column;
   border-radius: 8px;
+  margin-top: -8px;
+  margin-bottom: 15px;
 `
 
 export const PurposeHeader = styled.div`

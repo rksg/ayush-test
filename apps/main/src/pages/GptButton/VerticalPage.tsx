@@ -7,18 +7,10 @@ import { useIntl }                              from 'react-intl'
 
 import { cssStr } from '@acx-ui/components'
 // TODO: Move this component to common-components
-import { EdgeClusterTypeCard } from '@acx-ui/rc/components'
+import { Hospitality, MultiDwellingUnit, Office, School, Shop, Stadium, TransportHub, Warehhouse } from '@acx-ui/icons'
+import { EdgeClusterTypeCard }                                                                     from '@acx-ui/rc/components'
 
-// TOOD: Waiting for the new SVG export
-import { ReactComponent as GptHotel }         from './assets/gptHotel.svg'
-import { ReactComponent as GptMultiDwelling } from './assets/gptMultiDwelling.svg'
-import { ReactComponent as GptOffice }        from './assets/gptOffice.svg'
-import { ReactComponent as GptSchool }        from './assets/gptSchool.svg'
-import { ReactComponent as GptShop }          from './assets/gptShop.svg'
-import { ReactComponent as GptStadium }       from './assets/gptStadium.svg'
-import { ReactComponent as GptTransport }     from './assets/gptTransport.svg'
-import { ReactComponent as GptWareHouse }     from './assets/gptWareHouse.svg'
-import * as UI                                from './styledComponents'
+import * as UI from './styledComponents'
 
 
 function VerticalPage () {
@@ -35,7 +27,7 @@ function VerticalPage () {
       fontWeight: 600,
       margin: '0px 0px 10px 85px'
     }}>
-      {$t({ defaultMessage: 'Vertical Type' })}
+      {$t({ defaultMessage: '<VenueSingular></VenueSingular> Type' })}
     </div>
 
     <Form.Item
@@ -56,7 +48,7 @@ function VerticalPage () {
               className='typeCard'
               id='school'
               title={$t({ defaultMessage: 'School' })}
-              icon={<GptSchool />}
+              icon={<School />}
             />
           </UI.VirticalBox>
           <UI.VirticalBox>
@@ -64,7 +56,7 @@ function VerticalPage () {
               className='typeCard'
               id='stadium'
               title={$t({ defaultMessage: 'Stadium' })}
-              icon={<GptStadium />}
+              icon={<Stadium />}
             />
           </UI.VirticalBox>
 
@@ -73,7 +65,7 @@ function VerticalPage () {
               className='typeCard'
               id='hotel'
               title={$t({ defaultMessage: 'Hotel' })}
-              icon={<GptHotel />}
+              icon={<Hospitality />}
             />
           </UI.VirticalBox>
           <UI.VirticalBox>
@@ -81,7 +73,7 @@ function VerticalPage () {
               className='typeCard'
               id='transport'
               title={$t({ defaultMessage: 'Transport Hub' })}
-              icon={<GptTransport />}
+              icon={<TransportHub />}
             />
           </UI.VirticalBox>
 
@@ -90,7 +82,7 @@ function VerticalPage () {
               className='typeCard'
               id='office'
               title={$t({ defaultMessage: 'Office' })}
-              icon={<GptOffice />}
+              icon={<Office />}
             />
           </UI.VirticalBox>
           <UI.VirticalBox>
@@ -98,7 +90,7 @@ function VerticalPage () {
               className='typeCard'
               id='wareHouse'
               title={$t({ defaultMessage: 'Warehouse' })}
-              icon={<GptWareHouse />}
+              icon={<Warehhouse />}
             />
           </UI.VirticalBox>
 
@@ -107,7 +99,7 @@ function VerticalPage () {
               className='typeCard'
               id='shop'
               title={$t({ defaultMessage: 'Shop' })}
-              icon={<GptShop />}
+              icon={<Shop />}
             />
           </UI.VirticalBox>
           <UI.VirticalBox>
@@ -115,7 +107,7 @@ function VerticalPage () {
               className='typeCard'
               id='multiDwelling'
               title={$t({ defaultMessage: 'Multi-Dwelling Unit' })}
-              icon={<GptMultiDwelling />}
+              icon={<MultiDwellingUnit />}
             />
           </UI.VirticalBox>
         </UI.VirticalContainer>

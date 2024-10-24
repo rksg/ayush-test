@@ -117,7 +117,11 @@ export default function GptWizard (props: {
     {
       name: GptConfigurationStepsEnum.VLAN,
       title: '',
-      component: <VlanStep payload={payloads[GptConfigurationStepsEnum.VLAN].payload} />,
+      component: payloads[GptConfigurationStepsEnum.VLAN].payload ? (
+        <VlanStep payload={payloads[GptConfigurationStepsEnum.VLAN].payload} />
+      ) : (
+        null
+      ),
       onFinish: async () =>
         handleOnFinish(GptConfigurationStepsEnum.VLAN)
     },
