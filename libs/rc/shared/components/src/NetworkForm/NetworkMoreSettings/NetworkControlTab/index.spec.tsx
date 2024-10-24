@@ -313,4 +313,25 @@ describe('Network More settings - Network Control Tab', () => {
 
     expect(screen.queryByText(/Application Recognition & Control/i)).not.toBeInTheDocument()
   })
+
+  it('ARC option can be switched correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <Form>
+          <NetworkControlTab/>
+        </Form>
+      </Provider>,
+      { route: { params } })
+
+    const arcForm = screen.getByTestId('arcForm')
+    const arcBtn = within(arcForm).getByRole('switch')
+    expect(arcBtn).toBeVisible()
+    expect(arcBtn.getAttribute('aria-checked')).toBe('true')
+
+    await userEvent.click(arcBtn)
+    expect(arcBtn.getAttribute('aria-checked')).toBe('false')
+    await userEvent.click(arcBtn)
+    expect(arcBtn.getAttribute('aria-checked')).toBe('true')
+  })
 })
