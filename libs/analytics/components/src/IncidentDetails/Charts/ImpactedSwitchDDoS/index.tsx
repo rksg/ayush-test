@@ -105,10 +105,10 @@ function ImpactedSwitchTable (props: {
     dataIndex: 'name',
     title: $t({ defaultMessage: 'Switch Name' }),
     render: (_, { mac, name },__,highlightFn) =>
-      <TenantLink to={
-        get('IS_MLISA_SA') ? `devices/switch/${mac}/serial/details/reports`
-          : `devices/switch/${mac}/serial/details/overview`
-      }>
+      <TenantLink
+        to={`devices/switch/${mac}/serial/details/${get('IS_MLISA_SA')
+          ? 'reports': 'overview'}`
+        }>
         {highlightFn(name)}
       </TenantLink>,
     fixed: 'left',
