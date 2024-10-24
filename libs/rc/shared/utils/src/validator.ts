@@ -805,6 +805,16 @@ export function specialCharactersRegExp (value: string) {
   return Promise.resolve()
 }
 
+export function specialCharactersWithNewLineRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/^[\.$A-Za-z0-9_ \n-]+$/)
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.specialCharactersInvalid))
+  }
+  return Promise.resolve()
+}
+
 export function parsePhoneNumber (phoneNumber: string): {
   number: libphonenumber.PhoneNumber,
   type: PhoneNumberType
