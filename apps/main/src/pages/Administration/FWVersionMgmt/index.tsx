@@ -123,7 +123,7 @@ const FWVersionMgmt = () => {
 
       if (isSupport8100) {
         const recommended81 = recommendedSwitchReleaseVersions.filter(
-          r => r.modelGroup === SwitchFirmwareModelGroup.ICX81)[0].versions[0].id
+          r => r.modelGroup === SwitchFirmwareModelGroup.ICX81)[0]?.versions[0].id
         const hasOutdated81 = recommended81 && switchVenueVersionListV1001.data.some(fv =>
           compareSwitchVersion(recommended81, fv.versions.filter(
             v=> v.modelGroup=== SwitchFirmwareModelGroup.ICX81)[0]?.version)) || false
