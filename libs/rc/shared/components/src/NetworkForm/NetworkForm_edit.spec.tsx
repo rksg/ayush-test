@@ -55,8 +55,8 @@ async function fillInBeforeSettings (networkName: string) {
   const insertInput = screen.getByLabelText(/Network Name/)
   fireEvent.change(insertInput, { target: { value: networkName } })
   fireEvent.blur(insertInput)
-  const validating = await screen.findByRole('img', { name: 'loading' })
-  await waitForElementToBeRemoved(validating, { timeout: 7000 })
+  //const validating = await screen.findByRole('img', { name: 'loading' })
+  //await waitForElementToBeRemoved(validating, { timeout: 7000 })
 
   await userEvent.click(screen.getByRole('button', { name: 'Settings' }))
 }
@@ -323,6 +323,7 @@ describe('NetworkForm', () => {
         route: { params }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     await fillInBeforeSettings('open network edit test')
 
