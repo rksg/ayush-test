@@ -17,8 +17,6 @@ import { KpiData, useIntentAIEcoFlexQuery } from './services'
 import * as UI                              from './styledComponents'
 
 function DataGraph ({ kpiData, isDetail }: { kpiData: KpiData, isDetail: boolean }) {
-  if (!kpiData) return null
-
   const tooltipFormat = defineMessage({
     defaultMessage: ` <b>{formattedValue} {value, plural,
       one {AP}

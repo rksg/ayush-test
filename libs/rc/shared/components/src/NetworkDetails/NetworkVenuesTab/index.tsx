@@ -12,7 +12,7 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import {
   useAddNetworkVenueMutation,
   useAddNetworkVenuesMutation,
@@ -32,7 +32,9 @@ import {
   useNewNetworkVenueTableQuery,
   useNetworkDetailHeaderQuery,
   useEnhanceNetworkVenueTableQuery,
-  useGetEnhancedVlanPoolPolicyTemplateListQuery
+  useGetEnhancedVlanPoolPolicyTemplateListQuery,
+  useAddRbacNetworkVenueMutation,
+  useDeleteRbacNetworkVenueMutation
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -209,6 +211,7 @@ export function NetworkVenuesTab () {
   const { cityFilterOptions } = useGetVenueCityList()
 
   const [tableData, setTableData] = useState(defaultArray)
+  const [isActivateUpdating, setIsActivateUpdating] = useState<boolean>(false)
   const [apGroupModalState, setApGroupModalState] = useState<ApGroupModalState>({
     visible: false
   })
@@ -228,6 +231,28 @@ export function NetworkVenuesTab () {
   })
 
   const [
+    addRbacNetworkVenue,
+    { isLoading: isAddRbacNetworkUpdating }
+  ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddRbacNetworkVenueMutation,
+    useTemplateMutationFn: useAddNetworkVenueTemplateMutation
+  })
+
+  const [
+    deleteRbacNetworkVenue,
+    { isLoading: isDeleteRbacNetworkUpdating }
+  ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useDeleteRbacNetworkVenueMutation,
+    useTemplateMutationFn: useDeleteNetworkVenueTemplateMutation
+  })
+
+  const [updateNetworkVenue] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateNetworkVenueMutation,
+    useTemplateMutationFn: useUpdateNetworkVenueTemplateMutation
+  })
+
+  // non-RBAC API
+  const [
     addNetworkVenue,
     { isLoading: isAddNetworkUpdating }
   ] = useConfigTemplateMutationFnSwitcher({
@@ -240,11 +265,6 @@ export function NetworkVenuesTab () {
   ] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useDeleteNetworkVenueMutation,
     useTemplateMutationFn: useDeleteNetworkVenueTemplateMutation
-  })
-
-  const [updateNetworkVenue] = useConfigTemplateMutationFnSwitcher({
-    useMutationFn: useUpdateNetworkVenueMutation,
-    useTemplateMutationFn: useUpdateNetworkVenueTemplateMutation
   })
 
   // RBAC API doesn't support
@@ -351,15 +371,27 @@ export function NetworkVenuesTab () {
 
     if (!row.allApDisabled || !checked) {
       if (checked) { // activate
-        addNetworkVenue({
-          params: {
-            tenantId: params.tenantId,
-            venueId,
-            networkId
-          },
-          payload: newNetworkVenue,
-          enableRbac: resolvedRbacEnabled
-        })
+        const apiParams = {
+          tenantId: params.tenantId,
+          venueId,
+          networkId
+        }
+
+        if (resolvedRbacEnabled) {
+          setIsActivateUpdating(true)
+          addRbacNetworkVenue({
+            params: apiParams,
+            payload: newNetworkVenue,
+            enableRbac: true,
+            callback: () => setIsActivateUpdating(false)
+          })
+        } else {
+          addNetworkVenue({
+            params: apiParams,
+            payload: newNetworkVenue,
+            enableRbac: false
+          })
+        }
       } else { // deactivate
         checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues?.networkVenueIds, [row.id], () => {
           if (!deactivateNetworkVenueId) {
@@ -369,15 +401,24 @@ export function NetworkVenuesTab () {
               }
             })
           }
-          deleteNetworkVenue({
-            params: {
-              tenantId: params.tenantId,
-              networkVenueId: deactivateNetworkVenueId,
-              venueId: newNetworkVenue.venueId,
-              networkId
-            },
-            enableRbac: resolvedRbacEnabled
-          })
+
+          const apiParams = {
+            tenantId: params.tenantId,
+            networkVenueId: deactivateNetworkVenueId,
+            venueId: newNetworkVenue.venueId,
+            networkId
+          }
+
+          if (resolvedRbacEnabled) {
+            setIsActivateUpdating(true)
+            deleteRbacNetworkVenue({
+              params: apiParams,
+              enableRbac: true,
+              callback: () => setIsActivateUpdating(false)
+            })
+          } else {
+            deleteNetworkVenue({ params: apiParams, enableRbac: false })
+          }
         })
       }
     }
@@ -386,12 +427,18 @@ export function NetworkVenuesTab () {
   const handleAddNetworkVenues = async (networkVenues: NetworkVenue[], clearSelection: () => void) => {
     if (networkVenues.length > 0) {
       if (resolvedRbacEnabled) {
+        setIsActivateUpdating(true)
         const addNetworkVenueReqs = networkVenues.map((networkVenue) => {
           const params = {
             venueId: networkVenue.venueId,
             networkId: networkVenue.networkId
           }
-          return addNetworkVenue({ params, payload: networkVenue, enableRbac: true })
+          return addRbacNetworkVenue({
+            params,
+            payload: networkVenue,
+            enableRbac: true,
+            callback: () => setIsActivateUpdating(false)
+          })
         })
 
         await Promise.allSettled(addNetworkVenueReqs).then(clearSelection)
@@ -409,12 +456,17 @@ export function NetworkVenuesTab () {
       if (resolvedRbacEnabled) {
         const network = networkQuery.data
         const networkId = (network && network?.id) ? network.id : ''
+        setIsActivateUpdating(true)
         const deleteNetworkVenueReqs = networkVenueIds.map((networkVenueId) => {
           const curParams = {
             venueId: networkVenueId,
             networkId: networkId
           }
-          return deleteNetworkVenue({ params: curParams, enableRbac: true })
+          return deleteRbacNetworkVenue({
+            params: curParams,
+            enableRbac: true,
+            callback: () => setIsActivateUpdating(false)
+          })
         })
 
         await Promise.allSettled(deleteNetworkVenueReqs).then(clearSelection)
@@ -796,12 +848,15 @@ export function NetworkVenuesTab () {
     }
   }
 
+  const isFetching = isActivateUpdating
+    || isAddRbacNetworkUpdating || isDeleteRbacNetworkUpdating
+    || isAddNetworkUpdating || isDeleteNetworkUpdating
+
   return (
     <Loader states={[
       tableQuery,
       networkQuery,
-      { isLoading: false, isFetching: isAddNetworkUpdating },
-      { isLoading: false, isFetching: isDeleteNetworkUpdating }
+      { isLoading: false, isFetching: isFetching }
     ]}>
       {
         !networkDetailHeader?.activeVenueCount &&

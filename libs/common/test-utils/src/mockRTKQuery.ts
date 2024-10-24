@@ -16,7 +16,7 @@ export const mockGraphqlQuery = (
         expect(req.body?.variables).toMatchSnapshot()
       }
       return result.error
-        ? res(ctx.errors([result.error]))
+        ? res(ctx.status(500), ctx.data({ error: result.error, ...result.data }))
         : res(ctx.data(result.data||{}))
     })
   )

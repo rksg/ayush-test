@@ -108,6 +108,7 @@ export enum Features {
   PTENANT_RBAC_API = 'abac-policies-toggle',
   RADIO6G_RATE_CONTROL = 'radio6g-rate-control-toggle',
   RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
+  RBAC_PHASE2_TOGGLE = 'acx-ui-rbac-phase2-toggle',
   REC_TO_MSP_CONVERSION_TOGGLE = 'acx-rec-to-msp-conversion-toggle',
   RECOMMENDATION_DELETE = 'acx-ui-recommendation-delete-toggle',
   RECOMMENDATION_REVERT = 'acx-ui-recommendation-revert-toggle',
@@ -139,6 +140,7 @@ export enum Features {
   SWITCH_FIRMWARE_V1002_TOGGLE= 'switch-firmware-management-for-10010d-toggle',
   SWITCH_PROFILE_ONBOARD_ONLY= 'switch-config-profile-onboarding-only-toggle',
   SWITCH_NTP_SERVER = 'switch-consumer-apply-ntp-server-toggle',
+  SWITCH_LEVEL_CLI_PROFILE = 'switch-consumer-switch-level-cli-profile-toggle',
   SWITCH_CABLE_TEST = 'switch-cable-testing-toggle',
   SWITCH_SUPPORT_ICX8200AV= 'switch-support-icx8200av-toggle',
   TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs',
@@ -203,7 +205,8 @@ export enum Features {
   ENTITLEMENT_LICENSE_COMPLIANCE_PHASE2_TOGGLE = 'entitlement-license-compliance-phase2-toggle',
   BRAND360_MDU_TOGGLE = 'acx-ui-brand360-mdu-toggle',
   SERVER_CERTIFICATE_MANAGEMENT_UI_TOGGLE = 'server-certificate-management-ui-toggle',
-  WIFI_NETWORK_APPLICATION_CONTROL = 'wifi-network-application-control'
+  WIFI_NETWORK_APPLICATION_CONTROL = 'wifi-network-application-control',
+  UX_OPTIMIZATION_FEATURE_TOGGLE = 'acx-ui-ux-optimization-feature-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

@@ -96,7 +96,6 @@ export default function ServerCertificatesTable () {
       sorter: true,
       render: (_, { notAfterDate }) => {
         return formatter(DateFormatEnum.DateFormat)(notAfterDate)
-        // return moment(notAfterDate).format('MM/DD/YYYY')
       }
     },
     {

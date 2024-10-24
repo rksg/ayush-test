@@ -60,6 +60,11 @@ export interface KpiData {
   }
 }
 
+export interface KpiDonutChartData {
+  timestamp: string
+  data: DonutChartData[]
+}
+
 interface KpiChartData {
   value: number
   name: ReturnType<typeof defineMessage>
