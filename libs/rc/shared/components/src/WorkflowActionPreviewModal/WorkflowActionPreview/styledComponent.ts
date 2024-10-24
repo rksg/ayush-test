@@ -8,7 +8,7 @@ export const PreviewContainer = styled.div<({ hasBackgroundImage: boolean })>`
   margin: 0 auto;
   padding: 8px;
 
-  width: 425px;
+  width: 430px;
   max-width: 600px;
   min-height: 100%;
 
@@ -38,7 +38,7 @@ export const PreviewContainer = styled.div<({ hasBackgroundImage: boolean })>`
 export const Title = styled.div`
   font-weight: 600;
   padding: inherit;
-  width: inherit;
+  width: 100%;
 
   ${({ style })=> `color: ${style?.color}`};
 
@@ -48,8 +48,8 @@ export const Title = styled.div`
 `
 
 export const Body = styled.div`
-  padding: 24px 8px;
-  width: inherit;
+  padding: 24px 10px;
+  width: 100%;
 
   ${({ style })=> `color: ${style?.color}`};
 
