@@ -16,8 +16,10 @@ import { get }                                                     from '@acx-ui
 import { SwitchScopes, WifiScopes }                                from '@acx-ui/types'
 import { filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 
-import { useDeleteWebhookMutation, useWebhooksQuery, useResourceGroups, handleError } from './services'
-import { WebhookForm }                                                                from './WebhookForm'
+import { handleError } from '../utils'
+
+import { useDeleteWebhookMutation, useWebhooksQuery, useResourceGroups } from './services'
+import { WebhookForm }                                                   from './WebhookForm'
 
 import type { Webhook, ExtendedWebhook } from './services'
 
@@ -51,7 +53,7 @@ export const useWebhooks = () => {
   // null      = no webhook selected
   const [selectedId, setSelectedId] = useState<string | undefined | null>(null)
 
-  const { webhook, webhooks, states } = useWebhooksData(selectedId)
+  const { webhooks, webhook, states } = useWebhooksData(selectedId)
 
   const [doDelete, response] = useDeleteWebhookMutation()
 

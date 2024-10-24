@@ -746,6 +746,7 @@
         }
       }
     }
+
     &.grouping-dropdown {
       padding: 4px 0;
       .rc-virtual-list-holder {
@@ -767,6 +768,89 @@
               background: var(--acx-neutrals-50);
               top: 50%;
               right: var(--acx-select-item-left-padding);
+            }
+          }
+          .ant-select-item-option {
+            &-content {
+              .option-label {
+                display: flex;
+                .subtitle {
+                  color: var(--acx-neutrals-60);
+                  margin-top: 2px;
+                }
+              }
+            }
+            &-disabled {
+              &:before {
+                border-color: var(--acx-neutrals-40);
+              }
+              .option-label {
+                color: var(--acx-neutrals-40);
+                .subtitle {
+                  color: var(--acx-neutrals-40);
+                }
+              }
+              &.ant-select-item-option-selected {
+                &:before {
+                  background: var(--acx-neutrals-40);
+                }
+              }
+            }
+          }
+        }
+      }
+      &.radio-type {
+        .rc-virtual-list-holder {
+          &-inner {
+            .ant-select-item-option-state {
+              position: absolute;
+              text-align: center;
+              width: 16px;
+              margin-left: 2px;
+              left: var(--acx-select-multiple-item-left-padding);
+              svg {
+                display: none;
+              }
+              &:before {
+                content: "";
+                display: inline-block;
+                position: relative;
+                border-radius: 50%;
+                width: 10px;
+                height: 10px;
+                top: .5px;
+              }
+            }
+            .ant-select-item-option {
+              &:before {
+                content: "";
+                display: inline-block;
+                border: 1px solid var(--acx-accents-blue-50);
+                background: var(--acx-primary-white);
+                border-radius: 50%;
+                width: 16px;
+                height: 16px;
+                margin-right: 7px;
+              }
+              &-selected {
+                .ant-select-item-option-state {
+                  &:before {
+                    background: var(--acx-accents-blue-50);
+                  }
+                }
+              }
+              &-disabled {
+                &:before {
+                  border-color: var(--acx-neutrals-40);
+                }
+                &.ant-select-item-option-selected {
+                  .ant-select-item-option-state {
+                    &:before {
+                      background: var(--acx-neutrals-40);
+                    }
+                  }
+                }
+              }
             }
           }
         }

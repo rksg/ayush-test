@@ -43,7 +43,9 @@ import {
   useGetVLANPoolPolicyViewModelListQuery,
   useNewVenueNetworkTableQuery,
   useEnhanceVenueNetworkTableQuery,
-  useGetEnhancedVlanPoolPolicyTemplateListQuery
+  useGetEnhancedVlanPoolPolicyTemplateListQuery,
+  useDeleteRbacNetworkVenueMutation,
+  useAddRbacNetworkVenueMutation
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -189,6 +191,7 @@ export function VenueNetworksTab () {
   const tableQuery = useVenueNetworkList({ settingsId, venueId })
 
   const [tableData, setTableData] = useState(defaultArray)
+  const [isActivateUpdating, setIsActivateUpdating] = useState<boolean>(false)
   const [apGroupModalState, setApGroupModalState] = useState<ApGroupModalState>({
     visible: false
   })
@@ -205,6 +208,15 @@ export function VenueNetworksTab () {
     useTemplateMutationFn: useUpdateNetworkVenueTemplateMutation
   })
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([])
+
+  const [ addRbacNetworkVenue, { isLoading: isAddRbacNetworkUpdating } ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddRbacNetworkVenueMutation,
+    useTemplateMutationFn: useAddNetworkVenueTemplateMutation
+  })
+  const [ deleteRbacNetworkVenue, { isLoading: isDeleteRbacNetworkUpdating } ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useDeleteRbacNetworkVenueMutation,
+    useTemplateMutationFn: useDeleteNetworkVenueTemplateMutation
+  })
 
   const [ addNetworkVenue, { isLoading: isAddNetworkUpdating } ] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useAddNetworkVenueMutation,
@@ -292,27 +304,52 @@ export function VenueNetworksTab () {
           if (IsNetworkSupport6g(row.deepNetwork)) {
             newNetworkVenue.allApGroupsRadioTypes.push(RadioTypeEnum._6_GHz)
           }
-          addNetworkVenue({
-            params: {
-              tenantId: params.tenantId,
-              venueId,
-              networkId: newNetworkVenue.networkId
-            },
-            payload: newNetworkVenue,
-            enableRbac: resolvedRbacEnabled
-          })
+
+          const apiParams = {
+            tenantId: params.tenantId,
+            venueId,
+            networkId: newNetworkVenue.networkId
+          }
+
+          if (resolvedRbacEnabled) {
+            setIsActivateUpdating(true)
+            addRbacNetworkVenue({
+              params: apiParams,
+              payload: newNetworkVenue,
+              enableRbac: true,
+              callback: () => setIsActivateUpdating(false)
+            })
+          } else {
+            addNetworkVenue({
+              params: apiParams,
+              payload: newNetworkVenue,
+              enableRbac: false
+            })
+          }
+
         } else { // deactivate
           row.deepNetwork.venues.forEach((networkVenue) => {
             if (networkVenue.venueId === venueId) {
-              deleteNetworkVenue({
-                params: {
-                  tenantId: params.tenantId,
-                  venueId,
-                  networkId: networkVenue.networkId,
-                  networkVenueId: networkVenue.id
-                },
-                enableRbac: resolvedRbacEnabled
-              })
+              const apiParams = {
+                tenantId: params.tenantId,
+                venueId,
+                networkId: networkVenue.networkId,
+                networkVenueId: networkVenue.id
+              }
+
+              if (resolvedRbacEnabled) {
+                setIsActivateUpdating(true)
+                deleteRbacNetworkVenue({
+                  params: apiParams,
+                  enableRbac: true,
+                  callback: () => setIsActivateUpdating(false)
+                })
+              } else {
+                deleteNetworkVenue({
+                  params: apiParams,
+                  enableRbac: false
+                })
+              }
             }
           })
         }
@@ -637,11 +674,13 @@ export function VenueNetworksTab () {
     }
   }
 
+  const isFetching = isActivateUpdating
+    || isAddRbacNetworkUpdating || isDeleteRbacNetworkUpdating
+    || isAddNetworkUpdating || isDeleteNetworkUpdating
   return (
     <Loader states={[
       tableQuery,
-      { isLoading: false, isFetching: isAddNetworkUpdating },
-      { isLoading: false, isFetching: isDeleteNetworkUpdating }
+      { isLoading: false, isFetching: isFetching }
     ]}>
       <Table
         settingsId={settingsId}

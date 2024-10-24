@@ -243,27 +243,26 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
               })
             }
           }
-
-          if (Object.keys(apIdsToIncompatible).length > 0) {
-            // TODO Need more discuss wether groupBy feature is necessary
-            if (hasGroupBy) {
-              tableQuery.data.data?.forEach(item => {
-                const children = (item as unknown as { aps: NewAPModelExtended[] }).aps?.map(ap => ({
-                  ...ap,
-                  incompatible: apIdsToIncompatible[ap.serialNumber]
-                }))
-                result.push({ ...item, aps: children, children })
-              })
-            } else {
-              tableQuery.data.data?.forEach(ap => (result.push({
+        }
+        if (Object.keys(apIdsToIncompatible).length > 0) {
+          // TODO Need more discuss wether groupBy feature is necessary
+          if (hasGroupBy) {
+            tableQuery.data.data?.forEach(item => {
+              const children = (item as unknown as { aps: NewAPModelExtended[] }).aps?.map(ap => ({
                 ...ap,
                 incompatible: apIdsToIncompatible[ap.serialNumber]
-              })))
-            }
-            setTableData(result)
+              }))
+              result.push({ ...item, aps: children, children })
+            })
           } else {
-            setTableData(tableQuery.data?.data)
+            tableQuery.data.data?.forEach(ap => (result.push({
+              ...ap,
+              incompatible: apIdsToIncompatible[ap.serialNumber]
+            })))
           }
+          setTableData(result)
+        } else {
+          setTableData(tableQuery.data?.data)
         }
       }
     }
@@ -395,7 +394,6 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       dataIndex: 'venueName',
       filterKey: 'venueId',
       filterable: filterables ? filterables['venueId'] : false,
-      sorter: true,
       render: (_: ReactNode, row: NewAPModelExtended) => (
         <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
           {row.venueName}
@@ -697,10 +695,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const [ importQuery ] = useLazyImportResultQuery()
   const [ importResult, setImportResult ] = useState<ImportErrorRes>({} as ImportErrorRes)
   const [ importErrors, setImportErrors ] = useState<FetchBaseQueryError>({} as FetchBaseQueryError)
-  const apGpsFlag = useIsSplitOn(Features.AP_GPS)
-  const importTemplateLink = apGpsFlag ?
-    'assets/templates/new_aps_import_template_with_gps.csv' :
-    'assets/templates/new_aps_import_template.csv'
+  const importTemplateLink = 'assets/templates/new_aps_import_template_with_gps.csv'
   // eslint-disable-next-line max-len
   const { exportCsv, disabled } = useExportCsv<NewAPModelExtended>(tableQuery as TableQuery<NewAPModelExtended, RequestPayload<unknown>, unknown>)
   const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
