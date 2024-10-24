@@ -168,6 +168,8 @@ export class PskWlanAdvancedCustomization {
 
   fastRoamingOptions?: FastRoamingOptions
 
+  applicationVisibilityEnabled?: boolean
+
   constructor () {
     this.maxClientsOnWlanPerRadio = 100
 
@@ -291,5 +293,7 @@ export class PskWlanAdvancedCustomization {
     this.qosMapSetOptions = new QosMapSetOptions()
 
     this.fastRoamingOptions = new FastRoamingOptions()
+
+    this.applicationVisibilityEnabled = true
   }
 }
