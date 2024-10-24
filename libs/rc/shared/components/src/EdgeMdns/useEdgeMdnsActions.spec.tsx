@@ -44,28 +44,26 @@ describe('differenceVenueClusters', () => {
 
 const mockedActivateEdgeClusterReq = jest.fn()
 const mockedDeactivateEdgeClusterReq = jest.fn()
-// const mockedCreateFn = jest.fn()
-const mockedCreateReq = jest.fn()
+const mockedCreateFn = jest.fn()
 const mockedUpdateReq = jest.fn()
 
-// TODO: add this back when BE activity is done
-// jest.mock('@acx-ui/rc/services', () => ({
-//   ...jest.requireActual('@acx-ui/rc/services'),
-//   useAddEdgeMdnsProxyMutation: () => {
-//     return [(req: RequestPayload) => {
-//       return { unwrap: () => new Promise((resolve) => {
-//         resolve(true)
-//         setTimeout(() => {
-//           mockedCreateFn()
-//           const cbFn = (req.callback as Function)
-//           cbFn({
-//             response: { id: 'mocked_service_id' }
-//           })
-//         }, 300)
-//       }) }
-//     }]
-//   }
-// }))
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useAddEdgeMdnsProxyMutation: () => {
+    return [(req: RequestPayload) => {
+      return { unwrap: () => new Promise((resolve) => {
+        resolve(true)
+        setTimeout(() => {
+          mockedCreateFn()
+          const cbFn = (req.callback as Function)
+          cbFn({
+            response: { id: 'mocked_service_id' }
+          })
+        }, 300)
+      }) }
+    }]
+  }
+}))
 
 describe('useEdgeMdnsActions', () => {
   beforeEach(() => {
@@ -73,18 +71,10 @@ describe('useEdgeMdnsActions', () => {
 
     mockedActivateEdgeClusterReq.mockClear()
     mockedDeactivateEdgeClusterReq.mockClear()
-    // mockedCreateFn.mockClear()
-    mockedCreateReq.mockClear()
+    mockedCreateFn.mockClear()
     mockedUpdateReq.mockClear()
 
     mockServer.use(
-      rest.post(
-        EdgeMdnsProxyUrls.addEdgeMdnsProxy.url,
-        (req, res, ctx) => {
-          mockedCreateReq(req.body)
-          return res(ctx.json({ response: { id: 'mocked_service_id' } }))
-        }
-      ),
       rest.put(
         EdgeMdnsProxyUrls.updateEdgeMdnsProxy.url,
         (req, res, ctx) => {
@@ -132,8 +122,7 @@ describe('useEdgeMdnsActions', () => {
       }
 
       expect(error).toBeUndefined()
-      // expect(mockedCreateFn).toBeCalled()
-      expect(mockedCreateReq).toBeCalled()
+      expect(mockedCreateFn).toBeCalled()
       expect(mockedActivateEdgeClusterReq).toBeCalledTimes(0)
     })
 
@@ -159,8 +148,7 @@ describe('useEdgeMdnsActions', () => {
       }
 
       expect(error).toBeUndefined()
-      // expect(mockedCreateFn).toBeCalled()
-      expect(mockedCreateReq).toBeCalled()
+      expect(mockedCreateFn).toBeCalled()
       expect(mockedActivateEdgeClusterReq).toBeCalledTimes(1)
       expect(mockedActivateEdgeClusterReq).toBeCalledWith({
         serviceId: 'mocked_service_id',

@@ -11,15 +11,15 @@ import { baseEdgeMdnsProxyApi } from '@acx-ui/store'
 import { RequestPayload }       from '@acx-ui/types'
 import { createHttpRequest }    from '@acx-ui/utils'
 
-import { serviceApi } from './service'
+import { serviceApi }                     from './service'
+import { handleCallbackWhenActivityDone } from './utils'
 
-// TODO: still need to confirm
 enum EdgeMdnsProxyActivityEnum {
-  ADD = 'Add EdgeMdnsProxy',
-  UPDATE = 'Update EdgeMdnsProxy',
-  DELETE = 'Delete EdgeMdnsProxy',
-  ACTIVATE_NETWORK = 'Activate cluster',
-  DEACTIVATE_NETWORK = 'Deactivate cluster',
+  CREATE = 'Create MdnsProxy',
+  UPDATE = 'Update MdnsProxy',
+  DELETE = 'Delete MdnsProxy',
+  ACTIVATE_CLUSTER = 'Activate MdnsProxy',
+  DEACTIVATE_CLUSTER = 'Deactivate MdnsProxy',
 }
 
 export const edgeMdnsProxyApi = baseEdgeMdnsProxyApi.injectEndpoints({
@@ -37,9 +37,11 @@ export const edgeMdnsProxyApi = baseEdgeMdnsProxyApi.injectEndpoints({
         async onCacheEntryAdded (requestArgs, api) {
           await onSocketActivityChanged(requestArgs, api, (msg) => {
             onActivityMessageReceived(msg, [
-              EdgeMdnsProxyActivityEnum.ADD,
+              EdgeMdnsProxyActivityEnum.CREATE,
               EdgeMdnsProxyActivityEnum.UPDATE,
-              EdgeMdnsProxyActivityEnum.DELETE
+              EdgeMdnsProxyActivityEnum.DELETE,
+              EdgeMdnsProxyActivityEnum.ACTIVATE_CLUSTER,
+              EdgeMdnsProxyActivityEnum.DEACTIVATE_CLUSTER
             ], () => {
               api.dispatch(serviceApi.util.invalidateTags([
                 { type: 'Service', id: 'LIST' }
@@ -66,7 +68,18 @@ export const edgeMdnsProxyApi = baseEdgeMdnsProxyApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'EdgeMdnsProxy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'EdgeMdnsProxy', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          await handleCallbackWhenActivityDone({
+            api,
+            activityData: msg,
+            useCase: EdgeMdnsProxyActivityEnum.CREATE,
+            callback: requestArgs.callback,
+            failedCallback: requestArgs.failedCallback
+          })
+        })
+      }
     }),
     updateEdgeMdnsProxy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -88,11 +101,33 @@ export const edgeMdnsProxyApi = baseEdgeMdnsProxyApi.injectEndpoints({
     activateEdgeMdnsProxyCluster: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         return createHttpRequest(EdgeMdnsProxyUrls.activateEdgeMdnsProxyCluster, params)
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          await handleCallbackWhenActivityDone({
+            api,
+            activityData: msg,
+            useCase: EdgeMdnsProxyActivityEnum.ACTIVATE_CLUSTER,
+            callback: requestArgs.callback,
+            failedCallback: requestArgs.failedCallback
+          })
+        })
       }
     }),
     deactivateEdgeMdnsProxyCluster: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         return createHttpRequest(EdgeMdnsProxyUrls.deactivateEdgeMdnsProxyCluster, params)
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          await handleCallbackWhenActivityDone({
+            api,
+            activityData: msg,
+            useCase: EdgeMdnsProxyActivityEnum.DEACTIVATE_CLUSTER,
+            callback: requestArgs.callback,
+            failedCallback: requestArgs.failedCallback
+          })
+        })
       }
     })
   })

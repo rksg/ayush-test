@@ -26,44 +26,29 @@ export const useEdgeMdnsActions = () => {
   const createEdgeMdns = async (formData: EdgeMdnsProxyViewData): Promise<CommonResult> => {
     const payload = edgeMdnsFormRequestPreProcess(formData)
 
-
     return new Promise(async (resolve, reject) => {
       addEdgeMdns({
-        payload
-        // TODO: add this back when BE activity is done
-        // callback: (response: CommonResult) => {
-        //   const serviceId = response.response?.id
+        payload,
+        callback: async (response: CommonResult) => {
+          const serviceId = response.response?.id
 
-        //   if (serviceId) {
-        //     // do activation
-        //     const actions = formData.activations?.map(item =>
-        //       activateEdgeMdnsCluster(serviceId, item.venueId, item.edgeClusterId))
+          if (serviceId) {
 
-        //     if (actions) {
-        //       Promise.all(actions).then(() => resolve(response))
-        //     } else {
-        //       resolve(response)
-        //     }
-        //   } else {
-        //     reject(new Error('empty service id'))
-        //   }
-        // }
+            // do activation
+            const actions = formData.activations?.map(item =>
+              activateEdgeMdnsCluster(serviceId, item.venueId, item.edgeClusterId))
+
+            if (actions) {
+              Promise.all(actions).then(() => resolve(response))
+            } else {
+              resolve(response)
+            }
+          } else {
+            reject(new Error('empty service id'))
+          }
+        }
         // need to catch basic service profile failed
       }).unwrap()
-        // TODO: should remove this when BE activity is done
-        .then(async (response: CommonResult) => {
-          const serviceId = response.response?.id
-          if (!serviceId) {
-            return reject(new Error('empty service id'))
-          }
-
-          const activates = formData.activations ?? []
-          const actions = activates?.map(item =>
-            activateEdgeMdnsCluster(serviceId, item.venueId, item.edgeClusterId))
-
-          await Promise.all(actions)
-          return resolve(response)
-        })
         .catch(reject)
     })
   }
