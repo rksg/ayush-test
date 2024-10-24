@@ -364,7 +364,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           })
         })
       },
-      keepUnusedDataFor: APT_QUERY_CACHE_TIME,
+      keepUnusedDataFor: 300, //APT_QUERY_CACHE_TIME,
       providesTags: [{ type: 'SwitchPort', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),

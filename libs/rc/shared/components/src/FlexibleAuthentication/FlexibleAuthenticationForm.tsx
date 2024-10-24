@@ -35,7 +35,8 @@ import {
   getAuthfieldDisabled,
   shouldHideAuthField,
   PortControl,
-  portControlTypeLabel
+  portControlTypeLabel,
+  validateVlanDiffFromAuthDefault
 } from './index'
 
 export const FlexibleAuthenticationForm = (props: {
@@ -277,6 +278,24 @@ export const FlexibleAuthenticationForm = (props: {
               children={
                 <Input
                   disabled={getAuthfieldDisabled('criticalVlan', authFormWatchValues)}
+                />
+              }
+            />
+            <Form.Item
+              name='guestVlan'
+              label={$t({ defaultMessage: 'Guest VLAN' })}
+              hidden={shouldHideAuthField('guestVlan', authFormWatchValues)}
+              validateFirst
+              rules={[{
+                validator: (_:unknown, value: string) =>
+                  validateVlanExceptReservedVlanId(value)
+              },
+              { validator: (_:unknown, value: string) =>
+                validateVlanDiffFromAuthDefault(value, authDefaultVlan)
+              }]}
+              children={
+                <Input
+                  disabled={getAuthfieldDisabled('guestVlan', authFormWatchValues)}
                 />
               }
             />

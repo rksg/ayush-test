@@ -40,6 +40,20 @@ export const MultipleText = (props: any) => {
   </Space>
 }
 
+export const shouldRenderMultipleText = (props: {
+  field: string,
+  isMultipleEdit: boolean,
+  hasMultipleValue: string[],
+  form: FormInstance,
+  ignoreCheckbox?: boolean
+}) => {
+  const { field, isMultipleEdit, hasMultipleValue, form, ignoreCheckbox = false } = props
+  const checkboxEnabled = form.getFieldValue(`${field}Checkbox`)
+  return isMultipleEdit
+    && (!checkboxEnabled || ignoreCheckbox)
+    && hasMultipleValue.includes(field)
+}
+
 export const getFormItemLayout = (isMultipleEdit: boolean) => {
   return isMultipleEdit && {
     labelCol: { span: 10 },
@@ -238,27 +252,27 @@ export const checkPortEditStatus = (
   }
 }
 
-export const checkPortEditStatusLegacy = (
-  form: FormInstance,
-  portSetting: PortSettingModel,
-  revert: boolean,
-  taggedByVenue: string,
-  untaggedByVenue: string,
-  forceStatus?: string
-) => {
-  const taggedVlans = form?.getFieldValue('taggedVlans') || portSetting?.taggedVlans
-  const untaggedVlan = form?.getFieldValue('untaggedVlan') || portSetting?.untaggedVlan
+// export const checkPortEditStatusLegacy = (
+//   form: FormInstance,
+//   portSetting: PortSettingModel,
+//   revert: boolean,
+//   taggedByVenue: string,
+//   untaggedByVenue: string,
+//   forceStatus?: string
+// ) => {
+//   const taggedVlans = form?.getFieldValue('taggedVlans') || portSetting?.taggedVlans
+//   const untaggedVlan = form?.getFieldValue('untaggedVlan') || portSetting?.untaggedVlan
 
-  if (forceStatus) {
-    return forceStatus.toString()
-  } else if (!revert && (taggedVlans || untaggedVlan)) {
-    return 'port'
-  } else if (revert && (taggedByVenue || untaggedByVenue)) {
-    return 'venue'
-  } else {
-    return 'default'
-  }
-}
+//   if (forceStatus) {
+//     return forceStatus.toString()
+//   } else if (!revert && (taggedVlans || untaggedVlan)) {
+//     return 'port'
+//   } else if (revert && (taggedByVenue || untaggedByVenue)) {
+//     return 'venue'
+//   } else {
+//     return 'default'
+//   }
+// }
 
 export const getPoeCapabilityDisabled = (portSettings: PortSettingModel[]) => {
   return portSettings?.filter(s => !s?.poeCapability)?.length > 0
