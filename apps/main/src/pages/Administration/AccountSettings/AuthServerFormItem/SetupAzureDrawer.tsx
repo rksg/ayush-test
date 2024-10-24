@@ -103,7 +103,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
   const loginSsoSignatureEnabled = useIsSplitOn(Features.LOGIN_SSO_SIGNATURE_TOGGLE)
   const isRbacEarlyAccessEnable = useIsTierAllowed(Features.RBAC_IMPLICIT_P1)
   const isRbacEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
-  const isSsoEncryptionEnabled = true//useIsSplitOn(Features.SSO_SAML_ENCRYPTION)
+  const isSsoEncryptionEnabled = useIsSplitOn(Features.SSO_SAML_ENCRYPTION)
 
   const bytesFormatter = formatter('bytesFormat')
 

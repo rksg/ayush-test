@@ -14,7 +14,7 @@ import {
 } from '@acx-ui/rc/services'
 import {  SamlFileType, TenantAuthentications, TenantAuthenticationType } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink, useParams }                          from '@acx-ui/react-router-dom'
-import { loadImageWithJWT }                                               from '@acx-ui/utils'
+import { getTenantId, loadImageWithJWT }                                  from '@acx-ui/utils'
 
 import { reloadAuthTable } from '../AppTokenFormItem/'
 
@@ -43,7 +43,7 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
   const loginSsoSignatureEnabled = useIsSplitOn(Features.LOGIN_SSO_SIGNATURE_TOGGLE)
   const isRbacEarlyAccessEnable = useIsTierAllowed(Features.RBAC_IMPLICIT_P1)
   const isRbacEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
-  const isSsoEncryptionEnabled = true//useIsSplitOn(Features.SSO_SAML_ENCRYPTION)
+  const isSsoEncryptionEnabled = useIsSplitOn(Features.SSO_SAML_ENCRYPTION)
 
   const linkToAdministrators =
   useTenantLink(isRbacEnabled ? '/administration/userPrivileges/ssoGroups'
@@ -216,23 +216,15 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
               }}>
               {$t({ defaultMessage: 'Manage SSO Users' })}
             </Button></div>
-            {/* {isSsoEncryptionEnabled && <div style={{ marginTop: '5px' }}><Button type='link'
+            {isSsoEncryptionEnabled && <div style={{ marginTop: '5px' }}><Button type='link'
               key='manageusers'
               onClick={async () => {
                 const tenantId = getTenantId()
-                const rbacUrl = `https://ruckus.cloud/saml2/service-provider-metadata/${tenantId}`
-                const url = await loadImageWithJWT(authenticationData?.samlFileURL as string,
-                  isRbacEnabled ? rbacUrl : undefined
-                )
-                await fetch(url)
-                  .then((response) => response.text())
-                  .then((text) => {
-                    setXmlData(text)
-                  })
-                setModalVisible(true)
+                const ssoUrl = `https://ruckus.cloud/saml2/service-provider-metadata/${tenantId}`
+                window.open(ssoUrl, '_blank')
               }}>
               {$t({ defaultMessage: 'Download SAML Metadata' })}
-            </Button></div>} */}
+            </Button></div>}
           </Card>
         </Col>
         }
