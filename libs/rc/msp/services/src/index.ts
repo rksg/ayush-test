@@ -35,7 +35,8 @@ import {
   MspRbacUrlsInfo,
   MspCompliances,
   LicenseAttentionNotes,
-  RecommendFirmwareUpgradeByApModel
+  RecommendFirmwareUpgradeByApModel,
+  LicenseCalculatorDataResponse
 } from '@acx-ui/msp/utils'
 import {
   TableResult,
@@ -1008,6 +1009,15 @@ export const mspApi = baseMspApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getCalculatedLicences: build.mutation<LicenseCalculatorDataResponse, RequestPayload>({
+      query: ({ payload }) => {
+        const request = createHttpRequest(MspRbacUrlsInfo.getCalculatedLicences)
+        return {
+          ...request,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -1124,7 +1134,8 @@ export const {
   usePatchCustomerMutation,
   useGetMspUploadURLMutation,
   useGetEntitlementsCompliancesQuery,
-  useGetEntitlementsAttentionNotesQuery
+  useGetEntitlementsAttentionNotesQuery,
+  useGetCalculatedLicencesMutation
 } = mspApi
 
 export * from './hospitalityVerticalFFCheck'

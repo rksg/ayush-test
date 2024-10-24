@@ -26,7 +26,7 @@ export const defaultGroupOption = [{
 }, {
   label: 'Group 1',
   options: [
-    { label: 'option 3', value: 3 },
+    { label: 'option 3', value: 3, disabled: true },
     { label: 'option 4', value: 4 },
     { label: 'option 5', value: 5 }
   ]
@@ -35,7 +35,7 @@ export const defaultGroupOption = [{
 export const normalGroupOption = [{
   label: 'Group 1',
   options: [
-    { label: 'option 1', value: 1 },
+    { label: 'option 1', value: 1, disabled: true },
     { label: 'option 2', value: 2 }
   ]
 },{

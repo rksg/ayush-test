@@ -1,0 +1,553 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test getRequiredMark function should render correctly 1`] = `
+<styledComponents__RequiredMark>
+  *
+</styledComponents__RequiredMark>
+`;
+
+exports[`Test renderVariableTitle function should render correctly 1`] = `
+<DocumentFragment>
+  .c0 {
+  font-size: 11px;
+  color: var(--acx-primary-white);
+  border-radius: 20px;
+  padding: 2px 8px;
+}
+
+<div
+    class="ant-space ant-space-horizontal ant-space-align-center"
+  >
+    <div
+      class="ant-space-item"
+      style="margin-right: 4px;"
+    >
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-center"
+        style="font-weight: 600; line-height: 20px;"
+      >
+        <div
+          class="ant-space-item"
+        >
+          testRange
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-space-item"
+    >
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-center c0"
+      >
+        <div
+          class="ant-space-item"
+        >
+          Range
+        </div>
+      </div>
+    </div>
+  </div>
+  .c0 {
+  font-size: 11px;
+  color: var(--acx-primary-white);
+  border-radius: 20px;
+  padding: 2px 8px;
+}
+
+<div
+    class="ant-space ant-space-horizontal ant-space-align-center"
+  >
+    <div
+      class="ant-space-item"
+      style="margin-right: 4px;"
+    >
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-center"
+        style="font-weight: 600; line-height: 20px;"
+      >
+        <div
+          class="ant-space-item"
+        >
+          testIp
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-space-item"
+    >
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-center c0"
+      >
+        <div
+          class="ant-space-item"
+        >
+          Address
+        </div>
+      </div>
+    </div>
+  </div>
+  .c0 {
+  font-size: 11px;
+  color: var(--acx-primary-white);
+  border-radius: 20px;
+  padding: 2px 8px;
+}
+
+<div
+    class="ant-space ant-space-horizontal ant-space-align-center"
+  >
+    <div
+      class="ant-space-item"
+      style="margin-right: 4px;"
+    >
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-center"
+        style="font-weight: 600; line-height: 20px;"
+      >
+        <div
+          class="ant-space-item"
+        >
+          testString
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-space-item"
+    >
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-center c0"
+      >
+        <div
+          class="ant-space-item"
+        >
+          String
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Test renderVariableValue function should render correctly with the new variable format 1`] = `
+<DocumentFragment>
+  .c0 {
+  font-size: 10px;
+  color: var(--acx-neutrals-60);
+  line-height: 16px;
+}
+
+<div
+    class="c0"
+  >
+    Start - End Value
+  </div>
+  .c0 {
+  font-size: 12px;
+  color: var(--acx-primary-black);
+  margin-bottom: 6px;
+  line-height: 16px;
+}
+
+<div
+    class="c0"
+  >
+    88 - 98
+  </div>
+  .c0 {
+  font-size: 10px;
+  color: var(--acx-neutrals-60);
+  line-height: 16px;
+}
+
+<div
+    class="c0"
+  >
+    Switches with their own settings
+  </div>
+  .c1 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  vertical-align: bottom;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.c1 svg {
+  width: 16px;
+  height: 16px;
+}
+
+.c1 svg:before {
+  content: 'a';
+}
+
+.c1 svg path {
+  color: var(--acx-primary-black);
+}
+
+.c1.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c1.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c1.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
+}
+
+.c1.ant-btn-primary svg path {
+  color: var(--acx-primary-white) !important;
+}
+
+.c1[disabled] svg path,
+.c1.ant-btn-disabled svg path {
+  color: var(--acx-primary-white);
+}
+
+.c1[disabled].ant-btn-link svg path,
+.c1.ant-btn-disabled.ant-btn-link svg path,
+.c1[disabled].ant-btn-default svg path,
+.c1.ant-btn-disabled.ant-btn-default svg path,
+.c1[disabled].ant-btn-primary svg path,
+.c1.ant-btn-disabled.ant-btn-primary svg path {
+  color: var(--acx-neutrals-40);
+}
+
+.c0 {
+  font-size: 12px;
+  color: var(--acx-primary-black);
+  margin-bottom: 6px;
+  line-height: 16px;
+}
+
+<div
+    class="c0"
+  >
+    <button
+      class="ant-btn ant-btn-link ant-btn-sm c1"
+      type="button"
+    >
+      <span>
+        2 Switch(es)
+      </span>
+    </button>
+  </div>
+  .c0 {
+  font-size: 10px;
+  color: var(--acx-neutrals-60);
+  line-height: 16px;
+}
+
+<div
+    class="c0"
+  >
+    Start - End IP Address
+  </div>
+  .c0 {
+  font-size: 12px;
+  color: var(--acx-primary-black);
+  margin-bottom: 6px;
+  line-height: 16px;
+}
+
+<div
+    class="c0"
+  >
+    1.1.1.1 - 1.1.1.10
+  </div>
+  .c0 {
+  font-size: 10px;
+  color: var(--acx-neutrals-60);
+  line-height: 16px;
+}
+
+<div
+    class="c0"
+  >
+    Network Mask
+  </div>
+  .c0 {
+  font-size: 12px;
+  color: var(--acx-primary-black);
+  margin-bottom: 6px;
+  line-height: 16px;
+}
+
+<div
+    class="c0"
+  >
+    255.255.254.0
+  </div>
+  .c0 {
+  font-size: 10px;
+  color: var(--acx-neutrals-60);
+  line-height: 16px;
+}
+
+<div
+    class="c0"
+  >
+    String
+  </div>
+  .c1 > span {
+  -webkit-text-decoration: dotted underline;
+  text-decoration: dotted underline;
+}
+
+.c1 > span:after {
+  content: '';
+  display: block;
+}
+
+.c0 {
+  font-size: 12px;
+  color: var(--acx-primary-black);
+  margin-bottom: 6px;
+  line-height: 16px;
+}
+
+.c2 {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+<div
+    class="c0"
+  >
+    <span
+      class="c1"
+    >
+      <span
+        class="c2"
+      >
+        test-string
+      </span>
+    </span>
+  </div>
+  .c0 {
+  font-size: 10px;
+  color: var(--acx-neutrals-60);
+  line-height: 16px;
+}
+
+<div
+    class="c0"
+  >
+    Switches with their own settings
+  </div>
+  .c1 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  vertical-align: bottom;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.c1 svg {
+  width: 16px;
+  height: 16px;
+}
+
+.c1 svg:before {
+  content: 'a';
+}
+
+.c1 svg path {
+  color: var(--acx-primary-black);
+}
+
+.c1.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c1.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c1.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
+}
+
+.c1.ant-btn-primary svg path {
+  color: var(--acx-primary-white) !important;
+}
+
+.c1[disabled] svg path,
+.c1.ant-btn-disabled svg path {
+  color: var(--acx-primary-white);
+}
+
+.c1[disabled].ant-btn-link svg path,
+.c1.ant-btn-disabled.ant-btn-link svg path,
+.c1[disabled].ant-btn-default svg path,
+.c1.ant-btn-disabled.ant-btn-default svg path,
+.c1[disabled].ant-btn-primary svg path,
+.c1.ant-btn-disabled.ant-btn-primary svg path {
+  color: var(--acx-neutrals-40);
+}
+
+.c0 {
+  font-size: 12px;
+  color: var(--acx-primary-black);
+  margin-bottom: 6px;
+  line-height: 16px;
+}
+
+<div
+    class="c0"
+  >
+    <button
+      class="ant-btn ant-btn-link ant-btn-sm c1"
+      type="button"
+    >
+      <span>
+        1 Switch(es)
+      </span>
+    </button>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Test renderVariableValue function should render correctly with the old variable format 1`] = `
+<DocumentFragment>
+  .c0 {
+  font-size: 10px;
+  color: var(--acx-neutrals-60);
+  line-height: 16px;
+}
+
+<div
+    class="c0"
+  >
+    Start - End Value
+  </div>
+  .c0 {
+  font-size: 12px;
+  color: var(--acx-primary-black);
+  margin-bottom: 6px;
+  line-height: 16px;
+}
+
+<div
+    class="c0"
+  >
+    25 - 127
+  </div>
+  .c0 {
+  font-size: 10px;
+  color: var(--acx-neutrals-60);
+  line-height: 16px;
+}
+
+<div
+    class="c0"
+  >
+    Start - End IP Address
+  </div>
+  .c0 {
+  font-size: 12px;
+  color: var(--acx-primary-black);
+  margin-bottom: 6px;
+  line-height: 16px;
+}
+
+<div
+    class="c0"
+  >
+    1.1.1.1 - 1.1.1.10
+  </div>
+  .c0 {
+  font-size: 10px;
+  color: var(--acx-neutrals-60);
+  line-height: 16px;
+}
+
+<div
+    class="c0"
+  >
+    Network Mask
+  </div>
+  .c0 {
+  font-size: 12px;
+  color: var(--acx-primary-black);
+  margin-bottom: 6px;
+  line-height: 16px;
+}
+
+<div
+    class="c0"
+  >
+    255.255.255.0
+  </div>
+  .c0 {
+  font-size: 10px;
+  color: var(--acx-neutrals-60);
+  line-height: 16px;
+}
+
+<div
+    class="c0"
+  >
+    String
+  </div>
+  .c1 > span {
+  -webkit-text-decoration: dotted underline;
+  text-decoration: dotted underline;
+}
+
+.c1 > span:after {
+  content: '';
+  display: block;
+}
+
+.c0 {
+  font-size: 12px;
+  color: var(--acx-primary-black);
+  margin-bottom: 6px;
+  line-height: 16px;
+}
+
+.c2 {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+<div
+    class="c0"
+  >
+    <span
+      class="c1"
+    >
+      <span
+        class="c2"
+      >
+        test string
+      </span>
+    </span>
+  </div>
+</DocumentFragment>
+`;
