@@ -232,7 +232,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
             onChange={handleICX81Change}
             value={selectedICX81Version}>
             <Space direction={'vertical'}>
-              { // eslint-disable-next-line max-len
+              {
                 getAvailableVersions(SwitchFirmwareModelGroup.ICX81)?.map(v =>
                   <Radio value={v.id} key={v.id} disabled={v.inUse}>
                     {getVersionOptionV1002(intl, v)}
