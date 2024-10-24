@@ -25,7 +25,7 @@ const defaultGroupOption = [{
 }, {
   label: 'Group 1',
   options: [
-    { label: 'option 3', value: 3 },
+    { label: 'option 3', value: 3, disabled: true },
     { label: 'option 4', value: 4 },
     { label: 'option 5', value: 5 }
   ]
@@ -34,7 +34,7 @@ const defaultGroupOption = [{
 const normalGroupOption = [{
   label: 'Group 1',
   options: [
-    { label: 'option 1', value: 1 },
+    { label: 'option 1', value: 1, disabled: true },
     { label: 'option 2', value: 2 }
   ]
 },{
@@ -54,14 +54,27 @@ describe('Select', () => {
           {...defaultProps}
           options={defaultOption}
         />
+        {/* Group - Single Select */}
         <Select
           {...defaultProps}
           options={normalGroupOption}
         />
+        {/* Group - Single Select (radio type) */}
+        <Select
+          {...defaultProps}
+          type='radio'
+          options={defaultGroupOption}
+        />
+        {/* Group - Multiple Select */}
         <Select
           {...defaultProps}
           mode='multiple'
           options={defaultGroupOption}
+        />
+        <Select
+          {...defaultProps}
+          mode='multiple'
+          options={normalGroupOption}
         />
         <Select
           {...defaultProps}
@@ -73,6 +86,7 @@ describe('Select', () => {
               key={option.value}
               value={option.value}
               children={option.label}
+              disabled={option.value===1}
             />)}
           />
           <Select.OptGroup

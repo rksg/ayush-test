@@ -92,6 +92,20 @@ describe('MyServices', () => {
     expect(await screen.findByText('Network Control')).toBeVisible()
   })
 
+  it('should render Edge MDNS when FF is off', async () => {
+    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
+
+    render(
+      <Provider>
+        <MyServices />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    expect(screen.queryByText(/mDNS Proxy for RUCKUS Edge/)).toBeNull()
+  })
+
   it('should render Edge MDNS when FF is ON', async () => {
     // eslint-disable-next-line max-len
     jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_MDNS_PROXY_TOGGLE)
