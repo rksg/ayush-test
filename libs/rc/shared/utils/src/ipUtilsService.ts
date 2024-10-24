@@ -80,7 +80,7 @@ export class IpUtilsService {
   }
 
   static validateInTheSameSubnet (ip: string, subnet: string, gateway: string) {
-    if (!ip || !subnet || !subnet) {
+    if (!ip || !subnet || !gateway) {
       return false
     }
 
