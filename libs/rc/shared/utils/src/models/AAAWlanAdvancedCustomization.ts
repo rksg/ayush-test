@@ -177,6 +177,8 @@ export class AAAWlanAdvancedCustomization {
 
   fastRoamingOptions?: FastRoamingOptions
 
+  applicationVisibilityEnabled?: boolean
+
   constructor () {
     this.maxClientsOnWlanPerRadio = 100
 
@@ -302,5 +304,7 @@ export class AAAWlanAdvancedCustomization {
     this.qosMapSetOptions = new QosMapSetOptions()
 
     this.fastRoamingOptions = new FastRoamingOptions()
+
+    this.applicationVisibilityEnabled = true
   }
 }
