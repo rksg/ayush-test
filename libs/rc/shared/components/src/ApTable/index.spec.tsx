@@ -284,9 +284,7 @@ describe('Aps', () => {
   })
 
   it('should import correctly', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
-      return ff === Features.AP_GPS ? true : false
-    })
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
 
     mockServer.use(
       rest.post(
