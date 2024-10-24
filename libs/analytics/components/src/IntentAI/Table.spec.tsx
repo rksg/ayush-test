@@ -11,7 +11,7 @@ import { fireEvent, render, screen } from '@acx-ui/test-utils'
 import { aiFeatureWithAIOps, aiFeatureWithEquiFlex, aiFeatureWithEquiFlexWithNewStatus, aiFeatureWithEcoFlex, aiFeatureWithRRM, mockAIDrivenRow } from './__tests__/fixtures'
 import { Icon }                                                                                                                                   from './common/IntentIcon'
 import { AiFeatures }                                                                                                                             from './config'
-import { DisplayStates, Statuses }                                                                                                                from './states'
+import { DisplayStates, Statuses, StatusReasons }                                                                                                 from './states'
 import * as UI                                                                                                                                    from './styledComponents'
 import { AIFeature, Banner, iconTooltips }                                                                                                        from './Table'
 import { Actions, isVisibledByAction }                                                                                                            from './utils'
@@ -186,7 +186,7 @@ describe('AIFeature component', () => {
       statusTrail: []
     }
     const makeRow = (status: Statuses, displayStatus: DisplayStates) => ({
-      ...mockAIDrivenRow, ...extractItem, displayStatus, status
+      ...mockAIDrivenRow, ...extractItem, displayStatus, status, statusReason: StatusReasons.byDefault
     })
     const newRow = makeRow(Statuses.new, DisplayStates.new)
     const activeRow = makeRow(Statuses.active, DisplayStates.active)
