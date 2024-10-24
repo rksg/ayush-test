@@ -643,10 +643,11 @@ export function useAccessControlActivation () {
       removed: (params: Params<string>) => {
         return deactivateL2Acl({ params, enableRbac: enableServicePolicyRbac }).unwrap()
       },
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       updated: (oldParams: Params<string>, params: Params<string>) => {
         return [
-          deactivateL2Acl({ params: oldParams, enableRbac: enableServicePolicyRbac }).unwrap(),
-          activateL2Acl({ params, enableRbac: enableServicePolicyRbac }).unwrap()
+          deactivateL2Acl({ params: oldParams, enableRbac: enableServicePolicyRbac }).unwrap()
+          // activateL2Acl({ params, enableRbac: enableServicePolicyRbac }).unwrap()
         ]
       }
     },
@@ -657,10 +658,11 @@ export function useAccessControlActivation () {
       removed: (params: Params<string>) => {
         return deactivateL3Acl({ params, enableRbac: enableServicePolicyRbac }).unwrap()
       },
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       updated: (oldParams: Params<string>, params: Params<string>) => {
         return [
-          deactivateL3Acl({ params: oldParams, enableRbac: enableServicePolicyRbac }).unwrap(),
-          activateL3Acl({ params, enableRbac: enableServicePolicyRbac }).unwrap()
+          deactivateL3Acl({ params: oldParams, enableRbac: enableServicePolicyRbac }).unwrap()
+          // activateL3Acl({ params, enableRbac: enableServicePolicyRbac }).unwrap()
         ]
       }
     },
@@ -671,10 +673,11 @@ export function useAccessControlActivation () {
       removed: (params: Params<string>) => {
         return deactivateDevice({ params, enableRbac: enableServicePolicyRbac }).unwrap()
       },
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       updated: (oldParams: Params<string>, params: Params<string>) => {
         return [
-          deactivateDevice({ params: oldParams, enableRbac: enableServicePolicyRbac }).unwrap(),
-          activateDevice({ params, enableRbac: enableServicePolicyRbac }).unwrap()
+          deactivateDevice({ params: oldParams, enableRbac: enableServicePolicyRbac }).unwrap()
+          // activateDevice({ params, enableRbac: enableServicePolicyRbac }).unwrap()
         ]
       }
     },
@@ -685,10 +688,11 @@ export function useAccessControlActivation () {
       removed: (params: Params<string>) => {
         return deactivateApplication({ params, enableRbac: enableServicePolicyRbac }).unwrap()
       },
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       updated: (oldParams: Params<string>, params: Params<string>) => {
         return [
-          activateApplication({ params: oldParams, enableRbac: enableServicePolicyRbac }).unwrap(),
-          deactivateApplication({ params, enableRbac: enableServicePolicyRbac }).unwrap()
+          deactivateApplication({ params: oldParams, enableRbac: enableServicePolicyRbac }).unwrap()
+          // activateApplication({ params, enableRbac: enableServicePolicyRbac }).unwrap()
         ]
       }
     },
@@ -699,11 +703,12 @@ export function useAccessControlActivation () {
       removed: (params: Params<string>) => {
         return deactivateAccessControl({ params, enableRbac: enableServicePolicyRbac }).unwrap()
       },
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       updated: (oldParams: Params<string>, params: Params<string>) => {
         return [
           // eslint-disable-next-line max-len
-          activateAccessControl({ params: oldParams, enableRbac: enableServicePolicyRbac }).unwrap(),
-          deactivateAccessControl({ params, enableRbac: enableServicePolicyRbac }).unwrap()
+          deactivateAccessControl({ params: oldParams, enableRbac: enableServicePolicyRbac }).unwrap()
+          // activateAccessControl({ params, enableRbac: enableServicePolicyRbac }).unwrap()
         ]
       }
     }
@@ -796,9 +801,9 @@ export function useAccessControlActivation () {
     }
 
     return Promise.all([
-      ...addActions,
       ...removeActions,
-      ...updateActions
+      ...updateActions,
+      ...addActions
     ])
   }
 
