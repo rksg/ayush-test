@@ -13,12 +13,12 @@ import * as UI from './styledComponents'
 export interface CertificateSelectorProps {
     serverSertificates?: ServerCertificate[];
     setSelected: (certificateId: string) => void
+    selected?: string
 }
-
 
 const SelectServerCertificate = (props: CertificateSelectorProps) => {
   const { $t } = useIntl()
-  const { serverSertificates, setSelected } = props
+  const { serverSertificates, setSelected, selected } = props
 
   const certificateData = serverSertificates?.map((item) => ({
     label: `${item.name} - ${item.id}`,
@@ -43,6 +43,7 @@ const SelectServerCertificate = (props: CertificateSelectorProps) => {
             showSearch
             optionFilterProp='children'
             disabled={!hasCrossVenuesPermission()}
+            defaultValue={selected}
           >
             {certificateData?.map(({ label, value }) =>
               (<Select.Option value={value} key={value} children={label}/>)

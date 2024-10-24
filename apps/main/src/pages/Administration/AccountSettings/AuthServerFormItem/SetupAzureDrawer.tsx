@@ -140,6 +140,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
       // fetchMetaData()
       form.setFieldValue('domains', editData?.domains?.toString())
       setSsoSignature(editData?.samlSignatureEnabled ?? false)
+      setCertificateId(editData?.samlEncryptionCertificateId ?? '')
     }
     setSelectedAuth(editData?.authenticationType || TenantAuthenticationType.saml)
   }, [form, props.visible])
@@ -443,10 +444,13 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
     </Form.Item>
     }
     {isSsoEncryptionEnabled &&
+    <Form layout='vertical' form={form}>
       <SelectServerCertificate
         serverSertificates={certificateList?.data}
         setSelected={setCertificateId}
-      />}
+        selected={certificateId}
+      />
+    </Form>}
     </>
   }
 
