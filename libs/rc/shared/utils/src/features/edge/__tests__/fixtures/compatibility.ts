@@ -1,5 +1,5 @@
-import { CompatibilityEntityTypeEnum }                                                                                               from '../../../../models/EdgeEnum'
-import { EdgeFeatureSets, EdgeServiceCompatibilitiesResponse, EdgeSdLanApCompatibilitiesResponse, VenueEdgeCompatibilitiesResponse } from '../../../../types/edge'
+import { CompatibilityEntityTypeEnum }                                                                                                  from '../../../../models/EdgeEnum'
+import { EdgeFeatureSets, EdgeServiceCompatibilitiesResponse, EdgeServicesApCompatibilitiesResponse, VenueEdgeCompatibilitiesResponse } from '../../../../types/edge'
 
 export const mockEdgeFeatureCompatibilities: EdgeFeatureSets = {
   featureSets: [
@@ -180,11 +180,11 @@ export const mockEdgeHqosCompatibilities: EdgeServiceCompatibilitiesResponse = {
   ]
 }
 
-export const mockEdgeSdLanApCompatibilites: EdgeSdLanApCompatibilitiesResponse = {
+export const mockEdgeSdLanApCompatibilites: EdgeServicesApCompatibilitiesResponse = {
   compatibilities: [
     {
       serviceId: 'sdLanService-1',
-      venueSdLanApCompatibilities: [
+      venueEdgeServiceApCompatibilities: [
         {
           venueId: 'venue-1',
           incompatibleFeatures: [

@@ -413,6 +413,19 @@ export interface EdgeSdLanApCompatibilitiesResponse {
   compatibilities: EdgeSdLanApCompatibility[]
 }
 
+// ap incompatibility by model
+export type VenueEdgeServiceApCompatibility = Omit<ApCompatibility, 'id'> & {
+  venueId: string
+}
+export interface EdgeServiceApCompatibility {
+  serviceId: string
+  venueEdgeServiceApCompatibilities: VenueEdgeServiceApCompatibility[]
+}
+export interface EdgeServicesApCompatibilitiesResponse {
+  compatibilities: EdgeServiceApCompatibility[]
+}
+// ap incompatibility by model
+
 export interface VirtualIpSetting {
   virtualIp: string
   ports: {

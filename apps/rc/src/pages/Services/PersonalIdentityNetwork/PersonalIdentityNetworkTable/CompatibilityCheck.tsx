@@ -6,18 +6,19 @@ import { CompatibilityDeviceEnum, EdgeServiceApCompatibility, EdgeServiceCompati
 
 interface CompatibilityCheckProps {
   serviceId: string,
-  sdLanCompatibilityData?: Record<string, EdgeServiceCompatibility[] | EdgeServiceApCompatibility[]>
+  // eslint-disable-next-line max-len
+  compatibilityData?: Record<string, EdgeServiceCompatibility[] | EdgeServiceApCompatibility[]>
 }
 export const CompatibilityCheck = (props: CompatibilityCheckProps) => {
   const { $t } = useIntl()
-  const { serviceId, sdLanCompatibilityData } = props
+  const { serviceId, compatibilityData } = props
 
   // eslint-disable-next-line max-len
-  const edgeIncompatibleData = (find(sdLanCompatibilityData?.[CompatibilityDeviceEnum.EDGE], { serviceId }) as EdgeServiceCompatibility)?.clusterEdgeCompatibilities
+  const edgeIncompatibleData = (find(compatibilityData?.[CompatibilityDeviceEnum.EDGE], { serviceId }) as EdgeServiceCompatibility)?.clusterEdgeCompatibilities
   const edgeIncompatibleCount = sumBy(edgeIncompatibleData, (data) => data.incompatible)
   const edgeIncompatible = edgeIncompatibleCount > 0
   // eslint-disable-next-line max-len
-  const apIncompatibleData = (find(sdLanCompatibilityData?.[CompatibilityDeviceEnum.AP], { serviceId }) as EdgeServiceApCompatibility)?.venueEdgeServiceApCompatibilities
+  const apIncompatibleData = (find(compatibilityData?.[CompatibilityDeviceEnum.AP], { serviceId }) as EdgeServiceApCompatibility)?.venueEdgeServiceApCompatibilities
   const apIncompatibleCount = sumBy(apIncompatibleData, (data) => data.incompatible)
   const apIncompatible = apIncompatibleCount > 0
 
@@ -27,7 +28,7 @@ export const CompatibilityCheck = (props: CompatibilityCheckProps) => {
     ? <ApCompatibilityToolTip
     // eslint-disable-next-line max-len
       title={$t({
-        defaultMessage: `This SD-LAN is not able to be brought up
+        defaultMessage: `This PIN is not able to be brought up
         on some {edgeInfo} {hasAnd} {apInfo} due to their firmware incompatibility.` },
       {
         edgeInfo: (edgeIncompatible

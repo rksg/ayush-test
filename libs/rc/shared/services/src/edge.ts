@@ -29,6 +29,7 @@ import {
   EdgeSerialNumber,
   EdgeService,
   EdgeServiceCompatibilitiesResponse,
+  EdgeServicesApCompatibilitiesResponse,
   EdgeStaticRouteConfig,
   EdgeStatus,
   EdgeSubInterface,
@@ -1019,6 +1020,26 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Edge', id: 'HQOS_EDGE_COMPATIBILITY' }]
+    }),
+    getPinEdgeCompatibilities: build.query<EdgeServiceCompatibilitiesResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getPinEdgeCompatibilities, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'PIN_EDGE_COMPATIBILITY' }]
+    }),
+    getPinApCompatibilities: build.query<EdgeServicesApCompatibilitiesResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getPinApCompatibilities, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'PIN_AP_COMPATIBILITY' }]
     })
   })
 })
@@ -1154,5 +1175,8 @@ export const {
   useLazyGetSdLanEdgeCompatibilitiesQuery,
   useGetSdLanApCompatibilitiesQuery,
   useLazyGetSdLanApCompatibilitiesQuery,
-  useGetHqosEdgeCompatibilitiesQuery
+  useGetHqosEdgeCompatibilitiesQuery,
+  useGetPinEdgeCompatibilitiesQuery,
+  useLazyGetPinEdgeCompatibilitiesQuery,
+  useLazyGetPinApCompatibilitiesQuery
 } = edgeApi

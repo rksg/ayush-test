@@ -16,13 +16,14 @@ import {
   EdgePort,
   EdgePortStatus,
   EdgePortWithStatus,
-  EdgeSdLanApCompatibility,
+  EdgeServiceApCompatibility,
   EdgeSerialNumber,
   EdgeServiceCompatibility,
   EdgeStatus,
   EdgeSubInterface,
   EntityCompatibility,
-  VenueSdLanApCompatibility
+  VenueSdLanApCompatibility,
+  EdgeSdLanApCompatibility
 } from '../../types'
 import { isSubnetOverlap, networkWifiIpRegExp, subnetMaskIpRegExp } from '../../validator'
 
@@ -433,7 +434,7 @@ const getTotalScopedCount = (clusterCompatibilities: EntityCompatibility[] | Ven
 }
 
 // eslint-disable-next-line max-len
-export const getFeaturesIncompatibleDetailData = (compatibleData: EdgeServiceCompatibility | EdgeSdLanApCompatibility) => {
+export const getFeaturesIncompatibleDetailData = (compatibleData: EdgeServiceCompatibility | EdgeSdLanApCompatibility | EdgeServiceApCompatibility) => {
   const isEdgePerspective = compatibleData.hasOwnProperty('clusterEdgeCompatibilities')
 
   const resultMapping : Record<string, ApCompatibility> = {}
@@ -468,24 +469,38 @@ export const getFeaturesIncompatibleDetailData = (compatibleData: EdgeServiceCom
       })
     })
   } else {
-    const data = (compatibleData as EdgeSdLanApCompatibility).venueSdLanApCompatibilities
+    const data = (compatibleData as EdgeServiceApCompatibility).venueEdgeServiceApCompatibilities
     const totalScoped = getTotalScopedCount(data)
 
     data.forEach(item => {
       item.incompatibleFeatures?.forEach(feature => {
         const featureName = feature.featureName
+        const isOldDataModel = feature.hasOwnProperty('supportedModelFamilies')
 
         if (!resultMapping[featureName]) {
-          resultMapping[featureName] = {
-            id: `ap_incompatible_details_${featureName}`,
-            incompatibleFeatures: [{
-              featureName,
-              requiredFw: feature.requiredFw,
-              supportedModelFamilies: feature.supportedModelFamilies
-            }],
-            incompatible: 0,
-            total: totalScoped
-          } as ApCompatibility
+          if (isOldDataModel) {
+            resultMapping[featureName] = {
+              id: `ap_incompatible_details_${featureName}`,
+              incompatibleFeatures: [{
+                featureName,
+                requiredFw: feature.requiredFw,
+                supportedModelFamilies: feature.supportedModelFamilies
+              }],
+              incompatible: 0,
+              total: totalScoped
+            } as ApCompatibility
+          } else {
+            // AP model incompatibility (new data type)
+            resultMapping[featureName] = {
+              id: `ap_incompatible_details_${featureName}`,
+              incompatibleFeatures: [{
+                ...feature,
+                featureName
+              }],
+              incompatible: 0,
+              total: totalScoped
+            } as ApCompatibility
+          }
         }
 
         // eslint-disable-next-line max-len

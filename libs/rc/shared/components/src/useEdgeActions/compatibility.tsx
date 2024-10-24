@@ -1,11 +1,16 @@
 /* eslint-disable max-len */
 import { useEffect, useMemo, useState } from 'react'
 
-import { get } from 'lodash'
+import { UseLazyQuery }    from '@reduxjs/toolkit/dist/query/react/buildHooks'
+import { QueryDefinition } from '@reduxjs/toolkit/query'
+import { get }             from 'lodash'
 
 import {
   useLazyGetApFeatureSetsQuery,
   useLazyGetEdgeFeatureSetsQuery,
+  // TODO: add back after BE code deploy
+  // useLazyGetPinApCompatibilitiesQuery,
+  useLazyGetPinEdgeCompatibilitiesQuery,
   useLazyGetSdLanApCompatibilitiesQuery,
   useLazyGetSdLanEdgeCompatibilitiesQuery,
   useLazyGetVenueEdgeCompatibilitiesQuery
@@ -19,6 +24,7 @@ import {
   EdgeSdLanApCompatibility,
   EdgeServiceCompatibilitiesResponse,
   EdgeServiceCompatibility,
+  EdgeServicesApCompatibilitiesResponse,
   EntityCompatibility,
   getFeaturesIncompatibleDetailData,
   IncompatibilityFeatures,
@@ -27,6 +33,7 @@ import {
 
 import { EdgeCompatibilityDrawerProps, EdgeCompatibilityType } from '../Compatibility/EdgeCompatibilityDrawer'
 
+// SDLAN table
 export const useEdgeSdLanCompatibilityData = (serviceIds: string[], skip: boolean = false) => {
   const [data, setData] = useState<Record<string, EdgeServiceCompatibility[] | EdgeSdLanApCompatibility[]> | undefined>(undefined)
 
@@ -66,30 +73,62 @@ export const useEdgeSdLanCompatibilityData = (serviceIds: string[], skip: boolea
   return data
 }
 
-export const useEdgeSdLanDetailsCompatibilitiesData = (serviceId: string, skip: boolean = false) => {
+export const useEdgeSdLanDetailsCompatibilitiesData = (props: {
+  serviceId: string,
+  skip?: boolean,
+}) => {
+  return useEdgeSvcPcyDetailsCompatibilitiesData({
+    ...props,
+    useEdgeSvcPcyCompatibleQuery: useLazyGetSdLanEdgeCompatibilitiesQuery,
+    useEdgeSvcPcyApCompatibleQuery: useLazyGetSdLanApCompatibilitiesQuery
+  })
+}
+
+export const useEdgePinDetailsCompatibilitiesData = (props: {
+  serviceId: string,
+  skip?: boolean,
+}) => {
+  return useEdgeSvcPcyDetailsCompatibilitiesData({
+    ...props,
+    useEdgeSvcPcyCompatibleQuery: useLazyGetPinEdgeCompatibilitiesQuery
+    // useEdgeSvcPcyApCompatibleQuery: useLazyGetPinApCompatibilitiesQuery
+  })
+}
+
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type DefaultQueryDefinition<ResultType> = QueryDefinition<any, any, any, ResultType>
+export const useEdgeSvcPcyDetailsCompatibilitiesData = (props: {
+  serviceId: string,
+  skip?: boolean,
+  useEdgeSvcPcyCompatibleQuery: UseLazyQuery<DefaultQueryDefinition<EdgeServiceCompatibilitiesResponse>>,
+  useEdgeSvcPcyApCompatibleQuery?: UseLazyQuery<DefaultQueryDefinition<EdgeServicesApCompatibilitiesResponse>> | UseLazyQuery<DefaultQueryDefinition<EdgeSdLanApCompatibilitiesResponse>> | undefined
+}) => {
+  const { serviceId, skip = false, useEdgeSvcPcyCompatibleQuery, useEdgeSvcPcyApCompatibleQuery } = props
   const [ isInitializing, setIsInitializing ] = useState(false)
   const [ data, setData ] = useState<Record<string, Record<string, ApCompatibility>>>({})
 
-  const [getSdLanEdgeCompatibilities] = useLazyGetSdLanEdgeCompatibilitiesQuery()
-  const [getSdLanApCompatibilities] = useLazyGetSdLanApCompatibilitiesQuery()
+  const [getEdgeSvcPcyCompatibilities] = useEdgeSvcPcyCompatibleQuery()
+  const apCompatibilityFn = useEdgeSvcPcyApCompatibleQuery?.()
 
   const fetchEdgeCompatibilities = async () => {
     try {
       setIsInitializing(true)
 
-      const result = await Promise.allSettled([
-        getSdLanEdgeCompatibilities({ payload: { filters: { serviceIds: [serviceId] } } }).unwrap(),
-        getSdLanApCompatibilities({ payload: { filters: { serviceIds: [serviceId] } } }).unwrap()
-      ])
+      const reqs: unknown[] = [getEdgeSvcPcyCompatibilities({ payload: { filters: { serviceIds: [serviceId] } } }).unwrap()]
+      if (apCompatibilityFn) {
+        reqs.push(apCompatibilityFn[0]({ payload: { filters: { serviceIds: [serviceId] } } }).unwrap())
+      }
 
       const deviceTypeResultMap: Record<string, Record<string, ApCompatibility>> = {}
-      result.forEach((resultItem, index) => {
+      const results = await Promise.allSettled(reqs)
+      results.forEach((resultItem, index) => {
         if (resultItem.status === 'fulfilled') {
           if(index === 0) {
             const details = getFeaturesIncompatibleDetailData((resultItem.value as EdgeServiceCompatibilitiesResponse).compatibilities[0])
             deviceTypeResultMap[CompatibilityDeviceEnum.EDGE] = details
           } else {
-            const details = getFeaturesIncompatibleDetailData((resultItem.value as EdgeSdLanApCompatibilitiesResponse).compatibilities[0])
+            const details = getFeaturesIncompatibleDetailData((resultItem.value as EdgeServicesApCompatibilitiesResponse).compatibilities[0])
             deviceTypeResultMap[CompatibilityDeviceEnum.AP] = details
           }
         }
@@ -110,13 +149,13 @@ export const useEdgeSdLanDetailsCompatibilitiesData = (serviceId: string, skip: 
     }
   }, [skip])
 
-  return useMemo(() => ({ sdLanCompatibilities: data, isLoading: isInitializing }),
+  return useMemo(() => ({ compatibilities: data, isLoading: isInitializing }),
     [data, isInitializing])
 }
 
-export const getSdLanDetailsCompatibilitiesDrawerData = (sdLanCompatibilities: Record<string, Record<string, ApCompatibility>>, featureName: string) => {
-  const edgeData = get(sdLanCompatibilities, [CompatibilityDeviceEnum.EDGE, featureName])
-  const apData = get(sdLanCompatibilities, [CompatibilityDeviceEnum.AP, featureName])
+export const transformEdgeCompatibilitiesWithFeatureName = (compatibilities: Record<string, Record<string, ApCompatibility>>, featureName: string) => {
+  const edgeData = get(compatibilities, [CompatibilityDeviceEnum.EDGE, featureName])
+  const apData = get(compatibilities, [CompatibilityDeviceEnum.AP, featureName])
   const result = {} as Record<string, ApCompatibility>
   if (edgeData) result[CompatibilityDeviceEnum.EDGE] = edgeData
   if (apData) result[CompatibilityDeviceEnum.AP] = apData
