@@ -90,7 +90,8 @@ export interface TableProps <RecordType>
     enableResizableColumn?: boolean,
     enablePagination?: boolean,
     onDisplayRowChange?: (displayRows: RecordType[]) => void,
-    getAllPagesData?: () => RecordType[]
+    getAllPagesData?: () => RecordType[],
+    filterPersistence?: boolean
   }
 
 export interface TableHighlightFnArgs {
@@ -151,7 +152,7 @@ function useSelectedRowKeys <RecordType> (
 function Table <RecordType extends Record<string, any>> ({
   type = 'tall', columnState, enableApiFilter, iconButton, onFilterChange, settingsId,
   enableResizableColumn = true, onDisplayRowChange, stickyHeaders, stickyPagination,
-  enablePagination = false, selectedFilters = {}, ...props
+  enablePagination = false, selectedFilters = {}, filterPersistence = false, ...props
 }: TableProps<RecordType>) {
   const { dataSource, filterableWidth, searchableWidth, style } = props
   const wrapperRef = useRef<HTMLDivElement>(null)
@@ -159,7 +160,10 @@ function Table <RecordType extends Record<string, any>> ({
   const rowKey = (props.rowKey ?? 'key')
   const intl = useIntl()
   const { $t } = intl
-  const [filterValues, setFilterValues] = useState<Filter>(selectedFilters)
+  const storedFilters = sessionStorage.getItem(`${settingsId}-filter`) as string | null
+  const parseFilters = storedFilters ? JSON.parse(storedFilters) : {}
+  const [filterValues, setFilterValues] = useState<Filter>(
+    filterPersistence ? parseFilters : selectedFilters)
   const [searchValue, setSearchValue] = useState<string>('')
   const [groupByValue, setGroupByValue] = useState<string | undefined>(undefined)
   const onFilter = useRef(onFilterChange)
@@ -532,7 +536,8 @@ function Table <RecordType extends Record<string, any>> ({
         {filterables.map((column, i) =>
           renderFilter<RecordType>(
             column, i, dataSource, filterValues,
-            setFilterValues, !!enableApiFilter, column.filterableWidth ?? filterWidth)
+            setFilterValues, !!enableApiFilter, column.filterableWidth ?? filterWidth,
+            settingsId, filterPersistence)
         )}
         {Boolean(groupable.length) && <GroupSelect<RecordType>
           $t={$t}
@@ -554,6 +559,7 @@ function Table <RecordType extends Record<string, any>> ({
             setFilterValues({} as Filter)
             setSearchValue('')
             setGroupByValue(undefined)
+            sessionStorage.removeItem(`${settingsId}-filter`)
           }}>
           {$t({ defaultMessage: 'Clear Filters' })}
         </Button>}
