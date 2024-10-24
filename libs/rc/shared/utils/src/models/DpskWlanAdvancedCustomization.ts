@@ -170,6 +170,8 @@ export class DpskWlanAdvancedCustomization {
 
   fastRoamingOptions?: FastRoamingOptions
 
+  applicationVisibilityEnabled?: boolean
+
   constructor () {
     this.maxClientsOnWlanPerRadio = 100
 
@@ -291,5 +293,7 @@ export class DpskWlanAdvancedCustomization {
     this.qosMapSetOptions = new QosMapSetOptions()
 
     this.fastRoamingOptions = new FastRoamingOptions()
+
+    this.applicationVisibilityEnabled = true
   }
 }
