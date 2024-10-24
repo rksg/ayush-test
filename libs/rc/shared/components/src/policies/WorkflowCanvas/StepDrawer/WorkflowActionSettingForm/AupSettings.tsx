@@ -83,6 +83,13 @@ export function AupSettings () {
     }
   }
 
+  const validateFileLoading = async ( ) => {
+    if (fileLoading === true) {
+      return Promise.reject($t({ defaultMessage: 'File upload is in progress' }))
+    } else {
+      return Promise.resolve()
+    }
+  }
 
   return (<>
     <CommonActionSettings actionType={ActionType.AUP} />
@@ -153,7 +160,8 @@ export function AupSettings () {
         name={'aupFile'}
         label={$t({ defaultMessage: 'Policy Content' })}
         rules={[
-          { required: true }
+          { required: true },
+          { validator: validateFileLoading }
         ]}
         valuePropName='file'
         extra={<Button
@@ -228,7 +236,6 @@ export function AupSettings () {
     <Form.Item name={'aupFileLocation'} hidden={true}>
       <Input/>
     </Form.Item>
-
 
   </>)
 }
