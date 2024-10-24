@@ -397,5 +397,14 @@ export function FilteredTable () {
         dataSource={dataWithStatus}
       />
     </Router>
+    with persistent filter only:
+    <Router>
+      <Table<RecordType>
+        settingsId={'storybook-demo'}
+        columns={columnsFilterOnly}
+        dataSource={dataWithStatus}
+        filterPersistence={true}
+      />
+    </Router>
   </>
 }

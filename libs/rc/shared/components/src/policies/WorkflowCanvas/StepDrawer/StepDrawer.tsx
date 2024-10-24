@@ -144,7 +144,11 @@ export default function StepDrawer (props: StepDrawerProps) {
             <Button
               type={'link'}
               icon={<EyeOpenSolid/>}
-              onClick={() => setIsPreviewOpen(true)}
+              onClick={() => {
+                formInstance.validateFields()
+                  .then(() => setIsPreviewOpen(true))
+                  .catch(() => {})
+              }}
             >
               {$t({ defaultMessage: 'Preview' })}
             </Button>

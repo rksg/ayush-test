@@ -410,6 +410,7 @@ export function NetworkVenuesTab () {
           }
 
           if (resolvedRbacEnabled) {
+            setIsActivateUpdating(true)
             deleteRbacNetworkVenue({
               params: apiParams,
               enableRbac: true,
@@ -427,7 +428,6 @@ export function NetworkVenuesTab () {
     if (networkVenues.length > 0) {
       if (resolvedRbacEnabled) {
         setIsActivateUpdating(true)
-
         const addNetworkVenueReqs = networkVenues.map((networkVenue) => {
           const params = {
             venueId: networkVenue.venueId,
@@ -456,12 +456,17 @@ export function NetworkVenuesTab () {
       if (resolvedRbacEnabled) {
         const network = networkQuery.data
         const networkId = (network && network?.id) ? network.id : ''
+        setIsActivateUpdating(true)
         const deleteNetworkVenueReqs = networkVenueIds.map((networkVenueId) => {
           const curParams = {
             venueId: networkVenueId,
             networkId: networkId
           }
-          return deleteRbacNetworkVenue({ params: curParams, enableRbac: true })
+          return deleteRbacNetworkVenue({
+            params: curParams,
+            enableRbac: true,
+            callback: () => setIsActivateUpdating(false)
+          })
         })
 
         await Promise.allSettled(deleteNetworkVenueReqs).then(clearSelection)
