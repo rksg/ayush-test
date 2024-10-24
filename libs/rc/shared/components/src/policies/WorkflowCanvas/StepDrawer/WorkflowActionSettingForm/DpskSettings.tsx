@@ -17,14 +17,13 @@ import { CommonActionSettings } from './CommonActionSettings'
 
 const notificationOptions = [
   { label: 'QR Code', field: 'qrCodeDisplay', initialValue: true }
-  // { label: 'Email', field: 'emailNotification', initialValue: false },
-  // { label: 'SMS', field: 'smsNotification', initialValue: false }
 ]
 
 export function DpskSettings () {
   const { $t } = useIntl()
   const form = useFormInstance()
-  const identityGroupId = form.getFieldValue('identityGroupId')
+
+  const [identityGroupId, setIdentityGroupId] = useState<string | undefined>(undefined)
   const [dpskServiceName, setDpskServiceName] = useState('')
   const [networkList, setNetworkList] = useState<string[]>([])
 
@@ -40,6 +39,19 @@ export function DpskSettings () {
       return data?.data.map(network => network.ssid) ?? []
     }
   })
+
+  useEffect(() => {
+    const formIdentityGroupId = form.getFieldValue('identityGroupId')
+    if(formIdentityGroupId && identityGroupList) {
+      const selectedIdentityGroup =
+        identityGroupList?.data.find((identityGroup) => identityGroup.id === formIdentityGroupId)
+      if(selectedIdentityGroup) {
+        setIdentityGroupId(selectedIdentityGroup.id)
+      } else {
+        form.setFieldValue('identityGroupId', undefined)
+      }
+    }
+  }, [identityGroupList])
 
   const loadIdentities = useCallback((identityGroupId: string) => {
     fetchIdentities({
@@ -72,10 +84,7 @@ export function DpskSettings () {
 
   const onIdentityGroupChange = useCallback((identityGroupId: string) => {
     form.setFieldValue('identityId', null)
-    if (identityGroupId) {
-      loadIdentities(identityGroupId)
-      loadDpskNetworks(identityGroupId)
-    }
+    setIdentityGroupId(identityGroupId)
   }, [form, loadIdentities, loadDpskNetworks])
 
   useEffect(() => {
@@ -83,6 +92,17 @@ export function DpskSettings () {
       loadIdentities(identityGroupId)
     }
   }, [identityGroupId, loadIdentities])
+
+  useEffect(() => {
+    const identityIdValue = form.getFieldValue('identityId')
+    if(identityIdValue && identitiesResponse.data) {
+      const selectedIdentity = identitiesResponse.data?.data
+        .find((identity) => identity.id === identityIdValue)
+      if(!selectedIdentity) {
+        form.setFieldValue('identityId', null)
+      }
+    }
+  }, [identitiesResponse])
 
   useEffect(() => {
     if (identityGroupId && identityGroupList) {

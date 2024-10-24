@@ -156,7 +156,7 @@ export function useTableQuery <
     if (!option.pagination?.settingsId) return initialPagination
 
     const settingsId = option.pagination.settingsId
-    const pageSizeDefined = Number(localStorage.getItem(`${settingsId}-pagesize`))
+    const pageSizeDefined = Number(sessionStorage.getItem(`${settingsId}-pagesize`))
     const pageSize = (pageSizeDefined > 0) ? pageSizeDefined :
       (option.pagination.pageSize ?? TABLE_DEFAULT_PAGE_SIZE)
 
