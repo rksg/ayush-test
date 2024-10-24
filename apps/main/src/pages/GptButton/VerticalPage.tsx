@@ -48,7 +48,33 @@ function VerticalPage () {
               className='typeCard'
               id='school'
               title={$t({ defaultMessage: 'School' })}
-              icon={<School />}
+              icon={<School style={{ width: '120px', height: '70px' }} />}
+            />
+          </UI.VirticalBox>
+          <UI.VirticalBox>
+            <EdgeClusterTypeCard
+              className='typeCard'
+              id='hotel'
+              title={$t({ defaultMessage: 'Hotel' })}
+              icon={<Hospitality style={{ width: '120px', height: '70px' }}/>}
+            />
+          </UI.VirticalBox>
+
+
+          <UI.VirticalBox>
+            <EdgeClusterTypeCard
+              className='typeCard'
+              id='office'
+              title={$t({ defaultMessage: 'Office' })}
+              icon={<Office style={{ width: '120px', height: '70px' }}/>}
+            />
+          </UI.VirticalBox>
+          <UI.VirticalBox>
+            <EdgeClusterTypeCard
+              className='typeCard'
+              id='shop'
+              title={$t({ defaultMessage: 'Shop' })}
+              icon={<Shop style={{ width: '120px', height: '70px' }} />}
             />
           </UI.VirticalBox>
           <UI.VirticalBox>
@@ -56,58 +82,35 @@ function VerticalPage () {
               className='typeCard'
               id='stadium'
               title={$t({ defaultMessage: 'Stadium' })}
-              icon={<Stadium />}
+              icon={<Stadium style={{ width: '120px', height: '70px' }}/>}
             />
           </UI.VirticalBox>
 
-          <UI.VirticalBox>
-            <EdgeClusterTypeCard
-              className='typeCard'
-              id='hotel'
-              title={$t({ defaultMessage: 'Hotel' })}
-              icon={<Hospitality />}
-            />
-          </UI.VirticalBox>
           <UI.VirticalBox>
             <EdgeClusterTypeCard
               className='typeCard'
               id='transport'
               title={$t({ defaultMessage: 'Transport Hub' })}
-              icon={<TransportHub />}
+              icon={<TransportHub style={{ width: '120px', height: '70px' }}/>}
             />
           </UI.VirticalBox>
 
-          <UI.VirticalBox>
-            <EdgeClusterTypeCard
-              className='typeCard'
-              id='office'
-              title={$t({ defaultMessage: 'Office' })}
-              icon={<Office />}
-            />
-          </UI.VirticalBox>
           <UI.VirticalBox>
             <EdgeClusterTypeCard
               className='typeCard'
               id='wareHouse'
               title={$t({ defaultMessage: 'Warehouse' })}
-              icon={<Warehhouse />}
+              icon={<Warehhouse style={{ width: '120px', height: '70px' }} />}
             />
           </UI.VirticalBox>
 
-          <UI.VirticalBox>
-            <EdgeClusterTypeCard
-              className='typeCard'
-              id='shop'
-              title={$t({ defaultMessage: 'Shop' })}
-              icon={<Shop />}
-            />
-          </UI.VirticalBox>
+
           <UI.VirticalBox>
             <EdgeClusterTypeCard
               className='typeCard'
               id='multiDwelling'
               title={$t({ defaultMessage: 'Multi-Dwelling Unit' })}
-              icon={<MultiDwellingUnit />}
+              icon={<MultiDwellingUnit style={{ width: '120px', height: '70px' }} />}
             />
           </UI.VirticalBox>
         </UI.VirticalContainer>
