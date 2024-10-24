@@ -13,7 +13,9 @@ import { richTextFormatValues } from '../common/richTextFormatValues'
 import { StatusTrail }          from '../common/StatusTrail'
 import { useIntentContext }     from '../IntentContext'
 
-import * as SideNotes from './IntentAIForm/SideNotes'
+import { ComparisonDonutChart }    from './ComparisonDonutChart'
+import { useIntentAIEcoFlexQuery } from './ComparisonDonutChart/services'
+import * as SideNotes              from './IntentAIForm/SideNotes'
 
 export function createUseValuesText ({ action }: {
   action: {
@@ -42,6 +44,7 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
     const { intent } = useIntentContext()
     const valuesText = useValuesText()
     const fields = useCommonFields(intent)
+    const kpiQuery = useIntentAIEcoFlexQuery()
 
     return <>
       <IntentDetailsHeader />
@@ -68,6 +71,7 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
           <DetailsSection data-testid='Key Performance Indications'>
             <DetailsSection.Title
               children={$t({ defaultMessage: 'Key Performance Indications' })} />
+            <ComparisonDonutChart kpiQuery={kpiQuery} isDetail/>
           </DetailsSection>
 
           <GridRow>

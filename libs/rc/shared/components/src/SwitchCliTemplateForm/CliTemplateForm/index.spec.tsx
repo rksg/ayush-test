@@ -17,6 +17,9 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
+import { CliStepConfiguration } from '../../SwitchCli/CliStepConfiguration'
+import { CliStepNotice }        from '../../SwitchCli/CliStepNotice'
+
 import {
   cliTemplate,
   cliTemplateWith200Variables,
@@ -25,10 +28,8 @@ import {
   templates,
   venues
 } from './__tests__/fixtures'
-import { CliStepConfiguration } from './CliStepConfiguration'
-import { CliStepNotice }        from './CliStepNotice'
-import { CliStepSummary }       from './CliStepSummary'
-import { CliStepSwitches }      from './CliStepSwitches'
+import { CliStepSummary }  from './CliStepSummary'
+import { CliStepSwitches } from './CliStepSwitches'
 
 import { CliTemplateForm } from '.'
 

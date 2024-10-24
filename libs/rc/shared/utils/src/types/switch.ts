@@ -816,15 +816,21 @@ export interface CliTemplateExample {
   version: string
 }
 
+export interface SwitchCustomizedVariable {
+  serialNumbers: string[] | string
+  value: string
+  key: string
+}
 export interface CliTemplateVariable {
   name: string
   type: string
   value: string
-  rangeStart?: number,
-  rangeEnd?: number,
-  ipAddressStart?: string,
-  ipAddressEnd?: string,
+  rangeStart?: number
+  rangeEnd?: number
+  ipAddressStart?: string
+  ipAddressEnd?: string
   subMask?: string
+  switchVariables?: SwitchCustomizedVariable[]
 }
 
 export interface CliTemplateVenueSwitches {

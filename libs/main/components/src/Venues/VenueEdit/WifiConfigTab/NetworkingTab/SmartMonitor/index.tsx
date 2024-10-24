@@ -4,22 +4,34 @@ import { Col, Form, InputNumber, Row, Space, Switch } from 'antd'
 import { useIntl }                                    from 'react-intl'
 import { useParams }                                  from 'react-router-dom'
 
-import { AnchorContext, Loader, Tooltip } from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }     from '@acx-ui/icons'
+import { AnchorContext, Loader, Tooltip }                from '@acx-ui/components'
+import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                    from '@acx-ui/icons'
 import {
   useGetVenueApSmartMonitorQuery,
-  useUpdateVenueApSmartMonitorMutation
+  useUpdateVenueApSmartMonitorMutation,
+  useGetVenueTemplateApSmartMonitorSettingsQuery,
+  useUpdateVenueTemplateApSmartMonitorSettingsMutation
 } from '@acx-ui/rc/services'
-import { VenueApSmartMonitor } from '@acx-ui/rc/utils'
+import { VenueApSmartMonitor, useConfigTemplate } from '@acx-ui/rc/utils'
 
-import { VenueEditContext } from '../../..'
-import { FieldLabel }       from '../../styledComponents'
+import { VenueEditContext }               from '../../..'
+import {
+  useVenueConfigTemplateMutationFnSwitcher,
+  useVenueConfigTemplateQueryFnSwitcher
+} from '../../../../venueConfigTemplateApiSwitcher'
+import { FieldLabel } from '../../styledComponents'
 
 export function SmartMonitor () {
   const colSpan = 8
   const { $t } = useIntl()
   const { venueId } = useParams()
   const [smartMonitorEnabled, setSmartMonitorEnabled] = useState(false)
+
+  const { isTemplate } = useConfigTemplate()
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? enableTemplateRbac : isUseRbacApi
 
   const {
     editContextData,
@@ -31,18 +43,17 @@ export function SmartMonitor () {
 
   const form = Form.useFormInstance()
 
-  const [
-    updateVenueApSmartMonitor,
-    { isLoading: isUpdatingVenueApSmartMonitor }
-  ] = useUpdateVenueApSmartMonitorMutation()
-  // eslint-disable-next-line max-len
-
-  const venueApSmartMonitor = useGetVenueApSmartMonitorQuery(
-    {
-      params: { venueId }
-    },
-    { skip: !venueId }
+  const [updateVenueApSmartMonitor, { isLoading: isUpdatingVenueApSmartMonitor }] =
+  useVenueConfigTemplateMutationFnSwitcher(
+    useUpdateVenueApSmartMonitorMutation,
+    useUpdateVenueTemplateApSmartMonitorSettingsMutation
   )
+
+  const venueApSmartMonitor = useVenueConfigTemplateQueryFnSwitcher<VenueApSmartMonitor>({
+    useQueryFn: useGetVenueApSmartMonitorQuery,
+    useTemplateQueryFn: useGetVenueTemplateApSmartMonitorSettingsQuery,
+    enableRbac: isUseRbacApi
+  })
 
   useEffect(() => {
     const venueApSmartMonitorData = venueApSmartMonitor.data
@@ -67,7 +78,8 @@ export function SmartMonitor () {
 
       await updateVenueApSmartMonitor({
         params: { venueId },
-        payload: payload
+        payload: payload,
+        enableRbac: resolvedRbacEnabled
       }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
