@@ -1,9 +1,8 @@
-import { Typography } from 'antd'
 
+import { GridCol, GridRow }                                from '@acx-ui/components'
 import { DisplayMessageAction, GenericActionPreviewProps } from '@acx-ui/rc/utils'
 
 import { ContentPreview } from './ContentPreview'
-import { GridCol, GridRow }                     from '@acx-ui/components'
 
 export function DisplayMessagePreview (props: GenericActionPreviewProps<DisplayMessageAction>) {
   const { data, ...rest } = props
@@ -20,7 +19,7 @@ export function DisplayMessagePreview (props: GenericActionPreviewProps<DisplayM
       align={'middle'}>
       <GridCol col={{ span: 24 }}
         style={{ alignItems: 'center' }}>
-          <span dangerouslySetInnerHTML={{ __html: data?.messageHtml || '' }} />
+        <span dangerouslySetInnerHTML={{ __html: data?.messageHtml || '' }} />
       </GridCol>
     </GridRow>}
     {...rest}

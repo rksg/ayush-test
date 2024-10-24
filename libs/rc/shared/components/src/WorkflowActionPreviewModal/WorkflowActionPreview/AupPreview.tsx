@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 
 import { Typography, Checkbox, Button, Modal, Form } from 'antd'
-import FormItem                                from 'antd/es/form/FormItem'
-import { useIntl }                             from 'react-intl'
+import FormItem                                      from 'antd/es/form/FormItem'
+import { useIntl }                                   from 'react-intl'
 
 import { GridCol, GridRow }                     from '@acx-ui/components'
 import { useLazyGetFileQuery }                  from '@acx-ui/rc/services'
@@ -63,26 +63,26 @@ export function AupPreview (props: GenericActionPreviewProps<AupAction>) {
               initialValue={data?.checkboxDefaultState}
               valuePropName='checked'
             >
-            <Checkbox data-testid='acceptAup'>
-              {data?.useAupFile ?
-                <Text>{$t({ defaultMessage: 'I agree to the' })+' '}<Link href={fileUrl}>
-                  {$t({ defaultMessage: 'Terms & Conditions' })}</Link></Text> :
-                <Text>{$t({ defaultMessage: 'I agree to the' })+' '}<Link onClick={showModal}>
-                  {$t({ defaultMessage: 'Terms & Conditions' })}</Link></Text>}
-            </Checkbox>
+              <Checkbox data-testid='acceptAup'>
+                {data?.useAupFile ?
+                  <Text>{$t({ defaultMessage: 'I agree to the' })+' '}<Link href={fileUrl}>
+                    {$t({ defaultMessage: 'Terms & Conditions' })}</Link></Text> :
+                  <Text>{$t({ defaultMessage: 'I agree to the' })+' '}<Link onClick={showModal}>
+                    {$t({ defaultMessage: 'Terms & Conditions' })}</Link></Text>}
+              </Checkbox>
             </FormItem>
           </Form>
         </GridCol>
       </GridRow>
-        <Modal
-          visible={isModalOpen}
-          closable={false}
-          footer={<Button type='primary'
-            onClick={handleClose}>
-            {$t({ defaultMessage: 'Close' })}
-          </Button>}>
-          <span dangerouslySetInnerHTML={{ __html: data?.aupPlainText || '' }} />
-        </Modal></>
+      <Modal
+        visible={isModalOpen}
+        closable={false}
+        footer={<Button type='primary'
+          onClick={handleClose}>
+          {$t({ defaultMessage: 'Close' })}
+        </Button>}>
+        <span dangerouslySetInnerHTML={{ __html: data?.aupPlainText || '' }} />
+      </Modal></>
     }
     {...rest}
   />
