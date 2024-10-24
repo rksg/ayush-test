@@ -203,7 +203,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
             ({ICX82Count} {intl.$t({ defaultMessage: 'switches' })})
           </Subtitle>
           <Radio.Group
-            style={{ margin: '5px 0 40px 0', fontSize: '14px' }}
+            style={{ margin: '5px 0 40px 0', fontSize: 'var(--acx-body-3-font-size)' }}
             onChange={handleICX82Change}
             value={selectedICX82Version}>
             <Space direction={'vertical'}>
@@ -228,7 +228,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
             ({ICX81Count} {intl.$t({ defaultMessage: 'switches' })})
           </Subtitle>
           <Radio.Group
-            style={{ margin: '5px 0 40px 0', fontSize: '14px' }}
+            style={{ margin: '5px 0 40px 0', fontSize: 'var(--acx-body-3-font-size)' }}
             onChange={handleICX81Change}
             value={selectedICX81Version}>
             <Space direction={'vertical'}>
@@ -251,7 +251,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
             ({ICX7XCount} {intl.$t({ defaultMessage: 'switches' })})
           </Subtitle>
           <Radio.Group
-            style={{ margin: '5px 0 40px 0', fontSize: '14px' }}
+            style={{ margin: '5px 0 40px 0', fontSize: 'var(--acx-body-3-font-size)' }}
             onChange={handleICX7XChange}
             value={selectedICX7XVersion}>
             <Space direction={'vertical'}>
@@ -274,7 +274,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
             ({ICX71Count} {intl.$t({ defaultMessage: 'switches' })})
           </Subtitle>
           <Radio.Group
-            style={{ margin: '5px 0 20px 0', fontSize: '14px' }}
+            style={{ margin: '5px 0 20px 0', fontSize: 'var(--acx-body-3-font-size)' }}
             onChange={handleICX71Change}
             value={selectedICX71Version}>
             <Space direction={'vertical'}>
