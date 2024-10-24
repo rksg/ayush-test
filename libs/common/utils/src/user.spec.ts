@@ -23,6 +23,7 @@ describe('userLogout', () => {
       const originalRemoveItem = localStorage.removeItem
       localStorage.removeItem = mockedRemoveItem
       localStorage['SPLITIO-foo'] = 'bar'
+      localStorage['table-pagesize'] = '20'
       sessionStorage.setItem('jwt', 'testToken')
       sessionStorage.setItem('ACX-ap-compatibiliy-note-hidden', 'true')
 
@@ -33,6 +34,7 @@ describe('userLogout', () => {
       expect(mockedRemoveItem).toHaveBeenCalledWith('SPLITIO-foo')
 
       delete localStorage['SPLITIO-foo']
+      delete localStorage['table-pagesize']
       localStorage.removeItem = originalRemoveItem
     })
 
