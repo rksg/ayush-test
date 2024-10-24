@@ -86,6 +86,7 @@ export const useDashBoardUpdatedFilter = () => {
 export default function Dashboard () {
   const { $t } = useIntl()
   const isEdgeEnabled = useIsEdgeReady()
+  const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
@@ -107,16 +108,6 @@ export default function Dashboard () {
     ] : [])
   ]
 
-  /**
-   * Sets the selected tab value in local storage.
-   *
-   * @param {string} value - The value of the selected tab.
-   * @return {void} This function does not return anything.
-   */
-  const onTabChange = (value: string): void => {
-    localStorage.setItem('dashboard-tab', value)
-  }
-
   return (
     <DashboardFilterProvider>
       <DashboardPageHeader />
@@ -126,10 +117,9 @@ export default function Dashboard () {
           borderColor: 'var(--acx-neutrals-30)',
           margin: '20px 0px 5px 0px' }}/>
       <ContentSwitcher
+        tabId={'dashboard-devices'}
         tabDetails={tabDetails}
         size='large'
-        defaultValue={localStorage.getItem('dashboard-tab') || tabDetails[0].value}
-        onChange={onTabChange}
         extra={
           <UI.Wrapper>
             <TenantLink to={'/reports'}>
@@ -137,6 +127,7 @@ export default function Dashboard () {
             </TenantLink>
           </UI.Wrapper>
         }
+        tabPersistence={enabledUXOptFeature}
       />
       <Divider dashed
         style={{

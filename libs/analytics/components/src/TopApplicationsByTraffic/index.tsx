@@ -11,6 +11,7 @@ import {
   ContentSwitcher,
   ContentSwitcherProps
 } from '@acx-ui/components'
+import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 import { formatter, intlFormats } from '@acx-ui/formatter'
 import type { AnalyticsFilter }   from '@acx-ui/utils'
 
@@ -25,6 +26,7 @@ export function TopApplicationsByTraffic ({
 }) {
   const { $t } = useIntl()
   const queryResults = useTopApplicationsByTrafficQuery(filters)
+  const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
 
   const columns=[
     {
@@ -101,7 +103,12 @@ export function TopApplicationsByTraffic ({
         <AutoSizer>
           {({ height, width }) => (
             <div style={{ display: 'block', height, width }}>
-              <ContentSwitcher tabDetails={tabDetails} size='small' />
+              <ContentSwitcher
+                tabId={'ap-top-traffic'}
+                tabDetails={tabDetails}
+                size='small'
+                tabPersistence={enabledUXOptFeature}
+              />
             </div>
           )}
         </AutoSizer>
