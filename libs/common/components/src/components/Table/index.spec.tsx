@@ -1092,6 +1092,19 @@ describe('Table component', () => {
       fireEvent.change(input, { target: { value: 'John Doe' } })
       expect(onDisplayRowChange).toHaveBeenNthCalledWith(2, filteredData)
     })
+
+    it('Enabled the persistent filtering', async () => {
+      sessionStorage.setItem('storybook-demo-filter', '{"age":[32]}')
+      render(<Table
+        settingsId={'storybook-demo'}
+        columns={filteredColumns}
+        dataSource={filteredData}
+        alwaysShowFilters={true}
+        filterPersistence={true}
+      />)
+      const tbody = await findTBody()
+      expect(await within(tbody).findAllByRole('row')).toHaveLength(1)
+    })
   })
 
   describe('show/hide columnSort', () => {
