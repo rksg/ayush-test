@@ -11,6 +11,10 @@ export const userLogout = () => {
     ?.filter(s => s.includes('SPLITIO'))
     ?.forEach(s => localStorage.removeItem(s))
 
+  Object.keys(localStorage)
+    ?.filter(s => s.includes('-content-switcher'))
+    ?.forEach(s => localStorage.removeItem(s))
+
   if (Boolean(get('IS_MLISA_SA'))) {
     const form = document.createElement('form')
     form.action = `${get('MLISA_LOGOUT_URL')}${window.location.search}`
