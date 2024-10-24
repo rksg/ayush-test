@@ -143,7 +143,9 @@ export function SwitchUpgradeNotification (props: {
 
       return SwitchModelGroupDisplayText[model]
     } else {
-      return switchModel?.includes('8200') ? '8200' : (switchModel?.includes('8100') ? '8100' : '7000')
+      if (switchModel.includes('8200')) return '8200'
+      if (switchModel.includes('8100')) return '8100'
+      return '7000'
     }
 
   }
