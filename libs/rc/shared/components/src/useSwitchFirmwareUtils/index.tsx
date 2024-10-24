@@ -164,6 +164,9 @@ export function useSwitchFirmwareUtils () {
       }
 
       for (const key in SwitchFirmwareModelGroup) {
+        if(!isSupport8100 && key === SwitchFirmwareModelGroup.ICX81) {
+          continue
+        }
         const modelGroupVersions = supportModelGroupVersions?.filter(
           (v => v.modelGroup === key))
         if (modelGroupVersions.length > 0) {
@@ -203,6 +206,9 @@ export function useSwitchFirmwareUtils () {
        }
 
        for (const key in SwitchFirmwareModelGroup) {
+         if(!isSupport8100 && key === SwitchFirmwareModelGroup.ICX81) {
+           continue
+         }
          const modelGroupVersions = supportModelGroupVersions?.filter(
            (v => v.modelGroup === key))
          if (modelGroupVersions.length > 0) {

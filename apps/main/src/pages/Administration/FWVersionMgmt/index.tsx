@@ -43,6 +43,7 @@ const FWVersionMgmt = () => {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isSwitchFirmwareV1002Enabled = useIsSplitOn(Features.SWITCH_FIRMWARE_V1002_TOGGLE)
+  const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
 
 
   const { data: latestSwitchReleaseVersions } =
@@ -107,8 +108,6 @@ const FWVersionMgmt = () => {
         r => r.modelGroup === SwitchFirmwareModelGroup.ICX71)[0].versions[0].id
       const recommended7X = recommendedSwitchReleaseVersions.filter(
         r => r.modelGroup === SwitchFirmwareModelGroup.ICX7X)[0].versions[0].id
-      const recommended81 = recommendedSwitchReleaseVersions.filter(
-        r => r.modelGroup === SwitchFirmwareModelGroup.ICX81)[0].versions[0].id
       const recommended82 = recommendedSwitchReleaseVersions.filter(
         r => r.modelGroup === SwitchFirmwareModelGroup.ICX82)[0].versions[0].id
 
@@ -118,15 +117,21 @@ const FWVersionMgmt = () => {
       const hasOutdated7X = recommended7X && switchVenueVersionListV1001.data.some(fv =>
         compareSwitchVersion(recommended7X, fv.versions.filter(
           v=> v.modelGroup=== SwitchFirmwareModelGroup.ICX7X)[0]?.version)) || false
-      const hasOutdated81 = recommended81 && switchVenueVersionListV1001.data.some(fv =>
-        compareSwitchVersion(recommended81, fv.versions.filter(
-          v=> v.modelGroup=== SwitchFirmwareModelGroup.ICX81)[0]?.version)) || false
       const hasOutdated82 = recommended82 && switchVenueVersionListV1001.data.some(fv =>
         compareSwitchVersion(recommended82, fv.versions.filter(
           v=> v.modelGroup=== SwitchFirmwareModelGroup.ICX82)[0]?.version)) || false
 
-      // eslint-disable-next-line max-len
-      setHasRecomendedSwitchFirmware(hasOutdated71 || hasOutdated7X || hasOutdated82 || hasOutdated81)
+      if (isSupport8100) {
+        const recommended81 = recommendedSwitchReleaseVersions.filter(
+          r => r.modelGroup === SwitchFirmwareModelGroup.ICX81)[0].versions[0].id
+        const hasOutdated81 = recommended81 && switchVenueVersionListV1001.data.some(fv =>
+          compareSwitchVersion(recommended81, fv.versions.filter(
+            v=> v.modelGroup=== SwitchFirmwareModelGroup.ICX81)[0]?.version)) || false
+        // eslint-disable-next-line max-len
+        setHasRecomendedSwitchFirmware(hasOutdated71 || hasOutdated7X || hasOutdated82 || hasOutdated81)
+      } else {
+        setHasRecomendedSwitchFirmware(hasOutdated71 || hasOutdated7X || hasOutdated82)
+      }
     }
   }, [recommendedSwitchReleaseVersions, switchVenueVersionListV1001])
 
