@@ -1,6 +1,8 @@
-import { Row }     from 'antd'
-import { find }    from 'lodash'
-import { useIntl } from 'react-intl'
+import { useMemo } from 'react'
+
+import { Row, Space } from 'antd'
+import { find }       from 'lodash'
+import { useIntl }    from 'react-intl'
 
 import {
   Button,
@@ -33,6 +35,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { noDataDisplay }                                       from '@acx-ui/utils'
+
+import { CompatibilityCheck, useCompatibilityData } from './CompatibilityCheck'
 
 const getEdgePinPayload = {
   fields: [
@@ -92,6 +96,12 @@ const PersonalIdentityNetworkTable = () => {
     pagination: { settingsId }
   })
 
+  const currentServiceIds = useMemo(
+    () => tableQuery.data?.data?.map(i => i.id!) ?? [],
+    [tableQuery.data?.data])
+  const skipFetchCompatibilities = currentServiceIds.length === 0
+  const compatibilityData = useCompatibilityData(currentServiceIds, skipFetchCompatibilities)
+
   const { clusterOptions } = useGetEdgeClusterListQuery(
     { payload: clusterOptionsDefaultPayload },
     {
@@ -130,7 +140,9 @@ const PersonalIdentityNetworkTable = () => {
       defaultSortOrder: 'ascend',
       fixed: 'left',
       render: (_, row) => {
-        return (
+        const serviceId = row.id
+
+        return <Space>
           <TenantLink
             to={getServiceDetailsLink({
               type: ServiceType.PIN,
@@ -139,7 +151,11 @@ const PersonalIdentityNetworkTable = () => {
             })}>
             {row.name}
           </TenantLink>
-        )
+          <CompatibilityCheck
+            serviceId={serviceId!}
+            compatibilityData={compatibilityData}
+          />
+        </Space>
       }
     },
     {

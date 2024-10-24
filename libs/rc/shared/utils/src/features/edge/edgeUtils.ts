@@ -469,38 +469,27 @@ export const getFeaturesIncompatibleDetailData = (compatibleData: EdgeServiceCom
       })
     })
   } else {
-    const data = (compatibleData as EdgeServiceApCompatibility).venueEdgeServiceApCompatibilities
+    const isNewDataModel = compatibleData.hasOwnProperty('venueEdgeServiceApCompatibilities')
+
+    const data = isNewDataModel
+      ? (compatibleData as EdgeServiceApCompatibility).venueEdgeServiceApCompatibilities
+      : (compatibleData as EdgeSdLanApCompatibility).venueSdLanApCompatibilities
     const totalScoped = getTotalScopedCount(data)
 
     data.forEach(item => {
       item.incompatibleFeatures?.forEach(feature => {
         const featureName = feature.featureName
-        const isOldDataModel = feature.hasOwnProperty('supportedModelFamilies')
 
         if (!resultMapping[featureName]) {
-          if (isOldDataModel) {
-            resultMapping[featureName] = {
-              id: `ap_incompatible_details_${featureName}`,
-              incompatibleFeatures: [{
-                featureName,
-                requiredFw: feature.requiredFw,
-                supportedModelFamilies: feature.supportedModelFamilies
-              }],
-              incompatible: 0,
-              total: totalScoped
-            } as ApCompatibility
-          } else {
-            // AP model incompatibility (new data type)
-            resultMapping[featureName] = {
-              id: `ap_incompatible_details_${featureName}`,
-              incompatibleFeatures: [{
-                ...feature,
-                featureName
-              }],
-              incompatible: 0,
-              total: totalScoped
-            } as ApCompatibility
-          }
+          resultMapping[featureName] = {
+            id: `ap_incompatible_details_${featureName}`,
+            incompatibleFeatures: [{
+              ...feature,
+              featureName
+            }],
+            incompatible: 0,
+            total: totalScoped
+          } as ApCompatibility
         }
 
         // eslint-disable-next-line max-len
