@@ -87,7 +87,7 @@ export const SwitchMessages = {
     defaultMessage: 'Based on the switch serial number you entered, compatible stacks of the same model are listed here.'
   }),
   MEMBER_NOT_SUPPORT_STACKING_TOOLTIP: defineMessage({
-    defaultMessage: 'ICX7150-C08P/C08PT does not support stacking'
+    defaultMessage: '{switchModel} does not support stacking'
   }),
   NONOPERATIONAL_SWITCH_NOT_SUPPORT_CONFIGURED: defineMessage({
     defaultMessage: 'The port can not be edited since it is on a switch that is not operational'

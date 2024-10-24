@@ -580,7 +580,8 @@ export function SwitchForm () {
                   label={<>
                     {$t({ defaultMessage: 'Add as' })}
                     {!isSupportStack && <Tooltip.Question
-                      title={$t(SwitchMessages.MEMBER_NOT_SUPPORT_STACKING_TOOLTIP)}
+                      // eslint-disable-next-line max-len
+                      title={$t(SwitchMessages.MEMBER_NOT_SUPPORT_STACKING_TOOLTIP, { switchModel })}
                       placement='bottom'
                     />}
                     {switchRole === MEMEBER_TYPE.MEMBER && <Tooltip.Question
