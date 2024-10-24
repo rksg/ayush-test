@@ -31,7 +31,8 @@ export enum PolicyType {
   ETHERNET_PORT_PROFILE = 'Ethernet Port Profile',
   WORKFLOW = 'Workflow',
   HQOS_BANDWIDTH = 'HQoS Bandwidth',
-  SOFTGRE = 'SoftGRE'
+  SOFTGRE = 'SoftGRE',
+  DIRECTORY_SERVER = 'Directory Server'
 }
 
 export enum PolicyTechnology {
@@ -76,7 +77,8 @@ export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.HQOS_BANDWIDTH]: defineMessage({ defaultMessage: 'HQoS Bandwidth' }),
   [PolicyType.SOFTGRE]: defineMessage({ defaultMessage: 'Tunnel the traffic to a third party WLAN gateway' }),
   [PolicyType.ETHERNET_PORT_PROFILE]: defineMessage({ defaultMessage: 'An Ethernet port profile is a configuration that specifies how a network port functions and behaves.' }),
-  [PolicyType.SERVER_CERTIFICATES]: defineMessage({ defaultMessage: 'Server Certificates' })
+  [PolicyType.SERVER_CERTIFICATES]: defineMessage({ defaultMessage: 'Server Certificates' }),
+  [PolicyType.DIRECTORY_SERVER]: defineMessage({ defaultMessage: 'Create an Active Directory or LDAP server for network access on a captive portal' })
 }
 
 export const downloadCertExtension: Record<CertificateAcceptType, String> = {
