@@ -708,7 +708,7 @@ export const ClientsTable = (props: ClientsTableProps<ClientList>) => {
           enableApiFilter={true}
           floatRightFilters={true}
           rowKey='clientMac'
-          filterPersistence={enabledUXOptFeature && true}
+          filterPersistence={enabledUXOptFeature}
         />
       </Loader>
     </UI.ClientTableDiv>

@@ -120,7 +120,7 @@ export default function useApsTable () {
         rowSelection={{
           type: 'checkbox'
         }}
-        filterPersistence={enabledUXOptFeature && true}
+        filterPersistence={enabledUXOptFeature}
       />
     </ApsTabContext.Provider>
 

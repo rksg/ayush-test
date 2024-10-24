@@ -164,7 +164,7 @@ memo(({ searchString, setHistoricalClientCount } :
             pagination={tableQuery.pagination}
             onChange={tableQuery.handleTableChange}
             rowKey='clientMac'
-            filterPersistence={enabledUXOptFeature && true}
+            filterPersistence={enabledUXOptFeature}
           />
           {!!tableQuery.data?.data?.length && <Typography.Text style={{
             fontSize: '10px',
