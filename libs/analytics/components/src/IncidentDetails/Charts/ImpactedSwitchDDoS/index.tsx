@@ -5,6 +5,7 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { defaultSort, overlapsRollup, sortProp }                                   from '@acx-ui/analytics/utils'
 import {  Card, Loader, Table, TableProps, NoGranularityText, cssStr, DonutChart } from '@acx-ui/components'
+import { get }                                                                     from '@acx-ui/config'
 import { intlFormats }                                                             from '@acx-ui/formatter'
 import { TenantLink }                                                              from '@acx-ui/react-router-dom'
 
@@ -13,7 +14,6 @@ import {
   useImpactedSwitchDDoSAndTotalSwitchCountQuery,
   useImpactedSwitchDDoSQuery
 } from './services'
-
 
 import type { ChartProps } from '../types'
 
@@ -105,7 +105,10 @@ function ImpactedSwitchTable (props: {
     dataIndex: 'name',
     title: $t({ defaultMessage: 'Switch Name' }),
     render: (_, { mac, name },__,highlightFn) =>
-      <TenantLink to={`devices/switch/${mac}/serial/details/reports`}>
+      <TenantLink to={
+        get('IS_MLISA_SA') ? `devices/switch/${mac}/serial/details/reports`
+          : `devices/switch/${mac}/serial/details/overview`
+      }>
         {highlightFn(name)}
       </TenantLink>,
     fixed: 'left',
