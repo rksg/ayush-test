@@ -28,6 +28,7 @@ jest.mock('react-intl', () => ({
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
 }))
+
 describe('HealthPieChart', () => {
   const size = { width: 300, height: 300 }
 
@@ -44,7 +45,7 @@ describe('HealthPieChart', () => {
 
   const mockSetChartKey = jest.fn()
   const mockSetPieFilter = jest.fn()
-  const mockSetEventCode = jest.fn()
+  const mockOnPieClick = jest.fn()
 
   it('should render correctly for many connectionFailures', async () => {
     mockGraphqlQuery(dataApiURL, 'Network', { data: mockConnectionFailureResponse })
@@ -57,11 +58,10 @@ describe('HealthPieChart', () => {
             queryType='connectionFailure'
             selectedStage='Authentication'
             valueFormatter={formatter('durationFormat')}
-            pieFilter=''
             setPieFilter={mockSetPieFilter}
             chartKey='nodes'
             setChartKey={mockSetChartKey}
-            setEventCode={mockSetEventCode}
+            onPieClick={mockOnPieClick}
           />,
         </div>
       </Provider>,
@@ -96,11 +96,10 @@ describe('HealthPieChart', () => {
             queryType='ttc'
             selectedStage='Authentication'
             valueFormatter={formatter('countFormat')}
-            pieFilter=''
             setPieFilter={mockSetPieFilter}
             chartKey='nodes'
             setChartKey={mockSetChartKey}
-            setEventCode={mockSetEventCode}
+            onPieClick={mockOnPieClick}
           />,
         </div>
       </Provider>,
@@ -134,11 +133,10 @@ describe('HealthPieChart', () => {
             queryType='ttc'
             selectedStage='Authentication'
             valueFormatter={formatter('countFormat')}
-            pieFilter=''
             setPieFilter={mockSetPieFilter}
             chartKey='wlans'
             setChartKey={mockSetChartKey}
-            setEventCode={mockSetEventCode}
+            onPieClick={mockOnPieClick}
           />,
         </div>
       </Provider>,
@@ -169,11 +167,10 @@ describe('HealthPieChart', () => {
             queryType='ttc'
             selectedStage='Authentication'
             valueFormatter={formatter('countFormat')}
-            pieFilter=''
             setPieFilter={mockSetPieFilter}
             chartKey=''
             setChartKey={mockSetChartKey}
-            setEventCode={mockSetEventCode}
+            onPieClick={mockOnPieClick}
           />,
         </div>
       </Provider>,
@@ -203,11 +200,10 @@ describe('HealthPieChart', () => {
             queryType='connectionFailure'
             selectedStage='Authentication'
             valueFormatter={formatter('durationFormat')}
-            pieFilter=''
             setPieFilter={mockSetPieFilter}
             chartKey='nodes'
             setChartKey={mockSetChartKey}
-            setEventCode={mockSetEventCode}
+            onPieClick={mockOnPieClick}
           />,
         </div>
       </Provider>,
@@ -225,46 +221,12 @@ describe('HealthPieChart', () => {
       })
     expect(await screen.findByText('Top 5 Impacted Venues')).toBeVisible()
     expect(await screen.findByText('WLANs')).toBeVisible()
+    fireEvent.click(await screen.findByText('WLANs'))
     expect(await screen.findByText('Manufacturers')).toBeVisible()
     expect(await screen.findByText('Events')).toBeVisible()
     expect(await screen.findByText('Others')).toBeVisible()
     // eslint-disable-next-line max-len
     expect(await screen.findByText('Detailed breakup of all items beyond Top 5 can be explored using Data Studio custom charts.')).toBeInTheDocument()
-  })
-
-  it('should handle chart switching', async () => {
-    mockGraphqlQuery(dataApiURL, 'Network', { data: mockConnectionFailureResponse })
-    render(
-      <Provider>
-        <div style={{ height: 300, width: 300 }}>
-          <HealthPieChart
-            size={size}
-            filters={filters}
-            queryType='connectionFailure'
-            selectedStage='Authentication'
-            valueFormatter={formatter('countFormat')}
-            pieFilter=''
-            setPieFilter={mockSetPieFilter}
-            chartKey='nodes'
-            setChartKey={mockSetChartKey}
-            setEventCode={mockSetEventCode}
-          />,
-        </div>
-      </Provider>,
-      {
-        route: {
-          params: { tenantId: 'test' }
-        }
-      })
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    expect(await screen.findByText('Authentication')).toBeVisible()
-    expect(await screen.findByText('5 Impacted Venues')).toBeVisible()
-    fireEvent.click(await screen.findByText('WLANs'))
-    expect(await screen.findByText('Top 5 Impacted WLANs')).toBeVisible()
-    fireEvent.click(await screen.findByText('Manufacturers'))
-    expect(await screen.findByText('Top 5 Impacted Manufacturers')).toBeVisible()
-    fireEvent.click(await screen.findByText('Events'))
-    expect(await screen.findByText('Top 5 Events')).toBeVisible()
   })
 
   describe('tooltipFormatter', () => {
@@ -309,6 +271,7 @@ describe('transformData', () => {
         .osManufacturers[0]
     ).toEqual(
       {
+        rawKey: 'Apple, Inc.',
         color: '#66B1E8',
         key: 'Apple, Inc.',
         name: 'Apple, Inc.',
@@ -318,7 +281,7 @@ describe('transformData', () => {
     expect(
       transformData(mockConnectionFailureResponse as ImpactedEntities).events[0]
     ).toEqual({
-      code: 'CCD_REASON_PREV_AUTH_NOT_VALID',
+      rawKey: 'CCD_REASON_PREV_AUTH_NOT_VALID',
       color: '#66B1E8',
       key: 'Previous Auth Invalid',
       name: 'Previous Auth Invalid',
