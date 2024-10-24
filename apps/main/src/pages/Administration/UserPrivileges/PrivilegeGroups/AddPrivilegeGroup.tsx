@@ -43,8 +43,9 @@ import CustomRoleSelector from '../CustomRoles/CustomRoleSelector'
 import * as UI            from '../styledComponents'
 
 
-import { SelectCustomerDrawer } from './SelectCustomerDrawer'
-import { SelectVenuesDrawer }   from './SelectVenuesDrawer'
+import { SelectCustomerDrawer }     from './SelectCustomerDrawer'
+import { SelectCustomerOnlyDrawer } from './SelectCustomerOnlyDrawer'
+import { SelectVenuesDrawer }       from './SelectVenuesDrawer'
 
 import { PrivilegeGroupSateProps } from '.'
 
@@ -77,6 +78,7 @@ export function AddPrivilegeGroup () {
   const [selectedVenues, setVenues] = useState([] as Venue[])
   const [selectedCustomers, setCustomers] = useState([] as MspEcWithVenue[])
   const [displayMspScope, setDisplayMspScope] = useState(false)
+  const [selectedRole, setCustomRole] = useState('')
 
   const navigate = useNavigate()
   const location = useLocation().state as PrivilegeGroupSateProps
@@ -113,6 +115,10 @@ export function AddPrivilegeGroup () {
 
   const setSelectedCustomers = (selected: MspEcWithVenue[]) => {
     setCustomers(selected)
+  }
+
+  const setSelectedRole = (selected: RolesEnum) => {
+    setCustomRole(selected)
   }
 
   const onScopeChange = (e: RadioChangeEvent) => {
@@ -152,7 +158,8 @@ export function AddPrivilegeGroup () {
       if (isOnboardedMsp) {
         const policyEntities = [] as PrivilegePolicyEntity[]
         selectedCustomers.forEach((ec: MspEcWithVenue) => {
-          const venueIds = ec.children.filter(v => v.selected).map(venue => venue.id)
+          const venueIds = ec.allVenues ? []
+            : ec.children.filter(v => v.selected).map(venue => venue.id)
           let venueList = {} as VenueObjectList
           venueList['com.ruckus.cloud.venue.model.venue'] = venueIds
           policyEntities.push({
@@ -370,6 +377,64 @@ export function AddPrivilegeGroup () {
     </>
   }
 
+  const MspPrimeAdminScopeForm = () => {
+    return <>
+      <Form.Item
+        name='mspscope'
+        label={intl.$t({ defaultMessage: 'Scope' })}
+        valuePropName='checked'
+        children={
+          <Checkbox checked={displayMspScope}
+            onChange={e => setDisplayMspScope(e.target.checked)}
+            children={intl.$t({ defaultMessage: 'MSP Customers' })} />
+        }
+      />
+      <Form.Item
+        name='mspcustomers'
+        initialValue={ChoiceCustomerEnum.ALL_CUSTOMERS}
+        hidden={!displayMspScope}
+        rules={[
+          { validator: () =>{
+            if(selectedMspScope === ChoiceCustomerEnum.SPECIFIC_CUSTOMER
+            && selectedCustomers.length === 0) {
+              return Promise.reject(
+                `${intl.$t({ defaultMessage: 'Please select customer(s)' })} `
+              )
+            }
+            return Promise.resolve()}
+          }
+        ]}>
+        <Radio.Group
+          style={{ marginLeft: 22 }}
+          value={selectedMspScope}
+          onChange={onCustomerChange}
+        >
+          <Space direction={'vertical'} size={12}>
+            <Radio
+              key={ChoiceCustomerEnum.ALL_CUSTOMERS}
+              value={ChoiceCustomerEnum.ALL_CUSTOMERS}>
+              {intl.$t({ defaultMessage: 'All Customers' })}
+            </Radio>
+            <Radio
+              key={ChoiceCustomerEnum.SPECIFIC_CUSTOMER}
+              value={ChoiceCustomerEnum.SPECIFIC_CUSTOMER}>
+              {intl.$t({ defaultMessage: 'Specific Customer(s)' })}
+            </Radio>
+            <Button
+              style={{ marginLeft: '22px' }}
+              hidden={selectedMspScope ===
+              ChoiceCustomerEnum.ALL_CUSTOMERS || selectedCustomers.length > 0}
+              type='link'
+              onClick={onClickSelectCustomer}
+            >Select customers</Button>
+          </Space>
+        </Radio.Group>
+      </Form.Item>
+      {selectedCustomers.length > 0 && selectedMspScope === ChoiceCustomerEnum.SPECIFIC_CUSTOMER &&
+        <DisplaySelectedCustomers />}
+    </>
+  }
+
   const PrivilegeGroupForm = () => {
     return <StepsForm
       form={form}
@@ -413,12 +478,18 @@ export function AddPrivilegeGroup () {
                 <Input.TextArea rows={4} />
               }
             />
-            <CustomRoleSelector />
+            <CustomRoleSelector
+              isOnboardedMsp={isOnboardedMsp}
+              setSelected={setSelectedRole}
+            />
           </Col>
         </Row>
         <Row gutter={12}>
           <Col span={8}>
-            {isOnboardedMsp ? <MspScopeForm /> : <ScopeForm />}
+            {isOnboardedMsp
+              ? (selectedRole === RolesEnum.PRIME_ADMIN
+                ? <MspPrimeAdminScopeForm /> : <MspScopeForm />)
+              : <ScopeForm />}
           </Col>
         </Row>
         {selectVenueDrawer && <SelectVenuesDrawer
@@ -427,12 +498,20 @@ export function AddPrivilegeGroup () {
           setVisible={setSelectVenueDrawer}
           setSelected={setSelectedVenues}
         />}
-        {selectCustomerDrawer && <SelectCustomerDrawer
-          visible={selectCustomerDrawer}
-          selected={selectedCustomers}
-          setVisible={setSelectCustomerDrawer}
-          setSelected={setSelectedCustomers}
-        />}
+        {selectCustomerDrawer && (selectedRole === RolesEnum.PRIME_ADMIN
+          ? <SelectCustomerOnlyDrawer
+            visible={selectCustomerDrawer}
+            selected={selectedCustomers}
+            setVisible={setSelectCustomerDrawer}
+            setSelected={setSelectedCustomers}
+          />
+          : <SelectCustomerDrawer
+            visible={selectCustomerDrawer}
+            selected={selectedCustomers}
+            setVisible={setSelectCustomerDrawer}
+            setSelected={setSelectedCustomers}
+          />)
+        }
 
       </StepsForm.StepForm>
     </StepsForm>

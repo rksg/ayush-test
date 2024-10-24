@@ -229,6 +229,11 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
   text-overflow: ellipsis;
 }
 
+.c1 .ant-pro-table .ant-table-footer {
+  background: transparent;
+  padding: 8px 0;
+}
+
 .c1 .ant-pro-table .ant-pro-card-body {
   display: -webkit-box;
   display: -webkit-flex;
@@ -1346,6 +1351,11 @@ exports[`VideoCallQoe Table should render table 1`] = `
 .c1 .ant-pro-table .ant-table-tbody > tr > td.ant-table-cell-ellipsis .ant-badge-status .ant-badge-status-text {
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.c1 .ant-pro-table .ant-table-footer {
+  background: transparent;
+  padding: 8px 0;
 }
 
 .c1 .ant-pro-table .ant-pro-card-body {

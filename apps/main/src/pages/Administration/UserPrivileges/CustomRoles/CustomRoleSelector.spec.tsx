@@ -27,7 +27,9 @@ describe('Custom Role selector component', () => {
     render(
       <Provider>
         <Form form={formRef.current}>
-          <CustomRoleSelector />
+          <CustomRoleSelector
+            setSelected={jest.fn()}
+          />
         </Form>
       </Provider>
     )
@@ -46,7 +48,12 @@ describe('Custom Role selector component', () => {
 
     render(
       <Provider>
-        <Form form={formRef.current}><CustomRoleSelector disabled={true}/></Form>
+        <Form form={formRef.current}>
+          <CustomRoleSelector
+            disabled={true}
+            setSelected={jest.fn()}
+          />
+        </Form>
       </Provider>
     )
 
