@@ -1,10 +1,11 @@
 /* eslint-disable max-len */
 import { createContext, useContext, useEffect, useState } from 'react'
 
-import { Checkbox, Form, InputNumber, Switch } from 'antd'
-import { useIntl }                             from 'react-intl'
+import { Checkbox, Form, InputNumber, Switch, Space } from 'antd'
+import { useIntl }                                    from 'react-intl'
 
-import { StepsForm }   from '@acx-ui/components'
+import { StepsForm, Tooltip }     from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   DnsProxyContextType,
   DnsProxyRule,
@@ -37,6 +38,11 @@ export function NetworkControlTab () {
   const labelWidth = '250px'
 
   const isWifiCallingSupported = useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.WIFI_CALLING)
+  const wifi_network_application_control_FF = useIsSplitOn(Features.WIFI_NETWORK_APPLICATION_CONTROL)
+
+  const applicationRecognitionControlTooltipContent = $t({ defaultMessage:
+    `Application Recognition & Control (ARC) manages the usage and reporting of network guest application activities. 
+    Disabling this feature stops the monitoring and reporting of these activities. ` })
 
   const form = Form.useFormInstance()
   const [
@@ -216,6 +222,27 @@ export function NetworkControlTab () {
           children={<Switch />}
         />
       </UI.FieldLabel>
+
+      {
+        wifi_network_application_control_FF &&
+        <UI.FieldLabel width={labelWidth}>
+          <Space align='start'>
+            {$t({ defaultMessage: 'Application Recognition & Control' })}
+            <Tooltip.Question
+              title={applicationRecognitionControlTooltipContent}
+              placement='right'
+              iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+            />
+          </Space>
+          <Form.Item
+            name={['wlan','advancedCustomization','applicationVisibilityEnabled']}
+            style={{ marginBottom: '10px' }}
+            valuePropName='checked'
+            initialValue={true}
+            children={<Switch />}
+          />
+        </UI.FieldLabel>
+      }
 
       <StepsForm.Subtitle>
         {$t({ defaultMessage: 'DHCP' })}

@@ -243,27 +243,26 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
               })
             }
           }
-
-          if (Object.keys(apIdsToIncompatible).length > 0) {
-            // TODO Need more discuss wether groupBy feature is necessary
-            if (hasGroupBy) {
-              tableQuery.data.data?.forEach(item => {
-                const children = (item as unknown as { aps: NewAPModelExtended[] }).aps?.map(ap => ({
-                  ...ap,
-                  incompatible: apIdsToIncompatible[ap.serialNumber]
-                }))
-                result.push({ ...item, aps: children, children })
-              })
-            } else {
-              tableQuery.data.data?.forEach(ap => (result.push({
+        }
+        if (Object.keys(apIdsToIncompatible).length > 0) {
+          // TODO Need more discuss wether groupBy feature is necessary
+          if (hasGroupBy) {
+            tableQuery.data.data?.forEach(item => {
+              const children = (item as unknown as { aps: NewAPModelExtended[] }).aps?.map(ap => ({
                 ...ap,
                 incompatible: apIdsToIncompatible[ap.serialNumber]
-              })))
-            }
-            setTableData(result)
+              }))
+              result.push({ ...item, aps: children, children })
+            })
           } else {
-            setTableData(tableQuery.data?.data)
+            tableQuery.data.data?.forEach(ap => (result.push({
+              ...ap,
+              incompatible: apIdsToIncompatible[ap.serialNumber]
+            })))
           }
+          setTableData(result)
+        } else {
+          setTableData(tableQuery.data?.data)
         }
       }
     }
@@ -395,7 +394,6 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       dataIndex: 'venueName',
       filterKey: 'venueId',
       filterable: filterables ? filterables['venueId'] : false,
-      sorter: true,
       render: (_: ReactNode, row: NewAPModelExtended) => (
         <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
           {row.venueName}
