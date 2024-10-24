@@ -524,6 +524,11 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
   text-overflow: ellipsis;
 }
 
+.c2 .ant-pro-table .ant-table-footer {
+  background: transparent;
+  padding: 8px 0;
+}
+
 .c2 .ant-pro-table .ant-pro-card-body {
   display: -webkit-box;
   display: -webkit-flex;
@@ -6323,6 +6328,11 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
   text-overflow: ellipsis;
 }
 
+.c2 .ant-pro-table .ant-table-footer {
+  background: transparent;
+  padding: 8px 0;
+}
+
 .c2 .ant-pro-table .ant-pro-card-body {
   display: -webkit-box;
   display: -webkit-flex;
@@ -11794,6 +11804,11 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
 .c2 .ant-pro-table .ant-table-tbody > tr > td.ant-table-cell-ellipsis .ant-badge-status .ant-badge-status-text {
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.c2 .ant-pro-table .ant-table-footer {
+  background: transparent;
+  padding: 8px 0;
 }
 
 .c2 .ant-pro-table .ant-pro-card-body {
@@ -17540,6 +17555,11 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
   text-overflow: ellipsis;
 }
 
+.c3 .ant-pro-table .ant-table-footer {
+  background: transparent;
+  padding: 8px 0;
+}
+
 .c3 .ant-pro-table .ant-pro-card-body {
   display: -webkit-box;
   display: -webkit-flex;
@@ -19815,6 +19835,11 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
 .c3 .ant-pro-table .ant-table-tbody > tr > td.ant-table-cell-ellipsis .ant-badge-status .ant-badge-status-text {
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.c3 .ant-pro-table .ant-table-footer {
+  background: transparent;
+  padding: 8px 0;
 }
 
 .c3 .ant-pro-table .ant-pro-card-body {

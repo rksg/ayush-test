@@ -614,5 +614,14 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
+  },
+  queryMacRegistrationPool: {
+    method: 'GET',
+    newApi: true,
+    url: '/wifiNetworks/:networkId/macRegistrationPools',
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }
