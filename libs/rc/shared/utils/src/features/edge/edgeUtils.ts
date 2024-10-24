@@ -41,6 +41,7 @@ export const edgePhysicalPortInitialConfigs = {
   corePortEnabled: false
 }
 
+
 export const getEdgeServiceHealth = (alarmSummary?: EdgeAlarmSummary[]) => {
   if(!alarmSummary) return EdgeServiceStatusEnum.UNKNOWN
 
