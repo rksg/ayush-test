@@ -71,9 +71,9 @@ COPY --from=build /app/dist/apps ./
 
 RUN \
   # Create structure to match deployment need
-  mkdir -p tenant/t && \
+  mkdir -p ai && \
   # Move all files into it
-  cp -a ra/* tenant/t && \
+  cp -a ra/* ai && \
   # Remove the ra folder
   rm -rf ra
 
