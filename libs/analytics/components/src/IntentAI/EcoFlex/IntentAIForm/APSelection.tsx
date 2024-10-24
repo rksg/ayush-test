@@ -137,7 +137,6 @@ export function APsSelection ({ isDisabled }: { isDisabled: boolean }) {
       name={name as unknown as NamePath}
       children={<APsSelectionInput
         disabled={isDisabled}
-        autoFocus
         placeholder={get('IS_MLISA_SA')
           ? $t({ defaultMessage: 'Select AP Groups / APs to exclude' })
           : $t({ defaultMessage: 'Select <VenueSingular></VenueSingular> / APs to exclude' })}
