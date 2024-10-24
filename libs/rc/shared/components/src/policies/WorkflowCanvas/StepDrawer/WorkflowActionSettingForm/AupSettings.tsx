@@ -62,6 +62,7 @@ export function AupSettings () {
       name: formInstance.getFieldValue('aupFileName'),
       type: FileType.AUP_FILE
     }
+
     formDataInput.append('fileDetails',
       new Blob([JSON.stringify(fileContext)],
         { type: 'application/json' }), '')
