@@ -83,9 +83,9 @@ describe('SoftGreSettingForm', () => {
     const profileNameField = screen.getByRole('textbox', { name: 'Profile Name' })
     await user.type(profileNameField, '123')
     // eslint-disable-next-line max-len
-    const primaryGatewayField = screen.getByRole('textbox', { name: 'Tunnel Primary Gateway Address' })
+    const primaryGatewayField = screen.getByRole('textbox', { name: /Primary Gateway/i })
     await user.type(primaryGatewayField,'128.0.0')
-    const errMsg = await screen.findByText('Please enter a valid IP address')
+    const errMsg = await screen.findByText('Please enter a valid IP address or FQDN')
     expect(errMsg).toBeVisible()
 
     await user.clear(primaryGatewayField)
@@ -109,13 +109,13 @@ describe('SoftGreSettingForm', () => {
     const profileNameField = screen.getByRole('textbox', { name: 'Profile Name' })
     await user.type(profileNameField, 'Test-validation gateways different')
     // eslint-disable-next-line max-len
-    const primaryGatewayField = screen.getByRole('textbox', { name: 'Tunnel Primary Gateway Address' })
+    const primaryGatewayField = screen.getByRole('textbox', { name: /Primary Gateway/i })
     await user.type(primaryGatewayField,'128.0.0.0')
     // eslint-disable-next-line max-len
-    const secondaryGatewayField = screen.getByRole('textbox', { name: 'Tunnel Secondary Gateway Address' })
+    const secondaryGatewayField = screen.getByRole('textbox', { name: /Secondary Gateway/i })
     await user.type(secondaryGatewayField,'128.0.0.0')
     // eslint-disable-next-line max-len
-    const errMsg = await screen.findByText('Primary and secondary IP addresses must be different. Please enter a new IP address')
+    const errMsg = await screen.findByText('Primary and secondary gateways must be different. Please enter a new gateway IP address or FQDN.')
     expect(errMsg).toBeVisible()
 
     await user.clear(secondaryGatewayField)

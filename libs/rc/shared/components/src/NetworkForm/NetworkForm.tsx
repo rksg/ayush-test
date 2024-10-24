@@ -1,12 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unused-vars, max-len */
 import { useEffect, useRef, useState, createContext } from 'react'
 
-import { Form }                                                          from 'antd'
-import { get, isEqual, isNil, isNull, isUndefined, merge, omit, omitBy } from 'lodash'
-import { defineMessage, useIntl }                                        from 'react-intl'
+import { Form }                                                                     from 'antd'
+import { get, isEqual, isNil, isNull, isUndefined, merge, omit, omitBy, cloneDeep } from 'lodash'
+import { defineMessage, useIntl }                                                   from 'react-intl'
 
-import { PageHeader, StepsForm, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
+import {
+  Loader,
+  PageHeader,
+  StepsForm,
+  StepsFormLegacy,
+  StepsFormLegacyInstance
+} from '@acx-ui/components'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import {
   useAddNetworkMutation,
   useAddNetworkVenuesMutation,
@@ -36,7 +42,8 @@ import {
   useActivatePortalTemplateMutation,
   useGetEnhancedPortalProfileListQuery,
   useGetEnhancedPortalTemplateListQuery,
-  useUpdateNetworkVenueMutation
+  useUpdateNetworkVenueMutation,
+  useGetMacRegistrationPoolNetworkBindingQuery
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -56,7 +63,8 @@ import {
   useConfigTemplatePageHeaderTitle,
   useConfigTemplateQueryFnSwitcher,
   NetworkTunnelSdLanAction,
-  NetworkTunnelSoftGreAction
+  NetworkTunnelSoftGreAction,
+  MacRegistrationPool
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
@@ -254,7 +262,7 @@ export function NetworkForm (props:{
     })
   }
 
-  const { data } = useGetNetwork()
+  const { data, isLoading } = useGetNetwork()
   const networkVxLanTunnelProfileInfo = useNetworkVxLanTunnelProfileInfo(data ?? null)
   const { certificateTemplateId } = useGetCertificateTemplateNetworkBindingQuery(
     { params: { networkId: data?.id } },
@@ -262,6 +270,12 @@ export function NetworkForm (props:{
       skip: !(editMode || cloneMode) || !data?.useCertificateTemplate,
       selectFromResult: ({ data }) => ({ certificateTemplateId: data?.id })
     })
+
+  const { data: macRegistrationPool } = useGetMacRegistrationPoolNetworkBindingQuery(
+    { params: { networkId: data?.id } },
+    { skip: !data?.wlan?.macAddressAuthentication }
+  )
+
   const { data: dpskService } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetDpskServiceQuery,
     useTemplateQueryFn: useGetDpskServiceTemplateQuery,
@@ -360,6 +374,20 @@ export function NetworkForm (props:{
 
     updateSaveData(fullNetworkSaveData)
   }, [wifiCallingIds])
+
+  useEffect(() => {
+    if (!macRegistrationPool?.data?.length) return
+
+    const fullNetworkSaveData = merge({}, saveState, {
+      wlan: {
+        macRegistrationListId: (macRegistrationPool?.data as MacRegistrationPool[])[0].id || ''
+      }
+    })
+
+    form.setFieldValue('wlan.macRegistrationListId', (macRegistrationPool?.data as MacRegistrationPool[])[0].id || '')
+
+    updateSaveData(fullNetworkSaveData)
+  }, [macRegistrationPool])
 
   useEffect(() => {
     if (!radiusServerConfigurations) return
@@ -800,7 +828,7 @@ export function NetworkForm (props:{
 
         if (isSoftGreEnabled && formData['softGreAssociationUpdate']) {
         // eslint-disable-next-line max-len
-          afterVenueActivationRequest.push(updateSoftGreActivations(networkId, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode))
+          afterVenueActivationRequest.push(updateSoftGreActivations(networkId, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode, false))
         }
       }
       await Promise.all(afterVenueActivationRequest)
@@ -881,6 +909,7 @@ export function NetworkForm (props:{
   const handleEditNetwork = async (formData: NetworkSaveData) => {
     try {
       processEditData(formData)
+      const oldData = cloneDeep(saveContextRef.current)
       const payload = updateClientIsolationAllowlist(saveContextRef.current as NetworkSaveData)
       await updateNetworkInstance({
         params,
@@ -916,7 +945,7 @@ export function NetworkForm (props:{
           allRequests.push(handleNetworkVenues(payload.id, payload.venues, data?.venues))
         }
       }
-      allRequests.push(updateClientIsolationActivations(payload, data, payload.id))
+      allRequests.push(updateClientIsolationActivations(payload, oldData, payload.id))
 
       // eslint-disable-next-line max-len
       if (isEdgeSdLanMvEnabled && form.getFieldValue('sdLanAssociationUpdate') && payload.id && payload.venues) {
@@ -930,7 +959,7 @@ export function NetworkForm (props:{
       if (isSoftGreEnabled && formData['softGreAssociationUpdate'] && payload.id && payload.venues) {
         allRequests.push(
           // eslint-disable-next-line max-len
-          updateSoftGreActivations(payload.id, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode)
+          updateSoftGreActivations(payload.id, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode, true)
         )
       }
 
@@ -1032,6 +1061,7 @@ export function NetworkForm (props:{
         </NetworkFormContext.Provider>
       }
       {editMode &&
+      <Loader states={[{ isLoading: isLoading }]}>
         <NetworkFormContext.Provider value={{
           modalMode,
           createType,
@@ -1115,6 +1145,7 @@ export function NetworkForm (props:{
             </StepsForm>
           </MLOContext.Provider>
         </NetworkFormContext.Provider>
+      </Loader>
       }
     </>
   )

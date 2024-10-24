@@ -1,12 +1,12 @@
 import { useIntl } from 'react-intl'
 
+import { compareVersions }      from '@acx-ui/rc/components'
 import {
   useGetAvailableABFListQuery
 } from '@acx-ui/rc/services'
 import { ABFVersion, FirmwareCategory } from '@acx-ui/rc/utils'
 
 import { FirmwareBanner }   from '../../FirmwareBanner'
-import { compareVersions }  from '../../FirmwareUtils'
 import { useApEolFirmware } from '../VenueFirmwareList/useApEolFirmware'
 
 

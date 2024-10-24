@@ -7,6 +7,7 @@ import {
 } from '@acx-ui/components'
 import {
   ClusterNetworkSettings,
+  ClusterSubInterfaceSettings,
   CommonResult,
   EdgeAllPortTrafficData,
   EdgeCluster,
@@ -968,9 +969,42 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
+    patchEdgeClusterSubInterfaceSettings: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.patchEdgeClusterSubInterfaceSettings, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'CLUSTER_DETAIL' }]
+    }),
+    getEdgeClusterSubInterfaceSettings: build.query<ClusterSubInterfaceSettings, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getEdgeClusterSubInterfaceSettings, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'CLUSTER_DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'update-cluster-sub-interfaces'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'CLUSTER_DETAIL' }]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
     getEdgesPortStatus: build.query<EdgeNodesPortsInfo, RequestPayload>({
       queryFn: async ({ payload }, _queryApi, _extraOptions, fetchWithBQ) => {
-        const { edgeIds } = payload as { edgeIds: EdgeSerialNumber[] }
+        const { edgeIds, includeLags = false } = payload as {
+          edgeIds: EdgeSerialNumber[]
+          includeLags?: boolean
+        }
         const result = {} as EdgeNodesPortsInfo
 
         for(let edgeId of edgeIds) {
@@ -990,7 +1024,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           const edgeLagList = await fetchWithBQ({ ...edgeLagListReq, body: {} })
           tmp.push(...((edgeLagList.data as TableResult<EdgeLagStatus>).data))
           // filter ports
-          result[edgeId] = convertToEdgePortInfo(tmp, true)
+          result[edgeId] = convertToEdgePortInfo(tmp, !includeLags)
         }
 
         return { data: result }
@@ -1144,6 +1178,8 @@ export const {
   useGetEdgeClusterQuery,
   usePatchEdgeClusterNetworkSettingsMutation,
   useGetEdgeClusterNetworkSettingsQuery,
+  usePatchEdgeClusterSubInterfaceSettingsMutation,
+  useGetEdgeClusterSubInterfaceSettingsQuery,
   useGetEdgesPortStatusQuery,
   useLazyGetEdgesPortStatusQuery,
   useGetEdgeFeatureSetsQuery,

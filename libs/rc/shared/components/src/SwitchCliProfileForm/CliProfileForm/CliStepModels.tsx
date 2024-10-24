@@ -4,13 +4,15 @@ import { Col, Checkbox, Form, Input, Row, Space, Typography } from 'antd'
 import _                                                      from 'lodash'
 import { useIntl }                                            from 'react-intl'
 
-import { Button, cssStr, StepsForm, useStepFormContext }                   from '@acx-ui/components'
+import { Button, cssStr, StepsForm, Tooltip, useStepFormContext }          from '@acx-ui/components'
 import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
 import { useGetProfilesQuery, useGetSwitchConfigProfileTemplateListQuery } from '@acx-ui/rc/services'
 import {
   checkObjectNotExists,
+  CliTemplateVariable,
   SwitchProfileModel,
   TableResult,
+  getSwitchModel,
   useConfigTemplateQueryFnSwitcher,
   whitespaceOnlyRegExp,
   ICX_MODELS_MODULES
@@ -23,12 +25,6 @@ import { profilesPayload } from './'
 
 import type { CheckboxValueType } from 'antd/es/checkbox/Group'
 
-export enum VariableType {
-  ADDRESS = 'ADDRESS',
-  RANGE = 'RANGE',
-  STRING = 'STRING'
-}
-
 type IcxModel = Record<string, Record<string, string[][]>>
 
 interface IcxModelFamily {
@@ -40,6 +36,7 @@ export function CliStepModels () {
   const { $t } = useIntl()
   const params = useParams()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
 
   const { form, editMode } = useStepFormContext()
 
@@ -52,8 +49,20 @@ export function CliStepModels () {
 
   const [count, setCount] = useState(0)
   const [filteredModelFamily, setFilteredModelFamily] = useState([] as CheckboxValueType[])
+  const [appliedModels, setAppliedModels] = useState([] as string[])
 
-  const allFamilyModels = transformIcxModels(ICX_MODELS_MODULES)
+  const getAllFamilyModel = (isSupport8200AV: boolean) => {
+    let allFamilyModel = transformIcxModels(ICX_MODELS_MODULES)
+    if (!isSupport8200AV) {
+      allFamilyModel = allFamilyModel.map(family => ({
+        ...family,
+        models: family.models.filter(model =>
+          model !== 'ICX8200-24PV' && model !== 'ICX8200-C08PFV') }))
+    }
+    return allFamilyModel
+  }
+
+  const allFamilyModels = getAllFamilyModel(isSupport8200AV)
   const allModels:string[] = allFamilyModels.map((m) => m.models).flat()
 
   const existingProfileNameList = profiles?.data?.filter(
@@ -61,9 +70,20 @@ export function CliStepModels () {
   ).map(t => t.name) ?? []
 
   useEffect(() => {
+    const { variables } = form.getFieldsValue(true)
+    const appliedSerialNumbers = (variables as CliTemplateVariable[])
+      ?.filter(v => v?.switchVariables)
+      ?.map(v => v?.switchVariables?.map(
+        switchVariable => switchVariable?.serialNumbers
+      ).flat()).flat() ?? []
+    const modelList = _.uniq(
+      appliedSerialNumbers.map(serial => getSwitchModel(serial as string))
+    ) as string[]
+
     const allFamily = Object.keys(ICX_MODELS_MODULES)
     form.setFieldValue('selectedFamily', allFamily)
     setFilteredModelFamily(allFamily)
+    setAppliedModels(modelList)
     setCount(form.getFieldValue('models')?.length)
   }, [])
 
@@ -77,8 +97,11 @@ export function CliStepModels () {
       ? [
         ...selected,
         ...getVisibleModelList(allFamilyModels, filteredModelFamily)]
-      : selected.filter((m: string) =>
-        !getVisibleModelList(allFamilyModels, filteredModelFamily).includes(m))
+      : selected.filter((m: string) => {
+        const visibleModelList = getVisibleModelList(allFamilyModels, filteredModelFamily)
+        const removeableModelList = _.difference(visibleModelList, appliedModels)
+        return !removeableModelList.includes(m)
+      })
     const updateSelected = _.uniq(selectedModels)
 
     form.setFieldValue('models', updateSelected)
@@ -149,18 +172,20 @@ export function CliStepModels () {
       </Col>
       <Col span={16}>
         <Space style={{
-          display: 'flex', justifyContent: 'space-between', marginBottom: '12px'
+          display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '12px'
         }}>
           {$t({ defaultMessage: '{count} Models selected' }, { count })}
           <Space>
             <Button
               type='link'
+              size='small'
               disabled={checkAllSelected()}
               onClick={() => onSelectAllModels(true)}>
               {$t({ defaultMessage: 'Select All' })}
             </Button>
             <Button
               type='link'
+              size='small'
               disabled={
                 !getVisibleModelList(allFamilyModels, filteredModelFamily)?.length
                 || !checkAllSelected()
@@ -180,11 +205,20 @@ export function CliStepModels () {
             }}>
             {
               allModels.map(model =>
-                <Checkbox
-                  value={model}
-                  key={model}
-                  style={{ display: checkModelOptionVisiable(model, filteredModelFamily) }}
-                >{model}</Checkbox>
+                <Tooltip
+                  title={appliedModels.includes(model)
+                  // eslint-disable-next-line max-len
+                    ? $t({ defaultMessage: 'This switch model is already selected for variable customization in the next step.' })
+                    : ''}
+                  key={`${model}-tip`}
+                >
+                  <Checkbox
+                    value={model}
+                    key={model}
+                    disabled={appliedModels.includes(model)}
+                    style={{ display: checkModelOptionVisiable(model, filteredModelFamily) }}
+                  >{model}</Checkbox>
+                </Tooltip>
               )
             }
           </UI.FamilyModelsGroup>}

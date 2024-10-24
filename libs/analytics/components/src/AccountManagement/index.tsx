@@ -3,12 +3,14 @@ import { createContext } from 'react'
 import { useIntl } from 'react-intl'
 
 import { PageHeader, Tabs }           from '@acx-ui/components'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
+import { DevelopersTab }       from '../Developers'
+import { useWebhooks }         from '../Developers/Webhooks'
 import { useOnboardedSystems } from '../OnboardedSystems'
 import { Support }             from '../Support'
 import { useUsers }            from '../Users'
-import { useWebhooks }         from '../Webhooks'
 
 export enum AccountManagementTabEnum {
   ONBOARDED_SYSTEMS = 'onboarded',
@@ -18,7 +20,9 @@ export enum AccountManagementTabEnum {
   RESOURCE_GROUPS = 'resourceGroups',
   LICENSES = 'license',
   SCHEDULES = 'schedules',
-  WEBHOOKS = 'webhooks'
+  WEBHOOKS = 'webhooks',
+  APPLICATION_TOKENS = 'applicationTokens',
+  DEVELOPERS = 'developers/applicationTokens'
 }
 
 interface Tab {
@@ -71,13 +75,20 @@ const useTabs = (): Tab[] => {
     title: $t({ defaultMessage: 'Schedules' }),
     url: '/analytics/admin/schedules'
   }
+  const developersTab = {
+    key: AccountManagementTabEnum.DEVELOPERS,
+    title: $t({ defaultMessage: 'Developers' }),
+    component: <DevelopersTab />
+  }
   const webhooksTab = {
     key: AccountManagementTabEnum.WEBHOOKS,
     ...useWebhooks()
   }
+  const isJwtEnabled = useIsSplitOn(Features.RUCKUS_AI_JWT_TOGGLE)
+
   return [
     onboardedSystemsTab, usersTab, labelsTab, resourceGroupsTab, supportTab,
-    licenseTab, schedulesTab, webhooksTab
+    licenseTab, schedulesTab, isJwtEnabled ? developersTab : webhooksTab
   ]
 }
 

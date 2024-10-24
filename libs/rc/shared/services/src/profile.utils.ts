@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { defineMessage } from 'react-intl'
 
 import { showActionModal } from '@acx-ui/components'
@@ -15,7 +17,9 @@ export function doProfileDelete<T> (
   entityName: string,
   entityValue: string | undefined,
   instances: { fieldName: keyof T, fieldText: string }[],
-  callback: () => Promise<void>
+  callback: () => Promise<void>,
+  extraContent?: ReactNode | undefined
+
 ) {
   // eslint-disable-next-line max-len
   const disabledActionMessage = getDisabledActionMessage(selectedRows, instances, getIntl().$t({ defaultMessage: 'delete' }))
@@ -28,7 +32,8 @@ export function doProfileDelete<T> (
         action: 'DELETE',
         entityName: entityName,
         entityValue: entityValue,
-        numOfEntities: selectedRows.length
+        numOfEntities: selectedRows.length,
+        extraContent: extraContent ? extraContent : undefined
       },
       onOk: callback
     })

@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { Form, Input, InputNumber, Select, Space, Switch } from 'antd'
 import { DefaultOptionType }                               from 'antd/lib/select'
 import { FormattedMessage, useIntl }                       from 'react-intl'
-import { useParams }                                       from 'react-router-dom'
 
 import { cssStr, Tooltip }                     from '@acx-ui/components'
 import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
@@ -67,6 +66,8 @@ export function LanPortSettings (props: {
   isTrunkPortUntaggedVlanEnabled?: boolean,
   readOnly?: boolean,
   useVenueSettings?: boolean,
+  venueId?: string,
+  serialNumber?: string
 }) {
   const { $t } = useIntl()
   const {
@@ -79,11 +80,12 @@ export function LanPortSettings (props: {
     isDhcpEnabled,
     isTrunkPortUntaggedVlanEnabled,
     readOnly,
-    useVenueSettings
+    useVenueSettings,
+    venueId,
+    serialNumber
   } = props
 
   const [ drawerVisible, setDrawerVisible ] = useState(false)
-  const { venueId, serialNumber } = useParams()
   const form = Form.useFormInstance()
   const lan = form?.getFieldValue('lan')?.[index]
 
@@ -134,7 +136,8 @@ export function LanPortSettings (props: {
     useGetEthernetPortProfileViewDataListQuery({
       payload: {
         sortField: 'name',
-        sortOrder: 'ASC'
+        sortOrder: 'ASC',
+        pageSize: 1000
       }
     }, {
       skip: isTemplate || !isEthernetPortProfileEnabled,
@@ -170,8 +173,8 @@ export function LanPortSettings (props: {
   // AP level
   const { data: apEthPortSettings, isLoading: isApEthPortSettingsLoading } =
     useGetEthernetPortProfileSettingsByApPortIdQuery({
-      params: { venueId, serialNumber, portId: index as unknown as string }
-    }, { skip: isTemplate || !isEthernetPortProfileEnabled || !serialNumber })
+      params: { venueId, serialNumber, portId: lan?.portId }
+    }, { skip: isTemplate || !isEthernetPortProfileEnabled || !serialNumber || !venueId })
 
   useEffect(() => {
     if (!isApEthPortSettingsLoading && apEthPortSettings) {
