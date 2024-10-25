@@ -14,146 +14,137 @@ import {
   PolicyType,
   useTableQuery
 }                                                                  from '@acx-ui/rc/utils'
-import { Path, TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { SwitchScopes }                                            from '@acx-ui/types'
-import { filterByAccess, hasPermission }                           from '@acx-ui/user'
+import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { SwitchScopes }                                 from '@acx-ui/types'
+import { filterByAccess, hasPermission }                from '@acx-ui/user'
 
 const FlexibleAuthenticationTable = () => {
   const { $t } = useIntl()
-  const params = useParams()
   const basePath: Path = useTenantLink('')
   const navigate = useNavigate()
   const [deleteFlexAuthenticationProfile] = useDeleteFlexAuthenticationProfileMutation()
 
   const tableQuery = useTableQuery({
     useQuery: useGetFlexAuthenticationProfilesQuery,
-    defaultPayload: {},
+    defaultPayload: {
+      filters: {}
+    },
     sorter: {
-      sortField: 'name',
+      sortField: 'profileName',
       sortOrder: 'ASC'
     },
     search: {
-      searchTargetFields: ['name']
-    },
-    option: {
-      skip: true //TODO
+      searchTargetFields: ['profileName']
     }
   })
 
-  const columns: TableProps<FlexibleAuthentication>['columns'] = [
-    {
-      title: $t({ defaultMessage: 'Name' }),
-      key: 'profileName',
-      dataIndex: 'profileName',
-      searchable: true,
-      sorter: true,
-      defaultSortOrder: 'ascend',
-      render: (_, row) => { //TODO
-        return row.profileId ?
-          <TenantLink to={getPolicyDetailsLink({
-            type: PolicyType.FLEX_AUTH,
-            oper: PolicyOperation.DETAIL,
-            policyId: row.profileId
-          })}>
-            {row.profileName}
-          </TenantLink>
-          : row.profileName
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Type' }),
-      key: 'authenticationType',
-      dataIndex: 'authenticationType',
-      filterable: true,
-      sorter: true,
-      render: (_, { authenticationType }) => authenticationType
+  const columns: TableProps<FlexibleAuthentication>['columns'] = [{
+    title: $t({ defaultMessage: 'Name' }),
+    key: 'profileName',
+    dataIndex: 'profileName',
+    searchable: true,
+    sorter: true,
+    defaultSortOrder: 'ascend',
+    render: (_, row) => {
+      return row.id ?
+        <TenantLink to={getPolicyDetailsLink({
+          type: PolicyType.FLEX_AUTH,
+          oper: PolicyOperation.DETAIL,
+          policyId: row.id
+        })}>
+          {row.profileName}
+        </TenantLink>
+        : row.profileName
     }
-  ]
+  },
+  {
+    title: $t({ defaultMessage: 'Type' }),
+    key: 'authenticationType',
+    dataIndex: 'authenticationType',
+    filterable: true,
+    sorter: true,
+    render: (_, { authenticationType }) => authenticationType
+  }]
 
-  const rowActions: TableProps<FlexibleAuthentication>['rowActions'] = [
-    {
-      scopeKey: [SwitchScopes.UPDATE],
-      visible: (selectedRows) => selectedRows.length === 1,
-      label: $t({ defaultMessage: 'Edit' }),
-      onClick: ([selectedRow]) => {
-        navigate({
-          ...basePath,
-          pathname: `${basePath.pathname}/` + getPolicyDetailsLink({
-            type: PolicyType.FLEX_AUTH,
-            oper: PolicyOperation.EDIT,
-            policyId: selectedRow.profileId || ''
-          })
+  const rowActions: TableProps<FlexibleAuthentication>['rowActions'] = [{
+    scopeKey: [SwitchScopes.UPDATE],
+    visible: (selectedRows) => selectedRows.length === 1,
+    label: $t({ defaultMessage: 'Edit' }),
+    onClick: ([selectedRow]) => {
+      navigate({
+        ...basePath,
+        pathname: `${basePath.pathname}/` + getPolicyDetailsLink({
+          type: PolicyType.FLEX_AUTH,
+          oper: PolicyOperation.EDIT,
+          policyId: selectedRow.id || ''
         })
-      }
-    },
-    {
-      scopeKey: [SwitchScopes.DELETE],
-      label: $t({ defaultMessage: 'Delete' }),
-      onClick: (rows, clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Profile' }),
-            entityValue: rows.length === 1 ? rows[0].profileName : undefined,
-            numOfEntities: rows.length
-          },
-          onOk: () => {
-            deleteFlexAuthenticationProfile({ params, payload: rows.map(item => item.profileId) })
-              .then(clearSelection)
-          }
-        })
-      }
+      })
     }
-  ]
+  },
+  {
+    scopeKey: [SwitchScopes.DELETE],
+    label: $t({ defaultMessage: 'Delete' }),
+    onClick: ([selectedRow], clearSelection) => {
+      showActionModal({
+        type: 'confirm',
+        customContent: {
+          action: 'DELETE',
+          entityName: $t({ defaultMessage: 'Profile' }),
+          entityValue: selectedRow ? selectedRow.profileName : undefined
+        },
+        onOk: () => {
+          deleteFlexAuthenticationProfile({ params: { profileId: selectedRow?.id } })
+            .then(clearSelection)
+        }
+      })
+    }
+  }]
 
   const isSelectionVisible = hasPermission({
     scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE]
   })
 
-  return (
-    <>
-      <PageHeader
-        title={
-          $t(
-            { defaultMessage: 'Flexible Authentication ({count})' },
-            { count: tableQuery.data?.totalCount }
-          )
+  return (<>
+    <PageHeader
+      title={
+        $t(
+          { defaultMessage: 'Flexible Authentication ({count})' },
+          { count: tableQuery.data?.totalCount }
+        )
+      }
+      breadcrumb={[
+        { text: $t({ defaultMessage: 'Network Control' }) },
+        {
+          text: $t({ defaultMessage: 'Policies & Profiles' }),
+          link: getPolicyListRoutePath(true)
         }
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          }
-        ]}
+      ]}
 
-        extra={filterByAccess([<TenantLink
-          scopeKey={[SwitchScopes.CREATE]}
-          to={getPolicyRoutePath({
-            type: PolicyType.FLEX_AUTH,
-            oper: PolicyOperation.CREATE
-          })}
-        >
-          <Button type='primary'>{$t({ defaultMessage: 'Add Flexible Authentication' })}</Button>
-        </TenantLink>
-        ])}
+      extra={filterByAccess([<TenantLink
+        scopeKey={[SwitchScopes.CREATE]}
+        to={getPolicyRoutePath({
+          type: PolicyType.FLEX_AUTH,
+          oper: PolicyOperation.CREATE
+        })}
+      >
+        <Button type='primary'>{$t({ defaultMessage: 'Add Flexible Authentication' })}</Button>
+      </TenantLink>
+      ])}
+    />
+    <Loader states={[tableQuery]}>
+      <Table
+        rowKey='id'
+        columns={columns}
+        rowActions={filterByAccess(rowActions)}
+        rowSelection={isSelectionVisible && { type: 'radio' }}
+        dataSource={tableQuery.data?.data}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        onFilterChange={tableQuery.handleFilterChange}
+        enableApiFilter={true}
       />
-      <Loader states={[tableQuery]}>
-        <Table
-          rowKey='id'
-          columns={columns}
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={isSelectionVisible && { type: 'checkbox' }}
-          dataSource={tableQuery.data?.data}
-          pagination={tableQuery.pagination}
-          onChange={tableQuery.handleTableChange}
-          onFilterChange={tableQuery.handleFilterChange}
-          enableApiFilter={true}
-        />
-      </Loader>
-    </>
-  )
+    </Loader>
+  </>)
 }
 
 export default FlexibleAuthenticationTable

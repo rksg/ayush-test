@@ -346,7 +346,7 @@ function useCardData (): PolicyCardData[] {
       type: PolicyType.FLEX_AUTH,
       categories: [RadioCardCategory.SWITCH],
       // eslint-disable-next-line max-len
-      totalCount: useGetFlexAuthenticationProfilesQuery({ params, payload: {} }, { skip: true }).data?.totalCount, //TODO
+      totalCount: useGetFlexAuthenticationProfilesQuery({ params, payload: {} }, { skip: !isSwitchFlexAuthEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.FLEX_AUTH, oper: PolicyOperation.LIST })),
       disabled: !isSwitchFlexAuthEnabled

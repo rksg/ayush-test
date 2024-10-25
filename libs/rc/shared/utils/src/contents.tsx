@@ -267,8 +267,14 @@ export const EditPortMessages = {
     defaultMessage: `Changing the port settings may result in loss of connectivity and
       communication issues to your APs. Do you want to continue with these changes?`
   }),
+  ONLY_SUPPORT_FW_ABOVE_10010F: defineMessage({
+    defaultMessage: 'The firmware version on the selected switches is at least 10.0.10f or higher.'
+  }),
   UNTAGGED_PORT_CANNOT_ENABLE_FLEX_AUTH: defineMessage({
     defaultMessage: 'This port is Untagged port. So can not enable Flexible Authentication.'
+  }),
+  CLOUD_PORT_CANNOT_ENABLE_FLEX_AUTH: defineMessage({
+    defaultMessage: 'Authentication cannot be enabled on the uplink port because it will result in switch losing connection to RUCKUS One.'
   }),
   SWITCH_LEVEL_AUTH_NOT_ENABLED: defineMessage({
     defaultMessage: 'Before enable Flexible Authentication on port, please go to Edit Switch page to apply global level\'s Auth Default VLAN.'

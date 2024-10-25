@@ -1,16 +1,22 @@
 import { Form } from 'antd'
-// import { useIntl }        from 'react-intl'
 
-import { FlexibleAuthenticationForm } from '@acx-ui/rc/components'
-import { FlexibleAuthentication }     from '@acx-ui/rc/utils'
+import { FlexibleAuthenticationForm }              from '@acx-ui/rc/components'
+import { useAddFlexAuthenticationProfileMutation } from '@acx-ui/rc/services'
+import { FlexibleAuthentication }                  from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }              from '@acx-ui/react-router-dom'
 
 export const AddFlexibleAuthentication = () => {
-  // const { $t } = useIntl()
+  const navigate = useNavigate()
+  const basePath = useTenantLink('/policies/')
   const [form] = Form.useForm()
+  const [addFlexAuthenticationProfile] = useAddFlexAuthenticationProfileMutation()
 
   const onFinish = async (data: FlexibleAuthentication) => {
-    console.log(data) // eslint-disable-line no-console
     try {
+      await addFlexAuthenticationProfile({
+        payload: data
+      }).unwrap()
+      navigate(`${basePath.pathname}/flexibleAuthentication/list`)
 
     } catch (error) {
       // eslint-disable-next-line no-console

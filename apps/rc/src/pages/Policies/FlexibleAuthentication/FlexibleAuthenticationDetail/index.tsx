@@ -2,7 +2,10 @@ import { Card, Space, Typography } from 'antd'
 import { useIntl }                 from 'react-intl'
 
 import { Button, Loader, PageHeader, SummaryCard, Table, TableProps } from '@acx-ui/components'
-import { useGetFlexAuthenticationProfilesQuery }                      from '@acx-ui/rc/services'
+import {
+  useGetFlexAuthenticationProfilesQuery,
+  useGetFlexAuthenticationProfileAppliedTargetsQuery
+}                      from '@acx-ui/rc/services'
 import {
   FlexibleAuthentication,
   PolicyOperation,
@@ -23,9 +26,8 @@ const FlexibleAuthenticationDetail = () => {
 
   const { profileDetail } = useGetFlexAuthenticationProfilesQuery(
     { payload: {
-      filters: { profileId: [params.policyId] }
+      filters: { id: [params.policyId] }
     } }, {
-      skip: true,
       selectFromResult: ( { data, isLoading, isFetching } ) => {
         return {
           profileDetail: data?.data?.[0],
@@ -37,17 +39,20 @@ const FlexibleAuthenticationDetail = () => {
   )
 
   const tableQuery = useTableQuery({
-    useQuery: useGetFlexAuthenticationProfilesQuery,
-    defaultPayload: {},
+    useQuery: useGetFlexAuthenticationProfileAppliedTargetsQuery,
+    apiParams: { profileId: params.policyId ?? '' },
+    defaultPayload: {
+      filters: { id: [params.policyId] }
+    },
     sorter: {
-      sortField: 'name',
+      sortField: 'profileName',
       sortOrder: 'ASC'
     },
     search: {
-      searchTargetFields: ['name']
+      searchTargetFields: ['profileName']
     },
     option: {
-      skip: true //TODO
+      skip: !params.policyId
     }
   })
 
@@ -108,6 +113,7 @@ const FlexibleAuthenticationDetail = () => {
   {
     title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
     key: 'venue',
+    filterable: true,
     dataIndex: 'venue'
   },
   {

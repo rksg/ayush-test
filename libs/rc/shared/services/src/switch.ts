@@ -1583,20 +1583,45 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     }),
     // eslint-disable-next-line max-len
     getFlexAuthenticationProfiles: build.query<TableResult<FlexibleAuthentication>, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         const req = createHttpRequest(
-          SwitchUrlsInfo.getFlexAuthenticationProfiles, params, customHeaders.v1002
+          SwitchUrlsInfo.getFlexAuthenticationProfiles, params, customHeaders.v1
         )
         return {
-          ...req
+          ...req,
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'Switch', id: 'FlexAuthProfile' }]
     }),
+    // eslint-disable-next-line max-len
+    getFlexAuthenticationProfileAppliedTargets: build.query<TableResult<FlexibleAuthentication>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getFlexAuthenticationProfileAppliedTargets, params, customHeaders.v1
+        )
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    addFlexAuthenticationProfile: build.mutation<FlexibleAuthentication, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.addFlexAuthenticationProfile, params, customHeaders.v1
+        )
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'FlexAuthProfile' }]
+    }),
     updateFlexAuthenticationProfile: build.mutation<FlexibleAuthentication, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
-          SwitchUrlsInfo.updateFlexAuthenticationProfile, params, customHeaders.v1002
+          SwitchUrlsInfo.updateFlexAuthenticationProfile, params, customHeaders.v1
         )
         return {
           ...req,
@@ -1608,7 +1633,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     deleteFlexAuthenticationProfile: build.mutation<FlexibleAuthentication, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(
-          SwitchUrlsInfo.deleteFlexAuthenticationProfile, params, customHeaders.v1002
+          SwitchUrlsInfo.deleteFlexAuthenticationProfile, params, customHeaders.v1
         )
         return {
           ...req
@@ -1619,7 +1644,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     getSwitchesAuthentication: build.query<FlexibleAuthentication, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(
-          SwitchUrlsInfo.getSwitchesAuthentication, params, customHeaders.v1002
+          SwitchUrlsInfo.getSwitchesAuthentication, params, customHeaders.v1
         )
         return {
           ...req
@@ -1629,7 +1654,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     getSwitchAuthentication: build.query<FlexibleAuthentication, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(
-          SwitchUrlsInfo.getSwitchAuthentication, params, customHeaders.v1002
+          SwitchUrlsInfo.getSwitchAuthentication, params, customHeaders.v1
         )
         return {
           ...req
@@ -1640,7 +1665,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     updateSwitchAuthentication: build.mutation<FlexibleAuthentication, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
-          SwitchUrlsInfo.updateSwitchAuthentication, params, customHeaders.v1002
+          SwitchUrlsInfo.updateSwitchAuthentication, params, customHeaders.v1
         )
         return {
           ...req,
@@ -1903,6 +1928,10 @@ export const {
   useDownloadSwitchsCSVMutation,
   useBatchDeleteProfilesMutation,
   useGetFlexAuthenticationProfilesQuery,
+  useLazyGetFlexAuthenticationProfilesQuery,
+  useGetFlexAuthenticationProfileAppliedTargetsQuery,
+  useLazyGetFlexAuthenticationProfileAppliedTargetsQuery,
+  useAddFlexAuthenticationProfileMutation,
   useUpdateFlexAuthenticationProfileMutation,
   useDeleteFlexAuthenticationProfileMutation,
   useGetSwitchAuthenticationQuery,

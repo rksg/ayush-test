@@ -642,6 +642,11 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/flexibleAuthentication/profiles/query',
     newApi: true
   },
+  getFlexAuthenticationProfileAppliedTargets: {
+    method: 'post',
+    url: '/flexibleAuthentication/profile/:profileId/appliedTargets',
+    newApi: true
+  },
   updateFlexAuthenticationProfile: {
     method: 'put',
     url: '/flexibleAuthentication/profile',

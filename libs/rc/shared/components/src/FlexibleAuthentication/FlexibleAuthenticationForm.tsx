@@ -9,12 +9,14 @@ import {
   StepsForm,
   Tooltip
 } from '@acx-ui/components'
+// import { useGetFlexAuthenticationProfilesQuery } from '@acx-ui/rc/services'
 import {
+  // checkObjectNotExists,
   FlexibleAuthentication,
   FlexAuthMessages,
   getPolicyListRoutePath,
   getPolicyRoutePath,
-  normalNameRegExp,
+  whitespaceOnlyRegExp,
   PolicyOperation,
   PolicyType,
   validateVlanExceptReservedVlanId
@@ -41,6 +43,7 @@ import {
 
 export const FlexibleAuthenticationForm = (props: {
   editMode?: boolean
+  data?: FlexibleAuthentication
   form: FormInstance
   onFinish: (values: FlexibleAuthentication) => Promise<boolean | void>
 
@@ -69,13 +72,25 @@ export const FlexibleAuthenticationForm = (props: {
     , , authDefaultVlan, authFailAction, authTimeoutAction
   ] = authFormWatchValues
 
+  // const { authenticationProfiles } = useGetFlexAuthenticationProfilesQuery(
+  //   { payload: {
+  //     pageSize: 10000
+  //   } }, {
+  //     selectFromResult: ( { data, isLoading, isFetching } ) => {
+  //       return {
+  //         profileDetail: data?.data,
+  //         isLoading,
+  //         isFetching
+  //       }
+  //     }
+  //   }
+  // )
+
   useEffect(() => {
-    if (editMode) { // TODO
-      form.setFieldsValue({
-        authDefaultVlan: 99
-      })
+    if (editMode && props.data) {
+      form.setFieldsValue(props.data)
     }
-  }, [])
+  }, [editMode, props.data])
 
   return (
     <>
@@ -112,12 +127,18 @@ export const FlexibleAuthenticationForm = (props: {
             states={[]}
           >
             <Form.Item
-              name='name'
+              name='profileName'
               label={$t({ defaultMessage: 'Profile Name' })}
               validateFirst
               rules={[
                 { required: true },
-                { validator: (_, value) => normalNameRegExp(value) }
+                { validator: (_, value) => whitespaceOnlyRegExp(value) }
+                // TODO
+                // {
+                //   validator: (_, value) => checkObjectNotExists(
+                //     authenticationProfiles, value, $t({ defaultMessage: 'Profile' }, 'profileName')
+                //   )
+                // }
               ]}
               children={
                 <Input maxLength={64} />
@@ -157,15 +178,6 @@ export const FlexibleAuthenticationForm = (props: {
                 }
               />
             </Space>}
-            {/* <Form.Item
-                name='changeAuthOrder'
-                label={$t({ defaultMessage: 'Change Authentication Order' })}
-                children={
-                  <Switch
-                    disabled={getAuthfieldDisabled('changeAuthOrder', authFormWatchValues)}
-                  />
-                }
-              /> */}
             <Form.Item
               name='dot1xPortControl'
               label={$t({ defaultMessage: 'Port Control' })}
@@ -287,11 +299,19 @@ export const FlexibleAuthenticationForm = (props: {
               hidden={shouldHideAuthField('guestVlan', authFormWatchValues)}
               validateFirst
               rules={[{
-                validator: (_:unknown, value: string) =>
-                  validateVlanExceptReservedVlanId(value)
+                validator: (_:unknown, value: string) => {
+                  if (!value) {//TODO
+                    return Promise.resolve()
+                  }
+                  return validateVlanExceptReservedVlanId(value)
+                }
               },
-              { validator: (_:unknown, value: string) =>
-                validateVlanDiffFromAuthDefault(value, authDefaultVlan)
+              { validator: (_:unknown, value: string) => {
+                if (!value) {
+                  return Promise.resolve()
+                }
+                return validateVlanDiffFromAuthDefault(value, authDefaultVlan)
+              }
               }]}
               children={
                 <Input

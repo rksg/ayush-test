@@ -8,7 +8,9 @@ import {
   FlexAuthMessages,
   FlexAuthVlanLabel,
   FlexibleAuthentication,
-  SwitchPortViewModel
+  SwitchDefaultVlan,
+  SwitchPortViewModel,
+  PortSettingModel
 } from '@acx-ui/rc/utils'
 import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
@@ -25,7 +27,7 @@ import {
 import * as UI from './styledComponents'
 
 /* eslint-disable max-len */
-export interface AggregatePortsData {
+export interface AggregatePortSettings {
   taggedVlans: Record<string, string[]>
   untaggedVlan: Record<string, string[]>
   defaultVlan: Record<string, number | undefined>
@@ -41,18 +43,69 @@ export interface AggregatePortsData {
   switchLevelAuthDefaultVlan: Record<string, number | undefined>
 }
 
-export const initAggregatePortsData: AggregatePortsData = {
-  taggedVlans: {},
-  untaggedVlan: {},
-  defaultVlan: {},
-  guestVlan: {},
-  restrictedVlan: {},
-  criticalVlan: {},
-  switchLevelAuthDefaultVlan: {},
-  hasMultipleValue: [],
-  selectedPortIdentifier: {},
-  enableAuthPorts: {},
-  profileAuthDefaultVlan: {}
+export const aggregatePortSettings = (
+  portsSetting: PortSettingModel[],
+  switchesDefaultVlan?: SwitchDefaultVlan[],
+  hasMultipleValue?: string[]
+): AggregatePortSettings => {
+  // console.log('portsSetting: ', portsSetting)
+  const initialData: AggregatePortSettings = {
+    taggedVlans: {},
+    untaggedVlan: {},
+    defaultVlan: {},
+    guestVlan: {},
+    restrictedVlan: {},
+    criticalVlan: {},
+    switchLevelAuthDefaultVlan: {},
+    hasMultipleValue: [],
+    selectedPortIdentifier: {},
+    enableAuthPorts: {},
+    profileAuthDefaultVlan: {}
+  }
+
+  // const addUniqueToArray = (array: Array<string | Number>, item: string | Number) =>
+  //   array.includes(item as typeof array[number]) ? array : [...array, item]
+
+  return portsSetting.reduce((result, {
+    switchMac, port, taggedVlans = [], untaggedVlan = '',
+    switchLevelAuthDefaultVlan, guestVlan, profileAuthDefaultVlan, enableAuthPorts,
+    restrictedVlan, criticalVlan
+  }) => {
+    const index = switchMac as string
+    const untagged = untaggedVlan as string
+
+    if (taggedVlans) {
+      result.taggedVlans[index] = _.uniq(
+        (result.taggedVlans[index] || []).concat(taggedVlans)
+      )
+    }
+
+    if (untaggedVlan) {
+      result.untaggedVlan[index] = _.uniq([
+        ...(result.untaggedVlan[index] || []),
+        untagged
+      ])
+    }
+
+    result.switchLevelAuthDefaultVlan[index] = switchLevelAuthDefaultVlan
+    result.guestVlan[index] = guestVlan
+    result.restrictedVlan[index] = restrictedVlan
+    result.criticalVlan[index] = criticalVlan
+    result.enableAuthPorts[index] = enableAuthPorts ?? []
+    result.hasMultipleValue = hasMultipleValue ?? []
+    result.profileAuthDefaultVlan[index] = profileAuthDefaultVlan
+
+    result.defaultVlan[index] = switchesDefaultVlan
+      ?.find((s) => s.switchId === switchMac)?.defaultVlanId
+
+    result.selectedPortIdentifier[index] = _.uniq([
+      ...(result.selectedPortIdentifier[index] || []),
+      port
+    ])
+
+    return result
+
+  }, initialData)
 }
 
 export const renderAuthProfile = (data?: FlexibleAuthentication) => {
@@ -86,7 +139,7 @@ export const renderAuthProfile = (data?: FlexibleAuthentication) => {
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Restricted VLAN' })}
-        children={data?.restrictedVlan}
+        children={data?.restrictedVlan ?? noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Timeout Action' })}
@@ -97,60 +150,71 @@ export const renderAuthProfile = (data?: FlexibleAuthentication) => {
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Critical VLAN' })}
-        children={data?.criticalVlan}
+        children={data?.criticalVlan ?? noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Guest VLAN' })}
-        children={data?.guestVlan}
+        children={data?.guestVlan ?? noDataDisplay}
       />
     </UI.Descriptions>
   </UI.Card>
 }
 
 export const getUnionValuesByKey = (
-  key: keyof AggregatePortsData,
-  aggregateData: AggregatePortsData
+  key: keyof AggregatePortSettings,
+  aggregateData: AggregatePortSettings
 ) => {
   const values = Object.values(aggregateData[key] ?? {})
   return _.uniq(_.flatten(values))
 }
 
 export const getFlexAuthButtonStatus = (props: {
-  aggregateData: AggregatePortsData,
-  isMultipleEdit: boolean,
-  portVlansCheckbox: boolean,
+  aggregateData: AggregatePortSettings,
+  form: FormInstance,
   hasMultipleValue: string[],
-  form: FormInstance
+  isCloudPort: boolean,
+  isMultipleEdit: boolean,
+  isFirmwareAbove10010f: boolean,
+  portVlansCheckbox: boolean
 }) => {
-  const { aggregateData, isMultipleEdit, portVlansCheckbox, hasMultipleValue, form } = props
-  // const isSwitchLevelAuthNotEnabled = switchLevelAuthVlans.length !== switches?.length
-  const groupedUntaggedVlansBySwitch = aggregateData.untaggedVlan
-  const switchIds = Object.keys(groupedUntaggedVlansBySwitch ?? {})
+  const {
+    isMultipleEdit, isCloudPort, isFirmwareAbove10010f,
+    aggregateData, portVlansCheckbox, hasMultipleValue, form
+  } = props
 
   const checkUntaggedPortMismatch = (id: string) => {
     const defaultVlan = aggregateData?.defaultVlan?.[id]
     const untaggedVlan = getCurrentVlansByKey({
       key: 'untaggedVlan', aggregateData, isMultipleEdit, portVlansCheckbox, hasMultipleValue, form
     })
-
-    // console.log('untaggedVlan: ', untaggedVlan)
-    // console.log('defaultVlan: ', defaultVlan)
-
     return untaggedVlan && Number(untaggedVlan) !== Number(defaultVlan)
   }
 
+  const aggregateUntaggedVlan = aggregateData.untaggedVlan
+  const switchIds = Object.keys(aggregateUntaggedVlan ?? {})
   const isUntaggedPort = switchIds.some(id => checkUntaggedPortMismatch(id))
 
-  // TODO: uplink, fw
-  // if () {
-  // }
-  if (isUntaggedPort) {
+  if (!isFirmwareAbove10010f) {
+    return 'ONLY_SUPPORT_FW_ABOVE_10010F'
+  } else if (isCloudPort) {
+    return 'CLOUD_PORT_CANNOT_ENABLE_FLEX_AUTH'
+  } else if (isUntaggedPort) {
     const isFlexAuthEnabled = form.getFieldValue('flexibleAuthenticationEnabled')
+    const relatedFields = [
+      'flexibleAuthenticationEnabled', 'authenticationProfileId', 'profileAuthDefaultVlan',
+      'authenticationType', 'changeAuthOrder', 'dot1xPortControl', 'authDefaultVlan',
+      'restrictedVlan', 'criticalVlan', 'authFailAction', 'authTimeoutAction', 'guestVlan'
+    ]
     if (isFlexAuthEnabled) {
       form.setFieldsValue({
         ...form.getFieldsValue(),
-        flexibleAuthenticationEnabledCheckbox: false,
-        authenticationProfileIdCheckbox: false
+        flexibleAuthenticationEnabled: false,
+        ...(relatedFields.reduce((result, key) => {
+          return {
+            ...result,
+            [`${key}Checkbox`]: false
+          }
+        }, {}))
       })
     }
     return 'UNTAGGED_PORT_CANNOT_ENABLE_FLEX_AUTH'
@@ -162,25 +226,26 @@ export const getAppliedProfile = (
   profiles: FlexibleAuthentication[],
   profileId: string
 ) => {
-  return profiles.find(p => p.profileId === profileId)
+  return profiles.find(p => p.id === profileId)
 }
 
 export const checkAllSelectedPortsMatch = (
   selectedPorts: SwitchPortViewModel[],
-  aggregateData: AggregatePortsData
+  aggregateData: AggregatePortSettings
 ) => {
-  const selectedPortsMatchAuthPorts = selectedPorts.filter(port => {
-    const sortedSelectedPorts = (aggregateData.selectedPortIdentifier[port.switchMac] || []).sort()
-    const sortedAuthPorts = (aggregateData.enableAuthPorts[port.switchMac] || []).sort()
-    return _.isEqual(sortedSelectedPorts, sortedAuthPorts)
+  const isAllPortsMatch = selectedPorts.every(port => {
+    const { selectedPortIdentifier, enableAuthPorts } = aggregateData
+    const sortedSelectedPorts = (selectedPortIdentifier[port.switchMac] || []).sort()
+    const sortedAuthPorts = (enableAuthPorts[port.switchMac] || []).sort()
+    return _.intersection(sortedSelectedPorts, sortedAuthPorts)?.length > 0
   })
 
-  return selectedPortsMatchAuthPorts.length === selectedPorts.length
+  return isAllPortsMatch
 }
 
 export const getCurrentVlansByKey = (props: {
-  key: keyof AggregatePortsData,
-  aggregateData: AggregatePortsData,
+  key: keyof AggregatePortSettings,
+  aggregateData: AggregatePortSettings,
   isMultipleEdit: boolean,
   portVlansCheckbox: boolean,
   hasMultipleValue: string[],
@@ -216,10 +281,10 @@ export const validateApplyProfile = (
   value: string,
   authProfiles: FlexibleAuthentication[],
   selectedPorts: SwitchPortViewModel[],
-  aggregateData: AggregatePortsData
+  aggregateData: AggregatePortSettings
 ) => {
   const { $t } = getIntl()
-  const profile = authProfiles.find(p => p.profileId === value)
+  const profile = authProfiles.find(p => p.id === value)
 
   const allSelectedPortsMatch = checkAllSelectedPortsMatch(selectedPorts, aggregateData)
   const guestVlans = getUnionValuesByKey('guestVlan', aggregateData)
@@ -248,7 +313,7 @@ export const validateApplyProfile = (
 
   if (!allSelectedPortsMatch) {
     const isDefaultVlanMismatch = profileDefaultVlans.length > 1 || !profileDefaultVlans.includes(profile?.authDefaultVlan)
-    const isGuestVlanMismatch = guestVlans.length > 1 || !guestVlans.includes(profile?.guestVlan)
+    const isGuestVlanMismatch = profile?.guestVlan && (guestVlans.length > 1 || !guestVlans.includes(profile?.guestVlan))
 
     if (isDefaultVlanMismatch) {
       return Promise.reject(
@@ -301,7 +366,7 @@ export const validateApplyProfile = (
 
 export const validateVlanDiffFromSwitchDefault = (
   value: string,
-  aggregateData: AggregatePortsData
+  aggregateData: AggregatePortSettings
 ) => {
   const { $t } = getIntl()
   const switchDefaultVlans = getUnionValuesByKey('defaultVlan', aggregateData)
@@ -315,7 +380,7 @@ export const validateVlanDiffFromSwitchDefault = (
 
 export const validateVlanDiffFromSwitchAuthDefault = (
   value: string,
-  aggregateData: AggregatePortsData
+  aggregateData: AggregatePortSettings
 ) => {
   const { $t } = getIntl()
   const switchAuthDefaultVlans = getUnionValuesByKey('switchLevelAuthDefaultVlan', aggregateData)
@@ -344,13 +409,13 @@ export const validateVlanDiffFromSwitchAuthDefault = (
 export const validateVlanConsistencyWithGuestVlan = (
   value: string,
   selectedPorts: SwitchPortViewModel[],
-  aggregateData: AggregatePortsData
+  aggregateData: AggregatePortSettings
 ) => {
   const { $t } = getIntl()
   const allSelectedPortsMatch = checkAllSelectedPortsMatch(selectedPorts, aggregateData)
   const guestVlans = getUnionValuesByKey('guestVlan', aggregateData)
 
-  if (!allSelectedPortsMatch && (guestVlans.length > 1 || !guestVlans.includes(Number(value)))) {
+  if (value && !allSelectedPortsMatch && (guestVlans.length > 1 || !guestVlans.includes(Number(value)))) {
     return Promise.reject(
       $t(FlexAuthMessages.CANNOT_SET_DIFF_GUEST_VLAN, { applyGuestVlan: 0 }) //TODO
     )

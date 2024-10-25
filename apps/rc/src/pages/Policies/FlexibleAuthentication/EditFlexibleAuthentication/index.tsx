@@ -1,17 +1,45 @@
 import { Form } from 'antd'
-// import { useIntl }        from 'react-intl'
 
-import { FlexibleAuthenticationForm } from '@acx-ui/rc/components'
-import { FlexibleAuthentication }     from '@acx-ui/rc/utils'
+import { FlexibleAuthenticationForm }          from '@acx-ui/rc/components'
+import {
+  useGetFlexAuthenticationProfilesQuery,
+  useUpdateFlexAuthenticationProfileMutation
+}                      from '@acx-ui/rc/services'
+import { FlexibleAuthentication }                from '@acx-ui/rc/utils'
+import { useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 const EditFlexibleAuthentication = () => {
-  // const { $t } = useIntl()
+  const navigate = useNavigate()
+  const basePath = useTenantLink('/policies/')
+
   const [form] = Form.useForm()
+  const params = useParams()
+  const [ updateFlexAuthenticationProfile ] = useUpdateFlexAuthenticationProfileMutation()
+
+  const { profileDetail } = useGetFlexAuthenticationProfilesQuery(
+    { payload: {
+      filters: { id: [params.policyId] }
+    } }, {
+      selectFromResult: ( { data, isLoading, isFetching } ) => {
+        return {
+          profileDetail: data?.data?.[0],
+          isLoading,
+          isFetching
+        }
+      }
+    }
+  )
 
   const onFinish = async (data: FlexibleAuthentication) => {
-    console.log(data) // eslint-disable-line no-console
     try {
-
+      await updateFlexAuthenticationProfile({
+        payload: {
+          ...data,
+          id: profileDetail?.id,
+          profileId: profileDetail?.id
+        }
+      }).unwrap()
+      navigate(`${basePath.pathname}/flexibleAuthentication/list`)
     } catch (error) {
       // eslint-disable-next-line no-console
       console.log(error)
@@ -23,6 +51,7 @@ const EditFlexibleAuthentication = () => {
       form={form}
       editMode={true}
       onFinish={onFinish}
+      data={profileDetail}
     />
   )
 }

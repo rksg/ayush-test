@@ -937,8 +937,9 @@ export enum VlanModalType {
 }
 
 export interface FlexibleAuthentication {
-	profileId?: string,
-	profileName?: string,
+  id?: string //TODO
+	profileId?: string
+	profileName?: string
 	flexibleAuthenticationEnabled?: boolean
 	authenticationType: string
 	changeAuthOrder: boolean

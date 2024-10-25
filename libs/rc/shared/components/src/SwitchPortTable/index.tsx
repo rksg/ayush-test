@@ -7,11 +7,14 @@ import { useIntl } from 'react-intl'
 import { Table, TableProps, Tooltip, Loader } from '@acx-ui/components'
 import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import {
+  useGetFlexAuthenticationProfilesQuery,
+  useSwitchListQuery,
   useLazyGetSwitchVlanQuery,
   useLazyGetSwitchVlanUnionByVenueQuery,
   useSwitchPortlistQuery
 } from '@acx-ui/rc/services'
 import {
+  FlexibleAuthentication,
   getSwitchModel,
   isOperationalSwitch,
   SwitchPortViewModel,
@@ -26,10 +29,12 @@ import { SwitchScopes }                  from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
 import { getIntl }                       from '@acx-ui/utils'
 
-import { SwitchLagDrawer } from '../SwitchLagDrawer'
+import { SwitchLagDrawer }      from '../SwitchLagDrawer'
+import { defaultSwitchPayload } from '../SwitchTable'
 
-import { EditPortDrawer } from './editPortDrawer'
-import * as UI            from './styledComponents'
+import { EditPortDrawer }   from './editPortDrawer'
+import { mockAuthProfiles } from './mockData'
+import * as UI              from './styledComponents'
 
 const STACK_PORT_FIELD = 'usedInFormingStack'
 
@@ -42,6 +47,7 @@ export function SwitchPortTable (props: {
   const { serialNumber, venueId, tenantId, switchId } = useParams()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchV6AclEnabled = useIsSplitOn(Features.SUPPORT_SWITCH_V6_ACL)
+  const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
 
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortViewModel[])
   const [drawerVisible, setDrawerVisible] = useState(false)
@@ -50,6 +56,28 @@ export function SwitchPortTable (props: {
 
   const [getSwitchVlan] = useLazyGetSwitchVlanQuery()
   const [getSwitchesVlan] = useLazyGetSwitchVlanUnionByVenueQuery()
+
+  const { authenticationProfiles } = useGetFlexAuthenticationProfilesQuery({
+    payload: {}
+  }, {
+    skip: !isSwitchFlexAuthEnabled,
+    selectFromResult: ( { data } ) => ({
+      authenticationProfiles: data?.data
+    })
+  })
+
+  const vid = venueId || switchDetail?.venueId
+  const { data: switchList } = useSwitchListQuery({
+    params: { tenantId },
+    payload: {
+      ...defaultSwitchPayload,
+      pageSize: 10000,
+      filters: { venueId: [vid] }
+    },
+    enableRbac: isSwitchRbacEnabled
+  }, {
+    skip: !isSwitchRbacEnabled || !vid || !isSwitchFlexAuthEnabled
+  })
 
   const vlanFilterOptions = Array.isArray(vlanList) ? vlanList.map(v => ({
     key: v.vlanId.toString(), value: v.vlanId.toString()
@@ -351,7 +379,7 @@ export function SwitchPortTable (props: {
       setVisible={setLagDrawerVisible}
     />}
 
-    { drawerVisible && <EditPortDrawer
+    { drawerVisible && <EditPortDrawer //TODO: should call authenticationProfiles API when using EditPortDrawer
       key='edit-port'
       visible={drawerVisible}
       setDrawerVisible={setDrawerVisible}
@@ -359,6 +387,8 @@ export function SwitchPortTable (props: {
       isMultipleEdit={selectedPorts?.length > 1}
       isVenueLevel={isVenueLevel}
       selectedPorts={selectedPorts}
+      switchList={switchList?.data}
+      authProfiles={(authenticationProfiles || mockAuthProfiles) as FlexibleAuthentication[]}
     />}
 
   </Loader>
