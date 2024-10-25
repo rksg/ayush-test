@@ -12,7 +12,7 @@ export const userLogout = () => {
     ?.forEach(s => localStorage.removeItem(s))
 
   Object.keys(sessionStorage)
-    ?.filter(s => s.includes('pagesize'))
+    ?.filter(s => s.includes('pagesize') || s.includes('-filter'))
     ?.forEach(s => sessionStorage.removeItem(s))
 
   if (Boolean(get('IS_MLISA_SA'))) {

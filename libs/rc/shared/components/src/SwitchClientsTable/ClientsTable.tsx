@@ -65,6 +65,7 @@ export function ClientsTable (props: {
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const portLinkEnabled = useIsSplitOn(Features.SWITCH_PORT_HYPERLINK)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
 
   const [editLagModalVisible, setEditLagModalVisible] = useState(false)
   const [editLag, setEditLag] = useState([] as Lag[])
@@ -335,6 +336,7 @@ export function ClientsTable (props: {
           onFilterChange={handleFilterChange}
           enableApiFilter={true}
           rowKey='id'
+          filterPersistence={enabledUXOptFeature}
         />
         {editLagModalVisible && <SwitchLagModal
           isEditMode={true}

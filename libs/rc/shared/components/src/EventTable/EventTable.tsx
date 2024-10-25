@@ -79,6 +79,7 @@ export const EventTable = ({
   const [current, setCurrent] = useState<Event>()
   const isEdgeEnabled = useIsEdgeReady()
   const isRogueEventsFilterEnabled = useIsSplitOn(Features.ROGUE_EVENTS_FILTER)
+  const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
   const { exportCsv, disabled } = useExportCsv<Event>(tableQuery)
   const [addExportSchedules] = useAddExportSchedulesMutation()
 
@@ -288,6 +289,7 @@ export const EventTable = ({
       enableApiFilter={true}
       iconButton={!isCustomRole && hasCrossVenuesPermission()
         ? tableIconButtonConfig : {} as IconButtonProps}
+      filterPersistence={enabledUXOptFeature}
     />
     {current && <TimelineDrawer
       title={defineMessage({ defaultMessage: 'Event Details' })}
