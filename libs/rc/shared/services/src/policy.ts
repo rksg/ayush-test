@@ -3364,6 +3364,17 @@ export const policyApi = basePolicyApi.injectEndpoints({
           }
         }
       }
+    }),
+    generateClientServerCertificates: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.generateClientServerCertificate, params, defaultCertTempVersioningHeaders)
+        return{
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'ServerCertificate', id: 'LIST' }]
     })
   })
 })
@@ -3602,5 +3613,6 @@ export const {
   useGetServerCertificatesQuery,
   useUpdateServerCertificateMutation,
   useLazyDownloadServerCertificateQuery,
-  useLazyDownloadServerCertificateChainsQuery
+  useLazyDownloadServerCertificateChainsQuery,
+  useGenerateClientServerCertificatesMutation
 } = policyApi

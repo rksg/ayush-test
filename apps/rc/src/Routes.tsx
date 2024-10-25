@@ -32,6 +32,7 @@ import {
   RogueAPDetectionDetailView,
   RogueAPDetectionForm,
   RogueAPDetectionTable,
+  ServerClientCertificateForm,
   SoftGreForm,
   SyslogDetailView,
   SyslogForm,
@@ -1367,6 +1368,16 @@ function PolicyRoutes () {
         // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.DETAIL })}
           element={<CertificateTemplateDetail/>}
+        />
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.SERVER_CERTIFICATES, oper: PolicyOperation.CREATE })}
+          element={
+            // eslint-disable-next-line max-len
+            <PolicyAuthRoute policyType={PolicyType.SERVER_CERTIFICATES} oper={PolicyOperation.CREATE}>
+              <ServerClientCertificateForm/>
+            </PolicyAuthRoute>
+          }
         />
       </>
       }
