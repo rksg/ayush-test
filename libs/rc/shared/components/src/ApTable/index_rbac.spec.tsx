@@ -24,7 +24,8 @@ import { setUserProfile, getUserProfile } from '@acx-ui/user'
 
 import {
   apCompatibilities,
-  getApGroupsList
+  getApGroupsList,
+  mockVenueOptions
 } from './__test__/fixtures'
 
 import { ApTable } from '.'
@@ -112,6 +113,10 @@ describe('Aps', () => {
       rest.get(
         CommonUrlsInfo.getVenue.url,
         (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json({ ...mockVenueOptions }))
       )
     )
   })
