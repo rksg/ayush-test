@@ -121,7 +121,8 @@ function ForwardingRuleForm (props: ForwardingRuleFormProps) {
   return (
     <Form layout='vertical'
       form={form}
-      onFinish={(data: MdnsProxyForwardingRule) => {
+      onFinish={() => {
+        const data = form.getFieldsValue(true)
         setRule(data)
         form.resetFields()
       }}>
