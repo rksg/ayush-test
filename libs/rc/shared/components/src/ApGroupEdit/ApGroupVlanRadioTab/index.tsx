@@ -254,7 +254,7 @@ export const useGetVLANPoolPolicyInstance = (skipQuery: boolean) => {
   })
 
   const vlanPoolPayload = {
-    fields: ['name', 'id'],
+    fields: ['name', 'id', 'vlanMembers'],
     sortField: 'name',
     sortOrder: 'ASC',
     page: 1,
