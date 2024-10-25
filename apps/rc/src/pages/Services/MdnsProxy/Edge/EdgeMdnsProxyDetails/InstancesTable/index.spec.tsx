@@ -45,8 +45,8 @@ describe('Edge mDNS InstancesTable', () => {
     )
 
     expect(await screen.findByText('Instances (2)')).toBeVisible()
-    expect(screen.getByRole(/Edge Cluster 1/)).toBeVisible()
-    expect(screen.getByRole(/Edge Cluster 3/)).toBeVisible()
+    expect(screen.getByRole('row', { name: /Edge Cluster 1/ })).toBeVisible()
+    expect(screen.getByRole('row', { name: /Edge Cluster 3/ })).toBeVisible()
   })
 
   it('should render correctly when no instances', async () => {
