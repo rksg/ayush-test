@@ -30,6 +30,7 @@ jest.mock('@acx-ui/utils', () => ({
 }))
 
 const createPinPath = '/:tenantId/services/personalIdentityNetwork/create'
+const editPinPath = '/:tenantId/services/personalIdentityNetwork/:serviceId/edit'
 const { mockVenueOptions } = VenueFixtures
 const {
   mockPersonaGroup,
@@ -105,70 +106,88 @@ describe('PersonalIdentityNetworkFormContext', () => {
     )
   })
 
-  it('should get data correctly', async () => {
-    const { result } = renderHook(() => useContext(PersonalIdentityNetworkFormContext), {
-      wrapper: ({ children }) => <Provider>
-        <PersonalIdentityNetworkFormDataProvider
-          venueId='venue-id'
-        >
-          {children}
-        </PersonalIdentityNetworkFormDataProvider>
-      </Provider>,
-      route: { params, path: createPinPath }
-    })
-    await waitFor(() => expect(result.current.venueOptions?.length).toBe(2))
-    expect(result.current.venueOptions?.[0].label).toBe(mockVenueOptions.data[0].name)
-    expect(result.current.venueOptions?.[1].label).toBe(mockVenueOptions.data[2].name)
-    expect(result.current.venueOptions?.[0].value).toBe(mockVenueOptions.data[0].id)
-    expect(result.current.venueOptions?.[1].value).toBe(mockVenueOptions.data[2].id)
-    await waitFor(() =>
-      expect(result.current.personaGroupId).toBe(mockPropertyConfigs.personaGroupId))
-    await waitFor(() =>
-      expect(result.current.personaGroupData?.id).toBe(mockPersonaGroup.id))
-    await waitFor(() =>
-      expect(result.current.dpskData?.id).toBe(mockDpsk.id))
-    await waitFor(() =>
-      expect(result.current.clusterOptions?.length).toBe(5))
-    expect(result.current.clusterOptions?.[0].label).toBe(mockEdgeClusterList.data[0].name)
-    expect(result.current.clusterOptions?.[0].value).toBe(mockEdgeClusterList.data[0].clusterId)
-    await waitFor(() =>
-      expect(result.current.tunnelProfileOptions?.length)
-        .toBe(pinTunnelData.data.length))
-    expect(result.current.tunnelProfileOptions?.[0].label)
-      .toBe(pinTunnelData.data[0].name)
-    expect(result.current.tunnelProfileOptions?.[0].value)
-      .toBe(pinTunnelData.data[0].id)
-    await waitFor(() =>
-      expect(result.current.networkOptions?.length)
-        .toBe(mockDeepNetworkList.response.length))
-    expect(result.current.networkOptions?.[0].label).toBe(mockDeepNetworkList.response[0].name)
-    expect(result.current.networkOptions?.[0].value).toBe(mockDeepNetworkList.response[0].id)
-    await waitFor(() =>
-      expect(result.current.switchList?.length)
-        .toBe(mockPinSwitchInfoData.distributionSwitches.length +
+  describe('edit mode', () => {
+    it('should get data correctly', async () => {
+      const { result } = renderHook(() => useContext(PersonalIdentityNetworkFormContext), {
+        wrapper: ({ children }) => <Provider>
+          <PersonalIdentityNetworkFormDataProvider
+            venueId='venue-id'
+          >
+            {children}
+          </PersonalIdentityNetworkFormDataProvider>
+        </Provider>,
+        route: { params, path: editPinPath }
+      })
+      await waitFor(() => expect(result.current.venueOptions?.length).toBe(1))
+      expect(result.current.venueOptions?.[0].label).toBe(mockVenueOptions.data[2].name)
+      await waitFor(() =>
+        expect(result.current.personaGroupId).toBe(mockPropertyConfigs.personaGroupId))
+      await waitFor(() =>
+        expect(result.current.personaGroupData?.id).toBe(mockPersonaGroup.id))
+      await waitFor(() =>
+        expect(result.current.dpskData?.id).toBe(mockDpsk.id))
+      await waitFor(() =>
+        expect(result.current.clusterOptions?.length).toBe(5))
+      expect(result.current.clusterOptions?.[0].label).toBe(mockEdgeClusterList.data[0].name)
+      expect(result.current.clusterOptions?.[0].value).toBe(mockEdgeClusterList.data[0].clusterId)
+      await waitFor(() =>
+        expect(result.current.tunnelProfileOptions?.length)
+          .toBe(pinTunnelData.data.length))
+      expect(result.current.tunnelProfileOptions?.[0].label)
+        .toBe(pinTunnelData.data[0].name)
+      expect(result.current.tunnelProfileOptions?.[0].value)
+        .toBe(pinTunnelData.data[0].id)
+      await waitFor(() =>
+        expect(result.current.networkOptions?.length)
+          .toBe(mockDeepNetworkList.response.length))
+      expect(result.current.networkOptions?.[0].label).toBe(mockDeepNetworkList.response[0].name)
+      expect(result.current.networkOptions?.[0].value).toBe(mockDeepNetworkList.response[0].id)
+      await waitFor(() =>
+        expect(result.current.switchList?.length)
+          .toBe(mockPinSwitchInfoData.distributionSwitches.length +
           mockPinSwitchInfoData.accessSwitches.length))
+    })
+
+    it('should get name correctly', async () => {
+      const { result } = renderHook(() => useContext(PersonalIdentityNetworkFormContext), {
+        wrapper: ({ children }) => <Provider>
+          <PersonalIdentityNetworkFormDataProvider
+            venueId='venue-id'
+          >
+            {children}
+          </PersonalIdentityNetworkFormDataProvider>
+        </Provider>,
+        route: { params, path: editPinPath }
+      })
+      await waitFor(() =>
+        expect(result.current.getVenueName('mock_venue_3')).toBe('Mock Venue 3'))
+      await waitFor(() =>
+        expect(result.current.getClusterName('clusterId_1')).toBe('Edge Cluster 1'))
+      await waitFor(() =>
+        expect(result.current.getDhcpName('1')).toBe('TestDhcp-1'))
+      await waitFor(() =>
+        expect(result.current.getTunnelProfileName('tunnelProfileId1')).toBe('tunnelProfile1'))
+      await waitFor(() =>
+        expect(result.current.getNetworksName(['1'])).toContain('Network 1'))
+
+      expect(result.current.getVenueName('mock_venue_1')).toBe('')
+    })
   })
 
-  it('should get name correctly', async () => {
+  it('should filter out venue already bound with existing PIN in create mode', async () => {
     const { result } = renderHook(() => useContext(PersonalIdentityNetworkFormContext), {
       wrapper: ({ children }) => <Provider>
-        <PersonalIdentityNetworkFormDataProvider
-          venueId='venue-id'
-        >
+        <PersonalIdentityNetworkFormDataProvider>
           {children}
         </PersonalIdentityNetworkFormDataProvider>
       </Provider>,
       route: { params, path: createPinPath }
     })
+
     await waitFor(() =>
-      expect(result.current.getVenueName('mock_venue_1')).toBe('Mock Venue 1'))
-    await waitFor(() =>
-      expect(result.current.getClusterName('clusterId_1')).toBe('Edge Cluster 1'))
-    await waitFor(() =>
-      expect(result.current.getDhcpName('1')).toBe('TestDhcp-1'))
-    await waitFor(() =>
-      expect(result.current.getTunnelProfileName('tunnelProfileId1')).toBe('tunnelProfile1'))
-    await waitFor(() =>
-      expect(result.current.getNetworksName(['1'])).toContain('Network 1'))
+      expect(result.current.getVenueName('mock_venue_3')).toBe('Mock Venue 3'))
+
+    expect(result.current.getVenueName('mock_venue_1')).toBe('')
+    expect(result.current.getVenueName('mock_venue_2')).toBe('')
   })
 })
