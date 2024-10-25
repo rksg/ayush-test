@@ -5,9 +5,8 @@ import { useParams }   from 'react-router-dom'
 import { useVenuesListQuery } from '@acx-ui/rc/services'
 
 export function VenueSelector (props: {
-  placeHolder?: string,
+  defaultValue?: string,
 } & SelectProps) {
-  const { placeHolder } = props
   const { tenantId } = useParams()
 
   const { venueFilterOptions } = useVenuesListQuery({
@@ -28,6 +27,6 @@ export function VenueSelector (props: {
     []
 
   return (
-    <Select placeholder={placeHolder} options={venueOptions} />
+    <Select options={venueOptions} {...props} />
   )
 }

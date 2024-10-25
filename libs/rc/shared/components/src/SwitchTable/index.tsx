@@ -670,7 +670,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
             name={'venueId'}
             label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
             rules={[{ required: true }]}
-            children={<VenueSelector />} />
+            children={<VenueSelector defaultValue={params.venueId} />} />
         </>
         }
       </ImportFileDrawer>

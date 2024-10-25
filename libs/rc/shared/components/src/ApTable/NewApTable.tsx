@@ -827,7 +827,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
           name={'venueId'}
           label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
           rules={[{ required: true }]}
-          children={<VenueSelector />}
+          children={<VenueSelector defaultValue={params.venueId} />}
         />
       </ImportFileDrawer>
       {!isEdgeCompatibilityEnabled && <ApCompatibilityDrawer
