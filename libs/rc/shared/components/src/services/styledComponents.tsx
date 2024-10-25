@@ -9,8 +9,18 @@ export const ToolTipStyle = createGlobalStyle`
       color:var(--acx-primary-white)
     }
 
+
+    .ant-table-thead > tr > th.ant-table-column-has-sorters {
+      & .ant-table-column-sorters span.ant-table-column-sorter {
+        & span.ant-table-column-sorter-inner .anticon svg  {
+          fill: var(--acx-primary-white)
+        }
+      }
+    }
+    
     .ant-table-tbody > tr.ant-table-row:hover > td,
-    .ant-table-tbody > tr > td.ant-table-cell-row-hover{
+    .ant-table-thead > tr > td.ant-table-cell-row-hover,
+    .ant-table-tbody > tr > td.ant-table-cell-row-hover {
       background-color:var(--acx-neutrals-70) !important;
     }
 
