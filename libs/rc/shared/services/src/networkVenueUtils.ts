@@ -1050,9 +1050,13 @@ export const updateNetworkVenueFn = (isTemplate: boolean = false) : QueryFn<Comm
       }
       const updateNetworkVenueQuery = await fetchWithBQ(updateNetworkVenueInfo)
 
+      console.log(newPayload, oldPayload)
+
       if (enableRbac) {
         // per ap groups settings and skip the all ap groups setting
-        if ((!newPayload?.isAllApGroups && newPayload?.apGroups && oldPayload?.apGroups) || !oldPayload) {
+        if ((!newPayload?.isAllApGroups && newPayload?.apGroups && oldPayload?.apGroups)
+          || (!oldPayload && newPayload) // new payload and update the ap groups settings
+        ) {
           const {
             updateApGroups,
             addApGroups,
