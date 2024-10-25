@@ -34,6 +34,10 @@ export function AupSettings () {
     setDisplayFileOption(formInstance.getFieldValue('useAupFile'))
   }, [formInstance.getFieldValue('useAupFile')])
 
+  useEffect(() => {
+    formInstance.validateFields()
+  }, [fileLoading])
+
   const validateBeforeUpload = ( file: File | RcFile) => {
     let errorMsg = validateFileSize(file)
     if (errorMsg) {
@@ -77,7 +81,7 @@ export function AupSettings () {
         formInstance.setFieldValue('aupFileLocation', response.url)
         formInstance.setFieldValue('useAupFile', true)
         formInstance.setFieldValue('aupPlainText', '')
-        formInstance.setFieldValue('fileLoading', false)
+        setFileLoading(false)
         formInstance.validateFields()
       })
   }
@@ -90,7 +94,7 @@ export function AupSettings () {
   }
 
   const validateFileLoading = async ( ) => {
-    if (formInstance.getFieldValue('fileLoading') === true) {
+    if (fileLoading === true) {
       return Promise.reject($t({ defaultMessage: 'File upload is in progress' }))
     } else {
       return Promise.resolve()
@@ -207,7 +211,6 @@ export function AupSettings () {
           showUploadList={false}
           beforeUpload={validateBeforeUpload}
           customRequest={async (options) => {
-            formInstance.setFieldValue('fileLoading', true)
             setFileLoading(true)
             const { file } = options
             await fileUpload(file)
@@ -260,10 +263,6 @@ export function AupSettings () {
     </Form.Item>
 
     <Form.Item name={'aupFileLocation'} hidden={true}>
-      <Input/>
-    </Form.Item>
-
-    <Form.Item name={'fileLoading'} hidden={true}>
       <Input/>
     </Form.Item>
 
