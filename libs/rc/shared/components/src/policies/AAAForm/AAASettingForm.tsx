@@ -53,12 +53,12 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
   const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
   const { isTemplate } = useConfigTemplate()
   const supportRadsec = isRadsecFeatureEnabled && !isTemplate
-  const [enableSecondaryServer, type, tlsEnabled, ocspValidationEnabled, clientCertId ]
+  const [enableSecondaryServer, type, tlsEnabled, ocspValidationEnabled] //, clientCertId ]
     = [useWatch('enableSecondaryServer'),
       useWatch('type'),
       useWatch<boolean>(['radSecOptions', 'tlsEnabled']),
-      useWatch<boolean>(['radSecOptions', 'ocspValidationEnabled']),
-      useWatch(['radSecOptions', 'clientCertificateId'])]
+      useWatch<boolean>(['radSecOptions', 'ocspValidationEnabled'])]
+  // ,useWatch(['radSecOptions', 'clientCertificateId'])]
 
   const [showCertificateAuthorityDrawer, setShowCertificateAuthorityDrawer] = useState(false)
   const [showCertificateDrawer, setShowCertificateDrawer] = useState(false)

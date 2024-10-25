@@ -7,7 +7,8 @@ import { FormattedMessage, useIntl } from 'react-intl'
 import { Tooltip }                                                                from '@acx-ui/components'
 import { CertificateStatusType, getPolicyRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
 import { TenantLink }                                                             from '@acx-ui/react-router-dom'
-import * as UI                                                                    from './styledComponents'
+
+import * as UI from './styledComponents'
 
 export type CertificateToolTipProps = {
     visible: boolean,
