@@ -43,7 +43,8 @@ import {
   IncompatibleFeatureLevelEnum,
   NewTableResult,
   transferToTableResult,
-  MacRegistrationPool
+  MacRegistrationPool,
+  TxStatus
 } from '@acx-ui/rc/utils'
 import { baseNetworkApi }                      from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -335,14 +336,17 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          const { useCase, status } = msg
           const targetUseCase = 'ActivateWifiNetworkOnVenue'
-          await handleCallbackWhenActivityDone({
-            api,
-            activityData: msg,
-            useCase: targetUseCase,
-            callback: requestArgs.callback,
-            failedCallback: requestArgs.failedCallback
-          })
+          if (useCase === targetUseCase && status === TxStatus.SUCCESS) {
+            await handleCallbackWhenActivityDone({
+              api,
+              activityData: msg,
+              useCase: targetUseCase,
+              callback: requestArgs.callback,
+              failedCallback: requestArgs.failedCallback
+            })
+          }
         })
       }
     }),
@@ -393,14 +397,17 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          const { useCase, status } = msg
           const targetUseCase = 'DeactivateWifiNetworkOnVenue'
-          await handleCallbackWhenActivityDone({
-            api,
-            activityData: msg,
-            useCase: targetUseCase,
-            callback: requestArgs.callback,
-            failedCallback: requestArgs.failedCallback
-          })
+          if (useCase === targetUseCase && status === TxStatus.SUCCESS) {
+            await handleCallbackWhenActivityDone({
+              api,
+              activityData: msg,
+              useCase: targetUseCase,
+              callback: requestArgs.callback,
+              failedCallback: requestArgs.failedCallback
+            })
+          }
         })
       }
     }),
