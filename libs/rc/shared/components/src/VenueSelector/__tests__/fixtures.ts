@@ -1,28 +1,28 @@
 export const mockVenueOptions = {
-  fields: ['name', 'id', 'edges', 'country', 'city'],
+  fields: ['name', 'country', 'latitude', 'longitude', 'id'],
   totalCount: 3,
   page: 1,
   data: [
     {
       id: 'mock_venue_1',
       name: 'Mock Venue 1',
-      edges: 1,
-      country: 'TestCountry1',
-      city: 'TestCity1'
+      country: 'United States',
+      latitude: '37.4112751',
+      longitude: '-122.0191908'
     },
     {
       id: 'mock_venue_2',
       name: 'Mock Venue 2',
-      edges: 0,
-      country: 'TestCountry2',
-      city: 'TestCity2'
+      country: 'United States',
+      latitude: '38.4112751',
+      longitude: '-123.0191908'
     },
     {
       id: 'mock_venue_3',
       name: 'Mock Venue 3',
-      edges: 1,
-      country: 'TestCountry3',
-      city: 'TestCity3'
+      country: 'United States',
+      latitude: '39.4112751',
+      longitude: '-124.0191908'
     }
   ]
 }
