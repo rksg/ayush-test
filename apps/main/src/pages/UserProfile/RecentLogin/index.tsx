@@ -2,7 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps  }              from '@acx-ui/components'
 import { DateFormatEnum, formatter }               from '@acx-ui/formatter'
-import { useAdminLogsQuery }                       from '@acx-ui/rc/services'
+import { useAdminLogsOnlyQuery }                   from '@acx-ui/rc/services'
 import { AdminLog, CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
 import { noDataDisplay }                           from '@acx-ui/utils'
 
@@ -13,7 +13,7 @@ export function RecentLogin (props: { userEmail: string }) {
   const { userEmail } = props
 
   const tableQuery = useTableQuery({
-    useQuery: useAdminLogsQuery,
+    useQuery: useAdminLogsOnlyQuery,
     pagination: {
       pageSize: 5
     },

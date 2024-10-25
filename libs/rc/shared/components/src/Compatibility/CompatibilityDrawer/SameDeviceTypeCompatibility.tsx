@@ -40,6 +40,11 @@ export const SameDeviceTypeCompatibility = (props: SameDeviceTypeCompatibilityPr
 
   const defaultActiveKey = intersection(tabOrder, types)[0]
 
+  const allCompatibilityData = [
+    ...(data[CompatibilityDeviceEnum.AP] ?? []),
+    ...(data[CompatibilityDeviceEnum.EDGE] ?? [])
+  ]
+
   return <>
     <Form.Item>
       {description}
@@ -48,7 +53,7 @@ export const SameDeviceTypeCompatibility = (props: SameDeviceTypeCompatibilityPr
       (isApCompatibilitiesByModel?
         <ApCompatibilityDetailTable
           requirementOnly={props.compatibilityType === CompatibilityType.DEVICE}
-          data={data[CompatibilityDeviceEnum.AP] as IncompatibleFeature[]}
+          data={allCompatibilityData as IncompatibleFeature[]}
           venueId={props.venueId}
           apInfo={props.apInfo}
         />
