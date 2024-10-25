@@ -670,14 +670,22 @@ export function NetworkForm (props:{
     const removed: string[] = []
     const update: NetworkVenue[] = []
     const newVenueIds: string[] = []
+    const oldVenueIds = oldNetworkVenues?.map(oldNv => oldNv.venueId) ?? []
+
+    //console.log('newNetworkVenues: ', newNetworkVenues)
+    //console.log('oldNetworkVenues: ', oldNetworkVenues)
 
     if (newNetworkVenues?.length) {
       newNetworkVenues?.forEach(networkVenue => {
         if (!networkVenue.networkId) {
           networkVenue.networkId = networkId
+        }
+
+        const { networkId: curNetworkId, venueId } = networkVenue
+        if (!oldVenueIds.includes(venueId)) { // new networkVenue
           added.push(networkVenue)
           update.push(networkVenue)
-        } else {
+        } else { // networkVenue has existed
           newVenueIds.push(networkVenue.venueId!)
         }
       })
@@ -685,8 +693,8 @@ export function NetworkForm (props:{
 
     if (oldNetworkVenues?.length) {
       oldNetworkVenues?.forEach(networkVenue => {
-        const venueId = networkVenue.venueId!
-        if (networkVenue.networkId) {
+        const { venueId, networkId } = networkVenue
+        if (networkId && venueId) {
           if (!newVenueIds.includes(venueId)) {
             removed.push(venueId)
           } else if (newNetworkVenues?.length) {
@@ -704,6 +712,10 @@ export function NetworkForm (props:{
         }
       })
     }
+
+    //console.log('added: ', added)
+    //console.log('removed: ', removed)
+    //console.log('update: ', update)
 
     if (added.length) {
       const addNetworkVenueReqs = added.map((networkVenue) => {
@@ -747,7 +759,6 @@ export function NetworkForm (props:{
 
       await Promise.allSettled(updateNetworkVenueReqs)
     }
-
   }
 
   const processAddData = function (data: NetworkSaveData) {
