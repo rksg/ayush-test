@@ -7,7 +7,7 @@ import {
   ServiceType,
   getServiceDetailsLink,
   ServiceOperation,
-  MdnsProxyScopeData,
+  ApMdnsProxyScopeData,
   getServiceRoutePath,
   getServiceListRoutePath,
   filterByAccessForServicePolicyMutation,
@@ -29,7 +29,7 @@ export default function MdnsProxyDetail () {
       return null
     }
 
-    return data.scope.map((s: MdnsProxyScopeData) => {
+    return data.scope.map((s: ApMdnsProxyScopeData) => {
       return s.aps.map(ap => ap.serialNumber)
     }).flat()
   }
