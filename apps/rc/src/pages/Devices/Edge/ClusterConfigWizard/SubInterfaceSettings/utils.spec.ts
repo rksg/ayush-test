@@ -3,7 +3,7 @@ import {
   mockSubInterfaceSettingsFormType
 } from '../__tests__/fixtures'
 
-import { transformFromApiToFormData } from './types'
+import { transformFromApiToFormData } from './utils'
 
 describe('Type transformation', () => {
 
