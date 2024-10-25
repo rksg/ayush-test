@@ -1,5 +1,4 @@
-import { DefaultOptionType } from 'antd/lib/select'
-import _                     from 'lodash'
+import _ from 'lodash'
 
 import {
   CommonResult,
