@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
 import React, { useContext, useEffect, useState, useImperativeHandle, forwardRef, Ref } from 'react'
 
-import { FetchBaseQueryError }          from '@reduxjs/toolkit/dist/query'
-import { Badge, Divider, Form, Select } from 'antd'
-import _                                from 'lodash'
-import { defineMessage, useIntl }       from 'react-intl'
+import { FetchBaseQueryError }    from '@reduxjs/toolkit/dist/query'
+import { Badge, Divider, Form }   from 'antd'
+import _                          from 'lodash'
+import { defineMessage, useIntl } from 'react-intl'
 
 import {
   Table,
@@ -64,6 +64,7 @@ import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../ImportFileDr
 import { SwitchBlinkLEDsDrawer, SwitchInfo }               from '../SwitchBlinkLEDsDrawer'
 import { SwitchCliSession }                                from '../SwitchCliSession'
 import { useSwitchActions }                                from '../useSwitchActions'
+import { VenueSelector }                                   from '../VenueSelector'
 
 import {
   getGroupableConfig
@@ -557,10 +558,6 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     }
   }
 
-  const venueOptions = filterableKeys?.['venueId'] instanceof Array ?
-    filterableKeys?.['venueId'].map(item => ({ label: item.value, value: item.key })) :
-    []
-
   return <Loader states={[tableQuery]}>
     <div data-testid='switch-table'>
       <Table<SwitchRow>
@@ -673,7 +670,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
             name={'venueId'}
             label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
             rules={[{ required: true }]}
-            children={<Select options={venueOptions} />} />
+            children={<VenueSelector />} />
         </>
         }
       </ImportFileDrawer>
