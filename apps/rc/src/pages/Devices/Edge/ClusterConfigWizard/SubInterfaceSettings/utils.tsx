@@ -129,7 +129,10 @@ export const getSubInterfaceCompatibilityFields = () => {
   }] as SingleNodeDetailsField<SubInterfaceCompatibility>[]
 }
 
-const getInterfaceNameMap = (portsStatus: EdgeNodesPortsInfo, lagsStatus: EdgeNodesPortsInfo) => {
+export const getInterfaceNameMap = (
+  portsStatus: EdgeNodesPortsInfo,
+  lagsStatus: EdgeNodesPortsInfo
+) => {
   const allPortsAndLags = Object.entries(portsStatus).reduce((acc, [serial, ports]) => {
     acc[serial] = [...(acc[serial] || []), ...ports]
     return acc
