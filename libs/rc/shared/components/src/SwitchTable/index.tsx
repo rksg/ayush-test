@@ -664,14 +664,15 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
         onClose={() => setImportVisible(false)}
       >
         {isSwitchRbacEnabled &&
-        <>
+        <div style={{ display: params.venueId ? 'none' : 'block' }}>
           <Divider style={{ margin: '4px 0px 20px', background: cssStr('--acx-neutrals-30') }} />
           <Form.Item
             name={'venueId'}
             label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
             rules={[{ required: true }]}
+            initialValue={params.venueId}
             children={<VenueSelector defaultValue={params.venueId} />} />
-        </>
+        </div>
         }
       </ImportFileDrawer>
     </div>
