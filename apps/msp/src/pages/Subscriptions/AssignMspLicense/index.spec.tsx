@@ -163,6 +163,7 @@ const deviceAssignmentHistory =
       dateExpires: '2023-02-12 07:59:59Z',
       deviceSubType: 'ICX76',
       deviceType: 'MSP_APSW',
+      licenseType: 'APSW',
       id: 130469,
       mspEcTenantId: '3061bd56e37445a8993ac834c01e2710',
       mspTenantId: '3061bd56e37445a8993ac834c01e2710',
@@ -236,7 +237,7 @@ describe('AssignMspLicense', () => {
       return { data: assignmentHistory }
     })
     utils.useTableQuery = jest.fn().mockImplementation(() => {
-      return { data: { data: assignmentHistory } }
+      return { data: { data: deviceAssignmentHistory } }
     })
     jest.spyOn(services, 'useAddMspAssignmentMutation')
     jest.spyOn(services, 'useUpdateMspAssignmentMutation')

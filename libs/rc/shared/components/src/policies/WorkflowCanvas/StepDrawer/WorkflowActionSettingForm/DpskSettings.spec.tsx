@@ -16,6 +16,7 @@ import {
 import { DpskSettings } from './DpskSettings'
 
 const getPersonaList = jest.fn()
+const getDpsk = jest.fn()
 const getNetworkList = jest.fn()
 
 
@@ -34,8 +35,10 @@ describe('DpskSettings', () => {
       ),
       rest.get(
         DpskUrls.getDpsk.url,
-        (req, res, ctx) =>
-          res(ctx.json(mockDpskPool))
+        (req, res, ctx) => {
+          getDpsk()
+          return res(ctx.json(mockDpskPool))
+        }
       ),
       rest.post(CommonUrlsInfo.getVMNetworksList.url,
         (req, res, ctx) => {
@@ -44,6 +47,8 @@ describe('DpskSettings', () => {
         })
     )
   })
+
+  afterEach(() => jest.clearAllMocks())
 
   it('should render the form with default values', async () => {
     const { result: formRef } = renderHook(() => {
@@ -90,22 +95,44 @@ describe('DpskSettings', () => {
 
     await waitFor(() => expect(getPersonaList).toBeCalled())
 
-    // eslint-disable-next-line max-len
-    const qrCodeNotification = await screen.findByRole('checkbox', { name: /QR Code/ })
-    expect(qrCodeNotification).toBeChecked()
-
-    const smsNotification = await screen.findByRole('checkbox', { name: /SMS/ })
-    expect(smsNotification).toBeChecked()
-
-    const emailNotification = await screen.findByRole('checkbox', { name: /Email/ })
-    expect(emailNotification).toBeChecked()
-
     const dpskPoolName = await screen.findByText(mockDpskPool.name)
     expect(dpskPoolName).toBeVisible()
 
     // Test if the identityGroup is selected
     expect(await screen.findByText(mockPersonaGroupTableResult.content[0].name)).toBeInTheDocument()
     expect(await screen.findByText(mockPersonaTableResult.content[0].name)).toBeInTheDocument()
+  })
+
+  it('should render the form without provided values if identity group doesnt exist', async () => {
+    const { result: formRef } = renderHook(() => {
+      const [form] = Form.useForm<DpskActionContext>()
+      form.setFieldsValue({
+        identityGroupId: '1234',
+        identityId: mockPersonaTableResult.content[0].id,
+        qrCodeDisplay: true,
+        smsNotification: true,
+        emailNotification: true
+      })
+      return form
+    })
+
+    render(
+      <Provider>
+        <Form form={formRef.current}>
+          <DpskSettings/>
+        </Form>
+      </Provider>
+    )
+
+    await waitFor(() => expect(getPersonaList).toBeCalled())
+
+    expect(screen.queryByText(mockDpskPool.name)).toBeNull()
+
+    // Test if the identityGroup is selected
+    expect(screen.queryByText(mockPersonaGroupTableResult.content[0].name)).not.toBeInTheDocument()
+    expect(screen.queryByText(mockPersonaTableResult.content[0].name)).not.toBeInTheDocument()
+
+    expect(getDpsk).not.toHaveBeenCalled()
   })
 
   it('should render the component after identity group selected', async () => {

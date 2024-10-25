@@ -1,8 +1,9 @@
-/* eslint-disable max-len */
 import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/dist/query/react'
-import { cloneDeep }                               from 'lodash'
+/* eslint-disable max-len */
+import { cloneDeep } from 'lodash'
 
+import { MspEc, MspUrlsInfo }    from '@acx-ui/msp/utils'
 import {
   AAAPolicyType,
   AAAViewModalType,
@@ -17,11 +18,12 @@ import {
   onActivityMessageReceived,
   onSocketActivityChanged,
   transformNetwork,
-  NetworkRadiusSettings
+  NetworkRadiusSettings,
+  ConfigTemplateDriftsResponse
 } from '@acx-ui/rc/utils'
-import { baseConfigTemplateApi } from '@acx-ui/store'
-import { RequestPayload }        from '@acx-ui/types'
-import { createHttpRequest }     from '@acx-ui/utils'
+import { baseConfigTemplateApi }       from '@acx-ui/store'
+import { RequestPayload }              from '@acx-ui/types'
+import { batchApi, createHttpRequest } from '@acx-ui/utils'
 
 import { networkApi }    from '../network'
 import {
@@ -29,8 +31,9 @@ import {
   fetchRbacNetworkVenueList,
   updateNetworkVenueFn
 } from '../networkVenueUtils'
-import { commonQueryFn }     from '../servicePolicy.utils'
-import { addNetworkVenueFn } from '../servicePolicy.utils/network'
+import { commonQueryFn }                  from '../servicePolicy.utils'
+import { addNetworkVenueFn }              from '../servicePolicy.utils/network'
+import { handleCallbackWhenActivityDone } from '../utils'
 
 import {
   useCasesToRefreshRadiusServerTemplateList, useCasesToRefreshTemplateList,
@@ -48,7 +51,6 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, useCasesToRefreshTemplateList, () => {
-            // eslint-disable-next-line max-len
             api.dispatch(configTemplateApi.util.invalidateTags([{ type: 'ConfigTemplate', id: 'LIST' }]))
           })
         })
@@ -67,7 +69,6 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
         ConfigTemplateUrlsInfo.addNetworkTemplate,
         ConfigTemplateUrlsInfo.addNetworkTemplateRbac
       ),
-      // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'NetworkTemplate', id: 'LIST' }]
     }),
     updateNetworkTemplate: build.mutation<CommonResult, RequestPayload>({
@@ -75,7 +76,6 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
         ConfigTemplateUrlsInfo.updateNetworkTemplate,
         ConfigTemplateUrlsInfo.updateNetworkTemplateRbac
       ),
-      // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'NetworkTemplate', id: 'LIST' }]
     }),
     getNetworkDeepTemplate: build.query<NetworkSaveData | null, RequestPayload>({
@@ -137,7 +137,6 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
         ConfigTemplateUrlsInfo.deleteNetworkTemplate,
         ConfigTemplateUrlsInfo.deleteNetworkTemplateRbac
       ),
-      // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'NetworkTemplate', id: 'LIST' }]
     }),
     getNetworkTemplateList: build.query<TableResult<Network>, RequestPayload>({
@@ -169,14 +168,12 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, useCasesToRefreshNetworkTemplateList, () => {
-            // eslint-disable-next-line max-len
             api.dispatch(configTemplateApi.util.invalidateTags([{ type: 'NetworkTemplate', id: 'LIST' }]))
           })
         })
       },
       extraOptions: { maxRetries: 5 }
     }),
-    // eslint-disable-next-line max-len
     addAAAPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.addAAAPolicyTemplate, ConfigTemplateUrlsInfo.addAAAPolicyTemplateRbac),
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'AAATemplate', id: 'LIST' }]
@@ -199,7 +196,6 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, useCasesToRefreshRadiusServerTemplateList, () => {
-            // eslint-disable-next-line max-len
             api.dispatch(configTemplateApi.util.invalidateTags([{ type: 'AAATemplate', id: 'LIST' }]))
           })
         })
@@ -242,45 +238,67 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
     addNetworkVenueTemplate: build.mutation<CommonResult, RequestPayload>({
       queryFn: addNetworkVenueFn(),
       async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, (msg) => {
-          const activities = [
-            'AddNetworkVenueTemplate',
-            'UpdateVenueWifiNetworkTemplateSettings'
-          ]
-          onActivityMessageReceived(msg, activities, () => {
-            api.dispatch(networkApi.util.invalidateTags([
-              { type: 'Venue', id: 'LIST' },
-              { type: 'Network', id: 'DETAIL' } // venueNetwork
-            ]))
-            api.dispatch(configTemplateApi.util.invalidateTags([
-              { type: 'NetworkTemplate', id: 'LIST' } // networkVenue
-            ]))
-          })
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          if (requestArgs.enableRbac) {
+            const targetUseCase = 'ActivateWifiNetworkTemplateOnVenue'
+            await handleCallbackWhenActivityDone({
+              api,
+              activityData: msg,
+              useCase: targetUseCase,
+              callback: requestArgs.callback,
+              failedCallback: requestArgs.failedCallback
+            })
+          } else {
+            const activities = [
+              'AddNetworkVenueTemplate',
+              'UpdateVenueWifiNetworkTemplateSettings'
+            ]
+            onActivityMessageReceived(msg, activities, () => {
+              api.dispatch(networkApi.util.invalidateTags([
+                { type: 'Venue', id: 'LIST' },
+                { type: 'Network', id: 'DETAIL' } // venueNetwork
+              ]))
+              api.dispatch(configTemplateApi.util.invalidateTags([
+                { type: 'NetworkTemplate', id: 'LIST' } // networkVenue
+              ]))
+            })
+          }
         })
       },
-      invalidatesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }]
+      invalidatesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }, { type: 'VenueTemplate', id: 'LIST' }]
     }),
     deleteNetworkVenueTemplate: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.deleteNetworkVenueTemplate, ConfigTemplateUrlsInfo.deleteNetworkVenueTemplateRbac),
       async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, (msg) => {
-          const activities = [
-            'DeleteNetworkVenueTemplate',
-            'DeactivateWifiNetworkTemplateOnVenue'
-          ]
-          onActivityMessageReceived(msg, activities, () => {
-            api.dispatch(networkApi.util.invalidateTags([
-              { type: 'Venue', id: 'LIST' },
-              { type: 'Network', id: 'DETAIL' } // venueNetwork
-            ]))
-            api.dispatch(configTemplateApi.util.invalidateTags([
-              { type: 'NetworkTemplate', id: 'LIST' },
-              { type: 'NetworkTemplate', id: 'DETAIL' }
-            ]))
-          })
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          if (requestArgs.enableRbac) {
+            const targetUseCase = 'DeactivateWifiNetworkTemplateOnVenue'
+            await handleCallbackWhenActivityDone({
+              api,
+              activityData: msg,
+              useCase: targetUseCase,
+              callback: requestArgs.callback,
+              failedCallback: requestArgs.failedCallback
+            })
+          } else {
+            const activities = [
+              'DeleteNetworkVenueTemplate',
+              'DeactivateWifiNetworkTemplateOnVenue'
+            ]
+            onActivityMessageReceived(msg, activities, () => {
+              api.dispatch(networkApi.util.invalidateTags([
+                { type: 'Venue', id: 'LIST' },
+                { type: 'Network', id: 'DETAIL' } // venueNetwork
+              ]))
+              api.dispatch(configTemplateApi.util.invalidateTags([
+                { type: 'NetworkTemplate', id: 'LIST' },
+                { type: 'NetworkTemplate', id: 'DETAIL' }
+              ]))
+            })
+          }
         })
       },
-      invalidatesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }]
+      invalidatesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }, { type: 'VenueTemplate', id: 'LIST' }]
     }),
     deleteNetworkVenuesTemplate: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.deleteNetworkVenuesTemplate),
@@ -307,7 +325,8 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'UpdateNetworkVenueTemplate'
+            'UpdateNetworkVenueTemplate',
+            'UpdateVenueWifiNetworkTemplateSettings'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(networkApi.util.invalidateTags([
@@ -320,7 +339,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
           })
         })
       },
-      invalidatesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }]
+      invalidatesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }, { type: 'VenueTemplate', id: 'LIST' }]
     }),
     addNetworkVenueTemplates: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.addNetworkVenuesTemplate),
@@ -340,6 +359,58 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
         })
       },
       invalidatesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }]
+    }),
+    getDriftInstances: build.query<Array<{ id: string, name: string }>, RequestPayload>({
+      async queryFn ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) {
+        const resolvedPayload = payload as { filters?: Record<string, string[]> }
+
+        const driftInstanceIdsRes = await fetchWithBQ({
+          ...createHttpRequest(ConfigTemplateUrlsInfo.getDriftTenants, params)
+        })
+
+        if (driftInstanceIdsRes.error) {
+          return { error: driftInstanceIdsRes.error as FetchBaseQueryError }
+        }
+
+        const instanceIds = (driftInstanceIdsRes.data as TableResult<{ tenantId: string }>).data.map(item => item.tenantId)
+
+        if (instanceIds.length === 0) {
+          return { data: [] }
+        }
+
+        const driftInstancesRes = await fetchWithBQ({
+          ...createHttpRequest(MspUrlsInfo.getMspCustomersList, params),
+          body: JSON.stringify({
+            fields: ['id', 'name'],
+            sortField: 'name',
+            sortOrder: 'ASC',
+            filters: {
+              ...resolvedPayload.filters,
+              id: instanceIds
+            },
+            page: 1,
+            pageSize: 1000
+          })
+        })
+
+        if (driftInstancesRes.error) {
+          return { error: driftInstancesRes.error as FetchBaseQueryError }
+        }
+
+        return { data: (driftInstancesRes.data as TableResult<MspEc>).data }
+      }
+    }),
+    getDriftReport: build.query<ConfigTemplateDriftsResponse, RequestPayload>({
+      query: commonQueryFn(ConfigTemplateUrlsInfo.getDriftReport)
+    }),
+    patchDriftReport: build.mutation<CommonResult, RequestPayload<{ templateId: string, tenantIds: string[] }>>({
+      async queryFn (args, _queryApi, _extraOptions, fetchWithBQ) {
+        const { payload } = args
+        const requests = payload!.tenantIds.map(tenantId => ({
+          params: { templateId: payload!.templateId, tenantId }
+        }))
+        return batchApi(ConfigTemplateUrlsInfo.patchDriftReport, requests, fetchWithBQ)
+      }
     })
   })
 })
@@ -366,5 +437,8 @@ export const {
   useDeleteNetworkVenueTemplateMutation,
   useDeleteNetworkVenuesTemplateMutation,
   useUpdateNetworkVenueTemplateMutation,
-  useAddNetworkVenueTemplatesMutation
+  useAddNetworkVenueTemplatesMutation,
+  useGetDriftInstancesQuery,
+  useLazyGetDriftReportQuery,
+  usePatchDriftReportMutation
 } = configTemplateApi

@@ -11,11 +11,11 @@ import {
   EdgeFirewallFixtures,
   EdgeFirewallUrls,
   EdgeGeneralFixtures,
-  EdgeNSGFixtures,
+  EdgePinFixtures,
   EdgeSdLanFixtures,
   EdgeSdLanUrls,
   EdgeUrlsInfo,
-  NetworkSegmentationUrls,
+  EdgePinUrls,
   PersonaUrls,
   TunnelProfileUrls
 } from '@acx-ui/rc/utils'
@@ -43,9 +43,9 @@ const {
 const { mockedSdLanDataList, mockedSdLanDataListP2, mockedMvSdLanDataList } = EdgeSdLanFixtures
 const { mockFirewallData } = EdgeFirewallFixtures
 const { mockDhcpStatsData, mockEdgeDhcpDataList } = EdgeDHCPFixtures
-const mockNsgStatsList = cloneDeep(EdgeNSGFixtures.mockNsgStatsList)
-mockNsgStatsList.data[0].edgeClusterInfos[0].segments = 10
-mockNsgStatsList.data[0].edgeClusterInfos[0].devices = 10
+const mockPinStatsList = cloneDeep(EdgePinFixtures.mockPinStatsList)
+mockPinStatsList.data[0].edgeClusterInfo.segments = 10
+mockPinStatsList.data[0].edgeClusterInfo.devices = 10
 
 const mockedSetVisible = jest.fn()
 const mockedUseSearchParams = jest.fn()
@@ -83,8 +83,8 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
         (_req, res, ctx) => res(ctx.json(mockFirewallData))
       ),
       rest.post(
-        NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
-        (_req, res, ctx) => res(ctx.json(mockNsgStatsList))
+        EdgePinUrls.getEdgePinStatsList.url,
+        (_req, res, ctx) => res(ctx.json(mockPinStatsList))
       ),
       rest.get(
         EdgeDhcpUrls.getDhcp.url,
@@ -164,7 +164,7 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
     await screen.findByTestId('rc-EdgeFirewallGroupedStatsTables')
   })
 
-  it('should render nsg detail successfully', async () => {
+  it('should render PIN detail successfully', async () => {
     render(
       <Provider>
         <ServiceDetailDrawer
@@ -178,7 +178,7 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
     expect(await screen.findByRole('link', { name: 'NSG-1' })).toBeVisible()
     expect(await screen.findByText('Venue')).toBeVisible()
     expect(await screen.findByRole('link', { name: 'MockVenue1' })).toBeVisible()
-    expect(await screen.findByText('Persona Group')).toBeVisible()
+    expect(await screen.findByText('Identity Group')).toBeVisible()
     expect(await screen.findByRole('link', { name: 'TestPersona' })).toBeVisible()
     expect(await screen.findByText('Number of Segments')).toBeVisible()
     expect(await screen.findByText('Number of devices per segment')).toBeVisible()

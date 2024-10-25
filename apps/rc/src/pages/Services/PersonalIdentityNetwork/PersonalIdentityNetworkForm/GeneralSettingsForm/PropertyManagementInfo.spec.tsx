@@ -1,7 +1,7 @@
 
 
 import { StepsForm }       from '@acx-ui/components'
-import { EdgeNSGFixtures } from '@acx-ui/rc/utils'
+import { EdgePinFixtures } from '@acx-ui/rc/utils'
 import { Provider }        from '@acx-ui/store'
 import { render, screen }  from '@acx-ui/test-utils'
 
@@ -14,7 +14,7 @@ jest.mock('./PropertyManagementModal', () => ({
   PropertyManagementModal: () => <div data-testid='PropertyManagementModal' />
 }))
 
-const { mockPersonaGroup, mockDpsk } = EdgeNSGFixtures
+const { mockPersonaGroup, mockDpsk } = EdgePinFixtures
 
 describe('PIN GeneralSettings Form - PropertyManagementInfo', () => {
   let params: { tenantId: string, serviceId: string }

@@ -41,6 +41,7 @@ export const edgePhysicalPortInitialConfigs = {
   corePortEnabled: false
 }
 
+
 export const getEdgeServiceHealth = (alarmSummary?: EdgeAlarmSummary[]) => {
   if(!alarmSummary) return EdgeServiceStatusEnum.UNKNOWN
 
@@ -497,4 +498,17 @@ export const getFeaturesIncompatibleDetailData = (compatibleData: EdgeServiceCom
   }
 
   return resultMapping
+}
+
+export const genExpireTimeString = (seconds?: number) => {
+  const { $t } = getIntl()
+  const days = seconds && seconds > 0 ? Math.floor(seconds/86400) : 0
+  const lessThanADaySec = seconds && seconds > 0 ? Math.floor(seconds%86400) : 0
+  return $t(
+    { defaultMessage: '{days, plural, =0 {} one {# Day} other {# Days}} {time}' },
+    {
+      days,
+      time: new Date(lessThanADaySec * 1000).toISOString().slice(11, 19)
+    }
+  )
 }

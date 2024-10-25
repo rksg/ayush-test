@@ -46,8 +46,9 @@ const serviceTypePathMapping: Record<ServiceType, string> = {
   [ServiceType.EDGE_SD_LAN_P2]: 'edgeSdLanP2', // temporary type before SD-LAN GA2 dev done.
   [ServiceType.WIFI_CALLING]: 'wifiCalling',
   [ServiceType.MDNS_PROXY]: 'mdnsProxy',
+  [ServiceType.EDGE_MDNS_PROXY]: 'edgeMdnsProxy',
   [ServiceType.DPSK]: 'dpsk',
-  [ServiceType.NETWORK_SEGMENTATION]: 'personalIdentityNetwork',
+  [ServiceType.PIN]: 'personalIdentityNetwork',
   [ServiceType.WEBAUTH_SWITCH]: 'webAuth',
   [ServiceType.RESIDENT_PORTAL]: 'residentPortal'
 }

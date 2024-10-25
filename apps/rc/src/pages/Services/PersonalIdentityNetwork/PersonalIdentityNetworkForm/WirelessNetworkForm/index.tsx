@@ -16,6 +16,11 @@ import { PersonalIdentityNetworkFormContext } from '../PersonalIdentityNetworkFo
 import { AddDpskModal } from './AddDpskModal'
 import * as UI          from './styledComponents'
 
+const tunnelProfileFormInitValues ={
+  type: TunnelTypeEnum.VXLAN,
+  disabledFields: ['type']
+}
+
 export const WirelessNetworkForm = () => {
 
   const { $t } = useIntl()
@@ -41,11 +46,6 @@ export const WirelessNetworkForm = () => {
     setDpskModalVisible(true)
   }
 
-  const formInitValues ={
-    type: TunnelTypeEnum.VXLAN,
-    disabledFields: ['type']
-  }
-
   return(
     <>
       <StepsForm.Title>{$t({ defaultMessage: 'Wireless Network Settings' })}</StepsForm.Title>
@@ -64,7 +64,9 @@ export const WirelessNetworkForm = () => {
             }
           />
         </Col>
-        <TunnelProfileAddModal initialValues={formInitValues as TunnelProfileFormType} />
+        <TunnelProfileAddModal
+          initialValues={tunnelProfileFormInitValues as TunnelProfileFormType}
+        />
       </Row>
       <Row gutter={20}>
         <Col>

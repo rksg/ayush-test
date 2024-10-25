@@ -18,6 +18,9 @@ interface FieldType {
 }
 
 function DataPromptField () {
+
+  const form = Form.useFormInstance()
+
   const { $t } = useIntl()
   const fieldTypes: FieldType[] = [
     { value: 'USER_NAME', label: $t({ defaultMessage: 'Username' }) }
@@ -41,6 +44,22 @@ function DataPromptField () {
       return Promise.reject($t({ defaultMessage: 'Field type already selected' }))
     }
 
+    return Promise.resolve()
+  }
+
+  const validateDuplicateName = (label: string) => {
+
+    const formFields = form.getFieldValue('variables')
+
+    let nameCount = 0
+    if(formFields && formFields.length > 0) {
+      //@ts-ignore
+      formFields.forEach(field => field?.label === label ? nameCount++ : 1)
+    }
+
+    if (label && nameCount > 1) {
+      return Promise.reject($t({ defaultMessage: 'Field label is already in use.' }))
+    }
     return Promise.resolve()
   }
 
@@ -69,7 +88,8 @@ function DataPromptField () {
                     { required: true },
                     { min: 3 },
                     { max: 50 },
-                    { validator: (_, value) => trailingNorLeadingSpaces(value) }
+                    { validator: (_, value) => trailingNorLeadingSpaces(value) },
+                    { validator: (_, value) => validateDuplicateName(value) }
                   ]}
                 >
                   <Input />
@@ -125,7 +145,7 @@ export function DataPromptSettings () {
           name={'title'}
           rules={[
             { required: true },
-            { min: 1 },
+            { min: 2 },
             { max: 100 },
             { validator: (_, value) => trailingNorLeadingSpaces(value) }
           ]}
@@ -149,8 +169,8 @@ export function DataPromptSettings () {
         <Form.Item key='messageHtml'
           name={'messageHtml'}
           rules={[
-            { required: true },
-            { min: 1 },
+            { required: true, message: $t({ defaultMessage: 'Please enter page intro text' }) },
+            { min: 2 },
             { max: 1000 },
             { validator: (_, value) => trailingNorLeadingSpaces(value) }
           ]}

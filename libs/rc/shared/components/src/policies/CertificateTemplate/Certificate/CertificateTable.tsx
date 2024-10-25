@@ -19,7 +19,7 @@ import { issuedByLabel } from '../contentsMap'
 import CertificateSettings                                     from './CertificateForm/CertificateSettings'
 import { DetailDrawer }                                        from './DetailDrawer'
 import { getCertificateStatus, getDisplayedCertificateStatus } from './DetailDrawerHelper'
-import RevokeForm                                              from './RevokeForm'
+import { RevokeForm }                                          from './RevokeForm'
 
 
 export function CertificateTable (

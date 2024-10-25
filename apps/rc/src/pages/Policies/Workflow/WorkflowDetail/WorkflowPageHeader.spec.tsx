@@ -29,7 +29,8 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
-  WorkflowActionPreviewModal: () => <div data-testid='WorkflowActionPreviewModal' />
+  WorkflowActionPreviewModal: () => <div data-testid='WorkflowActionPreviewModal' />,
+  WorkflowComparator: () => <div data-testid='WorkflowComparator'></div>
 }))
 
 
@@ -65,6 +66,7 @@ describe('WorkflowPageHeader', () => {
 
     const preview = await screen.findByText('Preview')
     await screen.findByText('Configure')
+    await screen.findByText('Compare')
     await userEvent.click(preview)
     await screen.findByText(workflows[0].name)
     await waitFor(() => expect(getWorkflowApi).toHaveBeenCalled())

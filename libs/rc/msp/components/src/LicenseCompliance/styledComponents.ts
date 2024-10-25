@@ -113,11 +113,18 @@ export const BannerVersionOld = styled.div`
   line-height: 20px;
 `
 
-export const BannerVersion = styled.div`
+export const BannerComplianceNotes = styled.div`
   background-color: var(--acx-accents-orange-10);
   // width: fit-content;
   width: 100%;
   padding: 7px 15px 15px 15px;
+  .note {
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+  .detail {
+    padding-left: 8px;
+  }
 `
 
 export const BannerVersionName = styled.span`
@@ -125,10 +132,17 @@ export const BannerVersionName = styled.span`
   color: var(--acx-neutrals-70);
 `
 
-export const LatestVersion = styled.div`
+export const ComplianceNotesLabel = styled.div`
   font-weight: 600;
-  margin-bottom: 14px;
-  line-height: 18px;
+  line-height: 31px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  svg {
+    height: 18px;
+    width: 18px;
+    color: var(--acx-accents-orange-50);
+  }
 `
 export const TypeSpace = styled(Space)`
     gap: 0px !important;
@@ -145,7 +159,7 @@ export const FwContainer = styled.div`
 export const FieldLabelSubs = styled.div<{ width: string }>`
   font-size: var(--acx-body-4-font-size);
   display: grid;
-  grid-template-columns: 180px 80px 100px;
+  grid-template-columns: 140px 80px 100px;
   align-items: baseline;
   label:nth-child(2), label:nth-child(3) {
     text-align: center;
@@ -154,7 +168,7 @@ export const FieldLabelSubs = styled.div<{ width: string }>`
 export const FieldLabelSubs2 = styled.div<{ width: string }>`
   font-size: var(--acx-body-4-font-size);
   display: grid;
-  grid-template-columns: 180px 45px 180px;
+  grid-template-columns: 140px 45px 180px;
   align-items: baseline;
   label:nth-child(2) {
     text-align: right;
@@ -224,4 +238,10 @@ export const RedTickIcon = styled(WarningCircleSolid)`
     stroke: white;
     stroke-width: 2px;
   }
+`
+export const Expired = styled(Space)`
+  color: var(--acx-semantics-red-50)
+`
+export const Warning = styled(Space)`
+  color: var(--acx-accents-orange-50)
 `

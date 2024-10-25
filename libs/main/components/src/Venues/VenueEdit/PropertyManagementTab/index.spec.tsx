@@ -8,7 +8,6 @@ import {
   MacRegListUrlsInfo,
   MsgTemplateUrls,
   NewDpskBaseUrl,
-  NewPersonaBaseUrl,
   PersonaUrls,
   PropertyUrlsInfo
 } from '@acx-ui/rc/utils'
@@ -29,7 +28,7 @@ import {
 } from '../../__tests__/fixtures'
 import {
   mockedTemplateScope,
-  mockEnabledNoNSGPropertyConfig,
+  mockEnabledNoPinPropertyConfig,
   mockPropertyUnitList,
   mockResidentPortalProfileList
 } from '../../__tests__/fixtures'
@@ -64,7 +63,7 @@ describe('Property Config Tab', () => {
         PropertyUrlsInfo.getPropertyConfigs.url,
         (req, res, ctx) => {
           if (req.params.venueId === enabledParams.venueId) {
-            return res(ctx.json(mockEnabledNoNSGPropertyConfig))
+            return res(ctx.json(mockEnabledNoPinPropertyConfig))
           } else {
             return res(ctx.status(404))
           }
@@ -89,8 +88,8 @@ describe('Property Config Tab', () => {
         replacePagination(PropertyUrlsInfo.getResidentPortalList.url),
         (req, res, ctx) => res(ctx.json(mockResidentPortalProfileList))
       ),
-      rest.get(
-        NewPersonaBaseUrl,
+      rest.post(
+        PersonaUrls.searchPersonaGroupList.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(mockPersonaGroupList))
       ),
       rest.get(

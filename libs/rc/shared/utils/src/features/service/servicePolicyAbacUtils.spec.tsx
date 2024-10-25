@@ -64,7 +64,7 @@ describe('servicePolicyAbacUtils', () => {
     expect(getScopeKeyByService(ServiceType.WEBAUTH_SWITCH, ServiceOperation.DELETE)).toEqual<ScopeKeys>([SwitchScopes.DELETE])
 
     // eslint-disable-next-line max-len
-    expect(getScopeKeyByService(ServiceType.NETWORK_SEGMENTATION, ServiceOperation.EDIT).sort())
+    expect(getScopeKeyByService(ServiceType.PIN, ServiceOperation.EDIT).sort())
       .toEqual<ScopeKeys>([SwitchScopes.UPDATE, EdgeScopes.UPDATE].sort())
   })
 

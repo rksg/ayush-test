@@ -37,6 +37,7 @@ export default function SelectServiceForm () {
   const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinHaReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+  const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
 
   const navigateToCreateService = async function (data: { serviceType: ServiceType }) {
     const serviceCreatePath = getServiceRoutePath({
@@ -65,7 +66,7 @@ export default function SelectServiceForm () {
           categories: [RadioCardCategory.WIFI]
         },
         {
-          type: ServiceType.NETWORK_SEGMENTATION,
+          type: ServiceType.PIN,
           categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
           disabled: !isEdgeHaReady || !isEdgePinHaReady
         },
@@ -89,6 +90,11 @@ export default function SelectServiceForm () {
       title: $t({ defaultMessage: 'Application' }),
       items: [
         { type: ServiceType.MDNS_PROXY, categories: [RadioCardCategory.WIFI] },
+        {
+          type: ServiceType.EDGE_MDNS_PROXY,
+          categories: [RadioCardCategory.EDGE],
+          disabled: !isEdgeMdnsReady
+        },
         { type: ServiceType.WIFI_CALLING, categories: [RadioCardCategory.WIFI] }
       ]
     },

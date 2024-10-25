@@ -72,7 +72,7 @@ export function SwitchCableTestForm () {
   })
 
   const getPortDisabled = (port: SwitchPortViewModel) => {
-    return port.portSpeedConfig !== 'AUTO' || port.status !== 'Up' || port.portConnectorType !== 'COPPER'
+    return port.portSpeedConfig !== 'AUTO' || port.adminStatus !== 'Up' || port.portConnectorType !== 'COPPER'
   }
 
   const TOOLTIPS= {
@@ -86,7 +86,7 @@ export function SwitchCableTestForm () {
     if(port.portSpeedConfig !== 'AUTO') {
       t.push(TOOLTIPS.auto)
     }
-    if(port.status !== 'Up') {
+    if(port.adminStatus !== 'Up') {
       t.push(TOOLTIPS.up)
     }
     if(port.portConnectorType !== 'COPPER') {

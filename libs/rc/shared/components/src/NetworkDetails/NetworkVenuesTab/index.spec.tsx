@@ -55,10 +55,12 @@ const disabledFFs = [
   Features.EDGES_SD_LAN_TOGGLE,
   Features.EDGES_SD_LAN_HA_TOGGLE,
   Features.EDGE_SD_LAN_MV_TOGGLE,
+  Features.EDGE_PIN_HA_TOGGLE,
   Features.RBAC_SERVICE_POLICY_TOGGLE,
   Features.WIFI_RBAC_API,
   Features.ABAC_POLICIES_TOGGLE,
-  Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE
+  Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE,
+  Features.WIFI_COMPATIBILITY_BY_MODEL
 ]
 type MockDialogProps = React.PropsWithChildren<{
   visible: boolean
@@ -92,6 +94,18 @@ jest.mock('../../EdgeSdLan/useEdgeSdLanActions', () => ({
 
 const mockedApplyFn = jest.fn()
 const mockedGetApCompatibilitiesNetwork = jest.fn()
+const mockHeaderDetails = {
+  activeVenueCount: 2,
+  aps: {
+    summary: { '2_Operational': 2 },
+    totalApCount: 2
+  },
+  network: {
+    name: 'network-venue-1',
+    id: 'd7b1a9a350634115a92ee7b0f11c7e75',
+    clients: 0
+  }
+}
 
 describe('NetworkVenuesTab', () => {
   beforeEach(() => {
@@ -152,13 +166,23 @@ describe('NetworkVenuesTab', () => {
         }
       ),
       rest.post(
+        WifiRbacUrlsInfo.getNetworkApCompatibilities.url,
+        (_, res, ctx) => {
+          return res(ctx.json(networkVenueApCompatibilities))
+        }
+      ),
+      rest.post(
         WifiUrlsInfo.getVlanPoolViewModelList.url,
         (_, res, ctx) => res(ctx.json({ data: vlanPoolList }))
       ),
       rest.post(
         SoftGreUrls.getSoftGreViewDataList.url,
         (_, res, ctx) => res(ctx.json(mockSoftGreTable))
-      )
+      )/*,
+      rest.get(
+        CommonRbacUrlsInfo.getNetworksDetailHeader.url,
+        (_, res, ctx) => res(ctx.json(mockHeaderDetails))
+      )*/
     )
   })
 
@@ -252,6 +276,10 @@ describe('NetworkVenuesTab', () => {
       rest.post(
         CommonUrlsInfo.networkActivations.url,
         (req, res, ctx) => res(ctx.json({ data: [networkVenue_apgroup] }))
+      ),
+      rest.get(
+        CommonRbacUrlsInfo.getNetworksDetailHeader.url,
+        (_, res, ctx) => res(ctx.json(mockHeaderDetails))
       )
     )
 
@@ -413,7 +441,6 @@ describe('NetworkVenuesTab', () => {
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)
   })
-
 
 })
 
@@ -801,7 +828,11 @@ describe('WIFI_RBAC_API is turned on', () => {
       rest.post(AccessControlUrls.getAccessControlProfileQueryList.url,
         (_, res, ctx) => res(ctx.json(mockedAclPolicyResponse))),
       rest.post(AccessControlUrls.getDevicePolicyListQuery.url,
-        (req, res, ctx) => res(ctx.json(mockedAclPolicyResponse)))
+        (req, res, ctx) => res(ctx.json(mockedAclPolicyResponse))),
+      rest.get(
+        CommonRbacUrlsInfo.getNetworksDetailHeader.url,
+        (_, res, ctx) => res(ctx.json(mockHeaderDetails))
+      )
     )
   })
 
@@ -910,7 +941,11 @@ describe('SoftGreTunnel', () => {
       rest.post(AccessControlUrls.getAccessControlProfileQueryList.url,
         (_, res, ctx) => res(ctx.json(mockedAclPolicyResponse))),
       rest.post(AccessControlUrls.getDevicePolicyListQuery.url,
-        (req, res, ctx) => res(ctx.json(mockedAclPolicyResponse)))
+        (req, res, ctx) => res(ctx.json(mockedAclPolicyResponse))),
+      rest.get(
+        CommonRbacUrlsInfo.getNetworksDetailHeader.url,
+        (_, res, ctx) => res(ctx.json(mockHeaderDetails))
+      )
     )
   })
 

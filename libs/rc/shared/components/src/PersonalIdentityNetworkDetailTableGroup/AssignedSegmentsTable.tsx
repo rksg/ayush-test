@@ -82,7 +82,7 @@ export const AssignedSegmentsTable = (props: PersonaTableProps) => {
           <span className='text-align'>{$t({ defaultMessage: 'Assigned Port' })}</span>
           <Tooltip.Question
             title={$t(
-              { defaultMessage: 'To assign AP ports for a specific unit/persona, '
+              { defaultMessage: 'To assign AP ports for a specific unit/identity, '
                 + 'please go to the {navigateToVenues} and configure a unit.' },
               {
                 navigateToVenues: <PropertyUnitLink

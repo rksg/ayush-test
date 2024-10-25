@@ -7,11 +7,12 @@ import {
   MacRegListUrlsInfo,
   DpskUrls,
   CommonUrlsInfo,
-  NetworkSegmentationUrls,
+  EdgePinUrls,
   PropertyUrlsInfo,
   DistributionSwitch,
   AccessSwitch,
-  CertificateUrls
+  CertificateUrls,
+  EdgePinFixtures
 } from '@acx-ui/rc/utils'
 import { Provider }           from '@acx-ui/store'
 import {
@@ -35,28 +36,18 @@ import {
 
 import { PersonaGroupTable } from '.'
 
+const { mockPinData } = EdgePinFixtures
 
 const mockPropertyConfigOptionsResult = { content: [
   { venueId: 'venue-id', venueName: 'venue-name' }
 ] }
 
-const mockNsgData = {
-  id: 'nsg-id-1',
-  name: 'nsg-name-1',
-  venueInfos: [
-    {
-      venueId: 'mock_venue_1'
-    }
-  ]
-}
-
-const mockNsgSwitchInfoData: {
+const mockPinSwitchInfoData: {
   distributionSwitches: DistributionSwitch[],
   accessSwitches: AccessSwitch[]
 } = {
   distributionSwitches: [{
     id: 'c8:03:f5:3a:95:c6',
-    siteName: '964fe8920291194e208b6d22370c2cc82c',
     siteIp: '10.206.78.150',
     vlans: '23',
     siteKeepAlive: '5',
@@ -96,7 +87,7 @@ const mockNsgSwitchInfoData: {
   }]
 }
 
-// To enable NSG PLM FF and allow to call api
+// To enable PIN PLM FF and allow to call api
 jest.mocked(useIsSplitOn).mockReturnValue(true)
 jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
@@ -105,12 +96,18 @@ jest.mock('@acx-ui/rc/components', () => ({
   PersonaGroupDrawer: () => <div>PersonaGroupDrawer</div>
 }))
 
+const services = require('@acx-ui/rc/services')
+
 describe('Persona Group Table', () => {
   let params: { tenantId: string }
   const searchPersonaGroupApi = jest.fn()
 
   beforeEach(async () => {
     searchPersonaGroupApi.mockClear()
+
+    services.useLazyGetEdgePinByIdQuery = jest.fn().mockReturnValue([() => {
+      return Promise.resolve({ data: mockPinData })
+    }])
 
     mockServer.use(
       rest.post(
@@ -145,15 +142,11 @@ describe('Persona Group Table', () => {
         (req, res, ctx) => res(ctx.json( { data: [] }))
       ),
       rest.get(
-        NetworkSegmentationUrls.getNetworkSegmentationGroupById.url,
-        (req, res, ctx) => res(ctx.json(mockNsgData))
-      ),
-      rest.get(
-        NetworkSegmentationUrls.getSwitchInfoByNSGId.url,
-        (req, res, ctx) => res(ctx.json(mockNsgSwitchInfoData))
+        EdgePinUrls.getSwitchInfoByPinId.url,
+        (req, res, ctx) => res(ctx.json(mockPinSwitchInfoData))
       ),
       rest.post(
-        NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
+        EdgePinUrls.getEdgePinStatsList.url,
         // just for filterable options generation
         (req, res, ctx) => res(ctx.json({ data: [{ id: 'nsg-id-1', name: 'nsg-name-1' }] }))
       ),

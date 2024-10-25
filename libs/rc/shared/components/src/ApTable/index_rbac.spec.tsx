@@ -19,10 +19,13 @@ import {
   waitForElementToBeRemoved,
   within
 } from '@acx-ui/test-utils'
+import { RolesEnum, WifiScopes }          from '@acx-ui/types'
+import { setUserProfile, getUserProfile } from '@acx-ui/user'
 
 import {
   apCompatibilities,
-  getApGroupsList
+  getApGroupsList,
+  mockVenueOptions
 } from './__test__/fixtures'
 
 import { ApTable } from '.'
@@ -110,6 +113,10 @@ describe('Aps', () => {
       rest.get(
         CommonUrlsInfo.getVenue.url,
         (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json({ ...mockVenueOptions }))
       )
     )
   })
@@ -143,12 +150,21 @@ describe('Aps', () => {
 
   it('Table action bar Download Log', async () => {
     const fakeDownloadUrl = '/api/abc'
+    jest.mocked(get).mockReturnValue('')
     mockServer.use(
       rest.get(
         WifiRbacUrlsInfo.downloadApLog.url,
         (req, res, ctx) => res(ctx.json({ fileURL: fakeDownloadUrl, fileUrl: fakeDownloadUrl }))
       )
     )
+
+    setUserProfile({
+      ...getUserProfile(),
+      abacEnabled: true,
+      isCustomRole: false,
+      scopes: [WifiScopes.UPDATE, WifiScopes.DELETE, WifiScopes.CREATE, WifiScopes.READ],
+      profile: { ...getUserProfile().profile, roles: [RolesEnum.PRIME_ADMIN] }
+    })
 
     render(<Provider><ApTable
       rowSelection={{
@@ -176,12 +192,20 @@ describe('Aps', () => {
   it('Table action bar Reboot', async () => {
     const rebootSpy = jest.fn()
     rebootSpy.mockReturnValueOnce(true)
+    jest.mocked(get).mockReturnValue('')
     mockServer.use(
       rest.patch(
         WifiRbacUrlsInfo.rebootAp.url,
         (req, res, ctx) => rebootSpy() && res(ctx.json({ requestId: '456' }))
       )
     )
+    setUserProfile({
+      ...getUserProfile(),
+      abacEnabled: true,
+      isCustomRole: false,
+      scopes: [WifiScopes.UPDATE, WifiScopes.DELETE, WifiScopes.CREATE, WifiScopes.READ],
+      profile: { ...getUserProfile().profile, roles: [RolesEnum.PRIME_ADMIN] }
+    })
 
     render(<Provider><ApTable
       rowSelection={{
@@ -203,6 +227,7 @@ describe('Aps', () => {
   })
 
   it('Table action bar Delete', async () => {
+    jest.mocked(get).mockReturnValue('')
     render(<Provider><ApTable
       rowSelection={{
         type: 'checkbox'
@@ -228,6 +253,14 @@ describe('Aps', () => {
         (req, res, ctx) => deleteSpy() && res(ctx.status(202))
       )
     )
+
+    setUserProfile({
+      ...getUserProfile(),
+      abacEnabled: true,
+      isCustomRole: false,
+      scopes: [WifiScopes.UPDATE, WifiScopes.DELETE, WifiScopes.CREATE, WifiScopes.READ],
+      profile: { ...getUserProfile().profile, roles: [RolesEnum.PRIME_ADMIN] }
+    })
 
     const apRows = await screen.findAllByRole('row', { name: /mock-ap-/i })
     expect(within(apRows[0]).getByRole('cell', { name: /mock-ap-1/i })).toBeVisible()
@@ -266,6 +299,7 @@ describe('Aps', () => {
     jest.mocked(useIsSplitOn).mockImplementation((ff) => {
       return ff === Features.EXPORT_DEVICE || ff === Features.WIFI_RBAC_API
     })
+    jest.mocked(get).mockReturnValue('')
 
     render(<Provider><ApTable
       rowSelection={{
@@ -273,6 +307,14 @@ describe('Aps', () => {
       }}
     /></Provider>, {
       route: { params, path: '/:tenantId' }
+    })
+
+    setUserProfile({
+      ...getUserProfile(),
+      abacEnabled: true,
+      isCustomRole: false,
+      scopes: [WifiScopes.UPDATE, WifiScopes.DELETE, WifiScopes.CREATE, WifiScopes.READ],
+      profile: { ...getUserProfile().profile, roles: [RolesEnum.PRIME_ADMIN] }
     })
 
     const row = await screen.findByRole('row', { name: /mock-ap-1/i })
@@ -316,9 +358,7 @@ describe('Aps', () => {
   })
 
   it('should import correctly', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
-      return ff === Features.AP_GPS || ff === Features.WIFI_RBAC_API
-    })
+    jest.mocked(useIsSplitOn).mockImplementation((ff) => ff === Features.WIFI_RBAC_API)
     const importAPSpy = jest.fn()
 
     mockServer.use(
@@ -344,7 +384,7 @@ describe('Aps', () => {
     const drawer = await screen.findByTestId('ImportFileDrawer')
     expect(drawer).toBeVisible()
 
-    expect(within(drawer).getByRole('combobox', { name: 'Venue' })).toBeInTheDocument()
+    expect(await within(drawer).findByRole('combobox', { name: 'Venue' })).toBeInTheDocument()
     await userEvent.click(await within(drawer).findByRole('button', { name: 'Import' }))
     await waitFor(() => expect(importAPSpy).toHaveBeenCalled())
   })

@@ -11,7 +11,7 @@ import { fireEvent, render, screen } from '@acx-ui/test-utils'
 import { aiFeatureWithAIOps, aiFeatureWithEquiFlex, aiFeatureWithEquiFlexWithNewStatus, aiFeatureWithEcoFlex, aiFeatureWithRRM, mockAIDrivenRow } from './__tests__/fixtures'
 import { Icon }                                                                                                                                   from './common/IntentIcon'
 import { AiFeatures }                                                                                                                             from './config'
-import { DisplayStates, Statuses }                                                                                                                from './states'
+import { DisplayStates, Statuses, StatusReasons }                                                                                                 from './states'
 import * as UI                                                                                                                                    from './styledComponents'
 import { AIFeature, Banner, iconTooltips }                                                                                                        from './Table'
 import { Actions, isVisibledByAction }                                                                                                            from './utils'
@@ -186,7 +186,7 @@ describe('AIFeature component', () => {
       statusTrail: []
     }
     const makeRow = (status: Statuses, displayStatus: DisplayStates) => ({
-      ...mockAIDrivenRow, ...extractItem, displayStatus, status
+      ...mockAIDrivenRow, ...extractItem, displayStatus, status, statusReason: StatusReasons.byDefault
     })
     const newRow = makeRow(Statuses.new, DisplayStates.new)
     const activeRow = makeRow(Statuses.active, DisplayStates.active)
@@ -217,15 +217,13 @@ describe('AIFeature component', () => {
 describe('Banner Component', () => {
   it('should open the documentation link when the button is clicked', () => {
     const openSpy = jest.spyOn(window, 'open').mockImplementation(() => {return null})
+    const helpUrl = 'https://docs.cloud.ruckuswireless.com/RUCKUS-AI/userguide/GUID-CAAC695C-6740-499D-8C42-AB521CEE65F6.html'
 
-    render(<Banner />)
+    render(<Banner helpUrl={helpUrl} />)
 
     const button = screen.getByRole('button', { name: /Learn More/i })
     fireEvent.click(button)
-    expect(openSpy).toHaveBeenCalledWith(
-      'https://docs.commscope.com/bundle/ruckusai-userguide/page/GUID-CAAC695C-6740-499D-8C42-AB521CEE65F6.html',
-      '_blank'
-    )
+    expect(openSpy).toHaveBeenCalledWith(helpUrl, '_blank')
 
     openSpy.mockRestore()
   })

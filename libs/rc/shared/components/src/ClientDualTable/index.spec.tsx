@@ -66,7 +66,7 @@ describe('ClientDualTable', () => {
       route: { params, path: '/t/:tenantId/users/wifi/clients' }
     })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    await waitFor(() => expect(mockGetClientList).toBeCalledTimes(2))
+    await waitFor(() => expect(mockGetClientList).toBeCalledTimes(1))
     await screen.findByPlaceholderText('Search for connected and historical clients...')
 
     fireEvent.mouseEnter(screen.getByTestId('QuestionMarkCircleOutlined'))

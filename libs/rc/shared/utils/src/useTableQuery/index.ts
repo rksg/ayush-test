@@ -156,7 +156,7 @@ export function useTableQuery <
     if (!option.pagination?.settingsId) return initialPagination
 
     const settingsId = option.pagination.settingsId
-    const pageSizeDefined = Number(localStorage.getItem(`${settingsId}-pagesize`))
+    const pageSizeDefined = Number(sessionStorage.getItem(`${settingsId}-pagesize`))
     const pageSize = (pageSizeDefined > 0) ? pageSizeDefined :
       (option.pagination.pageSize ?? TABLE_DEFAULT_PAGE_SIZE)
 
@@ -169,7 +169,7 @@ export function useTableQuery <
     ...option.defaultPayload,
     ...(pagination as unknown as Partial<Payload>),
     ...(initialSorter as unknown as Partial<Payload>),
-    ...(initialSearch.searchString && initialSearch)
+    ...((initialSearch.searchString !== undefined) && initialSearch)
   } as Payload
 
   const [sorter, setSorter] = useState<SORTER>(initialSorter)
@@ -221,7 +221,7 @@ export function useTableQuery <
       : Object.keys(customFilters).filter(key => !customFilters[key])
     const toBeSearch = (customSearch.searchString
       ? { ...initialSearch, ...customSearch }
-      : initialSearch.searchString && initialSearch) as SEARCH
+      : (initialSearch.searchString !== undefined) && initialSearch) as SEARCH
     setPayload({
       ...rest,
       ...toBeSearch,

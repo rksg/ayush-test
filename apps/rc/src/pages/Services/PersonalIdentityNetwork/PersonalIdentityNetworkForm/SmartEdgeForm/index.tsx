@@ -141,7 +141,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
       {
         ...tenantBasePath,
         pathname: `${tenantBasePath.pathname}/` + getServiceDetailsLink({
-          type: ServiceType.NETWORK_SEGMENTATION,
+          type: ServiceType.PIN,
           oper: ServiceOperation.DETAIL,
           serviceId: params.serviceId!
         })
@@ -193,6 +193,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
             children={
               <Select
                 loading={isClusterOptionsLoading}
+                disabled={props.editMode}
                 placeholder={$t({ defaultMessage: 'Select...' })}
                 onChange={onEdgeChange}
                 options={[

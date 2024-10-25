@@ -134,24 +134,27 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
   }
 
   useEffect(()=>{
-    if(portType === EthernetPortType.TRUNK) {
-      formRef.setFieldsValue({
-        untagId: 1,
-        vlanMembers: '1-4094',
-        authTypeRole: EthernetPortAuthType.SUPPLICANT
-      })
+    if (!isEditMode) {
+      if(portType === EthernetPortType.TRUNK) {
+        formRef.setFieldsValue({
+          untagId: 1,
+          vlanMembers: '1-4094',
+          authTypeRole: EthernetPortAuthType.SUPPLICANT
+        })
+      }
+
+      if(portType === EthernetPortType.ACCESS) {
+        formRef.setFieldsValue({
+          vlanMembers: untagId,
+          authTypeRole: EthernetPortAuthType.PORT_BASED
+        })
+      }
+
+      if(portType === EthernetPortType.SELECTIVE_TRUNK) {
+        formRef.setFieldValue('authTypeRole', EthernetPortAuthType.PORT_BASED)
+      }
     }
 
-    if(portType === EthernetPortType.ACCESS) {
-      formRef.setFieldsValue({
-        vlanMembers: untagId,
-        authTypeRole: EthernetPortAuthType.PORT_BASED
-      })
-    }
-
-    if(portType === EthernetPortType.SELECTIVE_TRUNK) {
-      formRef.setFieldValue('authTypeRole', EthernetPortAuthType.PORT_BASED)
-    }
   }, [portType])
 
   useEffect(()=>{
@@ -289,7 +292,7 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
               name='authEnabled'
               valuePropName={'checked'}
             >
-              <Switch />
+              <Switch disabled={isEditMode} />
             </Form.Item>
           </StepsForm.FieldLabel>
           {authEnabled && <>
@@ -312,8 +315,8 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
                 >
                   <Select
                     options={authTypeRoleOptionsArray}
-                  >
-                  </Select>
+                    disabled={isEditMode}
+                  />
                 </Form.Item>
               </Col>
             </Row>

@@ -2,22 +2,20 @@
 import { Form, Select, Space } from 'antd'
 import { useIntl }             from 'react-intl'
 
-import { Loader, Table, TableProps, useStepFormContext }    from '@acx-ui/components'
-import { useGetDhcpStatsQuery, useGetEdgeDhcpServiceQuery } from '@acx-ui/rc/services'
-import { EdgeDhcpPool }                                     from '@acx-ui/rc/utils'
+import { useGetDhcpStatsQuery } from '@acx-ui/rc/services'
 
 import { AddEdgeDhcpServiceModal } from '../AddEdgeDhcpServiceModal'
 
+import { DhcpDetailDrawer } from './DhcpDetailDrawer'
+
 interface EdgeDhcpSelectionFormProps {
-  hasNsg?: boolean
+  hasPin?: boolean
 }
 
 export const EdgeDhcpSelectionForm = (props: EdgeDhcpSelectionFormProps) => {
 
-  const { hasNsg } = props
+  const { hasPin } = props
   const { $t } = useIntl()
-  const { form } = useStepFormContext()
-  const dhcpId = Form.useWatch('dhcpId', form)
 
   const {
     edgeDhcpOptions, isEdgeDhcpOptionsLoading
@@ -37,85 +35,43 @@ export const EdgeDhcpSelectionForm = (props: EdgeDhcpSelectionFormProps) => {
     }
   })
 
-  const { currentDhcp, isCurrentDhcpFetching } = useGetEdgeDhcpServiceQuery(
-    { params: { id: dhcpId } },
-    {
-      skip: !Boolean(dhcpId),
-      selectFromResult: ({ data, isFetching }) => ({
-        currentDhcp: data,
-        isCurrentDhcpFetching: isFetching
-      })
-    }
-  )
-
-  const columns: TableProps<EdgeDhcpPool>['columns'] = [
-    {
-      title: $t({ defaultMessage: 'Pool Name' }),
-      key: 'poolName',
-      dataIndex: 'poolName'
-    },
-    {
-      title: $t({ defaultMessage: 'Subnet Mask' }),
-      key: 'subnetMask',
-      dataIndex: 'subnetMask'
-    },
-    {
-      title: $t({ defaultMessage: 'Pool Range' }),
-      key: 'poolStartIp',
-      dataIndex: 'poolStartIp',
-      render (_, item) {
-        return `${item.poolStartIp} - ${item.poolEndIp}`
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Gateway' }),
-      key: 'gatewayIp',
-      dataIndex: 'gatewayIp'
-    }
-  ]
-
-  const content = <>
-    <Form.Item
-      label={$t({ defaultMessage: 'DHCP Service' })}
-      data-testid='edge-cluster-dhcp-select-form-label'>
-      <Space>
-        <Form.Item
-          name='dhcpId'
-          rules={[
-            {
-              required: true,
-              message: $t({ defaultMessage: 'Please select a DHCP Service' })
-            }
+  const content = <Form.Item
+    label={$t({ defaultMessage: 'DHCP Service' })}
+    data-testid='edge-cluster-dhcp-select-form-label'>
+    <Space>
+      <Form.Item
+        name='dhcpId'
+        rules={[
+          {
+            required: true,
+            message: $t({ defaultMessage: 'Please select a DHCP Service' })
+          }
+        ]}
+        noStyle
+      >
+        <Select
+          style={{ width: '200px' }}
+          options={[
+            { label: $t({ defaultMessage: 'Select...' }), value: null },
+            ...(edgeDhcpOptions || [])
           ]}
-          noStyle
-        >
-          <Select
-            style={{ width: '200px' }}
-            options={[
-              { label: $t({ defaultMessage: 'Select...' }), value: null },
-              ...(edgeDhcpOptions || [])
-            ]}
-            loading={isEdgeDhcpOptionsLoading}
-            disabled={hasNsg}
-          />
-        </Form.Item>
-        <AddEdgeDhcpServiceModal />
-      </Space>
-    </Form.Item>
-    {
-      dhcpId &&
-      <Loader states={[
-        { isFetching: isCurrentDhcpFetching, isLoading: false }
-      ]}>
-        <Table
-          rowKey='id'
-          type='form'
-          columns={columns}
-          dataSource={currentDhcp?.dhcpPools}
+          loading={isEdgeDhcpOptionsLoading}
+          disabled={hasPin}
         />
-      </Loader>
-    }
-  </>
+      </Form.Item>
+      <Form.Item
+        dependencies={['dhcpId']}
+        noStyle
+      >
+        {
+          ({ getFieldValue }) => {
+            return <DhcpDetailDrawer dhcpId={getFieldValue('dhcpId')} />
+          }
+        }
+      </Form.Item>
+      <AddEdgeDhcpServiceModal />
+    </Space>
+  </Form.Item>
 
   return content
 }

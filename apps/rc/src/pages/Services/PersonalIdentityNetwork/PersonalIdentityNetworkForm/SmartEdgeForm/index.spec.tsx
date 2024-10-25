@@ -80,11 +80,11 @@ jest.mock('@acx-ui/rc/components', () => ({
 
 const mockedFinishFn = jest.fn()
 
-const createNsgPath = '/:tenantId/t/' + getServiceRoutePath({
-  type: ServiceType.NETWORK_SEGMENTATION,
+const createPinPath = '/:tenantId/t/' + getServiceRoutePath({
+  type: ServiceType.PIN,
   oper: ServiceOperation.EDIT
 })
-const editNsgPath = '/:tenantId/t/services/personalIdentityNetwork/:serviceId/edit'
+const editPinPath = '/:tenantId/t/services/personalIdentityNetwork/:serviceId/edit'
 
 const { mockEdgeDhcpDataList } = EdgeDHCPFixtures
 
@@ -125,7 +125,7 @@ describe('PersonalIdentityNetworkForm - SmartEdgeForm', () => {
           </StepsForm>
         </PersonalIdentityNetworkFormContext.Provider>
       </Provider>, {
-        route: { params, path: createNsgPath }
+        route: { params, path: createPinPath }
       })
 
     await user.selectOptions(
@@ -146,7 +146,7 @@ describe('PersonalIdentityNetworkForm - SmartEdgeForm', () => {
           <StepsForm><SmartEdgeForm /></StepsForm>
         </PersonalIdentityNetworkFormContext.Provider>
       </Provider>, {
-        route: { params, path: createNsgPath }
+        route: { params, path: createPinPath }
       })
 
     await user.selectOptions(
@@ -181,7 +181,7 @@ describe('PersonalIdentityNetworkForm - SmartEdgeForm', () => {
           </StepsForm>
         </PersonalIdentityNetworkFormContext.Provider>
       </Provider>,
-      { route: { params, path: createNsgPath } })
+      { route: { params, path: createPinPath } })
     await user.selectOptions(
       await screen.findByRole('combobox', { name: 'Cluster' }),
       await screen.findByRole('option', { name: 'Edge Cluster 1' })
@@ -217,7 +217,7 @@ describe('PersonalIdentityNetworkForm - SmartEdgeForm', () => {
           </StepsForm>
         </PersonalIdentityNetworkFormContext.Provider>
       </Provider>,
-      { route: { params, path: createNsgPath } })
+      { route: { params, path: createPinPath } })
     await user.click((await screen.findAllByRole('button', { name: 'Add' }))[1])
     await screen.findByText('Please select Cluster')
     await screen.findByText('Please enter Number of Segments')
@@ -239,9 +239,12 @@ describe('PersonalIdentityNetworkForm - SmartEdgeForm', () => {
           </StepsForm>
         </PersonalIdentityNetworkFormContext.Provider>
       </Provider>,
-      { route: { params, path: editNsgPath } })
+      { route: { params, path: editPinPath } })
+
+    const clusterDropdown = await screen.findByRole('combobox', { name: 'Cluster' })
+    expect(clusterDropdown).toBeDisabled()
     await user.selectOptions(
-      await screen.findByRole('combobox', { name: 'Cluster' }),
+      clusterDropdown,
       await screen.findByRole('option', { name: 'Edge Cluster 1' })
     )
     const dhcpSelect = screen.getByRole('combobox', { name: 'DHCP Service' })
@@ -254,7 +257,7 @@ describe('PersonalIdentityNetworkForm - SmartEdgeForm', () => {
     await waitFor(() => expect(mockedNavigate).toBeCalledWith({
       hash: '',
       pathname: `/${params.tenantId}/t/${getServiceDetailsLink({
-        type: ServiceType.NETWORK_SEGMENTATION,
+        type: ServiceType.PIN,
         oper: ServiceOperation.DETAIL,
         serviceId: params.serviceId!
       })}`,

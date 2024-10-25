@@ -119,7 +119,7 @@ export function VenuePropertyTab () {
   const [apMap, setApMap] = useState(new Map())
   const [switchMap, setSwitchMap] = useState(new Map())
   const [connectionMeteringMap, setConnectionMeteringMap] = useState(new Map())
-  const [withNsg, setWithNsg] = useState(true)
+  const [withPin, setWithPin] = useState(true)
   const [drawerState, setDrawerState] = useState<{
     isEdit: boolean,
     visible: boolean,
@@ -201,7 +201,7 @@ export function VenuePropertyTab () {
     if (!propertyConfigsQuery.data?.personaGroupId) return
 
     getPersonaGroupById({ params: { groupId: propertyConfigsQuery.data.personaGroupId } })
-      .then(result => setWithNsg(!!result.data?.personalIdentityNetworkId))
+      .then(result => setWithPin(!!result.data?.personalIdentityNetworkId))
 
     setGroupId(propertyConfigsQuery.data.personaGroupId)
   }, [propertyConfigsQuery.data])
@@ -464,7 +464,7 @@ export function VenuePropertyTab () {
       align: 'center',
       render: (_, row) => personaMap.get(row.personaId)?.vlan
     },
-    ...withNsg ? [
+    ...withPin ? [
       {
         key: 'accessPoint',
         title: $t({ defaultMessage: 'Access Point' }),

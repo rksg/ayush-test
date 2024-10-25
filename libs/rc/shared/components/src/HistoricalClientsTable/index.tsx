@@ -1,10 +1,11 @@
-import { useEffect } from 'react'
+import { memo, useEffect } from 'react'
 
 import { Typography } from 'antd'
 import moment         from 'moment-timezone'
 import { useIntl }    from 'react-intl'
 
 import { cssStr, Subtitle, Table, TableProps, Loader } from '@acx-ui/components'
+import { useIsSplitOn, Features }                      from '@acx-ui/feature-toggle'
 import { formatter, DateFormatEnum }                   from '@acx-ui/formatter'
 import { useGetHistoricalClientListQuery }             from '@acx-ui/rc/services'
 import {
@@ -118,12 +119,13 @@ const defaultFilters = {
   eventId: ['204', '205', '208', '218']
 }
 
-export function HistoricalClientsTable
-({ searchString, setHistoricalClientCount } :
+export const HistoricalClientsTable =
+memo(({ searchString, setHistoricalClientCount } :
   { searchString: string, setHistoricalClientCount: (historicalClientCount: number) => void
-  }) {
+  }) => {
   const { $t } = useIntl()
   const params = useParams()
+  const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
 
   defaultHistoricalClientPayload.searchString = searchString
   defaultHistoricalClientPayload.filters =
@@ -162,6 +164,7 @@ export function HistoricalClientsTable
             pagination={tableQuery.pagination}
             onChange={tableQuery.handleTableChange}
             rowKey='clientMac'
+            filterPersistence={enabledUXOptFeature}
           />
           {!!tableQuery.data?.data?.length && <Typography.Text style={{
             fontSize: '10px',
@@ -179,7 +182,7 @@ export function HistoricalClientsTable
   return (
     <HistoricalClientsTable />
   )
-}
+})
 
 export const GlobalSearchHistoricalClientsTable = (props: {
   tableQuery?: TableQuery<Client, RequestPayload<unknown>, unknown>

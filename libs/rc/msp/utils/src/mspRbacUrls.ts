@@ -380,5 +380,15 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/entitlements/compliances/query',
     newApi: true
+  },
+  getEntitlementsAttentionNotes: {
+    method: 'post',
+    url: '/entitlements/attentionNotes/query',
+    newApi: true
+  },
+  getCalculatedLicences: {
+    method: 'post',
+    url: '/entitlements/availabilityReports/query',
+    newApi: true
   }
 }

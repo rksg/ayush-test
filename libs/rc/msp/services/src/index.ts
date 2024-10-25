@@ -34,7 +34,9 @@ import {
   MspEcWithVenue,
   MspRbacUrlsInfo,
   MspCompliances,
-  RecommendFirmwareUpgradeByApModel
+  LicenseAttentionNotes,
+  RecommendFirmwareUpgradeByApModel,
+  LicenseCalculatorDataResponse
 } from '@acx-ui/msp/utils'
 import {
   TableResult,
@@ -998,6 +1000,24 @@ export const mspApi = baseMspApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getEntitlementsAttentionNotes: build.query<LicenseAttentionNotes, RequestPayload>({
+      query: ({ params, payload }) => {
+        const request = createHttpRequest(MspRbacUrlsInfo.getEntitlementsAttentionNotes, params)
+        return {
+          ...request,
+          body: payload
+        }
+      }
+    }),
+    getCalculatedLicences: build.mutation<LicenseCalculatorDataResponse, RequestPayload>({
+      query: ({ payload }) => {
+        const request = createHttpRequest(MspRbacUrlsInfo.getCalculatedLicences)
+        return {
+          ...request,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -1113,7 +1133,9 @@ export const {
   useAddBrandCustomersMutation,
   usePatchCustomerMutation,
   useGetMspUploadURLMutation,
-  useGetEntitlementsCompliancesQuery
+  useGetEntitlementsCompliancesQuery,
+  useGetEntitlementsAttentionNotesQuery,
+  useGetCalculatedLicencesMutation
 } = mspApi
 
 export * from './hospitalityVerticalFFCheck'

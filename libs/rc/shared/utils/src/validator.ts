@@ -7,13 +7,15 @@ import {
   remove,
   split,
   isEmpty,
-  uniq
+  uniq,
+  isInteger
 }                from 'lodash'
 
 import { RolesEnum }                                from '@acx-ui/types'
 import { roleStringMap }                            from '@acx-ui/user'
 import { byteCounter, getIntl, validationMessages } from '@acx-ui/utils'
 
+import { AclTypeEnum }                from './constants'
 import { IpUtilsService }             from './ipUtilsService'
 import { Acl, AclExtendedRule, Vlan } from './types'
 
@@ -803,6 +805,16 @@ export function specialCharactersRegExp (value: string) {
   return Promise.resolve()
 }
 
+export function specialCharactersWithNewLineRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/^[\.$A-Za-z0-9_ \n-]+$/)
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.specialCharactersInvalid))
+  }
+  return Promise.resolve()
+}
+
 export function parsePhoneNumber (phoneNumber: string): {
   number: libphonenumber.PhoneNumber,
   type: PhoneNumberType
@@ -953,18 +965,33 @@ export function validateSwitchStaticRouteAdminDistance (ipAddress: string) {
   return Promise.resolve()
 }
 
-export function checkAclName (aclName: string) {
+export function checkAclName (aclName: string, aclType: string) {
   const { $t } = getIntl()
-  if (!/^[a-zA-Z]/.test(aclName)) {
-    return Promise.reject($t(validationMessages.aclNameStartWithoutAlphabetInvalid))
+  if (!isNaN(Number(aclName)) && isInteger(Number(aclName))) {
+    try {
+      const iName = parseInt(aclName, 10)
+      if ((iName < 1 || iName > 99) && aclType === AclTypeEnum.STANDARD) {
+        return Promise.reject($t(validationMessages.aclStandardNumericValueInvalid))
+      }
+      if ((iName < 100 || iName > 199) && aclType === AclTypeEnum.EXTENDED) {
+        return Promise.reject($t(validationMessages.aclExtendedNumericValueInvalid))
+      }
+      return Promise.resolve()
+    } catch (e) {
+      return Promise.reject($t(validationMessages.aclNameStartWithoutAlphabetInvalid))
+    }
+  } else {
+    if (!/^[a-zA-Z]/.test(aclName)) {
+      return Promise.reject($t(validationMessages.aclNameStartWithoutAlphabetInvalid))
+    }
+    if (/["]/.test(aclName)) {
+      return Promise.reject($t(validationMessages.aclNameSpecialCharacterInvalid))
+    }
+    if (aclName.toLowerCase() === 'test') {
+      return Promise.reject($t(validationMessages.aclNameContainsTestInvalid))
+    }
+    return Promise.resolve()
   }
-  if (/["]/.test(aclName)) {
-    return Promise.reject($t(validationMessages.aclNameSpecialCharacterInvalid))
-  }
-  if (aclName.toLowerCase() === 'test') {
-    return Promise.reject($t(validationMessages.aclNameContainsTestInvalid))
-  }
-  return Promise.resolve()
 }
 
 export function validateAclRuleSequence (sequence: number, currrentRecords: AclExtendedRule[]) {

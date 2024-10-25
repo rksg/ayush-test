@@ -15,7 +15,7 @@ import {
   Network,
   NetworkDetail, NetworkVenue,
   NewApGroupViewModelResponseType,
-  PoliciesConfigTemplateUrlsInfo,
+  PoliciesConfigTemplateUrlsInfo, RadioEnum,
   TableResult,
   Venue,
   VlanPoolRbacUrls,
@@ -134,6 +134,7 @@ export const aggregatedRbacVenueNetworksData = (
 
     data.push({
       ...(item as Network),
+      clients: item.clientCount ?? 0,
       activated: calculateRbacNetworkActivated(item, venueId),
       deepNetwork: deepNetwork,
       incompatible: apCompatibilities[item.id] ?? 0
@@ -203,6 +204,7 @@ export const fetchRbacApGroupNetworkVenueList = async (arg:any, fetchWithBQ:any)
   const venueId = arg.params.venueId
   const apGroupId = arg.params.apGroupId
   const apGroupIdsList = arg.payload.apGroupIds
+  const isTemplate = arg.payload.isTemplate
   const apGroupCheckList = apGroupId ? [apGroupId] : [...apGroupIdsList]
 
   let networkDeepListList = {} as { response: NetworkDetail[] }
@@ -255,7 +257,7 @@ export const fetchRbacApGroupNetworkVenueList = async (arg:any, fetchWithBQ:any)
       // Get "select specific AP Groups" settings
       const networkApGroupReqs = networkApGroupParamsList.map(params => {
         return fetchWithBQ(createHttpRequest(
-          arg.payload.isTemplate ? ConfigTemplateUrlsInfo.getNetworkVenueTemplateRbac : WifiRbacUrlsInfo.getNetworkVenue,
+          arg.payload.isTemplate ? ConfigTemplateUrlsInfo.getNetworkVenueTemplateRbac : WifiRbacUrlsInfo.getVenueApGroups,
           params,
           GetApiVersionHeader(ApiVersionEnum.v1)
         ))
@@ -281,6 +283,20 @@ export const fetchRbacApGroupNetworkVenueList = async (arg:any, fetchWithBQ:any)
         apGroupNameMap = apGroupList.data.map((apg) => ({ key: apg.id!, value: apg.name ?? '' }))
       }
 
+      // fetch AP Group vlan pool info
+      const apGroupVenueIds = uniq(networkApGroupParamsList.map(item => item.venueId))
+      let apGroupVlanPoolList = {} as TableResult<VLANPoolViewModelRbacType>
+      if (apGroupVenueIds.length) {
+        const apGroupVlanPoolListQuery = await fetchWithBQ({
+          ...createHttpRequest(
+            isTemplate ? PoliciesConfigTemplateUrlsInfo.getVlanPoolPolicyList : VlanPoolRbacUrls.getVLANPoolPolicyList
+          ),
+          body: JSON.stringify({
+            fields: ['id', 'name', 'wifiNetworkIds', 'wifiNetworkVenueApGroups'],
+            filters: { 'wifiNetworkVenueApGroups.venueId': apGroupVenueIds }
+          }) })
+        apGroupVlanPoolList = apGroupVlanPoolListQuery.data as TableResult<VLANPoolViewModelRbacType>
+      }
 
       networkDeepListRes.forEach((networkDeep) => {
         const networkId = networkDeep.id
@@ -305,12 +321,33 @@ export const fetchRbacApGroupNetworkVenueList = async (arg:any, fetchWithBQ:any)
             return undefined
           }
           const networkApGroupRes = networkApGroupList[venueApGroupIdx]
+          const apGroupName = apGroupNameMap.find(apg => apg.key === params.apGroupId)?.value ?? ''
+
+          const apgVlanPool = apGroupVlanPoolList?.data?.find(vlanPool => {
+            const apGroupsVenueIds: string[] = []
+            const apGroupNetworkIds: string[] = []
+            let apgIds: string[] = []
+            vlanPool.wifiNetworkVenueApGroups.forEach(apg => {
+              apGroupsVenueIds.push(apg.venueId)
+              apGroupNetworkIds.push(apg.wifiNetworkId)
+              apgIds = apgIds.concat(apg.apGroupIds)
+            })
+            const uniqApgIds = uniq(apgIds)
+            return apGroupsVenueIds.includes(params.venueId) &&
+              apGroupNetworkIds.includes(params.networkId) &&
+              uniqApgIds.includes(params.apGroupId)
+          })
 
           return {
             ...networkApGroupRes,
             ...params,
             radio: 'Both',
-            apGroupName: apGroupNameMap.find(apg => apg.key === params.apGroupId)?.value ?? ''
+            isDefault: !apGroupName,
+            apGroupName,
+            ...(apgVlanPool && {
+              vlanPoolId: apgVlanPool.id,
+              vlanPoolName: apgVlanPool.name
+            })
           }
         })
 
@@ -393,7 +430,7 @@ export const fetchRbacAllApGroupNetworkVenueList = async (arg:any, fetchWithBQ:a
       // Get "select specific AP Groups" settings
       const networkApGroupReqs = networkApGroupParamsList.map(params => {
         return fetchWithBQ(createHttpRequest(
-          arg.payload.isTemplate ? ConfigTemplateUrlsInfo.getNetworkVenueTemplateRbac : WifiRbacUrlsInfo.getNetworkVenue,
+          arg.payload.isTemplate ? ConfigTemplateUrlsInfo.getNetworkVenueTemplateRbac : WifiRbacUrlsInfo.getVenueApGroups,
           params,
           GetApiVersionHeader(ApiVersionEnum.v1)
         ))
@@ -443,12 +480,14 @@ export const fetchRbacAllApGroupNetworkVenueList = async (arg:any, fetchWithBQ:a
             return undefined
           }
           const networkApGroupRes = networkApGroupList[venueApGroupIdx]
+          const apGroupName = apGroupNameMap.find(apg => apg.key === params.apGroupId)?.value ?? ''
 
           return {
             ...networkApGroupRes,
             ...params,
             radio: 'Both',
-            apGroupName: apGroupNameMap.find(apg => apg.key === params.apGroupId)?.value ?? ''
+            isDefault: !apGroupName,
+            apGroupName
           }
         })
 
@@ -730,7 +769,7 @@ export const fetchRbacAccessControlSubPolicyNetwork = async (queryArgs: RequestP
     data: {
       ...(l2aclPolicyListInfoQuery.data.data.length ? { l2AclPolicyId: l2aclPolicyListInfoQuery.data.data[0].id, l2AclEnable: true } : {}),
       ...(l3aclPolicyListInfoQuery.data.data.length ? { l3AclPolicyId: l3aclPolicyListInfoQuery.data.data[0].id, l3AclEnable: true } : {}),
-      ...(appAclPolicyListInfoQuery.data.data.length ? { appAclPolicyId: appAclPolicyListInfoQuery.data.data[0].id, applicationPolicyEnable: true } : {}),
+      ...(appAclPolicyListInfoQuery.data.data.length ? { applicationPolicyId: appAclPolicyListInfoQuery.data.data[0].id, applicationPolicyEnable: true } : {}),
       ...(deviceAclPolicyListInfoQuery.data.data.length ? { devicePolicyId: deviceAclPolicyListInfoQuery.data.data[0].id, enableDeviceOs: true } : {})
     }
   }
@@ -901,7 +940,7 @@ export const fetchRbacNetworkVenueList = async (queryArgs: RequestPayload<{ isTe
           }
         })
 
-        const networkVlanPoolId = networkVlanPoolList?.data?.find(vlanPool => vlanPool.wifiNetworkIds?.includes(networkId))?.id
+        const networkVlanPool = networkVlanPoolList?.data?.find(vlanPool => vlanPool.wifiNetworkIds?.includes(networkId))
 
         return {
           ...defaultNetworkVenue,
@@ -909,7 +948,11 @@ export const fetchRbacNetworkVenueList = async (queryArgs: RequestPayload<{ isTe
           ...(venueApGroups && { apGroups: venueApGroups }),
           networkId,
           venueId,
-          ...(networkVlanPoolId && { vlanPoolId: networkVlanPoolId })
+          ...(networkVlanPool && {
+            vlanPoolId: networkVlanPool.id,
+            vlanPoolName: networkVlanPool.name,
+            vlanMembers: networkVlanPool.vlanMembers
+          })
         }
 
       })
@@ -1009,19 +1052,27 @@ export const updateNetworkVenueFn = (isTemplate: boolean = false) : QueryFn<Comm
 
       if (enableRbac) {
         // per ap groups settings and skip the all ap groups setting
-        if (!newPayload?.isAllApGroups && newPayload?.apGroups && oldPayload?.apGroups) {
+        if ((!newPayload?.isAllApGroups && newPayload?.apGroups && oldPayload?.apGroups)
+          || (!oldPayload && newPayload) // new payload and update the ap groups settings
+        ) {
           const {
             updateApGroups,
             addApGroups,
             deleteApGroups,
             activatedVlanPoolParamsList,
             deactivatedVlanPoolParamsList
-          } = apGroupsChangeSet(newPayload, oldPayload)
+          } = apGroupsChangeSet(
+            newPayload,
+            oldPayload ?? {
+              allApGroupsRadio: [RadioEnum._2_4_GHz, RadioEnum._5_GHz],
+              apGroups: []
+            } as unknown as NetworkVenue
+          )
 
           if (addApGroups.length > 0) {
             await Promise.all(addApGroups.map(apGroup => {
               // add ap group to update list when there is not the default setting
-              if (isEqual(apGroup.radioTypes?.sort(), apGroup.allApGroupsRadioTypes) || apGroup.vlanId) {
+              if (!isEqual(apGroup.radioTypes?.sort(), ['2.4-Ghz', '5-Ghz']) || apGroup.vlanId) {
                 updateApGroups.push(apGroup)
               }
 

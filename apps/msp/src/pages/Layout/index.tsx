@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from 'react'
 import { Typography } from 'antd'
 import { useIntl }    from 'react-intl'
 
+import { useBrand360Config } from '@acx-ui/analytics/services'
 import {
   Layout as LayoutComponent,
   LayoutUI
@@ -47,6 +48,7 @@ function Layout () {
   const params = useParams()
   const brand360PLMEnabled = useIsTierAllowed(Features.MSP_HSP_360_PLM_FF)
   const isBrand360Enabled = useIsSplitOn(Features.MSP_BRAND_360) && brand360PLMEnabled
+  const { names: { brand } } = useBrand360Config()
   const { data } = useGetTenantDetailQuery({ params: { tenantId } })
   const { data: userProfile } = useUserProfileContext()
   const companyName = userProfile?.companyName
@@ -147,7 +149,7 @@ function Layout () {
         <HeaderContext.Provider value={{ licenseExpanded, setLicenseExpanded }}>
           <LicenseBanner isMSPUser={true}/>
         </HeaderContext.Provider>
-        { isHospitality &&
+        { isHospitality && !brand.includes('MDU') &&
           <UI.VerticalTitle>
             <Typography.Title level={3}>
               {$t({ defaultMessage: 'Hospitality Edition' })}

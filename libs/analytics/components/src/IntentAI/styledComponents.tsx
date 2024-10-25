@@ -59,7 +59,7 @@ export const AlertNote = styled(UIAlert)`
   &.ant-alert-info {
     padding: 0px 0px;
     border-radius: 10px;
-    background-color: var(--acx-accents-blue-20);
+    background-color: var(--acx-accents-blue-10);
     border: 0px solid;
   }
 `
@@ -75,7 +75,7 @@ export const BannerBG = styled.img`
   top: 0;
   width: 100%;
   height: auto;
-  filter: invert(100%) opacity(0.5)
+  filter: invert(100%) opacity(0.8)
 `
 
 export const Banner = styled.div`

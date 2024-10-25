@@ -31,6 +31,7 @@ export default function ServiceCatalog () {
   const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+  const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
   const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
   // eslint-disable-next-line max-len
@@ -48,7 +49,7 @@ export default function ServiceCatalog () {
         },
         { type: ServiceType.DPSK, categories: [RadioCardCategory.WIFI] },
         {
-          type: ServiceType.NETWORK_SEGMENTATION,
+          type: ServiceType.PIN,
           categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
           disabled: !isEdgePinReady
         },
@@ -79,6 +80,11 @@ export default function ServiceCatalog () {
       title: $t({ defaultMessage: 'Application' }),
       items: [
         { type: ServiceType.MDNS_PROXY, categories: [RadioCardCategory.WIFI] },
+        {
+          type: ServiceType.EDGE_MDNS_PROXY,
+          categories: [RadioCardCategory.EDGE],
+          disabled: !isEdgeMdnsReady
+        },
         { type: ServiceType.WIFI_CALLING, categories: [RadioCardCategory.WIFI] }
       ]
     },

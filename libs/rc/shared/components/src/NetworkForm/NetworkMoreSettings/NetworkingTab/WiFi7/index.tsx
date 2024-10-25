@@ -108,7 +108,7 @@ const CheckboxGroup = ({ wlanData, mloEnabled, wifi7Enabled } :
             .filter(value => value === true)
             .length
           if (mloEnabled && numberOfSelected < MUST_SELECTED) {
-            return Promise.reject($t({ defaultMessage: 'Please select two radios' }))
+            return Promise.reject($t({ defaultMessage: 'Please select at least two radios' }))
           }
 
           return Promise.resolve()}
@@ -262,10 +262,8 @@ function WiFi7 () {
                   {$t({ defaultMessage: 'Enable Multi-Link operation (MLO)' })}
                   {/* eslint-disable max-len */}
                   <Tooltip.Question
-                    title={$t({ defaultMessage: `Allows Wi-Fi 7 devices to utilize multiple radio channels simultaneously.
-                      Increases network efficiency and better throughput.
-                      Most relevant in high-density environments. To enable, radios for MLO must be active on APs.
-                      Stays disabled when Wi-Fi Network is configured for DPSK3` })
+                    title={$t({ defaultMessage: `MLO allows Wi-Fi 7 devices to use multiple radio channels simultaneously (at least two) for better throughput and efficiency.
+                     For MLO to function, radios on APs must be active, and their usage is determined by AP configuration, which limits the number of supported 6 GHz networks` })
                     }
                     placement='right'
                     iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
@@ -276,8 +274,17 @@ function WiFi7 () {
                   valuePropName='checked'
                   style={{ marginBottom: '15px', width: '300px' }}
                   initialValue={false}
-                  children={<Switch disabled={!wifi7Enabled || isDisableMLO} />}
-                />
+                  children={
+                    isDisableMLO?
+                      <Tooltip
+                        title={$t({
+                          defaultMessage: 'For the functioning of MLO, ensure that either the WPA3 or OWE encryption method is activated.'
+                        })}>
+                        <Switch disabled={!wifi7Enabled || isDisableMLO} />
+                      </Tooltip>
+                      :
+                      <Switch disabled={!wifi7Enabled || isDisableMLO} />
+                  } />
               </UI.FieldLabel>
       }
       <CheckboxGroup wlanData={wlanData} mloEnabled={mloEnabled} wifi7Enabled={wifi7Enabled} />

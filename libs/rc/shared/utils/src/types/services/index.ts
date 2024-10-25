@@ -3,10 +3,11 @@ export * from './edgeDhcpService'
 export * from './edgeFirewallService'
 export * from './dpskService'
 export * from './wifiCallingService'
-export * from './networkSegmentationService'
+export * from './edgePinService'
 export * from './mdnsProxyService'
 export * from './portalService'
 export * from './edgeSdLanService'
+export * from './edgeMdnsProxyService'
 
 export enum AccessEnum {
   ALLOW = 'Allow',

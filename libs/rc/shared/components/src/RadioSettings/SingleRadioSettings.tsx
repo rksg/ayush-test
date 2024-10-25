@@ -4,10 +4,10 @@ import { Col, Row, Form, Switch } from 'antd'
 import { isEmpty }                from 'lodash'
 import { useIntl }                from 'react-intl'
 
-import { Button, cssStr }            from '@acx-ui/components'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { AFCProps }                  from '@acx-ui/rc/utils'
-import { isApFwVersionLargerThan71 } from '@acx-ui/utils'
+import { Button, cssStr }             from '@acx-ui/components'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { AFCProps }                   from '@acx-ui/rc/utils'
+import { isApFwVersionLargerThan711 } from '@acx-ui/utils'
 
 import { RadioSettingsChannels }       from '../RadioSettingsChannels'
 import { findIsolatedGroupByChannel }  from '../RadioSettingsChannels/320Mhz/ChannelComponentStates'
@@ -321,7 +321,7 @@ export function SingleRadioSettings (props:{
         : txPowerAdjustmentOptions
       if (isApTxPowerToggleEnabled) {
         if (context === 'venue'
-          || (context === 'ap' && isApFwVersionLargerThan71(firmwareProps?.firmware))) {
+          || (context === 'ap' && isApFwVersionLargerThan711(firmwareProps?.firmware))) {
           return [...res, ...txPowerAdjustmentExtendedOptions].sort((a, b) => {
             if (a.value === 'MIN') return 1
             if (b.value === 'MIN') return -1

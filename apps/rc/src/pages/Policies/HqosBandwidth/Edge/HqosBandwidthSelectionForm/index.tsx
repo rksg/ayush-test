@@ -2,21 +2,20 @@
 import { Form, Select, Space } from 'antd'
 import { useIntl }             from 'react-intl'
 
-import { useStepFormContext }                     from '@acx-ui/components'
-import { useGetEdgeHqosProfileViewDataListQuery } from '@acx-ui/rc/services'
+import { useGetEdgeHqosProfileViewDataListQuery }  from '@acx-ui/rc/services'
+import { EdgeScopes }                              from '@acx-ui/types'
+import { hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 
 import { AddHqosBandwidthModal }     from './AddHqosBandwidthModal'
-import { HqosBandwidthDeatilDrawer } from './HqosBandwidthDetailDrawer'
+import { HqosBandwidthDetailDrawer } from './HqosBandwidthDetailDrawer'
 
 
 export const EdgeQosProfileSelectionForm = () => {
 
   const { $t } = useIntl()
-  const { form } = useStepFormContext()
-  Form.useWatch('qosId', form)
 
   const {
-    edgeQosOptions, isEdgeQosOptionsLoading
+    edgeHqosOptions, isEdgeHqosOptionsLoading
   } = useGetEdgeHqosProfileViewDataListQuery({
     payload: {
       fields: ['id', 'name'],
@@ -27,11 +26,14 @@ export const EdgeQosProfileSelectionForm = () => {
   }, {
     selectFromResult: ({ data, isLoading }) => {
       return {
-        edgeQosOptions: data?.data.map(item => ({ label: item.name, value: item.id })),
-        isEdgeQosOptionsLoading: isLoading
+        edgeHqosOptions: data?.data.map(item => ({ label: item.name, value: item.id })),
+        isEdgeHqosOptionsLoading: isLoading
       }
     }
   })
+
+  const hasUpdatePermission =!!hasCrossVenuesPermission({ needGlobalPermission: true })
+  && hasPermission({ scopes: [EdgeScopes.CREATE] })
 
 
   const content = <Form.Item
@@ -39,7 +41,7 @@ export const EdgeQosProfileSelectionForm = () => {
     data-testid='edge-cluster-qos-select-form-label'>
     <Space>
       <Form.Item
-        name='qosId'
+        name='hqosId'
         rules={[
           {
             required: true,
@@ -52,13 +54,22 @@ export const EdgeQosProfileSelectionForm = () => {
           style={{ width: '200px' }}
           options={[
             { label: $t({ defaultMessage: 'Select...' }), value: null },
-            ...(edgeQosOptions || [])
+            ...(edgeHqosOptions || [])
           ]}
-          loading={isEdgeQosOptionsLoading}
+          loading={isEdgeHqosOptionsLoading}
         />
       </Form.Item>
-      <HqosBandwidthDeatilDrawer />
-      <AddHqosBandwidthModal />
+      <Form.Item
+        dependencies={['hqosId']}
+        noStyle
+      >
+        {
+          ({ getFieldValue }) => {
+            return <HqosBandwidthDetailDrawer hqosId={getFieldValue('hqosId')} />
+          }
+        }
+      </Form.Item>
+      {hasUpdatePermission && <AddHqosBandwidthModal />}
     </Space>
   </Form.Item>
 

@@ -219,7 +219,6 @@ export function toReactFlowData (
 }
 
 export const DefaultUIConfiguration : UIConfiguration = {
-  disablePoweredBy: false,
   uiColorSchema: {
     fontHeaderColor: 'var(--acx-neutrals-100)',
     backgroundColor: 'var(--acx-primary-white)',
@@ -230,7 +229,9 @@ export const DefaultUIConfiguration : UIConfiguration = {
   },
   uiStyleSchema: {
     logoSize: 'MEDIUM',
-    headerFontSize: 16
+    headerFontSize: 16,
+    wifi4EuNetworkId: '',
+    disablePoweredBy: false
   },
   welcomeName: '',
   welcomeTitle: ''

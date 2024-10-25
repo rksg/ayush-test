@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any, max-len */
 import { useEffect, useMemo, useState } from 'react'
 
 import { FormInstance }            from 'antd'
@@ -88,11 +88,12 @@ import { useParams } from '@acx-ui/react-router-dom'
 
 import { useIsConfigTemplateEnabledByType }               from '../configTemplates'
 import { useEdgeMvSdLanActions }                          from '../EdgeSdLan/useEdgeSdLanActions'
-import { NetworkTunnelActionModalProps }                  from '../NetworkTunnelActionModal'
 import { NetworkTunnelActionForm, NetworkTunnelTypeEnum } from '../NetworkTunnelActionModal/types'
 import { getNetworkTunnelType }                           from '../NetworkTunnelActionModal/utils'
 import { useLazyGetAAAPolicyInstance }                    from '../policies/AAAForm/aaaPolicyQuerySwitcher'
 import { useIsEdgeReady }                                 from '../useEdgeActions'
+
+import type { NetworkTunnelActionModalProps } from '../NetworkTunnelActionModal'
 
 export const TMP_NETWORK_ID = 'tmpNetworkId'
 export interface NetworkVxLanTunnelProfileInfo {
@@ -216,12 +217,10 @@ export function useServicePolicyEnabledWithConfigTemplate (configTemplateType: C
   return false
 }
 
-// eslint-disable-next-line max-len
 export function deriveRadiusFieldsFromServerData (data: NetworkSaveData): NetworkSaveData {
   return {
     ...data,
     isCloudpathEnabled: data.authRadius ? true : false,
-    // eslint-disable-next-line max-len
     enableAccountingService: (data.accountingRadius || data.guestPortal?.wisprPage?.accountingRadius)
       ? true
       : false
@@ -273,7 +272,8 @@ export function useRadiusServer () {
         wlan: {
           macAddressAuthenticationConfiguration: {
             macAuthMacFormat: radiusServerSettings.macAuthMacFormat
-          }
+          },
+          macAuthMacFormat: radiusServerSettings.macAuthMacFormat
         }
       }
 
@@ -299,17 +299,12 @@ export function useRadiusServer () {
     fetchRadiusDetails()
   }, [radiusServerProfiles, radiusServerSettings])
 
-
-  // eslint-disable-next-line max-len
   const updateProfile = async (saveData: NetworkSaveData, networkId?: string) => {
-    if (!resolvedRbacEnabled || !networkId) return Promise.resolve()
-
     const mutations: Promise<CommonResult>[] = []
 
-    // eslint-disable-next-line max-len
     const radiusServerIdKeys: Extract<keyof NetworkSaveData, 'authRadiusId' | 'accountingRadiusId'>[] = ['authRadiusId', 'accountingRadiusId']
     radiusServerIdKeys.forEach(radiusKey => {
-      const newRadiusId = saveData[radiusKey]
+      const newRadiusId = (radiusKey === 'authRadiusId' || saveData.enableAccountingService) ? saveData[radiusKey] : undefined
       const oldRadiusId = radiusServerConfigurations?.[radiusKey]
 
       if (!newRadiusId && !oldRadiusId) return
@@ -329,20 +324,22 @@ export function useRadiusServer () {
   }
 
   const updateSettings = async (saveData: NetworkSaveData, networkId?: string) => {
-    if (!resolvedRbacEnabled || !networkId) return Promise.resolve()
+    if (!shouldSaveRadiusServerSettings(saveData)) return Promise.resolve()
 
     return await updateRadiusServerSettings({
       params: { networkId },
       payload: {
         enableAccountingProxy: saveData.enableAccountingProxy,
         enableAuthProxy: saveData.enableAuthProxy,
-        macAuthMacFormat: saveData.wlan?.macAddressAuthenticationConfiguration?.macAuthMacFormat
+        macAuthMacFormat: resolveMacAuthFormat(saveData)
       }
     }).unwrap()
   }
 
   // eslint-disable-next-line max-len
   const updateRadiusServer = async (saveData: NetworkSaveData, networkId?: string) => {
+    if (!resolvedRbacEnabled || !networkId) return Promise.resolve()
+
     return Promise.all([
       updateProfile(saveData, networkId),
       updateSettings(saveData, networkId)
@@ -353,6 +350,28 @@ export function useRadiusServer () {
     updateRadiusServer,
     radiusServerConfigurations
   }
+}
+
+function resolveMacAuthFormat (newSettings: NetworkSaveData): string | undefined {
+  return newSettings.type === NetworkTypeEnum.AAA
+    ? newSettings.wlan?.macAddressAuthenticationConfiguration?.macAuthMacFormat
+    : newSettings.wlan?.macAuthMacFormat
+}
+
+function shouldSaveRadiusServerSettings (saveData: NetworkSaveData): boolean {
+  switch (saveData.type) {
+    case NetworkTypeEnum.PSK:
+    case NetworkTypeEnum.OPEN:
+      return !!saveData.wlan?.macAuthMacFormat
+    case NetworkTypeEnum.DPSK:
+      return !!saveData.isCloudpathEnabled
+    case NetworkTypeEnum.AAA:
+      return !saveData.useCertificateTemplate
+    case NetworkTypeEnum.CAPTIVEPORTAL:
+      return saveData.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.Cloudpath
+  }
+
+  return false
 }
 
 export function useClientIsolationActivations (shouldSkipMode: boolean,
@@ -399,15 +418,15 @@ export function useClientIsolationActivations (shouldSkipMode: boolean,
 
     const bindData = _.filter(saveData?.venues, v =>
       v.clientIsolationAllowlistId != null &&
-        (!_.some(oldSaveData?.venues, { id: v.id }) ||
-          _.some(oldSaveData?.venues, ov => ov.id === v.id
+        (!_.some(oldSaveData?.venues, { venueId: v.venueId }) ||
+          _.some(oldSaveData?.venues, ov => ov.venueId === v.venueId
             && ov.clientIsolationAllowlistId !== v.clientIsolationAllowlistId)
         )
     )
 
     const unbindData = _.filter(oldSaveData?.venues, ov =>
       ov.clientIsolationAllowlistId != null &&
-        _.some(saveData?.venues, v => v.id === ov.id && !v.clientIsolationAllowlistId)
+        _.some(saveData?.venues, v => v.venueId === ov.venueId && !v.clientIsolationAllowlistId)
     )
 
     const bindMutations = createMutationPromises(bindData, bindClientIsolation)
@@ -491,7 +510,7 @@ export function useVlanPool () {
     if (!vlanPool && !originalPoolId) return
     if (originalPoolId && !vlanPool) await deactivateVlanPool(networkId, originalPoolId)
     // eslint-disable-next-line max-len
-    if (vlanPool && originalPoolId !== vlanPool.id) await activateVlanPool(vlanPool, networkId, vlanPool.id)
+    if (vlanPool && originalPoolId !== vlanPool.id)  await activateVlanPool(vlanPool, networkId, vlanPool.id)
   }
 
   return {
@@ -615,7 +634,6 @@ export function useAccessControlActivation () {
     useMutationFn: useDeactivateAccessControlProfileOnWifiNetworkMutation,
     useTemplateMutationFn: useDeactivateAccessControlProfileTemplateOnWifiNetworkMutation
   })
-  const { networkId } = useParams()
 
   const accessControlWifiActionMap = {
     l2AclPolicyId: {
@@ -625,10 +643,11 @@ export function useAccessControlActivation () {
       removed: (params: Params<string>) => {
         return deactivateL2Acl({ params, enableRbac: enableServicePolicyRbac }).unwrap()
       },
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       updated: (oldParams: Params<string>, params: Params<string>) => {
         return [
-          deactivateL2Acl({ params: oldParams, enableRbac: enableServicePolicyRbac }).unwrap(),
-          activateL2Acl({ params, enableRbac: enableServicePolicyRbac }).unwrap()
+          deactivateL2Acl({ params: oldParams, enableRbac: enableServicePolicyRbac }).unwrap()
+          // activateL2Acl({ params, enableRbac: enableServicePolicyRbac }).unwrap()
         ]
       }
     },
@@ -639,10 +658,11 @@ export function useAccessControlActivation () {
       removed: (params: Params<string>) => {
         return deactivateL3Acl({ params, enableRbac: enableServicePolicyRbac }).unwrap()
       },
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       updated: (oldParams: Params<string>, params: Params<string>) => {
         return [
-          deactivateL3Acl({ params: oldParams, enableRbac: enableServicePolicyRbac }).unwrap(),
-          activateL3Acl({ params, enableRbac: enableServicePolicyRbac }).unwrap()
+          deactivateL3Acl({ params: oldParams, enableRbac: enableServicePolicyRbac }).unwrap()
+          // activateL3Acl({ params, enableRbac: enableServicePolicyRbac }).unwrap()
         ]
       }
     },
@@ -653,10 +673,11 @@ export function useAccessControlActivation () {
       removed: (params: Params<string>) => {
         return deactivateDevice({ params, enableRbac: enableServicePolicyRbac }).unwrap()
       },
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       updated: (oldParams: Params<string>, params: Params<string>) => {
         return [
-          deactivateDevice({ params: oldParams, enableRbac: enableServicePolicyRbac }).unwrap(),
-          activateDevice({ params, enableRbac: enableServicePolicyRbac }).unwrap()
+          deactivateDevice({ params: oldParams, enableRbac: enableServicePolicyRbac }).unwrap()
+          // activateDevice({ params, enableRbac: enableServicePolicyRbac }).unwrap()
         ]
       }
     },
@@ -667,10 +688,11 @@ export function useAccessControlActivation () {
       removed: (params: Params<string>) => {
         return deactivateApplication({ params, enableRbac: enableServicePolicyRbac }).unwrap()
       },
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       updated: (oldParams: Params<string>, params: Params<string>) => {
         return [
-          activateApplication({ params: oldParams, enableRbac: enableServicePolicyRbac }).unwrap(),
-          deactivateApplication({ params, enableRbac: enableServicePolicyRbac }).unwrap()
+          deactivateApplication({ params: oldParams, enableRbac: enableServicePolicyRbac }).unwrap()
+          // activateApplication({ params, enableRbac: enableServicePolicyRbac }).unwrap()
         ]
       }
     },
@@ -681,11 +703,12 @@ export function useAccessControlActivation () {
       removed: (params: Params<string>) => {
         return deactivateAccessControl({ params, enableRbac: enableServicePolicyRbac }).unwrap()
       },
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       updated: (oldParams: Params<string>, params: Params<string>) => {
         return [
           // eslint-disable-next-line max-len
-          activateAccessControl({ params: oldParams, enableRbac: enableServicePolicyRbac }).unwrap(),
-          deactivateAccessControl({ params, enableRbac: enableServicePolicyRbac }).unwrap()
+          deactivateAccessControl({ params: oldParams, enableRbac: enableServicePolicyRbac }).unwrap()
+          // activateAccessControl({ params, enableRbac: enableServicePolicyRbac }).unwrap()
         ]
       }
     }
@@ -778,13 +801,13 @@ export function useAccessControlActivation () {
     }
 
     return Promise.all([
-      ...addActions,
       ...removeActions,
-      ...updateActions
+      ...updateActions,
+      ...addActions
     ])
   }
 
-  const updateAccessControl = async (formData: NetworkSaveData, data?: NetworkSaveData | null) => {
+  const updateAccessControl = async (formData: NetworkSaveData, data?: NetworkSaveData | null, networkId?: string) => {
     if (!enableServicePolicyRbac || !networkId) return Promise.resolve()
 
     const comparisonResult = comparePayload(
@@ -835,13 +858,13 @@ export const useUpdateSoftGreActivations = () => {
   const [ dectivateSoftGre ] = useDectivateSoftGreMutation()
 
   // eslint-disable-next-line max-len
-  const updateSoftGreActivations = async (networkId: string, updates: NetworkTunnelSoftGreAction, activatedVenues: NetworkVenue[], cloneMode: boolean) => {
+  const updateSoftGreActivations = async (networkId: string, updates: NetworkTunnelSoftGreAction, activatedVenues: NetworkVenue[], cloneMode: boolean, editMode: boolean) => {
     const actions = Object.keys(updates).filter(venueId => {
       return _.find(activatedVenues, { venueId })
     }).map((venueId) => {
       // eslint-disable-next-line max-len
       const action = updates[venueId]
-      if (!cloneMode && !action.newProfileId && action.oldProfileId) {
+      if (editMode && !cloneMode && !action.newProfileId && action.oldProfileId) {
         return dectivateSoftGre({ params: { venueId, networkId, policyId: action.oldProfileId } })
       } else if (action.newProfileId && action.newProfileId !== action.oldProfileId) {
         return activateSoftGre({ params: { venueId, networkId, policyId: action.newProfileId } })
@@ -859,18 +882,18 @@ export const useUpdateSoftGreActivations = () => {
 export const getNetworkTunnelSdLanUpdateData = (
   modalFormValues: NetworkTunnelActionForm,
   sdLanAssociationUpdates: NetworkTunnelSdLanAction[],
-  tunnelModalProps: NetworkTunnelActionModalProps,
+  networkInfo: NetworkTunnelActionModalProps['network'],
   venueSdLanInfo: EdgeMvSdLanViewData
 ) => {
   // networkId is undefined in Add mode.
-  const networkId = tunnelModalProps.network?.id ?? TMP_NETWORK_ID
-  const networkVenueId = tunnelModalProps.network?.venueId
+  const networkId = networkInfo?.id ?? TMP_NETWORK_ID
+  const networkVenueId = networkInfo?.venueId
 
   const formTunnelType = modalFormValues.tunnelType
   const sdLanTunneled = formTunnelType === NetworkTunnelTypeEnum.SdLan
   const sdLanTunnelGuest = modalFormValues.sdLan?.isGuestTunnelEnabled
 
-  const tunnelTypeInitVal = getNetworkTunnelType(tunnelModalProps.network, [], venueSdLanInfo)
+  const tunnelTypeInitVal = getNetworkTunnelType(networkInfo, [], venueSdLanInfo)
   const isFwdGuest = sdLanTunneled ? sdLanTunnelGuest : false
   let isNeedUpdate: boolean = false
 
