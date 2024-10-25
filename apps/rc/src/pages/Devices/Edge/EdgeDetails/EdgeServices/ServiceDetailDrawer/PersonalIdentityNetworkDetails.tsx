@@ -108,7 +108,7 @@ export const PersonalIdentityNetworkDetails = (props: PersonalIdentityNetworkDet
         }
       />
       <Form.Item
-        label={$t({ defaultMessage: 'Persona Group' })}
+        label={$t({ defaultMessage: 'Identity Group' })}
         children={
           <TenantLink to={`users/persona-management/persona-group/${personaGroupData?.id}`}>
             {personaGroupData?.name}
