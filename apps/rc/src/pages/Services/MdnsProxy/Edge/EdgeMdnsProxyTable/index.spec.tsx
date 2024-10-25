@@ -123,7 +123,7 @@ describe('Edge mDNS Proxy Table', () => {
     const rulesNumStr = await within(row1).findByText('3')
     await userEvent.hover(rulesNumStr)
     const tooltip = await screen.findByRole('tooltip', { hidden: true })
-    within(tooltip).getByRole('row', { name: 'AirPlay 5 15' })
+    within(tooltip).getByRole('row', { name: 'AirPrint 33 66' })
   })
 
   it('should go edit page', async () => {
@@ -202,6 +202,7 @@ describe('Edge mDNS Proxy Table', () => {
     mockList[1].name = 'testZero'
     mockList[1].forwardingRules = undefined
     mockList[1].activations = undefined
+
     mockServer.use(
       rest.post(
         EdgeMdnsProxyUrls.getEdgeMdnsProxyViewDataList.url,

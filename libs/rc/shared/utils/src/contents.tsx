@@ -87,7 +87,7 @@ export const SwitchMessages = {
     defaultMessage: 'Based on the switch serial number you entered, compatible stacks of the same model are listed here.'
   }),
   MEMBER_NOT_SUPPORT_STACKING_TOOLTIP: defineMessage({
-    defaultMessage: 'ICX7150-C08P/C08PT does not support stacking'
+    defaultMessage: '{switchModel} does not support stacking'
   }),
   NONOPERATIONAL_SWITCH_NOT_SUPPORT_CONFIGURED: defineMessage({
     defaultMessage: 'The port can not be edited since it is on a switch that is not operational'
@@ -427,7 +427,6 @@ export const mdnsProxyRuleTypeLabelMapping: Record<BridgeServiceEnum, MessageDes
   [BridgeServiceEnum.OPEN_DIRECTORY_MASTER]: defineMessage({ defaultMessage: 'Open Directory Master' }),
   // eslint-disable-next-line max-len
   [BridgeServiceEnum.OPTICAL_DISK_SHARING]: defineMessage({ defaultMessage: 'Optical Disk Sharing' }),
-  [BridgeServiceEnum.OTHER]: defineMessage({ defaultMessage: 'Other' }),
   // eslint-disable-next-line max-len
   [BridgeServiceEnum.SCREEN_SHARING]: defineMessage({ defaultMessage: 'Screen Sharing' }),
   // eslint-disable-next-line max-len
@@ -435,7 +434,8 @@ export const mdnsProxyRuleTypeLabelMapping: Record<BridgeServiceEnum, MessageDes
   [BridgeServiceEnum.SECURE_SHELL]: defineMessage({ defaultMessage: 'Secure Shell' }),
   [BridgeServiceEnum.WWW_HTTP]: defineMessage({ defaultMessage: 'WWW HTTP' }),
   [BridgeServiceEnum.WWW_HTTPS]: defineMessage({ defaultMessage: 'WWW HTTPs' }),
-  [BridgeServiceEnum.XGRID]: defineMessage({ defaultMessage: 'Xgrid' })
+  [BridgeServiceEnum.XGRID]: defineMessage({ defaultMessage: 'Xgrid' }),
+  [BridgeServiceEnum.OTHER]: defineMessage({ defaultMessage: 'Other' })
 }
 
 export const EditPropertyConfigMessages = {

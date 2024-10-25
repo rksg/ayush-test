@@ -170,6 +170,8 @@ export class OpenWlanAdvancedCustomization {
 
   fastRoamingOptions?: FastRoamingOptions
 
+  applicationVisibilityEnabled?: boolean
+
   constructor () {
     this.clientIsolation = true
 
@@ -291,5 +293,7 @@ export class OpenWlanAdvancedCustomization {
     this.qosMapSetOptions = new QosMapSetOptions()
 
     this.fastRoamingOptions = new FastRoamingOptions()
+
+    this.applicationVisibilityEnabled = true
   }
 }
