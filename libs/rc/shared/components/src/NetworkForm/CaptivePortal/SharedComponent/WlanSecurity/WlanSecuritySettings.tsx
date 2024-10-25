@@ -42,10 +42,14 @@ export const WlanSecurityFormItems = () => {
     return data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr
   }
 
+  const isGuestNetworkTypeGuestPass = (): boolean => {
+    return data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.GuestPass
+  }
+
   const isCaptivePortalPskEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_PSK) ||
     isGuestNetworkTypeWISPr()
   const isCaptivePortalOweEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_OWE) ||
-    isGuestNetworkTypeWISPr()
+    isGuestNetworkTypeWISPr() || isGuestNetworkTypeGuestPass()
   const isDeprecateWep = useIsSplitOn(Features.WIFI_WLAN_DEPRECATE_WEP)
 
   useEffect(() => {
