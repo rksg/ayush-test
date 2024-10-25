@@ -394,7 +394,6 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       dataIndex: 'venueName',
       filterKey: 'venueId',
       filterable: filterables ? filterables['venueId'] : false,
-      sorter: true,
       render: (_: ReactNode, row: NewAPModelExtended) => (
         <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
           {row.venueName}

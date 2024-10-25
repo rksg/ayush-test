@@ -140,7 +140,9 @@ import EditFirewall                                                     from './
 import FirewallDetail                                                   from './pages/Services/EdgeFirewall/FirewallDetail'
 import FirewallTable                                                    from './pages/Services/EdgeFirewall/FirewallTable'
 import { AddEdgeSdLan, EdgeSdLanDetail, EdgeSdLanTable, EditEdgeSdLan } from './pages/Services/EdgeSdLan/index'
+import AddEdgeMdnsProxy                                                 from './pages/Services/MdnsProxy/Edge/AddEdgeMdnsProxy'
 import { EdgeMdnsProxyTable }                                           from './pages/Services/MdnsProxy/Edge/EdgeMdnsProxyTable'
+import EditEdgeMdnsProxy                                                from './pages/Services/MdnsProxy/Edge/EditEdgeMdnsProxy'
 import MdnsProxyDetail                                                  from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
 import MdnsProxyForm                                                    from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
 import MdnsProxyTable                                                   from './pages/Services/MdnsProxy/MdnsProxyTable/MdnsProxyTable'
@@ -541,11 +543,31 @@ const edgePinRoutes = () => {
 }
 
 const edgeMdnsRoutes = () => {
-  return <Route
-    path={getServiceRoutePath({ type: ServiceType.EDGE_MDNS_PROXY,
-      oper: ServiceOperation.LIST })}
-    element={<EdgeMdnsProxyTable />}
-  />
+  return <>
+    <Route
+      path={getServiceRoutePath({ type: ServiceType.EDGE_MDNS_PROXY,
+        oper: ServiceOperation.LIST })}
+      element={<EdgeMdnsProxyTable />}
+    />
+    <Route
+      path={getServiceRoutePath({ type: ServiceType.EDGE_MDNS_PROXY,
+        oper: ServiceOperation.CREATE })}
+      element={
+        <ServiceAuthRoute serviceType={ServiceType.EDGE_MDNS_PROXY} oper={ServiceOperation.CREATE}>
+          <AddEdgeMdnsProxy />
+        </ServiceAuthRoute>
+      }
+    />
+    <Route
+      path={getServiceRoutePath({ type: ServiceType.EDGE_MDNS_PROXY,
+        oper: ServiceOperation.EDIT })}
+      element={
+        <ServiceAuthRoute serviceType={ServiceType.EDGE_MDNS_PROXY} oper={ServiceOperation.EDIT}>
+          <EditEdgeMdnsProxy />
+        </ServiceAuthRoute>
+      }
+    />
+  </>
 }
 
 function ServiceRoutes () {

@@ -209,6 +209,10 @@ const tallStyle = css<StyledTable>`
           }
         }
       }
+      &-footer {
+        background: transparent;
+        padding: 8px 0; 
+      }
     }
 
     .ant-pro-card-body {

@@ -539,7 +539,7 @@ describe('useIntentAIActions', () => {
           displayStatus: DisplayStates.active,
           status: Statuses.active,
           statusTrail,
-          metadata: {}
+          metadata: mockAIDrivenRow.metadata
         },{
           id: '17',
           displayStatus: DisplayStates.active,

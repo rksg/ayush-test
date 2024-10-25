@@ -183,7 +183,7 @@ export const wifiNetworklist = {
     },
     {
       apSerialNumbers: ['apSerialNumber1'],
-      apCount: 0,
+      apCount: 1,
       clientCount: 0,
       id: '373377b0cb6e46ea8982b1c80aabe1fa',
       name: 'network-03',
