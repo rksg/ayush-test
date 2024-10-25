@@ -284,7 +284,7 @@ function useColumns () {
     },
     {
       key: 'radSecOptions.certificateAuthorityId',
-      title: $t({ defaultMessage: 'Certificate Authority' }),
+      title: $t({ defaultMessage: 'CA' }),
       dataIndex: 'radSecOptions.certificateAuthorityId',
       filterable: certificateAuthorityNameMap,
       render: (data: ReactNode, row: AAAViewModalType) => {

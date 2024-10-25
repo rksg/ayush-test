@@ -402,27 +402,27 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
             children={<Input />}
           />}
 
-          <Form.Item
-            label={$t({ defaultMessage: 'Trusted Certificate Authority' })}
-            name={['radSecOptions', 'certificateAuthorityId']}
-            initialValue={null}
-            rules={[
-              { required: true }
-            ]}
-            children={
-              <Space>
+          <Space>
+            <Form.Item
+              label={$t({ defaultMessage: 'Trusted Certificate Authority' })}
+              name={['radSecOptions', 'certificateAuthorityId']}
+              initialValue={null}
+              rules={[
+                { required: true }
+              ]}
+              children={
                 <Select
                   options={[
                     { label: $t({ defaultMessage: 'Select...' }), value: null },
                     ...caSelectOptions]} />
-                { hasPolicyPermission({
-                  type: PolicyType.CERTIFICATE_AUTHORITY, oper: PolicyOperation.CREATE }) &&
+              } />
+            { hasPolicyPermission({
+              type: PolicyType.CERTIFICATE_AUTHORITY, oper: PolicyOperation.CREATE }) &&
                 <Button type='link'
                   disabled={caSelectOptions.length >= CERTIFICATE_AUTHORITY_MAX_COUNT}
                   onClick={handleAddCertificateAuthority}
                   children={$t({ defaultMessage: 'Add CA' })} />}
-              </Space>
-            } />
+          </Space>
 
           <Form.Item
             label={$t({ defaultMessage: 'Client Certificate' })}
