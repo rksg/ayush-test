@@ -1050,8 +1050,6 @@ export const updateNetworkVenueFn = (isTemplate: boolean = false) : QueryFn<Comm
       }
       const updateNetworkVenueQuery = await fetchWithBQ(updateNetworkVenueInfo)
 
-      console.log(newPayload, oldPayload)
-
       if (enableRbac) {
         // per ap groups settings and skip the all ap groups setting
         if ((!newPayload?.isAllApGroups && newPayload?.apGroups && oldPayload?.apGroups)
@@ -1065,16 +1063,16 @@ export const updateNetworkVenueFn = (isTemplate: boolean = false) : QueryFn<Comm
             deactivatedVlanPoolParamsList
           } = apGroupsChangeSet(
             newPayload,
-            !oldPayload ? {
+            oldPayload ?? {
               allApGroupsRadio: [RadioEnum._2_4_GHz, RadioEnum._5_GHz],
               apGroups: []
-            } as unknown as NetworkVenue : oldPayload
+            } as unknown as NetworkVenue
           )
 
           if (addApGroups.length > 0) {
             await Promise.all(addApGroups.map(apGroup => {
               // add ap group to update list when there is not the default setting
-              if (!isEqual(apGroup.radioTypes?.sort(), ['2.4-Ghz', '5-Ghz'].sort()) || apGroup.vlanId) {
+              if (!isEqual(apGroup.radioTypes?.sort(), ['2.4-Ghz', '5-Ghz']) || apGroup.vlanId) {
                 updateApGroups.push(apGroup)
               }
 
