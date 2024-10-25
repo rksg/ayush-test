@@ -3,7 +3,8 @@ import { useIntl } from 'react-intl'
 import { SummaryCard, Tooltip }                                                         from '@acx-ui/components'
 import { MdnsProxyFeatureTypeEnum, NewMdnsProxyForwardingRule, transformDisplayNumber } from '@acx-ui/rc/utils'
 
-import { MdnsProxyForwardingRulesTable } from '../MdnsProxyForwardingRulesTable'
+import { MdnsProxyForwardingRulesTable }  from '../MdnsProxyForwardingRulesTable'
+import { ToolTipStyle, toolTipClassName } from '../styledComponents'
 
 export interface MdnsProxyServiceInfoProps {
   rules: NewMdnsProxyForwardingRule[] | undefined
@@ -28,7 +29,7 @@ export function MdnsProxyServiceInfo (props: MdnsProxyServiceInfoProps) {
           children={transformDisplayNumber(rules?.length)}
           dottedUnderline
           placement='bottom'
-          // overlayClassName={UI.toolTipClassName}
+          overlayClassName={toolTipClassName}
           overlayInnerStyle={{ minWidth: 380 }}
         />
         : 0
@@ -36,5 +37,8 @@ export function MdnsProxyServiceInfo (props: MdnsProxyServiceInfoProps) {
     }
   ]
 
-  return <SummaryCard data={mdnsProxyInfo} />
+  return <>
+    <ToolTipStyle/>
+    <SummaryCard data={mdnsProxyInfo} />
+  </>
 }
