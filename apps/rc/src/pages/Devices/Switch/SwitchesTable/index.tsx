@@ -11,8 +11,7 @@ import { Features, useIsSplitOn }                                               
 import { SwitchTable, SwitchTabContext, defaultSwitchPayload, SwitchTableRefType } from '@acx-ui/rc/components'
 import {
   useGetSwitchModelListQuery,
-  useSwitchListQuery,
-  useVenuesListQuery
+  useSwitchListQuery
 } from '@acx-ui/rc/services'
 import {
   usePollingTableQuery
@@ -64,19 +63,6 @@ export default function useSwitchesTable () {
     }]}
   />
 
-  const { venueFilterOptions } = useVenuesListQuery({
-    params: { tenantId }, payload: {
-      fields: ['name', 'country', 'latitude', 'longitude', 'id'],
-      pageSize: 10000,
-      sortField: 'name',
-      sortOrder: 'ASC'
-    }
-  }, {
-    selectFromResult: ({ data }) => ({
-      venueFilterOptions: data?.data.map(v => ({ key: v.id, value: v.name })) || true
-    })
-  })
-
   const { getSwitchModelList } = useGetSwitchModelListQuery({
     params: { tenantId },
     enableRbac: isSwitchRbacEnabled,
@@ -109,7 +95,6 @@ export default function useSwitchesTable () {
       <SwitchTable ref={switchTableRef}
         searchable={true}
         filterableKeys={{
-          venueId: venueFilterOptions,
           model: getSwitchModelList
         }}
       />
