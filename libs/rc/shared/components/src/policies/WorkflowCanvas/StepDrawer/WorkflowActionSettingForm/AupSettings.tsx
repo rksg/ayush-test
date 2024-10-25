@@ -22,6 +22,7 @@ export function AupSettings () {
   const formInstance = Form.useFormInstance()
   const [displayFileOption, setDisplayFileOption] = useState(false)
   const [fileLoading, setFileLoading] = useState(false)
+  const [fileSizeInvalid, setfileSizeInvalid] = useState(false)
   const [uploadFile] = useUploadFileMutation()
   const [deleteFile] = useDeleteFileMutation()
 
@@ -33,18 +34,23 @@ export function AupSettings () {
     setDisplayFileOption(formInstance.getFieldValue('useAupFile'))
   }, [formInstance.getFieldValue('useAupFile')])
 
+  useEffect(() => {
+    formInstance.validateFields()
+  }, [fileLoading])
+
   const validateBeforeUpload = ( file: File | RcFile) => {
     let errorMsg = validateFileSize(file)
     if (errorMsg) {
-      formInstance.setFieldValue('aupFileName',errorMsg as string)
+      setfileSizeInvalid(true)
       return false
     }
+    setfileSizeInvalid(false)
     formInstance.setFieldValue('aupFileName',file.name)
     return true
   }
 
   const validateFileSize = (file: File) => {
-    const maxSize = 1024 * 1024 * 10
+    const maxSize = 6291456
     const bytesFormatter = formatter('bytesFormat')
     let errorMsg = ''
     if (file.size > maxSize) {
@@ -56,12 +62,14 @@ export function AupSettings () {
   }
 
 
-  async function fileUpload (file : RcFile | string | Blob) {
+  async function fileUpload (file: RcFile | string | Blob) {
+    fileDelete()
     const formDataInput = new FormData()
     const fileContext: FileContext = {
       name: formInstance.getFieldValue('aupFileName'),
       type: FileType.AUP_FILE
     }
+
     formDataInput.append('fileDetails',
       new Blob([JSON.stringify(fileContext)],
         { type: 'application/json' }), '')
@@ -72,7 +80,9 @@ export function AupSettings () {
       .then(response => {
         formInstance.setFieldValue('aupFileLocation', response.url)
         formInstance.setFieldValue('useAupFile', true)
-        formInstance.setFieldValue('aupPlainText','')
+        formInstance.setFieldValue('aupPlainText', '')
+        setFileLoading(false)
+        formInstance.validateFields()
       })
   }
 
@@ -91,6 +101,24 @@ export function AupSettings () {
     }
   }
 
+  const fileUrlPresent = async () => {
+    if (null !== formInstance.getFieldValue('aupFileLocation')
+      && '' !== formInstance.getFieldValue('aupFileLocation')
+      && formInstance.getFieldValue('aupFileLocation') !== undefined)
+    {
+      return Promise.resolve()
+    } else {
+      return Promise.reject($t({ defaultMessage: 'Please upload policy file' }))
+    }
+  }
+
+  const invalidFileSize = async ( ) => {
+    if (fileSizeInvalid === true) {
+      return Promise.reject($t({ defaultMessage: 'File size should be upto 6MB' }))
+    } else {
+      return Promise.resolve()
+    }
+  }
   return (<>
     <CommonActionSettings actionType={ActionType.AUP} />
 
@@ -159,9 +187,11 @@ export function AupSettings () {
       <Form.Item
         name={'aupFile'}
         label={$t({ defaultMessage: 'Policy Content' })}
+        validateFirst={true}
         rules={[
-          { required: true },
-          { validator: validateFileLoading }
+          { validator: validateFileLoading },
+          { validator: invalidFileSize },
+          { validator: fileUrlPresent }
         ]}
         valuePropName='file'
         extra={<Button
@@ -185,8 +215,7 @@ export function AupSettings () {
             const { file } = options
             await fileUpload(file)
             setFileLoading(false)
-          }}
-          onChange={fileDelete}>
+          }}>
           <Space style={{ height: '96px' }}>
             { formInstance.getFieldValue('aupFileName')
               ? formInstance.getFieldValue('aupFileName') :
@@ -195,7 +224,7 @@ export function AupSettings () {
               </Typography.Text>}
             <Button
               type='primary'
-              loading={fileLoading}>{formInstance.getFieldValue('aupFileName')
+              loading={fileLoading} >{formInstance.getFieldValue('aupFileName')
                 ? $t({ defaultMessage: 'Change File' })
                 : $t({ defaultMessage: 'Browse' })}
             </Button>
@@ -220,8 +249,8 @@ export function AupSettings () {
           rows={8}
           onChange={() => {
             formInstance.setFieldValue('useAupFile',false)
-            formInstance.setFieldValue('aupFileLocation','')
-            formInstance.setFieldValue('aupFileName','')
+            formInstance.setFieldValue('aupFileLocation', null)
+            formInstance.setFieldValue('aupFileName', null)
           }}/>
       </Form.Item>}
 
