@@ -9,7 +9,7 @@ import { mockVenueOptions } from './__tests__/fixtures'
 
 import { VenueSelector } from '.'
 
-describe('ApSelector', () => {
+describe('VenueSelector', () => {
   it('should render the selector', async () => {
     mockServer.use(
       rest.post(
