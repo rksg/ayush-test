@@ -12,15 +12,17 @@ import {
   useDeleteTenantAuthenticationsMutation,
   useGetServerCertificatesQuery
 } from '@acx-ui/rc/services'
-import {  SamlFileType, TenantAuthentications, TenantAuthenticationType } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink, useParams }                          from '@acx-ui/react-router-dom'
-import { getTenantId, loadImageWithJWT }                                  from '@acx-ui/utils'
+import { downloadFile, SamlFileType, TenantAuthentications, TenantAuthenticationType } from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink, useParams }                                       from '@acx-ui/react-router-dom'
+import { getTenantId, loadImageWithJWT }                                               from '@acx-ui/utils'
 
 import { reloadAuthTable } from '../AppTokenFormItem/'
 
 import { SetupAzureDrawer } from './SetupAzureDrawer'
+import * as UI              from './styledComponents'
 import { ButtonWrapper }    from './styledComponents'
 import { ViewXmlModal }     from './ViewXmlModal'
+
 
 interface AuthServerFormItemProps {
   className?: string;
@@ -149,82 +151,84 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
 
         {hasSsoConfigured && <Col style={{ width: '400px', paddingLeft: 0 }}>
           <Card type='solid-bg' >
-            {isGoogleWorkspaceEnabled && <div>
-              <Form.Item
-                colon={false}
-                label={$t({ defaultMessage: 'Type' })} />
-              <h3 style={{ marginTop: '-15px' }}>
-                {authenticationData?.authenticationType === TenantAuthenticationType.saml
-                  ? $t({ defaultMessage: 'SAML' })
-                  : $t({ defaultMessage: 'Google Workspace' })
-                }</h3>
-            </div>}
-            {isGroupBasedLoginEnabled && <div>
-              <Form.Item
-                colon={false}
-                label={$t({ defaultMessage: 'Allowed Domains' })} />
-              <h3 style={{ marginTop: '-15px' }}>
-                {authenticationData?.domains?.toString()}</h3>
-            </div>}
-            <Form.Item
-              colon={false}
-              label={$t({ defaultMessage: 'IdP Metadata' })}
-            />
-            <div style={{ marginTop: '-15px' }}><Button type='link'
-              key='viewxml'
-              onClick={async () => {
-                const isDirectUrl = authenticationData?.samlFileType === SamlFileType.direct_url
-                if (isDirectUrl) {
-                  setXmlData(authenticationData?.samlFileURL || '')
-                } else {
-                  const rbacUrl = `/tenants/${authenticationData?.samlFileURL}/urls`
-                  const url = await loadImageWithJWT(authenticationData?.samlFileURL as string,
-                    isRbacEnabled ? rbacUrl : undefined
-                  )
-                  await fetch(url)
-                    .then((response) => response.text())
-                    .then((text) => {
-                      setXmlData(text)
-                    })
-                }
-                setModalVisible(true)
-              }}>
-              {$t({ defaultMessage: 'View XML code' })}
-            </Button></div>
-            {loginSsoSignatureEnabled && <div>
-              <Form.Item
-                colon={false}
-                label={$t({ defaultMessage: 'Require SAML requests to be signed' })} />
-              <h3 style={{ marginTop: '-15px' }}>
-                {authenticationData?.samlSignatureEnabled
-                  ? $t({ defaultMessage: 'YES' })
-                  : $t({ defaultMessage: 'NO' })}
-              </h3>
-            </div>}
-            {(isSsoEncryptionEnabled && authenticationData?.samlEncryptionCertificateId) &&
+            <UI.FormItemWrapper direction='vertical' size={5}>
+              {isGoogleWorkspaceEnabled && <div>
+                <Form.Item
+                  colon={false}
+                  label={$t({ defaultMessage: 'Type' })} />
+                <h3>
+                  {authenticationData?.authenticationType === TenantAuthenticationType.saml
+                    ? $t({ defaultMessage: 'SAML' })
+                    : $t({ defaultMessage: 'Google Workspace' })
+                  }</h3>
+              </div>}
+              {isGroupBasedLoginEnabled && <div>
+                <Form.Item
+                  colon={false}
+                  label={$t({ defaultMessage: 'Allowed Domains' })} />
+                <h3>{authenticationData?.domains?.toString()}</h3>
+              </div>}
+              <div>
+                <Form.Item
+                  colon={false}
+                  label={$t({ defaultMessage: 'IdP Metadata' })}
+                />
+                <Button type='link'
+                  key='viewxml'
+                  onClick={async () => {
+                    const isDirectUrl = authenticationData?.samlFileType === SamlFileType.direct_url
+                    if (isDirectUrl) {
+                      setXmlData(authenticationData?.samlFileURL || '')
+                    } else {
+                      const rbacUrl = `/tenants/${authenticationData?.samlFileURL}/urls`
+                      const url = await loadImageWithJWT(authenticationData?.samlFileURL as string,
+                        isRbacEnabled ? rbacUrl : undefined
+                      )
+                      await fetch(url)
+                        .then((response) => response.text())
+                        .then((text) => {
+                          setXmlData(text)
+                        })
+                    }
+                    setModalVisible(true)
+                  }}>
+                  {$t({ defaultMessage: 'View XML code' })}
+                </Button>
+              </div>
+              {loginSsoSignatureEnabled && <div>
+                <Form.Item
+                  colon={false}
+                  label={$t({ defaultMessage: 'Require SAML requests to be signed' })} />
+                <h3>
+                  {authenticationData?.samlSignatureEnabled
+                    ? $t({ defaultMessage: 'YES' })
+                    : $t({ defaultMessage: 'NO' })}
+                </h3>
+              </div>}
+              {(isSsoEncryptionEnabled && authenticationData?.samlEncryptionCertificateId) &&
             <div>
               <Form.Item
                 colon={false}
                 label={$t({ defaultMessage: 'SSO SAML Decryption Certificate' })} />
-              <h3 style={{ marginTop: '-15px' }}>
-                {certificate ? certificate.name : ''}</h3>
+              <h3>{certificate ? certificate.name : ''}</h3>
             </div>}
-            <div style={{ marginTop: '5px' }}><Button type='link'
-              key='manageusers'
-              onClick={() => {
-                navigate(linkToAdministrators)
-              }}>
-              {$t({ defaultMessage: 'Manage SSO Users' })}
-            </Button></div>
-            {isSsoEncryptionEnabled && <div style={{ marginTop: '5px' }}><Button type='link'
-              key='manageusers'
-              onClick={async () => {
-                const tenantId = getTenantId()
-                const ssoUrl = `https://ruckus.cloud/saml2/service-provider-metadata/${tenantId}`
-                window.open(ssoUrl, '_blank')
-              }}>
-              {$t({ defaultMessage: 'Download SAML Metadata' })}
-            </Button></div>}
+              <div style={{ marginTop: '5px' }}><Button type='link'
+                key='manageusers'
+                onClick={() => {
+                  navigate(linkToAdministrators)
+                }}>
+                {$t({ defaultMessage: 'Manage SSO Users' })}
+              </Button></div>
+              {isSsoEncryptionEnabled && <div style={{ marginTop: '5px' }}><Button type='link'
+                key='manageusers'
+                onClick={async () => {
+                  const tenantId = getTenantId()
+                  const ssoUrl = `https://ruckus.cloud/saml2/service-provider-metadata/${tenantId}`
+                  await fetch(ssoUrl).then(res => downloadFile(res, 'saml_metadata'))
+                }}>
+                {$t({ defaultMessage: 'Download SAML Metadata' })}
+              </Button></div>}
+            </UI.FormItemWrapper>
           </Card>
         </Col>
         }

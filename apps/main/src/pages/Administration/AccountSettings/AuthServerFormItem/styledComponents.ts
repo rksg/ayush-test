@@ -41,3 +41,11 @@ export const ButtonWrapper = styled(Space)`
     background: var(--acx-primary-black);
   }
 `
+export const FormItemWrapper = styled(Space)`
+  .ant-form-item {
+    margin-bottom: -5px;
+  }
+  h3 {
+    overflow-wrap: break-word;
+  }
+`
