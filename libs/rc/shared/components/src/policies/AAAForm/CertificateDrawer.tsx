@@ -4,9 +4,6 @@ import { Drawer } from '@acx-ui/components'
 
 import { WifiOperatorForm } from '../WifiOperator'
 
-// TODO
-//import { CertificateForm } from '../../../policies/Certificate'
-
 interface CertificateDrawerProps {
     visible: boolean,
     setVisible: (v: boolean) => void,

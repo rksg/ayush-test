@@ -91,8 +91,8 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
         const d = edit ? data?.data
           : data?.data?.filter(item => item.status?.includes(CertificateStatusType.VALID))
         const clientCertOptions = d?.map(item => ({
-          label: item.name, value: item.id, status: item.status })) ?? []
-        const selectedClientCert = radiusId && d?.filter(item => item.name
+          label: item.commonName, value: item.id, status: item.status })) ?? []
+        const selectedClientCert = radiusId && d?.filter(item => item.commonName
           ?.includes(radiusId)).map(item => item.id)?.at(0) // TODO : replace item.id by item.radiusIds when ca query API ready
         return { clientCertSelectOptions: clientCertOptions,
           selectedClientCertId: selectedClientCert }
@@ -350,11 +350,11 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
             </Form.Item>
             { hasPolicyPermission({
               type: PolicyType.CERTIFICATE_AUTHORITY, oper: PolicyOperation.CREATE }) &&
-          <Button type='link'
-            disabled={caSelectOptions.length >= CERTIFICATE_AUTHORITY_MAX_COUNT}
-            onClick={handleAddCertificateAuthority}
-            children={$t({ defaultMessage: 'Add CA' })} />
-            }
+              <Button type='link'
+                disabled={caSelectOptions.length >= CERTIFICATE_AUTHORITY_MAX_COUNT}
+                onClick={handleAddCertificateAuthority}
+                children={$t({ defaultMessage: 'Add CA' })}
+                hidden={true}/>}
           </Space>
           <Form.Item
             label={$t({ defaultMessage: 'Client Certificate' })}
@@ -376,9 +376,10 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
             clientCertStatus.includes(CertificateStatusType.REVOKED) ?
             <CertificateWarning status={clientCertStatus}/> : []}
           <Button type='link'
-            disabled={clientCertSelectOptions.length >= CERTIFICATE_MAX_COUNT} // TODO
+            disabled={clientCertSelectOptions.length >= CERTIFICATE_MAX_COUNT}
             onClick={handleAddClientCertificate}
-            children={$t({ defaultMessage: 'Generate new client certificate' })} />
+            children={$t({ defaultMessage: 'Generate new client certificate' })}
+            hidden={true}/>
         </UI.RacSecDiv>
         }
         <Space direction='vertical' size='middle' style={{ display: 'flex' }}>

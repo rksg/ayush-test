@@ -36,7 +36,6 @@ export const AaaInstance = (props: AaaInstanceProps) => {
   const params = useParams()
   const form = Form.useFormInstance()
 
-  // TODO, add tlsEnabled for filtering
   const { type, serverLabel } = props
   const radiusType = radiusTypeMap[type]
   const radiusIdName = type + 'Id'

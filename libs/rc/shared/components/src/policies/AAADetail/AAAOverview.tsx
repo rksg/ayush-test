@@ -50,7 +50,7 @@ export default function AAAOverview (props: { aaaProfile?: AAAPolicyType }) {
   }, {
     selectFromResult: ({ data }) => ({
       clientCertificateNameMap: data?.data
-        ? data.data.map(cc => ({ key: cc.id, value: cc.name }))
+        ? data.data.map(cc => ({ key: cc.id, value: cc.commonName }))
         : emptyResult
     })
   })

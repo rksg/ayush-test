@@ -222,7 +222,7 @@ function useColumns () {
   }, {
     selectFromResult: ({ data }) => ({
       clientCertificateMap: data?.data
-        ? data.data.map(cc => ({ key: cc.id, value: cc.name, status: cc.status }))
+        ? data.data.map(cc => ({ key: cc.id, value: cc.commonName, status: cc.status }))
         : emptyCertificateResult
     })
   })
