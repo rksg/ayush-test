@@ -7,10 +7,9 @@ import type { BaseCascaderProps, CascaderOption } from '@acx-ui/components'
 import { get }                                    from '@acx-ui/config'
 import type { FilterListNode, PathNode }          from '@acx-ui/utils'
 
-import { isAPListNodes, isNetworkNodes } from '../../../types'
+import { isAPListNodes, isNetworkNodes } from './types'
 
-
-import type { APListNodes, NetworkNodes, NetworkPaths } from '../../../types'
+import type { APListNodes, NetworkNodes, NetworkPaths } from './types'
 
 const root = defaultNetworkPath[0]
 const ap = (mac: string) => ({ type: 'AP', name: mac })

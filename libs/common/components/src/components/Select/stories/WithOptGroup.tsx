@@ -31,11 +31,12 @@ export function WithOptGroup () {
         />
       </Select>
     </div>
+
     <div>
-      <p>Multiple:</p>
+      <p>Radio:</p>
       <Select
         {...defaultProps}
-        mode='multiple'
+        type='radio'
       >
         <Select.OptGroup
           key='group1'
@@ -44,6 +45,36 @@ export function WithOptGroup () {
             key={option.value}
             value={option.value}
             children={option.label}
+          />)}
+        />
+        <Select.OptGroup
+          key='group2'
+          label='Group 2'
+          children={defaultOption?.map(option => <Select.Option
+            key={option.value * 4}
+            value={option.value * 4}
+            children={option.label}
+          />)}
+        />
+      </Select>
+    </div>
+
+    <div>
+      <p>Multiple:</p>
+      <Select
+        {...defaultProps}
+        mode='multiple'
+        optionFilterProp='label'
+        defaultValue={[1]}
+      >
+        <Select.OptGroup
+          key='group1'
+          label='Group 1'
+          children={defaultOption?.map(option => <Select.Option
+            key={option.value}
+            value={option.value}
+            children={option.label}
+            disabled={option.value === 1}
           />)}
         />
         <Select.OptGroup

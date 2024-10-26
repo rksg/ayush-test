@@ -16,6 +16,8 @@ export const Summary:React.FC<{ kpiQuery:ReturnType<typeof useIntentAIEcoFlexQue
   const { form } = useStepFormContext<Intent>()
   const isEnabled = form.getFieldValue('preferences').enable
   const enableExcludedHours = form.getFieldValue('preferences').enableExcludedHours
+  const enableExcludedAPs = form.getFieldValue('preferences').enableExcludedAPs
+
   return <Row gutter={20}>
     <Col span={16}>
       <StepsForm.Title children={$t({ defaultMessage: 'Summary' })} />
@@ -30,6 +32,12 @@ export const Summary:React.FC<{ kpiQuery:ReturnType<typeof useIntentAIEcoFlexQue
             label={$t({ defaultMessage: 'Hours not applied for EcoFlex' })}
           >
             {$t({ defaultMessage: 'PowerSave will not be triggered during specific hours set in the Settings.' })}
+          </Form.Item>
+          }
+          {enableExcludedAPs && <Form.Item
+            label={$t({ defaultMessage: 'APs not applied for EcoFlex' })}
+          >
+            {$t({ defaultMessage: 'PowerSave will not be triggered for the specific APs set in the Settings.' })}
           </Form.Item>
           }
         </>

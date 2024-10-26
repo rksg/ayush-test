@@ -18,9 +18,9 @@ import {
   transformTitleCase,
   RadioProperties
 } from '@acx-ui/rc/utils'
-import { useLocation }                                             from '@acx-ui/react-router-dom'
-import { isApFwVersionLargerThan71, noDataDisplay, useDateFilter } from '@acx-ui/utils'
-import type { AnalyticsFilter }                                    from '@acx-ui/utils'
+import { useLocation }                                              from '@acx-ui/react-router-dom'
+import { isApFwVersionLargerThan711, noDataDisplay, useDateFilter } from '@acx-ui/utils'
+import type { AnalyticsFilter }                                     from '@acx-ui/utils'
 
 import IncidentStackedBar              from './IncidentStackedBar'
 import * as UI                         from './styledComponents'
@@ -66,7 +66,7 @@ export function APDetailsCard (props: {
 
   const getTxPowerDisplayInfo = (currentAP: ApViewModel, channel: RadioProperties) => {
     if (isApTxPowerToggleEnabled) {
-      return ((isApFwVersionLargerThan71(currentAP?.fwVersion))?
+      return ((isApFwVersionLargerThan711(currentAP?.fwVersion))?
         channel?.actualTxPower : channel?.txPower) || noDataDisplay
     }
     return channel?.txPower || noDataDisplay
