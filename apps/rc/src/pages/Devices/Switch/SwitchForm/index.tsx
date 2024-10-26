@@ -16,7 +16,7 @@ import {
   Alert,
   showToast
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import {
   switchApi,
   useGetSwitchQuery,
@@ -26,9 +26,11 @@ import {
   useLazyGetSwitchListQuery,
   useSwitchDetailHeaderQuery,
   useLazyGetVlansByVenueQuery,
+  useGetSwitchAuthenticationQuery,
   useGetSwitchVenueVersionListQuery,
   useGetSwitchListQuery,
-  useGetSwitchVenueVersionListV1001Query
+  useGetSwitchVenueVersionListV1001Query,
+  useUpdateSwitchAuthenticationMutation
 } from '@acx-ui/rc/services'
 import {
   SwitchMessages,
@@ -84,6 +86,8 @@ export function SwitchForm () {
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isSwitchFirmwareV1002Enabled = useIsSplitOn(Features.SWITCH_FIRMWARE_V1002_TOGGLE)
+  const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
 
   const { $t } = useIntl()
   const { tenantId, switchId, action } = useParams()
@@ -92,7 +96,6 @@ export function SwitchForm () {
   const location = useLocation()
   const formRef = useRef<StepsFormLegacyInstance<Switch>>()
   const basePath = useTenantLink('/devices/')
-  const isSwitchFirmwareV1002Enabled = useIsSplitOn(Features.SWITCH_FIRMWARE_V1002_TOGGLE)
 
   const venuesList = useGetSwitchVenueVersionListQuery({
     params: { tenantId: tenantId },
@@ -116,6 +119,7 @@ export function SwitchForm () {
   const [addSwitch] = useAddSwitchMutation()
   const [updateSwitch] = useUpdateSwitchMutation()
   const [addStackMember] = useAddStackMemberMutation()
+  const [updateSwitchAuthentication] = useUpdateSwitchAuthenticationMutation()
   const [venueOption, setVenueOption] = useState([] as DefaultOptionType[])
   const [dhcpClientOption, setDhcpClientOption] = useState([] as DefaultOptionType[])
   const [switchRole, setSwitchRole] = useState(MEMEBER_TYPE.STANDALONE as MEMEBER_TYPE)
@@ -133,6 +137,7 @@ export function SwitchForm () {
   const [disableIpSetting, setDisableIpSetting] = useState(false)
   const dataFetchedRef = useRef(false)
   const [previousPath, setPreviousPath] = useState('')
+  const [isSwitchFirmwareAbove10010f, setIsSwitchFirmwareAbove10010f] = useState(false)
 
   const [currentFirmwareV1002, setCurrentFirmwareV1002] =
     useState([] as FirmwareSwitchVenueVersionsV1002[])
@@ -140,26 +145,33 @@ export function SwitchForm () {
   const [currentAboveTenFW, setCurrentAboveTenFW] = useState('')
 
 
-
   const getSwitchInfo = useGetSwitchListQuery({ params: { tenantId },
     payload: { filters: { id: [switchId || serialNumber] } }, enableRbac: isSwitchRbacEnabled }, {
-    skip: action === 'add' || !isSwitchRbacEnabled
+    skip: !editMode || !isSwitchRbacEnabled
   })
 
+  const isVenueIdEmpty = _.isEmpty(venueId)
   const { data: switchData, isLoading: isSwitchDataLoading } =
     useGetSwitchQuery({
       params: { tenantId, switchId, venueId },
       enableRbac: isSwitchRbacEnabled
     }, {
-      skip: action === 'add' || (isSwitchRbacEnabled && _.isEmpty(venueId))
+      skip: !editMode || (isSwitchRbacEnabled && isVenueIdEmpty)
     })
   const { data: switchDetail, isLoading: isSwitchDetailLoading } =
     useSwitchDetailHeaderQuery({
       params: { tenantId, switchId, venueId },
       enableRbac: isSwitchRbacEnabled
     }, {
-      skip: action === 'add' || (isSwitchRbacEnabled && _.isEmpty(venueId))
+      skip: !editMode || (isSwitchRbacEnabled && isVenueIdEmpty)
     })
+
+  const { data: switchAuth, isLoading: isSwitchAuthLoading } =
+  useGetSwitchAuthenticationQuery({
+    params: { tenantId, switchId, venueId }
+  }, {
+    skip: !editMode || isVenueIdEmpty || !isSwitchFlexAuthEnabled || !isSwitchFirmwareAbove10010f
+  })
 
   const switchListPayload = {
     searchString: '',
@@ -184,11 +196,15 @@ export function SwitchForm () {
       handleSwitchList()
     }
 
-    if(switchData && switchDetail){
+    if(switchData && switchDetail && !isSwitchAuthLoading){
       if(dataFetchedRef.current) return
       dataFetchedRef.current = true
       formRef?.current?.resetFields()
-      formRef?.current?.setFieldsValue({ ...switchDetail, ...switchData })
+      formRef?.current?.setFieldsValue({
+        ...switchDetail, ...switchData, ..._.omit(switchAuth, ['id'])
+      })
+
+      setIsSwitchFirmwareAbove10010f(isFirmwareVersionAbove10010f(switchDetail?.firmware))
       setReadOnly(!!switchDetail.cliApplied)
       setDeviceOnline(
         isOperationalSwitch(
@@ -200,7 +216,7 @@ export function SwitchForm () {
       }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [venueId, switchModel, switchRole, switchData, switchDetail])
+  }, [venueId, switchModel, switchRole, switchData, switchDetail, isSwitchAuthLoading])
 
   const handleSwitchList = async () => {
     const payload = {
@@ -344,11 +360,11 @@ export function SwitchForm () {
   }
 
   const handleEditSwitch = async (values: Switch) => {
-    const isSwitchFirmwareAbove10010f = isFirmwareVersionAbove10010f(switchDetail?.firmware)
-
     try {
+      const omittedFields
+        = ['specifiedType', 'serialNumber', 'authEnable', 'authDefaultVlan', 'guestVlanvalues']
       let payload = {
-        ...values,
+        ..._.omit(values, omittedFields),
         stackMembers: [],
         trustPorts: []
       }
@@ -360,13 +376,17 @@ export function SwitchForm () {
         delete payload.ipAddressType
       }
 
-      delete payload.specifiedType
-      delete payload.serialNumber
-
       payload.rearModule = _.get(payload, 'rearModuleOption') === true ? 'stack-40g' : 'none'
 
-      if (isSwitchFirmwareAbove10010f) {
-        //TODO: call flex auth api
+      if (isSwitchFlexAuthEnabled && isSwitchFirmwareAbove10010f) {
+        await updateSwitchAuthentication({
+          params: { tenantId, switchId, venueId: values.venueId },
+          payload: {
+            authEnable: values?.authEnable,
+            authDefaultVlan: values?.authDefaultVlan,
+            guestVlanvalues: values?.guestVlanvalues
+          }
+        }).unwrap()
       }
 
       await updateSwitch({

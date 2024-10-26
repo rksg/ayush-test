@@ -35,10 +35,10 @@ import {
   Alert,
   showToast
 } from '@acx-ui/components'
-import { useIsSplitOn, Features }          from '@acx-ui/feature-toggle'
-import { Drag }                            from '@acx-ui/icons'
-import { DeleteOutlined }                  from '@acx-ui/icons-new'
-import { useSwitchFirmwareUtils }          from '@acx-ui/rc/components'
+import { useIsSplitOn, Features }         from '@acx-ui/feature-toggle'
+import { Drag }                           from '@acx-ui/icons'
+import { DeleteOutlined }                 from '@acx-ui/icons-new'
+import { useSwitchFirmwareUtils }         from '@acx-ui/rc/components'
 import {
   switchApi,
   useGetSwitchQuery,
@@ -48,9 +48,11 @@ import {
   useSwitchDetailHeaderQuery,
   useLazyGetVlansByVenueQuery,
   useLazyGetSwitchListQuery,
+  useGetSwitchAuthenticationQuery,
   useGetSwitchVenueVersionListQuery,
   useGetSwitchListQuery,
-  useGetSwitchVenueVersionListV1001Query
+  useGetSwitchVenueVersionListV1001Query,
+  useUpdateSwitchAuthenticationMutation
 } from '@acx-ui/rc/services'
 import {
   Switch,
@@ -160,6 +162,7 @@ export function StackForm () {
   const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
   const isSwitchFirmwareV1002Enabled = useIsSplitOn(Features.SWITCH_FIRMWARE_V1002_TOGGLE)
   const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
+  const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
 
   const [getSwitchList] = useLazyGetSwitchListQuery()
 
@@ -172,6 +175,7 @@ export function StackForm () {
   const [visibleNotification, setVisibleNotification] = useState(false)
   const [deviceOnline, setDeviceOnline] = useState(false)
   const [isIcx7650, setIsIcx7650] = useState(false)
+  const [isSwitchFirmwareAbove10010f, setIsSwitchFirmwareAbove10010f] = useState(false)
   const [readOnly, setReadOnly] = useState(false)
   const [disableIpSetting, setDisableIpSetting] = useState(false)
   const [standaloneSwitches, setStandaloneSwitches] = useState([] as SwitchRow[])
@@ -218,21 +222,28 @@ export function StackForm () {
     }, { skip: !isSwitchFirmwareV1002Enabled })
 
   const [getVlansByVenue] = useLazyGetVlansByVenueQuery()
+  const isVenueIdEmpty = _.isEmpty(venueId) && _.isEmpty(editVenueId)
+
   const { data: switchData, isLoading: isSwitchDataLoading } =
     useGetSwitchQuery({
       params: { tenantId, switchId, venueId: venueId || editVenueId },
       enableRbac: isSwitchRbacEnabled
     }, {
-      skip: action === 'add' ||
-        (isSwitchRbacEnabled && (_.isEmpty(venueId) && _.isEmpty(editVenueId)))
+      skip: !editMode || (isSwitchRbacEnabled && isVenueIdEmpty)
     })
   const { data: switchDetail, isLoading: isSwitchDetailLoading } =
     useSwitchDetailHeaderQuery({
       params: { tenantId, switchId, venueId: venueId || editVenueId },
       enableRbac: isSwitchRbacEnabled
     }, {
-      skip: action === 'add' ||
-        (isSwitchRbacEnabled && (_.isEmpty(venueId) && _.isEmpty(editVenueId)))
+      skip: !editMode || (isSwitchRbacEnabled && isVenueIdEmpty)
+    })
+
+  const { data: switchAuth, isLoading: isSwitchAuthLoading } =
+    useGetSwitchAuthenticationQuery({
+      params: { tenantId, switchId, venueId: venueId || editVenueId }
+    }, {
+      skip: !editMode || isVenueIdEmpty || !isSwitchFlexAuthEnabled || !isSwitchFirmwareAbove10010f
     })
 
   useEffect(() => {
@@ -258,13 +269,16 @@ export function StackForm () {
       setVenueOption(sortedVenueOption)
     }
 
-    if (switchData && switchDetail && (venuesList || venuesListV1002)) {
+    if (switchData && switchDetail && (venuesList || venuesListV1002) && !isSwitchAuthLoading) {
       if (dataFetchedRef.current) return
       dataFetchedRef.current = true
       formRef?.current?.resetFields()
-      formRef?.current?.setFieldsValue({ ...switchDetail, ...switchData })
+      formRef?.current?.setFieldsValue({
+        ...switchDetail, ...switchData, ..._.omit(switchAuth, ['id'])
+      })
 
       setIsIcx7650(!!switchDetail.model?.includes('ICX7650'))
+      setIsSwitchFirmwareAbove10010f(isFirmwareVersionAbove10010f(switchDetail?.firmware))
       setReadOnly(!!switchDetail.cliApplied)
       setDeviceOnline(
         isOperationalSwitch(
@@ -368,7 +382,7 @@ export function StackForm () {
 
       getStandaloneSwitches()
     }
-  }, [venuesList, switchData, switchDetail, venuesListV1002])
+  }, [venuesList, switchData, switchDetail, venuesListV1002, isSwitchAuthLoading])
 
   useEffect(() => {
     if (tableData || activeRow) {
@@ -436,6 +450,7 @@ export function StackForm () {
   const [saveSwitch] = useSaveSwitchMutation()
   const [updateSwitch] = useUpdateSwitchMutation()
   const [convertToStack] = useConvertToStackMutation()
+  const [updateSwitchAuthentication] = useUpdateSwitchAuthenticationMutation()
 
   const hasBlockingTsb = function () {
     return !checkVersionAtLeast09010h(currentFw) && isBlockingTsbSwitch
@@ -491,17 +506,18 @@ export function StackForm () {
   }
 
   const handleEditSwitchStack = async (values: Switch) => {
-    const isSwitchFirmwareAbove10010f = isFirmwareVersionAbove10010f(switchDetail?.firmware)
     if (hasBlockingTsb()) {
       if (getTsbBlockedSwitch(tableData.map(item => item.id))?.length > 0) {
         showTsbBlockedSwitchErrorDialog()
         return
       }
     }
+    const omittedFields
+        = ['authEnable', 'authDefaultVlan', 'guestVlanvalues']
 
     try {
       let payload = {
-        ...values,
+        ..._.omit(values, omittedFields),
         stackMembers: tableData.filter(item => item.id).map(item => ({ id: item.id })),
         trustPorts: formRef.current?.getFieldValue('trustPorts')
       }
@@ -519,8 +535,15 @@ export function StackForm () {
         delete payload.rearModule
       }
 
-      if (isSwitchFirmwareAbove10010f) {
-        //TODO: call flex auth api
+      if (isSwitchFlexAuthEnabled && isSwitchFirmwareAbove10010f) {
+        await updateSwitchAuthentication({
+          params: { tenantId, switchId, venueId: values.venueId },
+          payload: {
+            authEnable: values?.authEnable,
+            authDefaultVlan: values?.authDefaultVlan,
+            guestVlanvalues: values?.guestVlanvalues
+          }
+        }).unwrap()
       }
 
       await updateSwitch({

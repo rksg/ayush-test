@@ -154,7 +154,9 @@ export const FlexibleAuthenticationForm = (props: {
                   label: $t(authenticationTypeLabel[authType]),
                   value: authType
                 }))}
-                onChange={(value) => handleAuthFieldChange('authenticationType', value, form)}
+                onChange={(value) => handleAuthFieldChange({
+                  field: 'authenticationType', value, form
+                })}
               />}
             />
             { !shouldHideAuthField('changeAuthOrder', authFormWatchValues) && <Space style={{
@@ -189,7 +191,9 @@ export const FlexibleAuthenticationForm = (props: {
                   value: controlType
                 }))}
                 disabled={getAuthfieldDisabled('dot1xPortControl', authFormWatchValues)}
-                onChange={(value) => handleAuthFieldChange('dot1xPortControl', value, form)}
+                onChange={(value) => handleAuthFieldChange({
+                  field: 'dot1xPortControl', value, form
+                })}
               />}
             />
             <Form.Item
@@ -219,7 +223,9 @@ export const FlexibleAuthenticationForm = (props: {
                   label: $t(authFailActionTypeLabel[failType]),
                   value: failType
                 }))}
-                onChange={(value) => handleAuthFieldChange('authFailAction', value, form)}
+                onChange={(value) => handleAuthFieldChange({
+                  field: 'authFailAction', value, form
+                })}
               />}
             />
             <Form.Item
@@ -262,7 +268,9 @@ export const FlexibleAuthenticationForm = (props: {
                   label: $t(authTimeoutActionTypeLabel[timeoutType]),
                   value: timeoutType
                 }))}
-                onChange={(value) => handleAuthFieldChange('authTimeoutAction', value, form)}
+                onChange={(value) => handleAuthFieldChange({
+                  field: 'authTimeoutAction', value, form
+                })}
               />}
             />
             <Form.Item

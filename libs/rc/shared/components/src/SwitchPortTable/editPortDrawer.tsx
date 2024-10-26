@@ -128,10 +128,10 @@ export const allMultipleEditableFields = [
   'name', 'poeClass', 'poeEnable', 'poePriority', 'portEnable', 'portSpeed',
   'rstpAdminEdgePort', 'stpBpduGuard', 'stpRootGuard', 'taggedVlans', 'voiceVlan',
   'lldpQos', 'tags', 'untaggedVlan', 'poeBudget', 'portProtected',
-  'flexibleAuthenticationEnabled', 'isFlexibleAuthCustomized', 'enableAuthPorts',
-  'switchLevelAuthDefaultVlan', 'guestVlan', 'authenticationProfileId', 'profileAuthDefaultVlan',
-  'authenticationType', 'changeAuthOrder', 'dot1xPortControl',
-  'authDefaultVlan', 'restrictedVlan', 'criticalVlan', 'authFailAction', 'authTimeoutAction'
+  'flexibleAuthenticationEnabled', 'authenticationProfileId',
+  // 'enableAuthPorts', 'switchLevelAuthDefaultVlan', 'profileAuthDefaultVlan',
+  'authDefaultVlan', 'guestVlan', 'authenticationType', 'changeAuthOrder', 'dot1xPortControl',
+  'restrictedVlan', 'criticalVlan', 'authFailAction', 'authTimeoutAction'
 ]
 
 interface ProfileVlans {
@@ -185,6 +185,7 @@ export function EditPortDrawer ({
     profileName,
     // Flex auth
     authenticationProfileId,
+    authenticationProfileIdCheckbox,
     // profileAuthDefaultVlan,
     // guestVlan,
     isFlexibleAuthCustomized,
@@ -492,8 +493,9 @@ export function EditPortDrawer ({
       switchLevelAuthDefaultVlan: 2,
       guestVlan: 3,
       shouldAlertAaaAndRadiusNotApply: false,
-      isFlexibleAuthCustomized: false,
-      authenticationProfileId: '7de28fc02c0245648dfd58590884bad2',
+      flexibleAuthenticationEnabled: true,
+      isFlexibleAuthCustomized: true,
+      // authenticationProfileId: '7de28fc02c0245648dfd58590884bad2',
       // profileAuthDefaultVlan: 2,
       authDefaultVlan: 100,
       restrictedVlan: 30,
@@ -548,17 +550,18 @@ export function EditPortDrawer ({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     portsSetting = portsSetting.map((p, index) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const i = p.switchMac === 'c0:c5:20:aa:32:79' ? 0 : 1 // c0:c5:20:aa:32:79 c0:c5:20:aa:32:55
+      const i = p.switchMac === 'c0:c5:20:aa:32:55' ? 0 : 1 // c0:c5:20:aa:32:79 c0:c5:20:aa:32:55
       return {
         ...p,
         switchLevelAuthDefaultVlan: (3 + 1),
         guestVlan: 6, //(4 + i),
+        flexibleAuthenticationEnabled: i ? true : false,
         shouldAlertAaaAndRadiusNotApply: false,
         enableAuthPorts: ['1/1/2'], // index === 0 ? ['1/1/2'] : ['1/1/3'],
 
         isFlexibleAuthCustomized: false,
-        authenticationProfileId: '7de28fc02c0245648dfd58590884bad2',
-        profileAuthDefaultVlan: 10, //(10+i),
+        authenticationProfileId: i ? '7de28fc02c0245648dfd58590884bad2' : '',
+        profileAuthDefaultVlan: 10+i, //(10+i),
         authDefaultVlan: 10,
         restrictedVlan: 30,
         criticalVlan: 40
@@ -604,6 +607,9 @@ export function EditPortDrawer ({
     setDisableSaveButton(true)
     setLldpQosList(portSetting?.lldpQos ?? [])
     setPortEditStatus('')
+    setIsAppliedAuthProfile(!hasMultipleValueFields?.includes('authenticationProfileId'))
+
+    // console.log('portSetting: ', portSetting)
 
     form.setFieldsValue({
       ...portSetting,
@@ -614,7 +620,12 @@ export function EditPortDrawer ({
         ? (portSetting?.taggedVlans || vlansValue.tagged)?.toString() : '',
       untaggedVlan: (!hasMultipleValueFields?.includes('untaggedVlan')
         && vlansValue.untagged) || (portSetting.untaggedVlan ? portSetting.untaggedVlan :
-        (portSetting?.taggedVlans ? portSetting.untaggedVlan : defaultVlan))
+        (portSetting?.taggedVlans ? portSetting.untaggedVlan : defaultVlan)),
+      //flex auth
+      authenticationProfileId: !hasMultipleValueFields?.includes('authenticationProfileId')
+        ? portSetting?.authenticationProfileId : '',
+      isFlexibleAuthCustomized: !hasMultipleValueFields?.includes('isFlexibleAuthCustomized')
+        ? portSetting?.isFlexibleAuthCustomized : false
     })
   }
 
@@ -674,10 +685,13 @@ export function EditPortDrawer ({
         return (isMultipleEdit && !checkboxEnabled)
           || !!getFlexAuthButtonStatus(commonRequiredProps)
       case 'authenticationProfileId':
-        return (isMultipleEdit && !checkboxEnabled)
-          || !flexibleAuthenticationEnabledCheckbox
+        return isMultipleEdit && !(checkboxEnabled && flexibleAuthenticationEnabledCheckbox)
+      case 'renderAuthProfile':
+        return isAppliedAuthProfile
+          && (isMultipleEdit ? authenticationProfileIdCheckbox : !isMultipleEdit)
       case 'isFlexibleAuthCustomized':
-        return !(flexibleAuthenticationEnabledCheckbox && flexibleAuthenticationEnabled)
+        return isMultipleEdit
+          && !(flexibleAuthenticationEnabledCheckbox && flexibleAuthenticationEnabled)
       case 'authDefaultVlan':
       case 'changeAuthOrder':
       case 'dot1xPortControl':
@@ -754,15 +768,21 @@ export function EditPortDrawer ({
     const hasBreakoutPortAndVenueSettings = hasBreakoutPort && useVenueSettings
     const vlansHasChanged = form?.isFieldTouched('taggedVlans') ||
       form?.isFieldTouched('untaggedVlan') || form?.isFieldTouched('voiceVlan')
+
     const getInitIgnoreFields = () => {
       const overrideFields = getOverrideFields(form.getFieldsValue())
       if ((overrideFields?.includes('portVlans') && vlansHasChanged)
         && !(hasBreakoutPortAndVenueSettings)) {
         overrideFields.push('taggedVlans', 'untaggedVlan', 'voiceVlan')
       }
-      return !isMultipleEdit
-        ? []
-        : allMultipleEditableFields.filter(f => !overrideFields.includes(f))
+      if (isSwitchFlexAuthEnabled && overrideFields?.includes('authenticationProfileId')) {
+        const profile = getAppliedProfile(authProfiles, data.authenticationProfileId as string)
+        const profileFields = Object.keys(profile ?? {})
+        overrideFields.push(...profileFields)
+      }
+      return isMultipleEdit
+        ? allMultipleEditableFields.filter(f => !overrideFields.includes(f))
+        : []
     }
 
     const originalUntaggedVlan = editPortData?.untaggedVlan
@@ -805,77 +825,91 @@ export function EditPortDrawer ({
   }
 
   const applyForm = async () => {
-    // console.log('** ', form.getFieldsValue())
-    const values = {
-      ...form.getFieldsValue(),
-      revert: useVenueSettings,
-      ...(lldpQosList && { lldpQos: // remove fake lldp id
-        lldpQosList?.map(lldp => ( lldp.id.includes('lldp') ? _.omit(lldp, ['id']) : lldp ))
-      }),
-      taggedVlans: useVenueSettings ? null :
-        (form.getFieldValue('taggedVlans') ?
-          form.getFieldValue('taggedVlans').split(',') : []),
-      untaggedVlan: useVenueSettings ? '' : form.getFieldValue('untaggedVlan'),
-      voiceVlan: useVenueSettings ? null : Number(form.getFieldValue('voiceVlan'))
-    }
-    const defaultVlanMap = switchesDefaultVlan?.reduce((result, item) => ({
-      ...result, [item.switchId]: item.defaultVlanId
-    }), {})
-    const { transformedValues, ignoreFields } = transformData(values)
-    // console.log( aggregatePortsData )
-
-    // console.log('applyForm: ', transformedValues)
-    // return
-
     try {
-      const payload = switches.map((item) => {
-        const ports = selectedPorts
-          .filter(p => p.switchSerial === item)
-          .map(p => p.portIdentifier)
+      // console.log('** ', form.getFieldsValue())
+      const valid = await form.validateFields()
+      if (valid) {
+        const appliedAuthProfileData = isSwitchFlexAuthEnabled && authenticationProfileId
+            && getAppliedProfile(authProfiles, authenticationProfileId)
 
-        return isSwitchRbacEnabled ? {
-          ...transformedValues,
-          switchId: item,
-          port: ports?.[0],
-          ports: ports,
-          ...(transformedValues?.untaggedVlan === defaultVlanText && {
-            untaggedVlan: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
+        const values = {
+          ...form.getFieldsValue(),
+          ...appliedAuthProfileData,
+          revert: useVenueSettings,
+          ...(lldpQosList && { lldpQos: // remove fake lldp id
+            lldpQosList?.map(lldp => ( lldp.id.includes('lldp') ? _.omit(lldp, ['id']) : lldp ))
           }),
-          ...(transformedValues?.voiceVlan === defaultVlanText && {
-            voiceVlan: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
-          }),
-          ignoreFields: ignoreFields.toString()
-        } : {
-          switchId: item,
-          port: {
-            ...transformedValues,
-            ...(transformedValues?.untaggedVlan === defaultVlanText && {
-              untaggedVlan: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
-            }),
-            ...(transformedValues?.voiceVlan === defaultVlanText && {
-              voiceVlan: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
-            }),
-            ignoreFields: ignoreFields.toString(),
-            port: ports?.[0],
-            ports: ports
-          }
+          taggedVlans: useVenueSettings ? null :
+            (form.getFieldValue('taggedVlans') ?
+              form.getFieldValue('taggedVlans').split(',') : []),
+          untaggedVlan: useVenueSettings ? '' : form.getFieldValue('untaggedVlan'),
+          voiceVlan: useVenueSettings ? null : Number(form.getFieldValue('voiceVlan'))
         }
-      })
 
-      await savePortsSetting({
-        params: { tenantId, venueId: switchDetail?.venueId },
-        payload,
-        enableRbac: isSwitchRbacEnabled,
-        option: { skip: !switchDetail?.venueId }
-      }).unwrap()
-      store.dispatch(
-        switchApi.util.invalidateTags([
-          { type: 'SwitchPort', id: 'LIST' },
-          { type: 'SwitchPort', id: 'Setting' }
-        ])
-      )
-      onClose()
+        const defaultVlanMap = switchesDefaultVlan?.reduce((result, item) => ({
+          ...result, [item.switchId]: item.defaultVlanId
+        }), {})
+        const getDefaultVlanMapping = (key: keyof typeof transformedValues, item: string) => {
+          return transformedValues?.[key] === defaultVlanText ? {
+            [key]: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
+          } : {}
+        }
 
+        const { transformedValues, ignoreFields } = transformData(values)
+        const payload = switches.map((item) => {
+          const ports = selectedPorts
+            .filter(p => p.switchSerial === item)
+            .map(p => p.portIdentifier)
+
+          return isSwitchRbacEnabled ? {
+            ...transformedValues,
+            switchId: item,
+            port: ports?.[0],
+            ports: ports,
+            // ...(transformedValues?.untaggedVlan === defaultVlanText && {
+            //   untaggedVlan: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
+            // }),
+            // ...(transformedValues?.voiceVlan === defaultVlanText && {
+            //   voiceVlan: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
+            // }),
+            ...getDefaultVlanMapping('untaggedVlan', item),
+            ...getDefaultVlanMapping('voiceVlan', item),
+            ignoreFields: ignoreFields.toString()
+          } : {
+            switchId: item,
+            port: {
+              ...transformedValues,
+              // ...(transformedValues?.untaggedVlan === defaultVlanText && {
+              //   untaggedVlan: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
+              // }),
+              // ...(transformedValues?.voiceVlan === defaultVlanText && {
+              //   voiceVlan: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
+              // }),
+              ...getDefaultVlanMapping('untaggedVlan', item),
+              ...getDefaultVlanMapping('voiceVlan', item),
+              ignoreFields: ignoreFields.toString(),
+              port: ports?.[0],
+              ports: ports
+            }
+          }
+        })
+
+        // console.log('payload: ', payload)
+
+        await savePortsSetting({
+          params: { tenantId, venueId: switchDetail?.venueId },
+          payload,
+          enableRbac: isSwitchRbacEnabled,
+          option: { skip: !switchDetail?.venueId }
+        }).unwrap()
+        store.dispatch(
+          switchApi.util.invalidateTags([
+            { type: 'SwitchPort', id: 'LIST' },
+            { type: 'SwitchPort', id: 'Setting' }
+          ])
+        )
+        onClose()
+      }
     } catch (err) {
       console.log(err) // eslint-disable-line no-console
     }
@@ -1187,7 +1221,7 @@ export function EditPortDrawer ({
                           const toggleCustomized = !isFlexibleAuthCustomized //
                           form.setFieldValue('isFlexibleAuthCustomized', toggleCustomized)
 
-                          if (toggleCustomized && authenticationProfileId) {
+                          if (toggleCustomized && authenticationProfileId && !isMultipleEdit) {
                             form.setFieldsValue({ // TODO
                               ...form.getFieldsValue(),
                               ...(getAppliedProfile(authProfiles, authenticationProfileId))
@@ -1209,7 +1243,7 @@ export function EditPortDrawer ({
 
           { flexibleAuthenticationEnabled && !isFlexibleAuthCustomized &&
           <Space style={{ display: 'block', marginLeft: isMultipleEdit ? '24px' : '0' }}>
-            <Form.Item name='profileAuthDefaultVlan' hidden children={<></>} />
+            {/* <Form.Item name='profileAuthDefaultVlan' hidden children={<></>} /> */}
             {/* <Form.Item name='guestVlan' hidden children={<></>} /> */}
             { getFieldTemplate(
               <Form.Item
@@ -1221,9 +1255,10 @@ export function EditPortDrawer ({
                     title={$t(EditPortMessages.GUIDE_TO_AUTHENTICATION)}
                   />
                 </>}
-                initialValue=''
+                initialValue={null}
                 validateFirst
                 rules={[
+                  { required: true, message: $t({ defaultMessage: 'Please select Profile' }) },
                   { validator: (_, value) => {
                     return validateApplyProfile(
                       value, authProfiles, selectedPorts, aggregatePortsData
@@ -1252,7 +1287,7 @@ export function EditPortDrawer ({
               />,
               'authenticationProfileId', $t({ defaultMessage: 'Profile' })
             )}
-            { isAppliedAuthProfile
+            { getFieldDisabled('renderAuthProfile')
               && renderAuthProfile(getAppliedProfile(authProfiles, authenticationProfileId))
             }
           </Space>}
@@ -1274,7 +1309,9 @@ export function EditPortDrawer ({
                       value: authType
                     }))}
                     disabled={getFieldDisabled('authenticationType')}
-                    onChange={(value) => handleAuthFieldChange('authenticationType', value, form)}
+                    onChange={(value) => handleAuthFieldChange({
+                      field: 'authenticationType', value, form, isMultipleEdit
+                    })}
                   />}
               />,
               'authenticationType', $t({ defaultMessage: 'Type' })
@@ -1324,7 +1361,9 @@ export function EditPortDrawer ({
                       value: controlType
                     }))}
                     disabled={getFieldDisabled('dot1xPortControl')}
-                    onChange={(value) => handleAuthFieldChange('dot1xPortControl', value, form)}
+                    onChange={(value) => handleAuthFieldChange({
+                      field: 'dot1xPortControl', value, form, isMultipleEdit
+                    })}
                   />}
               />,
               'dot1xPortControl', $t({ defaultMessage: '802.1x Port Control' })
@@ -1337,23 +1376,26 @@ export function EditPortDrawer ({
                 initialValue=''
                 validateFirst
                 rules={[
-                  { required: true },
-                  { validator: (_, value) => validateVlanExceptReservedVlanId(value) },
-                  { validator: (_:unknown, value: string) =>
-                    validateVlanDiffFromSwitchDefault(value, aggregatePortsData)
-                  },
-                  { validator: (_, value) => {
-                    const taggedVlans = getCurrentVlansByKey({
-                      ...commonRequiredProps,
-                      key: 'taggedVlans'
-                    })
-                    if (taggedVlans.includes(Number(value))) {
-                      return Promise.reject(
-                        $t(FlexAuthMessages.CANNOT_SAME_AS_TAGGED_VLAN)
-                      )
-                    }
-                    return Promise.resolve()
-                  } }
+                  ...(dot1xPortControl === PortControl.AUTO ? [
+                    { required: true },
+                    { validator: (_:unknown, value: string) =>
+                      validateVlanExceptReservedVlanId(value)
+                    },
+                    { validator: (_:unknown, value: string) =>
+                      validateVlanDiffFromSwitchDefault(value, aggregatePortsData)
+                    },
+                    { validator: (_:unknown, value: string) => {
+                      const taggedVlans = getCurrentVlansByKey({
+                        ...commonRequiredProps,
+                        key: 'taggedVlans'
+                      })
+                      if (taggedVlans.includes(Number(value))) {
+                        return Promise.reject(
+                          $t(FlexAuthMessages.CANNOT_SAME_AS_TAGGED_VLAN)
+                        )
+                      }
+                      return Promise.resolve()
+                    } }] : [])
                 ]}
                 children={shouldRenderMultipleText({
                   field: 'authDefaultVlan', ...commonRequiredProps
@@ -1378,7 +1420,9 @@ export function EditPortDrawer ({
                       value: failType
                     }))}
                     disabled={getFieldDisabled('authFailAction')}
-                    onChange={(value) => handleAuthFieldChange('authFailAction', value, form)}
+                    onChange={(value) => handleAuthFieldChange({
+                      field: 'authFailAction', value, form, isMultipleEdit
+                    })}
                   />}
               />,
               'authFailAction', $t({ defaultMessage: 'Fail Action' })
@@ -1430,7 +1474,9 @@ export function EditPortDrawer ({
                       value: timeoutType
                     }))}
                     disabled={getFieldDisabled('authTimeoutAction')}
-                    onChange={(value) => handleAuthFieldChange('authTimeoutAction', value, form)}
+                    onChange={(value) => handleAuthFieldChange({
+                      field: 'authTimeoutAction', value, form, isMultipleEdit
+                    })}
                   />}
               />,
               'authTimeoutAction', $t({ defaultMessage: 'Timeout Action' })

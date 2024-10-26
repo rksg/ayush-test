@@ -54,7 +54,7 @@ export function SwitchStackSetting (props: {
 
   const vlanMapping = JSON.parse(switchDetail?.vlanMapping ?? '{}')
   const defaultVlan = Object.keys(vlanMapping).find(k => vlanMapping[k] === 'DEFAULT-VLAN')
-  const isSwitchFirmwareAbove10010f = true || isFirmwareVersionAbove10010f(switchDetail?.firmware) //TODO
+  const isSwitchFirmwareAbove10010f = isFirmwareVersionAbove10010f(switchDetail?.firmware)
 
   const { useWatch } = Form
   const [authEnable, authDefaultVlan] = [
@@ -336,7 +336,13 @@ export function SwitchStackSetting (props: {
               label={$t({ defaultMessage: 'Guest VLAN' })}
               validateFirst
               rules={[
-                { validator: (_, value) => validateVlanExceptReservedVlanId(value) },
+                { validator: (_, value) => {
+                  if (!value) {//TODO
+                    return Promise.resolve()
+                  }
+                  return validateVlanExceptReservedVlanId(value)
+                }
+                },
                 { validator: (_, value) => {
                   if (Number(value) === Number(defaultVlan)) {
                     return Promise.reject(

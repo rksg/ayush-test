@@ -154,6 +154,10 @@ export class Switch {
   serialNumber?: string
   firmwareVersion?: string
   vlanCustomize?: boolean
+  //TODO
+  authEnable?: boolean
+  authDefaultVlan?: number
+  guestVlanvalues?: number
 
   constructor () {
     this.name = ''

@@ -226,7 +226,8 @@ export const getAppliedProfile = (
   profiles: FlexibleAuthentication[],
   profileId: string
 ) => {
-  return profiles.find(p => p.id === profileId)
+  const profile = profiles.find(p => p.id === profileId)
+  return _.omit(profile, ['profileName', 'id'])
 }
 
 export const checkAllSelectedPortsMatch = (

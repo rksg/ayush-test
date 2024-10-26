@@ -105,26 +105,67 @@ export const shouldHideAuthField = (
   return !isMultipleEdit && getAuthfieldDisabled(field, values)
 }
 
-export const handleAuthFieldChange = (field: string, value: string, form: FormInstance) => {
+export const handleAuthFieldChange = (props: {
+  field: string,
+  value: string,
+  form: FormInstance,
+  isMultipleEdit?: boolean
+}) => {
+  const { field, value, form, isMultipleEdit } = props
   switch(field) {
     case 'authenticationType':
       const values = form.getFieldsValue()
       form.setFieldsValue({
         ...values,
-        ...(value !== AuthenticationType._802_1X ? { dot1xPortControl: PortControl.AUTO }: {}),
-        ...(value !== AuthenticationType._802_1X_AND_MACAUTH ? { changeAuthOrder: false }: {})
+        ...(value !== AuthenticationType._802_1X ? {
+          dot1xPortControl: PortControl.AUTO,
+          ...(isMultipleEdit ? {
+            dot1xPortControlCheckbox: true
+          } : {}),
+          ...(isMultipleEdit && values.authFailAction === AuthFailAction.BLOCK ? {
+            restrictedVlanCheckbox: false
+          } : {}),
+          ...(isMultipleEdit && values.authTimeoutAction === AuthTimeoutAction.NONE ? {
+            criticalVlanCheckbox: false
+          } : {})
+        }: {}),
+        ...(value !== AuthenticationType._802_1X_AND_MACAUTH ? {
+          changeAuthOrder: false,
+          ...(isMultipleEdit ? { changeAuthOrderCheckbox: true } : {})
+        }: {})
       })
       break
     case 'dot1xPortControl':
       if (value !== PortControl.AUTO) {
         const values = form.getFieldsValue()
+        form.setFields([
+          { name: 'authDefaultVlan', errors: [] },
+          { name: 'restrictedVlan', errors: [] },
+          { name: 'criticalVlan', errors: [] }
+        ])
         form.setFieldsValue({
           ...values,
           authDefaultVlan: '',
           authFailAction: AuthFailAction.BLOCK,
           restrictedVlan: '',
           authTimeoutAction: AuthTimeoutAction.NONE,
-          criticalVlan: ''
+          criticalVlan: '',
+          ...(isMultipleEdit ? {
+            authDefaultVlanCheckbox: true,
+            authFailActionCheckbox: true,
+            restrictedVlanCheckbox: true,
+            authTimeoutActionCheckbox: true,
+            criticalVlanCheckbox: true
+          } : {})
+        })
+      } else if (value === PortControl.AUTO) {
+        const values = form.getFieldsValue()
+        form.setFieldsValue({
+          ...values,
+          ...(isMultipleEdit ? {
+            restrictedVlanCheckbox: false,
+            criticalVlanCheckbox: false
+          } : {})
         })
       }
       break
@@ -133,7 +174,8 @@ export const handleAuthFieldChange = (field: string, value: string, form: FormIn
         const values = form.getFieldsValue()
         form.setFieldsValue({
           ...values,
-          restrictedVlan: ''
+          restrictedVlan: '',
+          ...(isMultipleEdit ? { restrictedVlanCheckbox: false } : {})
         })
       }
       break
@@ -142,7 +184,8 @@ export const handleAuthFieldChange = (field: string, value: string, form: FormIn
         const values = form.getFieldsValue()
         form.setFieldsValue({
           ...values,
-          criticalVlan: ''
+          criticalVlan: '',
+          ...(isMultipleEdit ? { criticalVlanCheckbox: false } : {})
         })
       }
       break
@@ -151,8 +194,6 @@ export const handleAuthFieldChange = (field: string, value: string, form: FormIn
   }
 }
 
-
-// ================== Validate ==================
 export const validateVlanDiffFromAuthDefault = (
   value: string,
   authDefaultVlan: string

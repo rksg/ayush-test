@@ -100,5 +100,18 @@ export const mockAuthProfiles = [
     guestVlan: 4,
     authFailAction: 'restricted_vlan',
     authTimeoutAction: 'critical_vlan'
+  },
+  {
+    id: '9b84ee6f014b42ce8fa0ef1a1c24bd8f',
+    profileName: 'Profile10--auth99-r3-c3-g4',
+    authenticationType: 'macauth',
+    changeAuthOrder: true,
+    dot1xPortControl: 'auto',
+    authDefaultVlan: 99,
+    restrictedVlan: 3,
+    criticalVlan: 3,
+    guestVlan: 4,
+    authFailAction: 'restricted_vlan',
+    authTimeoutAction: 'critical_vlan'
   }
 ]
