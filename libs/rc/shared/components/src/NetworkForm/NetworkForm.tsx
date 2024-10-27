@@ -159,15 +159,16 @@ interface GuestMore {
 export function NetworkForm (props:{
   modalMode?: boolean,
   createType?: NetworkTypeEnum,
-  modalCallBack?: ()=>void,
-  defaultActiveVenues?: string[]
+  modalCallBack?: (payload?: NetworkSaveData)=>void,
+  defaultActiveVenues?: string[],
+  isGptMode?: boolean
 }) {
 
-  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const isUseWifiRbacApi = props.isGptMode ? false : useIsSplitOn(Features.WIFI_RBAC_API)
+  const isConfigTemplateRbacEnabled =props.isGptMode ? false : useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const { isTemplate } = useConfigTemplate()
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isUseWifiRbacApi
-  const enableServiceRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const enableServiceRbac = props.isGptMode ? false : useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
 
@@ -178,6 +179,7 @@ export function NetworkForm (props:{
   const wifi7Mlo3LinkFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_3LINK_TOGGLE)
   const linkToNetworks = usePathBasedOnConfigTemplate('/networks', '/templates')
   const params = useParams()
+  const isGptMode = props.isGptMode == true
   const editMode = params.action === 'edit'
   const cloneMode = params.action === 'clone'
   const addNetworkInstance = useAddInstance()
@@ -413,9 +415,11 @@ export function NetworkForm (props:{
     if(modalMode&&createType){
       detailsSaveData.type = createType
     }
-    if(createType === NetworkTypeEnum.CAPTIVEPORTAL){
-      updateSaveData({ ...detailsSaveData,
-        guestPortal: { guestNetworkType: GuestNetworkTypeEnum.GuestPass } })
+    if (createType === NetworkTypeEnum.CAPTIVEPORTAL && !isGptMode) {
+      updateSaveData({
+        ...detailsSaveData,
+        guestPortal: { guestNetworkType: GuestNetworkTypeEnum.GuestPass }
+      })
     }
     else updateSaveData(detailsSaveData)
     return true
@@ -792,6 +796,11 @@ export function NetworkForm (props:{
     try {
       const payload = processAddData(saveState)
 
+      if (isGptMode) {
+        modalCallBack?.(payload)
+        return
+      }
+
       // eslint-disable-next-line max-len
       const networkResponse = await addNetworkInstance({
         params,
@@ -924,6 +933,12 @@ export function NetworkForm (props:{
       processEditData(formData)
       const oldData = cloneDeep(saveContextRef.current)
       const payload = updateClientIsolationAllowlist(saveContextRef.current as NetworkSaveData)
+
+      if (isGptMode) {
+        modalCallBack?.(payload)
+        return
+      }
+
       await updateNetworkInstance({
         params,
         payload: resolvedRbacEnabled ? handleServicePolicyRbacPayload(payload) : payload,
@@ -999,6 +1014,7 @@ export function NetworkForm (props:{
           createType,
           editMode,
           cloneMode,
+          isGptMode,
           data: saveState,
           setData: updateSaveState
         }}>
@@ -1060,13 +1076,15 @@ export function NetworkForm (props:{
                 <PortalInstance updatePortalData={(data)=>setPortalDemo(data)}/>
               </StepsFormLegacy.StepForm>
               }
-              <StepsFormLegacy.StepForm
-                name='venues'
-                title={intl.$t({ defaultMessage: '<VenuePlural></VenuePlural>' })}
-                onFinish={handleVenues}
-              >
-                <Venues defaultActiveVenues={defaultActiveVenues} />
-              </StepsFormLegacy.StepForm>
+              {!isGptMode &&
+                <StepsFormLegacy.StepForm
+                  name='venues'
+                  title={intl.$t({ defaultMessage: '<VenuePlural></VenuePlural>' })}
+                  onFinish={handleVenues}
+                >
+                  <Venues defaultActiveVenues={defaultActiveVenues} />
+                </StepsFormLegacy.StepForm>}
+              
               <StepsFormLegacy.StepForm
                 name='summary'
                 title={intl.$t({ defaultMessage: 'Summary' })}
@@ -1084,6 +1102,7 @@ export function NetworkForm (props:{
           createType,
           editMode,
           cloneMode,
+          isGptMode,
           data: saveState,
           setData: updateSaveState
         }}>
@@ -1098,15 +1117,15 @@ export function NetworkForm (props:{
                 ? modalCallBack?.()
                 : redirectPreviousPage(navigate, previousPath, linkToNetworks)
               }
-              onFinish={editMode ? handleEditNetwork : handleAddNetwork}
-            >
-              <StepsForm.StepForm
-                name='details'
-                title={intl.$t({ defaultMessage: 'Network Details' })}
-                onFinish={handleDetails}
+                onFinish={editMode ? handleEditNetwork : handleAddNetwork}
               >
-                <NetworkDetailForm />
-              </StepsForm.StepForm>
+                <StepsForm.StepForm
+                  name='details'
+                  title={intl.$t({ defaultMessage: 'Network Details' })}
+                  onFinish={handleDetails}
+                >
+                  <NetworkDetailForm />
+                </StepsForm.StepForm>
 
               <StepsForm.StepForm
                 name='settings'
@@ -1151,14 +1170,17 @@ export function NetworkForm (props:{
               >
                 <PortalInstance updatePortalData={(data)=>setPortalDemo(data)}/>
               </StepsForm.StepForm>
-              }
-              <StepsForm.StepForm
-                name='venues'
-                title={intl.$t({ defaultMessage: '<VenuePlural></VenuePlural>' })}
-                onFinish={handleVenues}
-              >
-                <Venues />
-              </StepsForm.StepForm>
+                }
+                {!isGptMode &&
+                  <StepsForm.StepForm
+                    name='venues'
+                    title={intl.$t({ defaultMessage: '<VenuePlural></VenuePlural>' })}
+                    onFinish={handleVenues}
+                  >
+                    <Venues />
+                  </StepsForm.StepForm>
+                }
+
             </StepsForm>
           </MLOContext.Provider>
         </NetworkFormContext.Provider>

@@ -15,5 +15,20 @@ export const RuckusAssistantUrlInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/ruckusAssistant/conversations/:sessionId/apply',
     newApi: true
-  }
+  },
+  createOnboardConfigs: {
+    method: 'post',
+    url: '/ruckusAssistant/onboardConfigs',
+    newApi: true
+  },
+  updateOnboardConfigs: {
+    method: 'put',
+    url: '/ruckusAssistant/onboardConfigs/{id}',
+    newApi: true
+  },
+  getOnboardConfigs: {
+    method: 'get',
+    url: '/ruckusAssistant/onboardConfigs/{id}(?type={type})',
+    newApi: true
+  }  
 }

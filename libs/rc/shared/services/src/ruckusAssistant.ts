@@ -34,6 +34,33 @@ export const ruckusAssistantApi = baseRuckusAssistantApi.injectEndpoints({
           body: JSON.stringify({})
         }
       }
+    }),
+    createOnboardConfigs: build.mutation<unknown, RequestPayload>({
+      query: ({ payload }) => {
+        const req = createHttpRequest(RuckusAssistantUrlInfo.createOnboardConfigs)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    updateOnboardConfigs: build.mutation<GptConversation, RequestPayload>({
+      query: ({ payload, params }) => {
+        const req = createHttpRequest(RuckusAssistantUrlInfo.updateOnboardConfigs, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+
+    getOnboardConfigs: build.query<GptConversation, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RuckusAssistantUrlInfo.updateOnboardConfigs, params)
+        return {
+          ...req
+        }
+      }
     })
   })
 })
@@ -41,5 +68,8 @@ export const ruckusAssistantApi = baseRuckusAssistantApi.injectEndpoints({
 export const {
   useStartConversationsMutation,
   useApplyConversationsMutation,
-  useUpdateConversationsMutation
+  useUpdateConversationsMutation,
+  useCreateOnboardConfigsMutation,
+  useUpdateOnboardConfigsMutation,
+  useLazyGetOnboardConfigsQuery
 } = ruckusAssistantApi

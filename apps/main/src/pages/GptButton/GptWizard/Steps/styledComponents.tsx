@@ -68,6 +68,12 @@ export const PurposeContainer = styled.div`
   margin-bottom: 15px;
 `
 
+export const NetworkName = styled.div`
+  margin: 10px 0px;
+  font-size: 12px;
+  font-weight: 600;
+`
+
 export const PurposeHeader = styled.div`
   font-size: 12px;
   font-weight: 600;

@@ -4,6 +4,9 @@ import { Divider } from 'antd'
 import { useIntl } from 'react-intl'
 import { NetworkTypeEnum, networkTypes } from '@acx-ui/rc/utils'
 import * as UI from './styledComponents'
+import { Modal, ModalType } from '@acx-ui/components'
+import { NetworkForm } from '@acx-ui/rc/components'
+import { useCreateOnboardConfigsMutation } from '@acx-ui/rc/services'
 
 type NetworkConfig = {
   'Purpose': string;
@@ -13,12 +16,17 @@ type NetworkConfig = {
   'id': string;
 }
 
-export function WlanDetailStep(props: { payload: string }) {
+export function WlanDetailStep(props: { payload: string, sessionId: string }) {
   const { $t } = useIntl()
   const data = props.payload ? JSON.parse(props.payload) as NetworkConfig[] : []
 
-  const [ssidTypes, setSsidTypes] = useState<NetworkTypeEnum[]>(data.map(item => item['SSID Type']))
+  const [modalType, setModalType] = useState<NetworkTypeEnum>(NetworkTypeEnum.OPEN)
+  const [modalId, setModalId] = useState('')
+  const [modalName, setModalName] = useState('')
 
+  const [ssidTypes, setSsidTypes] = useState<NetworkTypeEnum[]>(data.map(item => item['SSID Type']))
+  const [networkModalVisible, setNetworkModalVisible] = useState(false)
+  
   useEffect(() => {
     if (data.length > 0) {
       setSsidTypes(data.map(item => item['SSID Type']));
@@ -40,6 +48,28 @@ export function WlanDetailStep(props: { payload: string }) {
       return updatedSsidTypes
     })
   }
+
+  const [createOnboardConfigs] = useCreateOnboardConfigsMutation()
+
+  const getNetworkForm = <NetworkForm
+    isGptMode={true} 
+    modalMode={true}
+    modalCallBack={async (payload) => {
+      console.log(payload)
+      setNetworkModalVisible(false)
+      await createOnboardConfigs({
+        payload: {
+          "id": modalId,
+          "name": modalName,
+          "type": modalType.toUpperCase(),
+          "content": JSON.stringify(payload),
+          "sessionId": props.sessionId
+        }
+      }).unwrap()
+      
+    }}
+    createType={modalType}
+  />
 
   return (
     <UI.Container>
@@ -74,10 +104,14 @@ export function WlanDetailStep(props: { payload: string }) {
                   hidden
                 />
                 <ProFormText
-                  label={$t({ defaultMessage: 'Network name' })}
                   name={['data', index, 'SSID Name']}
                   initialValue={item['SSID Name']}
+                  hidden
                 />
+                <UI.NetworkName>
+                  {`${$t({ defaultMessage: 'Network Name:' })} ${data[index]['SSID Name']}`}
+                </UI.NetworkName>
+
                 <ProFormSelect
                   label={$t({ defaultMessage: 'Network Type' })}
                   name={['data', index, 'SSID Type']}
@@ -90,7 +124,12 @@ export function WlanDetailStep(props: { payload: string }) {
                 />
               </div>
               <UI.PurposeContainer>
-                <UI.PurposeHeader>
+                <UI.PurposeHeader
+                  onClick={() => {
+                    setModalId(item['id'])
+                    setModalName(item['SSID Name'])
+                    setModalType(ssidTypes[index])
+                    setNetworkModalVisible(true)}}>
                   {networkOptions.find(option => option.value === ssidTypes[index])?.label || ''}
                 </UI.PurposeHeader>
               </UI.PurposeContainer>
@@ -99,6 +138,16 @@ export function WlanDetailStep(props: { payload: string }) {
           <Divider dashed />
         </React.Fragment>
       ))}
+
+      <Modal
+        title={$t({ defaultMessage: 'Add Guest Pass Network' })}
+        type={ModalType.ModalStepsForm}
+        visible={networkModalVisible}
+        mask={true}
+        children={getNetworkForm}
+      />
     </UI.Container>
   )
+
+  
 }
