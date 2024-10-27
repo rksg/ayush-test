@@ -10,6 +10,8 @@ import { useParams }                                     from '@acx-ui/react-rou
 import { intentAIApi }                                   from '@acx-ui/store'
 import { getIntl, NetworkPath, noDataDisplay, NodeType } from '@acx-ui/utils'
 
+import { NetworkNode } from '../NetworkFilter/services'
+
 import { DisplayStates, Statuses, StatusReasons }        from './states'
 import { dataRetentionText, IntentWlan, isDataRetained } from './utils'
 
@@ -58,7 +60,9 @@ export type Intent = {
         currency: string
         value: number
       }
-    }
+      excludedAPs?: [NetworkNode[]]
+    },
+    unsupportedAPs?: string[]
   }
   sliceType: NodeType
   sliceValue: string
@@ -123,9 +127,10 @@ const kpiHelper = (kpis: IntentDetailsQueryPayload['kpis']) => {
 export function getKPIData (intent: Intent, config: IntentKPIConfig) {
   const key = `kpi_${_.snakeCase(config.key)}` as `kpi_${string}`
   const kpi = intent[key] as IntentKpi[`kpi_${string}`]
+  // avoid druid error will receive null
   return {
-    data: kpi.data,
-    compareData: kpi.compareData
+    data: kpi?.data,
+    compareData: kpi?.compareData
   }
 }
 
@@ -200,7 +205,10 @@ export const api = intentAIApi.injectEndpoints({
         `,
         variables: { root, sliceId, code }
       }),
+
       transformResponse: (response: { intent?: Intent }) => response.intent,
+      transformErrorResponse: (error, meta) =>
+        ({ ...error, data: meta?.response?.data?.intent }),
       providesTags: [{ type: 'Intent', id: 'INTENT_DETAILS' }]
     })
   })

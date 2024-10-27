@@ -7,8 +7,7 @@ import { Descriptions, StepsForm, Tooltip, useStepFormContext } from '@acx-ui/co
 import { CliConfiguration }                                     from '@acx-ui/rc/utils'
 
 import { CodeMirrorWidget } from '../../CodeMirrorWidget'
-
-import * as UI from './styledComponents'
+import * as UI              from '../../SwitchCli/styledComponents'
 
 export function CliStepSummary () {
   const { $t } = useIntl()

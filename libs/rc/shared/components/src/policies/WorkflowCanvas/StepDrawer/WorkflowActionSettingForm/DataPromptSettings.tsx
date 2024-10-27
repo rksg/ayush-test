@@ -54,7 +54,7 @@ function DataPromptField () {
     let nameCount = 0
     if(formFields && formFields.length > 0) {
       //@ts-ignore
-      formFields.forEach(field => field.label === label ? nameCount++ : 1)
+      formFields.forEach(field => field?.label === label ? nameCount++ : 1)
     }
 
     if (label && nameCount > 1) {

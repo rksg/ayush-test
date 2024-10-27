@@ -261,7 +261,8 @@ export const getApGroupsList = {
 export const networkList = {
   fields: [
     'id',
-    'venueApGroups'
+    'venueApGroups',
+    'apCount'
   ],
   totalCount: 1,
   page: 1,
@@ -272,12 +273,42 @@ export const networkList = {
         '123456789005',
         '302002030366'
       ],
+      apCount: 2,
       venueApGroups: [{
         apGroupIds: [
           '_apGroupId_1_',
           '_apGroupId_2_'
         ]
       }]
+    }
+  ]
+}
+
+export const mockVenueOptions = {
+  fields: ['name', 'country', 'latitude', 'longitude', 'id'],
+  totalCount: 3,
+  page: 1,
+  data: [
+    {
+      id: 'mock_venue_1',
+      name: 'Mock Venue 1',
+      country: 'United States',
+      latitude: '37.4112751',
+      longitude: '-122.0191908'
+    },
+    {
+      id: 'mock_venue_2',
+      name: 'Mock Venue 2',
+      country: 'United States',
+      latitude: '38.4112751',
+      longitude: '-123.0191908'
+    },
+    {
+      id: 'mock_venue_3',
+      name: 'Mock Venue 3',
+      country: 'United States',
+      latitude: '39.4112751',
+      longitude: '-124.0191908'
     }
   ]
 }

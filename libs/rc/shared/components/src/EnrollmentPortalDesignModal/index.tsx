@@ -12,7 +12,7 @@ export interface EnrollmentPortalDesignModalProps {
 
 export function EnrollmentPortalDesignModal (props: EnrollmentPortalDesignModalProps) {
   const { id, onFinish } = props
-  const portalRef = useRef<{ onFinish: ()=> void }>(null)
+  const portalRef = useRef<{ onFinish: ()=> Promise<boolean> }>(null)
   return (
     <Modal
       destroyOnClose={true}
@@ -26,9 +26,17 @@ export function EnrollmentPortalDesignModal (props: EnrollmentPortalDesignModalP
       className={UI.modalClassName}
       maskClosable={false}
       footer={null}
-      onCancel={()=> {
-        portalRef?.current?.onFinish()
-        onFinish && onFinish()
+      onCancel={async ()=> {
+        if (portalRef?.current) {
+          await portalRef.current.onFinish()
+            .then((res)=> {
+              if (res) {
+                onFinish && onFinish()
+              }
+            })
+        } else {
+          onFinish && onFinish()
+        }
       }}
     >
       <PortalDesign id={id} ref={portalRef}/>
