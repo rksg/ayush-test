@@ -155,10 +155,10 @@ export default function RuckusGptButton () {
                     const response = await startConversations({
                       payload: {
                         venueName: result.venueName,
-                        numberOfAp: result.numberOfAp,
-                        numberOfSwitch: result.numberOfSwitch,
                         venueType,
-                        description: result.description
+                        description: result.description,
+                        ...(result.numberOfSwitch && { numberOfSwitch: result.numberOfSwitch }),
+                        ...(result.numberOfAp && { numberOfAp: result.numberOfAp })
                       }
                     }).unwrap()
                     setIsLoading(false)

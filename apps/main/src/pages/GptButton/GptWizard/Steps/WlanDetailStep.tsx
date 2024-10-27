@@ -55,7 +55,7 @@ export function WlanDetailStep (props: { payload: string }) {
             <UI.CheckboxContainer>
               <UI.CheckboxIndexLabel>{index + 1}</UI.CheckboxIndexLabel>
             </UI.CheckboxContainer>
-            <UI.VlanDetails>
+            <UI.VlanDetails style={{ width: '200px' }}>
               <ProFormText
                 name={['data', index, 'id']}
                 initialValue={item['id']}
@@ -84,8 +84,8 @@ export function WlanDetailStep (props: { payload: string }) {
                 allowClear={false}
               />
             </UI.VlanDetails>
-            <Divider dashed />
           </UI.VlanContainer>
+          <Divider dashed />
         </React.Fragment>
       ))}
     </UI.Container>

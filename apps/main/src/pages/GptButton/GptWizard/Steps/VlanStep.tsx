@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { ProFormCheckbox, ProFormText } from '@ant-design/pro-form'
 import { Button, Divider }              from 'antd'
@@ -20,7 +20,27 @@ type NetworkConfig = {
 
 export function VlanStep (props: { payload: string }) {
   const { $t } = useIntl()
-  const data = props.payload ? JSON.parse(props.payload) as NetworkConfig[] : []
+  const initialData = JSON.parse(props.payload || '[]') as NetworkConfig[]
+  const [data, setData] = useState<NetworkConfig[]>(initialData)
+
+  useEffect(() => {
+    if (initialData !== data) {
+      setData(initialData)
+    }
+
+  }, [props.payload])
+
+
+  const handleAddVlan = () => {
+    const newVlan: NetworkConfig = {
+      'Purpose': '',
+      'VLAN ID': '',
+      'VLAN Name': '',
+      'Checked': true,
+      'id': ''
+    }
+    setData([...data, newVlan])
+  }
 
   return (
     <UI.Container>
@@ -29,8 +49,8 @@ export function VlanStep (props: { payload: string }) {
           <UI.Title>{$t({ defaultMessage: 'Recommended VLANs' })}</UI.Title>
           <Button type='link'
             size='small'
-            onClick={() => {
-            }}>
+            disabled={data.length >= 5}
+            onClick={handleAddVlan}>
             {$t({ defaultMessage: 'Add VLAN' })}
           </Button>
         </UI.HeaderWithAddButton>
@@ -42,7 +62,7 @@ export function VlanStep (props: { payload: string }) {
       </UI.Header>
 
       {data.map((item, index) => (
-        <React.Fragment key={index}>
+        <React.Fragment key={item.id}>
           <UI.VlanContainer>
             <UI.CheckboxContainer>
               <ProFormCheckbox
@@ -64,6 +84,7 @@ export function VlanStep (props: { payload: string }) {
               />
 
               <ProFormText
+                width={200}
                 label={$t({ defaultMessage: 'VLAN Name' })}
                 name={['data', index, 'VLAN Name']}
                 initialValue={item['VLAN Name']}
@@ -83,14 +104,15 @@ export function VlanStep (props: { payload: string }) {
               </UI.PurposeContainer>
 
               <ProFormText
+                width={200}
                 label={$t({ defaultMessage: 'VLAN ID' })}
                 name={['data', index, 'VLAN ID']}
                 initialValue={item['VLAN ID']}
                 rules={[{ required: true }]}
               />
             </UI.VlanDetails>
-            <Divider dashed />
           </UI.VlanContainer>
+          <Divider dashed />
         </React.Fragment>
       ))}
     </UI.Container>

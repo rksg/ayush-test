@@ -76,10 +76,6 @@ export const GptModal = styled(Modal)<{ titleType: string }>`
       }
     }
   }
-  .ant-btn.ant-btn-primary {
-    border-color: var(--acx-accents-blue-50) !important;
-    background-color: var(--acx-accents-blue-50) !important;
-  }
 `
 
 
@@ -176,8 +172,10 @@ export const VirticalBox = styled.div`
   height: 150px;
   .typeCard {
     width: 180px;
-    height: 150px;
-    border-radius: 8px;
+    .ant-card {
+      height: 150px;
+      border-radius: 8px;
+    }
   }
 `
 
