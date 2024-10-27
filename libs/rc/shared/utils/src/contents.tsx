@@ -321,15 +321,6 @@ export const FlexAuthMessages = {
   CANNOT_SET_DIFF_GUEST_VLAN: defineMessage({
     defaultMessage: 'Either select a different profile that has a matching Guest VLAN number or use the customize option to set the Guest VLAN to {applyGuestVlan}'
   }),
-  // VLAN_CANNOT_SAME_AS_SWITCH_DEFAULT_VLAN: defineMessage({
-  //   defaultMessage: '{vlanName} can not be the same as Default VLAN'
-  // }),
-  // VLAN_CANNOT_SAME_AS_SWITCH_LEVEL_AUTH_DEFAULT_VLAN: defineMessage({
-  //   defaultMessage: '{vlanName} can not be the same as Switch Level Auth Default VLAN'
-  // }),
-  // AUTH_VLAN_CANNOT_SAME_AS_TAGGED_VLAN: defineMessage({
-  //   defaultMessage: 'Auth Default VLAN can not be the same as Tagged VLANs'
-  // }),
   VLAN_CANNOT_SAME_AS_TARGET_VLAN: defineMessage({
     defaultMessage: '{sourceVlan} can not be the same as {targetVlan}'
   })

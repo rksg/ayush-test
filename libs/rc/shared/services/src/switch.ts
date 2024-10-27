@@ -60,6 +60,7 @@ import {
   SwitchPortViewModelQueryFields,
   TroubleshootingResponse,
   FlexibleAuthentication,
+  FlexibleAuthenticationAppliedTargets,
   SwitchFeatureSet
 } from '@acx-ui/rc/utils'
 import { baseSwitchApi }  from '@acx-ui/store'
@@ -1592,10 +1593,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      providesTags: [{ type: 'Switch', id: 'FlexAuthProfile' }]
+      providesTags: [{ type: 'FlexAuthProfile', id: 'LIST' }]
     }),
     // eslint-disable-next-line max-len
-    getFlexAuthenticationProfileAppliedTargets: build.query<TableResult<FlexibleAuthentication>, RequestPayload>({
+    getFlexAuthenticationProfileAppliedTargets: build.query<TableResult<FlexibleAuthenticationAppliedTargets>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
           SwitchUrlsInfo.getFlexAuthenticationProfileAppliedTargets, params, customHeaders.v1
@@ -1616,7 +1617,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'Switch', id: 'FlexAuthProfile' }]
+      invalidatesTags: [{ type: 'FlexAuthProfile', id: 'LIST' }]
     }),
     updateFlexAuthenticationProfile: build.mutation<FlexibleAuthentication, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1628,7 +1629,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'Switch', id: 'FlexAuthProfile' }]
+      invalidatesTags: [{ type: 'FlexAuthProfile', id: 'LIST' }]
     }),
     deleteFlexAuthenticationProfile: build.mutation<FlexibleAuthentication, RequestPayload>({
       query: ({ params }) => {
@@ -1639,7 +1640,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Switch', id: 'FlexAuthProfile' }]
+      invalidatesTags: [{ type: 'FlexAuthProfile', id: 'LIST' }]
     }),
     getSwitchesAuthentication: build.query<FlexibleAuthentication, RequestPayload>({
       query: ({ params }) => {
@@ -1660,7 +1661,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Switch', id: 'SwitchAuth' }]
+      providesTags: [{ type: 'SwitchFlexAuth', id: 'DETAIL' }]
     }),
     updateSwitchAuthentication: build.mutation<FlexibleAuthentication, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1672,7 +1673,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'Switch', id: 'SwitchAuth' }]
+      invalidatesTags: [{ type: 'SwitchFlexAuth', id: 'DETAIL' }]
     })
   })
 })

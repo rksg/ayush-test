@@ -269,13 +269,11 @@ export function StackForm () {
       setVenueOption(sortedVenueOption)
     }
 
-    if (switchData && switchDetail && (venuesList || venuesListV1002) && !isSwitchAuthLoading) {
+    if (switchData && switchDetail && (venuesList || venuesListV1002)) {
       if (dataFetchedRef.current) return
       dataFetchedRef.current = true
       formRef?.current?.resetFields()
-      formRef?.current?.setFieldsValue({
-        ...switchDetail, ...switchData, ..._.omit(switchAuth, ['id'])
-      })
+      formRef?.current?.setFieldsValue({ ...switchDetail, ...switchData })
 
       setIsIcx7650(!!switchDetail.model?.includes('ICX7650'))
       setIsSwitchFirmwareAbove10010f(isFirmwareVersionAbove10010f(switchDetail?.firmware))
@@ -382,7 +380,17 @@ export function StackForm () {
 
       getStandaloneSwitches()
     }
-  }, [venuesList, switchData, switchDetail, venuesListV1002, isSwitchAuthLoading])
+  }, [venuesList, switchData, switchDetail, venuesListV1002])
+
+  useEffect(() => {
+    if (switchAuth && !isSwitchAuthLoading) {
+      formRef?.current?.setFieldsValue({
+        ...formRef?.current?.getFieldsValue(),
+        ..._.omit(switchAuth, ['id'])
+      })
+    }
+  }, [switchAuth, isSwitchAuthLoading])
+
 
   useEffect(() => {
     if (tableData || activeRow) {

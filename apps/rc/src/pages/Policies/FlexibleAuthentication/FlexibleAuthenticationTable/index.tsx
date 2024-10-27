@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, Loader, PageHeader, Table, TableProps, showActionModal } from '@acx-ui/components'
+import { authenticationTypeLabel }                                        from '@acx-ui/rc/components'
 import {
   useDeleteFlexAuthenticationProfileMutation,
   useGetFlexAuthenticationProfilesQuery
@@ -63,7 +64,9 @@ const FlexibleAuthenticationTable = () => {
     dataIndex: 'authenticationType',
     filterable: true,
     sorter: true,
-    render: (_, { authenticationType }) => authenticationType
+    render: (_, { authenticationType }) => {
+      return $t(authenticationTypeLabel[authenticationType as keyof typeof authenticationTypeLabel])
+    }
   }]
 
   const rowActions: TableProps<FlexibleAuthentication>['rowActions'] = [{
@@ -90,7 +93,7 @@ const FlexibleAuthenticationTable = () => {
         customContent: {
           action: 'DELETE',
           entityName: $t({ defaultMessage: 'Profile' }),
-          entityValue: selectedRow ? selectedRow.profileName : undefined
+          entityValue: selectedRow.profileName
         },
         onOk: () => {
           deleteFlexAuthenticationProfile({ params: { profileId: selectedRow?.id } })

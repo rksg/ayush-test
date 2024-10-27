@@ -196,13 +196,11 @@ export function SwitchForm () {
       handleSwitchList()
     }
 
-    if(switchData && switchDetail && !isSwitchAuthLoading){
+    if(switchData && switchDetail){
       if(dataFetchedRef.current) return
       dataFetchedRef.current = true
       formRef?.current?.resetFields()
-      formRef?.current?.setFieldsValue({
-        ...switchDetail, ...switchData, ..._.omit(switchAuth, ['id'])
-      })
+      formRef?.current?.setFieldsValue({ ...switchDetail, ...switchData })
 
       setIsSwitchFirmwareAbove10010f(isFirmwareVersionAbove10010f(switchDetail?.firmware))
       setReadOnly(!!switchDetail.cliApplied)
@@ -216,7 +214,16 @@ export function SwitchForm () {
       }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [venueId, switchModel, switchRole, switchData, switchDetail, isSwitchAuthLoading])
+  }, [venueId, switchModel, switchRole, switchData, switchDetail])
+
+  useEffect(() => {
+    if (switchAuth && !isSwitchAuthLoading) {
+      formRef?.current?.setFieldsValue({
+        ...formRef?.current?.getFieldsValue(),
+        ..._.omit(switchAuth, ['id'])
+      })
+    }
+  }, [switchAuth, isSwitchAuthLoading])
 
   const handleSwitchList = async () => {
     const payload = {

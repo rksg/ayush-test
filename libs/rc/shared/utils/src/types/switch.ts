@@ -946,7 +946,7 @@ export interface FlexibleAuthentication {
 	profileName?: string
 	flexibleAuthenticationEnabled?: boolean
 	authenticationType: string
-	changeAuthOrder: boolean
+	changeAuthOrder?: boolean
 	dot1xPortControl: string
 	authDefaultVlan: number
 	restrictedVlan?: number
@@ -954,6 +954,15 @@ export interface FlexibleAuthentication {
 	authFailAction: string
 	authTimeoutAction: string
   guestVlan?: number
+}
+
+export interface FlexibleAuthenticationAppliedTargets {
+  venueId: string
+  venueName: string
+  switchId: string
+  switchName?: string
+  ports: string[]
+  switchModel: string
 }
 
 export interface SwitchFeatureSet {

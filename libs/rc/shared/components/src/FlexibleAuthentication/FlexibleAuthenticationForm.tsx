@@ -9,9 +9,9 @@ import {
   StepsForm,
   Tooltip
 } from '@acx-ui/components'
-// import { useGetFlexAuthenticationProfilesQuery } from '@acx-ui/rc/services'
+import { useGetFlexAuthenticationProfilesQuery } from '@acx-ui/rc/services'
 import {
-  // checkObjectNotExists,
+  checkObjectNotExists,
   FlexibleAuthentication,
   FlexAuthMessages,
   getPolicyListRoutePath,
@@ -72,19 +72,18 @@ export const FlexibleAuthenticationForm = (props: {
     , , authDefaultVlan, authFailAction, authTimeoutAction
   ] = authFormWatchValues
 
-  // const { authenticationProfiles } = useGetFlexAuthenticationProfilesQuery(
-  //   { payload: {
-  //     pageSize: 10000
-  //   } }, {
-  //     selectFromResult: ( { data, isLoading, isFetching } ) => {
-  //       return {
-  //         profileDetail: data?.data,
-  //         isLoading,
-  //         isFetching
-  //       }
-  //     }
-  //   }
-  // )
+  const { authenticationProfiles, isProfileListLoading } = useGetFlexAuthenticationProfilesQuery(
+    { payload: {
+      pageSize: 10000
+    } }, {
+      selectFromResult: ( { data, isLoading } ) => {
+        return {
+          authenticationProfiles: data?.data ?? [],
+          isProfileListLoading: isLoading
+        }
+      }
+    }
+  )
 
   useEffect(() => {
     if (editMode && props.data) {
@@ -124,7 +123,9 @@ export const FlexibleAuthenticationForm = (props: {
       >
         <StepsForm.StepForm>
           <Loader
-            states={[]}
+            states={[{
+              isLoading: editMode ? (!props.data || isProfileListLoading) : isProfileListLoading
+            }]}
           >
             <Form.Item
               name='profileName'
@@ -132,13 +133,18 @@ export const FlexibleAuthenticationForm = (props: {
               validateFirst
               rules={[
                 { required: true },
-                { validator: (_, value) => whitespaceOnlyRegExp(value) }
-                // TODO
-                // {
-                //   validator: (_, value) => checkObjectNotExists(
-                //     authenticationProfiles, value, $t({ defaultMessage: 'Profile' }, 'profileName')
-                //   )
-                // }
+                { validator: (_, value) => whitespaceOnlyRegExp(value) },
+                {
+                  validator: (rule, value) => {
+                    const profileNameObjList = authenticationProfiles
+                      .filter(p => editMode ? (p.id !== props?.data?.id) : p)
+                      .map(p => ({ profileName: p.profileName }))
+
+                    return checkObjectNotExists(
+                      profileNameObjList, { profileName: value }, $t({ defaultMessage: 'Profile' })
+                    )
+                  }
+                }
               ]}
               children={
                 <Input maxLength={64} />

@@ -3,11 +3,18 @@ import { useIntl }                 from 'react-intl'
 
 import { Button, Loader, PageHeader, SummaryCard, Table, TableProps } from '@acx-ui/components'
 import {
+  authenticationTypeLabel,
+  authFailActionTypeLabel,
+  authTimeoutActionTypeLabel,
+  portControlTypeLabel
+} from '@acx-ui/rc/components'
+import {
   useGetFlexAuthenticationProfilesQuery,
   useGetFlexAuthenticationProfileAppliedTargetsQuery
 }                      from '@acx-ui/rc/services'
 import {
   FlexibleAuthentication,
+  FlexibleAuthenticationAppliedTargets,
   PolicyOperation,
   PolicyType,
   getPolicyDetailsLink,
@@ -63,15 +70,24 @@ const FlexibleAuthenticationDetail = () => {
   const profileInfo = [
     {
       title: $t({ defaultMessage: 'Type' }),
-      content: () => (getContent('authenticationType'))
+      content: () => {
+        const type = profileDetail?.['authenticationType']
+        return $t(authenticationTypeLabel[type as keyof typeof authenticationTypeLabel])
+      }
     },
     {
       title: $t({ defaultMessage: 'Change Authentication Order' }),
-      content: () => (getContent('changeAuthOrder'))
+      content: () => {
+        const changeAuthOrder = profileDetail?.['changeAuthOrder']
+        return changeAuthOrder ? $t({ defaultMessage: 'ON' }) : $t({ defaultMessage: 'OFF' })
+      }
     },
     {
       title: $t({ defaultMessage: '802.1x Port Control' }),
-      content: () => (getContent('dot1xPortControl'))
+      content: () => {
+        const dot1xPortControl = profileDetail?.['dot1xPortControl']
+        return $t(portControlTypeLabel[dot1xPortControl as keyof typeof portControlTypeLabel])
+      }
     },
     {
       title: $t({ defaultMessage: 'Auth Default VLAN' }),
@@ -79,7 +95,10 @@ const FlexibleAuthenticationDetail = () => {
     },
     {
       title: $t({ defaultMessage: 'Fail Action' }),
-      content: () => (getContent('authFailAction'))
+      content: () => {
+        const authFailAction = profileDetail?.['authFailAction']
+        return $t(authFailActionTypeLabel[authFailAction as keyof typeof authFailActionTypeLabel])
+      }
     },
     {
       title: $t({ defaultMessage: 'Restricted VLAN' }),
@@ -87,7 +106,12 @@ const FlexibleAuthenticationDetail = () => {
     },
     {
       title: $t({ defaultMessage: 'Timeout Action' }),
-      content: () => (getContent('authTimeoutAction'))
+      content: () => {
+        const authTimeoutAction = profileDetail?.['authTimeoutAction']
+        return $t(
+          authTimeoutActionTypeLabel[authTimeoutAction as keyof typeof authTimeoutActionTypeLabel]
+        )
+      }
     },
     {
       title: $t({ defaultMessage: 'Critical VLAN' }),
@@ -95,31 +119,30 @@ const FlexibleAuthenticationDetail = () => {
     }
   ]
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const columns: TableProps<any>['columns'] = [{ // TODO
+  const columns: TableProps<FlexibleAuthenticationAppliedTargets>['columns'] = [{
     title: $t({ defaultMessage: 'Switch' }),
-    key: 'switch',
-    dataIndex: 'switch',
+    key: 'switchName',
+    dataIndex: 'switchName',
     sorter: true,
     defaultSortOrder: 'ascend',
     searchable: true
   },
   {
     title: $t({ defaultMessage: 'Model' }),
-    key: 'model',
-    dataIndex: 'model',
+    key: 'switchModel',
+    dataIndex: 'switchModel',
     sorter: true
   },
   {
     title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
-    key: 'venue',
+    key: 'venueName',
     filterable: true,
-    dataIndex: 'venue'
+    dataIndex: 'venueName'
   },
   {
     title: $t({ defaultMessage: 'Port' }),
     key: 'port',
-    dataIndex: 'port'
+    dataIndex: 'ports' //TODO
   }]
 
   return (<>
@@ -163,11 +186,10 @@ const FlexibleAuthenticationDetail = () => {
           <Table
             rowKey={'id'}
             columns={columns}
-            dataSource={[]}
-            // dataSource={tableQuery?.data?.data}
-            // pagination={tableQuery.pagination}
-            // onChange={tableQuery.handleTableChange}
-            // onFilterChange={tableQuery.handleFilterChange}
+            dataSource={tableQuery?.data?.data}
+            pagination={tableQuery.pagination}
+            onChange={tableQuery.handleTableChange}
+            onFilterChange={tableQuery.handleFilterChange}
           />
         </Card>
       </Space>

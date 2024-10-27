@@ -5,6 +5,7 @@ import { DefaultOptionType }                                                    
 import { FormattedMessage, useIntl }                                               from 'react-intl'
 
 import { showActionModal, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import {
   FlexAuthMessages,
   IP_ADDRESS_TYPE,
@@ -54,6 +55,7 @@ export function SwitchStackSetting (props: {
 
   const vlanMapping = JSON.parse(switchDetail?.vlanMapping ?? '{}')
   const defaultVlan = Object.keys(vlanMapping).find(k => vlanMapping[k] === 'DEFAULT-VLAN')
+  const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   const isSwitchFirmwareAbove10010f = isFirmwareVersionAbove10010f(switchDetail?.firmware)
 
   const { useWatch } = Form
@@ -297,7 +299,7 @@ export function SwitchStackSetting (props: {
       { switchDetail && isL3ConfigAllowed &&
         <StaticRoutes readOnly={readOnly} switchDetail={switchDetail}/> }
       {
-        isSwitchFirmwareAbove10010f && <>
+        isSwitchFlexAuthEnabled && isSwitchFirmwareAbove10010f && <>
           <Space style={{
             display: 'flex', margin: '40px 0 30px', justifyContent: 'space-between'
           }}>
@@ -307,6 +309,7 @@ export function SwitchStackSetting (props: {
             <Form.Item
               noStyle
               name='authEnable'
+              valuePropName='checked'
               children={<Switch />}
             />
           </Space>
