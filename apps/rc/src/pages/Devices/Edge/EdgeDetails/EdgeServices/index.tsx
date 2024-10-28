@@ -197,7 +197,11 @@ export const EdgeServices = () => {
                 closeAfterAction: true,
                 handler: () => {
                   removeServices({
-                    params, payload: {
+                    params: {
+                      venueId: currentEdgeStatus?.venueId,
+                      edgeClusterId: currentEdgeStatus?.clusterId
+                    },
+                    payload: {
                       serviceList: selectedRows.map(item => ({
                         serviceId: item.serviceId,
                         serviceType: item.serviceType
