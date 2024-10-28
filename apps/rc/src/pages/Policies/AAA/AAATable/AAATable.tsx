@@ -256,7 +256,9 @@ function useColumns () {
       sorter: true,
       width: 160,
       render: (_, { type }) =>{
-        return type ? AAAPurposeEnum[type] : ''
+        return type ?
+          (supportRadsec ?
+            AAAPurposeEnum[type].replace(' RADIUS Server', '') : AAAPurposeEnum[type]) : ''
       }
     },
     {
