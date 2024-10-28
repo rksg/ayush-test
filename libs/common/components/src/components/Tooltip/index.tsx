@@ -2,7 +2,7 @@ import { CSSProperties } from 'react'
 
 import { Tooltip as AntTooltip } from 'antd'
 
-import { InformationOutlined, InformationSolid, QuestionMarkCircleOutlined, WarningCircleSolid } from '@acx-ui/icons'
+import { InformationOutlined, InformationSolid, QuestionMarkCircleOutlined } from '@acx-ui/icons'
 
 import * as UI from './styledComponents'
 
