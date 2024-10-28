@@ -87,7 +87,7 @@ FROM build-base as acx-ui-base-test
 ENV NODE_OPTIONS=--max-old-space-size=2048
 
 # Force dependency with lint & build stages
-#COPY --from=acx-ui-lint   /app/lint-done   ./lint-done
+COPY --from=acx-ui-lint   /app/lint-done   ./lint-done
 COPY --from=build         /app/dist/apps   ./dist/apps
 
 FROM acx-ui-base-test as acx-ui-group1-test
