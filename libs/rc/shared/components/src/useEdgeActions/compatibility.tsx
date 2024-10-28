@@ -22,6 +22,7 @@ import {
   CompatibilityDeviceEnum,
   EdgeSdLanApCompatibilitiesResponse,
   EdgeSdLanApCompatibility,
+  EdgeServiceApCompatibility,
   EdgeServiceCompatibilitiesResponse,
   EdgeServiceCompatibility,
   EdgeServicesApCompatibilitiesResponse,
@@ -40,7 +41,10 @@ export const useEdgeSdLansCompatibilityData = (serviceIds: string[], skip: boole
     useEdgeSvcPcyCompatibleQuery: useLazyGetSdLanEdgeCompatibilitiesQuery,
     useEdgeSvcPcyApCompatibleQuery: useLazyGetSdLanApCompatibilitiesQuery
   })
-  return results
+  return results as {
+    compatibilities: Record<string, EdgeServiceCompatibility[] | EdgeSdLanApCompatibility[]> | undefined
+    isLoading: boolean
+  }
 }
 
 export const useEdgePinsCompatibilityData = (serviceIds: string[], skip: boolean = false) => {
@@ -51,7 +55,10 @@ export const useEdgePinsCompatibilityData = (serviceIds: string[], skip: boolean
     // TODO: waiting for BE
     // useEdgeSvcPcyApCompatibleQuery: useLazyGetSdLanApCompatibilitiesQuery
   })
-  return results
+  return results as {
+    compatibilities: Record<string, EdgeServiceCompatibility[] | EdgeServiceApCompatibility[]> | undefined
+    isLoading: boolean
+  }
 }
 
 export const useEdgeSdLanDetailsCompatibilitiesData = (props: {
@@ -120,10 +127,10 @@ export const useEdgeSvcsPcysCompatibilitiesData = (props: {
   skip?: boolean,
   useEdgeSvcPcyCompatibleQuery: UseLazyQuery<DefaultQueryDefinition<EdgeServiceCompatibilitiesResponse>>,
   useEdgeSvcPcyApCompatibleQuery?: UseLazyQuery<DefaultQueryDefinition<EdgeServicesApCompatibilitiesResponse>> | UseLazyQuery<DefaultQueryDefinition<EdgeSdLanApCompatibilitiesResponse>> | undefined
-}) => {
+})=> {
   const { serviceIds, skip = false, useEdgeSvcPcyCompatibleQuery, useEdgeSvcPcyApCompatibleQuery } = props
   const [ isInitializing, setIsInitializing ] = useState(false)
-  const [data, setData] = useState<Record<string, EdgeServiceCompatibility[] | EdgeSdLanApCompatibility[]> | undefined>(undefined)
+  const [data, setData] = useState<Record<string, EdgeServiceCompatibility[] | EdgeSdLanApCompatibility[] | EdgeServiceApCompatibility[]> | undefined>(undefined)
 
   const [getEdgeSvcPcyCompatibilities] = useEdgeSvcPcyCompatibleQuery()
   const apCompatibilityFn = useEdgeSvcPcyApCompatibleQuery?.()
@@ -137,7 +144,7 @@ export const useEdgeSvcsPcysCompatibilitiesData = (props: {
         reqs.push(apCompatibilityFn[0]({ payload: { filters: { serviceIds: ids } } }).unwrap())
       }
 
-      const deviceTypeResultMap: Record<string, EdgeServiceCompatibility[] | EdgeSdLanApCompatibility[]> = {}
+      const deviceTypeResultMap: Record<string, EdgeServiceCompatibility[] | EdgeSdLanApCompatibility[] | EdgeServiceApCompatibility[]> = {}
       const results = await Promise.allSettled(reqs)
       results.forEach((resultItem, index) => {
         if (resultItem.status === 'fulfilled') {
@@ -159,7 +166,7 @@ export const useEdgeSvcsPcysCompatibilitiesData = (props: {
   }
 
   useEffect(() => {
-    if (!skip) {
+    if (!skip && serviceIds.length) {
       const usedIds = Array.isArray(serviceIds) ? serviceIds : [serviceIds]
       fetchEdgeCompatibilities(usedIds)
     }

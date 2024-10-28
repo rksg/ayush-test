@@ -12,8 +12,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
-import { EdgeServiceStatusLight, CountAndNamesTooltip } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
+import { EdgeServiceStatusLight, CountAndNamesTooltip, useEdgePinsCompatibilityData } from '@acx-ui/rc/components'
 import {
   useDeleteEdgePinMutation,
   useGetEdgeClusterListQuery,
@@ -36,7 +36,7 @@ import {
 import { TenantLink, useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { noDataDisplay }                                       from '@acx-ui/utils'
 
-import { CompatibilityCheck, useCompatibilityData } from './CompatibilityCheck'
+import { CompatibilityCheck } from './CompatibilityCheck'
 
 const getEdgePinPayload = {
   fields: [
@@ -100,7 +100,8 @@ const PersonalIdentityNetworkTable = () => {
     () => tableQuery.data?.data?.map(i => i.id!) ?? [],
     [tableQuery.data?.data])
   const skipFetchCompatibilities = currentServiceIds.length === 0
-  const compatibilityData = useCompatibilityData(currentServiceIds, skipFetchCompatibilities)
+  // eslint-disable-next-line max-len
+  const compatibilityData = useEdgePinsCompatibilityData(currentServiceIds, skipFetchCompatibilities)
 
   const { clusterOptions } = useGetEdgeClusterListQuery(
     { payload: clusterOptionsDefaultPayload },
@@ -153,7 +154,7 @@ const PersonalIdentityNetworkTable = () => {
           </TenantLink>
           <CompatibilityCheck
             serviceId={serviceId!}
-            compatibilityData={compatibilityData}
+            compatibilityData={compatibilityData.compatibilities}
           />
         </Space>
       }

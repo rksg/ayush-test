@@ -1,12 +1,10 @@
 /* eslint-disable max-len */
-import { useEffect, useState } from 'react'
 
 import { find, sumBy } from 'lodash'
 import { useIntl }     from 'react-intl'
 
-import { ApCompatibilityToolTip, CompatibilityWarningCircleIcon }                                                            from '@acx-ui/rc/components'
-import { useLazyGetPinEdgeCompatibilitiesQuery }                                                                             from '@acx-ui/rc/services'
-import { CompatibilityDeviceEnum, EdgeServiceApCompatibility, EdgeServiceCompatibilitiesResponse, EdgeServiceCompatibility } from '@acx-ui/rc/utils'
+import { ApCompatibilityToolTip, CompatibilityWarningCircleIcon }                        from '@acx-ui/rc/components'
+import { CompatibilityDeviceEnum, EdgeServiceApCompatibility, EdgeServiceCompatibility } from '@acx-ui/rc/utils'
 
 interface CompatibilityCheckProps {
   serviceId: string,
@@ -50,43 +48,4 @@ export const CompatibilityCheck = (props: CompatibilityCheckProps) => {
       onClick={() => {}}
     />
     : null
-}
-
-export const useCompatibilityData = (serviceIds: string[], skip: boolean = false) => {
-  const [data, setData] = useState<Record<string, EdgeServiceCompatibility[] | EdgeServiceApCompatibility[]> | undefined>(undefined)
-
-  const [getPinEdgeCompatibilities] = useLazyGetPinEdgeCompatibilitiesQuery()
-  // const [getPinApCompatibilities] = useLazyGetPinApCompatibilitiesQuery()
-
-  const fetchEdgeCompatibilities = async (ids: string[]) => {
-    try {
-      const result = await Promise.allSettled([
-        getPinEdgeCompatibilities({ payload: { filters: { serviceIds: ids } } }).unwrap()
-        // getPinApCompatibilities({ payload: { filters: { serviceIds: ids } } }).unwrap()
-      ])
-
-      const deviceTypeResultMap: Record<string, EdgeServiceCompatibility[] | EdgeServiceApCompatibility[]> = {}
-      result.forEach((resultItem, index) => {
-        if (resultItem.status === 'fulfilled') {
-          if(index === 0) {
-            deviceTypeResultMap[CompatibilityDeviceEnum.EDGE] = (resultItem.value as EdgeServiceCompatibilitiesResponse).compatibilities
-          // } else {
-          //   deviceTypeResultMap[CompatibilityDeviceEnum.AP] = (resultItem.value as EdgeServicesApCompatibilitiesResponse).compatibilities
-          }
-        }
-      })
-
-      setData(deviceTypeResultMap)
-    } catch(e) {
-      // eslint-disable-next-line no-console
-      console.error('PIN table useCompatibilityData api error:', e)
-    }
-  }
-
-  useEffect(() => {
-    if (!skip)
-      fetchEdgeCompatibilities(serviceIds)
-  }, [serviceIds, skip])
-
-  return data
 }
