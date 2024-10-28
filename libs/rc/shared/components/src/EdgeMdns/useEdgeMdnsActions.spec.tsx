@@ -5,6 +5,7 @@ import { edgeMdnsProxyApi }                                                     
 import { BridgeServiceEnum, EdgeMdnsProxyActivation, EdgeMdnsProxyUrls, EdgeMdnsProxyViewData } from '@acx-ui/rc/utils'
 import { Provider, store }                                                                      from '@acx-ui/store'
 import { mockServer, renderHook }                                                               from '@acx-ui/test-utils'
+import { RequestPayload }                                                                       from '@acx-ui/types'
 
 import { differenceVenueClusters, useEdgeMdnsActions } from './useEdgeMdnsActions'
 

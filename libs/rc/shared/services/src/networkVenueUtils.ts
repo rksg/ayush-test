@@ -15,7 +15,7 @@ import {
   Network,
   NetworkDetail, NetworkVenue,
   NewApGroupViewModelResponseType,
-  PoliciesConfigTemplateUrlsInfo,
+  PoliciesConfigTemplateUrlsInfo, RadioEnum,
   TableResult,
   Venue,
   VlanPoolRbacUrls,
@@ -1052,19 +1052,27 @@ export const updateNetworkVenueFn = (isTemplate: boolean = false) : QueryFn<Comm
 
       if (enableRbac) {
         // per ap groups settings and skip the all ap groups setting
-        if (!newPayload?.isAllApGroups && newPayload?.apGroups && oldPayload?.apGroups) {
+        if ((!newPayload?.isAllApGroups && newPayload?.apGroups && oldPayload?.apGroups)
+          || (!oldPayload && newPayload) // new payload and update the ap groups settings
+        ) {
           const {
             updateApGroups,
             addApGroups,
             deleteApGroups,
             activatedVlanPoolParamsList,
             deactivatedVlanPoolParamsList
-          } = apGroupsChangeSet(newPayload, oldPayload)
+          } = apGroupsChangeSet(
+            newPayload,
+            oldPayload ?? {
+              allApGroupsRadio: [RadioEnum._2_4_GHz, RadioEnum._5_GHz],
+              apGroups: []
+            } as unknown as NetworkVenue
+          )
 
           if (addApGroups.length > 0) {
             await Promise.all(addApGroups.map(apGroup => {
               // add ap group to update list when there is not the default setting
-              if (isEqual(apGroup.radioTypes?.sort(), apGroup.allApGroupsRadioTypes) || apGroup.vlanId) {
+              if (!isEqual(apGroup.radioTypes?.sort(), ['2.4-Ghz', '5-Ghz']) || apGroup.vlanId) {
                 updateApGroups.push(apGroup)
               }
 

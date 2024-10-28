@@ -9,12 +9,15 @@ import {
   getServiceRoutePath,
   EdgePinUrls,
   ServiceOperation,
-  ServiceType } from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+  ServiceType,
+  EdgeCompatibilityFixtures,
+  EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                           from '@acx-ui/store'
+import { mockServer, render, screen, within } from '@acx-ui/test-utils'
 
 import PersonalIdentityNetworkDetail from '.'
 const { mockPinStatsList } = EdgePinFixtures
+const { mockEdgePinCompatibilities } = EdgeCompatibilityFixtures
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
@@ -62,7 +65,10 @@ describe('PIN Detail', () => {
       rest.get(
         EdgeDhcpUrls.getDhcp.url,
         (_req, res, ctx) => res(ctx.json(mockEdgeDhcpDataList.content[0]))
-      )
+      ),
+      rest.post(
+        EdgeUrlsInfo.getPinEdgeCompatibilities.url,
+        (_, res, ctx) => res(ctx.json(mockEdgePinCompatibilities)))
     )
   })
 
@@ -105,5 +111,31 @@ describe('PIN Detail', () => {
     expect(mockedZipAddFile).toBeCalledTimes(2)
     expect(mockedGenZipFile).toBeCalledTimes(1)
     expect(mockedSaveAs).toBeCalledTimes(1)
+  })
+
+  it('should have compatible warning', async () => {
+    render(
+      <Provider>
+        <PersonalIdentityNetworkDetail />
+      </Provider>, {
+        route: { params, path: detailPath }
+      }
+    )
+    expect(await screen.findByText('nsg1')).toBeVisible()
+    expect(await screen.findByTestId('PersonalIdentityNetworkServiceInfo')).toBeVisible()
+    expect(await screen.findByTestId('PersonalIdentityNetworkDetailTableGroup')).toBeVisible()
+
+    const sdlanWarning = await screen.findByText(/PIN is not able to be brought up on/)
+    // eslint-disable-next-line testing-library/no-node-access
+    const detailBtn = within(sdlanWarning.closest('.ant-space') as HTMLElement)
+      .getByRole('button', { name: 'See details' })
+
+    await userEvent.click(detailBtn)
+    const compatibleInfoDrawer = await screen.findByRole('dialog')
+
+    // eslint-disable-next-line max-len
+    expect(await within(compatibleInfoDrawer).findByText(/RUCKUS Edge Firmware/)).toBeInTheDocument()
+    expect(within(compatibleInfoDrawer).getByText('2.1.0.200')).toBeValid()
+    expect(within(compatibleInfoDrawer).getByText('5 / 14')).toBeValid()
   })
 })

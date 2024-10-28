@@ -5,7 +5,7 @@ interface PortSubInterfaceTableProps {
   currentTab: string
   ip: string
   mac: string
-  portId: string,
+  portId: string
 }
 
 export const PortSubInterfaceTable = (props: PortSubInterfaceTableProps) => {

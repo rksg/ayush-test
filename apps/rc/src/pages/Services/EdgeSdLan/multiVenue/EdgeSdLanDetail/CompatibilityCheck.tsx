@@ -6,7 +6,7 @@ import { useIntl } from 'react-intl'
 import {
   CompatibleAlertBanner,
   EdgeDetailCompatibilityDrawer,
-  getSdLanDetailsCompatibilitiesDrawerData,
+  transformEdgeCompatibilitiesWithFeatureName,
   useEdgeSdLanDetailsCompatibilitiesData
 } from '@acx-ui/rc/components'
 import {
@@ -59,7 +59,7 @@ export const CompatibilityCheck = ({ serviceId }: { serviceId: string }) => {
   const { $t } = useIntl()
   const [drawerFeature, setDrawerFeature] = useState<string|undefined>()
 
-  const { sdLanCompatibilities, isLoading } = useEdgeSdLanDetailsCompatibilitiesData(serviceId)
+  const { compatibilities, isLoading } = useEdgeSdLanDetailsCompatibilitiesData({ serviceId })
 
   const toggleCompatibilityDrawer = (feature: string | undefined) => {
     setDrawerFeature(feature)
@@ -67,9 +67,9 @@ export const CompatibilityCheck = ({ serviceId }: { serviceId: string }) => {
 
   let hasIncompatible = false
   let incompatibleInfo: ApEdgeCompatibilityResult = {}
-  if (sdLanCompatibilities) {
-    const edgeData = sdLanCompatibilities?.[CompatibilityDeviceEnum.EDGE]
-    const apData = sdLanCompatibilities?.[CompatibilityDeviceEnum.AP]
+  if (compatibilities) {
+    const edgeData = compatibilities?.[CompatibilityDeviceEnum.EDGE]
+    const apData = compatibilities?.[CompatibilityDeviceEnum.AP]
 
     incompatibleInfo = checkApEdgeCompatibility(
       [IncompatibilityFeatures.SD_LAN, IncompatibilityFeatures.TUNNEL_PROFILE],
@@ -118,7 +118,7 @@ export const CompatibilityCheck = ({ serviceId }: { serviceId: string }) => {
         visible={!!drawerFeature}
         featureName={drawerFeature as IncompatibilityFeatures}
         data={drawerFeature
-          ? getSdLanDetailsCompatibilitiesDrawerData(sdLanCompatibilities, drawerFeature)
+          ? transformEdgeCompatibilitiesWithFeatureName(compatibilities, drawerFeature)
           : {}}
         onClose={() => toggleCompatibilityDrawer(undefined)}
       />
