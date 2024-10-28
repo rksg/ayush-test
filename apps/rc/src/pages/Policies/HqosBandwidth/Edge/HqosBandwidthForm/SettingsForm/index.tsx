@@ -176,7 +176,6 @@ export const SettingsForm = () => {
                   <Tooltip
                     title={errors[0]}
                     placement='bottom'
-                    overlayClassName={UI.toolTipClassName}
                     overlayInnerStyle={{ width: 415 }}><UI.WarningCircleRed />
                   </Tooltip> :<></>
               }}
@@ -216,7 +215,6 @@ export const SettingsForm = () => {
                   <Tooltip
                     title={errors[0]}
                     placement='bottom'
-                    overlayClassName={UI.toolTipClassName}
                     overlayInnerStyle={{ width: 415 }}><UI.WarningCircleRed />
                   </Tooltip> :<></>
               }}
