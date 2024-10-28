@@ -1,5 +1,7 @@
 import styled from 'styled-components/macro'
 
+import { ArrowChevronRight, CollapseCircleSolid } from '@acx-ui/icons'
+
 export const CheckboxIndexLabel = styled.div`
   display: inline-block;
   border: 1px solid;
@@ -59,6 +61,17 @@ export const VlanDetails = styled.div`
 
 export const PurposeContainer = styled.div`
   display: flex;
+  background-color: var(--acx-accents-blue-10);
+  padding: 10px 20px;
+  flex-grow: 1;
+  flex-direction: column;
+  border-radius: 8px;
+  margin-top: -8px;
+  margin-bottom: 15px;
+`
+
+export const ConfigurationContainer = styled.div`
+  display: flex;
   background-color: var(--acx-neutrals-15);
   padding: 10px 20px;
   flex-grow: 1;
@@ -66,6 +79,7 @@ export const PurposeContainer = styled.div`
   border-radius: 8px;
   margin-top: -8px;
   margin-bottom: 15px;
+  cursor: pointer;
 `
 
 export const NetworkName = styled.div`
@@ -114,4 +128,18 @@ export const HighlightedTitle = styled.div`
 export const HighlightedDescription = styled.div`
   font-size: 14px;
   margin: 5px 0 0 25px;
+`
+
+export const ArrowChevronRightIcons = styled(ArrowChevronRight)`
+  width: 16px;
+  height: 16px;
+`
+
+export const CollapseCircleSolidIcons = styled(CollapseCircleSolid)`
+  width: 16px;
+  height: 16px;
+  fill: var(--acx-semantics-green-50);
+  path {
+    stroke: var(--acx-primary-white);
+  }
 `

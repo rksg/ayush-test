@@ -20,6 +20,7 @@ export function GuestPassForm () {
   const {
     data,
     editMode,
+    isGptMode,
     cloneMode
   } = useContext(NetworkFormContext)
   const intl = useIntl()
@@ -50,7 +51,7 @@ export function GuestPassForm () {
           wlanSecurity={data?.wlan?.wlanSecurity} />
       </GridCol>
     </GridRow>
-    {!(editMode) && <GridRow>
+    {!(editMode) && !(isGptMode) && <GridRow>
       <GridCol col={{ span: 24 }}>
         <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />
       </GridCol>

@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, createContext } from 'react'
 
 import { Form }                                                                     from 'antd'
 import { get, isEqual, isNil, isNull, isUndefined, merge, omit, omitBy, cloneDeep } from 'lodash'
+import _                                                                            from 'lodash'
 import { defineMessage, useIntl }                                                   from 'react-intl'
 
 import {
@@ -154,21 +155,25 @@ interface UserConnection {
 interface GuestMore {
   guestPortal?: GuestPortal,
   userConnection?: UserConnection
-
 }
 export function NetworkForm (props:{
   modalMode?: boolean,
   createType?: NetworkTypeEnum,
   modalCallBack?: (payload?: NetworkSaveData)=>void,
   defaultActiveVenues?: string[],
-  isGptMode?: boolean
+  isGptMode?: boolean,
+  gptEditId?: string
 }) {
+  const isGptMode = props.isGptMode === true
+  const wifiRbacApiEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const configTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const serviceRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
-  const isUseWifiRbacApi = props.isGptMode ? false : useIsSplitOn(Features.WIFI_RBAC_API)
-  const isConfigTemplateRbacEnabled =props.isGptMode ? false : useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const isUseWifiRbacApi = isGptMode ? false : wifiRbacApiEnabled
+  const isConfigTemplateRbacEnabled = isGptMode ? false : configTemplateRbacEnabled
   const { isTemplate } = useConfigTemplate()
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isUseWifiRbacApi
-  const enableServiceRbac = props.isGptMode ? false : useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const enableServiceRbac = isGptMode ? false : serviceRbacEnabled
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
 
@@ -179,8 +184,8 @@ export function NetworkForm (props:{
   const wifi7Mlo3LinkFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_3LINK_TOGGLE)
   const linkToNetworks = usePathBasedOnConfigTemplate('/networks', '/templates')
   const params = useParams()
-  const isGptMode = props.isGptMode == true
-  const editMode = params.action === 'edit'
+  const gptEditId = props.gptEditId || ''
+  const editMode = params.action === 'edit' || !_.isEmpty(gptEditId)
   const cloneMode = params.action === 'clone'
   const addNetworkInstance = useAddInstance()
   const updateNetworkInstance = useUpdateInstance()
@@ -266,7 +271,7 @@ export function NetworkForm (props:{
     })
   }
 
-  const { data, isLoading } = useGetNetwork()
+  const { data, isLoading } = useGetNetwork({ isGptMode, gptEditId })
   const networkVxLanTunnelProfileInfo = useNetworkVxLanTunnelProfileInfo(data ?? null)
   const { certificateTemplateId } = useGetCertificateTemplateNetworkBindingQuery(
     { params: { networkId: data?.id } },
@@ -1031,13 +1036,15 @@ export function NetworkForm (props:{
               }
               onFinish={editMode ? handleEditNetwork : handleAddNetwork}
             >
-              <StepsFormLegacy.StepForm
-                name='details'
-                title={intl.$t({ defaultMessage: 'Network Details' })}
-                onFinish={handleDetails}
-              >
-                <NetworkDetailForm />
-              </StepsFormLegacy.StepForm>
+              {!isGptMode &&
+                <StepsFormLegacy.StepForm
+                  name='details'
+                  title={intl.$t({ defaultMessage: 'Network Details' })}
+                  onFinish={handleDetails}
+                >
+                  <NetworkDetailForm />
+                </StepsFormLegacy.StepForm>
+              }
 
               <StepsFormLegacy.StepForm
                 name='settings'
@@ -1084,7 +1091,7 @@ export function NetworkForm (props:{
                 >
                   <Venues defaultActiveVenues={defaultActiveVenues} />
                 </StepsFormLegacy.StepForm>}
-              
+
               <StepsFormLegacy.StepForm
                 name='summary'
                 title={intl.$t({ defaultMessage: 'Summary' })}
@@ -1117,15 +1124,18 @@ export function NetworkForm (props:{
                 ? modalCallBack?.()
                 : redirectPreviousPage(navigate, previousPath, linkToNetworks)
               }
-                onFinish={editMode ? handleEditNetwork : handleAddNetwork}
-              >
-                <StepsForm.StepForm
+              onFinish={editMode ? handleEditNetwork : handleAddNetwork}
+            >
+              {
+                !isGptMode && <StepsForm.StepForm
                   name='details'
                   title={intl.$t({ defaultMessage: 'Network Details' })}
                   onFinish={handleDetails}
                 >
                   <NetworkDetailForm />
                 </StepsForm.StepForm>
+
+              }
 
               <StepsForm.StepForm
                 name='settings'
@@ -1154,15 +1164,16 @@ export function NetworkForm (props:{
                       pickOneCaptivePortalForm(saveState)}
                 </StepsForm.StepForm>
               }
-              {editMode &&
-              <StepsForm.StepForm
-                name='moreSettings'
-                title={intl.$t({ defaultMessage: 'More Settings' })}
-                onFinish={handleMoreSettings}>
+              { editMode && !isGptMode &&
+                <StepsForm.StepForm
+                  name='moreSettings'
+                  title={intl.$t({ defaultMessage: 'More Settings' })}
+                  onFinish={handleMoreSettings}>
 
-                <NetworkMoreSettingsForm wlanData={saveState} />
+                  <NetworkMoreSettingsForm wlanData={saveState} />
 
-              </StepsForm.StepForm>}
+                </StepsForm.StepForm>
+              }
               { isPortalWebRender(saveState) &&<StepsForm.StepForm
                 name='portalweb'
                 title={intl.$t({ defaultMessage: 'Portal Web Page' })}
@@ -1170,8 +1181,8 @@ export function NetworkForm (props:{
               >
                 <PortalInstance updatePortalData={(data)=>setPortalDemo(data)}/>
               </StepsForm.StepForm>
-                }
-                {!isGptMode &&
+              }
+              {!isGptMode &&
                   <StepsForm.StepForm
                     name='venues'
                     title={intl.$t({ defaultMessage: '<VenuePlural></VenuePlural>' })}
@@ -1179,7 +1190,7 @@ export function NetworkForm (props:{
                   >
                     <Venues />
                   </StepsForm.StepForm>
-                }
+              }
 
             </StepsForm>
           </MLOContext.Provider>

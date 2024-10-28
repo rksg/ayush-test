@@ -23,12 +23,12 @@ export const RuckusAssistantUrlInfo: { [key: string]: ApiInfo } = {
   },
   updateOnboardConfigs: {
     method: 'put',
-    url: '/ruckusAssistant/onboardConfigs/{id}',
+    url: '/ruckusAssistant/onboardConfigs/:id',
     newApi: true
   },
   getOnboardConfigs: {
     method: 'get',
-    url: '/ruckusAssistant/onboardConfigs/{id}(?type={type})',
+    url: '/ruckusAssistant/onboardConfigs/:id',
     newApi: true
-  }  
+  }
 }

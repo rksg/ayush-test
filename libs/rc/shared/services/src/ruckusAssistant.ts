@@ -1,5 +1,7 @@
 import {
+  GptConfiguration,
   GptConversation,
+  NetworkSaveData,
   RuckusAssistantUrlInfo
 } from '@acx-ui/rc/utils'
 import { baseRuckusAssistantApi } from '@acx-ui/store'
@@ -54,12 +56,15 @@ export const ruckusAssistantApi = baseRuckusAssistantApi.injectEndpoints({
       }
     }),
 
-    getOnboardConfigs: build.query<GptConversation, RequestPayload>({
+    getOnboardConfigs: build.query<NetworkSaveData, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(RuckusAssistantUrlInfo.updateOnboardConfigs, params)
+        const req = createHttpRequest(RuckusAssistantUrlInfo.getOnboardConfigs, params)
         return {
           ...req
         }
+      },
+      transformResponse: (response: GptConfiguration) => {
+        return JSON.parse(response.content) as NetworkSaveData
       }
     })
   })
@@ -71,5 +76,6 @@ export const {
   useUpdateConversationsMutation,
   useCreateOnboardConfigsMutation,
   useUpdateOnboardConfigsMutation,
+  useGetOnboardConfigsQuery,
   useLazyGetOnboardConfigsQuery
 } = ruckusAssistantApi

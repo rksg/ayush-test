@@ -5,6 +5,12 @@ export interface GptConversation {
   description: string
 }
 
+export interface GptConfiguration {
+  content: string,
+  id: string,
+  name: string,
+  sessionId: string
+}
 export enum GptConfigurationStepsEnum {
   WLANS = 'ssidProfile',
   WLANDETAIL = 'ssid',

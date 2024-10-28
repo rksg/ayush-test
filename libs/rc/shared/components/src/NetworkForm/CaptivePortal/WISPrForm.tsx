@@ -46,6 +46,7 @@ export function WISPrForm () {
     data,
     editMode,
     cloneMode,
+    isGptMode,
     setData
   } = useContext(NetworkFormContext)
   const { $t } = useIntl()
@@ -386,7 +387,7 @@ export function WISPrForm () {
         />
       </GridCol>
     </GridRow>
-    {!(editMode) && <GridRow>
+    {!(editMode) && !(isGptMode) && <GridRow>
       <GridCol col={{ span: 24 }}>
         <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />
       </GridCol>

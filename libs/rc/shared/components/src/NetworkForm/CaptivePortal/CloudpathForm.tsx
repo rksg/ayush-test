@@ -34,6 +34,7 @@ export function CloudpathForm () {
   const {
     data,
     editMode,
+    isGptMode,
     cloneMode
   } = useContext(NetworkFormContext)
   const { $t } = useIntl()
@@ -107,7 +108,7 @@ export function CloudpathForm () {
         />
       </GridCol>
     </GridRow>
-    {!(editMode) && <GridRow>
+    {!(editMode) && !(isGptMode) && <GridRow>
       <GridCol col={{ span: 24 }}>
         <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />
       </GridCol>

@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from 'react'
+
 import { ProFormSelect, ProFormText } from '@ant-design/pro-form'
-import { Divider } from 'antd'
-import { useIntl } from 'react-intl'
+import { Divider }                    from 'antd'
+import { useIntl }                    from 'react-intl'
+
+import { cssStr, Modal, ModalType } from '@acx-ui/components'
+import { NetworkForm }              from '@acx-ui/rc/components'
+import {
+  useCreateOnboardConfigsMutation,
+  useUpdateOnboardConfigsMutation
+} from '@acx-ui/rc/services'
 import { NetworkTypeEnum, networkTypes } from '@acx-ui/rc/utils'
+
 import * as UI from './styledComponents'
-import { Modal, ModalType } from '@acx-ui/components'
-import { NetworkForm } from '@acx-ui/rc/components'
-import { useCreateOnboardConfigsMutation } from '@acx-ui/rc/services'
 
 type NetworkConfig = {
   'Purpose': string;
@@ -16,7 +22,7 @@ type NetworkConfig = {
   'id': string;
 }
 
-export function WlanDetailStep(props: { payload: string, sessionId: string }) {
+export function WlanDetailStep (props: { payload: string, sessionId: string }) {
   const { $t } = useIntl()
   const data = props.payload ? JSON.parse(props.payload) as NetworkConfig[] : []
 
@@ -24,12 +30,15 @@ export function WlanDetailStep(props: { payload: string, sessionId: string }) {
   const [modalId, setModalId] = useState('')
   const [modalName, setModalName] = useState('')
 
+  const [configuredFlags, setConfiguredFlags] = useState<boolean[]>(Array(data.length).fill(false))
   const [ssidTypes, setSsidTypes] = useState<NetworkTypeEnum[]>(data.map(item => item['SSID Type']))
   const [networkModalVisible, setNetworkModalVisible] = useState(false)
-  
+  const [configuredIndex, setConfiguredIndex] = useState<number>(0)
+
   useEffect(() => {
     if (data.length > 0) {
-      setSsidTypes(data.map(item => item['SSID Type']));
+      setSsidTypes(data.map(item => item['SSID Type']))
+      setConfiguredFlags(Array(data.length).fill(false))
     }
   }, [props.payload])
 
@@ -47,26 +56,56 @@ export function WlanDetailStep(props: { payload: string, sessionId: string }) {
       updatedSsidTypes[index] = value
       return updatedSsidTypes
     })
+    setConfiguredFlags((prevConfiguredFlags) => {
+      const updatedConfiguredFlags = [...prevConfiguredFlags]
+      updatedConfiguredFlags[index] = false
+      return updatedConfiguredFlags
+    })
   }
 
   const [createOnboardConfigs] = useCreateOnboardConfigsMutation()
+  const [updateOnboardConfigs] = useUpdateOnboardConfigsMutation()
 
   const getNetworkForm = <NetworkForm
-    isGptMode={true} 
+    isGptMode={true}
     modalMode={true}
+    gptEditId={configuredFlags[configuredIndex] ? `${modalId}?type=${modalType}` : ''}
     modalCallBack={async (payload) => {
-      console.log(payload)
       setNetworkModalVisible(false)
-      await createOnboardConfigs({
-        payload: {
-          "id": modalId,
-          "name": modalName,
-          "type": modalType.toUpperCase(),
-          "content": JSON.stringify(payload),
-          "sessionId": props.sessionId
+      if (payload) {
+        const modifiedPayload = {
+          ...payload,
+          type: modalType
         }
-      }).unwrap()
-      
+        if(modalId) {
+          await updateOnboardConfigs({
+            params: {
+              id: modalId
+            },
+            payload: {
+              id: modalId,
+              name: modalName,
+              type: modalType.toUpperCase(),
+              content: JSON.stringify(modifiedPayload),
+              sessionId: props.sessionId
+            }
+          }).unwrap()
+        } else {
+          await createOnboardConfigs({
+            payload: {
+              name: modalName,
+              type: modalType.toUpperCase(),
+              content: JSON.stringify(modifiedPayload),
+              sessionId: props.sessionId
+            }
+          }).unwrap()
+        }
+        setConfiguredFlags((prevConfiguredFlags) => {
+          const updatedConfiguredFlags = [...prevConfiguredFlags]
+          updatedConfiguredFlags[configuredIndex] = true
+          return updatedConfiguredFlags
+        })
+      }
     }}
     createType={modalType}
   />
@@ -76,7 +115,8 @@ export function WlanDetailStep(props: { payload: string, sessionId: string }) {
       <UI.Header>
         <UI.Title>{$t({ defaultMessage: 'Recommended Network Configuration' })}</UI.Title>
         <UI.Description>
-          {$t({ defaultMessage: 'Based on your selection, below is the list of SSIDs and their recommended respective configurations.' })}
+          {// eslint-disable-next-line max-len
+            $t({ defaultMessage: 'Based on your selection, below is the list of SSIDs and their recommended respective configurations.' })}
         </UI.Description>
       </UI.Header>
 
@@ -123,31 +163,61 @@ export function WlanDetailStep(props: { payload: string, sessionId: string }) {
                   }}
                 />
               </div>
-              <UI.PurposeContainer>
+              <UI.ConfigurationContainer>
                 <UI.PurposeHeader
                   onClick={() => {
                     setModalId(item['id'])
                     setModalName(item['SSID Name'])
                     setModalType(ssidTypes[index])
-                    setNetworkModalVisible(true)}}>
-                  {networkOptions.find(option => option.value === ssidTypes[index])?.label || ''}
+                    setNetworkModalVisible(true)
+                    setConfiguredIndex(index)
+                  }}>
+
+                  <div style={{
+                    display: 'flex', justifyContent: 'space-between',
+                    width: '-webkit-fill-available'
+                  }}>
+                    <div>
+                      {networkOptions.find(
+                        option => option.value === ssidTypes[index])?.label || ''}
+                      &nbsp;
+                      {$t({ defaultMessage: 'Configurations' })}
+                      {ssidTypes[index] !== NetworkTypeEnum.OPEN &&
+                        <span style={{
+                          color: cssStr('--acx-accents-orange-50'),
+                          marginLeft: '5px'
+                        }} >*</span>}
+                    </div>
+
+                    <div style={{ display: 'flex' }}>
+                      {configuredFlags[index] ?
+                        <div style={{ color: cssStr('--acx-semantics-green-50'), display: 'flex' }}>
+                          <UI.CollapseCircleSolidIcons/>
+                          <div>{$t({ defaultMessage: 'Configured' })}</div>
+                        </div> :
+                        <div style={{ color: cssStr('--acx-accents-blue-50') }}>
+                          {$t({ defaultMessage: 'Setup Network' })}</div>}
+                      <UI.ArrowChevronRightIcons />
+                    </div>
+                  </div>
                 </UI.PurposeHeader>
-              </UI.PurposeContainer>
+              </UI.ConfigurationContainer>
             </UI.VlanDetails>
           </UI.VlanContainer>
           <Divider dashed />
         </React.Fragment>
       ))}
-
-      <Modal
-        title={$t({ defaultMessage: 'Add Guest Pass Network' })}
-        type={ModalType.ModalStepsForm}
-        visible={networkModalVisible}
-        mask={true}
-        children={getNetworkForm}
-      />
+      {networkModalVisible &&
+        <Modal
+          // eslint-disable-next-line max-len
+          title={`${$t({ defaultMessage: 'Add' })} ${networkOptions.find(option => option.value === modalType)?.label}`}
+          type={ModalType.ModalStepsForm}
+          visible={networkModalVisible}
+          mask={true}
+          children={getNetworkForm}
+        />
+      }
     </UI.Container>
   )
 
-  
 }
