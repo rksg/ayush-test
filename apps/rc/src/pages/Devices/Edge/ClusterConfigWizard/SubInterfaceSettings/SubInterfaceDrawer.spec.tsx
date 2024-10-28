@@ -1,7 +1,10 @@
 import { useState } from 'react'
 
-import userEvent from '@testing-library/user-event'
+import userEvent     from '@testing-library/user-event'
+import { UserEvent } from '@testing-library/user-event/dist/types/setup/setup'
+import { Form }      from 'antd'
 
+import { StepsForm }                              from '@acx-ui/components'
 import { EdgeSubInterfaceFixtures, SubInterface } from '@acx-ui/rc/utils'
 import { Provider }                               from '@acx-ui/store'
 import {
@@ -13,7 +16,10 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
-import SubInterfaceDrawer from './SubInterfaceDrawer'
+import { mockSubInterfaceSettingsFormType } from '../__tests__/fixtures'
+
+import SubInterfaceDrawer               from './SubInterfaceDrawer'
+import { SubInterfaceSettingsFormType } from './types'
 
 const { mockEdgeSubInterfaces } = EdgeSubInterfaceFixtures
 
@@ -40,6 +46,7 @@ describe('EditEdge ports - sub-interface', () => {
     render(
       <Provider>
         <SubInterfaceDrawer
+          serialNumber='edge-id'
           visible={true}
           setVisible={mockedSetVisible}
           data={undefined}
@@ -65,6 +72,7 @@ describe('EditEdge ports - sub-interface', () => {
     render(
       <Provider>
         <SubInterfaceDrawer
+          serialNumber='edge-id'
           visible={true}
           setVisible={mockedSetVisible}
           data={undefined}
@@ -84,35 +92,100 @@ describe('EditEdge ports - sub-interface', () => {
   })
 
   it('Add a STATIC sub-interface', async () => {
-    const user = userEvent.setup()
+    const { result: formRef } = renderHook(() => Form.useForm<SubInterfaceSettingsFormType>()[0])
     render(
-      <Provider>
-        <SubInterfaceDrawer
-          visible={true}
-          setVisible={mockedSetVisible}
-          data={undefined}
-          handleAdd={mockedHandleAddFn}
-          handleUpdate={mockedHandleUpdateFn}
-          allSubInterfaceVlans={[]}
-        />
-      </Provider>)
+      <StepsForm
+        form={formRef.current}
+        initialValues={mockSubInterfaceSettingsFormType}
+        buttonLabel={{ submit: 'mockSubmitButtonLabel' }}
+      >
+        <StepsForm.StepForm>
+          <SubInterfaceDrawer
+            serialNumber='96000076DCCAA42E87785B549A64997E72'
+            visible={true}
+            setVisible={mockedSetVisible}
+            data={undefined}
+            handleAdd={mockedHandleAddFn}
+            handleUpdate={mockedHandleUpdateFn}
+            allSubInterfaceVlans={[]}
+          />
+        </StepsForm.StepForm>
+      </StepsForm>)
+    const user = userEvent.setup()
     await user.click(await screen.findByRole('combobox', { name: 'IP Assignment Type' }))
     await user.click(await screen.findByText('Static IP'))
     const ipInput = await screen.findByRole('textbox', { name: 'IP Address' })
-    fireEvent.change(ipInput, { target: { value: '1.1.1.1' } })
+    fireEvent.change(ipInput, { target: { value: '2.1.1.1' } })
     const subnetInput = await screen.findByRole('textbox', { name: 'Subnet Mask' })
-    fireEvent.change(subnetInput, { target: { value: '255.255.255.0' } })
+    fireEvent.change(subnetInput, { target: { value: '255.0.0.0' } })
     const vlanInput = await screen.findByRole('spinbutton', { name: 'VLAN' })
-    fireEvent.change(vlanInput, { target: { value: '2' } })
+    fireEvent.change(vlanInput, { target: { value: '1024' } })
     await user.click(screen.getByRole('button', { name: 'Add' }))
     await waitFor(() => {
       expect(mockedHandleAddFn).toBeCalledWith(expect.objectContaining({
-        ip: '1.1.1.1',
+        ip: '2.1.1.1',
         ipMode: 'STATIC',
         portType: 'LAN',
-        subnet: '255.255.255.0',
-        vlan: 2
+        subnet: '255.0.0.0',
+        vlan: 1024
       }))
+    })
+  })
+
+  it('Add a STATIC sub-interface with duplicate subnet range', async () => {
+    const { result: formRef } = renderHook(() => Form.useForm<SubInterfaceSettingsFormType>()[0])
+    render(
+      <StepsForm form={formRef.current} initialValues={mockSubInterfaceSettingsFormType}>
+        <StepsForm.StepForm>
+          <SubInterfaceDrawer
+            serialNumber='96000076DCCAA42E87785B549A64997E72'
+            visible={true}
+            setVisible={mockedSetVisible}
+            data={undefined}
+            handleAdd={mockedHandleAddFn}
+            handleUpdate={mockedHandleUpdateFn}
+            allSubInterfaceVlans={[]}
+          />
+        </StepsForm.StepForm>
+      </StepsForm>)
+
+    const user = userEvent.setup()
+    await user.click(await screen.findByRole('combobox', { name: 'IP Assignment Type' }))
+    await user.click(await screen.findByText('Static IP'))
+    inputStaticIp(user, '1.1.5.2', '255.255.255.0')
+
+    await waitFor(() => {
+      expect(screen.getByText('The ports have overlapping subnets')).toBeInTheDocument()
+    })
+  })
+
+  it('Edit a STATIC sub-interface with duplicate subnet range', async () => {
+    const { result: formRef } = renderHook(() => Form.useForm<SubInterfaceSettingsFormType>()[0])
+    const editEdgeId = '96000076DCCAA42E87785B549A64997E72'
+    const editPortId = '29445906-158a-4535-8e1e-5d4852d064c6'
+    const editSubInterface = mockSubInterfaceSettingsFormType
+      .portSubInterfaces[editEdgeId][editPortId][0]
+
+    render(
+      <StepsForm form={formRef.current} initialValues={mockSubInterfaceSettingsFormType}>
+        <StepsForm.StepForm>
+          <SubInterfaceDrawer
+            serialNumber='96000076DCCAA42E87785B549A64997E72'
+            visible={true}
+            setVisible={mockedSetVisible}
+            data={editSubInterface}
+            handleAdd={mockedHandleAddFn}
+            handleUpdate={mockedHandleUpdateFn}
+            allSubInterfaceVlans={[]}
+          />
+        </StepsForm.StepForm>
+      </StepsForm>)
+
+    const user = userEvent.setup()
+    inputStaticIp(user, '1.1.3.2', '255.255.255.0')
+
+    await waitFor(() => {
+      expect(screen.getByText('The ports have overlapping subnets')).toBeInTheDocument()
     })
   })
 
@@ -121,6 +194,7 @@ describe('EditEdge ports - sub-interface', () => {
     render(
       <Provider>
         <SubInterfaceDrawer
+          serialNumber='edge-id'
           visible={true}
           setVisible={mockedSetVisible}
           data={mockedData}
@@ -142,11 +216,12 @@ describe('EditEdge ports - sub-interface', () => {
     })
   })
 
-  it('Edit a sub-interface with duplicatae vlan', async () => {
+  it('Edit a sub-interface with duplicate vlan', async () => {
     const user = userEvent.setup()
     render(
       <Provider>
         <SubInterfaceDrawer
+          serialNumber='edge-id'
           visible={true}
           setVisible={mockedSetVisible}
           data={mockedData}
@@ -174,6 +249,7 @@ describe('EditEdge ports - sub-interface', () => {
 
     const MockedComponent = () => (<Provider>
       <SubInterfaceDrawer
+        serialNumber='edge-id'
         visible={result.current.visible}
         setVisible={result.current.setVisible}
         data={undefined}
@@ -197,4 +273,11 @@ describe('EditEdge ports - sub-interface', () => {
     rerender(<MockedComponent />)
     expect(screen.queryByRole('spinbutton', { name: 'VLAN' })).toHaveAttribute('value', '')
   })
+
+  const inputStaticIp = async (user: UserEvent, ip: string, mask: string) => {
+    const ipInput = await screen.findByRole('textbox', { name: 'IP Address' })
+    fireEvent.change(ipInput, { target: { value: ip } })
+    const subnetInput = await screen.findByRole('textbox', { name: 'Subnet Mask' })
+    fireEvent.change(subnetInput, { target: { value: mask } })
+  }
 })
