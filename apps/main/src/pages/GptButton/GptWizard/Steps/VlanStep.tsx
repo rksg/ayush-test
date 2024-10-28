@@ -22,10 +22,12 @@ export function VlanStep (props: { payload: string }) {
   const { $t } = useIntl()
   const initialData = JSON.parse(props.payload || '[]') as NetworkConfig[]
   const [data, setData] = useState<NetworkConfig[]>(initialData)
+  const [configuredFlags, setConfiguredFlags] = useState<boolean[]>(Array(data.length).fill(false))
 
   useEffect(() => {
     if (initialData !== data) {
       setData(initialData)
+      setConfiguredFlags(Array(data.length).fill(false))
     }
 
   }, [props.payload])
@@ -110,6 +112,36 @@ export function VlanStep (props: { payload: string }) {
                 initialValue={item['VLAN ID']}
                 rules={[{ required: true }]}
               />
+              <UI.ConfigurationContainer
+                onClick={() => {
+                  // setModalId(item['id'])
+                  // setModalName(item['SSID Name'])
+                  // setModalType(ssidTypes[index])
+                  // setNetworkModalVisible(true)
+                  // setConfiguredIndex(index)
+                }}>
+
+                <UI.ConfigurationHeader>
+                  <div>
+                    {$t({ defaultMessage: 'Port Configurations' })}
+                  </div>
+
+                  <div style={{ display: 'flex' }}>
+                    {configuredFlags[index] ?
+                      <UI.ConfiguredButton>
+                        <UI.CollapseCircleSolidIcons/>
+                        <div>{$t({ defaultMessage: 'Configured' })}</div>
+                      </UI.ConfiguredButton> :
+                      <UI.SetupButton>
+                        {$t({ defaultMessage: 'Setup Ports' })}
+                      </UI.SetupButton>}
+                    <UI.ArrowChevronRightIcons />
+                  </div>
+                </UI.ConfigurationHeader>
+                <div>
+                  {$t({ defaultMessage: 'Ports have not been set yet. ' })}
+                </div>
+              </UI.ConfigurationContainer>
             </UI.VlanDetails>
           </UI.VlanContainer>
           <Divider dashed />

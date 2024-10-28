@@ -4,7 +4,7 @@ import { ProFormSelect, ProFormText } from '@ant-design/pro-form'
 import { Divider }                    from 'antd'
 import { useIntl }                    from 'react-intl'
 
-import { cssStr, Modal, ModalType } from '@acx-ui/components'
+import { Modal, ModalType }         from '@acx-ui/components'
 import { NetworkForm }              from '@acx-ui/rc/components'
 import {
   useCreateOnboardConfigsMutation,
@@ -163,44 +163,37 @@ export function WlanDetailStep (props: { payload: string, sessionId: string }) {
                   }}
                 />
               </div>
-              <UI.ConfigurationContainer>
-                <UI.PurposeHeader
-                  onClick={() => {
-                    setModalId(item['id'])
-                    setModalName(item['SSID Name'])
-                    setModalType(ssidTypes[index])
-                    setNetworkModalVisible(true)
-                    setConfiguredIndex(index)
-                  }}>
+              <UI.ConfigurationContainer
+                onClick={() => {
+                  setModalId(item['id'])
+                  setModalName(item['SSID Name'])
+                  setModalType(ssidTypes[index])
+                  setNetworkModalVisible(true)
+                  setConfiguredIndex(index)
+                }}>
 
-                  <div style={{
-                    display: 'flex', justifyContent: 'space-between',
-                    width: '-webkit-fill-available'
-                  }}>
-                    <div>
-                      {networkOptions.find(
-                        option => option.value === ssidTypes[index])?.label || ''}
+                <UI.ConfigurationHeader>
+                  <div>
+                    {networkOptions.find(
+                      option => option.value === ssidTypes[index])?.label || ''}
                       &nbsp;
-                      {$t({ defaultMessage: 'Configurations' })}
-                      {ssidTypes[index] !== NetworkTypeEnum.OPEN &&
-                        <span style={{
-                          color: cssStr('--acx-accents-orange-50'),
-                          marginLeft: '5px'
-                        }} >*</span>}
-                    </div>
-
-                    <div style={{ display: 'flex' }}>
-                      {configuredFlags[index] ?
-                        <div style={{ color: cssStr('--acx-semantics-green-50'), display: 'flex' }}>
-                          <UI.CollapseCircleSolidIcons/>
-                          <div>{$t({ defaultMessage: 'Configured' })}</div>
-                        </div> :
-                        <div style={{ color: cssStr('--acx-accents-blue-50') }}>
-                          {$t({ defaultMessage: 'Setup Network' })}</div>}
-                      <UI.ArrowChevronRightIcons />
-                    </div>
+                    {$t({ defaultMessage: 'Configurations' })}
+                    {ssidTypes[index] !== NetworkTypeEnum.OPEN &&
+                        <UI.RequiredIcon />}
                   </div>
-                </UI.PurposeHeader>
+
+                  <div style={{ display: 'flex' }}>
+                    {configuredFlags[index] ?
+                      <UI.ConfiguredButton>
+                        <UI.CollapseCircleSolidIcons/>
+                        <div>{$t({ defaultMessage: 'Configured' })}</div>
+                      </UI.ConfiguredButton> :
+                      <UI.SetupButton>
+                        {$t({ defaultMessage: 'Setup Network' })}
+                      </UI.SetupButton>}
+                    <UI.ArrowChevronRightIcons />
+                  </div>
+                </UI.ConfigurationHeader>
               </UI.ConfigurationContainer>
             </UI.VlanDetails>
           </UI.VlanContainer>

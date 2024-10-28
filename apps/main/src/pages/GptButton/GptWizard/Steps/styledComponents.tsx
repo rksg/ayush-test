@@ -80,6 +80,12 @@ export const ConfigurationContainer = styled.div`
   margin-top: -8px;
   margin-bottom: 15px;
   cursor: pointer;
+  font-size: 12px;
+  /* align-items: center; */
+
+  & > span {
+    margin-left: 5px;
+  }
 `
 
 export const NetworkName = styled.div`
@@ -97,6 +103,14 @@ export const PurposeHeader = styled.div`
   & > span {
     margin-left: 5px;
   }
+`
+
+
+export const ConfigurationHeader = styled.div`
+    display: flex;
+    font-weight: 600;
+    justify-content: space-between;
+    width: -webkit-fill-available;
 `
 
 export const PurposeText = styled.div`
@@ -142,4 +156,23 @@ export const CollapseCircleSolidIcons = styled(CollapseCircleSolid)`
   path {
     stroke: var(--acx-primary-white);
   }
+`
+
+
+export const RequiredIcon = styled.span`
+  color: var(--acx-accents-orange-50);
+  margin-left: 5px;
+
+  &::after {
+    content: '*';
+  }
+`
+
+export const ConfiguredButton = styled.div`
+  color: var(--acx-semantics-green-50);
+  display: flex;
+`
+
+export const SetupButton = styled.div`
+  color: var(--acx-accents-blue-50);
 `
