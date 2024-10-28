@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
-import { ProFormCheckbox, ProFormText } from '@ant-design/pro-form'
-import { Button, Divider }              from 'antd'
+import { ProFormCheckbox, ProFormInstance, ProFormText } from '@ant-design/pro-form'
+import { Button, Divider, Form }              from 'antd'
 import { useIntl }                      from 'react-intl'
 
 import { cssStr } from '@acx-ui/components'
@@ -9,6 +9,10 @@ import { cssStr } from '@acx-ui/components'
 import { ReactComponent as Logo } from '../../assets/gptDog.svg'
 
 import * as UI from './styledComponents'
+import { VlanSettingDrawer } from '@acx-ui/rc/components'
+import { Vlan } from '@acx-ui/rc/utils'
+import { useCreateOnboardConfigsMutation, useLazyGetVlanOnboardConfigsQuery, useUpdateOnboardConfigsMutation } from '@acx-ui/rc/services'
+import _ from 'lodash'
 
 type NetworkConfig = {
   'Purpose': string;
@@ -18,16 +22,27 @@ type NetworkConfig = {
   'id': string;
 }
 
-export function VlanStep (props: { payload: string }) {
+export function VlanStep (props: { payload: string, sessionId: string,
+  formInstance: ProFormInstance<any> | undefined
+}) {
+  const { formInstance } = props
   const { $t } = useIntl()
   const initialData = JSON.parse(props.payload || '[]') as NetworkConfig[]
   const [data, setData] = useState<NetworkConfig[]>(initialData)
-  const [configuredFlags, setConfiguredFlags] = useState<boolean[]>(Array(data.length).fill(false))
 
+  
+  const [isSetupComplete, setIsSetupComplete] = useState<boolean[]>(Array(data.length).fill(false))
+  const [configId, setConfigId] = useState('')
+  const [configVisible, setConfigVisible] = useState(false)
+  const [configIndex, setConfigIndex] = useState<number>(0)
+
+  const [selectedVlanProfile, setSelectedVlanProfile] = useState<Vlan>()
+  const [vlanTable, setVlanTable] = useState<Vlan[]>([])
+  
   useEffect(() => {
     if (initialData !== data) {
       setData(initialData)
-      setConfiguredFlags(Array(data.length).fill(false))
+      setIsSetupComplete(Array(data.length).fill(false))
     }
 
   }, [props.payload])
@@ -42,6 +57,76 @@ export function VlanStep (props: { payload: string }) {
       'id': ''
     }
     setData([...data, newVlan])
+  }
+
+  const handleSetVlan = async (data: Vlan) => {
+    const filterData = selectedVlanProfile?.vlanId ? vlanTable.filter(
+      (item: { vlanId: number }) => item.vlanId.toString() !== selectedVlanProfile?.vlanId.toString()) :
+      vlanTable
+
+    const sfm = data.switchFamilyModels?.map((item, index) => {
+      return {
+        ...item,
+        untaggedPorts: Array.isArray(item.untaggedPorts) ?
+          item.untaggedPorts?.join(',') : item.untaggedPorts,
+        taggedPorts: Array.isArray(item.taggedPorts) ?
+          item.taggedPorts?.join(',') : item.taggedPorts,
+        key: index
+      }
+    })
+
+    data.switchFamilyModels = sfm
+    setVlanTable([...filterData, data])
+    if(configId) {
+      await updateOnboardConfigs({
+        params: {
+          id: configId
+        },
+        payload: {
+          id: configId,
+          name: '',
+          type: 'VLAN',
+          content: JSON.stringify(data),
+          sessionId: props.sessionId
+        }
+      }).unwrap()
+    } else {
+      await createOnboardConfigs({
+        payload: {
+          name: '',
+          type: 'VLAN',
+          content: JSON.stringify(data),
+          sessionId: props.sessionId
+        }
+      }).unwrap()
+    }
+   
+    setSelectedVlanProfile(undefined)
+    setConfigId('')
+    setIsSetupComplete((prevIsSetupComplete) => {
+      const updatedPrevIsSetupComplete = [...prevIsSetupComplete]
+      updatedPrevIsSetupComplete[configIndex] = true
+      return updatedPrevIsSetupComplete
+    })
+
+
+    return true
+  }
+
+  const [getVlanConfigs] = useLazyGetVlanOnboardConfigsQuery()
+  const [updateOnboardConfigs] = useUpdateOnboardConfigsMutation()
+  const [createOnboardConfigs] = useCreateOnboardConfigsMutation()
+  
+  const onEditMode = async (id: string) =>{
+    const vlanConfig = (await getVlanConfigs({
+      params: { id }
+    })).data
+    setSelectedVlanProfile(vlanConfig)
+    setConfigVisible(true)
+  }
+
+  const onAddMode= () => {
+    setConfigVisible(true)
   }
 
   return (
@@ -92,19 +177,19 @@ export function VlanStep (props: { payload: string }) {
                 initialValue={item['VLAN Name']}
                 rules={[{ required: true }]}
               />
-
-              <UI.PurposeContainer>
+              {item['Purpose'] && <UI.PurposeContainer>
                 <UI.PurposeHeader>
                   <Logo style={{
                     width: '20px',
                     height: '20px',
                     verticalAlign: 'text-bottom',
-                    color: cssStr('--acx-semantics-yellow-50') }} />
+                    color: cssStr('--acx-semantics-yellow-50')
+                  }} />
                   <span>{$t({ defaultMessage: 'Purpose' })}</span>
                 </UI.PurposeHeader>
                 <UI.PurposeText>{item['Purpose']}</UI.PurposeText>
               </UI.PurposeContainer>
-
+              }
               <ProFormText
                 width={200}
                 label={$t({ defaultMessage: 'VLAN ID' })}
@@ -114,20 +199,29 @@ export function VlanStep (props: { payload: string }) {
               />
               <UI.ConfigurationContainer
                 onClick={() => {
-                  // setModalId(item['id'])
-                  // setModalName(item['SSID Name'])
-                  // setModalType(ssidTypes[index])
-                  // setNetworkModalVisible(true)
-                  // setConfiguredIndex(index)
+                  setConfigId(item['id'])
+                  setConfigIndex(index)
+                  if(isSetupComplete[configIndex]){
+                    onEditMode(item['id'])
+                  } else {
+                    onAddMode()
+                  }
                 }}>
 
                 <UI.ConfigurationHeader>
                   <div>
-                    {$t({ defaultMessage: 'Port Configurations' })}
+                    <div>
+                      {$t({ defaultMessage: 'Port Configurations' })}
+                    </div>
+                    {!isSetupComplete[index] &&
+                      <div style={{ fontWeight: 400, color: cssStr('--acx-neutrals-60') }}>
+                        {$t({ defaultMessage: 'Ports have not been set yet. ' })}
+                      </div>
+                    }
                   </div>
 
                   <div style={{ display: 'flex' }}>
-                    {configuredFlags[index] ?
+                    {isSetupComplete[index] ?
                       <UI.ConfiguredButton>
                         <UI.CollapseCircleSolidIcons/>
                         <div>{$t({ defaultMessage: 'Configured' })}</div>
@@ -138,15 +232,28 @@ export function VlanStep (props: { payload: string }) {
                     <UI.ArrowChevronRightIcons />
                   </div>
                 </UI.ConfigurationHeader>
-                <div>
-                  {$t({ defaultMessage: 'Ports have not been set yet. ' })}
-                </div>
+                
               </UI.ConfigurationContainer>
             </UI.VlanDetails>
           </UI.VlanContainer>
           <Divider dashed />
         </React.Fragment>
       ))}
+      {configVisible &&
+        <VlanSettingDrawer
+          editMode={isSetupComplete[configIndex]}
+          visible={configVisible}
+          setVisible={setConfigVisible}
+          vlan={(selectedVlanProfile)}
+          setVlan={handleSetVlan}
+          isProfileLevel={true}
+          gptObject={{
+            vlanId: formInstance?.getFieldValue(['data', configIndex, 'VLAN ID']) || '',
+            vlanName: formInstance?.getFieldValue(['data', configIndex, 'VLAN Name']) || ''
+          }}
+          vlansList={vlanTable.filter(item=>item.vlanId !== selectedVlanProfile?.vlanId)}
+        />
+      }
     </UI.Container>
   )
 }

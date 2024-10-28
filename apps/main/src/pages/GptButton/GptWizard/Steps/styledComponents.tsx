@@ -111,6 +111,7 @@ export const ConfigurationHeader = styled.div`
     font-weight: 600;
     justify-content: space-between;
     width: -webkit-fill-available;
+    align-items: center;
 `
 
 export const PurposeText = styled.div`

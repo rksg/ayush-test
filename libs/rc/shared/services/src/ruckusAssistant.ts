@@ -2,7 +2,8 @@ import {
   GptConfiguration,
   GptConversation,
   NetworkSaveData,
-  RuckusAssistantUrlInfo
+  RuckusAssistantUrlInfo,
+  Vlan
 } from '@acx-ui/rc/utils'
 import { baseRuckusAssistantApi } from '@acx-ui/store'
 import { RequestPayload }         from '@acx-ui/types'
@@ -66,6 +67,17 @@ export const ruckusAssistantApi = baseRuckusAssistantApi.injectEndpoints({
       transformResponse: (response: GptConfiguration) => {
         return JSON.parse(response.content) as NetworkSaveData
       }
+    }),
+    getVlanOnboardConfigs: build.query<Vlan, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RuckusAssistantUrlInfo.getOnboardConfigs, params)
+        return {
+          ...req
+        }
+      },
+      transformResponse: (response: GptConfiguration) => {
+        return JSON.parse(response.content) as Vlan
+      }
     })
   })
 })
@@ -77,5 +89,6 @@ export const {
   useCreateOnboardConfigsMutation,
   useUpdateOnboardConfigsMutation,
   useGetOnboardConfigsQuery,
-  useLazyGetOnboardConfigsQuery
+  useLazyGetOnboardConfigsQuery,
+  useLazyGetVlanOnboardConfigsQuery
 } = ruckusAssistantApi

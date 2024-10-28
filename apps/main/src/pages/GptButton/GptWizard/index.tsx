@@ -119,7 +119,10 @@ export default function GptWizard (props: {
       name: GptConfigurationStepsEnum.VLAN,
       title: '',
       component: payloads[GptConfigurationStepsEnum.VLAN].payload ? (
-        <VlanStep payload={payloads[GptConfigurationStepsEnum.VLAN].payload} />
+        <VlanStep
+          formInstance={formMapRef.current[2].current}
+          sessionId={props.sessionId}
+          payload={payloads[GptConfigurationStepsEnum.VLAN].payload} />
       ) : (
         null
       ),
