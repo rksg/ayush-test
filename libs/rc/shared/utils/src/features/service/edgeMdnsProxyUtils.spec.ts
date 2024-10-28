@@ -1,8 +1,8 @@
 import { cloneDeep, set } from 'lodash'
 
-import { EdgeMdnsFixtures } from '@acx-ui/rc/utils'
+import { EdgeMdnsFixtures } from '../edge/__tests__/fixtures'
 
-import { edgeMdnsFormRequestPreProcess } from './edgeMdnsUtils'
+import { edgeMdnsFormRequestPreProcess } from './edgeMdnsProxyUtils'
 
 const { mockEdgeMdnsViewDataList } = EdgeMdnsFixtures
 

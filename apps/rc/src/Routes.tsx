@@ -142,6 +142,7 @@ import FirewallDetail                                                   from './
 import FirewallTable                                                    from './pages/Services/EdgeFirewall/FirewallTable'
 import { AddEdgeSdLan, EdgeSdLanDetail, EdgeSdLanTable, EditEdgeSdLan } from './pages/Services/EdgeSdLan/index'
 import AddEdgeMdnsProxy                                                 from './pages/Services/MdnsProxy/Edge/AddEdgeMdnsProxy'
+import EdgeMdnsProxyDetails                                             from './pages/Services/MdnsProxy/Edge/EdgeMdnsProxyDetails'
 import { EdgeMdnsProxyTable }                                           from './pages/Services/MdnsProxy/Edge/EdgeMdnsProxyTable'
 import EditEdgeMdnsProxy                                                from './pages/Services/MdnsProxy/Edge/EditEdgeMdnsProxy'
 import MdnsProxyDetail                                                  from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
@@ -567,6 +568,11 @@ const edgeMdnsRoutes = () => {
           <EditEdgeMdnsProxy />
         </ServiceAuthRoute>
       }
+    />
+    <Route
+      path={getServiceRoutePath({ type: ServiceType.EDGE_MDNS_PROXY,
+        oper: ServiceOperation.DETAIL })}
+      element={<EdgeMdnsProxyDetails />}
     />
   </>
 }

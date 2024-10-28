@@ -248,7 +248,8 @@ export function ScheduleStep (props: ScheduleStepProps) {
                   const selectedVersions = [
                     form.getFieldValue('selectedICX82Version'),
                     form.getFieldValue('selectedICX71Version'),
-                    form.getFieldValue('selectedICX7XVersion')
+                    form.getFieldValue('selectedICX7XVersion'),
+                    form.getFieldValue('selectedICX81Version')
                   ]
                   if (selectedVersions.every(_.isEmpty)) {
                     return Promise.reject(
