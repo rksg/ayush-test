@@ -185,7 +185,6 @@ export {
   getSdLanDetailsCompatibilitiesDrawerData
 } from './useEdgeActions/compatibility'
 export * from './EdgeMdns/useEdgeMdnsActions'
-export * from './EdgeMdns/edgeMdnsUtils'
 
 export { EdgeServiceStatusLight } from './EdgeServiceStatusLight'
 export { PropertyManagementForm } from './PropertyManagementForm'
