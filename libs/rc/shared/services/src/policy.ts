@@ -135,8 +135,10 @@ const LbsServerProfileMutationUseCases = [
 const CertificateMutationUseCases = [
   'ActivateCertificateAuthorityOnRadius',
   'DectivateCertificateAuthorityOnRadius',
-  'ActivateCertificateOnRadius',
-  'DectivateCertificateOnRadius'
+  'ActivateClientCertificateOnRadius',
+  'DectivateClientCertificateOnRadius',
+  'ActivateServerCertificateOnRadius',
+  'DectivateServerCertificateOnRadius'
 ]
 
 const L2AclUseCases = [
@@ -1673,21 +1675,41 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       }
     }),
-    activateCertificateOnRadius: build.mutation<CommonResult, RequestPayload>({
+    activateClientCertificateOnRadius: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
         const req = createHttpRequest(
-          CertificateUrls.activateCertificateOnRadius, params, customHeaders)
+          CertificateUrls.activateClientCertificateOnRadius, params, customHeaders)
         return {
           ...req
         }
       }
     }),
-    deactivateCertificateOnRadius: build.mutation<CommonResult, RequestPayload>({
+    deactivateClientCertificateOnRadius: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
         const req = createHttpRequest(
-          CertificateUrls.deactivateCertificateOnRadius, params, customHeaders)
+          CertificateUrls.deactivateClientCertificateOnRadius, params, customHeaders)
+        return {
+          ...req
+        }
+      }
+    }),
+    activateServerCertificateOnRadius: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(
+          CertificateUrls.activateServerCertificateOnRadius, params, customHeaders)
+        return {
+          ...req
+        }
+      }
+    }),
+    deactivateServerCertificateOnRadius: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(
+          CertificateUrls.deactivateServerCertificateOnRadius, params, customHeaders)
         return {
           ...req
         }
@@ -3564,8 +3586,10 @@ export const {
   // Certificate
   useGetCertificateListQuery,
   useActivateCertificateAuthorityOnRadiusMutation,
-  useActivateCertificateOnRadiusMutation,
-  useDeactivateCertificateOnRadiusMutation,
+  useActivateClientCertificateOnRadiusMutation,
+  useDeactivateClientCertificateOnRadiusMutation,
+  useActivateServerCertificateOnRadiusMutation,
+  useDeactivateServerCertificateOnRadiusMutation,
   useLazyGetMacRegListQuery,
   useUploadMacRegistrationMutation,
   useAddSyslogPolicyMutation,

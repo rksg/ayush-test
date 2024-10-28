@@ -30,17 +30,21 @@ export interface RadSecOptionsType {
   ocspUrl?: string,
   certificateAuthorityId?: string,
   clientCertificateId?: string,
+  serverCertificateId?: string,
   // certificates only allow to activate once
-  originalCertificateAuthorityId?: string | null,
-  originalClientCertificateId?: string | null
+  originalCertificateAuthorityId?: string,
+  originalClientCertificateId?: string
+  originalServerCertificateId?: string
 }
 export interface RadSecOptionsViewModalType {
   tlsEnabled?: boolean,
   certificateAuthorityId?: string,
   clientCertificateId?: string,
+  serverCertificateId?: string,
   // certificates only allow to activate once
-  originalCertificateAuthorityId?: string | null,
-  originalClientCertificateId?: string | null
+  originalCertificateAuthorityId?: string,
+  originalClientCertificateId?: string,
+  originalServerCertificateId?: string
 }
 export enum AAAPurposeEnum{
   ALL = 'All (Default)',

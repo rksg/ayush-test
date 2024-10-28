@@ -1,6 +1,5 @@
 import { useRef, useEffect, useState } from 'react'
 
-import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
@@ -8,7 +7,7 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
 import {
   useAaaPolicyQuery,
   useAddAAAPolicyMutation,
@@ -17,8 +16,10 @@ import {
   useGetAAAPolicyTemplateQuery,
   useUpdateAAAPolicyTemplateMutation,
   useActivateCertificateAuthorityOnRadiusMutation,
-  useActivateCertificateOnRadiusMutation,
-  useDeactivateCertificateOnRadiusMutation
+  useActivateClientCertificateOnRadiusMutation,
+  useDeactivateClientCertificateOnRadiusMutation,
+  useActivateServerCertificateOnRadiusMutation,
+  useDeactivateServerCertificateOnRadiusMutation
 } from '@acx-ui/rc/services'
 import {
   AAAPolicyType,
@@ -58,8 +59,8 @@ export const AAAForm = (props: AAAFormProps) => {
   const enableRbac = isTemplate ? isConfigTemplateRbacEnabled : isServicePolicyRbacEnabled
   const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
   const supportRadsec = isRadsecFeatureEnabled && !isTemplate
-  const addCertificateActivations = useAddCertificateActivations()
-  const updateCertificateActivations = useUpdateCertificateActivations()
+  const addRadSecActivations = useAddRadSecActivations()
+  const updateRadSecActivations = useUpdateRadSecActivations()
   const { data } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useAaaPolicyQuery,
     useTemplateQueryFn: useGetAAAPolicyTemplateQuery,
@@ -92,13 +93,13 @@ export const AAAForm = (props: AAAFormProps) => {
       if (isEdit) {
         await updateInstance(requestPayload).unwrap()
         if (supportRadsec) {
-          updateCertificateActivations(data, data.id)
+          updateRadSecActivations(data, requestPayload?.params?.policyId)
         }
       } else {
         await createInstance(requestPayload).unwrap().then(res => {
           data.id = res?.response?.id
           if (supportRadsec) {
-            addCertificateActivations(data, res?.response?.id)
+            addRadSecActivations(data, res?.response?.id)
           }
         })
       }
@@ -123,63 +124,97 @@ export const AAAForm = (props: AAAFormProps) => {
     return activateCertificateAuthority
   }
 
-  function useCertificateActivation () {
-    const [activate] = useActivateCertificateOnRadiusMutation()
-    const activateCertificate =
-      async (radiusId?: string, certificateId?: string) => {
-        return radiusId && certificateId ?
-          await activate({ params: { radiusId, certificateId } }).unwrap() : null
+  function useClientCertificateActivation () {
+    const [activate] = useActivateClientCertificateOnRadiusMutation()
+    const activateClientCertificate =
+      async (radiusId?: string, clientCertificateId?: string) => {
+        return radiusId && clientCertificateId ?
+          await activate({ params: { radiusId, clientCertificateId } }).unwrap() : null
       }
-    return activateCertificate
+    return activateClientCertificate
   }
 
-  function useCertificateDeactivation () {
-    const [deactivate] = useDeactivateCertificateOnRadiusMutation()
-    const deactivateCertificate =
-      async (radiusId?: string, certificateId?: string) => {
-        return radiusId && certificateId ?
-          await deactivate({ params: { radiusId, certificateId } }).unwrap() : null
+  function useClientCertificateDeactivation () {
+    const [deactivate] = useDeactivateClientCertificateOnRadiusMutation()
+    const deactivateClientCertificate =
+      async (radiusId?: string, clientCertificateId?: string) => {
+        return radiusId && clientCertificateId ?
+          await deactivate({ params: { radiusId, clientCertificateId } }).unwrap() : null
       }
-    return deactivateCertificate
+    return deactivateClientCertificate
   }
 
-  function useAddCertificateActivations () {
+  function useServerCertificateActivation () {
+    const [activate] = useActivateServerCertificateOnRadiusMutation()
+    const activateServerCertificate =
+      async (radiusId?: string, serverCertificateId?: string) => {
+        return radiusId && serverCertificateId ?
+          await activate({ params: { radiusId, serverCertificateId } }).unwrap() : null
+      }
+    return activateServerCertificate
+  }
+
+  function useServerCertificateDeactivation () {
+    const [deactivate] = useDeactivateServerCertificateOnRadiusMutation()
+    const deactivateServerCertificate =
+      async (radiusId?: string, serverCertificateId?: string) => {
+        return radiusId && serverCertificateId ?
+          await deactivate({ params: { radiusId, serverCertificateId } }).unwrap() : null
+      }
+    return deactivateServerCertificate
+  }
+
+  function useAddRadSecActivations () {
     const activateCertificateAuthority = useCertificateAuthorityActivation()
-    const activateCertificate = useCertificateActivation()
-    const addCertificateActivations =
+    const activateClientCertificate = useClientCertificateActivation()
+    const activateServerCertificate = useServerCertificateActivation()
+    const addRadSecActivations =
       async (aaa?: AAAPolicyType, radiusId?: string) => {
         const radSecOptions = aaa?.radSecOptions
 
-        await activateCertificateAuthority(radiusId, aaa?.radSecOptions?.clientCertificateId)
-        if (!_.isEmpty(radSecOptions?.clientCertificateId)) {
-          await activateCertificate(radiusId, aaa?.radSecOptions?.clientCertificateId)
+        await activateCertificateAuthority(radiusId, radSecOptions?.certificateAuthorityId)
+        if (radSecOptions?.clientCertificateId) {
+          await activateClientCertificate(radiusId, radSecOptions?.clientCertificateId)
+        }
+        if (radSecOptions?.serverCertificateId) {
+          await activateServerCertificate(radiusId, radSecOptions?.serverCertificateId)
         }
       }
-    return addCertificateActivations
+    return addRadSecActivations
   }
 
-  function useUpdateCertificateActivations () {
+  function useUpdateRadSecActivations () {
     const activateCertificateAuthority = useCertificateAuthorityActivation()
-    const activateCertificate = useCertificateActivation()
-    const deactivateCertificate = useCertificateDeactivation()
-    const addCertificateActivations =
+    const activateClientCertificate = useClientCertificateActivation()
+    const deactivateClientCertificate = useClientCertificateDeactivation()
+    const activateServerCertificate = useServerCertificateActivation()
+    const deactivateServerCertificate = useServerCertificateDeactivation()
+    const addRadSecActivations =
       async (aaa?: AAAPolicyType, radiusId?: string) => {
         const radSecOptions = aaa?.radSecOptions
 
-        if (radSecOptions?.originalCertificateAuthorityId &&
-          radSecOptions?.originalCertificateAuthorityId !== radSecOptions?.certificateAuthorityId) {
-          await activateCertificateAuthority(radiusId, aaa?.radSecOptions?.clientCertificateId)
+        if (radSecOptions?.originalCertificateAuthorityId
+          !== radSecOptions?.certificateAuthorityId) {
+          await activateCertificateAuthority(radiusId, radSecOptions?.certificateAuthorityId)
         }
-        if (radSecOptions?.originalClientCertificateId &&
-          radSecOptions?.originalClientCertificateId !== radSecOptions?.clientCertificateId) {
-          if (!_.isEmpty(radSecOptions?.clientCertificateId)) {
-            await activateCertificate(radiusId, aaa?.radSecOptions?.clientCertificateId)
-          } else {
-            await deactivateCertificate(radiusId, aaa?.radSecOptions?.clientCertificateId)
+        if (radSecOptions?.originalClientCertificateId !== radSecOptions?.clientCertificateId) {
+          if (radSecOptions?.clientCertificateId) {
+            await activateClientCertificate(radiusId, radSecOptions?.clientCertificateId)
+          } else if (radSecOptions?.originalClientCertificateId) {
+            await deactivateClientCertificate(
+              radiusId, radSecOptions?.originalClientCertificateId)
+          }
+        }
+        if (radSecOptions?.originalServerCertificateId !== radSecOptions?.serverCertificateId) {
+          if (radSecOptions?.serverCertificateId) {
+            await activateServerCertificate(radiusId, radSecOptions?.serverCertificateId)
+          } else if (radSecOptions?.originalServerCertificateId) {
+            await deactivateServerCertificate(
+              radiusId, radSecOptions?.originalServerCertificateId)
           }
         }
       }
-    return addCertificateActivations
+    return addRadSecActivations
   }
 
   return (

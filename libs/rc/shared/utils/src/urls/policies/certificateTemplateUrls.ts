@@ -188,14 +188,24 @@ export const CertificateUrls: { [key: string]: ApiInfo } = {
     url: '/radiusServerProfiles/:radiusId/certificateAuthorities/:certificateAuthorityId',
     newApi: true
   },
-  activateCertificateOnRadius: {
+  activateClientCertificateOnRadius: {
     method: 'put',
-    url: '/radiusServerProfiles/:radiusId/certificates/:certificateId',
+    url: '/radiusServerProfiles/:radiusId/certificates/:certificateId&certType=CLIENT',
     newApi: true
   },
-  deactivateCertificateOnRadius: {
+  deactivateClientCertificateOnRadius: {
     method: 'delete',
-    url: '/radiusServerProfiles/:radiusId/certificates/:certificateId',
+    url: '/radiusServerProfiles/:radiusId/certificates/:certificateId&certType=CLIENT',
+    newApi: true
+  },
+  activateServerCertificateOnRadius: {
+    method: 'put',
+    url: '/radiusServerProfiles/:radiusId/certificates/:certificateId&certType=SERVER',
+    newApi: true
+  },
+  deactivateServerCertificateOnRadius: {
+    method: 'delete',
+    url: '/radiusServerProfiles/:radiusId/certificates/:certificateId&certType=SERVER',
     newApi: true
   }
 }
