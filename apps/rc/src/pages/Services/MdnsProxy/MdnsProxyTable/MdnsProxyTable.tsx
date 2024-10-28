@@ -10,7 +10,7 @@ import {
   Tooltip
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
-import { MdnsProxyForwardingRulesTable, SimpleListTooltip }                                from '@acx-ui/rc/components'
+import { MdnsProxyForwardingRulesTable, SimpleListTooltip, ToolTipTableStyle }             from '@acx-ui/rc/components'
 import { useDeleteMdnsProxyMutation, useGetEnhancedMdnsProxyListQuery, useGetVenuesQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -25,8 +25,6 @@ import {
   MdnsProxyFeatureTypeEnum
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-
-import * as UI from '../styledComponents'
 
 const defaultPayload = {
   fields: ['id', 'name', 'rules', 'venueIds', 'activations'],
@@ -110,7 +108,7 @@ export default function MdnsProxyTable () {
       />
 
       <Loader states={[tableQuery]}>
-        <UI.ToolTipStyle/>
+        <ToolTipTableStyle.ToolTipStyle/>
         <Table<MdnsProxyViewModel>
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
@@ -187,7 +185,7 @@ function useColumns () {
             children={rules.length}
             dottedUnderline={true}
             placement='bottom'
-            overlayClassName={UI.toolTipClassName}
+            overlayClassName={ToolTipTableStyle.toolTipClassName}
             overlayInnerStyle={{ minWidth: '380px' }}
           />
           : 0

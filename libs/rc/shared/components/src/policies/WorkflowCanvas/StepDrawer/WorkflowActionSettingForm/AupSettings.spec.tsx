@@ -329,7 +329,7 @@ describe('AupSettings', () => {
     Object.defineProperty(file, 'size', { value: 1024 * 1024 * 11 })
     const testfile = screen.getByTestId('aupPolicy')
     await userEvent.upload(testfile, file)
-    expect(await screen.findByText('File size (11 MB) is too big.')).toBeVisible()
+    expect(await screen.findByText('File size should be upto 6MB')).toBeVisible()
   })
 
   it('Should be able to upload file', async () => {

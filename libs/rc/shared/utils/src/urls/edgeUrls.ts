@@ -201,8 +201,7 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   },
   deleteService: {
     method: 'delete',
-    url: '/edges/:serialNumber/service',
-    oldUrl: '/edges/:serialNumber/service',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/service',
     newApi: true
   },
   getEdgePasswordDetail: {

@@ -6,10 +6,12 @@ import {
   useDeactivateEdgeMdnsProxyClusterMutation,
   useUpdateEdgeMdnsProxyMutation
 } from '@acx-ui/rc/services'
-import { EdgeMdnsProxyActivation, EdgeMdnsProxyViewData } from '@acx-ui/rc/utils'
-import { CommonResult }                                   from '@acx-ui/user'
-
-import { edgeMdnsFormRequestPreProcess } from './edgeMdnsUtils'
+import {
+  EdgeMdnsProxyActivation,
+  EdgeMdnsProxyViewData,
+  edgeMdnsFormRequestPreProcess
+} from '@acx-ui/rc/utils'
+import { CommonResult } from '@acx-ui/user'
 
 // eslint-disable-next-line max-len
 export const differenceVenueClusters = (first: EdgeMdnsProxyActivation[], second: EdgeMdnsProxyActivation[]) => {
