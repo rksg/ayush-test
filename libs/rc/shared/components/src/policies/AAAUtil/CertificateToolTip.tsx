@@ -20,7 +20,7 @@ export function CertificateToolTip (props: CertificateToolTipProps) {
   const { status, placement, icon } = props
 
   return (<Tooltip
-    title={<CertificateWarning status={status} />}
+    title={<CertificateWarning status={status} includeParentLocation={true} />}
     overlayClassName={UI.toolTipClassName}
     placement={placement ?? 'right'}>
     {icon ??

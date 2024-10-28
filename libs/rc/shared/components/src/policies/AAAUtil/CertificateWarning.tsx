@@ -5,11 +5,13 @@ import { CertificateStatusType, getPolicyRoutePath, PolicyOperation, PolicyType 
 import { TenantLink }                                                             from '@acx-ui/react-router-dom'
 
 export type CertificateWarningProps = {
-  status: CertificateStatusType[] | undefined
+  status: CertificateStatusType[] | undefined,
+  includeParentLocation?: boolean
 }
 
 export const CertificateWarning = (props: CertificateWarningProps) => {
   const { $t } = useIntl()
+  const { status, includeParentLocation = false } = props
   const getCertStatus = (status: CertificateStatusType[] | undefined) => {
     if (!status) {
       return ''
@@ -36,12 +38,15 @@ export const CertificateWarning = (props: CertificateWarningProps) => {
             type: PolicyType.SERVER_CERTIFICATES,
             oper: PolicyOperation.LIST
           })}
-          children={$t({ defaultMessage: 'Server & Client Certificates' })}/>,
-        status: getCertStatus(props.status)
+          children={
+            includeParentLocation ?
+              $t({ defaultMessage: 'Certificate Management/ Server & Client Certificates' }) :
+              $t({ defaultMessage: 'Server & Client Certificates' })}/>,
+        status: getCertStatus(status)
       }
     )}
   </>
 
   // eslint-disable-next-line react/jsx-no-useless-fragment
-  return props.status ? warningMsg : <></>
+  return status ? warningMsg : <></>
 }

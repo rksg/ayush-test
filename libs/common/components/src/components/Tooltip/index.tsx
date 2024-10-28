@@ -53,10 +53,3 @@ Tooltip.Info = function InfoTooltip (props: PredefinedTooltipProps) {
     }
   </Tooltip>
 }
-
-Tooltip.Warning = function WarningTooltip (props: PredefinedTooltipProps) {
-  const { iconStyle, ...tooltipProps } = props
-  return <Tooltip {...tooltipProps}>
-    <WarningCircleSolid {...(iconStyle && { style: iconStyle })}/>
-  </Tooltip>
-}

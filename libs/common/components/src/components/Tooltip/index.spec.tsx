@@ -34,10 +34,4 @@ describe('Tooltip', () => {
     const icon = await screen.findByTestId('InformationSolid')
     expect(icon).toBeVisible()
   })
-
-  it('renders Tooltip.Warning', async () => {
-    render(<Tooltip.Warning title='question tooltip' iconStyle={{ width: '16px' }}/>)
-    const icon = await screen.findByTestId('WarningCircleSolid')
-    expect(icon).toBeVisible()
-  })
 })
