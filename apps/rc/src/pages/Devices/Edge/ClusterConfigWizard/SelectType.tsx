@@ -4,12 +4,19 @@ import { Col, Radio, RadioChangeEvent, Row, Space, Typography } from 'antd'
 import { useIntl }                                              from 'react-intl'
 
 import { Button, PageHeader, StepsForm, Tooltip } from '@acx-ui/components'
+import { Features }                               from '@acx-ui/feature-toggle'
 import { formatter }                              from '@acx-ui/formatter'
 import {
   ClusterInterface as ClusterInterfaceIcon,
-  Port as PortIcon
+  Port as PortIcon,
+  SubInterface as SubInterfaceIcon
 } from '@acx-ui/icons'
-import { ClusterConfigWizardSubtitle, EdgeClusterTypeCard, SpaceWrapper }                       from '@acx-ui/rc/components'
+import {
+  ClusterConfigWizardSubtitle,
+  EdgeClusterTypeCard,
+  SpaceWrapper,
+  useIsEdgeFeatureReady
+} from '@acx-ui/rc/components'
 import { ClusterHighAvailabilityModeEnum, CommonCategory, Device, genUrl, validateEdgeGateway } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }                                                from '@acx-ui/react-router-dom'
 
@@ -24,6 +31,7 @@ export const SelectType = () => {
   const { clusterInfo, clusterNetworkSettings } = useContext(ClusterConfigWizardContext)
   const [selected, setSelected] = useState<string | undefined>(undefined)
   const [hasGateway, setHasGateway] = useState(false)
+  const isEdgeHaSubInterfaceReady = useIsEdgeFeatureReady(Features.EDGE_HA_SUB_INTERFACE_TOGGLE)
 
   useEffect(() => {
     if(!clusterNetworkSettings?.portSettings) return
@@ -102,18 +110,27 @@ export const SelectType = () => {
       }
     ]
   },
-  // {
-  //   id: 'subInterface',
-  //   title: $t({ defaultMessage: 'Sub-interface Settings' }),
-  //   icon: <SubInterfaceIcon />,
-  //   targetUrl: genUrl([
-  //     CommonCategory.Device,
-  //     Device.EdgeCluster,
-  //     clusterId!,
-  //     'configure',
-  //     'subInterface'
-  //   ])
-  // },
+  ...(isEdgeHaSubInterfaceReady ? [{
+    id: 'subInterface',
+    title: $t({ defaultMessage: 'Sub-interface Settings' }),
+    icon: <SubInterfaceIcon />,
+    targetUrl: genUrl([
+      CommonCategory.Device,
+      Device.EdgeCluster,
+      clusterId!,
+      'configure',
+      'subInterface'
+    ]),
+    disabledList: [
+      {
+        value: !isHardwareCompatible
+      },
+      {
+        value: !hasGateway,
+        tooltip: $t({ defaultMessage: 'Please complete the LAG and port settings first' })
+      }
+    ]
+  }] : []),
   {
     id: 'clusterInterface',
     title: $t({ defaultMessage: 'Cluster Interface Settings' }),

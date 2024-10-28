@@ -23,16 +23,20 @@ describe('userLogout', () => {
       const originalRemoveItem = localStorage.removeItem
       localStorage.removeItem = mockedRemoveItem
       localStorage['SPLITIO-foo'] = 'bar'
+      localStorage['table-pagesize'] = '20'
       sessionStorage.setItem('jwt', 'testToken')
       sessionStorage.setItem('ACX-ap-compatibiliy-note-hidden', 'true')
+      sessionStorage.setItem('table-pagesize', '20')
 
       userLogout()
       expect(window.location.href).toEqual('/logout?token=testToken')
       expect(sessionStorage.getItem('jwt')).toBeNull()
       expect(sessionStorage.getItem('ACX-ap-compatibiliy-note-hidden')).toBeNull()
+      expect(sessionStorage.getItem('table-pagesize')).toBeNull()
       expect(mockedRemoveItem).toHaveBeenCalledWith('SPLITIO-foo')
 
       delete localStorage['SPLITIO-foo']
+      delete localStorage['table-pagesize']
       localStorage.removeItem = originalRemoveItem
     })
 

@@ -1,13 +1,15 @@
-import { Col, Row } from 'antd'
-import { useIntl }  from 'react-intl'
+import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, Tooltip }                            from '@acx-ui/components'
-import { Features }                                                      from '@acx-ui/feature-toggle'
-import { EdgeStatusLight, useEdgeClusterActions, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
-import { useGetEdgeClusterListForTableQuery, useVenuesListQuery }        from '@acx-ui/rc/services'
+import { Loader, Table, TableProps } from '@acx-ui/components'
+import { Features }                  from '@acx-ui/feature-toggle'
 import {
-  ClusterNodeStatusEnum,
-  ClusterStatusEnum,
+  EdgeStatusLight,
+  useEdgeClusterActions,
+  useIsEdgeFeatureReady,
+  EdgeClusterStatusLabel
+} from '@acx-ui/rc/components'
+import { useGetEdgeClusterListForTableQuery, useVenuesListQuery } from '@acx-ui/rc/services'
+import {
   CommonOperation,
   Device,
   EdgeClusterTableDataType,
@@ -25,7 +27,6 @@ import {
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { EdgeScopes }                             from '@acx-ui/types'
 import { filterByAccess, hasPermission }          from '@acx-ui/user'
-import { getIntl }                                from '@acx-ui/utils'
 
 import { HaStatusBadge } from './HaStatusBadge'
 
@@ -108,7 +109,10 @@ export const EdgeClusterTable = () => {
       dataIndex: 'clusterStatus',
       sorter: true,
       render: (_, row) => {
-        return row.clusterStatus && getClusterStatus(row)
+        return row.clusterStatus && <EdgeClusterStatusLabel
+          clusterStatus={row.clusterStatus}
+          edgeList={row.edgeList}
+        />
       }
     },
     {
@@ -327,40 +331,4 @@ export const EdgeClusterTable = () => {
       />
     </Loader>
   )
-}
-
-const getClusterStatus = (data: EdgeClusterTableDataType) => {
-  const { $t } = getIntl()
-  const defaultMessage = $t({ defaultMessage: 'Cluster Setup Required' })
-  if((data.edgeList?.length ?? 0) < 2){
-    return <Row align='middle' gutter={[2, 0]}>
-      <Col>
-        {$t({ defaultMessage: 'Single Node' })}
-      </Col>
-      <Col>
-        <Tooltip.Question
-          title={$t({ defaultMessage: `The cluster function requires
-        at least two nodes to operate` })}
-          placement='bottom'
-          iconStyle={{ width: 13, height: 13, marginTop: 3 }}
-        />
-      </Col>
-    </Row>
-  }
-  switch(data.clusterStatus) {
-    case ClusterStatusEnum.CLUSTER_CONFIGS_NEEDED:
-      return defaultMessage
-    case ClusterStatusEnum.CLUSTER_IS_FORMING:
-      return $t({ defaultMessage: 'Cluster Forming' })
-    case ClusterStatusEnum.CLUSTER_READY:
-      return $t({ defaultMessage: 'Ready ({ready}/{total})' }, {
-        ready: data.edgeList?.filter(item =>
-          item.clusterNodeStatus === ClusterNodeStatusEnum.CLUSTER_NODE_READY).length ?? 0,
-        total: data.edgeList?.length ?? 0
-      })
-    case ClusterStatusEnum.CLUSTER_UNHEALTHY:
-      return $t({ defaultMessage: 'Disconnected' })
-    default:
-      return defaultMessage
-  }
 }

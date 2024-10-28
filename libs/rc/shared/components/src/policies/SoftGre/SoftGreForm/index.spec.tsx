@@ -75,7 +75,7 @@ describe('SoftGreForm', () => {
 
       const profileNameField = await screen.findByLabelText(/Profile Name/i)
       await user.type(profileNameField, 'createSoftGre')
-      const primaryGatewayField = await screen.findByLabelText(/Tunnel Primary Gateway Address/i)
+      const primaryGatewayField = await screen.findByLabelText(/Primary Gateway/i)
       await user.type(primaryGatewayField, '128.0.0.1')
 
       await user.click(screen.getByRole('button', { name: 'Add' }))
@@ -138,7 +138,7 @@ describe('SoftGreForm', () => {
       const profileNameField = await screen.findByLabelText(/Profile Name/i)
       await user.type(profileNameField, 'TestFailedToAddSoftGre')
       // eslint-disable-next-line max-len
-      const primaryGatewayField = await screen.findByLabelText(/Tunnel Primary Gateway Address/i)
+      const primaryGatewayField = await screen.findByLabelText(/Primary Gateway/i)
       await user.type(primaryGatewayField,'128.0.0.1')
 
       await user.click(screen.getByRole('button', { name: 'Add' }))
@@ -201,17 +201,17 @@ describe('SoftGreForm', () => {
       await user.clear(profileNameField)
       await user.type(profileNameField, 'testEditSoftGre')
 
-      const primaryGatewayField = await screen.findByLabelText(/Tunnel Primary Gateway Address/i)
+      const primaryGatewayField = await screen.findByLabelText(/Primary Gateway/i)
       await user.clear(primaryGatewayField)
       await user.type(primaryGatewayField, '128.0.0.3')
-      expect(await screen.findByText(/Please enter a unique address./)).toBeVisible()
+      expect(await screen.findByText(/Please enter a unique/i)).toBeVisible()
 
       getListFn.mockReset()
       await user.clear(primaryGatewayField)
       await user.type(primaryGatewayField, '128.0.0.4')
       await waitFor(() => expect(getListFn).toHaveBeenCalledTimes(1))
       // eslint-disable-next-line max-len
-      expect(screen.queryByText(/Please enter a unique address./)).toBeNull()
+      expect(screen.queryByText(/Please enter a unique/i)).toBeNull()
       await user.click(await screen.findByRole('button', { name: 'Apply' }))
 
       await waitFor(() => expect(updateFn).toHaveBeenCalledTimes(1))

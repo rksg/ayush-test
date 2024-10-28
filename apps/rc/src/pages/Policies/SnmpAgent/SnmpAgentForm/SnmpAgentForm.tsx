@@ -47,7 +47,7 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.SNMP_AGENT)
   const pageTitle = usePolicyPageHeaderTitle(editMode, PolicyType.SNMP_AGENT)
   //eslint-disable-next-line
-  const { data } = useGetApSnmpPolicyQuery({ params, enableRbac: isUseRbacApi }, { skip: !editMode })
+  const { data } = useGetApSnmpPolicyQuery({ params, enableRbac: isUseRbacApi, isSNMPv3PassphraseOn }, { skip: !editMode })
   const [ createApSnmpPolicy ] = useAddApSnmpPolicyMutation()
   const [ updateApSnmpPolicy ] = useUpdateApSnmpPolicyMutation()
 

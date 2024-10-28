@@ -7,6 +7,7 @@ import {
 } from '@acx-ui/components'
 import {
   ClusterNetworkSettings,
+  ClusterSubInterfaceSettings,
   CommonResult,
   EdgeAllPortTrafficData,
   EdgeCluster,
@@ -19,6 +20,7 @@ import {
   EdgeLagStatus,
   EdgeNodesPortsInfo,
   EdgePasswordDetail,
+  EdgePort,
   EdgePortConfig,
   EdgePortInfo,
   EdgePortStatus,
@@ -231,6 +233,10 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           ...req
         }
       },
+      transformResponse: (response: EdgePortConfig) => {
+        response.ports.sort(physicalPortSorter)
+        return response
+      },
       providesTags: [{ type: 'Edge', id: 'DETAIL' }, { type: 'Edge', id: 'PORT' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -339,6 +345,10 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           ...req,
           body: payload
         }
+      },
+      transformResponse: (response: TableResult<EdgePortStatus>) => {
+        response.data.sort(physicalPortSorter)
+        return response
       },
       providesTags: [{ type: 'Edge', id: 'PORT' }]
     }),
@@ -956,6 +966,10 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           ...req
         }
       },
+      transformResponse: (response: ClusterNetworkSettings) => {
+        response.portSettings.forEach(portSetting => portSetting.ports.sort(physicalPortSorter))
+        return response
+      },
       providesTags: [{ type: 'Edge', id: 'CLUSTER_DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -969,9 +983,42 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
+    patchEdgeClusterSubInterfaceSettings: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.patchEdgeClusterSubInterfaceSettings, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'CLUSTER_DETAIL' }]
+    }),
+    getEdgeClusterSubInterfaceSettings: build.query<ClusterSubInterfaceSettings, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getEdgeClusterSubInterfaceSettings, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'CLUSTER_DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'update-cluster-sub-interfaces'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'CLUSTER_DETAIL' }]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
     getEdgesPortStatus: build.query<EdgeNodesPortsInfo, RequestPayload>({
       queryFn: async ({ payload }, _queryApi, _extraOptions, fetchWithBQ) => {
-        const { edgeIds } = payload as { edgeIds: EdgeSerialNumber[] }
+        const { edgeIds, includeLags = false } = payload as {
+          edgeIds: EdgeSerialNumber[]
+          includeLags?: boolean
+        }
         const result = {} as EdgeNodesPortsInfo
 
         for(let edgeId of edgeIds) {
@@ -985,13 +1032,15 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
               sortOrder: 'ASC'
             }
           })
-          tmp.push(...((edgePortList.data as TableResult<EdgePortStatus>).data))
+          const edgePorts = (edgePortList.data as TableResult<EdgePortStatus>).data
+          edgePorts.sort(physicalPortSorter)
+          tmp.push(...edgePorts)
 
           const edgeLagListReq = createHttpRequest(EdgeUrlsInfo.getEdgeLagStatusList, params)
           const edgeLagList = await fetchWithBQ({ ...edgeLagListReq, body: {} })
           tmp.push(...((edgeLagList.data as TableResult<EdgeLagStatus>).data))
           // filter ports
-          result[edgeId] = convertToEdgePortInfo(tmp, true)
+          result[edgeId] = convertToEdgePortInfo(tmp, !includeLags)
         }
 
         return { data: result }
@@ -1103,6 +1152,19 @@ const convertToEdgePortInfo = (interfaces: (EdgePortStatus | EdgeLagStatus)[], p
   return data.filter(d => !!d) as EdgePortInfo[]
 }
 
+const physicalPortSorter = (
+  a: EdgePort | EdgePortStatus,
+  b: EdgePort | EdgePortStatus
+) => {
+  const aMatch = a.interfaceName?.match(/^port(\d+)$/)
+  const bMatch = b.interfaceName?.match(/^port(\d+)$/)
+
+  if (aMatch && bMatch) {
+    return parseInt(aMatch[1], 10) - parseInt(bMatch[1], 10)
+  }
+  return aMatch ? -1 : bMatch ? 1 : 0
+}
+
 export const {
   useAddEdgeMutation,
   useGetEdgeQuery,
@@ -1165,6 +1227,8 @@ export const {
   useGetEdgeClusterQuery,
   usePatchEdgeClusterNetworkSettingsMutation,
   useGetEdgeClusterNetworkSettingsQuery,
+  usePatchEdgeClusterSubInterfaceSettingsMutation,
+  useGetEdgeClusterSubInterfaceSettingsQuery,
   useGetEdgesPortStatusQuery,
   useLazyGetEdgesPortStatusQuery,
   useGetEdgeFeatureSetsQuery,

@@ -54,12 +54,11 @@ import {
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }               from '@acx-ui/user'
 
-import { AppliedToTenantDrawer }           from './AppliedToTenantDrawer'
-import { ApplyTemplateDrawer }             from './ApplyTemplateDrawer'
-import { ShowDriftsDrawer }                from './ShowDriftsDrawer'
-import { configTemplateDriftTypeLabelMap } from './ShowDriftsDrawer/contents'
-import { getConfigTemplateTypeLabel }      from './templateUtils'
-import { useAddTemplateMenuProps }         from './useAddTemplateMenuProps'
+import { AppliedToTenantDrawer }                                         from './AppliedToTenantDrawer'
+import { ApplyTemplateDrawer }                                           from './ApplyTemplateDrawer'
+import { ShowDriftsDrawer }                                              from './ShowDriftsDrawer'
+import { getConfigTemplateDriftStatusLabel, getConfigTemplateTypeLabel } from './templateUtils'
+import { useAddTemplateMenuProps }                                       from './useAddTemplateMenuProps'
 
 export function ConfigTemplateList () {
   const { $t } = useIntl()
@@ -212,6 +211,10 @@ function useColumns (props: TemplateColumnProps) {
     ({ key: type[1], value: getConfigTemplateTypeLabel(type[1]) })
   ))
 
+  const driftStatusFilterOptions = Object.entries(ConfigTemplateDriftType).map((status =>
+    ({ key: status[1], value: getConfigTemplateDriftStatusLabel(status[1]) })
+  ))
+
   const columns: TableProps<ConfigTemplate>['columns'] = [
     {
       key: 'name',
@@ -297,9 +300,10 @@ function useColumns (props: TemplateColumnProps) {
       key: 'driftStatus',
       title: $t({ defaultMessage: 'Drift Status' }),
       dataIndex: 'driftStatus',
+      filterable: driftStatusFilterOptions,
       sorter: true,
       render: function (_: ReactNode, row: ConfigTemplate) {
-        return row.driftStatus ? $t(configTemplateDriftTypeLabelMap[row.driftStatus]) : ''
+        return getConfigTemplateDriftStatusLabel(row.driftStatus)
       }
     }] : []),
     {
