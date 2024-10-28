@@ -212,6 +212,13 @@ function testNoWlanSecuritySettings (guestNetworkType: GuestNetworkTypeEnum) {
       expect(wpa).toBeInTheDocument()
       expect(wep).toBeInTheDocument()
       expect(wep).not.toHaveClass('ant-select-item-option-disabled')
+    } else if (guestNetworkType === GuestNetworkTypeEnum.GuestPass) {
+      expect(secureNetwork).toBeInTheDocument()
+      const defaultNetworkSecurity = (await screen.findAllByTitle('None'))[0]
+      expect(defaultNetworkSecurity).toBeInTheDocument()
+      await userEvent.click(defaultNetworkSecurity)
+      const oweNetworkSecurity = (await screen.findAllByTitle('OWE encryption'))[0]
+      expect(oweNetworkSecurity).toBeInTheDocument()
     } else {
       expect(secureNetwork).not.toBeInTheDocument()
       expect(screen.queryAllByTitle('Pre-Share Key (PSK)').length).toBe(0)
@@ -251,6 +258,8 @@ function testWlanSecuritySettingsOnlyPSK (guestNetworkType: GuestNetworkTypeEnum
       expect(wpa[0]).toBeInTheDocument()
       expect(wep[0]).toBeInTheDocument()
       expect(wep[0]).not.toHaveClass('ant-select-item-option-disabled')
+    } else if (guestNetworkType === GuestNetworkTypeEnum.GuestPass) {
+      expect(oweNetworkSecurity[0]).toBeInTheDocument()
     } else {
       expect(oweNetworkSecurity.length).toBe(0)
       expect(wpa.length).toBe(0)

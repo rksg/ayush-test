@@ -37,6 +37,7 @@ export function CliStepModels () {
   const params = useParams()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
+  const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
 
   const { form, editMode } = useStepFormContext()
 
@@ -51,7 +52,7 @@ export function CliStepModels () {
   const [filteredModelFamily, setFilteredModelFamily] = useState([] as CheckboxValueType[])
   const [appliedModels, setAppliedModels] = useState([] as string[])
 
-  const getAllFamilyModel = (isSupport8200AV: boolean) => {
+  const getAllFamilyModel = (isSupport8200AV: boolean, isSupport8100: boolean) => {
     let allFamilyModel = transformIcxModels(ICX_MODELS_MODULES)
     if (!isSupport8200AV) {
       allFamilyModel = allFamilyModel.map(family => ({
@@ -59,10 +60,13 @@ export function CliStepModels () {
         models: family.models.filter(model =>
           model !== 'ICX8200-24PV' && model !== 'ICX8200-C08PFV') }))
     }
+    if (!isSupport8100) {
+      allFamilyModel = allFamilyModel.filter(family => family.family !== 'ICX8100')
+    }
     return allFamilyModel
   }
 
-  const allFamilyModels = getAllFamilyModel(isSupport8200AV)
+  const allFamilyModels = getAllFamilyModel(isSupport8200AV, isSupport8100)
   const allModels:string[] = allFamilyModels.map((m) => m.models).flat()
 
   const existingProfileNameList = profiles?.data?.filter(
@@ -81,6 +85,7 @@ export function CliStepModels () {
     ) as string[]
 
     const allFamily = Object.keys(ICX_MODELS_MODULES)
+      .filter(key => isSupport8100 || key !== 'ICX8100')
     form.setFieldValue('selectedFamily', allFamily)
     setFilteredModelFamily(allFamily)
     setAppliedModels(modelList)
@@ -161,10 +166,11 @@ export function CliStepModels () {
               <UI.FamilyGroup
                 onChange={onModelFamilyChange}
               > {
-                  Object.keys(ICX_MODELS_MODULES).map(family => <Row key={family}>
-                    <Checkbox value={family}>{family}</Checkbox>
-                  </Row>
-                  )
+                  Object.keys(ICX_MODELS_MODULES).filter(key => isSupport8100 || key !== 'ICX8100')
+                    .map(family => <Row key={family}>
+                      <Checkbox value={family}>{family}</Checkbox>
+                    </Row>
+                    )
                 } </UI.FamilyGroup>
             }
           />
