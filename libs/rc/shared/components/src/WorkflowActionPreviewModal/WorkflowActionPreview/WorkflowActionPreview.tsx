@@ -224,7 +224,9 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
             style={{
               backgroundImage: UIConfig.backgroundImage ?
                 'url("'+ UIConfig?.backgroundImage+'")' : undefined,
-              backgroundColor: UIConfig.uiColorSchema?.backgroundColor
+              backgroundColor: UIConfig.uiStyleSchema.backgroundImageName
+                ? DefaultUIConfiguration.uiColorSchema.backgroundColor
+                : UIConfig.uiColorSchema?.backgroundColor
             }}>
             <CommonPreviewContainer
               ui={UIConfig}
