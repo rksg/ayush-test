@@ -280,11 +280,34 @@ export interface ServerCertificate extends Certificate{
   title?: string
   algorithm?: AlgorithmType
   csrString?: string
-  extendedKeyUsages?: string
+  extendedKeyUsages?: [ExtendedKeyUsages]
 }
 
 export const serverCertStatusColors = {
   [CertificateStatusType.VALID]: '--acx-semantics-green-50',
   [CertificateStatusType.REVOKED]: '--acx-neutrals-20',
   [CertificateStatusType.EXPIRED]: '--acx-semantics-red-50'
+}
+
+export enum CertificateGenerationType {
+  NEW = 'NEW',
+  WITH_CSR = 'WITH_CSR',
+  UPLOAD = 'UPLOAD'
+}
+
+export interface GenerateCertificateFormData extends ServerCertificate {
+  generation: CertificateGenerationType
+  password: string
+  startDateMoment: Moment
+  expireDateMoment: Moment
+}
+
+export enum KeyUsages {
+  DIGITAL_SIGNATURE = 'DIGITAL_SIGNATURE',
+  KEY_ENCIPHERMENT = 'KEY_ENCIPHERMENT'
+}
+
+export enum ExtendedKeyUsages {
+  SERVER_AUTH = 'SERVER_AUTH',
+  CLIENT_AUTH = 'CLIENT_AUTH'
 }

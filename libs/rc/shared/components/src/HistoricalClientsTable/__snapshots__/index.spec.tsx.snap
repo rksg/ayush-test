@@ -242,6 +242,11 @@ h5.c1.ant-typography {
   text-overflow: ellipsis;
 }
 
+.c2 .ant-pro-table .ant-table-footer {
+  background: transparent;
+  padding: 8px 0;
+}
+
 .c2 .ant-pro-table .ant-pro-card-body {
   display: -webkit-box;
   display: -webkit-flex;

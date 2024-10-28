@@ -207,5 +207,10 @@ export const CertificateUrls: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/radiusServerProfiles/:radiusId/certificates/:certificateId&certType=SERVER',
     newApi: true
+  },
+  generateClientServerCertificate: {
+    method: 'post',
+    newApi: true,
+    url: '/certificateAuthorities/:caId/certificates'
   }
 }

@@ -62,7 +62,8 @@ export default function MyServices () {
         params, payload: defaultPayload
       }, {
         skip: !isEdgeMdnsReady
-      }).data?.totalCount
+      }).data?.totalCount,
+      disabled: !isEdgeMdnsReady
     },
     {
       type: ServiceType.DHCP,

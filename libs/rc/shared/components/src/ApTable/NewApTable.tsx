@@ -9,7 +9,6 @@ import { useIntl }              from 'react-intl'
 import {
   ColumnState,
   Loader,
-  Select,
   Table,
   TableProps,
   Tooltip,
@@ -71,6 +70,7 @@ import { seriesMappingAP }                                                    fr
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType }                    from '../ImportFileDrawer'
 import { useApActions }                                                       from '../useApActions'
 import { useIsEdgeFeatureReady }                                              from '../useEdgeActions'
+import { VenueSelector }                                                      from '../VenueSelector'
 
 import { getGroupableConfig } from './newGroupByConfig'
 import { useExportCsv }       from './useExportCsv'
@@ -243,27 +243,26 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
               })
             }
           }
-
-          if (Object.keys(apIdsToIncompatible).length > 0) {
-            // TODO Need more discuss wether groupBy feature is necessary
-            if (hasGroupBy) {
-              tableQuery.data.data?.forEach(item => {
-                const children = (item as unknown as { aps: NewAPModelExtended[] }).aps?.map(ap => ({
-                  ...ap,
-                  incompatible: apIdsToIncompatible[ap.serialNumber]
-                }))
-                result.push({ ...item, aps: children, children })
-              })
-            } else {
-              tableQuery.data.data?.forEach(ap => (result.push({
+        }
+        if (Object.keys(apIdsToIncompatible).length > 0) {
+          // TODO Need more discuss wether groupBy feature is necessary
+          if (hasGroupBy) {
+            tableQuery.data.data?.forEach(item => {
+              const children = (item as unknown as { aps: NewAPModelExtended[] }).aps?.map(ap => ({
                 ...ap,
                 incompatible: apIdsToIncompatible[ap.serialNumber]
-              })))
-            }
-            setTableData(result)
+              }))
+              result.push({ ...item, aps: children, children })
+            })
           } else {
-            setTableData(tableQuery.data?.data)
+            tableQuery.data.data?.forEach(ap => (result.push({
+              ...ap,
+              incompatible: apIdsToIncompatible[ap.serialNumber]
+            })))
           }
+          setTableData(result)
+        } else {
+          setTableData(tableQuery.data?.data)
         }
       }
     }
@@ -282,10 +281,6 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
     key, value: name, label: <Badge color={color} text={name} />
   }))
   const linkToEditAp = useTenantLink('/devices/wifi/')
-  const venueOptions = filterables?.['venueId'] instanceof Array ?
-    filterables?.['venueId'].map(item => ({ label: item.value, value: item.key })) :
-    []
-
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const isAPOutdoor = (model: string): boolean | undefined => {
@@ -395,7 +390,6 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       dataIndex: 'venueName',
       filterKey: 'venueId',
       filterable: filterables ? filterables['venueId'] : false,
-      sorter: true,
       render: (_: ReactNode, row: NewAPModelExtended) => (
         <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
           {row.venueName}
@@ -828,15 +822,16 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
           })
         }}
         onClose={() => setImportVisible(false)}>
-        <Divider style={{ margin: '4px 0px 20px', background: cssStr('--acx-neutrals-30') }}/>
-        <Form.Item
-          name={'venueId'}
-          label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
-          rules={[{ required: true }]}
-          children={
-            <Select options={venueOptions} />
-          }
-        />
+        <div style={{ display: params.venueId ? 'none' : 'block' }}>
+          <Divider style={{ margin: '4px 0px 20px', background: cssStr('--acx-neutrals-30') }}/>
+          <Form.Item
+            name={'venueId'}
+            label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
+            rules={[{ required: true }]}
+            initialValue={params.venueId}
+            children={<VenueSelector defaultValue={params.venueId} />}
+          />
+        </div>
       </ImportFileDrawer>
       {!isEdgeCompatibilityEnabled && <ApCompatibilityDrawer
         visible={compatibilitiesDrawerVisible}

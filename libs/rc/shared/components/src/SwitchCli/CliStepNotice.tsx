@@ -1,20 +1,20 @@
 import { Form, Input, Col, Row, Space, Typography } from 'antd'
 import { FormattedMessage, useIntl }                from 'react-intl'
 
-import { cssStr, StepsForm } from '@acx-ui/components'
-import { InformationSolid }  from '@acx-ui/icons'
-import { agreeRegExp }       from '@acx-ui/rc/utils'
-import { useParams }         from '@acx-ui/react-router-dom'
+import { cssStr, StepsForm }              from '@acx-ui/components'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
+import { InformationSolid }               from '@acx-ui/icons'
+import { agreeRegExp, SwitchCliMessages } from '@acx-ui/rc/utils'
+import { useParams }                      from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
-import { tooltip } from './'
-
-// TODO: move to rc/components
 export function CliStepNotice () {
   const { $t } = useIntl()
   const params = useParams()
-  const isTemplate = params?.configType !== 'profiles'
+  const isCliTemplate = params?.configType !== 'profiles'
+  const isSwitchLevelCliProfileEnabled = useIsSplitOn(Features.SWITCH_LEVEL_CLI_PROFILE)
+
   const editMode = params.action === 'edit'
   // eslint-disable-next-line max-len
   const documentLink = 'https://support.ruckuswireless.com/documents/4026-fastiron-09-0-10-ga-command-reference-guide'
@@ -30,13 +30,13 @@ export function CliStepNotice () {
         {$t({ defaultMessage: 'Read this before you start:' })}
       </Typography.Text>
 
-      {!isTemplate && <Space style={{
+      {!isCliTemplate && !isSwitchLevelCliProfileEnabled && <Space style={{
         marginBottom: '10px',
         alignItems: 'flex-start', fontSize: '12px' }}
       >
         <InformationSolid />
         <FormattedMessage
-          {...tooltip?.noticeInfo}
+          {...SwitchCliMessages?.NOTICE_INFO}
         />
       </Space>}
 
@@ -46,7 +46,7 @@ export function CliStepNotice () {
       >
         <UI.WarningTriangleSolidIcon />
         <FormattedMessage
-          {...tooltip?.noticeDesp}
+          {...SwitchCliMessages?.NOTICE_DESP}
           values={{
             link: <a
               className='link'

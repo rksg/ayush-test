@@ -31,23 +31,23 @@ export const mockEdgeMdnsViewDataList = [
     forwardingRules: [
       {
         ruleIndex: 0,
-        service: 'AIRPLAY',
-        fromVlan: 5,
-        toVlan: 15
+        service: 'APPLETV',
+        fromVlan: 10,
+        toVlan: 200
       },
       {
         ruleIndex: 1,
-        service: 'OTHER',
-        mdnsName: 'test7878',
-        mdnsProtocol: 'TCP',
-        fromVlan: 19,
-        toVlan: 1111
+        service: 'AIRPRINT',
+        fromVlan: 33,
+        toVlan: 66
       },
       {
         ruleIndex: 2,
-        service: 'APPLE_FILE_SHARING',
-        fromVlan: 222,
-        toVlan: 70
+        service: 'OTHER',
+        mdnsName: 'testCXCX',
+        mdnsProtocol: 'TCP',
+        fromVlan: 5,
+        toVlan: 120
       }
     ],
     activations: [

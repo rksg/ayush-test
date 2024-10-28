@@ -597,5 +597,15 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
+  },
+  getVenueApSmartMonitorSettings: {
+    method: 'get',
+    url: '/templates/venues/:venueId/apSmartMonitorSettings',
+    newApi: true
+  },
+  updateVenueApSmartMonitorSettings: {
+    method: 'put',
+    url: '/templates/venues/:venueId/apSmartMonitorSettings',
+    newApi: true
   }
 }

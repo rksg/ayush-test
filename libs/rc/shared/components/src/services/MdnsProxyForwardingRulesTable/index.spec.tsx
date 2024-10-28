@@ -43,12 +43,14 @@ jest.mock('antd', () => {
 const mockedRules: MdnsProxyForwardingRule[] = [
   {
     id: '__UUID__rule1',
+    ruleIndex: '__UUID__rule1',
     service: BridgeServiceEnum.AIRPLAY,
     fromVlan: 10,
     toVlan: 20
   },
   {
     id: '__UUID__rule2',
+    ruleIndex: '__UUID__rule2',
     service: BridgeServiceEnum.APPLETV,
     fromVlan: 21,
     toVlan: 30
@@ -95,6 +97,7 @@ describe('MdnsProxyForwardingRulesTable', () => {
   it('should be invalid when creating the duplicated rule', async () => {
     const ruleToAdd: MdnsProxyForwardingRule = {
       id: '__RULE_ID__',
+      ruleIndex: '__RULE_ID__',
       service: BridgeServiceEnum.AIRPLAY,
       fromVlan: 1,
       toVlan: 2
