@@ -8,8 +8,9 @@ import {
 import { useIntl } from 'react-intl'
 
 
-import { Subtitle, Tooltip } from '@acx-ui/components'
-import { NetworkTypeEnum }   from '@acx-ui/rc/utils'
+import { Subtitle, Tooltip }                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
+import { NetworkTypeEnum, Radius, useConfigTemplate } from '@acx-ui/rc/utils'
 
 import { AAAInstance }    from '../AAAInstance'
 import NetworkFormContext from '../NetworkFormContext'
@@ -26,11 +27,32 @@ export function CloudpathServerForm () {
   const onProxyChange = (value: boolean, fieldName: string) => {
     setData && setData({ ...data, [fieldName]: value })
   }
+  const [selectedAuthRadius, selectedAcctRadius] =
+    [useWatch<Radius>('authRadius'), useWatch<Radius>('accountingRadius')]
+  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const { isTemplate } = useConfigTemplate()
+  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
 
+  // TODO: Remove deprecated codes below when RadSec feature is delivery
   useEffect(()=>{
-    form.setFieldsValue({ ...data })
+    !supportRadsec && form.setFieldsValue({ ...data })
   },[data])
 
+  useEffect(()=>{
+    supportRadsec && form.setFieldsValue({ ...data })
+  },[data?.id])
+
+  useEffect(() => {
+    if (isRadsecFeatureEnabled && selectedAuthRadius?.radSecOptions?.tlsEnabled) {
+      form.setFieldValue('enableAuthProxy', true)
+    }
+  }, [selectedAuthRadius])
+
+  useEffect(() => {
+    if (isRadsecFeatureEnabled && selectedAcctRadius?.radSecOptions?.tlsEnabled) {
+      form.setFieldValue('enableAccountingProxy', true)
+    }
+  }, [selectedAcctRadius])
 
   const proxyServiceTooltip = <Tooltip.Question
     placement='bottom'
@@ -74,6 +96,7 @@ export function CloudpathServerForm () {
             children={<Switch
               data-testid='enable-auth-proxy'
               onChange={(value) => onProxyChange(value,'enableAuthProxy')}
+              disabled={supportRadsec && selectedAuthRadius?.radSecOptions?.tlsEnabled}
             />}
           />
         </UI.FieldLabel>}
@@ -107,6 +130,7 @@ export function CloudpathServerForm () {
               children={<Switch
                 data-testid='enable-accounting-proxy'
                 onChange={(value)=>onProxyChange(value,'enableAccountingProxy')}
+                disabled={supportRadsec && selectedAcctRadius?.radSecOptions?.tlsEnabled}
               />}
             />
           </UI.FieldLabel>}

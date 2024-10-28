@@ -23,7 +23,8 @@ import {
   TableResult,
   hasServicePermission,
   ServiceType,
-  ServiceOperation
+  ServiceOperation,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 
 import { DpskForm }       from '../../services/DpskForm/DpskForm'
@@ -42,25 +43,40 @@ export function DpskSettingsForm () {
   const { editMode, cloneMode, data } = useContext(NetworkFormContext)
   const { disableMLO } = useContext(MLOContext)
   const form = Form.useFormInstance()
+  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const { isTemplate } = useConfigTemplate()
+  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+
   useEffect(()=>{
-    if((editMode || cloneMode) && data){
-      form.setFieldsValue({
-        isCloudpathEnabled: data.authRadius?true:false,
-        dpskServiceProfileId: data?.dpskServiceProfileId,
-        dpskWlanSecurity: data?.wlan?.wlanSecurity,
-        enableAccountingService: data.enableAccountingService,
-        authRadius: data.authRadius,
-        enableAuthProxy: data.enableAuthProxy,
-        accountingRadius: data.accountingRadius,
-        accountingRadiusId: data.accountingRadiusId||data.accountingRadius?.id,
-        authRadiusId: data.authRadiusId||data.authRadius?.id
-      })
+    // TODO: Remove deprecated codes below when RadSec feature is delivery
+    if(!supportRadsec && (editMode || cloneMode) && data){
+      setFieldsValue()
     }
     if(!editMode) {
       disableMLO(true)
       form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
     }
   }, [data])
+
+  useEffect(()=>{
+    if(supportRadsec && (editMode || cloneMode) && data){
+      setFieldsValue()
+    }
+  }, [data?.id])
+
+  function setFieldsValue () {
+    data && form.setFieldsValue({
+      isCloudpathEnabled: data.authRadius?true:false,
+      dpskServiceProfileId: data?.dpskServiceProfileId,
+      dpskWlanSecurity: data?.wlan?.wlanSecurity,
+      enableAccountingService: data.enableAccountingService,
+      authRadius: data.authRadius,
+      enableAuthProxy: data.enableAuthProxy,
+      accountingRadius: data.accountingRadius,
+      accountingRadiusId: data.accountingRadiusId||data.accountingRadius?.id,
+      authRadiusId: data.authRadiusId||data.authRadius?.id
+    })
+  }
 
   return (<>
     <Row gutter={20}>
@@ -87,6 +103,9 @@ function SettingsForm () {
   const { $t } = useIntl()
   const isCloudpathEnabled = useWatch('isCloudpathEnabled')
   const dpskWlanSecurity = useWatch('dpskWlanSecurity')
+  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const { isTemplate } = useConfigTemplate()
+  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
 
   const onCloudPathChange = (e: RadioChangeEvent) => {
     form.setFieldValue(e.target.value ? 'dpskServiceProfileId' : 'cloudpathServerId', '')
@@ -94,8 +113,12 @@ function SettingsForm () {
     setData && setData({ ...data, isCloudpathEnabled: e.target.value })
   }
   useEffect(()=>{
-    form.setFieldsValue({ ...data })
+    !supportRadsec && form.setFieldsValue({ ...data })
   },[data])
+
+  useEffect(()=>{
+    supportRadsec && form.setFieldsValue({ ...data })
+  },[data?.id])
 
   useEffect(() => {
     if (dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed)
