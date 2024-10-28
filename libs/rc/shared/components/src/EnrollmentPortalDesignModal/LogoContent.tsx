@@ -55,7 +55,7 @@ function Widget (props: WidgetProps) {
   >
     <Upload
       id='logoupload'
-      accept='.png,.jpg,.jpeg,.svg,.gif'
+      accept='.png,.jpg,.jpeg'
       showUploadList={false}
       customRequest={async ({ file })=>{
         Utils.loadFile(file as RcFile, (url: string)=> {

@@ -19,8 +19,6 @@ export default function WiFi4euModal (props:{
     <Form.Item
       name='wifi4eu_uuid'
       label={$t({ defaultMessage: 'WiFi4EU UUID' })}
-      validateFirst
-      hasFeedback
       children={<Input placeholder={
         $t({ defaultMessage: 'Copy from your WiFi4EU installation report' })}
       onChange={(e)=>setNewWifi4eu(e.target.value)}
