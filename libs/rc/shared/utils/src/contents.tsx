@@ -87,7 +87,7 @@ export const SwitchMessages = {
     defaultMessage: 'Based on the switch serial number you entered, compatible stacks of the same model are listed here.'
   }),
   MEMBER_NOT_SUPPORT_STACKING_TOOLTIP: defineMessage({
-    defaultMessage: 'ICX7150-C08P/C08PT does not support stacking'
+    defaultMessage: '{switchModel} does not support stacking'
   }),
   NONOPERATIONAL_SWITCH_NOT_SUPPORT_CONFIGURED: defineMessage({
     defaultMessage: 'The port can not be edited since it is on a switch that is not operational'
@@ -104,6 +104,32 @@ export const SwitchMessages = {
   PLEASE_CHECK_INVALID_VALUES: defineMessage({
     defaultMessage: 'Please check the invalid field values under the settings tab'
   })
+}
+
+export const SwitchCliMessages = {
+  INVALID_CLI: defineMessage({ defaultMessage: 'Please input CLI commands' }),
+  INVALID_CLI_VARIABLES: defineMessage({ defaultMessage: 'Please define variable(s) in CLI commands' }),
+  INVALID_CLI_ATTRIBUTES: defineMessage({ defaultMessage: 'Please define attribute(s) in CLI commands' }),
+  CLI_COMMANDS: defineMessage({ defaultMessage: 'You can use any combination of the following options: type the commands, copy/paste the configuration from another file, use the examples on the right pane.' }),
+  CLI_VARIABLES_REACH_MAX: defineMessage({ defaultMessage: 'The variables had reach to the maximum total 200 entries.' }),
+  NOTICE_INFO: defineMessage({ defaultMessage: 'Once the CLI Configuration profile is applied to a <venueSingular></venueSingular>, you will not be able to apply a regular switch configuration profile to the same <venueSingular></venueSingular>' }),
+  NOTICE_DESP: defineMessage({ defaultMessage: 'It is the user\'s responsibility to ensure the validity and ordering of CLI commands are accurate. The recommendation is to get familiarized with {link} to avoid configuration failures' }),
+  VARIABLE_NAME_RULE: defineMessage({ defaultMessage: 'Variable name may include letters and numbers. It must start with a letter.' }),
+  VARIABLE_RANGE_START_RULE: defineMessage({ defaultMessage: 'You may enter numbers between 0 and 65535. Start value must be lower than end value' }),
+  VARIABLE_RANGE_END_RULE: defineMessage({ defaultMessage: 'You may enter numbers between 0 and 65535. End value must be higher than start value' }),
+  VARIABLE_STRING_RULE: defineMessage({ defaultMessage: 'Special characters (other than space, $, -, . and _) are not allowed' }),
+  ALLOW_CUSTOMIZED_ADDRESS_TOOLTIP: defineMessage({ defaultMessage: 'Select an IP address from the subnet defined above.' }),
+  ALLOW_CUSTOMIZED_RANGE_TOOLTIP: defineMessage({ defaultMessage: 'Select a number from the range defined above.' }),
+  ALLOW_CUSTOMIZED_CLI_TOOLTIP: defineMessage({ defaultMessage: 'This section allows you to dictate the variable value getting assigned to the selected switch.' }),
+  NOT_ALLOWED_APPLY_PROFILE: defineMessage({ defaultMessage: 'This switch is already linked with a different configuration profile.' }),
+  PREPROVISIONED_SWITCH_LIST_TOOLTIP: defineMessage({ defaultMessage: 'Only the selected models from the previous step will be available for selection when customizing variables.' }),
+  PLEASE_ENTER_START_IP: defineMessage({ defaultMessage: 'Please enter Start IP Address first' }),
+  PLEASE_ENTER_END_IP: defineMessage({ defaultMessage: 'Please enter End IP Address first' }),
+  PLEASE_ENTER_MASK: defineMessage({ defaultMessage: 'Please enter Network Mask first' }),
+  PLEASE_ENTER_ADDRESS_VALUES: defineMessage({ defaultMessage: 'Please enter Start IP Address, End IP Address and Network Mask first' }),
+  OVERLAPPING_MODELS_TOOLTIP: defineMessage({ defaultMessage: 'A CLI configuration profile with overlapping switch models has been applied to this <venueSingular></venueSingular> so it cannot be selected.' }),
+  VENUE_STEP_DESP: defineMessage({ defaultMessage: 'The configuration will be applied to all switches of the selected models, as well as any switch that will be added to the <venueSingular></venueSingular> in the future' }),
+  PRE_SELECT_VENUE_FOR_CUSTOMIZED: defineMessage({ defaultMessage: 'Cannot unselect this <venueSingular></venueSingular> because some of it\'s switches have custom variables assigned from the previous step' })
 }
 
 /* eslint-disable max-len */
@@ -452,7 +478,6 @@ export const mdnsProxyRuleTypeLabelMapping: Record<BridgeServiceEnum, MessageDes
   [BridgeServiceEnum.OPEN_DIRECTORY_MASTER]: defineMessage({ defaultMessage: 'Open Directory Master' }),
   // eslint-disable-next-line max-len
   [BridgeServiceEnum.OPTICAL_DISK_SHARING]: defineMessage({ defaultMessage: 'Optical Disk Sharing' }),
-  [BridgeServiceEnum.OTHER]: defineMessage({ defaultMessage: 'Other' }),
   // eslint-disable-next-line max-len
   [BridgeServiceEnum.SCREEN_SHARING]: defineMessage({ defaultMessage: 'Screen Sharing' }),
   // eslint-disable-next-line max-len
@@ -460,7 +485,8 @@ export const mdnsProxyRuleTypeLabelMapping: Record<BridgeServiceEnum, MessageDes
   [BridgeServiceEnum.SECURE_SHELL]: defineMessage({ defaultMessage: 'Secure Shell' }),
   [BridgeServiceEnum.WWW_HTTP]: defineMessage({ defaultMessage: 'WWW HTTP' }),
   [BridgeServiceEnum.WWW_HTTPS]: defineMessage({ defaultMessage: 'WWW HTTPs' }),
-  [BridgeServiceEnum.XGRID]: defineMessage({ defaultMessage: 'Xgrid' })
+  [BridgeServiceEnum.XGRID]: defineMessage({ defaultMessage: 'Xgrid' }),
+  [BridgeServiceEnum.OTHER]: defineMessage({ defaultMessage: 'Other' })
 }
 
 export const EditPropertyConfigMessages = {

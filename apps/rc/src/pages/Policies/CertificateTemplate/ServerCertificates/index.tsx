@@ -3,12 +3,12 @@ import { useEffect, useState } from 'react'
 import { Modal as AntModal, Badge } from 'antd'
 import { RawIntlProvider, useIntl } from 'react-intl'
 
-import { Loader, TableProps, Table, Button }                                                                                                                                                                                  from '@acx-ui/components'
-import { DateFormatEnum, formatter }                                                                                                                                                                                          from '@acx-ui/formatter'
-import { certificateStatusTypeLabel, getCertificateStatus, issuedByLabel, RevokeForm, ServerCertificateDetailDrawer }                                                                                                         from '@acx-ui/rc/components'
-import { useGetServerCertificatesQuery, useUpdateServerCertificateMutation }                                                                                                                                                  from '@acx-ui/rc/services'
-import { CertificateCategoryType, CertificateStatusType, EnrollmentType, PolicyOperation, PolicyType, ServerCertificate, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, serverCertStatusColors, useTableQuery } from '@acx-ui/rc/utils'
-import { getIntl, noDataDisplay }                                                                                                                                                                                             from '@acx-ui/utils'
+import { Loader, TableProps, Table }                                                                                                                                                                                                    from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                                                                                                                                                                                    from '@acx-ui/formatter'
+import { certificateStatusTypeLabel, ExtendedKeyUsagesLabels, getCertificateStatus, issuedByLabel, RevokeForm, ServerCertificateDetailDrawer }                                                                                          from '@acx-ui/rc/components'
+import { useGetServerCertificatesQuery, useUpdateServerCertificateMutation }                                                                                                                                                            from '@acx-ui/rc/services'
+import { CertificateStatusType, EnrollmentType, ExtendedKeyUsages, FILTER, PolicyOperation, PolicyType, SEARCH, ServerCertificate, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, serverCertStatusColors, useTableQuery } from '@acx-ui/rc/utils'
+import { getIntl, noDataDisplay }                                                                                                                                                                                                       from '@acx-ui/utils'
 
 
 export default function ServerCertificatesTable () {
@@ -45,22 +45,14 @@ export default function ServerCertificatesTable () {
       searchable: true,
       sorter: true,
       fixed: 'left',
-      defaultSortOrder: 'ascend',
-      render: (_, row) => {
-        return (
-          <Button type='link'
-            onClick={() => {
-              setDetailId(row.id)
-              setDetailData(row)
-              setDetailDrawerOpen(true)
-            }}>
-            {row.name}
-          </Button>)
-      }
+      defaultSortOrder: 'ascend'
     },
     {
       title: $t({ defaultMessage: 'Status' }),
+      filterable: Object.entries(CertificateStatusType)
+        .map(([key, value])=>({ key, value: $t(certificateStatusTypeLabel[value]) })),
       dataIndex: 'status',
+      filterMultiple: false,
       key: 'status',
       render: (_, row) => {
         return row.status[0] ?
@@ -96,19 +88,36 @@ export default function ServerCertificatesTable () {
       sorter: true,
       render: (_, { notAfterDate }) => {
         return formatter(DateFormatEnum.DateFormat)(notAfterDate)
-        // return moment(notAfterDate).format('MM/DD/YYYY')
       }
     },
     {
       title: $t({ defaultMessage: 'Extended Key Usage' }),
       dataIndex: 'extendedKeyUsages',
       sorter: false,
+      filterable: Object.entries(ExtendedKeyUsages)
+        .map(([key, value])=>({ key, value: $t(ExtendedKeyUsagesLabels[value]) })),
       key: 'extendedKeyUsages',
       render: (_, row) => {
-        return row.extendedKeyUsages ? row.extendedKeyUsages : noDataDisplay
+        return row.extendedKeyUsages?.length ?
+          row.extendedKeyUsages
+            .map((extendeKey) => $t(ExtendedKeyUsagesLabels[extendeKey])).join(', ')
+          : noDataDisplay
       }
     }
   ]
+
+  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
+
+    let _customFilters = {}
+    if(customFilters?.status) {
+      _customFilters = {
+        ...customFilters,
+        status: customFilters.status[0]
+      }
+    }
+
+    tableQuery.handleFilterChange(_customFilters, customSearch)
+  }
 
   const showRevokeModal = (entityValue: string,
     onFinish: (revocationReason: string) => Promise<void>) => {
@@ -158,6 +167,15 @@ export default function ServerCertificatesTable () {
           payload: { revocationReason: null }
         }).then(clearSelection)
       }
+    },
+    {
+      scopeKey: getScopeKeyByPolicy(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.DETAIL),
+      label: $t({ defaultMessage: 'Download' }),
+      onClick: ([selectedRow]) => {
+        setDetailId(selectedRow.id)
+        setDetailData(selectedRow)
+        setDetailDrawerOpen(true)
+      }
     }
   ]
 
@@ -173,18 +191,21 @@ export default function ServerCertificatesTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowActions={allowedRowActions}
-          rowSelection={allowedRowActions.length > 0 && { type: 'radio' }}
+          rowSelection={allowedRowActions.length > 0 && { type: 'radio', onSelect: () => {
+            setDetailId(null)
+            setDetailData(null)
+            setDetailDrawerOpen(false)
+          } }}
           rowKey='id'
           searchableWidth={430}
           enableApiFilter={true}
-          onFilterChange={tableQuery.handleFilterChange}
+          onFilterChange={handleFilterChange}
         />
       </Loader>
       <ServerCertificateDetailDrawer
         open={detailDrawerOpen}
         setOpen={setDetailDrawerOpen}
         data={detailData}
-        type={CertificateCategoryType.SERVER_CERTIFICATES}
       />
     </>
   )

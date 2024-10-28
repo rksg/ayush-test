@@ -4,10 +4,10 @@ import { Col, Form, Input, InputNumber, Radio, Row, Space, Switch } from 'antd'
 import { useIntl }                                                  from 'react-intl'
 import { useParams }                                                from 'react-router-dom'
 
-import { Loader, Tooltip }                                                                                  from '@acx-ui/components'
-import { useGetSoftGreViewDataListQuery, useLazyGetSoftGreViewDataListQuery }                               from '@acx-ui/rc/services'
-import { MtuTypeEnum, networkWifiIpRegExp, servicePolicyNameRegExp, checkObjectNotExists, SoftGreViewData } from '@acx-ui/rc/utils'
-import { noDataDisplay }                                                                                    from '@acx-ui/utils'
+import { Loader, Tooltip }                                                                               from '@acx-ui/components'
+import { useGetSoftGreViewDataListQuery, useLazyGetSoftGreViewDataListQuery }                            from '@acx-ui/rc/services'
+import { MtuTypeEnum, servicePolicyNameRegExp, checkObjectNotExists, SoftGreViewData, domainNameRegExp } from '@acx-ui/rc/utils'
+import { noDataDisplay }                                                                                 from '@acx-ui/utils'
 
 import { messageMapping } from './messageMapping'
 import * as UI            from './styledComponents'
@@ -108,14 +108,14 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
     return isValid ? Promise.resolve() :
       Promise.reject(
         /* eslint-disable max-len */
-        $t({ defaultMessage: 'The gateway address of the selected SoftGRE tunnel profile already exists in another applied profile at the activation <venuePlural></venuePlural>. Please enter a unique address.' })
+        $t({ defaultMessage: 'The gateway of the selected SoftGRE tunnel profile already exists in another applied profile at the activation <venuePlural></venuePlural>. Please enter a unique IP address or FQDN.' })
       )
   }
 
   const secondaryGWValidator = (value: string) => {
     const primaryGatewayAddress = form.getFieldValue('primaryGatewayAddress')
     return (value && primaryGatewayAddress && primaryGatewayAddress === value) ?
-      Promise.reject($t( { defaultMessage: 'Primary and secondary IP addresses must be different. Please enter a new IP address' })) :
+      Promise.reject($t( { defaultMessage: 'Primary and secondary gateways must be different. Please enter a new gateway IP address or FQDN.' })) :
       Promise.resolve()
   }
 
@@ -152,10 +152,12 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
           />
           <Form.Item
             {...(readMode? undefined : { name: 'primaryGatewayAddress' })}
-            label={$t({ defaultMessage: 'Tunnel Primary Gateway Address' })}
+            label={$t({ defaultMessage: 'Primary Gateway IP Address or FQDN' })}
             rules={readMode ? undefined : [
               { required: true },
-              { validator: (_, value) => networkWifiIpRegExp(value) },
+              { validator: (_, value) => domainNameRegExp(value),
+                message: $t({ defaultMessage: 'Please enter a valid IP address or FQDN' })
+              },
               { validator: (_, value) => gatewayValidator(value) }
             ]}
             validateFirst
@@ -166,9 +168,11 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
           />
           <Form.Item
             {...(readMode? undefined : { name: 'secondaryGatewayAddress' })}
-            label={$t({ defaultMessage: 'Tunnel Secondary Gateway Address' })}
+            label={$t({ defaultMessage: 'Secondary Gateway IP Address or FQDN' })}
             rules={readMode ? undefined : [
-              { validator: (_, value) => networkWifiIpRegExp(value) },
+              { validator: (_, value) => domainNameRegExp(value),
+                message: $t({ defaultMessage: 'Please enter a valid IP address or FQDN' })
+              },
               { validator: (_, value) => secondaryGWValidator(value) },
               { validator: (_, value) => gatewayValidator(value) }
             ]}

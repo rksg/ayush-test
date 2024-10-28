@@ -21,6 +21,7 @@ import {
   cliIpAddressRegExp,
   subnetMaskPrefixRegExp,
   specialCharactersRegExp,
+  specialCharactersWithNewLineRegExp,
   serialNumberRegExp,
   targetHostRegExp,
   validateRecoveryPassphrasePart,
@@ -447,6 +448,17 @@ describe('validator', () => {
     })
     it('Should display error message if string value incorrectly', async () => {
       const result1 = specialCharactersRegExp('test t@$t-t._t')
+      await expect(result1).rejects.toEqual(
+        'Special characters (other than space, $, -, . and _) are not allowed')
+    })
+  })
+  describe('specialCharactersWithNewLineRegExp', () => {
+    it('Should take care of string with special characters correctly', async () => {
+      const result = specialCharactersWithNewLineRegExp('test t$t-t._t\n\n')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if string value incorrectly', async () => {
+      const result1 = specialCharactersWithNewLineRegExp('test t@$t-t._t')
       await expect(result1).rejects.toEqual(
         'Special characters (other than space, $, -, . and _) are not allowed')
     })

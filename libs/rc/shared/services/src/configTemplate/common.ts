@@ -31,8 +31,9 @@ import {
   fetchRbacNetworkVenueList,
   updateNetworkVenueFn
 } from '../networkVenueUtils'
-import { commonQueryFn }     from '../servicePolicy.utils'
-import { addNetworkVenueFn } from '../servicePolicy.utils/network'
+import { commonQueryFn }                  from '../servicePolicy.utils'
+import { addNetworkVenueFn }              from '../servicePolicy.utils/network'
+import { handleCallbackWhenActivityDone } from '../utils'
 
 import {
   useCasesToRefreshRadiusServerTemplateList, useCasesToRefreshTemplateList,
@@ -237,45 +238,67 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
     addNetworkVenueTemplate: build.mutation<CommonResult, RequestPayload>({
       queryFn: addNetworkVenueFn(),
       async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, (msg) => {
-          const activities = [
-            'AddNetworkVenueTemplate',
-            'UpdateVenueWifiNetworkTemplateSettings'
-          ]
-          onActivityMessageReceived(msg, activities, () => {
-            api.dispatch(networkApi.util.invalidateTags([
-              { type: 'Venue', id: 'LIST' },
-              { type: 'Network', id: 'DETAIL' } // venueNetwork
-            ]))
-            api.dispatch(configTemplateApi.util.invalidateTags([
-              { type: 'NetworkTemplate', id: 'LIST' } // networkVenue
-            ]))
-          })
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          if (requestArgs.enableRbac) {
+            const targetUseCase = 'ActivateWifiNetworkTemplateOnVenue'
+            await handleCallbackWhenActivityDone({
+              api,
+              activityData: msg,
+              useCase: targetUseCase,
+              callback: requestArgs.callback,
+              failedCallback: requestArgs.failedCallback
+            })
+          } else {
+            const activities = [
+              'AddNetworkVenueTemplate',
+              'UpdateVenueWifiNetworkTemplateSettings'
+            ]
+            onActivityMessageReceived(msg, activities, () => {
+              api.dispatch(networkApi.util.invalidateTags([
+                { type: 'Venue', id: 'LIST' },
+                { type: 'Network', id: 'DETAIL' } // venueNetwork
+              ]))
+              api.dispatch(configTemplateApi.util.invalidateTags([
+                { type: 'NetworkTemplate', id: 'LIST' } // networkVenue
+              ]))
+            })
+          }
         })
       },
-      invalidatesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }]
+      invalidatesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }, { type: 'VenueTemplate', id: 'LIST' }]
     }),
     deleteNetworkVenueTemplate: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.deleteNetworkVenueTemplate, ConfigTemplateUrlsInfo.deleteNetworkVenueTemplateRbac),
       async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, (msg) => {
-          const activities = [
-            'DeleteNetworkVenueTemplate',
-            'DeactivateWifiNetworkTemplateOnVenue'
-          ]
-          onActivityMessageReceived(msg, activities, () => {
-            api.dispatch(networkApi.util.invalidateTags([
-              { type: 'Venue', id: 'LIST' },
-              { type: 'Network', id: 'DETAIL' } // venueNetwork
-            ]))
-            api.dispatch(configTemplateApi.util.invalidateTags([
-              { type: 'NetworkTemplate', id: 'LIST' },
-              { type: 'NetworkTemplate', id: 'DETAIL' }
-            ]))
-          })
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          if (requestArgs.enableRbac) {
+            const targetUseCase = 'DeactivateWifiNetworkTemplateOnVenue'
+            await handleCallbackWhenActivityDone({
+              api,
+              activityData: msg,
+              useCase: targetUseCase,
+              callback: requestArgs.callback,
+              failedCallback: requestArgs.failedCallback
+            })
+          } else {
+            const activities = [
+              'DeleteNetworkVenueTemplate',
+              'DeactivateWifiNetworkTemplateOnVenue'
+            ]
+            onActivityMessageReceived(msg, activities, () => {
+              api.dispatch(networkApi.util.invalidateTags([
+                { type: 'Venue', id: 'LIST' },
+                { type: 'Network', id: 'DETAIL' } // venueNetwork
+              ]))
+              api.dispatch(configTemplateApi.util.invalidateTags([
+                { type: 'NetworkTemplate', id: 'LIST' },
+                { type: 'NetworkTemplate', id: 'DETAIL' }
+              ]))
+            })
+          }
         })
       },
-      invalidatesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }]
+      invalidatesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }, { type: 'VenueTemplate', id: 'LIST' }]
     }),
     deleteNetworkVenuesTemplate: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.deleteNetworkVenuesTemplate),
@@ -302,7 +325,8 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'UpdateNetworkVenueTemplate'
+            'UpdateNetworkVenueTemplate',
+            'UpdateVenueWifiNetworkTemplateSettings'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(networkApi.util.invalidateTags([
@@ -315,7 +339,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
           })
         })
       },
-      invalidatesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }]
+      invalidatesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }, { type: 'VenueTemplate', id: 'LIST' }]
     }),
     addNetworkVenueTemplates: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.addNetworkVenuesTemplate),

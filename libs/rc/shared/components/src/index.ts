@@ -179,11 +179,15 @@ export {
   useIsEdgeReady
 } from './useEdgeActions'
 export {
-  useEdgeSdLanCompatibilityData,
+  useEdgeSdLansCompatibilityData,
   useEdgeCompatibilityRequirementData,
   useEdgeSdLanDetailsCompatibilitiesData,
-  getSdLanDetailsCompatibilitiesDrawerData
+  transformEdgeCompatibilitiesWithFeatureName,
+  useEdgePinDetailsCompatibilitiesData,
+  useEdgePinsCompatibilityData
 } from './useEdgeActions/compatibility'
+export * from './EdgeMdns/useEdgeMdnsActions'
+
 export { EdgeServiceStatusLight } from './EdgeServiceStatusLight'
 export { PropertyManagementForm } from './PropertyManagementForm'
 export { AdaptivePolicySetForm } from './AdaptivePolicySetForm'

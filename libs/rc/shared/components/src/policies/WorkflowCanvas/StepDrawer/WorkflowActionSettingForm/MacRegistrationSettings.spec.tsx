@@ -48,6 +48,10 @@ describe('MacRegistrationSettings', () => {
     )
   })
 
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
   it('should render the form with default values', async () => {
     const { result: formRef } = renderHook(() => {
       const [form] = Form.useForm()
@@ -99,6 +103,33 @@ describe('MacRegistrationSettings', () => {
 
     expect(await screen.findByText(mockPersonaGroupTableResult.content[1].name)).toBeInTheDocument()
     expect(await screen.findByText(mockPersonaTableResult.content[0].name)).toBeInTheDocument()
+  })
+
+  it('should render the form without provided values if identity group doesnt exist', async () => {
+    const { result: formRef } = renderHook(() => {
+      const [form] = Form.useForm<MacRegActionContext>()
+      form.setFieldsValue({
+        identityGroupId: '1234',
+        identityId: mockPersonaTableResult.content[0].id
+      })
+      return form
+    })
+
+    render(
+      <Provider>
+        <Form form={formRef.current}>
+          <MacRegistrationSettings/>
+        </Form>
+      </Provider>
+    )
+
+    await waitFor(() => expect(getPersonaList).toBeCalled())
+    await waitFor(() => expect(getMacRegList).not.toHaveBeenCalled())
+
+    expect(screen.queryByText(mockMacRegList.name)).toBeNull()
+
+    expect(screen.queryByText(mockPersonaGroupTableResult.content[1].name)).not.toBeInTheDocument()
+    expect(screen.queryByText(mockPersonaTableResult.content[0].name)).not.toBeInTheDocument()
   })
 
   it('should render the component after identity group selected', async () => {

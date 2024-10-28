@@ -1585,7 +1585,7 @@ describe('SignaleRadioSettings component', () => {
   })
 
   // eslint-disable-next-line max-len
-  it('should show tx power extended options when AP version is larger than 7.1', async () => {
+  it('should show tx power extended options when AP version is larger than 7.1.1', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     const radioType = ApRadioTypeEnum.Radio24G
 
@@ -1601,7 +1601,7 @@ describe('SignaleRadioSettings component', () => {
                 context='ap'
                 radioType={radioType}
                 isUseVenueSettings={false}
-                firmwareProps={{ firmware: '7.1.0.103.2' }}
+                firmwareProps={{ firmware: '7.1.1.103.2' }}
               />
             </SupportRadioChannelsContext.Provider>
           </Form>

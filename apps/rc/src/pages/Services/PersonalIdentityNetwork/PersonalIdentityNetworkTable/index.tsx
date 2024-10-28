@@ -1,6 +1,8 @@
-import { Row }     from 'antd'
-import { find }    from 'lodash'
-import { useIntl } from 'react-intl'
+import { useMemo } from 'react'
+
+import { Row, Space } from 'antd'
+import { find }       from 'lodash'
+import { useIntl }    from 'react-intl'
 
 import {
   Button,
@@ -10,8 +12,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
-import { EdgeServiceStatusLight, CountAndNamesTooltip } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
+import { EdgeServiceStatusLight, CountAndNamesTooltip, useEdgePinsCompatibilityData } from '@acx-ui/rc/components'
 import {
   useDeleteEdgePinMutation,
   useGetEdgeClusterListQuery,
@@ -33,6 +35,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { noDataDisplay }                                       from '@acx-ui/utils'
+
+import { CompatibilityCheck } from './CompatibilityCheck'
 
 const getEdgePinPayload = {
   fields: [
@@ -92,6 +96,13 @@ const PersonalIdentityNetworkTable = () => {
     pagination: { settingsId }
   })
 
+  const currentServiceIds = useMemo(
+    () => tableQuery.data?.data?.map(i => i.id!) ?? [],
+    [tableQuery.data?.data])
+  const skipFetchCompatibilities = currentServiceIds.length === 0
+  // eslint-disable-next-line max-len
+  const compatibilityData = useEdgePinsCompatibilityData(currentServiceIds, skipFetchCompatibilities)
+
   const { clusterOptions } = useGetEdgeClusterListQuery(
     { payload: clusterOptionsDefaultPayload },
     {
@@ -130,7 +141,9 @@ const PersonalIdentityNetworkTable = () => {
       defaultSortOrder: 'ascend',
       fixed: 'left',
       render: (_, row) => {
-        return (
+        const serviceId = row.id
+
+        return <Space>
           <TenantLink
             to={getServiceDetailsLink({
               type: ServiceType.PIN,
@@ -139,7 +152,11 @@ const PersonalIdentityNetworkTable = () => {
             })}>
             {row.name}
           </TenantLink>
-        )
+          <CompatibilityCheck
+            serviceId={serviceId!}
+            compatibilityData={compatibilityData.compatibilities}
+          />
+        </Space>
       }
     },
     {

@@ -134,13 +134,11 @@ export const groupedFields = [
   'switchName',
   'clients',
   'deviceGroupName',
-  'apStatusData.APRadio.band',
   'tags',
   'serialNumber',
   'fwVersion',
   'cog',
   'venueId',
-  'apStatusData.APRadio.radioId',
-  'apStatusData.APRadio.channel',
+  'apStatusData',
   'powerSavingStatus'
 ]

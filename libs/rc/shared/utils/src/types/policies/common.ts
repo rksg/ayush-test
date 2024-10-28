@@ -75,7 +75,7 @@ export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.CERTIFICATE]: defineMessage({ defaultMessage: 'Certificate' }),
   [PolicyType.WORKFLOW]: defineMessage({ defaultMessage: 'A customizable onboarding process that provides more control over who is granted network access' }),
   [PolicyType.HQOS_BANDWIDTH]: defineMessage({ defaultMessage: 'HQoS Bandwidth' }),
-  [PolicyType.SOFTGRE]: defineMessage({ defaultMessage: 'Tunnel the traffic to a third party WLAN gateway' }),
+  [PolicyType.SOFTGRE]: defineMessage({ defaultMessage: 'Tunnel the traffic to a SoftGRE gateway' }),
   [PolicyType.ETHERNET_PORT_PROFILE]: defineMessage({ defaultMessage: 'An Ethernet port profile is a configuration that specifies how a network port functions and behaves.' }),
   [PolicyType.FLEX_AUTH]: defineMessage({ defaultMessage: 'Flexible authentication combines MAC and 802.1X authentication as a single authentication procedure' }),
   [PolicyType.SERVER_CERTIFICATES]: defineMessage({ defaultMessage: 'Server Certificates' })

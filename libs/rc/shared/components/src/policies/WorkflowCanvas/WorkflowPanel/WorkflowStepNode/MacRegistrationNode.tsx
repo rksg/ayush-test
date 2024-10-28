@@ -22,11 +22,11 @@ export function MacRegistrationNode (props: NodeProps<WorkflowStep>) {
 
   const { data: macRegData } =
     useGetMacRegListQuery({ params: { policyId: data?.macRegListId } }
-      , { skip: !isDesignMode || !data?.macRegListId })
+      , { skip: !isDesignMode || !data?.macRegListId || data?.valid === false })
   const { data: identityGroupData } =
     useGetPersonaGroupByIdQuery(
       { params: { groupId: data?.identityGroupId } },
-      { skip: !isDesignMode || !data?.identityGroupId })
+      { skip: !isDesignMode || !data?.identityGroupId || data?.valid === false })
 
   return (
     <BaseStepNode {...props}>

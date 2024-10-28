@@ -8,8 +8,12 @@ export const userLogout = () => {
   sessionStorage.removeItem('ACX-ap-compatibiliy-note-hidden') // clear ap compatibiliy banner display condition
 
   Object.keys(localStorage)
-    ?.filter(s => s.includes('SPLITIO'))
+    ?.filter(s => s.includes('SPLITIO') || s.includes('pagesize'))
     ?.forEach(s => localStorage.removeItem(s))
+
+  Object.keys(sessionStorage)
+    ?.filter(s => s.includes('pagesize'))
+    ?.forEach(s => sessionStorage.removeItem(s))
 
   if (Boolean(get('IS_MLISA_SA'))) {
     const form = document.createElement('form')
