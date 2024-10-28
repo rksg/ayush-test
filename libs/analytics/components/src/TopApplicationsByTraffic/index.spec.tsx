@@ -46,7 +46,8 @@ describe('TopApplicationsByTrafficWidget', () => {
     mockGraphqlQuery(dataApiURL, 'TopApplicationsByTrafficWidget', {
       data: { network: { hierarchyNode: topApplicationByTrafficFixture } }
     })
-    render( <Provider> <TopApplicationsByTraffic filters={filters}/></Provider>)
+    render( <Provider>
+      <TopApplicationsByTraffic filters={filters} tabId={'ap-top-traffic'} /></Provider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
 
@@ -60,7 +61,7 @@ describe('TopApplicationsByTrafficWidget', () => {
       } } }
     })
     const { asFragment } = render( <Provider>
-      <TopApplicationsByTraffic filters={filters}/>
+      <TopApplicationsByTraffic filters={filters} tabId={'ap-top-traffic'}/>
     </Provider>)
     await screen.findByText('No data to display')
     expect(asFragment()).toMatchSnapshot('NoData')
@@ -71,7 +72,8 @@ describe('TopApplicationsByTrafficWidget', () => {
       data: { network: { hierarchyNode: topApplicationByTrafficFixture } }
     })
     const { asFragment } = render( <Provider> <TopApplicationsByTraffic
-      filters={filters}/></Provider>)
+      filters={filters}
+      tabId={'ap-top-traffic'}/></Provider>)
     await screen.findByText('Top Applications by Traffic')
     const contentSwitcher = asFragment()
       .querySelector('div.ant-card-body > div > div:nth-child(1) > div')

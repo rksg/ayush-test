@@ -127,7 +127,7 @@ export default function Dashboard () {
             </TenantLink>
           </UI.Wrapper>
         }
-        tabPersistence={enabledUXOptFeature}
+        tabPersistence={true}
       />
       <Divider dashed
         style={{

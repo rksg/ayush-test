@@ -107,7 +107,7 @@ function ApWidgets (props: { filters: AnalyticsFilter }) {
         <ConnectedClientsOverTime filters={filters} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <TopApplicationsByTraffic filters={filters} />
+        <TopApplicationsByTraffic filters={filters} tabId={'ap-overview-ap-top-traffic'} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <TopSSIDsByTraffic filters={filters} />

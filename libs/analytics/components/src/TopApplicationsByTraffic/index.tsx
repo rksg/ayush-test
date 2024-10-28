@@ -20,9 +20,10 @@ import { TrafficPercent }                                                from '.
 
 
 export function TopApplicationsByTraffic ({
-  filters
+  filters, tabId
 }: {
   filters: AnalyticsFilter;
+  tabId: string;
 }) {
   const { $t } = useIntl()
   const queryResults = useTopApplicationsByTrafficQuery(filters)
@@ -104,7 +105,7 @@ export function TopApplicationsByTraffic ({
           {({ height, width }) => (
             <div style={{ display: 'block', height, width }}>
               <ContentSwitcher
-                tabId={'ap-top-traffic'}
+                tabId={tabId}
                 tabDetails={tabDetails}
                 size='small'
                 tabPersistence={enabledUXOptFeature}
