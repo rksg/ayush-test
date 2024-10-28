@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { Form, Input, InputNumber, Radio, RadioChangeEvent, Space, Switch } from 'antd'
-import { FormattedMessage, useIntl }                                                          from 'react-intl'
+import { useIntl }                                                          from 'react-intl'
 
 import { Button, Fieldset, GridCol, GridRow, StepsFormLegacy, PasswordInput, Tooltip, Select } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
@@ -15,11 +15,10 @@ import {
   hasPolicyPermission,
   PolicyOperation,
   CertificateStatusType,
-  getPolicyRoutePath,
   ExtendedKeyUsages
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
+import { CertificateWarning }                                     from '../AAAUtil/CertificateWarning'
 import { CERTIFICATE_AUTHORITY_MAX_COUNT, CERTIFICATE_MAX_COUNT } from '../CertificateTemplate'
 
 import { useGetAAAPolicyInstanceList } from './aaaPolicyQuerySwitcher'
@@ -46,8 +45,6 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
       pollingInterval: 30000
     }
   })
-  const params = useParams()
-  const { radiusId } = params
   const form = Form.useFormInstance()
   const { useWatch } = Form
   const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
@@ -62,6 +59,8 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
 
   const [showCertificateAuthorityDrawer, setShowCertificateAuthorityDrawer] = useState(false)
   const [showCertificateDrawer, setShowCertificateDrawer] = useState(false)
+  const [selectedCaId, setSelectedCaId] = useState<string|null>(null)
+  const [selectedClientCertId, setSelectedClientCertId] = useState<string|null>(null)
   const [selectedServerCertId, setSelectedServerCertId] = useState<string|null>(null)
   const [isGenerateClientCert, setIsGenerateClientCert] = useState(true)
 
@@ -72,16 +71,14 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
     sortOrder: 'ASC'
   }
 
-  const { caSelectOptions, selectedCaId } = useGetCertificateAuthoritiesQuery(
+  const { caSelectOptions } = useGetCertificateAuthoritiesQuery(
     { payload: defaultPayload }, {
       skip: !supportRadsec,
       selectFromResult: ({ data }) => {
 
         const d = data?.data
         const caOptions = d?.map(item => ({ label: item.name, value: item.id })) ?? []
-        const selectedCa = radiusId && d?.filter(item => item.id
-          ?.includes(radiusId)).map(item => item.id)?.at(0)
-        return { caSelectOptions: caOptions, selectedCaId: selectedCa ?? null }
+        return { caSelectOptions: caOptions }
       }
     })
 
@@ -113,41 +110,9 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
       }
     })
 
-  const getCertState = (certStatuses: CertificateStatusType[]) => {
-    const isExpired = certStatuses.includes(CertificateStatusType.EXPIRED)
-    const isRevoked = certStatuses.includes(CertificateStatusType.REVOKED)
-    if (isExpired && isRevoked) {
-      return 'revoked and expired'
-    }
-    if (isExpired) {
-      return 'expired'
-    }
-    if (isRevoked) {
-      return 'revoked'
-    }
-    return ''
-  }
-
   const certificateStatusValidator = (certStates: CertificateStatusType[] | undefined) => {
     if (certStates && !certStates.includes(CertificateStatusType.VALID)) {
-      return Promise.reject(<FormattedMessage
-        defaultMessage={
-          // eslint-disable-next-line max-len
-          'This certificate has {certState}.  Please go to <certificateGuide></certificateGuide> to renew it.'
-        }
-        values={{
-          certState: getCertState(certStates),
-          certificateGuide: ()=> (
-            <TenantLink
-              to={getPolicyRoutePath({
-                type: PolicyType.SERVER_CERTIFICATES,
-                oper: PolicyOperation.LIST
-              })}>
-              {'Server & Client Certificates'}
-            </TenantLink>
-          )
-        }}
-      />)
+      return Promise.reject(<CertificateWarning status={certStates}/>)
     }
     return Promise.resolve()
   }
@@ -219,14 +184,6 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
     setShowCertificateAuthorityDrawer(true)
   }
 
-  const handleSaveCertificateAuthority = (id?: string) => {
-    if (id) {
-      form.setFieldValue(['radSecOptions', 'certificateAuthorityId'], id)
-      form.validateFields()
-    }
-    setShowCertificateAuthorityDrawer(false)
-  }
-
   const handleAddClientCertificate = () => {
     setIsGenerateClientCert(true)
     setShowCertificateDrawer(true)
@@ -237,17 +194,21 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
     setShowCertificateDrawer(true)
   }
 
+  const handleSaveCertificateAuthority = (id?: string) => {
+    if (id) {
+      setSelectedCaId(id)
+      form.validateFields()
+    }
+    setShowCertificateAuthorityDrawer(false)
+  }
+
   const handleSaveClientCertificate = (id?: string) => {
     if (id) {
-      form.setFieldValue(['radSecOptions', 'clientCertificateId'], id)
+      setSelectedClientCertId(id)
       form.validateFields()
     }
     setShowCertificateDrawer(false)
   }
-
-  useEffect(() => {
-    form.setFieldValue(['radSecOptions', 'originalCertificateAuthorityId'], selectedCaId)
-  }, [selectedCaId])
 
   const handleSaveServerCertificate = (id?: string) => {
     if (id) {
@@ -257,25 +218,16 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
     setShowCertificateDrawer(false)
   }
 
-  // TODO handle certificate expired
-  // const isValidCert = (options: any, certId: any) => {
-  //   return clientCertSelectOptions.find(option => selectedClientCertId === option.value)?.status
-  // }
-
   // useEffect(() => {
-  //   form.setFieldValue('certificateAuthorityId', selectedCaId)
-  // }, [selectedCaId])
-
-  // useEffect(() => {
-  //   form.setFieldValue('clientCertificateId', selectedClientCertId)
+  //   form.setFieldValue(['radSecOptions', 'originalClientCertificateId'], selectedClientCertId)
   // }, [selectedClientCertId])
 
-  useEffect(() => {
-    if ( edit && !form.isFieldsTouched() && selectedCaId &&
-     !(instanceListResult?.data ?? []).map(data => data.radSecOptions?.certificateAuthorityId)) {
-      form.setFieldValue(['radSecOptions', 'certificateAuthorityId'], selectedCaId)
-    }
-  }, [edit, selectedCaId])
+  // useEffect(() => {
+  //   if ( edit && !form.isFieldsTouched() && selectedCaId &&
+  //    !(instanceListResult?.data ?? []).map(data => data.radSecOptions?.certificateAuthorityId)) {
+  //     form.setFieldValue(['radSecOptions', 'certificateAuthorityId'], selectedCaId)
+  //   }
+  // }, [edit, selectedCaId])
 
   // useEffect(() => {
   //   if ( edit && !form.isFieldsTouched() && selectedClientCertId &&
@@ -292,8 +244,15 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
       if (saveState.radSecOptions?.ocspUrl) {
         form.setFieldValue(['radSecOptions', 'ocspValidationEnabled'], true)
       }
+      setSelectedCaId(saveState.radSecOptions?.certificateAuthorityId ?? null)
+      setSelectedClientCertId(saveState.radSecOptions?.clientCertificateId ?? null)
+      setSelectedServerCertId(saveState.radSecOptions?.serverCertificateId ?? null)
     }
   }, [saveState])
+
+  useEffect(() => {
+    form.setFieldValue(['radSecOptions', 'originalCertificateAuthorityId'], selectedCaId)
+  }, [selectedCaId])
 
   const ACCT_FORBIDDEN_PORT = 1812
   const AUTH_FORBIDDEN_PORT = 1813
@@ -353,6 +312,7 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
           </UI.FormItemWrapper>
           <Form.Item
             name={['radSecOptions', 'tlsEnabled']}
+            initialValue={props.saveState.radSecOptions?.tlsEnabled}
             valuePropName='checked'
             children={<Switch
               disabled={props.allowTlsEnabled? true: false}
@@ -384,6 +344,7 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
             </UI.FormItemWrapper>
             <Form.Item
               name={['radSecOptions', 'ocspValidationEnabled']}
+              initialValue={props.saveState?.radSecOptions?.cnSanIdentity ? true : false}
               valuePropName='checked'
               children={
                 <Switch checked={ocspValidationEnabled}/>
@@ -406,12 +367,13 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
             <Form.Item
               label={$t({ defaultMessage: 'Trusted Certificate Authority' })}
               name={['radSecOptions', 'certificateAuthorityId']}
-              initialValue={null}
+              initialValue={selectedCaId}
               rules={[
                 { required: true }
               ]}
               children={
                 <Select
+                  onChange={setSelectedCaId}
                   options={[
                     { label: $t({ defaultMessage: 'Select...' }), value: null },
                     ...caSelectOptions]} />
@@ -427,7 +389,7 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
           <Form.Item
             label={$t({ defaultMessage: 'Client Certificate' })}
             name={['radSecOptions', 'clientCertificateId']}
-            initialValue={null}
+            initialValue={selectedClientCertId}
             rules={[
               { required: false },
               { validator: (_, certId) => {
@@ -446,6 +408,7 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
               </div>
             }>
             <Select
+              onChange={setSelectedClientCertId}
               options={[
                 { label: $t({ defaultMessage: 'None' }), value: null },
                 ...clientCertOptions

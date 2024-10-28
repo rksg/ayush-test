@@ -318,7 +318,6 @@ function useColumns () {
               c => c.key === row.radSecOptions?.clientCertificateId)?.status?.find(
               (s) => s === CertificateStatusType.EXPIRED || s === CertificateStatusType.REVOKED) ?
               <CertificateToolTip
-                visible={true}
                 placement='bottom'
                 status={clientCertificateMap.find(
                   c => c.key === row.radSecOptions?.clientCertificateId)?.status}
@@ -347,7 +346,6 @@ function useColumns () {
             </TenantLink>
             {serverCert?.status && !serverCert?.status.includes(CertificateStatusType.VALID) ?
               <CertificateToolTip
-                visible={true}
                 placement='bottom'
                 policyType={PolicyType.SERVER_CERTIFICATES}
                 status={serverCert.status} /> : []}
