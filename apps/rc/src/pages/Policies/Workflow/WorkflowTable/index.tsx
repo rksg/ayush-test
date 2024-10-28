@@ -33,6 +33,7 @@ import {
 import {
   TenantLink
 } from '@acx-ui/react-router-dom'
+
 function useColumns (workflowMap: Map<string, Workflow>) {
   const { $t } = useIntl()
 
@@ -205,6 +206,13 @@ export default function WorkflowTable () {
     tableQuery.setPayload(payload)
   }
 
+  const isAboveMaximumWorkflowCount= function ():boolean {
+    if(!tableQuery.data?.totalCount || tableQuery.data?.totalCount >= 500) {
+      return true
+    }
+    return false
+  }
+
   return (
     <Loader
       states={[
@@ -232,7 +240,7 @@ export default function WorkflowTable () {
               oper: PolicyOperation.CREATE
             })}
           >
-            <Button type='primary'>
+            <Button disabled={isAboveMaximumWorkflowCount()} type='primary'>
               { $t({ defaultMessage: 'Add Workflow' }) }
             </Button>
           </TenantLink>
