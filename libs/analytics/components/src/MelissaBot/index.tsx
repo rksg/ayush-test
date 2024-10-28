@@ -12,9 +12,8 @@ import { Conversation, FulfillmentMessage, Content,
   cssStr } from '@acx-ui/components'
 
 import headerIconUrl                                   from './MelissaHeaderIcon.png'
-import iconUrl                                         from './MelissaIcon.png'
 import { AskMelissaBody, queryAskMelissa, uploadFile } from './services'
-import { MelissaDrawer, SubTitle, Title }              from './styledComponents'
+import { MelissaDrawer, MelissaIcon, SubTitle, Title } from './styledComponents'
 
 let lastAccessedInterval:NodeJS.Timer
 
@@ -294,99 +293,87 @@ export function MelissaBot ({ sessionTimeoutInSecs = DEFAULT_DF_SESSION_TIMEOUT_
       tooltip: $t({ defaultMessage: 'Use power of Generative AI to get RUCKUS product details and technical knowledge.' }),
       children: <div/>, value: 'general' }
   ]
-  return (<>{state.showFloatingButton && <img
-    data-testid='MelissaIcon'
-    src={iconUrl}
-    alt='melissa icon'
-    onClick={showDrawer}
-    style={{
-      width: '56px',
-      position: 'fixed',
-      right: '15px',
-      bottom: '15px',
-      zIndex: 999999,
-      cursor: 'pointer'
-    }} />}
-  <MelissaDrawer
-    title={title}
-    icon={<img src={headerIconUrl} alt='melissa header icon' />}
-    onClose={onClose}
-    visible={state.isOpen}
-    width={390}
-    footer={
-      <div style={{ display: 'block', width: '100%' }}>
-        <ContentSwitcher tabDetails={tabDetails}
-          value={mode}
-          align='center'
-          size='small'
-          onChange={(key)=>{
-            setState({ ...state,isInputDisabled: true,isReplying: true })
-            setMode(key as Mode)
-            if(key === 'my-network'){
-              askMelissa({
-                queryInput: {
-                  event: {
-                    languageCode: 'en',
-                    name: 'data-mode'
+  return (<>{state.showFloatingButton && <MelissaIcon onClick={showDrawer} />}
+    <MelissaDrawer
+      title={title}
+      icon={<img src={headerIconUrl} alt='melissa header icon' />}
+      onClose={onClose}
+      visible={state.isOpen}
+      width={390}
+      footer={
+        <div style={{ display: 'block', width: '100%' }}>
+          <ContentSwitcher tabDetails={tabDetails}
+            value={mode}
+            align='center'
+            size='small'
+            onChange={(key)=>{
+              setState({ ...state,isInputDisabled: true,isReplying: true })
+              setMode(key as Mode)
+              if(key === 'my-network'){
+                askMelissa({
+                  queryInput: {
+                    event: {
+                      languageCode: 'en',
+                      name: 'data-mode'
+                    }
+                  },
+                  queryParams: {
+                    resetContexts: true
                   }
-                },
-                queryParams: {
-                  resetContexts: true
-                }
-              },true)
-            }else{
-              askMelissa({
-                queryInput: {
-                  event: {
-                    languageCode: 'en',
-                    name: 'general-mode'
+                },true)
+              }else{
+                askMelissa({
+                  queryInput: {
+                    event: {
+                      languageCode: 'en',
+                      name: 'general-mode'
+                    }
                   }
-                }
-              },true)
-            }
-            defer(doAfterResponse)
-          }}/>
-        <Input.TextArea ref={inputRef}
-          placeholder={mode === 'my-network' ? askAnythingNetwork : askAnythingGeneral}
-          value={inputValue}
-          disabled={state.isInputDisabled}
-          autoSize={{ minRows: 2, maxRows: 3 }}
-          style={{ height: '52px', borderColor: cssStr('--acx-neutrals-25') }}
-          onChange={(e) => {
-            setInputValue(e.target.value)
-          }}
-          onKeyDown={(e) => {
-            const trimedInputValue = inputValue.trim()
-            if (e.key === 'Enter' && trimedInputValue !== '') {
-              const userMessage: Content = {
-                type: 'user',
-                contentList: [{ text: { text: [trimedInputValue] } }]
+                },true)
               }
-              messages.push(userMessage)
-              setState({ ...state, isReplying: true, isInputDisabled: true })
-              setInputValue('')
-              setMessages(messages)
-              defer(() => {
-                scrollToBottom()
-              })
-              askMelissa({
-                queryInput: {
-                  text: {
-                    languageCode: 'en',
-                    text: inputValue
-                  }
+              defer(doAfterResponse)
+            }}/>
+          <Input.TextArea ref={inputRef}
+            placeholder={mode === 'my-network' ? askAnythingNetwork : askAnythingGeneral}
+            value={inputValue}
+            disabled={state.isInputDisabled}
+            autoSize={{ minRows: 2, maxRows: 3 }}
+            style={{ height: '52px', borderColor: cssStr('--acx-neutrals-25') }}
+            onChange={(e) => {
+              setInputValue(e.target.value)
+            }}
+            onKeyDown={(e) => {
+              const trimedInputValue = inputValue.trim()
+              if (e.key === 'Enter' && trimedInputValue !== '') {
+                const userMessage: Content = {
+                  type: 'user',
+                  contentList: [{ text: { text: [trimedInputValue] } }]
                 }
-              })
-            }
-          }} />
-      </div>}
-  >
-    <Conversation
-      content={messages}
-      isReplying={state.isReplying}
-      classList='conversation'
-      listCallback={askMelissa}
-      style={{ height: 410, width: 350, whiteSpace: 'pre-line' }} />
-  </MelissaDrawer></>
+                messages.push(userMessage)
+                setState({ ...state, isReplying: true, isInputDisabled: true })
+                setInputValue('')
+                setMessages(messages)
+                defer(() => {
+                  scrollToBottom()
+                })
+                askMelissa({
+                  queryInput: {
+                    text: {
+                      languageCode: 'en',
+                      text: inputValue
+                    }
+                  }
+                })
+              }
+            }} />
+        </div>}
+    >
+      <Conversation
+        content={messages}
+        isReplying={state.isReplying}
+        classList='conversation'
+        listCallback={askMelissa}
+        style={{ height: 410, width: 350, whiteSpace: 'pre-line' }} />
+    </MelissaDrawer></>
   )
 }
