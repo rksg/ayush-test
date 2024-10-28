@@ -11,6 +11,10 @@ export const userLogout = () => {
     ?.filter(s => s.includes('SPLITIO') || s.includes('pagesize'))
     ?.forEach(s => localStorage.removeItem(s))
 
+  Object.keys(sessionStorage)
+    ?.filter(s => s.includes('pagesize'))
+    ?.forEach(s => sessionStorage.removeItem(s))
+
   if (Boolean(get('IS_MLISA_SA'))) {
     const form = document.createElement('form')
     form.action = `${get('MLISA_LOGOUT_URL')}${window.location.search}`
