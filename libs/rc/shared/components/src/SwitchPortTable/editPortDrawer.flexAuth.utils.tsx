@@ -31,16 +31,17 @@ export interface AggregatePortSettings {
   taggedVlans: Record<string, string[]>
   untaggedVlan: Record<string, string[]>
   defaultVlan: Record<string, number | undefined>
-
   hasMultipleValue: string[]
   selectedPortIdentifier: Record<string, string[]>
-
   enableAuthPorts: Record<string, string[]>
   profileAuthDefaultVlan: Record<string, number | undefined>
+  authenticationProfileId: Record<string, string | undefined>
+  switchLevelAuthDefaultVlan: Record<string, number | undefined>
   guestVlan: Record<string, number | undefined>
+  authDefaultVlan: Record<string, number[]>
+  authDefaultVlan2: Record<string, Record<string, number[]>>
   restrictedVlan: Record<string, number | undefined>
   criticalVlan: Record<string, number | undefined>
-  switchLevelAuthDefaultVlan: Record<string, number | undefined>
 }
 
 export const aggregatePortSettings = (
@@ -53,14 +54,17 @@ export const aggregatePortSettings = (
     taggedVlans: {},
     untaggedVlan: {},
     defaultVlan: {},
-    guestVlan: {},
-    restrictedVlan: {},
-    criticalVlan: {},
-    switchLevelAuthDefaultVlan: {},
     hasMultipleValue: [],
     selectedPortIdentifier: {},
     enableAuthPorts: {},
-    profileAuthDefaultVlan: {}
+    profileAuthDefaultVlan: {},
+    authenticationProfileId: {},
+    switchLevelAuthDefaultVlan: {},
+    guestVlan: {},
+    authDefaultVlan: {},
+    authDefaultVlan2: {}, //TODO
+    restrictedVlan: {},
+    criticalVlan: {}
   }
 
   // const addUniqueToArray = (array: Array<string | Number>, item: string | Number) =>
@@ -68,8 +72,8 @@ export const aggregatePortSettings = (
 
   return portsSetting.reduce((result, {
     switchMac, port, taggedVlans = [], untaggedVlan = '',
-    switchLevelAuthDefaultVlan, guestVlan, profileAuthDefaultVlan, enableAuthPorts,
-    restrictedVlan, criticalVlan
+    switchLevelAuthDefaultVlan, guestVlan, authDefaultVlan, restrictedVlan, criticalVlan,
+    profileAuthDefaultVlan, authenticationProfileId, enableAuthPorts
   }) => {
     const index = switchMac as string
     const untagged = untaggedVlan as string
@@ -87,13 +91,31 @@ export const aggregatePortSettings = (
       ])
     }
 
-    result.switchLevelAuthDefaultVlan[index] = switchLevelAuthDefaultVlan
-    result.guestVlan[index] = guestVlan
-    result.restrictedVlan[index] = restrictedVlan
-    result.criticalVlan[index] = criticalVlan
+    if (authDefaultVlan) {
+      result.authDefaultVlan[index] = [
+        ...(result.authDefaultVlan[index] || []),
+        authDefaultVlan
+      ]
+    }
+
+    if (authDefaultVlan) {
+      if (!result.authDefaultVlan2[index]) result.authDefaultVlan2[index] = {}
+      if (!result.authDefaultVlan2[index][port]) result.authDefaultVlan2[index][port] = []
+
+      result.authDefaultVlan2[index][port] = [
+        ...(result.authDefaultVlan2[index]?.[port] || []),
+        authDefaultVlan
+      ]
+    }
+
+    if (switchLevelAuthDefaultVlan) result.switchLevelAuthDefaultVlan[index] = switchLevelAuthDefaultVlan
+    if (guestVlan) result.guestVlan[index] = guestVlan
+    if (restrictedVlan) result.restrictedVlan[index] = restrictedVlan
+    if (criticalVlan) result.criticalVlan[index] = criticalVlan
     result.enableAuthPorts[index] = enableAuthPorts ?? []
     result.hasMultipleValue = hasMultipleValue ?? []
-    result.profileAuthDefaultVlan[index] = profileAuthDefaultVlan
+    if (profileAuthDefaultVlan) result.profileAuthDefaultVlan[index] = profileAuthDefaultVlan
+    if (authenticationProfileId) result.authenticationProfileId[index] = authenticationProfileId
 
     result.defaultVlan[index] = switchesDefaultVlan
       ?.find((s) => s.switchId === switchMac)?.defaultVlanId
@@ -164,7 +186,9 @@ export const getUnionValuesByKey = (
   key: keyof AggregatePortSettings,
   aggregateData: AggregatePortSettings
 ) => {
-  const values = Object.values(aggregateData[key] ?? {})
+  const values = key === 'authDefaultVlan2'
+    ? Object.values(aggregateData[key] ?? {}).flatMap(Object.values)
+    : Object.values(aggregateData[key] ?? {})
   return _.uniq(_.flatten(values))
 }
 
@@ -236,9 +260,9 @@ export const checkAllSelectedPortsMatch = (
 ) => {
   const isAllPortsMatch = selectedPorts.every(port => {
     const { selectedPortIdentifier, enableAuthPorts } = aggregateData
-    const sortedSelectedPorts = (selectedPortIdentifier[port.switchMac] || []).sort()
-    const sortedAuthPorts = (enableAuthPorts[port.switchMac] || []).sort()
-    return _.intersection(sortedSelectedPorts, sortedAuthPorts)?.length > 0
+    const sortedSelectedPorts = [...(selectedPortIdentifier[port.switchMac] || [])].sort() //(selectedPortIdentifier[port.switchMac] || []).sort()
+    const sortedAuthPorts = [...(enableAuthPorts[port.switchMac] || [])].sort()
+    return sortedAuthPorts?.length ? _.intersection(sortedSelectedPorts, sortedAuthPorts)?.length > 0 : true
   })
 
   return isAllPortsMatch
@@ -371,7 +395,7 @@ export const validateVlanDiffFromSwitchDefault = (
 ) => {
   const { $t } = getIntl()
   const switchDefaultVlans = getUnionValuesByKey('defaultVlan', aggregateData)
-  if (switchDefaultVlans.includes(Number(value))) {
+  if (value && switchDefaultVlans.includes(Number(value))) {
     return Promise.reject(
       $t(FlexAuthMessages.CANNOT_SAME_AS_SWITCH_DEFAULT_VLAN)
     )
@@ -385,7 +409,7 @@ export const validateVlanDiffFromSwitchAuthDefault = (
 ) => {
   const { $t } = getIntl()
   const switchAuthDefaultVlans = getUnionValuesByKey('switchLevelAuthDefaultVlan', aggregateData)
-  if (switchAuthDefaultVlans.includes(Number(value))) {
+  if (value && switchAuthDefaultVlans.includes(Number(value))) {
     return Promise.reject(
       $t(FlexAuthMessages.CANNOT_SAME_AS_SWITCH_LEVEL_AUTH_DEFAULT_VLAN)
     )
@@ -415,8 +439,9 @@ export const validateVlanConsistencyWithGuestVlan = (
   const { $t } = getIntl()
   const allSelectedPortsMatch = checkAllSelectedPortsMatch(selectedPorts, aggregateData)
   const guestVlans = getUnionValuesByKey('guestVlan', aggregateData)
+  const hasAssignedGuestVlan = !!guestVlans.length
 
-  if (value && !allSelectedPortsMatch && (guestVlans.length > 1 || !guestVlans.includes(Number(value)))) {
+  if (value && !allSelectedPortsMatch && hasAssignedGuestVlan && (guestVlans.length > 1 || !guestVlans.includes(Number(value)))) {
     return Promise.reject(
       $t(FlexAuthMessages.CANNOT_SET_DIFF_GUEST_VLAN, { applyGuestVlan: 0 }) //TODO
     )

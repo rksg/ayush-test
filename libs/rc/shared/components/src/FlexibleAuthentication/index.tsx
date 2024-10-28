@@ -199,7 +199,7 @@ export const validateVlanDiffFromAuthDefault = (
   authDefaultVlan: string
 ) => {
   const { $t } = getIntl()
-  if (Number(value) === Number(authDefaultVlan)) {
+  if (value && (Number(value) === Number(authDefaultVlan))) {
     return Promise.reject(
       $t(FlexAuthMessages.CANNOT_SAME_AS_AUTH_DEFAULT_VLAN)
     )

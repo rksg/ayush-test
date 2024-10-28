@@ -1661,7 +1661,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'SwitchFlexAuth', id: 'DETAIL' }]
+      providesTags: [{ type: 'Switch', id: 'DETAIL' }]
     }),
     updateSwitchAuthentication: build.mutation<FlexibleAuthentication, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1673,7 +1673,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'SwitchFlexAuth', id: 'DETAIL' }]
+      invalidatesTags: [{ type: 'Switch', id: 'DETAIL' }]
     })
   })
 })
