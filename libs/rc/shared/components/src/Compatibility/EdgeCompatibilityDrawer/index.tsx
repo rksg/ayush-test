@@ -17,7 +17,7 @@ import {
 import {
   useEdgeCompatibilityRequirementData,
   useEdgeSdLanDetailsCompatibilitiesData,
-  getSdLanDetailsCompatibilitiesDrawerData
+  transformEdgeCompatibilitiesWithFeatureName
 } from '../../useEdgeActions/compatibility'
 import { CompatibilityDrawer }           from '../CompatibilityDrawer'
 import { EdgeDetailCompatibilityDrawer } from '../EdgeDetailCompatibilityDrawer'
@@ -50,7 +50,6 @@ export const EdgeCompatibilityDrawer = (props: EdgeCompatibilityDrawerProps) => 
     title,
     type = EdgeCompatibilityType.VENUE,
     venueId, venueName,
-    // edgeId,
     featureName,
     onClose,
     width
@@ -65,9 +64,12 @@ export const EdgeCompatibilityDrawer = (props: EdgeCompatibilityDrawerProps) => 
   // eslint-disable-next-line max-len
   const skipFetchSdLanDetailCompatibilities = !visible || type !== EdgeCompatibilityType.SD_LAN || !props.serviceId
   const {
-    sdLanCompatibilities,
+    compatibilities: sdLanCompatibilities,
     isLoading: isDetailCompatibilitiesLoading
-  } = useEdgeSdLanDetailsCompatibilitiesData(props.serviceId!, skipFetchSdLanDetailCompatibilities)
+  } = useEdgeSdLanDetailsCompatibilitiesData({
+    serviceId: props.serviceId!,
+    skip: skipFetchSdLanDetailCompatibilities
+  })
 
   const skipFetchFeatureInfo = !visible || type !== EdgeCompatibilityType.ALONE || !featureName
   const {
@@ -107,7 +109,7 @@ export const EdgeCompatibilityDrawer = (props: EdgeCompatibilityDrawerProps) => 
       }
       data={type === EdgeCompatibilityType.ALONE
         ? featureInfos
-        : getSdLanDetailsCompatibilitiesDrawerData(sdLanCompatibilities, featureName!)
+        : transformEdgeCompatibilitiesWithFeatureName(sdLanCompatibilities, featureName!)
       }
       onClose={onClose}
     />

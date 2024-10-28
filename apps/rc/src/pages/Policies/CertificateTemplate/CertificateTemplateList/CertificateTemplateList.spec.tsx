@@ -164,8 +164,8 @@ describe('CertificateTemplateList', () => {
     expect(await screen.findByText('Certificate Template (3)')).toBeInTheDocument()
     expect(await screen.findByText('Certificate Authority (3)')).toBeInTheDocument()
     expect(await screen.findByText('Certificate (2)')).toBeInTheDocument()
-    expect(await screen.findByText('Server Certificates (2)')).toBeInTheDocument()
-    expect(await screen.findByText('Generate Server Certificate')).toBeInTheDocument()
+    expect(await screen.findByText('Server & Client Certificates (2)')).toBeInTheDocument()
+    expect(await screen.findByText('Generate Certificate')).toBeInTheDocument()
   })
 })
 

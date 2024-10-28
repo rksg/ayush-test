@@ -7,7 +7,7 @@ import {
   CompatibleAlertBanner,
   EdgeDetailCompatibilityDrawer,
   transformEdgeCompatibilitiesWithFeatureName,
-  useEdgeSdLanDetailsCompatibilitiesData
+  useEdgePinDetailsCompatibilitiesData
 } from '@acx-ui/rc/components'
 import {
   ACX_UI_EDGE_COMPATIBILITY_NOTE_HIDDEN_KEY,
@@ -18,6 +18,8 @@ import {
 } from '@acx-ui/rc/utils'
 
 import { StyledSpace } from './styledComponents'
+
+// import { StyledSpace } from './styledComponents'
 
 type ApEdgeCompatibilityResult = Record<string, {
   isAll: boolean,
@@ -59,7 +61,7 @@ export const CompatibilityCheck = ({ serviceId }: { serviceId: string }) => {
   const { $t } = useIntl()
   const [drawerFeature, setDrawerFeature] = useState<string|undefined>()
 
-  const { compatibilities, isLoading } = useEdgeSdLanDetailsCompatibilitiesData({ serviceId })
+  const { compatibilities, isLoading } = useEdgePinDetailsCompatibilitiesData({ serviceId })
 
   const toggleCompatibilityDrawer = (feature: string | undefined) => {
     setDrawerFeature(feature)
@@ -72,7 +74,7 @@ export const CompatibilityCheck = ({ serviceId }: { serviceId: string }) => {
     const apData = compatibilities?.[CompatibilityDeviceEnum.AP]
 
     incompatibleInfo = checkApEdgeCompatibility(
-      [IncompatibilityFeatures.SD_LAN, IncompatibilityFeatures.TUNNEL_PROFILE],
+      [IncompatibilityFeatures.PIN, IncompatibilityFeatures.TUNNEL_PROFILE],
       edgeData, apData)
 
     hasIncompatible = Object.keys(incompatibleInfo)
