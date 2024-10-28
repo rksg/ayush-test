@@ -86,7 +86,6 @@ export const useDashBoardUpdatedFilter = () => {
 export default function Dashboard () {
   const { $t } = useIntl()
   const isEdgeEnabled = useIsEdgeReady()
-  const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
