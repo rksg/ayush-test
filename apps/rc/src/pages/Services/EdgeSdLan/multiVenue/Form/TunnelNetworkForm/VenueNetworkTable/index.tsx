@@ -57,8 +57,8 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
       })
       .filter(i => !!i)
 
-    const pinVenueIds = allPins?.map(pin => pin.venueId) || []
-      .filter(id => !!id)
+    const pinVenueIds = allPins?.map(pin => pin.venueId).filter(id => !!id) || []
+
     return [...sdlanVenueIds, ...pinVenueIds]
   }, [allPins, allSdLans, serviceId])
 

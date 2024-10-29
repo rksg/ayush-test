@@ -66,11 +66,8 @@ export const SettingsForm = () => {
       selectFromResult: ({ data, isLoading }) => {
         return {
           clusterData: data?.data
-            .filter(item =>
-              !sdLanBoundEdges.some(id => id === item.clusterId)
-              &&
-              !pinBoundEdges.some(id => id === item.clusterId)),
-
+          // eslint-disable-next-line max-len
+            .filter(item => !sdLanBoundEdges.includes(item.clusterId!) && !pinBoundEdges.includes(item.clusterId!)),
           isLoading
         }
       }
