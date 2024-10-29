@@ -66,8 +66,11 @@ export const SettingsForm = () => {
       selectFromResult: ({ data, isLoading }) => {
         return {
           clusterData: data?.data
-            .filter(item => sdLanBoundEdges.indexOf(item.clusterId!) === -1)
-            .filter(item => pinBoundEdges.indexOf(item.clusterId!) === -1),
+            .filter(item =>
+              !sdLanBoundEdges.some(id => id === item.clusterId)
+              &&
+              !pinBoundEdges.some(id => id === item.clusterId)),
+
           isLoading
         }
       }

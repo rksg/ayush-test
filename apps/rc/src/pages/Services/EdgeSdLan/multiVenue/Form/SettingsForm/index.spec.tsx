@@ -207,7 +207,7 @@ describe('Edge SD-LAN form: settings', () => {
     const { result: stepFormRef } = renderHook(useMockedFrom)
     render(<MockedTargetComponent
       form={stepFormRef.current}
-      ctxValues={{ allSdLans: mockedMvSdLanDataList, allPins: mockedPinAlreadyUsedEdge }}
+      ctxValues={{ allSdLans: [], allPins: mockedPinAlreadyUsedEdge }}
     />)
 
     const formBody = await screen.findByTestId('steps-form-body')
