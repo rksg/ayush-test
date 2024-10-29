@@ -5,7 +5,6 @@ import { Col, Row, Space, Typography } from 'antd'
 import { useIntl }                     from 'react-intl'
 
 import { Button, Card, Loader, PageHeader, SummaryCard, Table, TableProps }                                    from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                              from '@acx-ui/feature-toggle'
 import { EdgeServiceStatusLight, useIsEdgeReady }                                                              from '@acx-ui/rc/components'
 import { useGetDhcpStatsQuery, useGetDhcpUeSummaryStatsQuery, useGetEdgeClusterListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
 import {
@@ -36,7 +35,6 @@ const EdgeDHCPDetail = () => {
   const { $t } = useIntl()
   const params = useParams()
   const isEdgeReady = useIsEdgeReady()
-  const isEdgeCompatibilityEnabled = useIsSplitOn(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
   const getDhcpStatsPayload = {
     fields: [
@@ -248,12 +246,12 @@ const EdgeDHCPDetail = () => {
             isEdgeClusterInfoLoading || isVenueInfoLoading, isLoading: false }
       ]}>
         {
-          (isEdgeCompatibilityEnabled && !!params.serviceId) &&
-            <Row>
-              <Col span={24}>
-                <CompatibilityCheck serviceId={params.serviceId} />
-              </Col>
-            </Row>
+          !!params.serviceId &&
+          <Row>
+            <Col span={24}>
+              <CompatibilityCheck serviceId={params.serviceId} />
+            </Col>
+          </Row>
         }
         <Space direction='vertical' size={30}>
           <SummaryCard data={dhcpInfo} />

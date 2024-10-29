@@ -5,8 +5,7 @@ import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Button, Loader, PageHeader, showActionModal, Table, TableProps } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
-import { EdgeServiceStatusLight, useEdgeDhcpActions, SimpleListTooltip }  from '@acx-ui/rc/components'
+import { EdgeServiceStatusLight, SimpleListTooltip, useEdgeDhcpActions }  from '@acx-ui/rc/components'
 import {
   useDeleteEdgeDhcpServicesMutation,
   useGetDhcpEdgeCompatibilitiesQuery,
@@ -35,7 +34,6 @@ const EdgeDhcpTable = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
-  const isEdgeCompatibilityEnabled = useIsSplitOn(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
   const getDhcpStatsPayload = {
     fields: [
       'id',
@@ -85,7 +83,7 @@ const EdgeDhcpTable = () => {
     [tableQuery.data?.data])
   const { dhcpCompatibilityData = [] } = useGetDhcpEdgeCompatibilitiesQuery({
     payload: { filters: { serviceIds: currentServiceIds } } }, {
-    skip: !isEdgeCompatibilityEnabled || !currentServiceIds.length,
+    skip: !currentServiceIds.length,
     selectFromResult: ({ data }) => {
       return {
         dhcpCompatibilityData: data?.compatibilities
@@ -126,12 +124,10 @@ const EdgeDhcpTable = () => {
               })}>
               {row.serviceName}
             </TenantLink>
-            {
-              isEdgeCompatibilityEnabled && <CompatibilityCheck
-                serviceId={row.id!}
-                compatibilityData={dhcpCompatibilityData}
-              />
-            }
+            <CompatibilityCheck
+              serviceId={row.id!}
+              compatibilityData={dhcpCompatibilityData}
+            />
           </Space>
         )
       }
