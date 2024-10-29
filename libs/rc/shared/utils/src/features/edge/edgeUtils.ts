@@ -243,7 +243,7 @@ export const isVirtualEdgeSerial = (value: string) => {
 }
 
 export const deriveEdgeModel = (serial: string) => {
-  return isVirtualEdgeSerial(serial) ? 'vEdge' : '-'
+  return isVirtualEdgeSerial(serial) ? 'vRUCKUS Edge' : '-'
 }
 
 export const isOtpEnrollmentRequired = (serial: string) => {
