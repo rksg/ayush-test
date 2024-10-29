@@ -234,7 +234,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       },
       transformResponse: (response: EdgePortConfig) => {
-        response.ports.sort(physicalPortSorter)
+        response.ports?.sort(physicalPortSorter)
         return response
       },
       providesTags: [{ type: 'Edge', id: 'DETAIL' }, { type: 'Edge', id: 'PORT' }],
@@ -347,7 +347,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       },
       transformResponse: (response: TableResult<EdgePortStatus>) => {
-        response.data.sort(physicalPortSorter)
+        response.data?.sort(physicalPortSorter)
         return response
       },
       providesTags: [{ type: 'Edge', id: 'PORT' }]
@@ -967,7 +967,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       },
       transformResponse: (response: ClusterNetworkSettings) => {
-        response.portSettings.forEach(portSetting => portSetting.ports.sort(physicalPortSorter))
+        response.portSettings?.forEach(portSetting => portSetting.ports?.sort(physicalPortSorter))
         return response
       },
       providesTags: [{ type: 'Edge', id: 'CLUSTER_DETAIL' }],
@@ -1033,7 +1033,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
             }
           })
           const edgePorts = (edgePortList.data as TableResult<EdgePortStatus>).data
-          edgePorts.sort(physicalPortSorter)
+          edgePorts?.sort(physicalPortSorter)
           tmp.push(...edgePorts)
 
           const edgeLagListReq = createHttpRequest(EdgeUrlsInfo.getEdgeLagStatusList, params)
