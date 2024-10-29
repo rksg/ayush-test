@@ -1,10 +1,15 @@
 
+import { useMemo } from 'react'
+
+import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Button, Loader, PageHeader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import { EdgeServiceStatusLight, useEdgeDhcpActions, SimpleListTooltip }  from '@acx-ui/rc/components'
 import {
   useDeleteEdgeDhcpServicesMutation,
+  useGetDhcpEdgeCompatibilitiesQuery,
   useGetDhcpStatsQuery,
   useGetEdgeClusterListQuery
 } from '@acx-ui/rc/services'
@@ -21,12 +26,16 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
+import { CompatibilityCheck } from './CompatibilityCheck'
+
+
 
 const EdgeDhcpTable = () => {
 
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
+  const isEdgeCompatibilityEnabled = useIsSplitOn(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
   const getDhcpStatsPayload = {
     fields: [
       'id',
@@ -71,6 +80,18 @@ const EdgeDhcpTable = () => {
   )
   const [deleteDhcp, { isLoading: isDeleteDhcpUpdating }] = useDeleteEdgeDhcpServicesMutation()
   const { upgradeEdgeDhcp, isEdgeDhcpUpgrading } = useEdgeDhcpActions()
+  const currentServiceIds = useMemo(
+    () => tableQuery.data?.data?.map(i => i.id!) ?? [],
+    [tableQuery.data?.data])
+  const { dhcpCompatibilityData = [] } = useGetDhcpEdgeCompatibilitiesQuery({
+    payload: { filters: { serviceIds: currentServiceIds } } }, {
+    skip: !isEdgeCompatibilityEnabled || !currentServiceIds.length,
+    selectFromResult: ({ data }) => {
+      return {
+        dhcpCompatibilityData: data?.compatibilities
+      }
+    }
+  })
 
   const isUpdateAvailable = (data: DhcpStats) => {
     let isReadyToUpdate = false
@@ -96,14 +117,22 @@ const EdgeDhcpTable = () => {
       searchable: true,
       render: function (_, row) {
         return (
-          <TenantLink
-            to={getServiceDetailsLink({
-              type: ServiceType.EDGE_DHCP,
-              oper: ServiceOperation.DETAIL,
-              serviceId: row.id!
-            })}>
-            {row.serviceName}
-          </TenantLink>
+          <Space>
+            <TenantLink
+              to={getServiceDetailsLink({
+                type: ServiceType.EDGE_DHCP,
+                oper: ServiceOperation.DETAIL,
+                serviceId: row.id!
+              })}>
+              {row.serviceName}
+            </TenantLink>
+            {
+              isEdgeCompatibilityEnabled && <CompatibilityCheck
+                serviceId={row.id!}
+                compatibilityData={dhcpCompatibilityData}
+              />
+            }
+          </Space>
         )
       }
     },

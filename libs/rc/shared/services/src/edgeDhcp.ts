@@ -6,6 +6,7 @@ import {
   DhcpUeSummaryStats,
   EdgeDhcpSetting,
   EdgeDhcpUrls,
+  EdgeServiceCompatibilitiesResponse,
   onActivityMessageReceived,
   onSocketActivityChanged,
   TableResult
@@ -187,6 +188,16 @@ export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'EdgeDhcp', id: 'LIST' }, { type: 'EdgeDhcp', id: 'DETAIL' }]
+    }),
+    getDhcpEdgeCompatibilities: build.query<EdgeServiceCompatibilitiesResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeDhcpUrls.getDhcpEdgeCompatibilities, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'EdgeDhcp', id: 'COMPATIBILITY' }]
     })
   })
 })
@@ -204,5 +215,6 @@ export const {
   useGetDhcpUeSummaryStatsQuery,
   useActivateEdgeDhcpServiceMutation,
   useDeactivateEdgeDhcpServiceMutation,
-  useRestartEdgeDhcpServiceMutation
+  useRestartEdgeDhcpServiceMutation,
+  useGetDhcpEdgeCompatibilitiesQuery
 } = edgeDhcpApi

@@ -180,6 +180,36 @@ export const mockEdgeHqosCompatibilities: EdgeServiceCompatibilitiesResponse = {
   ]
 }
 
+export const mockEdgeDhcpCompatibilities: EdgeServiceCompatibilitiesResponse = {
+  compatibilities: [
+    {
+      serviceId: '1',
+      clusterEdgeCompatibilities: [
+        {
+          identityType: CompatibilityEntityTypeEnum.CLUSTER,
+          id: 'edgeCluster-1',
+          incompatibleFeatures: [
+            {
+              featureRequirement: {
+                featureName: 'DHCP',
+                requiredFw: '2.1.0.200'
+              },
+              incompatibleDevices: [
+                {
+                  firmware: '2.1.0.100',
+                  count: 1
+                }
+              ]
+            }
+          ],
+          total: 6,
+          incompatible: 1
+        }
+      ]
+    }
+  ]
+}
+
 export const mockEdgeSdLanApCompatibilites: EdgeSdLanApCompatibilitiesResponse = {
   compatibilities: [
     {
