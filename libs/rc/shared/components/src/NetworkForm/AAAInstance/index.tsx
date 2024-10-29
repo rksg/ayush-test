@@ -135,13 +135,15 @@ export const AAAInstance = (props: AAAInstanceProps) => {
             />}
             hidden={get(watchedRadius, 'radSecOptions.tlsEnabled')}
           /></>}
-        {watchedRadius?.[AaaServerOrderEnum.SECONDARY] && <>
+        {watchedRadius?.[AaaServerOrderEnum.SECONDARY] &&
           <Form.Item
             label={$t(contents.aaaServerTypes[AaaServerOrderEnum.SECONDARY])}
             children={$t({ defaultMessage: '{ipAddress}:{port}' }, {
               ipAddress: get(watchedRadius, `${AaaServerOrderEnum.SECONDARY}.ip`),
               port: get(watchedRadius, `${AaaServerOrderEnum.SECONDARY}.port`)
-            })} />
+            })} />}
+        {watchedRadius?.[AaaServerOrderEnum.SECONDARY] &&
+          get(watchedRadius, 'radSecOptions.tlsEnabled') &&
           <Form.Item
             label={$t({ defaultMessage: 'Shared Secret' })}
             children={<PasswordInput
@@ -149,9 +151,7 @@ export const AAAInstance = (props: AAAInstanceProps) => {
               bordered={false}
               value={get(watchedRadius, `${AaaServerOrderEnum.SECONDARY}.sharedSecret`)}
             />}
-            hidden={get(watchedRadius, 'radSecOptions.tlsEnabled')}
-          />
-        </>}
+          />}
         {supportRadsec && <Form.Item
           label={$t({ defaultMessage: 'RadSec' })}
           children={$t({ defaultMessage: '{tlsEnabled}' }, {
