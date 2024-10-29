@@ -10,6 +10,8 @@ import styled from 'styled-components/macro'
 
 import { GptSuccess } from '@acx-ui/icons'
 
+import GptBackground from './assets/GptBackground.svg'
+
 
 const Button = styled(AntButton).attrs({ type: 'primary' })`
   &&& {
@@ -37,7 +39,7 @@ export const ButtonSolid = styled(Button)`
   }
 `
 
-export const GptModal = styled(Modal)<{ titleType: string }>`
+export const GptModal = styled(Modal)<{ titleType: string, needBackground: boolean }>`
   .ant-modal-content {
     border-radius: 24px;
     .ant-modal-header{
@@ -58,6 +60,14 @@ export const GptModal = styled(Modal)<{ titleType: string }>`
     .ant-modal-body {
       max-height: calc(80vh - 100px);
       overflow-y: auto;
+      ${(props) => props.needBackground &&
+        `
+        background-image: url(${GptBackground});
+        background-size: cover;
+        background-position: center center;
+        border-radius: 24px;
+      `}
+
       .ant-pro-steps-form-container {
         padding: '0px 20px';
       }

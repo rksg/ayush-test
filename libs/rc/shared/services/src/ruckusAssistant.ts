@@ -38,7 +38,7 @@ export const ruckusAssistantApi = baseRuckusAssistantApi.injectEndpoints({
         }
       }
     }),
-    createOnboardConfigs: build.mutation<unknown, RequestPayload>({
+    createOnboardConfigs: build.mutation<GptConfiguration, RequestPayload>({
       query: ({ payload }) => {
         const req = createHttpRequest(RuckusAssistantUrlInfo.createOnboardConfigs)
         return {

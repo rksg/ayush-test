@@ -1,18 +1,23 @@
 import React, { useEffect, useState } from 'react'
 
 import { ProFormCheckbox, ProFormInstance, ProFormText } from '@ant-design/pro-form'
-import { Button, Divider, Form }              from 'antd'
-import { useIntl }                      from 'react-intl'
+import { Button, Divider }                               from 'antd'
+import _                                                 from 'lodash'
+import { useIntl }                                       from 'react-intl'
 
-import { cssStr } from '@acx-ui/components'
+import { cssStr }                   from '@acx-ui/components'
+import { VlanSettingDrawer }        from '@acx-ui/rc/components'
+import {
+  useCreateOnboardConfigsMutation,
+  useLazyGetVlanOnboardConfigsQuery,
+  useUpdateOnboardConfigsMutation
+} from '@acx-ui/rc/services'
+import { Vlan } from '@acx-ui/rc/utils'
 
 import { ReactComponent as Logo } from '../../assets/gptDog.svg'
 
 import * as UI from './styledComponents'
-import { VlanSettingDrawer } from '@acx-ui/rc/components'
-import { Vlan } from '@acx-ui/rc/utils'
-import { useCreateOnboardConfigsMutation, useLazyGetVlanOnboardConfigsQuery, useUpdateOnboardConfigsMutation } from '@acx-ui/rc/services'
-import _ from 'lodash'
+
 
 type NetworkConfig = {
   'Purpose': string;
@@ -23,6 +28,7 @@ type NetworkConfig = {
 }
 
 export function VlanStep (props: { payload: string, sessionId: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   formInstance: ProFormInstance<any> | undefined
 }) {
   const { formInstance } = props
@@ -30,7 +36,8 @@ export function VlanStep (props: { payload: string, sessionId: string,
   const initialData = JSON.parse(props.payload || '[]') as NetworkConfig[]
   const [data, setData] = useState<NetworkConfig[]>(initialData)
 
-  
+
+  const [configVlanIds, setConfigVlanIds] = useState<boolean[]>(Array(data.length).fill(true))
   const [isSetupComplete, setIsSetupComplete] = useState<boolean[]>(Array(data.length).fill(false))
   const [configId, setConfigId] = useState('')
   const [configVisible, setConfigVisible] = useState(false)
@@ -38,11 +45,12 @@ export function VlanStep (props: { payload: string, sessionId: string,
 
   const [selectedVlanProfile, setSelectedVlanProfile] = useState<Vlan>()
   const [vlanTable, setVlanTable] = useState<Vlan[]>([])
-  
+
   useEffect(() => {
     if (initialData !== data) {
       setData(initialData)
       setIsSetupComplete(Array(data.length).fill(false))
+      setConfigVlanIds(Array(data.length).fill(true))
     }
 
   }, [props.payload])
@@ -57,11 +65,13 @@ export function VlanStep (props: { payload: string, sessionId: string,
       'id': ''
     }
     setData([...data, newVlan])
+    setConfigVlanIds([...configVlanIds, false])
   }
 
   const handleSetVlan = async (data: Vlan) => {
     const filterData = selectedVlanProfile?.vlanId ? vlanTable.filter(
-      (item: { vlanId: number }) => item.vlanId.toString() !== selectedVlanProfile?.vlanId.toString()) :
+      (item: { vlanId: number }) =>
+        item.vlanId.toString() !== selectedVlanProfile?.vlanId.toString()) :
       vlanTable
 
     const sfm = data.switchFamilyModels?.map((item, index) => {
@@ -91,7 +101,7 @@ export function VlanStep (props: { payload: string, sessionId: string,
         }
       }).unwrap()
     } else {
-      await createOnboardConfigs({
+      const result = await createOnboardConfigs({
         payload: {
           name: '',
           type: 'VLAN',
@@ -99,8 +109,12 @@ export function VlanStep (props: { payload: string, sessionId: string,
           sessionId: props.sessionId
         }
       }).unwrap()
+
+      if (result?.id) {
+        formInstance?.setFieldValue(['data', configIndex, 'id'], result?.id)
+      }
     }
-   
+
     setSelectedVlanProfile(undefined)
     setConfigId('')
     setIsSetupComplete((prevIsSetupComplete) => {
@@ -116,7 +130,7 @@ export function VlanStep (props: { payload: string, sessionId: string,
   const [getVlanConfigs] = useLazyGetVlanOnboardConfigsQuery()
   const [updateOnboardConfigs] = useUpdateOnboardConfigsMutation()
   const [createOnboardConfigs] = useCreateOnboardConfigsMutation()
-  
+
   const onEditMode = async (id: string) =>{
     const vlanConfig = (await getVlanConfigs({
       params: { id }
@@ -192,48 +206,59 @@ export function VlanStep (props: { payload: string, sessionId: string,
               }
               <ProFormText
                 width={200}
+                validateTrigger={['onKeyUp', 'onBlur']}
                 label={$t({ defaultMessage: 'VLAN ID' })}
                 name={['data', index, 'VLAN ID']}
                 initialValue={item['VLAN ID']}
                 rules={[{ required: true }]}
-              />
-              <UI.ConfigurationContainer
-                onClick={() => {
-                  setConfigId(item['id'])
-                  setConfigIndex(index)
-                  if(isSetupComplete[configIndex]){
-                    onEditMode(item['id'])
-                  } else {
-                    onAddMode()
+                fieldProps={{
+                  onChange: (value) => {
+                    const updateVlanIds = [...configVlanIds]
+                    updateVlanIds[index] = !_.isEmpty(value)
+                    setConfigVlanIds(updateVlanIds)
                   }
-                }}>
-
-                <UI.ConfigurationHeader>
-                  <div>
-                    <div>
-                      {$t({ defaultMessage: 'Port Configurations' })}
-                    </div>
-                    {!isSetupComplete[index] &&
-                      <div style={{ fontWeight: 400, color: cssStr('--acx-neutrals-60') }}>
-                        {$t({ defaultMessage: 'Ports have not been set yet. ' })}
-                      </div>
+                }}
+              />
+              { configVlanIds[index] &&
+                <UI.ConfigurationContainer
+                  onClick={() => {
+                    const currentId = formInstance?.getFieldValue(['data', index, 'id'])
+                    setConfigId(currentId)
+                    setConfigIndex(index)
+                    if (isSetupComplete[configIndex]) {
+                      onEditMode(currentId)
+                    } else {
+                      onAddMode()
                     }
-                  </div>
+                  }}>
 
-                  <div style={{ display: 'flex' }}>
-                    {isSetupComplete[index] ?
-                      <UI.ConfiguredButton>
-                        <UI.CollapseCircleSolidIcons/>
-                        <div>{$t({ defaultMessage: 'Configured' })}</div>
-                      </UI.ConfiguredButton> :
-                      <UI.SetupButton>
-                        {$t({ defaultMessage: 'Setup Ports' })}
-                      </UI.SetupButton>}
-                    <UI.ArrowChevronRightIcons />
-                  </div>
-                </UI.ConfigurationHeader>
-                
-              </UI.ConfigurationContainer>
+                  <UI.ConfigurationHeader>
+                    <div>
+                      <div>
+                        {$t({ defaultMessage: 'Port Configurations' })}
+                      </div>
+                      {!isSetupComplete[index] &&
+                        <div style={{ fontWeight: 400, color: cssStr('--acx-neutrals-60') }}>
+                          {$t({ defaultMessage: 'Ports have not been set yet. ' })}
+                        </div>
+                      }
+                    </div>
+
+                    <div style={{ display: 'flex' }}>
+                      {isSetupComplete[index] ?
+                        <UI.ConfiguredButton>
+                          <UI.CollapseCircleSolidIcons />
+                          <div>{$t({ defaultMessage: 'Configured' })}</div>
+                        </UI.ConfiguredButton> :
+                        <UI.SetupButton>
+                          {$t({ defaultMessage: 'Setup Ports' })}
+                        </UI.SetupButton>}
+                      <UI.ArrowChevronRightIcons />
+                    </div>
+                  </UI.ConfigurationHeader>
+                </UI.ConfigurationContainer>
+              }
+
             </UI.VlanDetails>
           </UI.VlanContainer>
           <Divider dashed />

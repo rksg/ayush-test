@@ -196,6 +196,7 @@ export default function RuckusGptButton () {
       }}
     />
     <UI.GptModal
+      needBackground={step === GptStepsEnum.WELCOME || step === GptStepsEnum.FINISHED}
       titleType={step === GptStepsEnum.CONFIGURATION ? 'wizard' : 'default'}
       title={getWizardTitle()}
       footer={renderFooter()}

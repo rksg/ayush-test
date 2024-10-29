@@ -90,13 +90,13 @@ export const ConfigurationContainer = styled.div`
 
 export const NetworkName = styled.div`
   margin: 10px 0px;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: var(--acx-subtitle-5-font-size);
+  font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
 `
 
 export const PurposeHeader = styled.div`
-  font-size: 12px;
-  font-weight: 600;
+  font-size: var(--acx-subtitle-5-font-size);
+  font-weight:  var(--acx-subtitle-5-font-weight-semi-bold);
   display: flex;
   align-items: center;
 
@@ -130,8 +130,8 @@ export const HighlightedBox = styled.div`
 `
 
 export const HighlightedTitle = styled.div`
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--acx-subtitle-4-font-size);
+  font-weight: var(--acx-subtitle-4-font-weight);
   display: flex;
   align-items: center;
 
@@ -141,7 +141,7 @@ export const HighlightedTitle = styled.div`
 `
 
 export const HighlightedDescription = styled.div`
-  font-size: 14px;
+  font-size: var(--acx-subtitle-4-font-size);
   margin: 5px 0 0 25px;
 `
 
@@ -176,4 +176,32 @@ export const ConfiguredButton = styled.div`
 
 export const SetupButton = styled.div`
   color: var(--acx-accents-blue-50);
+`
+
+export const SummaryContainer = styled.div`
+  background-color: var(--acx-neutrals-15);
+  border-radius: 8px;
+  width: 450px;
+  padding: 20px;
+  margin: 10px 0px;
+`
+
+export const SummaryDescription = styled.span`
+  font-size: var(--acx-subtitle-4-font-size);
+  color: var(--acx-neutrals-60);
+  margin: 10px 0px;
+  font-family: var(--acx-neutral-brand-font);
+`
+
+export const SummaryContainerHeader = styled.span`
+  font-size: var(--acx-subtitle-4-font-size);
+  font-weight: var(--acx-subtitle-4-font-weight);
+  color: var(--acx-accents-blue-50);
+  margin-bottom: 5px;
+`
+
+export const SummaryHeader = styled.span`
+  font-size: var(--acx-subtitle-1-font-size);
+  font-weight: var(--acx-subtitle-1-font-weight);
+  font-family: var(--acx-accent-brand-font);
 `

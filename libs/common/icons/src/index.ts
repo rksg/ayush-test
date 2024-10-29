@@ -416,20 +416,19 @@ export { ReactComponent as MacRegActionTypeIcon } from './icons/MacRegActionType
 export { ReactComponent as QrCodeSmallIcon } from './icons/QrCodeSmall.svg'
 export { ReactComponent as GptWhiteicon } from './icons/GptWhiteicon.svg'
 export { ReactComponent as GptBlackicon } from './icons/GptBlackicon.svg'
-export { ReactComponent as GptBackground } from './icons/GptBackground.svg'
 export { ReactComponent as GptSuccess } from './icons/GptSuccess.svg'
 export { ReactComponent as DogAndPerson } from './icons/DogAndPerson.svg'
 export { ReactComponent as Hospitality } from './icons/Hospitality.svg'
 export { ReactComponent as MultiDwellingUnit } from './icons/MultiDwellingUnit.svg'
 export { ReactComponent as Office } from './icons/Office.svg'
-export { ReactComponent as OnboardingAssistantBackground } from './icons/OnboardingAssistantBackground.svg'
 export { ReactComponent as RuckusAI } from './icons/RuckusAI.svg'
 export { ReactComponent as School } from './icons/School.svg'
 export { ReactComponent as Shop } from './icons/Shop.svg'
 export { ReactComponent as Stadium } from './icons/Stadium.svg'
 export { ReactComponent as TransportHub } from './icons/TransportHub.svg'
 export { ReactComponent as Warehhouse } from './icons/Warehhouse.svg'
-
+export { ReactComponent as RuckusAiLogo } from './icons/RuckusAiLogo.svg'
+export { ReactComponent as WelcomeLogo } from './icons/WelcomeLogo.svg'
 
 
 export * from './styledComponents'

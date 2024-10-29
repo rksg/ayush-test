@@ -1,7 +1,10 @@
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
+import { cssStr }                        from '@acx-ui/components'
 import { NetworkTypeEnum, networkTypes } from '@acx-ui/rc/utils'
+
+import * as UI from './styledComponents'
 
 // Waiting for new UX design
 export function SummaryStep (props: {
@@ -21,41 +24,54 @@ export function SummaryStep (props: {
       flexDirection: 'column',
       justifyContent: 'center'
     }}>
+      <UI.SummaryHeader>
+        {$t({ defaultMessage: 'Summary' })}
+      </UI.SummaryHeader>
+      <UI.SummaryDescription>
+        { // eslint-disable-next-line max-len
+          $t({ defaultMessage: 'We have completed the setup for your network. Below is a summary. Would you like me to create these configurations and apply them to the <venueSingular></venueSingular> ' })}
+        &nbsp;
+        <b style={{ color: cssStr('--acx-primary-black') }}>
+          {data?.venue?.venueName}
+        </b>?
+      </UI.SummaryDescription>
 
-      <span style={{ fontSize: '24px',
-        fontWeight: 600,
-        marginTop: '30px',
-        fontFamily: 'Montserrat' }}>
-      Summary
-      </span>
-      <span style={{ fontSize: '16px', color: '#808284', margin: '20px 0' }}>
-      Alright, we have completed the setup for your network. Below is a summary.<br />
-      Would you like me to create these configurations and apply them to the venue <b>{
-          data?.venue?.venueName}</b>?
-      </span>
+      <UI.SummaryContainer>
+        <Form.Item
+          label={
+            <UI.SummaryContainerHeader>
+              {$t({ defaultMessage: 'Wireless Networks' })}
+            </UI.SummaryContainerHeader>
+          }
+          style={{ marginBottom: '0px' }}
+          children={<ul style={{ marginBottom: '0px' }}>
+            {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              data?.wlan?.map((item: any, index: number) => (
+                <li key={index}>
+                  {`${item['SSID Name']} with ${getNetworkTypeDescription(item['SSID Type'])}`}</li>
+              ))}
+          </ul>
+          }
+        />
+      </UI.SummaryContainer>
 
-
-      <Form.Item
-        label={'Wireless Networks'}
-        children={<ul>
-          {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            data?.wlan?.map((item: any, index: number) => (
-              <li key={index}>
-                {`${item['SSID Name']} with ${getNetworkTypeDescription(item['SSID Type'])}`}</li>
-            ))}
-        </ul>
-        }
-      />
-      <Form.Item
-        label={'VLAN Configuration'}
-        children={<ul>
-          {// eslint-disable-next-line @typescript-eslint/no-explicit-any
-            data?.vlan?.map((item: any, index: number) => (
-              <li key={index}>{`${item['VLAN Name']} @ VLAN  ${item['VLAN ID']}`}</li>
-            ))}
-        </ul>}
-      />
+      <UI.SummaryContainer>
+        <Form.Item
+          label={
+            <UI.SummaryContainerHeader>
+              {$t({ defaultMessage: 'VLAN Configuration' })}
+            </UI.SummaryContainerHeader>
+          }
+          style={{ marginBottom: '0px' }}
+          children={<ul style={{ marginBottom: '0px' }}>
+            {// eslint-disable-next-line @typescript-eslint/no-explicit-any
+              data?.vlan?.map((item: any, index: number) => (
+                <li key={index}>{`${item['VLAN Name']} @ VLAN  ${item['VLAN ID']}`}</li>
+              ))}
+          </ul>}
+        />
+      </UI.SummaryContainer>
 
     </div>
   </div>
