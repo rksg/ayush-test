@@ -1,30 +1,24 @@
 import { useEffect, useState } from 'react'
 
-import { Button, Col, Divider, Row } from 'antd'
-import { useIntl }                   from 'react-intl'
+import { useIntl } from 'react-intl'
 
-import { Collapse, Drawer, Loader }                                                      from '@acx-ui/components'
-import { CollapseActive, CollapseInactive }                                              from '@acx-ui/icons'
-import { Certificate, CertificateAuthority, CertificateCategoryType, ServerCertificate } from '@acx-ui/rc/utils'
-import { TenantLink }                                                                    from '@acx-ui/react-router-dom'
-import { noDataDisplay }                                                                 from '@acx-ui/utils'
+import { Collapse, Drawer, Loader }                   from '@acx-ui/components'
+import { CollapseActive, CollapseInactive }           from '@acx-ui/icons'
+import { CertificateCategoryType, ServerCertificate } from '@acx-ui/rc/utils'
 
-import { certDetailTitle }                                                                                                    from '../contentsMap'
-import { CollapsePanelContentWrapper, CollapseTitle, CollapseWrapper, Description, DescriptionRow, DescriptionText, RawInfo } from '../styledComponents'
+import { certDetailTitle }          from '../contentsMap'
+import { CollapseWrapper, RawInfo } from '../styledComponents'
 
-import { RenderType, SubContent, Content } from './DetailDrawer'
-import { getCertificateDetails }           from './DetailDrawerHelper'
-import DownloadSection                     from './DownloadSection'
+import DownloadSection from './DownloadSection'
 
 interface DetailDrawerProps {
   open?: boolean;
   setOpen: (open: boolean) => void;
   data: ServerCertificate | null;
-  type: CertificateCategoryType;
 }
 
 export function ServerCertificateDetailDrawer (
-  { open = false, setOpen, data, type }: DetailDrawerProps) {
+  { open = false, setOpen, data }: DetailDrawerProps) {
   const { $t } = useIntl()
   const [rawInfoDrawerOpen, setRawInfoDrawerOpen] = useState(false)
   const [rawInfoDrawerData, setRawInfoDrawerData] = useState('')
@@ -40,81 +34,10 @@ export function ServerCertificateDetailDrawer (
     setRawInfoDrawerOpen(open)
   }
 
-  const getDetails = () => {
-    const certificateData = data as ServerCertificate
-    return getCertificateDetails(certificateData, null)
-  }
-
-  const CollapsePanelContent = ({ data, item, setRawInfoDrawer }:
-    {
-      data: CertificateAuthority | Certificate | null; item: Content;
-      setRawInfoDrawer: (title: string | undefined, data: string | undefined, open: boolean) => void
-    }) => {
-    const renderItemContent = (subItem: SubContent, subIndex: number) => {
-      switch (subItem.type) {
-        case RenderType.CONTENT:
-          return (
-            <DescriptionRow key={subIndex}>
-              <Description>{subItem.title}</Description>
-              <DescriptionText>{subItem.content || noDataDisplay}</DescriptionText>
-            </DescriptionRow>
-          )
-        case RenderType.LINK:
-          return (
-            <DescriptionRow key={subIndex}>
-              <Description>{subItem.title}</Description>
-              <TenantLink to={subItem.link!}>{subItem.content || noDataDisplay}</TenantLink>
-            </DescriptionRow>
-          )
-        case RenderType.DIVIDER:
-          return <Divider key={subIndex} />
-        case RenderType.CONTENT_WITH_DETAILS:
-          return (
-            <DescriptionRow key={subIndex}>
-              <Row key={subIndex}>
-                <Col span={12}>
-                  <Description>{subItem.title}</Description>
-                  <DescriptionText>{subItem.content || noDataDisplay}</DescriptionText>
-                </Col>
-                <Col span={12}>
-                  <Row justify='end'>
-                    <Button
-                      type='link'
-                      size='small'
-                      onClick={() => setRawInfoDrawer(subItem.detailTitle, subItem.detail, true)}
-                    >
-                      {subItem.detailTitle}
-                    </Button>
-                  </Row>
-                </Col>
-              </Row>
-            </DescriptionRow>
-          )
-        default:
-          return null
-      }
-    }
-
-    switch (item.type) {
-      case RenderType.TITLE:
-        return Array.isArray(item.content) ? <>{item.content.map(renderItemContent)}</> : null
-      case RenderType.TITLE_WITH_DETAILS:
-        return item.content as JSX.Element
-      case RenderType.DOWNLOAD:
-        return <DownloadSection
-          type={CertificateCategoryType.SERVER_CERTIFICATES}
-          data={data}
-          setRawInfoDrawer={setRawInfoDrawer}
-          setUploadDrawerOpen={()=>{}} />
-      default:
-        return null
-    }
-  }
-
   return (
     <>
       <Drawer
-        title={$t(certDetailTitle[type])}
+        title={$t(certDetailTitle[CertificateCategoryType.SERVER_CERTIFICATES])}
         visible={open}
         onClose={() => setOpen(false)}
         width={550}
@@ -129,17 +52,11 @@ export function ServerCertificateDetailDrawer (
                 <CollapseInactive width={10} /> : <CollapseActive width={10} />}
               ghost
             >
-              {getDetails().map((item, index) => (
-                <Collapse.Panel header={<CollapseTitle>{item.title}</CollapseTitle>}
-                  key={index}>
-                  <CollapsePanelContentWrapper>
-                    <CollapsePanelContent
-                      data={data}
-                      item={item}
-                      setRawInfoDrawer={setRawInfoDrawer} />
-                  </CollapsePanelContentWrapper>
-                </Collapse.Panel>
-              )).filter(item => item.key !== RenderType.DOWNLOAD)}
+              <DownloadSection
+                type={CertificateCategoryType.SERVER_CERTIFICATES}
+                data={data}
+                setRawInfoDrawer={setRawInfoDrawer}
+                setUploadDrawerOpen={()=>{}} />
             </Collapse>
           </CollapseWrapper>
         </Loader>

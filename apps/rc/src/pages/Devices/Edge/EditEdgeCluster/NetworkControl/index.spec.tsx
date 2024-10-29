@@ -393,7 +393,10 @@ describe('Edge Cluster Network Control Tab', () => {
           path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab'
         }
       })
-    expect(await screen.findByTestId('ApCompatibilityToolTip')).toBeVisible()
+    const toolTips = await screen.findAllByTestId('ApCompatibilityToolTip')
+    expect(toolTips.length).toBe(2)
+    expect(toolTips[0]).toBeVisible()
+    expect(toolTips[1]).toBeVisible()
     expect(await screen.findByTestId('EdgeCompatibilityDrawer')).toBeVisible()
   })
 })

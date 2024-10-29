@@ -1,9 +1,17 @@
-import { Col, Form, Input, Row, Space, Typography } from 'antd'
-import { useIntl }                                  from 'react-intl'
+import { Col, Form, Input, Row } from 'antd'
+import { useIntl }               from 'react-intl'
 
-import { StepsForm, useStepFormContext }                                                                                             from '@acx-ui/components'
-import { MdnsProxyForwardingRulesTable, RULES_MAX_COUNT, SpaceWrapper }                                                              from '@acx-ui/rc/components'
-import { EdgeMdnsProxyViewData, MdnsProxyFeatureTypeEnum, MdnsProxyForwardingRule, servicePolicyNameRegExp, transformDisplayNumber } from '@acx-ui/rc/utils'
+import { StepsForm, useStepFormContext }                                from '@acx-ui/components'
+import { MdnsProxyForwardingRulesTable, RULES_MAX_COUNT, SpaceWrapper } from '@acx-ui/rc/components'
+import {
+  EdgeMdnsProxyViewData,
+  MdnsProxyFeatureTypeEnum,
+  MdnsProxyForwardingRule,
+  servicePolicyNameRegExp,
+  transformDisplayNumber
+} from '@acx-ui/rc/utils'
+
+import { StyledText, StyledSubText } from './styledComponents'
 
 export const SettingsForm = () => {
   const { $t } = useIntl()
@@ -42,31 +50,34 @@ export const SettingsForm = () => {
           <Row>
             <Col span={24}>
               <Form.Item
-                name='forwardingRules'
-                label={<Space direction='vertical' size={0}>
-                  <Form.Item noStyle shouldUpdate>{
-                    ({ getFieldValue }) => {
-                      return $t({ defaultMessage: 'Forwarding Rules ({rulesCount})' },
-                        // eslint-disable-next-line max-len
-                        { rulesCount: transformDisplayNumber(getFieldValue('forwardingRules')?.length) })
-                    }
-                  }</Form.Item>
-                  <Typography.Text type='secondary'>
-                    {$t({ defaultMessage: 'Up to {maxCount} rules may be added' },
-                      { maxCount: RULES_MAX_COUNT })}
-                  </Typography.Text>
-                </Space>}
-                rules={[{
-                  required: true,
-                  message: $t({ defaultMessage: 'Please set forwarding rules' })
-                }]}
-                valuePropName='rules'
+                label={<Form.Item noStyle shouldUpdate>
+                  {({ getFieldValue }) => {
+                    return <StyledText>
+                      {$t({ defaultMessage: 'Forwarding Rules ({rulesCount})' },
+                      // eslint-disable-next-line max-len
+                        { rulesCount: transformDisplayNumber(getFieldValue('forwardingRules')?.length) })}
+                    </StyledText>
+                  }}</Form.Item>}
               >
-                <MdnsProxyForwardingRulesTable
-                  featureType={MdnsProxyFeatureTypeEnum.EDGE}
-                  readonly={false}
-                  setRules={handleSetRules}
-                />
+                <StyledSubText>
+                  {$t({ defaultMessage: 'Up to {maxCount} rules may be added' },
+                    { maxCount: RULES_MAX_COUNT })}
+                </StyledSubText>
+                <Form.Item
+                  name='forwardingRules'
+                  rules={[{
+                    required: true,
+                    message: $t({ defaultMessage: 'Please set forwarding rules' })
+                  }]}
+                  valuePropName='rules'
+                  noStyle
+                >
+                  <MdnsProxyForwardingRulesTable
+                    featureType={MdnsProxyFeatureTypeEnum.EDGE}
+                    readonly={false}
+                    setRules={handleSetRules}
+                  />
+                </Form.Item>
               </Form.Item>
             </Col>
           </Row>

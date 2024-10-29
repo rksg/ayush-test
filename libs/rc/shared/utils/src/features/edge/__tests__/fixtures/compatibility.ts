@@ -1,5 +1,8 @@
+import { cloneDeep } from 'lodash'
+
+import { IncompatibilityFeatures }                                                                                                   from '../../../../models/CompatibilityEnum'
 import { CompatibilityEntityTypeEnum }                                                                                               from '../../../../models/EdgeEnum'
-import { EdgeFeatureSets, EdgeServiceCompatibilitiesResponse, EdgeSdLanApCompatibilitiesResponse, VenueEdgeCompatibilitiesResponse } from '../../../../types/edge'
+import { EdgeFeatureSets, EdgeSdLanApCompatibilitiesResponse, EdgeServiceCompatibilitiesResponse, VenueEdgeCompatibilitiesResponse } from '../../../../types/edge'
 
 export const mockEdgeFeatureCompatibilities: EdgeFeatureSets = {
   featureSets: [
@@ -150,6 +153,17 @@ export const mockEdgeSdLanCompatibilities: EdgeServiceCompatibilitiesResponse = 
   ]
 }
 
+export const mockEdgePinCompatibilities = cloneDeep(mockEdgeSdLanCompatibilities)
+mockEdgePinCompatibilities.compatibilities.forEach((item, idx) => {
+  item.serviceId = `pin-${idx+1}`
+  item.clusterEdgeCompatibilities.forEach(item2 => {
+    item2.incompatibleFeatures.forEach((f) => {
+      if (f.featureRequirement.featureName === IncompatibilityFeatures.SD_LAN)
+        f.featureRequirement.featureName = IncompatibilityFeatures.PIN
+    })
+  })
+})
+
 export const mockEdgeHqosCompatibilities: EdgeServiceCompatibilitiesResponse = {
   compatibilities: [
     {
@@ -162,6 +176,36 @@ export const mockEdgeHqosCompatibilities: EdgeServiceCompatibilitiesResponse = {
             {
               featureRequirement: {
                 featureName: 'HQoS',
+                requiredFw: '2.1.0.200'
+              },
+              incompatibleDevices: [
+                {
+                  firmware: '2.1.0.100',
+                  count: 1
+                }
+              ]
+            }
+          ],
+          total: 6,
+          incompatible: 1
+        }
+      ]
+    }
+  ]
+}
+
+export const mockEdgeDhcpCompatibilities: EdgeServiceCompatibilitiesResponse = {
+  compatibilities: [
+    {
+      serviceId: '1',
+      clusterEdgeCompatibilities: [
+        {
+          identityType: CompatibilityEntityTypeEnum.CLUSTER,
+          id: 'edgeCluster-1',
+          incompatibleFeatures: [
+            {
+              featureRequirement: {
+                featureName: 'DHCP',
                 requiredFw: '2.1.0.200'
               },
               incompatibleDevices: [

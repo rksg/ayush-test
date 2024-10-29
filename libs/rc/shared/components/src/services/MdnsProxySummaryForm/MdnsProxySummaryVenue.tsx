@@ -32,7 +32,7 @@ export function MdnsProxySummaryVenues (props: {
                       {
                         deviceCount,
                         featureType: featureType === MdnsProxyFeatureTypeEnum.EDGE
-                          ? $t({ defaultMessage: 'RUCKUS Edges' })
+                          ? $t({ defaultMessage: 'Clusters' })
                           : $t({ defaultMessage: 'APs' })
                       })
                   })

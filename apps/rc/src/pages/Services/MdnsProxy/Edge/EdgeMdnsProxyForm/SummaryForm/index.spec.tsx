@@ -37,7 +37,7 @@ describe('Summary form', () => {
     screen.getByRole('row', { name: 'AirPrint 33 66' })
     screen.getByRole('row', { name: '_testCXCX._tcp. (Other) 5 120' })
 
-    expect(screen.getByText('Venues & RUCKUS Edges (2)')).not.toBeNull()
+    expect(screen.getByText('Venues & RUCKUS Edge Clusters (2)')).not.toBeNull()
     const txt = screen.getByText('Mock Venue 1')
     expect(txt.parentElement?.parentElement).toHaveTextContent('Mock Venue 1(Edge Cluster 1)')
   })
@@ -62,8 +62,8 @@ describe('Summary form', () => {
     </Provider>)
 
     await screen.findByText('test multiple')
-    expect(screen.getByText('Venues & RUCKUS Edges (2)')).not.toBeNull()
+    expect(screen.getByText('Venues & RUCKUS Edge Clusters (2)')).not.toBeNull()
     const txt = screen.getByText('Mock Venue 1')
-    expect(txt.parentElement?.parentElement).toHaveTextContent('Mock Venue 1(2 RUCKUS Edges)')
+    expect(txt.parentElement?.parentElement).toHaveTextContent('Mock Venue 1(2 Clusters)')
   })
 })

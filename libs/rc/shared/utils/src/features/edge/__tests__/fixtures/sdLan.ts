@@ -317,6 +317,81 @@ export const mockedMvSdLanDataList = [{
   guestEdgeClusterTunnelInfo: []
 }] as EdgeMvSdLanViewData[]
 
+export const mockSdLanDataForPinMutuallyExclusive = [{
+  id: 'mocked-sd-lan-1',
+  name: 'Mocked_SDLAN_1',
+  tenantId: '0f18d1cf714b4bcf94bef4654f1ab29c',
+  venueId: 'mock_venue_3',
+  venueName: 'Mocked-Venue-3',
+  edgeClusterId: 'clusterId_1',
+  edgeClusterName: 'SE_Cluster 1',
+  guestEdgeClusterId: 'clusterId_2',
+  guestEdgeClusterName: 'SE_Cluster 2',
+  tunnelProfileId: 'aa3ecf6f283448d5bb8c0ce86790b843',
+  tunnelProfileName: 'Mocked_tunnel-1',
+  guestTunnelProfileId: 'aa3ecf6f283448d5bb8c0ce86790b845',
+  guestTunnelProfileName: 'Mocked_tunnel-3',
+  isGuestTunnelEnabled: true,
+  tunneledWlans: [{
+    venueId: 'a307d7077410456f8f1a4fc41d861567',
+    venueName: 'Mocked-Venue-1',
+    networkId: 'network3',
+    networkName: 'Mocked_network3',
+    wlanId: '3'
+  }, {
+    venueId: 'a307d7077410456f8f1a4fc41d861567',
+    venueName: 'Mocked-Venue-1',
+    networkId: 'network5',
+    networkName: 'Mocked_network_5',
+    wlanId: '6'
+  }],
+  tunneledGuestWlans: [{
+    venueId: 'a307d7077410456f8f1a4fc41d861567',
+    venueName: 'Mocked-Venue-1',
+    networkId: 'network6',
+    networkName: 'Mocked_network_6',
+    wlanId: '3'
+  }],
+  edgeAlarmSummary: {
+    edgeId: 'mocked-edge-1',
+    severitySummary: {
+      critical: 1
+    },
+    totalCount: 1
+  },
+  serviceVersion: '1.0.0.100',
+  vxlanTunnelNum: 12,
+  vlanNum: 37,
+  guestVlanNum: 20,
+  guestVxlanTunnelNum: 10,
+  vlans: ['2-9', '20', '22', '62-63'],
+  guestVlans: ['11-15', '30', '32', '51-53'],
+  edgeClusterTunnelInfo: [
+    {
+      serialNumber: 'serialNumber-1',
+      activeApCount: 3,
+      allocatedApCount: 10
+    },
+    {
+      serialNumber: 'serialNumber-2',
+      activeApCount: 6,
+      allocatedApCount: 10
+    }
+  ],
+  guestEdgeClusterTunnelInfo: [
+    {
+      serialNumber: 'serialNumber-1',
+      activeNodeCount: 2,
+      allocatedNodeCount: 2
+    },
+    {
+      serialNumber: 'serialNumber-2',
+      activeNodeCount: 1,
+      allocatedNodeCount: 2
+    }
+  ]
+}]
+
 export const mockApListForApTableTest = {
   fields: [
     'serialNumber',
