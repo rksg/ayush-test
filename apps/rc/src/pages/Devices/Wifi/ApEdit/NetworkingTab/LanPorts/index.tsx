@@ -43,6 +43,7 @@ import { ApDataContext, ApEditContext } from '../..'
 
 const useFetchIsVenueDhcpEnabled = () => {
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isServiceRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   const [getVenueSettings] = useLazyGetVenueSettingsQuery()
   const [getDhcpList] = useLazyGetDHCPProfileListViewModelQuery()
@@ -55,7 +56,8 @@ const useFetchIsVenueDhcpEnabled = () => {
         payload: {
           fields: ['id', 'venueIds'],
           filters: { venueIds: [venueId] }
-        }
+        },
+        enableRbac: isServiceRbacEnabled
       }).unwrap()
 
       isDhcpEnabled = !!dhcpList?.data[0]
