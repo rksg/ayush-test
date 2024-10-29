@@ -206,13 +206,6 @@ export default function WorkflowTable () {
     tableQuery.setPayload(payload)
   }
 
-  const isAboveMaximumWorkflowCount= function ():boolean {
-    if(!tableQuery.data?.totalCount || tableQuery.data?.totalCount >= 500) {
-      return true
-    }
-    return false
-  }
-
   return (
     <Loader
       states={[
@@ -240,7 +233,7 @@ export default function WorkflowTable () {
               oper: PolicyOperation.CREATE
             })}
           >
-            <Button disabled={isAboveMaximumWorkflowCount()} type='primary'>
+            <Button type='primary'>
               { $t({ defaultMessage: 'Add Workflow' }) }
             </Button>
           </TenantLink>
