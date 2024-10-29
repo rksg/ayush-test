@@ -99,6 +99,17 @@ describe('SubInterfaceSettings', () => {
       }),
       expect.anything()
     )
+
+    expect(await screen.findByText('Pass')).toBeVisible()
+  })
+
+  it('should render mismatch when sub-interface counts are inconsistent', async () => {
+    const cxtData = _.cloneDeep(defaultCxtData)
+    const port = cxtData?.clusterSubInterfaceSettings?.nodes?.[0]?.ports?.[0]
+    port?.subInterfaces?.pop()
+    renderSettings(cxtData)
+
+    expect(await screen.findByText('Mismatch')).toBeVisible()
   })
 
   it('Apply & Finish', async () => {

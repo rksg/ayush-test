@@ -1,5 +1,6 @@
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import userEvent     from '@testing-library/user-event'
+import { cloneDeep } from 'lodash'
+import { rest }      from 'msw'
 
 import { edgeApi, networkApi, pinApi, switchApi, venueApi } from '@acx-ui/rc/services'
 import {
@@ -14,7 +15,8 @@ import {
   ServiceOperation,
   ServiceType,
   SwitchUrlsInfo,
-  VenueFixtures
+  VenueFixtures,
+  EdgeCompatibilityFixtures
 } from '@acx-ui/rc/utils'
 import { Provider, store }                             from '@acx-ui/store'
 import {
@@ -32,6 +34,7 @@ import PersonalIdentityNetworkTable from '.'
 const { mockVenueOptions } = VenueFixtures
 const { mockEdgeClusterList } = EdgeGeneralFixtures
 const { mockPinStatsList } = EdgePinFixtures
+const { mockEdgePinCompatibilities } = EdgeCompatibilityFixtures
 
 const mockedUsedNavigate = jest.fn()
 const mockUseLocationValue = {
@@ -82,7 +85,10 @@ describe('PersonalIdentityNetworkTable', () => {
       rest.post(
         SwitchUrlsInfo.getSwitchList.url,
         (_req, res, ctx) => res(ctx.json(mockedSwitchOptions))
-      )
+      ),
+      rest.post(
+        EdgeUrlsInfo.getPinEdgeCompatibilities.url,
+        (_, res, ctx) => res(ctx.json(mockEdgePinCompatibilities)))
     )
   })
 
@@ -100,6 +106,8 @@ describe('PersonalIdentityNetworkTable', () => {
 
     expect(rows[0]).toHaveTextContent(/nsg1\s*Edge1\s*1\s*0\s*Poor\s*No/)
     expect(rows[1]).toHaveTextContent(/nsg2\s*Edge2\s*1\s*0\s*Unknown\s*No/)
+    const fwWarningIcon = screen.queryAllByTestId('WarningCircleSolid')
+    expect(fwWarningIcon.length).toBe(0)
   })
 
 
@@ -219,5 +227,32 @@ describe('PersonalIdentityNetworkTable', () => {
     await waitFor(() => {
       expect(mockedDeleteEdgePin).toBeCalled()
     })
+  })
+
+  it('should have compatible warning', async () => {
+    // eslint-disable-next-line max-len
+    const mockedData = cloneDeep(mockPinStatsList.data.slice(0, 1))
+    mockedData[0].id = mockEdgePinCompatibilities.compatibilities[0].serviceId
+    mockedData[0].name = 'compatible test'
+
+    mockServer.use(
+      rest.post(
+        EdgePinUrls.getEdgePinStatsList.url,
+        (_req, res, ctx) => res(ctx.json({ data: mockedData })))
+    )
+
+    render(
+      <Provider>
+        <PersonalIdentityNetworkTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    const row1 = await screen.findByRole('row', { name: new RegExp('compatible test') })
+    const fwWarningIcon = await within(row1).findByTestId('WarningCircleSolid')
+    await userEvent.hover(fwWarningIcon)
+    expect(await screen.findByRole('tooltip', { hidden: true }))
+      .toHaveTextContent('RUCKUS Edges')
   })
 })

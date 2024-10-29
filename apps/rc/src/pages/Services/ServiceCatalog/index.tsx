@@ -20,6 +20,15 @@ import { ServiceCard } from '../ServiceCard'
 
 import * as UI from './styledComponents'
 
+interface ServiceCardItem {
+  title: string
+  items: {
+    type: ServiceType
+    categories: RadioCardCategory[]
+    disabled?: boolean
+    helpIcon?: React.ReactNode
+  }[]
+}
 
 export default function ServiceCatalog () {
   const { $t } = useIntl()
@@ -45,12 +54,22 @@ export default function ServiceCatalog () {
         {
           type: ServiceType.EDGE_DHCP,
           categories: [RadioCardCategory.EDGE],
+          helpIcon: <ApCompatibilityToolTip
+            title=''
+            visible
+            onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.PIN)}
+          />,
           disabled: !isEdgeHaReady || !isEdgeDhcpHaReady
         },
         { type: ServiceType.DPSK, categories: [RadioCardCategory.WIFI] },
         {
           type: ServiceType.PIN,
           categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
+          helpIcon: <ApCompatibilityToolTip
+            title=''
+            visible
+            onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.PIN)}
+          />,
           disabled: !isEdgePinReady
         },
         {
@@ -104,7 +123,7 @@ export default function ServiceCatalog () {
         }
       ]
     }
-  ]
+  ] as ServiceCardItem []
 
   return (
     <>

@@ -2,7 +2,6 @@
 import { useMemo } from 'react'
 
 import { Form }    from 'antd'
-import { omit }    from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Loader, PageHeader }                                             from '@acx-ui/components'
@@ -13,7 +12,8 @@ import {
   ServiceOperation,
   ServiceType,
   getServiceListRoutePath,
-  getServiceRoutePath
+  getServiceRoutePath,
+  transformEdgeMdnsRulesToViewModelType
 } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 
@@ -55,12 +55,7 @@ const EditEdgeMdnsProxy = () => {
     return {
       id: params.serviceId,
       ...data,
-      forwardingRules: data.forwardingRules.map((r, idx) =>
-        ({
-          ...omit(r, 'serviceType'),
-          service: r.serviceType,
-          ruleIndex: idx
-        })),
+      forwardingRules: transformEdgeMdnsRulesToViewModelType(data.forwardingRules),
       activations: viewData?.data[0].activations
     } as EdgeMdnsProxyViewData
   }, [data, viewData])
