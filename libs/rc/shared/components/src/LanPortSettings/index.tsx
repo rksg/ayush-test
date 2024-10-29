@@ -160,8 +160,12 @@ export function LanPortSettings (props: {
   useEffect(()=> {
     if (!isLoadingEthPortList && ethernetPortListQuery?.data) {
       const eth = getOriginalEthProfile(ethernetPortListQuery?.data)
-      form.setFieldValue(['lan', index, 'ethernetPortProfileId'],
-        ethernetProfileCreateId ?? (eth?.id ?? null))
+
+      if(eth) {
+        form.setFieldValue(['lan', index, 'ethernetPortProfileId'],
+          ethernetProfileCreateId ?? (eth?.id ?? null))
+      }
+
       setCurrentEthernetPortData(eth)
       setEthernetProfileCreateId(undefined)
       if (onGUIChanged) {
@@ -186,10 +190,9 @@ export function LanPortSettings (props: {
     if (isLoadingEthPortList || !ethernetPortList) {
       return undefined
     }
-
     const portIndex = index + 1
     let ethProfile = undefined
-    if (venueId) {
+    if (venueId && !serialNumber) {
       ethProfile = ethernetPortList?.filter(
         m => m.venueIds && m.venueIds.includes(venueId) &&
         m.venueActivations?.map(v => v.apModel).includes((selectedModel as VenueLanPorts).model) &&
