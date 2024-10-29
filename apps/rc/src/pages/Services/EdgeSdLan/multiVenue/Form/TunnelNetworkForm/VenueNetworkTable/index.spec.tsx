@@ -184,7 +184,7 @@ describe('Tunneled Venue Networks Table', () => {
     const { result: stepFormRef } = renderHook(useMockedFormHook)
 
     render(<MockedTargetComponent
-      ctxValues={{ allSdLans: mockedOverlapSdLans }}
+      ctxValues={{ allSdLans: mockedOverlapSdLans , allPins: [] }}
       form={stepFormRef.current}
       editMode={true}
     />, { route: { params: { tenantId: 't-id' } } })

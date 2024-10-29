@@ -1,8 +1,7 @@
-import userEvent            from '@testing-library/user-event'
-import { Form }             from 'antd'
-import { mockPinStatsList } from 'libs/rc/shared/utils/src/features/edge/__tests__/fixtures/pin'
-import { cloneDeep, get }   from 'lodash'
-import { rest }             from 'msw'
+import userEvent          from '@testing-library/user-event'
+import { Form }           from 'antd'
+import { cloneDeep, get } from 'lodash'
+import { rest }           from 'msw'
 
 import { StepsForm, StepsFormProps } from '@acx-ui/components'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
@@ -14,9 +13,7 @@ import {
   EdgeSdLanFixtures,
   EdgeCompatibilityFixtures,
   EdgeUrlsInfo,
-  EdgePinFixtures,
-  EdgePinUrls
-} from '@acx-ui/rc/utils'
+  EdgePinFixtures } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
@@ -189,8 +186,7 @@ describe('Edge SD-LAN form: settings', () => {
     const { result: stepFormRef } = renderHook(useMockedFrom)
     render(<MockedTargetComponent
       form={stepFormRef.current}
-      ctxValues={{ allSdLans: mockedSdLanDuplicateEdge,
-        allPins: [{ ...mockPinListForMutullyExclusive.data[0] }] }}
+      ctxValues={{ allSdLans: mockedSdLanDuplicateEdge, allPins: [] }}
     />)
 
     const formBody = await screen.findByTestId('steps-form-body')

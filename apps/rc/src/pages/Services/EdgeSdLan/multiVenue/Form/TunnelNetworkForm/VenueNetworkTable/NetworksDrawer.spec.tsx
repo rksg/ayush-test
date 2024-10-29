@@ -3,13 +3,12 @@ import {
   waitFor,
   within
 } from '@testing-library/react'
-import userEvent            from '@testing-library/user-event'
-import { mockPinStatsList } from 'libs/rc/shared/utils/src/features/edge/__tests__/fixtures/pin'
-import { rest }             from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { networkApi }                                        from '@acx-ui/rc/services'
-import { CommonRbacUrlsInfo, EdgePinUrls, VlanPoolRbacUrls } from '@acx-ui/rc/utils'
-import { Provider, store }                                   from '@acx-ui/store'
+import { networkApi }                           from '@acx-ui/rc/services'
+import { CommonRbacUrlsInfo, VlanPoolRbacUrls } from '@acx-ui/rc/utils'
+import { Provider, store }                      from '@acx-ui/store'
 import {
   mockServer,
   render,
