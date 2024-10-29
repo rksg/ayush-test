@@ -8,18 +8,24 @@ export class NewMdnsProxyForwardingRule extends BonjourGatewayRule {
   ruleIndex?: number
 }
 
-export interface MdnsProxyScopeData {
+export interface ApMdnsProxyScopeData {
   venueId: string;
   venueName?: string;
   aps: { serialNumber: string, name?: string }[]
+}
+
+export interface EdgeMdnsProxyScopeData {
+  venueId: string;
+  venueName?: string;
+  edgeClusters: { id: string, name?: string }[]
 }
 
 export interface MdnsProxyFormData {
   id?: string;
   name: string;
   rules?: MdnsProxyForwardingRule[];
-  scope?: MdnsProxyScopeData[];
-  oldScope?: MdnsProxyScopeData[];
+  scope?: ApMdnsProxyScopeData[];
+  oldScope?: ApMdnsProxyScopeData[];
 }
 
 export interface NewMdnsProxyData {

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { Intent }         from '../../useIntentDetailsQuery'
 import { categoryStyles } from '../ComparisonDonutChart/services'
 
@@ -41,6 +42,57 @@ export const mocked = {
     }
   }
 } as unknown as Intent
+export const mockNetworkHierarchy = {
+  network: {
+    venueHierarchy: [{
+      id: 'id1',
+      name: 'Venue 1',
+      aps: [
+        { name: 'AP 1', mac: '00:00:00:00:00:01', model: 'R350', firmware: '6.2.1.103.2538', serial: '431802006001' },
+        { name: 'AP 2', mac: '00:00:00:00:00:02', model: 'R350', firmware: '6.2.1.103.2538', serial: '431802006002' }
+      ]
+    }, {
+      id: 'id2',
+      name: 'Venue 2',
+      aps: [
+        { name: 'AP 3', mac: '00:00:00:00:00:03', model: 'R350', firmware: '6.2.1.103.2538', serial: '431802006003' },
+        { name: 'AP 4', mac: '00:00:00:00:00:04', model: 'R350', firmware: '6.2.1.103.2538', serial: '431802006004' },
+        { name: 'AP 5', mac: '00:00:00:00:00:05', model: 'R350', firmware: '6.2.1.103.2538', serial: '431802006005' }
+      ]
+    }]
+  }
+}
+export const mockApHierarchy = {
+  network: {
+    apHierarchy: [{ name: 'system 1', type: 'system',
+      children: [
+        { name: '1||Administration Domain', type: 'domain',
+          children: [{ name: 'zone 1', type: 'zone',
+            children: [{ name: 'group 1', type: 'apGroup' }]
+          }] },
+        {
+          name: '2||domain', type: 'domain',
+          children: [{ name: 'zone 2', type: 'zone',
+            children: [{ name: 'group 2', type: 'apGroup',
+              children: [
+                { name: 'ap 1', type: 'ap', mac: '00:00:00:00:00:01', model: 'R350', firmware: '6.2.1.103.253' },
+                { name: 'ap 2', type: 'ap', mac: '00:00:00:00:00:02', model: 'R350', firmware: '6.2.1.103.253' },
+                { name: 'ap 3', type: 'ap', mac: '00:00:00:00:00:03', model: 'R500', firmware: '6.2.1.103.253' },
+                { name: 'ap 4', type: 'ap', mac: '00:00:00:00:00:04', model: 'R760', firmware: '6.0.0.0.0' },
+                { name: 'ap 5', type: 'ap', mac: '00:00:00:00:00:05', model: 'R350', firmware: '6.2.1.103.253' },
+                { name: 'ap 6', type: 'ap', mac: 'Unknown', model: 'Unknown', firmware: 'Unknown' }
+              ] },
+            { name: 'group 4', type: 'apGroup' }
+            ]
+          }]
+        }]
+    },
+    { name: 'system 2', type: 'system', children: [] },
+    { name: 'system 3', type: 'system', children: [{ name: 'zone 1', type: 'zone' }] },
+    { name: 'system 4', type: 'system', children: [] },
+    { name: 'system 5', type: 'system', children: [{ name: 'zone 1', type: 'zone' }] }
+    ] }
+}
 
 export const mockKpiData = {
   kpi: {

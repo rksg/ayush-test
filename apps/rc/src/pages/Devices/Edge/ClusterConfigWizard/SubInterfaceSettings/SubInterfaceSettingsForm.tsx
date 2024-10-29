@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 
+import { Form }    from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
@@ -63,13 +64,15 @@ export const SubInterfaceSettingsForm = (props: SubInterfaceSettingsFormProps) =
             }
             key={`port_${portId}`}
             children={
-              <PortSubInterfaceTable
-                serialNumber={serialNumber}
-                currentTab={currentTab}
-                ip={item.ip!}
-                mac={item.mac}
-                portId={portId}
-              />
+              <Form.Item name={['portSubInterfaces', serialNumber, portId]}>
+                <PortSubInterfaceTable
+                  serialNumber={serialNumber}
+                  currentTab={currentTab}
+                  ip={item.ip!}
+                  mac={item.mac}
+                  portId={portId}
+                />
+              </Form.Item>
             }
             disabled={item.isLagMember}
           />
@@ -81,13 +84,15 @@ export const SubInterfaceSettingsForm = (props: SubInterfaceSettingsFormProps) =
             tab={$t({ defaultMessage: 'LAG {id}' }, { id: item.id })}
             key={'lag_' + item.id}
             children={
-              <LagSubInterfaceTable
-                serialNumber={serialNumber}
-                currentTab={currentTab}
-                ip={item.ip ?? ''}
-                mac={item.mac ?? ''}
-                lagId={item.id}
-              />
+              <Form.Item name={['lagSubInterfaces', serialNumber, item.id]}>
+                <LagSubInterfaceTable
+                  serialNumber={serialNumber}
+                  currentTab={currentTab}
+                  ip={item.ip ?? ''}
+                  mac={item.mac ?? ''}
+                  lagId={item.id}
+                />
+              </Form.Item>
             }
           />
         )

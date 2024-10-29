@@ -55,8 +55,8 @@ describe('Edge SD-LAN Detail - EdgeInfoDrawer', () => {
     )
 
     expect(screen.getByText('Cluster 2: RUCKUS Edges')).toBeVisible()
-    expect(await screen.findByText('# of Active APs')).toBeVisible()
-    expect(await screen.findByText('# of Allocated APs')).toBeVisible()
+    expect(await screen.findByText('Active APs')).toBeVisible()
+    expect(await screen.findByText('Primary APs')).toBeVisible()
     // eslint-disable-next-line max-len
     expect(await screen.findByRole('row', { name: 'Smart Edge 1 Operational Active 3 10' })).toBeVisible()
     // eslint-disable-next-line max-len
@@ -83,8 +83,8 @@ describe('Edge SD-LAN Detail - EdgeInfoDrawer', () => {
     )
 
     expect(screen.getByText('Cluster 1: RUCKUS Edges')).toBeVisible()
-    expect(await screen.findByText('# of Active RUCKUS Edges')).toBeVisible()
-    expect(await screen.findByText('# of Allocated RUCKUS Edges')).toBeVisible()
+    expect(await screen.findByText('Active SEs')).toBeVisible()
+    expect(await screen.findByText('Primary SEs')).toBeVisible()
     // eslint-disable-next-line max-len
     expect(await screen.findByRole('row', { name: 'Smart Edge 1 Operational Active 2 2' })).toBeVisible()
     // eslint-disable-next-line max-len

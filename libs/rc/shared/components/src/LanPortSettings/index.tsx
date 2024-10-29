@@ -136,7 +136,8 @@ export function LanPortSettings (props: {
     useGetEthernetPortProfileViewDataListQuery({
       payload: {
         sortField: 'name',
-        sortOrder: 'ASC'
+        sortOrder: 'ASC',
+        pageSize: 1000
       }
     }, {
       skip: isTemplate || !isEthernetPortProfileEnabled,

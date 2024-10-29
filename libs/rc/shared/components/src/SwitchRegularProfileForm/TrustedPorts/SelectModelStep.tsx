@@ -45,6 +45,7 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
   const [optionListForSlot4, setOptionListForSlot4] = useState<ModelsType[]>([])
 
   const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
+  const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
 
   const [trustedPorts, setTrustedPorts] =
     useState<TrustedPort>({
@@ -58,6 +59,7 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
   useEffect(() => {
     if(ICX_MODELS_MODULES){
       const modules = Object.keys(ICX_MODELS_MODULES)
+        .filter(key => isSupport8100 || key !== 'ICX8100')
       const familiesData = modules.map(key => {
         return { label: `ICX-${key.split('ICX')[1]}`, value: key }
       })
@@ -126,6 +128,13 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
     }
 
     if (family === 'ICX8200') {
+      setModuleSelectionEnable(false)
+      form.setFieldValue('enableSlot2', true)
+      form.setFieldValue('selectedOptionOfSlot2', optionListForSlot2[0]?.value)
+      setModule2SelectionEnable(false)
+    }
+
+    if (family === 'ICX8100') {
       setModuleSelectionEnable(false)
       form.setFieldValue('enableSlot2', true)
       form.setFieldValue('selectedOptionOfSlot2', optionListForSlot2[0]?.value)
