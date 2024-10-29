@@ -90,9 +90,10 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
     events: build.query<TableResult<Event>, RequestPayload>({
       providesTags: [{ type: 'Event', id: 'LIST' }],
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const timeFilter = latestTimeFilter(arg.payload)
         const eventListInfo = {
           ...createHttpRequest(CommonUrlsInfo.getEventList, arg.params),
-          body: latestTimeFilter(arg.payload)
+          body: timeFilter
         }
         const baseListQuery = await fetchWithBQ(eventListInfo)
         const baseList = baseListQuery.data as TableResult<EventBase>
@@ -102,7 +103,8 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
 
         const metaListInfo = getMetaList<EventBase>(baseList, {
           urlInfo: createHttpRequest(CommonUrlsInfo.getEventListMeta, arg.params),
-          fields: metaFields
+          fields: metaFields,
+          filters: timeFilter.filters
         })
         const metaListQuery = await fetchWithBQ(metaListInfo)
         const metaList = metaListQuery.data as TableResult<EventMeta>
@@ -129,9 +131,10 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
     adminLogs: build.query<TableResult<AdminLog>, RequestPayload>({
       providesTags: [{ type: 'AdminLog', id: 'LIST' }],
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const timeFilter = latestTimeFilter(arg.payload)
         const adminlogListInfo = {
           ...createHttpRequest(CommonUrlsInfo.getEventList, arg.params),
-          body: latestTimeFilter(arg.payload)
+          body: timeFilter
         }
         const baseListQuery = await fetchWithBQ(adminlogListInfo)
         const baseList = baseListQuery.data as TableResult<AdminLogBase>
@@ -141,7 +144,8 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
 
         const metaListInfo = getMetaList<AdminLogBase>(baseList, {
           urlInfo: createHttpRequest(CommonUrlsInfo.getEventListMeta, arg.params),
-          fields: metaFields
+          fields: metaFields,
+          filters: timeFilter.filters
         })
         const metaListQuery = await fetchWithBQ(metaListInfo)
         const metaList = metaListQuery.data as TableResult<AdminLogMeta>
