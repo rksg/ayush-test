@@ -2,6 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader } from '@acx-ui/components'
 import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
+import { MdnsProxyServiceInfo }                 from '@acx-ui/rc/components'
 import { useGetMdnsProxyQuery }                 from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -16,7 +17,6 @@ import {
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 import { MdnsProxyInstancesTable } from './MdnsProxyInstancesTable'
-import { MdnsProxyOverview }       from './MdnsProxyOverview'
 
 export default function MdnsProxyDetail () {
   const { $t } = useIntl()
@@ -63,7 +63,7 @@ export default function MdnsProxyDetail () {
       />
       <GridRow>
         <GridCol col={{ span: 24 }}>
-          {data && <MdnsProxyOverview data={data} />}
+          {data && <MdnsProxyServiceInfo rules={data.rules} />}
         </GridCol>
         <GridCol col={{ span: 24 }}>
           {data && <MdnsProxyInstancesTable apList={getApList()} />}

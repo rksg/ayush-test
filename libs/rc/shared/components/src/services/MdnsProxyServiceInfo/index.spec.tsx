@@ -4,15 +4,14 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { MdnsProxyOverview } from './MdnsProxyOverview'
+import { MdnsProxyServiceInfo } from './'
 
-
-describe('MdnsProxyOverview', () => {
+describe('MdnsProxyServiceInfo', () => {
 
   it('should render table', async () => {
     render(
       <Provider>
-        <MdnsProxyOverview data={{ name: '', rules: [] }} />
+        <MdnsProxyServiceInfo rules={[]} />
       </Provider>)
     expect(await screen.findByText('Forwarding Rules')).toBeInTheDocument()
   })

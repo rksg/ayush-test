@@ -67,5 +67,10 @@ export const EdgeDhcpUrls: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/edgeDhcpServices/:id/venues/:venueId/edgeClusters/:clusterId',
     newApi: true
+  },
+  getDhcpEdgeCompatibilities: {
+    method: 'post',
+    url: '/edgeDhcpServices/edgeCompatibilities/query',
+    newApi: true
   }
 }

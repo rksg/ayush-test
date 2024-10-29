@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
@@ -8,7 +10,7 @@ import { useParams }                               from '@acx-ui/react-router-do
 import * as UI from './styledComponents'
 
 interface CompatibleAlertBannerProps {
-  title: string,
+  title: string | ReactNode,
   cacheKey?: string,
   onClick: () => void,
   onClose?: () => void

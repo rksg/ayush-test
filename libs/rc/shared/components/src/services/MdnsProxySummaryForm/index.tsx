@@ -64,7 +64,7 @@ export const MdnsProxySummaryForm = (props: MdnsProxySummaryProps) => {
                 $t({ defaultMessage: '<VenuePlural></VenuePlural> & {featureType} ({deviceCount})' },
                   {
                     featureType: featureType === MdnsProxyFeatureTypeEnum.EDGE
-                      ? $t({ defaultMessage: 'RUCKUS Edges' })
+                      ? $t({ defaultMessage: 'RUCKUS Edge Clusters' })
                       : $t({ defaultMessage: 'APs' }),
                     deviceCount
                   })
