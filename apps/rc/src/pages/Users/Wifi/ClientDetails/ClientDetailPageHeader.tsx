@@ -41,19 +41,25 @@ function ClientDetailPageHeader () {
       macAddress: [clientId]
     }
   } }, { skip: !isWifiRbacEnabled || status !== ClientStatusEnum.CONNECTED })?.data?.data[0]
+
+  // non-rbac API or History Client
   const { data: result } = useGetClientOrHistoryDetailQuery(
     { params: {
       tenantId,
       clientId,
       status
     } }, { skip: isWifiRbacEnabled && status === ClientStatusEnum.CONNECTED })
-  const clentDetails = (status ? { hostname: result?.data?.hostname } : result?.data) as Client
+
+  const clentDetails = (status === ClientStatusEnum.HISTORICAL
+    ? { hostname: result?.data?.hostname }
+    : result?.data) as Client
 
   /* eslint-disable max-len */
-  const venueId = isWifiRbacEnabled ? clientInfo?.venueInformation.id : clentDetails.venueId
-  const apSerialNumber = isWifiRbacEnabled ? clientInfo?.apInformation.serialNumber : clentDetails.apSerialNumber
-  const macAddress = isWifiRbacEnabled ? clientInfo?.macAddress : clentDetails.clientMac
   const hostname = isWifiRbacEnabled ? clientInfo?.hostname : clentDetails?.hostname
+  const macAddress = isWifiRbacEnabled ? clientInfo?.macAddress : clentDetails?.clientMac
+  const venueId = isWifiRbacEnabled ? clientInfo?.venueInformation.id : clentDetails?.venueId
+  const apSerialNumber = isWifiRbacEnabled ? clientInfo?.apInformation.serialNumber : clentDetails?.apSerialNumber
+  const networkType = isWifiRbacEnabled ? clientInfo?.networkInformation.type : clentDetails?.networkType
   /* eslint-enable max-len */
 
   const [disconnectClient] = useDisconnectClientMutation()
@@ -130,9 +136,11 @@ function ClientDetailPageHeader () {
         // eslint-disable-next-line max-len
         ...((wifiEDAClientRevokeToggle &&
             (status === ClientStatusEnum.CONNECTED) &&
-            isEqualCaptivePortal(result?.data.networkType)) ?
-          [{ label: $t({ defaultMessage: 'Revoke Network Access' }),key: 'revoke-client' }] :
-          [])
+            isEqualCaptivePortal(networkType)) ?
+          [{
+            label: $t({ defaultMessage: 'Revoke Network Access' }),
+            key: 'revoke-client'
+          }] : [])
       ]}
     />
   )
