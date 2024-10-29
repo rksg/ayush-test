@@ -240,8 +240,11 @@ describe('PersonalIdentityNetworkForm - SmartEdgeForm', () => {
         </PersonalIdentityNetworkFormContext.Provider>
       </Provider>,
       { route: { params, path: editPinPath } })
+
+    const clusterDropdown = await screen.findByRole('combobox', { name: 'Cluster' })
+    expect(clusterDropdown).toBeDisabled()
     await user.selectOptions(
-      await screen.findByRole('combobox', { name: 'Cluster' }),
+      clusterDropdown,
       await screen.findByRole('option', { name: 'Edge Cluster 1' })
     )
     const dhcpSelect = screen.getByRole('combobox', { name: 'DHCP Service' })

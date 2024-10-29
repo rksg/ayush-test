@@ -51,6 +51,11 @@ export default function ServiceCatalog () {
         {
           type: ServiceType.PIN,
           categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
+          helpIcon: <ApCompatibilityToolTip
+            title=''
+            visible
+            onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.PIN)}
+          />,
           disabled: !isEdgePinReady
         },
         {
