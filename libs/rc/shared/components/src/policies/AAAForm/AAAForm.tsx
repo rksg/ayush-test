@@ -19,7 +19,8 @@ import {
   useActivateClientCertificateOnRadiusMutation,
   useDeactivateClientCertificateOnRadiusMutation,
   useActivateServerCertificateOnRadiusMutation,
-  useDeactivateServerCertificateOnRadiusMutation
+  useDeactivateServerCertificateOnRadiusMutation,
+  useAaaPolicyCertificateQuery
 } from '@acx-ui/rc/services'
 import {
   AAAPolicyType,
@@ -30,8 +31,7 @@ import {
   useConfigTemplateQueryFnSwitcher,
   usePolicyListBreadcrumb,
   usePolicyPreviousPath,
-  useConfigTemplate,
-  ApiVersionEnum
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
@@ -63,11 +63,10 @@ export const AAAForm = (props: AAAFormProps) => {
   const addRadSecActivations = useAddRadSecActivations()
   const updateRadSecActivations = useUpdateRadSecActivations()
   const { data } = useConfigTemplateQueryFnSwitcher({
-    useQueryFn: useAaaPolicyQuery,
+    useQueryFn: supportRadsec ? useAaaPolicyCertificateQuery : useAaaPolicyQuery,
     useTemplateQueryFn: useGetAAAPolicyTemplateQuery,
     skip: !isEdit,
-    enableRbac,
-    apiVersion: supportRadsec ? ApiVersionEnum.v1_1 : (enableRbac ? ApiVersionEnum.v1 : undefined)
+    enableRbac
   })
 
   const [ createInstance ] = useConfigTemplateMutationFnSwitcher({
@@ -84,7 +83,21 @@ export const AAAForm = (props: AAAFormProps) => {
     if (data) {
       formRef?.current?.resetFields()
       formRef?.current?.setFieldsValue(data)
-      setSaveState({ ...saveState, ...data })
+      if (supportRadsec && data.radSecOptions) {
+        const newRadSecOptions = {
+          ...data.radSecOptions,
+          originalCertificateAuthorityId: data.radSecOptions?.certificateAuthorityId ?? undefined,
+          originalClientCertificateId: data.radSecOptions.clientCertificateId ?? undefined,
+          originalServerCertificateId: data.radSecOptions.serverCertificateId ?? undefined
+        }
+        const newSaveData = {
+          ...data,
+          radSecOptions: newRadSecOptions
+        }
+        setSaveState({ ...saveState, ...newSaveData })
+      } else {
+        setSaveState({ ...saveState, ...data })
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
@@ -131,7 +144,7 @@ export const AAAForm = (props: AAAFormProps) => {
     const activateClientCertificate =
       async (radiusId?: string, clientCertificateId?: string) => {
         return radiusId && clientCertificateId ?
-          await activate({ params: { radiusId, clientCertificateId } }).unwrap() : null
+          await activate({ params: { radiusId, certificateId: clientCertificateId } }).unwrap() : null
       }
     return activateClientCertificate
   }
@@ -141,7 +154,7 @@ export const AAAForm = (props: AAAFormProps) => {
     const deactivateClientCertificate =
       async (radiusId?: string, clientCertificateId?: string) => {
         return radiusId && clientCertificateId ?
-          await deactivate({ params: { radiusId, clientCertificateId } }).unwrap() : null
+          await deactivate({ params: { radiusId, certificateId: clientCertificateId } }).unwrap() : null
       }
     return deactivateClientCertificate
   }
@@ -151,7 +164,7 @@ export const AAAForm = (props: AAAFormProps) => {
     const activateServerCertificate =
       async (radiusId?: string, serverCertificateId?: string) => {
         return radiusId && serverCertificateId ?
-          await activate({ params: { radiusId, serverCertificateId } }).unwrap() : null
+          await activate({ params: { radiusId, certificateId: serverCertificateId } }).unwrap() : null
       }
     return activateServerCertificate
   }
@@ -161,7 +174,7 @@ export const AAAForm = (props: AAAFormProps) => {
     const deactivateServerCertificate =
       async (radiusId?: string, serverCertificateId?: string) => {
         return radiusId && serverCertificateId ?
-          await deactivate({ params: { radiusId, serverCertificateId } }).unwrap() : null
+          await deactivate({ params: { radiusId, certificateId: serverCertificateId } }).unwrap() : null
       }
     return deactivateServerCertificate
   }

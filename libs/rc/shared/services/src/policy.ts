@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
+import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
 import { each, zip }           from 'lodash'
 
 import {
@@ -98,6 +98,7 @@ import {
   getVLANPoolVenuesFn,
   getVLANPoolPolicyViewModelListFn
 } from './servicePolicy.utils'
+import { QueryReturnValue } from '@rtk-query/graphql-request-base-query/dist/GraphqlBaseQueryTypes'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
@@ -845,7 +846,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
             'AddRadius', 'UpdateRadius', 'DeleteRadius', 'DeleteRadiuses',
-            'ActivateRadiusServerProfileOnWifiNetwork', 'DeactivateRadiusServerProfileOnWifiNetwork'
+            'ActivateRadiusServerProfileOnWifiNetwork', 'DeactivateRadiusServerProfileOnWifiNetwork',
+            'ActivateCertificateOnRadiusServerProfile'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))
           })
@@ -883,6 +885,49 @@ export const policyApi = basePolicyApi.injectEndpoints({
 
     aaaPolicy: build.query<AAAPolicyType, RequestPayload>({
       query: commonQueryFn(AaaUrls.getAAAPolicy, AaaUrls.getAAAPolicyRbac),
+      providesTags: [{ type: 'AAA', id: 'DETAIL' }]
+    }),
+    aaaPolicyCertificate: build.query<AAAPolicyType | null, RequestPayload>({
+      async queryFn ({ params }, _queryApi, _extraOptions, fetchWithBQ) {
+        if (!params?.policyId) return Promise.resolve({ data: null } as QueryReturnValue<
+          null,
+          FetchBaseQueryError,
+          FetchBaseQueryMeta
+        >)
+
+        const radiusReq = {
+          ...createHttpRequest(
+            AaaUrls.queryAAAPolicyList, undefined, GetApiVersionHeader(ApiVersionEnum.v1)),
+          body: JSON.stringify({
+            filters: {
+              id: [ params.policyId ]
+            },
+            page: 1,
+            pageSize: 10
+          })
+        }
+        const radiusData = await fetchWithBQ(radiusReq)
+        const radiusQueryResponse = (radiusData.data) as TableResult<AAAViewModalType>
+
+        const apiCustomHeaderV1_1 = GetApiVersionHeader(ApiVersionEnum.v1_1)
+        const aaaPolicyQuery = await fetchWithBQ(
+          createHttpRequest(AaaUrls.getAAAPolicyRbac, params, apiCustomHeaderV1_1)
+        )
+        const aaaPolicyResponse = (aaaPolicyQuery.data) as AAAPolicyType
+
+        const newRadSecOptions = radiusQueryResponse?.data?.length > 0 ? {
+          ...aaaPolicyResponse.radSecOptions,
+          ...radiusQueryResponse.data[0].radSecOptions
+        } : aaaPolicyResponse.radSecOptions
+
+        const newAaaPolicy = {
+          ...aaaPolicyResponse,
+          radSecOptions: newRadSecOptions
+        }
+
+        return { data: newAaaPolicy } as QueryReturnValue<AAAPolicyType, FetchBaseQueryError,
+        FetchBaseQueryMeta>
+      },
       providesTags: [{ type: 'AAA', id: 'DETAIL' }]
     }),
     updateAAAPolicy: build.mutation<CommonResult, RequestPayload>({
@@ -3552,6 +3597,7 @@ export const {
   useUpdateAAAPolicyMutation,
   useAaaPolicyQuery,
   useLazyAaaPolicyQuery,
+  useAaaPolicyCertificateQuery,
   useAddVLANPoolPolicyMutation,
   useDelVLANPoolPolicyMutation,
   useUpdateVLANPoolPolicyMutation,

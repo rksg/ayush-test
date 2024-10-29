@@ -17,14 +17,13 @@ export type QueryFn<ResultType, QueryArg = never, BaseQueryResultType = ResultTy
 
 export function commonQueryFn (apiInfo: ApiInfo, rbacApiInfo: ApiInfo = apiInfo) {
   return (queryArgs: RequestPayload) => {
-    const { params, payload, enableRbac = false, apiVersion } = queryArgs
+    const { params, payload, enableRbac = false } = queryArgs
     const resolvedApiInfo = (enableRbac && rbacApiInfo) ? rbacApiInfo : apiInfo
     // eslint-disable-next-line max-len
     const resolvedPayload = resolvedApiInfo?.defaultHeaders?.['Content-Type'] ? JSON.stringify(payload) : payload
-    const apiCustomHeader = GetApiVersionHeader(apiVersion as ApiVersionEnum)
 
     return {
-      ...createHttpRequest(resolvedApiInfo, params, apiCustomHeader),
+      ...createHttpRequest(resolvedApiInfo, params),
       ...(resolvedPayload ? { body: resolvedPayload } : {})
     }
   }

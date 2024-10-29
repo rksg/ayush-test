@@ -218,24 +218,6 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
     setShowCertificateDrawer(false)
   }
 
-  // useEffect(() => {
-  //   form.setFieldValue(['radSecOptions', 'originalClientCertificateId'], selectedClientCertId)
-  // }, [selectedClientCertId])
-
-  // useEffect(() => {
-  //   if ( edit && !form.isFieldsTouched() && selectedCaId &&
-  //    !(instanceListResult?.data ?? []).map(data => data.radSecOptions?.certificateAuthorityId)) {
-  //     form.setFieldValue(['radSecOptions', 'certificateAuthorityId'], selectedCaId)
-  //   }
-  // }, [edit, selectedCaId])
-
-  // useEffect(() => {
-  //   if ( edit && !form.isFieldsTouched() && selectedClientCertId &&
-  //    !(instanceListResult?.data ?? []).map(data => data.radSecOptions?.clientCertificateId)) {
-  //     form.setFieldValue(['radSecOptions', 'clientCertificateId'], selectedClientCertId)
-  //   }
-  // }, [edit, selectedClientCertId])
-
   useEffect(() => {
     if (edit && saveState) {
       if(saveState.secondary?.ip){
@@ -362,7 +344,6 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
             initialValue={''}
             children={<Input />}
           />}
-
           <Space>
             <Form.Item
               label={$t({ defaultMessage: 'Trusted Certificate Authority' })}
@@ -385,7 +366,6 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
                   onClick={handleAddCertificateAuthority}
                   children={$t({ defaultMessage: 'Add CA' })} />}
           </Space>
-
           <Form.Item
             label={$t({ defaultMessage: 'Client Certificate' })}
             name={['radSecOptions', 'clientCertificateId']}
@@ -414,7 +394,6 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
                 ...clientCertOptions
               ]} />
           </Form.Item>
-
           <Form.Item
             label={
               <>{$t({ defaultMessage: 'Server Certificate' })}
