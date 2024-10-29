@@ -131,7 +131,9 @@ export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
           const activities = [
             EdgeDhcpActivityEnum.ADD,
             EdgeDhcpActivityEnum.UPDATE,
-            EdgeDhcpActivityEnum.DELETE
+            EdgeDhcpActivityEnum.DELETE,
+            EdgeDhcpActivityEnum.ACTIVATE,
+            EdgeDhcpActivityEnum.DEACTIVATE
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(edgeDhcpApi.util.invalidateTags([{ type: 'EdgeDhcp', id: 'LIST' }]))
