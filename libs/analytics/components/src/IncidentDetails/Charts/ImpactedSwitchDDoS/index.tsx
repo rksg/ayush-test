@@ -99,6 +99,7 @@ function ImpactedSwitchTable (props: {
 }) {
   const { $t } = useIntl()
   const rows = props.data
+  const isMLISA = get('IS_MLISA_SA')
 
   const columns: TableProps<ImpactedSwitchPortRow>['columns'] = useMemo(()=>[{
     key: 'name',
@@ -106,7 +107,7 @@ function ImpactedSwitchTable (props: {
     title: $t({ defaultMessage: 'Switch Name' }),
     render: (_, { mac, name },__,highlightFn) =>
       <TenantLink
-        to={`devices/switch/${mac}/serial/details/${get('IS_MLISA_SA')
+        to={`devices/switch/${isMLISA ? mac : mac?.toLowerCase()}/serial/details/${isMLISA
           ? 'reports': 'overview'}`
         }>
         {highlightFn(name)}
