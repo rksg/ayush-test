@@ -37,7 +37,7 @@ export interface UseConfigTemplateQueryFnSwitcherProps<ResultType, Payload = unk
   payload?: Payload
   extraParams?: Params<string>
   templatePayload?: Payload
-  enableRbac?: boolean,
+  enableRbac?: boolean
   extraQueryArgs?: {}
 }
 export function useConfigTemplateQueryFnSwitcher<ResultType, Payload = unknown> (
