@@ -39,7 +39,8 @@ const getRowDisabledInfo = (
   venueId: string,
   row: Network,
   isForGuestTraffic: boolean,
-  dsaeOnboardNetworkIds?: string[]
+  dsaeOnboardNetworkIds?: string[],
+  pinNetworkIds?: string[]
 ) => {
   const { $t } = getIntl()
   const isGuestnetwork = row.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL
@@ -58,6 +59,10 @@ const getRowDisabledInfo = (
   } else if (isGuestnetwork && isForGuestTraffic && isVlanPooling) {
     disabled = true
     tooltip = $t({ defaultMessage: 'Cannot tunnel vlan pooling network to DMZ cluster.' })
+  } else if (pinNetworkIds?.includes(row.id)) {
+    disabled = true
+    // eslint-disable-next-line max-len
+    tooltip = $t({ defaultMessage: 'This network already used in Personal Identity Network, cannot be SD-LAN traffic network.' })
   }
 
   return { disabled, tooltip }
@@ -81,7 +86,8 @@ export interface ActivatedNetworksTableP2Props {
   disabled?: boolean | SdLanActivatedNetworksIsDisableFn,
   toggleButtonTooltip?: string,
   onActivateChange?: ActivateNetworkSwitchButtonP2Props['onChange'],
-  isUpdating?: boolean
+  isUpdating?: boolean,
+  pinNetworkIds?: string[]
 }
 
 export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP2Props) => {
@@ -94,7 +100,8 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
     disabled,
     toggleButtonTooltip,
     onActivateChange,
-    isUpdating
+    isUpdating,
+    pinNetworkIds
   } = props
 
   const { $t } = useIntl()
@@ -155,7 +162,7 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
     align: 'center' as AlignType,
     width: 80,
     render: (_: unknown, row: Network) => {
-      const disabledInfo = getRowDisabledInfo(venueId, row, false, dsaeOnboardNetworkIds)
+      const disabledInfo = getRowDisabledInfo(venueId, row, false, dsaeOnboardNetworkIds, pinNetworkIds)
       let isDisabled = disabled
       let tooltip = toggleButtonTooltip
       if (typeof disabled === 'function') {
@@ -186,7 +193,7 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
     align: 'center' as AlignType,
     width: 120,
     render: (_: unknown, row: Network) => {
-      const disabledInfo = getRowDisabledInfo(venueId, row, true, dsaeOnboardNetworkIds)
+      const disabledInfo = getRowDisabledInfo(venueId, row, true, dsaeOnboardNetworkIds, pinNetworkIds)
       let isDisabled = disabled
       let tooltip = toggleButtonTooltip
       if (typeof disabled === 'function') {
@@ -214,7 +221,8 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
     onActivateChange,
     detailDrawerVisible,
     disabled,
-    dsaeOnboardNetworkIds
+    dsaeOnboardNetworkIds,
+    pinNetworkIds
   ])
 
   const actions: TableProps<Network>['actions'] = [{
