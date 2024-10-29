@@ -1,11 +1,15 @@
-import { useContext } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 
 import { Col, Form, Space, Typography } from 'antd'
 import { useIntl }                      from 'react-intl'
 import { useParams, useNavigate }       from 'react-router-dom'
 
-import { Loader, StepsForm }                               from '@acx-ui/components'
-import { NodesTabs, TypeForm }                             from '@acx-ui/rc/components'
+import { Loader, StepsForm, StepsFormProps } from '@acx-ui/components'
+import {
+  CompatibilityStatusBar,
+  CompatibilityStatusEnum,
+  NodesTabs, TypeForm
+} from '@acx-ui/rc/components'
 import { usePatchEdgeClusterSubInterfaceSettingsMutation } from '@acx-ui/rc/services'
 import { useTenantLink }                                   from '@acx-ui/react-router-dom'
 
@@ -15,10 +19,16 @@ import {
   SubInterfaceSettingsForm
 } from './SubInterfaceSettingsForm'
 import {
-  SubInterfaceSettingsFormType,
+  CompatibilityCheckResult,
+  SubInterfaceCompatibility,
+  SubInterfaceSettingsFormType
+} from './types'
+import {
+  getSubInterfaceCompatibilityFields,
+  subInterfaceCompatibleCheck,
   transformFromApiToFormData,
   transformFromFormDataToApi
-} from './types'
+} from './utils'
 
 const renderHeader = (title: string, description: string) => {
   return <Space direction='vertical' size={5}>
@@ -33,7 +43,7 @@ export const SubInterfaceSettings = () => {
   const navigate = useNavigate()
   const clusterListPage = useTenantLink('/devices/edge')
   const selectTypePage = useTenantLink(`/devices/edge/cluster/${clusterId}/configure`)
-  const [form] = Form.useForm()
+  const [form] = Form.useForm<SubInterfaceSettingsFormType>()
   const [updateSubInterfaceSettings] = usePatchEdgeClusterSubInterfaceSettingsMutation()
   const {
     clusterInfo,
@@ -44,8 +54,21 @@ export const SubInterfaceSettings = () => {
     isLoading,
     isFetching
   } = useContext(ClusterConfigWizardContext)
+  const isSingleNode = (clusterInfo?.edgeList?.length ?? 0) < 2
+  const [alertData, setAlertData] =
+    useState<StepsFormProps<Record<string, unknown>>['alert']>({
+      type: 'success',
+      message: <CompatibilityStatusBar
+        key='step1'
+        type={CompatibilityStatusEnum.PASS}
+      />
+    })
 
   const subInterfaceSettingsFormData = transformFromApiToFormData(clusterSubInterfaceSettings)
+
+  useEffect(() => {
+    doCompatibleCheck()
+  }, [form, clusterInfo])
 
   const content = <NodesTabs
     nodeList={clusterInfo?.edgeList}
@@ -96,10 +119,47 @@ export const SubInterfaceSettings = () => {
     navigate(clusterListPage)
   }
 
+  const doCompatibleCheck = (): void => {
+    const checkResult = getCompatibleCheckResult()
+    updateAlertMessage(checkResult)
+  }
+
+  const getCompatibleCheckResult = useCallback((): CompatibilityCheckResult => {
+    const formData = form.getFieldsValue(true) as SubInterfaceSettingsFormType
+    return subInterfaceCompatibleCheck(
+      formData.portSubInterfaces,
+      formData.lagSubInterfaces,
+      clusterInfo?.edgeList,
+      portsStatus,
+      lagsStatus)
+  }, [form, clusterInfo])
+
+  const updateAlertMessage = (checkResult: CompatibilityCheckResult) => {
+    let errorFieldsConfig = getSubInterfaceCompatibilityFields()
+
+    setAlertData({
+      type: checkResult.isError ? 'error' : 'success',
+      message: <CompatibilityStatusBar<SubInterfaceCompatibility>
+        key='step1'
+        type={checkResult.isError
+          ? CompatibilityStatusEnum.FAIL
+          : CompatibilityStatusEnum.PASS
+        }
+        {...(checkResult.isError
+          ? {
+            fields: errorFieldsConfig,
+            errors: checkResult.results
+          }
+          : undefined)}
+      />
+    })
+  }
+
   return (
     <Loader states={[{ isLoading: isLoading, isFetching: isFetching }]}>
       <StepsForm<SubInterfaceSettingsFormType>
         form={form}
+        alert={isSingleNode ? undefined : alertData}
         onFinish={applyAndFinish}
         onCancel={handleCancel}
         initialValues={subInterfaceSettingsFormData}
@@ -111,7 +171,9 @@ export const SubInterfaceSettings = () => {
           onCustomFinish: applyAndContinue
         }}
       >
-        <StepsForm.StepForm>
+        <StepsForm.StepForm
+          onValuesChange={doCompatibleCheck}
+        >
           <TypeForm
             header={renderHeader(
               $t({ defaultMessage: 'Sub-interface Settings' }),

@@ -12,8 +12,8 @@ import {
   showActionModal,
   Loader
 } from '@acx-ui/components'
-import { useIsSplitOn, Features }                                                      from '@acx-ui/feature-toggle'
-import { CountAndNamesTooltip, EdgeServiceStatusLight, useEdgeSdLanCompatibilityData } from '@acx-ui/rc/components'
+import { useIsSplitOn, Features }                                                       from '@acx-ui/feature-toggle'
+import { CountAndNamesTooltip, EdgeServiceStatusLight, useEdgeSdLansCompatibilityData } from '@acx-ui/rc/components'
 import {
   useVenuesListQuery,
   useDeleteEdgeSdLanMutation,
@@ -106,7 +106,7 @@ const EdgeMvSdLanTable = () => {
     [tableQuery.data?.data])
   const skipFetchCompatibilities = !isEdgeCompatibilityEnabled || currentServiceIds.length === 0
   // eslint-disable-next-line max-len
-  const sdLanCompatibilityData = useEdgeSdLanCompatibilityData(currentServiceIds, skipFetchCompatibilities)
+  const sdLanCompatibilityData = useEdgeSdLansCompatibilityData(currentServiceIds, skipFetchCompatibilities)
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
     if (customFilters.guestEdgeClusterId?.length) {
@@ -171,7 +171,7 @@ const EdgeMvSdLanTable = () => {
           </TenantLink>
           {isEdgeCompatibilityEnabled && <CompatibilityCheck
             serviceId={serviceId!}
-            sdLanCompatibilityData={sdLanCompatibilityData}
+            sdLanCompatibilityData={sdLanCompatibilityData.compatibilities}
           />}
         </Space>
         )

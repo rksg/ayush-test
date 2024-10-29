@@ -36,24 +36,32 @@ function ClientDetailPageHeader () {
   const { tenantId, clientId } = useParams()
   const [searchParams] = useSearchParams()
   const status = searchParams.get('clientStatus') || ClientStatusEnum.CONNECTED
+  const isHisToricalClient = (status === ClientStatusEnum.HISTORICAL)
+
   const clientInfo = useGetClientsQuery({ payload: {
     filters: {
       macAddress: [clientId]
     }
-  } }, { skip: !isWifiRbacEnabled || status !== ClientStatusEnum.CONNECTED })?.data?.data[0]
+  } }, { skip: !isWifiRbacEnabled || isHisToricalClient })?.data?.data[0]
+
+  // non-rbac API or History Client
   const { data: result } = useGetClientOrHistoryDetailQuery(
     { params: {
       tenantId,
       clientId,
       status
-    } }, { skip: isWifiRbacEnabled && status === ClientStatusEnum.CONNECTED })
-  const clentDetails = (status ? { hostname: result?.data?.hostname } : result?.data) as Client
+    } }, { skip: isWifiRbacEnabled && !isHisToricalClient })
+
+  const clentDetails = (isHisToricalClient
+    ? { hostname: result?.data?.hostname }
+    : result?.data) as Client
 
   /* eslint-disable max-len */
-  const venueId = isWifiRbacEnabled ? clientInfo?.venueInformation.id : clentDetails.venueId
-  const apSerialNumber = isWifiRbacEnabled ? clientInfo?.apInformation.serialNumber : clentDetails.apSerialNumber
-  const macAddress = isWifiRbacEnabled ? clientInfo?.macAddress : clentDetails.clientMac
   const hostname = isWifiRbacEnabled ? clientInfo?.hostname : clentDetails?.hostname
+  const macAddress = isWifiRbacEnabled ? clientInfo?.macAddress : clentDetails?.clientMac
+  const venueId = isWifiRbacEnabled ? clientInfo?.venueInformation.id : clentDetails?.venueId
+  const apSerialNumber = isWifiRbacEnabled ? clientInfo?.apInformation.serialNumber : clentDetails?.apSerialNumber
+  const networkType = isWifiRbacEnabled ? clientInfo?.networkInformation.type : clentDetails?.networkType
   /* eslint-enable max-len */
 
   const [disconnectClient] = useDisconnectClientMutation()
@@ -130,9 +138,11 @@ function ClientDetailPageHeader () {
         // eslint-disable-next-line max-len
         ...((wifiEDAClientRevokeToggle &&
             (status === ClientStatusEnum.CONNECTED) &&
-            isEqualCaptivePortal(result?.data.networkType)) ?
-          [{ label: $t({ defaultMessage: 'Revoke Network Access' }),key: 'revoke-client' }] :
-          [])
+            isEqualCaptivePortal(networkType)) ?
+          [{
+            label: $t({ defaultMessage: 'Revoke Network Access' }),
+            key: 'revoke-client'
+          }] : [])
       ]}
     />
   )
@@ -154,7 +164,8 @@ function ClientDetailPageHeader () {
       ]}
       extra={[
         <DatePicker />,
-        hasPermission({ scopes: [WifiScopes.UPDATE] }) &&
+        (!isHisToricalClient
+          && hasPermission({ scopes: [WifiScopes.UPDATE] })) &&
           <Dropdown overlay={menu}>{()=>
             <Button type='primary'>
               <Space>
