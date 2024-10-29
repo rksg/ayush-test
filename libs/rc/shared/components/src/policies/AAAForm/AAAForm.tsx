@@ -30,7 +30,8 @@ import {
   useConfigTemplateQueryFnSwitcher,
   usePolicyListBreadcrumb,
   usePolicyPreviousPath,
-  useConfigTemplate
+  useConfigTemplate,
+  ApiVersionEnum
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
@@ -65,7 +66,8 @@ export const AAAForm = (props: AAAFormProps) => {
     useQueryFn: useAaaPolicyQuery,
     useTemplateQueryFn: useGetAAAPolicyTemplateQuery,
     skip: !isEdit,
-    enableRbac
+    enableRbac,
+    apiVersion: supportRadsec ? ApiVersionEnum.v1_1 : (enableRbac ? ApiVersionEnum.v1 : undefined)
   })
 
   const [ createInstance ] = useConfigTemplateMutationFnSwitcher({

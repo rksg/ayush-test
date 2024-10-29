@@ -5,6 +5,7 @@ import { BaseQueryApi, FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from
 
 import { RequestPayload }             from '@acx-ui/types'
 import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
+import { ApiVersionEnum, GetApiVersionHeader } from '@acx-ui/rc/utils'
 
 export type QueryFn<ResultType, QueryArg = never, BaseQueryResultType = ResultType> = (
   { params, payload, enableRbac }: RequestPayload<QueryArg>,
@@ -16,13 +17,14 @@ export type QueryFn<ResultType, QueryArg = never, BaseQueryResultType = ResultTy
 
 export function commonQueryFn (apiInfo: ApiInfo, rbacApiInfo: ApiInfo = apiInfo) {
   return (queryArgs: RequestPayload) => {
-    const { params, payload, enableRbac = false } = queryArgs
+    const { params, payload, enableRbac = false, apiVersion } = queryArgs
     const resolvedApiInfo = (enableRbac && rbacApiInfo) ? rbacApiInfo : apiInfo
     // eslint-disable-next-line max-len
     const resolvedPayload = resolvedApiInfo?.defaultHeaders?.['Content-Type'] ? JSON.stringify(payload) : payload
+    const apiCustomHeader = GetApiVersionHeader(apiVersion as ApiVersionEnum)
 
     return {
-      ...createHttpRequest(resolvedApiInfo, params),
+      ...createHttpRequest(resolvedApiInfo, params, apiCustomHeader),
       ...(resolvedPayload ? { body: resolvedPayload } : {})
     }
   }

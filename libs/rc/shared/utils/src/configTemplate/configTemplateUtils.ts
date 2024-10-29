@@ -9,6 +9,7 @@ import { AccountType, getIntl }                from '@acx-ui/utils'
 
 import { CONFIG_TEMPLATE_LIST_PATH } from './configTemplateRouteUtils'
 import { useConfigTemplate }         from './useConfigTemplate'
+import { ApiVersionEnum }            from '../common'
 
 // eslint-disable-next-line max-len
 export function generateConfigTemplateBreadcrumb (): { text: string, link?: string, tenantType?: TenantType }[] {
@@ -37,7 +38,8 @@ export interface UseConfigTemplateQueryFnSwitcherProps<ResultType, Payload = unk
   payload?: Payload
   extraParams?: Params<string>
   templatePayload?: Payload
-  enableRbac?: boolean
+  enableRbac?: boolean,
+  apiVersion?: ApiVersionEnum,
   extraQueryArgs?: {}
 }
 export function useConfigTemplateQueryFnSwitcher<ResultType, Payload = unknown> (
@@ -45,7 +47,7 @@ export function useConfigTemplateQueryFnSwitcher<ResultType, Payload = unknown> 
 ): ReturnType<typeof useQueryFn> {
   const {
     useQueryFn, useTemplateQueryFn, skip = false, payload, templatePayload,
-    extraParams, enableRbac, extraQueryArgs = {}
+    extraParams, enableRbac, apiVersion, extraQueryArgs = {}
   } = props
 
   const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
@@ -57,6 +59,7 @@ export function useConfigTemplateQueryFnSwitcher<ResultType, Payload = unknown> 
     params: { ...params, ...(extraParams ?? {}) },
     ...(resolvedPayload ? ({ payload: resolvedPayload }) : {}),
     ...(resolvedEnableRbac ? ({ enableRbac: resolvedEnableRbac }) : {}),
+    ...(apiVersion ? { apiVersion } : {}),
     ...extraQueryArgs
   }
   const result = useQueryFn(requestPayload, { skip: skip || isTemplate })
