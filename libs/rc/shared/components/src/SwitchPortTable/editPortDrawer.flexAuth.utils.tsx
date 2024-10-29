@@ -39,7 +39,7 @@ export interface AggregatePortSettings {
   switchLevelAuthDefaultVlan: Record<string, number | undefined>
   guestVlan: Record<string, number | undefined>
   authDefaultVlan: Record<string, number[]>
-  authDefaultVlan2: Record<string, Record<string, number[]>>
+  // authDefaultVlan2: Record<string, Record<string, number[]>>
   restrictedVlan: Record<string, number | undefined>
   criticalVlan: Record<string, number | undefined>
 }
@@ -62,7 +62,7 @@ export const aggregatePortSettings = (
     switchLevelAuthDefaultVlan: {},
     guestVlan: {},
     authDefaultVlan: {},
-    authDefaultVlan2: {}, //TODO
+    // authDefaultVlan2: {}, //TODO
     restrictedVlan: {},
     criticalVlan: {}
   }
@@ -98,15 +98,15 @@ export const aggregatePortSettings = (
       ]
     }
 
-    if (authDefaultVlan) {
-      if (!result.authDefaultVlan2[index]) result.authDefaultVlan2[index] = {}
-      if (!result.authDefaultVlan2[index][port]) result.authDefaultVlan2[index][port] = []
+    // if (authDefaultVlan) {
+    //   if (!result.authDefaultVlan2[index]) result.authDefaultVlan2[index] = {}
+    //   if (!result.authDefaultVlan2[index][port]) result.authDefaultVlan2[index][port] = []
 
-      result.authDefaultVlan2[index][port] = [
-        ...(result.authDefaultVlan2[index]?.[port] || []),
-        authDefaultVlan
-      ]
-    }
+    //   result.authDefaultVlan2[index][port] = [
+    //     ...(result.authDefaultVlan2[index]?.[port] || []),
+    //     authDefaultVlan
+    //   ]
+    // }
 
     if (switchLevelAuthDefaultVlan) result.switchLevelAuthDefaultVlan[index] = switchLevelAuthDefaultVlan
     if (guestVlan) result.guestVlan[index] = guestVlan
@@ -186,9 +186,10 @@ export const getUnionValuesByKey = (
   key: keyof AggregatePortSettings,
   aggregateData: AggregatePortSettings
 ) => {
-  const values = key === 'authDefaultVlan2'
-    ? Object.values(aggregateData[key] ?? {}).flatMap(Object.values)
-    : Object.values(aggregateData[key] ?? {})
+  // const values = key === 'authDefaultVlan2'
+  //   ? Object.values(aggregateData[key] ?? {}).flatMap(Object.values)
+  //   : Object.values(aggregateData[key] ?? {})
+  const values = Object.values(aggregateData[key] ?? {})
   return _.uniq(_.flatten(values))
 }
 
@@ -389,7 +390,7 @@ export const validateApplyProfile = (
   return Promise.resolve()
 }
 
-export const validateVlanDiffFromSwitchDefault = (
+export const checkVlanDiffFromSwitchDefaultVlan = (
   value: string,
   aggregateData: AggregatePortSettings
 ) => {
@@ -403,7 +404,7 @@ export const validateVlanDiffFromSwitchDefault = (
   return Promise.resolve()
 }
 
-export const validateVlanDiffFromSwitchAuthDefault = (
+export const checkVlanDiffFromSwitchAuthDefaultVlan = (
   value: string,
   aggregateData: AggregatePortSettings
 ) => {
@@ -417,21 +418,7 @@ export const validateVlanDiffFromSwitchAuthDefault = (
   return Promise.resolve()
 }
 
-// export const validateVlanDiffFromTagged = (
-//   value: string,
-//   authDefaultVlan: string
-// ) => {
-//   const { $t } = getIntl()
-//   const taggedVlanArray = taggedVlans?.split(',')
-//   if (taggedVlanArray.includes(value)) {
-//     return Promise.reject(
-//       $t(FlexAuthMessages.CANNOT_SAME_AS_TAGGED_VLAN)
-//     )
-//   }
-//   return Promise.resolve()
-// }
-
-export const validateVlanConsistencyWithGuestVlan = (
+export const checkVlanConsistencyWithGuestVlan = (
   value: string,
   selectedPorts: SwitchPortViewModel[],
   aggregateData: AggregatePortSettings
@@ -449,3 +436,62 @@ export const validateVlanConsistencyWithGuestVlan = (
   return Promise.resolve()
 }
 
+export const checkVlanDiffFromAuthDefaultVlan = (
+  value: string,
+  aggregateData: AggregatePortSettings
+) => {
+  const { $t } = getIntl()
+  const authDefaultVlans = getUnionValuesByKey('authDefaultVlan', aggregateData)
+  if (value && authDefaultVlans.includes(Number(value))) {
+    return Promise.reject(
+      $t(FlexAuthMessages.CANNOT_SAME_AS_AUTH_DEFAULT_VLAN)
+    )
+  }
+  return Promise.resolve()
+}
+
+export const isOverrideFieldNotChecked = (props: {
+  field: string,
+  isMultipleEdit: boolean,
+  hasMultipleValue: string[],
+  form: FormInstance
+}) => {
+  const {
+    field, isMultipleEdit, hasMultipleValue, form
+  } = props
+  const checkboxEnabled = form.getFieldValue(`${field}Checkbox`)
+  return isMultipleEdit
+    && hasMultipleValue.includes(field)
+    && !checkboxEnabled
+}
+
+export const checkMultipleVlansDifferences = async (props: {
+  field: keyof AggregatePortSettings,
+  aggregateData: AggregatePortSettings,
+  selectedPorts: SwitchPortViewModel[],
+  vlanType: string,
+}) => {
+  const { $t } = getIntl()
+  const { field, aggregateData, selectedPorts, vlanType } = props
+  const vlans = getUnionValuesByKey(field, aggregateData)
+  try {
+    await Promise.all(
+      vlans.map(vlan =>
+        Promise.all([
+          ...( field === 'guestVlan'
+            ? [ checkVlanConsistencyWithGuestVlan(vlan, selectedPorts, aggregateData) ]
+            : []
+          ),
+          checkVlanDiffFromSwitchDefaultVlan(vlan, aggregateData),
+          checkVlanDiffFromSwitchAuthDefaultVlan(vlan, aggregateData),
+          checkVlanDiffFromAuthDefaultVlan(vlan, aggregateData)
+        ])
+      )
+    )
+    return Promise.resolve()
+  } catch (error) {
+    return Promise.reject(
+      new Error($t({ defaultMessage: 'Please enter {vlanType}' }, { vlanType: vlanType }))
+    )
+  }
+}

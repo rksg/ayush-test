@@ -111,7 +111,7 @@ const FlexibleAuthenticationTable = () => {
     <PageHeader
       title={
         $t(
-          { defaultMessage: 'Flexible Authentication ({count})' },
+          { defaultMessage: 'Authentication ({count})' },
           { count: tableQuery.data?.totalCount }
         )
       }
@@ -130,7 +130,7 @@ const FlexibleAuthenticationTable = () => {
           oper: PolicyOperation.CREATE
         })}
       >
-        <Button type='primary'>{$t({ defaultMessage: 'Add Flexible Authentication' })}</Button>
+        <Button type='primary'>{$t({ defaultMessage: 'Add Authentication' })}</Button>
       </TenantLink>
       ])}
     />

@@ -167,7 +167,7 @@ export function SwitchForm () {
       skip: !editMode || (isSwitchRbacEnabled && isVenueIdEmpty)
     })
 
-  const { data: switchAuth, isLoading: isSwitchAuthLoading } =
+  const { data: switchAuth, isLoading: isSwitchAuthLoading, isFetching: isSwitchAuthFetching } =
   useGetSwitchAuthenticationQuery({
     params: { tenantId, switchId, venueId }
   }, {
@@ -218,13 +218,13 @@ export function SwitchForm () {
   }, [venueId, switchModel, switchRole, switchData, switchDetail])
 
   useEffect(() => {
-    if (switchAuth && !isSwitchAuthLoading) {
+    if (switchAuth && !isSwitchAuthLoading && !isSwitchAuthFetching) {
       formRef?.current?.setFieldsValue({
         ...formRef?.current?.getFieldsValue(),
         ..._.omit(switchAuth, ['id'])
       })
     }
-  }, [switchAuth, isSwitchAuthLoading])
+  }, [switchAuth, isSwitchAuthLoading, isSwitchAuthFetching])
 
   const handleSwitchList = async () => {
     const payload = {

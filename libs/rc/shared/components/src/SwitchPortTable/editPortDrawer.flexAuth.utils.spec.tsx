@@ -23,7 +23,7 @@ describe('getUnionValuesByKey', () => {
   }
   it('should get union values correctly', async () => {
     await expect(getUnionValuesByKey('authDefaultVlan', aggregateData)).toStrictEqual([3, 10])
-    await expect(getUnionValuesByKey('authDefaultVlan2', aggregateData)).toStrictEqual([3, 10])
+    // await expect(getUnionValuesByKey('authDefaultVlan2', aggregateData)).toStrictEqual([3, 10])
     await expect(getUnionValuesByKey('defaultVlan', aggregateData)).toStrictEqual([1])
     await expect(getUnionValuesByKey('restrictedVlan', aggregateData)).toStrictEqual([9])
     await expect(getUnionValuesByKey(

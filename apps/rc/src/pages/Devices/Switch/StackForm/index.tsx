@@ -251,7 +251,7 @@ export function StackForm () {
       skip: !editMode || (isSwitchRbacEnabled && isVenueIdEmpty)
     })
 
-  const { data: switchAuth, isLoading: isSwitchAuthLoading } =
+  const { data: switchAuth, isLoading: isSwitchAuthLoading, isFetching: isSwitchAuthFetching } =
     useGetSwitchAuthenticationQuery({
       params: { tenantId, switchId, venueId: venueId || editVenueId }
     }, {
@@ -395,14 +395,13 @@ export function StackForm () {
   }, [venuesList, switchData, switchDetail, venuesListV1002])
 
   useEffect(() => {
-    if (switchAuth && !isSwitchAuthLoading) {
+    if (switchAuth && !isSwitchAuthLoading && !isSwitchAuthFetching) {
       formRef?.current?.setFieldsValue({
         ...formRef?.current?.getFieldsValue(),
         ..._.omit(switchAuth, ['id'])
       })
     }
-  }, [switchAuth, isSwitchAuthLoading])
-
+  }, [switchAuth, isSwitchAuthLoading, isSwitchAuthFetching])
 
   useEffect(() => {
     if (tableData || activeRow) {

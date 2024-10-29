@@ -963,6 +963,7 @@ export interface FlexibleAuthentication {
 }
 
 export interface FlexibleAuthenticationAppliedTargets {
+  id?: string //TODO
   venueId: string
   venueName: string
   switchId: string

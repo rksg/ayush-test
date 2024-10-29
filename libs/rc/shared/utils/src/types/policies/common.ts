@@ -32,7 +32,7 @@ export enum PolicyType {
   WORKFLOW = 'Workflow',
   HQOS_BANDWIDTH = 'HQoS Bandwidth',
   SOFTGRE = 'SoftGRE',
-  FLEX_AUTH = 'Flexible Authentication'
+  FLEX_AUTH = 'Authentication'
 }
 
 export enum PolicyTechnology {
@@ -77,7 +77,7 @@ export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.HQOS_BANDWIDTH]: defineMessage({ defaultMessage: 'HQoS Bandwidth' }),
   [PolicyType.SOFTGRE]: defineMessage({ defaultMessage: 'Tunnel the traffic to a SoftGRE gateway' }),
   [PolicyType.ETHERNET_PORT_PROFILE]: defineMessage({ defaultMessage: 'An Ethernet port profile is a configuration that specifies how a network port functions and behaves.' }),
-  [PolicyType.FLEX_AUTH]: defineMessage({ defaultMessage: 'Flexible authentication combines MAC and 802.1X authentication as a single authentication procedure' }),
+  [PolicyType.FLEX_AUTH]: defineMessage({ defaultMessage: 'Define 802.1x and MACAUTH settings for switch clients. These profiles can be applied at the switch port(s) level.' }),
   [PolicyType.SERVER_CERTIFICATES]: defineMessage({ defaultMessage: 'Server Certificates' })
 }
 

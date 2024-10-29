@@ -153,7 +153,7 @@ const FlexibleAuthenticationDetail = () => {
         { text: $t({ defaultMessage: 'Policies & Profiles' })
           , link: getPolicyListRoutePath(true) },
         {
-          text: $t({ defaultMessage: 'Flexible Authentication' }),
+          text: $t({ defaultMessage: 'Authentication' }),
           link: getPolicyRoutePath({
             type: PolicyType.FLEX_AUTH,
             oper: PolicyOperation.LIST

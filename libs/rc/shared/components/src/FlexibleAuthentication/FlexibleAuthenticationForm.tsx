@@ -95,7 +95,7 @@ export const FlexibleAuthenticationForm = (props: {
     <>
       <PageHeader
         title={
-          $t({ defaultMessage: '{action} Flexible Authentication' }, {
+          $t({ defaultMessage: '{action} Authentication' }, {
             action: editMode ? $t({ defaultMessage: 'Edit' }) : $t({ defaultMessage: 'Add' })
           })
         }
@@ -104,7 +104,7 @@ export const FlexibleAuthenticationForm = (props: {
           { text: $t({ defaultMessage: 'Policies & Profiles' }),
             link: getPolicyListRoutePath(true)
           },
-          { text: $t({ defaultMessage: 'Flexible Authentication' }), link: flexAuthRoute }
+          { text: $t({ defaultMessage: 'Authentication' }), link: flexAuthRoute }
         ]}
       />
 

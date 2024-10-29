@@ -304,7 +304,7 @@ export function SwitchStackSetting (props: {
             display: 'flex', margin: '40px 0 30px', justifyContent: 'space-between'
           }}>
             <Typography.Text style={{ display: 'flex', fontSize: '12px' }}>
-              {$t({ defaultMessage: 'Flexible Authentication' })}
+              {$t({ defaultMessage: 'Authentication' })}
             </Typography.Text>
             <Form.Item
               noStyle

@@ -1589,14 +1589,45 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     }),
     // eslint-disable-next-line max-len
     getFlexAuthenticationProfiles: build.query<TableResult<FlexibleAuthentication>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(
-          SwitchUrlsInfo.getFlexAuthenticationProfiles, params, customHeaders.v1
-        )
-        return {
-          ...req,
-          body: JSON.stringify(payload)
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const headers = customHeaders.v1
+        const listInfo = {
+          ...createHttpRequest(SwitchUrlsInfo.getFlexAuthenticationProfiles, arg.params, headers),
+          body: JSON.stringify(arg.payload)
         }
+        const listQuery = await fetchWithBQ(listInfo)
+        const profileList = listQuery.data as TableResult<FlexibleAuthentication>
+        // const profileIds = profileList.data.map(p => p.id)
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // const profileAppliedTargets:any = await Promise.all(profileIds.map(pid =>
+        //   fetchWithBQ({
+        //     ...createHttpRequest(SwitchUrlsInfo.getFlexAuthenticationProfileAppliedTargets, {
+        //       ...arg.params,
+        //       profileId: pid
+        //     }, headers),
+        //     body: JSON.stringify(arg.payload)
+        //   })
+        // ))
+
+        const aggregatedList = profileList.data.map((profile: FlexibleAuthentication) => {
+          // const appliedTargets = profileAppliedTargets?.data?.find(
+          //   (p: FlexibleAuthenticationAppliedTargets) => profile.id === p.id)
+          return {
+            ...profile
+            // ...appliedTargets
+          }
+        })
+
+        // console.log( listQuery.data )
+        // console.log( profileAppliedTargets )
+
+        return listQuery.data
+          ? { data: {
+            ...profileList,
+            data: aggregatedList
+          } }
+          : { error: listQuery.error as FetchBaseQueryError }
       },
       providesTags: [{ type: 'FlexAuthProfile', id: 'LIST' }]
     }),
