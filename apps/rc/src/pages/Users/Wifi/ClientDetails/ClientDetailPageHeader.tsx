@@ -36,11 +36,13 @@ function ClientDetailPageHeader () {
   const { tenantId, clientId } = useParams()
   const [searchParams] = useSearchParams()
   const status = searchParams.get('clientStatus') || ClientStatusEnum.CONNECTED
+  const isHisToricalClient = (status === ClientStatusEnum.HISTORICAL)
+
   const clientInfo = useGetClientsQuery({ payload: {
     filters: {
       macAddress: [clientId]
     }
-  } }, { skip: !isWifiRbacEnabled || status !== ClientStatusEnum.CONNECTED })?.data?.data[0]
+  } }, { skip: !isWifiRbacEnabled || isHisToricalClient })?.data?.data[0]
 
   // non-rbac API or History Client
   const { data: result } = useGetClientOrHistoryDetailQuery(
@@ -48,9 +50,9 @@ function ClientDetailPageHeader () {
       tenantId,
       clientId,
       status
-    } }, { skip: isWifiRbacEnabled && status === ClientStatusEnum.CONNECTED })
+    } }, { skip: isWifiRbacEnabled && !isHisToricalClient })
 
-  const clentDetails = (status === ClientStatusEnum.HISTORICAL
+  const clentDetails = (isHisToricalClient
     ? { hostname: result?.data?.hostname }
     : result?.data) as Client
 
@@ -162,7 +164,8 @@ function ClientDetailPageHeader () {
       ]}
       extra={[
         <DatePicker />,
-        hasPermission({ scopes: [WifiScopes.UPDATE] }) &&
+        (!isHisToricalClient
+          && hasPermission({ scopes: [WifiScopes.UPDATE] })) &&
           <Dropdown overlay={menu}>{()=>
             <Button type='primary'>
               <Space>
