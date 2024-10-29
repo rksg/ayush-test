@@ -1,79 +1,68 @@
-import { Avatar, Card } from 'antd'
-import Meta             from 'antd/lib/card/Meta'
+import { Card }    from 'antd'
+import { useIntl } from 'react-intl'
 
-import { GptWhiteicon } from '@acx-ui/icons'
+import { DogAndPerson, RuckusAiLogo, WelcomeLogo } from '@acx-ui/icons'
+import { useUserProfileContext }                   from '@acx-ui/user'
 
+import * as UI from './styledComponents'
 
-
-// Waiting for new UX design
 function WelcomePage () {
-  return <>
-    <div
-      style={{
-        position: 'relative',
-        marginTop: '190px',
-        zIndex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100%'
-      }}
-    >
-      <GptWhiteicon style={{
-        width: '90px', height: '90px'
-      }} />
-      <span style={{
-        fontSize: '28px',
-        fontWeight: 600, marginTop: '30px',
-        fontFamily: 'Montserrat'
-      }}>
-        Hi, I’m RuckusGPT
-      </span>
-      <span style={{ fontSize: '14px', color: '#808284', marginTop: '15px' }}>
-    Your new personal network assistant
-      </span>
+  const { $t } = useIntl()
+  const {
+    data: userProfileData
+  } = useUserProfileContext()
+  const name = userProfileData?.lastName || userProfileData?.firstName || ''
+  return <div
+    style={{
+      position: 'relative',
+      marginTop: '60px',
+      zIndex: 1,
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100%'
+    }}
+  >
+    <WelcomeLogo style={{
+      width: '110px', height: '110px'
+    }} />
+    <span style={{
+      fontSize: '24px',
+      fontWeight: 700,
+      marginTop: '25px',
+      fontFamily: 'Montserrat'
+    }}>
+      {`${$t({ defaultMessage: 'Hello' })} ${name}`}
+    </span>
+    <span style={{
+      fontSize: '24px',
+      fontWeight: 700,
+      fontFamily: 'Montserrat'
+    }}>
+      {$t({ defaultMessage: "I'm" })} <RuckusAiLogo style={{ height: '20px' }} />
+    </span>
+    <span style={{ fontSize: '14px', color: '#808284', marginTop: '15px', fontWeight: 600 }}>
+      {$t({ defaultMessage: 'Your personal onboarding assistant' })}
+    </span>
 
-      <Card
-        style={{ width: 780, margin: '30px' }}
-      >
-        <Meta
-          avatar={<Avatar src='https://api.dicebear.com/7.x/miniavs/svg?seed=8' />}
-          title='About RuckusGPT'
-          style={{ fontFamily: 'Montserrat' }}
-          // eslint-disable-next-line max-len
-          description='RuckusGPT helps you efficiently build vertical networks tailored to your specific needs, guiding you step-by-step for optimal performance and scalability.'
-        />
-      </Card>
-    </div>
-
-{/*
-    <div
-      style={{
-        position: 'absolute',
-        bottom: '30px',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        padding: '16px',
-        backgroundColor: 'white'
-      }}
+    <Card
+      style={{ width: '780px', margin: '100px 30px 30px 30px', height: '125px' }}
     >
-      <Card
-        style={{ width: 780, margin: '30px' }}
-      >
-        <Meta
-          avatar={<Avatar src='https://api.dicebear.com/7.x/miniavs/svg?seed=8' />}
-          title='About RuckusGPT'
-          style={{ fontFamily: 'Montserrat' }}
-          // eslint-disable-next-line max-len
-          description='RuckusGPT helps you efficiently build vertical networks tailored to your specific needs, guiding you step-by-step for optimal performance and scalability.'
-        />
-      </Card>
-    </div> */}
-  </>
+      <UI.WelcomeMeta
+        avatar={<DogAndPerson style={{
+          position: 'absolute',
+          top: '-57px',
+          left: '-1px',
+          zIndex: '1'
+        }} />}
+        title={$t({ defaultMessage: 'About RUCKUS AI' })}
+        style={{ fontFamily: 'Montserrat' }}
+        // eslint-disable-next-line max-len
+        description={$t({ defaultMessage: 'RUCKUS AI automates and optimizes complex network onboarding processes, leading to increased efficiency and productivity.' })}
+      />
+    </Card>
+  </div>
 }
 
 export default WelcomePage

@@ -6,6 +6,7 @@ import {
   Modal,
   Steps
 } from 'antd'
+import Meta   from 'antd/lib/card/Meta'
 import styled from 'styled-components/macro'
 
 import { GptSuccess } from '@acx-ui/icons'
@@ -227,14 +228,11 @@ export const Subtitle = styled.span`
 `
 
 export const BottomSection = styled.div`
-  position: absolute;
   bottom: 130px;
   left: 50%;
-  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 16px;
   background-color: white;
 `
 
@@ -252,8 +250,26 @@ export const StyledList = styled.ul`
   flex-direction: column;
 `
 export const PageTitle = styled.div`
-  font-size: 16px;
-  font-weight: 600;
-  font-family: var('--acx-accent-brand-font');
+  font-size: var(--acx-headline-3-font-size);
+  font-weight: var(--acx-headline-3-font-weight);
+  font-family: var(--acx-accent-brand-font);
   margin-bottom: 15px;
+`
+export const WelcomeMeta = styled(Meta)`
+  .ant-card-meta-avatar{
+    width: 400px;
+  }
+
+  .ant-card-meta-title {
+    font-family: var(--acx-accent-brand-font);
+    font-weight: 600;
+    font-size: 18px;
+  }
+
+  .ant-card-meta-description {
+    font-family: var(--acx-neutral-brand-font);
+    font-weight: var(--acx-headline-4-font-weight);
+    font-size: var(--acx-headline-4-font-size);
+    color: var(--acx-neutrals-60);
+  }
 `
