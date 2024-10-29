@@ -9,7 +9,8 @@ import { Drawer }                                                            fro
 import { EdgeSdLanP2ActivatedNetworksTable, showSdLanGuestFwdConflictModal } from '@acx-ui/rc/components'
 import { Network, NetworkTypeEnum, EdgeMvSdLanFormNetwork }                  from '@acx-ui/rc/utils'
 
-import { messageMappings } from '../../messageMappings'
+import { useEdgeMvSdLanContext } from '../../EdgeMvSdLanContextProvider'
+import { messageMappings }       from '../../messageMappings'
 
 const toggleItemFromSelected = (
   checked: boolean,
@@ -57,6 +58,11 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
   } = props
 
   const [updateContent, setUpdateContent] = useState<Record<string, EdgeMvSdLanFormNetwork>>({})
+
+  const { allPins } = useEdgeMvSdLanContext()
+  const pinNetworkIds = allPins.flatMap(item => item.tunneledWlans ?? [])
+    .map(wlan => wlan?.networkId)
+    .filter(networkId => !!networkId)
 
   useEffect(() => {
     if (visible) {
@@ -184,6 +190,7 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
           activated={updateContent.activatedNetworks?.[venueId]?.map(item => item.id) ?? []}
           activatedGuest={updateContent.activatedGuestNetworks?.[venueId]?.map(item => item.id) ?? []}
           onActivateChange={handleActivateChange}
+          pinNetworkIds={pinNetworkIds}
         />
       </Space>
     </Drawer>

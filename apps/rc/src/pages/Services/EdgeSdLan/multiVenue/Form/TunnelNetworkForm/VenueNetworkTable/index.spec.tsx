@@ -35,7 +35,8 @@ mockedOverlapSdLans[0].tunneledGuestWlans?.forEach(wlan => {
   wlan.venueId = targetVenue.id
 })
 const edgeMvSdlanContextValues = {
-  allSdLans: mockedMvSdLanDataList
+  allSdLans: mockedMvSdLanDataList,
+  allPins: []
 } as EdgeMvSdLanContextType
 
 jest.mock('@acx-ui/utils', () => ({
