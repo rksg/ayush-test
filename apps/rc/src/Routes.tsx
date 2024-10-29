@@ -32,6 +32,7 @@ import {
   RogueAPDetectionDetailView,
   RogueAPDetectionForm,
   RogueAPDetectionTable,
+  ServerClientCertificateForm,
   SoftGreForm,
   SyslogDetailView,
   SyslogForm,
@@ -140,7 +141,10 @@ import EditFirewall                                                     from './
 import FirewallDetail                                                   from './pages/Services/EdgeFirewall/FirewallDetail'
 import FirewallTable                                                    from './pages/Services/EdgeFirewall/FirewallTable'
 import { AddEdgeSdLan, EdgeSdLanDetail, EdgeSdLanTable, EditEdgeSdLan } from './pages/Services/EdgeSdLan/index'
+import AddEdgeMdnsProxy                                                 from './pages/Services/MdnsProxy/Edge/AddEdgeMdnsProxy'
+import EdgeMdnsProxyDetails                                             from './pages/Services/MdnsProxy/Edge/EdgeMdnsProxyDetails'
 import { EdgeMdnsProxyTable }                                           from './pages/Services/MdnsProxy/Edge/EdgeMdnsProxyTable'
+import EditEdgeMdnsProxy                                                from './pages/Services/MdnsProxy/Edge/EditEdgeMdnsProxy'
 import MdnsProxyDetail                                                  from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
 import MdnsProxyForm                                                    from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
 import MdnsProxyTable                                                   from './pages/Services/MdnsProxy/MdnsProxyTable/MdnsProxyTable'
@@ -541,11 +545,36 @@ const edgePinRoutes = () => {
 }
 
 const edgeMdnsRoutes = () => {
-  return <Route
-    path={getServiceRoutePath({ type: ServiceType.EDGE_MDNS_PROXY,
-      oper: ServiceOperation.LIST })}
-    element={<EdgeMdnsProxyTable />}
-  />
+  return <>
+    <Route
+      path={getServiceRoutePath({ type: ServiceType.EDGE_MDNS_PROXY,
+        oper: ServiceOperation.LIST })}
+      element={<EdgeMdnsProxyTable />}
+    />
+    <Route
+      path={getServiceRoutePath({ type: ServiceType.EDGE_MDNS_PROXY,
+        oper: ServiceOperation.CREATE })}
+      element={
+        <ServiceAuthRoute serviceType={ServiceType.EDGE_MDNS_PROXY} oper={ServiceOperation.CREATE}>
+          <AddEdgeMdnsProxy />
+        </ServiceAuthRoute>
+      }
+    />
+    <Route
+      path={getServiceRoutePath({ type: ServiceType.EDGE_MDNS_PROXY,
+        oper: ServiceOperation.EDIT })}
+      element={
+        <ServiceAuthRoute serviceType={ServiceType.EDGE_MDNS_PROXY} oper={ServiceOperation.EDIT}>
+          <EditEdgeMdnsProxy />
+        </ServiceAuthRoute>
+      }
+    />
+    <Route
+      path={getServiceRoutePath({ type: ServiceType.EDGE_MDNS_PROXY,
+        oper: ServiceOperation.DETAIL })}
+      element={<EdgeMdnsProxyDetails />}
+    />
+  </>
 }
 
 function ServiceRoutes () {
@@ -1345,6 +1374,16 @@ function PolicyRoutes () {
         // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.DETAIL })}
           element={<CertificateTemplateDetail/>}
+        />
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.SERVER_CERTIFICATES, oper: PolicyOperation.CREATE })}
+          element={
+            // eslint-disable-next-line max-len
+            <PolicyAuthRoute policyType={PolicyType.SERVER_CERTIFICATES} oper={PolicyOperation.CREATE}>
+              <ServerClientCertificateForm/>
+            </PolicyAuthRoute>
+          }
         />
       </>
       }

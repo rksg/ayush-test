@@ -128,7 +128,7 @@ const PersonaInfo = ({
   return (
     <>
       <StepsForm.FieldLabel width={'140px'}>
-        {$t({ defaultMessage: 'Persona Group:' })}
+        {$t({ defaultMessage: 'Identity Group:' })}
         <Form.Item
           children={
             <UI.FieldTitle>
@@ -144,7 +144,7 @@ const PersonaInfo = ({
         />
       </StepsForm.FieldLabel>
       <StepsForm.FieldLabel width={'140px'}>
-        {$t({ defaultMessage: 'Number of Personas:' })}
+        {$t({ defaultMessage: 'Number of Identities:' })}
         <Form.Item
           children={
             <UI.FieldTitle>

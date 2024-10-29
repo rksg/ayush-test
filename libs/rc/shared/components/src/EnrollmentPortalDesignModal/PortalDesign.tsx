@@ -3,8 +3,9 @@ import { forwardRef, Ref, useEffect, useImperativeHandle, useRef, useState } fro
 import { Form, Switch }                              from 'antd'
 import _                                             from 'lodash'
 import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
+import { validate }                                  from 'uuid'
 
-import { Loader }                                                                                                                                               from '@acx-ui/components'
+import { Alert, Loader }                                                                                                                                        from '@acx-ui/components'
 import { useGetUIConfigurationQuery, useUpdateUIConfigurationMutation, useLazyGetUIConfigurationLogoImageQuery, useLazyGetUIConfigurationBackgroundImageQuery } from '@acx-ui/rc/services'
 import { DefaultUIConfiguration, UIConfiguration }                                                                                                              from '@acx-ui/rc/utils'
 
@@ -149,12 +150,25 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
     }
   }, [configurationQuery])
 
+  const validateWifi4EuNetworkId = (id?: string) => {
+    if (!id || !validate(id))
+      return false
+    return true
+  }
+
   const handleSubmit = async () => {
-    if (!value) return
+    if (!value) return true
     let data: UIConfiguration = { ...value }
     if (!display.get('wifi4eu')) {
       data.uiStyleSchema = { ...data.uiStyleSchema, wifi4EuNetworkId: '' }
+    } else {
+      if (!validateWifi4EuNetworkId(data.uiStyleSchema.wifi4EuNetworkId)) {
+        return false
+      }
     }
+
+
+
     if (!display.get('logo')) {
       data.logoImage = undefined
       data.uiStyleSchema = {
@@ -207,11 +221,12 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
           console.log(e)
         })
     }
+    return true
   }
 
   useImperativeHandle(ref, ()=> ({
     onFinish () {
-      handleSubmit()
+      return handleSubmit()
     }
   }))
 
@@ -314,6 +329,15 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
                 $isbg={value?.backgroundImage !== undefined ? true : false}
                 style={display.get('logo') || display.get('wifi4eu') ? {}: { paddingTop: '15' }}
               >
+                {display.get('wifi4eu') &&
+                !validateWifi4EuNetworkId(value.uiStyleSchema.wifi4EuNetworkId) &&
+                <Alert style={{ width: 400 }}
+                  message={$t(defineMessage(
+                    { defaultMessage: 'Invalid Wifi4EU Configuration' }))
+                  }
+                  type='error'
+                  showIcon/>
+                }
                 {display.get('wifi4eu') && <UI.Img src={Wifi4eu} alt={'Wifi4eu'} height={120}/> }
                 {display.get('logo') && <LogoContent
                   value={value}

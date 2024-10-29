@@ -178,7 +178,7 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
     expect(await screen.findByRole('link', { name: 'NSG-1' })).toBeVisible()
     expect(await screen.findByText('Venue')).toBeVisible()
     expect(await screen.findByRole('link', { name: 'MockVenue1' })).toBeVisible()
-    expect(await screen.findByText('Persona Group')).toBeVisible()
+    expect(await screen.findByText('Identity Group')).toBeVisible()
     expect(await screen.findByRole('link', { name: 'TestPersona' })).toBeVisible()
     expect(await screen.findByText('Number of Segments')).toBeVisible()
     expect(await screen.findByText('Number of devices per segment')).toBeVisible()
