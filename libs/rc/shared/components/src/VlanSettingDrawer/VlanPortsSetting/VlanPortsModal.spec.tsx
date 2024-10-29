@@ -32,12 +32,11 @@ const portlist = {
     {
       name: 'GigabitEthernet1/1/9',
       portIdentifier: '1/1/9',
-      isAuthPort: true
+      authDefaultVlan: '10' //TODO: check type
     },
     {
       name: 'GigabitEthernet1/1/10',
       portIdentifier: '1/1/10',
-      isAuthPort: true,
       authDefaultVlan: 5
     }
   ]

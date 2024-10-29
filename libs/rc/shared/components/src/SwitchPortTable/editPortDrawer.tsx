@@ -70,8 +70,8 @@ import {
 } from '../FlexibleAuthentication'
 import { handleAuthFieldChange } from '../FlexibleAuthentication'
 
-import { ACLSettingDrawer }                from './ACLSettingDrawer'
-import { EditLldpModal }                   from './editLldpModal'
+import { ACLSettingDrawer } from './ACLSettingDrawer'
+import { EditLldpModal }    from './editLldpModal'
 import {
   AggregatePortSettings,
   aggregatePortSettings,
@@ -84,7 +84,7 @@ import {
   getFlexAuthButtonStatus,
   isOverrideFieldNotChecked,
   renderAuthProfile,
-  validateApplyProfile  
+  validateApplyProfile
 } from './editPortDrawer.flexAuth.utils'
 import {
   checkVlanOptions,

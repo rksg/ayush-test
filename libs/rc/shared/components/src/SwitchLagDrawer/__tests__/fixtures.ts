@@ -270,7 +270,7 @@ export const portlist = {
       stack: false,
       syncedSwitchConfig: false,
       usedInFormingStack: false,
-      isAuthPort: true
+      authDefaultVlan: '10'
     },
     {
       cloudPort: false,

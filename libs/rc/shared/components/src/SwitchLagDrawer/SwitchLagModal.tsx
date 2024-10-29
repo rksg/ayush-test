@@ -163,7 +163,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
     if (portList.data && lagList.data && switchDetailHeader) {
       let allPorts: SwitchPortViewModel[] = portList.data.data
       if(isSwitchFlexAuthEnabled){
-        allPorts = allPorts.filter(p => !p.isAuthPort)
+        allPorts = allPorts.filter(p => !p.authDefaultVlan)
       }
       setCliApplied(switchDetailHeader.cliApplied ?? false)
       if (switchDetailHeader.isStack) {

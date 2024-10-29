@@ -168,6 +168,12 @@ export function TaggedPortsStep (props:{ portsData?: SwitchPortViewModel[] }) {
   }
 
   const getTooltip = (timeslot: string) => {
+    let isAuthDefaultVlan = false //TODO
+    if(portsData && vlanId) {
+      // eslint-disable-next-line max-len
+      isAuthDefaultVlan = portsData.find(i => i.portIdentifier === timeslot)?.authDefaultVlan == vlanId
+    }
+
     const untaggedPorts =
     vlanSettingValues.switchFamilyModels?.untaggedPorts?.toString().split(',') || []
 
@@ -181,7 +187,9 @@ export function TaggedPortsStep (props:{ portsData?: SwitchPortViewModel[] }) {
         switchModel => switchModel.model === vlanSettingValues.switchFamilyModels?.model &&
         switchModel.taggedPorts?.split(',').includes(timeslot))) : []
 
-    if(untaggedPorts.includes(timeslot)){
+    if (isAuthDefaultVlan) {
+      return <div>{$t({ defaultMessage: 'Port has already been enabled for Authentication' })}</div>
+    } else if(untaggedPorts.includes(timeslot)){
       return <div>{$t(PortStatusMessages.SET_AS_UNTAGGED)}</div>
     } else if (Object.keys(portsUsedBy?.lag ?? {})?.includes(timeslot)) {
       return <div>{

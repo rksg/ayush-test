@@ -154,7 +154,7 @@ export function UntaggedPortsStep (props:{ portsData?: SwitchPortViewModel[] }) 
   const getDisabledPorts = (timeslot: string) => {
     let isAuthPort = false
     if(portsData) {
-      isAuthPort = !!portsData.find(i => i.portIdentifier === timeslot)?.isAuthPort
+      isAuthPort = !!portsData.find(i => i.portIdentifier === timeslot)?.authDefaultVlan
     }
     const vlanSelectedPorts = vlanList ? vlanList.map(item => item.switchFamilyModels
       ?.filter(obj => obj.model === vlanSettingValues.switchFamilyModels?.model)) : []
@@ -177,6 +177,11 @@ export function UntaggedPortsStep (props:{ portsData?: SwitchPortViewModel[] }) 
   }
 
   const getTooltip = (timeslot: string) => {
+    let isAuthPort = false //TODO
+    if(portsData) {
+      isAuthPort = !!portsData.find(i => i.portIdentifier === timeslot)?.authDefaultVlan
+    }
+
     const taggedPorts =
     vlanSettingValues.switchFamilyModels?.taggedPorts?.toString().split(',') || []
 
@@ -190,7 +195,9 @@ export function UntaggedPortsStep (props:{ portsData?: SwitchPortViewModel[] }) 
         switchModel => switchModel.model === vlanSettingValues.switchFamilyModels?.model &&
         switchModel.taggedPorts?.split(',')?.includes(timeslot))) : []
 
-    if(taggedPorts.includes(timeslot)){
+    if (isAuthPort) {
+      return <div>{$t({ defaultMessage: 'Port has already been enabled for Authentication' })}</div>
+    } else if(taggedPorts.includes(timeslot)){
       return <div>{$t(PortStatusMessages.SET_AS_TAGGED)}</div>
     } else if (Object.keys(portsUsedBy?.lag ?? {})?.includes(timeslot)) {
       return <div>{

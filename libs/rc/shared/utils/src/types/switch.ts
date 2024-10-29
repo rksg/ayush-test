@@ -62,7 +62,6 @@ export const SwitchPortViewModelQueryFields = [
   'vlanIds',
   'vsixEgressAclName',
   'vsixIngressAclName',
-  'isAuthPort',
   'authDefaultVlan'
 ]
 
