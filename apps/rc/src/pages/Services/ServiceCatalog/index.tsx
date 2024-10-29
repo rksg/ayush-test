@@ -45,6 +45,13 @@ export default function ServiceCatalog () {
         {
           type: ServiceType.EDGE_DHCP,
           categories: [RadioCardCategory.EDGE],
+          helpIcon: isEdgeCompatibilityEnabled
+            ? <ApCompatibilityToolTip
+              title={''}
+              visible={true}
+              onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.DHCP)}
+            />
+            : undefined,
           disabled: !isEdgeHaReady || !isEdgeDhcpHaReady
         },
         { type: ServiceType.DPSK, categories: [RadioCardCategory.WIFI] },
