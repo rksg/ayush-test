@@ -3,12 +3,13 @@ import {
   waitFor,
   within
 } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import userEvent            from '@testing-library/user-event'
+import { mockPinStatsList } from 'libs/rc/shared/utils/src/features/edge/__tests__/fixtures/pin'
+import { rest }             from 'msw'
 
-import { networkApi }                           from '@acx-ui/rc/services'
-import { CommonRbacUrlsInfo, VlanPoolRbacUrls } from '@acx-ui/rc/utils'
-import { Provider, store }                      from '@acx-ui/store'
+import { networkApi }                                        from '@acx-ui/rc/services'
+import { CommonRbacUrlsInfo, EdgePinUrls, VlanPoolRbacUrls } from '@acx-ui/rc/utils'
+import { Provider, store }                                   from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -81,6 +82,23 @@ describe('Network Drawer', () => {
   it('should correctly render', async () => {
     render(<MockedTargetComponent />, { route: { params: { tenantId: 't-id' } } })
     await basicCheck(false)
+  })
+
+  it('should correctly render grey out network when the network is used by PIN', async () => {
+    render(<MockedTargetComponent
+      initData={{
+        pinNetworkIds: ['network_1', 'network_2']
+      }}
+    />, { route: { params: { tenantId: 't-id' } } })
+
+    const rows = await basicCheck(false)
+
+    expect(within(rows[0]).getByRole('cell', { name: /MockedNetwork 1/i })).toBeVisible()
+    const switchBtn = within(rows[1]).getByRole('switch')
+    expect(within(rows[1]).getByRole('cell', { name: /MockedNetwork 2/i })).toBeVisible()
+    const switchBtn2 = within(rows[1]).getByRole('switch')
+    expect(switchBtn).toBeDisabled()
+    expect(switchBtn2).toBeDisabled()
   })
 
   it('should correctly render in edit mode', async () => {

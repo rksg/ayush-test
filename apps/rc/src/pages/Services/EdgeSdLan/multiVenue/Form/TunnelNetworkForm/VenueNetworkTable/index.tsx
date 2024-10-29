@@ -147,6 +147,10 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
     closeNetworkModal()
   }
 
+  const pinNetworkIds = allPins?.flatMap(item => item.tunneledWlans ?? [])
+    .map(wlan => wlan?.networkId)
+    .filter(networkId => !!networkId)
+
   return (
     <>
       <Loader states={[ { isLoading, isFetching } ]}>
@@ -168,6 +172,7 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
         tunneledNetworks={formRef.getFieldValue('activatedNetworks') as EdgeMvSdLanFormNetwork}
         // eslint-disable-next-line max-len
         tunneledGuestNetworks={formRef.getFieldValue('activatedGuestNetworks') as EdgeMvSdLanFormNetwork}
+        pinNetworkIds={pinNetworkIds}
       />}
     </>
   )

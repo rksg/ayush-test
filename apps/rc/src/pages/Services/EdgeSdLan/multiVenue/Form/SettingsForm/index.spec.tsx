@@ -1,7 +1,8 @@
-import userEvent          from '@testing-library/user-event'
-import { Form }           from 'antd'
-import { cloneDeep, get } from 'lodash'
-import { rest }           from 'msw'
+import userEvent            from '@testing-library/user-event'
+import { Form }             from 'antd'
+import { mockPinStatsList } from 'libs/rc/shared/utils/src/features/edge/__tests__/fixtures/pin'
+import { cloneDeep, get }   from 'lodash'
+import { rest }             from 'msw'
 
 import { StepsForm, StepsFormProps } from '@acx-ui/components'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
@@ -13,7 +14,8 @@ import {
   EdgeSdLanFixtures,
   EdgeCompatibilityFixtures,
   EdgeUrlsInfo,
-  EdgePinFixtures
+  EdgePinFixtures,
+  EdgePinUrls
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -67,7 +69,8 @@ jest.mock('antd', () => {
 })
 
 const edgeMvSdlanContextValues = {
-  allSdLans: mockedMvSdLanDataList
+  allSdLans: mockedMvSdLanDataList,
+  allPins: []
 } as EdgeMvSdLanContextType
 
 jest.mock('@acx-ui/rc/utils', () => ({

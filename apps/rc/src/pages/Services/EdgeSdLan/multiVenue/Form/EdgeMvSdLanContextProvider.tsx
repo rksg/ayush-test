@@ -1,6 +1,8 @@
 import { createContext, useContext, ReactNode } from 'react'
 
 import { Loader }                                                             from '@acx-ui/components'
+import { Features }                                                           from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                              from '@acx-ui/rc/components'
 import { useGetEdgeMvSdLanViewDataListQuery, useGetEdgePinViewDataListQuery } from '@acx-ui/rc/services'
 import { EdgeMvSdLanViewData, PersonalIdentityNetworksViewData }              from '@acx-ui/rc/utils'
 
@@ -26,12 +28,14 @@ export function EdgeMvSdLanContextProvider (props: { children: ReactNode }) {
     } })
 
   const allSdLans = allSdLansQuery.data?.data ?? []
+
+  const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const allPinsQuery = useGetEdgePinViewDataListQuery({
     payload: {
       fields: ['id','venueId', 'edgeClusterInfo', 'tunneledWlans'],
       pageSize: 10000
     } })
-  const allPins = allPinsQuery.data?.data ?? []
+  const allPins = isEdgePinReady ? allPinsQuery.data?.data ?? [] : []
   return <EdgeMvSdLanContext.Provider value={{ allSdLans, allPins }}>
     <Loader states={[allSdLansQuery, allPinsQuery]}>
       {props.children}
