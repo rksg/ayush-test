@@ -10,7 +10,7 @@ import {
   showActionModal,
   Tooltip
 } from '@acx-ui/components'
-import { CountAndNamesTooltip, MdnsProxyForwardingRulesTable }                                      from '@acx-ui/rc/components'
+import { CountAndNamesTooltip, MdnsProxyForwardingRulesTable, ToolTipTableStyle }                   from '@acx-ui/rc/components'
 import { useDeleteEdgeMdnsProxyMutation, useGetEdgeMdnsProxyViewDataListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -26,8 +26,6 @@ import {
   MdnsProxyFeatureTypeEnum
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-
-import * as UI from '../../styledComponents'
 
 const settingsId = 'services-edge-mdns-proxy-table'
 export function EdgeMdnsProxyTable () {
@@ -113,7 +111,7 @@ export function EdgeMdnsProxyTable () {
         ])}
       />
       <Loader states={[tableQuery, { isLoading: false, isFetching: isDeleting }]}>
-        <UI.ToolTipStyle/>
+        <ToolTipTableStyle.ToolTipStyle/>
         <Table
           rowKey='id'
           settingsId={settingsId}
@@ -190,7 +188,7 @@ function useColumns () {
             children={forwardingRules.length}
             dottedUnderline
             placement='bottom'
-            overlayClassName={UI.toolTipClassName}
+            overlayClassName={ToolTipTableStyle.toolTipClassName}
             overlayInnerStyle={{ minWidth: 380 }}
           />
           : 0

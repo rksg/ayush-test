@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl'
 
 import { Button, cssStr, Loader, PageHeader, showActionModal, Table, TableProps, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
-import { SimpleListTooltip, TrafficClassSettingsTable }                                    from '@acx-ui/rc/components'
+import { SimpleListTooltip, TrafficClassSettingsTable, ToolTipTableStyle }                 from '@acx-ui/rc/components'
 import {
   useDeleteEdgeHqosProfileMutation,
   useGetEdgeClusterListQuery,
@@ -147,7 +147,7 @@ const EdgeHqosBandwidthTable = () => {
           />
         }
         placement='bottom'
-        overlayClassName={UI.toolTipClassName}
+        overlayClassName={ToolTipTableStyle.toolTipClassName}
         overlayInnerStyle={{ width: 415 }}
         dottedUnderline={true}>
           <UI.EyeOpenSolidCustom
@@ -238,7 +238,7 @@ const EdgeHqosBandwidthTable = () => {
           </TenantLink>
         ])}
       />
-      <UI.ToolTipStyle/>
+      <ToolTipTableStyle.ToolTipStyle/>
       <Loader states={[
         tableQuery,
         { isLoading: false, isFetching: isDeleteQosUpdating }

@@ -2,6 +2,7 @@ import _ from 'lodash'
 
 import {
   ClusterNetworkSettings,
+  ClusterSubInterfaceSettings,
   EdgeClusterStatus,
   EdgeGeneralFixtures,
   EdgeIpModeEnum,
@@ -14,7 +15,8 @@ import {
   EdgeSdLanViewDataP2
 } from '@acx-ui/rc/utils'
 
-import { InterfaceSettingsFormType } from '../InterfaceSettings/types'
+import { InterfaceSettingsFormType }    from '../InterfaceSettings/types'
+import { SubInterfaceSettingsFormType } from '../SubInterfaceSettings/types'
 
 const { mockedHaNetworkSettings, mockEdgeClusterList } = EdgeGeneralFixtures
 const { mockedPortsStatus } = EdgePortConfigFixtures
@@ -171,3 +173,139 @@ export const mockFailedNetworkConfig = {
     timeoutSeconds: 6
   }]
 } as ClusterNetworkSettings
+
+export const mockClusterSubInterfaceSettings = {
+  nodes: [
+    {
+      serialNumber: '96000076DCCAA42E87785B549A64997E72',
+      ports: [
+        {
+          portId: '29445906-158a-4535-8e1e-5d4852d064c6',
+          subInterfaces: [
+            {
+              id: '2deb8142-13fd-4658-a38c-a5be78aa894e',
+              vlan: 123,
+              portType: 'LAN',
+              ipMode: 'STATIC',
+              ip: '1.1.5.1',
+              subnet: '255.255.255.0'
+            }
+          ]
+        },
+        {
+          portId: '4f40f9cd-54fe-49bc-aade-bbc25ee2b6a7',
+          subInterfaces: []
+        }
+      ],
+      lags: [
+        {
+          lagId: 0,
+          subInterfaces: [
+            {
+              id: '392d0d59-566b-486e-ad55-fa9610b1a96b',
+              vlan: 1,
+              portType: 'LAN',
+              ipMode: 'STATIC',
+              ip: '1.1.3.1',
+              subnet: '255.255.255.0'
+            }
+          ]
+        }
+      ]
+    },
+    {
+      serialNumber: '96000036D1099D0C32121B82EB7786AC26',
+      ports: [
+        {
+          portId: 'c10a7aa2-766c-4e29-a193-bb8f0fe9b02d',
+          subInterfaces: []
+        },
+        {
+          portId: '85dd1fee-4e1f-42ba-a939-988e263612d3',
+          subInterfaces: [
+            {
+              id: '2165e0d4-4aae-4d2d-8fc7-bcae11c7bacb',
+              vlan: 1,
+              portType: 'LAN',
+              ipMode: 'STATIC',
+              ip: '1.1.2.1',
+              subnet: '255.255.255.0'
+            }
+          ]
+        }
+      ],
+      lags: [
+        {
+          lagId: 3,
+          subInterfaces: [
+            {
+              id: 'b4bca3e8-4f2a-463d-9b8f-0a4c3b21f5ec',
+              vlan: 3,
+              portType: 'LAN',
+              ipMode: 'DHCP',
+              ip: '',
+              subnet: ''
+            }
+          ]
+        }
+      ]
+    }
+  ]
+} as ClusterSubInterfaceSettings
+
+export const mockSubInterfaceSettingsFormType = {
+  portSubInterfaces: {
+    '96000076DCCAA42E87785B549A64997E72': {
+      '29445906-158a-4535-8e1e-5d4852d064c6': [
+        {
+          id: '2deb8142-13fd-4658-a38c-a5be78aa894e',
+          vlan: 123,
+          portType: 'LAN',
+          ipMode: 'STATIC',
+          ip: '1.1.5.1',
+          subnet: '255.255.255.0'
+        }
+      ],
+      '4f40f9cd-54fe-49bc-aade-bbc25ee2b6a7': []
+    },
+    '96000036D1099D0C32121B82EB7786AC26': {
+      'c10a7aa2-766c-4e29-a193-bb8f0fe9b02d': [],
+      '85dd1fee-4e1f-42ba-a939-988e263612d3': [
+        {
+          id: '2165e0d4-4aae-4d2d-8fc7-bcae11c7bacb',
+          vlan: 1,
+          portType: 'LAN',
+          ipMode: 'STATIC',
+          ip: '1.1.2.1',
+          subnet: '255.255.255.0'
+        }
+      ]
+    }
+  },
+  lagSubInterfaces: {
+    '96000076DCCAA42E87785B549A64997E72': {
+      0: [
+        {
+          id: '392d0d59-566b-486e-ad55-fa9610b1a96b',
+          vlan: 1,
+          portType: 'LAN',
+          ipMode: 'STATIC',
+          ip: '1.1.3.1',
+          subnet: '255.255.255.0'
+        }
+      ]
+    },
+    '96000036D1099D0C32121B82EB7786AC26': {
+      3: [
+        {
+          id: 'b4bca3e8-4f2a-463d-9b8f-0a4c3b21f5ec',
+          vlan: 3,
+          portType: 'LAN',
+          ipMode: 'DHCP',
+          ip: '',
+          subnet: ''
+        }
+      ]
+    }
+  }
+} as SubInterfaceSettingsFormType
