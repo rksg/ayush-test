@@ -140,10 +140,7 @@ function ImpactedSwitchTable (props: {
     fixed: 'left',
     width: 250,
     sorter: { compare: sortProp('portNumbers', defaultSort) },
-    searchable: true,
-    render: (_, { portNumbers }) => {
-      return (<div style={{ overflow: 'auto', padding: '8px 0px' }}>{portNumbers}</div>)
-    }
+    searchable: true
   }, {
     key: 'action',
     dataIndex: 'action',
