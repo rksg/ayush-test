@@ -1,5 +1,8 @@
+import { cloneDeep } from 'lodash'
+
+import { IncompatibilityFeatures }                                                                                                   from '../../../../models/CompatibilityEnum'
 import { CompatibilityEntityTypeEnum }                                                                                               from '../../../../models/EdgeEnum'
-import { EdgeFeatureSets, EdgeServiceCompatibilitiesResponse, EdgeSdLanApCompatibilitiesResponse, VenueEdgeCompatibilitiesResponse } from '../../../../types/edge'
+import { EdgeFeatureSets, EdgeSdLanApCompatibilitiesResponse, EdgeServiceCompatibilitiesResponse, VenueEdgeCompatibilitiesResponse } from '../../../../types/edge'
 
 export const mockEdgeFeatureCompatibilities: EdgeFeatureSets = {
   featureSets: [
@@ -149,6 +152,17 @@ export const mockEdgeSdLanCompatibilities: EdgeServiceCompatibilitiesResponse = 
     }  // end of service-2
   ]
 }
+
+export const mockEdgePinCompatibilities = cloneDeep(mockEdgeSdLanCompatibilities)
+mockEdgePinCompatibilities.compatibilities.forEach((item, idx) => {
+  item.serviceId = `pin-${idx+1}`
+  item.clusterEdgeCompatibilities.forEach(item2 => {
+    item2.incompatibleFeatures.forEach((f) => {
+      if (f.featureRequirement.featureName === IncompatibilityFeatures.SD_LAN)
+        f.featureRequirement.featureName = IncompatibilityFeatures.PIN
+    })
+  })
+})
 
 export const mockEdgeHqosCompatibilities: EdgeServiceCompatibilitiesResponse = {
   compatibilities: [

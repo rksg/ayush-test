@@ -4,8 +4,8 @@ import { Form, Input, Button, Upload, Space, Typography } from 'antd'
 import { RcFile }                                         from 'antd/lib/upload'
 import { useIntl }                                        from 'react-intl'
 
-import { formatter }                                    from '@acx-ui/formatter'
-import { useUploadFileMutation, useDeleteFileMutation } from '@acx-ui/rc/services'
+import { formatter }             from '@acx-ui/formatter'
+import { useUploadFileMutation } from '@acx-ui/rc/services'
 import {
   ActionType,
   FileContext,
@@ -24,7 +24,6 @@ export function AupSettings () {
   const [fileLoading, setFileLoading] = useState(false)
   const [fileSizeInvalid, setfileSizeInvalid] = useState(false)
   const [uploadFile] = useUploadFileMutation()
-  const [deleteFile] = useDeleteFileMutation()
 
   const aupFormatSwitch = () => {
     setDisplayFileOption(!displayFileOption)
@@ -50,7 +49,7 @@ export function AupSettings () {
   }
 
   const validateFileSize = (file: File) => {
-    const maxSize = 6291456
+    const maxSize = 1024 * 1024 * 2
     const bytesFormatter = formatter('bytesFormat')
     let errorMsg = ''
     if (file.size > maxSize) {
@@ -63,7 +62,6 @@ export function AupSettings () {
 
 
   async function fileUpload (file: RcFile | string | Blob) {
-    fileDelete()
     const formDataInput = new FormData()
     const fileContext: FileContext = {
       name: formInstance.getFieldValue('aupFileName'),
@@ -84,13 +82,6 @@ export function AupSettings () {
         setFileLoading(false)
         formInstance.validateFields()
       })
-  }
-
-  const fileDelete = async () => {
-    const fileToDelete:string = formInstance.getFieldValue('aupFileLocation')
-    if (null !== fileToDelete && '' !== fileToDelete && fileToDelete !== undefined) {
-      await deleteFile({ params: { fileId: fileToDelete } })
-    }
   }
 
   const validateFileLoading = async ( ) => {
@@ -114,7 +105,7 @@ export function AupSettings () {
 
   const invalidFileSize = async ( ) => {
     if (fileSizeInvalid === true) {
-      return Promise.reject($t({ defaultMessage: 'File size should be upto 6MB' }))
+      return Promise.reject($t({ defaultMessage: 'File size should be upto 2MB' }))
     } else {
       return Promise.resolve()
     }

@@ -347,5 +347,15 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/edgeHqosProfiles/edgeCompatibilities/query',
     newApi: true
+  },
+  getPinEdgeCompatibilities: {
+    method: 'post',
+    url: '/personalIdentityNetworks/edgeCompatibilities/query',
+    newApi: true
+  },
+  getPinApCompatibilities: {
+    method: 'post',
+    url: '/personalIdentityNetworks/apCompatibilities/query',
+    newApi: true
   }
 }
