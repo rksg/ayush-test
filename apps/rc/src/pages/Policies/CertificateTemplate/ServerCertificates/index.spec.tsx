@@ -4,7 +4,7 @@ import { rest }  from 'msw'
 import { CertificateUrls }                    from '@acx-ui/rc/utils'
 import { Provider }                           from '@acx-ui/store'
 import { mockServer, render, screen, within } from '@acx-ui/test-utils'
-import { RolesEnum, WifiScopes }              from '@acx-ui/types'
+import { RolesEnum }                          from '@acx-ui/types'
 import { setUserProfile, getUserProfile }     from '@acx-ui/user'
 
 import { serverCertificateList } from '../__test__/fixtures'
@@ -53,12 +53,13 @@ describe('ServerCertificates', () => {
     const name = await screen.findByText('certificate1')
 
     await userEvent.click(name)
-    expect(screen.getByText('Certificate Information')).toBeVisible()
     expect(screen.getByText('Download')).toBeVisible()
-    expect(screen.getByText('Usage')).toBeVisible()
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Download' }))
+    expect(screen.getByText('View Public Key')).toBeVisible()
   })
 
-  it('should render correctly with prime adimin permission', async () => {
+  it('should render correctly with prime admin permission', async () => {
     setUserProfile({
       ...getUserProfile(),
       abacEnabled: true,
@@ -78,6 +79,7 @@ describe('ServerCertificates', () => {
     await userEvent.click(row)
     expect(await screen.findByRole('button', { name: 'Revoke' })).toBeVisible()
     expect(await screen.findByRole('button', { name: 'Unrevoke' })).toBeVisible()
+    expect(await screen.findByRole('button', { name: 'Download' })).toBeVisible()
   })
 
   it('should render correctly with read only permission', async () => {
@@ -85,7 +87,6 @@ describe('ServerCertificates', () => {
       ...getUserProfile(),
       abacEnabled: true,
       isCustomRole: true,
-      scopes: [WifiScopes.READ],
       profile: { ...getUserProfile().profile, roles: [RolesEnum.READ_ONLY] }
     })
     render(<Provider>
