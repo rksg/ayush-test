@@ -87,6 +87,15 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
 
   const [batchSkipSwitchUpgradeSchedules] = useBatchSkipSwitchUpgradeSchedulesMutation()
 
+  const ICX71Count = upgradeVersions?.filter(
+    v => v.modelGroup === SwitchFirmwareModelGroup.ICX71)[0]?.switchCount || 0
+  const ICX7XCount = upgradeVersions?.filter(
+    v => v.modelGroup === SwitchFirmwareModelGroup.ICX7X)[0]?.switchCount || 0
+  const ICX81Count = upgradeVersions?.filter(
+    v => v.modelGroup === SwitchFirmwareModelGroup.ICX81)[0]?.switchCount || 0
+  const ICX82Count = upgradeVersions?.filter(
+    v => v.modelGroup === SwitchFirmwareModelGroup.ICX82)[0]?.switchCount || 0
+
   const getVersionsPayload = function () {
 
     let versionsPayload = []
@@ -117,6 +126,36 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
     return versionsPayload
   }
 
+  const getVersionsPayloadForSwitchLevel = function () {
+
+    let versionsPayload = []
+
+    if (form.getFieldValue('selectedICX71Version') && ICX71Count !== 0) {
+      versionsPayload.push({
+        modelGroup: SwitchFirmwareModelGroup.ICX71,
+        version: form.getFieldValue('selectedICX71Version')
+      })
+    }
+    if (form.getFieldValue('selectedICX7XVersion') && ICX7XCount !== 0) {
+      versionsPayload.push({
+        modelGroup: SwitchFirmwareModelGroup.ICX7X,
+        version: form.getFieldValue('selectedICX7XVersion')
+      })
+    }
+    if (form.getFieldValue('selectedICX81Version') && ICX81Count !== 0) {
+      versionsPayload.push({
+        modelGroup: SwitchFirmwareModelGroup.ICX81,
+        version: form.getFieldValue('selectedICX81Version')
+      })
+    }
+    if (form.getFieldValue('selectedICX82Version') && ICX82Count !== 0) {
+      versionsPayload.push({
+        modelGroup: SwitchFirmwareModelGroup.ICX82,
+        version: form.getFieldValue('selectedICX82Version')
+      })
+    }
+    return versionsPayload
+  }
 
   const wizardFinish = {
     [SwitchFirmwareWizardType.update]: async () => {
@@ -132,12 +171,13 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
         await batchUpdateSwitchVenueSchedules(venueRequests)
 
         const switchVenueGroups = _.groupBy(upgradeSwitchList, 'venueId')
+        const versionForSwitchLevel = getVersionsPayloadForSwitchLevel()
         const switchRequests = Object.keys(switchVenueGroups).map(key =>
           ({
             params: { venueId: key },
             payload: {
               switchIds: switchVenueGroups[key].map(item => item.switchId),
-              versions
+              versions: versionForSwitchLevel
             }
           }))
         await batchUpdateSwitchVenueSchedules(switchRequests)
@@ -164,6 +204,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
         await batchUpdateSwitchVenueSchedules(venueRequests)
 
         const switchVenueGroups = _.groupBy(upgradeSwitchList, 'venueId')
+        const versionForSwitchLevel = getVersionsPayloadForSwitchLevel()
         const switchRequests = Object.keys(switchVenueGroups).map(key =>
           ({
             params: { venueId: key },
@@ -172,7 +213,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
               time: form.getFieldValue('selectTimeStep') || '',
               preDownload: form.getFieldValue('preDownloadChecked') || false,
               switchIds: switchVenueGroups[key].map(item => item.switchId),
-              versions
+              versions: versionForSwitchLevel
             }
           }))
         await batchUpdateSwitchVenueSchedules(switchRequests)

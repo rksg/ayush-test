@@ -140,7 +140,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
 
     // NotesEnum.NOTE8200_1
     if (isSupport8200AV) {
-      updateNoteEnable(form.getFieldValue('selectedICX82Version'))
+      updateNoteEnable(selectedICX82Version)
     }
   }, [current])
 
