@@ -15,8 +15,6 @@ import {
   DateRange,
   dateRangeMap,
   resetRanges,
-  getJwtTokenPayload,
-  AccountTier,
   dateRangeForLast
 } from '@acx-ui/utils'
 
@@ -92,13 +90,10 @@ export const RangePicker = ({
   const [range, setRange] = useState<DateRangeType>(selectedRange)
   const [boundary, setBoundary] = useState<string>('')
   const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false)
-  const { acx_account_tier: accountTier } = getJwtTokenPayload()
   const allowedDateRange = isReport
     ? dateRangeForLast(12, 'months')
     : isRA
-      ? (accountTier === AccountTier.GOLD)
-        ? dateRangeForLast(1, 'month')
-        : dateRangeForLast(3, 'months')
+      ? dateRangeForLast(3, 'months')
       : dateRangeForLast(1, 'month')
 
   const disabledDate = useCallback(
