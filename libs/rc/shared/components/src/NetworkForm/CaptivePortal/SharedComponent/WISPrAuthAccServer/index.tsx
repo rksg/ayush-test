@@ -44,7 +44,6 @@ export function WISPrAuthAccServer (props : {
   const context = useContext(WISPrAuthAccContext)
   const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
   const { isTemplate } = useConfigTemplate()
-  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
 
   const [
     enableAccountingService,
@@ -59,6 +58,9 @@ export function WISPrAuthAccServer (props : {
   ]
 
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+  const primaryRadius = authRadius?.[AaaServerOrderEnum.PRIMARY]
+  const secondaryRadius = authRadius?.[AaaServerOrderEnum.SECONDARY]
 
   const onAccountingServiceChange = (enabled: boolean) => {
     if(!enabled){
@@ -220,52 +222,53 @@ export function WISPrAuthAccServer (props : {
 
         <div style={{ marginTop: 6, backgroundColor: 'var(--acx-neutrals-20)',
           width: 210, paddingLeft: 5 }}>
-          {authRadius?.[AaaServerOrderEnum.PRIMARY]&&<>
-            <Form.Item
-              label={$t(contents.aaaServerTypes[AaaServerOrderEnum.PRIMARY])}
-              children={$t({ defaultMessage: '{ipAddress}:{port}' }, {
-                ipAddress: _.get(authRadius,
-                  `${AaaServerOrderEnum.PRIMARY}.ip`),
-                port: _.get(authRadius,
-                  `${AaaServerOrderEnum.PRIMARY}.port`)
-              })} />
-            <Form.Item
-              label={$t({ defaultMessage: 'Shared Secret' })}
-              children={<PasswordInput
-                readOnly
-                bordered={false}
-                value={_.get(authRadius,
-                  `${AaaServerOrderEnum.PRIMARY}.sharedSecret`)}
+          {!_.isEmpty(_.get(authRadius, 'id')) && <>
+            {primaryRadius &&
+              <Form.Item
+                label={$t(contents.aaaServerTypes[AaaServerOrderEnum.PRIMARY])}
+                children={$t({ defaultMessage: '{ipAddress}:{port}' }, {
+                  ipAddress: _.get(authRadius,
+                    `${AaaServerOrderEnum.PRIMARY}.ip`),
+                  port: _.get(authRadius,
+                    `${AaaServerOrderEnum.PRIMARY}.port`)
+                })} />}
+            {primaryRadius && !_.get(authRadius, 'radSecOptions.tlsEnabled') &&
+              <Form.Item
+                label={$t({ defaultMessage: 'Shared Secret' })}
+                children={<PasswordInput
+                  readOnly
+                  bordered={false}
+                  value={_.get(authRadius,
+                    `${AaaServerOrderEnum.PRIMARY}.sharedSecret`)}
+                />}
               />}
-              hidden={_.get(authRadius, 'radSecOptions.tlsEnabled')}
-            /></>}
-          {authRadius?.[AaaServerOrderEnum.SECONDARY]&&<>
-            <Form.Item
-              label={$t(contents.aaaServerTypes[AaaServerOrderEnum.SECONDARY])}
-              children={$t({ defaultMessage: '{ipAddress}:{port}' }, {
-                ipAddress: _.get(authRadius,
-                  `${AaaServerOrderEnum.SECONDARY}.ip`),
-                port: _.get(authRadius,
-                  `${AaaServerOrderEnum.SECONDARY}.port`)
-              })} />
-            <Form.Item
-              label={$t({ defaultMessage: 'Shared Secret' })}
-              children={<PasswordInput
-                readOnly
-                bordered={false}
-                value={_.get(authRadius,
-                  `${AaaServerOrderEnum.SECONDARY}.sharedSecret`)}
+            {secondaryRadius &&
+              <Form.Item
+                label={$t(contents.aaaServerTypes[AaaServerOrderEnum.SECONDARY])}
+                children={$t({ defaultMessage: '{ipAddress}:{port}' }, {
+                  ipAddress: _.get(authRadius,
+                    `${AaaServerOrderEnum.SECONDARY}.ip`),
+                  port: _.get(authRadius,
+                    `${AaaServerOrderEnum.SECONDARY}.port`)
+                })} />}
+            {secondaryRadius && !_.get(authRadius, 'radSecOptions.tlsEnabled') &&
+              <Form.Item
+                label={$t({ defaultMessage: 'Shared Secret' })}
+                children={<PasswordInput
+                  readOnly
+                  bordered={false}
+                  value={_.get(authRadius,
+                    `${AaaServerOrderEnum.SECONDARY}.sharedSecret`)}
+                />}
               />}
-              hidden={_.get(authRadius, 'radSecOptions.tlsEnabled')}
-            />
+            {supportRadsec &&
+              <Form.Item
+                label={$t({ defaultMessage: 'RadSec' })}
+                children={$t({ defaultMessage: '{tlsEnabled}' }, {
+                  tlsEnabled: _.get(authRadius, 'radSecOptions.tlsEnabled') ? 'On' : 'Off'
+                })}
+              />}
           </>}
-          {supportRadsec && <Form.Item
-            label={$t({ defaultMessage: 'RadSec' })}
-            children={$t({ defaultMessage: '{tlsEnabled}' }, {
-              tlsEnabled: _.get(authRadius, 'radSecOptions.tlsEnabled') ? 'On' : 'Off'
-            })}
-            hidden={_.isEmpty(_.get(authRadius, 'id'))}
-          />}
         </div>
         <Form.Item
           name={'authRadius'}

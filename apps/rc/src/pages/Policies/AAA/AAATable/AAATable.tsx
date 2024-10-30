@@ -274,7 +274,7 @@ function useColumns () {
     ...(supportRadsec ? [{
       key: 'radSecOptions.tlsEnabled',
       title: $t({ defaultMessage: 'RadSec' }),
-      dataIndex: 'tlsEnabled',
+      dataIndex: 'radSecOptions.tlsEnabled',
       sorter: false,
       align: 'center' as AlignType,
       width: 80,
@@ -286,7 +286,6 @@ function useColumns () {
       key: 'radSecOptions.certificateAuthorityId',
       title: $t({ defaultMessage: 'Certificate Authority' }),
       dataIndex: 'radSecOptions.certificateAuthorityId',
-      filterKey: 'radSecOptions.certificateAuthorityId',
       filterable: certificateAuthorityNameMap,
       render: (data: ReactNode, row : AAAViewModalType) => {
         return (!row.radSecOptions?.certificateAuthorityId)
@@ -303,7 +302,6 @@ function useColumns () {
       key: 'radSecOptions.clientCertificateId',
       title: $t({ defaultMessage: 'Client Certificate' }),
       dataIndex: 'radSecOptions.clientCertificateId',
-      filterKey: 'radSecOptions.clientCertificateId',
       filterable: clientCertificateMap,
       width: 160,
       render: (data: ReactNode, row : AAAViewModalType) => {

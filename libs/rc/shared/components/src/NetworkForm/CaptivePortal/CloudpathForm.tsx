@@ -57,13 +57,14 @@ export function CloudpathForm () {
     }
   },[data?.id])
 
-  function setFieldsValue () {
+  const setFieldsValue = () => {
     if (!data) {
       return
     }
 
-    form.setFieldsValue({ ...data })
-    form.setFieldValue('enableAccountingService', data.enableAccountingService)
+    form.setFieldsValue({ ...data,
+      enableAccountingService: data.enableAccountingService
+    })
     if(data.accountingRadius){
       form.setFieldValue('accountingRadiusId',
         data.accountingRadius.id)

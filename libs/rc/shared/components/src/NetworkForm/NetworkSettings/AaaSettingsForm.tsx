@@ -72,7 +72,7 @@ export function AaaSettingsForm () {
     }
   }, [data?.id])
 
-  function setFieldsValue () {
+  const setFieldsValue = () => {
     data && form.setFieldsValue({
       enableAuthProxy: data.enableAuthProxy,
       enableAccountingProxy: data.enableAccountingProxy,

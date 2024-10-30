@@ -64,7 +64,7 @@ export function DpskSettingsForm () {
     }
   }, [data?.id])
 
-  function setFieldsValue () {
+  const setFieldsValue = () => {
     data && form.setFieldsValue({
       isCloudpathEnabled: data.authRadius?true:false,
       dpskServiceProfileId: data?.dpskServiceProfileId,
