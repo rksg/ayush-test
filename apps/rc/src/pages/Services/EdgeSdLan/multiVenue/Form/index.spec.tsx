@@ -3,14 +3,16 @@ import { Form, Input } from 'antd'
 import { transform }   from 'lodash'
 import { rest }        from 'msw'
 
-import { edgeSdLanApi }    from '@acx-ui/rc/services'
+import { edgeSdLanApi } from '@acx-ui/rc/services'
 import {
   EdgeSdLanUrls,
   getServiceRoutePath,
   ServiceOperation,
   ServiceType,
   EdgeSdLanFixtures,
-  EdgeMvSdLanFormNetwork
+  EdgeMvSdLanFormNetwork,
+  EdgePinUrls,
+  EdgePinFixtures
 } from '@acx-ui/rc/utils'
 import {
   Provider, store
@@ -27,6 +29,7 @@ import {
 import EdgeMvSdLanForm, { EdgeMvSdLanFormProps } from '.'
 
 const { mockedMvSdLanService, mockedMvSdLanDataList } = EdgeSdLanFixtures
+const { mockPinStatsList } = EdgePinFixtures
 
 const { click } = userEvent
 
@@ -80,6 +83,10 @@ describe('multi-venue SD-LAN form', () => {
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
         (_, res, ctx) => res(ctx.json({ data: mockedMvSdLanDataList }))
+      ),
+      rest.post(
+        EdgePinUrls.getEdgePinStatsList.url,
+        (_, res, ctx) => res(ctx.json({ data: mockPinStatsList }))
       )
     )
   })

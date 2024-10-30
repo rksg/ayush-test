@@ -83,6 +83,23 @@ describe('Network Drawer', () => {
     await basicCheck(false)
   })
 
+  it('should correctly render grey out network when the network is used by PIN', async () => {
+    render(<MockedTargetComponent
+      initData={{
+        pinNetworkIds: ['network_1', 'network_2']
+      }}
+    />, { route: { params: { tenantId: 't-id' } } })
+
+    const rows = await basicCheck(false)
+
+    expect(within(rows[0]).getByRole('cell', { name: /MockedNetwork 1/i })).toBeVisible()
+    const switchBtn = within(rows[1]).getByRole('switch')
+    expect(within(rows[1]).getByRole('cell', { name: /MockedNetwork 2/i })).toBeVisible()
+    const switchBtn2 = within(rows[1]).getByRole('switch')
+    expect(switchBtn).toBeDisabled()
+    expect(switchBtn2).toBeDisabled()
+  })
+
   it('should correctly render in edit mode', async () => {
     render(<MockedTargetComponent
       initData={{

@@ -88,7 +88,7 @@ export const SmartEdgesTable = (props: SmartEdgesTableProps) => {
       sorter: { compare: sortProp('vxlanTunnelNum', defaultSort) }
     },
     {
-      title: $t({ defaultMessage: '# of Active APs' }),
+      title: $t({ defaultMessage: 'Active APs' }),
       key: 'activeApCount',
       dataIndex: 'activeApCount',
       sorter: { compare: sortProp('activeApCount', defaultSort) }
