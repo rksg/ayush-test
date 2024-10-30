@@ -5,11 +5,15 @@ import { Node } from '.'
 
 export const searchTree = (node: Node, searchText: string, path: Node[] = []): Node[] => {
   let results: Node[] = []
-  if (
-    node?.name?.toLowerCase().match(searchText) ||
-    node?.mac?.toLowerCase().match(searchText)
-  ) {
-    results.push({ ...node, path: [...path, node] })
+  try {
+    if (
+      node?.name?.toLowerCase().match(searchText) ||
+      node?.mac?.toLowerCase().match(searchText)
+    ) {
+      results.push({ ...node, path: [...path, node] })
+    }
+  } catch (e) {
+    // ignore invalid regex error
   }
   if (Array.isArray(node.children)) {
     for (const child of node.children) {

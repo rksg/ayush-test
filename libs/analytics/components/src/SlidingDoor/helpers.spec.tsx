@@ -44,6 +44,12 @@ describe('Helper Functions', () => {
       const results = searchTree(rootNode, 'xyz')
       expect(results.length).toBe(0)
     })
+
+    it.each(
+      ['*', '\\', '?']
+    ) ('should not throw any error if search text not a valid regex', (text) => {
+      expect(() => searchTree(rootNode, text)).not.toThrowError()
+    })
   })
 
   describe('findMatchingNode', () => {
