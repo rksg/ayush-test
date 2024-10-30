@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from 'react'
 
-import { Space }                  from 'antd'
+import { Space, Typography }      from 'antd'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -152,19 +152,20 @@ export default function WorkflowDetails () {
         [
           // eslint-disable-next-line max-len
           ...(hasPermission({ scopes: getScopeKeyByPolicy(PolicyType.WORKFLOW, PolicyOperation.EDIT) }) ?
-            []: []),
-          <Button
-            key='configure'
-            type='default'
-            scopeKey={getScopeKeyByPolicy(PolicyType.WORKFLOW, PolicyOperation.EDIT)}
-            onClick={()=> {
-              setPreviewVisible(false)
-              openWorkflowDesigner()
-              setIsComparatorOpen(false)
-            }}
-          >
-            {$t({ defaultMessage: 'Configure' })}
-          </Button>,
+            [
+              <Button
+                key='configure'
+                type='default'
+                scopeKey={getScopeKeyByPolicy(PolicyType.WORKFLOW, PolicyOperation.EDIT)}
+                onClick={()=> {
+                  setPreviewVisible(false)
+                  openWorkflowDesigner()
+                  setIsComparatorOpen(false)
+                }}
+              >
+                {$t({ defaultMessage: 'Configure' })}
+              </Button>
+            ]: []),
           <Button
             type='default'
             onClick={() => {
@@ -221,9 +222,29 @@ export default function WorkflowDetails () {
           {(stepsData?.paging?.totalCount ?? 0 ) <= WorkflowStepsEmptyCount ?
             <Card
               title={$t({ defaultMessage: 'Active Workflow Design' })}
-            ><label style={{ textAlign: 'center', margin: 'auto' }}>
-                {$t({ defaultMessage: 'Onboarding Workflow not configured' })}
-              </label>
+            ><div style={{ margin: 'auto' }}>
+                <Typography.Text style={{ textAlign: 'center', margin: 'auto', fontSize: '14px' }}>
+                  {$t({ defaultMessage: 'Onboarding Workflow not configured' })}
+                </Typography.Text>
+                {
+                  // eslint-disable-next-line max-len
+                  hasPermission({ scopes: getScopeKeyByPolicy(PolicyType.WORKFLOW, PolicyOperation.EDIT) }) &&
+                  <Button
+                    key='configure'
+                    type='default'
+                    size={'small'}
+                    scopeKey={getScopeKeyByPolicy(PolicyType.WORKFLOW, PolicyOperation.EDIT)}
+                    style={{ marginLeft: '4px', top: '5px' }}
+                    onClick={()=> {
+                      setPreviewVisible(false)
+                      openWorkflowDesigner()
+                      setIsComparatorOpen(false)
+                    }}
+                  >
+                    {$t({ defaultMessage: 'Configure' })}
+                  </Button>
+                }
+              </div>
             </Card> :
             <WorkflowPanel
               workflowId={data?.id!!}
