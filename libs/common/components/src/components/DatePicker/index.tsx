@@ -64,8 +64,6 @@ export const restrictDateTo3Months = (values: RangeValueType, range: string) => 
   return { startDate, endDate }
 }
 
-
-
 export const RangePicker = ({
   showTimePicker,
   rangeOptions,
@@ -95,14 +93,13 @@ export const RangePicker = ({
   const [boundary, setBoundary] = useState<string>('')
   const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false)
   const { acx_account_tier: accountTier } = getJwtTokenPayload()
-
   const allowedDateRange = isReport
     ? dateRangeForLast(12, 'months')
     : isRA
       ? (accountTier === AccountTier.GOLD)
         ? dateRangeForLast(1, 'month')
         : dateRangeForLast(3, 'months')
-      : dateRangeForLast(1, 'month')
+      : dateRangeForLast(2, 'month')
 
   const disabledDate = useCallback(
     (current: Moment) => (
