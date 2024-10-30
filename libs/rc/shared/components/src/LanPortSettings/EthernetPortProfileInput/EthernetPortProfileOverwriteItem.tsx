@@ -110,7 +110,7 @@ const EthernetPortProfileOverwriteItem = (props:EthernetPortProfileOverwriteProp
           { isEditable &&
             <>
               <Tooltip
-                title={$t({ defaultMessage: 'Override the {title}'}, { title })}
+                title={$t({ defaultMessage: 'Override the {title}' }, { title })}
                 placement='top'>
                 <Button
                   type='link'
