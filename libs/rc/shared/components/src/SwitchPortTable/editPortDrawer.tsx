@@ -80,6 +80,7 @@ import {
   checkVlanDiffFromAuthDefaultVlan,
   checkVlanDiffFromSwitchDefaultVlan,
   checkVlanDiffFromSwitchAuthDefaultVlan,
+  handleClickCustomize,
   getAppliedProfile,
   getFlexAuthButtonStatus,
   isOverrideFieldNotChecked,
@@ -209,6 +210,7 @@ export function EditPortDrawer ({
 
   const defaultVlanText = $t({ defaultMessage: 'Default VLAN (Multiple values)' })
   const switches: string[] = _.uniq(selectedPorts.map(p => p.switchMac))
+
   const isFirmwareAbove10010f = switchList
     ?.filter(s => switches.includes(s.id))
     .every(s => isFirmwareVersionAbove10010f(s.firmware)) ?? false
@@ -821,94 +823,86 @@ export function EditPortDrawer ({
   }
 
   const applyForm = async () => {
-    try {
-      // console.log('** ', form.getFieldsValue())
-      const valid = await form.validateFields()
-      if (valid) {
-        const appliedAuthProfileData = isSwitchFlexAuthEnabled && authenticationProfileId
+    const appliedAuthProfileData = isSwitchFlexAuthEnabled && authenticationProfileId
             && getAppliedProfile(authProfiles, authenticationProfileId)
 
-        const values = {
-          ...form.getFieldsValue(),
-          ...appliedAuthProfileData,
-          revert: useVenueSettings,
-          ...(lldpQosList && { lldpQos: // remove fake lldp id
+    const values = {
+      ...form.getFieldsValue(),
+      ...appliedAuthProfileData,
+      revert: useVenueSettings,
+      ...(lldpQosList && { lldpQos: // remove fake lldp id
             lldpQosList?.map(lldp => ( lldp.id.includes('lldp') ? _.omit(lldp, ['id']) : lldp ))
-          }),
-          taggedVlans: useVenueSettings ? null :
-            (form.getFieldValue('taggedVlans') ?
-              form.getFieldValue('taggedVlans').split(',') : []),
-          untaggedVlan: useVenueSettings ? '' : form.getFieldValue('untaggedVlan'),
-          voiceVlan: useVenueSettings ? null : Number(form.getFieldValue('voiceVlan'))
-        }
-
-        const defaultVlanMap = switchesDefaultVlan?.reduce((result, item) => ({
-          ...result, [item.switchId]: item.defaultVlanId
-        }), {})
-        const getDefaultVlanMapping = (key: keyof typeof transformedValues, item: string) => {
-          return transformedValues?.[key] === defaultVlanText ? {
-            [key]: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
-          } : {}
-        }
-
-        const { transformedValues, ignoreFields } = transformData(values)
-        const payload = switches.map((item) => {
-          const ports = selectedPorts
-            .filter(p => p.switchSerial === item)
-            .map(p => p.portIdentifier)
-
-          return isSwitchRbacEnabled ? {
-            ...transformedValues,
-            switchId: item,
-            port: ports?.[0],
-            ports: ports,
-            // ...(transformedValues?.untaggedVlan === defaultVlanText && {
-            //   untaggedVlan: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
-            // }),
-            // ...(transformedValues?.voiceVlan === defaultVlanText && {
-            //   voiceVlan: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
-            // }),
-            ...getDefaultVlanMapping('untaggedVlan', item),
-            ...getDefaultVlanMapping('voiceVlan', item),
-            ignoreFields: ignoreFields.toString()
-          } : {
-            switchId: item,
-            port: {
-              ...transformedValues,
-              // ...(transformedValues?.untaggedVlan === defaultVlanText && {
-              //   untaggedVlan: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
-              // }),
-              // ...(transformedValues?.voiceVlan === defaultVlanText && {
-              //   voiceVlan: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
-              // }),
-              ...getDefaultVlanMapping('untaggedVlan', item),
-              ...getDefaultVlanMapping('voiceVlan', item),
-              ignoreFields: ignoreFields.toString(),
-              port: ports?.[0],
-              ports: ports
-            }
-          }
-        })
-
-        // console.log('payload: ', payload)
-
-        await savePortsSetting({
-          params: { tenantId, venueId: switchDetail?.venueId },
-          payload,
-          enableRbac: isSwitchRbacEnabled,
-          option: { skip: !switchDetail?.venueId }
-        }).unwrap()
-        store.dispatch(
-          switchApi.util.invalidateTags([
-            { type: 'SwitchPort', id: 'LIST' },
-            { type: 'SwitchPort', id: 'Setting' }
-          ])
-        )
-        onClose()
-      }
-    } catch (err) {
-      console.log(err) // eslint-disable-line no-console
+      }),
+      taggedVlans: useVenueSettings ? null :
+        (form.getFieldValue('taggedVlans') ?
+          form.getFieldValue('taggedVlans').split(',') : []),
+      untaggedVlan: useVenueSettings ? '' : form.getFieldValue('untaggedVlan'),
+      voiceVlan: useVenueSettings ? null : Number(form.getFieldValue('voiceVlan'))
     }
+
+    const defaultVlanMap = switchesDefaultVlan?.reduce((result, item) => ({
+      ...result, [item.switchId]: item.defaultVlanId
+    }), {})
+    const getDefaultVlanMapping = (key: keyof typeof transformedValues, item: string) => {
+      return transformedValues?.[key] === defaultVlanText ? {
+        [key]: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
+      } : {}
+    }
+
+    const { transformedValues, ignoreFields } = transformData(values)
+    const payload = switches.map((item) => {
+      const ports = selectedPorts
+        .filter(p => p.switchSerial === item)
+        .map(p => p.portIdentifier)
+
+      return isSwitchRbacEnabled ? {
+        ...transformedValues,
+        switchId: item,
+        port: ports?.[0],
+        ports: ports,
+        // ...(transformedValues?.untaggedVlan === defaultVlanText && {
+        //   untaggedVlan: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
+        // }),
+        // ...(transformedValues?.voiceVlan === defaultVlanText && {
+        //   voiceVlan: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
+        // }),
+        ...getDefaultVlanMapping('untaggedVlan', item),
+        ...getDefaultVlanMapping('voiceVlan', item),
+        ignoreFields: ignoreFields.toString()
+      } : {
+        switchId: item,
+        port: {
+          ...transformedValues,
+          // ...(transformedValues?.untaggedVlan === defaultVlanText && {
+          //   untaggedVlan: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
+          // }),
+          // ...(transformedValues?.voiceVlan === defaultVlanText && {
+          //   voiceVlan: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
+          // }),
+          ...getDefaultVlanMapping('untaggedVlan', item),
+          ...getDefaultVlanMapping('voiceVlan', item),
+          ignoreFields: ignoreFields.toString(),
+          port: ports?.[0],
+          ports: ports
+        }
+      }
+    })
+
+    // console.log('payload: ', payload)
+
+    await savePortsSetting({
+      params: { tenantId, venueId: switchDetail?.venueId },
+      payload,
+      enableRbac: isSwitchRbacEnabled,
+      option: { skip: !switchDetail?.venueId }
+    }).unwrap()
+    store.dispatch(
+      switchApi.util.invalidateTags([
+        { type: 'SwitchPort', id: 'LIST' },
+        { type: 'SwitchPort', id: 'Setting' }
+      ])
+    )
+    onClose()
   }
 
   const onCyclePoe = async () => {
@@ -1071,18 +1065,42 @@ export function EditPortDrawer ({
     }
   }
 
-  const onApply = () => {
+  const handleApplyCloudPort = () => {
     showActionModal({
       type: 'confirm',
       width: 450,
       title: $t({ defaultMessage: 'Modify Uplink Port?' }),
-      content: $t({
-        defaultMessage: `Modifying the uplink port may result in connectivity issues.
-      Are you sure you want to apply these changes?` }),
+      content: $t(EditPortMessages.MODIFYING_UPLINK_PORT),
       okText: $t({ defaultMessage: 'Apply Changes' }),
       cancelText: $t({ defaultMessage: 'Cancel' }),
       onOk: applyForm
     })
+  }
+
+  const handleApply = async () => {
+    const shouldAlertAaa = aggregatePortsData?.shouldAlertAaaAndRadiusNotApply
+    const flexAuthEnabled = form.getFieldValue('flexibleAuthenticationEnabled')
+    try {
+      // console.log('** ', form.getFieldsValue())
+      const valid = await form.validateFields()
+      if (valid) {
+        if (isSwitchFlexAuthEnabled && shouldAlertAaa && flexAuthEnabled) {
+          showActionModal({
+            type: 'confirm',
+            width: 450,
+            title: $t({ defaultMessage: 'Modify Port?' }),
+            content: $t(EditPortMessages.NEED_CONFIGURE_AAA_RADIUS_SETTINGS),
+            okText: $t({ defaultMessage: 'Apply Changes' }),
+            cancelText: $t({ defaultMessage: 'Cancel' }),
+            onOk: applyForm
+          })
+          return
+        }
+        applyForm()
+      }
+    } catch (err) {
+      console.log(err) // eslint-disable-line no-console
+    }
   }
 
   const footer = [
@@ -1104,7 +1122,7 @@ export function EditPortDrawer ({
         key='apply'
         type='primary'
         disabled={disableSaveButton}
-        onClick={isCloudPort ? onApply : applyForm}>
+        onClick={isCloudPort ? handleApplyCloudPort : handleApply}>
         {$t({ defaultMessage: 'Apply' })}
       </Button>
     </Space>
@@ -1203,17 +1221,11 @@ export function EditPortDrawer ({
                         type='link'
                         size='small'
                         disabled={getFieldDisabled('isFlexibleAuthCustomized')}
-                        onClick={() => {
-                          const toggleCustomized = !isFlexibleAuthCustomized
-                          form.setFieldValue('isFlexibleAuthCustomized', toggleCustomized)
-
-                          if (toggleCustomized && authenticationProfileId && !isMultipleEdit) {
-                            form.setFieldsValue({
-                              ...form.getFieldsValue(),
-                              ...(getAppliedProfile(authProfiles, authenticationProfileId))
-                            })
-                          }
-                        }}
+                        onClick={() => handleClickCustomize({
+                          ...commonRequiredProps,
+                          isFlexibleAuthCustomized,
+                          authenticationProfileId, authProfiles, switches
+                        })}
                       >{
                           isFlexibleAuthCustomized
                             ? $t({ defaultMessage: 'Use Profile Settings' })
@@ -1357,7 +1369,8 @@ export function EditPortDrawer ({
                   : <Select
                     options={Object.values(PortControl).map(controlType => ({
                       label: $t(portControlTypeLabel[controlType]),
-                      value: controlType
+                      value: controlType,
+                      disabled: controlType === ''
                     }))}
                     disabled={getFieldDisabled('dot1xPortControl')}
                     onChange={(value) => handleAuthFieldChange({

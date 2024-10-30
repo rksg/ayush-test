@@ -1077,7 +1077,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const switchesInfo = {
           ...createHttpRequest(switchUrls.getSwitchList, arg.params, headers),
           body: JSON.stringify({
-            fields: ['name', 'venueName', 'id', 'switchMac', 'switchName'],
+            fields: ['name', 'venueName', 'id', 'switchMac', 'switchName', 'firmware'],
             filters: { id: _.uniq(list.data.map(c => c.switchId)) },
             pageSize: 10000
           })
@@ -1824,7 +1824,10 @@ const aggregatedSwitchClientData = (
     const target = switches.data.find(s => s.id === item.switchId)
     const switchPortStatus = switchPortsQuery?.data.find(p => p.portId === item.switchPortId)
     const switchId = target ? item.switchId : ''
-    return switchPortsQuery ? { ...item, switchId, switchPortStatus } : { ...item, switchId } // use switchId to mark non-exist switch
+    const switchFirmware = target ? target.firmware : ''
+    return switchPortsQuery
+      ? { ...item, switchId, switchPortStatus, switchFirmware }
+      : { ...item, switchId } // use switchId to mark non-exist switch
   })
   return {
     ...clients,
@@ -1834,6 +1837,7 @@ const aggregatedSwitchClientData = (
 
 export const {
   useSwitchListQuery,
+  useLazySwitchListQuery,
   useStackMemberListQuery,
   useBatchDeleteSwitchMutation,
   useDeleteSwitchesMutation,

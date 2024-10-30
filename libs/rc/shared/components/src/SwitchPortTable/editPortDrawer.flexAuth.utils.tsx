@@ -42,6 +42,7 @@ export interface AggregatePortSettings {
   // authDefaultVlan2: Record<string, Record<string, number[]>>
   restrictedVlan: Record<string, number | undefined>
   criticalVlan: Record<string, number | undefined>
+  shouldAlertAaaAndRadiusNotApply: boolean
 }
 
 export const aggregatePortSettings = (
@@ -64,7 +65,8 @@ export const aggregatePortSettings = (
     authDefaultVlan: {},
     // authDefaultVlan2: {}, //TODO
     restrictedVlan: {},
-    criticalVlan: {}
+    criticalVlan: {},
+    shouldAlertAaaAndRadiusNotApply: false
   }
 
   // const addUniqueToArray = (array: Array<string | Number>, item: string | Number) =>
@@ -73,7 +75,8 @@ export const aggregatePortSettings = (
   return portsSetting.reduce((result, {
     switchMac, port, taggedVlans = [], untaggedVlan = '',
     switchLevelAuthDefaultVlan, guestVlan, authDefaultVlan, restrictedVlan, criticalVlan,
-    profileAuthDefaultVlan, authenticationProfileId, enableAuthPorts
+    profileAuthDefaultVlan, authenticationProfileId,
+    enableAuthPorts, shouldAlertAaaAndRadiusNotApply
   }) => {
     const index = switchMac as string
     const untagged = untaggedVlan as string
@@ -116,6 +119,7 @@ export const aggregatePortSettings = (
     result.hasMultipleValue = hasMultipleValue ?? []
     if (profileAuthDefaultVlan) result.profileAuthDefaultVlan[index] = profileAuthDefaultVlan
     if (authenticationProfileId) result.authenticationProfileId[index] = authenticationProfileId
+    if (shouldAlertAaaAndRadiusNotApply) result.shouldAlertAaaAndRadiusNotApply = true
 
     result.defaultVlan[index] = switchesDefaultVlan
       ?.find((s) => s.switchId === switchMac)?.defaultVlanId
@@ -493,5 +497,44 @@ export const checkMultipleVlansDifferences = async (props: {
     return Promise.reject(
       new Error($t({ defaultMessage: 'Please enter {vlanType}' }, { vlanType: vlanType }))
     )
+  }
+}
+
+export const handleClickCustomize = (props: {
+  isFlexibleAuthCustomized: boolean,
+  isMultipleEdit: boolean,
+  authenticationProfileId?: string,
+  authProfiles: FlexibleAuthentication[],
+  aggregateData: AggregatePortSettings,
+  switches: string[],
+  form: FormInstance,
+}) => {
+  const {
+    isFlexibleAuthCustomized, isMultipleEdit, aggregateData,
+    authenticationProfileId, authProfiles, switches, form
+  } = props
+
+  const toggleCustomized = !isFlexibleAuthCustomized
+  const hasSelectedProfile = !isMultipleEdit && authenticationProfileId
+  const authDefaultVlans
+    = getUnionValuesByKey('authDefaultVlan', aggregateData)
+  const isEitherPortEnabledForFirstTime
+    = isMultipleEdit && (switches?.length > authDefaultVlans?.length)
+
+  form.setFieldValue('isFlexibleAuthCustomized', toggleCustomized)
+
+  if (toggleCustomized) {
+    form.setFieldsValue({
+      ...form.getFieldsValue(),
+      ...(hasSelectedProfile
+        ? getAppliedProfile(authProfiles, authenticationProfileId) : {}
+      ),
+      ...(isEitherPortEnabledForFirstTime ? {
+        authenticationTypeCheckbox: true,
+        dot1xPortControlCheckbox: true,
+        authDefaultVlanCheckbox: true
+      }: {}
+      )
+    })
   }
 }

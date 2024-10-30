@@ -293,6 +293,12 @@ export const EditPortMessages = {
     defaultMessage: `Changing the port settings may result in loss of connectivity and
       communication issues to your APs. Do you want to continue with these changes?`
   }),
+  MODIFYING_UPLINK_PORT: defineMessage({
+    defaultMessage: 'Modifying the uplink port may result in connectivity issues. Are you sure you want to apply these changes?'
+  }),
+  NEED_CONFIGURE_AAA_RADIUS_SETTINGS: defineMessage({
+    defaultMessage: 'Authentication needs RADIUS server and AAA policy to support. If you have set them on R1, will apply the configuration for Authentication automatically. If no, please set them to make Authentication work.'
+  }),
   ONLY_SUPPORT_FW_ABOVE_10010F: defineMessage({
     defaultMessage: 'The firmware version on the selected switches is at least 10.0.10f or higher.'
   }),

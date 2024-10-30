@@ -569,6 +569,7 @@ export interface SwitchClient {
   clientName: string
   clientDesc: string
   clientType: SWITCH_CLIENT_TYPE
+  switchFirmware?: string
   switchId: string
   switchName: string
   switchPort: string

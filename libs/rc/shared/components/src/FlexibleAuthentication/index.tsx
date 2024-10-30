@@ -11,6 +11,7 @@ export enum AuthenticationType {
 }
 
 export enum PortControl {
+  NONE = '',
 	AUTO = 'auto',
 	FORCE_AUTHORIZED = 'force_authorized',
 	FORCE_UNAUTHORIZED = 'force_unauthorized'
@@ -41,6 +42,9 @@ export const authenticationTypeLabel: Record<AuthenticationType, MessageDescript
 }
 
 export const portControlTypeLabel: Record<PortControl, MessageDescriptor> = {
+  [PortControl.NONE]: defineMessage({
+    defaultMessage: 'None'
+  }),
   [PortControl.AUTO]: defineMessage({
     defaultMessage: 'Auto'
   }),
@@ -118,7 +122,8 @@ export const handleAuthFieldChange = (props: {
       form.setFieldsValue({
         ...values,
         ...(value !== AuthenticationType._802_1X ? {
-          dot1xPortControl: PortControl.AUTO,
+          // eslint-disable-next-line max-len
+          dot1xPortControl: value === AuthenticationType.MACAUTH ? PortControl.NONE : PortControl.AUTO,
           ...(isMultipleEdit ? {
             dot1xPortControlCheckbox: true
           } : {}),
@@ -128,7 +133,9 @@ export const handleAuthFieldChange = (props: {
           ...(isMultipleEdit && values.authTimeoutAction === AuthTimeoutAction.NONE ? {
             criticalVlanCheckbox: false
           } : {})
-        }: {}),
+        }: {
+          dot1xPortControl: PortControl.AUTO
+        }),
         ...(value !== AuthenticationType._802_1X_AND_MACAUTH ? {
           changeAuthOrder: false,
           ...(isMultipleEdit ? { changeAuthOrderCheckbox: true } : {})

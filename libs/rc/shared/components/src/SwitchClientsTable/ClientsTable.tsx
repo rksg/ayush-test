@@ -5,7 +5,11 @@ import { useIntl } from 'react-intl'
 import { Table, TableProps, Tooltip, Loader, ColumnType, Button } from '@acx-ui/components'
 import type { TableHighlightFnArgs }                              from '@acx-ui/components'
 import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
-import { useGetSwitchClientListQuery, useLazyGetLagListQuery }    from '@acx-ui/rc/services'
+import {
+  useGetFlexAuthenticationProfilesQuery,
+  useGetSwitchClientListQuery,
+  useLazyGetLagListQuery
+}    from '@acx-ui/rc/services'
 import {
   FILTER,
   getOsTypeIcon,
@@ -17,6 +21,7 @@ import {
   SWITCH_CLIENT_TYPE,
   TableQuery,
   Lag,
+  SwitchRow,
   SwitchPortStatus
 } from '@acx-ui/rc/utils'
 import { useParams, TenantLink }        from '@acx-ui/react-router-dom'
@@ -65,12 +70,14 @@ export function ClientsTable (props: {
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const portLinkEnabled = useIsSplitOn(Features.SWITCH_PORT_HYPERLINK)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
 
   const [editLagModalVisible, setEditLagModalVisible] = useState(false)
   const [editLag, setEditLag] = useState([] as Lag[])
   const [editPortDrawerVisible, setEditPortDrawerVisible] = useState(false)
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortStatus[])
   const [lagDrawerParams, setLagDrawerParams] = useState({} as SwitchLagParams)
+  const [switchList, setSwitchList] = useState([] as SwitchRow[])
   const [ getLagList ] = useLazyGetLagListQuery()
 
 
@@ -95,6 +102,15 @@ export function ClientsTable (props: {
   useEffect(() => {
     setSwitchCount?.(tableQuery.data?.totalCount || 0)
   }, [tableQuery.data])
+
+  const { authenticationProfiles } = useGetFlexAuthenticationProfilesQuery({
+    payload: {}
+  }, {
+    skip: !isSwitchFlexAuthEnabled,
+    selectFromResult: ( { data } ) => ({
+      authenticationProfiles: data?.data
+    })
+  })
 
   const handleFilterChange = (filters: FILTER, search: SEARCH, groupBy: string | undefined) => {
     setTableQueryFilters?.(filters)
@@ -247,6 +263,7 @@ export function ClientsTable (props: {
         }
 
         const onEditPort = () => {
+          setSwitchList([{ id: row.switchId, firmware: row?.switchFirmware }] as SwitchRow[])
           setSelectedPorts([switchPortStatus])
           setEditLagModalVisible(false)
           setEditPortDrawerVisible(true)
@@ -352,6 +369,8 @@ export function ClientsTable (props: {
           isMultipleEdit={selectedPorts?.length > 1}
           isVenueLevel={false}
           selectedPorts={selectedPorts}
+          switchList={switchList}
+          authProfiles={authenticationProfiles}
         />
         }
       </Loader>
