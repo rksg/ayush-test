@@ -24,6 +24,7 @@ import { formatter }                                from '@acx-ui/formatter'
 import { useGetMspUploadURLMutation }               from '@acx-ui/msp/services'
 import {
   useAddTenantAuthenticationsMutation,
+  useGetServerCertificatesQuery,
   useUpdateTenantAuthenticationsMutation
 } from '@acx-ui/rc/services'
 import {
@@ -37,8 +38,9 @@ import {
 
 import { reloadAuthTable } from '../AppTokenFormItem'
 
-import AuthTypeSelector from './authTypeSelector'
-import * as UI          from './styledComponents'
+import AuthTypeSelector         from './authTypeSelector'
+import  SelectServerCertificate from './SelectServerCertificate'
+import * as UI                  from './styledComponents'
 
 type AcceptableType = 'xml'
 
@@ -97,11 +99,17 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
   const [uploadFile, setUploadFile] = useState(false)
   const [selectedAuth, setSelectedAuth] = useState('')
   const [ssoSignature, setSsoSignature] = useState(false)
+  const [certificateId, setCertificateId] = useState('')
   const loginSsoSignatureEnabled = useIsSplitOn(Features.LOGIN_SSO_SIGNATURE_TOGGLE)
   const isRbacEarlyAccessEnable = useIsTierAllowed(Features.RBAC_IMPLICIT_P1)
   const isRbacEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
+  const isSsoEncryptionEnabled = useIsSplitOn(Features.SSO_SAML_ENCRYPTION)
 
   const bytesFormatter = formatter('bytesFormat')
+
+  const { data: certificateList } = useGetServerCertificatesQuery({ payload:
+    { pageSize: 20, page: 1 } }, { skip: !isSsoEncryptionEnabled })
+
   const [addSso] = useAddTenantAuthenticationsMutation()
   const [updateSso] = useUpdateTenantAuthenticationsMutation()
   const [getUploadURL] = useGetMspUploadURLMutation()
@@ -132,6 +140,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
       // fetchMetaData()
       form.setFieldValue('domains', editData?.domains?.toString())
       setSsoSignature(editData?.samlSignatureEnabled ?? false)
+      setCertificateId(editData?.samlEncryptionCertificateId ?? '')
     }
     setSelectedAuth(editData?.authenticationType || TenantAuthenticationType.saml)
   }, [form, props.visible])
@@ -236,7 +245,8 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
           samlFileURL: needAuthUpdate
             ? (fileType === SamlFileType.file ? fileURL?.data.fileId : directUrlPath) : undefined,
           domains: allowedDomains,
-          samlSignatureEnabled: loginSsoSignatureEnabled ? ssoSignature : undefined
+          samlSignatureEnabled: loginSsoSignatureEnabled ? ssoSignature : undefined,
+          samlEncryptionCertificateId: isSsoEncryptionEnabled ? certificateId : undefined
         }
         await updateSso({ params: { authenticationId: editData?.id },
           payload: ssoEditData }).unwrap()
@@ -248,7 +258,8 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
           samlFileType: fileType,
           samlFileURL: fileType === SamlFileType.file ? fileURL?.data.fileId : directUrlPath,
           domains: allowedDomains,
-          samlSignatureEnabled: loginSsoSignatureEnabled ? ssoSignature : undefined
+          samlSignatureEnabled: loginSsoSignatureEnabled ? ssoSignature : undefined,
+          samlEncryptionCertificateId: isSsoEncryptionEnabled ? certificateId : undefined
         }
         await addSso({ payload: ssoData }).unwrap()
         reloadAuthTable(2)
@@ -430,7 +441,16 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
         defaultChecked={ssoSignature}
         onChange={onChangeSsoSignature}
       />
-    </Form.Item>}
+    </Form.Item>
+    }
+    {isSsoEncryptionEnabled &&
+    <Form layout='vertical' form={form}>
+      <SelectServerCertificate
+        serverSertificates={certificateList?.data}
+        setSelected={setCertificateId}
+        selected={certificateId}
+      />
+    </Form>}
     </>
   }
 

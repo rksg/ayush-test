@@ -218,6 +218,7 @@ export interface TenantAuthentications {
   scopes?: string;
   domains?: string[];
   samlSignatureEnabled?: boolean;
+  samlEncryptionCertificateId?: string;
 }
 
 export interface Entitlement {

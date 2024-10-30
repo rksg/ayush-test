@@ -1,7 +1,7 @@
 import { useContext, useRef, useState, useEffect } from 'react'
 
 import { Col, Form, Image, Row, Space, Switch } from 'antd'
-import { isObject }                             from 'lodash'
+import { cloneDeep, isObject }                  from 'lodash'
 import { FormChangeInfo }                       from 'rc-field-form/lib/FormContext'
 import { FormattedMessage, useIntl }            from 'react-intl'
 
@@ -32,7 +32,8 @@ import {
   CapabilitiesApModel,
   VenueLanPorts,
   EditPortMessages,
-  isEqualLanPort
+  isEqualLanPort,
+  ApLanPortTypeEnum
 } from '@acx-ui/rc/utils'
 import {
   useParams,
@@ -43,6 +44,7 @@ import { ApDataContext, ApEditContext } from '../..'
 
 const useFetchIsVenueDhcpEnabled = () => {
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isServiceRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   const [getVenueSettings] = useLazyGetVenueSettingsQuery()
   const [getDhcpList] = useLazyGetDHCPProfileListViewModelQuery()
@@ -55,7 +57,8 @@ const useFetchIsVenueDhcpEnabled = () => {
         payload: {
           fields: ['id', 'venueIds'],
           filters: { venueIds: [venueId] }
-        }
+        },
+        enableRbac: isServiceRbacEnabled
       }).unwrap()
 
       isDhcpEnabled = !!dhcpList?.data[0]
@@ -135,11 +138,16 @@ export function LanPorts () {
       // eslint-disable-next-line max-len
       const convertToFormData = (lanPortsData: WifiApSetting | VenueLanPorts, lanPortsCap: LanPort[]) => {
         const poeOutFormData = ConvertPoeOutToFormData(lanPortsData, lanPortsCap)
-
-        return {
+        const formData = {
           ...lanPortsData,
           ...(poeOutFormData && { poeOut: poeOutFormData })
         }
+
+        formData.lanPorts = getLanPortsWithDefaultEthernetPortProfile(
+          formData.lanPorts, lanPortsCap, tenantId
+        )
+
+        return formData
       }
 
       const setData = async () => {
@@ -153,7 +161,6 @@ export function LanPorts () {
         const apLanPortsCap = apCaps.lanPorts
         const lanPorts = convertToFormData(apLanPortsData, apLanPortsCap)
         const venueLanPorts = convertToFormData(venueLanPortsData, apLanPortsCap)
-
         setApLanPorts(lanPorts)
         setVenueLanPorts(venueLanPorts)
         setSelectedModel(lanPorts)
@@ -167,6 +174,7 @@ export function LanPorts () {
         setReadyToScroll?.(r => [...(new Set(r.concat('LAN-Ports')))])
       }
       setData()
+
     }
   }, [apDetails, venueId, apLanPortsData, apCaps])
 
@@ -185,9 +193,14 @@ export function LanPorts () {
 
   const handleCustomize = async (useVenueSettings: boolean) => {
     const lanPorts = (useVenueSettings ? venueLanPorts : apLanPorts) as WifiApSetting
+    lanPorts.lanPorts = getLanPortsWithDefaultEthernetPortProfile(
+      (lanPorts.lanPorts || []),
+      selectedModelCaps.lanPorts,
+      tenantId
+    )
+
     setUseVenueSettings(useVenueSettings)
     setSelectedModel(lanPorts)
-
     formRef?.current?.setFieldsValue({
       ...lanPorts,
       lan: lanPorts?.lanPorts,
@@ -328,6 +341,10 @@ export function LanPorts () {
         ...defaultLanPorts,
         ...(poeOutFormData && { poeOut: poeOutFormData })
       }
+
+      defaultLanPortsFormData.lanPorts = getLanPortsWithDefaultEthernetPortProfile(
+        defaultLanPortsFormData.lanPorts, apCaps.lanPorts, tenantId
+      )
 
       setSelectedModel(defaultLanPortsFormData)
       formRef?.current?.setFieldsValue({
@@ -472,4 +489,32 @@ export function LanPorts () {
         }</Button>}
     </Space>
   }
+}
+
+function getLanPortsWithDefaultEthernetPortProfile (
+  lanPorts: LanPort[],
+  lanPortsCap: LanPort[],
+  tenantId?: string) {
+
+  if(!lanPorts) {
+    return lanPorts
+  }
+
+  const newLanPorts = cloneDeep(lanPorts)
+  newLanPorts.forEach((lanPort: LanPort)=>{
+    if (!lanPort.hasOwnProperty('ethernetPortProfileId') ||
+         lanPort.ethernetPortProfileId === null) {
+      const defaultType = lanPortsCap.find(cap => cap.id === lanPort.portId)?.defaultType
+      switch (defaultType){
+        case ApLanPortTypeEnum.ACCESS:
+          lanPort.ethernetPortProfileId = tenantId + '_' + ApLanPortTypeEnum.ACCESS.toString()
+          break
+        case ApLanPortTypeEnum.TRUNK:
+          lanPort.ethernetPortProfileId = tenantId + '_' + ApLanPortTypeEnum.TRUNK.toString()
+          break
+      }
+    }
+  })
+
+  return newLanPorts
 }
