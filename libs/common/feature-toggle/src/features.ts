@@ -121,6 +121,7 @@ export enum Features {
   RUCKUS_WAN_GATEWAY_UI_SHOW = 'ruckus-wan-gateway-ui-show',
   RUCKUS_ONBOARDING_ASSISTANT_TOGGLE = 'ruckus-gen-ai-onboarding-assistant',
   SSO = 'ADMN-SSO',
+  SSO_SAML_ENCRYPTION = 'acx-ui-sso-saml-encryption',
   SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE = 'acx-ui-support-to-msp-dashboard-toggle',
   SUPPORT_SWITCH_TWO_VERSION_UPGRADE = 'removable-ff',
   SUPPORT_SWITCH_V6_ACL = 'switch-support-v6-acl-toggle',

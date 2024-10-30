@@ -48,7 +48,7 @@ export const SettingsForm = () => {
   $t({ defaultMessage: 'This value should be between 1 and 100' })
   const prioritySchedulingRangeErrMsg =
   // eslint-disable-next-line max-len
-  $t({ defaultMessage: 'If you want to set this traffic class to priority scheduling, the value must be at least 1' })
+  $t({ defaultMessage: 'Guaranteed Bandwidth value must be 1% or higher if this traffic class is set to priority scheduling' })
   const guaranteedBandwidthSumErrMsg =
   $t({ defaultMessage: 'Total guaranteed bandwidth across all classes must NOT exceed 100%' })
   const bandwidthRangeCompareErrMsg =
@@ -176,7 +176,6 @@ export const SettingsForm = () => {
                   <Tooltip
                     title={errors[0]}
                     placement='bottom'
-                    overlayClassName={UI.toolTipClassName}
                     overlayInnerStyle={{ width: 415 }}><UI.WarningCircleRed />
                   </Tooltip> :<></>
               }}
@@ -216,7 +215,6 @@ export const SettingsForm = () => {
                   <Tooltip
                     title={errors[0]}
                     placement='bottom'
-                    overlayClassName={UI.toolTipClassName}
                     overlayInnerStyle={{ width: 415 }}><UI.WarningCircleRed />
                   </Tooltip> :<></>
               }}
@@ -266,8 +264,13 @@ export const SettingsForm = () => {
                     <Alert type='info'
                       message={
                       // eslint-disable-next-line max-len
-                        $t({ defaultMessage: `Note: Total guaranteed bandwidth across all classes must NOT exceed 100%.
-                        Max bandwidth must exceed minimal guaranteed bandwidth in each class.` })
+                        $t({ defaultMessage: `
+                          Note:
+                          Total guaranteed bandwidth across all classes must NOT exceed 100%.
+                          Max bandwidth must exceed minimal guaranteed bandwidth in each class.
+                          Guaranteed Bandwidth per traffic class must be over 1% if that traffic
+                            class isset to Priority Scheduling.
+                        ` })
                       }
                     />
                     <Table

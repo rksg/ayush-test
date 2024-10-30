@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CsvSize }                                                                                           from '@acx-ui/rc/components'
-import { AdministrationUrlsInfo, ApplicationAuthenticationStatus, CommonUrlsInfo, TenantAuthenticationType } from '@acx-ui/rc/utils'
-import { Provider }                                                                                          from '@acx-ui/store'
+import { CsvSize }                                                                                                            from '@acx-ui/rc/components'
+import { AdministrationUrlsInfo, ApplicationAuthenticationStatus, CertificateUrls, CommonUrlsInfo, TenantAuthenticationType } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                           from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -59,6 +59,10 @@ describe('Setup Azure Drawer', () => {
       rest.put(
         'https://example.com/image.png',
         (req, res, ctx) => res(ctx.json({ requestId: 'fetch' }))
+      ),
+      rest.post(
+        CertificateUrls.getServerCertificates.url,
+        (req, res, ctx) => res(ctx.json({ requestId: 'certificates' }))
       )
     )
     global.URL.createObjectURL = jest.fn().mockReturnValue('url')
@@ -121,7 +125,7 @@ describe('Setup Azure Drawer', () => {
     expect(screen.getByRole('button', { name: 'Apply' })).toBeDisabled()
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible()
     expect(screen.getByRole('button', { name: 'Change File' })).toBeVisible()
-    await userEvent.click(screen.getByRole('button',
+    fireEvent.click(screen.getByRole('button',
       { name: 'Paste IdP Metadata code or link instead' }))
     await userEvent.click(await screen.findByRole('button', { name: 'Upload file instead' }))
     expect(await screen.findByRole('button', { name: 'Change File' })).toBeVisible()
@@ -475,11 +479,10 @@ describe('Setup Azure Drawer', () => {
     expect(screen.getByRole('button', { name: 'Change File' })).toBeVisible()
     expect(screen.getByText('Allowed Domains')).toBeVisible()
 
-    const input = screen.getByRole('textbox')
-    fireEvent.change(input, { target: { value: 'commscope.c' } } )
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'commscope.c' } } )
     expect(await screen.findByText('Please enter domains separated by comma')).toBeVisible()
     expect(screen.getByRole('button', { name: 'Apply' })).toBeDisabled()
-    fireEvent.change(input, { target: { value: 'commscope.com' } } )
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'commscope.com' } } )
     await waitFor(() => {
       expect(screen.queryByText('Please enter domains separated by comma')).toBeNull()
     })
@@ -513,9 +516,9 @@ describe('Setup Azure Drawer', () => {
     expect(screen.getByText('IdP Metadata')).toBeVisible()
     const button = screen.getByRole('button', { name: 'Apply' })
     expect(button).toBeDisabled()
-    await userEvent.click(screen.getByRole('button',
+    fireEvent.click(screen.getByRole('button',
       { name: 'Paste IdP Metadata code or link instead' }))
-    const metadataInput = screen.getByRole('textbox')
+    const metadataInput = await screen.findByRole('textbox')
     fireEvent.change(metadataInput, { target: { value: metadataText } })
 
     await waitFor(() => {

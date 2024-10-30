@@ -46,6 +46,7 @@ export default function CertificateStrengthSettings () {
         rules={[{ required: true }]}
       >
         <Select
+          style={{ width: '150px' }}
           placeholder={$t({ defaultMessage: 'Select Algorithm...' })}
           options={options}
         />

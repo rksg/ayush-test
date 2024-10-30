@@ -41,6 +41,7 @@ export interface NetworksDrawerProps {
   isGuestTunnelEnabled?: boolean,
   tunneledNetworks?: EdgeMvSdLanFormNetwork,
   tunneledGuestNetworks?: EdgeMvSdLanFormNetwork
+  pinNetworkIds?: string[]
 }
 
 export const NetworksDrawer = (props: NetworksDrawerProps) => {
@@ -53,7 +54,8 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
     venueName,
     isGuestTunnelEnabled = false,
     tunneledNetworks,
-    tunneledGuestNetworks
+    tunneledGuestNetworks,
+    pinNetworkIds
   } = props
 
   const [updateContent, setUpdateContent] = useState<Record<string, EdgeMvSdLanFormNetwork>>({})
@@ -184,6 +186,7 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
           activated={updateContent.activatedNetworks?.[venueId]?.map(item => item.id) ?? []}
           activatedGuest={updateContent.activatedGuestNetworks?.[venueId]?.map(item => item.id) ?? []}
           onActivateChange={handleActivateChange}
+          pinNetworkIds={pinNetworkIds}
         />
       </Space>
     </Drawer>

@@ -34,7 +34,7 @@ export const SettingsForm = () => {
   const isHaAaDmzEnabled = useIsEdgeFeatureReady(Features.EDGE_HA_AA_DMZ_TOGGLE)
 
   const { form, editMode, initialValues } = useStepFormContext<EdgeMvSdLanFormModel>()
-  const { allSdLans } = useEdgeMvSdLanContext()
+  const { allSdLans, allPins } = useEdgeMvSdLanContext()
 
   const edgeClusterId = Form.useWatch('edgeClusterId', form)
   const guestEdgeClusterId = Form.useWatch('guestEdgeClusterId', form)
@@ -44,6 +44,9 @@ export const SettingsForm = () => {
 
   const sdLanBoundEdges = allSdLans.filter(item => item.id !== params.serviceId)
     .flatMap(item => [item.edgeClusterId, item.guestEdgeClusterId])
+    .filter(val => !!val)
+
+  const pinBoundEdges = allPins.flatMap(item => [item.edgeClusterInfo?.edgeClusterId])
     .filter(val => !!val)
 
   const { clusterData, isLoading: isClusterOptsLoading } = useGetEdgeClusterListQuery(
@@ -63,7 +66,8 @@ export const SettingsForm = () => {
       selectFromResult: ({ data, isLoading }) => {
         return {
           clusterData: data?.data
-            .filter(item => sdLanBoundEdges.indexOf(item.clusterId!) === -1),
+          // eslint-disable-next-line max-len
+            .filter(item => !sdLanBoundEdges.includes(item.clusterId!) && !pinBoundEdges.includes(item.clusterId!)),
           isLoading
         }
       }
