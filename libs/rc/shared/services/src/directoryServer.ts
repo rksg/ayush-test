@@ -79,7 +79,7 @@ export const directoryServerApi = baseDirectoryServerApi.injectEndpoints({
         const req = createHttpRequest(DirectoryServerUrls.updateDirectoryServer, params)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'DirectoryServer', id: 'LIST' }]
