@@ -99,7 +99,7 @@ export const RangePicker = ({
       ? (accountTier === AccountTier.GOLD)
         ? dateRangeForLast(1, 'month')
         : dateRangeForLast(3, 'months')
-      : dateRangeForLast(2, 'month')
+      : dateRangeForLast(1, 'month')
 
   const disabledDate = useCallback(
     (current: Moment) => (
