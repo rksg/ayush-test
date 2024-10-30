@@ -97,5 +97,10 @@ describe('Helper Functions', () => {
       const node: Node = { name: 'example', type: 'system' }
       expect(customCapitalize(node)).toBe('Example (SZ Cluster)')
     })
+
+    it('should capitalize and format the node name and type correctly for AP', () => {
+      const ap: Node = { name: 'example', type: 'ap', mac: '00:11:22:33:44:55' }
+      expect(customCapitalize(ap)).toBe('Example (00:11:22:33:44:55) (Access Point)')
+    })
   })
 })

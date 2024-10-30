@@ -98,7 +98,7 @@ describe('SlidingDoor', () => {
       </IntlProvider>
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
-    fireEvent.click(await screen.findByText('Ap (Access Point)'))
+    fireEvent.click(await screen.findByText(`Ap (${mock.children?.[0].mac}) (Access Point)`))
     fireEvent.click(await screen.findByText('Apply'))
     expect(setNetwork).toBeCalledWith(
       [{ name: 'network', type: 'network' }, { name: '1', type: 'AP' }],

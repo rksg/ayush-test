@@ -49,6 +49,8 @@ export const customCapitalize = (node: Node) => {
   if (type === 'network') {
     const { $t } = getIntl()
     return $t({ defaultMessage: 'Entire Organization' })
+  } else if (type ==='ap') {
+    return capitalizeFirstLetter(`${name} (${node.mac}) (${nodeTypes('ap')})`)
   } else {
     return capitalizeFirstLetter(`${name} (${nodeTypes(type as NodeType)})`)
   }
