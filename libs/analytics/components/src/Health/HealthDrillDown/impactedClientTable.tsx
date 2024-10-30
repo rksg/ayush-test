@@ -27,13 +27,15 @@ export const ImpactedClientsTable = ({
   selectedStage,
   drillDownSelection,
   pieFilter,
-  chartKey
+  chartKey,
+  filteredData
 }: {
   filters: AnalyticsFilter;
   selectedStage: Stages;
   drillDownSelection: DrilldownSelection;
   pieFilter: PieChartData | null;
   chartKey: TabKeyType;
+  filteredData: string[];
 }) => {
   const { $t } = useIntl()
   const fieldMap = {
@@ -46,6 +48,11 @@ export const ImpactedClientsTable = ({
     end: filters.endDate
   }
   const field = fieldMap?.[drillDownSelection as keyof typeof fieldMap]
+  const pieData = {
+    key: pieFilter?.rawKey ?? '',
+    chartKey: chartKey,
+    list: filteredData
+  }
   const queryResults = useHealthImpactedClientsQuery(
     {
       ...payload,
@@ -53,7 +60,8 @@ export const ImpactedClientsTable = ({
       stage: (selectedStage && stageNameToCodeMap[selectedStage]) as string,
       topImpactedClientLimit: topImpactedClientLimit,
       pieFilter: pieFilter?.rawKey ?? '',
-      chartKey: chartKey
+      chartKey: chartKey,
+      pieData: pieData
     },
     {
       selectFromResult: (result) => {

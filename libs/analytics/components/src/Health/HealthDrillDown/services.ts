@@ -181,22 +181,28 @@ export const api = dataApi.injectEndpoints({
         stage: string;
         pieFilter: string;
         chartKey: TabKeyType;
+        pieData: {
+          key: string;
+          chartKey: TabKeyType;
+          list: string[];
+        }
       }
     >({
       query: (payload) => {
-        const impactedClientQuery = (type : string, stage : string, pieFilter: string, chartKey: TabKeyType) => {
+        const impactedClientQuery = (type: string, stage: string, pieFilter: string, chartKey: TabKeyType) => {
           return `impactedClients: ${type}(n: ${
             payload.topImpactedClientLimit + 1
           }, stage: "${stage}",
           pieFilter: "${pieFilter}",
-          chartKey: "${chartKey}") {
-                mac
-                manufacturer
-                ssid
-                hostname
-                username
-                osType
-              }`
+          chartKey: "${chartKey}",
+          pieData: $pieData) {
+            mac
+            manufacturer
+            ssid
+            hostname
+            username
+            osType
+          }`
         }
         return {
           document: gql`
@@ -205,6 +211,7 @@ export const api = dataApi.injectEndpoints({
               $start: DateTime
               $end: DateTime
               $filter: FilterInput
+              $pieData: PieDataInput
             ) {
               network(start: $start, end: $end, filter: $filter) {
                 hierarchyNode(path: $path) {

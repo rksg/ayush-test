@@ -179,7 +179,8 @@ export const HealthPieChart = ({
   chartKey,
   setChartKey,
   onPieClick,
-  onLegendClick
+  onLegendClick,
+  setPieList
 }: {
   size: { width: number; height: number }
   filters: AnalyticsFilter
@@ -192,6 +193,7 @@ export const HealthPieChart = ({
   setChartKey: (key: TabKeyType) => void
   onPieClick: (e: EventParams) => void
   onLegendClick: (data: PieChartData) => void
+  setPieList: (data: PieChartData[]) => void
 }) => {
   const { $t } = useIntl()
   const { startDate: start, endDate: end, filter } = filters
@@ -233,7 +235,10 @@ export const HealthPieChart = ({
   )
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { setChartKey(tabDetails?.[0]?.value as TabKeyType) }, [tabDetails.length])
-  useEffect(() => { setPieFilter(null) }, [chartKey])
+  useEffect(() => {
+    setPieFilter(null)
+    setPieList(tabsList.find((tab) => tab.key === chartKey)?.data || [])
+  }, [chartKey])
 
   return (
     <Loader states={[queryResults]} style={size}>
