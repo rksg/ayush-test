@@ -36,7 +36,7 @@ const EthernetPortProfileDetailsDrawer = (props: EthernetPortProfileDetailsDrawe
   const { $t } = useIntl()
   const params = useParams()
   const { title, visible, setVisible, ethernetPortProfileData } = props
-  const [ ethernetDataForDisplay, setEthernetdataforDisplay ] = useState(ethernetPortProfileData)
+  const [ ethernetDataForDisplay, setEthernetDataForDisplay ] = useState(ethernetPortProfileData)
   const enableServicePolicyRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   const onClose = () => {
@@ -73,7 +73,7 @@ const EthernetPortProfileDetailsDrawer = (props: EthernetPortProfileDetailsDrawe
         ...ethernetPortProfileData
       } as EthernetPortProfileViewData
 
-      setEthernetdataforDisplay(result)
+      setEthernetDataForDisplay(result)
     }
   }, [ethernetData])
 
