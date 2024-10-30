@@ -12,8 +12,8 @@ import {
   EdgeGeneralFixtures,
   EdgeSdLanFixtures,
   EdgeCompatibilityFixtures,
-  EdgeUrlsInfo
-} from '@acx-ui/rc/utils'
+  EdgeUrlsInfo,
+  EdgePinFixtures } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
@@ -31,6 +31,7 @@ import { SettingsForm } from '.'
 
 const { mockEdgeFeatureCompatibilities } = EdgeCompatibilityFixtures
 const { mockedMvSdLanDataList } = EdgeSdLanFixtures
+const { mockPinListForMutullyExclusive } = EdgePinFixtures
 const { mockEdgeList } = EdgeGeneralFixtures
 const mockEdgeClusterList = cloneDeep(EdgeGeneralFixtures.mockEdgeClusterList)
 mockEdgeClusterList.data[4].highAvailabilityMode = ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY
@@ -65,7 +66,8 @@ jest.mock('antd', () => {
 })
 
 const edgeMvSdlanContextValues = {
-  allSdLans: mockedMvSdLanDataList
+  allSdLans: mockedMvSdLanDataList,
+  allPins: []
 } as EdgeMvSdLanContextType
 
 jest.mock('@acx-ui/rc/utils', () => ({
@@ -184,7 +186,7 @@ describe('Edge SD-LAN form: settings', () => {
     const { result: stepFormRef } = renderHook(useMockedFrom)
     render(<MockedTargetComponent
       form={stepFormRef.current}
-      ctxValues={{ allSdLans: mockedSdLanDuplicateEdge }}
+      ctxValues={{ allSdLans: mockedSdLanDuplicateEdge, allPins: [] }}
     />)
 
     const formBody = await screen.findByTestId('steps-form-body')
@@ -196,6 +198,28 @@ describe('Edge SD-LAN form: settings', () => {
     })
     expect(screen.queryByRole('option', { name: 'Edge Cluster 5' })).toBeNull()
   })
+
+  it('should filter out edges which is already bound with a PIN in create mode', async () => {
+    const mockedPinAlreadyUsedEdge = [{ ...mockPinListForMutullyExclusive.data[0] }]
+    // eslint-disable-next-line max-len
+    mockedPinAlreadyUsedEdge[0].edgeClusterInfo.edgeClusterId = mockEdgeClusterList.data[4].clusterId
+
+    const { result: stepFormRef } = renderHook(useMockedFrom)
+    render(<MockedTargetComponent
+      form={stepFormRef.current}
+      ctxValues={{ allSdLans: [], allPins: mockedPinAlreadyUsedEdge }}
+    />)
+
+    const formBody = await screen.findByTestId('steps-form-body')
+    await waitForElementToBeRemoved(await within(formBody).findAllByTestId('loadingIcon'))
+
+    await screen.findByText('Cluster')
+    await waitFor(() => {
+      expect(mockedReqClusterList).toBeCalled()
+    })
+    expect(screen.queryByRole('option', { name: 'Edge Cluster 5' })).toBeNull()
+  })
+
   it('should be able to configure/change guest cluster', async () => {
     const expectedClusterId = 'clusterId_5'
     const { result: stepFormRef } = renderHook(() => {

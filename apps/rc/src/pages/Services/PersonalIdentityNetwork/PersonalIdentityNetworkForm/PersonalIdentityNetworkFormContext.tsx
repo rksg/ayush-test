@@ -16,7 +16,8 @@ import {
   useGetTunnelProfileViewDataListQuery,
   useVenueNetworkActivationsViewModelListQuery,
   useVenuesListQuery,
-  useGetDhcpStatsQuery
+  useGetDhcpStatsQuery,
+  useGetEdgeMvSdLanViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
   DhcpStats,
@@ -106,6 +107,33 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
   const [venueId, setVenueId] = useState('')
 
   const {
+    usedSdlanClusterIds,
+    usedSdlanVenueIds,
+    usedSdlanNetworkIds,
+    isSdlanLoading
+  } = useGetEdgeMvSdLanViewDataListQuery({
+    payload: {
+      fields: ['venueId', 'edgeClusterId', 'guestEdgeClusterId', 'tunneledWlans'],
+      pageSize: 10000
+    }
+  }, {
+    selectFromResult: ({ data, isLoading }) => {
+      const allSdLans = data?.data ?? []
+      return {
+        usedSdlanClusterIds: Array.from(new Set(
+          allSdLans.flatMap(sdLan => [sdLan.edgeClusterId, sdLan.guestEdgeClusterId])
+            .filter(id => !!id))),
+        usedSdlanVenueIds: allSdLans.map(item => item.venueId),
+        usedSdlanNetworkIds: Array.from(new Set(
+          allSdLans.flatMap(sdlan => sdlan.tunneledWlans ?? [])
+            .map(wlan => wlan.networkId)
+            .filter(id => !!id))),
+        isSdlanLoading: isLoading
+      }
+    }
+  })
+
+  const {
     personaGroupId,
     isGetPropertyConfigError,
     isPropertyConfigLoading
@@ -169,7 +197,9 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
       skip: !Boolean(venueId),
       selectFromResult: ({ data, isLoading }) => {
         return {
-          clusterOptions: data?.data.map(item => ({ label: item.name, value: item.clusterId })),
+          clusterOptions: data?.data
+            .filter(item => !usedSdlanClusterIds.includes(item.clusterId))
+            .map(item => ({ label: item.name, value: item.clusterId })),
           isLoading
         }
       }
@@ -240,18 +270,20 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
   })
 
   const networkOptions = useMemo(() => {
-    if (isNil(usedNetworkIds)) return []
+    if (isNil(usedNetworkIds) && usedSdlanNetworkIds.length === 0) return []
 
     return dpskNetworkList?.filter(item => !usedNetworkIds?.includes(item.id ?? ''))
       .filter(item => dpskData?.networkIds?.includes(item.id))
+      .filter(item => !usedSdlanNetworkIds.includes(item.id))
       .map(item => ({ label: item.name, value: item.id }))
-  }, [dpskData?.networkIds, dpskNetworkList, usedNetworkIds])
+  }, [dpskData?.networkIds, dpskNetworkList, usedNetworkIds, usedSdlanNetworkIds])
 
   const venueOptions = useMemo(() => {
     if (isNil(usedVenueIds)) return []
 
     return venues?.filter((item) => !usedVenueIds.includes(item.value))
-  }, [venues, usedVenueIds])
+      .filter(item => !usedSdlanVenueIds.includes(item.value))
+  }, [venues, usedVenueIds, usedSdlanVenueIds])
 
   useEffect(() => {
     if(props.venueId) setVenueId(props.venueId)
@@ -283,7 +315,7 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
       value={{
         setVenueId,
         venueOptions,
-        isVenueOptionsLoading,
+        isVenueOptionsLoading: isVenueOptionsLoading || isSdlanLoading,
         personaGroupId,
         isGetPropertyConfigError,
         isPropertyConfigLoading,
@@ -292,14 +324,15 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
         dpskData,
         isDpskLoading,
         clusterOptions,
-        isClusterOptionsLoading,
+        isClusterOptionsLoading: isClusterOptionsLoading || isSdlanLoading,
         dhcpList,
         dhcpOptions: dhcpList?.map(item => ({ label: item.serviceName, value: item.id })),
         isDhcpOptionsLoading,
         tunnelProfileOptions,
         isTunnelLoading,
         networkOptions,
-        isNetworkOptionsLoading: isNetworkLoading || isUsedNetworkIdsLoading || isDpskLoading,
+        isNetworkOptionsLoading: isNetworkLoading || isUsedNetworkIdsLoading || isDpskLoading
+          || isSdlanLoading,
         switchList,
         refetchSwitchesQuery,
         getVenueName,
