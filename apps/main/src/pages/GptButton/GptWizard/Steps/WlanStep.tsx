@@ -79,7 +79,7 @@ export function WlanStep (props: { payload: string; description: string }) {
               <ProFormCheckbox name={['data', index, 'Checked']} initialValue={true} />
               <UI.CheckboxIndexLabel>{index + 1}</UI.CheckboxIndexLabel>
             </UI.CheckboxContainer>
-            <div>
+            <div style={{ marginTop: '5px' }}>
               <ProFormText
                 name={['data', index, 'id']}
                 initialValue={item['id']}

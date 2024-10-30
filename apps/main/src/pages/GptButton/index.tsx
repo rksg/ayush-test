@@ -176,8 +176,15 @@ export default function RuckusGptButton () {
             {$t({ defaultMessage: 'Next' })}
           </Button>
         </>
-      default:
+      case GptStepsEnum.FINISHED:
+        return <Button key='next'
+          type='primary'
+          loading={isLoading}
+          onClick={closeModal}>
+          {$t({ defaultMessage: 'Finish' })}
+        </Button>
       case GptStepsEnum.CONFIGURATION:
+      default:
         return null
     }
   }

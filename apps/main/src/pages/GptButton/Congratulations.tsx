@@ -1,6 +1,7 @@
 import { Button }  from 'antd'
 import { useIntl } from 'react-intl'
 
+import { cssStr }                     from '@acx-ui/components'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { useUserProfileContext }      from '@acx-ui/user'
 
@@ -16,22 +17,29 @@ function Congratulations (props: { closeModal: () => void }) {
   } = useUserProfileContext()
   const name = userProfileData?.lastName || userProfileData?.firstName || ''
   return (
-    <UI.Container>
-      <UI.Title>
+    <UI.CongratContainer>
+      <UI.CongrateTitle>
         {`${$t({ defaultMessage: 'Congratulations' })} ${name}!`}
-      </UI.Title>
-      <UI.Subtitle>
+      </UI.CongrateTitle>
+      <UI.CongratSubtitle>
         {// eslint-disable-next-line max-len
           $t({ defaultMessage: 'You have finished onboarding your new <VenueSingular></VenueSingular>!' })}
-      </UI.Subtitle>
-      <UI.BottomSection>
-        <UI.StyledCard>
+      </UI.CongratSubtitle>
+      <UI.CongratBox>
+        <UI.CongratCard>
+          <div style={{
+            marginBottom: '20px',
+            fontSize: cssStr('--acx-headline-5-font-size')
+          }}>
+            { // eslint-disable-next-line max-len
+              $t({ defaultMessage: 'You are welcome to review and modify your <venueSingular></venueSingular> network and switch configurations from the list provided below. This will help ensure that all settings have been successfully configured to meet your needs.' })}
+          </div>
           <UI.StyledList>
             <li>
               {$t({ defaultMessage: 'View/Edit' })}
               <b> {$t({ defaultMessage: 'Wireless Network' })}</b> ({
                 <Button type='link'
-                  size='small'
+                  style={{ fontSize: '14px' }}
                   onClick={() => {
                     navigate(linkToNetework)
                     props.closeModal()
@@ -43,7 +51,7 @@ function Congratulations (props: { closeModal: () => void }) {
               {$t({ defaultMessage: 'View/Edit' })}
               <b> {$t({ defaultMessage: 'Wired Configurations' })}</b> ({
                 <Button type='link'
-                  size='small'
+                  style={{ fontSize: '14px' }}
                   onClick={() => {
                     navigate(linkToWiredProfiles)
                     props.closeModal()
@@ -52,9 +60,9 @@ function Congratulations (props: { closeModal: () => void }) {
                 </Button>})
             </li>
           </UI.StyledList>
-        </UI.StyledCard>
-      </UI.BottomSection>
-    </UI.Container>
+        </UI.CongratCard>
+      </UI.CongratBox>
+    </UI.CongratContainer>
   )
 }
 

@@ -2,10 +2,35 @@ import { Col, Form, Input } from 'antd'
 import { useIntl }          from 'react-intl'
 
 
+import { useLazyVenuesListQuery }                     from '@acx-ui/rc/services'
+import { checkObjectNotExists, whitespaceOnlyRegExp } from '@acx-ui/rc/utils'
+import { validationMessages }                         from '@acx-ui/utils'
+
 import * as UI from './styledComponents'
 
 function BasicInformationPage () {
   const { $t } = useIntl()
+
+  const venuesListPayload = {
+    searchString: '',
+    fields: ['name', 'id'],
+    searchTargetFields: ['name'],
+    filters: {},
+    pageSize: 10000
+  }
+
+  const [ venuesList ] = useLazyVenuesListQuery()
+
+  const nameValidator = async (value: string) => {
+    if ([...value].length !== JSON.stringify(value).normalize().slice(1, -1).length) {
+      return Promise.reject($t(validationMessages.name))
+    }
+    const payload = { ...venuesListPayload, searchString: value }
+    const list = (await venuesList({ payload }, true).unwrap()).data.map(n => ({ name: n.name }))
+    return checkObjectNotExists(list, { name: value },
+      $t({ defaultMessage: '<VenueSingular></VenueSingular>' }))
+  }
+
 
   return (
     <div style={{ marginLeft: '85px' }}>
@@ -16,7 +41,16 @@ function BasicInformationPage () {
         <Form.Item
           name='venueName'
           label={$t({ defaultMessage: '<VenueSingular></VenueSingular> Name' })}
-          rules={[{ required: true }]}
+          rules={[
+            { type: 'string', required: true },
+            { min: 2, transform: (value) => value.trim() },
+            { max: 32, transform: (value) => value.trim() },
+            { validator: (_, value) => whitespaceOnlyRegExp(value) },
+            {
+              validator: (_, value) => nameValidator(value)
+            }
+          ]}
+          hasFeedback
         >
           <Input />
         </Form.Item>

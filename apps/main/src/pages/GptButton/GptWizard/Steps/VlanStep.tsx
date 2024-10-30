@@ -172,7 +172,7 @@ export function VlanStep (props: { payload: string, sessionId: string,
               />
               <UI.CheckboxIndexLabel>{index + 1}</UI.CheckboxIndexLabel>
             </UI.CheckboxContainer>
-            <UI.VlanDetails>
+            <UI.VlanDetails style={{ marginTop: '5px' }}>
               <ProFormText
                 name={['data', index, 'id']}
                 initialValue={item['id']}

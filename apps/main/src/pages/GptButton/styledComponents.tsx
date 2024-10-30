@@ -197,7 +197,7 @@ export const GptStepsForm = styled(StepsForm)`
  }
 `
 
-export const Container = styled.div`
+export const CongratContainer = styled.div`
   position: relative;
   margin-top: 100px;
   z-index: 1;
@@ -206,7 +206,6 @@ export const Container = styled.div`
   justify-content: center;
   align-items: center;
   height: 100%;
-  margin-bottom: 250px;
 `
 
 export const GptSuccessStyled = styled(GptSuccess)`
@@ -214,39 +213,50 @@ export const GptSuccessStyled = styled(GptSuccess)`
   height: 50px;
 `
 
-export const Title = styled.span`
-  font-size: 28px;
-  font-weight: 600;
+export const CongrateTitle = styled.span`
   margin-top: 30px;
   font-family: var(--acx-accent-brand-font);
+  font-size: var(--acx-headline-2-font-size);
+  font-weight: var(--acx-headline-2-font-weight-bold);
 `
 
-export const Subtitle = styled.span`
-  font-size: 14px;
-  color:  var(--acx-neutrals-60);
+export const CongratSubtitle = styled.span`
   margin-top: 15px;
+  color: var(--acx-primary-black);
+  font-family: var(--acx-neutral-brand-font);
+  font-size: var(--acx-headline-4-line-height);
+  font-weight: var(--acx-headline-4-font-weight);
 `
 
-export const BottomSection = styled.div`
+export const CongratBox = styled.div`
   bottom: 130px;
   left: 50%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: white;
+  height: 292px;
+  margin: 20px 0px;
+  background: transparent;
 `
 
-export const StyledCard = styled(Card)`
+export const CongratCard = styled(Card)`
   width: 723px;
   background-color: var(--acx-neutrals-15);
   border: 0;
   border-radius: 8px;
   height: 90px;
+  background: #FFFFFFCC;
+  height: 100%;
+  border: 1px solid var(--acx-neutrals-25);
+  .ant-card-body {
+    padding-top: 15px;
+  }
 `
 
 export const StyledList = styled.ul`
   row-gap: 8px;
   display: flex;
+  margin-left: -15px;
   flex-direction: column;
 `
 export const PageTitle = styled.div`

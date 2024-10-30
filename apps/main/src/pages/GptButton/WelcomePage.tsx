@@ -40,7 +40,12 @@ function WelcomePage () {
       fontWeight: 700,
       fontFamily: 'Montserrat'
     }}>
-      {$t({ defaultMessage: "I'm" })} <RuckusAiLogo style={{ height: '20px' }} />
+      {$t({ defaultMessage: "I'm" })}
+      <RuckusAiLogo
+        style={{
+          height: '20px',
+          marginBottom: '-1px'
+        }} />
     </span>
     <span style={{ fontSize: '14px', color: '#808284', marginTop: '15px', fontWeight: 600 }}>
       {$t({ defaultMessage: 'Your personal onboarding assistant' })}
