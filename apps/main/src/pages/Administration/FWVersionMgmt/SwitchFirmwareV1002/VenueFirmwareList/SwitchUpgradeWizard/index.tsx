@@ -129,7 +129,6 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
   const getVersionsPayloadForSwitchLevel = function () {
 
     let versionsPayload = []
-
     if (form.getFieldValue('selectedICX71Version') && ICX71Count !== 0) {
       versionsPayload.push({
         modelGroup: SwitchFirmwareModelGroup.ICX71,
