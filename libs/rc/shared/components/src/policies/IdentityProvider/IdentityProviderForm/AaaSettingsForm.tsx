@@ -60,8 +60,7 @@ const AaaSettingsForm = () => {
         <Subtitle level={3}>{ $t({ defaultMessage: 'Authentication Service' }) }</Subtitle>
         <AaaInstance key='identity-provider-auth'
           serverLabel={$t({ defaultMessage: 'Authentication Server' })}
-          type='authRadius'
-          tlsEnabled={false}/>
+          type='authRadius'/>
         <div style={{ display: 'grid', gridTemplateColumns: '250px 50px' }}>
           <Subtitle level={3}>{ $t({ defaultMessage: 'Accounting Service' }) }</Subtitle>
           <Form.Item
@@ -77,8 +76,7 @@ const AaaSettingsForm = () => {
         {accountingRadiusEnabled && (
           <AaaInstance key='identity-provider-acounting'
             serverLabel={$t({ defaultMessage: 'Accounting Server' })}
-            type='accountingRadius'
-            tlsEnabled={false}/>
+            type='accountingRadius'/>
         )}
 
       </Space>

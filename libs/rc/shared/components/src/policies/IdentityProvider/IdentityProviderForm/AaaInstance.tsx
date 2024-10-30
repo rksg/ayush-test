@@ -27,7 +27,6 @@ const radiusTypeMap: { [key:string]: string } = {
 type AaaInstanceProps = {
    serverLabel: string,
    type: 'authRadius' | 'accountingRadius',
-   tlsEnabled?: boolean,
    onChange?: (radiusId: string) => void
 }
 
