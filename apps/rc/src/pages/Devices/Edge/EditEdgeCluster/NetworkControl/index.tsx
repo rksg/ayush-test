@@ -181,7 +181,14 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
               {
                 isEdgeDhcpHaReady &&
                 <StepsForm.FieldLabel width='50%'>
-                  {$t({ defaultMessage: 'DHCP Service' })}
+                  <Space>
+                    {$t({ defaultMessage: 'DHCP Service' })}
+                    <ApCompatibilityToolTip
+                      title=''
+                      visible
+                      onClick={() => setEdgeFeatureName(IncompatibilityFeatures.DHCP)}
+                    />
+                  </Space>
                   <Form.Item
                     name='dhcpSwitch'
                     valuePropName='checked'

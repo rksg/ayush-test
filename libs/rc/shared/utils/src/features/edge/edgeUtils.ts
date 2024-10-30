@@ -16,13 +16,14 @@ import {
   EdgePort,
   EdgePortStatus,
   EdgePortWithStatus,
-  EdgeSdLanApCompatibility,
+  EdgeServiceApCompatibility,
   EdgeSerialNumber,
   EdgeServiceCompatibility,
   EdgeStatus,
   EdgeSubInterface,
   EntityCompatibility,
-  VenueSdLanApCompatibility
+  VenueSdLanApCompatibility,
+  EdgeSdLanApCompatibility
 } from '../../types'
 import { isSubnetOverlap, networkWifiIpRegExp, subnetMaskIpRegExp } from '../../validator'
 
@@ -242,7 +243,7 @@ export const isVirtualEdgeSerial = (value: string) => {
 }
 
 export const deriveEdgeModel = (serial: string) => {
-  return isVirtualEdgeSerial(serial) ? 'vEdge' : '-'
+  return isVirtualEdgeSerial(serial) ? 'vRUCKUS Edge' : '-'
 }
 
 export const isOtpEnrollmentRequired = (serial: string) => {
@@ -434,7 +435,7 @@ const getTotalScopedCount = (clusterCompatibilities: EntityCompatibility[] | Ven
 }
 
 // eslint-disable-next-line max-len
-export const getFeaturesIncompatibleDetailData = (compatibleData: EdgeServiceCompatibility | EdgeSdLanApCompatibility) => {
+export const getFeaturesIncompatibleDetailData = (compatibleData: EdgeServiceCompatibility | EdgeSdLanApCompatibility | EdgeServiceApCompatibility) => {
   const isEdgePerspective = compatibleData.hasOwnProperty('clusterEdgeCompatibilities')
 
   const resultMapping : Record<string, ApCompatibility> = {}
@@ -469,7 +470,11 @@ export const getFeaturesIncompatibleDetailData = (compatibleData: EdgeServiceCom
       })
     })
   } else {
-    const data = (compatibleData as EdgeSdLanApCompatibility).venueSdLanApCompatibilities
+    const isNewDataModel = compatibleData.hasOwnProperty('venueEdgeServiceApCompatibilities')
+
+    const data = isNewDataModel
+      ? (compatibleData as EdgeServiceApCompatibility).venueEdgeServiceApCompatibilities
+      : (compatibleData as EdgeSdLanApCompatibility).venueSdLanApCompatibilities
     const totalScoped = getTotalScopedCount(data)
 
     data.forEach(item => {
@@ -480,9 +485,8 @@ export const getFeaturesIncompatibleDetailData = (compatibleData: EdgeServiceCom
           resultMapping[featureName] = {
             id: `ap_incompatible_details_${featureName}`,
             incompatibleFeatures: [{
-              featureName,
-              requiredFw: feature.requiredFw,
-              supportedModelFamilies: feature.supportedModelFamilies
+              ...feature,
+              featureName
             }],
             incompatible: 0,
             total: totalScoped
