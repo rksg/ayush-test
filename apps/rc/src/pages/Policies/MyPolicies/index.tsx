@@ -25,7 +25,8 @@ import {
   useSearchInProgressWorkflowListQuery,
   useGetWifiOperatorListQuery,
   useMacRegListsQuery,
-  useSyslogPolicyListQuery
+  useSyslogPolicyListQuery,
+  useGetDirectoryServerViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
   IncompatibilityFeatures,
@@ -160,6 +161,7 @@ function useCardData (): PolicyCardData[] {
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const isEdgeHqosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
+  const isDirectoryServerEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE)
   // eslint-disable-next-line
   const isSNMPv3PassphraseOn = useIsSplitOn(Features.WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE)
 
@@ -339,6 +341,15 @@ function useCardData (): PolicyCardData[] {
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.SOFTGRE, oper: PolicyOperation.LIST })),
       disabled: !isSoftGreEnabled
+    },
+    {
+      type: PolicyType.DIRECTORY_SERVER,
+      categories: [RadioCardCategory.WIFI],
+      // eslint-disable-next-line max-len
+      totalCount: useGetDirectoryServerViewDataListQuery({ params, payload: {} }, { skip: !isDirectoryServerEnabled }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.DIRECTORY_SERVER, oper: PolicyOperation.LIST })),
+      disabled: !isDirectoryServerEnabled
     }
   ]
 }
