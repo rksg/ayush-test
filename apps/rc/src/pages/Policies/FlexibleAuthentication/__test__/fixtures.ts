@@ -24,7 +24,7 @@ export const flexAuthList = {
     authTimeoutAction: 'none'
   },
   {
-    // id: 'dccf7d0272024d3ca03bcf5b48497685',
+    id: 'dccf7d0272024d3ca03bcf5b48497685',
     profileName: 'Profile03--auth10-r3-c4-g5',
     authenticationType: '802.1x',
     dot1xPortControl: 'auto',

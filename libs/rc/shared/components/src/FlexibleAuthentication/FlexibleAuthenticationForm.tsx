@@ -155,7 +155,7 @@ export const FlexibleAuthenticationForm = (props: {
               label={$t({ defaultMessage: 'Type' })}
               initialValue={AuthenticationType._802_1X}
               children={<Select
-                data-testid='authenticationType'
+                data-testid='authentication-type-select'
                 options={Object.values(AuthenticationType).map(authType => ({
                   label: $t(authenticationTypeLabel[authType]),
                   value: authType
@@ -179,8 +179,10 @@ export const FlexibleAuthenticationForm = (props: {
               <Form.Item
                 noStyle
                 name='changeAuthOrder'
+                valuePropName='checked'
                 children={
                   <Switch
+                    data-testid='change-auth-order-switch'
                     disabled={getAuthfieldDisabled('changeAuthOrder', authFormWatchValues)}
                   />
                 }
@@ -191,10 +193,11 @@ export const FlexibleAuthenticationForm = (props: {
               label={$t({ defaultMessage: 'Port Control' })}
               initialValue={PortControl.AUTO}
               children={<Select
-                data-testid='dot1xPortControl'
+                data-testid='port-control-select'
                 options={Object.values(PortControl).map(controlType => ({
                   label: $t(portControlTypeLabel[controlType]),
-                  value: controlType
+                  value: controlType,
+                  disabled: controlType === ''
                 }))}
                 disabled={getAuthfieldDisabled('dot1xPortControl', authFormWatchValues)}
                 onChange={(value) => handleAuthFieldChange({
@@ -213,6 +216,7 @@ export const FlexibleAuthenticationForm = (props: {
               ]}
               children={
                 <Input
+                  data-testid='auth-vlan-input'
                   disabled={getAuthfieldDisabled('authDefaultVlan', authFormWatchValues)}
                 />
               }
@@ -223,7 +227,7 @@ export const FlexibleAuthenticationForm = (props: {
               initialValue={AuthFailAction.BLOCK}
               hidden={shouldHideAuthField('authFailAction', authFormWatchValues)}
               children={<Select
-                data-testid='authFailAction'
+                data-testid='fail-action-select'
                 disabled={getAuthfieldDisabled('authFailAction', authFormWatchValues)}
                 options={Object.values(AuthFailAction).map(failType => ({
                   label: $t(authFailActionTypeLabel[failType]),
@@ -258,6 +262,7 @@ export const FlexibleAuthenticationForm = (props: {
               ]}
               children={
                 <Input
+                  data-testid='restricted-vlan-input'
                   disabled={getAuthfieldDisabled('restrictedVlan', authFormWatchValues)}
                 />
               }
@@ -268,7 +273,7 @@ export const FlexibleAuthenticationForm = (props: {
               initialValue={AuthTimeoutAction.NONE}
               hidden={shouldHideAuthField('authTimeoutAction', authFormWatchValues)}
               children={<Select
-                data-testid='authTimeoutAction'
+                data-testid='timeout-action-select'
                 disabled={getAuthfieldDisabled('authTimeoutAction', authFormWatchValues)}
                 options={Object.values(AuthTimeoutAction).map(timeoutType => ({
                   label: $t(authTimeoutActionTypeLabel[timeoutType]),
@@ -303,6 +308,7 @@ export const FlexibleAuthenticationForm = (props: {
               ]}
               children={
                 <Input
+                  data-testid='critical-vlan-input'
                   disabled={getAuthfieldDisabled('criticalVlan', authFormWatchValues)}
                 />
               }

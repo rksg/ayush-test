@@ -566,7 +566,7 @@ describe('Edit switch form', () => {
 
       await userEvent.click(await screen.findByRole('tab', { name: 'Settings' }))
       expect(mockedGetSwitchFlexAuth).not.toBeCalled()
-      expect(screen.queryByText(/Flexible Authentication/)).toBeNull()
+      expect(screen.queryByText(/Authentication/)).toBeNull()
     })
 
     // eslint-disable-next-line max-len
@@ -593,7 +593,7 @@ describe('Edit switch form', () => {
 
       await userEvent.click(await screen.findByRole('tab', { name: 'Settings' }))
       expect(mockedGetSwitchFlexAuth).not.toBeCalled()
-      expect(screen.queryByText(/Flexible Authentication/)).toBeNull()
+      expect(screen.queryByText(/Authentication/)).toBeNull()
     })
 
     // eslint-disable-next-line max-len
@@ -622,7 +622,7 @@ describe('Edit switch form', () => {
         expect(mockedGetSwitchFlexAuth).toBeCalled()
       )
       await userEvent.click(await screen.findByRole('tab', { name: 'Settings' }))
-      expect(await screen.findByText(/Flexible Authentication/)).toBeVisible()
+      expect(await screen.findByText(/Authentication/)).toBeVisible()
     })
 
     it('should update switch flex auth correctly', async () => {
@@ -659,7 +659,7 @@ describe('Edit switch form', () => {
 
       await userEvent.click(await screen.findByRole('tab', { name: 'Settings' }))
       expect(mockedGetSwitchFlexAuth).toBeCalled()
-      expect(await screen.findByText(/Flexible Authentication/)).toBeVisible()
+      expect(await screen.findByText(/Authentication/)).toBeVisible()
       await userEvent.type(await screen.findByLabelText(/Guest VLAN/), '2')
       await waitFor(async () => {
         expect(

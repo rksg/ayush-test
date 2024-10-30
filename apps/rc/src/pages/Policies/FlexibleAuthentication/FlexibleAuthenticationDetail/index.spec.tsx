@@ -69,7 +69,7 @@ describe('FlexibleAuthenticationDetail', ()=>{
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', { name: 'Policies & Profiles' })).toBeVisible()
-    expect(screen.getByRole('link', { name: 'Flexible Authentication' })).toBeVisible()
+    expect(screen.getByRole('link', { name: 'Authentication' })).toBeVisible()
   })
 
 })

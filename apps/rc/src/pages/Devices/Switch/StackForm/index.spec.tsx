@@ -509,7 +509,7 @@ describe('Switch Stack Form - Edit', () => {
       expect(await screen.findByLabelText(/DHCP Client/)).toBeVisible()
 
       expect(mockedGetSwitchFlexAuth).not.toBeCalled()
-      expect(screen.queryByText(/Flexible Authentication/)).toBeNull()
+      expect(screen.queryByText(/Authentication/)).toBeNull()
     })
     // eslint-disable-next-line max-len
     it('should render correctly when the FF is enabled and the switch firmware version is below 10.0.10f', async () => {
@@ -538,7 +538,7 @@ describe('Switch Stack Form - Edit', () => {
       expect(await screen.findByLabelText(/DHCP Client/)).toBeVisible()
 
       expect(mockedGetSwitchFlexAuth).not.toBeCalled()
-      expect(screen.queryByText(/Flexible Authentication/)).toBeNull()
+      expect(screen.queryByText(/Authentication/)).toBeNull()
     })
 
     // eslint-disable-next-line max-len
@@ -570,7 +570,7 @@ describe('Switch Stack Form - Edit', () => {
       await userEvent.click(await screen.findByRole('tab', { name: 'Settings' }))
       expect(await screen.findByLabelText(/DHCP Client/)).toBeVisible()
 
-      expect(await screen.findByText(/Flexible Authentication/)).toBeVisible()
+      expect(await screen.findByText(/Authentication/)).toBeVisible()
     })
 
     it('should update switch flex auth correctly', async () => {
@@ -609,7 +609,7 @@ describe('Switch Stack Form - Edit', () => {
       expect(await screen.findByLabelText(/DHCP Client/)).toBeVisible()
 
       expect(mockedGetSwitchFlexAuth).toBeCalled()
-      expect(await screen.findByText(/Flexible Authentication/)).toBeVisible()
+      expect(await screen.findByText(/Authentication/)).toBeVisible()
       await userEvent.type(await screen.findByLabelText(/Guest VLAN/), '2')
       await waitFor(async () => {
         expect(
