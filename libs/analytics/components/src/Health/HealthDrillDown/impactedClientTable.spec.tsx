@@ -26,6 +26,8 @@ describe('ImpactedClientsTable', () => {
           filters={filters}
           drillDownSelection='connectionFailure'
           selectedStage='Association'
+          pieFilter={null}
+          chartKey='nodes'
         />
       </Provider>,
       {
@@ -53,6 +55,8 @@ describe('ImpactedClientsTable', () => {
           filters={filters}
           drillDownSelection='connectionFailure'
           selectedStage='Association'
+          pieFilter={null}
+          chartKey='nodes'
         />
       </Provider>,
       {
@@ -89,6 +93,8 @@ describe('ImpactedClientsTable', () => {
           filters={filters}
           drillDownSelection='connectionFailure'
           selectedStage='Association'
+          pieFilter={null}
+          chartKey='nodes'
         />
       </Provider>,
       {

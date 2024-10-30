@@ -27,10 +27,19 @@ const HealthDrillDown = (props: {
   const [pieFilter, setPieFilter] = useState<PieChartData | null>(null)
   const [chartKey, setChartKey] = useState<TabKeyType>('wlans')
   const onPieClick = (e: EventParams) => {
-    if(e.name === 'Others') {
+    const selectedData = e.data as PieChartData
+    if (selectedData.name === pieFilter?.name) {
+      setPieFilter(null)
       return
     }
     setPieFilter(e.data as PieChartData)
+  }
+  const onLegendClick = (data: PieChartData) => {
+    if (data.name === pieFilter?.name) {
+      setPieFilter(null)
+      return
+    }
+    setPieFilter(data)
   }
 
   const { drilldownSelection, filters } = props
@@ -139,10 +148,12 @@ const HealthDrillDown = (props: {
                 queryType={drilldownSelection}
                 selectedStage={selectedStage}
                 valueFormatter={format}
+                pieFilter={pieFilter}
                 setPieFilter={setPieFilter}
                 chartKey={chartKey}
                 setChartKey={setChartKey}
                 onPieClick={onPieClick}
+                onLegendClick={onLegendClick}
               />
             }</AutoSizer>
           </GridCol>

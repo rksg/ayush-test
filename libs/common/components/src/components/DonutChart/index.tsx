@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { Space }          from 'antd'
 import ReactECharts       from 'echarts-for-react'
 import { find }           from 'lodash'
@@ -63,8 +65,10 @@ export interface DonutChartProps extends DonutChartOptionalProps,
   value?: string
   dataFormatter?: (value: unknown) => string | null
   onClick?: (params: EventParams) => void
+  onLegendClick?: (params: EventParams) => void
   style: EChartsReactProps['style'] & { width: number, height: number }
   labelTextStyle?: { overflow?: 'break' | 'breakAll' | 'truncate' | 'none' , width?: number }
+  clicked?: boolean
 }
 
 export const onChartClick = (onClick: DonutChartProps['onClick']) =>
@@ -116,6 +120,7 @@ export function DonutChart ({
   ...props
 }: DonutChartProps) {
   const dataFormatter = _dataFormatter ?? ((value: unknown) => String(value))
+  const [selectedSlice, setSelectedSlice] = useState<number | null>(null)
 
   const sum = data.reduce((acc, cur) => acc + cur.value, 0)
   const colors = data.map(series => series.color)
@@ -239,6 +244,22 @@ export function DonutChart ({
     }
   }
 
+  const toggleSelection = (index: number) => {
+    setSelectedSlice(prevSlice => (prevSlice === index ? null : index))
+  }
+
+  const onChartClick = (params: EventParams) => {
+    toggleSelection(params.dataIndex)
+    props.onClick && props.onClick(params)
+  }
+
+  const onLegendClick = (params: EventParams) => {
+    const clickedIndex = data.findIndex(item => item.name === params.name)
+    if (clickedIndex !== -1) toggleSelection(clickedIndex)
+    const clickedData = find(data, (pie) => pie.name === params.name)
+    props.onLegendClick && props.onLegendClick(clickedData as EventParams)
+  }
+
   const option: EChartsOption = {
     animation: props.animation,
     tooltip: {
@@ -264,7 +285,7 @@ export function DonutChart ({
       left: props.size === 'x-large' ? '55%' : '60%',
       orient: 'vertical',
       icon: 'circle',
-      selectedMode: false,
+      selectedMode: true,
       itemGap: props.size === 'x-large'? 16 : 4,
       itemWidth: 8,
       itemHeight: 8,
@@ -290,7 +311,10 @@ export function DonutChart ({
     series: [
       {
         animation: false,
-        data,
+        data: data.map((item, index) => ({
+          ...item,
+          selected: index === selectedSlice
+        })),
         type: 'pie',
         cursor: props.onClick ? 'pointer' : 'auto',
         center: [props.showLegend && !isEmpty ? '30%' : '50%', '50%'],
@@ -309,8 +333,9 @@ export function DonutChart ({
             props.tooltipFormat
           )
         },
+        selectedMode: props.clicked ? 'single' : false,
         emphasis: {
-          disabled: isEmpty,
+          scale: true,
           scaleSize: 5
         },
         labelLine: {
@@ -339,7 +364,11 @@ export function DonutChart ({
         }}
         opts={{ renderer: 'svg' }}
         option={option}
-        onEvents={{ click: onChartClick(props.onClick) }} />
+        onEvents={{
+          click: onChartClick,
+          legendselectchanged: onLegendClick
+        }}
+      />
       { props.subTitle && <SubTitle width={props.style.width}>{props.subTitle}</SubTitle> }
     </Space>
   )

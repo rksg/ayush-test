@@ -137,7 +137,9 @@ function getHealthPieChart (
   data: { key: string; value: number; name: string; color: string, code?: string }[],
   dataFormatter: (value: unknown, tz?: string | undefined) => string,
   size: { width: number; height: number },
-  onPieClick: (e: EventParams) => void
+  onPieClick: (e: EventParams) => void,
+  onLegendClick: (data: PieChartData) => void,
+  pieFilter: PieChartData | null
 ) {
 
   let tops = data.slice(0, topCount)
@@ -159,7 +161,9 @@ function getHealthPieChart (
       showTotal={false}
       labelTextStyle={{ overflow: 'truncate', width: size.width * 0.5 }} // 50% of width
       dataFormatter={tooltipFormatter(total, dataFormatter)}
-      onClick={onPieClick}
+      onClick={(params: EventParams) => onPieClick(params)}
+      onLegendClick={(params: EventParams) => onLegendClick(params as unknown as PieChartData)}
+      clicked={!!pieFilter}
     /> : <NoData />
   )
 }
@@ -170,20 +174,24 @@ export const HealthPieChart = ({
   queryType,
   selectedStage,
   valueFormatter,
+  pieFilter,
   setPieFilter,
   chartKey,
   setChartKey,
-  onPieClick
+  onPieClick,
+  onLegendClick
 }: {
   size: { width: number; height: number }
   filters: AnalyticsFilter
   queryType: DrilldownSelection
   selectedStage: Stages
   valueFormatter: (value: unknown, tz?: string | undefined) => string
+  pieFilter: PieChartData | null
   setPieFilter: (data: PieChartData | null) => void
   chartKey: TabKeyType
   setChartKey: (key: TabKeyType) => void
   onPieClick: (e: EventParams) => void
+  onLegendClick: (data: PieChartData) => void
 }) => {
   const { $t } = useIntl()
   const { startDate: start, endDate: end, filter } = filters
@@ -216,7 +224,7 @@ export const HealthPieChart = ({
     .map(({ key, data }) => ({
       label: titleMap[key as TabKeyType],
       value: key,
-      children: getHealthPieChart(data, valueFormatter, size, onPieClick)
+      children: getHealthPieChart(data, valueFormatter, size, onPieClick, onLegendClick, pieFilter)
     }))
   const count = showTopNPieChartResult(
     $t,
