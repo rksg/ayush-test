@@ -6,9 +6,9 @@ import { EdgeCompatibilityFixtures, EdgeUrlsInfo, IncompatibilityFeatures } from
 import { store, Provider }                                                  from '@acx-ui/store'
 import { act, mockServer, render, screen, within, renderHook, waitFor }     from '@acx-ui/test-utils'
 
-import { getSdLanDetailsCompatibilitiesDrawerData, useEdgeSdLanDetailsCompatibilitiesData } from '../../useEdgeActions/compatibility'
-import { CompatibilityItemProps }                                                           from '../CompatibilityDrawer/CompatibilityItem'
-import { FeatureItemProps }                                                                 from '../CompatibilityDrawer/CompatibilityItem/FeatureItem'
+import { transformEdgeCompatibilitiesWithFeatureName, useEdgeSdLanDetailsCompatibilitiesData } from '../../useEdgeActions/compatibility'
+import { CompatibilityItemProps }                                                              from '../CompatibilityDrawer/CompatibilityItem'
+import { FeatureItemProps }                                                                    from '../CompatibilityDrawer/CompatibilityItem/FeatureItem'
 
 import { EdgeDetailCompatibilityDrawer } from '.'
 
@@ -52,10 +52,10 @@ describe('EdgeDetailCompatibilityDrawer', () => {
   })
 
   it('should fetch and display SD-LAN correctly', async () => {
-    const { result } = renderHook(() => useEdgeSdLanDetailsCompatibilitiesData('mock_service'),
+    const { result } = renderHook(() => useEdgeSdLanDetailsCompatibilitiesData({ serviceId: 'mock_service' }),
       { wrapper: Provider })
     await waitFor(() => expect(result.current.isLoading).toBe(false))
-    const sdlanData = getSdLanDetailsCompatibilitiesDrawerData(result.current.sdLanCompatibilities, IncompatibilityFeatures.SD_LAN)
+    const sdlanData = transformEdgeCompatibilitiesWithFeatureName(result.current.compatibilities, IncompatibilityFeatures.SD_LAN)
 
     render(<Provider>
       <EdgeDetailCompatibilityDrawer
@@ -89,10 +89,10 @@ describe('EdgeDetailCompatibilityDrawer', () => {
   })
 
   it('should fetch and display Tunnel Profile correctly', async () => {
-    const { result } = renderHook(() => useEdgeSdLanDetailsCompatibilitiesData('mock_service'),
+    const { result } = renderHook(() => useEdgeSdLanDetailsCompatibilitiesData({ serviceId: 'mock_service' }),
       { wrapper: Provider })
     await waitFor(() => expect(result.current.isLoading).toBe(false))
-    const sdlanData = getSdLanDetailsCompatibilitiesDrawerData(result.current.sdLanCompatibilities, IncompatibilityFeatures.TUNNEL_PROFILE)
+    const sdlanData = transformEdgeCompatibilitiesWithFeatureName(result.current.compatibilities, IncompatibilityFeatures.TUNNEL_PROFILE)
 
     render(<Provider>
       <EdgeDetailCompatibilityDrawer

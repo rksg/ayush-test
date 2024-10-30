@@ -127,8 +127,8 @@ export const EdgeInfoDrawer = (props: EdgeInfoDrawerProps) => {
     },
     {
       title: $t(
-        { defaultMessage: '# of Active {deviceType}' },
-        { deviceType: currentEdgeInfo?.isDmzCluster ? 'RUCKUS Edges' : 'APs' }
+        { defaultMessage: 'Active {deviceType}' },
+        { deviceType: currentEdgeInfo?.isDmzCluster ? 'SEs' : 'APs' }
       ),
       key: 'activeDeviceCount',
       dataIndex: 'activeDeviceCount',
@@ -138,8 +138,8 @@ export const EdgeInfoDrawer = (props: EdgeInfoDrawerProps) => {
       clusterInfo?.highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE ?
         [{
           title: $t(
-            { defaultMessage: '# of Allocated {deviceType}' },
-            { deviceType: currentEdgeInfo?.isDmzCluster ? 'RUCKUS Edges' : 'APs' }
+            { defaultMessage: 'Primary {deviceType}' },
+            { deviceType: currentEdgeInfo?.isDmzCluster ? 'SEs' : 'APs' }
           ),
           key: 'allocatedDeviceCount',
           dataIndex: 'allocatedDeviceCount',
