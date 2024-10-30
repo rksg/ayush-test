@@ -123,7 +123,12 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
         usedSdlanClusterIds: Array.from(new Set(
           allSdLans.flatMap(sdLan => [sdLan.edgeClusterId, sdLan.guestEdgeClusterId])
             .filter(id => !!id))),
-        usedSdlanVenueIds: allSdLans.map(item => item.venueId),
+        usedSdlanVenueIds: Array.from(new Set([
+          ...allSdLans.map(item => item.venueId),
+          ...allSdLans.flatMap(sdlan => sdlan.tunneledWlans ?? [])
+            .map(wlan => wlan.venueId)
+            .filter(id => !!id)
+        ])),
         usedSdlanNetworkIds: Array.from(new Set(
           allSdLans.flatMap(sdlan => sdlan.tunneledWlans ?? [])
             .map(wlan => wlan.networkId)

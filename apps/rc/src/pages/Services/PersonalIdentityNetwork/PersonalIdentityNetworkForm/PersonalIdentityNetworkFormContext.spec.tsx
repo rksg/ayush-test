@@ -233,7 +233,7 @@ describe('PersonalIdentityNetworkFormContext', () => {
     await waitFor(() =>
       expect(result.current.getVenueName('mock_venue_2')).toBe(''))
     await waitFor(() =>
-      expect(result.current.getVenueName('mock_venue_1')).toBe('Mock Venue 1'))
+      expect(result.current.getVenueName('mock_venue_1')).toBe(''))
   })
 
   it('should filter network already bound with SD-LAN', async () => {

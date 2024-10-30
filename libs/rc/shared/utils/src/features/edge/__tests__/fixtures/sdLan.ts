@@ -333,7 +333,7 @@ export const mockSdLanDataForPinMutuallyExclusive = [{
   guestTunnelProfileName: 'Mocked_tunnel-3',
   isGuestTunnelEnabled: true,
   tunneledWlans: [{
-    venueId: 'a307d7077410456f8f1a4fc41d861567',
+    venueId: 'mock_venue_1',
     venueName: 'Mocked-Venue-1',
     networkId: 'network3',
     networkName: 'Mocked_network3',
