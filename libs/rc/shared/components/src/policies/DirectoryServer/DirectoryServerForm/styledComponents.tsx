@@ -3,7 +3,7 @@ import styled                from 'styled-components'
 
 import { CheckMarkCircleSolid, FailedSolid } from '@acx-ui/icons'
 
-import { TestConnectionStatusEnum } from '@acx-ui/rc/components'
+import { TestConnectionStatusEnum } from './DirectoryServerSettingForm'
 
 
 export const StyledSpace = styled(Space)`

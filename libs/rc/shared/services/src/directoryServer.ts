@@ -1,5 +1,4 @@
-import { DefaultOptionType } from 'antd/lib/select'
-import _                     from 'lodash'
+import _ from 'lodash'
 
 import {
   CommonResult,
@@ -80,7 +79,7 @@ export const directoryServerApi = baseDirectoryServerApi.injectEndpoints({
         const req = createHttpRequest(DirectoryServerUrls.updateDirectoryServer, params)
         return {
           ...req,
-          body: JSON.stringify(_.omit(payload, ['activations']))
+          body: payload
         }
       },
       invalidatesTags: [{ type: 'DirectoryServer', id: 'LIST' }]

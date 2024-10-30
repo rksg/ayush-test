@@ -224,7 +224,7 @@ describe('DirectoryServerForm', () => {
     })
 
     // eslint-disable-next-line max-len
-    it.skip('should successfully fetch data from the API, edit it, and navigate back to the list page', async () => {
+    it('should successfully fetch data from the API, edit it, and navigate back to the list page', async () => {
       render(
         <Provider>
           <DirectoryServerForm editMode={true} />
