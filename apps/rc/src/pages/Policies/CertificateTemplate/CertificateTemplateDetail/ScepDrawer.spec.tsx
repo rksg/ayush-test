@@ -175,4 +175,17 @@ describe('ScepDrawer', () => {
       expect(screen.queryByText('Same subnet values cannot be given in allowed and blocked')).not.toBeInTheDocument()
     })
   })
+
+  it('should show error for subnet with out of range address in allowedSubnets', async () => {
+    render(<Provider><ScepDrawer visible={true} onClose={() => {}}/></Provider>)
+
+    const allowedSubnetsInput = screen.getByLabelText('Allowed Subnets')
+    await userEvent.clear(allowedSubnetsInput)
+    await userEvent.type(allowedSubnetsInput, '10.1.11.711')
+    await userEvent.tab() // Trigger validation
+
+    await waitFor(() => {
+      expect(screen.getByText('Invalid subnet format')).toBeInTheDocument()
+    })
+  })
 })
