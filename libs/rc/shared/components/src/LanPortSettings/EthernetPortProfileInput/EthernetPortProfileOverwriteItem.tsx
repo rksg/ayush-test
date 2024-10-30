@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { EditOutlined, ReloadOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons'
-import { Form, Input, Space }                                         from 'antd'
+import { Form, Input, Space, Tooltip }                                from 'antd'
 import { Rule }                                                       from 'antd/lib/form'
 import { useWatch }                                                   from 'antd/lib/form/Form'
 import { ValidateErrorEntity }                                        from 'rc-field-form/es/interface'
@@ -109,22 +109,35 @@ const EthernetPortProfileOverwriteItem = (props:EthernetPortProfileOverwriteProp
           {currentFieldValue}{(isEditable) ? (isDirty? '(Custom)': '(Default)') : ''}
           { isEditable &&
             <>
-              <Button
-                type='link'
-                icon={<EditOutlined />}
-                onClick={(e)=>{
-                  e.preventDefault()
-                  handleEdit()
-                }}
-              />
+              <Tooltip
+                title={$t({ defaultMessage: 'Override the {title}'}, { title })}
+                placement='top'>
+                <Button
+                  type='link'
+                  icon={<EditOutlined />}
+                  onClick={(e)=>{
+                    e.preventDefault()
+                    handleEdit()
+                  }}
+                />
+              </Tooltip>
+
               { isDirty &&
-              <Button
-                type='link'
-                icon={<ReloadOutlined />}
-                onClick={(e)=>{
-                  e.preventDefault()
-                  reset()
-                }}></Button>
+              <Tooltip
+                title={$t({
+                  // eslint-disable-next-line max-len
+                  defaultMessage: 'Reset to the default value specified by the selected port profile'
+                })}
+                placement='top'>
+                <Button
+                  type='link'
+                  icon={<ReloadOutlined />}
+                  onClick={(e)=>{
+                    e.preventDefault()
+                    reset()
+                  }}
+                />
+              </Tooltip>
               }
             </>
           }
