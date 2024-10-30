@@ -233,7 +233,7 @@ export function MelissaBot ({ sessionTimeoutInSecs = DEFAULT_DF_SESSION_TIMEOUT_
   useEffect(()=>{
     if(pathname.includes('/dashboard')){
       setState({ ...state,showFloatingButton: false })
-    }else if(state.responseCount){
+    }else {
       setState({ ...state,showFloatingButton: true })
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
