@@ -70,9 +70,7 @@ export const CompatibilityCheck = ({ venueId }: { venueId: string }) => {
     setDrawerFeature(open)
   }
 
-  const incompatibleCount = apVenueCompatibilities?.incompatible
-    ? Number(apVenueCompatibilities.incompatible)
-    : 0
+  const incompatibleCount = Number(apVenueCompatibilities?.incompatible ?? 0)
 
   const hasEdgeFeature = apVenueCompatibilities?.incompatibleFeatures
     ?.some(item => isEdgeCompatibilityFeature(item.featureName))
