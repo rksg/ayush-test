@@ -2,14 +2,13 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { ToastProps }                                                                        from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                          from '@acx-ui/feature-toggle'
-import { MspAdministrator, MspEcData, MspEcDelegatedAdmins, MspUrlsInfo, SupportDelegation } from '@acx-ui/msp/utils'
-import { AdministrationUrlsInfo }                                                            from '@acx-ui/rc/utils'
-import { Provider }                                                                          from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent, waitFor }                                    from '@acx-ui/test-utils'
-import { RolesEnum }                                                                         from '@acx-ui/types'
-import { UserUrlsInfo }                                                                      from '@acx-ui/user'
+import { ToastProps }                                                                                         from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                                                           from '@acx-ui/feature-toggle'
+import { MspAdministrator, MspEcData, MspEcDelegatedAdmins, MspRbacUrlsInfo, MspUrlsInfo, SupportDelegation } from '@acx-ui/msp/utils'
+import { AdministrationUrlsInfo }                                                                             from '@acx-ui/rc/utils'
+import { Provider }                                                                                           from '@acx-ui/store'
+import { mockServer, render, screen, fireEvent, waitFor }                                                     from '@acx-ui/test-utils'
+import { RolesEnum }                                                                                          from '@acx-ui/types'
 
 import { AddRecCustomer } from './AddRecCustomer'
 
@@ -118,10 +117,103 @@ const recList = {
   ]
 }
 
+const fakedPrivilegeGroupList =
+  [
+    {
+      id: '2765e98c7b9446e2a5bdd4720e0e8911',
+      name: 'ADMIN',
+      description: 'Admin Role',
+      roleName: 'ADMIN',
+      type: 'System',
+      delegation: false,
+      allCustomers: false
+    },
+    {
+      id: '2765e98c7b9446e2a5bdd4720e0e8912',
+      name: 'PRIME_ADMIN',
+      description: 'Prime Admin Role',
+      roleName: 'PRIME_ADMIN',
+      type: 'System',
+      delegation: false,
+      allCustomers: false
+    },
+    {
+      id: '2765e98c7b9446e2a5bdd4720e0e8913',
+      name: 'READ_ONLY',
+      description: 'Read only Role',
+      roleName: 'READ_ONLY',
+      type: 'System',
+      delegation: false,
+      allCustomers: false
+    },
+    {
+      id: '2765e98c7b9446e2a5bdd4720e0e8914',
+      name: 'OFFICE_ADMIN',
+      description: 'Guest Manager',
+      roleName: 'OFFICE_ADMIN',
+      type: 'System',
+      delegation: false,
+      allCustomers: false
+    },
+    {
+      id: '2765e98c7b9446e2a5bdd4720e0e8915',
+      name: 'DPSK_ADMIN',
+      description: 'DPSK Manager',
+      roleName: 'DPSK_ADMIN',
+      type: 'System',
+      delegation: false,
+      allCustomers: false
+    },
+    {
+      id: '99bb7b958a5544898cd0b938fa800a5a',
+      name: 'wi-fi privilege group',
+      description: 'privilege group for wi-fi',
+      roleName: 'new wi-fi custom role',
+      type: 'Custom',
+      delegation: false,
+      allCustomers: false
+    },
+    {
+      name: 'PG_DEV_CR_01_MSP_DG',
+      description: 'This is PG creatig for MSP with delegations',
+      roleName: 'ADMIN',
+      policies: [
+        {
+          entityInstanceId: '2fe159728aa34c1abb94f3877d2f1d98',
+          objectType: 'com.ruckus.cloud.venue.model.venue'
+        },
+        {
+          entityInstanceId: '9e32160be86b4c4797c0fb106c4f3615',
+          objectType: 'com.ruckus.cloud.venue.model.venue'
+        }
+      ],
+      delegation: true,
+      policyEntityDTOS: [
+        {
+          tenantId: 'fd62264fb63f482283cd70fbcdbe9cb9',
+          objectList: {
+            'com.ruckus.cloud.venue.model.venue': [
+              'a3dfc1c8b6b14af897eef44c0ccf035b'
+            ]
+          }
+        },
+        {
+          tenantId: '5f404592c5b94ebcbaf674ebe5888645',
+          objectList: {
+            'com.ruckus.cloud.venue.model.venue': [
+              'ff6db356a17948719f7f5d9df0d05104'
+            ]
+          }
+        }
+      ]
+    }
+  ]
+
 const services = require('@acx-ui/msp/services')
 jest.mock('@acx-ui/msp/services', () => ({
   ...jest.requireActual('@acx-ui/msp/services')
 }))
+const rcServices = require('@acx-ui/rc/services')
 const utils = require('@acx-ui/rc/utils')
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils')
@@ -136,6 +228,7 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+const user = require('@acx-ui/user')
 
 describe('AddRecCustomer', () => {
   beforeEach(() => {
@@ -144,10 +237,6 @@ describe('AddRecCustomer', () => {
   let params: { tenantId: string, mspEcTenantId: string, action: string, status?: string }
   beforeEach(async () => {
     mockServer.use(
-      rest.get(
-        UserUrlsInfo.getUserProfile.url,
-        (req, res, ctx) => res(ctx.json(userProfile))
-      ),
       rest.get(
         AdministrationUrlsInfo.getPreferences.url,
         (_req, res, ctx) => res(ctx.json({ global: {
@@ -177,6 +266,10 @@ describe('AddRecCustomer', () => {
       rest.post(
         MspUrlsInfo.addBrandCustomers.url,
         (_req, res, ctx) => res(ctx.json({ requestId: 'add' }))
+      ),
+      rest.put(
+        MspRbacUrlsInfo.updateMspEcDelegatedAdmins.url,
+        (req, res, ctx) => res(ctx.json({ requestId: '123' }))
       )
     )
 
@@ -187,6 +280,12 @@ describe('AddRecCustomer', () => {
     jest.spyOn(services, 'useDisableMspEcSupportMutation')
     jest.spyOn(services, 'useUpdateMspEcDelegatedAdminsMutation')
     jest.spyOn(services, 'useAddBrandCustomersMutation')
+    rcServices.useGetPrivilegeGroupsWithAdminsQuery = jest.fn().mockImplementation(() => {
+      return { data: fakedPrivilegeGroupList }
+    })
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
     services.useGetAvailableMspRecCustomersQuery = jest.fn().mockImplementation(() => {
       return { data: recList }
     })
@@ -233,7 +332,6 @@ describe('AddRecCustomer', () => {
     expect(screen.getByRole('button', { name: 'Cancel' })).not.toBeDisabled()
 
   })
-
   it('should render correctly for edit', async () => {
     params.action = 'edit'
     render(
@@ -249,7 +347,6 @@ describe('AddRecCustomer', () => {
 
     expect(screen.getByText('Test')).toBeVisible()
   })
-
   it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
@@ -263,7 +360,6 @@ describe('AddRecCustomer', () => {
       name: 'Brand Properties'
     })).toBeVisible()
   })
-
   it('should enable/disable support correctly', async () => {
     params.action = 'edit'
     render(
@@ -311,7 +407,6 @@ describe('AddRecCustomer', () => {
       }))
     })
   })
-
   it('should not save for edit', async () => {
     params.action = 'edit'
     services.useGetMspEcSupportQuery = jest.fn().mockImplementation(() => {
@@ -331,7 +426,6 @@ describe('AddRecCustomer', () => {
       expect(services.useUpdateCustomerMutation).not.toHaveBeenCalled()
     })
   })
-
   it('should save correctly for add for data with administrator', async () => {
     render(
       <Provider>
@@ -502,7 +596,6 @@ describe('AddRecCustomer', () => {
       expect(services.useAddRecCustomerMutation).toHaveBeenCalled()
     })
   })
-
   it('cancel should correctly close', async () => {
     render(
       <Provider>
@@ -519,7 +612,6 @@ describe('AddRecCustomer', () => {
       search: ''
     })
   })
-
   it('should show Brand properties instead of ruckus end customer', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MSP_HSP_SUPPORT)
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
@@ -538,7 +630,6 @@ describe('AddRecCustomer', () => {
     await userEvent.click(screen.getAllByText('Manage')[0])
     await screen.findByText('Manage Brand Property')
   })
-
   it('should save correctly for multiple property add', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff =>
       ff === Features.MSP_MULTI_PROPERTY_CREATION_TOGGLE)
@@ -575,5 +666,95 @@ describe('AddRecCustomer', () => {
       expect(services.useAddBrandCustomersMutation).toHaveBeenCalled()
     })
   })
+  it('should save correctly for add for abac and rbac enabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.ABAC_POLICIES_TOGGLE
+      || ff === Features.RBAC_PHASE2_TOGGLE
+    )
+    render(
+      <Provider>
+        <AddRecCustomer />
+      </Provider>, {
+        route: { params }
+      })
 
+    // Select customers
+    await userEvent.click(screen.getAllByText('Manage')[0])
+    await screen.findByText('Manage Brand Property')
+    await screen.findByRole('button', { name: 'Save' })
+
+    fireEvent.click(screen.getAllByRole('radio')[0])
+    expect(screen.getByText('1 selected')).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled()
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }))
+
+    await waitFor(() => {
+      expect(screen.queryByText('Manage Brand Property')).toBeNull()
+    })
+
+    // Select adminstrators
+    await userEvent.click(screen.getAllByText('Manage')[1])
+    await screen.findByText('Manage MSP Delegations')
+    await screen.findByRole('button', { name: 'Save' })
+
+    expect(screen.getByText('1 selected')).toBeVisible()
+    await userEvent.click(screen.getByRole('tab', { name: 'Privilege Groups' }))
+    await userEvent.click(screen.getByText('wi-fi privilege group'))
+    expect(await screen.findByText('1 selected')).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled()
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }))
+
+    await waitFor(() => {
+      expect(screen.queryByText('Manage MSP Delegations')).toBeNull()
+    })
+
+    expect(screen.getByRole('button', { name: 'Add' })).toBeEnabled()
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+
+    await waitFor(() => {
+      expect(services.useAddRecCustomerMutation).toHaveBeenCalled()
+    })
+  })
+  it('should save correctly for add for abac enabled and rbac not enabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.ABAC_POLICIES_TOGGLE)
+    render(
+      <Provider>
+        <AddRecCustomer />
+      </Provider>, {
+        route: { params }
+      })
+
+    // Select customers
+    await userEvent.click(screen.getAllByText('Manage')[0])
+    await screen.findByText('Manage Brand Property')
+    await screen.findByRole('button', { name: 'Save' })
+
+    fireEvent.click(screen.getAllByRole('radio')[0])
+    expect(screen.getByText('1 selected')).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled()
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }))
+
+    await waitFor(() => {
+      expect(screen.queryByText('Manage Brand Property')).toBeNull()
+    })
+
+    // Select adminstrators
+    await userEvent.click(screen.getAllByText('Manage')[1])
+    await screen.findByText('Manage MSP Users')
+    await screen.findByRole('button', { name: 'Assign' })
+
+    expect(screen.getByText('1 selected')).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Assign' })).toBeEnabled()
+    fireEvent.click(screen.getByRole('button', { name: 'Assign' }))
+
+    await waitFor(() => {
+      expect(screen.queryByText('Manage MSP Users')).toBeNull()
+    })
+
+    expect(screen.getByRole('button', { name: 'Add' })).toBeEnabled()
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+
+    await waitFor(() => {
+      expect(services.useAddRecCustomerMutation).toHaveBeenCalled()
+    })
+  })
 })
