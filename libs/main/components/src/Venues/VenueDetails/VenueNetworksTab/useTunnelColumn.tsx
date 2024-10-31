@@ -132,6 +132,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
                     } as NetworkTunnelActionForm
 
                     // deactivate depending on current tunnel type
+                    // eslint-disable-next-line max-len
                     deactivateNetworkTunnelByType(tunnelType, formValues, networkInfo, venueSdLanInfo)
                   }
                 }}
