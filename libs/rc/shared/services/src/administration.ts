@@ -800,6 +800,15 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         })
       }
     }),
+    getPrivilegeGroupsWithAdmins: build.query<PrivilegeGroup[], RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(AdministrationUrlsInfo.getPrivilegeGroupsWithAdmins, params)
+        return {
+          ...req
+        }
+      }
+    }),
     addPrivilegeGroup: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(AdministrationUrlsInfo.addPrivilegeGroup, params)
@@ -965,6 +974,7 @@ export const {
   useGetMspEcPrivilegeGroupsQuery,
   useGetOnePrivilegeGroupQuery,
   useGetPrivilegeGroupsQuery,
+  useGetPrivilegeGroupsWithAdminsQuery,
   useAddPrivilegeGroupMutation,
   useUpdatePrivilegeGroupMutation,
   useDeletePrivilegeGroupMutation,
