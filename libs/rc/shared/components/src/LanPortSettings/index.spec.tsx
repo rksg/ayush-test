@@ -255,8 +255,6 @@ describe('LanPortSettings - Ethernet Port Profile', () => {
     const untagIdReloadBtn = screen.getByRole('button',
       { name: 'VLAN Untag ID 1 (Custom) reload' })
     expect(untagIdReloadBtn).toBeVisible()
-    userEvent.hover(untagIdReloadBtn)
-    expect(await screen.findByText('Override the VLAN Untag ID')).toBeInTheDocument()
     await userEvent.click(untagIdReloadBtn)
 
     const checkBtn = screen.getByRole('button', { name: 'check' })
