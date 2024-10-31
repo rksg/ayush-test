@@ -290,7 +290,10 @@ export function CertificateTable (
       <Drawer
         title={$t({ defaultMessage: 'Generate Certificate' })}
         visible={certificateDrawerOpen}
-        onClose={() => setCertificateDrawerOpen(false)}
+        onClose={() => {
+          setCertificateDrawerOpen(false)
+          certificateForm.resetFields()
+        }}
         width={550}
         destroyOnClose={true}
         footer={
