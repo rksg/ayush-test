@@ -22,7 +22,10 @@ import {
   getSwitchModel,
   checkVersionAtLeast09010h,
   SwitchViewModel,
-  convertInputToUppercase
+  convertInputToUppercase,
+  FirmwareSwitchVenueVersionsV1002,
+  SwitchFirmwareModelGroup,
+  getSwitchFwGroupVersionV1002
 } from '@acx-ui/rc/utils'
 import {
   useParams
@@ -46,11 +49,12 @@ export interface AddStackMemberProps {
   setVisible: (v: boolean) => void
   maxMembers: number
   venueFirmwareVersion: string
+  venueFwV1002: FirmwareSwitchVenueVersionsV1002[]
 }
 
 export default function AddStackMember (props: AddStackMemberProps) {
   const { $t } = useIntl()
-  const { visible, setVisible, maxMembers, venueFirmwareVersion } = props
+  const { visible, setVisible, maxMembers, venueFirmwareVersion, venueFwV1002 } = props
   const [form] = Form.useForm<Switch>()
 
   const { switchDetailsContextData } = useContext(SwitchDetailsContext)
@@ -73,6 +77,7 @@ export default function AddStackMember (props: AddStackMemberProps) {
           maxMembers={maxMembers}
           switchDetail={switchDetailHeader}
           venueFirmwareVersion={venueFirmwareVersion}
+          venueFwV1002={venueFwV1002}
         />
       }
       footer={
@@ -106,13 +111,14 @@ interface DefaultVlanFormProps {
   form: FormInstance<Switch>
   maxMembers: number
   switchDetail: SwitchViewModel
-  venueFirmwareVersion: string
+  venueFirmwareVersion: string,
+  venueFwV1002: FirmwareSwitchVenueVersionsV1002[]
 }
 
 function AddMemberForm (props: DefaultVlanFormProps) {
   const { $t } = useIntl()
   const { tenantId, switchId, stackList } = useParams()
-  const { form, maxMembers, switchDetail, venueFirmwareVersion } = props
+  const { form, maxMembers, switchDetail, venueFirmwareVersion, venueFwV1002 } = props
   const stackSwitches = stackList?.split('_') ?? []
   const isStackSwitches = stackSwitches?.length > 0
   const [rowKey, setRowKey] = useState(1)
@@ -128,6 +134,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
+  const isSwitchFirmwareV1002Enabled = useIsSplitOn(Features.SWITCH_FIRMWARE_V1002_TOGGLE)
 
   const { data: switchData } =
     useGetSwitchQuery({
@@ -230,7 +237,10 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   }
 
   const onSaveStackMember = async () => {
-    if (!checkVersionAtLeast09010h(venueFirmwareVersion) && isBlockingTsbSwitch) {
+    const fw = isSwitchFirmwareV1002Enabled
+      ? getSwitchFwGroupVersionV1002(venueFwV1002, SwitchFirmwareModelGroup.ICX71)
+      : venueFirmwareVersion
+    if (!checkVersionAtLeast09010h(fw) && isBlockingTsbSwitch) {
       if (getTsbBlockedSwitch(tableData.map(item=>item.id))?.length > 0) {
         showTsbBlockedSwitchErrorDialog()
         return
