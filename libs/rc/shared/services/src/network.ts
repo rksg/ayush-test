@@ -480,7 +480,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         if (networkDeepData) {
           const arg = {
             params,
-            payload: {}
+            payload: { page: 1, pageSize: 10000 }
           }
 
           const {
