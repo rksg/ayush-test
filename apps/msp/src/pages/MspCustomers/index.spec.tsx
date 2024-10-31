@@ -261,40 +261,6 @@ const fakedPrivilegeGroupList =
       type: 'Custom',
       delegation: false,
       allCustomers: false
-    },
-    {
-      name: 'PG_DEV_CR_01_MSP_DG',
-      description: 'This is PG creatig for MSP with delegations',
-      roleName: 'ADMIN',
-      policies: [
-        {
-          entityInstanceId: '2fe159728aa34c1abb94f3877d2f1d98',
-          objectType: 'com.ruckus.cloud.venue.model.venue'
-        },
-        {
-          entityInstanceId: '9e32160be86b4c4797c0fb106c4f3615',
-          objectType: 'com.ruckus.cloud.venue.model.venue'
-        }
-      ],
-      delegation: true,
-      policyEntityDTOS: [
-        {
-          tenantId: 'fd62264fb63f482283cd70fbcdbe9cb9',
-          objectList: {
-            'com.ruckus.cloud.venue.model.venue': [
-              'a3dfc1c8b6b14af897eef44c0ccf035b'
-            ]
-          }
-        },
-        {
-          tenantId: '5f404592c5b94ebcbaf674ebe5888645',
-          objectList: {
-            'com.ruckus.cloud.venue.model.venue': [
-              'ff6db356a17948719f7f5d9df0d05104'
-            ]
-          }
-        }
-      ]
     }
   ]
 
