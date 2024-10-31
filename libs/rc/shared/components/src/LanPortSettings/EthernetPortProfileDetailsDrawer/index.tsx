@@ -1,11 +1,16 @@
 /* eslint-disable max-len */
+
+import { useMemo } from 'react'
+
 import { Divider, Form } from 'antd'
 import { useIntl }       from 'react-intl'
 import { useParams }     from 'react-router-dom'
 
-import { Drawer }                            from '@acx-ui/components'
-import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
-import { useGetAAAPolicyViewModelListQuery } from '@acx-ui/rc/services'
+import { Drawer }                      from '@acx-ui/components'
+import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
+import {
+  useGetAAAPolicyViewModelListQuery,
+  useGetEthernetPortProfileByIdQuery } from '@acx-ui/rc/services'
 import {
   AAAViewModalType,
   EthernetPortAuthType,
@@ -54,110 +59,120 @@ const EthernetPortProfileDetailsDrawer = (props: EthernetPortProfileDetailsDrawe
     })
   })
 
+  const { data: ethernetData } = useGetEthernetPortProfileByIdQuery({
+    params: { id: ethernetPortProfileData?.id }
+  }, {
+    skip: !ethernetPortProfileData?.id
+  })
+
+  const ethernetDataForDisplay = useMemo(() => ({
+    ...ethernetData,
+    ...ethernetPortProfileData
+  }), [ethernetData, ethernetPortProfileData])
+
   const content = (
     <Form
       labelCol={{ span: 9 }}
       labelAlign='left'
-      // style={{ marginTop: currentEdge?.deviceStatus === EdgeStatusEnum.OPERATIONAL ? '25px' : 0 }}
     >
       <Form.Item
         label={$t({ defaultMessage: 'Name' })}
-        children={ethernetPortProfileData?.name}
+        children={ethernetDataForDisplay?.name}
       />
       <Form.Item
         label={$t({ defaultMessage: 'Port type' })}
-        children={getEthernetPortTypeString(ethernetPortProfileData?.type)
+        children={getEthernetPortTypeString(ethernetDataForDisplay?.type)
         }
       />
       <Form.Item
         label={$t({ defaultMessage: 'VLAN Untag ID' })}
-        children={ethernetPortProfileData?.untagId}
+        children={ethernetDataForDisplay?.untagId}
       />
       <Form.Item
         label={$t({ defaultMessage: 'VLAN Member' })}
-        children={ethernetPortProfileData?.vlanMembers}
+        children={ethernetDataForDisplay?.vlanMembers}
       />
 
       <Form.Item
         label={$t({ defaultMessage: '802.1X' })}
         children={
-          (ethernetPortProfileData?.authType === EthernetPortAuthType.DISABLED)?
+          (ethernetDataForDisplay?.authType === EthernetPortAuthType.DISABLED)?
             'Off': 'On'
         }
       />
-      {!(ethernetPortProfileData?.authType === EthernetPortAuthType.DISABLED) &&
+      {!(ethernetDataForDisplay?.authType === EthernetPortAuthType.DISABLED) &&
       <>
         <Divider/>
 
         <Form.Item
           label={$t({ defaultMessage: '802.1X Role' })}
-          children={getEthernetPortAuthTypeString(ethernetPortProfileData?.authType)}
+          children={getEthernetPortAuthTypeString(ethernetDataForDisplay?.authType)}
         />
 
-        {ethernetPortProfileData?.authType === EthernetPortAuthType.SUPPLICANT &&
+        {ethernetDataForDisplay?.authType === EthernetPortAuthType.SUPPLICANT &&
         <Form.Item
           label={$t({ defaultMessage: 'Credential Type' })}
-          children={getEthernetPortCredentialTypeString(ethernetPortProfileData?.supplicantAuthenticationOption)}
+          children={getEthernetPortCredentialTypeString(ethernetDataForDisplay?.supplicantAuthenticationOptions?.type)}
         />
         }
-        {!(ethernetPortProfileData?.authType === EthernetPortAuthType.SUPPLICANT) &&
+        {!(ethernetDataForDisplay?.authType === EthernetPortAuthType.SUPPLICANT) &&
         <>
           <Form.Item
             label={$t({ defaultMessage: 'Authentication Service' })}
             children={
-              (!ethernetPortProfileData?.authRadiusId)
+              (!ethernetDataForDisplay?.authRadiusId)
                 ? ''
                 : (
                   <TenantLink to={getPolicyDetailsLink({
                     type: PolicyType.AAA,
                     oper: PolicyOperation.DETAIL,
-                    policyId: ethernetPortProfileData.authRadiusId })}>
-                    {radiusNameMap.find(radius => radius.key === ethernetPortProfileData?.authRadiusId)?.value || ''}
+                    policyId: ethernetDataForDisplay.authRadiusId })}>
+                    {radiusNameMap.find(radius => radius.key === ethernetDataForDisplay?.authRadiusId)?.value || ''}
                   </TenantLink>)
             }
           />
 
           <Form.Item
             label={$t({ defaultMessage: 'Proxy Service(Auth)' })}
-            children={(ethernetPortProfileData?.enableAuthProxy)? 'No' : 'Off'}
+            children={(ethernetDataForDisplay?.enableAuthProxy)? 'On' : 'Off'}
           />
 
           <Form.Item
             label={$t({ defaultMessage: 'Accounting Service' })}
             children={
-              (!ethernetPortProfileData?.accountingRadiusId)
+              (!ethernetDataForDisplay?.accountingRadiusId)
                 ? '-'
                 : (
                   <TenantLink to={getPolicyDetailsLink({
                     type: PolicyType.AAA,
                     oper: PolicyOperation.DETAIL,
-                    policyId: ethernetPortProfileData.accountingRadiusId })}>
-                    {radiusNameMap.find(radius => radius.key === ethernetPortProfileData?.accountingRadiusId)?.value || ''}
+                    policyId: ethernetDataForDisplay.accountingRadiusId })}>
+                    {radiusNameMap.find(radius => radius.key === ethernetDataForDisplay?.accountingRadiusId)?.value || ''}
                   </TenantLink>)
             }
           />
           <Form.Item
             label={$t({ defaultMessage: 'Proxy Service(Accounting)' })}
-            children={(ethernetPortProfileData?.enableAuthProxy)? 'No' : 'Off'}
+            children={(ethernetDataForDisplay?.enableAuthProxy)? 'On' : 'Off'}
           />
 
-          {ethernetPortProfileData?.authType === EthernetPortAuthType.MAC_BASED &&
+          {ethernetDataForDisplay?.authType === EthernetPortAuthType.MAC_BASED &&
           <>
             <Form.Item
               label={$t({ defaultMessage: 'MAC Auth Bypass' })}
-              children={(ethernetPortProfileData?.bypassMacAddressAuthentication)? 'No' : 'Off'}
+              children={(ethernetDataForDisplay?.bypassMacAddressAuthentication)? 'On' : 'Off'}
             />
 
-            {ethernetPortProfileData?.authType === EthernetPortAuthType.MAC_BASED &&
+            {ethernetDataForDisplay?.authType === EthernetPortAuthType.MAC_BASED &&
               <>
                 <Form.Item
                   label={$t({ defaultMessage: 'Dynamic VLAN' })}
-                  children={(ethernetPortProfileData?.dynamicVlanEnabled)? 'No' : 'Off'}
+                  children={(ethernetDataForDisplay?.dynamicVlanEnabled)? 'On' : 'Off'}
                 />
-                { ethernetPortProfileData?.dynamicVlanEnabled &&
+                { ethernetDataForDisplay?.dynamicVlanEnabled &&
                   <Form.Item
                     label={$t({ defaultMessage: 'Guest VLAN' })}
-                    children={ethernetPortProfileData?.unauthenticatedguestVlan}
+                    children={ethernetDataForDisplay?.unauthenticatedGuestVlan}
                   />
                 }
               </>
