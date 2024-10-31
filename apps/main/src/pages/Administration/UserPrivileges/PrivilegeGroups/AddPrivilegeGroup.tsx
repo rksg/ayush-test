@@ -170,8 +170,8 @@ export function AddPrivilegeGroup () {
         })
         privilegeGroupData.delegation = displayMspScope
         privilegeGroupData.policyEntityDTOS =
-        (selectedMspScope === ChoiceCustomerEnum.SPECIFIC_CUSTOMER && policyEntities.length > 0)
-          ? policyEntities : undefined
+        (displayMspScope && selectedMspScope === ChoiceCustomerEnum.SPECIFIC_CUSTOMER &&
+         policyEntities.length > 0) ? policyEntities : undefined
       }
 
       await addPrivilegeGroup({ payload: privilegeGroupData }).unwrap()
@@ -372,7 +372,8 @@ export function AddPrivilegeGroup () {
           </Space>
         </Radio.Group>
       </Form.Item>
-      {selectedCustomers.length > 0 && selectedMspScope === ChoiceCustomerEnum.SPECIFIC_CUSTOMER &&
+      {displayMspScope && selectedCustomers.length > 0 &&
+       selectedMspScope === ChoiceCustomerEnum.SPECIFIC_CUSTOMER &&
         <DisplaySelectedCustomers />}
     </>
   }
@@ -430,7 +431,8 @@ export function AddPrivilegeGroup () {
           </Space>
         </Radio.Group>
       </Form.Item>
-      {selectedCustomers.length > 0 && selectedMspScope === ChoiceCustomerEnum.SPECIFIC_CUSTOMER &&
+      {displayMspScope && selectedCustomers.length > 0 &&
+       selectedMspScope === ChoiceCustomerEnum.SPECIFIC_CUSTOMER &&
         <DisplaySelectedCustomers />}
     </>
   }
