@@ -233,7 +233,7 @@ function SwitchPageHeader () {
         const mg = getSwitchModelGroup(switchModel)
         const currentVersion = venueFwV1002?.find(v =>
           v.modelGroup === mg)?.version || ''
-         maxUnits = getStackUnitsMinLimitationV1002(switchModel, currentVersion)
+        maxUnits = getStackUnitsMinLimitationV1002(switchModel, currentVersion)
       }
 
       setMaxMembers(maxUnits - syncedStackMemberCount)
