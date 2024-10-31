@@ -369,7 +369,6 @@ function SwitchPageHeader () {
         visible={addStackMemberOpen}
         setVisible={setAddStackMemberOpen}
         maxMembers={maxMembers}
-        venueFwV1002={venueFwV1002}
         venueFirmwareVersion={venueFW}
       />
     </>
