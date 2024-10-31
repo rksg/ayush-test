@@ -18,8 +18,8 @@ import {
   useGetSoftGreScopeVenueMap,
   useIsEdgeFeatureReady
 } from '@acx-ui/rc/components'
-import { useVenuesListQuery }                                   from '@acx-ui/rc/services'
-import { EdgeMvSdLanViewData, Network, NetworkTypeEnum, Venue } from '@acx-ui/rc/utils'
+import { useVenuesListQuery }                                                      from '@acx-ui/rc/services'
+import { EdgeMvSdLanViewData, Network, NetworkTypeEnum, useConfigTemplate, Venue } from '@acx-ui/rc/utils'
 
 import { NetworkTunnelButton } from './NetworkTunnelButton'
 
@@ -31,6 +31,7 @@ interface useTunnelColumnProps {
 export const useTunnelColumn = (props: useTunnelColumnProps) => {
   const { $t } = useIntl()
   const { venueId, sdLanScopedNetworks, setTunnelModalState } = props
+  const { isTemplate } = useConfigTemplate()
   const isEdgeMvSdLanReady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isEdgePinHaReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)

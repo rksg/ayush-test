@@ -8,7 +8,8 @@ import {
   EdgeMvSdLanViewData,
   NetworkSaveData,
   PersonalIdentityNetworksViewData,
-  Venue
+  Venue,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 
 import { SdLanScopedNetworkVenuesData } from '../../EdgeSdLan/useEdgeSdLanActions'
@@ -34,6 +35,7 @@ interface useTunnelColumnProps {
 export const useTunnelColumn = (props: useTunnelColumnProps) => {
   const { $t } = useIntl()
   const { network, sdLanScopedNetworkVenues, setTunnelModalState } = props
+  const { isTemplate } = useConfigTemplate()
 
   const isEdgeMvSdLanReady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isEdgePinHaReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
