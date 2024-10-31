@@ -115,7 +115,8 @@ export enum EdgeFeatureEnum {
   SD_LAN = 'SD-LAN',
   TUNNEL_PROFILE = 'Tunnel Profile',
   HA_AA = 'HA-AA',
-  HQOS = 'HQoS'
+  HQOS = 'HQoS',
+  DHCP = 'DHCP'
 }
 
 export enum CompatibilityEntityTypeEnum {

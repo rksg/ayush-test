@@ -295,7 +295,10 @@ export function CertificateTable (
         destroyOnClose={true}
         footer={
           <Drawer.FormFooter
-            onCancel={() => setCertificateDrawerOpen(false)}
+            onCancel={() => {
+              setCertificateDrawerOpen(false)
+              certificateForm.resetFields()
+            }}
             onSave={async () => {
               try {
                 await certificateForm.validateFields()

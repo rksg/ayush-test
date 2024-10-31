@@ -43,20 +43,24 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
   const { $t } = useIntl()
   const { value: activated } = props
   const { form: formRef } = useStepFormContext<EdgeMvSdLanFormModel>()
-  const { allSdLans } = useEdgeMvSdLanContext()
+  const { allSdLans, allPins } = useEdgeMvSdLanContext()
 
   const [networkDrawerVenueId, setNetworkDrawerVenueId] = useState<string|undefined>(undefined)
 
   const serviceId = formRef.getFieldValue('id')
 
-  // venue list should filter out the venues that already tied to other SDLAN services.
+  // venue list should filter out the venues that already tied to other SDLAN services and PIN services.
   const usedVenueIds = useMemo(() => {
-    return Object.entries(tansformSdLanScopedVenueMap(allSdLans))
+    const sdlanVenueIds = Object.entries(tansformSdLanScopedVenueMap(allSdLans))
       .map(([venueId, sdlan]) => {
         return (!!serviceId && sdlan.id === serviceId) ? undefined : venueId
       })
       .filter(i => !!i)
-  }, [allSdLans, serviceId])
+
+    const pinVenueIds = allPins?.map(pin => pin.venueId).filter(id => !!id) || []
+
+    return [...sdlanVenueIds, ...pinVenueIds]
+  }, [allPins, allSdLans, serviceId])
 
   const { availableVenues, isLoading, isFetching } = useVenuesListQuery({
     payload: {
@@ -143,6 +147,10 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
     closeNetworkModal()
   }
 
+  const pinNetworkIds = allPins?.flatMap(item => item.tunneledWlans ?? [])
+    .map(wlan => wlan?.networkId)
+    .filter(networkId => !!networkId)
+
   return (
     <>
       <Loader states={[ { isLoading, isFetching } ]}>
@@ -164,6 +172,7 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
         tunneledNetworks={formRef.getFieldValue('activatedNetworks') as EdgeMvSdLanFormNetwork}
         // eslint-disable-next-line max-len
         tunneledGuestNetworks={formRef.getFieldValue('activatedGuestNetworks') as EdgeMvSdLanFormNetwork}
+        pinNetworkIds={pinNetworkIds}
       />}
     </>
   )

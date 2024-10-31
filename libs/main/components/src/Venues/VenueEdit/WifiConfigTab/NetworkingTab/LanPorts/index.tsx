@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect, useRef } from 'react'
 
 import { Col, Form, Image, Row, Select, Space, Tooltip } from 'antd'
-import { isEqual, clone }                                from 'lodash'
+import { isEqual, clone, cloneDeep }                     from 'lodash'
 import { useIntl }                                       from 'react-intl'
 
 import { AnchorContext, Button, Loader, Tabs, showActionModal }         from '@acx-ui/components'
@@ -23,6 +23,7 @@ import {
   useGetVenueLanPortWithEthernetPortSettingsQuery
 } from '@acx-ui/rc/services'
 import {
+  ApLanPortTypeEnum,
   CapabilitiesApModel,
   DHCPSaveData,
   EditPortMessages,
@@ -201,20 +202,21 @@ export function LanPorts () {
 
   const handleModelChange = (value: string) => {
     const modelCaps = venueApCaps?.apModels?.filter(item => item.model === value)[0]
-    const selected = getSelectedModelData(lanPortData as VenueLanPorts[], value)
     const lanPortsCap = modelCaps?.lanPorts || []
+    // eslint-disable-next-line max-len
+    const selected = getSelectedModelData(lanPortData as VenueLanPorts[], value)
+
     const poeOutFormData = ConvertPoeOutToFormData(selected, lanPortsCap) as VenueLanPorts
     const tabIndex = 0
-
-    setSelectedModel(selected)
+    const selectedModel = getModelWithDefaultEthernetPortProfile(selected, lanPortsCap, tenantId)
+    setSelectedModel(selectedModel)
     setSelectedModelCaps(modelCaps as CapabilitiesApModel)
     setActiveTabIndex(tabIndex)
     setSelectedPortCaps(modelCaps?.lanPorts?.[tabIndex] as LanPort)
-
     form?.setFieldsValue({
-      ...selected,
+      ...selectedModel,
       poeOut: poeOutFormData,
-      lan: selected?.lanPorts
+      lan: selectedModel?.lanPorts
     })
   }
 
@@ -224,7 +226,6 @@ export function LanPorts () {
     setLanPortData(data)
     setLanPortOrinData(data)
     setResetModels([])
-
     form?.setFieldsValue({
       ...selected,
       poeOut: Array(form.getFieldValue('poeOut')?.length).fill(selected?.poeOut),
@@ -333,11 +334,14 @@ export function LanPorts () {
     const defaultLanPorts = defaultLanPortsByModelMap.get(apModel)
     if (defaultLanPorts === undefined) return
 
-    setSelectedModel(defaultLanPorts as VenueLanPorts)
+    const defaultLanPortsData =
+      getModelWithDefaultEthernetPortProfile(defaultLanPorts, selectedModelCaps.lanPorts, tenantId)
+
+    setSelectedModel(defaultLanPortsData as VenueLanPorts)
     form?.setFieldsValue({
-      ...defaultLanPorts,
-      poeOut: Array(form.getFieldValue('poeOut')?.length).fill(defaultLanPorts?.poeOut),
-      lan: defaultLanPorts?.lanPorts
+      ...defaultLanPortsData,
+      poeOut: Array(form.getFieldValue('poeOut')?.length).fill(defaultLanPortsData?.poeOut),
+      lan: defaultLanPortsData?.lanPorts
     })
     let records = clone(resetModels)
     records.push(apModel)
@@ -476,3 +480,29 @@ export function LanPorts () {
 function getSelectedModelData (list: VenueLanPorts[], model: string) {
   return list?.filter(item => item.model === model)?.[0]
 }
+
+// eslint-disable-next-line max-len
+function getModelWithDefaultEthernetPortProfile (selectedModel: VenueLanPorts, lanPortsCaps: LanPort[], tenantId?: string) {
+  if(!selectedModel) {
+    return selectedModel
+  }
+
+  const model = cloneDeep(selectedModel)
+  model.lanPorts.forEach((lanPort) => {
+    if (!lanPort.hasOwnProperty('ethernetPortProfileId') ||
+          lanPort.ethernetPortProfileId === null) {
+      const defaultType = lanPortsCaps.find(cap => cap.id === lanPort.portId)?.defaultType
+      switch (defaultType){
+        case ApLanPortTypeEnum.ACCESS:
+          lanPort.ethernetPortProfileId = tenantId + '_' + ApLanPortTypeEnum.ACCESS.toString()
+          break
+        case ApLanPortTypeEnum.TRUNK:
+          lanPort.ethernetPortProfileId = tenantId + '_' + ApLanPortTypeEnum.TRUNK.toString()
+          break
+      }
+    }
+  })
+
+  return model
+}
+
