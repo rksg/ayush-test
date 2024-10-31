@@ -3,9 +3,8 @@ import { RetryOptions }                                                     from
 import { MaybePromise }                                                     from '@reduxjs/toolkit/dist/query/tsHelpers'
 import { BaseQueryApi, FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 
-import { ApiVersionEnum, GetApiVersionHeader } from '@acx-ui/rc/utils'
-import { RequestPayload }                      from '@acx-ui/types'
-import { ApiInfo, createHttpRequest }          from '@acx-ui/utils'
+import { RequestPayload }             from '@acx-ui/types'
+import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
 
 export type QueryFn<ResultType, QueryArg = never, BaseQueryResultType = ResultType> = (
   { params, payload, enableRbac }: RequestPayload<QueryArg>,
