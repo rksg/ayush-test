@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 
-import { useEffect, useState } from 'react'
+import { useMemo } from 'react'
 
 import { Divider, Form } from 'antd'
 import { useIntl }       from 'react-intl'
@@ -36,7 +36,6 @@ const EthernetPortProfileDetailsDrawer = (props: EthernetPortProfileDetailsDrawe
   const { $t } = useIntl()
   const params = useParams()
   const { title, visible, setVisible, ethernetPortProfileData } = props
-  const [ ethernetDataForDisplay, setEthernetDataForDisplay ] = useState(ethernetPortProfileData)
   const enableServicePolicyRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   const onClose = () => {
@@ -63,25 +62,18 @@ const EthernetPortProfileDetailsDrawer = (props: EthernetPortProfileDetailsDrawe
   const { data: ethernetData } = useGetEthernetPortProfileByIdQuery({
     params: { id: ethernetPortProfileData?.id }
   }, {
-    skip: !ethernetPortProfileData?.id || ethernetPortProfileData?.id === ethernetDataForDisplay?.id
+    skip: !ethernetPortProfileData?.id
   })
 
-  useEffect(() => {
-    if (ethernetData) {
-      const result = {
-        ...ethernetData,
-        ...ethernetPortProfileData
-      } as EthernetPortProfileViewData
-
-      setEthernetDataForDisplay(result)
-    }
-  }, [ethernetData])
+  const ethernetDataForDisplay = useMemo(() => ({
+    ...ethernetData,
+    ...ethernetPortProfileData
+  }), [ethernetData, ethernetPortProfileData])
 
   const content = (
     <Form
       labelCol={{ span: 9 }}
       labelAlign='left'
-      // style={{ marginTop: currentEdge?.deviceStatus === EdgeStatusEnum.OPERATIONAL ? '25px' : 0 }}
     >
       <Form.Item
         label={$t({ defaultMessage: 'Name' })}
