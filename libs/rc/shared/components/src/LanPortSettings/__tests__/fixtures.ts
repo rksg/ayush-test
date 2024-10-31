@@ -5,11 +5,11 @@ export const mockAuthRadiusName2 = '__Auth_Radius_Name_2__'
 export const mockAccountingRadiusId = '__Accounting_Radius_ID_1__'
 export const mockAccountingRadiusId2 = '__Accounting_Radius_ID_2__'
 export const mockAccuntingRadiusName = '__Accounting_Radius_Name_1__'
-
+export const mockDefaultTrunkEthertnetPortProfileId = 'mockDefaultTrunkEthertnetPortProfile'
 
 export const ethernetPortProfileList = [
   {
-    id: '34a1d209ccab49b98138cdf5d73f0a7a',
+    id: mockDefaultTrunkEthertnetPortProfileId,
     tenantId: 'tenant-id',
     name: 'Default Trunk',
     type: 'TRUNK',
@@ -34,6 +34,17 @@ export const ethernetPortProfileList = [
     ]
   }
 ]
+
+export const mockDefaultTunkEthertnetPortProfile = {
+  id: mockDefaultTrunkEthertnetPortProfileId,
+  tenantId: 'tenant-id',
+  name: 'Default Trunk',
+  type: 'TRUNK',
+  untagId: 1,
+  vlanMembers: '1-4094',
+  authType: 'DISABLED',
+  isDefault: true
+}
 
 export const dummyRadiusServiceList = {
   totalCount: 3,
