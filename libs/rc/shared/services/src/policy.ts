@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
-import { each, zip }           from 'lodash'
+import { QueryReturnValue }                        from '@rtk-query/graphql-request-base-query/dist/GraphqlBaseQueryTypes'
+import { each, zip }                               from 'lodash'
 
 import {
   MacRegistration, MacRegistrationPool, MacRegListUrlsInfo,
@@ -98,7 +99,6 @@ import {
   getVLANPoolVenuesFn,
   getVLANPoolPolicyViewModelListFn
 } from './servicePolicy.utils'
-import { QueryReturnValue } from '@rtk-query/graphql-request-base-query/dist/GraphqlBaseQueryTypes'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true

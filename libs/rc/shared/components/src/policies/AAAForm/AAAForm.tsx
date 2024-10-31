@@ -7,7 +7,7 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useAaaPolicyQuery,
   useAddAAAPolicyMutation,
@@ -144,7 +144,8 @@ export const AAAForm = (props: AAAFormProps) => {
     const activateClientCertificate =
       async (radiusId?: string, clientCertificateId?: string) => {
         return radiusId && clientCertificateId ?
-          await activate({ params: { radiusId, certificateId: clientCertificateId } }).unwrap() : null
+          await activate({ params: { radiusId, certificateId: clientCertificateId } }).unwrap() :
+          null
       }
     return activateClientCertificate
   }
@@ -154,7 +155,8 @@ export const AAAForm = (props: AAAFormProps) => {
     const deactivateClientCertificate =
       async (radiusId?: string, clientCertificateId?: string) => {
         return radiusId && clientCertificateId ?
-          await deactivate({ params: { radiusId, certificateId: clientCertificateId } }).unwrap() : null
+          await deactivate({ params: { radiusId, certificateId: clientCertificateId } }).unwrap() :
+          null
       }
     return deactivateClientCertificate
   }
@@ -164,7 +166,8 @@ export const AAAForm = (props: AAAFormProps) => {
     const activateServerCertificate =
       async (radiusId?: string, serverCertificateId?: string) => {
         return radiusId && serverCertificateId ?
-          await activate({ params: { radiusId, certificateId: serverCertificateId } }).unwrap() : null
+          await activate({ params: { radiusId, certificateId: serverCertificateId } }).unwrap() :
+          null
       }
     return activateServerCertificate
   }
@@ -174,7 +177,8 @@ export const AAAForm = (props: AAAFormProps) => {
     const deactivateServerCertificate =
       async (radiusId?: string, serverCertificateId?: string) => {
         return radiusId && serverCertificateId ?
-          await deactivate({ params: { radiusId, certificateId: serverCertificateId } }).unwrap() : null
+          await deactivate({ params: { radiusId, certificateId: serverCertificateId } }).unwrap() :
+          null
       }
     return deactivateServerCertificate
   }
