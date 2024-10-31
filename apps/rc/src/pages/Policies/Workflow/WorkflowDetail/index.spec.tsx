@@ -7,7 +7,8 @@ import { ActionType, NewAPITableResult, Workflow, WorkflowActionDefinition, Work
 import { Provider }                                                                                      from '@acx-ui/store'
 import { mockServer, render, screen, waitFor }                                                           from '@acx-ui/test-utils'
 
-import { WorkflowDetailOverview } from './WorkflowDetailOverview'
+
+import WorkflowDetails from '.'
 
 const workflows:Workflow[] = [{
   id: 'id1',
@@ -95,8 +96,6 @@ const steps: NewAPITableResult<WorkflowStep> = {
   }
 }
 
-
-// eslint-disable-next-line max-len
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
   pathname: 't/__tenantId__',
@@ -112,10 +111,15 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
+  WorkflowActionPreviewModal: () => <div data-testid='WorkflowActionPreviewModal' />,
+  WorkflowComparator: () => <div data-testid='WorkflowComparator'></div>,
   WorkflowPanel: () => <div data-testid='WorkflowPanel' />
 }))
 
-describe('WorkflowDetailOverview', () => {
+
+
+
+describe('WorkflowDetails', () => {
   const getWorkflowApi = jest.fn()
   const searchVersionApi = jest.fn()
   const updateWorkflowApi = jest.fn()
@@ -125,7 +129,6 @@ describe('WorkflowDetailOverview', () => {
     getWorkflowApi.mockClear()
     searchVersionApi.mockClear()
     updateWorkflowApi.mockClear()
-
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
       rest.get(
@@ -170,9 +173,24 @@ describe('WorkflowDetailOverview', () => {
     )
   })
 
+  it('should render header correctly', async () => {
+    render(<Provider>
+      <WorkflowDetails/>
+    </Provider>, {
+      route: { params }
+    })
+
+    const preview = await screen.findByText('Preview')
+    await screen.findByText('Configure')
+    await screen.findByText('Compare')
+    await userEvent.click(preview)
+    await screen.findByText(workflows[0].name)
+    await waitFor(() => expect(getWorkflowApi).toHaveBeenCalled())
+  })
+
   it('should close correctly', async () => {
     render(<Provider>
-      <WorkflowDetailOverview/>
+      <WorkflowDetails/>
     </Provider>, {
       route: { params }
     })
@@ -189,7 +207,7 @@ describe('WorkflowDetailOverview', () => {
 
   it('should publish correctly', async () => {
     render(<Provider>
-      <WorkflowDetailOverview/>
+      <WorkflowDetails/>
     </Provider>, {
       route: { params }
     })
