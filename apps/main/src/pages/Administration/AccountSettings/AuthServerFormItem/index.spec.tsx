@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn, useIsTierAllowed }                                                                  from '@acx-ui/feature-toggle'
-import { AdministrationUrlsInfo, ApplicationAuthenticationStatus, SamlFileType, TenantAuthenticationType } from '@acx-ui/rc/utils'
-import { Provider }                                                                                        from '@acx-ui/store'
+import { useIsSplitOn, useIsTierAllowed }                                                                                   from '@acx-ui/feature-toggle'
+import { AdministrationUrlsInfo, ApplicationAuthenticationStatus, CertificateUrls, SamlFileType, TenantAuthenticationType } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                         from '@acx-ui/store'
 import {
   render,
   screen,
@@ -77,6 +77,10 @@ describe('Auth Server Form Item', () => {
       rest.delete(
         AdministrationUrlsInfo.deleteTenantAuthentications.url,
         (req, res, ctx) => res(ctx.json({ requestId: '123' }))
+      ),
+      rest.post(
+        CertificateUrls.getServerCertificates.url,
+        (req, res, ctx) => res(ctx.json({ requestId: '456' }))
       )
     )
     utils.loadImageWithJWT = jest.fn().mockImplementation(() =>

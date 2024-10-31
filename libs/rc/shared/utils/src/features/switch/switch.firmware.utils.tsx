@@ -1,6 +1,7 @@
 import _ from 'lodash'
 
-import { SwitchFirmwareModelGroup } from '../../types'
+import { FirmwareSwitchVenueVersionsV1002,
+  SwitchFirmwareModelGroup } from '../../types'
 const MAJOR = 'major'
 const MINOR = 'minor'
 const BUILD = 'build'
@@ -239,4 +240,9 @@ export function isVerGEVer (currentVer: string, targetVer: string, considerBeta:
   } else {
     return cMajor > tMajor
   }
+}
+
+export function getSwitchFwGroupVersionV1002 (
+  fwV1002: FirmwareSwitchVenueVersionsV1002[], modelGroup: SwitchFirmwareModelGroup): string {
+  return fwV1002?.find((fw) => fw.modelGroup === modelGroup)?.version ?? ''
 }
