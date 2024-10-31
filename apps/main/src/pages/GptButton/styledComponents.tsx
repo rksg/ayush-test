@@ -281,5 +281,6 @@ export const WelcomeMeta = styled(Meta)`
     font-weight: var(--acx-headline-4-font-weight);
     font-size: var(--acx-headline-4-font-size);
     color: var(--acx-neutrals-60);
+    line-height: 20px;
   }
 `

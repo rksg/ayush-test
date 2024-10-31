@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 
 import { ProFormCheckbox, ProFormInstance, ProFormText } from '@ant-design/pro-form'
 import { Button, Divider }                               from 'antd'
-import _                                                 from 'lodash'
 import { useIntl }                                       from 'react-intl'
 
 import { cssStr }                   from '@acx-ui/components'
@@ -12,7 +11,7 @@ import {
   useLazyGetVlanOnboardConfigsQuery,
   useUpdateOnboardConfigsMutation
 } from '@acx-ui/rc/services'
-import { Vlan } from '@acx-ui/rc/utils'
+import { validateVlanName, Vlan } from '@acx-ui/rc/utils'
 
 import { ReactComponent as Logo } from '../../assets/gptDog.svg'
 
@@ -36,8 +35,9 @@ export function VlanStep (props: { payload: string, sessionId: string,
   const initialData = JSON.parse(props.payload || '[]') as NetworkConfig[]
   const [data, setData] = useState<NetworkConfig[]>(initialData)
 
-
-  const [configVlanIds, setConfigVlanIds] = useState<boolean[]>(Array(data.length).fill(true))
+  // eslint-disable-next-line max-len
+  const [configVlanNames, setConfigVlanNames] = useState<string[]>(data.map(vlan => vlan['VLAN Name']))
+  const [configVlanIds, setConfigVlanIds] = useState<string[]>(data.map(vlan => vlan['VLAN ID']))
   const [isSetupComplete, setIsSetupComplete] = useState<boolean[]>(Array(data.length).fill(false))
   const [configId, setConfigId] = useState('')
   const [configVisible, setConfigVisible] = useState(false)
@@ -50,7 +50,8 @@ export function VlanStep (props: { payload: string, sessionId: string,
     if (initialData !== data) {
       setData(initialData)
       setIsSetupComplete(Array(data.length).fill(false))
-      setConfigVlanIds(Array(data.length).fill(true))
+      setConfigVlanIds(data.map(vlan => vlan['VLAN ID']))
+      setConfigVlanNames(data.map(vlan => vlan['VLAN Name']))
     }
 
   }, [props.payload])
@@ -65,7 +66,8 @@ export function VlanStep (props: { payload: string, sessionId: string,
       'id': ''
     }
     setData([...data, newVlan])
-    setConfigVlanIds([...configVlanIds, false])
+    setConfigVlanIds([...configVlanIds, ''])
+    setConfigVlanNames([...configVlanNames, ''])
   }
 
   const handleSetVlan = async (data: Vlan) => {
@@ -131,11 +133,20 @@ export function VlanStep (props: { payload: string, sessionId: string,
   const [updateOnboardConfigs] = useUpdateOnboardConfigsMutation()
   const [createOnboardConfigs] = useCreateOnboardConfigsMutation()
 
-  const onEditMode = async (id: string) =>{
+  const onEditMode = async (id: string, index: number) =>{
     const vlanConfig = (await getVlanConfigs({
       params: { id }
     })).data
-    setSelectedVlanProfile(vlanConfig)
+
+
+    if (vlanConfig && Number(configVlanIds[index])) {
+      setSelectedVlanProfile({
+        ...vlanConfig,
+        vlanId: Number(configVlanIds[index]),
+        vlanName: configVlanNames[index]
+      })
+    }
+
     setConfigVisible(true)
   }
 
@@ -190,6 +201,15 @@ export function VlanStep (props: { payload: string, sessionId: string,
                 name={['data', index, 'VLAN Name']}
                 initialValue={item['VLAN Name']}
                 rules={[{ required: true }]}
+                fieldProps={{
+                  onChange: (value) => {
+                    const newVlanName = value.target.value
+                    const updateVlanNames = [...configVlanNames]
+                    updateVlanNames[index] = newVlanName
+
+                    setConfigVlanNames(updateVlanNames)
+                  }
+                }}
               />
               {item['Purpose'] && <UI.PurposeContainer>
                 <UI.PurposeHeader>
@@ -210,11 +230,23 @@ export function VlanStep (props: { payload: string, sessionId: string,
                 label={$t({ defaultMessage: 'VLAN ID' })}
                 name={['data', index, 'VLAN ID']}
                 initialValue={item['VLAN ID']}
-                rules={[{ required: true }]}
+                rules={[
+                  { required: true },
+                  { validator: (_, value) => validateVlanName(value) }]}
                 fieldProps={{
+                  type: 'number',
                   onChange: (value) => {
+                    const newVlan = value.target.value
                     const updateVlanIds = [...configVlanIds]
-                    updateVlanIds[index] = !_.isEmpty(value)
+                    updateVlanIds[index] = newVlan
+
+                    const updatedVlanTable = vlanTable.map(v => {
+                      if (newVlan && String(v.vlanId) === configVlanIds[index]) {
+                        return { ...v, vlanId: Number(newVlan) } // 更新 VLAN ID
+                      }
+                      return v // 保持其他 VLAN 不变
+                    })
+                    setVlanTable(updatedVlanTable)
                     setConfigVlanIds(updateVlanIds)
                   }
                 }}
@@ -226,7 +258,7 @@ export function VlanStep (props: { payload: string, sessionId: string,
                     setConfigId(currentId)
                     setConfigIndex(index)
                     if (isSetupComplete[configIndex]) {
-                      onEditMode(currentId)
+                      onEditMode(currentId, index)
                     } else {
                       onAddMode()
                     }

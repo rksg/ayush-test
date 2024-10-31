@@ -319,9 +319,14 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           rules={[
             { required: true },
             { validator: (_, value) => validateVlanName(value) },
-            { validator: (_, value) => validateDuplicateVlanId(
-              value, vlansList.filter(v => editMode ? v.vlanId !== vlan?.vlanId : v)
-            ) }
+            {
+              validator: (_, value) => {
+                if (isGptMode) {return Promise.resolve()}
+                return validateDuplicateVlanId(
+                  value, vlansList.filter(v => editMode ? v.vlanId !== vlan?.vlanId : v)
+                )
+              }
+            }
           ]}
           children={<Input style={{ width: '400px' }} disabled={isGptMode} />}
         />

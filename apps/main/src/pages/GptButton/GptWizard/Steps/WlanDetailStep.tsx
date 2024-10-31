@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 
-import { ProFormSelect, ProFormText } from '@ant-design/pro-form'
-import { Divider }                    from 'antd'
-import { useIntl }                    from 'react-intl'
+import ProForm, { ProFormInstance, ProFormSelect, ProFormText } from '@ant-design/pro-form'
+import { Divider }                                              from 'antd'
+import { useIntl }                                              from 'react-intl'
 
 import { Modal, ModalType }         from '@acx-ui/components'
 import { NetworkForm }              from '@acx-ui/rc/components'
@@ -10,7 +10,7 @@ import {
   useCreateOnboardConfigsMutation,
   useUpdateOnboardConfigsMutation
 } from '@acx-ui/rc/services'
-import { NetworkTypeEnum, networkTypes } from '@acx-ui/rc/utils'
+import { NetworkSaveData, NetworkTypeEnum, networkTypes } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 
@@ -22,8 +22,13 @@ type NetworkConfig = {
   'id': string;
 }
 
-export function WlanDetailStep (props: { payload: string, sessionId: string }) {
+export function WlanDetailStep (props: {
+  payload: string, sessionId: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  formInstance: ProFormInstance<any> | undefined
+}) {
   const { $t } = useIntl()
+  const { formInstance } = props
   const data = props.payload ? JSON.parse(props.payload) as NetworkConfig[] : []
 
   const [modalType, setModalType] = useState<NetworkTypeEnum>(NetworkTypeEnum.OPEN)
@@ -61,52 +66,61 @@ export function WlanDetailStep (props: { payload: string, sessionId: string }) {
       updatedConfiguredFlags[index] = false
       return updatedConfiguredFlags
     })
+
+    formInstance?.setFields([{ name: `configuredFlag-${index}`, errors: [] }])
   }
 
   const [createOnboardConfigs] = useCreateOnboardConfigsMutation()
   const [updateOnboardConfigs] = useUpdateOnboardConfigsMutation()
 
+  const handleModalCallback = useCallback(async (payload: NetworkSaveData | undefined) => {
+    setNetworkModalVisible(false)
+
+    if (!payload) return
+
+    const modifiedPayload = {
+      ...payload,
+      type: modalType
+    }
+
+    const configPayload = {
+      name: modalName,
+      type: modalType.toUpperCase(),
+      content: JSON.stringify(modifiedPayload),
+      sessionId: props.sessionId
+    }
+
+    if (modalId) {
+      await updateOnboardConfigs({
+        params: { id: modalId },
+        payload: { id: modalId, ...configPayload }
+      }).unwrap()
+    } else {
+      await createOnboardConfigs({ payload: configPayload }).unwrap()
+    }
+
+    setConfiguredFlags((prevConfiguredFlags) => {
+      const updatedConfiguredFlags = [...prevConfiguredFlags]
+      updatedConfiguredFlags[configuredIndex] = true
+      return updatedConfiguredFlags
+    })
+
+
+  }, [modalId, modalName, modalType, configuredIndex, props.sessionId])
+
+  useEffect(()=>{
+    configuredFlags.forEach((flag, index) => {
+      if (flag) {
+        formInstance?.validateFields([`configuredFlag-${index}`])
+      }
+    })
+  },[configuredFlags])
+
   const getNetworkForm = <NetworkForm
     isGptMode={true}
     modalMode={true}
     gptEditId={configuredFlags[configuredIndex] ? `${modalId}?type=${modalType}` : ''}
-    modalCallBack={async (payload) => {
-      setNetworkModalVisible(false)
-      if (payload) {
-        const modifiedPayload = {
-          ...payload,
-          type: modalType
-        }
-        if(modalId) {
-          await updateOnboardConfigs({
-            params: {
-              id: modalId
-            },
-            payload: {
-              id: modalId,
-              name: modalName,
-              type: modalType.toUpperCase(),
-              content: JSON.stringify(modifiedPayload),
-              sessionId: props.sessionId
-            }
-          }).unwrap()
-        } else {
-          await createOnboardConfigs({
-            payload: {
-              name: modalName,
-              type: modalType.toUpperCase(),
-              content: JSON.stringify(modifiedPayload),
-              sessionId: props.sessionId
-            }
-          }).unwrap()
-        }
-        setConfiguredFlags((prevConfiguredFlags) => {
-          const updatedConfiguredFlags = [...prevConfiguredFlags]
-          updatedConfiguredFlags[configuredIndex] = true
-          return updatedConfiguredFlags
-        })
-      }
-    }}
+    modalCallBack={handleModalCallback}
     createType={modalType}
   />
 
@@ -176,16 +190,16 @@ export function WlanDetailStep (props: { payload: string, sessionId: string }) {
                   <div>
                     {networkOptions.find(
                       option => option.value === ssidTypes[index])?.label || ''}
-                      &nbsp;
+                        &nbsp;
                     {$t({ defaultMessage: 'Configurations' })}
                     {ssidTypes[index] !== NetworkTypeEnum.OPEN &&
-                        <UI.RequiredIcon />}
+                          <UI.RequiredIcon />}
                   </div>
 
                   <div style={{ display: 'flex' }}>
                     {configuredFlags[index] ?
                       <UI.ConfiguredButton>
-                        <UI.CollapseCircleSolidIcons/>
+                        <UI.CollapseCircleSolidIcons />
                         <div>{$t({ defaultMessage: 'Configured' })}</div>
                       </UI.ConfiguredButton> :
                       <UI.SetupButton>
@@ -195,6 +209,30 @@ export function WlanDetailStep (props: { payload: string, sessionId: string }) {
                   </div>
                 </UI.ConfigurationHeader>
               </UI.ConfigurationContainer>
+
+              <ProForm.Item
+                style={{
+                  height: '40px',
+                  marginTop: '-45px',
+                  pointerEvents: 'none'
+                }}
+                name={`configuredFlag-${index}`}
+                rules={[{
+                  validator: () => {
+                    if (!configuredFlags[index]
+                       && ssidTypes[index] !== NetworkTypeEnum.OPEN) {
+                      return Promise.reject(new Error($t({
+                        // eslint-disable-next-line max-len
+                        defaultMessage: 'This configuration is not yet set. Please complete it to ensure proper functionality.'
+                      })))
+                    }
+                    return Promise.resolve()
+                  }
+                }]}
+              >
+                <ProFormText hidden />
+              </ProForm.Item>
+
             </UI.VlanDetails>
           </UI.VlanContainer>
           <Divider dashed />

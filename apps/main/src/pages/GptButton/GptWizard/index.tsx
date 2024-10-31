@@ -109,9 +109,14 @@ export default function GptWizard (props: {
     {
       name: GptConfigurationStepsEnum.WLANDETAIL,
       title: '',
-      component: <WlanDetailStep
-        sessionId={props.sessionId}
-        payload={payloads[GptConfigurationStepsEnum.WLANDETAIL].payload} />,
+      component: payloads[GptConfigurationStepsEnum.WLANDETAIL].payload ? (
+        <WlanDetailStep
+          formInstance={formMapRef.current[1].current}
+          sessionId={props.sessionId}
+          payload={payloads[GptConfigurationStepsEnum.WLANDETAIL].payload} />)
+        : (
+          null
+        ),
       onFinish: async () =>
         handleOnFinish(GptConfigurationStepsEnum.WLANDETAIL)
     },
