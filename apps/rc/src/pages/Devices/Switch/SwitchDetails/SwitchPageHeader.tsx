@@ -231,7 +231,7 @@ function SwitchPageHeader () {
       let maxUnits = getStackUnitsMinLimitation(switchModel, currentFW, currentAboveTenFW)
       if (isSwitchFirmwareV1002Enabled && venueFwV1002.length > 0) {
         const mg = getSwitchModelGroup(switchModel)
-        const currentVersion = venueFwV1002?.find(v =>
+        const currentVersion = switchDetailHeader?.firmware || venueFwV1002?.find(v =>
           v.modelGroup === mg)?.version || ''
         maxUnits = getStackUnitsMinLimitationV1002(switchModel, currentVersion)
       }
