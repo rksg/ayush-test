@@ -311,7 +311,7 @@ function useColumns () {
           ? ''
           : (<>
             <TenantLink to={getPolicyRoutePath({
-              type: PolicyType.CERTIFICATE,
+              type: PolicyType.SERVER_CERTIFICATES,
               oper: PolicyOperation.LIST })}>
               {clientCertificateMap.find(
                 c => c.key === row.radSecOptions?.clientCertificateId)?.value || ''}
