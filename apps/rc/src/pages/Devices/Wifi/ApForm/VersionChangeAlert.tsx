@@ -1,7 +1,7 @@
+import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
 import { compareVersions } from '@acx-ui/utils'
-import { Space } from 'antd'
 
 interface VersionChangeAlertProps {
   targetVersion: string
@@ -23,5 +23,5 @@ export function VersionChangeAlert (props: VersionChangeAlertProps) {
     <span>{
       $t({ defaultMessage: 'From {existingVersion} to {targetVersion}' }, { existingVersion, targetVersion })
     }</span>
-    </Space>
+  </Space>
 }

@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 
 import { Features, useIsSplitOn }                                                                  from '@acx-ui/feature-toggle'
 import { useGetVenueApModelFirmwaresQuery, useGetVenueVersionListQuery, useWifiCapabilitiesQuery } from '@acx-ui/rc/services'
-import { FirmwareType, FirmwareVenue, VenueExtended }                                      from '@acx-ui/rc/utils'
+import { FirmwareType, FirmwareVenue, VenueExtended }                                              from '@acx-ui/rc/utils'
 import { TenantLink }                                                                              from '@acx-ui/react-router-dom'
 import { compareVersions }                                                                         from '@acx-ui/utils'
 
