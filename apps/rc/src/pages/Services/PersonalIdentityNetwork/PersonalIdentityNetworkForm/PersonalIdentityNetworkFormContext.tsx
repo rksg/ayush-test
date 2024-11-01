@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction, createContext, useEffect, useMemo, useState }
 
 import { BaseQueryFn, QueryActionCreatorResult, QueryDefinition } from '@reduxjs/toolkit/query'
 import { DefaultOptionType }                                      from 'antd/lib/select'
-import { find, isNil }                                            from 'lodash'
+import { find, isNil, union, uniq }                               from 'lodash'
 import { useParams }                                              from 'react-router-dom'
 
 import {
@@ -283,13 +283,13 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
   const usedSdlanVenueIds = useMemo(() => {
     const sdlanClusterVenueIds = clusterData?.filter(item =>
       usedSdlanClusterIds.includes(item.value))
-      .map(item => item.venueId) ?? []
-    return [...usedSdlanTunneledVenueIds, ...sdlanClusterVenueIds]
+      .map(item => item.venueId)
+    return uniq(union(usedSdlanTunneledVenueIds, sdlanClusterVenueIds))
   }, [usedSdlanTunneledVenueIds, usedSdlanClusterIds])
 
   const venueOptions = useMemo(() => {
     return venues?.filter(item =>
-      !(usedSdlanVenueIds?.includes(item.value) || usedVenueIds?.includes(item.value))
+      !(usedSdlanVenueIds.includes(item.value) || usedVenueIds?.includes(item.value))
     )
   }, [venues, usedVenueIds, usedSdlanVenueIds])
 
