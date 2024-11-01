@@ -6,21 +6,9 @@ const versionHeaders = {
 }
 
 export const EdgeTnmServiceUrls: { [key: string]: ApiInfo } = {
-  getEdgeTnmService: {
+  getEdgeTnmServiceList: {
     method: 'get',
-    url: '/edgeTnmZabbixServices/:serviceId',
-    newApi: true,
-    defaultHeaders: versionHeaders
-  },
-  addEdgeTnmService: {
-    method: 'post',
-    url: '/edgeTnmZabbixServices',
-    newApi: true,
-    defaultHeaders: versionHeaders
-  },
-  deleteEdgeTnmService: {
-    method: 'delete',
-    url: '/edgeTnmZabbixServices/:serviceId',
+    url: '/edgeTnmZabbixServices/',
     newApi: true,
     defaultHeaders: versionHeaders
   },

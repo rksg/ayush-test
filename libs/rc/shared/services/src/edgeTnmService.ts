@@ -2,8 +2,7 @@ import {
   TableResult,
   CommonResult,
   EdgeTnmServiceUrls,
-  EdgeTnmServiceSetting,
-  EdgeTnmServiceViewData
+  EdgeTnmServiceData
 } from '@acx-ui/rc/utils'
 import { baseEdgeTnmServiceApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
@@ -11,10 +10,10 @@ import { createHttpRequest }     from '@acx-ui/utils'
 
 export const edgeTnmServiceApi = baseEdgeTnmServiceApi.injectEndpoints({
   endpoints: (build) => ({
-    getEdgeTnmServiceViewDataList:
-      build.query<TableResult<EdgeTnmServiceViewData>, RequestPayload>({
+    getEdgeTnmServiceList:
+      build.query<TableResult<EdgeTnmServiceData>, RequestPayload>({
         query: ({ payload }) => {
-          const req = createHttpRequest(EdgeTnmServiceUrls.getEdgeTnmServiceViewDataList)
+          const req = createHttpRequest(EdgeTnmServiceUrls.getEdgeTnmServiceList)
           return {
             ...req,
             body: JSON.stringify(payload)
@@ -23,12 +22,6 @@ export const edgeTnmServiceApi = baseEdgeTnmServiceApi.injectEndpoints({
         providesTags: [{ type: 'EdgeTnmService', id: 'LIST' }],
         extraOptions: { maxRetries: 5 }
       }),
-    getEdgeTnmService: build.query<EdgeTnmServiceSetting, RequestPayload>({
-      query: ({ params }) => {
-        return createHttpRequest(EdgeTnmServiceUrls.getEdgeTnmService, params)
-      },
-      providesTags: [{ type: 'EdgeTnmService', id: 'DETAIL' }]
-    }),
     addEdgeTnmService: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(EdgeTnmServiceUrls.activateEdgeTnmServiceAppCluster, params)
@@ -50,8 +43,7 @@ export const edgeTnmServiceApi = baseEdgeTnmServiceApi.injectEndpoints({
 })
 
 export const {
-  useGetEdgeTnmServiceViewDataListQuery,
-  useGetEdgeTnmServiceQuery,
+  useGetEdgeTnmServiceListQuery,
   useAddEdgeTnmServiceMutation,
   useDeleteEdgeTnmServiceMutation
 } = edgeTnmServiceApi

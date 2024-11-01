@@ -3,7 +3,7 @@ export interface EdgeTnmServiceSetting {
   venueId?: string
   name?: string
 }
-export interface EdgeTnmServiceViewData {
+export interface EdgeTnmServiceData {
   id?: string
   tenantId?: string
   venueId?: string
