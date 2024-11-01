@@ -14,7 +14,7 @@ export const showTsbBlockedSwitchErrorDialog = () => {
     title: $t({ defaultMessage: 'Switch could not be added' }),
     width: 550,
     content: <>
-      {$t({ defaultMessage: 'This serial number matches with an active TSB related to PoE power on ICX 7148-48ZP switches which can be found on ' })}
+      {$t({ defaultMessage: 'This serial number matches with an active TSB related to PoE power on ICX 7150-48ZP switches which can be found on ' })}
       <a target='_blank'
         href={link}
         rel='noreferrer'> {$t({ defaultMessage: 'RUCKUS support portal' })} </a>

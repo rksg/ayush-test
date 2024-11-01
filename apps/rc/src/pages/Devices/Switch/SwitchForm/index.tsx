@@ -49,7 +49,9 @@ import {
   SWITCH_SERIAL_PATTERN_INCLUDED_8100,
   SWITCH_SERIAL_PATTERN_INCLUDED_8200AV,
   SWITCH_SERIAL_PATTERN_INCLUDED_8100_8200AV,
-  FirmwareSwitchVenueVersionsV1002
+  FirmwareSwitchVenueVersionsV1002,
+  SwitchFirmwareModelGroup,
+  getSwitchFwGroupVersionV1002
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -299,7 +301,10 @@ export function SwitchForm () {
   }
 
   const handleAddSwitch = async (values: Switch) => {
-    if (!checkVersionAtLeast09010h(currentFW) && isBlockingTsbSwitch) {
+    const fw = isSwitchFirmwareV1002Enabled
+      ? getSwitchFwGroupVersionV1002(currentFirmwareV1002, SwitchFirmwareModelGroup.ICX71)
+      : currentFW
+    if (!checkVersionAtLeast09010h(fw) && isBlockingTsbSwitch) {
       if (getTsbBlockedSwitch(values.id)?.length > 0) {
         showTsbBlockedSwitchErrorDialog()
         return
