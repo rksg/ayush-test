@@ -52,7 +52,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
   const [selectedICX82Version, setSelecteedICX82Version] =
   useState(form.getFieldValue('selectedICX82Version'))
 
-  const [noteEnable, setNoteEnable] = useState(false)
+  const [switchNoteEnable, setSwitchNoteEnable] = useState(false)
 
   const ICX71Count = availableVersions?.filter(
     v => v.modelGroup === SwitchFirmwareModelGroup.ICX71)[0]?.switchCount || 0
@@ -95,11 +95,11 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
     return invalidVersionFor82Av(version) && icxRodanAvGroupedData().length > 0
   }
 
-  const updateNoteEnable = (version: string) => {
+  const updateSwitchNoteEnable = (version: string) => {
     if (exist82AvAndInvalidVersion(version)) {
-      setNoteEnable(true)
+      setSwitchNoteEnable(true)
     } else {
-      setNoteEnable(false)
+      setSwitchNoteEnable(false)
     }
   }
 
@@ -108,7 +108,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
 
     // NotesEnum.NOTE8200_1
     if (isSupport8200AV) {
-      updateNoteEnable(form.getFieldValue('selectedICX82Version'))
+      updateSwitchNoteEnable(form.getFieldValue('selectedICX82Version'))
     }
   }, [current])
 
@@ -132,7 +132,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
     form.setFieldValue('selectedICX82Version', value.target.value)
     form.validateFields()
     if (isSupport8200AV) {
-      updateNoteEnable(value.target.value)
+      updateSwitchNoteEnable(value.target.value)
     }
   }
 
@@ -207,7 +207,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
           </Radio.Group>
         </>}
 
-        {isSupport8200AV && noteEnable && <SwitchNote
+        {isSupport8200AV && switchNoteEnable && <SwitchNote
           type={NotesEnum.NOTE8200_1}
           data={icxRodanAvGroupedData()} />}
 

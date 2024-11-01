@@ -126,7 +126,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
     return versionsPayload
   }
 
-  const getVersionsPayloadForSwitchLevel = function () {
+  const getSwitchLevelVersionsPayload = function () {
 
     let versionsPayload = []
     if (form.getFieldValue('selectedICX71Version') && ICX71Count !== 0) {
@@ -170,13 +170,13 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
         await batchUpdateSwitchVenueSchedules(venueRequests)
 
         const switchVenueGroups = _.groupBy(upgradeSwitchList, 'venueId')
-        const versionForSwitchLevel = getVersionsPayloadForSwitchLevel()
+        const switchLevelVersions = getSwitchLevelVersionsPayload()
         const switchRequests = Object.keys(switchVenueGroups).map(key =>
           ({
             params: { venueId: key },
             payload: {
               switchIds: switchVenueGroups[key].map(item => item.switchId),
-              versions: versionForSwitchLevel
+              versions: switchLevelVersions
             }
           }))
         await batchUpdateSwitchVenueSchedules(switchRequests)
@@ -203,7 +203,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
         await batchUpdateSwitchVenueSchedules(venueRequests)
 
         const switchVenueGroups = _.groupBy(upgradeSwitchList, 'venueId')
-        const versionForSwitchLevel = getVersionsPayloadForSwitchLevel()
+        const switchLevelVersions = getSwitchLevelVersionsPayload()
         const switchRequests = Object.keys(switchVenueGroups).map(key =>
           ({
             params: { venueId: key },
@@ -212,7 +212,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
               time: form.getFieldValue('selectTimeStep') || '',
               preDownload: form.getFieldValue('preDownloadChecked') || false,
               switchIds: switchVenueGroups[key].map(item => item.switchId),
-              versions: versionForSwitchLevel
+              versions: switchLevelVersions
             }
           }))
         await batchUpdateSwitchVenueSchedules(switchRequests)

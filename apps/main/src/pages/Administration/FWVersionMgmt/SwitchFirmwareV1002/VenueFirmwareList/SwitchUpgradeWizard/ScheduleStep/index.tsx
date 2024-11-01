@@ -93,7 +93,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
   const ICX82Count = availableVersions?.filter(
     v => v.modelGroup === SwitchFirmwareModelGroup.ICX82)[0]?.switchCount || 0
 
-  const [noteEnable, setNoteEnable] = useState(false)
+  const [switchNoteEnable, setSwitchNoteEnable] = useState(false)
 
   const payload = {
     venueIdList: upgradeVenueList.map(item => item.venueId),
@@ -127,11 +127,11 @@ export function ScheduleStep (props: ScheduleStepProps) {
     return invalidVersionFor82Av(version) && icxRodanAvGroupedData().length > 0
   }
 
-  const updateNoteEnable = (version: string) => {
+  const updateSwitchNoteEnable = (version: string) => {
     if (exist82AvAndInvalidVersion(version)) {
-      setNoteEnable(true)
+      setSwitchNoteEnable(true)
     } else {
-      setNoteEnable(false)
+      setSwitchNoteEnable(false)
     }
   }
 
@@ -140,7 +140,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
 
     // NotesEnum.NOTE8200_1
     if (isSupport8200AV) {
-      updateNoteEnable(selectedICX82Version)
+      updateSwitchNoteEnable(selectedICX82Version)
     }
   }, [current])
 
@@ -164,7 +164,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
     form.setFieldValue('selectedICX82Version', value.target.value)
     form.validateFields(['selectVersionStep'])
     if (isSupport8200AV) {
-      updateNoteEnable(value.target.value)
+      updateSwitchNoteEnable(value.target.value)
     }
   }
 
@@ -273,7 +273,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
             </Radio.Group>
           </>}
 
-          {isSupport8200AV && noteEnable && <SwitchNote
+          {isSupport8200AV && switchNoteEnable && <SwitchNote
             type={NotesEnum.NOTE8200_1}
             data={icxRodanAvGroupedData()} />}
 
