@@ -14,7 +14,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { dummyRadiusServiceList, ethernetPortProfileList } from './__tests__/fixtures'
+import { dummyRadiusServiceList, ethernetPortProfileList, mockDefaultTunkEthertnetPortProfile } from './__tests__/fixtures'
 
 import { LanPortSettings } from '.'
 
@@ -202,6 +202,12 @@ describe('LanPortSettings - Ethernet Port Profile', () => {
           data: {
             enabled: true
           }
+        }))
+      ),
+      rest.get(
+        EthernetPortProfileUrls.getEthernetPortProfile.url,
+        (_, res, ctx) => res(ctx.json({
+          data: mockDefaultTunkEthertnetPortProfile
         }))
       ),
       rest.post(AaaUrls.getAAAPolicyViewModelList.url,
