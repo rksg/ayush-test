@@ -117,7 +117,7 @@ export function WlanDetailStep (props: {
   },[configuredFlags])
 
   const getNetworkForm = <NetworkForm
-    isGptMode={true}
+    isRuckusAiMode={true}
     modalMode={true}
     gptEditId={configuredFlags[configuredIndex] ? `${modalId}?type=${modalType}` : ''}
     modalCallBack={handleModalCallback}

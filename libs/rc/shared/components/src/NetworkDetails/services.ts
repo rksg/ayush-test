@@ -13,18 +13,18 @@ import { useParams }         from '@acx-ui/react-router-dom'
 
 export function useGetNetwork ( props?: {
   gptEditId?: string,
-  isGptMode?: boolean
+  isRuckusAiMode?: boolean
 }) {
-  const { gptEditId, isGptMode } = props || {}
+  const { gptEditId, isRuckusAiMode } = props || {}
   const { isTemplate } = useConfigTemplate()
   const wifiRbacApiEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const configTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
 
-  const isWifiRbacEnabled = isGptMode ? false : wifiRbacApiEnabled
-  const isConfigTemplateRbacEnabled = isGptMode ? false : configTemplateRbacEnabled
+  const isWifiRbacEnabled = isRuckusAiMode ? false : wifiRbacApiEnabled
+  const isConfigTemplateRbacEnabled = isRuckusAiMode ? false : configTemplateRbacEnabled
   const params = useParams()
 
-  const networkResult = useGetNetworkQuery({ params, enableRbac: isWifiRbacEnabled }, { skip: isTemplate || isWifiRbacEnabled || isGptMode })
+  const networkResult = useGetNetworkQuery({ params, enableRbac: isWifiRbacEnabled }, { skip: isTemplate || isWifiRbacEnabled || isRuckusAiMode })
   const gptNetworkResult = useGetOnboardConfigsQuery({ params: { id: gptEditId } }, { skip: _.isEmpty(gptEditId) })
   const rbacNetworkResult = useGetNetworkDeepQuery({ params, enableRbac: isWifiRbacEnabled }, { skip: isTemplate || !isWifiRbacEnabled })
   const rbacNetworkResultTemplate = useGetNetworkDeepTemplateQuery({ params, enableRbac: isConfigTemplateRbacEnabled }, { skip: !isTemplate })

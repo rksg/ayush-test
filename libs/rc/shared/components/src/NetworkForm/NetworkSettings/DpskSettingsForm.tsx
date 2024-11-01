@@ -39,7 +39,7 @@ const { Option } = Select
 const { useWatch } = Form
 
 export function DpskSettingsForm () {
-  const { editMode, cloneMode, data, isGptMode } = useContext(NetworkFormContext)
+  const { editMode, cloneMode, data, isRuckusAiMode } = useContext(NetworkFormContext)
   const { disableMLO } = useContext(MLOContext)
   const form = Form.useFormInstance()
   useEffect(()=>{
@@ -71,7 +71,7 @@ export function DpskSettingsForm () {
         <NetworkDiagram />
       </Col>
     </Row>
-    {!(editMode) && !(isGptMode) && <Row>
+    {!(editMode) && !(isRuckusAiMode) && <Row>
       <Col span={24}>
         <NetworkMoreSettingsForm
           wlanData={data} />

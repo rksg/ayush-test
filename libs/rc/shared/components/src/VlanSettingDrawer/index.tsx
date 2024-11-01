@@ -154,7 +154,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
 
   const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
   const isSwitchLevel = !!switchFamilyModel
-  const isGptMode = !_.isEmpty(gptObject)
+  const isRuckusAiMode = !_.isEmpty(gptObject)
 
   const multicastVersionEnabled = () : boolean => {
     const igmpSnooping = form.getFieldValue('igmpSnooping')
@@ -315,29 +315,29 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           label={$t({ defaultMessage: 'VLAN ID' })}
           name='vlanId'
           validateFirst
-          initialValue={isGptMode ? gptObject?.vlanId : ''}
+          initialValue={isRuckusAiMode ? gptObject?.vlanId : ''}
           rules={[
             { required: true },
             { validator: (_, value) => validateVlanName(value) },
             {
               validator: (_, value) => {
-                if (isGptMode) {return Promise.resolve()}
+                if (isRuckusAiMode) {return Promise.resolve()}
                 return validateDuplicateVlanId(
                   value, vlansList.filter(v => editMode ? v.vlanId !== vlan?.vlanId : v)
                 )
               }
             }
           ]}
-          children={<Input style={{ width: '400px' }} disabled={isGptMode} />}
+          children={<Input style={{ width: '400px' }} disabled={isRuckusAiMode} />}
         />
         <Form.Item
           name='vlanName'
           label={$t({ defaultMessage: 'VLAN Name' })}
-          initialValue={isGptMode ? gptObject?.vlanName : ''}
+          initialValue={isRuckusAiMode ? gptObject?.vlanName : ''}
           rules={[
             { validator: (_, value) => validateVlanNameWithoutDVlans(value) }
           ]}
-          children={<Input style={{ width: '400px' }} maxLength={32} disabled={isGptMode} />}
+          children={<Input style={{ width: '400px' }} maxLength={32} disabled={isRuckusAiMode} />}
         />
         <UI.FieldLabel width='130px'>
           { $t({ defaultMessage: 'IPv4 DHCP Snooping' }) }

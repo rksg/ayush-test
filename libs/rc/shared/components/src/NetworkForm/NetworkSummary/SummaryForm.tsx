@@ -43,7 +43,7 @@ export function SummaryForm (props: {
 }) {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
-  const { isGptMode } = useContext(NetworkFormContext)
+  const { isRuckusAiMode } = useContext(NetworkFormContext)
   const { summaryData, portalData } = props
   const params = useParams()
   const { data } = useVenuesListQuery({
@@ -92,7 +92,7 @@ export function SummaryForm (props: {
           <Subtitle level={4}>
             { $t({ defaultMessage: 'Network Info' }) }
           </Subtitle>
-          {!isGptMode && <>
+          {!isRuckusAiMode && <>
             <Form.Item label={$t({ defaultMessage: 'Network Name:' })}
               children={summaryData.name} />
             {summaryData.name !== summaryData?.wlan?.ssid &&

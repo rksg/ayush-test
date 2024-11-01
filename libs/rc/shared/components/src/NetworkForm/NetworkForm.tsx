@@ -161,19 +161,19 @@ export function NetworkForm (props:{
   createType?: NetworkTypeEnum,
   modalCallBack?: (payload?: NetworkSaveData)=>void,
   defaultActiveVenues?: string[],
-  isGptMode?: boolean,
+  isRuckusAiMode?: boolean,
   gptEditId?: string
 }) {
-  const isGptMode = props.isGptMode === true
+  const isRuckusAiMode = props.isRuckusAiMode === true
   const wifiRbacApiEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const configTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const serviceRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
-  const isUseWifiRbacApi = isGptMode ? false : wifiRbacApiEnabled
-  const isConfigTemplateRbacEnabled = isGptMode ? false : configTemplateRbacEnabled
+  const isUseWifiRbacApi = isRuckusAiMode ? false : wifiRbacApiEnabled
+  const isConfigTemplateRbacEnabled = isRuckusAiMode ? false : configTemplateRbacEnabled
   const { isTemplate } = useConfigTemplate()
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isUseWifiRbacApi
-  const enableServiceRbac = isGptMode ? false : serviceRbacEnabled
+  const enableServiceRbac = isRuckusAiMode ? false : serviceRbacEnabled
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
 
@@ -271,7 +271,7 @@ export function NetworkForm (props:{
     })
   }
 
-  const { data, isLoading } = useGetNetwork({ isGptMode, gptEditId })
+  const { data, isLoading } = useGetNetwork({ isRuckusAiMode, gptEditId })
   const networkVxLanTunnelProfileInfo = useNetworkVxLanTunnelProfileInfo(data ?? null)
   const { certificateTemplateId } = useGetCertificateTemplateNetworkBindingQuery(
     { params: { networkId: data?.id } },
@@ -420,7 +420,7 @@ export function NetworkForm (props:{
     if(modalMode&&createType){
       detailsSaveData.type = createType
     }
-    if (createType === NetworkTypeEnum.CAPTIVEPORTAL && !isGptMode) {
+    if (createType === NetworkTypeEnum.CAPTIVEPORTAL && !isRuckusAiMode) {
       updateSaveData({
         ...detailsSaveData,
         guestPortal: { guestNetworkType: GuestNetworkTypeEnum.GuestPass }
@@ -801,7 +801,7 @@ export function NetworkForm (props:{
     try {
       const payload = processAddData(saveState)
 
-      if (isGptMode) {
+      if (isRuckusAiMode) {
         modalCallBack?.(payload)
         return
       }
@@ -939,7 +939,7 @@ export function NetworkForm (props:{
       const oldData = cloneDeep(saveContextRef.current)
       const payload = updateClientIsolationAllowlist(saveContextRef.current as NetworkSaveData)
 
-      if (isGptMode) {
+      if (isRuckusAiMode) {
         modalCallBack?.(payload)
         return
       }
@@ -1019,7 +1019,7 @@ export function NetworkForm (props:{
           createType,
           editMode,
           cloneMode,
-          isGptMode,
+          isRuckusAiMode,
           data: saveState,
           setData: updateSaveState
         }}>
@@ -1036,7 +1036,7 @@ export function NetworkForm (props:{
               }
               onFinish={editMode ? handleEditNetwork : handleAddNetwork}
             >
-              {!isGptMode &&
+              {!isRuckusAiMode &&
                 <StepsFormLegacy.StepForm
                   name='details'
                   title={intl.$t({ defaultMessage: 'Network Details' })}
@@ -1083,7 +1083,7 @@ export function NetworkForm (props:{
                 <PortalInstance updatePortalData={(data)=>setPortalDemo(data)}/>
               </StepsFormLegacy.StepForm>
               }
-              {!isGptMode &&
+              {!isRuckusAiMode &&
                 <StepsFormLegacy.StepForm
                   name='venues'
                   title={intl.$t({ defaultMessage: '<VenuePlural></VenuePlural>' })}
@@ -1109,7 +1109,7 @@ export function NetworkForm (props:{
           createType,
           editMode,
           cloneMode,
-          isGptMode,
+          isRuckusAiMode,
           data: saveState,
           setData: updateSaveState
         }}>
@@ -1127,7 +1127,7 @@ export function NetworkForm (props:{
               onFinish={editMode ? handleEditNetwork : handleAddNetwork}
             >
               {
-                !isGptMode && <StepsForm.StepForm
+                !isRuckusAiMode && <StepsForm.StepForm
                   name='details'
                   title={intl.$t({ defaultMessage: 'Network Details' })}
                   onFinish={handleDetails}
@@ -1164,7 +1164,7 @@ export function NetworkForm (props:{
                       pickOneCaptivePortalForm(saveState)}
                 </StepsForm.StepForm>
               }
-              { editMode && !isGptMode &&
+              { editMode && !isRuckusAiMode &&
                 <StepsForm.StepForm
                   name='moreSettings'
                   title={intl.$t({ defaultMessage: 'More Settings' })}
@@ -1182,7 +1182,7 @@ export function NetworkForm (props:{
                 <PortalInstance updatePortalData={(data)=>setPortalDemo(data)}/>
               </StepsForm.StepForm>
               }
-              {!isGptMode &&
+              {!isRuckusAiMode &&
                   <StepsForm.StepForm
                     name='venues'
                     title={intl.$t({ defaultMessage: '<VenuePlural></VenuePlural>' })}

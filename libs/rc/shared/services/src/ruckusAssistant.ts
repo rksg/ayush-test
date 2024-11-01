@@ -1,6 +1,6 @@
 import {
-  GptConfiguration,
-  GptConversation,
+  RuckusAiConfiguration,
+  RuckusAiConversation,
   NetworkSaveData,
   RuckusAssistantUrlInfo,
   Vlan
@@ -11,7 +11,7 @@ import { createHttpRequest }      from '@acx-ui/utils'
 
 export const ruckusAssistantApi = baseRuckusAssistantApi.injectEndpoints({
   endpoints: (build) => ({
-    startConversations: build.mutation<GptConversation, RequestPayload>({
+    startConversations: build.mutation<RuckusAiConversation, RequestPayload>({
       query: ({ payload }) => {
         const req = createHttpRequest(RuckusAssistantUrlInfo.startConversations)
         return {
@@ -20,7 +20,7 @@ export const ruckusAssistantApi = baseRuckusAssistantApi.injectEndpoints({
         }
       }
     }),
-    updateConversations: build.mutation<GptConversation, RequestPayload>({
+    updateConversations: build.mutation<RuckusAiConversation, RequestPayload>({
       query: ({ payload, params }) => {
         const req = createHttpRequest(RuckusAssistantUrlInfo.updateConversations, params)
         return {
@@ -29,7 +29,7 @@ export const ruckusAssistantApi = baseRuckusAssistantApi.injectEndpoints({
         }
       }
     }),
-    applyConversations: build.mutation<GptConversation, RequestPayload>({
+    applyConversations: build.mutation<RuckusAiConversation, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(RuckusAssistantUrlInfo.applyConversations, params)
         return {
@@ -38,7 +38,7 @@ export const ruckusAssistantApi = baseRuckusAssistantApi.injectEndpoints({
         }
       }
     }),
-    createOnboardConfigs: build.mutation<GptConfiguration, RequestPayload>({
+    createOnboardConfigs: build.mutation<RuckusAiConfiguration, RequestPayload>({
       query: ({ payload }) => {
         const req = createHttpRequest(RuckusAssistantUrlInfo.createOnboardConfigs)
         return {
@@ -47,7 +47,7 @@ export const ruckusAssistantApi = baseRuckusAssistantApi.injectEndpoints({
         }
       }
     }),
-    updateOnboardConfigs: build.mutation<GptConversation, RequestPayload>({
+    updateOnboardConfigs: build.mutation<RuckusAiConversation, RequestPayload>({
       query: ({ payload, params }) => {
         const req = createHttpRequest(RuckusAssistantUrlInfo.updateOnboardConfigs, params)
         return {
@@ -64,7 +64,7 @@ export const ruckusAssistantApi = baseRuckusAssistantApi.injectEndpoints({
           ...req
         }
       },
-      transformResponse: (response: GptConfiguration) => {
+      transformResponse: (response: RuckusAiConfiguration) => {
         return JSON.parse(response.content) as NetworkSaveData
       }
     }),
@@ -75,7 +75,7 @@ export const ruckusAssistantApi = baseRuckusAssistantApi.injectEndpoints({
           ...req
         }
       },
-      transformResponse: (response: GptConfiguration) => {
+      transformResponse: (response: RuckusAiConfiguration) => {
         return JSON.parse(response.content) as Vlan
       }
     })

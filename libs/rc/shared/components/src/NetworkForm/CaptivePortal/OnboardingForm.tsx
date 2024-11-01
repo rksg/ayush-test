@@ -22,7 +22,7 @@ export function OnboardingForm () {
   const {
     data,
     editMode,
-    isGptMode,
+    isRuckusAiMode,
     cloneMode
   } = useContext(NetworkFormContext)
   const intl = useIntl()
@@ -52,7 +52,7 @@ export function OnboardingForm () {
           wlanSecurity={data?.wlan?.wlanSecurity} />
       </GridCol>
     </GridRow>
-    {!(editMode) && !(isGptMode) && <GridRow>
+    {!(editMode) && !(isRuckusAiMode) && <GridRow>
       <GridCol col={{ span: 24 }}>
         <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />
       </GridCol>

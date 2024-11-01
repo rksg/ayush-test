@@ -48,7 +48,7 @@ const { useWatch } = Form
 const labelWidth = '250px'
 
 export function PskSettingsForm () {
-  const { editMode, cloneMode, data, isGptMode } = useContext(NetworkFormContext)
+  const { editMode, cloneMode, data, isRuckusAiMode } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   useEffect(()=>{
     if((editMode || cloneMode) && data && !form.isFieldsTouched()) {
@@ -85,7 +85,7 @@ export function PskSettingsForm () {
         <NetworkDiagram />
       </Col>
     </Row>
-    {!(editMode) && !(isGptMode) && <Row>
+    {!(editMode) && !(isRuckusAiMode) && <Row>
       <Col span={24}>
         <NetworkMoreSettingsForm
           wlanData={data} />

@@ -9,9 +9,8 @@ import {
 import Meta   from 'antd/lib/card/Meta'
 import styled from 'styled-components/macro'
 
-import { GptSuccess } from '@acx-ui/icons'
 
-import GptBackground from './assets/GptBackground.svg'
+import RuckusAiBackground from './assets/RuckusAiBackground.svg'
 
 
 const Button = styled(AntButton).attrs({ type: 'primary' })`
@@ -63,7 +62,7 @@ export const GptModal = styled(Modal)<{ titleType: string, needBackground: boole
       overflow-y: auto;
       ${(props) => props.needBackground &&
         `
-        background-image: url(${GptBackground});
+        background-image: url(${RuckusAiBackground});
         background-size: cover;
         background-position: center center;
         border-radius: 24px;
@@ -208,10 +207,6 @@ export const CongratContainer = styled.div`
   height: 100%;
 `
 
-export const GptSuccessStyled = styled(GptSuccess)`
-  width: 50px;
-  height: 50px;
-`
 
 export const CongrateTitle = styled.span`
   margin-top: 30px;

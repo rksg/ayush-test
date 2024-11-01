@@ -5,9 +5,9 @@ import { Button }                     from 'antd'
 import { useIntl }                    from 'react-intl'
 
 import { useApplyConversationsMutation, useUpdateConversationsMutation } from '@acx-ui/rc/services'
-import { GptConfigurationStepsEnum, GptConversation }                    from '@acx-ui/rc/utils'
+import { RuckusAiConfigurationStepsEnum, RuckusAiConversation }                    from '@acx-ui/rc/utils'
 
-import { GptStepsEnum } from '..'
+import { RuckusAiStepsEnum } from '..'
 import { GptStepsForm } from '../styledComponents'
 
 import { SummaryStep }    from './Steps/SummaryStep'
@@ -15,7 +15,7 @@ import { VlanStep }       from './Steps/VlanStep'
 import { WlanDetailStep } from './Steps/WlanDetailStep'
 import { WlanStep }       from './Steps/WlanStep'
 
-export default function GptWizard (props: {
+export default function RuckusAiWizard (props: {
   sessionId: string;
   requestId: string;
   actionType: string;
@@ -24,7 +24,7 @@ export default function GptWizard (props: {
   currentStep: number;
   step: string;
   setCurrentStep: (currentStep: number) => void;
-  setStep: (step: GptStepsEnum) => void;
+  setStep: (step: RuckusAiStepsEnum) => void;
 }) {
   const { $t } = useIntl()
   const [isLoading, setIsLoading] = useState(false)
@@ -32,7 +32,7 @@ export default function GptWizard (props: {
   const [applyConversations] = useApplyConversationsMutation()
   const [updateConversations] = useUpdateConversationsMutation()
 
-  const lastPageIndex = Object.values(GptConfigurationStepsEnum).length - 1
+  const lastPageIndex = Object.values(RuckusAiConfigurationStepsEnum).length - 1
   const firstPageIndex = 0
 
   const formMapRef = useRef<
@@ -43,21 +43,22 @@ export default function GptWizard (props: {
 
   const onPrevious = function () {
     if (props.currentStep === firstPageIndex) {
-      props.setStep(GptStepsEnum.BASIC)
+      props.setStep(RuckusAiStepsEnum.BASIC)
     } else {
       props.setCurrentStep(props.currentStep - 1)
     }
   }
 
-  const [payloads, setPayloads] = useState<Record<GptConfigurationStepsEnum, GptConversation>>(
-    Object.values(GptConfigurationStepsEnum).reduce((acc, step) => {
-      acc[step] = {} as GptConversation
-      return acc
-    }, {} as Record<GptConfigurationStepsEnum, GptConversation>)
-  )
+  const [payloads, setPayloads] =
+    useState<Record<RuckusAiConfigurationStepsEnum, RuckusAiConversation>>(
+      Object.values(RuckusAiConfigurationStepsEnum).reduce((acc, step) => {
+        acc[step] = {} as RuckusAiConversation
+        return acc
+      }, {} as Record<RuckusAiConfigurationStepsEnum, RuckusAiConversation>)
+    )
 
   const handleOnFinish = async (
-    stepType: GptConfigurationStepsEnum) => {
+    stepType: RuckusAiConfigurationStepsEnum) => {
     setIsLoading(true)
     try {
       const stepIndex = steps.findIndex(s => s.name === stepType)
@@ -98,53 +99,53 @@ export default function GptWizard (props: {
 
   const steps = [
     {
-      name: GptConfigurationStepsEnum.WLANS,
+      name: RuckusAiConfigurationStepsEnum.WLANS,
       title: '',
       component: (
         <WlanStep payload={props.payload} description={props.description} />
       ),
       onFinish: async () =>
-        handleOnFinish(GptConfigurationStepsEnum.WLANS)
+        handleOnFinish(RuckusAiConfigurationStepsEnum.WLANS)
     },
     {
-      name: GptConfigurationStepsEnum.WLANDETAIL,
+      name: RuckusAiConfigurationStepsEnum.WLANDETAIL,
       title: '',
-      component: payloads[GptConfigurationStepsEnum.WLANDETAIL].payload ? (
+      component: payloads[RuckusAiConfigurationStepsEnum.WLANDETAIL].payload ? (
         <WlanDetailStep
           formInstance={formMapRef.current[1].current}
           sessionId={props.sessionId}
-          payload={payloads[GptConfigurationStepsEnum.WLANDETAIL].payload} />)
+          payload={payloads[RuckusAiConfigurationStepsEnum.WLANDETAIL].payload} />)
         : (
           null
         ),
       onFinish: async () =>
-        handleOnFinish(GptConfigurationStepsEnum.WLANDETAIL)
+        handleOnFinish(RuckusAiConfigurationStepsEnum.WLANDETAIL)
     },
     {
-      name: GptConfigurationStepsEnum.VLAN,
+      name: RuckusAiConfigurationStepsEnum.VLAN,
       title: '',
-      component: payloads[GptConfigurationStepsEnum.VLAN].payload ? (
+      component: payloads[RuckusAiConfigurationStepsEnum.VLAN].payload ? (
         <VlanStep
           formInstance={formMapRef.current[2].current}
           sessionId={props.sessionId}
-          payload={payloads[GptConfigurationStepsEnum.VLAN].payload} />
+          payload={payloads[RuckusAiConfigurationStepsEnum.VLAN].payload} />
       ) : (
         null
       ),
       onFinish: async () =>
-        handleOnFinish(GptConfigurationStepsEnum.VLAN)
+        handleOnFinish(RuckusAiConfigurationStepsEnum.VLAN)
     },
     {
-      name: GptConfigurationStepsEnum.SUMMARY,
+      name: RuckusAiConfigurationStepsEnum.SUMMARY,
       title: '',
-      component: <SummaryStep payload={payloads[GptConfigurationStepsEnum.SUMMARY].payload} />,
+      component: <SummaryStep payload={payloads[RuckusAiConfigurationStepsEnum.SUMMARY].payload} />,
       onFinish: async () => {
         setIsLoading(true)
         try {
           await applyConversations({
             params: { sessionId: props.sessionId }
           }).unwrap()
-          props.setStep(GptStepsEnum.FINISHED)
+          props.setStep(RuckusAiStepsEnum.FINISHED)
         } catch (error) {
           //TODO: Waiting for UX design and backend integration.
           alert('Please try again.')

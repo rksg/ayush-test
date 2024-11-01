@@ -43,7 +43,7 @@ import WifiOperatorDrawer                      from './Hotspot20/WifiOperatorDra
 const { Option } = Select
 
 export function Hotspot20SettingsForm () {
-  const { editMode, cloneMode, data, isGptMode } = useContext(NetworkFormContext)
+  const { editMode, cloneMode, data, isRuckusAiMode } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
 
   useEffect(()=>{
@@ -68,7 +68,7 @@ export function Hotspot20SettingsForm () {
         <NetworkDiagram />
       </GridCol>
     </GridRow>
-    {!(editMode) && !(isGptMode) && <GridRow>
+    {!(editMode) && !(isRuckusAiMode) && <GridRow>
       <GridCol col={{ span: 24 }}>
         <NetworkMoreSettingsForm wlanData={data} />
       </GridCol>

@@ -4,10 +4,9 @@ import { ProFormCheckbox, ProFormSelect, ProFormText } from '@ant-design/pro-for
 import { Button, Divider }                             from 'antd'
 import { useIntl }                                     from 'react-intl'
 
-import { cssStr }     from '@acx-ui/components'
-import { CrownSolid } from '@acx-ui/icons'
+import { cssStr }                  from '@acx-ui/components'
+import { CrownSolid, RuckusAiDog } from '@acx-ui/icons'
 
-import { ReactComponent as Logo } from '../../assets/gptDog.svg'
 
 import * as UI from './styledComponents'
 
@@ -127,7 +126,7 @@ export function WlanStep (props: { payload: string; description: string }) {
               />
               {item['Purpose'] && <UI.PurposeContainer>
                 <UI.PurposeHeader>
-                  <Logo
+                  <RuckusAiDog
                     style={{
                       width: '20px',
                       height: '20px',

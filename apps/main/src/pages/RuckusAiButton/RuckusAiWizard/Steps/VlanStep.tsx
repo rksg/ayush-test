@@ -5,6 +5,7 @@ import { Button, Divider }                               from 'antd'
 import { useIntl }                                       from 'react-intl'
 
 import { cssStr }                   from '@acx-ui/components'
+import { RuckusAiDog }              from '@acx-ui/icons'
 import { VlanSettingDrawer }        from '@acx-ui/rc/components'
 import {
   useCreateOnboardConfigsMutation,
@@ -12,8 +13,6 @@ import {
   useUpdateOnboardConfigsMutation
 } from '@acx-ui/rc/services'
 import { validateVlanName, Vlan } from '@acx-ui/rc/utils'
-
-import { ReactComponent as Logo } from '../../assets/gptDog.svg'
 
 import * as UI from './styledComponents'
 
@@ -213,7 +212,7 @@ export function VlanStep (props: { payload: string, sessionId: string,
               />
               {item['Purpose'] && <UI.PurposeContainer>
                 <UI.PurposeHeader>
-                  <Logo style={{
+                  <RuckusAiDog style={{
                     width: '20px',
                     height: '20px',
                     verticalAlign: 'text-bottom',

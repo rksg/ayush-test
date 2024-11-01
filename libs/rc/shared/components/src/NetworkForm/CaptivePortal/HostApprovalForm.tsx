@@ -45,7 +45,7 @@ export function HostApprovalForm () {
   const {
     data,
     editMode,
-    isGptMode,
+    isRuckusAiMode,
     cloneMode
   } = useContext(NetworkFormContext)
   const { $t } = useIntl()
@@ -239,7 +239,7 @@ export function HostApprovalForm () {
           wlanSecurity={data?.wlan?.wlanSecurity} />
       </GridCol>
     </GridRow>
-    {!(editMode) && !(isGptMode) && <GridRow>
+    {!(editMode) && !(isRuckusAiMode) && <GridRow>
       <GridCol col={{ span: 24 }}>
         <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />
       </GridCol>

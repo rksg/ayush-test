@@ -38,7 +38,7 @@ function TypesForm () {
     data,
     setData,
     editMode,
-    isGptMode,
+    isRuckusAiMode,
     cloneMode,
     modalMode,
     createType
@@ -71,7 +71,7 @@ function TypesForm () {
         rules={[{ required: true }]}
       >
         <Radio.Group onChange={onChange}
-          disabled={!isGptMode && (editMode || cloneMode || modalMode)}>
+          disabled={!isRuckusAiMode && (editMode || cloneMode || modalMode)}>
           <Space direction='vertical'>
             <Radio value={GuestNetworkTypeEnum.ClickThrough}>
               {GuestNetworkTypeLabel[GuestNetworkTypeEnum.ClickThrough]}

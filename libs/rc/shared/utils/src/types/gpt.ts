@@ -1,17 +1,17 @@
-export interface GptConversation {
+export interface RuckusAiConversation {
   sessionId: string,
-  nextStep: GptConfigurationStepsEnum,
+  nextStep: RuckusAiConfigurationStepsEnum,
   payload: string,
   description: string
 }
 
-export interface GptConfiguration {
+export interface RuckusAiConfiguration {
   content: string,
   id: string,
   name: string,
   sessionId: string
 }
-export enum GptConfigurationStepsEnum {
+export enum RuckusAiConfigurationStepsEnum {
   WLANS = 'ssidProfile',
   WLANDETAIL = 'ssid',
   VLAN = 'vlan',
