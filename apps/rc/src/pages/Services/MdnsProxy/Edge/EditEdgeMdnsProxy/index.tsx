@@ -1,11 +1,9 @@
-
 import { useMemo } from 'react'
 
-import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Loader, PageHeader }                                             from '@acx-ui/components'
-import { useEdgeMdnsActions }                                             from '@acx-ui/rc/components'
+import { EditEdgeMdnsProxyForm, useEdgeMdnsActions }                      from '@acx-ui/rc/components'
 import { useGetEdgeMdnsProxyQuery, useGetEdgeMdnsProxyViewDataListQuery } from '@acx-ui/rc/services'
 import {
   EdgeMdnsProxyViewData,
@@ -17,15 +15,10 @@ import {
 } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 
-import { EdgeMdnsProxyForm } from '../EdgeMdnsProxyForm'
-import { ScopeForm }         from '../EdgeMdnsProxyForm/ScopeForm'
-import { SettingsForm }      from '../EdgeMdnsProxyForm/SettingsForm'
-
 const EditEdgeMdnsProxy = () => {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const [form] = Form.useForm()
 
   const routeToList = getServiceRoutePath({
     type: ServiceType.EDGE_MDNS_PROXY,
@@ -60,13 +53,6 @@ const EditEdgeMdnsProxy = () => {
     } as EdgeMdnsProxyViewData
   }, [data, viewData])
 
-  const steps = [{
-    title: $t({ defaultMessage: 'Settings' }),
-    content: SettingsForm
-  }, {
-    title: $t({ defaultMessage: 'Scope' }),
-    content: ScopeForm
-  }]
 
   const handleFinish = async (formData: EdgeMdnsProxyViewData) => {
     try {
@@ -93,11 +79,10 @@ const EditEdgeMdnsProxy = () => {
         isLoading: isLoading || isViewDataLoading,
         isFetching: isFetching || isViewFetching
       }]}>
-        <EdgeMdnsProxyForm
-          form={form}
+        <EditEdgeMdnsProxyForm
           editData={editData}
-          steps={steps}
           onFinish={handleFinish}
+          onCancel={() => navigate(linkToServiceList)}
         />
       </Loader>
     </>

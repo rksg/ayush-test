@@ -1,0 +1,43 @@
+import { useState } from 'react'
+
+import { useIntl } from 'react-intl'
+
+import { Button, Modal, ModalType }                 from '@acx-ui/components'
+import { AddEdgeMdnsProxyForm, useEdgeMdnsActions } from '@acx-ui/rc/components'
+import { EdgeMdnsProxyViewData  }                   from '@acx-ui/rc/utils'
+
+export const MdnsAddModal = () => {
+  const { $t } = useIntl()
+  const [visible, setVisible] = useState(false)
+  const { createEdgeMdns } = useEdgeMdnsActions()
+
+  const handleCreate = async (data: EdgeMdnsProxyViewData) => {
+    try {
+      await createEdgeMdns(data)
+    } catch {
+    } finally {
+      setVisible(false)
+    }
+  }
+
+  return (
+    <>
+      <Button type='link' onClick={()=>setVisible(true)}>
+        {$t({ defaultMessage: 'Add' })}
+      </Button>
+      <Modal
+        title={$t({ defaultMessage: 'Add mDNS Proxy' })}
+        width={800}
+        visible={visible}
+        type={ModalType.ModalStepsForm}
+        mask={true}
+        destroyOnClose={true}
+      >
+        <AddEdgeMdnsProxyForm
+          onFinish={handleCreate}
+          onCancel={() => setVisible(false)}
+        />
+      </Modal>
+    </>
+  )
+}

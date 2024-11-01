@@ -1,8 +1,7 @@
 import { Col, Form, Input, Row } from 'antd'
 import { useIntl }               from 'react-intl'
 
-import { StepsForm, useStepFormContext }                                from '@acx-ui/components'
-import { MdnsProxyForwardingRulesTable, RULES_MAX_COUNT, SpaceWrapper } from '@acx-ui/rc/components'
+import { StepsForm, useStepFormContext } from '@acx-ui/components'
 import {
   EdgeMdnsProxyViewData,
   MdnsProxyFeatureTypeEnum,
@@ -10,6 +9,9 @@ import {
   servicePolicyNameRegExp,
   transformDisplayNumber
 } from '@acx-ui/rc/utils'
+
+import { MdnsProxyForwardingRulesTable, RULES_MAX_COUNT } from '../../../services/MdnsProxyForwardingRulesTable'
+import { SpaceWrapper }                                   from '../../../SpaceWrapper'
 
 import { StyledText, StyledSubText } from './styledComponents'
 
