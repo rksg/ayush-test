@@ -72,6 +72,8 @@ export const aggregatePortSettings = (
   // const addUniqueToArray = (array: Array<string | Number>, item: string | Number) =>
   //   array.includes(item as typeof array[number]) ? array : [...array, item]
 
+  // console.log('** portsSetting: ', portsSetting)
+
   return portsSetting.reduce((result, {
     switchMac, port, taggedVlans = [], untaggedVlan = '',
     switchLevelAuthDefaultVlan, guestVlan, authDefaultVlan, restrictedVlan, criticalVlan,
@@ -321,15 +323,15 @@ export const validateApplyProfile = (
   const profileDefaultVlans = getUnionValuesByKey('profileAuthDefaultVlan', aggregateData)
   const switchDefaultVlans = getUnionValuesByKey('defaultVlan', aggregateData)
   const switchAuthDefaultVlans = getUnionValuesByKey('switchLevelAuthDefaultVlan', aggregateData)
-  const taggedVlans = getUnionValuesByKey('taggedVlans', aggregateData)
+  // const taggedVlans = getUnionValuesByKey('taggedVlans', aggregateData)
 
   const isDefaultVlanDuplicateWithSwitch = switchDefaultVlans.includes(profile?.authDefaultVlan)
-  const isDefaultVlanDuplicateWithTagged = taggedVlans.includes(profile?.authDefaultVlan.toString())
+  // const isDefaultVlanDuplicateWithTagged = taggedVlans.includes(profile?.authDefaultVlan.toString())
   const isCriticalVlanDuplicateWithSwitch = switchDefaultVlans.includes(profile?.criticalVlan)
   const isRestrictedVlanDuplicateWithSwitch = switchDefaultVlans.includes(profile?.restrictedVlan)
   const isCriticalVlanDuplicateWithSwitchAuth = switchAuthDefaultVlans.includes(profile?.criticalVlan)
   const isRestrictedVlanDuplicateWithSwitchAuth = switchAuthDefaultVlans.includes(profile?.restrictedVlan)
-
+  const isGuestVlanDuplicateWithSwitchAuth = switchAuthDefaultVlans.includes(profile?.guestVlan)
 
   // TODO:
   // const statusMapping = {
@@ -342,20 +344,21 @@ export const validateApplyProfile = (
   // }
 
   if (!allSelectedPortsMatch) {
-    const isDefaultVlanMismatch = profileDefaultVlans.length > 1 || !profileDefaultVlans.includes(profile?.authDefaultVlan)
-    const isGuestVlanMismatch = profile?.guestVlan && (guestVlans.length > 1 || !guestVlans.includes(profile?.guestVlan))
+    const isDefaultVlanMismatch = !!profileDefaultVlans.length
+      && (profileDefaultVlans.length > 1 || !profileDefaultVlans.includes(profile?.authDefaultVlan))
+    const isGuestVlanMismatch = !!guestVlans.length && profile?.guestVlan
+      && (guestVlans.length > 1 || !guestVlans.includes(profile?.guestVlan))
 
     if (isDefaultVlanMismatch) {
       return Promise.reject(
         $t(FlexAuthMessages.CANNOT_SET_DIFF_PROFILE_AUTH_DEFAULT_VLAN, {
-          profileAuthDefaultVlan: profileDefaultVlans.sort().join(','), //TODO
           applyProfileAuthDefaultVlan: profile?.authDefaultVlan
         })
       )
     } else if (isGuestVlanMismatch) {
       return Promise.reject(
-        $t(FlexAuthMessages.CANNOT_SET_DIFF_GUEST_VLAN, {
-          applyGuestVlan: profile?.guestVlan
+        $t(FlexAuthMessages.CANNOT_SET_DIFF_GUEST_VLAN_FOR_PROFILE, {
+          guestVlan: guestVlans.sort().join(', ')
         })
       )
     }
@@ -364,11 +367,11 @@ export const validateApplyProfile = (
       sourceVlan: $t(FlexAuthVlanLabel.AUTH_DEFAULT_VLAN),
       targetVlan: $t(FlexAuthVlanLabel.DEFAULT_VLAN)
     }))
-  } else if (isDefaultVlanDuplicateWithTagged) {
-    return Promise.reject($t(FlexAuthMessages.VLAN_CANNOT_SAME_AS_TARGET_VLAN, {
-      sourceVlan: $t(FlexAuthVlanLabel.AUTH_DEFAULT_VLAN),
-      targetVlan: $t(FlexAuthVlanLabel.TAGGED_VLANS)
-    }))
+  // } else if (isDefaultVlanDuplicateWithTagged) {
+  //   return Promise.reject($t(FlexAuthMessages.VLAN_CANNOT_SAME_AS_TARGET_VLAN, {
+  //     sourceVlan: $t(FlexAuthVlanLabel.AUTH_DEFAULT_VLAN),
+  //     targetVlan: $t(FlexAuthVlanLabel.TAGGED_VLANS)
+  //   }))
   } else if (isCriticalVlanDuplicateWithSwitch) {
     return Promise.reject($t(FlexAuthMessages.VLAN_CANNOT_SAME_AS_TARGET_VLAN, {
       sourceVlan: $t(FlexAuthVlanLabel.CRITICAL_VLAN),
@@ -387,6 +390,11 @@ export const validateApplyProfile = (
   } else if (isRestrictedVlanDuplicateWithSwitchAuth) {
     return Promise.reject($t(FlexAuthMessages.VLAN_CANNOT_SAME_AS_TARGET_VLAN, {
       sourceVlan: $t(FlexAuthVlanLabel.RESTRICTED_VLAN),
+      targetVlan: $t(FlexAuthVlanLabel.SWITCH_AUTH_DEFAULT_VLAN)
+    }))
+  } else if (isGuestVlanDuplicateWithSwitchAuth) {
+    return Promise.reject($t(FlexAuthMessages.VLAN_CANNOT_SAME_AS_TARGET_VLAN, {
+      sourceVlan: $t(FlexAuthVlanLabel.GUEST_VLAN),
       targetVlan: $t(FlexAuthVlanLabel.SWITCH_AUTH_DEFAULT_VLAN)
     }))
   }
@@ -434,7 +442,7 @@ export const checkVlanConsistencyWithGuestVlan = (
 
   if (value && !allSelectedPortsMatch && hasAssignedGuestVlan && (guestVlans.length > 1 || !guestVlans.includes(Number(value)))) {
     return Promise.reject(
-      $t(FlexAuthMessages.CANNOT_SET_DIFF_GUEST_VLAN, { applyGuestVlan: 0 }) //TODO
+      $t(FlexAuthMessages.CANNOT_SET_DIFF_GUEST_VLAN, { guestVlan: guestVlans.sort().join(', ') })
     )
   }
   return Promise.resolve()

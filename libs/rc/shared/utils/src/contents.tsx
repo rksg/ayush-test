@@ -331,7 +331,8 @@ export const FlexAuthVlanLabel = {
   AUTH_DEFAULT_VLAN: defineMessage({ defaultMessage: 'Auth Default VLAN' }),
   CRITICAL_VLAN: defineMessage({ defaultMessage: 'Critical VLAN' }),
   RESTRICTED_VLAN: defineMessage({ defaultMessage: 'Restricted VLAN' }),
-  TAGGED_VLANS: defineMessage({ defaultMessage: 'Tagged VLANs' })
+  TAGGED_VLANS: defineMessage({ defaultMessage: 'Tagged VLANs' }),
+  GUEST_VLAN: defineMessage({ defaultMessage: 'Guest VLAN' })
 }
 
 export const FlexAuthMessages = {
@@ -348,10 +349,13 @@ export const FlexAuthMessages = {
     defaultMessage: 'VLAN ID can not be the same as Tagged VLANs'
   }),
   CANNOT_SET_DIFF_PROFILE_AUTH_DEFAULT_VLAN: defineMessage({
-    defaultMessage: 'Another Auth-Default VLAN ({profileAuthDefaultVlan}) is already defined on this switch. Either select a different profile that has a matching Auth-Default VLAN or use the customize option to set the Auth-Default VLAN to {applyProfileAuthDefaultVlan}'
+    defaultMessage: 'Another Auth-Default VLAN is already defined on this switch. Either select a different profile that has a matching Auth-Default VLAN or use the customize option to set the Auth-Default VLAN to {applyProfileAuthDefaultVlan}'
+  }),
+  CANNOT_SET_DIFF_GUEST_VLAN_FOR_PROFILE: defineMessage({
+    defaultMessage: 'Guest-VLAN is set to {guestVlan} previously and needs to be consistent across all the ports that have authentication enabled. Please select another profile that has the matching Guest VLAN in order to proceed'
   }),
   CANNOT_SET_DIFF_GUEST_VLAN: defineMessage({
-    defaultMessage: 'Either select a different profile that has a matching Guest VLAN number or use the customize option to set the Guest VLAN to {applyGuestVlan}'
+    defaultMessage: 'Guest-VLAN is set to {guestVlan} previously and needs to be consistent across all the ports that have authentication enabled.'
   }),
   VLAN_CANNOT_SAME_AS_TARGET_VLAN: defineMessage({
     defaultMessage: '{sourceVlan} can not be the same as {targetVlan}'

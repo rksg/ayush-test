@@ -15,6 +15,7 @@ import {
   SWITCH_TYPE,
   SWITCH_SERIAL_PATTERN
 } from '../../types'
+import { FlexibleAuthentication } from '../../types'
 
 import { compareSwitchVersion, isVerGEVer } from './switch.firmware.utils'
 
@@ -779,11 +780,14 @@ export const convertInputToUppercase = (e: React.FormEvent<HTMLInputElement>) =>
 }
 
 export const checkSwitchUpdateFields = function (
-  values: Switch, switchDetail?: SwitchViewModel, switchData?: Switch
+  values: Switch,
+  switchDetail?: SwitchViewModel,
+  switchData?: Switch,
+  switchAuth?: FlexibleAuthentication
 ) {
   const fields = Object.keys(values ?? {})
   const currentValues = _.omitBy(values, (v) => v === undefined || v === '')
-  const originalValues = _.pick({ ...switchDetail, ...switchData }, fields) as Switch
+  const originalValues = _.pick({ ...switchDetail, ...switchData, ...switchAuth }, fields) as Switch
 
   return Object.keys(values ?? {}).reduce((result: string[], key) => {
     if (!_.isEqual(originalValues[key as keyof Switch], currentValues[key as keyof Switch])) {

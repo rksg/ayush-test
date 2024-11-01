@@ -561,7 +561,7 @@ export function EditPortDrawer ({
 
     //     authenticationCustomize: false,
     //     authenticationProfileId: i ? '' : '7de28fc02c0245648dfd58590884bad2',
-    //     profileAuthDefaultVlan: 10 + i, //(10+i),
+    //     //profileAuthDefaultVlan: 10 + i, //(10+i),
     //     authDefaultVlan: i ? 10 : 30,
     //     restrictedVlan: i ? 20 : 30,
     //     criticalVlan: i ? 20 : 40
