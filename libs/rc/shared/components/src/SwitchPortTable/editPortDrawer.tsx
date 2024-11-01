@@ -187,7 +187,7 @@ export function EditPortDrawer ({
     // Flex auth
     authenticationProfileId,
     authenticationProfileIdCheckbox,
-    isFlexibleAuthCustomized,
+    authenticationCustomize,
     flexibleAuthenticationEnabled,
     flexibleAuthenticationEnabledCheckbox,
     authenticationType,
@@ -211,9 +211,9 @@ export function EditPortDrawer ({
   const defaultVlanText = $t({ defaultMessage: 'Default VLAN (Multiple values)' })
   const switches: string[] = _.uniq(selectedPorts.map(p => p.switchMac))
 
-  const isFirmwareAbove10010f = switchList
-    ?.filter(s => switches.includes(s.id))
-    .every(s => isFirmwareVersionAbove10010f(s.firmware)) ?? false
+  const selectedSwitchList = switchList?.filter(s => switches.includes(s.id))
+  const isFirmwareAbove10010f = !!selectedSwitchList?.length
+    && selectedSwitchList?.every(s => isFirmwareVersionAbove10010f(s.firmware))
 
   const switchId = switches?.[0]
   const disablePortSpeed = handlePortSpeedFor765048F(selectedPorts)
@@ -494,7 +494,7 @@ export function EditPortDrawer ({
     //   guestVlan: 3,
     //   shouldAlertAaaAndRadiusNotApply: false,
     //   flexibleAuthenticationEnabled: true,
-    //   isFlexibleAuthCustomized: true,
+    //   authenticationCustomize: true,
     //   // authenticationProfileId: '7de28fc02c0245648dfd58590884bad2',
     //   // profileAuthDefaultVlan: 2,
     //   authDefaultVlan: 100,
@@ -559,7 +559,7 @@ export function EditPortDrawer ({
     //     shouldAlertAaaAndRadiusNotApply: false,
     //     enableAuthPorts: ['1/1/3'], // index === 0 ? ['1/1/2'] : ['1/1/3'],
 
-    //     isFlexibleAuthCustomized: false,
+    //     authenticationCustomize: false,
     //     authenticationProfileId: i ? '' : '7de28fc02c0245648dfd58590884bad2',
     //     profileAuthDefaultVlan: 10 + i, //(10+i),
     //     authDefaultVlan: i ? 10 : 30,
@@ -622,8 +622,8 @@ export function EditPortDrawer ({
       //flex auth
       authenticationProfileId: !hasMultipleValueFields?.includes('authenticationProfileId')
         ? portSetting?.authenticationProfileId : '',
-      isFlexibleAuthCustomized: !hasMultipleValueFields?.includes('isFlexibleAuthCustomized')
-        ? portSetting?.isFlexibleAuthCustomized : false
+      authenticationCustomize: !hasMultipleValueFields?.includes('authenticationCustomize')
+        ? portSetting?.authenticationCustomize : false
     })
   }
 
@@ -687,7 +687,7 @@ export function EditPortDrawer ({
       case 'renderAuthProfile':
         return !(isAppliedAuthProfile && authenticationProfileId &&
           (isMultipleEdit ? authenticationProfileIdCheckbox : true))
-      case 'isFlexibleAuthCustomized':
+      case 'authenticationCustomize':
         return isMultipleEdit
           && !(flexibleAuthenticationEnabledCheckbox && flexibleAuthenticationEnabled)
       case 'authDefaultVlan':
@@ -1211,7 +1211,7 @@ export function EditPortDrawer ({
                     </Form.Item>
                     { flexibleAuthenticationEnabled && <>
                       <Form.Item
-                        name='isFlexibleAuthCustomized'
+                        name='authenticationCustomize'
                         hidden
                         initialValue={false}
                         valuePropName='checked'
@@ -1220,14 +1220,14 @@ export function EditPortDrawer ({
                       <Button
                         type='link'
                         size='small'
-                        disabled={getFieldDisabled('isFlexibleAuthCustomized')}
+                        disabled={getFieldDisabled('authenticationCustomize')}
                         onClick={() => handleClickCustomize({
                           ...commonRequiredProps,
-                          isFlexibleAuthCustomized,
+                          authenticationCustomize,
                           authenticationProfileId, authProfiles, switches
                         })}
                       >{
-                          isFlexibleAuthCustomized
+                          authenticationCustomize
                             ? $t({ defaultMessage: 'Use Profile Settings' })
                             : $t({ defaultMessage: 'Customize' })
                         }</Button>
@@ -1239,7 +1239,7 @@ export function EditPortDrawer ({
             'flexibleAuthenticationEnabled', $t({ defaultMessage: 'Authentication' }), true
           )}
 
-          { flexibleAuthenticationEnabled && !isFlexibleAuthCustomized &&
+          { flexibleAuthenticationEnabled && !authenticationCustomize &&
           <Space style={{ display: 'block', marginLeft: isMultipleEdit ? '24px' : '0' }}>
             {/* <Form.Item name='profileAuthDefaultVlan' hidden children={<></>} /> */}
             {/* <Form.Item name='guestVlan' hidden children={<></>} /> */}
@@ -1288,6 +1288,7 @@ export function EditPortDrawer ({
                   field: 'authenticationProfileId', ...commonRequiredProps
                 }) ? <MultipleText />
                   : <Select
+                    data-testid='auth-profile-select'
                     placeholder={$t({ defaultMessage: 'Select...' })}
                     options={authProfiles.map(p => ({
                       label: p.profileName,
@@ -1303,7 +1304,7 @@ export function EditPortDrawer ({
             }
           </Space>}
 
-          { isFlexibleAuthCustomized &&
+          { authenticationCustomize &&
           <Space style={{ display: 'block', marginLeft: isMultipleEdit ? '24px' : '0' }}>
             { getFieldTemplate(
               <Form.Item

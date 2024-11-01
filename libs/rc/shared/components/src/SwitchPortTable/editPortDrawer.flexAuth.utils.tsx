@@ -501,7 +501,7 @@ export const checkMultipleVlansDifferences = async (props: {
 }
 
 export const handleClickCustomize = (props: {
-  isFlexibleAuthCustomized: boolean,
+  authenticationCustomize: boolean,
   isMultipleEdit: boolean,
   authenticationProfileId?: string,
   authProfiles: FlexibleAuthentication[],
@@ -510,18 +510,18 @@ export const handleClickCustomize = (props: {
   form: FormInstance,
 }) => {
   const {
-    isFlexibleAuthCustomized, isMultipleEdit, aggregateData,
+    authenticationCustomize, isMultipleEdit, aggregateData,
     authenticationProfileId, authProfiles, switches, form
   } = props
 
-  const toggleCustomized = !isFlexibleAuthCustomized
+  const toggleCustomized = !authenticationCustomize
   const hasSelectedProfile = !isMultipleEdit && authenticationProfileId
   const authDefaultVlans
     = getUnionValuesByKey('authDefaultVlan', aggregateData)
   const isEitherPortEnabledForFirstTime
     = isMultipleEdit && (switches?.length > authDefaultVlans?.length)
 
-  form.setFieldValue('isFlexibleAuthCustomized', toggleCustomized)
+  form.setFieldValue('authenticationCustomize', toggleCustomized)
 
   if (toggleCustomized) {
     form.setFieldsValue({

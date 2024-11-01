@@ -30,7 +30,7 @@ export class PortSettingModel {
   switchLevelAuthDefaultVlan?: number
   shouldAlertAaaAndRadiusNotApply?: boolean
   flexibleAuthenticationEnabled?: boolean
-  isFlexibleAuthCustomized?: boolean
+  authenticationCustomize?: boolean
   authenticationProfileId?: string
   profileAuthDefaultVlan?: number
   authenticationType?: string
