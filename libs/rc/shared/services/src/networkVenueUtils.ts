@@ -776,7 +776,7 @@ export const fetchRbacAccessControlSubPolicyNetwork = async (queryArgs: RequestP
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, max-len
-export const fetchRbacNetworkVenueList = async (queryArgs: RequestPayload<{ isTemplate?: boolean }>, fetchWithBQ: any) => {
+export const fetchRbacNetworkVenueList = async (queryArgs: RequestPayload<{ page?: number, pageSize?: number, isTemplate?: boolean }>, fetchWithBQ: any) => {
   const { params, payload } = queryArgs
   const networkVenuesListInfo = resolveRbacVenuesListFetchArgs(queryArgs)
   const networkVenuesListQuery = await fetchWithBQ(networkVenuesListInfo)
