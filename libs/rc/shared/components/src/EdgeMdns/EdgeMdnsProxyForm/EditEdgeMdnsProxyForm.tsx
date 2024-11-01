@@ -10,7 +10,7 @@ import { SettingsForm } from './SettingsForm'
 import { EdgeMdnsProxyForm } from './'
 
 export const EditEdgeMdnsProxyForm = (props: {
-  editData: EdgeMdnsProxyViewData,
+  editData: EdgeMdnsProxyViewData | undefined,
   onFinish: (formData: EdgeMdnsProxyViewData) => Promise<void>,
   onCancel: () => void
  }) => {

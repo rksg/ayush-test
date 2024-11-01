@@ -14,12 +14,19 @@ import { hasCrossVenuesPermission, hasPermission }                              
 
 import EdgeQosProfileSelectionForm from '../../../../Policies/HqosBandwidth/Edge/HqosBandwidthSelectionForm'
 
+import { MdnsProxyFormItem } from './mDNS'
+
 
 interface EdgeNetworkControlProps {
   currentClusterStatus?: EdgeClusterStatus
 }
 
 export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
+  const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
+  const isEdgeHqosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
+  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+  const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
+
   const { currentClusterStatus } = props
   const navigate = useNavigate()
   const params = useParams()
@@ -27,10 +34,6 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
   const linkToEdgeList = useTenantLink('/devices/edge')
   const [form] = Form.useForm()
   const [edgeFeatureName, setEdgeFeatureName] = useState<IncompatibilityFeatures | undefined>()
-
-  const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
-  const isEdgeHqosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
-  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
   const { activateEdgeDhcp, deactivateEdgeDhcp } = useEdgeDhcpActions()
   const [activateEdgeQos] = useActivateHqosOnEdgeClusterMutation()
@@ -251,6 +254,8 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
               }
             </Col>
           </Row>
+
+          {isEdgeMdnsReady && <MdnsProxyFormItem setEdgeFeatureName={setEdgeFeatureName} />}
         </StepsForm.StepForm>
 
       </StepsForm>
