@@ -1,4 +1,3 @@
-// import userEvent from '@testing-library/user-event'
 import { rest } from 'msw'
 
 import { switchApi }   from '@acx-ui/rc/services'
@@ -11,11 +10,16 @@ import {
 import { store, Provider }                                       from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { flexAuthList } from '../__test__/fixtures'
+import { flexAuthList, appliedTargets } from '../__tests__/fixtures'
 
 import FlexibleAuthenticationDetail from '.'
 
 const mockedUpdateProfile = jest.fn()
+const mockedUsedNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
+}))
 
 describe('FlexibleAuthenticationDetail', ()=>{
   let params: { tenantId: string, policyId: string }
@@ -26,7 +30,7 @@ describe('FlexibleAuthenticationDetail', ()=>{
   const profileDetailPath = '/:tenantId/' + getPolicyRoutePath({
     type: PolicyType.FLEX_AUTH,
     oper: PolicyOperation.DETAIL,
-    policyId: params.policyId!
+    policyId: params.policyId
   })
 
   beforeEach(() => {
@@ -39,7 +43,7 @@ describe('FlexibleAuthenticationDetail', ()=>{
       ),
       rest.post(
         SwitchUrlsInfo.getFlexAuthenticationProfileAppliedTargets.url,
-        (req, res, ctx) => res(ctx.json([]))
+        (req, res, ctx) => res(ctx.json({ data: appliedTargets }))
       )
     )
   })
@@ -55,8 +59,7 @@ describe('FlexibleAuthenticationDetail', ()=>{
 
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Profile01--auth10-guest5')).toBeVisible()
-
-    //TODO
+    expect(await screen.findByText('Instances (2)')).toBeVisible()
   })
 
   it('should render breadcrumb correctly', async () => {
@@ -72,4 +75,27 @@ describe('FlexibleAuthenticationDetail', ()=>{
     expect(screen.getByRole('link', { name: 'Authentication' })).toBeVisible()
   })
 
+  it('should render correctly when some data fields are empty.', async () => {
+    mockServer.use(
+      rest.post(
+        SwitchUrlsInfo.getFlexAuthenticationProfiles.url,
+        (req, res, ctx) => res(ctx.json({
+          ...flexAuthList,
+          data: [flexAuthList?.data[1]]
+        }))
+      )
+    )
+
+    render(
+      <Provider>
+        <FlexibleAuthenticationDetail />
+      </Provider>, {
+        route: { params, path: profileDetailPath }
+      }
+    )
+
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    expect(await screen.findByText('Profile02--auth1-guest5')).toBeVisible()
+    expect(await screen.findByText('Instances (2)')).toBeVisible()
+  })
 })

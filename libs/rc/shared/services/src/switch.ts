@@ -1596,7 +1596,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const headers = customHeaders.v1
         const listInfo = {
           ...createHttpRequest(SwitchUrlsInfo.getFlexAuthenticationProfiles, arg.params, headers),
-          body: JSON.stringify({})
+          body: JSON.stringify(_.omit(arg?.payload, ['enableAggregateAppliedTargets']))
         }
         const listQuery = await fetchWithBQ(listInfo)
         const profileList = listQuery.data as TableResult<FlexibleAuthentication>

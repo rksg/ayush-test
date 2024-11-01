@@ -1,9 +1,6 @@
 import { FormInstance }                     from 'antd'
 import { MessageDescriptor, defineMessage } from 'react-intl'
 
-import { FlexAuthMessages } from '@acx-ui/rc/utils'
-import { getIntl }          from '@acx-ui/utils'
-
 export enum AuthenticationType {
 	_802_1X = '802.1x',
 	MACAUTH = 'macauth',
@@ -201,15 +198,13 @@ export const handleAuthFieldChange = (props: {
   }
 }
 
-export const validateVlanDiffFromAuthDefault = (
+export const checkVlanDiffFromTargetVlan = (
   value: string,
-  authDefaultVlan: string
+  targetVlan: string | number,
+  rejectMessage: string
 ) => {
-  const { $t } = getIntl()
-  if (value && (Number(value) === Number(authDefaultVlan))) {
-    return Promise.reject(
-      $t(FlexAuthMessages.CANNOT_SAME_AS_AUTH_DEFAULT_VLAN)
-    )
+  if (value && (Number(value) === Number(targetVlan))) {
+    return Promise.reject(rejectMessage)
   }
   return Promise.resolve()
 }

@@ -150,12 +150,17 @@ export function TaggedPortsStep (props:{ portsData?: SwitchPortViewModel[] }) {
     })
   }
 
-  const getDisabledPorts = (timeslot: string) => {
+  const checkAuthDefaultVlan = (timeslot: string) => {
     let isAuthDefaultVlan = false
     if(portsData && vlanId) {
       // eslint-disable-next-line max-len
       isAuthDefaultVlan = portsData.find(i => i.portIdentifier === timeslot)?.authDefaultVlan == vlanId
     }
+    return isAuthDefaultVlan
+  }
+
+  const getDisabledPorts = (timeslot: string) => {
+    const isAuthDefaultVlan = checkAuthDefaultVlan(timeslot)
     const untaggedPorts =
         vlanSettingValues.switchFamilyModels?.untaggedPorts?.toString().split(',') || []
 
@@ -168,12 +173,7 @@ export function TaggedPortsStep (props:{ portsData?: SwitchPortViewModel[] }) {
   }
 
   const getTooltip = (timeslot: string) => {
-    let isAuthDefaultVlan = false //TODO
-    if(portsData && vlanId) {
-      // eslint-disable-next-line max-len
-      isAuthDefaultVlan = portsData.find(i => i.portIdentifier === timeslot)?.authDefaultVlan == vlanId
-    }
-
+    const isAuthDefaultVlan = checkAuthDefaultVlan(timeslot)
     const untaggedPorts =
     vlanSettingValues.switchFamilyModels?.untaggedPorts?.toString().split(',') || []
 

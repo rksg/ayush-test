@@ -5,28 +5,19 @@ import {
   SwitchUrlsInfo,
   PolicyOperation,
   PolicyType,
-  getPolicyListRoutePath,
   getPolicyRoutePath
 } from '@acx-ui/rc/utils'
 import { Provider }                                                               from '@acx-ui/store'
 import { mockServer, render, screen, within, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { flexAuthList } from '../__test__/fixtures'
+import { flexAuthList, appliedTargets } from '../__tests__/fixtures'
 
 import FlexibleAuthenticationTable from '.'
 
 const mockedUsedNavigate = jest.fn()
-const mockUseLocationValue = {
-  pathname: getPolicyListRoutePath(),
-  search: '',
-  hash: '',
-  state: null
-}
-
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedUsedNavigate,
-  useLocation: jest.fn().mockImplementation(() => mockUseLocationValue)
+  useNavigate: () => mockedUsedNavigate
 }))
 
 describe('FlexibleAuthenticationTable', ()=>{
@@ -47,7 +38,7 @@ describe('FlexibleAuthenticationTable', ()=>{
       ),
       rest.post(
         SwitchUrlsInfo.getFlexAuthenticationProfileAppliedTargets.url,
-        (req, res, ctx) => res(ctx.json([]))
+        (req, res, ctx) => res(ctx.json({ data: appliedTargets }))
       ),
       rest.delete(
         SwitchUrlsInfo.deleteFlexAuthenticationProfile.url,
@@ -73,8 +64,35 @@ describe('FlexibleAuthenticationTable', ()=>{
     expect(button).toBeVisible()
 
     const profile01 = within(rows[1])
-    const switchRow = await profile01.findAllByRole('cell', { name: /Profile01--auth10-guest5/i })
-    expect(switchRow[0]).toBeVisible()
+    expect(await profile01.findByRole('cell', { name: /Profile01--auth10-guest5/i })).toBeVisible()
+    expect(await profile01.findByRole('cell', { name: '2' })).toBeVisible()
+  })
+
+  it('should render correctly when profiles are not applied to venues', async () => {
+    mockServer.use(
+      rest.post(
+        SwitchUrlsInfo.getFlexAuthenticationProfileAppliedTargets.url,
+        (req, res, ctx) => res(ctx.json({ data: [] }))
+      )
+    )
+    render(
+      <Provider>
+        <FlexibleAuthenticationTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+
+    const table = await screen.findByRole('table')
+    const rows = await within(table).findAllByRole('row')
+    expect(rows).toHaveLength(flexAuthList.data.length + 1)
+
+    const button = await screen.findByRole('button', { name: 'Add Authentication' })
+    expect(button).toBeVisible()
+
+    const profile01 = within(rows[1])
+    expect(await profile01.findByRole('cell', { name: /Profile01--auth10-guest5/i })).toBeVisible()
+    expect(await profile01.findByRole('cell', { name: '--' })).toBeVisible()
   })
 
   it('should render breadcrumb correctly', async () => {

@@ -64,15 +64,13 @@ const FlexibleAuthenticationTable = () => {
     sorter: true,
     defaultSortOrder: 'ascend',
     render: (_, row) => {
-      return row.id ?
-        <TenantLink to={getPolicyDetailsLink({
-          type: PolicyType.FLEX_AUTH,
-          oper: PolicyOperation.DETAIL,
-          policyId: row.id
-        })}>
-          {row.profileName}
-        </TenantLink>
-        : row.profileName
+      return <TenantLink to={getPolicyDetailsLink({
+        type: PolicyType.FLEX_AUTH,
+        oper: PolicyOperation.DETAIL,
+        policyId: row.id || ''
+      })}>
+        {row.profileName}
+      </TenantLink>
     }
   },
   {

@@ -408,7 +408,10 @@ export const checkVlanDiffFromSwitchDefaultVlan = (
   const switchDefaultVlans = getUnionValuesByKey('defaultVlan', aggregateData)
   if (value && switchDefaultVlans.includes(Number(value))) {
     return Promise.reject(
-      $t(FlexAuthMessages.CANNOT_SAME_AS_SWITCH_DEFAULT_VLAN)
+      $t(FlexAuthMessages.VLAN_CANNOT_SAME_AS_TARGET_VLAN, {
+        sourceVlan: $t(FlexAuthVlanLabel.VLAN_ID),
+        targetVlan: $t(FlexAuthVlanLabel.DEFAULT_VLAN)
+      })
     )
   }
   return Promise.resolve()
@@ -422,7 +425,10 @@ export const checkVlanDiffFromSwitchAuthDefaultVlan = (
   const switchAuthDefaultVlans = getUnionValuesByKey('switchLevelAuthDefaultVlan', aggregateData)
   if (value && switchAuthDefaultVlans.includes(Number(value))) {
     return Promise.reject(
-      $t(FlexAuthMessages.CANNOT_SAME_AS_SWITCH_LEVEL_AUTH_DEFAULT_VLAN)
+      $t(FlexAuthMessages.VLAN_CANNOT_SAME_AS_TARGET_VLAN, {
+        sourceVlan: $t(FlexAuthVlanLabel.VLAN_ID),
+        targetVlan: $t(FlexAuthVlanLabel.SWITCH_AUTH_DEFAULT_VLAN)
+      })
     )
   }
   return Promise.resolve()
@@ -454,7 +460,10 @@ export const checkVlanDiffFromAuthDefaultVlan = (
   const authDefaultVlans = getUnionValuesByKey('authDefaultVlan', aggregateData)
   if (value && authDefaultVlans.includes(Number(value))) {
     return Promise.reject(
-      $t(FlexAuthMessages.CANNOT_SAME_AS_AUTH_DEFAULT_VLAN)
+      $t(FlexAuthMessages.VLAN_CANNOT_SAME_AS_TARGET_VLAN, {
+        sourceVlan: $t(FlexAuthVlanLabel.VLAN_ID),
+        targetVlan: $t(FlexAuthVlanLabel.AUTH_DEFAULT_VLAN)
+      })
     )
   }
   return Promise.resolve()

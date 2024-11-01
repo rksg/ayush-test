@@ -448,7 +448,7 @@ describe('Switch Stack Form - Edit', () => {
     )).toBeVisible()
   })
 
-  describe('Flexible Authentication', () => {
+  describe('Flexible Authentication (base on Switch RBAC FF enabled)', () => {
     const mockedGetSwitchFlexAuth = jest.fn()
     const mockedUpdateSwitchFlexAuth = jest.fn()
     beforeEach(() => {
@@ -511,6 +511,7 @@ describe('Switch Stack Form - Edit', () => {
       expect(mockedGetSwitchFlexAuth).not.toBeCalled()
       expect(screen.queryByText(/Authentication/)).toBeNull()
     })
+
     // eslint-disable-next-line max-len
     it('should render correctly when the FF is enabled and the switch firmware version is below 10.0.10f', async () => {
       // eslint-disable-next-line max-len

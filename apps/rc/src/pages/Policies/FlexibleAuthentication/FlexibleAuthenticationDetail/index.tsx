@@ -114,10 +114,13 @@ const FlexibleAuthenticationDetail = () => {
   }, {
     title: $t({ defaultMessage: 'Critical VLAN' }),
     content: () => (getContent('criticalVlan'))
+  }, {
+    title: $t({ defaultMessage: 'Guest VLAN' }),
+    content: () => (getContent('guestVlan'))
   }] as {
     title: string;
     content: () => string | number | boolean
-}[]
+  }[]
 
   const columns: TableProps<FlexibleAuthenticationAppliedTargets>['columns'] = [{
     title: $t({ defaultMessage: 'Switch' }),

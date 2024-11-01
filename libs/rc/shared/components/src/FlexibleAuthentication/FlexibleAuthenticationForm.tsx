@@ -14,6 +14,7 @@ import {
   checkObjectNotExists,
   FlexibleAuthentication,
   FlexAuthMessages,
+  FlexAuthVlanLabel,
   getPolicyListRoutePath,
   getPolicyRoutePath,
   whitespaceOnlyRegExp,
@@ -38,7 +39,7 @@ import {
   shouldHideAuthField,
   PortControl,
   portControlTypeLabel,
-  validateVlanDiffFromAuthDefault
+  checkVlanDiffFromTargetVlan
 } from './index'
 
 export const FlexibleAuthenticationForm = (props: {
@@ -249,14 +250,14 @@ export const FlexibleAuthenticationForm = (props: {
                     validator: (_:unknown, value: string) =>
                       validateVlanExceptReservedVlanId(value)
                   },
-                  { validator: (_:unknown, value: string) => {
-                    if (Number(value) === Number(authDefaultVlan)) {
-                      return Promise.reject(
-                        $t(FlexAuthMessages.CANNOT_SAME_AS_AUTH_DEFAULT_VLAN)
-                      )
-                    }
-                    return Promise.resolve()
-                  }
+                  { validator: (_:unknown, value: string) =>
+                    checkVlanDiffFromTargetVlan(
+                      value, authDefaultVlan,
+                      $t(FlexAuthMessages.VLAN_CANNOT_SAME_AS_TARGET_VLAN, {
+                        sourceVlan: $t(FlexAuthVlanLabel.VLAN_ID),
+                        targetVlan: $t(FlexAuthVlanLabel.AUTH_DEFAULT_VLAN)
+                      })
+                    )
                   }] : []
                 )
               ]}
@@ -295,14 +296,14 @@ export const FlexibleAuthenticationForm = (props: {
                     validator: (_:unknown, value: string) =>
                       validateVlanExceptReservedVlanId(value)
                   },
-                  { validator: (_:unknown, value: string) => {
-                    if (Number(value) === Number(authDefaultVlan)) {
-                      return Promise.reject(
-                        $t(FlexAuthMessages.CANNOT_SAME_AS_AUTH_DEFAULT_VLAN)
-                      )
-                    }
-                    return Promise.resolve()
-                  }
+                  { validator: (_:unknown, value: string) =>
+                    checkVlanDiffFromTargetVlan(
+                      value, authDefaultVlan,
+                      $t(FlexAuthMessages.VLAN_CANNOT_SAME_AS_TARGET_VLAN, {
+                        sourceVlan: $t(FlexAuthVlanLabel.VLAN_ID),
+                        targetVlan: $t(FlexAuthVlanLabel.AUTH_DEFAULT_VLAN)
+                      })
+                    )
                   }] : []
                 )
               ]}
@@ -320,18 +321,20 @@ export const FlexibleAuthenticationForm = (props: {
               validateFirst
               rules={[{
                 validator: (_:unknown, value: string) => {
-                  if (!value) {//TODO
+                  if (!value) {
                     return Promise.resolve()
                   }
                   return validateVlanExceptReservedVlanId(value)
                 }
               },
-              { validator: (_:unknown, value: string) => {
-                if (!value) {
-                  return Promise.resolve()
-                }
-                return validateVlanDiffFromAuthDefault(value, authDefaultVlan)
-              }
+              { validator: (_:unknown, value: string) =>
+                checkVlanDiffFromTargetVlan(
+                  value, authDefaultVlan,
+                  $t(FlexAuthMessages.VLAN_CANNOT_SAME_AS_TARGET_VLAN, {
+                    sourceVlan: $t(FlexAuthVlanLabel.VLAN_ID),
+                    targetVlan: $t(FlexAuthVlanLabel.AUTH_DEFAULT_VLAN)
+                  })
+                )
               }]}
               children={
                 <Input

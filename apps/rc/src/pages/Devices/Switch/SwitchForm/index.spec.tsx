@@ -511,7 +511,7 @@ describe('Edit switch form', () => {
     )).toBeVisible()
   })
 
-  describe('Flexible Authentication', () => {
+  describe('Flexible Authentication (base on Switch RBAC FF enabled)', () => {
     const mockedGetSwitchFlexAuth = jest.fn()
     const mockedUpdateSwitchFlexAuth = jest.fn()
     beforeEach(() => {
@@ -626,7 +626,6 @@ describe('Edit switch form', () => {
     })
 
     it('should update switch flex auth correctly', async () => {
-      // eslint-disable-next-line max-len
       jest.mocked(useIsSplitOn).mockImplementation(ff =>
         ff === Features.SWITCH_FLEXIBLE_AUTHENTICATION || ff === Features.SWITCH_RBAC_API
       )
@@ -634,6 +633,7 @@ describe('Edit switch form', () => {
         rest.get(SwitchRbacUrlsInfo.getSwitchDetailHeader.url,
           (_, res, ctx) => res(ctx.json({
             ...switchDetailHeader,
+            defaultGateway: '192.168.1.100',
             name: 'stack-name',
             firmware: 'SPR10010f_b467',
             firmwareVersion: 'SPR10010f_b467'
@@ -670,10 +670,9 @@ describe('Edit switch form', () => {
 
       const applyButton = await screen.findByRole('button', { name: /apply/i })
       await userEvent.click(applyButton)
-      // TODO:
-      // await waitFor(async () =>
-      //   expect(mockedUpdateSwitchFlexAuth).toBeCalled()
-      // )
+      await waitFor(async () =>
+        expect(mockedUpdateSwitchFlexAuth).toBeCalled()
+      )
     })
   })
 })

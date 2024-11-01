@@ -231,7 +231,7 @@ describe('FlexibleAuthenticationForm', ()=>{
         expect(await screen.findByLabelText(/Guest VLAN/)).toBeVisible()
       })
 
-      it('choose "Type" to "MAC-AUTH"', async () => {
+      it('select "Type" and set it to "MAC-AUTH"', async () => {
         const { result: formRef } = renderHook(() => {
           const [ form ] = Form.useForm()
           return form
@@ -271,7 +271,7 @@ describe('FlexibleAuthenticationForm', ()=>{
         }
       })
 
-      it('choose "Type" to "802.1x and MAC-AUTH"', async () => {
+      it('select "Type" and set it to "802.1x and MAC-AUTH"', async () => {
         const { result: formRef } = renderHook(() => {
           const [ form ] = Form.useForm()
           return form
@@ -306,7 +306,7 @@ describe('FlexibleAuthenticationForm', ()=>{
         expect(await screen.findByTestId('change-auth-order-switch')).toBeVisible()
       })
 
-      it('choose "Port Control" to "AUTO"', async () => {
+      it('select "Port Control" and set it to "AUTO"', async () => {
         const { result: formRef } = renderHook(() => {
           const [ form ] = Form.useForm()
           return form
@@ -340,7 +340,7 @@ describe('FlexibleAuthenticationForm', ()=>{
         expect(authVlanField?.closest('.ant-form-item')).not.toHaveClass('ant-form-item-hidden')
       })
 
-      it('choose "Port Control" to "Force Authorized"', async () => {
+      it('select "Port Control" and set it to "Force Authorized"', async () => {
         const { result: formRef } = renderHook(() => {
           const [ form ] = Form.useForm()
           return form
@@ -369,7 +369,7 @@ describe('FlexibleAuthenticationForm', ()=>{
         }
       })
 
-      it('choose "Port Control" to "Force Unauthorized"', async () => {
+      it('select "Port Control" and set it to "Force Unauthorized"', async () => {
         const { result: formRef } = renderHook(() => {
           const [ form ] = Form.useForm()
           return form
@@ -398,7 +398,7 @@ describe('FlexibleAuthenticationForm', ()=>{
         }
       })
 
-      it('choose "Fail Action" to "BLOCK"', async () => {
+      it('select "Fail Action" and set it to "BLOCK"', async () => {
         const { result: formRef } = renderHook(() => {
           const [ form ] = Form.useForm()
           return form
@@ -428,7 +428,7 @@ describe('FlexibleAuthenticationForm', ()=>{
         expect(restrictedVlanField?.closest('.ant-form-item')).toHaveClass('ant-form-item-hidden')
       })
 
-      it('choose "Fail Action" to "Restricted VLAN"', async () => {
+      it('select "Fail Action" and set it to "Restricted VLAN"', async () => {
         const { result: formRef } = renderHook(() => {
           const [ form ] = Form.useForm()
           return form
@@ -457,7 +457,7 @@ describe('FlexibleAuthenticationForm', ()=>{
         expect(restrictedVlanField?.closest('.ant-form-item')).not.toHaveClass('ant-form-item-hidden')
       })
 
-      it('choose "Timeout Action" to "Success"', async () => {
+      it('select "Timeout Action" and set it to "Success"', async () => {
         const { result: formRef } = renderHook(() => {
           const [ form ] = Form.useForm()
           return form
@@ -486,7 +486,7 @@ describe('FlexibleAuthenticationForm', ()=>{
         expect(criticalVlanField?.closest('.ant-form-item')).toHaveClass('ant-form-item-hidden')
       })
 
-      it('choose "Timeout Action" to "Critical VLAN"', async () => {
+      it('select "Timeout Action" and set it to "Critical VLAN"', async () => {
         const { result: formRef } = renderHook(() => {
           const [ form ] = Form.useForm()
           return form

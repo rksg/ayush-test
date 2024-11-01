@@ -186,7 +186,10 @@ describe('SwitchClientsTable - Port link', () => {
         return res(ctx.json({
           data: [{ id: '58:fb:96:0e:c0:c4', name: 'ICX7150-C12 Router' }]
         }))
-      })
+      }),
+      rest.post(SwitchUrlsInfo.getFlexAuthenticationProfiles.url,
+        (req, res, ctx) => res(ctx.json({ data: [] }))
+      )
     )
   })
 
@@ -274,6 +277,9 @@ describe('SwitchClientsTable', () => {
       ),
       rest.post(SwitchUrlsInfo.getSwitchClientDetail.url, (_, res, ctx) =>
         res(ctx.json(clientDetail))
+      ),
+      rest.post(SwitchUrlsInfo.getFlexAuthenticationProfiles.url,
+        (req, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
   })

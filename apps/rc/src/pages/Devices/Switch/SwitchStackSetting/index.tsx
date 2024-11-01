@@ -7,7 +7,11 @@ import { FormattedMessage, useIntl }                                            
 import { showActionModal, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import {
+  checkVlanDiffFromTargetVlan
+} from '@acx-ui/rc/components'
+import {
   FlexAuthMessages,
+  FlexAuthVlanLabel,
   IP_ADDRESS_TYPE,
   IGMP_SNOOPING_TYPE,
   isL3FunctionSupported,
@@ -16,7 +20,8 @@ import {
   validateSwitchSubnetIpAddress,
   validateSwitchGatewayIpAddress,
   validateVlanExceptReservedVlanId,
-  SwitchViewModel
+  SwitchViewModel,
+  SWITCH_DEFAULT_VLAN_NAME
 } from '@acx-ui/rc/utils'
 
 import StaticRoutes      from './StaticRoutes'
@@ -54,7 +59,9 @@ export function SwitchStackSetting (props: {
   const form = Form.useFormInstance()
 
   const vlanMapping = JSON.parse(switchDetail?.vlanMapping ?? '{}')
-  const defaultVlan = Object.keys(vlanMapping).find(k => vlanMapping[k] === 'DEFAULT-VLAN')
+  const defaultVlan
+    = Object.keys(vlanMapping).find(key => vlanMapping[key] === SWITCH_DEFAULT_VLAN_NAME) ?? ''
+
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   const isSwitchFirmwareAbove10010f = isFirmwareVersionAbove10010f(switchDetail?.firmware)
 
@@ -321,14 +328,15 @@ export function SwitchStackSetting (props: {
               rules={[
                 { required: true },
                 { validator: (_, value) => validateVlanExceptReservedVlanId(value) },
-                { validator: (_, value) => {
-                  if (Number(value) === Number(defaultVlan)) {
-                    return Promise.reject(
-                      $t(FlexAuthMessages.CANNOT_SAME_AS_SWITCH_DEFAULT_VLAN)
-                    )
-                  }
-                  return Promise.resolve()
-                } }
+                { validator: (_, value) =>
+                  checkVlanDiffFromTargetVlan(
+                    value, defaultVlan,
+                    $t(FlexAuthMessages.VLAN_CANNOT_SAME_AS_TARGET_VLAN, {
+                      sourceVlan: $t(FlexAuthVlanLabel.VLAN_ID),
+                      targetVlan: $t(FlexAuthVlanLabel.DEFAULT_VLAN)
+                    })
+                  )
+                }
               ]}
               children={
                 <Input />
@@ -340,28 +348,30 @@ export function SwitchStackSetting (props: {
               validateFirst
               rules={[
                 { validator: (_, value) => {
-                  if (!value) {//TODO
+                  if (!value) {
                     return Promise.resolve()
                   }
                   return validateVlanExceptReservedVlanId(value)
                 }
                 },
-                { validator: (_, value) => {
-                  if (Number(value) === Number(defaultVlan)) {
-                    return Promise.reject(
-                      $t(FlexAuthMessages.CANNOT_SAME_AS_SWITCH_DEFAULT_VLAN)
-                    )
-                  }
-                  return Promise.resolve()
-                } },
-                { validator: (_, value) => {
-                  if (Number(value) === Number(authDefaultVlan)) {
-                    return Promise.reject(
-                      $t(FlexAuthMessages.CANNOT_SAME_AS_AUTH_DEFAULT_VLAN)
-                    )
-                  }
-                  return Promise.resolve()
-                } }
+                { validator: (_, value) =>
+                  checkVlanDiffFromTargetVlan(
+                    value, defaultVlan,
+                    $t(FlexAuthMessages.VLAN_CANNOT_SAME_AS_TARGET_VLAN, {
+                      sourceVlan: $t(FlexAuthVlanLabel.VLAN_ID),
+                      targetVlan: $t(FlexAuthVlanLabel.DEFAULT_VLAN)
+                    })
+                  )
+                },
+                { validator: (_, value) =>
+                  checkVlanDiffFromTargetVlan(
+                    value, authDefaultVlan,
+                    $t(FlexAuthMessages.VLAN_CANNOT_SAME_AS_TARGET_VLAN, {
+                      sourceVlan: $t(FlexAuthVlanLabel.VLAN_ID),
+                      targetVlan: $t(FlexAuthVlanLabel.AUTH_DEFAULT_VLAN)
+                    })
+                  )
+                }
               ]}
               children={
                 <Input />

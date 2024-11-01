@@ -11,7 +11,7 @@ import {
 import { store, Provider }                                                from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { flexAuthList } from '../__test__/fixtures'
+import { flexAuthList } from '../__tests__/fixtures'
 
 import EditFlexibleAuthentication from '.'
 

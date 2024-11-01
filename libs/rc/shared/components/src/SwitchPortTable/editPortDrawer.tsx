@@ -130,7 +130,6 @@ export const allMultipleEditableFields = [
   'rstpAdminEdgePort', 'stpBpduGuard', 'stpRootGuard', 'taggedVlans', 'voiceVlan',
   'lldpQos', 'tags', 'untaggedVlan', 'poeBudget', 'portProtected',
   'flexibleAuthenticationEnabled', 'authenticationProfileId',
-  // 'enableAuthPorts', 'switchLevelAuthDefaultVlan', 'profileAuthDefaultVlan',
   'authDefaultVlan', 'guestVlan', 'authenticationType', 'changeAuthOrder', 'dot1xPortControl',
   'restrictedVlan', 'criticalVlan', 'authFailAction', 'authTimeoutAction'
 ]
@@ -448,7 +447,6 @@ export function EditPortDrawer ({
       setSwitchConfigurationProfileId(switchProfile?.[0]?.id)
       setCliApplied(isCliApplied)
       setDisabledUseVenueSetting(await getUseVenueSettingDisabled(profileDefaultVlan))
-      // setIsFirmwareAbove10010f(isSelectedSwitchFirmwareAbove10010f || false)
 
       isMultipleEdit
         ? await getMultiplePortsValue(vlansByVenue, defaultVlan)
@@ -848,6 +846,11 @@ export function EditPortDrawer ({
         [key]: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
       } : {}
     }
+
+    // try {
+    // } catch (err) {
+    //   console.log(err) // eslint-disable-line no-console
+    // }
 
     const { transformedValues, ignoreFields } = transformData(values)
     const payload = switches.map((item) => {

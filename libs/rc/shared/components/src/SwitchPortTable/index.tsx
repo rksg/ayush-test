@@ -14,7 +14,6 @@ import {
   useSwitchPortlistQuery
 } from '@acx-ui/rc/services'
 import {
-  FlexibleAuthentication,
   getSwitchModel,
   isOperationalSwitch,
   SwitchPortViewModel,
@@ -32,9 +31,8 @@ import { getIntl }                       from '@acx-ui/utils'
 import { SwitchLagDrawer }      from '../SwitchLagDrawer'
 import { defaultSwitchPayload } from '../SwitchTable'
 
-import { EditPortDrawer }   from './editPortDrawer'
-import { mockAuthProfiles } from './mockData'
-import * as UI              from './styledComponents'
+import { EditPortDrawer } from './editPortDrawer'
+import * as UI            from './styledComponents'
 
 const STACK_PORT_FIELD = 'usedInFormingStack'
 
@@ -379,7 +377,7 @@ export function SwitchPortTable (props: {
       setVisible={setLagDrawerVisible}
     />}
 
-    { drawerVisible && <EditPortDrawer //TODO: should call authenticationProfiles API when using EditPortDrawer
+    { drawerVisible && <EditPortDrawer
       key='edit-port'
       visible={drawerVisible}
       setDrawerVisible={setDrawerVisible}
@@ -388,7 +386,7 @@ export function SwitchPortTable (props: {
       isVenueLevel={isVenueLevel}
       selectedPorts={selectedPorts}
       switchList={switchList?.data}
-      authProfiles={(authenticationProfiles || mockAuthProfiles) as FlexibleAuthentication[]}
+      authProfiles={authenticationProfiles}
     />}
 
   </Loader>

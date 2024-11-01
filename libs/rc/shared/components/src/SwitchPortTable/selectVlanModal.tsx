@@ -345,7 +345,6 @@ export function SelectVlanModal (props: {
           tab={$t({ defaultMessage: 'Untagged VLAN' })}
           key={VlanModalType.UNTAGGED}
           disabled={flexAuthEnabled}
-          // TODO: tooltip
         >
           <Typography.Text style={{
             display: 'inline-block', fontSize: '12px', marginBottom: '6px'
