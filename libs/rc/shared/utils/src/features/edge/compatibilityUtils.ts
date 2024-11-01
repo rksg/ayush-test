@@ -6,6 +6,7 @@ export const isApRelatedEdgeFeature = (featureName: IncompatibilityFeatures): bo
   switch(featureName) {
     case IncompatibilityFeatures.SD_LAN:
     case IncompatibilityFeatures.TUNNEL_PROFILE:
+    case IncompatibilityFeatures.PIN:
       return true
     default:
       return false
