@@ -576,7 +576,8 @@ export function StackForm () {
       }).unwrap()
         .then(() => {
           const transformedSwitchData = transformSwitchData(switchData as Switch)
-          const updatedFields = checkSwitchUpdateFields(values, switchDetail, transformedSwitchData, switchAuth)
+          const updatedFields
+            = checkSwitchUpdateFields(values, switchDetail, transformedSwitchData, switchAuth)
           const noChange = updatedFields.length === 0
           // TODO: should disable apply button while no changes
           const onlyChangeDescription

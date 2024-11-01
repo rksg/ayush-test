@@ -408,7 +408,8 @@ export function SwitchForm () {
         enableRbac: isSwitchRbacEnabled
       }).unwrap()
         .then(() => {
-          const updatedFields = checkSwitchUpdateFields(values, switchDetail, switchData, switchAuth)
+          const updatedFields
+            = checkSwitchUpdateFields(values, switchDetail, switchData, switchAuth)
           const noChange = updatedFields.length === 0
           // TODO: should disable apply button while no changes
           const onlyChangeDescription
