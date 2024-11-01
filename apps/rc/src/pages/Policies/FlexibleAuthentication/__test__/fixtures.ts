@@ -36,3 +36,21 @@ export const flexAuthList = {
     authTimeoutAction: 'critical_vlan'
   }]
 }
+
+export const appliedTargets = [{
+  id: '88a05a1e0c5e4d108532e92ca5bfc246',
+  ports: ['1/1/2,1/1/3'],
+  switchId: 'c0:c5:20:78:fc:04',
+  switchModel: 'ICX7650_48ZP',
+  switchName: 'CliEnhancement',
+  venueId: '51ceb59612724c2cb4d3b9c01315749d',
+  venueName: 'ProfileVenue'
+}, {
+  id: '88a05a1e0c5e4d108532e92ca5bfc247',
+  ports: ['1/1/2,1/1/3'],
+  switchId: 'c0:c5:20:78:fc:04',
+  switchModel: 'ICX7650_48ZP',
+  switchName: 'CliEnhancement',
+  venueId: '51ceb59612724c2cb4d3b9c01315749e',
+  venueName: 'ProfileVenue2'
+}]

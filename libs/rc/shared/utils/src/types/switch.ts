@@ -959,6 +959,7 @@ export interface FlexibleAuthentication {
 	authFailAction: string
 	authTimeoutAction: string
   guestVlan?: number
+  appliedVenues?: Record<string, string>
 }
 
 export interface FlexibleAuthenticationAppliedTargets {

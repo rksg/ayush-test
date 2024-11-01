@@ -45,6 +45,10 @@ describe('FlexibleAuthenticationTable', ()=>{
         SwitchUrlsInfo.getFlexAuthenticationProfiles.url,
         (req, res, ctx) => res(ctx.json(flexAuthList))
       ),
+      rest.post(
+        SwitchUrlsInfo.getFlexAuthenticationProfileAppliedTargets.url,
+        (req, res, ctx) => res(ctx.json([]))
+      ),
       rest.delete(
         SwitchUrlsInfo.deleteFlexAuthenticationProfile.url,
         (req, res, ctx) => res(ctx.json({}))

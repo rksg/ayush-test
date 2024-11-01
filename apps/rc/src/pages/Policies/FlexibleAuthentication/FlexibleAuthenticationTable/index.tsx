@@ -1,7 +1,8 @@
-import { useIntl } from 'react-intl'
+import { useIntl }          from 'react-intl'
+import { FormattedMessage } from 'react-intl'
 
-import { Button, Loader, PageHeader, Table, TableProps, showActionModal } from '@acx-ui/components'
-import { authenticationTypeLabel }                                        from '@acx-ui/rc/components'
+import { Button, Loader, PageHeader, Table, TableProps, Tooltip, showActionModal } from '@acx-ui/components'
+import { authenticationTypeLabel }                                                 from '@acx-ui/rc/components'
 import {
   useDeleteFlexAuthenticationProfileMutation,
   useGetFlexAuthenticationProfilesQuery
@@ -18,6 +19,21 @@ import {
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { SwitchScopes }                                 from '@acx-ui/types'
 import { filterByAccess, hasPermission }                from '@acx-ui/user'
+import { noDataDisplay }                                from '@acx-ui/utils'
+
+export const getItemTooltip = (items: string[]) => {
+  return items?.length ? <FormattedMessage
+    defaultMessage={'{switches}'}
+    values={{
+      switches: items.map((item, index) => (
+        <span key={item}>
+          {item}
+          {index < items.length - 1 && <br />}
+        </span>
+      ))
+    }}
+  /> : ''
+}
 
 const FlexibleAuthenticationTable = () => {
   const { $t } = useIntl()
@@ -28,7 +44,8 @@ const FlexibleAuthenticationTable = () => {
   const tableQuery = useTableQuery({
     useQuery: useGetFlexAuthenticationProfilesQuery,
     defaultPayload: {
-      filters: {}
+      filters: {},
+      enableAggregateAppliedTargets: true
     },
     sorter: {
       sortField: 'profileName',
@@ -66,6 +83,20 @@ const FlexibleAuthenticationTable = () => {
     sorter: true,
     render: (_, { authenticationType }) => {
       return $t(authenticationTypeLabel[authenticationType as keyof typeof authenticationTypeLabel])
+    }
+  },
+  {
+    title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
+    key: 'appliedVenues',
+    dataIndex: 'appliedVenues',
+    filterable: true,
+    sorter: true,
+    render: (_, { appliedVenues }) => {
+      const venueCount = Object.keys(appliedVenues ?? {})?.length
+      const venues = Object.values(appliedVenues ?? {})
+      return venueCount
+        ? <Tooltip dottedUnderline title={getItemTooltip(venues)}>{ venueCount }</Tooltip>
+        : noDataDisplay
     }
   }]
 

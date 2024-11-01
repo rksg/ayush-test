@@ -72,8 +72,6 @@ export const aggregatePortSettings = (
   // const addUniqueToArray = (array: Array<string | Number>, item: string | Number) =>
   //   array.includes(item as typeof array[number]) ? array : [...array, item]
 
-  // console.log('** portsSetting: ', portsSetting)
-
   return portsSetting.reduce((result, {
     switchMac, port, taggedVlans = [], untaggedVlan = '',
     switchLevelAuthDefaultVlan, guestVlan, authDefaultVlan, restrictedVlan, criticalVlan,

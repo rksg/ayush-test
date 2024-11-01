@@ -1,7 +1,15 @@
 import { Card, Space, Typography } from 'antd'
 import { useIntl }                 from 'react-intl'
 
-import { Button, Loader, PageHeader, SummaryCard, Table, TableProps } from '@acx-ui/components'
+import {
+  Button,
+  Loader,
+  PageHeader,
+  SummaryCard,
+  Table,
+  TableProps,
+  Tooltip
+} from '@acx-ui/components'
 import {
   authenticationTypeLabel,
   authFailActionTypeLabel,
@@ -27,36 +35,34 @@ import { SwitchScopes }          from '@acx-ui/types'
 import { filterByAccess }        from '@acx-ui/user'
 import { noDataDisplay }         from '@acx-ui/utils'
 
+import { getItemTooltip } from '../FlexibleAuthenticationTable'
+
 const FlexibleAuthenticationDetail = () => {
   const { $t } = useIntl()
   const params = useParams()
 
-  const { profileDetail } = useGetFlexAuthenticationProfilesQuery(
-    { payload: {
+  const { profileDetail, isLoading: isProfileDetailLoading }
+  = useGetFlexAuthenticationProfilesQuery({
+    payload: {
       filters: { id: [params.policyId] }
-    } }, {
-      selectFromResult: ( { data, isLoading, isFetching } ) => {
-        return {
-          profileDetail: data?.data?.[0],
-          isLoading,
-          isFetching
-        }
+    }
+  }, {
+    selectFromResult: ( { data, isLoading } ) => {
+      return {
+        profileDetail: data?.data?.[0],
+        isLoading
       }
     }
+  }
   )
 
   const tableQuery = useTableQuery({
     useQuery: useGetFlexAuthenticationProfileAppliedTargetsQuery,
     apiParams: { profileId: params.policyId ?? '' },
-    defaultPayload: {
-      filters: { id: [params.policyId] }
-    },
+    defaultPayload: {},
     sorter: {
-      sortField: 'profileName',
+      sortField: 'switchName',
       sortOrder: 'ASC'
-    },
-    search: {
-      searchTargetFields: ['profileName']
     },
     option: {
       skip: !params.policyId
@@ -67,57 +73,51 @@ const FlexibleAuthenticationDetail = () => {
     return profileDetail?.[field] ?? noDataDisplay
   }
 
-  const profileInfo = [
-    {
-      title: $t({ defaultMessage: 'Type' }),
-      content: () => {
-        const type = profileDetail?.['authenticationType']
-        return $t(authenticationTypeLabel[type as keyof typeof authenticationTypeLabel])
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Change Authentication Order' }),
-      content: () => {
-        const changeAuthOrder = profileDetail?.['changeAuthOrder']
-        return changeAuthOrder ? $t({ defaultMessage: 'ON' }) : $t({ defaultMessage: 'OFF' })
-      }
-    },
-    {
-      title: $t({ defaultMessage: '802.1x Port Control' }),
-      content: () => {
-        const dot1xPortControl = profileDetail?.['dot1xPortControl']
-        return $t(portControlTypeLabel[dot1xPortControl as keyof typeof portControlTypeLabel])
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Auth Default VLAN' }),
-      content: () => (getContent('authDefaultVlan'))
-    },
-    {
-      title: $t({ defaultMessage: 'Fail Action' }),
-      content: () => {
-        const authFailAction = profileDetail?.['authFailAction']
-        return $t(authFailActionTypeLabel[authFailAction as keyof typeof authFailActionTypeLabel])
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Restricted VLAN' }),
-      content: () => (getContent('restrictedVlan'))
-    },
-    {
-      title: $t({ defaultMessage: 'Timeout Action' }),
-      content: () => {
-        const authTimeoutAction = profileDetail?.['authTimeoutAction']
-        return $t(
-          authTimeoutActionTypeLabel[authTimeoutAction as keyof typeof authTimeoutActionTypeLabel]
-        )
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Critical VLAN' }),
-      content: () => (getContent('criticalVlan'))
+  const profileInfo = [{
+    title: $t({ defaultMessage: 'Type' }),
+    content: () => {
+      const type = profileDetail?.['authenticationType']
+      return $t(authenticationTypeLabel[type as keyof typeof authenticationTypeLabel])
     }
-  ]
+  }, {
+    title: $t({ defaultMessage: 'Change Authentication Order' }),
+    content: () => {
+      const changeAuthOrder = profileDetail?.['changeAuthOrder']
+      return changeAuthOrder ? $t({ defaultMessage: 'ON' }) : $t({ defaultMessage: 'OFF' })
+    }
+  }, {
+    title: $t({ defaultMessage: '802.1x Port Control' }),
+    content: () => {
+      const dot1xPortControl = profileDetail?.['dot1xPortControl']
+      return $t(portControlTypeLabel[dot1xPortControl as keyof typeof portControlTypeLabel])
+    }
+  }, {
+    title: $t({ defaultMessage: 'Auth Default VLAN' }),
+    content: () => (getContent('authDefaultVlan'))
+  }, {
+    title: $t({ defaultMessage: 'Fail Action' }),
+    content: () => {
+      const authFailAction = profileDetail?.['authFailAction']
+      return $t(authFailActionTypeLabel[authFailAction as keyof typeof authFailActionTypeLabel])
+    }
+  }, {
+    title: $t({ defaultMessage: 'Restricted VLAN' }),
+    content: () => (getContent('restrictedVlan'))
+  }, {
+    title: $t({ defaultMessage: 'Timeout Action' }),
+    content: () => {
+      const authTimeoutAction = profileDetail?.['authTimeoutAction']
+      return $t(
+        authTimeoutActionTypeLabel[authTimeoutAction as keyof typeof authTimeoutActionTypeLabel]
+      )
+    }
+  }, {
+    title: $t({ defaultMessage: 'Critical VLAN' }),
+    content: () => (getContent('criticalVlan'))
+  }] as {
+    title: string;
+    content: () => string | number | boolean
+}[]
 
   const columns: TableProps<FlexibleAuthenticationAppliedTargets>['columns'] = [{
     title: $t({ defaultMessage: 'Switch' }),
@@ -142,7 +142,13 @@ const FlexibleAuthenticationDetail = () => {
   {
     title: $t({ defaultMessage: 'Port' }),
     key: 'port',
-    dataIndex: 'ports' //TODO
+    dataIndex: 'ports',
+    render: (_, { ports }) => {
+      const portList = ports?.[0].split(',')
+      return portList?.length
+        ? <Tooltip dottedUnderline title={getItemTooltip(portList)}>{ portList?.length }</Tooltip>
+        : noDataDisplay
+    }
   }]
 
   return (<>
@@ -173,18 +179,18 @@ const FlexibleAuthenticationDetail = () => {
     />
     <Loader states={[tableQuery]}>
       <Space direction='vertical' size={30}>
-        <SummaryCard data={profileInfo} colPerRow={6} />
+        <SummaryCard data={!isProfileDetailLoading ? profileInfo : []} colPerRow={6} />
         <Card>
           <div>
             <Typography.Title level={2}>
               {$t(
                 { defaultMessage: 'Instances ({count})' },
-                { count: 0 }
+                { count: tableQuery?.data?.data?.length ?? 0 }
               )}
             </Typography.Title>
           </div>
           <Table
-            rowKey={'id'}
+            rowKey={'switchId'}
             columns={columns}
             dataSource={tableQuery?.data?.data}
             pagination={tableQuery.pagination}

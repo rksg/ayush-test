@@ -1589,38 +1589,45 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     }),
     // eslint-disable-next-line max-len
     getFlexAuthenticationProfiles: build.query<TableResult<FlexibleAuthentication>, RequestPayload>({
-      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+      async queryFn (
+        arg: RequestPayload & { payload?: { enableAggregateAppliedTargets?: boolean } },
+        _queryApi, _extraOptions, fetchWithBQ
+      ) {
         const headers = customHeaders.v1
         const listInfo = {
           ...createHttpRequest(SwitchUrlsInfo.getFlexAuthenticationProfiles, arg.params, headers),
-          body: JSON.stringify(arg.payload)
+          body: JSON.stringify({})
         }
         const listQuery = await fetchWithBQ(listInfo)
         const profileList = listQuery.data as TableResult<FlexibleAuthentication>
-        // const profileIds = profileList.data.map(p => p.id)
+        const profileIds = profileList.data.map(p => p.id)
+        const enableAggregateAppliedTargets = arg?.payload?.enableAggregateAppliedTargets
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        // const profileAppliedTargets:any = await Promise.all(profileIds.map(pid =>
-        //   fetchWithBQ({
-        //     ...createHttpRequest(SwitchUrlsInfo.getFlexAuthenticationProfileAppliedTargets, {
-        //       ...arg.params,
-        //       profileId: pid
-        //     }, headers),
-        //     body: JSON.stringify(arg.payload)
-        //   })
-        // ))
+        const profileAppliedTargets:any = enableAggregateAppliedTargets
+          ? await Promise.all(profileIds.map(pid =>
+            fetchWithBQ({
+              ...createHttpRequest(SwitchUrlsInfo.getFlexAuthenticationProfileAppliedTargets, {
+                ...arg.params,
+                profileId: pid
+              }, headers),
+              body: JSON.stringify({})
+            })
+          )) : []
 
-        const aggregatedList = profileList.data.map((profile: FlexibleAuthentication) => {
-          // const appliedTargets = profileAppliedTargets?.data?.find(
-          //   (p: FlexibleAuthenticationAppliedTargets) => profile.id === p.id)
+        const aggregatedList = profileList.data.map((profile: FlexibleAuthentication, index) => {
+          // eslint-disable-next-line max-len
+          const appliedTargets = profileAppliedTargets?.[index]?.data?.data as FlexibleAuthenticationAppliedTargets[]
+          const appliedVenues = appliedTargets?.reduce((result, target) => ({
+            ...result,
+            [target.venueId]: target.venueName
+          }), {})
+
           return {
-            ...profile
-            // ...appliedTargets
+            ...profile,
+            appliedVenues
           }
         })
-
-        // console.log( listQuery.data )
-        // console.log( profileAppliedTargets )
 
         return listQuery.data
           ? { data: {
@@ -1633,13 +1640,13 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     }),
     // eslint-disable-next-line max-len
     getFlexAuthenticationProfileAppliedTargets: build.query<TableResult<FlexibleAuthenticationAppliedTargets>, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params }) => {
         const req = createHttpRequest(
           SwitchUrlsInfo.getFlexAuthenticationProfileAppliedTargets, params, customHeaders.v1
         )
         return {
           ...req,
-          body: JSON.stringify(payload)
+          body: JSON.stringify({})
         }
       }
     }),
