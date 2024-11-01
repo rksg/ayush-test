@@ -77,7 +77,9 @@ import {
   getStackUnitsMinLimitation,
   convertInputToUppercase,
   FirmwareSwitchVenueVersionsV1002,
-  getStackUnitsMinLimitationV1002
+  getStackUnitsMinLimitationV1002,
+  getSwitchFwGroupVersionV1002,
+  SwitchFirmwareModelGroup
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -472,8 +474,10 @@ export function StackForm () {
   const [updateSwitchAuthentication] = useUpdateSwitchAuthenticationMutation()
 
   const hasBlockingTsb = function () {
-    return !checkVersionAtLeast09010h(currentFw) && isBlockingTsbSwitch
-
+    const fw = isSwitchFirmwareV1002Enabled
+      ? getSwitchFwGroupVersionV1002(currentFirmwareV1002, SwitchFirmwareModelGroup.ICX71)
+      : currentFw
+    return !checkVersionAtLeast09010h(fw) && isBlockingTsbSwitch
   }
 
   const transformSwitchData = (switchData: Switch) => {

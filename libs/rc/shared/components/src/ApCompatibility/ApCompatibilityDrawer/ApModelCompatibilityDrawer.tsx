@@ -159,7 +159,7 @@ export const ApModelCompatibilityDrawer = (props: ApModelCompatibilityDrawerProp
       */
 
     } else if (ApCompatibilityType.VENUE === currentType) {
-      return await getVenuePerCheckApCompatibilities({
+      const venueApCompatibilities = await getVenuePerCheckApCompatibilities({
         params: { venueId },
         payload: {
           filters: {
@@ -170,6 +170,11 @@ export const ApModelCompatibilityDrawer = (props: ApModelCompatibilityDrawerProp
           pageSize: 10
         }
       }).unwrap()
+
+      const incompatible = venueApCompatibilities?.compatibilities?.[0]?.incompatible ?? 0
+      if (incompatible > 0) {
+        return venueApCompatibilities
+      }
     }
 
     const apFeatureSetsResponse = await getApFeatureSets({
