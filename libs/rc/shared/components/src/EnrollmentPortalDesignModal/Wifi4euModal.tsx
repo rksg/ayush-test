@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
@@ -8,12 +8,19 @@ import { Modal } from '@acx-ui/components'
 import * as UI from './styledComponents'
 export default function WiFi4euModal (props:{
   onChange: (value:string) => void,
-  wifi4eu?: string
+  wifi4eu?: string,
+  visible: boolean
+  onCancel: ()=>void
 }) {
   const { $t } = useIntl()
-  const { onChange, wifi4eu } = props
+  const { onChange, wifi4eu, onCancel } = props
   const [visible, setVisible]=useState(false)
   const [newWifi4eu, setNewWifi4eu]=useState(wifi4eu)
+
+  useEffect(()=> {
+    setVisible(props.visible)
+  }, [props.visible])
+
   const getContent = <Form
     layout='vertical'>
     <Form.Item
@@ -39,6 +46,7 @@ export default function WiFi4euModal (props:{
         onCancel={()=>{
           setNewWifi4eu(wifi4eu)
           setVisible(false)
+          onCancel()
         }}
         onOk={()=>{
           onChange(newWifi4eu as string)

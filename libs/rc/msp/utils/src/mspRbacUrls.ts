@@ -390,5 +390,16 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/entitlements/availabilityReports/query',
     newApi: true
+  },
+  updateMspEcDelegations: {
+    method: 'put',
+    url: '/tenants/:mspEcTenantId/adminDelegations',
+    newApi: true
+  },
+  updateMspMultipleEcDelegations: {
+    method: 'PATCH',
+    url: '/adminDelegations',
+    newApi: true
   }
+
 }

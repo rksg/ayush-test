@@ -175,6 +175,22 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
     expect(switchBtn).toBeDisabled()
   })
 
+  it('should grey out network is used by PIN', async () => {
+    render(
+      <Provider>
+        <EdgeSdLanP2ActivatedNetworksTable
+          venueId='mocked-venue'
+          isGuestTunnelEnabled={false}
+          pinNetworkIds={['network_1']}
+        />
+      </Provider>, { route: { params: { tenantId: 't-id' } } })
+
+    await checkPageLoaded()
+    const switchBtn = within(await screen.findByRole('row', { name: /MockedNetwork 1/i }))
+      .getByRole('switch')
+    expect(switchBtn).toBeDisabled()
+  })
+
   describe('Guest tunnel enabled', () => {
     it('should correctly display', async () => {
       render(
