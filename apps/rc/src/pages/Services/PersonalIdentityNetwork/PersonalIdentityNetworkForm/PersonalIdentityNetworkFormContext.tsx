@@ -1,7 +1,8 @@
-import { Dispatch, SetStateAction, createContext, useEffect, useMemo, useState } from 'react'
+import { Dispatch, SetStateAction, createContext, memo, useEffect, useMemo, useState } from 'react'
 
 
 import { BaseQueryFn, QueryActionCreatorResult, QueryDefinition } from '@reduxjs/toolkit/query'
+import Item                                                       from 'antd/lib/list/Item'
 import { DefaultOptionType }                                      from 'antd/lib/select'
 import { find, isNil }                                            from 'lodash'
 import { useParams }                                              from 'react-router-dom'
@@ -88,8 +89,8 @@ const tunnelProfileDefaultPayload = {
   sortOrder: 'ASC'
 }
 
-const clusterOptionsDefaultPayload = {
-  fields: ['name', 'clusterId'],
+const clusterDataDefaultPayload = {
+  fields: ['name', 'clusterId', 'venueId'],
   pageSize: 10000,
   sortField: 'name',
   sortOrder: 'ASC'
@@ -108,7 +109,7 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
 
   const {
     usedSdlanClusterIds,
-    usedSdlanVenueIds,
+    usedSdlanTunneledVenueIds,
     usedSdlanNetworkIds,
     isSdlanLoading
   } = useGetEdgeMvSdLanViewDataListQuery({
@@ -123,8 +124,7 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
         usedSdlanClusterIds: Array.from(new Set(
           allSdLans.flatMap(sdLan => [sdLan.edgeClusterId, sdLan.guestEdgeClusterId])
             .filter(id => !!id))),
-        usedSdlanVenueIds: Array.from(new Set([
-          ...allSdLans.map(item => item.venueId),
+        usedSdlanTunneledVenueIds: Array.from(new Set([
           ...allSdLans.flatMap(sdlan => sdlan.tunneledWlans ?? [])
             .map(wlan => wlan.venueId)
             .filter(id => !!id)
@@ -196,19 +196,24 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
       }
     })
 
-  const { clusterOptions, isLoading: isClusterOptionsLoading } = useGetEdgeClusterListQuery(
-    { params, payload: { ...clusterOptionsDefaultPayload, filters: { venueId: [venueId] } } },
+  const { clusterData, isLoading: isClusterDataLoading } = useGetEdgeClusterListQuery(
+    { params, payload: { ...clusterDataDefaultPayload } },
     {
-      skip: !Boolean(venueId),
       selectFromResult: ({ data, isLoading }) => {
         return {
-          clusterOptions: data?.data
-            .filter(item => !usedSdlanClusterIds.includes(item.clusterId))
-            .map(item => ({ label: item.name, value: item.clusterId })),
+          clusterData: data?.data
+            .map(item => ({ label: item.name, value: item.clusterId, venueId: item.venueId })),
           isLoading
         }
       }
     })
+
+  const usedSdlanVenueIds = useMemo(() => {
+    return [...usedSdlanTunneledVenueIds,
+      clusterData?.filter(item => usedSdlanClusterIds.includes(item.value))
+        .map(item => item.venueId) ?? []
+    ]
+  }, [usedSdlanTunneledVenueIds, clusterData])
 
   const { tunnelProfileOptions, isTunnelLoading } = useGetTunnelProfileViewDataListQuery({
     payload: tunnelProfileDefaultPayload
@@ -290,6 +295,11 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
       .filter(item => !usedSdlanVenueIds.includes(item.value))
   }, [venues, usedVenueIds, usedSdlanVenueIds])
 
+  const clusterOptions = useMemo(() => {
+    return clusterData?.filter(item =>
+      !usedSdlanClusterIds.includes(item.value) && venueId === item.venueId) ?? []
+  }, [venueId, usedSdlanClusterIds])
+
   useEffect(() => {
     if(props.venueId) setVenueId(props.venueId)
   }, [props.venueId])
@@ -329,7 +339,7 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
         dpskData,
         isDpskLoading,
         clusterOptions,
-        isClusterOptionsLoading: isClusterOptionsLoading || isSdlanLoading,
+        isClusterOptionsLoading: isClusterDataLoading || isSdlanLoading,
         dhcpList,
         dhcpOptions: dhcpList?.map(item => ({ label: item.serviceName, value: item.id })),
         isDhcpOptionsLoading,

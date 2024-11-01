@@ -339,7 +339,7 @@ export const mockSdLanDataForPinMutuallyExclusive = [{
     networkName: 'Mocked_network3',
     wlanId: '3'
   }, {
-    venueId: 'a307d7077410456f8f1a4fc41d861567',
+    venueId: 'mock_venue_4',
     venueName: 'Mocked-Venue-1',
     networkId: 'network5',
     networkName: 'Mocked_network_5',
