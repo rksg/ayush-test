@@ -49,7 +49,9 @@ import {
   SWITCH_SERIAL_PATTERN_INCLUDED_8100,
   SWITCH_SERIAL_PATTERN_INCLUDED_8200AV,
   SWITCH_SERIAL_PATTERN_INCLUDED_8100_8200AV,
-  FirmwareSwitchVenueVersionsV1002
+  FirmwareSwitchVenueVersionsV1002,
+  SwitchFirmwareModelGroup,
+  getSwitchFwGroupVersionV1002
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -127,6 +129,7 @@ export function SwitchForm () {
   const [isSupportStack, setIsSupportStack] = useState(true)
   const [isOnlyFirmware, setIsOnlyFirmware] = useState(false)
   const [isRodanModel, setIsRodanModel] = useState(false)
+  const [isBabyRodanModel, setIsBabyRodanModel] = useState(false)
   const [serialNumber, setSerialNumber] = useState('')
   const [readOnly, setReadOnly] = useState(false)
   const [disableIpSetting, setDisableIpSetting] = useState(false)
@@ -298,7 +301,10 @@ export function SwitchForm () {
   }
 
   const handleAddSwitch = async (values: Switch) => {
-    if (!checkVersionAtLeast09010h(currentFW) && isBlockingTsbSwitch) {
+    const fw = isSwitchFirmwareV1002Enabled
+      ? getSwitchFwGroupVersionV1002(currentFirmwareV1002, SwitchFirmwareModelGroup.ICX71)
+      : currentFW
+    if (!checkVersionAtLeast09010h(fw) && isBlockingTsbSwitch) {
       if (getTsbBlockedSwitch(values.id)?.length > 0) {
         showTsbBlockedSwitchErrorDialog()
         return
@@ -408,6 +414,12 @@ export function SwitchForm () {
       formRef.current?.setFieldValue('specifiedType', FIRMWARE.ROUTER)
     }
     setIsRodanModel(isRodan || false)
+
+    const isBabyRodan = getSwitchModel(value)?.includes('8100')
+    if (isBabyRodan) {
+      formRef.current?.setFieldValue('specifiedType', FIRMWARE.ROUTER)
+    }
+    setIsBabyRodanModel(isBabyRodan || false)
   }
 
   const switchSerialPatterns = [
@@ -418,7 +430,8 @@ export function SwitchForm () {
   ]
 
   const serialNumberRegExp = function (value: string) {
-    const modelNotSupportStack = ['ICX7150-C08P', 'ICX7150-C08PT']
+    const modelNotSupportStack = ['ICX7150-C08P', 'ICX7150-C08PT', 'ICX8100-24', 'ICX8100-24P',
+      'ICX8100-48', 'ICX8100-48P', 'ICX8100-C08PF']
     // Only 7150-C08P/C08PT are Switch Only.
     // Only 7850 all models are Router Only.
     const modelOnlyFirmware = ['ICX7150-C08P', 'ICX7150-C08PT', 'ICX7850']
@@ -572,7 +585,8 @@ export function SwitchForm () {
                   label={<>
                     {$t({ defaultMessage: 'Add as' })}
                     {!isSupportStack && <Tooltip.Question
-                      title={$t(SwitchMessages.MEMBER_NOT_SUPPORT_STACKING_TOOLTIP)}
+                      // eslint-disable-next-line max-len
+                      title={$t(SwitchMessages.MEMBER_NOT_SUPPORT_STACKING_TOOLTIP, { switchModel })}
                       placement='bottom'
                     />}
                     {switchRole === MEMEBER_TYPE.MEMBER && <Tooltip.Question
@@ -663,7 +677,7 @@ export function SwitchForm () {
                     </>}
                     hidden={editMode}
                   >
-                    <Select disabled={isOnlyFirmware || isRodanModel}>
+                    <Select disabled={isOnlyFirmware || isRodanModel || isBabyRodanModel}>
                       <Option value={FIRMWARE.AUTO}>
                         {$t({ defaultMessage: 'Factory default' })}
                       </Option>

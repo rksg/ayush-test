@@ -17,7 +17,8 @@ import {
   ManageAdminsDrawer,
   ManageDelegateAdminDrawer,
   ResendInviteModal,
-  SelectIntegratorDrawer
+  SelectIntegratorDrawer,
+  ManageMspDelegationDrawer
 } from '@acx-ui/msp/components'
 import {
   useDeactivateMspEcMutation,
@@ -84,6 +85,7 @@ export function MspCustomers () {
   const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
   const isvViewModelTpLoginEnabled = useIsSplitOn(Features.VIEWMODEL_TP_LOGIN_ADMIN_COUNT)
   const isMspSortOnTpEnabled = useIsSplitOn(Features.MSP_SORT_ON_TP_COUNT_TOGGLE)
+  const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
 
   const [ecTenantId, setTenantId] = useState('')
   const [selectedTenantType, setTenantType] = useState(AccountType.MSP_INTEGRATOR)
@@ -643,18 +645,25 @@ export function MspCustomers () {
           setVisible={setModalVisible}
           tenantId={selTenantId}
         />}
-        {drawerAssignEcMspAdminsVisible && ((isAbacToggleEnabled && selEcTenantIds.length === 1)
-          ? <ManageDelegateAdminDrawer
-            visible={drawerAssignEcMspAdminsVisible}
-            setVisible={setDrawerAssignEcMspAdminsVisible}
-            setSelected={() => {}}
-            tenantId={selEcTenantIds[0]}
-            tenantType={AccountType.MSP_EC}/>
-          : <AssignEcMspAdminsDrawer
+        {drawerAssignEcMspAdminsVisible && (isAbacToggleEnabled && isRbacPhase2Enabled
+          ? <ManageMspDelegationDrawer
             visible={drawerAssignEcMspAdminsVisible}
             tenantIds={selEcTenantIds}
             setVisible={setDrawerAssignEcMspAdminsVisible}
-            setSelected={() => {}}/>)
+            setSelectedUsers={() => {}}
+            setSelectedPrivilegeGroups={() => {}}/>
+          : (isAbacToggleEnabled && selEcTenantIds.length === 1)
+            ? <ManageDelegateAdminDrawer
+              visible={drawerAssignEcMspAdminsVisible}
+              setVisible={setDrawerAssignEcMspAdminsVisible}
+              setSelected={() => {}}
+              tenantId={selEcTenantIds[0]}
+              tenantType={AccountType.MSP_EC}/>
+            : <AssignEcMspAdminsDrawer
+              visible={drawerAssignEcMspAdminsVisible}
+              tenantIds={selEcTenantIds}
+              setVisible={setDrawerAssignEcMspAdminsVisible}
+              setSelected={() => {}}/>)
         }
         {drawerScheduleFirmwareVisible && <ScheduleFirmwareDrawer
           visible={drawerScheduleFirmwareVisible}
@@ -810,12 +819,20 @@ export function MspCustomers () {
         && <MspEcTable />}
       {!userProfile?.support && isIntegrator && <IntegratorTable />}
       {drawerAdminVisible && (isAbacToggleEnabled
-        ? <ManageDelegateAdminDrawer
-          visible={drawerAdminVisible}
-          setVisible={setDrawerAdminVisible}
-          setSelected={() => {}}
-          tenantId={ecTenantId}
-          tenantType={tenantType}/>
+        ? (isRbacPhase2Enabled
+          ? <ManageMspDelegationDrawer
+            visible={drawerAdminVisible}
+            setVisible={setDrawerAdminVisible}
+            setSelectedUsers={() => {}}
+            setSelectedPrivilegeGroups={() => {}}
+            tenantIds={[ecTenantId]}
+            tenantType={tenantType}/>
+          : <ManageDelegateAdminDrawer
+            visible={drawerAdminVisible}
+            setVisible={setDrawerAdminVisible}
+            setSelected={() => {}}
+            tenantId={ecTenantId}
+            tenantType={tenantType}/>)
         : <ManageAdminsDrawer
           visible={drawerAdminVisible}
           setVisible={setDrawerAdminVisible}

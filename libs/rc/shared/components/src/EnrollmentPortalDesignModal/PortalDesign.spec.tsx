@@ -114,7 +114,7 @@ describe('Portal Design', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     fireEvent.click(setRows[0])
     await userEvent.type(await screen.findByPlaceholderText(
-      'Copy from your WiFi4EU installation report'),'UUID')
+      'Copy from your WiFi4EU installation report'),'4e7696f3-e4db-465e-91f2-de7c2ebc15a6')
     await userEvent.click(await screen.findByRole('button', { name: 'OK' }))
     await waitFor(() => expect(getUIConfigApi).toHaveBeenCalled())
     await waitFor(() => expect(getUIConfigImageApi).toHaveBeenCalledTimes(2))

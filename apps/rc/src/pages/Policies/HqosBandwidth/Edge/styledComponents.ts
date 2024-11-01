@@ -1,5 +1,5 @@
-import { Form }                      from 'antd'
-import styled, { createGlobalStyle } from 'styled-components/macro'
+import { Form } from 'antd'
+import styled   from 'styled-components/macro'
 
 import { EyeOpenSolid, WarningCircleSolid } from '@acx-ui/icons'
 
@@ -19,18 +19,6 @@ export const BandwidthStyleFormItem = styled(Form.Item)`
   }
 `
 
-export const toolTipClassName = 'qos-traffic-class-tooltip-popover'
-
-export const ToolTipStyle = createGlobalStyle`
-  .${toolTipClassName} {
-    .ant-table-thead>tr>th,.ant-table-tbody,
-    .ant-table-tbody > tr.ant-table-row:hover > td,
-    .ant-table-tbody > tr > td.ant-table-cell-row-hover{
-      background-color:var(--acx-primary-black);
-      color:var(--acx-primary-white)
-    }
-  }
-`
 export const EyeOpenSolidCustom = styled(EyeOpenSolid)`
   transform: scale(1.75);
   path:nth-child(1){

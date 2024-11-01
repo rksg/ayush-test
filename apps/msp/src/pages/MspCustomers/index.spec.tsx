@@ -3,11 +3,11 @@ import userEvent      from '@testing-library/user-event'
 import moment         from 'moment'
 import { Path, rest } from 'msw'
 
-import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
-import { MspEcTierEnum, MspRbacUrlsInfo, MspUrlsInfo }            from '@acx-ui/msp/utils'
-import { Provider }                                               from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent, within, waitFor } from '@acx-ui/test-utils'
-import { AccountType }                                            from '@acx-ui/utils'
+import { Features, useIsSplitOn, useIsTierAllowed }                      from '@acx-ui/feature-toggle'
+import { MspAdministrator, MspEcTierEnum, MspRbacUrlsInfo, MspUrlsInfo } from '@acx-ui/msp/utils'
+import { Provider }                                                      from '@acx-ui/store'
+import { mockServer, render, screen, fireEvent, within, waitFor }        from '@acx-ui/test-utils'
+import { AccountType }                                                   from '@acx-ui/utils'
 
 import { MspCustomers } from '.'
 
@@ -206,6 +206,64 @@ const userProfile = {
 const mspPortal = {
   msp_label: 'eleu1658'
 }
+const fakedPrivilegeGroupList =
+  [
+    {
+      id: '2765e98c7b9446e2a5bdd4720e0e8911',
+      name: 'ADMIN',
+      description: 'Admin Role',
+      roleName: 'ADMIN',
+      type: 'System',
+      delegation: false,
+      allCustomers: false
+    },
+    {
+      id: '2765e98c7b9446e2a5bdd4720e0e8912',
+      name: 'PRIME_ADMIN',
+      description: 'Prime Admin Role',
+      roleName: 'PRIME_ADMIN',
+      type: 'System',
+      delegation: false,
+      allCustomers: false
+    },
+    {
+      id: '2765e98c7b9446e2a5bdd4720e0e8913',
+      name: 'READ_ONLY',
+      description: 'Read only Role',
+      roleName: 'READ_ONLY',
+      type: 'System',
+      delegation: false,
+      allCustomers: false
+    },
+    {
+      id: '2765e98c7b9446e2a5bdd4720e0e8914',
+      name: 'OFFICE_ADMIN',
+      description: 'Guest Manager',
+      roleName: 'OFFICE_ADMIN',
+      type: 'System',
+      delegation: false,
+      allCustomers: false
+    },
+    {
+      id: '2765e98c7b9446e2a5bdd4720e0e8915',
+      name: 'DPSK_ADMIN',
+      description: 'DPSK Manager',
+      roleName: 'DPSK_ADMIN',
+      type: 'System',
+      delegation: false,
+      allCustomers: false
+    },
+    {
+      id: '99bb7b958a5544898cd0b938fa800a5a',
+      name: 'wi-fi privilege group',
+      description: 'privilege group for wi-fi',
+      roleName: 'new wi-fi custom role',
+      type: 'Custom',
+      delegation: false,
+      allCustomers: false
+    }
+  ]
+
 
 const services = require('@acx-ui/msp/services')
 jest.mock('@acx-ui/msp/services', () => ({
@@ -215,6 +273,7 @@ const rcServices = require('@acx-ui/rc/services')
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services')
 }))
+const utils = require('@acx-ui/rc/utils')
 const user = require('@acx-ui/user')
 jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user')
@@ -231,14 +290,18 @@ describe('MspCustomers', () => {
     services.useGetMspLabelQuery = jest.fn().mockImplementation(() => {
       return { data: mspPortal }
     })
+    const emptyList: MspAdministrator[] = []
     services.useMspAdminListQuery = jest.fn().mockImplementation(() => {
-      return { data: [] }
+      return { data: emptyList }
     })
     services.useGetMspEcDelegatedAdminsQuery = jest.fn().mockImplementation(() => {
       return { data: undefined }
     })
     rcServices.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
       return { data: undefined }
+    })
+    rcServices.useGetPrivilegeGroupsWithAdminsQuery = jest.fn().mockImplementation(() => {
+      return { data: fakedPrivilegeGroupList }
     })
     jest.spyOn(services, 'useMspCustomerListQuery')
     jest.spyOn(services, 'useSupportMspCustomerListQuery')
@@ -784,5 +847,144 @@ describe('MspCustomers', () => {
       hash: '',
       search: ''
     }, { replace: true })
+  })
+  it('should open msp delegations dialog for abac and rbac enabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.ABAC_POLICIES_TOGGLE
+      || ff === Features.RBAC_PHASE2_TOGGLE)
+    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === Features.RBAC_IMPLICIT_P1)
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    user.hasRoles = jest.fn().mockImplementation(() => {
+      return true
+    })
+    render(
+      <Provider>
+        <MspCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+      })
+
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /ec 111/i })).toBeVisible()
+    fireEvent.click(within(rows[1]).getByRole('link', { name: '1' })) //ec 111
+
+    expect(screen.getByRole('dialog')).toBeVisible()
+    expect(screen.getByText('Manage MSP Delegations')).toBeVisible()
+  })
+  it('should open delegation admin dialog for abac enabled and rbac not enabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.ABAC_POLICIES_TOGGLE)
+    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === Features.RBAC_IMPLICIT_P1)
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    user.hasRoles = jest.fn().mockImplementation(() => {
+      return true
+    })
+    render(
+      <Provider>
+        <MspCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+      })
+
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /ec 111/i })).toBeVisible()
+    fireEvent.click(within(rows[1]).getByRole('link', { name: '1' })) //ec 111
+
+    expect(screen.getByRole('dialog')).toBeVisible()
+    expect(screen.getByText('Manage MSP Users')).toBeVisible()
+  })
+  it('should open manage delegations dialog for abac/rbac enabled for support access', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.ABAC_POLICIES_TOGGLE
+      || ff === Features.RBAC_PHASE2_TOGGLE
+      || ff === Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS)
+    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === Features.RBAC_IMPLICIT_P1)
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    user.hasRoles = jest.fn().mockImplementation(() => {
+      return true
+    })
+    utils.useTableQuery = jest.fn().mockImplementation(() => {
+      return { data: list }
+    })
+    services.useGetMspEcAlarmListQuery = jest.fn().mockImplementation(() => {
+      return { data: alarmList }
+    })
+    render(
+      <Provider>
+        <MspCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+      })
+
+    fireEvent.click(screen.getAllByRole('checkbox')[0])
+    expect(await screen.findByRole('button', { name: 'Assign MSP Administrators' })).toBeVisible()
+    fireEvent.click(screen.getByRole('button', { name: 'Assign MSP Administrators' }))
+
+    expect(await screen.findByRole('dialog')).toBeVisible()
+    expect(screen.getByText('Manage MSP Delegations')).toBeVisible()
+  })
+  it('should open delegation admin dialog for abac enabled for support access', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.ABAC_POLICIES_TOGGLE
+      || ff === Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS)
+    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === Features.RBAC_IMPLICIT_P1)
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    user.hasRoles = jest.fn().mockImplementation(() => {
+      return true
+    })
+    utils.useTableQuery = jest.fn().mockImplementation(() => {
+      return { data: list }
+    })
+    services.useGetMspEcAlarmListQuery = jest.fn().mockImplementation(() => {
+      return { data: alarmList }
+    })
+    render(
+      <Provider>
+        <MspCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+      })
+
+    fireEvent.click(screen.getAllByRole('checkbox')[1])
+    expect(await screen.findByRole('button', { name: 'Assign MSP Administrators' })).toBeVisible()
+    fireEvent.click(screen.getByRole('button', { name: 'Assign MSP Administrators' }))
+
+    expect(screen.getByRole('dialog')).toBeVisible()
+    expect(screen.getByText('Manage MSP Users')).toBeVisible()
+    expect(screen.getAllByText('Assign MSP Administrators')).toHaveLength(1)
+  })
+  it('should open admin dialog for abac enabled & multiselected for support access', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.ABAC_POLICIES_TOGGLE
+      || ff === Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS)
+    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === Features.RBAC_IMPLICIT_P1)
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    user.hasRoles = jest.fn().mockImplementation(() => {
+      return true
+    })
+    utils.useTableQuery = jest.fn().mockImplementation(() => {
+      return { data: list }
+    })
+    services.useGetMspEcAlarmListQuery = jest.fn().mockImplementation(() => {
+      return { data: alarmList }
+    })
+    render(
+      <Provider>
+        <MspCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+      })
+
+    fireEvent.click(screen.getAllByRole('checkbox')[0])
+    expect(await screen.findByRole('button', { name: 'Assign MSP Administrators' })).toBeVisible()
+    fireEvent.click(screen.getByRole('button', { name: 'Assign MSP Administrators' }))
+
+    expect(screen.getByRole('dialog')).toBeVisible()
+    expect(screen.getAllByText('Assign MSP Administrators')).toHaveLength(2)
   })
 })

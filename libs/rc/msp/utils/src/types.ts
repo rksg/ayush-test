@@ -100,6 +100,7 @@ export interface MspEcData {
   licenses?: {};
   delegations?: MspIntegratorDelegated[];
   admin_delegations?: MspEcDelegatedAdmins[];
+  privilegeGroups?: string[];
   number_of_days?: string;
   isManageAllEcs?: boolean;
   tier?: MspEcTierEnum;
@@ -594,4 +595,15 @@ export interface LicenseCalculatorData {
 export interface LicenseCalculatorDataResponse {
   data: LicenseCalculatorData,
   message: string
+}
+export interface SelectedMspMspAdmins {
+  mspAdminId: string
+  mspAdminRole: RolesEnum
+}
+
+export interface AssignedMultiEcMspAdmins {
+  operation: string
+  mspEcId: string
+  mspAdminRoles: SelectedMspMspAdmins[]
+  privilege_group_ids?: string[]
 }

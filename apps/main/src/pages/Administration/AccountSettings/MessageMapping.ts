@@ -25,5 +25,6 @@ export const MessageMapping = {
   enable_r1_beta_logout_dialog_msg: defineMessage({ defaultMessage: 'In order to enable the Early Access features, we have to log you out. Once you log-in back, the features will be available for you to use.' }),
   delete_sms_provider_msg: defineMessage({ defaultMessage: 'If you opt to remove the SMS provider, your account will no longer support Captive Portal Self Sign-In with SMS one time passcode.' }),
   received_invalid_twilios_number: defineMessage({ defaultMessage: 'We are not able to retrieve phone numbers from Twilio - please check the entered account SID and auth token' }),
-  received_invalid_twilios_service: defineMessage({ defaultMessage: 'We are not able to retrieve messaging services from Twilio - please check the entered account SID and auth token' })
+  received_invalid_twilios_service: defineMessage({ defaultMessage: 'We are not able to retrieve messaging services from Twilio - please check the entered account SID and auth token' }),
+  configure_a_server_certificate: defineMessage({ defaultMessage: 'Use a server certificate to enable encrypted SAML responses.  If a SAML response{br}from IDP is already encrypted, the selected server certificate will be used.' })
 }
