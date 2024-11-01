@@ -1157,6 +1157,30 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       providesTags: [{ type: 'Network', id: 'Overview' }]
     }),
+    venueSummaries: build.query<Dashboard, RequestPayload>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(CommonUrlsInfo.getVenueSummaries, params),
+          body: payload
+        }
+      }
+    }),
+    deviceSummaries: build.query<Dashboard, RequestPayload>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(CommonUrlsInfo.getDeviceSummaries, params),
+          body: payload
+        }
+      }
+    }),
+    clientSummaries: build.query<Dashboard, RequestPayload>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(CommonUrlsInfo.getClientSummaries, params),
+          body: payload
+        }
+      }
+    }),
     externalProviders: build.query<ExternalProviders, RequestPayload>({
       query: ({ params, enableRbac }) => {
         const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
@@ -1681,6 +1705,9 @@ export const {
   useLazyGetNetworkApCompatibilitiesQuery,
   useDashboardV2OverviewQuery,
   useAlarmSummariesQuery,
+  useVenueSummariesQuery,
+  useDeviceSummariesQuery,
+  useClientSummariesQuery,
   useExternalProvidersQuery,
   useGetCertificateTemplateNetworkBindingQuery,
   useGetMacRegistrationPoolNetworkBindingQuery,

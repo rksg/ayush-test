@@ -48,6 +48,21 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/dashboards/alarmSummaries/query',
     newApi: true
   },
+  getVenueSummaries: {
+    method: 'post',
+    url: '/dashboards/venueSummaries/query',
+    newApi: true
+  },
+  getDeviceSummaries: {
+    method: 'post',
+    url: '/dashboards/deviceSummaries/query',
+    newApi: true
+  },
+  getClientSummaries: {
+    method: 'post',
+    url: '/dashboards/clientSummaries/query',
+    newApi: true
+  },
   getAlarmsList: {
     method: 'post',
     url: '/alarms/query',
