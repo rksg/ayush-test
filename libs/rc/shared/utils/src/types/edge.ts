@@ -1,6 +1,6 @@
 import type { TimeStamp } from '@acx-ui/types'
 
-import { ApCompatibility, FirmwareCategory, SkippedVersion }                                                                                                                                                                                                                                                                   from '..'
+import { ApCompatibility, Compatibility, FirmwareCategory, SkippedVersion }                                                                                                                                                                                                                                                    from '..'
 import { ClusterHaFallbackScheduleTypeEnum, ClusterHaLoadDistributionEnum, ClusterHighAvailabilityModeEnum, ClusterNodeStatusEnum, CompatibilityEntityTypeEnum, EdgeIpModeEnum, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, EdgeStatusSeverityEnum, NodeClusterRoleEnum } from '../models/EdgeEnum'
 
 export type EdgeSerialNumber = string
@@ -414,7 +414,7 @@ export interface EdgeSdLanApCompatibilitiesResponse {
 }
 
 // ap incompatibility by model
-export type VenueEdgeServiceApCompatibility = Omit<ApCompatibility, 'id'> & {
+export type VenueEdgeServiceApCompatibility = Omit<Compatibility, 'id'> & {
   venueId: string
 }
 export interface EdgeServiceApCompatibility {
