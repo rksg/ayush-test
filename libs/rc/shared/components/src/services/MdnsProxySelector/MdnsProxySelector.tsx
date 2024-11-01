@@ -43,7 +43,7 @@ export function MdnsProxySelector (props: MdnsProxySelectorProps) {
             const data = featureType === MdnsProxyFeatureTypeEnum.EDGE
               ? (mdnsProxy as EdgeMdnsProxyViewData)
               : (mdnsProxy as MdnsProxyFormData)
-            return <Select.Option key={data.id}>{data.name}</Select.Option>
+            return <Select.Option key={data.id} value={data.id}>{data.name}</Select.Option>
           })}
         </Select>
       </Form.Item>
