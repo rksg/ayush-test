@@ -1,8 +1,5 @@
 import { Dispatch, SetStateAction, createContext, memo, useEffect, useMemo, useState } from 'react'
 
-
-import { log } from 'console'
-
 import { BaseQueryFn, QueryActionCreatorResult, QueryDefinition } from '@reduxjs/toolkit/query'
 import { DefaultOptionType }                                      from 'antd/lib/select'
 import { find, isNil }                                            from 'lodash'
@@ -197,18 +194,6 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
       }
     })
 
-  const { clusterData, isLoading: isClusterDataLoading } = useGetEdgeClusterListQuery(
-    { params, payload: { ...clusterDataDefaultPayload } },
-    {
-      selectFromResult: ({ data, isLoading }) => {
-        return {
-          clusterData: data?.data
-            .map(item => ({ label: item.name, value: item.clusterId, venueId: item.venueId })),
-          isLoading
-        }
-      }
-    })
-
   const { tunnelProfileOptions, isTunnelLoading } = useGetTunnelProfileViewDataListQuery({
     payload: tunnelProfileDefaultPayload
   }, {
@@ -295,6 +280,18 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
       !(usedSdlanVenueIds?.includes(item.value) || usedVenueIds?.includes(item.value))
     )
   }, [venues, usedVenueIds, usedSdlanVenueIds])
+
+  const { clusterData, isLoading: isClusterDataLoading } = useGetEdgeClusterListQuery(
+    { params, payload: { ...clusterDataDefaultPayload } },
+    {
+      selectFromResult: ({ data, isLoading }) => {
+        return {
+          clusterData: data?.data
+            .map(item => ({ label: item.name, value: item.clusterId, venueId: item.venueId })),
+          isLoading
+        }
+      }
+    })
 
   const clusterOptions = useMemo(() => {
     return clusterData?.filter(item =>
