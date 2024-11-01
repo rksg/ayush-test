@@ -1,8 +1,9 @@
 import { Dispatch, SetStateAction, createContext, memo, useEffect, useMemo, useState } from 'react'
 
 
+import { log } from 'console'
+
 import { BaseQueryFn, QueryActionCreatorResult, QueryDefinition } from '@reduxjs/toolkit/query'
-import Item                                                       from 'antd/lib/list/Item'
 import { DefaultOptionType }                                      from 'antd/lib/select'
 import { find, isNil }                                            from 'lodash'
 import { useParams }                                              from 'react-router-dom'
@@ -208,13 +209,6 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
       }
     })
 
-  const usedSdlanVenueIds = useMemo(() => {
-    return [...usedSdlanTunneledVenueIds,
-      clusterData?.filter(item => usedSdlanClusterIds.includes(item.value))
-        .map(item => item.venueId) ?? []
-    ]
-  }, [usedSdlanTunneledVenueIds, clusterData])
-
   const { tunnelProfileOptions, isTunnelLoading } = useGetTunnelProfileViewDataListQuery({
     payload: tunnelProfileDefaultPayload
   }, {
@@ -257,19 +251,6 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
     }
   })
 
-  const {
-    venues, isVenueOptionsLoading
-  } = useVenuesListQuery(
-    { payload: venueOptionsDefaultPayload }, {
-      selectFromResult: ({ data, isLoading }) => {
-        return {
-          venues: data?.data.filter(item => (item.edges ?? 0) > 0)
-            .map(item => ({ label: item.name, value: item.id })),
-          isVenueOptionsLoading: isLoading
-        }
-      }
-    })
-
   const { switchList, refetch: refetchSwitchesQuery } = useGetAvailableSwitchesQuery({
     params: { ...params, venueId }
   }, {
@@ -288,11 +269,31 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
       .map(item => ({ label: item.name, value: item.id }))
   }, [dpskData?.networkIds, dpskNetworkList, usedNetworkIds, usedSdlanNetworkIds])
 
-  const venueOptions = useMemo(() => {
-    if (isNil(usedVenueIds)) return []
 
-    return venues?.filter((item) => !usedVenueIds.includes(item.value))
-      .filter(item => !usedSdlanVenueIds.includes(item.value))
+  const {
+    venues, isVenueOptionsLoading
+  } = useVenuesListQuery(
+    { payload: venueOptionsDefaultPayload }, {
+      selectFromResult: ({ data, isLoading }) => {
+        return {
+          venues: data?.data.filter(item => (item.edges ?? 0) > 0)
+            .map(item => ({ label: item.name, value: item.id })),
+          isVenueOptionsLoading: isLoading
+        }
+      }
+    })
+
+  const usedSdlanVenueIds = useMemo(() => {
+    const sdlanClusterVenueIds = clusterData?.filter(item =>
+      usedSdlanClusterIds.includes(item.value))
+      .map(item => item.venueId) ?? []
+    return [...usedSdlanTunneledVenueIds, ...sdlanClusterVenueIds]
+  }, [usedSdlanTunneledVenueIds, usedSdlanClusterIds])
+
+  const venueOptions = useMemo(() => {
+    return venues?.filter(item =>
+      !(usedSdlanVenueIds?.includes(item.value) || usedVenueIds?.includes(item.value))
+    )
   }, [venues, usedVenueIds, usedSdlanVenueIds])
 
   const clusterOptions = useMemo(() => {

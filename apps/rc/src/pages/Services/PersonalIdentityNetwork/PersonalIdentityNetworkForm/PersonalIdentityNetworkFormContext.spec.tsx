@@ -1,6 +1,7 @@
 import { useContext } from 'react'
 
-import { rest } from 'msw'
+import { clone } from 'lodash'
+import { rest }  from 'msw'
 
 import { commonApi, edgeApi, edgeSdLanApi, pinApi, serviceApi } from '@acx-ui/rc/services'
 import {
@@ -208,6 +209,8 @@ describe('PersonalIdentityNetworkFormContext', () => {
   })
 
   it('should filter venue already bound with SD-LAN', async () => {
+    const edgeList = clone(mockEdgeClusterList)
+    edgeList.data[0].venueId = mockVenueOptionsForMutuallyExclusive.data[1].id
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
@@ -220,6 +223,10 @@ describe('PersonalIdentityNetworkFormContext', () => {
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
         (_req, res, ctx) => res(ctx.json({ data: mockSdLanDataForPinMutuallyExclusive }))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (_req, res, ctx) => res(ctx.json(edgeList))
       )
     )
 
@@ -239,7 +246,7 @@ describe('PersonalIdentityNetworkFormContext', () => {
     await waitFor(() =>
       expect(result.current.getVenueName('mock_venue_3')).toBe('Mock Venue 3'))
     await waitFor(() =>
-      expect(result.current.getVenueName('mock_venue_2')).toBe('Mock Venue 2'))
+      expect(result.current.getVenueName('mock_venue_2')).toBe(''))
     await waitFor(() =>
       expect(result.current.getVenueName('mock_venue_1')).toBe(''))
   })
