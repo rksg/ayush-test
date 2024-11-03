@@ -46,6 +46,8 @@ describe('HealthPieChart', () => {
   const mockSetChartKey = jest.fn()
   const mockSetPieFilter = jest.fn()
   const mockOnPieClick = jest.fn()
+  const mockOnLegendClick = jest.fn()
+  const mockSetPieList = jest.fn()
 
   it('should render correctly for many connectionFailures', async () => {
     mockGraphqlQuery(dataApiURL, 'Network', { data: mockConnectionFailureResponse })
@@ -60,8 +62,11 @@ describe('HealthPieChart', () => {
             valueFormatter={formatter('durationFormat')}
             setPieFilter={mockSetPieFilter}
             chartKey='nodes'
+            pieFilter={null}
             setChartKey={mockSetChartKey}
             onPieClick={mockOnPieClick}
+            onLegendClick={mockOnLegendClick}
+            setPieList={mockSetPieList}
           />,
         </div>
       </Provider>,
@@ -98,8 +103,11 @@ describe('HealthPieChart', () => {
             valueFormatter={formatter('countFormat')}
             setPieFilter={mockSetPieFilter}
             chartKey='nodes'
+            pieFilter={null}
             setChartKey={mockSetChartKey}
             onPieClick={mockOnPieClick}
+            onLegendClick={mockOnLegendClick}
+            setPieList={mockSetPieList}
           />,
         </div>
       </Provider>,
@@ -135,8 +143,11 @@ describe('HealthPieChart', () => {
             valueFormatter={formatter('countFormat')}
             setPieFilter={mockSetPieFilter}
             chartKey='wlans'
+            pieFilter={null}
             setChartKey={mockSetChartKey}
             onPieClick={mockOnPieClick}
+            onLegendClick={mockOnLegendClick}
+            setPieList={mockSetPieList}
           />,
         </div>
       </Provider>,
@@ -168,9 +179,12 @@ describe('HealthPieChart', () => {
             selectedStage='Authentication'
             valueFormatter={formatter('countFormat')}
             setPieFilter={mockSetPieFilter}
-            chartKey=''
+            chartKey='wlans'
+            pieFilter={null}
             setChartKey={mockSetChartKey}
             onPieClick={mockOnPieClick}
+            onLegendClick={mockOnLegendClick}
+            setPieList={mockSetPieList}
           />,
         </div>
       </Provider>,
@@ -202,8 +216,11 @@ describe('HealthPieChart', () => {
             valueFormatter={formatter('durationFormat')}
             setPieFilter={mockSetPieFilter}
             chartKey='nodes'
+            pieFilter={null}
             setChartKey={mockSetChartKey}
             onPieClick={mockOnPieClick}
+            onLegendClick={mockOnLegendClick}
+            setPieList={mockSetPieList}
           />,
         </div>
       </Provider>,

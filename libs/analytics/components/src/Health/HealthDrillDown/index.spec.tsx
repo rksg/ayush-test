@@ -16,14 +16,19 @@ import { HealthDrillDown } from '.'
 jest.mock('./healthPieChart', () => ({
   HealthPieChart: (props: {
     setChartKey: (key: string) => void,
-    onPieClick: (arg0: { rawKey?: string, name?: string }) => void
+    onPieClick: (key: { data: { rawKey?: string, name?: string } }) => void,
+    onLegendClick: (key: { rawKey?: string, name?: string }) => void
   }) => <div>
     PIE chart
     <button onClick={() => props.setChartKey('wlans')}>WLANS</button>
     <button onClick={() => props.setChartKey('nodes')}>Venues</button>
-    <button onClick={() => props.onPieClick({ rawKey: 'wlan1' })}>WLAN 1</button>
-    <button onClick={() => props.onPieClick({ rawKey: 'wlan2' })}>WLAN 2</button>
-    <button onClick={() => props.onPieClick({ name: 'Others' })}>Others</button>
+    <button onClick={() =>
+      props.onPieClick({ data: { rawKey: 'wlan1', name: 'wlan1' } })}>WLAN 1</button>
+    <button onClick={() =>
+      props.onPieClick({ data: { rawKey: 'wlan2', name: 'wlan2' } })}>WLAN 2</button>
+    <button onClick={() => props.onPieClick({ data: { name: 'Others' } })}>Others</button>
+    <button onClick={() =>
+      props.onLegendClick({ rawKey: 'wlan1 legend', name: 'wlan1 legend' })}>WLAN 1 Legend</button>
   </div>
 }))
 
@@ -82,14 +87,11 @@ describe('HealthDrillDown', () => {
     expect(await screen.findByText('PIE chart')).toBeVisible()
   })
 
-  it('should update pieFilter when pie chart is clicked', async () => {
-    const mockSetPieFilter = jest.fn()
+  it('should update pieFilter when chart is clicked', async () => {
     const mockSetChartKey = jest.fn()
-
     jest.spyOn(React, 'useState').mockImplementation(() => {
-      return ['wlans', mockSetChartKey] as const
+      return ['wlans', mockSetChartKey]
     })
-
     mockGraphqlQuery(dataApiURL, 'ConnectionDrilldown', { data: mockConnectionDrillDown })
     render(
       <Provider>
@@ -105,11 +107,90 @@ describe('HealthDrillDown', () => {
     expect(mockSetChartKey).toHaveBeenCalledWith('wlans')
     await fireEvent.click(screen.getByRole('button', { name: 'Venues' }))
     expect(mockSetChartKey).toHaveBeenCalledWith('nodes')
-    await fireEvent.click(screen.getByRole('button', { name: 'WLAN 1' }))
-    await fireEvent.click(screen.getByRole('button', { name: 'WLAN 2' }))
+    expect(screen.getByTestId('impactedClientsTable')).toBeInTheDocument()
+  })
 
-    await fireEvent.click(screen.getByRole('button', { name: 'Others' }))
-    expect(mockSetPieFilter).not.toHaveBeenCalledWith({ name: 'Others' })
+  it('should update pieFilter when pie is clicked', async () => {
+    const mockSetPieFilter = jest.fn()
+    jest.spyOn(React, 'useState').mockImplementation(() => {
+      return [{}, mockSetPieFilter]
+    })
+    mockGraphqlQuery(dataApiURL, 'ConnectionDrilldown', { data: mockConnectionDrillDown })
+    render(
+      <Provider>
+        <HealthDrillDown
+          filters={filters}
+          drilldownSelection='connectionFailure'
+        />
+      </Provider>
+    )
+
+    await fireEvent.click(await screen.findByRole('Association'))
+    await fireEvent.click(screen.getByRole('button', { name: 'WLAN 1' }))
+    expect(mockSetPieFilter).toHaveBeenCalledWith({ rawKey: 'wlan1', name: 'wlan1' })
+    expect(screen.getByTestId('impactedClientsTable')).toBeInTheDocument()
+  })
+
+  it('should update pieFilter when similar pie is clicked', async () => {
+    const mockSetPieFilter = jest.fn()
+    jest.spyOn(React, 'useState').mockImplementation(() => {
+      return [{ name: 'wlan1', rawKey: 'wlan1' }, mockSetPieFilter]
+    })
+    mockGraphqlQuery(dataApiURL, 'ConnectionDrilldown', { data: mockConnectionDrillDown })
+    render(
+      <Provider>
+        <HealthDrillDown
+          filters={filters}
+          drilldownSelection='connectionFailure'
+        />
+      </Provider>
+    )
+
+    await fireEvent.click(await screen.findByRole('Association'))
+    await fireEvent.click(screen.getByRole('button', { name: 'WLAN 1' }))
+    expect(mockSetPieFilter).toHaveBeenCalledWith(null)
+    expect(screen.getByTestId('impactedClientsTable')).toBeInTheDocument()
+  })
+
+  it('should update pieFilter when legend is clicked', async () => {
+    const mockSetPieFilter = jest.fn()
+    jest.spyOn(React, 'useState').mockImplementation(() => {
+      return [{}, mockSetPieFilter]
+    })
+    mockGraphqlQuery(dataApiURL, 'ConnectionDrilldown', { data: mockConnectionDrillDown })
+    render(
+      <Provider>
+        <HealthDrillDown
+          filters={filters}
+          drilldownSelection='connectionFailure'
+        />
+      </Provider>
+    )
+
+    await fireEvent.click(await screen.findByRole('Association'))
+    await fireEvent.click(screen.getByRole('button', { name: 'WLAN 1 Legend' }))
+    expect(mockSetPieFilter).toHaveBeenCalledWith({ rawKey: 'wlan1 legend', name: 'wlan1 legend' })
+    expect(screen.getByTestId('impactedClientsTable')).toBeInTheDocument()
+  })
+
+  it('should update pieFilter when similar legend is clicked', async () => {
+    const mockSetPieFilter = jest.fn()
+    jest.spyOn(React, 'useState').mockImplementation(() => {
+      return [{ rawKey: 'wlan1 legend', name: 'wlan1 legend' }, mockSetPieFilter]
+    })
+    mockGraphqlQuery(dataApiURL, 'ConnectionDrilldown', { data: mockConnectionDrillDown })
+    render(
+      <Provider>
+        <HealthDrillDown
+          filters={filters}
+          drilldownSelection='connectionFailure'
+        />
+      </Provider>
+    )
+
+    await fireEvent.click(await screen.findByRole('Association'))
+    await fireEvent.click(screen.getByRole('button', { name: 'WLAN 1 Legend' }))
+    expect(mockSetPieFilter).toHaveBeenCalledWith(null)
     expect(screen.getByTestId('impactedClientsTable')).toBeInTheDocument()
   })
 
@@ -117,7 +198,7 @@ describe('HealthDrillDown', () => {
     it('should render on null xPos', () => {
       render(<Point $xPos={null} data-testId='point'/>)
       const point = screen.getByTestId('point')
-      expect(point).toHaveStyle('left: 50%;')
+      expect(point).toHaveStyle('left: 50%')
     })
   })
 })

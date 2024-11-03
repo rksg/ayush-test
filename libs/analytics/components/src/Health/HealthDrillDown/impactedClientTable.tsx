@@ -28,16 +28,18 @@ export const ImpactedClientsTable = ({
   drillDownSelection,
   pieFilter,
   chartKey,
-  filteredData
+  pieList
 }: {
   filters: AnalyticsFilter;
   selectedStage: Stages;
   drillDownSelection: DrilldownSelection;
   pieFilter: PieChartData | null;
   chartKey: TabKeyType;
-  filteredData: string[];
+  pieList: PieChartData[];
 }) => {
   const { $t } = useIntl()
+  const filteredData = pieList?.map((data: PieChartData) => data.rawKey)
+    .filter((rawKey: string) => rawKey !== 'Others')
   const fieldMap = {
     connectionFailure: 'topNImpactedClientbyConnFailure',
     ttc: 'topNImpactedClientbyAvgTTC'

@@ -6,6 +6,7 @@ import { DateRange }                        from '@acx-ui/utils'
 import type { AnalyticsFilter }             from '@acx-ui/utils'
 
 import {  mockImpactedClient }  from './__tests__/fixtures'
+import { PieChartData }         from './healthPieChart'
 import { ImpactedClientsTable } from './impactedClientTable'
 import { api }                  from './services'
 
@@ -24,6 +25,7 @@ describe('ImpactedClientsTable', () => {
       <Provider>
         <ImpactedClientsTable
           filters={filters}
+          pieList={[]}
           drillDownSelection='connectionFailure'
           selectedStage='Association'
           pieFilter={null}
@@ -53,6 +55,7 @@ describe('ImpactedClientsTable', () => {
       <Provider>
         <ImpactedClientsTable
           filters={filters}
+          pieList={[]}
           drillDownSelection='connectionFailure'
           selectedStage='Association'
           pieFilter={null}
@@ -69,6 +72,10 @@ describe('ImpactedClientsTable', () => {
     expect(await screen.findByText('0 Impacted Clients')).toBeVisible()
   })
   it('should show only top 10 impacted clients', async () => {
+    const samplePieList = [
+      { rawKey: 'Others', name: 'Others' },
+      { rawKey: 'secondpie', name: 'secondpie' }
+    ] as PieChartData[]
     mockGraphqlQuery(dataApiURL, 'Network', {
       data: {
         network: {
@@ -91,6 +98,7 @@ describe('ImpactedClientsTable', () => {
       <Provider>
         <ImpactedClientsTable
           filters={filters}
+          pieList={samplePieList}
           drillDownSelection='connectionFailure'
           selectedStage='Association'
           pieFilter={null}
