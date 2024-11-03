@@ -4,6 +4,7 @@ import { useIntl }           from 'react-intl'
 import { Button, PageHeader, SummaryCard, Card }                         from '@acx-ui/components'
 import { useAaaPolicyQuery, useGetEthernetPortProfileViewDataListQuery } from '@acx-ui/rc/services'
 import {
+  EthernetPortAuthType,
   PolicyOperation,
   PolicyType,
   getEthernetPortAuthTypeString,
@@ -113,7 +114,14 @@ export const EthernetPortProfileDetail = () => {
       content: () => {
         return (ethernetPortProfileData?.bypassMacAddressAuthentication)? 'On' : 'Off'
       }
-    }
+    },
+    ...(ethernetPortProfileData?.authType === EthernetPortAuthType.MAC_BASED ?
+      [{
+        title: $t({ defaultMessage: 'Dynamic VLAN' }),
+        content: () => {
+          return (ethernetPortProfileData?.dynamicVlanEnabled)? 'On' : 'Off'
+        }
+      }] : [])
   ]
 
   return (<>
