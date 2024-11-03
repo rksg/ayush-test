@@ -5,10 +5,10 @@ import { Button }                     from 'antd'
 import { useIntl }                    from 'react-intl'
 
 import { useApplyConversationsMutation, useUpdateConversationsMutation } from '@acx-ui/rc/services'
-import { RuckusAiConfigurationStepsEnum, RuckusAiConversation }                    from '@acx-ui/rc/utils'
+import { RuckusAiConfigurationStepsEnum, RuckusAiConversation }          from '@acx-ui/rc/utils'
 
 import { RuckusAiStepsEnum } from '..'
-import { GptStepsForm } from '../styledComponents'
+import { GptStepsForm }      from '../styledComponents'
 
 import { SummaryStep }    from './Steps/SummaryStep'
 import { VlanStep }       from './Steps/VlanStep'
