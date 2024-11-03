@@ -1295,6 +1295,7 @@ describe('EditPortDrawer', () => {
     // TODO: check other status
   })
 
+  /* eslint-disable max-len */
   describe('Flexible Authentication (base on Switch RBAC FF enabled)', () => {
     beforeEach(() => {
       jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_RBAC_API)
@@ -1367,6 +1368,11 @@ describe('EditPortDrawer', () => {
       })
 
       describe('Single edit', () => {
+        const switchList = [{
+          id: 'c0:c5:20:aa:32:79',
+          firmware: 'SPR10010f_b467'
+        }] as SwitchRow[]
+
         it('should render correctly', async () => {
           render(<Provider>
             <EditPortDrawer
@@ -1376,10 +1382,7 @@ describe('EditPortDrawer', () => {
               isMultipleEdit={selectedPorts?.slice(0, 1)?.length > 1}
               isVenueLevel={false}
               selectedPorts={selectedPorts?.slice(0, 1)}
-              switchList={[{
-                id: 'c0:c5:20:aa:32:79',
-                firmware: 'SPR10010f_b467'
-              }] as SwitchRow[]}
+              switchList={switchList}
               authProfiles={flexAuthList.data}
             />
           </Provider>, {
@@ -1398,7 +1401,6 @@ describe('EditPortDrawer', () => {
           expect(await screen.findByTestId('flex-enable-switch')).not.toBeDisabled()
         })
 
-        // eslint-disable-next-line max-len
         it('should render correctly when the firmware of the selected switch is below the 10.0.10f version', async () => {
           render(<Provider>
             <EditPortDrawer
@@ -1451,10 +1453,7 @@ describe('EditPortDrawer', () => {
               isMultipleEdit={selectedPorts?.slice(0, 1)?.length > 1}
               isVenueLevel={false}
               selectedPorts={selectedPorts?.slice(0, 1)}
-              switchList={[{
-                id: 'c0:c5:20:aa:32:79',
-                firmware: 'SPR10010f_b467'
-              }] as SwitchRow[]}
+              switchList={switchList}
               authProfiles={flexAuthList.data}
             />
           </Provider>, {
@@ -1501,10 +1500,7 @@ describe('EditPortDrawer', () => {
               isMultipleEdit={selectedPorts?.slice(0, 1)?.length > 1}
               isVenueLevel={false}
               selectedPorts={selectedPorts?.slice(0, 1)}
-              switchList={[{
-                id: 'c0:c5:20:aa:32:79',
-                firmware: 'SPR10010f_b467'
-              }] as SwitchRow[]}
+              switchList={switchList}
               authProfiles={flexAuthList.data}
             />
           </Provider>, {
@@ -1528,7 +1524,52 @@ describe('EditPortDrawer', () => {
           expect(await screen.findByLabelText('Auth Default VLAN')).toHaveValue('10')
         })
 
-        // eslint-disable-next-line max-len
+        it('should load profile data after selecting a profile and clicking the customize button', async () => {
+          mockServer.use(
+            rest.post(SwitchRbacUrlsInfo.getPortSetting.url,
+              (_, res, ctx) => res(ctx.json([{
+                ...portSetting[0],
+                flexibleAuthenticationEnabled: false,
+                authenticationCustomize: false
+              }]))
+            )
+          )
+
+          render(<Provider>
+            <EditPortDrawer
+              visible={true}
+              setDrawerVisible={jest.fn()}
+              isCloudPort={false}
+              isMultipleEdit={selectedPorts?.slice(0, 1)?.length > 1}
+              isVenueLevel={false}
+              selectedPorts={selectedPorts?.slice(0, 1)}
+              switchList={switchList}
+              authProfiles={flexAuthList.data}
+            />
+          </Provider>, {
+            route: {
+              params,
+              path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/overview/ports'
+            }
+          })
+          await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+          await screen.findByText('Edit Port')
+          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByTestId('flex-enable-switch')).not.toBeChecked()
+          await userEvent.click(await screen.findByTestId('flex-enable-switch'))
+          expect(await screen.findByText('Customize')).toBeVisible()
+
+          const profileCombobox = await screen.findByRole('combobox', { name: /Profile/ })
+          await userEvent.click(profileCombobox)
+          await userEvent.click(await screen.findByText('Profile03--auth10-r3-c4-g99'))
+          expect(await screen.findByTestId('auth-profile-card')).toBeVisible()
+
+          await userEvent.click(await screen.findByText('Customize'))
+          expect(await screen.findByLabelText(/Auth Default VLAN/)).toHaveValue(flexAuthList?.data[2].authDefaultVlan.toString())
+          expect(await screen.findByLabelText(/Restricted VLAN/)).toHaveValue(flexAuthList?.data[2].restrictedVlan?.toString())
+          expect(await screen.findByLabelText(/Guest VLAN/)).toHaveValue(flexAuthList?.data[2].guestVlan.toString())
+        })
+
         it('should display an alert message if AAA RADIUS has not been configured when applying port settings', async () => {
           const profile01 = _.omit(flexAuthList.data[0], ['id', 'profileName'])
           mockServer.use(
@@ -1552,10 +1593,7 @@ describe('EditPortDrawer', () => {
               isMultipleEdit={selectedPorts?.slice(0, 1)?.length > 1}
               isVenueLevel={false}
               selectedPorts={selectedPorts?.slice(0, 1)}
-              switchList={[{
-                id: 'c0:c5:20:aa:32:79',
-                firmware: 'SPR10010f_b467'
-              }] as SwitchRow[]}
+              switchList={switchList}
               authProfiles={flexAuthList.data}
             />
           </Provider>, {
@@ -1578,7 +1616,6 @@ describe('EditPortDrawer', () => {
 
           await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
           expect(await screen.findByText('Modify Port?')).toBeVisible()
-          // eslint-disable-next-line max-len
           expect(await screen.findByText(/Authentication needs RADIUS server and AAA policy to support/)).toBeVisible()
 
           await userEvent.click(await screen.findByRole('button', { name: 'Apply Changes' }))
@@ -1594,10 +1631,17 @@ describe('EditPortDrawer', () => {
       })
 
       describe('Multiple edit', () => {
-        it('should render correctly when the auth profile is applied', async () => {
+        const switchList = [{
+          id: 'c0:c5:20:aa:32:79',
+          firmware: 'SPR10010f_b467'
+        }, {
+          id: '58:fb:96:0e:82:8a',
+          firmware: 'SPR10010f_b467'
+        }] as SwitchRow[]
+
+        it('should render correctly when either of the selected ports is uplink port', async () => {
           const profile01 = _.omit(flexAuthList.data[0], ['id', 'profileName'])
           mockServer.use(
-            // rest.post(SwitchRbacUrlsInfo.getPortSetting.url,
             rest.post(SwitchRbacUrlsInfo.getPortsSetting.url,
               (_, res, ctx) => res(ctx.json([{
                 ...portSetting[0],
@@ -1608,7 +1652,64 @@ describe('EditPortDrawer', () => {
                 authenticationCustomize: false,
                 ...profile01
               }, {
-                ...portSetting[1],
+                ...portSetting[2],
+                taggedVlans: ['2'],
+                untaggedVlan: '1',
+                flexibleAuthenticationEnabled: true,
+                authenticationProfileId: '7de28fc02c0245648dfd58590884bad2',
+                authenticationCustomize: false,
+                ...profile01
+              }]))
+            ),
+            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
+              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
+            )
+          )
+
+          render(<Provider>
+            <EditPortDrawer
+              visible={true}
+              setDrawerVisible={jest.fn()}
+              isCloudPort={true}
+              isMultipleEdit={selectedPorts?.slice(0, 2)?.length > 1}
+              isVenueLevel={true}
+              selectedPorts={selectedPorts?.slice(0, 2)}
+              switchList={switchList}
+              authProfiles={flexAuthList.data}
+            />
+          </Provider>, {
+            route: {
+              params,
+              path: '/:tenantId/t/venues/:venueId/venue-details/devices/switch/port'
+            }
+          })
+          await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+          await screen.findByText('Edit Port')
+
+          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
+          expect(await screen.findByTestId('flex-enable-switch')).toBeDisabled()
+          expect(await screen.findByText('Customize')).toBeVisible()
+
+          await userEvent.hover(await screen.findByTestId('flex-enable-switch'))
+          expect(await screen.findByRole('tooltip', { hidden: false }))
+            .toHaveTextContent(/Authentication cannot be enabled on the uplink port/)
+        })
+
+        it('should render correctly when either of the selected switch firmware versions is below 10.0.10f', async () => {
+          const profile01 = _.omit(flexAuthList.data[0], ['id', 'profileName'])
+          mockServer.use(
+            rest.post(SwitchRbacUrlsInfo.getPortsSetting.url,
+              (_, res, ctx) => res(ctx.json([{
+                ...portSetting[0],
+                taggedVlans: ['2'],
+                untaggedVlan: '1',
+                flexibleAuthenticationEnabled: true,
+                authenticationProfileId: '7de28fc02c0245648dfd58590884bad2',
+                authenticationCustomize: false,
+                ...profile01
+              }, {
+                ...portSetting[2],
                 taggedVlans: ['2'],
                 untaggedVlan: '1',
                 flexibleAuthenticationEnabled: true,
@@ -1632,7 +1733,7 @@ describe('EditPortDrawer', () => {
               selectedPorts={selectedPorts?.slice(0, 2)}
               switchList={[{
                 id: 'c0:c5:20:aa:32:79',
-                firmware: 'SPR10010f_b467'
+                firmware: 'SPS09010j_cd3'
               }, {
                 id: '58:fb:96:0e:82:8a',
                 firmware: 'SPR10010f_b467'
@@ -1649,10 +1750,125 @@ describe('EditPortDrawer', () => {
           await screen.findByText('Edit Port')
 
           expect(await screen.findByText('Authentication')).toBeVisible()
+          // expect(screen.queryAllByText(/Multiple values/)).toHaveLength(16)
+
+          await userEvent.click(
+            await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox')
+          )
+          expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
+          expect(await screen.findByTestId('flex-enable-switch')).toBeDisabled()
+
+          await userEvent.hover(await screen.findByTestId('flex-enable-switch'))
+          expect(await screen.findByRole('tooltip', { hidden: false }))
+            .toHaveTextContent(/The firmware version on the selected switches is at least 10.0.10f or higher/)
+        })
+
+        it('should render correctly when either of the selected ports is an untagged port', async () => {
+          mockServer.use(
+            rest.post(SwitchRbacUrlsInfo.getPortsSetting.url,
+              (_, res, ctx) => res(ctx.json([{
+                ...portSetting[0],
+                taggedVlans: ['2'],
+                untaggedVlan: '3',
+                flexibleAuthenticationEnabled: false,
+                authenticationCustomize: false
+              }, {
+                ...portSetting[2],
+                taggedVlans: ['2'],
+                untaggedVlan: '3',
+                flexibleAuthenticationEnabled: false,
+                authenticationCustomize: false
+              }]))
+            ),
+            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
+              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
+            )
+          )
+
+          render(<Provider>
+            <EditPortDrawer
+              visible={true}
+              setDrawerVisible={jest.fn()}
+              isCloudPort={false}
+              isMultipleEdit={selectedPorts?.slice(0, 2)?.length > 1}
+              isVenueLevel={true}
+              selectedPorts={selectedPorts?.slice(0, 2)}
+              switchList={switchList}
+              authProfiles={flexAuthList.data}
+            />
+          </Provider>, {
+            route: {
+              params,
+              path: '/:tenantId/t/venues/:venueId/venue-details/devices/switch/port'
+            }
+          })
+          await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+          await screen.findByText('Edit Port')
+
+          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
+          expect(await screen.findByTestId('flex-enable-switch')).toBeDisabled()
+
+          await userEvent.hover(await screen.findByTestId('flex-enable-switch'))
+          expect(await screen.findByRole('tooltip', { hidden: false }))
+            .toHaveTextContent(/This port is Untagged port/)
+        })
+
+        it('should render correctly when the auth profile is applied', async () => {
+          const profile01 = _.omit(flexAuthList.data[0], ['id', 'profileName'])
+          const profile03 = _.omit(flexAuthList.data[2], ['id', 'profileName'])
+          const authFields = Object.keys(profile03)
+          const ignoreFields = _.difference(allMultipleEditableFields, ['authenticationProfileId', 'flexibleAuthenticationEnabled', ...authFields])
+
+          mockServer.use(
+            rest.post(SwitchRbacUrlsInfo.getPortsSetting.url,
+              (_, res, ctx) => res(ctx.json([{
+                ...portSetting[0],
+                taggedVlans: ['2'],
+                untaggedVlan: '1',
+                flexibleAuthenticationEnabled: true,
+                authenticationProfileId: '7de28fc02c0245648dfd58590884bad2',
+                authenticationCustomize: false,
+                ...profile01
+              }, {
+                ...portSetting[2],
+                taggedVlans: ['2'],
+                untaggedVlan: '2',
+                flexibleAuthenticationEnabled: true,
+                authenticationProfileId: '7de28fc02c0245648dfd58590884bad2',
+                authenticationCustomize: false,
+                ...profile01
+              }]))
+            ),
+            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
+              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
+            )
+          )
+
+          render(<Provider>
+            <EditPortDrawer
+              visible={true}
+              setDrawerVisible={jest.fn()}
+              isCloudPort={false}
+              isMultipleEdit={selectedPorts?.slice(0, 2)?.length > 1}
+              isVenueLevel={true}
+              selectedPorts={selectedPorts?.slice(0, 2)}
+              switchList={switchList}
+              authProfiles={flexAuthList.data}
+            />
+          </Provider>, {
+            route: {
+              params,
+              path: '/:tenantId/t/venues/:venueId/venue-details/devices/switch/port'
+            }
+          })
+          await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+          await screen.findByText('Edit Port')
+
+          expect(await screen.findByText('Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
           expect(await screen.findByText('Customize')).toBeVisible()
-          // expect(screen.queryAllByText(/Multiple values/)).toHaveLength(0)
 
           const profileCombobox = await screen.findByRole('combobox', { name: /Profile/ })
           expect(profileCombobox).toBeDisabled()
@@ -1667,7 +1883,1036 @@ describe('EditPortDrawer', () => {
           expect(await screen.findByTestId('flex-enable-switch')).not.toBeDisabled()
           expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
           expect(profileCombobox).not.toBeDisabled()
+
+          await userEvent.click(profileCombobox)
+          await userEvent.click(await screen.findByText('Profile03--auth10-r3-c4-g99'))
+
+          await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+          expect(mockedSavePortsSetting).toHaveBeenLastCalledWith({
+            enableRbac: true,
+            option: { skip: false },
+            params: {
+              tenantId: 'tenant-id',
+              venueId: 'a98653366d2240b9ae370e48fab3a9a1'
+            },
+            payload: [{
+              switchId: 'c0:c5:20:aa:32:79',
+              ignoreFields: ignoreFields.concat(['revert']).toString(),
+              port: '5',
+              ports: ['5'],
+              authenticationProfileId: 'dccf7d0272024d3ca03bcf5b48497685',
+              flexibleAuthenticationEnabled: true,
+              ...profile03
+            }, {
+              switchId: '58:fb:96:0e:82:8a',
+              ignoreFields: ignoreFields.concat(['revert']).toString(),
+              port: '1/1/5',
+              ports: ['1/1/5'],
+              authenticationProfileId: 'dccf7d0272024d3ca03bcf5b48497685',
+              flexibleAuthenticationEnabled: true,
+              ...profile03
+            }]
+          })
         })
+
+        it('should handle field changes correctly', async () => {
+          mockServer.use(
+            rest.post(SwitchRbacUrlsInfo.getPortsSetting.url,
+              (_, res, ctx) => res(ctx.json([{
+                ...portSetting[0],
+                taggedVlans: ['2'],
+                untaggedVlan: '1',
+                flexibleAuthenticationEnabled: false,
+                authenticationCustomize: false,
+                switchLevelAuthDefaultVlan: 3
+              }, {
+                ...portSetting[2],
+                taggedVlans: ['2'],
+                untaggedVlan: '2',
+                flexibleAuthenticationEnabled: false,
+                authenticationCustomize: false,
+                switchLevelAuthDefaultVlan: 4
+              }]))
+            ),
+            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
+              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
+            )
+          )
+
+          render(<Provider>
+            <EditPortDrawer
+              visible={true}
+              setDrawerVisible={jest.fn()}
+              isCloudPort={false}
+              isMultipleEdit={selectedPorts?.slice(0, 2)?.length > 1}
+              isVenueLevel={true}
+              selectedPorts={selectedPorts?.slice(0, 2)}
+              switchList={switchList}
+              authProfiles={flexAuthList.data}
+            />
+          </Provider>, {
+            route: {
+              params,
+              path: '/:tenantId/t/venues/:venueId/venue-details/devices/switch/port'
+            }
+          })
+          await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+          await screen.findByText('Edit Port')
+
+          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
+          expect(await screen.findByTestId('flex-enable-switch')).not.toBeChecked()
+
+          await userEvent.click(
+            await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox')
+          )
+          await userEvent.click(await screen.findByTestId('flex-enable-switch'))
+
+          expect(await screen.findByText('Customize')).toBeVisible()
+          await userEvent.click(await screen.findByText('Customize'))
+
+          expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
+          expect(await screen.findByText('Use Profile Settings')).toBeVisible()
+          expect(await screen.findByTestId('authDefaultVlan-override-checkbox')).toBeChecked() //checked by default
+
+          const portControlCombobox = await screen.findByRole('combobox', { name: /Port Control/ })
+          const typeCombobox = await screen.findByRole('combobox', { name: 'Type' })
+          expect(portControlCombobox).not.toBeDisabled()
+          expect(typeCombobox).not.toBeDisabled()
+
+          await userEvent.click(portControlCombobox)
+          await userEvent.click(await screen.findByText('Force Authorized'))
+
+          expect(await screen.findByTestId('authDefaultVlan-override-checkbox')).toBeChecked()
+          expect(await screen.findByTestId('authDefaultVlan-override-checkbox')).toBeDisabled()
+          expect(await screen.findByTestId('authFailAction-override-checkbox')).toBeChecked()
+          expect(await screen.findByTestId('authFailAction-override-checkbox')).toBeDisabled()
+          expect(await screen.findByTestId('restrictedVlan-override-checkbox')).toBeChecked()
+          expect(await screen.findByTestId('restrictedVlan-override-checkbox')).toBeDisabled()
+
+          await userEvent.click(typeCombobox)
+          await userEvent.click(await screen.findByText(/802.1x and MAC-AUTH/))
+
+          expect(await screen.findByTestId('changeAuthOrder-override-checkbox')).not.toBeDisabled()
+          expect(await screen.findByTestId('dot1xPortControl-override-checkbox')).toBeChecked()
+          expect(await screen.findByTestId('dot1xPortControl-override-checkbox')).toBeDisabled()
+        })
+
+        it('should handle untagged vlan changes correctly', async () => {
+          mockServer.use(
+            rest.post(SwitchRbacUrlsInfo.getPortsSetting.url,
+              (_, res, ctx) => res(ctx.json([{
+                ...portSetting[0],
+                taggedVlans: ['3'],
+                untaggedVlan: '1', //defaultVlan = 1
+                flexibleAuthenticationEnabled: false,
+                authenticationCustomize: false
+              }, {
+                ...portSetting[2],
+                taggedVlans: ['3'],
+                untaggedVlan: '2', //defaultVlan = 2
+                flexibleAuthenticationEnabled: false,
+                authenticationCustomize: false
+              }]))
+            ),
+            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
+              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
+            )
+          )
+
+          render(<Provider>
+            <EditPortDrawer
+              visible={true}
+              setDrawerVisible={jest.fn()}
+              isCloudPort={false}
+              isMultipleEdit={selectedPorts?.slice(0, 2)?.length > 1}
+              isVenueLevel={true}
+              selectedPorts={selectedPorts?.slice(0, 2)}
+              switchList={switchList}
+              authProfiles={flexAuthList.data}
+            />
+          </Provider>, {
+            route: {
+              params,
+              path: '/:tenantId/t/venues/:venueId/venue-details/devices/switch/port'
+            }
+          })
+          await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+          await screen.findByText('Edit Port')
+
+          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
+          expect(await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox')).not.toBeDisabled()
+          await userEvent.click(await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox'))
+          await userEvent.click(await screen.findByTestId('flex-enable-switch'))
+
+          // Edit Port VLANs
+          // enable override portVlans
+          await userEvent.click(await screen.findByTestId('portVlans-override-checkbox'))
+          await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+          const dialog = await screen.findByTestId('select-port-vlans')
+
+          const untaggedTabPanel = await screen.findByRole('tabpanel', { hidden: false })
+          await userEvent.click(await within(untaggedTabPanel).findByText(/VLAN-ID-2/))
+          await userEvent.click(await within(dialog).findByRole('button', { name: 'OK' }))
+
+          // port is untagged port, so disable the flex auth setting automatically
+          expect(await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox')).toBeDisabled()
+          expect(await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox')).not.toBeChecked()
+
+          // disable override portVlans
+          await userEvent.click(await screen.findByTestId('portVlans-override-checkbox'))
+          expect(await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox')).not.toBeDisabled()
+        })
+
+        it('should validate guest vlan correctly', async () => {
+          mockServer.use(
+            rest.post(SwitchRbacUrlsInfo.getPortsSetting.url,
+              (_, res, ctx) => res(ctx.json([{
+                ...portSetting[0],
+                taggedVlans: ['2'],
+                untaggedVlan: '1',
+                flexibleAuthenticationEnabled: false,
+                authenticationCustomize: false,
+                switchLevelAuthDefaultVlan: 3
+              }, {
+                ...portSetting[2],
+                taggedVlans: ['2'],
+                untaggedVlan: '2',
+                flexibleAuthenticationEnabled: false,
+                authenticationCustomize: false,
+                switchLevelAuthDefaultVlan: 4
+              }]))
+            ),
+            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
+              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
+            )
+          )
+
+          render(<Provider>
+            <EditPortDrawer
+              visible={true}
+              setDrawerVisible={jest.fn()}
+              isCloudPort={false}
+              isMultipleEdit={selectedPorts?.slice(0, 2)?.length > 1}
+              isVenueLevel={true}
+              selectedPorts={selectedPorts?.slice(0, 2)}
+              switchList={switchList}
+              authProfiles={flexAuthList.data}
+            />
+          </Provider>, {
+            route: {
+              params,
+              path: '/:tenantId/t/venues/:venueId/venue-details/devices/switch/port'
+            }
+          })
+          await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+          await screen.findByText('Edit Port')
+
+          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
+          expect(await screen.findByTestId('flex-enable-switch')).not.toBeChecked()
+
+          await userEvent.click(
+            await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox')
+          )
+          await userEvent.click(await screen.findByTestId('flex-enable-switch'))
+
+          expect(await screen.findByText('Customize')).toBeVisible()
+          await userEvent.click(await screen.findByText('Customize'))
+
+          expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
+          expect(await screen.findByText('Use Profile Settings')).toBeVisible()
+          expect(await screen.findByTestId('authDefaultVlan-override-checkbox')).toBeChecked() //checked by default
+
+          await userEvent.click(
+            await screen.findByTestId('guestVlan-override-checkbox')
+          )
+
+          await userEvent.type(await screen.findByLabelText(/Auth Default VLAN/), '5')
+
+          const guestVlanInput = await screen.findByLabelText('Guest VLAN')
+          await userEvent.type(guestVlanInput, '1')
+          expect(await screen.findByText('VLAN ID can not be the same as Default VLAN')).toBeVisible()
+
+          await userEvent.clear(guestVlanInput)
+          await userEvent.type(guestVlanInput, '3')
+          expect(await screen.findByText('VLAN ID can not be the same as Switch Level Auth Default VLAN')).toBeVisible()
+
+          await userEvent.clear(guestVlanInput)
+          await userEvent.type(guestVlanInput, '5')
+          expect(await screen.findByText('VLAN ID can not be the same as Auth Default VLAN')).toBeVisible()
+        })
+
+        it('should validate VLANs correctly when the Auth Default VLAN has multiple values', async () => {
+          mockServer.use(
+            rest.post(SwitchRbacUrlsInfo.getPortsSetting.url,
+              (_, res, ctx) => res(ctx.json([{
+                ...portSetting[0],
+                taggedVlans: ['2'],
+                untaggedVlan: '1',
+                flexibleAuthenticationEnabled: true,
+                authenticationCustomize: true,
+                authDefaultVlan: 7,
+                switchLevelAuthDefaultVlan: 3,
+                authFailAction: 'restricted_vlan',
+                restrictedVlan: 5,
+                authTimeoutAction: 'critical_vlan',
+                criticalVlan: 5
+              }, {
+                ...portSetting[2],
+                taggedVlans: ['2'],
+                untaggedVlan: '2',
+                flexibleAuthenticationEnabled: true,
+                authenticationCustomize: true,
+                authDefaultVlan: 8,
+                switchLevelAuthDefaultVlan: 4,
+                authFailAction: 'restricted_vlan',
+                restrictedVlan: 5,
+                authTimeoutAction: 'critical_vlan',
+                criticalVlan: 5
+              }]))
+            ),
+            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
+              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
+            )
+          )
+
+          render(<Provider>
+            <EditPortDrawer
+              visible={true}
+              setDrawerVisible={jest.fn()}
+              isCloudPort={false}
+              isMultipleEdit={selectedPorts?.slice(0, 2)?.length > 1}
+              isVenueLevel={true}
+              selectedPorts={selectedPorts?.slice(0, 2)}
+              switchList={switchList}
+              authProfiles={flexAuthList.data}
+            />
+          </Provider>, {
+            route: {
+              params,
+              path: '/:tenantId/t/venues/:venueId/venue-details/devices/switch/port'
+            }
+          })
+          await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+          await screen.findByText('Edit Port')
+
+          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
+          expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
+          expect(await screen.findByText('Use Profile Settings')).toBeVisible()
+
+          await userEvent.click(
+            await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox')
+          )
+
+          expect(await screen.findByTestId('authDefaultVlan-override-checkbox')).not.toBeChecked()
+          await userEvent.click(
+            await screen.findByTestId('restrictedVlan-override-checkbox')
+          )
+          await userEvent.click(
+            await screen.findByTestId('criticalVlan-override-checkbox')
+          )
+          await userEvent.click(
+            await screen.findByTestId('guestVlan-override-checkbox')
+          )
+
+          await userEvent.type(await screen.findByLabelText('Restricted VLAN'), '9')
+          await userEvent.type(await screen.findByLabelText('Critical VLAN'), '9')
+
+          const guestVlanInput = await screen.findByLabelText('Guest VLAN')
+          await userEvent.type(guestVlanInput, '1')
+          expect(await screen.findByText('VLAN ID can not be the same as Default VLAN')).toBeVisible()
+
+          await userEvent.clear(guestVlanInput)
+          await userEvent.type(guestVlanInput, '3')
+          expect(await screen.findByText('VLAN ID can not be the same as Switch Level Auth Default VLAN')).toBeVisible()
+
+          await userEvent.clear(guestVlanInput)
+          await userEvent.type(guestVlanInput, '7')
+          expect(await screen.findByText('VLAN ID can not be the same as Auth Default VLAN')).toBeVisible()
+        })
+
+        it('should validate VLANs correctly when the guest vlan is inconsistent', async () => {
+          mockServer.use(
+            rest.post(SwitchRbacUrlsInfo.getPortsSetting.url,
+              (_, res, ctx) => res(ctx.json([{
+                ...portSetting[0],
+                taggedVlans: ['2'],
+                untaggedVlan: '1',
+                flexibleAuthenticationEnabled: true,
+                authenticationCustomize: true,
+                authDefaultVlan: 7,
+                switchLevelAuthDefaultVlan: 3,
+                guestVlan: 99,
+                enableAuthPorts: ['1/1/9']
+              }, {
+                ...portSetting[2],
+                taggedVlans: ['2'],
+                untaggedVlan: '2',
+                flexibleAuthenticationEnabled: true,
+                authenticationCustomize: true,
+                authDefaultVlan: 8,
+                switchLevelAuthDefaultVlan: 4
+              }]))
+            ),
+            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
+              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
+            )
+          )
+
+          render(<Provider>
+            <EditPortDrawer
+              visible={true}
+              setDrawerVisible={jest.fn()}
+              isCloudPort={false}
+              isMultipleEdit={selectedPorts?.slice(0, 2)?.length > 1}
+              isVenueLevel={true}
+              selectedPorts={selectedPorts?.slice(0, 2)}
+              switchList={switchList}
+              authProfiles={flexAuthList.data}
+            />
+          </Provider>, {
+            route: {
+              params,
+              path: '/:tenantId/t/venues/:venueId/venue-details/devices/switch/port'
+            }
+          })
+          await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+          await screen.findByText('Edit Port')
+
+          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
+          expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
+          expect(await screen.findByText('Use Profile Settings')).toBeVisible()
+
+          await userEvent.click(
+            await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox')
+          )
+
+          expect(await screen.findByTestId('authDefaultVlan-override-checkbox')).not.toBeChecked()
+          await userEvent.click(
+            await screen.findByTestId('guestVlan-override-checkbox')
+          )
+
+          const guestVlanInput = await screen.findByLabelText('Guest VLAN')
+          await userEvent.type(guestVlanInput, '9')
+          expect(await screen.findByText(/Guest-VLAN is set to/)).toBeVisible()
+        })
+
+        it('should not apply different profile auth default vlan', async () => {
+          const profile01 = _.omit(flexAuthList.data[0], ['id', 'profileName'])
+          mockServer.use(
+            rest.post(SwitchRbacUrlsInfo.getPortsSetting.url,
+              (_, res, ctx) => res(ctx.json([{
+                ...portSetting[0],
+                taggedVlans: ['2'],
+                untaggedVlan: '1',
+                enableAuthPorts: ['1/1/9'],
+                authenticationProfileId: '7de28fc02c0245648dfd58590884bad2',
+                flexibleAuthenticationEnabled: true,
+                authenticationCustomize: false,
+                profileAuthDefaultVlan: profile01.authDefaultVlan,
+                ...profile01
+              }, {
+                ...portSetting[2],
+                taggedVlans: ['2'],
+                untaggedVlan: '2',
+                authenticationProfileId: '7de28fc02c0245648dfd58590884bad2',
+                flexibleAuthenticationEnabled: true,
+                authenticationCustomize: false,
+                profileAuthDefaultVlan: profile01.authDefaultVlan,
+                ...profile01
+              }]))
+            ),
+            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
+              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
+            )
+          )
+
+          render(<Provider>
+            <EditPortDrawer
+              visible={true}
+              setDrawerVisible={jest.fn()}
+              isCloudPort={false}
+              isMultipleEdit={selectedPorts?.slice(0, 2)?.length > 1}
+              isVenueLevel={true}
+              selectedPorts={selectedPorts?.slice(0, 2)}
+              switchList={switchList}
+              authProfiles={flexAuthList.data}
+            />
+          </Provider>, {
+            route: {
+              params,
+              path: '/:tenantId/t/venues/:venueId/venue-details/devices/switch/port'
+            }
+          })
+          await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+          await screen.findByText('Edit Port')
+
+          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
+          expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
+          expect(await screen.findByText('Customize')).toBeVisible()
+
+          const profileCombobox = await screen.findByRole('combobox', { name: /Profile/ })
+          expect(profileCombobox).toBeDisabled()
+
+          await userEvent.click(
+            await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox')
+          )
+          await userEvent.click(
+            await screen.findByTestId('authenticationProfileId-override-checkbox')
+          )
+
+          expect(await screen.findByTestId('flex-enable-switch')).not.toBeDisabled()
+          expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
+          expect(profileCombobox).not.toBeDisabled()
+
+          await userEvent.click(profileCombobox)
+          await userEvent.click(await screen.findByText('Profile02--auth1-guest5'))
+
+          expect(await screen.findByText(/Another Auth-Default VLAN is already defined on this switch/)).toBeVisible()
+        })
+
+        it('should not apply different guest vlan when applying profile', async () => {
+          const profile01 = _.omit(flexAuthList.data[0], ['id', 'profileName'])
+          mockServer.use(
+            rest.post(SwitchRbacUrlsInfo.getPortsSetting.url,
+              (_, res, ctx) => res(ctx.json([{
+                ...portSetting[0],
+                taggedVlans: ['2'],
+                untaggedVlan: '1',
+                enableAuthPorts: ['1/1/9'],
+                authenticationProfileId: '7de28fc02c0245648dfd58590884bad2',
+                flexibleAuthenticationEnabled: true,
+                authenticationCustomize: false,
+                profileAuthDefaultVlan: profile01.authDefaultVlan,
+                ...profile01
+              }, {
+                ...portSetting[2],
+                taggedVlans: ['2'],
+                untaggedVlan: '2',
+                flexibleAuthenticationEnabled: false,
+                authenticationCustomize: false
+              }]))
+            ),
+            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
+              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
+            )
+          )
+
+          render(<Provider>
+            <EditPortDrawer
+              visible={true}
+              setDrawerVisible={jest.fn()}
+              isCloudPort={false}
+              isMultipleEdit={selectedPorts?.slice(0, 2)?.length > 1}
+              isVenueLevel={true}
+              selectedPorts={selectedPorts?.slice(0, 2)}
+              switchList={switchList}
+              authProfiles={flexAuthList.data}
+            />
+          </Provider>, {
+            route: {
+              params,
+              path: '/:tenantId/t/venues/:venueId/venue-details/devices/switch/port'
+            }
+          })
+          await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+          await screen.findByText('Edit Port')
+
+          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(screen.queryByTestId('flex-enable-switch')).toBeNull() //Multiple Values
+
+          await userEvent.click(
+            await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox')
+          )
+          await userEvent.click(await screen.findByTestId('flex-enable-switch'))
+          await userEvent.click(
+            await screen.findByTestId('authenticationProfileId-override-checkbox')
+          )
+
+          const profileCombobox = await screen.findByRole('combobox', { name: /Profile/ })
+          expect(await screen.findByTestId('flex-enable-switch')).not.toBeDisabled()
+          expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
+          expect(profileCombobox).not.toBeDisabled()
+
+          await userEvent.click(profileCombobox)
+          await userEvent.click(await screen.findByText('Profile03--auth10-r3-c4-g99'))
+
+          expect(await screen.findByText(/Please select another profile that has the matching Guest VLAN in order to proceed/)).toBeVisible()
+        })
+
+        it('should apply different profile auth default vlan when selected ports matches all enabled authentication ports', async () => {
+          const profile01 = _.omit(flexAuthList.data[0], ['id', 'profileName'])
+          mockServer.use(
+            rest.post(SwitchRbacUrlsInfo.getPortsSetting.url,
+              (_, res, ctx) => res(ctx.json([{
+                ...portSetting[0],
+                taggedVlans: ['2'],
+                untaggedVlan: '1',
+                enableAuthPorts: ['1/1/5'],
+                authenticationProfileId: '7de28fc02c0245648dfd58590884bad2',
+                flexibleAuthenticationEnabled: true,
+                authenticationCustomize: false,
+                profileAuthDefaultVlan: profile01.authDefaultVlan,
+                ...profile01
+              }, {
+                ...portSetting[2],
+                taggedVlans: ['2'],
+                untaggedVlan: '2',
+                enableAuthPorts: ['1/1/5'],
+                authenticationProfileId: '7de28fc02c0245648dfd58590884bad2',
+                flexibleAuthenticationEnabled: true,
+                authenticationCustomize: false,
+                profileAuthDefaultVlan: profile01.authDefaultVlan,
+                ...profile01
+              }]))
+            ),
+            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
+              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
+            )
+          )
+
+          render(<Provider>
+            <EditPortDrawer
+              visible={true}
+              setDrawerVisible={jest.fn()}
+              isCloudPort={false}
+              isMultipleEdit={selectedPorts?.slice(0, 2)?.length > 1}
+              isVenueLevel={true}
+              selectedPorts={selectedPorts?.slice(0, 2)}
+              switchList={switchList}
+              authProfiles={flexAuthList.data}
+            />
+          </Provider>, {
+            route: {
+              params,
+              path: '/:tenantId/t/venues/:venueId/venue-details/devices/switch/port'
+            }
+          })
+          await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+          await screen.findByText('Edit Port')
+
+          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
+          expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
+          expect(await screen.findByText('Customize')).toBeVisible()
+
+          const profileCombobox = await screen.findByRole('combobox', { name: /Profile/ })
+          expect(profileCombobox).toBeDisabled()
+
+          await userEvent.click(
+            await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox')
+          )
+          await userEvent.click(
+            await screen.findByTestId('authenticationProfileId-override-checkbox')
+          )
+
+          expect(await screen.findByTestId('flex-enable-switch')).not.toBeDisabled()
+          expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
+          expect(profileCombobox).not.toBeDisabled()
+
+          await userEvent.click(profileCombobox)
+          await userEvent.click(await screen.findByText('Profile02--auth1-guest5'))
+
+          expect(await screen.findByText(/Auth Default VLAN can not be the same as Default VLAN/)).toBeVisible()
+
+          await userEvent.click(profileCombobox)
+          await userEvent.click(await screen.findByText('Profile04--auth100-g5'))
+          expect(await screen.findByTestId('auth-profile-card')).toBeVisible()
+
+        })
+
+        it('should apply different guest vlan from porfile when selected ports matches all enabled authentication ports', async () => {
+          const profile01 = _.omit(flexAuthList.data[0], ['id', 'profileName'])
+          mockServer.use(
+            rest.post(SwitchRbacUrlsInfo.getPortsSetting.url,
+              (_, res, ctx) => res(ctx.json([{
+                ...portSetting[0],
+                taggedVlans: ['2'],
+                untaggedVlan: '1',
+                enableAuthPorts: ['1/1/5'],
+                authenticationProfileId: '7de28fc02c0245648dfd58590884bad2',
+                flexibleAuthenticationEnabled: true,
+                authenticationCustomize: false,
+                profileAuthDefaultVlan: profile01.authDefaultVlan,
+                ...profile01
+              }, {
+                ...portSetting[2],
+                taggedVlans: ['2'],
+                untaggedVlan: '2',
+                enableAuthPorts: ['1/1/5'],
+                authenticationProfileId: '7de28fc02c0245648dfd58590884bad2',
+                flexibleAuthenticationEnabled: true,
+                authenticationCustomize: false,
+                profileAuthDefaultVlan: profile01.authDefaultVlan,
+                ...profile01
+              }]))
+            ),
+            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
+              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
+            )
+          )
+
+          render(<Provider>
+            <EditPortDrawer
+              visible={true}
+              setDrawerVisible={jest.fn()}
+              isCloudPort={false}
+              isMultipleEdit={selectedPorts?.slice(0, 2)?.length > 1}
+              isVenueLevel={true}
+              selectedPorts={selectedPorts?.slice(0, 2)}
+              switchList={switchList}
+              authProfiles={flexAuthList.data}
+            />
+          </Provider>, {
+            route: {
+              params,
+              path: '/:tenantId/t/venues/:venueId/venue-details/devices/switch/port'
+            }
+          })
+          await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+          await screen.findByText('Edit Port')
+
+          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
+          expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
+          expect(await screen.findByText('Customize')).toBeVisible()
+
+          const profileCombobox = await screen.findByRole('combobox', { name: /Profile/ })
+          expect(profileCombobox).toBeDisabled()
+
+          await userEvent.click(
+            await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox')
+          )
+          await userEvent.click(
+            await screen.findByTestId('authenticationProfileId-override-checkbox')
+          )
+
+          expect(await screen.findByTestId('flex-enable-switch')).not.toBeDisabled()
+          expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
+          expect(profileCombobox).not.toBeDisabled()
+
+          await userEvent.click(profileCombobox)
+          await userEvent.click(await screen.findByText('Profile02--auth1-guest5'))
+
+          expect(await screen.findByText(/Auth Default VLAN can not be the same as Default VLAN/)).toBeVisible()
+
+          await userEvent.click(profileCombobox)
+          await userEvent.click(await screen.findByText('Profile03--auth10-r3-c4-g99'))
+          expect(await screen.findByTestId('auth-profile-card')).toBeVisible()
+
+        })
+
+        it('should apply different guest vlan from customized when selected ports matches all enabled authentication ports', async () => {
+          const profile01 = _.omit(flexAuthList.data[0], ['id', 'profileName'])
+          const ignoreFields = _.difference(allMultipleEditableFields, ['flexibleAuthenticationEnabled', 'guestVlan'])
+
+          mockServer.use(
+            rest.post(SwitchRbacUrlsInfo.getPortsSetting.url,
+              (_, res, ctx) => res(ctx.json([{
+                ...portSetting[0],
+                taggedVlans: ['2'],
+                untaggedVlan: '1',
+                enableAuthPorts: ['1/1/5'],
+                authenticationProfileId: '7de28fc02c0245648dfd58590884bad2',
+                flexibleAuthenticationEnabled: true,
+                authenticationCustomize: false,
+                profileAuthDefaultVlan: profile01.authDefaultVlan,
+                ...profile01
+              }, {
+                ...portSetting[2],
+                taggedVlans: ['2'],
+                untaggedVlan: '2',
+                enableAuthPorts: ['1/1/5'],
+                flexibleAuthenticationEnabled: true,
+                authenticationCustomize: true,
+                authenticationType: '802.1x_and_macauth',
+                changeAuthOrder: true,
+                dot1xPortControl: 'auto',
+                authDefaultVlan: 10,
+                guestVlan: 9,
+                authFailAction: 'block',
+                authTimeoutAction: 'none'
+              }]))
+            ),
+            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
+              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
+            )
+          )
+
+          render(<Provider>
+            <EditPortDrawer
+              visible={true}
+              setDrawerVisible={jest.fn()}
+              isCloudPort={false}
+              isMultipleEdit={selectedPorts?.slice(0, 2)?.length > 1}
+              isVenueLevel={true}
+              selectedPorts={selectedPorts?.slice(0, 2)}
+              switchList={switchList}
+              authProfiles={flexAuthList.data}
+            />
+          </Provider>, {
+            route: {
+              params,
+              path: '/:tenantId/t/venues/:venueId/venue-details/devices/switch/port'
+            }
+          })
+          await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+          await screen.findByText('Edit Port')
+
+          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
+          expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
+          expect(await screen.findByText('Customize')).toBeVisible()
+
+          await userEvent.click(
+            await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox')
+          )
+          await userEvent.click(await screen.findByText('Customize'))
+          await userEvent.click(
+            await screen.findByTestId('restrictedVlan-override-checkbox')
+          )
+          await userEvent.click(
+            await screen.findByTestId('criticalVlan-override-checkbox')
+          )
+          await userEvent.click(
+            await screen.findByTestId('guestVlan-override-checkbox')
+          )
+
+          const guestVlanInput = await screen.findByLabelText('Guest VLAN')
+          await userEvent.type(guestVlanInput, '7')
+
+          await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+          expect(mockedSavePortsSetting).toHaveBeenLastCalledWith({
+            enableRbac: true,
+            option: { skip: false },
+            params: {
+              tenantId: 'tenant-id',
+              venueId: 'a98653366d2240b9ae370e48fab3a9a1'
+            },
+            payload: [{
+              switchId: 'c0:c5:20:aa:32:79',
+              ignoreFields: ignoreFields.concat(['revert']).toString(),
+              port: '5',
+              ports: ['5'],
+              flexibleAuthenticationEnabled: true,
+              guestVlan: '7'
+            }, {
+              switchId: '58:fb:96:0e:82:8a',
+              ignoreFields: ignoreFields.concat(['revert']).toString(),
+              port: '1/1/5',
+              ports: ['1/1/5'],
+              flexibleAuthenticationEnabled: true,
+              guestVlan: '7'
+            }]
+          })
+        })
+
+        it('should override VLANs correctly', async () => {
+          const ignoreFields = _.difference(allMultipleEditableFields, ['flexibleAuthenticationEnabled', 'restrictedVlan', 'criticalVlan', 'guestVlan'])
+
+          mockServer.use(
+            rest.post(SwitchRbacUrlsInfo.getPortsSetting.url,
+              (_, res, ctx) => res(ctx.json([{
+                ...portSetting[0],
+                taggedVlans: ['2'],
+                untaggedVlan: '1',
+                enableAuthPorts: ['1/1/5'],
+                flexibleAuthenticationEnabled: true,
+                authenticationCustomize: true,
+                authenticationType: '802.1x_and_macauth',
+                changeAuthOrder: true,
+                dot1xPortControl: 'auto',
+                authDefaultVlan: 10,
+                authFailAction: 'restricted_vlan',
+                restrictedVlan: 8,
+                authTimeoutAction: 'critical_vlan',
+                criticalVlan: 8,
+                guestVlan: 8
+              }, {
+                ...portSetting[2],
+                taggedVlans: ['2'],
+                untaggedVlan: '2',
+                enableAuthPorts: ['1/1/5'],
+                flexibleAuthenticationEnabled: true,
+                authenticationCustomize: true,
+                authenticationType: '802.1x',
+                dot1xPortControl: 'auto',
+                authDefaultVlan: 10,
+                authFailAction: 'restricted_vlan',
+                restrictedVlan: 7,
+                authTimeoutAction: 'critical_vlan',
+                criticalVlan: 7,
+                guestVlan: 7
+              }]))
+            ),
+            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
+              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
+            )
+          )
+
+          render(<Provider>
+            <EditPortDrawer
+              visible={true}
+              setDrawerVisible={jest.fn()}
+              isCloudPort={false}
+              isMultipleEdit={selectedPorts?.slice(0, 2)?.length > 1}
+              isVenueLevel={true}
+              selectedPorts={selectedPorts?.slice(0, 2)}
+              switchList={switchList}
+              authProfiles={flexAuthList.data}
+            />
+          </Provider>, {
+            route: {
+              params,
+              path: '/:tenantId/t/venues/:venueId/venue-details/devices/switch/port'
+            }
+          })
+          await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+          await screen.findByText('Edit Port')
+
+          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
+          expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
+
+          await userEvent.click(
+            await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox')
+          )
+          await userEvent.click(
+            await screen.findByTestId('restrictedVlan-override-checkbox')
+          )
+          await userEvent.click(
+            await screen.findByTestId('criticalVlan-override-checkbox')
+          )
+          await userEvent.click(
+            await screen.findByTestId('guestVlan-override-checkbox')
+          )
+
+          const restrictedVlanInput = await screen.findByLabelText('Restricted VLAN')
+          await userEvent.type(restrictedVlanInput, '7')
+          const criticalVlanInput = await screen.findByLabelText('Critical VLAN')
+          await userEvent.type(criticalVlanInput, '7')
+          const guestVlanInput = await screen.findByLabelText('Guest VLAN')
+          await userEvent.type(guestVlanInput, '7')
+
+          await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+          expect(mockedSavePortsSetting).toHaveBeenLastCalledWith({
+            enableRbac: true,
+            option: { skip: false },
+            params: {
+              tenantId: 'tenant-id',
+              venueId: 'a98653366d2240b9ae370e48fab3a9a1'
+            },
+            payload: [{
+              switchId: 'c0:c5:20:aa:32:79',
+              ignoreFields: ignoreFields.concat(['revert']).toString(),
+              port: '5',
+              ports: ['5'],
+              flexibleAuthenticationEnabled: true,
+              restrictedVlan: '7',
+              criticalVlan: '7',
+              guestVlan: '7'
+            }, {
+              switchId: '58:fb:96:0e:82:8a',
+              ignoreFields: ignoreFields.concat(['revert']).toString(),
+              port: '1/1/5',
+              ports: ['1/1/5'],
+              flexibleAuthenticationEnabled: true,
+              restrictedVlan: '7',
+              criticalVlan: '7',
+              guestVlan: '7'
+            }]
+          })
+        })
+
+        it('should validate correctly when VLANs have multiple values', async () => {
+          mockServer.use(
+            rest.post(SwitchRbacUrlsInfo.getPortsSetting.url,
+              (_, res, ctx) => res(ctx.json([{
+                ...portSetting[0],
+                taggedVlans: ['2'],
+                untaggedVlan: '1',
+                enableAuthPorts: ['1/1/5'],
+                flexibleAuthenticationEnabled: true,
+                authenticationCustomize: true,
+                authenticationType: '802.1x_and_macauth',
+                changeAuthOrder: true,
+                dot1xPortControl: 'auto',
+                authDefaultVlan: 10,
+                authFailAction: 'restricted_vlan',
+                restrictedVlan: 8,
+                authTimeoutAction: 'critical_vlan',
+                criticalVlan: 8,
+                guestVlan: 8
+              }, {
+                ...portSetting[2],
+                taggedVlans: ['2'],
+                untaggedVlan: '2',
+                enableAuthPorts: ['1/1/5'],
+                flexibleAuthenticationEnabled: true,
+                authenticationCustomize: true,
+                authenticationType: '802.1x',
+                dot1xPortControl: 'auto',
+                authDefaultVlan: 10,
+                authFailAction: 'restricted_vlan',
+                restrictedVlan: 7,
+                authTimeoutAction: 'critical_vlan',
+                criticalVlan: 7,
+                guestVlan: 7
+              }]))
+            ),
+            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
+              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
+            )
+          )
+
+          render(<Provider>
+            <EditPortDrawer
+              visible={true}
+              setDrawerVisible={jest.fn()}
+              isCloudPort={false}
+              isMultipleEdit={selectedPorts?.slice(0, 2)?.length > 1}
+              isVenueLevel={true}
+              selectedPorts={selectedPorts?.slice(0, 2)}
+              switchList={switchList}
+              authProfiles={flexAuthList.data}
+            />
+          </Provider>, {
+            route: {
+              params,
+              path: '/:tenantId/t/venues/:venueId/venue-details/devices/switch/port'
+            }
+          })
+          await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+          await screen.findByText('Edit Port')
+
+          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
+          expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
+
+          await userEvent.click(
+            await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox')
+          )
+          await userEvent.click(
+            await screen.findByTestId('authDefaultVlan-override-checkbox')
+          )
+
+          const authVlanInput = await screen.findByLabelText(/Auth Default VLAN/)
+          await userEvent.clear(authVlanInput)
+          await userEvent.type(authVlanInput, '7')
+          await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+
+          expect(mockedSavePortsSetting).not.toBeCalled()
+          // auth default vlan cannot be the same as either of the other VLANs
+          expect(await screen.findByText(/Please enter Restricted VLAN/)).toBeVisible()
+          expect(await screen.findByText(/Please enter Critical VLAN/)).toBeVisible()
+          expect(await screen.findByText(/Please enter Guest VLAN/)).toBeVisible()
+        })
+
       })
     })
   })

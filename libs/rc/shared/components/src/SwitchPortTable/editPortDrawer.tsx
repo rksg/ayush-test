@@ -34,6 +34,8 @@ import {
 } from '@acx-ui/rc/services'
 import {
   EditPortMessages,
+  FlexAuthMessages,
+  FlexAuthVlanLabel,
   FlexibleAuthentication,
   LldpQosModel,
   MultipleEditPortMessages,
@@ -64,6 +66,7 @@ import {
   authFailActionTypeLabel,
   AuthTimeoutAction,
   authTimeoutActionTypeLabel,
+  checkVlanDiffFromTargetVlan,
   getAuthfieldDisabled,
   PortControl,
   portControlTypeLabel
@@ -76,7 +79,7 @@ import {
   AggregatePortSettings,
   aggregatePortSettings,
   checkMultipleVlansDifferences,
-  checkVlanConsistencyWithGuestVlan,
+  checkGuestVlanConsistency,
   checkVlanDiffFromAuthDefaultVlan,
   checkVlanDiffFromSwitchDefaultVlan,
   checkVlanDiffFromSwitchAuthDefaultVlan,
@@ -129,7 +132,7 @@ export const allMultipleEditableFields = [
   'name', 'poeClass', 'poeEnable', 'poePriority', 'portEnable', 'portSpeed',
   'rstpAdminEdgePort', 'stpBpduGuard', 'stpRootGuard', 'taggedVlans', 'voiceVlan',
   'lldpQos', 'tags', 'untaggedVlan', 'poeBudget', 'portProtected',
-  'flexibleAuthenticationEnabled', 'authenticationProfileId',
+  'flexibleAuthenticationEnabled', 'authenticationCustomize', 'authenticationProfileId',
   'authDefaultVlan', 'guestVlan', 'authenticationType', 'changeAuthOrder', 'dot1xPortControl',
   'restrictedVlan', 'criticalVlan', 'authFailAction', 'authTimeoutAction'
 ]
@@ -546,25 +549,42 @@ export function EditPortDrawer ({
 
     //TODO: wait for API
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    // portsSetting = portsSetting.map((p, index) => {
-    //   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    //   const i = p.switchMac === 'c0:c5:20:aa:32:55' ? 0 : 1 // c0:c5:20:aa:32:79 c0:c5:20:aa:32:55
-    //   return {
-    //     ...p,
-    //     switchLevelAuthDefaultVlan: (3 + i),
-    //     guestVlan: i ? 6 : 66, //(4 + i),
-    //     flexibleAuthenticationEnabled: i ? true : false,
-    //     shouldAlertAaaAndRadiusNotApply: false,
-    //     enableAuthPorts: ['1/1/3'], // index === 0 ? ['1/1/2'] : ['1/1/3'],
+    portsSetting = portsSetting.map((p, index) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const i = p.switchMac === 'c0:c5:20:aa:32:55' ? 0 : 1 // c0:c5:20:aa:32:79 c0:c5:20:aa:32:55
+      return {
+        ...p
+        // switchLevelAuthDefaultVlan: (3 + i),
+        // guestVlan: i ? 6 : 66, //(4 + i),
+        // flexibleAuthenticationEnabled: i ? true : false,
+        // shouldAlertAaaAndRadiusNotApply: false,
+        // enableAuthPorts: ['1/1/3'], // index === 0 ? ['1/1/2'] : ['1/1/3'],
 
-    //     authenticationCustomize: false,
-    //     authenticationProfileId: i ? '' : '7de28fc02c0245648dfd58590884bad2',
-    //     //profileAuthDefaultVlan: 10 + i, //(10+i),
-    //     authDefaultVlan: i ? 10 : 30,
-    //     restrictedVlan: i ? 20 : 30,
-    //     criticalVlan: i ? 20 : 40
-    //   }
-    // })
+        // authenticationCustomize: false,
+        // authenticationProfileId: i ? '' : '7de28fc02c0245648dfd58590884bad2',
+        // //profileAuthDefaultVlan: 10 + i, //(10+i),
+        // authDefaultVlan: i ? 10 : 30,
+        // restrictedVlan: i ? 20 : 30,
+        // criticalVlan: i ? 20 : 40
+
+        // flexibleAuthenticationEnabled: true,
+        // authenticationCustomize: true,
+        // authDefaultVlan: (7 + i),
+        // switchLevelAuthDefaultVlan: (3 + i)
+
+        // flexibleAuthenticationEnabled: true,
+        //         authenticationCustomize: true,
+        //         authenticationType: '802.1x_and_macauth',
+        //         changeAuthOrder: true,
+        //         dot1xPortControl: 'auto',
+        //        ...( i ?  { authDefaultVlan: 10 } : {}),
+        //         authFailAction: 'restricted_vlan',
+        //         restrictedVlan: 8 + i,
+        //         authTimeoutAction: 'critical_vlan',
+        //         criticalVlan: 8 + i,
+        //         guestVlan: 8 + i
+      }
+    })
 
     const vlansValue = getMultipleVlanValue(
       selectedPorts, vlansByVenue, portsSetting, defaultVlan, switchesDefaultVlan
@@ -592,7 +612,7 @@ export function EditPortDrawer ({
     ])
     const aggregatedData = isSwitchFlexAuthEnabled
       ? aggregatePortSettings(portsSetting, switchesDefaultVlan, hasMultipleValue) : {}
-    // console.log('aggregatedData: ', aggregatedData)
+    // console.log('multi aggregatedData: ', aggregatedData)
 
     setDisablePoeCapability(poeCapabilityDisabled)
     setDisableCyclePoeCapability(cyclePoeMultiPortsDisabled)
@@ -847,35 +867,19 @@ export function EditPortDrawer ({
       } : {}
     }
 
-    // try {
-    // } catch (err) {
-    //   console.log(err) // eslint-disable-line no-console
-    // }
-
     const { transformedValues, ignoreFields } = transformData(values)
-    const payload = switches.map((item) => {
-      const ports = selectedPorts
-        .filter(p => p.switchSerial === item)
-        .map(p => p.portIdentifier)
 
-      return isSwitchRbacEnabled ? {
-        ...transformedValues,
-        switchId: item,
-        port: ports?.[0],
-        ports: ports,
-        // ...(transformedValues?.untaggedVlan === defaultVlanText && {
-        //   untaggedVlan: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
-        // }),
-        // ...(transformedValues?.voiceVlan === defaultVlanText && {
-        //   voiceVlan: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
-        // }),
-        ...getDefaultVlanMapping('untaggedVlan', item),
-        ...getDefaultVlanMapping('voiceVlan', item),
-        ignoreFields: ignoreFields.toString()
-      } : {
-        switchId: item,
-        port: {
+    try {
+      const payload = switches.map((item) => {
+        const ports = selectedPorts
+          .filter(p => p.switchSerial === item)
+          .map(p => p.portIdentifier)
+
+        return isSwitchRbacEnabled ? {
           ...transformedValues,
+          switchId: item,
+          port: ports?.[0],
+          ports: ports,
           // ...(transformedValues?.untaggedVlan === defaultVlanText && {
           //   untaggedVlan: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
           // }),
@@ -884,28 +888,44 @@ export function EditPortDrawer ({
           // }),
           ...getDefaultVlanMapping('untaggedVlan', item),
           ...getDefaultVlanMapping('voiceVlan', item),
-          ignoreFields: ignoreFields.toString(),
-          port: ports?.[0],
-          ports: ports
+          ignoreFields: ignoreFields.toString()
+        } : {
+          switchId: item,
+          port: {
+            ...transformedValues,
+            // ...(transformedValues?.untaggedVlan === defaultVlanText && {
+            //   untaggedVlan: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
+            // }),
+            // ...(transformedValues?.voiceVlan === defaultVlanText && {
+            //   voiceVlan: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
+            // }),
+            ...getDefaultVlanMapping('untaggedVlan', item),
+            ...getDefaultVlanMapping('voiceVlan', item),
+            ignoreFields: ignoreFields.toString(),
+            port: ports?.[0],
+            ports: ports
+          }
         }
-      }
-    })
+      })
 
-    // console.log('payload: ', payload)
+      // console.log('payload: ', payload)
 
-    await savePortsSetting({
-      params: { tenantId, venueId: switchDetail?.venueId },
-      payload,
-      enableRbac: isSwitchRbacEnabled,
-      option: { skip: !switchDetail?.venueId }
-    }).unwrap()
-    store.dispatch(
-      switchApi.util.invalidateTags([
-        { type: 'SwitchPort', id: 'LIST' },
-        { type: 'SwitchPort', id: 'Setting' }
-      ])
-    )
-    onClose()
+      await savePortsSetting({
+        params: { tenantId, venueId: switchDetail?.venueId },
+        payload,
+        enableRbac: isSwitchRbacEnabled,
+        option: { skip: !switchDetail?.venueId }
+      }).unwrap()
+      store.dispatch(
+        switchApi.util.invalidateTags([
+          { type: 'SwitchPort', id: 'LIST' },
+          { type: 'SwitchPort', id: 'Setting' }
+        ])
+      )
+      onClose()
+    } catch (err) {
+      console.log(err) // eslint-disable-line no-console
+    }
   }
 
   const onCyclePoe = async () => {
@@ -1035,6 +1055,32 @@ export function EditPortDrawer ({
           setHasMultipleValue(hasMultipleValue.filter(v =>
             (v !== 'taggedVlans' && v !== 'untaggedVlan' && v !== 'voiceVlan'))
           )
+        }
+      } else if (changedField === 'portVlansCheckbox' && changedValue && isMultipleEdit) {
+        const isFlexAuthEnabled = form.getFieldValue('flexibleAuthenticationEnabled')
+        // eslint-disable-next-line max-len
+        const isFlexAuthEnabledOverride = form.getFieldValue('flexibleAuthenticationEnabledCheckbox')
+        // const relatedFields = [
+        //   'flexibleAuthenticationEnabled', 'authenticationProfileId', 'profileAuthDefaultVlan',
+        //   'authenticationType', 'changeAuthOrder', 'dot1xPortControl', 'authDefaultVlan',
+        //   'restrictedVlan', 'criticalVlan', 'authFailAction', 'authTimeoutAction', 'guestVlan'
+        // ]
+        if (isFlexAuthEnabledOverride || isFlexAuthEnabled) {
+          const resetFieldValues = {
+            ...form.getFieldsValue(),
+            flexibleAuthenticationEnabled: false,
+            flexibleAuthenticationEnabledCheckbox: false
+            // ...(relatedFields.reduce((result, key) => {
+            //   return {
+            //     ...result,
+            //     [`${key}Checkbox`]: false
+            //   }
+            // }, {}))
+          }
+          // setTimeout(() => {
+          //   form.setFieldsValue(resetFieldValues)
+          // }, 200)
+          form.setFieldsValue(resetFieldValues)
         }
       }
     }
@@ -1226,8 +1272,10 @@ export function EditPortDrawer ({
                         disabled={getFieldDisabled('authenticationCustomize')}
                         onClick={() => handleClickCustomize({
                           ...commonRequiredProps,
+                          selectedPorts,
                           authenticationCustomize,
-                          authenticationProfileId, authProfiles, switches
+                          authenticationProfileId,
+                          authProfiles
                         })}
                       >{
                           authenticationCustomize
@@ -1244,8 +1292,6 @@ export function EditPortDrawer ({
 
           { flexibleAuthenticationEnabled && !authenticationCustomize &&
           <Space style={{ display: 'block', marginLeft: isMultipleEdit ? '24px' : '0' }}>
-            {/* <Form.Item name='profileAuthDefaultVlan' hidden children={<></>} /> */}
-            {/* <Form.Item name='guestVlan' hidden children={<></>} /> */}
             { getFieldTemplate(
               <Form.Item
                 {...getFormItemLayout(isMultipleEdit)}
@@ -1392,7 +1438,7 @@ export function EditPortDrawer ({
                 initialValue=''
                 validateFirst
                 rules={[
-                  ...(dot1xPortControl === PortControl.AUTO ? [
+                  ...((dot1xPortControl === PortControl.AUTO || isMultipleEdit) ? [
                     { required: true },
                     { validator: (_:unknown, value: string) =>
                       validateVlanExceptReservedVlanId(value)
@@ -1470,7 +1516,9 @@ export function EditPortDrawer ({
                       field: 'restrictedVlan',
                       vlanType: $t({ defaultMessage: 'Restricted VLAN' }),
                       selectedPorts,
-                      aggregateData: aggregatePortsData
+                      aggregateData: aggregatePortsData,
+                      isMultipleEdit,
+                      form
                     })
                   }] : [
                     ...(authFailAction === AuthFailAction.RESTRICTED_VLAN
@@ -1482,10 +1530,19 @@ export function EditPortDrawer ({
                         checkVlanDiffFromSwitchDefaultVlan(value, aggregatePortsData)
                       },
                       { validator: (_:unknown, value: string) =>
-                        checkVlanDiffFromAuthDefaultVlan(value, aggregatePortsData)
+                        checkVlanDiffFromSwitchAuthDefaultVlan(value, aggregatePortsData)
                       },
                       { validator: (_:unknown, value: string) =>
-                        checkVlanDiffFromSwitchAuthDefaultVlan(value, aggregatePortsData)
+                        // eslint-disable-next-line max-len
+                        isOverrideFieldNotChecked({ field: 'authDefaultVlan', ...commonRequiredProps })
+                          ? checkVlanDiffFromAuthDefaultVlan(value, aggregatePortsData)
+                          : checkVlanDiffFromTargetVlan(
+                            value, authDefaultVlan,
+                            $t(FlexAuthMessages.VLAN_CANNOT_SAME_AS_TARGET_VLAN, {
+                              sourceVlan: $t(FlexAuthVlanLabel.VLAN_ID),
+                              targetVlan: $t(FlexAuthVlanLabel.AUTH_DEFAULT_VLAN)
+                            })
+                          )
                       }] : []
                     )])
                 ]}
@@ -1533,7 +1590,9 @@ export function EditPortDrawer ({
                       field: 'criticalVlan',
                       vlanType: $t({ defaultMessage: 'Critical VLAN' }),
                       selectedPorts,
-                      aggregateData: aggregatePortsData
+                      aggregateData: aggregatePortsData,
+                      isMultipleEdit,
+                      form
                     })
                   }] : [
                     ...(authTimeoutAction === AuthTimeoutAction.CRITICAL_VLAN
@@ -1548,7 +1607,16 @@ export function EditPortDrawer ({
                         checkVlanDiffFromSwitchAuthDefaultVlan(value, aggregatePortsData)
                       },
                       { validator: (_:unknown, value: string) =>
-                        checkVlanDiffFromAuthDefaultVlan(value, aggregatePortsData)
+                        // eslint-disable-next-line max-len
+                        isOverrideFieldNotChecked({ field: 'authDefaultVlan', ...commonRequiredProps })
+                          ? checkVlanDiffFromAuthDefaultVlan(value, aggregatePortsData)
+                          : checkVlanDiffFromTargetVlan(
+                            value, authDefaultVlan,
+                            $t(FlexAuthMessages.VLAN_CANNOT_SAME_AS_TARGET_VLAN, {
+                              sourceVlan: $t(FlexAuthVlanLabel.VLAN_ID),
+                              targetVlan: $t(FlexAuthVlanLabel.AUTH_DEFAULT_VLAN)
+                            })
+                          )
                       }] : []
                     )])
                 ]}
@@ -1573,7 +1641,9 @@ export function EditPortDrawer ({
                       field: 'guestVlan',
                       vlanType: $t({ defaultMessage: 'Guest VLAN' }),
                       selectedPorts,
-                      aggregateData: aggregatePortsData
+                      aggregateData: aggregatePortsData,
+                      isMultipleEdit,
+                      form
                     })
                   }] : [{
                     validator: (_:unknown, value: string) => {
@@ -1585,7 +1655,7 @@ export function EditPortDrawer ({
                   }, {
                     validator: (_:unknown, value: string) =>
                       // eslint-disable-next-line max-len
-                      checkVlanConsistencyWithGuestVlan(value, selectedPorts, aggregatePortsData)
+                      checkGuestVlanConsistency(value, selectedPorts, aggregatePortsData)
                   }, {
                     validator: (_:unknown, value: string) =>
                       checkVlanDiffFromSwitchDefaultVlan(value, aggregatePortsData)
@@ -1594,7 +1664,16 @@ export function EditPortDrawer ({
                       checkVlanDiffFromSwitchAuthDefaultVlan(value, aggregatePortsData)
                   }, {
                     validator: (_:unknown, value: string) =>
-                      checkVlanDiffFromAuthDefaultVlan(value, aggregatePortsData)
+                    // eslint-disable-next-line max-len
+                      isOverrideFieldNotChecked({ field: 'authDefaultVlan', ...commonRequiredProps })
+                        ? checkVlanDiffFromAuthDefaultVlan(value, aggregatePortsData)
+                        : checkVlanDiffFromTargetVlan(
+                          value, authDefaultVlan,
+                          $t(FlexAuthMessages.VLAN_CANNOT_SAME_AS_TARGET_VLAN, {
+                            sourceVlan: $t(FlexAuthVlanLabel.VLAN_ID),
+                            targetVlan: $t(FlexAuthVlanLabel.AUTH_DEFAULT_VLAN)
+                          })
+                        )
                   }])
                 ]}
                 children={shouldRenderMultipleText({

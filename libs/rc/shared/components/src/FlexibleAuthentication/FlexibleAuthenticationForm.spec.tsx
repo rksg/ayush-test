@@ -13,7 +13,7 @@ import {
 import { store, Provider }                                                            from '@acx-ui/store'
 import { mockServer, render, renderHook, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { flexAuthList }               from './__test__/fixtures'
+import { flexAuthList }               from './__tests__/fixtures'
 import { FlexibleAuthenticationForm } from './FlexibleAuthenticationForm'
 
 import {
@@ -153,6 +153,7 @@ describe('FlexibleAuthenticationForm', ()=>{
 
       await userEvent.type(await screen.findByLabelText(/Restricted VLAN/),'1')
       await userEvent.type(await screen.findByLabelText(/Critical VLAN/),'1')
+      expect(await screen.findByLabelText(/Critical VLAN/)).toHaveValue('1')
 
       await userEvent.click(button)
       expect(

@@ -135,7 +135,7 @@ export const handleAuthFieldChange = (props: {
         }),
         ...(value !== AuthenticationType._802_1X_AND_MACAUTH ? {
           changeAuthOrder: false,
-          ...(isMultipleEdit ? { changeAuthOrderCheckbox: true } : {})
+          ...(isMultipleEdit ? { changeAuthOrderCheckbox: false } : {})
         }: {})
       })
       break

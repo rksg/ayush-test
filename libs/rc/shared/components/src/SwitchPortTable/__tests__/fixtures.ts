@@ -460,6 +460,37 @@ export const portSetting = [{
   ingressAcl: 'test-acl',
   egressAcl: 'test-acl',
   tags: 'aa,bb'
+}, {
+  dhcpSnoopingTrust: false,
+  id: '58:fb:96:0e:82:8a/1/1/5',
+  ipsg: true,
+  lldpEnable: false,
+  lldpQos: [{
+    applicationType: 'GUEST_VOICE',
+    dscp: 0,
+    id: '3df095a0926741b5ac2f9f1f09ffccff',
+    priority: 0,
+    qosVlanType: 'PRIORITY_TAGGED'
+  }],
+  poeBudget: 1000,
+  poeCapability: true,
+  poeClass: 'ONE',
+  poeEnable: true,
+  poePriority: 2,
+  port: '1/1/5',
+  portEnable: true,
+  portProtected: true,
+  portSpeed: 'AUTO',
+  ports: ['1/1/4', '1/1/6'],
+  revert: true,
+  rstpAdminEdgePort: true,
+  stpBpduGuard: true,
+  stpRootGuard: true,
+  switchMac: '58:fb:96:0e:82:8a',
+  untaggedVlan: '2',
+  ingressAcl: 'test-acl',
+  egressAcl: 'test-acl',
+  tags: 'aa,bb'
 }]
 
 export const portsSetting = {
@@ -608,7 +639,7 @@ export const taggedVlansByVenue = [{
 export const flexAuthList = {
   totalCount: 3,
   page: 1,
-  data: [ {
+  data: [{
     id: '7de28fc02c0245648dfd58590884bad2',
     profileName: 'Profile01--auth10-guest5',
     authenticationType: '802.1x',
@@ -632,14 +663,24 @@ export const flexAuthList = {
   },
   {
     id: 'dccf7d0272024d3ca03bcf5b48497685',
-    profileName: 'Profile03--auth10-r3-c4-g5',
+    profileName: 'Profile03--auth10-r3-c4-g99',
     authenticationType: '802.1x',
     dot1xPortControl: 'auto',
     authDefaultVlan: 10,
     restrictedVlan: 3,
     criticalVlan: 4,
-    guestVlan: 5,
+    guestVlan: 99,
     authFailAction: 'restricted_vlan',
     authTimeoutAction: 'critical_vlan'
+  },
+  {
+    id: 'dccf7d0272024d3ca03bcf5b48497686',
+    profileName: 'Profile04--auth100-g5',
+    authenticationType: '802.1x',
+    dot1xPortControl: 'auto',
+    authDefaultVlan: 100,
+    guestVlan: 5,
+    authFailAction: 'block',
+    authTimeoutAction: 'none'
   }]
 }
