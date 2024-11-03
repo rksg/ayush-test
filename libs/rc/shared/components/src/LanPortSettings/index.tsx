@@ -7,7 +7,7 @@ import { FormattedMessage, useIntl }                       from 'react-intl'
 import { cssStr, Tooltip }                     from '@acx-ui/components'
 import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
 import {
-  useGetEthernetPortProfileSettingsByApPortIdQuery,
+  useGetEthernetPortProfileOverwritesByApPortIdQuery,
   useGetEthernetPortProfileViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -15,7 +15,7 @@ import {
   CapabilitiesApModel,
   CapabilitiesLanPort,
   checkVlanMember,
-  EhternetPortSettings,
+  EhternetPortOverwrites,
   EthernetPortProfileViewData,
   LanPort,
   useConfigTemplate,
@@ -95,7 +95,7 @@ export function LanPortSettings (props: {
   const [currentEthernetPortData, setCurrentEthernetPortData] =
     useState<EthernetPortProfileViewData>()
   const [ethernetPortSettings, setEthernetPortSettings] =
-    useState<EhternetPortSettings>()
+    useState<EhternetPortOverwrites>()
   const [ethernetProfileCreateId, setEthernetProfileCreateId] = useState<String>()
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
 
@@ -176,7 +176,7 @@ export function LanPortSettings (props: {
 
   // AP level
   const { data: apEthPortSettings, isLoading: isApEthPortSettingsLoading } =
-    useGetEthernetPortProfileSettingsByApPortIdQuery({
+    useGetEthernetPortProfileOverwritesByApPortIdQuery({
       params: { venueId, serialNumber, portId: lan?.portId }
     }, { skip: isTemplate || !isEthernetPortProfileEnabled || !serialNumber || !venueId })
 
@@ -192,12 +192,7 @@ export function LanPortSettings (props: {
     }
     const portIndex = index + 1
     let ethProfile = undefined
-    if (venueId && !serialNumber) {
-      ethProfile = ethernetPortList?.filter(
-        m => m.venueIds && m.venueIds.includes(venueId) &&
-        m.venueActivations?.map(v => v.apModel).includes((selectedModel as VenueLanPorts).model) &&
-        m.venueActivations?.map(v => v.portId).includes(portIndex))?.[0] ?? undefined
-    } else if (serialNumber) {
+    if (serialNumber) {
       ethProfile = ethernetPortList?.filter(
         m => m.apSerialNumbers && m.apSerialNumbers.includes(serialNumber) &&
         m.apActivations?.map(l => l.portId).includes(portIndex)
