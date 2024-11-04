@@ -67,23 +67,25 @@ import {
   useTableQuery,
   EntitlementDeviceType,
   EntitlementDeviceSubType,
-  whitespaceOnlyRegExp
+  whitespaceOnlyRegExp,
+  PrivilegeGroup
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { RolesEnum }             from '@acx-ui/types'
-import { useUserProfileContext } from '@acx-ui/user'
-import { AccountType }           from '@acx-ui/utils'
+import { RolesEnum }                  from '@acx-ui/types'
+import { useUserProfileContext }      from '@acx-ui/user'
+import { AccountType, noDataDisplay } from '@acx-ui/utils'
 
 import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'
 import { ManageDelegateAdminDrawer } from '../ManageDelegateAdminDrawer'
 // eslint-disable-next-line import/order
-import { SelectIntegratorDrawer } from '../SelectIntegratorDrawer'
-import { StartSubscriptionModal } from '../StartSubscriptionModal'
-import * as UI                    from '../styledComponents'
+import { ManageMspDelegationDrawer } from '../ManageMspDelegations'
+import { SelectIntegratorDrawer }    from '../SelectIntegratorDrawer'
+import { StartSubscriptionModal }    from '../StartSubscriptionModal'
+import * as UI                       from '../styledComponents'
 
 interface AddressComponent {
   long_name?: string;
@@ -188,6 +190,7 @@ export function ManageCustomer () {
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
   const isExtendedTrialToggleEnabled = useIsSplitOn(Features.ENTITLEMENT_EXTENDED_TRIAL_TOGGLE)
   const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
+  const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
@@ -200,6 +203,7 @@ export function ManageCustomer () {
   const [trialSelected, setTrialSelected] = useState(true)
   const [ecSupportEnabled, setEcSupport] = useState(false)
   const [mspAdmins, setAdministrator] = useState([] as MspAdministrator[])
+  const [privilegeGroups, setPrivilegeGroups] = useState([] as PrivilegeGroup[])
   const [mspIntegrator, setIntegrator] = useState([] as MspEc[])
   const [mspInstaller, setInstaller] = useState([] as MspEc[])
   const [mspEcAdmins, setMspEcAdmins] = useState([] as MspAdministrator[])
@@ -555,6 +559,10 @@ export function ManageCustomer () {
       if (ecDelegations.length > 0) {
         customer.delegations = ecDelegations
       }
+      if (isRbacPhase2Enabled && privilegeGroups.length > 0) {
+        const pgIds = privilegeGroups?.map((pg: PrivilegeGroup)=> pg.id)
+        customer.privilegeGroups = pgIds
+      }
 
       const result =
       await addCustomer({ params: { tenantId: tenantId },
@@ -706,7 +714,7 @@ export function ManageCustomer () {
 
   const displayMspAdmins = () => {
     if (!mspAdmins || mspAdmins.length === 0)
-      return '--'
+      return noDataDisplay
     return <>
       {mspAdmins.map(admin =>
         <UI.AdminList key={admin.id}>
@@ -717,9 +725,21 @@ export function ManageCustomer () {
     </>
   }
 
+  const displayPrivilegeGroups = () => {
+    if (!privilegeGroups || privilegeGroups.length === 0)
+      return noDataDisplay
+    return <>
+      {privilegeGroups.map(pg =>
+        <UI.AdminList key={pg.id}>
+          {pg.name}
+        </UI.AdminList>
+      )}
+    </>
+  }
+
   const displayIntegrator = () => {
     if (!mspIntegrator || mspIntegrator.length === 0)
-      return '--'
+      return noDataDisplay
     return <>
       {mspIntegrator.map(integrator =>
         <UI.AdminList key={integrator.id}>
@@ -731,7 +751,7 @@ export function ManageCustomer () {
 
   const displayInstaller = () => {
     if (!mspInstaller || mspInstaller.length === 0)
-      return '--'
+      return noDataDisplay
     return <>
       {mspInstaller.map(installer =>
         <UI.AdminList key={installer.id}>
@@ -843,17 +863,36 @@ export function ManageCustomer () {
 
   const MspAdminsForm = () => {
     return <>
-      <UI.FieldLabelAdmins width='275px' style={{ marginTop: '15px' }}>
-        <label>{intl.$t({ defaultMessage: 'MSP Administrators' })}</label>
-        <Form.Item children={<div>{displayMspAdmins()}</div>} />
-        {!isEditMode && <Form.Item
-          children={<UI.FieldTextLink onClick={() => setDrawerAdminVisible(true)}>
-            {intl.$t({ defaultMessage: 'Manage' })}
-          </UI.FieldTextLink>
-          }
-        />}
-      </UI.FieldLabelAdmins>
-      <UI.FieldLabelAdmins width='275px' style={{ marginTop: '-12px' }}>
+      {(isRbacPhase2Enabled && !isEditMode)
+        ? <div>
+          <UI.FieldLabelAdmins2 width='275px' style={{ marginTop: '15px' }}>
+            <label>{intl.$t({ defaultMessage: 'MSP Delegations' })}</label>
+            <Form.Item
+              children={<UI.FieldTextLink onClick={() => setDrawerAdminVisible(true)}>
+                {intl.$t({ defaultMessage: 'Manage' })}
+              </UI.FieldTextLink>
+              }
+            />
+          </UI.FieldLabelAdmins2>
+          <UI.FieldLabelDelegations width='260px' style={{ marginLeft: '15px', marginTop: '5px' }}>
+            <label>{intl.$t({ defaultMessage: 'Users' })}</label>
+            <Form.Item children={<div>{displayMspAdmins()}</div>} />
+            <label>{intl.$t({ defaultMessage: 'Privilege Groups' })}</label>
+            <Form.Item children={<div>{displayPrivilegeGroups()}</div>} />
+          </UI.FieldLabelDelegations>
+        </div>
+        : <UI.FieldLabelAdmins width='275px' style={{ marginTop: '15px' }}>
+          <label>{intl.$t({ defaultMessage: 'MSP Administrators' })}</label>
+          <Form.Item children={<div>{displayMspAdmins()}</div>} />
+          {!isEditMode && <Form.Item
+            children={<UI.FieldTextLink onClick={() => setDrawerAdminVisible(true)}>
+              {intl.$t({ defaultMessage: 'Manage' })}
+            </UI.FieldTextLink>
+            }
+          />}
+        </UI.FieldLabelAdmins>}
+
+      <UI.FieldLabelAdmins width='275px'>
         <label>{intl.$t({ defaultMessage: 'Integrator' })}</label>
         <Form.Item children={displayIntegrator()} />
         {!isEditMode && <Form.Item
@@ -1629,10 +1668,18 @@ export function ManageCustomer () {
           <Paragraph>{address.addressLine}</Paragraph>
         </Form.Item>
 
-        <Form.Item
+        <Form.Item style={{ height: '20px', margin: '0' }}
           label={intl.$t({ defaultMessage: 'MSP Administrators' })}
+        />
+        <Form.Item style={{ margin: '0' }}
+          label={intl.$t({ defaultMessage: 'Users' })}
         >
           <Paragraph>{displayMspAdmins()}</Paragraph>
+        </Form.Item>
+        <Form.Item
+          label={intl.$t({ defaultMessage: 'Privilege Groups' })}
+        >
+          <Paragraph>{displayPrivilegeGroups()}</Paragraph>
         </Form.Item>
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Integrator' })}
@@ -1876,11 +1923,20 @@ export function ManageCustomer () {
       </StepsFormLegacy>
 
       {drawerAdminVisible && (isAbacToggleEnabled
-        ? <ManageDelegateAdminDrawer
-          visible={drawerAdminVisible}
-          setVisible={setDrawerAdminVisible}
-          setSelected={selectedMspAdmins}
-          tenantId={mspEcTenantId}/>
+        ? (isRbacPhase2Enabled
+          ? <ManageMspDelegationDrawer
+            visible={drawerAdminVisible}
+            setVisible={setDrawerAdminVisible}
+            setSelectedUsers={selectedMspAdmins}
+            selectedUsers={mspAdmins}
+            setSelectedPrivilegeGroups={setPrivilegeGroups}
+            selectedPrivilegeGroups={privilegeGroups}
+            tenantIds={mspEcTenantId ? [mspEcTenantId] : undefined}/>
+          : <ManageDelegateAdminDrawer
+            visible={drawerAdminVisible}
+            setVisible={setDrawerAdminVisible}
+            setSelected={selectedMspAdmins}
+            tenantId={mspEcTenantId}/>)
         : <ManageAdminsDrawer
           visible={drawerAdminVisible}
           setVisible={setDrawerAdminVisible}

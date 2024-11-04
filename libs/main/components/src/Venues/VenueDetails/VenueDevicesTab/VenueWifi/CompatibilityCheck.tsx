@@ -88,8 +88,7 @@ export const CompatibilityCheck = ({ venueId }: { venueId: string }) => {
         },
         {
           apCount: incompatibleCount,
-          // eslint-disable-next-line max-len
-          edgeText: hasEdgeFeature ? $t({ defaultMessage: '{nbsp}& RUCKUS Edge' }, { nbsp: () => <>&nbsp;</> }) : ''
+          edgeText: hasEdgeFeature ? $t({ defaultMessage: '& RUCKUS Edge' }) : ''
         })}
         cacheKey={ACX_UI_AP_COMPATIBILITY_NOTE_HIDDEN_KEY}
         onClick={() => toggleCompatibilityDrawer(true)}

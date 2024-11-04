@@ -16,7 +16,9 @@ import {
   useAssignMultiMspEcDelegatedAdminsMutation
 } from '@acx-ui/msp/services'
 import {
-  MspAdministrator
+  AssignedMultiEcMspAdmins,
+  MspAdministrator,
+  SelectedMspMspAdmins
 } from '@acx-ui/msp/utils'
 import {
   defaultSort,
@@ -31,17 +33,6 @@ interface AssignEcMspAdminsDrawerProps {
   tenantIds: string[]
   setVisible: (visible: boolean) => void
   setSelected: (selected: MspAdministrator[]) => void
-}
-
-interface SelectedMspMspAdmins {
-  mspAdminId: string
-  mspAdminRole: RolesEnum
-}
-
-interface AssignedMultiEcMspAdmins {
-  operation: string
-  mspEcId: string
-  mspAdminRoles: SelectedMspMspAdmins[]
 }
 
 export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => {
