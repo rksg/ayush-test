@@ -16,7 +16,8 @@ import {
   AssignEcDrawer,
   ResendInviteModal,
   ManageAdminsDrawer,
-  ManageDelegateAdminDrawer
+  ManageDelegateAdminDrawer,
+  ManageMspDelegationDrawer
 } from '@acx-ui/msp/components'
 import {
   useDeleteMspEcMutation,
@@ -56,6 +57,7 @@ export function Integrators () {
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
   const isRbacEarlyAccessEnable = useIsTierAllowed(Features.RBAC_IMPLICIT_P1)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
+  const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
 
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerEcVisible, setDrawerEcVisible] = useState(false)
@@ -273,19 +275,26 @@ export function Integrators () {
           ]}
       />
       <IntegratorssTable />
-      {drawerAdminVisible && (isAbacToggleEnabled
-        ? <ManageDelegateAdminDrawer
+      {drawerAdminVisible && (isAbacToggleEnabled && isRbacPhase2Enabled
+        ? <ManageMspDelegationDrawer
           visible={drawerAdminVisible}
+          tenantIds={[tenantId]}
           setVisible={setDrawerAdminVisible}
-          setSelected={() => {}}
-          tenantId={tenantId}
-        />
-        : <ManageAdminsDrawer
-          visible={drawerAdminVisible}
-          setVisible={setDrawerAdminVisible}
-          setSelected={() => {}}
-          tenantId={tenantId}
-        />)}
+          setSelectedUsers={() => {}}
+          setSelectedPrivilegeGroups={() => {}}/>
+        : (isAbacToggleEnabled
+          ? <ManageDelegateAdminDrawer
+            visible={drawerAdminVisible}
+            setVisible={setDrawerAdminVisible}
+            setSelected={() => {}}
+            tenantId={tenantId}
+          />
+          : <ManageAdminsDrawer
+            visible={drawerAdminVisible}
+            setVisible={setDrawerAdminVisible}
+            setSelected={() => {}}
+            tenantId={tenantId}
+          />))}
       {drawerEcVisible && <AssignEcDrawer
         visible={drawerEcVisible}
         setVisible={setDrawerEcVisible}
