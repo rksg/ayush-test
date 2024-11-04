@@ -1,7 +1,11 @@
-import { Form } from 'antd'
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
+import { rest }  from 'msw'
 
-import { Provider  } from '@acx-ui/store'
+import { CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider  }      from '@acx-ui/store'
 import {
+  mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
@@ -10,6 +14,7 @@ import BasicInformationPage from './BasicInformationPage'
 import Congratulations      from './Congratulations'
 import VerticalPage         from './VerticalPage'
 import WelcomePage          from './WelcomePage'
+
 
 describe('VerticalPage', () => {
   it('should display vertical page correctly', async () => {
@@ -47,6 +52,7 @@ describe('Congratulations', () => {
         route: { params }
       })
     expect(await screen.findByText('You have finished onboarding your new Venue!')).toBeVisible()
+
   })
 })
 
@@ -64,6 +70,13 @@ describe('WelcomePage', () => {
 
 describe('BasicInfomrationPage', () => {
   it('should display Basic Information page correctly', async () => {
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getVenues.url,
+        (_, res, ctx) => res(ctx.json({}))
+      )
+    )
+
     render(
       <Provider>
         <Form>
@@ -71,5 +84,27 @@ describe('BasicInfomrationPage', () => {
         </Form>
       </Provider>)
     expect(await screen.findByText('Tell me more about the deployment')).toBeVisible()
+
+    const venueName = screen.getByRole('textbox', {
+      name: /venue name/i
+    })
+    await userEvent.type(venueName, 'ruckus-1')
+
+    const apNumber = screen.getByRole('textbox', {
+      name: /approx\. number of aps/i
+    })
+    await userEvent.type(apNumber, '1')
+
+    const switchNumber = screen.getByRole('textbox', {
+      name: /approx\. number of switches/i
+    })
+    await userEvent.type(switchNumber, '1')
+
+    const description = screen.getByRole('textbox', {
+      name: /tell me more about the deployment/i
+    })
+    await userEvent.type(description, 'Hello')
+
+
   })
 })

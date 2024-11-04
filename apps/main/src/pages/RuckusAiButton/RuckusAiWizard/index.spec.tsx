@@ -80,6 +80,10 @@ describe('RuckusAiWizard', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /Next/i }))
 
+    expect(screen.getByText('WlanStep Component')).toBeInTheDocument() //TODO
+
+    fireEvent.click(screen.getByRole('button', { name: /Back/i }))
+
     expect(screen.getByText('WlanStep Component')).toBeInTheDocument()
   })
 

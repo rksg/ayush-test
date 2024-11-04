@@ -40,6 +40,7 @@ function Congratulations (props: { closeModal: () => void }) {
               <b> {$t({ defaultMessage: 'Wireless Network' })}</b> ({
                 <Button type='link'
                   style={{ fontSize: '14px' }}
+                  data-testid='network-link'
                   onClick={() => {
                     navigate(linkToNetework)
                     props.closeModal()
@@ -52,6 +53,7 @@ function Congratulations (props: { closeModal: () => void }) {
               <b> {$t({ defaultMessage: 'Wired Configurations' })}</b> ({
                 <Button type='link'
                   style={{ fontSize: '14px' }}
+                  data-testid='vlan-link'
                   onClick={() => {
                     navigate(linkToWiredProfiles)
                     props.closeModal()

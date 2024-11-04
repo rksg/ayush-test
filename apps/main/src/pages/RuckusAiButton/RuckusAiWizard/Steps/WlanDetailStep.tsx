@@ -178,6 +178,7 @@ export function WlanDetailStep (props: {
                 />
               </div>
               <UI.ConfigurationContainer
+                data-testid={`wlan-configuration-${index}`}
                 onClick={() => {
                   setModalId(item['id'])
                   setModalName(item['SSID Name'])

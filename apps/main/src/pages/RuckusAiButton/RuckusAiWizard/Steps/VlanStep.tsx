@@ -233,17 +233,18 @@ export function VlanStep (props: { payload: string, sessionId: string,
                   { required: true },
                   { validator: (_, value) => validateVlanName(value) }]}
                 fieldProps={{
-                  type: 'number',
-                  onChange: (value) => {
+                  'data-testid': `vlan-id-input-${index}`,
+                  'type': 'number',
+                  'onChange': (value) => {
                     const newVlan = value.target.value
                     const updateVlanIds = [...configVlanIds]
                     updateVlanIds[index] = newVlan
 
                     const updatedVlanTable = vlanTable.map(v => {
                       if (newVlan && String(v.vlanId) === configVlanIds[index]) {
-                        return { ...v, vlanId: Number(newVlan) } // 更新 VLAN ID
+                        return { ...v, vlanId: Number(newVlan) }
                       }
-                      return v // 保持其他 VLAN 不变
+                      return v
                     })
                     setVlanTable(updatedVlanTable)
                     setConfigVlanIds(updateVlanIds)
@@ -252,6 +253,7 @@ export function VlanStep (props: { payload: string, sessionId: string,
               />
               { configVlanIds[index] &&
                 <UI.ConfigurationContainer
+                  data-testid={`vlan-configuration-${index}`}
                   onClick={() => {
                     const currentId = formInstance?.getFieldValue(['data', index, 'id'])
                     setConfigId(currentId)
