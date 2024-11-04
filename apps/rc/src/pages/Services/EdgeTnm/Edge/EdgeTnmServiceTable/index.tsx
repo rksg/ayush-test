@@ -9,7 +9,6 @@ import {
   Loader,
   showActionModal
 } from '@acx-ui/components'
-import { ToolTipTableStyle }                                              from '@acx-ui/rc/components'
 import { useDeleteEdgeTnmServiceMutation, useGetEdgeTnmServiceListQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
