@@ -148,7 +148,7 @@ describe('EdgeDetails', () => {
       route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/details/:activeTab' }
     })
 
-    await user.click(screen.getByRole('tab', { name: 'Services (4)' }))
+    await user.click(screen.getByRole('tab', { name: 'Services (5)' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/details/services`,
       hash: '',
