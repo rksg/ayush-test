@@ -15,7 +15,7 @@ function Congratulations (props: { closeModal: () => void }) {
   const {
     data: userProfileData
   } = useUserProfileContext()
-  const name = userProfileData?.lastName || userProfileData?.firstName || ''
+  const name = userProfileData?.firstName || userProfileData?.lastName || ''
   return (
     <UI.CongratContainer>
       <UI.CongrateTitle>

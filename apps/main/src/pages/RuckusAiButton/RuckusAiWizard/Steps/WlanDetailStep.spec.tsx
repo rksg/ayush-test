@@ -39,7 +39,7 @@ describe('WlanDetailStep', () => {
 
     render(
       <Provider>
-        <Form>
+        <Form form={formRef.current}>
           <WlanDetailStep
             payload={mock_payload}
             sessionId='session-id'
@@ -57,7 +57,7 @@ describe('WlanDetailStep', () => {
 
     render(
       <Provider>
-        <Form>
+        <Form form={formRef.current}>
           <WlanDetailStep
             payload={mock_payload}
             sessionId='session-id'

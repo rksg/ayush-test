@@ -11,7 +11,7 @@ function WelcomePage () {
   const {
     data: userProfileData
   } = useUserProfileContext()
-  const name = userProfileData?.lastName || userProfileData?.firstName || ''
+  const name = userProfileData?.firstName || userProfileData?.lastName || ''
   return <div
     style={{
       position: 'relative',
@@ -33,7 +33,7 @@ function WelcomePage () {
       marginTop: '25px',
       fontFamily: 'Montserrat'
     }}>
-      {`${$t({ defaultMessage: 'Hello' })} ${name}`}
+      {`${$t({ defaultMessage: 'Hello' })} ${name},`}
     </span>
     <span style={{
       fontSize: '24px',
