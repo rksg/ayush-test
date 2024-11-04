@@ -32,7 +32,7 @@ export const ButtonSolid = styled(Button)`
   > svg {
     transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
   }
-  &:hover, &:focus {
+  &:hover {
     > svg {
       stroke: var(--acx-accents-orange-55);
     }
