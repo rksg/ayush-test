@@ -22,6 +22,7 @@ export type Intent = {
   sliceId: string
   metadata: object & {
     scheduledAt: string
+    appliedAt: string
   }
   path: NetworkPath
   idPath: NetworkPath
