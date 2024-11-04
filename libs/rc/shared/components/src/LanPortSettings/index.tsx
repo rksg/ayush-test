@@ -95,8 +95,6 @@ export function LanPortSettings (props: {
   const ethernetPortProfileId = Form.useWatch( ['lan', index, 'ethernetPortProfileId'] ,form)
   const [currentEthernetPortData, setCurrentEthernetPortData] =
     useState<EthernetPortProfileViewData>()
-  // const [ethernetPortSettings, setEthernetPortSettings] =
-  //   useState<EthernetPortOverwrites>()
   const [ethernetProfileCreateId, setEthernetProfileCreateId] = useState<String>()
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
 
@@ -155,55 +153,13 @@ export function LanPortSettings (props: {
     })
 
   useEffect(()=> {
-    if (ethernetPortListQuery?.data) {
+    if (!isLoadingEthPortList && ethernetPortListQuery?.data) {
       setCurrentEthernetPortData(
-        ethernetPortListQuery.data.find((profile)=> profile.id === ethernetPortProfileId))
+        ethernetPortListQuery.data.find((profile)=> ethernetProfileCreateId ?
+          profile.id === ethernetProfileCreateId : profile.id === ethernetPortProfileId))
+      setEthernetProfileCreateId(undefined)
     }
   }, [ethernetPortProfileId, ethernetPortListQuery?.data])
-
-  useEffect(()=> {
-    if (!isLoadingEthPortList && ethernetPortListQuery?.data) {
-      const eth = getOriginalEthProfile(ethernetPortListQuery?.data)
-
-      if(eth) {
-        form.setFieldValue(['lan', index, 'ethernetPortProfileId'],
-          ethernetProfileCreateId ?? (eth?.id ?? null))
-      }
-
-      setCurrentEthernetPortData(eth)
-      setEthernetProfileCreateId(undefined)
-      if (onGUIChanged) {
-        onGUIChanged('ethernetPortProfileId')
-      }
-    }
-  }, [ethernetPortListQuery?.data])
-
-  // AP level
-  // const { data: apEthPortSettings, isLoading: isApEthPortSettingsLoading } =
-  //   useGetEthernetPortProfileOverwritesByApPortIdQuery({
-  //     params: { venueId, serialNumber, portId: lan?.portId }
-  //   }, { skip: isTemplate || !isEthernetPortProfileEnabled || !serialNumber || !venueId })
-
-  // useEffect(() => {
-  //   if (!isApEthPortSettingsLoading && apEthPortSettings) {
-  //     setEthernetPortSettings(apEthPortSettings)
-  //   }
-  // }, [apEthPortSettings, isApEthPortSettingsLoading])
-
-  const getOriginalEthProfile = (ethernetPortList?: EthernetPortProfileViewData[]) => {
-    if (isLoadingEthPortList || !ethernetPortList) {
-      return undefined
-    }
-    const portIndex = index + 1
-    let ethProfile = undefined
-    if (serialNumber) {
-      ethProfile = ethernetPortList?.filter(
-        m => m.apSerialNumbers && m.apSerialNumbers.includes(serialNumber) &&
-        m.apActivations?.map(l => l.portId).includes(portIndex)
-      )?.[0] ?? undefined
-    }
-    return ethProfile
-  }
 
   return (<>
     {selectedPortCaps?.isPoeOutPort && <Form.Item

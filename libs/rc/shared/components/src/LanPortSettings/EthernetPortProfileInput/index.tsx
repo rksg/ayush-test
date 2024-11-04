@@ -33,15 +33,6 @@ const EthernetPortProfileInput = (props:EthernetPortProfileInputProps) => {
     }
   }, [currentUntagId])
 
-  // useEffect(()=> {
-  //   if (currentPortOverwirte && currentEthernetPortData) {
-  //     form.setFieldValue(['lan', currentIndex, 'untagId'],
-  //       currentPortOverwirte.overwriteUntagId ?? currentEthernetPortData?.untagId)
-  //     form.setFieldValue(['lan', currentIndex, 'vlanMembers'],
-  //       currentPortOverwirte.overwriteVlanMembers ?? currentEthernetPortData?.vlanMembers)
-  //   }
-  // }, [currentEthernetPortData, currentPortOverwirte])
-
   return (<>
     <StepsForm.FieldLabel width={'200px'}>
       {$t({ defaultMessage: 'Port Type' })}
@@ -52,10 +43,10 @@ const EthernetPortProfileInput = (props:EthernetPortProfileInputProps) => {
 
     <EthernetPortProfileOverwriteItem
       title='VLAN Untag ID'
-      defaultValue={
-        (currentEthernetPortData?.apPortOverwrites &&
-          currentEthernetPortData?.apPortOverwrites
-          .find(p => p.portId === currentIndex)?.overwriteUntagId?.toString()) ??
+      defaultValue={currentEthernetPortData?.untagId.toString() ?? ''}
+      initialData={
+        (currentEthernetPortData?.apPortOverwrites
+          ?.find(p => p.portId === currentIndex+1)?.overwriteUntagId?.toString()) ??
         (currentEthernetPortData?.untagId.toString() ?? '')}
       isEditable={isEditable}
       fieldName={['lan', currentIndex, 'untagId']}
@@ -65,10 +56,10 @@ const EthernetPortProfileInput = (props:EthernetPortProfileInputProps) => {
     />
     <EthernetPortProfileOverwriteItem
       title='VLAN Members'
-      defaultValue={
-        (currentEthernetPortData?.apPortOverwrites &&
-          currentEthernetPortData?.apPortOverwrites
-          .find(p => p.portId === currentIndex)?.overwriteVlanMembers) ??
+      defaultValue={currentEthernetPortData?.vlanMembers.toString() ?? ''}
+      initialData={
+        (currentEthernetPortData?.apPortOverwrites
+          ?.find(p => p.portId === currentIndex+1)?.overwriteVlanMembers) ??
         (currentEthernetPortData?.vlanMembers.toString() ?? '')}
       isEditable={isEditable &&
         (currentEthernetPortData?.type === EthernetPortType.SELECTIVE_TRUNK)}

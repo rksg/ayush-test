@@ -19,7 +19,7 @@ import { ConvertPoeOutToFormData, LanPortPoeSettings, LanPortSettings } from '@a
 import {
   useLazyGetVenueLanPortsQuery,
   useLazyGetVenueSettingsQuery,
-  useGetApLanPortsQuery,
+  useGetApLanPortsWithEthernetProfilesQuery,
   useUpdateApLanPortsMutation,
   useResetApLanPortsMutation,
   useLazyGetDHCPProfileListViewModelQuery,
@@ -99,9 +99,10 @@ export function LanPorts () {
   const supportTrunkPortUntaggedVlan = useIsSplitOn(Features.WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE)
 
   const formRef = useRef<StepsFormLegacyInstance<WifiApSetting>>()
-  const { data: apLanPortsData, isLoading: isApLanPortsLoading } = useGetApLanPortsQuery({
+  const { data: apLanPortsData, isLoading: isApLanPortsLoading } =
+  useGetApLanPortsWithEthernetProfilesQuery({
     params: { tenantId, serialNumber, venueId },
-    enableRbac: isUseWifiRbacApi
+    enableEthernetProfile: isEthernetPortProfileEnabled
   })
   const { data: defaultLanPorts, isLoading: isDefaultPortsLoading } = useGetDefaultApLanPortsQuery({
     params: { venueId, serialNumber }

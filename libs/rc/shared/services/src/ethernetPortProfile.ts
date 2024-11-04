@@ -169,7 +169,7 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
     }),
 
     // eslint-disable-next-line max-len
-    getEthernetPortProfileSettingsByVenueApModel: build.query<EhternetPortOverwrites, RequestPayload>({
+    getEthernetPortProfileSettingsByVenueApModel: build.query<EthernetPortOverwrites, RequestPayload>({
       query: ({ params }) => {
         const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
         const req = createHttpRequest(
@@ -181,7 +181,7 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
     }),
 
     updateEthernetPortSettingsByVenueApModel:
-      build.mutation<EhternetPortOverwrites, RequestPayload>({
+      build.mutation<EthernetPortOverwrites, RequestPayload>({
         query: ({ params, payload }) => {
           const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
           const req = createHttpRequest(
@@ -208,7 +208,7 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
       }
     }),
     getEthernetPortProfileOverwritesByApPortId:
-    build.query<EhternetPortOverwrites, RequestPayload>({
+    build.query<EthernetPortOverwrites, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(
           EthernetPortProfileUrls.getEthernetPortOverwritesByApPortId, params)
