@@ -566,7 +566,7 @@ export function StackForm () {
           payload: {
             authEnable: values?.authEnable,
             authDefaultVlan: values?.authDefaultVlan,
-            guestVlanvalues: values?.guestVlanvalues
+            guestVlan: values?.guestVlan
           }
         }).unwrap()
       }

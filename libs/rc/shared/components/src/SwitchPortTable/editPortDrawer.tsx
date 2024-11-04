@@ -69,7 +69,8 @@ import {
   checkVlanDiffFromTargetVlan,
   getAuthfieldDisabled,
   PortControl,
-  portControlTypeLabel
+  portControlTypeLabel,
+  shouldHideAuthField
 } from '../FlexibleAuthentication'
 import { handleAuthFieldChange } from '../FlexibleAuthentication'
 
@@ -87,6 +88,7 @@ import {
   handlePortVlanChange,
   getAppliedProfile,
   getFlexAuthButtonStatus,
+  getFlexAuthDefaultValue,
   isOverrideFieldNotChecked,
   renderAuthProfile,
   validateApplyProfile
@@ -282,6 +284,10 @@ export function EditPortDrawer ({
     isMultipleEdit, isCloudPort, hasMultipleValue, isFirmwareAbove10010f,
     form, aggregateData: aggregatePortsData, portVlansCheckbox
   }
+  const authFormWatchValues = [
+    authenticationType, dot1xPortControl, authDefaultVlan,
+    authFailAction, authTimeoutAction
+  ]
 
   const { data: switchDetail, isLoading: isSwitchDetailLoading }
     = useSwitchDetailHeaderQuery({ params: { tenantId, switchId, serialNumber } })
@@ -539,7 +545,8 @@ export function EditPortDrawer ({
         (portSetting.untaggedVlan ? portSetting.untaggedVlan :
           (portSetting?.taggedVlans ? portSetting.untaggedVlan : defaultVlan)),
       voiceVlan: (portSetting.revert ? voice
-        : (portSetting?.voiceVlan === 0 ? '' : portSetting?.voiceVlan))
+        : (portSetting?.voiceVlan === 0 ? '' : portSetting?.voiceVlan)),
+      ...( isSwitchFlexAuthEnabled && getFlexAuthDefaultValue(portSetting))
     })
     checkIsVoiceVlanInvalid(true, portSetting?.revert)
   }
@@ -639,11 +646,9 @@ export function EditPortDrawer ({
       untaggedVlan: (!hasMultipleValueFields?.includes('untaggedVlan')
         && vlansValue.untagged) || (portSetting.untaggedVlan ? portSetting.untaggedVlan :
         (portSetting?.taggedVlans ? portSetting.untaggedVlan : defaultVlan)),
-      //flex auth
-      authenticationProfileId: !hasMultipleValueFields?.includes('authenticationProfileId')
-        ? portSetting?.authenticationProfileId : '',
-      authenticationCustomize: !hasMultipleValueFields?.includes('authenticationCustomize')
-        ? portSetting?.authenticationCustomize : false
+      ...( isSwitchFlexAuthEnabled &&
+        getFlexAuthDefaultValue(portSetting, hasMultipleValueFields)
+      )
     })
   }
 
@@ -766,7 +771,15 @@ export function EditPortDrawer ({
     labelName: string,
     extraLabel?: boolean
   ) => {
-    return <UI.FormItem>
+    const shouldControlHiddenFields = [
+      'changeAuthOrder', 'authDefaultVlan', 'authFailAction',
+      'restrictedVlan', 'authTimeoutAction', 'criticalVlan'
+    ]
+    return <UI.FormItem
+      hidden={shouldControlHiddenFields.includes(field)
+        ? shouldHideAuthField(field, authFormWatchValues, isMultipleEdit) : false
+      }
+    >
       {isMultipleEdit && <Form.Item
         noStyle
         label={false}

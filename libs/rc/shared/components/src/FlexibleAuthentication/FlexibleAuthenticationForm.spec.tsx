@@ -264,7 +264,7 @@ describe('FlexibleAuthenticationForm', ()=>{
         expect(portControl).toHaveValue(PortControl.NONE)
         expect(portControl).toBeDisabled()
 
-        const hiddenFieldLabel = ['auth-vlan-input', 'fail-action-select', 'timeout-action-select', 'restricted-vlan-input', 'critical-vlan-input']
+        const hiddenFieldLabel = ['restricted-vlan-input', 'critical-vlan-input']
         for (let i = 0; i < hiddenFieldLabel.length; i++) {
           const field = await screen.findByTestId(hiddenFieldLabel[i])
           // eslint-disable-next-line testing-library/no-node-access

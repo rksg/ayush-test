@@ -15,10 +15,14 @@ import {
 import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
 import {
+  AuthenticationType,
   authenticationTypeLabel,
+  AuthFailAction,
   authFailActionTypeLabel,
+  AuthTimeoutAction,
   authTimeoutActionTypeLabel,
   checkVlanDiffFromTargetVlan,
+  PortControl,
   portControlTypeLabel
 } from '../FlexibleAuthentication'
 
@@ -166,6 +170,35 @@ export const renderAuthProfile = (data?: FlexibleAuthentication) => {
       </UI.Descriptions>
     </UI.Card>
   </div>
+}
+
+export const getFlexAuthDefaultValue = (
+  portSetting: Partial<PortSettingModel>,
+  hasMultipleValueFields?: string[]
+) => {
+  const defaultValue = {
+    authenticationProfileId: '',
+    authenticationCustomize: false,
+    flexibleAuthenticationEnabled: false,
+    authenticationType: AuthenticationType._802_1X,
+    changeAuthOrder: false,
+    dot1xPortControl: PortControl.AUTO,
+    authDefaultVlan: '',
+    restrictedVlan: '',
+    criticalVlan: '',
+    authFailAction: AuthFailAction.BLOCK,
+    authTimeoutAction: AuthTimeoutAction.NONE,
+    guestVlan: ''
+  }
+
+  return Object.keys(defaultValue).reduce((result: FlexibleAuthentication, key: string) => {
+    return {
+      ...result,
+      [key]: !hasMultipleValueFields?.includes(key) && (portSetting[key as keyof typeof portSetting] !== undefined)
+        ? portSetting[key as keyof typeof portSetting]
+        : defaultValue[key as keyof typeof defaultValue]
+    }
+  }, {} as FlexibleAuthentication)
 }
 
 export const getUnionValuesByKey = (

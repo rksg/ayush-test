@@ -399,7 +399,7 @@ export function SwitchForm () {
           payload: {
             authEnable: values?.authEnable,
             authDefaultVlan: values?.authDefaultVlan,
-            guestVlanvalues: values?.guestVlanvalues
+            guestVlan: values?.guestVlan
           }
         }).unwrap()
       }

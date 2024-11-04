@@ -82,7 +82,9 @@ export const getAuthfieldDisabled = (field: string, values: string[]) => {
     authenticationType, dot1xPortControl, ,
     authFailAction, authTimeoutAction
 	 ] = values
-  const isPortControlNotAuto = dot1xPortControl !== PortControl.AUTO
+  const isPortControlNotAuto
+    = dot1xPortControl !== PortControl.AUTO && dot1xPortControl !== PortControl.NONE
+
   const fieldDisabledMapping = {
     authDefaultVlan: () => isPortControlNotAuto,
     changeAuthOrder: () => authenticationType !== AuthenticationType._802_1X_AND_MACAUTH,
@@ -162,7 +164,7 @@ export const handleAuthFieldChange = (props: {
             criticalVlanCheckbox: true
           } : {})
         })
-      } else if (value === PortControl.AUTO) {
+      } else if (value === PortControl.AUTO || value === PortControl.NONE) {
         const values = form.getFieldsValue()
         form.setFieldsValue({
           ...values,
