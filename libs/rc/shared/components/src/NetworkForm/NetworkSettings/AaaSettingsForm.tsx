@@ -304,13 +304,13 @@ function AaaService () {
   }
 
   useEffect(() => {
-    if (isRadsecFeatureEnabled && selectedAuthRadius?.radSecOptions?.tlsEnabled) {
+    if (supportRadsec && selectedAuthRadius?.radSecOptions?.tlsEnabled) {
       form.setFieldValue('enableAuthProxy', true)
     }
   }, [selectedAuthRadius])
 
   useEffect(() => {
-    if (isRadsecFeatureEnabled && selectedAcctRadius?.radSecOptions?.tlsEnabled) {
+    if (supportRadsec && selectedAcctRadius?.radSecOptions?.tlsEnabled) {
       form.setFieldValue('enableAccountingProxy', true)
     }
   }, [selectedAcctRadius])

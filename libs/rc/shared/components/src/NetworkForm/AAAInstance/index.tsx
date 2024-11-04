@@ -6,9 +6,9 @@ import { get, isEmpty }        from 'lodash'
 import { useIntl }             from 'react-intl'
 import { useParams }           from 'react-router-dom'
 
-import { Tooltip, PasswordInput }                                  from '@acx-ui/components'
-import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
-import { AaaServerOrderEnum, AAAViewModalType, useConfigTemplate } from '@acx-ui/rc/utils'
+import { Tooltip, PasswordInput }                                                   from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
+import { AaaServerOrderEnum, AAAViewModalType, NetworkTypeEnum, useConfigTemplate } from '@acx-ui/rc/utils'
 
 import { useLazyGetAAAPolicyInstance, useGetAAAPolicyInstanceList } from '../../policies/AAAForm/aaaPolicyQuerySwitcher'
 import * as contents                                                from '../contentsMap'
@@ -23,7 +23,8 @@ const radiusTypeMap: { [key:string]: string } = {
 
 interface AAAInstanceProps {
   serverLabel: string
-  type: 'authRadius' | 'accountingRadius'
+  type: 'authRadius' | 'accountingRadius',
+  networkType?: NetworkTypeEnum
 }
 
 export const AAAInstance = (props: AAAInstanceProps) => {
@@ -48,12 +49,13 @@ export const AAAInstance = (props: AAAInstanceProps) => {
   })
   const [ getAaaPolicy ] = useLazyGetAAAPolicyInstance()
   // eslint-disable-next-line max-len
-  const [ aaaDropdownItems, setAaaDropdownItems ]= useState(convertAaaListToDropdownItems(radiusType, aaaListQuery?.data))
+  const [ aaaDropdownItems, setAaaDropdownItems ]= useState(convertAaaListToDropdownItems(radiusType, aaaListQuery?.data, props.networkType))
   const { data, setData } = useContext(NetworkFormContext)
 
   useEffect(()=>{
     if (aaaListQuery?.data) {
-      setAaaDropdownItems(convertAaaListToDropdownItems(radiusType, aaaListQuery.data))
+      setAaaDropdownItems(
+        convertAaaListToDropdownItems(radiusType, aaaListQuery.data, props.networkType))
     }
   },[aaaListQuery])
 
@@ -176,8 +178,13 @@ export const AAAInstance = (props: AAAInstanceProps) => {
 
 function convertAaaListToDropdownItems (
   targetRadiusType: typeof radiusTypeMap[keyof typeof radiusTypeMap],
-  aaaList?: AAAViewModalType[]
+  aaaList?: AAAViewModalType[],
+  networkType?: NetworkTypeEnum
 ): DefaultOptionType[] {
+  if (networkType === NetworkTypeEnum.PSK) {
+    aaaList = aaaList?.filter(m => m.radSecOptions?.tlsEnabled !== true)
+  }
+
   // eslint-disable-next-line max-len
   return aaaList?.filter(m => m.type === targetRadiusType).map(m => ({ label: m.name, value: m.id })) ?? []
 }

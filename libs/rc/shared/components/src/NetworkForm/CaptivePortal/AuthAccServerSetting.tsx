@@ -29,8 +29,19 @@ export function AuthAccServerSetting () {
     if(!value){
       form.setFieldValue(['guestPortal','wisprPage','accountingRadius'], undefined)
     }
-    setData && setData({ ...(!value?_.omit(data, 'guestPortal.wisprPage.accountingRadius'):data),
-      [fieldName]: value })
+    form.setFieldValue(fieldName, value)
+
+    if (supportRadsec) {
+      setData && setData({ ...(!value?_.omit(data, 'guestPortal.wisprPage.accountingRadius'):data),
+        [fieldName]: value,
+        authRadius: authRadius,
+        authRadiusId: authRadius?.id,
+        accountingRadius: accountingRadius,
+        accountingRadiusId: accountingRadius?.id })
+    } else {
+      setData && setData({ ...(!value?_.omit(data, 'guestPortal.wisprPage.accountingRadius'):data),
+        [fieldName]: value })
+    }
   }
   const proxyServiceTooltip = <Tooltip
     placement='bottom'
@@ -54,7 +65,7 @@ export function AuthAccServerSetting () {
       form.setFieldValue(['guestPortal','wisprPage','authRadius'], authRadius)
 
       if (supportRadsec && authRadius.radSecOptions?.tlsEnabled) {
-        form.setFieldValue('enableAuthProxy', true)
+        onChange(true, 'enableAuthProxy')
       }
     }
   },[authRadius])
@@ -63,7 +74,7 @@ export function AuthAccServerSetting () {
       form.setFieldValue(['guestPortal','wisprPage','accountingRadius'], accountingRadius)
 
       if (supportRadsec && accountingRadius.radSecOptions?.tlsEnabled) {
-        form.setFieldValue('enableAuthProxy', true)
+        onChange(true, 'enableAccountingProxy')
       }
     }
   },[accountingRadius])
