@@ -1636,7 +1636,18 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           } }
           : { error: listQuery.error as FetchBaseQueryError }
       },
-      providesTags: [{ type: 'FlexAuthProfile', id: 'LIST' }]
+      keepUnusedDataFor: APT_QUERY_CACHE_TIME,
+      providesTags: [{ type: 'FlexAuthProfile', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'AuthenticationProfile'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(switchApi.util.invalidateTags([{ type: 'FlexAuthProfile', id: 'LIST' }]))
+          })
+        })
+      }
     }),
     // eslint-disable-next-line max-len
     getFlexAuthenticationProfileAppliedTargets: build.query<TableResult<FlexibleAuthenticationAppliedTargets>, RequestPayload>({
@@ -1704,7 +1715,17 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Switch', id: 'DETAIL' }]
+      providesTags: [{ type: 'Switch', id: 'DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateSwitch'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(switchApi.util.invalidateTags([{ type: 'Switch', id: 'DETAIL' }]))
+          })
+        })
+      }
     }),
     updateSwitchAuthentication: build.mutation<FlexibleAuthentication, RequestPayload>({
       query: ({ params, payload }) => {

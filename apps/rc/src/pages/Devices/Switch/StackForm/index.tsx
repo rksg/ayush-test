@@ -287,7 +287,9 @@ export function StackForm () {
       if (dataFetchedRef.current) return
       dataFetchedRef.current = true
       formRef?.current?.resetFields()
-      formRef?.current?.setFieldsValue({ ...switchDetail, ...switchData, ...switchAuth })
+      formRef?.current?.setFieldsValue({
+        ...switchDetail, ...switchData, ..._.omit(switchAuth, ['id'])
+      })
 
       setIsIcx7650(!!switchDetail.model?.includes('ICX7650'))
       setIsSwitchFirmwareAbove10010f(isFirmwareVersionAbove10010f(switchDetail?.firmware))
@@ -576,8 +578,9 @@ export function StackForm () {
       }).unwrap()
         .then(() => {
           const transformedSwitchData = transformSwitchData(switchData as Switch)
-          const updatedFields
-            = checkSwitchUpdateFields(values, switchDetail, transformedSwitchData, switchAuth)
+          const updatedFields = checkSwitchUpdateFields(
+            values, switchDetail, transformedSwitchData, _.omit(switchAuth, ['id'])
+          )
           const noChange = updatedFields.length === 0
           // TODO: should disable apply button while no changes
           const onlyChangeDescription

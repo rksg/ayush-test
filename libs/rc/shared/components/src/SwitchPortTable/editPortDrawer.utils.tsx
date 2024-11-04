@@ -54,6 +54,19 @@ export const shouldRenderMultipleText = (props: {
     && hasMultipleValue.includes(field)
 }
 
+export const getDefaultVlanMapping = (
+  key: string,
+  switchId: string,
+  defaultVlanMap: Record<string, number>,
+  vlanValue?: string | Number
+) => {
+  const { $t } = getIntl()
+  const defaultVlanText = $t({ defaultMessage: 'Default VLAN (Multiple values)' })
+  return vlanValue === defaultVlanText
+    ? { [key]: defaultVlanMap?.[switchId as keyof typeof defaultVlanMap] ?? '' }
+    : {}
+}
+
 export const getFormItemLayout = (isMultipleEdit: boolean) => {
   return isMultipleEdit && {
     labelCol: { span: 10 },

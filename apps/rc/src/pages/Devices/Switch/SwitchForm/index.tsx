@@ -203,7 +203,9 @@ export function SwitchForm () {
       if(dataFetchedRef.current) return
       dataFetchedRef.current = true
       formRef?.current?.resetFields()
-      formRef?.current?.setFieldsValue({ ...switchDetail, ...switchData, ...switchAuth })
+      formRef?.current?.setFieldsValue({
+        ...switchDetail, ...switchData, ..._.omit(switchAuth, ['id'])
+      })
 
       setIsSwitchFirmwareAbove10010f(isFirmwareVersionAbove10010f(switchDetail?.firmware))
       setReadOnly(!!switchDetail.cliApplied)
@@ -408,8 +410,9 @@ export function SwitchForm () {
         enableRbac: isSwitchRbacEnabled
       }).unwrap()
         .then(() => {
-          const updatedFields
-            = checkSwitchUpdateFields(values, switchDetail, switchData, switchAuth)
+          const updatedFields = checkSwitchUpdateFields(
+            values, switchDetail, switchData, _.omit(switchAuth, ['id'])
+          )
           const noChange = updatedFields.length === 0
           // TODO: should disable apply button while no changes
           const onlyChangeDescription

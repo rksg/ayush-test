@@ -23,6 +23,7 @@ import {
 } from '../FlexibleAuthentication'
 
 import {
+  getDefaultVlanMapping,
   shouldRenderMultipleText
 } from './editPortDrawer.utils'
 import * as UI from './styledComponents'
@@ -199,7 +200,7 @@ export const getFlexAuthButtonStatus = (props: {
       key: 'untaggedVlan', switchId: id, aggregateData,
       isMultipleEdit, portVlansCheckbox, hasMultipleValue, form
     })
-    return untaggedVlan && Number(untaggedVlan) !== Number(defaultVlan)
+    return !!untaggedVlan?.length && Number(untaggedVlan[0]) !== Number(defaultVlan)
   }
 
   const aggregateUntaggedVlan = aggregateData.untaggedVlan
@@ -249,12 +250,17 @@ export const getCurrentVlansByKey = (props: {
 }): number[] => {
   const { key, aggregateData, isMultipleEdit, portVlansCheckbox, hasMultipleValue, switchId = '', form } = props
   // const isMultipleValues = aggregateData?.hasMultipleValue?.includes(key)
+  const defaultVlanMap = { [switchId]: aggregateData.defaultVlan?.[switchId] } as Record<string, number>
   const originalVlans = key === 'taggedVlans'
     ? getUnionValuesByKey(key, aggregateData) : aggregateData['untaggedVlan']?.[switchId]
-  const fieldValue = form.getFieldValue(key)
-  const overrideValue = typeof fieldValue === 'string'
-    ? fieldValue.split(',')
-    : typeof fieldValue === 'number' ? fieldValue.toString().split(',') : fieldValue
+
+  const fieldValue = isNaN(form.getFieldValue(key)) ? '' : form.getFieldValue(key)
+  const transformedFieldValue = key === 'taggedVlans'
+    ? fieldValue : (getDefaultVlanMapping(key, switchId, defaultVlanMap, fieldValue)?.untaggedVlan || fieldValue)
+
+  const overrideValue = typeof transformedFieldValue === 'string'
+    ? transformedFieldValue.split(',')
+    : (typeof transformedFieldValue === 'number' ? transformedFieldValue.toString().split(',') : transformedFieldValue)
 
   const getCurrentVlans = () => {
     if (isMultipleEdit) {
@@ -532,5 +538,37 @@ export const handleClickCustomize = (props: {
       }: {}
       )
     })
+  }
+}
+
+export const handlePortVlanChange = (props: {
+  isFlexAuthButtonDisabled: boolean,
+  form: FormInstance,
+}) => {
+  const { form, isFlexAuthButtonDisabled } = props
+  const isFlexAuthEnabled = form.getFieldValue('flexibleAuthenticationEnabled')
+  // eslint-disable-next-line max-len
+  const isFlexAuthEnabledOverride = form.getFieldValue('flexibleAuthenticationEnabledCheckbox')
+  // const relatedFields = [
+  //   'flexibleAuthenticationEnabled', 'authenticationProfileId', 'profileAuthDefaultVlan',
+  //   'authenticationType', 'changeAuthOrder', 'dot1xPortControl', 'authDefaultVlan',
+  //   'restrictedVlan', 'criticalVlan', 'authFailAction', 'authTimeoutAction', 'guestVlan'
+  // ]
+  if (isFlexAuthButtonDisabled && (isFlexAuthEnabledOverride || isFlexAuthEnabled)) {
+    const resetFieldValues = {
+      ...form.getFieldsValue(),
+      flexibleAuthenticationEnabled: false,
+      flexibleAuthenticationEnabledCheckbox: false
+      // ...(relatedFields.reduce((result, key) => {
+      //   return {
+      //     ...result,
+      //     [`${key}Checkbox`]: false
+      //   }
+      // }, {}))
+    }
+    // setTimeout(() => {
+    //   form.setFieldsValue(resetFieldValues)
+    // }, 200)
+    form.setFieldsValue(resetFieldValues)
   }
 }

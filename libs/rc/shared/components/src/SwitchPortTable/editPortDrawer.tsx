@@ -84,6 +84,7 @@ import {
   checkVlanDiffFromSwitchDefaultVlan,
   checkVlanDiffFromSwitchAuthDefaultVlan,
   handleClickCustomize,
+  handlePortVlanChange,
   getAppliedProfile,
   getFlexAuthButtonStatus,
   isOverrideFieldNotChecked,
@@ -99,6 +100,7 @@ import {
   handlePortSpeedFor765048F,
   getAclOptions,
   getAllSwitchVlans,
+  getDefaultVlanMapping,
   getFormItemLayout,
   getInitPortVlans,
   getMultipleVlanValue,
@@ -210,7 +212,7 @@ export function EditPortDrawer ({
 
   const hasCreatePermission = hasPermission({ scopes: [SwitchScopes.CREATE] })
 
-  const defaultVlanText = $t({ defaultMessage: 'Default VLAN (Multiple values)' })
+  // const defaultVlanText = $t({ defaultMessage: 'Default VLAN (Multiple values)' })
   const switches: string[] = _.uniq(selectedPorts.map(p => p.switchMac))
 
   const selectedSwitchList = switchList?.filter(s => switches.includes(s.id))
@@ -858,16 +860,20 @@ export function EditPortDrawer ({
       voiceVlan: useVenueSettings ? null : Number(form.getFieldValue('voiceVlan'))
     }
 
-    const defaultVlanMap = switchesDefaultVlan?.reduce((result, item) => ({
-      ...result, [item.switchId]: item.defaultVlanId
-    }), {})
-    const getDefaultVlanMapping = (key: keyof typeof transformedValues, item: string) => {
-      return transformedValues?.[key] === defaultVlanText ? {
-        [key]: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
-      } : {}
-    }
+    // const defaultVlanMap = switchesDefaultVlan?.reduce((result, item) => ({
+    //   ...result, [item.switchId]: item.defaultVlanId
+    // }), {})
+    // const getDefaultVlanMapping = (key: keyof typeof transformedValues, item: string) => {
+    //   return transformedValues?.[key] === defaultVlanText ? {
+    //     [key]: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
+    //   } : {}
+    // }
+
+
 
     const { transformedValues, ignoreFields } = transformData(values)
+    const { untaggedVlan, voiceVlan } = transformedValues
+    const defaultVlanMap = aggregatePortsData.defaultVlan as Record<string, number>
 
     try {
       const payload = switches.map((item) => {
@@ -880,27 +886,15 @@ export function EditPortDrawer ({
           switchId: item,
           port: ports?.[0],
           ports: ports,
-          // ...(transformedValues?.untaggedVlan === defaultVlanText && {
-          //   untaggedVlan: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
-          // }),
-          // ...(transformedValues?.voiceVlan === defaultVlanText && {
-          //   voiceVlan: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
-          // }),
-          ...getDefaultVlanMapping('untaggedVlan', item),
-          ...getDefaultVlanMapping('voiceVlan', item),
+          ...getDefaultVlanMapping('untaggedVlan', item, defaultVlanMap, untaggedVlan),
+          ...getDefaultVlanMapping('voiceVlan', item, defaultVlanMap, voiceVlan),
           ignoreFields: ignoreFields.toString()
         } : {
           switchId: item,
           port: {
             ...transformedValues,
-            // ...(transformedValues?.untaggedVlan === defaultVlanText && {
-            //   untaggedVlan: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
-            // }),
-            // ...(transformedValues?.voiceVlan === defaultVlanText && {
-            //   voiceVlan: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
-            // }),
-            ...getDefaultVlanMapping('untaggedVlan', item),
-            ...getDefaultVlanMapping('voiceVlan', item),
+            ...getDefaultVlanMapping('untaggedVlan', item, defaultVlanMap, untaggedVlan),
+            ...getDefaultVlanMapping('voiceVlan', item, defaultVlanMap, voiceVlan),
             ignoreFields: ignoreFields.toString(),
             port: ports?.[0],
             ports: ports
@@ -923,6 +917,7 @@ export function EditPortDrawer ({
         ])
       )
       onClose()
+
     } catch (err) {
       console.log(err) // eslint-disable-line no-console
     }
@@ -1056,32 +1051,20 @@ export function EditPortDrawer ({
             (v !== 'taggedVlans' && v !== 'untaggedVlan' && v !== 'voiceVlan'))
           )
         }
-      } else if (changedField === 'portVlansCheckbox' && changedValue && isMultipleEdit) {
-        const isFlexAuthEnabled = form.getFieldValue('flexibleAuthenticationEnabled')
-        // eslint-disable-next-line max-len
-        const isFlexAuthEnabledOverride = form.getFieldValue('flexibleAuthenticationEnabledCheckbox')
-        // const relatedFields = [
-        //   'flexibleAuthenticationEnabled', 'authenticationProfileId', 'profileAuthDefaultVlan',
-        //   'authenticationType', 'changeAuthOrder', 'dot1xPortControl', 'authDefaultVlan',
-        //   'restrictedVlan', 'criticalVlan', 'authFailAction', 'authTimeoutAction', 'guestVlan'
-        // ]
-        if (isFlexAuthEnabledOverride || isFlexAuthEnabled) {
-          const resetFieldValues = {
-            ...form.getFieldsValue(),
-            flexibleAuthenticationEnabled: false,
-            flexibleAuthenticationEnabledCheckbox: false
-            // ...(relatedFields.reduce((result, key) => {
-            //   return {
-            //     ...result,
-            //     [`${key}Checkbox`]: false
-            //   }
-            // }, {}))
-          }
-          // setTimeout(() => {
-          //   form.setFieldsValue(resetFieldValues)
-          // }, 200)
-          form.setFieldsValue(resetFieldValues)
+        if (changedField === 'untaggedVlan') {
+          const isFlexAuthButtonDisabled = !!getFlexAuthButtonStatus({
+            ...commonRequiredProps,
+            hasMultipleValue: hasMultipleValue.filter(v =>
+              (v !== 'taggedVlans' && v !== 'untaggedVlan' && v !== 'voiceVlan'))
+          })
+          handlePortVlanChange({ isFlexAuthButtonDisabled, form })
         }
+      } else if (changedField === 'portVlansCheckbox' && isMultipleEdit) {
+        const isFlexAuthButtonDisabled = !!getFlexAuthButtonStatus({
+          ...commonRequiredProps,
+          portVlansCheckbox: changedValue as boolean
+        })
+        handlePortVlanChange({ isFlexAuthButtonDisabled, form })
       }
     }
 

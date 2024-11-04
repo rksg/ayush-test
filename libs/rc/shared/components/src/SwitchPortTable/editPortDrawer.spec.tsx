@@ -2044,7 +2044,6 @@ describe('EditPortDrawer', () => {
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox')).not.toBeDisabled()
           await userEvent.click(await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox'))
-          await userEvent.click(await screen.findByTestId('flex-enable-switch'))
 
           // Edit Port VLANs
           // enable override portVlans
@@ -2053,9 +2052,10 @@ describe('EditPortDrawer', () => {
           const dialog = await screen.findByTestId('select-port-vlans')
 
           const untaggedTabPanel = await screen.findByRole('tabpanel', { hidden: false })
-          await userEvent.click(await within(untaggedTabPanel).findByText(/VLAN-ID-2/))
+          await userEvent.click(await within(untaggedTabPanel).findByText(/VLAN-ID-5/))
           await userEvent.click(await within(dialog).findByRole('button', { name: 'OK' }))
 
+          expect(await screen.findByText(/VLAN-ID: 5/)).toBeVisible()
           // port is untagged port, so disable the flex auth setting automatically
           expect(await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox')).toBeDisabled()
           expect(await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox')).not.toBeChecked()
@@ -2063,6 +2063,63 @@ describe('EditPortDrawer', () => {
           // disable override portVlans
           await userEvent.click(await screen.findByTestId('portVlans-override-checkbox'))
           expect(await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox')).not.toBeDisabled()
+        })
+
+        it('should disable the Untagged tab correctly when flex auth enabled', async () => {
+          mockServer.use(
+            rest.post(SwitchRbacUrlsInfo.getPortsSetting.url,
+              (_, res, ctx) => res(ctx.json([{
+                ...portSetting[0],
+                taggedVlans: ['3'],
+                untaggedVlan: '1', //defaultVlan = 1
+                flexibleAuthenticationEnabled: false,
+                authenticationCustomize: false
+              }, {
+                ...portSetting[2],
+                taggedVlans: ['3'],
+                untaggedVlan: '2', //defaultVlan = 2
+                flexibleAuthenticationEnabled: false,
+                authenticationCustomize: false
+              }]))
+            ),
+            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
+              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
+            )
+          )
+
+          render(<Provider>
+            <EditPortDrawer
+              visible={true}
+              setDrawerVisible={jest.fn()}
+              isCloudPort={false}
+              isMultipleEdit={selectedPorts?.slice(0, 2)?.length > 1}
+              isVenueLevel={true}
+              selectedPorts={selectedPorts?.slice(0, 2)}
+              switchList={switchList}
+              authProfiles={flexAuthList.data}
+            />
+          </Provider>, {
+            route: {
+              params,
+              path: '/:tenantId/t/venues/:venueId/venue-details/devices/switch/port'
+            }
+          })
+          await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+          await screen.findByText('Edit Port')
+
+          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
+          expect(await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox')).not.toBeDisabled()
+          await userEvent.click(await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox'))
+          await userEvent.click(await screen.findByTestId('flex-enable-switch'))
+
+          await userEvent.click(await screen.findByTestId('portVlans-override-checkbox'))
+          await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+          const dialog = await screen.findByTestId('select-port-vlans')
+
+          const untaggedTab = await within(dialog).findByRole('tab', { name: /Untagged VLAN/ })
+          expect(untaggedTab.getAttribute('aria-disabled')).toBeTruthy()
+          expect(await within(dialog).findByRole('tab', { name: 'Tagged VLANs' })).not.toBeDisabled()
         })
 
         it('should validate guest vlan correctly', async () => {

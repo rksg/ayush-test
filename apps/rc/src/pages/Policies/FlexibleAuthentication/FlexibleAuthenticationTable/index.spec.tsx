@@ -1,13 +1,14 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { switchApi }   from '@acx-ui/rc/services'
 import {
   SwitchUrlsInfo,
   PolicyOperation,
   PolicyType,
   getPolicyRoutePath
 } from '@acx-ui/rc/utils'
-import { Provider }                                                               from '@acx-ui/store'
+import { Provider, store }                                                        from '@acx-ui/store'
 import { mockServer, render, screen, within, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { flexAuthList, appliedTargets } from '../__tests__/fixtures'
@@ -31,6 +32,7 @@ describe('FlexibleAuthenticationTable', ()=>{
   })
 
   beforeEach(() => {
+    store.dispatch(switchApi.util.resetApiState())
     mockServer.use(
       rest.post(
         SwitchUrlsInfo.getFlexAuthenticationProfiles.url,
