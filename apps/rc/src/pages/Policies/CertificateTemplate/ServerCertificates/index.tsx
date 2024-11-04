@@ -107,15 +107,11 @@ export default function ServerCertificatesTable () {
   ]
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
-
     let _customFilters = {}
-    if(customFilters?.status) {
-      _customFilters = {
-        ...customFilters,
-        status: customFilters.status[0]
-      }
+    _customFilters = {
+      ...customFilters,
+      ...(customFilters?.status ? { status: customFilters.status[0] } : {})
     }
-
     tableQuery.handleFilterChange(_customFilters, customSearch)
   }
 

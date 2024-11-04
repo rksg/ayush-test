@@ -177,5 +177,10 @@ export const CertificateUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     newApi: true,
     url: '/certificateAuthorities/:caId/certificates'
+  },
+  uploadCertificate: {
+    method: 'post',
+    newApi: true,
+    url: '/certificates'
   }
 }

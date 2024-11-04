@@ -3,12 +3,13 @@ import { useEffect } from 'react'
 import { Form } from 'antd'
 import moment   from 'moment'
 
-import { useGenerateClientServerCertificatesMutation } from '@acx-ui/rc/services'
-import { AlgorithmType, CertificateGenerationType }    from '@acx-ui/rc/utils'
+import { useGenerateClientServerCertificatesMutation, useUploadCertificateMutation } from '@acx-ui/rc/services'
+import { AlgorithmType, CertificateGenerationType }                                  from '@acx-ui/rc/utils'
 
 export default function useCertificateForm () {
   const [generateCertificateForm] = Form.useForm()
   const [generateClientServerCertificate] = useGenerateClientServerCertificatesMutation()
+  const [uploadCertificate] = useUploadCertificateMutation()
 
   useEffect(() => {
     resetFormFeilds()
@@ -29,19 +30,42 @@ export default function useCertificateForm () {
     const formData = generateCertificateForm.getFieldsValue()
     await generateCertificateForm.validateFields()
 
-    const { name, caId, expireDateMoment, startDateMoment, generation, email, ...rest } = formData
-    const payload = {
-      ...rest,
-      commonName: name,
-      notAfterDate: expireDateMoment.startOf('day').toDate(),
-      notBeforeDate: startDateMoment.startOf('day').toDate(),
-      email: email ? email : undefined
+    const { name, caId, expireDateMoment, startDateMoment, generation, ...rest } = formData
+    let payload = {
+      ...rest
     }
     if (generation === CertificateGenerationType.NEW) {
+      payload = {
+        name,
+        commonName: name,
+        ...payload,
+        notAfterDate: expireDateMoment.startOf('day').toDate(),
+        notBeforeDate: startDateMoment.startOf('day').toDate()
+      }
       const res = await generateClientServerCertificate({ payload, params: { caId } }).unwrap()
       return res?.response?.id
+    } else if(generation === CertificateGenerationType.WITH_CSR) {
+      payload = {
+        name,
+        ...payload,
+        notAfterDate: expireDateMoment.startOf('day').toDate(),
+        notBeforeDate: startDateMoment.startOf('day').toDate()
+      }
+      const res = await generateClientServerCertificate({ payload, params: { caId } }).unwrap()
+      return res?.response?.id
+    } else {
+      const uploadCertData = new FormData()
+      if (formData.publicKey) uploadCertData.append('certificateFile', formData.publicKey.file)
+      if (formData.privateKey) uploadCertData.append('privateKeyFile', formData.privateKey.file)
+      if (formData.name) uploadCertData.append('name', formData.name)
+      if (formData.password) uploadCertData.append('password', formData.password)
+
+      const res = await uploadCertificate({
+        payload: uploadCertData,
+        customHeaders: { 'Content-Type': undefined }
+      }).unwrap()
+      return res?.response?.id
     }
-    return null
   }
 
   return {

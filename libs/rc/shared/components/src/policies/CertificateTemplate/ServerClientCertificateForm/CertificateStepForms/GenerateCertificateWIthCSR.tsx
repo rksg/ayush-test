@@ -6,13 +6,12 @@ import { DatePicker, GridCol, GridRow }                                         
 import { useGetCertificateAuthoritiesQuery, useGetServerCertificatesQuery }             from '@acx-ui/rc/services'
 import { trailingNorLeadingSpaces, checkObjectNotExists, ExtendedKeyUsages, KeyUsages } from '@acx-ui/rc/utils'
 
-import CertificateStrengthSettings                                     from '../../CertificateTemplateForm/CertificateTemplateSettings/CertificateStrengthSettings'
 import { MAX_CERTIFICATE_PER_TENANT }                                  from '../../constants'
 import { caFormDescription, ExtendedKeyUsagesLabels, KeyUsagesLabels } from '../../contentsMap'
 import { SettingsSectionTitle, Description, Section }                  from '../../styledComponents'
 
 
-export default function GenerateCertificate () {
+export default function GenerateCertificateWithCSR () {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const { isCaNameListLoading, caNameList } = useGetCertificateAuthoritiesQuery({
@@ -97,54 +96,12 @@ export default function GenerateCertificate () {
               children={<Input />}
             />
             <Form.Item
-              name='organization'
-              label={$t({ defaultMessage: 'Organization' })}
+              name='csrString'
+              label={$t({ defaultMessage: 'Paste Certificate Sign Request (CSR)' })}
               rules={[
-                { min: 2 },
-                { max: 255 },
-                { validator: (_, value) => trailingNorLeadingSpaces(value) }
+                { required: true }
               ]}
-              children={<Input />}
-            />
-            <Form.Item
-              name='organizationUnit'
-              label={$t({ defaultMessage: 'Organization Unit' })}
-              rules={[
-                { min: 2 },
-                { max: 255 },
-                { validator: (_, value) => trailingNorLeadingSpaces(value) }
-              ]}
-              children={<Input />}
-            />
-            <Form.Item
-              name='country'
-              label={$t({ defaultMessage: 'Country' })}
-              rules={[
-                { min: 2 },
-                { max: 255 },
-                { validator: (_, value) => trailingNorLeadingSpaces(value) }
-              ]}
-              children={<Input />}
-            />
-            <Form.Item
-              name='state'
-              label={$t({ defaultMessage: 'State / Province' })}
-              rules={[
-                { min: 2 },
-                { max: 255 },
-                { validator: (_, value) => trailingNorLeadingSpaces(value) }
-              ]}
-              children={<Input />}
-            />
-            <Form.Item
-              name='locality'
-              label={$t({ defaultMessage: 'Locality' })}
-              rules={[
-                { min: 2 },
-                { max: 255 },
-                { validator: (_, value) => trailingNorLeadingSpaces(value) }
-              ]}
-              children={<Input />}
+              children={<Input.TextArea rows={10} />}
             />
           </GridCol>
         </GridRow>
@@ -168,17 +125,6 @@ export default function GenerateCertificate () {
                 disabledDate={current => current && current < moment().endOf('day')}
               />
             </Form.Item>
-          </GridCol>
-        </GridRow>
-      </Section >
-      <Section>
-        <SettingsSectionTitle>
-          {$t({ defaultMessage: 'Certificate Strength' })}
-        </SettingsSectionTitle>
-        <Description>{$t(caFormDescription.STRENGTH)}</Description>
-        <GridRow>
-          <GridCol col={{ span: 10 }} >
-            <CertificateStrengthSettings />
           </GridCol>
         </GridRow>
       </Section >
@@ -209,7 +155,7 @@ export default function GenerateCertificate () {
         <GridRow>
           <GridCol col={{ span: 10 }} >
             <Form.Item
-              name={'extendedKeyUsages'}
+              name={'extendedkeyUsages'}
               label={$t({ defaultMessage: 'Extended Key Usage' })}
               children={
                 <Checkbox.Group>
