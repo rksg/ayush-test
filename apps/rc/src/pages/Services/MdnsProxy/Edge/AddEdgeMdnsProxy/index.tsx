@@ -1,4 +1,5 @@
-import { useIntl } from 'react-intl'
+import { Row, Col } from 'antd'
+import { useIntl }  from 'react-intl'
 
 import { PageHeader }                               from '@acx-ui/components'
 import { AddEdgeMdnsProxyForm, useEdgeMdnsActions } from '@acx-ui/rc/components'
@@ -44,10 +45,14 @@ const AddEdgeMdnsProxy = () => {
           { text: $t({ defaultMessage: 'Edge mDNS Proxy' }), link: routeToList }
         ]}
       />
-      <AddEdgeMdnsProxyForm
-        onFinish={handleFinish}
-        onCancel={() => navigate(linkToServiceList)}
-      />
+      <Row>
+        <Col span={24}>
+          <AddEdgeMdnsProxyForm
+            onFinish={handleFinish}
+            onCancel={() => navigate(linkToServiceList)}
+          />
+        </Col>
+      </Row>
     </>
   )
 }

@@ -52,10 +52,8 @@ export const EdgeQosProfileSelectionForm = () => {
       >
         <Select
           style={{ width: '200px' }}
-          options={[
-            { label: $t({ defaultMessage: 'Select...' }), value: null },
-            ...(edgeHqosOptions || [])
-          ]}
+          placeholder={$t({ defaultMessage: 'Select...' })}
+          options={edgeHqosOptions || []}
           loading={isEdgeHqosOptionsLoading}
         />
       </Form.Item>

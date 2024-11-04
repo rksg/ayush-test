@@ -26,7 +26,7 @@ export const MdnsAddModal = () => {
       </Button>
       <Modal
         title={$t({ defaultMessage: 'Add mDNS Proxy' })}
-        width={800}
+        width={1000}
         visible={visible}
         type={ModalType.ModalStepsForm}
         mask={true}

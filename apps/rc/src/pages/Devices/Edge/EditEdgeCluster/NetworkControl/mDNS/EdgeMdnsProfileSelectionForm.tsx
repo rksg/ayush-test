@@ -50,10 +50,8 @@ export const EdgeMdnsProfileSelectionForm = () => {
       >
         <Select
           style={{ width: '200px' }}
-          options={[
-            { label: $t({ defaultMessage: 'Select...' }), value: null },
-            ...(edgeMdnsOptions || [])
-          ]}
+          options={edgeMdnsOptions || []}
+          placeholder={$t({ defaultMessage: 'Select...' })}
           loading={isEdgeMdnsOptionsLoading}
         />
       </Form.Item>

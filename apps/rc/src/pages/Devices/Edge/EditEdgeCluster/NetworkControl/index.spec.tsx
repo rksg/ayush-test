@@ -474,7 +474,6 @@ describe('Edge Cluster Network Control Tab', () => {
       })
     })
 
-
     it('should deactivate cluster mDNS when switch into off', async () => {
       const mockedDeactivateEdgeClusterReq = jest.fn()
       mockServer.use(
@@ -508,6 +507,39 @@ describe('Edge Cluster Network Control Tab', () => {
         serviceId: mockEdgeMdnsViewDataList[0].id,
         edgeClusterId: mockEdgeClusterList.data[0].clusterId
       })
+    })
+
+    it('should not trigger API when there is no change', async () => {
+      const mockedActivateEdgeClusterReq = jest.fn()
+      mockServer.use(
+        rest.put(
+          EdgeMdnsProxyUrls.activateEdgeMdnsProxyCluster.url,
+          (req, res, ctx) => {
+            mockedActivateEdgeClusterReq(req.params)
+            return res(ctx.status(202))
+          }
+        )
+      )
+
+      render(
+        <Provider>
+          <EdgeNetworkControl
+            currentClusterStatus={mockEdgeClusterList.data[0] as EdgeClusterStatus} />
+        </Provider>, {
+          route: {
+            params,
+            path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab'
+          }
+        })
+
+      await screen.findByText('mDNS Proxy')
+      const mdnsSwitch = getMdnsSwitchBtn()
+      await waitFor(() => expect(mdnsSwitch).toBeChecked())
+      const dropdown = getMdnsDropdownBtn()
+      await waitFor(() => expect(dropdown).toHaveValue(mockEdgeMdnsViewDataList[0].id))
+
+      await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
+      expect(mockedActivateEdgeClusterReq).toBeCalledTimes(0)
     })
   })
 })

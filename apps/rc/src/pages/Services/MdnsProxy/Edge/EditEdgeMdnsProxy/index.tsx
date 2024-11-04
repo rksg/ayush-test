@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
-import { useIntl } from 'react-intl'
+import { Row, Col } from 'antd'
+import { useIntl }  from 'react-intl'
 
 import { Loader, PageHeader }                                             from '@acx-ui/components'
 import { EditEdgeMdnsProxyForm, useEdgeMdnsActions }                      from '@acx-ui/rc/components'
@@ -75,16 +76,20 @@ const EditEdgeMdnsProxy = () => {
           { text: $t({ defaultMessage: 'Edge mDNS Proxy' }), link: routeToList }
         ]}
       />
-      <Loader states={[{
-        isLoading: isLoading || isViewDataLoading,
-        isFetching: isFetching || isViewFetching
-      }]}>
-        <EditEdgeMdnsProxyForm
-          editData={editData}
-          onFinish={handleFinish}
-          onCancel={() => navigate(linkToServiceList)}
-        />
-      </Loader>
+      <Row>
+        <Col span={24}>
+          <Loader states={[{
+            isLoading: isLoading || isViewDataLoading,
+            isFetching: isFetching || isViewFetching
+          }]}>
+            <EditEdgeMdnsProxyForm
+              editData={editData}
+              onFinish={handleFinish}
+              onCancel={() => navigate(linkToServiceList)}
+            />
+          </Loader>
+        </Col>
+      </Row>
     </>
   )
 }

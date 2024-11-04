@@ -29,15 +29,6 @@ export const MdnsDetailDrawer = (props: MdnsDetailDrawerProps) => {
     setVisible(false)
   }
 
-  const footer = (
-    <Drawer.FormFooter
-      buttonLabel={{
-        save: $t({ defaultMessage: 'OK' })
-      }}
-      onCancel={handleClose}
-    />
-  )
-
   return <>
     <Button type='link' onClick={() => setVisible(true)} disabled={!serviceId}>
       {$t({ defaultMessage: 'Profile Details' })}
@@ -49,8 +40,7 @@ export const MdnsDetailDrawer = (props: MdnsDetailDrawerProps) => {
       )}
       visible={visible}
       onClose={handleClose}
-      footer={footer}
-      width={'400px'}
+      width={500}
     >
       <Loader states={[{ isLoading, isFetching }]}>
         <Typography.Text>
