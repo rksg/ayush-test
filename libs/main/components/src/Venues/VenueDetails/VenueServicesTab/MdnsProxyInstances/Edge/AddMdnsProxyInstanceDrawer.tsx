@@ -97,7 +97,13 @@ export default function AddMdnsProxyInstanceDrawer (props: AddMdnsProxyInstanceD
           label={$t({ defaultMessage: 'Edge Cluster' })}
           rules={[{ required: true }]}
         >
-          <Select options={clusterOptions} loading={isClusterOptionsLoading} />
+          <Select loading={isClusterOptionsLoading}>
+            {clusterOptions?.map(opt => <Select.Option
+              key={opt.value}
+              value={opt.value}
+              children={opt.label}
+            />)}
+          </Select>
         </Form.Item>
         <EdgeMdnsProxySelector
           formItemProps={{

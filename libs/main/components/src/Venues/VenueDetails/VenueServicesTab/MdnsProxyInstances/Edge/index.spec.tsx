@@ -169,7 +169,7 @@ describe('Edge Venue MdnsProxyInstances', () => {
     expect(serviceDropdown).toHaveValue(mockEdgeMdnsViewDataList[0].id)
     await userEvent.selectOptions(
       serviceDropdown,
-      mockEdgeMdnsViewDataList[1].name )
+      mockEdgeMdnsViewDataList[1].name)
 
     await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
 
@@ -206,17 +206,15 @@ describe('Edge Venue MdnsProxyInstances', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Add Instance' }))
 
     const clusterDropdown = await screen.findByRole('combobox', { name: /Edge Cluster/i })
-    const dialog = screen.getByRole('dialog')
     await userEvent.selectOptions(
       clusterDropdown,
       mockEdgeClusterList.data[1].name)
 
-    const serviceDropdown = await screen.findByRole('combobox', { name: /mDNS Proxy Service/i })
-    await within(dialog).findByText(mockEdgeMdnsViewDataList[1].name)
+    const serviceDropdown = screen.getByRole('combobox', { name: /mDNS Proxy Service/i })
     await userEvent.selectOptions(
       serviceDropdown,
       mockEdgeMdnsViewDataList[1].name )
-    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
 
     await waitFor(() => {
       expect(activateFn).toHaveBeenCalledWith({
