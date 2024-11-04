@@ -12,11 +12,10 @@ export const edgeTnmServiceApi = baseEdgeTnmServiceApi.injectEndpoints({
   endpoints: (build) => ({
     getEdgeTnmServiceList:
       build.query<TableResult<EdgeTnmServiceData>, RequestPayload>({
-        query: ({ payload }) => {
+        query: () => {
           const req = createHttpRequest(EdgeTnmServiceUrls.getEdgeTnmServiceList)
           return {
-            ...req,
-            body: JSON.stringify(payload)
+            ...req
           }
         },
         providesTags: [{ type: 'EdgeTnmService', id: 'LIST' }],

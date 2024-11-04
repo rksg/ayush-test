@@ -592,7 +592,7 @@ function ServiceRoutes () {
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
-  const isEdgeTnmReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
+  const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
 
   return rootRoutes(
     <Route path=':tenantId/t'>
@@ -807,7 +807,7 @@ function ServiceRoutes () {
 
       {isEdgeMdnsReady && edgeMdnsRoutes()}
 
-      {isEdgeTnmReady && edgeTnmRoutes()}
+      {isEdgeTnmServiceReady && edgeTnmRoutes()}
 
       <Route
         path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,

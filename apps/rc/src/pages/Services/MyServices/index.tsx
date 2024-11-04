@@ -16,7 +16,7 @@ import {
   useGetEdgeFirewallViewDataListQuery,
   useGetEdgeSdLanP2ViewDataListQuery,
   useGetEdgeMdnsProxyViewDataListQuery,
-  useGetEdgeTnmServiceViewDataListQuery
+  useGetEdgeTnmServiceListQuery
 } from '@acx-ui/rc/services'
 import {
   filterByAccessForServicePolicyMutation,
@@ -107,7 +107,7 @@ export default function MyServices () {
     {
       type: ServiceType.EDGE_TNM_SERVICE,
       categories: [RadioCardCategory.EDGE],
-      totalCount: useGetEdgeTnmServiceViewDataListQuery({
+      totalCount: useGetEdgeTnmServiceListQuery({
         params, payload: defaultPayload
       }, {
         skip: !isEdgeTnmServiceReady

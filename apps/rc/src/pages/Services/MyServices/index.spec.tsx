@@ -21,7 +21,7 @@ jest.mock('@acx-ui/rc/components', () => ({
   useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
 const { mockEdgeMdnsViewDataList } = EdgeMdnsFixtures
-const { mockTnmServiceViewDataList } = EdgeTnmServiceFixtures
+const { mockTnmServiceDataList } = EdgeTnmServiceFixtures
 describe('MyServices', () => {
   const params = {
     tenantId: '15320bc221d94d2cb537fa0189fee742'
@@ -60,12 +60,12 @@ describe('MyServices', () => {
           data: mockEdgeMdnsViewDataList
         }))
       ),
-      rest.post(
-        EdgeTnmServiceUrls.getEdgeTnmServiceViewDataList.url,
+      rest.get(
+        EdgeTnmServiceUrls.getEdgeTnmServiceList.url,
         (_, res, ctx) => res(ctx.json({
-          totalCount: mockTnmServiceViewDataList.length,
+          totalCount: mockTnmServiceDataList.length,
           page: 1,
-          data: mockTnmServiceViewDataList
+          data: mockTnmServiceDataList
         }))
       )
     )
@@ -101,7 +101,7 @@ describe('MyServices', () => {
     expect(await screen.findByText('Network Control')).toBeVisible()
   })
 
-  it('should render Edge MDNS when FF is off', async () => {
+  it('should not render anything when FF is off', async () => {
     jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
 
     render(
@@ -113,6 +113,7 @@ describe('MyServices', () => {
     )
 
     expect(screen.queryByText(/mDNS Proxy for RUCKUS Edge/)).toBeNull()
+    expect(screen.queryByText(/Thirdparty Network Management/)).toBeNull()
   })
 
   it('should render Edge MDNS when FF is ON', async () => {
@@ -128,20 +129,6 @@ describe('MyServices', () => {
     )
 
     expect(await screen.findByText('mDNS Proxy for RUCKUS Edge (2)')).toBeVisible()
-  })
-
-  it('should render Edge TNM SERVICE when FF is off', async () => {
-    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
-
-    render(
-      <Provider>
-        <MyServices />
-      </Provider>, {
-        route: { params, path }
-      }
-    )
-
-    expect(screen.queryByText(/Thirdparty Network Management/)).toBeNull()
   })
 
   it('should render Edge TNM SERVICE when FF is ON', async () => {

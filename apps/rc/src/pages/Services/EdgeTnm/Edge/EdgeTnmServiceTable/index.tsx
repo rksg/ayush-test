@@ -1,3 +1,4 @@
+import { Row }     from 'antd'
 import { useIntl } from 'react-intl'
 
 import {
@@ -8,18 +9,17 @@ import {
   Loader,
   showActionModal
 } from '@acx-ui/components'
-import { ToolTipTableStyle }                                                      from '@acx-ui/rc/components'
-import { useDeleteEdgeTnmServiceMutation, useGetEdgeTnmServiceViewDataListQuery } from '@acx-ui/rc/services'
+import { ToolTipTableStyle }                                              from '@acx-ui/rc/components'
+import { useDeleteEdgeTnmServiceMutation, useGetEdgeTnmServiceListQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
-  getServiceDetailsLink,
   ServiceOperation,
   getServiceListRoutePath,
   getServiceRoutePath,
   getScopeKeyByService,
   filterByAccessForServicePolicyMutation,
   useTableQuery,
-  EdgeTnmServiceViewData
+  EdgeTnmServiceData
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
@@ -29,22 +29,14 @@ export function EdgeTnmServiceTable () {
   const [ deleteFn, { isLoading: isDeleting } ] = useDeleteEdgeTnmServiceMutation()
 
   const tableQuery = useTableQuery({
-    useQuery: useGetEdgeTnmServiceViewDataListQuery,
+    useQuery: useGetEdgeTnmServiceListQuery,
     defaultPayload: {
-      fields: ['id', 'name', 'version', 'status'],
       filters: {}
-    },
-    sorter: {
-      sortField: 'name',
-      sortOrder: 'ASC'
-    },
-    search: {
-      searchTargetFields: ['name']
     },
     pagination: { settingsId }
   })
 
-  const rowActions: TableProps<EdgeTnmServiceViewData>['rowActions'] = [
+  const rowActions: TableProps<EdgeTnmServiceData>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
@@ -52,12 +44,13 @@ export function EdgeTnmServiceTable () {
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Edge Tnm Service' }),
+            entityName: $t({ defaultMessage: 'Edge TNM Service' }),
             entityValue: rows.length === 1 ? rows[0].name : undefined,
             numOfEntities: rows.length
           },
           onOk: () => {
-            Promise.all(rows.map(row => deleteFn({ params: { serviceId: row.id } }).unwrap()))
+            Promise.all(rows.map(row => deleteFn({
+              params: { edgeClusterId: row.id, venueId: row.venueId } }).unwrap()))
               .then(clearSelection)
           }
         })
@@ -86,7 +79,7 @@ export function EdgeTnmServiceTable () {
             to={getServiceRoutePath({ type: ServiceType.EDGE_TNM_SERVICE, oper: ServiceOperation.CREATE })}
           >
             <Button type='primary'>
-              {$t({ defaultMessage: 'Add mDNS Proxy Service' })}</Button>
+              {$t({ defaultMessage: 'Add TNM Service' })}</Button>
           </TenantLink>
         ])}
       />
@@ -111,7 +104,7 @@ export function EdgeTnmServiceTable () {
 
 function useColumns () {
   const { $t } = useIntl()
-  const columns: TableProps<EdgeTnmServiceViewData>['columns'] = [
+  const columns: TableProps<EdgeTnmServiceData>['columns'] = [
     {
       key: 'name',
       title: $t({ defaultMessage: 'Name' }),
@@ -119,18 +112,32 @@ function useColumns () {
       sorter: true,
       searchable: true,
       fixed: 'left',
-      render: function (_, row) {
-        return (
-          <TenantLink
-            to={getServiceDetailsLink({
-              type: ServiceType.EDGE_TNM_SERVICE,
-              oper: ServiceOperation.DETAIL,
-              serviceId: row.id!
-            })}>
-            {row.name}
-          </TenantLink>
-        )
-      }
+      render: (_, row) =>
+        <Row justify='center'>
+          {row.name}
+        </Row>
+    },
+    {
+      key: 'version',
+      title: $t({ defaultMessage: 'Version' }),
+      dataIndex: 'version',
+      align: 'center',
+      sorter: true,
+      render: (_, row) =>
+        <Row justify='center'>
+          {row.version}
+        </Row>
+    },
+    {
+      title: $t({ defaultMessage: 'Health' }),
+      key: 'status',
+      dataIndex: 'stauts',
+      width: 80,
+      align: 'center',
+      render: (_, row) =>
+        <Row justify='center'>
+          {row.status}
+        </Row>
     }
   ]
 
