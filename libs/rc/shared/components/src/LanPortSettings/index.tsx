@@ -8,14 +8,15 @@ import { cssStr, Tooltip }                     from '@acx-ui/components'
 import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
 import {
   useGetEthernetPortProfileOverwritesByApPortIdQuery,
-  useGetEthernetPortProfileViewDataListQuery
+  useGetEthernetPortProfileViewDataListQuery,
+  useQueryEthernetPortProfilesWithOverwritesQuery
 } from '@acx-ui/rc/services'
 import {
   ApLanPortTypeEnum,
   CapabilitiesApModel,
   CapabilitiesLanPort,
   checkVlanMember,
-  EhternetPortOverwrites,
+  EthernetPortOverwrites,
   EthernetPortProfileViewData,
   LanPort,
   useConfigTemplate,
@@ -94,8 +95,8 @@ export function LanPortSettings (props: {
   const ethernetPortProfileId = Form.useWatch( ['lan', index, 'ethernetPortProfileId'] ,form)
   const [currentEthernetPortData, setCurrentEthernetPortData] =
     useState<EthernetPortProfileViewData>()
-  const [ethernetPortSettings, setEthernetPortSettings] =
-    useState<EhternetPortOverwrites>()
+  // const [ethernetPortSettings, setEthernetPortSettings] =
+  //   useState<EthernetPortOverwrites>()
   const [ethernetProfileCreateId, setEthernetProfileCreateId] = useState<String>()
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
 
@@ -133,11 +134,14 @@ export function LanPortSettings (props: {
   // Ethernet Port Profile
   const { ethernetPortDropdownItems, ethernetPortListQuery,
     isLoading: isLoadingEthPortList } =
-    useGetEthernetPortProfileViewDataListQuery({
+    useQueryEthernetPortProfilesWithOverwritesQuery({
       payload: {
         sortField: 'name',
         sortOrder: 'ASC',
         pageSize: 1000
+      },
+      params: {
+        serialNumber
       }
     }, {
       skip: isTemplate || !isEthernetPortProfileEnabled,
@@ -175,16 +179,16 @@ export function LanPortSettings (props: {
   }, [ethernetPortListQuery?.data])
 
   // AP level
-  const { data: apEthPortSettings, isLoading: isApEthPortSettingsLoading } =
-    useGetEthernetPortProfileOverwritesByApPortIdQuery({
-      params: { venueId, serialNumber, portId: lan?.portId }
-    }, { skip: isTemplate || !isEthernetPortProfileEnabled || !serialNumber || !venueId })
+  // const { data: apEthPortSettings, isLoading: isApEthPortSettingsLoading } =
+  //   useGetEthernetPortProfileOverwritesByApPortIdQuery({
+  //     params: { venueId, serialNumber, portId: lan?.portId }
+  //   }, { skip: isTemplate || !isEthernetPortProfileEnabled || !serialNumber || !venueId })
 
-  useEffect(() => {
-    if (!isApEthPortSettingsLoading && apEthPortSettings) {
-      setEthernetPortSettings(apEthPortSettings)
-    }
-  }, [apEthPortSettings, isApEthPortSettingsLoading])
+  // useEffect(() => {
+  //   if (!isApEthPortSettingsLoading && apEthPortSettings) {
+  //     setEthernetPortSettings(apEthPortSettings)
+  //   }
+  // }, [apEthPortSettings, isApEthPortSettingsLoading])
 
   const getOriginalEthProfile = (ethernetPortList?: EthernetPortProfileViewData[]) => {
     if (isLoadingEthPortList || !ethernetPortList) {
@@ -271,7 +275,6 @@ export function LanPortSettings (props: {
       </Space>
       <EthernetPortProfileInput
         currentEthernetPortData={currentEthernetPortData}
-        currentPortOverwirte={ethernetPortSettings}
         currentIndex={index}
         isEditable={!!serialNumber} /></>) :
       (<>

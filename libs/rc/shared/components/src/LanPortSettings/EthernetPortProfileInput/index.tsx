@@ -5,7 +5,6 @@ import { useIntl } from 'react-intl'
 
 import { StepsForm } from '@acx-ui/components'
 import {
-  EhternetPortOverwrites,
   EthernetPortAuthType,
   EthernetPortProfileViewData,
   EthernetPortType,
@@ -18,15 +17,13 @@ import EthernetPortProfileOverwriteItem from './EthernetPortProfileOverwriteItem
 
 interface EthernetPortProfileInputProps {
     currentEthernetPortData?: EthernetPortProfileViewData,
-    currentPortOverwirte?: EhternetPortOverwrites,
     currentIndex: number,
     isEditable?: boolean
 }
 
 const EthernetPortProfileInput = (props:EthernetPortProfileInputProps) => {
   const { $t } = useIntl()
-  const { currentIndex, currentEthernetPortData,
-    currentPortOverwirte, isEditable=true } = props
+  const { currentIndex, currentEthernetPortData, isEditable=true } = props
   const form = Form.useFormInstance()
   const currentUntagId = Form.useWatch( ['lan', currentIndex, 'untagId'] ,form)
 
@@ -55,7 +52,10 @@ const EthernetPortProfileInput = (props:EthernetPortProfileInputProps) => {
 
     <EthernetPortProfileOverwriteItem
       title='VLAN Untag ID'
-      defaultValue={currentPortOverwirte?.overwriteUntagId?.toString() ??
+      defaultValue={
+        (currentEthernetPortData?.apPortOverwrites &&
+          currentEthernetPortData?.apPortOverwrites
+          .find(p => p.portId === currentIndex)?.overwriteUntagId?.toString()) ??
         (currentEthernetPortData?.untagId.toString() ?? '')}
       isEditable={isEditable}
       fieldName={['lan', currentIndex, 'untagId']}
@@ -65,7 +65,10 @@ const EthernetPortProfileInput = (props:EthernetPortProfileInputProps) => {
     />
     <EthernetPortProfileOverwriteItem
       title='VLAN Members'
-      defaultValue={currentPortOverwirte?.overwriteVlanMembers ??
+      defaultValue={
+        (currentEthernetPortData?.apPortOverwrites &&
+          currentEthernetPortData?.apPortOverwrites
+          .find(p => p.portId === currentIndex)?.overwriteVlanMembers) ??
         (currentEthernetPortData?.vlanMembers.toString() ?? '')}
       isEditable={isEditable &&
         (currentEthernetPortData?.type === EthernetPortType.SELECTIVE_TRUNK)}

@@ -21,6 +21,7 @@ export interface EthernetPortProfileViewData {
     venueIds: string[],
     venueActivations?: VenueActivation[],
     apActivations?: ApActivation[]
+    apPortOverwrites?: EthernetPortOverwrites[]
   }
 
 export interface EthernetPortProfile {
@@ -49,7 +50,8 @@ export interface EthernetPortProfileFormType extends EthernetPortProfile {
     accountingEnabled?: boolean
   }
 
-export interface EhternetPortOverwrites {
+export interface EthernetPortOverwrites {
+  portId?: number
   enabled?: boolean
   overwriteUntagId?: number
   overwriteVlanMembers?: string
@@ -65,7 +67,6 @@ export interface ApActivation {
   venueId?: string
   apSerialNumber?: string
   portId?: number
-  portOverwrites?: EhternetPortOverwrites
 }
 
 export interface EthernetPortSupplicantOptions {

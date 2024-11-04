@@ -8,7 +8,7 @@ import {
   EthernetPortProfileUrls,
   EthernetPortProfileViewData,
   EthernetPortProfile,
-  EhternetPortOverwrites,
+  EthernetPortOverwrites,
   ApiVersionEnum,
   GetApiVersionHeader
 } from '@acx-ui/rc/utils'
@@ -63,13 +63,14 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
         const viewDataReq = createHttpRequest(
           EthernetPortProfileUrls.getEthernetPortProfileViewDataList, params)
         const ethListQuery = await fetchWithBQ({ ...viewDataReq, body: JSON.stringify(payload) })
-        const ethList = ethListQuery.data as TableResult<EthernetPortProfileViewData>
+        let ethList = ethListQuery.data as TableResult<EthernetPortProfileViewData>
 
         if (ethList.data && params?.serialNumber) {
           let apEthPortProfiles = ethList.data?.filter(
             m => m.apSerialNumbers && m.apSerialNumbers.includes(params.serialNumber!)
           ) ?? [] as EthernetPortProfileViewData[]
           for (let eth of apEthPortProfiles) {
+            eth.apPortOverwrites = []
             for (let apActivation of (eth.apActivations ?? [])) {
               const apPortOverwriteReq = createHttpRequest(
                 EthernetPortProfileUrls.getEthernetPortOverwritesByApPortId,
@@ -78,7 +79,9 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
                   portId: apActivation.portId?.toString()
                 })
               const apEthPortOverwrites = await fetchWithBQ(apPortOverwriteReq)
-              apActivation.portOverwrites = apEthPortOverwrites.data as EhternetPortOverwrites
+              const portOverwrite = { ...(apEthPortOverwrites.data as EthernetPortOverwrites),
+                portId: apActivation.portId }
+              eth.apPortOverwrites?.push(portOverwrite)
             }
           }
           const ethOverwriteList = {
