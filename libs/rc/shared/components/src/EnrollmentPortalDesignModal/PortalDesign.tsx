@@ -344,7 +344,7 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
                 !validateWifi4EuNetworkId(value.uiStyleSchema.wifi4EuNetworkId) &&
                 <Alert style={{ width: 400 }}
                   message={$t(defineMessage(
-                    { defaultMessage: 'Invalid Wifi4EU Configuration' }))
+                    { defaultMessage: 'Please provide a valid UUID for Wifi4EU Configuration' }))
                   }
                   type='error'
                   showIcon/>
