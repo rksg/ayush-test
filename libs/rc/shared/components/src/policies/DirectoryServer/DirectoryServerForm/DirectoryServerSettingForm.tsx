@@ -78,14 +78,15 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
 
   const onClickTestConnection = async () => {
     setIsTesting(true)
+    const { tlsEnabled, adminDomainName, adminPassword, host, port, type } = form.getFieldsValue()
     const payload: DirectoryServerDiagnosisCommand = {
       action: DirectoryServerDiagnosisCommandEnum.testConnection,
-      tlsEnabled: form.getFieldValue('tlsEnabled'),
-      adminDomainName: form.getFieldValue('adminDomainName'),
-      adminPassword: form.getFieldValue('adminPassword'),
-      host: form.getFieldValue('host'),
-      port: form.getFieldValue('port'),
-      type: form.getFieldValue('type')
+      tlsEnabled,
+      adminDomainName,
+      adminPassword,
+      host,
+      port,
+      type
     }
     try{
       const result = await testConnectionDirectoryServer({
