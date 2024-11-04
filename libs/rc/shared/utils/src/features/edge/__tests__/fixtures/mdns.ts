@@ -94,8 +94,8 @@ export const mockEdgeMdnsViewDataList = [
       {
         venueId: 'mock_venue_1',
         venueName: 'Mock Venue 1',
-        edgeClusterId: 'clusterId_1',
-        edgeClusterName: 'Edge Cluster 3'
+        edgeClusterId: 'clusterId_2',
+        edgeClusterName: 'Edge Cluster 2'
       }
     ]
   }

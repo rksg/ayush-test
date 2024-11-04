@@ -5,6 +5,7 @@ import { UseLazyQuery }    from '@reduxjs/toolkit/dist/query/react/buildHooks'
 import { QueryDefinition } from '@reduxjs/toolkit/query'
 import { get, isNil }      from 'lodash'
 
+import { useIsSplitOn, Features }           from '@acx-ui/feature-toggle'
 import {
   useLazyGetApFeatureSetsQuery,
   useLazyGetEdgeFeatureSetsQuery,
@@ -47,11 +48,13 @@ export const useEdgeSdLansCompatibilityData = (serviceIds: string[], skip: boole
 }
 
 export const useEdgePinsCompatibilityData = (serviceIds: string[], skip: boolean = false) => {
+  const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
+
   const results = useEdgeSvcsPcysCompatibilitiesData({
     serviceIds: serviceIds,
     skip: skip,
     useEdgeSvcPcyCompatibleQuery: useLazyGetPinEdgeCompatibilitiesQuery,
-    useEdgeSvcPcyApCompatibleQuery: useLazyGetSdLanApCompatibilitiesQuery
+    useEdgeSvcPcyApCompatibleQuery: isApCompatibilitiesByModel ? useLazyGetSdLanApCompatibilitiesQuery : undefined
   })
   return results as {
     compatibilities: Record<string, EdgeServiceCompatibility[] | EdgeServiceApCompatibility[]> | undefined
@@ -90,11 +93,13 @@ export const useEdgePinDetailsCompatibilitiesData = (props: {
   serviceId: string,
   skip?: boolean,
 }) => {
+  const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
+
   const results = useEdgeSvcsPcysCompatibilitiesData({
     serviceIds: props.serviceId,
     skip: props.skip,
     useEdgeSvcPcyCompatibleQuery: useLazyGetPinEdgeCompatibilitiesQuery,
-    useEdgeSvcPcyApCompatibleQuery: useLazyGetPinApCompatibilitiesQuery
+    useEdgeSvcPcyApCompatibleQuery: isApCompatibilitiesByModel ? useLazyGetPinApCompatibilitiesQuery : undefined
   })
 
   const transformed: Record<string, Record<string, ApCompatibility>> = {}
