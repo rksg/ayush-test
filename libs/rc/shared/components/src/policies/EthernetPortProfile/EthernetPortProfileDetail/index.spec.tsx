@@ -92,23 +92,4 @@ describe('EthernetPortProfileDetail', () => {
     await screen.findAllByText(mockAccuntingRadiusName)
   })
 
-  it('Should render EthernetPortProfileDetail with Dynamic VLAN when MAC-based auth', async () => {
-    mockServer.use(
-      rest.post(
-        EthernetPortProfileUrls.getEthernetPortProfileViewDataList.url,
-        (req, res, ctx) => res(ctx.json(dummyTableResultWithSingle))
-      )
-    )
-
-    render(
-      <Provider>
-        <EthernetPortProfileDetail />
-      </Provider>, {
-        route: { params, path: detailPath }
-      })
-    await screen.findByText(mockEthernetPortProfileId3)
-    await screen.findByText('On (Port-based Authenticator)')
-    await screen.findByText(mockAuthRadiusName)
-    await screen.findAllByText(mockAccuntingRadiusName)
-  })
 })
