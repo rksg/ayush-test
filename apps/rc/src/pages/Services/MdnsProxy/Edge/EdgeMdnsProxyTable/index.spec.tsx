@@ -229,7 +229,7 @@ describe('Edge mDNS Proxy Table', () => {
 const basicCheck= async () => {
   await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
   screen.getByRole('columnheader', { name: 'Forwarding Rules' })
-  const rows = await screen.findAllByRole('row', { name: /Mocked_TNMService_/i })
+  const rows = await screen.findAllByRole('row', { name: /edge-mdns-proxy-name-/i })
   // eslint-disable-next-line max-len
   expect(within(rows[0]).getByRole('cell', { name: new RegExp(`${mockMdns1.name}`) })).toBeVisible()
   return rows
