@@ -54,6 +54,16 @@ const defaultProps: DonutChartOptionalProps = {
 
 DonutChart.defaultProps = { ...defaultProps }
 
+interface TitleTextStyle {
+  fontSize: number,
+  lineHeight: number,
+  fontWeight: number,
+  color: string,
+  fontFamily: string,
+  width: number
+  overflow: 'break' | 'breakAll' | 'truncate' | 'none'
+}
+
 export interface DonutChartProps extends DonutChartOptionalProps,
   Omit<EChartsReactProps, 'option' | 'opts' | 'style'> {
   data: Array<DonutChartData>
@@ -69,6 +79,9 @@ export interface DonutChartProps extends DonutChartOptionalProps,
   style: EChartsReactProps['style'] & { width: number, height: number }
   labelTextStyle?: { overflow?: 'break' | 'breakAll' | 'truncate' | 'none' , width?: number }
   clicked?: boolean
+  titleTextStyle?: TitleTextStyle
+  secondaryTitleTextStyle?: TitleTextStyle
+  isShowTooltip?: boolean
 }
 
 export const onChartClick = (onClick: DonutChartProps['onClick']) =>
@@ -114,6 +127,13 @@ export const tooltipFormatter = (
   )
 }
 
+// Adding empty data to show center label
+const buildEmptyData = () => [{
+  name: '',
+  value: 0,
+  color: cssStr('--acx-primary-white')
+}]
+
 export function DonutChart ({
   data,
   dataFormatter: _dataFormatter,
@@ -128,14 +148,7 @@ export function DonutChart ({
   const isSmall = props.size === 'small'
   const isCustomEmptyStatus = isEmpty && !!props.value
   const isWhiteTitle = props.titleColor === 'white'
-
-  if (data.length === 0) { // Adding empty data to show center label
-    data.push({
-      name: '',
-      value: 0,
-      color: cssStr('--acx-primary-white')
-    })
-  }
+  const isShowTooltip = props.isShowTooltip ?? true
 
   const legendStyles = {
     color: cssStr('--acx-primary-black'),
@@ -276,8 +289,12 @@ export function DonutChart ({
       textVerticalAlign: 'top',
       textAlign: props.showLegend && !isEmpty ? 'center' : undefined,
       itemGap: 4,
-      textStyle: { ...styles[props.size].title, width: 80, overflow: 'break' },
-      subtextStyle: styles[props.size].value
+      textStyle: props.titleTextStyle
+        ? { ...props.titleTextStyle }
+        : { ...styles[props.size].title, width: 80, overflow: 'break' },
+      subtextStyle: props.secondaryTitleTextStyle
+        ? { ...props.secondaryTitleTextStyle }
+        : styles[props.size].value
     },
     legend: {
       show: props.showLegend,
@@ -311,7 +328,7 @@ export function DonutChart ({
     series: [
       {
         animation: false,
-        data: data.map((item, index) => ({
+        data: data.length === 0 ? buildEmptyData() : data.map((item, index) => ({
           ...item,
           selected: index === selectedSlice
         })),
@@ -326,7 +343,7 @@ export function DonutChart ({
         },
         tooltip: {
           ...tooltipOptions(),
-          show: !isEmpty,
+          show: isShowTooltip && !isEmpty,
           formatter: tooltipFormatter(
             dataFormatter,
             sum,
@@ -336,6 +353,7 @@ export function DonutChart ({
         selectedMode: props.clicked ? 'single' : false,
         emphasis: {
           scale: true,
+          disabled: !isShowTooltip || isEmpty,
           scaleSize: 5
         },
         labelLine: {

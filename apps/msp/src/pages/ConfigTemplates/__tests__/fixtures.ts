@@ -1,4 +1,4 @@
-import { ConfigTemplate, ConfigTemplateType } from '@acx-ui/rc/utils'
+import { ConfigTemplate, ConfigTemplateDriftType, ConfigTemplateType } from '@acx-ui/rc/utils'
 
 export const mockedConfigTemplateList = {
   totalCount: 3,
@@ -12,7 +12,8 @@ export const mockedConfigTemplateList = {
       appliedOnTenants: ['t1', '1969e24ce9af4348833968096ff6cb47'],
       type: ConfigTemplateType.NETWORK,
       lastModified: 1690598400000,
-      lastApplied: 1690598405000
+      lastApplied: 1690598405000,
+      driftStatus: ConfigTemplateDriftType.DRIFT_DETECTED
     },
     {
       id: '2',

@@ -24,6 +24,7 @@ describe('ScheduleWeekly', () => {
 
   it('should data correct parseExcludedHours & buildExcludedHours', async () => {
     expect(scheduleResultRAI).toEqual(buildExcludedHours(parseExcludedHours(scheduleResultRAI)))
+    expect(undefined).toEqual(parseExcludedHours(undefined))
   })
 
   it('should render schedule monday checkbox options successfully (CUSTOM)', async () => {

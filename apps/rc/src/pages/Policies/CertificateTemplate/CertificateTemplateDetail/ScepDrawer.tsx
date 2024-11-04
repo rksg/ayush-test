@@ -41,7 +41,7 @@ export default function ScepDrawer
       const blockedSubnets = getFieldValue('blockedSubnets') as string
 
       // eslint-disable-next-line max-len
-      const subnetRegex = /^(\*|(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/?(3[0-2]|[12]?[0-9])?))$/
+      const subnetRegex = /^(\*|((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(\/([0-9]|[12][0-9]|3[0-2]))?)$/
 
       // Validate each subnet in the value field
       if (value) {
@@ -64,7 +64,7 @@ export default function ScepDrawer
 
         if (overlappingSubnets.length > 0) {
           // eslint-disable-next-line max-len
-          return Promise.reject(new Error($t({ defaultMessage: 'Subnets cannot be both allowed and blocked' })))
+          return Promise.reject(new Error($t({ defaultMessage: 'Same subnet values cannot be given in allowed and blocked' })))
         }
       }
 
@@ -249,9 +249,9 @@ export default function ScepDrawer
                 style={{ marginTop: 8, display: 'inline-block' }}
                 name='overrideDays'
                 label={$t({ defaultMessage: 'Days of Access' })}
-                rules={[{ required: true }]}
+                rules={[{ required: true, type: 'number', min: 0, max: 365 }]}
               >
-                <InputNumber min={0} max={365}/>
+                <InputNumber min={0}/>
               </Form.Item>
               <Description style={{ marginTop: 38, marginLeft: 10, display: 'inline-block' }}>
                 {$t({ defaultMessage: 'Days' })}

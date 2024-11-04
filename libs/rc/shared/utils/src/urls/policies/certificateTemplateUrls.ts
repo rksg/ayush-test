@@ -172,5 +172,10 @@ export const CertificateUrls: { [key: string]: ApiInfo } = {
     method: 'get',
     newApi: true,
     url: '/certificates/:certId'
+  },
+  generateClientServerCertificate: {
+    method: 'post',
+    newApi: true,
+    url: '/certificateAuthorities/:caId/certificates'
   }
 }

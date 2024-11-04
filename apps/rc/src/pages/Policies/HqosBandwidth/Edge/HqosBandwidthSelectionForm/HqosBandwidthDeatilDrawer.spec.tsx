@@ -1,12 +1,11 @@
 import userEvent from '@testing-library/user-event'
-import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { EdgeHqosProfileFixtures, EdgeHqosProfilesUrls }           from '@acx-ui/rc/utils'
-import { Provider }                                                from '@acx-ui/store'
-import { mockServer, render, renderHook, screen, waitFor, within } from '@acx-ui/test-utils'
+import { EdgeHqosProfileFixtures, EdgeHqosProfilesUrls } from '@acx-ui/rc/utils'
+import { Provider }                                      from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, within }   from '@acx-ui/test-utils'
 
-import { HqosBandwidthDeatilDrawer } from './HqosBandwidthDetailDrawer'
+import { HqosBandwidthDetailDrawer } from './HqosBandwidthDetailDrawer'
 
 
 const { mockEdgeHqosProfileStatusList } = EdgeHqosProfileFixtures
@@ -26,17 +25,9 @@ describe('SmartEdgeForm > HqosBandwidthDeatilDrawer', () => {
   })
 
   it('HQoS profile detail', async () => {
-    const { result: formRef } = renderHook(() => {
-      const [ form ] = Form.useForm()
-      return form
-    })
-    formRef.current.setFieldValue('qosId', mockEdgeHqosProfileStatusList.data[1].id)
-
     render(
       <Provider>
-        <Form form={formRef.current}>
-          <HqosBandwidthDeatilDrawer />
-        </Form>
+        <HqosBandwidthDetailDrawer hqosId='test-id' />
       </Provider>, {
         route: { params }
       }
@@ -50,17 +41,9 @@ describe('SmartEdgeForm > HqosBandwidthDeatilDrawer', () => {
   })
 
   it('Should close modal while clicking Close button', async () => {
-    const { result: formRef } = renderHook(() => {
-      const [ form ] = Form.useForm()
-      return form
-    })
-    formRef.current.setFieldValue('qosId', mockEdgeHqosProfileStatusList.data[1].id)
-
     render(
       <Provider>
-        <Form form={formRef.current}>
-          <HqosBandwidthDeatilDrawer />
-        </Form>
+        <HqosBandwidthDetailDrawer hqosId='test-id' />
       </Provider>, {
         route: { params }
       }

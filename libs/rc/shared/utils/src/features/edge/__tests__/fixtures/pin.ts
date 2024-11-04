@@ -1,6 +1,53 @@
 import { PassphraseFormatEnum }                           from '../../../../constants'
 import { AccessSwitch, DistributionSwitch, PersonaGroup } from '../../../../types'
 
+export const mockPinListForMutullyExclusive = {
+  fields: [
+    'venueId',
+    'venueName',
+    'edgeClusterInfo',
+    'tunneledWlans',
+    'name',
+    'id',
+    'tags',
+    'edgeAlarmSummary'
+  ],
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      id: '1',
+      name: 'nsg1',
+      vxlanTunnelProfileId: 'test123',
+      tunneledWlans: [
+        { networkId: 'wlan-1' }
+      ],
+      venueId: 'mock_venue_5',
+      venueName: 'MockVenue5',
+      personaGroupId: 'per-444',
+      edgeClusterInfo: {
+        id: '5e5a85d5-1540-4aab-86c4-a8d8b9f3e28b',
+        edgeClusterId: '0000000001',
+        edgeClusterName: 'Edge1',
+        segments: 1,
+        devices: 1,
+        dhcpInfoId: 'ee61bd6e-c637-4177-b070-0ded060af3bd',
+        dhcpPoolId: '6a408e31-30a0-4ac1-a672-76b666f57d6e',
+        vniRange: ''
+      },
+      edgeAlarmSummary: [
+        {
+          edgeId: '0000000001',
+          severitySummary: {
+            critical: 1
+          },
+          totalCount: 1
+        }
+      ]
+    }
+  ]
+}
+
 export const mockPinStatsList = {
   fields: [
     'venueId',
@@ -89,7 +136,6 @@ export const mockPinData = {
   distributionSwitchInfos: [
     {
       id: 'c8:03:f5:3a:95:c6',
-      siteName: '964fe8920291194e208b6d22370c2cc82c',
       loopbackInterfaceId: '12',
       loopbackInterfaceIp: '1.2.3.4',
       loopbackInterfaceSubnetMask: '255.255.255.0',
@@ -157,13 +203,21 @@ export const mockDpsk = {
   expirationType: null
 }
 
+export const mockDpskForPinMutullyExclusive = {
+  id: 'testDpskId',
+  name: 'TestDpsk',
+  networkIds: ['network1', 'network2', 'network3', 'network4', 'network5', 'network6'],
+  passphraseLength: 0,
+  passphraseFormat: PassphraseFormatEnum.NUMBERS_ONLY,
+  expirationType: null
+}
+
 export const mockPinSwitchInfoData: {
   distributionSwitches: DistributionSwitch[],
   accessSwitches: AccessSwitch[]
 } = {
   distributionSwitches: [{
     id: 'c8:03:f5:3a:95:c6',
-    siteName: '964fe8920291194e208b6d22370c2cc82c',
     siteIp: '10.206.78.150',
     vlans: '23',
     siteKeepAlive: '5',
@@ -217,6 +271,18 @@ export const mockDeepNetworkList = {
   response: [
     // { name: 'Network 1', id: '1', type: 'dpsk', dpskServiceProfileId: 'testDpskId' }
     { name: 'Network 1', id: '1', nwSubType: 'dpsk' }
+  ]
+}
+
+export const mockDPSKNetworkList = {
+  requestId: '639283c7-7a5e-4ab3-8fdb-6289fe0ed255',
+  response: [
+    { name: 'Network 1', id: 'network1', nwSubType: 'dpsk' },
+    { name: 'Network 2', id: 'network2', nwSubType: 'dpsk' },
+    { name: 'Network 3', id: 'network3', nwSubType: 'dpsk' },
+    { name: 'Network 4', id: 'network4', nwSubType: 'dpsk' },
+    { name: 'Network 5', id: 'network5', nwSubType: 'dpsk' },
+    { name: 'Network 6', id: 'network6', nwSubType: 'dpsk' }
   ]
 }
 

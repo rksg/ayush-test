@@ -116,7 +116,7 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
     return isValid ? Promise.resolve() :
       Promise.reject(
         /* eslint-disable max-len */
-        $t({ defaultMessage: 'The gateway address of the selected SoftGRE tunnel profile already exists in another applied profile at the same <venueSingular></venueSingular>. Please choose a different one.' })
+        $t({ defaultMessage: 'The gateway of the selected SoftGRE tunnel profile already exists in another applied profile at the same <venueSingular></venueSingular>. Please choose a different one.' })
       )
   }
 
@@ -133,7 +133,7 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
   return <Row>
     <Form.Item
       extra={<UI.RadioSubTitle>
-        {$t({ defaultMessage: 'Tunnel the traffic to an third party WLAN gateway' })}
+        {$t({ defaultMessage: 'Tunnel the traffic to a SoftGRE gateway' })}
       </UI.RadioSubTitle>}
     >
       <UI.RadioWrapper>

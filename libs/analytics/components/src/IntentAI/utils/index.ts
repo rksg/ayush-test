@@ -67,6 +67,7 @@ export const isVisibledByAction = (rows: IntentListItem[], action: Actions) => {
           DisplayStates.active,
           DisplayStates.revertScheduled,
           DisplayStates.pausedRevertFailed].includes(row.displayStatus)
+        || !row.metadata.appliedAt
       )
     case Actions.Pause:
       return !rows.some(row => ![

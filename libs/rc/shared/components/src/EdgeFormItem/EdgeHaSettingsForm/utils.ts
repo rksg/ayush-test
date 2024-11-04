@@ -12,7 +12,8 @@ export const transformEdgeHaSettingsToFormType =
       schedule: {
         type: apiData.fallbackSettings.schedule.type,
         intervalHours: apiData.fallbackSettings.schedule.intervalHours,
-        time: moment(apiData.fallbackSettings.schedule.time, 'HH:mm:ss'),
+        time: apiData.fallbackSettings.schedule.time ?
+          moment(apiData.fallbackSettings.schedule.time, 'HH:mm:ss') : undefined,
         weekday: apiData.fallbackSettings.schedule.weekday
       }
     },

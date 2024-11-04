@@ -201,8 +201,7 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   },
   deleteService: {
     method: 'delete',
-    url: '/edges/:serialNumber/service',
-    oldUrl: '/edges/:serialNumber/service',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/service',
     newApi: true
   },
   getEdgePasswordDetail: {
@@ -314,6 +313,16 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/edgeClusters/:clusterId/networkSettings',
     newApi: true
   },
+  getEdgeClusterSubInterfaceSettings: {
+    method: 'get',
+    url: '/venues/:venueId/edgeClusters/:clusterId/subInterfaces',
+    newApi: true
+  },
+  patchEdgeClusterSubInterfaceSettings: {
+    method: 'PATCH',
+    url: '/venues/:venueId/edgeClusters/:clusterId/subInterfaces',
+    newApi: true
+  },
   getEdgeFeatureSets: {
     method: 'post',
     url: '/edgeFeatureSets/query',
@@ -337,6 +346,16 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   getHqosEdgeCompatibilities: {
     method: 'post',
     url: '/edgeHqosProfiles/edgeCompatibilities/query',
+    newApi: true
+  },
+  getPinEdgeCompatibilities: {
+    method: 'post',
+    url: '/personalIdentityNetworks/edgeCompatibilities/query',
+    newApi: true
+  },
+  getPinApCompatibilities: {
+    method: 'post',
+    url: '/personalIdentityNetworks/apCompatibilities/query',
     newApi: true
   }
 }

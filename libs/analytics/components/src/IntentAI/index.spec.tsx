@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
+import { Modal } from 'antd'
 
 import { useAnalyticsFilter, defaultNetworkPath }             from '@acx-ui/analytics/utils'
 import { defaultTimeRangeDropDownContextValue, useDateRange } from '@acx-ui/components'
@@ -29,6 +30,22 @@ import {
 
 import { IntentAITabContent } from './index'
 
+const mockShowOneClickOptimize =
+jest.fn().mockImplementation((_rows, onOk) => onOk && onOk())
+const mockFetchWlans = jest.fn()
+const mockHandleTransitionIntent =
+jest.fn().mockImplementation((_action, _rows, onOk) => onOk && onOk())
+const mockRevert = jest.fn()
+jest.mock('./useIntentAIActions', () => ({
+  ...jest.requireActual('./useIntentAIActions'),
+  useIntentAIActions: () => ({
+    showOneClickOptimize: mockShowOneClickOptimize,
+    fetchWlans: mockFetchWlans,
+    handleTransitionIntent: mockHandleTransitionIntent,
+    revert: mockRevert
+  })
+}))
+
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
   useAnalyticsFilter: jest.fn()
@@ -53,7 +70,6 @@ jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
   useRaiR1HelpPageLink: () => ''
 }))
-
 setUpIntl({ locale: 'en-US', messages: {} })
 //Refer to libs/analytics/components/src/Recommendations/index.spec.tsx
 describe('IntentAITabContent', () => {
@@ -63,13 +79,14 @@ describe('IntentAITabContent', () => {
     range: DateRange.last24Hours,
     filter: {}
   }
+  const now = new Date('2024-07-20T04:01:00.000Z').getTime()
 
   const resp = { t1: { success: true, errorMsg: '' , errorCode: '' } } as TransitionMutationResponse
 
   beforeEach(() => {
     setRaiPermissions({ WRITE_AI_OPERATIONS: true, WRITE_INTENT_AI: true } as RaiPermissions)
     store.dispatch(api.util.resetApiState())
-
+    jest.spyOn(Date, 'now').mockReturnValue(now)
     const pathFilters = { ...filters, path: defaultNetworkPath }
     jest.mocked(useAnalyticsFilter).mockReturnValue({
       filters,
@@ -81,11 +98,15 @@ describe('IntentAITabContent', () => {
     jest.mocked(useDateRange).mockReturnValue(defaultTimeRangeDropDownContextValue)
     jest.mocked(get).mockReturnValue('') // get('IS_MLISA_SA')
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockFetchWlans.mockClear()
+    mockHandleTransitionIntent.mockClear()
+    mockRevert.mockClear()
   })
 
   afterEach(() => {
     jest.clearAllMocks()
     jest.restoreAllMocks()
+    Modal.destroyAll()
   })
 
   it('should render loader and empty table', async () => {
@@ -192,6 +213,7 @@ describe('IntentAITabContent', () => {
       status: 'new',
       statusTooltip: 'statusTooltip'
     }
+
     mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
       data: { intents: { data: [{ ...mockAIDrivenRow, ...extractItem }], total: 1 } }
     })
@@ -213,9 +235,8 @@ describe('IntentAITabContent', () => {
     expect(await screen.findByRole('button', { name: 'Pause' })).toBeVisible()
     expect(await screen.findByRole('button', { name: '1-Click Optimize' })).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: '1-Click Optimize' }))
-    await userEvent.click((await screen.findAllByText('Yes, Optimize!'))[0])
     await waitFor(() =>
-      expect(screen.queryByRole('button', { name: '1-Click Optimize' })).toBeNull()
+      expect(mockShowOneClickOptimize).toBeCalledTimes(1)
     )
   })
 
@@ -331,7 +352,7 @@ describe('IntentAITabContent', () => {
     expect(await screen.findByRole('button', { name: 'Pause' })).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Pause' }))
     await waitFor(() =>
-      expect(screen.queryByRole('button', { name: 'Pause' })).toBeNull()
+      expect(mockHandleTransitionIntent).toBeCalledTimes(1)
     )
   })
 
@@ -346,6 +367,7 @@ describe('IntentAITabContent', () => {
     > EDU-MeshZone_S12348 (Venue)`,
       status: 'revertscheduled',
       displayStatus: 'revertscheduled',
+      metadata: { appliedAt: '2024-04-19T07:30:00.000Z' },
       statusTooltip: 'statusTooltip'
     }
     mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
@@ -370,7 +392,7 @@ describe('IntentAITabContent', () => {
     await userEvent.click((await screen.findAllByText('Revert'))[0])
     await userEvent.click((await screen.findAllByText('Apply'))[0])
     await waitFor(() =>
-      expect(screen.queryByText('Revert')).toBeNull()
+      expect(mockRevert).toBeCalledTimes(1)
     )
   })
 
@@ -407,7 +429,7 @@ describe('IntentAITabContent', () => {
     expect(await screen.findByRole('button', { name: 'Cancel' })).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     await waitFor(() =>
-      expect(screen.queryByRole('button', { name: 'Cancel' })).toBeNull()
+      expect(mockHandleTransitionIntent).toBeCalledTimes(1)
     )
   })
 
@@ -444,7 +466,7 @@ describe('IntentAITabContent', () => {
     expect(await screen.findByRole('button', { name: 'Resume' })).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Resume' }))
     await waitFor(() =>
-      expect(screen.queryByRole('button', { name: 'Resume' })).toBeNull()
+      expect(mockHandleTransitionIntent).toBeCalledTimes(1)
     )
   })
 

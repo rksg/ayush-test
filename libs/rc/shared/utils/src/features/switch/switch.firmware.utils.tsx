@@ -1,6 +1,7 @@
 import _ from 'lodash'
 
-import { SwitchFirmwareModelGroup } from '../../types'
+import { FirmwareSwitchVenueVersionsV1002,
+  SwitchFirmwareModelGroup } from '../../types'
 const MAJOR = 'major'
 const MINOR = 'minor'
 const BUILD = 'build'
@@ -30,6 +31,16 @@ export const checkVersionAtLeast09010h = (version: string): boolean => {
     return true
   } else {
     return compareSwitchVersion(version, '09010h') > 0
+  }
+}
+
+export const invalidVersionFor82Av = (version: string): boolean => {
+  if (_.isString(version) && version.startsWith('10010')) {
+    return !isVerGEVer(version, '10010f', false)
+  } else if (_.isString(version) && version.startsWith('10020')) {
+    return !isVerGEVer(version, '10020b', false)
+  } else {
+    return true
   }
 }
 
@@ -128,6 +139,8 @@ export const getSwitchModelGroup = (model: string): SwitchFirmwareModelGroup => 
     return SwitchFirmwareModelGroup.ICX71
   } else if (prefixICX7X.some(prefix => modelLowerCase.startsWith(prefix.toLowerCase()))) {
     return SwitchFirmwareModelGroup.ICX7X
+  } else if (modelLowerCase.startsWith(SwitchFirmwareModelGroup.ICX81.toLowerCase())) {
+    return SwitchFirmwareModelGroup.ICX81
   } else if (modelLowerCase.startsWith(SwitchFirmwareModelGroup.ICX82.toLowerCase())) {
     return SwitchFirmwareModelGroup.ICX82
   } else {
@@ -227,4 +240,9 @@ export function isVerGEVer (currentVer: string, targetVer: string, considerBeta:
   } else {
     return cMajor > tMajor
   }
+}
+
+export function getSwitchFwGroupVersionV1002 (
+  fwV1002: FirmwareSwitchVenueVersionsV1002[], modelGroup: SwitchFirmwareModelGroup): string {
+  return fwV1002?.find((fw) => fw.modelGroup === modelGroup)?.version ?? ''
 }

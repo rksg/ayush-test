@@ -575,10 +575,9 @@ export const useSdLanScopedVenueNetworks = (
         : { networkIds, venueId: [venueId] },
       fields: [
         'id',
+        'name',
         'venueId',
         'isGuestTunnelEnabled',
-        'tunnelProfileId',
-        'guestTunnelProfileId',
         ...(isEdgeSdLanHaReady
           ? ['edgeClusterId', 'edgeClusterName', 'guestEdgeClusterId', 'guestEdgeClusterName']
           : ['edgeId', 'edgeName']),
@@ -635,8 +634,6 @@ export const useSdLanScopedNetworkVenues = (networkId: string | undefined) => {
         'name',
         'venueId',
         'isGuestTunnelEnabled',
-        'tunnelProfileId',
-        'guestTunnelProfileId',
         ...(isEdgeSdLanHaReady
           ? ['edgeClusterId', 'edgeClusterName', 'guestEdgeClusterId', 'guestEdgeClusterName']
           : ['edgeId', 'edgeName']),

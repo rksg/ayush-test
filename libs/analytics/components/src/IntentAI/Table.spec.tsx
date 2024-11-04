@@ -11,7 +11,7 @@ import { fireEvent, render, screen } from '@acx-ui/test-utils'
 import { aiFeatureWithAIOps, aiFeatureWithEquiFlex, aiFeatureWithEquiFlexWithNewStatus, aiFeatureWithEcoFlex, aiFeatureWithRRM, mockAIDrivenRow } from './__tests__/fixtures'
 import { Icon }                                                                                                                                   from './common/IntentIcon'
 import { AiFeatures }                                                                                                                             from './config'
-import { DisplayStates, Statuses }                                                                                                                from './states'
+import { DisplayStates, Statuses, StatusReasons }                                                                                                 from './states'
 import * as UI                                                                                                                                    from './styledComponents'
 import { AIFeature, Banner, iconTooltips }                                                                                                        from './Table'
 import { Actions, isVisibledByAction }                                                                                                            from './utils'
@@ -186,19 +186,27 @@ describe('AIFeature component', () => {
       statusTrail: []
     }
     const makeRow = (status: Statuses, displayStatus: DisplayStates) => ({
-      ...mockAIDrivenRow, ...extractItem, displayStatus, status
+      ...mockAIDrivenRow, ...extractItem, displayStatus, status, statusReason: StatusReasons.byDefault
     })
     const newRow = makeRow(Statuses.new, DisplayStates.new)
     const activeRow = makeRow(Statuses.active, DisplayStates.active)
+    const activeRowAfterApply = {
+      ...makeRow(Statuses.active, DisplayStates.active),
+      metadata: { appliedAt: '2024-04-19T07:30:00.000Z' }
+    }
     const pausedApplyFailedRow = makeRow(Statuses.paused, DisplayStates.pausedApplyFailed)
     const scheduledOneClickRow = makeRow(Statuses.scheduled, DisplayStates.scheduledOneClick)
-    const revertScheduledRow = makeRow(Statuses.revertScheduled, DisplayStates.revertScheduled)
+    const revertScheduledRow = {
+      ...makeRow(Statuses.revertScheduled, DisplayStates.revertScheduled),
+      metadata: { appliedAt: '2024-04-19T07:30:00.000Z' }
+    }
     it('should return true for all actions', () => {
       expect(isVisibledByAction([newRow, newRow], Actions.One_Click_Optimize)).toBeTruthy()
       expect(isVisibledByAction([newRow, activeRow], Actions.One_Click_Optimize)).toBeFalsy()
       expect(isVisibledByAction([scheduledOneClickRow], Actions.Optimize)).toBeTruthy()
       expect(isVisibledByAction([newRow, revertScheduledRow], Actions.Optimize)).toBeFalsy()
-      expect(isVisibledByAction([activeRow, revertScheduledRow], Actions.Revert)).toBeTruthy()
+      expect(isVisibledByAction([activeRow, revertScheduledRow], Actions.Revert)).toBeFalsy()
+      expect(isVisibledByAction([activeRowAfterApply, revertScheduledRow], Actions.Revert)).toBeTruthy()
       expect(isVisibledByAction([newRow, revertScheduledRow], Actions.Revert)).toBeFalsy()
       expect(isVisibledByAction([scheduledOneClickRow, activeRow], Actions.Pause)).toBeTruthy()
       expect(isVisibledByAction([newRow, pausedApplyFailedRow], Actions.Pause)).toBeFalsy()

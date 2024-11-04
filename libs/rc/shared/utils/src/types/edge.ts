@@ -1,6 +1,6 @@
 import type { TimeStamp } from '@acx-ui/types'
 
-import { ApCompatibility, FirmwareCategory, SkippedVersion }                                                                                                                                                                                                                                                                   from '..'
+import { ApCompatibility, Compatibility, FirmwareCategory, SkippedVersion }                                                                                                                                                                                                                                                    from '..'
 import { ClusterHaFallbackScheduleTypeEnum, ClusterHaLoadDistributionEnum, ClusterHighAvailabilityModeEnum, ClusterNodeStatusEnum, CompatibilityEntityTypeEnum, EdgeIpModeEnum, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, EdgeStatusSeverityEnum, NodeClusterRoleEnum } from '../models/EdgeEnum'
 
 export type EdgeSerialNumber = string
@@ -413,6 +413,19 @@ export interface EdgeSdLanApCompatibilitiesResponse {
   compatibilities: EdgeSdLanApCompatibility[]
 }
 
+// ap incompatibility by model
+export type VenueEdgeServiceApCompatibility = Omit<Compatibility, 'id'> & {
+  venueId: string
+}
+export interface EdgeServiceApCompatibility {
+  serviceId: string
+  venueEdgeServiceApCompatibilities: VenueEdgeServiceApCompatibility[]
+}
+export interface EdgeServicesApCompatibilitiesResponse {
+  compatibilities: EdgeServiceApCompatibility[]
+}
+// ap incompatibility by model
+
 export interface VirtualIpSetting {
   virtualIp: string
   ports: {
@@ -485,4 +498,33 @@ export interface ClusterNetworkSettings {
     }
     loadDistribution: ClusterHaLoadDistributionEnum
   }
+}
+
+export interface ClusterSubInterfaceSettings {
+  nodes: NodeSubInterfaces[]
+}
+
+export interface NodeSubInterfaces {
+  serialNumber: EdgeSerialNumber
+  ports: PortSubInterface[]
+  lags: LagSubInterface[]
+}
+
+export interface PortSubInterface {
+  portId: string
+  subInterfaces: SubInterface[]
+}
+
+export interface LagSubInterface {
+  lagId: number
+  subInterfaces: SubInterface[]
+}
+
+export interface SubInterface {
+  id?: string
+  vlan: number
+  portType: EdgePortTypeEnum
+  ipMode: EdgeIpModeEnum
+  ip?: string
+  subnet?: string
 }

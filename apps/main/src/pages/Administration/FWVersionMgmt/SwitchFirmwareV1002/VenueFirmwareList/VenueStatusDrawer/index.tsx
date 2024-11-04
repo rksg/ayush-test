@@ -10,6 +10,7 @@ import {
   showToast
 } from '@acx-ui/components'
 import { useSwitchActions, useSwitchFirmwareUtils } from '@acx-ui/rc/components'
+import { toUserDate }                               from '@acx-ui/rc/components'
 import { useLazyGetSwitchFirmwareStatusListQuery }  from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenueV1002,
@@ -21,8 +22,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { TABLE_QUERY_LONG_POLLING_INTERVAL, noDataDisplay } from '@acx-ui/utils'
 
-import { toUserDate } from '../../../FirmwareUtils'
-import * as UI        from '../styledComponents'
+import * as UI from '../styledComponents'
 
 export interface VenueStatusDrawerProps {
   visible: boolean,

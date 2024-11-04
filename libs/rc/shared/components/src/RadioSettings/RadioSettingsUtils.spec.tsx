@@ -96,7 +96,7 @@ describe('RadioSetting Utils test', () => {
     const supportCh24G = {}
     const newRadio24G = CorrectRadioChannels(radio24G, supportCh24G)
 
-    expect(newRadio24G.allowedChannels).toEqual([])
+    expect(newRadio24G.allowedChannels).toEqual(undefined)
 
     const venueRadio5G = {
       allowedIndoorChannels: ['36', '40', '44', '100', '104', '108'],
@@ -107,11 +107,11 @@ describe('RadioSetting Utils test', () => {
     const supportCh5G = {}
     const newRadio5G = CorrectRadioChannels(venueRadio5G, supportCh5G)
 
-    expect(newRadio5G.allowedIndoorChannels).toEqual([])
-    expect(newRadio5G.allowedOutdoorChannels).toEqual([])
+    expect(newRadio5G.allowedIndoorChannels).toEqual(undefined)
+    expect(newRadio5G.allowedOutdoorChannels).toEqual(undefined)
 
     const newRadio = CorrectRadioChannels(radio24G, undefined)
-    expect(newRadio.allowedChannels).toEqual([])
+    expect(newRadio.allowedChannels).toEqual(undefined)
   })
 
 

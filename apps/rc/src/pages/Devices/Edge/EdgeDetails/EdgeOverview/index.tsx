@@ -8,7 +8,6 @@ import { GridRow, Tabs }                                         from '@acx-ui/c
 import { Features }                                              from '@acx-ui/feature-toggle'
 import { EdgeInfoWidget, useIsEdgeFeatureReady, useIsEdgeReady } from '@acx-ui/rc/components'
 import {
-  useGetEdgeClusterQuery,
   useGetEdgeLagsStatusListQuery,
   useGetEdgePortsStatusListQuery
 } from '@acx-ui/rc/services'
@@ -33,14 +32,11 @@ export const EdgeOverview = () => {
   const [currentTab, setCurrentTab] = useState<string | undefined>(undefined)
   const {
     currentEdgeStatus: currentEdge,
-    isEdgeStatusLoading: isLoadingEdgeStatus
+    isEdgeStatusLoading: isLoadingEdgeStatus,
+    currentCluster
   } = useContext(EdgeDetailsDataContext)
   const isEdgeReady = useIsEdgeReady()
   const isEdgeLagEnabled = useIsEdgeFeatureReady(Features.EDGE_LAG)
-
-  const { data: currentCluster } = useGetEdgeClusterQuery({
-    params: { venueId: currentEdge?.venueId, clusterId: currentEdge?.clusterId }
-  }, { skip: !Boolean(currentEdge?.clusterId) || !Boolean(currentEdge?.venueId) })
 
   const isConfigurable = isEdgeConfigurable(currentEdge)
 

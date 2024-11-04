@@ -193,6 +193,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
             children={
               <Select
                 loading={isClusterOptionsLoading}
+                disabled={props.editMode}
                 placeholder={$t({ defaultMessage: 'Select...' })}
                 onChange={onEdgeChange}
                 options={[

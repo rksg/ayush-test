@@ -10,6 +10,7 @@ import {
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import { useSwitchFirmwareUtils }            from '@acx-ui/rc/components'
+import { getNextScheduleTpl }                from '@acx-ui/rc/components'
 import { useLazyGetSwitchFirmwareListQuery } from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenue,
@@ -19,8 +20,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
 
-import { getNextScheduleTpl } from '../../../FirmwareUtils'
-import * as UI                from '../../../styledComponents'
+import * as UI               from '../../../styledComponents'
 import {
   enableSwitchScheduleTooltip,
   getSwitchNextScheduleTpl

@@ -3,7 +3,7 @@ import { useIntl }                           from 'react-intl'
 
 import { Button, Loader, PageHeader, SummaryCard, Tooltip, cssStr }                                                        from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                                          from '@acx-ui/feature-toggle'
-import { TrafficClassSettingsTable }                                                                                       from '@acx-ui/rc/components'
+import { TrafficClassSettingsTable, ToolTipTableStyle }                                                                    from '@acx-ui/rc/components'
 import { useGetEdgeHqosProfileViewDataListQuery }                                                                          from '@acx-ui/rc/services'
 import { EdgeHqosViewData, PolicyOperation, PolicyType, getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                                                                                           from '@acx-ui/react-router-dom'
@@ -46,7 +46,7 @@ const EdgeHqosBandwidthDetail = () => {
           />
         }
         placement='bottom'
-        overlayClassName={UI.toolTipClassName}
+        overlayClassName={ToolTipTableStyle.toolTipClassName}
         overlayInnerStyle={{ width: 415 }}
         dottedUnderline={true}>
           <UI.EyeOpenSolidCustom
@@ -99,7 +99,7 @@ const EdgeHqosBandwidthDetail = () => {
             </Col>
           </Row>
       }
-      <UI.ToolTipStyle/>
+      <ToolTipTableStyle.ToolTipStyle/>
       <Space direction='vertical' size={30}>
         <SummaryCard data={qosInfo} colPerRow={6} />
         <Card>

@@ -16,7 +16,8 @@ import {
   ServiceOperation,
   ServiceType,
   getPolicyDetailsLink,
-  getServiceDetailsLink
+  getServiceDetailsLink,
+  transformDisplayNumber
 }              from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
@@ -27,6 +28,7 @@ const defaultFields = [
   'personaGroupId',
   'vxlanTunnelProfileId',
   'tunneledWlans',
+  'tunnelNumber',
   'edgeAlarmSummary'
 ]
 interface PersonalIdentityNetworkDetailsProps {
@@ -106,7 +108,7 @@ export const PersonalIdentityNetworkDetails = (props: PersonalIdentityNetworkDet
         }
       />
       <Form.Item
-        label={$t({ defaultMessage: 'Persona Group' })}
+        label={$t({ defaultMessage: 'Identity Group' })}
         children={
           <TenantLink to={`users/persona-management/persona-group/${personaGroupData?.id}`}>
             {personaGroupData?.name}
@@ -156,7 +158,7 @@ export const PersonalIdentityNetworkDetails = (props: PersonalIdentityNetworkDet
       />
       <Form.Item
         label={$t({ defaultMessage: 'Networks' })}
-        children={pinViewData?.tunneledWlans?.length}
+        children={transformDisplayNumber(pinViewData?.tunneledWlans?.length)}
       />
       <PersonalIdentityNetworkDetailTableGroup pinId={serviceData.serviceId} />
     </Loader>

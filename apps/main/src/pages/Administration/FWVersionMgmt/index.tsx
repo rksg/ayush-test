@@ -7,6 +7,11 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { InformationSolid }       from '@acx-ui/icons'
 import { useIsEdgeReady }         from '@acx-ui/rc/components'
 import {
+  compareVersions,
+  getApVersion,
+  getReleaseFirmware
+} from '@acx-ui/rc/components'
+import {
   useGetLatestEdgeFirmwareQuery,
   useGetLatestFirmwareListQuery,
   useGetSigPackQuery,
@@ -23,13 +28,8 @@ import { useNavigate, useParams, useTenantLink }                                
 
 import ApplicationPolicyMgmt from '../ApplicationPolicyMgmt'
 
-import ApFirmware      from './ApFirmware'
-import EdgeFirmware    from './EdgeFirmware'
-import {
-  compareVersions,
-  getApVersion,
-  getReleaseFirmware
-} from './FirmwareUtils'
+import ApFirmware          from './ApFirmware'
+import EdgeFirmware        from './EdgeFirmware'
 import * as UI             from './styledComponents'
 import SwitchFirmware      from './SwitchFirmware'
 import SwitchFirmwareV1002 from './SwitchFirmwareV1002'
@@ -43,6 +43,7 @@ const FWVersionMgmt = () => {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isSwitchFirmwareV1002Enabled = useIsSplitOn(Features.SWITCH_FIRMWARE_V1002_TOGGLE)
+  const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
 
 
   const { data: latestSwitchReleaseVersions } =
@@ -120,7 +121,17 @@ const FWVersionMgmt = () => {
         compareSwitchVersion(recommended82, fv.versions.filter(
           v=> v.modelGroup=== SwitchFirmwareModelGroup.ICX82)[0]?.version)) || false
 
-      setHasRecomendedSwitchFirmware(hasOutdated71 || hasOutdated7X || hasOutdated82)
+      if (isSupport8100) {
+        const recommended81 = recommendedSwitchReleaseVersions.filter(
+          r => r.modelGroup === SwitchFirmwareModelGroup.ICX81)[0]?.versions[0].id
+        const hasOutdated81 = recommended81 && switchVenueVersionListV1001.data.some(fv =>
+          compareSwitchVersion(recommended81, fv.versions.filter(
+            v=> v.modelGroup=== SwitchFirmwareModelGroup.ICX81)[0]?.version)) || false
+        // eslint-disable-next-line max-len
+        setHasRecomendedSwitchFirmware(hasOutdated71 || hasOutdated7X || hasOutdated82 || hasOutdated81)
+      } else {
+        setHasRecomendedSwitchFirmware(hasOutdated71 || hasOutdated7X || hasOutdated82)
+      }
     }
   }, [recommendedSwitchReleaseVersions, switchVenueVersionListV1001])
 

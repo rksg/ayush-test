@@ -290,12 +290,18 @@ export function CertificateTable (
       <Drawer
         title={$t({ defaultMessage: 'Generate Certificate' })}
         visible={certificateDrawerOpen}
-        onClose={() => setCertificateDrawerOpen(false)}
+        onClose={() => {
+          setCertificateDrawerOpen(false)
+          certificateForm.resetFields()
+        }}
         width={550}
         destroyOnClose={true}
         footer={
           <Drawer.FormFooter
-            onCancel={() => setCertificateDrawerOpen(false)}
+            onCancel={() => {
+              setCertificateDrawerOpen(false)
+              certificateForm.resetFields()
+            }}
             onSave={async () => {
               try {
                 await certificateForm.validateFields()

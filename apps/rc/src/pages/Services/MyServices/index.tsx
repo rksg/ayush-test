@@ -14,7 +14,8 @@ import {
   useWebAuthTemplateListQuery,
   useGetResidentPortalListQuery,
   useGetEdgeFirewallViewDataListQuery,
-  useGetEdgeSdLanP2ViewDataListQuery
+  useGetEdgeSdLanP2ViewDataListQuery,
+  useGetEdgeMdnsProxyViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
   filterByAccessForServicePolicyMutation,
@@ -42,6 +43,7 @@ export default function MyServices () {
   const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+  const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
@@ -52,6 +54,16 @@ export default function MyServices () {
       totalCount: useGetEnhancedMdnsProxyListQuery({
         params, payload: defaultPayload, enableRbac: isEnabledRbacService
       }).data?.totalCount
+    },
+    {
+      type: ServiceType.EDGE_MDNS_PROXY,
+      categories: [RadioCardCategory.EDGE],
+      totalCount: useGetEdgeMdnsProxyViewDataListQuery({
+        params, payload: defaultPayload
+      }, {
+        skip: !isEdgeMdnsReady
+      }).data?.totalCount,
+      disabled: !isEdgeMdnsReady
     },
     {
       type: ServiceType.DHCP,

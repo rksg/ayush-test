@@ -39,6 +39,7 @@ export const SettingsForm = () => {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const { initialValues } = useStepFormContext<EdgeHqosViewData>()
+  const isDefaultProfile = initialValues?.isDefault??false
   const formTrafficClassSettings = Form.useWatch('trafficClassSettings', form)
 
   const minBandwidthRangeErrMsg =
@@ -47,7 +48,7 @@ export const SettingsForm = () => {
   $t({ defaultMessage: 'This value should be between 1 and 100' })
   const prioritySchedulingRangeErrMsg =
   // eslint-disable-next-line max-len
-  $t({ defaultMessage: 'If you want to set this traffic class to priority scheduling, the value must be at least 1' })
+  $t({ defaultMessage: 'Guaranteed Bandwidth value must be 1% or higher if this traffic class is set to priority scheduling' })
   const guaranteedBandwidthSumErrMsg =
   $t({ defaultMessage: 'Total guaranteed bandwidth across all classes must NOT exceed 100%' })
   const bandwidthRangeCompareErrMsg =
@@ -134,7 +135,7 @@ export const SettingsForm = () => {
             name={['trafficClassSettings', index, 'priorityScheduling']}
             valuePropName='checked'
             noStyle>
-            <Checkbox />
+            <Checkbox disabled={isDefaultProfile}/>
           </Form.Item>
         </Space>
       }
@@ -159,7 +160,10 @@ export const SettingsForm = () => {
                 { required: true, message: $t({ defaultMessage: 'Please enter Guaranteed Bandwidth' }) },
                 { validator: (_, value) => validateMinBandwidth(index, value) }
               ]}
-              children={<InputNumber style={{ width: '70px' }} min={0} max={100} />}
+              children={<InputNumber style={{ width: '70px' }}
+                min={0}
+                max={100}
+                disabled={isDefaultProfile} />}
               validateFirst
             />
             <span> % </span>
@@ -172,7 +176,6 @@ export const SettingsForm = () => {
                   <Tooltip
                     title={errors[0]}
                     placement='bottom'
-                    overlayClassName={UI.toolTipClassName}
                     overlayInnerStyle={{ width: 415 }}><UI.WarningCircleRed />
                   </Tooltip> :<></>
               }}
@@ -196,7 +199,10 @@ export const SettingsForm = () => {
                 { required: true, message: $t({ defaultMessage: 'Please enter Max Bandwidth' }) },
                 { validator: (_, value) => validateMaxBandwidth(index, value) }
               ]}
-              children={<InputNumber style={{ width: '70px' }} min={1} max={100} />}
+              children={<InputNumber style={{ width: '70px' }}
+                min={1}
+                max={100}
+                disabled={isDefaultProfile} />}
               validateFirst
             />
             <span> % </span>
@@ -209,7 +215,6 @@ export const SettingsForm = () => {
                   <Tooltip
                     title={errors[0]}
                     placement='bottom'
-                    overlayClassName={UI.toolTipClassName}
                     overlayInnerStyle={{ width: 415 }}><UI.WarningCircleRed />
                   </Tooltip> :<></>
               }}
@@ -236,13 +241,13 @@ export const SettingsForm = () => {
                       { min: 2, max: 32 },
                       { validator: (_, value) => servicePolicyNameRegExp(value) }
                     ]}
-                    children={<Input />}
+                    children={<Input disabled={isDefaultProfile} />}
                   />
                   <Form.Item
                     name='description'
                     label={$t({ defaultMessage: 'Description' })}
                     rules={[{ max: 255 }]}
-                    children={<Input />}
+                    children={<Input disabled={isDefaultProfile} />}
                   />
                 </Col>
                 <Form.Item
@@ -259,8 +264,13 @@ export const SettingsForm = () => {
                     <Alert type='info'
                       message={
                       // eslint-disable-next-line max-len
-                        $t({ defaultMessage: `Note: Total guaranteed bandwidth across all classes must NOT exceed 100%.
-                        Max bandwidth must exceed minimal guaranteed bandwidth in each class.` })
+                        $t({ defaultMessage: `
+                          Note:
+                          Total guaranteed bandwidth across all classes must NOT exceed 100%.
+                          Max bandwidth must exceed minimal guaranteed bandwidth in each class.
+                          Guaranteed Bandwidth per traffic class must be over 1% if that traffic
+                            class isset to Priority Scheduling.
+                        ` })
                       }
                     />
                     <Table

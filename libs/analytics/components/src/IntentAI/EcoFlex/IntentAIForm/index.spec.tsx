@@ -3,14 +3,15 @@ import userEvent   from '@testing-library/user-event'
 import { message } from 'antd'
 import moment      from 'moment-timezone'
 
-import { intentAIApi, intentAIUrl, Provider, store }                                         from '@acx-ui/store'
-import { fireEvent, mockGraphqlMutation, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { get }                                                                                                 from '@acx-ui/config'
+import { dataApi, dataApiURL, intentAIApi, intentAIUrl, Provider, store }                                      from '@acx-ui/store'
+import { fireEvent, mockGraphqlMutation, mockGraphqlQuery, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
-import { mockIntentContext } from '../../__tests__/fixtures'
-import { Statuses }          from '../../states'
-import { Intent }            from '../../useIntentDetailsQuery'
-import { mocked }            from '../__tests__/mockedEcoFlex'
-import { kpis }              from '../common'
+import { mockIntentContext }                                          from '../../__tests__/fixtures'
+import { Statuses }                                                   from '../../states'
+import { Intent }                                                     from '../../useIntentDetailsQuery'
+import { mocked, mockApHierarchy, mockNetworkHierarchy, mockKpiData } from '../__tests__/mockedEcoFlex'
+import { kpis }                                                       from '../common'
 
 import { IntentAIForm } from '.'
 
@@ -51,6 +52,11 @@ jest.mock('../common/ScheduleTiming', () => ({
 
 jest.mock('../IntentContext')
 
+jest.mock('@acx-ui/config', () => ({
+  ...jest.requireActual('@acx-ui/config'),
+  get: jest.fn()
+}))
+
 window.ResizeObserver = ResizeObserver
 
 beforeEach(() => {
@@ -61,6 +67,9 @@ beforeEach(() => {
 
   mockGraphqlMutation(intentAIUrl, 'IntentTransition', {
     data: { transition: { success: true, errorMsg: '' , errorCode: '' } }
+  })
+  mockGraphqlQuery(intentAIUrl, 'IntentAIEcoKpi', {
+    data: { intent: mockKpiData }
   })
 })
 
@@ -85,8 +94,33 @@ const mockIntentContextWith = (data: Partial<Intent> = {}) => {
 }
 
 describe('IntentAIForm', () => {
+  beforeEach(() => {
+    store.dispatch(intentAIApi.util.resetApiState())
+    moment.tz.setDefault('Asia/Singapore')
+    const now = +new Date('2024-08-08T12:00:00.000Z')
+    jest.spyOn(Date, 'now').mockReturnValue(now)
+    store.dispatch(dataApi.util.resetApiState())
+    mockGraphqlQuery(dataApiURL, 'VenueHierarchy', { data: mockNetworkHierarchy })
+    mockGraphqlQuery(dataApiURL, 'Network', { data: mockApHierarchy })
+    mockGraphqlMutation(intentAIUrl, 'IntentTransition', {
+      data: { transition: { success: true, errorMsg: '' , errorCode: '' } }
+    })
+  })
+
+  afterEach((done) => {
+    jest.clearAllMocks()
+    jest.restoreAllMocks()
+    const toast = screen.queryByRole('img', { name: 'close' })
+    if (toast) {
+      waitForElementToBeRemoved(toast).then(done)
+      message.destroy()
+    } else {
+      done()
+    }
+  })
+
   it('handle schedule intent', async () => {
-    const { params } = mockIntentContextWith({ status: Statuses.new })
+    const { params } = mockIntentContextWith({ status: Statuses.new, sliceId: 'id1' })
     render(<IntentAIForm />, { route: { params }, wrapper: Provider })
     const form = within(await screen.findByTestId('steps-form'))
     const actions = within(form.getByTestId('steps-form-actions'))
@@ -119,10 +153,17 @@ describe('IntentAIForm', () => {
     expect(scheduleEnabled).toBeChecked()
     expect(await screen.findByText(/Local time/)).toBeVisible()
 
+    const excludeAPsEnabled = screen.getByRole('checkbox', { name: /following APs/ })
+    await click(excludeAPsEnabled)
+    expect(excludeAPsEnabled).toBeChecked()
+
     await click(actions.getByRole('button', { name: 'Next' }))
     expect((await screen.findAllByText('Summary')).length).toEqual(2)
     expect(await screen.findByText('Hours not applied for EcoFlex')).toBeVisible()
     expect(await screen.findByText(/PowerSave will not be triggered during specific hours set in the Settings/)).toBeVisible()
+    expect(await screen.findByText(/PowerSave will not be triggered for the specific APs set in the Settings./)).toBeVisible()
+
+    expect(await screen.findByText('Projected energy reduction')).toBeVisible()
     await click(actions.getByRole('button', { name: 'Apply' }))
 
     expect(await screen.findByText(/has been updated/)).toBeVisible()
@@ -135,10 +176,11 @@ describe('IntentAIForm', () => {
       metadata: {
         preferences: {
           averagePowerPrice: { currency: 'SGD', value: 0 },
-          crrmFullOptimization: true
+          crrmFullOptimization: true,
+          excludedAPs: [[{ name: 'name', type: 'zone' }]]
         },
         scheduledAt: '',
-        dataEndTime: ''
+        dataEndTime: '2024-08-08T12:00:00.000Z'
       }
     })
     render(<IntentAIForm />, { route: { params }, wrapper: Provider })
@@ -166,12 +208,64 @@ describe('IntentAIForm', () => {
     const scheduleEnabled = screen.getByRole('checkbox', { name: /following time slots of the week/ })
     expect(scheduleEnabled).toBeDisabled()
 
+    const excludeAPsEnabled = screen.getByRole('checkbox', { name: /following APs/ })
+    expect(excludeAPsEnabled).toBeDisabled()
+
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Summary' })).toBeVisible()
     expect(screen.queryByText('Hours not applied for EcoFlex')).toBeNull()
 
     expect(await screen.findByText(/IntentAI will maintain the existing network configuration and will cease automated monitoring of configuration for handling PowerSafe request\/response in the network./)).toBeVisible()
+    await click(actions.getByRole('button', { name: 'Apply' }))
+
+    expect(await screen.findByText(/has been updated/)).toBeVisible()
+    await click(await screen.findByText(/View/))
+    expect(mockNavigate).toBeCalled()
+  })
+  it('handle active intent in RAI', async () => {
+    jest.mocked(get).mockReturnValue('true')
+    const { params } = mockIntentContextWith({
+      status: Statuses.new,
+      path: [
+        { name: 'system 1', type: 'system' },
+        { name: 'domain', type: 'domain' },
+        { name: 'zone 2', type: 'zone' }
+      ],
+      metadata: {
+        unsupportedAPs: ['00:00:00:00:00:01'],
+        scheduledAt: '',
+        dataEndTime: ''
+
+      }
+    })
+    render(<IntentAIForm />, { route: { params }, wrapper: Provider })
+    const form = within(await screen.findByTestId('steps-form'))
+    const actions = within(form.getByTestId('steps-form-actions'))
+
+    expect(await screen.findByRole('heading', { name: 'Introduction' })).toBeVisible()
+    await click(actions.getByRole('button', { name: 'Next' }))
+
+    expect(await screen.findByText('Potential trade-off')).toBeVisible()
+    const radioEnabled = screen.getByRole('radio', { name: 'Reduction in energy footprint' })
+    await click(radioEnabled)
+    await click(actions.getByRole('button', { name: 'Next' }))
+
+    const date = await screen.findByPlaceholderText('Select date')
+    await click(date)
+    await click(await screen.findByRole('cell', { name: '2024-08-09' }))
+    const time = await screen.findByPlaceholderText('Select time')
+    await selectOptions(time, '12:30 (UTC+08)')
+
+    const excludeAPsEnabled = screen.getByRole('checkbox', { name: /following APs/ })
+    await click(excludeAPsEnabled)
+    expect(excludeAPsEnabled).toBeChecked()
+    await click(excludeAPsEnabled)
+    expect(excludeAPsEnabled).not.toBeChecked()
+
+    await click(actions.getByRole('button', { name: 'Next' }))
+    expect((await screen.findAllByText('Summary')).length).toEqual(2)
+
     await click(actions.getByRole('button', { name: 'Apply' }))
 
     expect(await screen.findByText(/has been updated/)).toBeVisible()
@@ -190,5 +284,6 @@ describe('IntentAIForm', () => {
     expect(await screen.findByRole('heading', { name: 'Intent Priority' })).toBeVisible()
     await click(actions.getByRole('button', { name: 'Cancel' }))
     expect(mockNavigate).toBeCalled()
+
   })
 })

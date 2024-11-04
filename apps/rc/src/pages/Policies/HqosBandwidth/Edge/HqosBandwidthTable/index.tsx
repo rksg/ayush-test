@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl'
 
 import { Button, cssStr, Loader, PageHeader, showActionModal, Table, TableProps, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
-import { TrafficClassSettingsTable }                                                       from '@acx-ui/rc/components'
+import { SimpleListTooltip, TrafficClassSettingsTable, ToolTipTableStyle }                 from '@acx-ui/rc/components'
 import {
   useDeleteEdgeHqosProfileMutation,
   useGetEdgeClusterListQuery,
@@ -43,7 +43,8 @@ const EdgeHqosBandwidthTable = () => {
       'name',
       'description',
       'trafficClassSettings',
-      'edgeClusterIds'
+      'edgeClusterIds',
+      'isDefault'
     ]
   }
   const settingsId = 'profiles-edge-qos-bandwidth-table'
@@ -78,7 +79,7 @@ const EdgeHqosBandwidthTable = () => {
           clusterOptions: data?.data.map(item => ({
             value: item.name!,
             key: item.clusterId!
-          })),
+          })) ?? [],
           isLoading
         }
       }
@@ -89,7 +90,6 @@ const EdgeHqosBandwidthTable = () => {
   const currentServiceIds = useMemo(
     () => tableQuery.data?.data?.map(i => i.id!) ?? [],
     [tableQuery.data?.data])
-
   const { hqosCompatibilityData = [] } = useGetHqosEdgeCompatibilitiesQuery({
     payload: { filters: { serviceIds: currentServiceIds } } }, {
     skip: !isEdgeCompatibilityEnabled || !currentServiceIds.length,
@@ -147,7 +147,7 @@ const EdgeHqosBandwidthTable = () => {
           />
         }
         placement='bottom'
-        overlayClassName={UI.toolTipClassName}
+        overlayClassName={ToolTipTableStyle.toolTipClassName}
         overlayInnerStyle={{ width: 415 }}
         dottedUnderline={true}>
           <UI.EyeOpenSolidCustom
@@ -165,7 +165,11 @@ const EdgeHqosBandwidthTable = () => {
       sorter: true,
       filterable: clusterOptions,
       render: function (_, row) {
-        return row?.edgeClusterIds?.length
+        const edgeClusterIds = row?.edgeClusterIds??[]
+        const tooltipItems = clusterOptions
+          .filter(option => option.key && edgeClusterIds.includes(option.key))
+          .map(option => option.value)
+        return <SimpleListTooltip items={tooltipItems} displayText={edgeClusterIds.length} />
       }
     }
   ]
@@ -173,7 +177,7 @@ const EdgeHqosBandwidthTable = () => {
   const rowActions: TableProps<EdgeHqosViewData>['rowActions'] = [
     {
       scopeKey: getScopeKeyByPolicy(PolicyType.HQOS_BANDWIDTH, PolicyOperation.EDIT),
-      visible: (selectedRows) => selectedRows.length === 1,
+      visible: (selectedRows) => selectedRows.length === 1 && selectedRows[0]?.isDefault !== true,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
         navigate({
@@ -189,6 +193,7 @@ const EdgeHqosBandwidthTable = () => {
     },
     {
       scopeKey: getScopeKeyByPolicy(PolicyType.HQOS_BANDWIDTH, PolicyOperation.DELETE),
+      visible: (selectedRows) => selectedRows[0]?.isDefault !== true,
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         showActionModal({
@@ -233,7 +238,7 @@ const EdgeHqosBandwidthTable = () => {
           </TenantLink>
         ])}
       />
-      <UI.ToolTipStyle/>
+      <ToolTipTableStyle.ToolTipStyle/>
       <Loader states={[
         tableQuery,
         { isLoading: false, isFetching: isDeleteQosUpdating }

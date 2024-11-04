@@ -1,12 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unused-vars, max-len */
 import { useEffect, useRef, useState, createContext } from 'react'
 
-import { Form }                                                          from 'antd'
-import { get, isEqual, isNil, isNull, isUndefined, merge, omit, omitBy } from 'lodash'
-import { defineMessage, useIntl }                                        from 'react-intl'
+import { Form }                                                                     from 'antd'
+import { get, isEqual, isNil, isNull, isUndefined, merge, omit, omitBy, cloneDeep } from 'lodash'
+import { defineMessage, useIntl }                                                   from 'react-intl'
 
-import { PageHeader, StepsForm, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
+import {
+  Loader,
+  PageHeader,
+  StepsForm,
+  StepsFormLegacy,
+  StepsFormLegacyInstance
+} from '@acx-ui/components'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import {
   useAddNetworkMutation,
   useAddNetworkVenuesMutation,
@@ -28,15 +34,16 @@ import {
   useGetDpskServiceQuery,
   useGetDpskServiceTemplateQuery,
   useGetCertificateTemplateNetworkBindingQuery,
-  useAddNetworkVenueMutation,
   useAddNetworkVenueTemplateMutation,
-  useDeleteNetworkVenueMutation,
   useDeleteNetworkVenueTemplateMutation,
   useActivatePortalMutation,
   useActivatePortalTemplateMutation,
   useGetEnhancedPortalProfileListQuery,
   useGetEnhancedPortalTemplateListQuery,
-  useUpdateNetworkVenueMutation
+  useUpdateNetworkVenueMutation,
+  useGetMacRegistrationPoolNetworkBindingQuery,
+  useAddRbacNetworkVenueMutation,
+  useDeleteRbacNetworkVenueMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -56,7 +63,8 @@ import {
   useConfigTemplatePageHeaderTitle,
   useConfigTemplateQueryFnSwitcher,
   NetworkTunnelSdLanAction,
-  NetworkTunnelSoftGreAction
+  NetworkTunnelSoftGreAction,
+  MacRegistrationPool
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
@@ -175,17 +183,19 @@ export function NetworkForm (props:{
   const addNetworkInstance = useAddInstance()
   const updateNetworkInstance = useUpdateInstance()
 
-  const [ addNetworkVenue ] = useConfigTemplateMutationFnSwitcher({
-    useMutationFn: useAddNetworkVenueMutation,
+  const [ addRbacNetworkVenue ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddRbacNetworkVenueMutation,
     useTemplateMutationFn: useAddNetworkVenueTemplateMutation
   })
+
+  const [ deleteRbacNetworkVenue ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useDeleteRbacNetworkVenueMutation,
+    useTemplateMutationFn: useDeleteNetworkVenueTemplateMutation
+  })
+
   const [ updateNetworkVenue ] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useUpdateNetworkVenueMutation,
     useTemplateMutationFn: useUpdateNetworkVenueTemplateMutation
-  })
-  const [ deleteNetworkVenue ] = useConfigTemplateMutationFnSwitcher({
-    useMutationFn: useDeleteNetworkVenueMutation,
-    useTemplateMutationFn: useDeleteNetworkVenueTemplateMutation
   })
 
   // The RBAC APIs not support the addNetworkVenues, updateNetworkVenues and deleteNetworkVenues.
@@ -248,13 +258,13 @@ export function NetworkForm (props:{
         delete saveData?.authRadiusId
       }
 
-      const newSavedata = { ...updateSate, ...saveData }
+      const newSavedata = merge({}, updateSate, saveData)
       newSavedata.wlan = { ...updateSate?.wlan, ...saveData.wlan }
       return { ...saveState, ...newSavedata }
     })
   }
 
-  const { data } = useGetNetwork()
+  const { data, isLoading } = useGetNetwork()
   const networkVxLanTunnelProfileInfo = useNetworkVxLanTunnelProfileInfo(data ?? null)
   const { certificateTemplateId } = useGetCertificateTemplateNetworkBindingQuery(
     { params: { networkId: data?.id } },
@@ -262,6 +272,12 @@ export function NetworkForm (props:{
       skip: !(editMode || cloneMode) || !data?.useCertificateTemplate,
       selectFromResult: ({ data }) => ({ certificateTemplateId: data?.id })
     })
+
+  const { data: macRegistrationPool } = useGetMacRegistrationPoolNetworkBindingQuery(
+    { params: { networkId: data?.id } },
+    { skip: !data?.wlan?.macAddressAuthentication }
+  )
+
   const { data: dpskService } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetDpskServiceQuery,
     useTemplateQueryFn: useGetDpskServiceTemplateQuery,
@@ -360,6 +376,20 @@ export function NetworkForm (props:{
 
     updateSaveData(fullNetworkSaveData)
   }, [wifiCallingIds])
+
+  useEffect(() => {
+    if (!macRegistrationPool?.data?.length) return
+
+    const fullNetworkSaveData = merge({}, saveState, {
+      wlan: {
+        macRegistrationListId: (macRegistrationPool?.data as MacRegistrationPool[])[0].id || ''
+      }
+    })
+
+    form.setFieldValue('wlan.macRegistrationListId', (macRegistrationPool?.data as MacRegistrationPool[])[0].id || '')
+
+    updateSaveData(fullNetworkSaveData)
+  }, [macRegistrationPool])
 
   useEffect(() => {
     if (!radiusServerConfigurations) return
@@ -640,14 +670,22 @@ export function NetworkForm (props:{
     const removed: string[] = []
     const update: NetworkVenue[] = []
     const newVenueIds: string[] = []
+    const oldVenueIds = oldNetworkVenues?.map(oldNv => oldNv.venueId) ?? []
+
+    //console.log('newNetworkVenues: ', newNetworkVenues)
+    //console.log('oldNetworkVenues: ', oldNetworkVenues)
 
     if (newNetworkVenues?.length) {
       newNetworkVenues?.forEach(networkVenue => {
         if (!networkVenue.networkId) {
           networkVenue.networkId = networkId
+        }
+
+        const { networkId: curNetworkId, venueId } = networkVenue
+        if (!oldVenueIds.includes(venueId)) { // new networkVenue
           added.push(networkVenue)
           update.push(networkVenue)
-        } else {
+        } else { // networkVenue has existed
           newVenueIds.push(networkVenue.venueId!)
         }
       })
@@ -655,8 +693,8 @@ export function NetworkForm (props:{
 
     if (oldNetworkVenues?.length) {
       oldNetworkVenues?.forEach(networkVenue => {
-        const venueId = networkVenue.venueId!
-        if (networkVenue.networkId) {
+        const { venueId, networkId } = networkVenue
+        if (networkId && venueId) {
           if (!newVenueIds.includes(venueId)) {
             removed.push(venueId)
           } else if (newNetworkVenues?.length) {
@@ -675,13 +713,17 @@ export function NetworkForm (props:{
       })
     }
 
+    //console.log('added: ', added)
+    //console.log('removed: ', removed)
+    //console.log('update: ', update)
+
     if (added.length) {
       const addNetworkVenueReqs = added.map((networkVenue) => {
         const params = {
           venueId: networkVenue.venueId,
           networkId: networkId
         }
-        return addNetworkVenue({ params, payload: networkVenue, enableRbac: true })
+        return addRbacNetworkVenue({ params, payload: networkVenue, enableRbac: true })
       })
 
       await Promise.allSettled(addNetworkVenueReqs)
@@ -693,7 +735,7 @@ export function NetworkForm (props:{
           venueId: networkVenueId,
           networkId: networkId
         }
-        return deleteNetworkVenue({ params: curParams, enableRbac: true })
+        return deleteRbacNetworkVenue({ params: curParams, enableRbac: true })
       })
 
       await Promise.allSettled(deleteNetworkVenueReqs)
@@ -717,7 +759,6 @@ export function NetworkForm (props:{
 
       await Promise.allSettled(updateNetworkVenueReqs)
     }
-
   }
 
   const processAddData = function (data: NetworkSaveData) {
@@ -800,7 +841,7 @@ export function NetworkForm (props:{
 
         if (isSoftGreEnabled && formData['softGreAssociationUpdate']) {
         // eslint-disable-next-line max-len
-          afterVenueActivationRequest.push(updateSoftGreActivations(networkId, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode))
+          afterVenueActivationRequest.push(updateSoftGreActivations(networkId, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode, false))
         }
       }
       await Promise.all(afterVenueActivationRequest)
@@ -881,6 +922,7 @@ export function NetworkForm (props:{
   const handleEditNetwork = async (formData: NetworkSaveData) => {
     try {
       processEditData(formData)
+      const oldData = cloneDeep(saveContextRef.current)
       const payload = updateClientIsolationAllowlist(saveContextRef.current as NetworkSaveData)
       await updateNetworkInstance({
         params,
@@ -888,39 +930,43 @@ export function NetworkForm (props:{
         enableRbac: resolvedRbacEnabled
       }).unwrap()
 
-      const allRequests = []
-      allRequests.push(activateCertificateTemplate(formData.certificateTemplateId, payload.id))
+      const beforeVenueActivationRequest = []
+      const afterVenueActivationRequest = []
+
+      beforeVenueActivationRequest.push(activateCertificateTemplate(formData.certificateTemplateId, payload.id))
       if (isUseWifiRbacApi) {
-        allRequests.push(activatePortal(payload.id, formData.portalServiceProfileId))
+        beforeVenueActivationRequest.push(activatePortal(payload.id, formData.portalServiceProfileId))
       }
       if (enableServiceRbac) {
-        allRequests.push(activateDpskPool(formData.dpskServiceProfileId, payload.id))
+        beforeVenueActivationRequest.push(activateDpskPool(formData.dpskServiceProfileId, payload.id))
         // eslint-disable-next-line max-len
-        allRequests.push(activateMacRegistrationPool(formData.wlan?.macRegistrationListId, payload.id))
+        beforeVenueActivationRequest.push(activateMacRegistrationPool(formData.wlan?.macRegistrationListId, payload.id))
       }
-      allRequests.push(updateHotspot20NetworkActivations(formData))
+      beforeVenueActivationRequest.push(updateHotspot20NetworkActivations(formData))
       if (formData.type !== NetworkTypeEnum.HOTSPOT20) {
         // HS 20 Network:
         // The Radius service is binding on the Identity provider profile
         // So it doesn't need to do the network and radius service binding
-        allRequests.push(updateRadiusServer(formData, payload.id))
+        beforeVenueActivationRequest.push(updateRadiusServer(formData, payload.id))
       }
-      allRequests.push(updateWifiCallingActivation(payload.id, formData))
+      beforeVenueActivationRequest.push(updateWifiCallingActivation(payload.id, formData))
       // eslint-disable-next-line max-len
-      allRequests.push(updateVlanPoolActivation(payload.id, formData.wlan?.advancedCustomization?.vlanPool, vlanPoolId))
-      allRequests.push(updateAccessControl(formData, data, payload.id))
+      beforeVenueActivationRequest.push(updateVlanPoolActivation(payload.id, formData.wlan?.advancedCustomization?.vlanPool, vlanPoolId))
+      beforeVenueActivationRequest.push(updateAccessControl(formData, data, payload.id))
+      await Promise.all(beforeVenueActivationRequest)
+
       if (payload.id && (payload.venues || data?.venues)) {
         if (resolvedRbacEnabled) {
-          allRequests.push(handleRbacNetworkVenues(payload.id, payload.venues, data?.venues))
+          await handleRbacNetworkVenues(payload.id, payload.venues, data?.venues)
         } else {
-          allRequests.push(handleNetworkVenues(payload.id, payload.venues, data?.venues))
+          await handleNetworkVenues(payload.id, payload.venues, data?.venues)
         }
       }
-      allRequests.push(updateClientIsolationActivations(payload, data, payload.id))
+      afterVenueActivationRequest.push(updateClientIsolationActivations(payload, oldData, payload.id))
 
       // eslint-disable-next-line max-len
       if (isEdgeSdLanMvEnabled && form.getFieldValue('sdLanAssociationUpdate') && payload.id && payload.venues) {
-        allRequests.push(
+        afterVenueActivationRequest.push(
           // eslint-disable-next-line max-len
           updateEdgeSdLanActivations(payload.id, form.getFieldValue('sdLanAssociationUpdate') as NetworkTunnelSdLanAction[], payload.venues)
         )
@@ -928,13 +974,13 @@ export function NetworkForm (props:{
 
       // eslint-disable-next-line max-len
       if (isSoftGreEnabled && formData['softGreAssociationUpdate'] && payload.id && payload.venues) {
-        allRequests.push(
+        afterVenueActivationRequest.push(
           // eslint-disable-next-line max-len
-          updateSoftGreActivations(payload.id, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode)
+          updateSoftGreActivations(payload.id, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode, true)
         )
       }
 
-      await Promise.allSettled(allRequests)
+      await Promise.all(afterVenueActivationRequest)
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -1032,6 +1078,7 @@ export function NetworkForm (props:{
         </NetworkFormContext.Provider>
       }
       {editMode &&
+      <Loader states={[{ isLoading: isLoading }]}>
         <NetworkFormContext.Provider value={{
           modalMode,
           createType,
@@ -1115,6 +1162,7 @@ export function NetworkForm (props:{
             </StepsForm>
           </MLOContext.Provider>
         </NetworkFormContext.Provider>
+      </Loader>
       }
     </>
   )
