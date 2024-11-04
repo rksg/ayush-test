@@ -17,6 +17,7 @@ import {
   checkVlanMember,
   EhternetPortSettings,
   EthernetPortProfileViewData,
+  EthernetPortType,
   LanPort,
   useConfigTemplate,
   VenueLanPorts,
@@ -127,7 +128,8 @@ export function LanPortSettings (props: {
   const convertEthernetPortListToDropdownItems = (
     ethernetPortList?: EthernetPortProfileViewData[]): DefaultOptionType[] => {
     // eslint-disable-next-line max-len
-    return ethernetPortList?.map(m => ({ label: m.name, value: m.id })) ?? []
+    return ethernetPortList?.filter(m=> !(selectedPortCaps.trunkPortOnly && m.type !== EthernetPortType.TRUNK))
+      .map(m => ({ label: m.name, value: m.id })) ?? []
   }
 
   // Ethernet Port Profile
@@ -260,7 +262,6 @@ export function LanPortSettings (props: {
             disabled={readOnly
               || isDhcpEnabled
               || !lan?.enabled
-              || selectedPortCaps?.trunkPortOnly
               || lan?.vni > 0}
             options={[
               { label: $t({ defaultMessage: 'No ethernet port profile selected' }), value: null },

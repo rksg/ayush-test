@@ -74,7 +74,9 @@ import {
   getStackUnitsMinLimitation,
   convertInputToUppercase,
   FirmwareSwitchVenueVersionsV1002,
-  getStackUnitsMinLimitationV1002
+  getStackUnitsMinLimitationV1002,
+  getSwitchFwGroupVersionV1002,
+  SwitchFirmwareModelGroup
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -132,7 +134,8 @@ export const validatorSwitchModel = ( props: SwitchModelParams ) => {
 
   if (modelNotSupportStack.indexOf(model) > -1) {
     return Promise.reject(
-      $t({ defaultMessage: "Serial number is invalid since it's not support stacking" })
+      // eslint-disable-next-line max-len
+      $t({ defaultMessage: 'This switch model does not support stacking. Add it as a standalone switch.' })
     )
   }
   if (serialNumber && activeSerialNumber && !isSameModelFamily(activeSerialNumber, serialNumber)) {
@@ -449,8 +452,10 @@ export function StackForm () {
   const [convertToStack] = useConvertToStackMutation()
 
   const hasBlockingTsb = function () {
-    return !checkVersionAtLeast09010h(currentFw) && isBlockingTsbSwitch
-
+    const fw = isSwitchFirmwareV1002Enabled
+      ? getSwitchFwGroupVersionV1002(currentFirmwareV1002, SwitchFirmwareModelGroup.ICX71)
+      : currentFw
+    return !checkVersionAtLeast09010h(fw) && isBlockingTsbSwitch
   }
 
   const transformSwitchData = (switchData: Switch) => {

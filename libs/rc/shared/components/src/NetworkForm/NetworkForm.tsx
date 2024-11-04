@@ -265,7 +265,7 @@ export function NetworkForm (props:{
         delete saveData?.authRadiusId
       }
 
-      const newSavedata = { ...updateSate, ...saveData }
+      const newSavedata = merge({}, updateSate, saveData)
       newSavedata.wlan = { ...updateSate?.wlan, ...saveData.wlan }
       return { ...saveState, ...newSavedata }
     })
