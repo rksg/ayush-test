@@ -21,6 +21,7 @@ export function VersionChangeAlert (props: VersionChangeAlertProps) {
       $t({ defaultMessage: 'Moving to this <venueSingular></venueSingular> involves a firmware version downgrade. Please consider the impact on AP stability before proceeding.' })
     }</span>
     <span>{
+      // eslint-disable-next-line max-len
       $t({ defaultMessage: 'From {existingVersion} to {targetVersion}' }, { existingVersion, targetVersion })
     }</span>
   </Space>

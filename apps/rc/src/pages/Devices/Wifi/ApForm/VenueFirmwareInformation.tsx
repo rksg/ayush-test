@@ -45,6 +45,7 @@ export function VenueFirmwareInformation (props: VenueInformationProps) {
     }
   })
 
+  // eslint-disable-next-line max-len
   const { apFirmwareInVenue } = useGetVenueApModelFirmwaresQuery({ params: { venueId: venue.id } }, {
     skip: !supportUpgradeByModel || !venue.id,
     selectFromResult: ({ data }) => ({
