@@ -41,6 +41,7 @@ function BasicInformationPage () {
         <Form.Item
           name='venueName'
           label={$t({ defaultMessage: '<VenueSingular></VenueSingular> Name' })}
+          validateTrigger={'onBlur'}
           rules={[
             { type: 'string', required: true },
             { min: 2, transform: (value) => value.trim() },

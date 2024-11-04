@@ -169,7 +169,7 @@ export const VirticalContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 180px);
   grid-template-rows: repeat(2, 150px);
-  gap: 10px;
+  gap: 20px;
   justify-content: center;
   align-content: center;
 `

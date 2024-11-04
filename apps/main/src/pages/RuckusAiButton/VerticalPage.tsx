@@ -114,7 +114,7 @@ function VerticalPage () {
             />
           </UI.VirticalBox>
         </UI.VirticalContainer>
-        <Radio value={'OTHER'} style={{ marginLeft: '100px' }}>
+        <Radio value={'OTHER'} style={{ marginLeft: '90px', marginTop: '30px' }}>
           {$t({ defaultMessage: 'Others' })}
           {selected === 'OTHER' &&
           <Form.Item
