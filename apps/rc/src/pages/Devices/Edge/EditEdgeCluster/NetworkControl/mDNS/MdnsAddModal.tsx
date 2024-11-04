@@ -14,7 +14,6 @@ export const MdnsAddModal = () => {
   const handleCreate = async (data: EdgeMdnsProxyViewData) => {
     try {
       await createEdgeMdns(data)
-    } catch {
     } finally {
       setVisible(false)
     }
@@ -22,8 +21,8 @@ export const MdnsAddModal = () => {
 
   return (
     <>
-      <Button type='link' onClick={()=>setVisible(true)}>
-        {$t({ defaultMessage: 'Add' })}
+      <Button type='link' onClick={() => setVisible(true)}>
+        {$t({ defaultMessage: 'Add Service' })}
       </Button>
       <Modal
         title={$t({ defaultMessage: 'Add mDNS Proxy' })}

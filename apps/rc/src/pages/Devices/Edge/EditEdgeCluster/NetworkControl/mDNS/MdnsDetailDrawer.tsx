@@ -22,7 +22,7 @@ export const MdnsDetailDrawer = (props: MdnsDetailDrawerProps) => {
 
   const { data, isLoading, isFetching } = useGetEdgeMdnsProxyQuery(
     { params: { serviceId } },
-    { skip: !serviceId }
+    { skip: !serviceId || !visible }
   )
 
   const handleClose = () => {
@@ -39,7 +39,7 @@ export const MdnsDetailDrawer = (props: MdnsDetailDrawerProps) => {
   )
 
   return <>
-    <Button type='link' onClick={() => setVisible(true)}>
+    <Button type='link' onClick={() => setVisible(true)} disabled={!serviceId}>
       {$t({ defaultMessage: 'Profile Details' })}
     </Button>
     <Drawer

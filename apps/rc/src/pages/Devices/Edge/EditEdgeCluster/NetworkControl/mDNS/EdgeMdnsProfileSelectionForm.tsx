@@ -34,8 +34,7 @@ export const EdgeMdnsProfileSelectionForm = () => {
   const hasUpdatePermission =!!hasCrossVenuesPermission({ needGlobalPermission: true })
   && hasPermission({ scopes: [EdgeScopes.CREATE] })
 
-
-  const content = <Form.Item
+  return <Form.Item
     label={$t({ defaultMessage: 'mDNS Proxy Service' })}
   >
     <Space>
@@ -71,8 +70,6 @@ export const EdgeMdnsProfileSelectionForm = () => {
       {hasUpdatePermission && <MdnsAddModal />}
     </Space>
   </Form.Item>
-
-  return content
 }
 
 export default EdgeMdnsProfileSelectionForm
