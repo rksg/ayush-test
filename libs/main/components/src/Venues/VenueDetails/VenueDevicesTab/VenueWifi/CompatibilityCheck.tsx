@@ -66,12 +66,12 @@ export const CompatibilityCheck = ({ venueId }: { venueId: string }) => {
 
   const { apVenueCompatibilities, isLoading } = useGetApCompatibilityData(venueId)
 
-
   const toggleCompatibilityDrawer = (open: boolean) => {
     setDrawerFeature(open)
   }
 
-  const incompatibleCount = Number(apVenueCompatibilities?.incompatible)
+  const incompatibleCount = Number(apVenueCompatibilities?.incompatible ?? 0)
+
   const hasEdgeFeature = apVenueCompatibilities?.incompatibleFeatures
     ?.some(item => isEdgeCompatibilityFeature(item.featureName))
 
@@ -84,12 +84,11 @@ export const CompatibilityCheck = ({ venueId }: { venueId: string }) => {
           defaultMessage: `{apCount} { apCount, plural,
                   one {access point is}
                   other {access points are}
-                } not compatible with certain Wi-Fi{nbsp}{edgeText} features.`
+                } not compatible with certain Wi-Fi {edgeText} features.`
         },
         {
           apCount: incompatibleCount,
-          // eslint-disable-next-line max-len
-          edgeText: hasEdgeFeature ? $t({ defaultMessage: '{nbsp}& RUCKUS Edge' }, { nbsp: () => <>&nbsp;</> }) : ''
+          edgeText: hasEdgeFeature ? $t({ defaultMessage: '& RUCKUS Edge' }) : ''
         })}
         cacheKey={ACX_UI_AP_COMPATIBILITY_NOTE_HIDDEN_KEY}
         onClick={() => toggleCompatibilityDrawer(true)}
