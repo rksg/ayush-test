@@ -16,6 +16,13 @@ import VerticalPage         from './VerticalPage'
 import WelcomePage          from './WelcomePage'
 
 
+const mockedUsedNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
+}))
+
+
 describe('VerticalPage', () => {
   it('should display vertical page correctly', async () => {
     render(
@@ -35,24 +42,38 @@ describe('Congratulations', () => {
     useUserProfileContext: () => ({ data: { lastName: 'last-name', firstName: 'first-name' } })
   }))
 
-  const mockedUsedNavigate = jest.fn()
-  jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    useNavigate: () => mockedUsedNavigate
-  }))
-
-  it('should display congratulations page correctly', async () => {
+  it('should display congratulations page and click network link correctly', async () => {
+    const mockCloseModal = jest.fn()
     render(
       <Provider>
         <Form>
           <Congratulations
-            closeModal={() => { }} />
+            closeModal={() => {mockCloseModal()}} />
         </Form>
       </Provider>, {
         route: { params }
       })
     expect(await screen.findByText('You have finished onboarding your new Venue!')).toBeVisible()
 
+    await userEvent.click(await screen.findByTestId('network-link'))
+    expect(mockCloseModal).toBeCalled()
+  })
+
+  it('should display congratulations page and click wired link correctly', async () => {
+    const mockCloseModal = jest.fn()
+    render(
+      <Provider>
+        <Form>
+          <Congratulations
+            closeModal={() => {mockCloseModal()}} />
+        </Form>
+      </Provider>, {
+        route: { params }
+      })
+    expect(await screen.findByText('You have finished onboarding your new Venue!')).toBeVisible()
+
+    await userEvent.click(await screen.findByTestId('wired-link'))
+    expect(mockCloseModal).toBeCalled()
   })
 })
 

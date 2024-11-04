@@ -53,7 +53,7 @@ function Congratulations (props: { closeModal: () => void }) {
               <b> {$t({ defaultMessage: 'Wired Configurations' })}</b> ({
                 <Button type='link'
                   style={{ fontSize: '14px' }}
-                  data-testid='vlan-link'
+                  data-testid='wired-link'
                   onClick={() => {
                     navigate(linkToWiredProfiles)
                     props.closeModal()
