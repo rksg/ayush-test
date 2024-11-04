@@ -76,13 +76,13 @@ export function ScheduleStep (props: ScheduleStepProps) {
   const currentSchedule = getCurrentSchedule()
 
   const [selectedICX71Version, setSelecteedICX71Version] = useState(
-    currentSchedule[SwitchFirmwareModelGroup.ICX71] || form.getFieldValue('selectedICX71Version'))
+    currentSchedule[SwitchFirmwareModelGroup.ICX71] || '')
   const [selectedICX7XVersion, setSelecteedICX7XVersion] = useState(
-    currentSchedule[SwitchFirmwareModelGroup.ICX7X] || form.getFieldValue('selectedICX7XVersion'))
+    currentSchedule[SwitchFirmwareModelGroup.ICX7X] || '')
   const [selectedICX81Version, setSelecteedICX81Version] = useState(
-    currentSchedule[SwitchFirmwareModelGroup.ICX81] || form.getFieldValue('selectedICX81Version'))
+    currentSchedule[SwitchFirmwareModelGroup.ICX81] || '')
   const [selectedICX82Version, setSelecteedICX82Version] = useState(
-    currentSchedule[SwitchFirmwareModelGroup.ICX82] || form.getFieldValue('selectedICX82Version'))
+    currentSchedule[SwitchFirmwareModelGroup.ICX82] || '')
 
   const ICX71Count = availableVersions?.filter(
     v => v.modelGroup === SwitchFirmwareModelGroup.ICX71)[0]?.switchCount || 0
@@ -135,12 +135,20 @@ export function ScheduleStep (props: ScheduleStepProps) {
     }
   }
 
+  const setVersionFieldValue = function () {
+    form.setFieldValue('selectedICX71Version', selectedICX71Version)
+    form.setFieldValue('selectedICX7XVersion', selectedICX7XVersion)
+    form.setFieldValue('selectedICX81Version', selectedICX81Version)
+    form.setFieldValue('selectedICX82Version', selectedICX82Version)
+  }
+
   useEffect(() => {
     setShowSubTitle(false)
 
+    setVersionFieldValue()
     // NotesEnum.NOTE8200_1
     if (isSupport8200AV) {
-      updateSwitchNoteEnable(selectedICX82Version)
+      updateSwitchNoteEnable(form.getFieldValue('selectedICX82Version'))
     }
   }, [current])
 

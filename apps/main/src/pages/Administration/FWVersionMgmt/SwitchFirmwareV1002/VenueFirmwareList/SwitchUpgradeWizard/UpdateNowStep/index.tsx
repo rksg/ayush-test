@@ -43,14 +43,10 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
   const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
 
-  const [selectedICX71Version, setSelecteedICX71Version] =
-  useState(form.getFieldValue('selectedICX71Version'))
-  const [selectedICX7XVersion, setSelecteedICX7XVersion] =
-  useState(form.getFieldValue('selectedICX7XVersion'))
-  const [selectedICX81Version, setSelecteedICX81Version] =
-  useState(form.getFieldValue('selectedICX81Version'))
-  const [selectedICX82Version, setSelecteedICX82Version] =
-  useState(form.getFieldValue('selectedICX82Version'))
+  const [selectedICX71Version, setSelecteedICX71Version] = useState('')
+  const [selectedICX7XVersion, setSelecteedICX7XVersion] = useState('')
+  const [selectedICX81Version, setSelecteedICX81Version] = useState('')
+  const [selectedICX82Version, setSelecteedICX82Version] = useState('')
 
   const [switchNoteEnable, setSwitchNoteEnable] = useState(false)
 
@@ -103,9 +99,17 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
     }
   }
 
+  const setVersionFieldValue = function () {
+    form.setFieldValue('selectedICX71Version', selectedICX71Version)
+    form.setFieldValue('selectedICX7XVersion', selectedICX7XVersion)
+    form.setFieldValue('selectedICX81Version', selectedICX81Version)
+    form.setFieldValue('selectedICX82Version', selectedICX82Version)
+  }
+
   useEffect(() => {
     setShowSubTitle(false)
 
+    setVersionFieldValue()
     // NotesEnum.NOTE8200_1
     if (isSupport8200AV) {
       updateSwitchNoteEnable(form.getFieldValue('selectedICX82Version'))
