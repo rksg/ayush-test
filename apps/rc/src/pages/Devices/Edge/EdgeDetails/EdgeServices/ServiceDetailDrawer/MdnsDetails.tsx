@@ -33,7 +33,7 @@ export const MdnsDetails = (props: MdnsDetailsProps) => {
       { $t({ defaultMessage: 'mDNS Settings' }) }
     </Subtitle>
     <MdnsProxyForwardingRulesTable
-      featureType={MdnsProxyFeatureTypeEnum.WIFI}
+      featureType={MdnsProxyFeatureTypeEnum.EDGE}
       readonly={true}
       rules={data?.forwardingRules}
     />
