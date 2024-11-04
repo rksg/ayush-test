@@ -213,7 +213,7 @@ export const captiveNetworkTypes: Record<GuestNetworkTypeEnum, MessageDescriptor
     defaultMessage: 'Captive Portal',
     description: 'Guest network type - Captive Portal'
   }),
-  [GuestNetworkTypeEnum.AD_LDAP]: defineMessage({
+  [GuestNetworkTypeEnum.Directory]: defineMessage({
     defaultMessage: 'Active Directory/ LDAP Server',
     // eslint-disable-next-line max-len
     description: 'Users are required to enter an organizational username and password to gain access to the network'

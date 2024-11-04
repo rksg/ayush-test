@@ -113,10 +113,10 @@ function TypesForm () {
               </RadioDescription>
             </Radio>
 
-            <Radio value={GuestNetworkTypeEnum.AD_LDAP}>
-              {GuestNetworkTypeLabel[GuestNetworkTypeEnum.AD_LDAP]}
+            <Radio value={GuestNetworkTypeEnum.Directory}>
+              {GuestNetworkTypeLabel[GuestNetworkTypeEnum.Directory]}
               <RadioDescription>
-                {GuestNetworkTypeDescription[GuestNetworkTypeEnum.AD_LDAP]}
+                {GuestNetworkTypeDescription[GuestNetworkTypeEnum.Directory]}
               </RadioDescription>
             </Radio>
           </Space>

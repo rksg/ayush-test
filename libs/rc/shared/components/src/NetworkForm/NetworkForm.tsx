@@ -1178,7 +1178,7 @@ function isPortalWebRender (saveState: NetworkSaveData): boolean {
     GuestNetworkTypeEnum.SelfSignIn,
     GuestNetworkTypeEnum.GuestPass,
     GuestNetworkTypeEnum.HostApproval,
-    GuestNetworkTypeEnum.AD_LDAP
+    GuestNetworkTypeEnum.Directory
   ]
 
   // eslint-disable-next-line max-len
@@ -1201,7 +1201,7 @@ function pickOneCaptivePortalForm (saveState: NetworkSaveData) {
       return <GuestPassForm />
     case GuestNetworkTypeEnum.WISPr:
       return <WISPrForm />
-    case GuestNetworkTypeEnum.AD_LDAP:
+    case GuestNetworkTypeEnum.Directory:
       return <APLDAPForm />
     default:
       // eslint-disable-next-line no-console

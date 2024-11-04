@@ -55,7 +55,7 @@ export const captiveTypesDescription: Record<GuestNetworkTypeEnum, MessageDescri
     defaultMessage: 'Users connect through a 3rd party captive portal, authenticated by a AAA server',
     description: 'Description for 3rd Party Captive Portal(WISPr)'
   }),
-  [GuestNetworkTypeEnum.AD_LDAP]: defineMessage({
+  [GuestNetworkTypeEnum.Directory]: defineMessage({
     defaultMessage: 'Users are required to enter an organizational username and password to gain access to the network',
     description: 'Description for Active Directory/ LDAP Server'
   })

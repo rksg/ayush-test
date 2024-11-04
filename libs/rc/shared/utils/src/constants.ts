@@ -20,7 +20,7 @@ export enum GuestNetworkTypeEnum {
   GuestPass = 'GuestPass',
   WISPr = 'WISPr',
   Cloudpath = 'Cloudpath',
-  AD_LDAP = 'Directory'
+  Directory = 'Directory'
 }
 
 export enum WlanSecurityEnum {
