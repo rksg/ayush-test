@@ -6,7 +6,7 @@ import { NetworkTypeEnum, networkTypes } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 
-// Waiting for new UX design
+// Need to confirm the new UX with the PLM
 export function SummaryStep (props: {
   payload: string
 }) {

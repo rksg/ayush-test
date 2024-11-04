@@ -7,7 +7,6 @@ import { RuckusAiStepsEnum } from '..'
 
 import RuckusAiWizard from './index'
 
-// 模擬需要的子組件
 jest.mock('./Steps/SummaryStep', () => ({
   SummaryStep: () => <div>SummaryStep Component</div>
 }))
