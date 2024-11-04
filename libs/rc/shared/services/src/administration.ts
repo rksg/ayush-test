@@ -836,6 +836,24 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         }
       }
     }),
+    getMspEcDelegatePrivilegeGroups: build.query<PrivilegeGroup[], RequestPayload>({
+      query: ({ params }) => {
+        const CUSTOM_HEADER = {
+          'x-rks-tenantid': params?.mspEcTenantId
+        }
+        const req = createHttpRequest(
+          AdminRbacUrlsInfo.getMspEcDelegatePrivilegeGroups, params, CUSTOM_HEADER, true)
+        return{
+          ...req
+        }
+      },
+      transformResponse: (result: PrivilegeGroup[]) => {
+        return result.map(item => {
+          item.id = item.parentPrivilegeGroupId as string
+          return item
+        })
+      }
+    }),
     getNotificationSms: build.query<NotificationSmsUsage, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(AdministrationUrlsInfo.getNotificationSms, params)
@@ -978,6 +996,7 @@ export const {
   useAddPrivilegeGroupMutation,
   useUpdatePrivilegeGroupMutation,
   useDeletePrivilegeGroupMutation,
+  useGetMspEcDelegatePrivilegeGroupsQuery,
   useGetNotificationSmsQuery,
   useUpdateNotificationSmsMutation,
   useGetNotificationSmsProviderQuery,
