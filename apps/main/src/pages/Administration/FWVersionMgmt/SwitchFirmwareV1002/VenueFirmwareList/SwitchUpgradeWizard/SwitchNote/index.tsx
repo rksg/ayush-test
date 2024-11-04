@@ -15,11 +15,7 @@ export interface NoteProps {
   data: SwitchFirmwareV1002[][]
 }
 
-interface SwitchNoteProps {
-  notes: NoteProps[]
-}
-
-export function SwitchNote (props: SwitchNoteProps) {
+export function SwitchNote (props: NoteProps) {
   const { $t } = useIntl()
   // const switchListArray = props.icx7150C08pGroupedData
 
@@ -39,11 +35,11 @@ export function SwitchNote (props: SwitchNoteProps) {
   return (
     <UI.Description>
       <b>{$t({ defaultMessage: 'Note' })}</b>
-      <ol>
-        {props.notes.map(note => (<div id={note.type} key={note.type}>
-          <li key={note.type}>  {noteMesage[note.type]}
+      <ul>
+        <div id={props.type}>
+          <li>  {noteMesage[props.type]}
             <ul>
-              {note.data.map((switchList, index) => (
+              {props.data.map((switchList, index) => (
                 <li key={index}>
                   <div>
                     <span style={{ fontWeight: '600' }}>
@@ -59,9 +55,8 @@ export function SwitchNote (props: SwitchNoteProps) {
               ))}
             </ul>
           </li>
-        </div>)
-        )}
-      </ol>
+        </div>
+      </ul>
     </UI.Description>
   )
 }
