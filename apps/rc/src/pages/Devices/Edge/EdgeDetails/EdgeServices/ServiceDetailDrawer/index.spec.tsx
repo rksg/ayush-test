@@ -17,7 +17,9 @@ import {
   EdgeUrlsInfo,
   EdgePinUrls,
   PersonaUrls,
-  TunnelProfileUrls
+  TunnelProfileUrls,
+  EdgeMdnsProxyUrls,
+  EdgeMdnsFixtures
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -46,6 +48,7 @@ const { mockDhcpStatsData, mockEdgeDhcpDataList } = EdgeDHCPFixtures
 const mockPinStatsList = cloneDeep(EdgePinFixtures.mockPinStatsList)
 mockPinStatsList.data[0].edgeClusterInfo.segments = 10
 mockPinStatsList.data[0].edgeClusterInfo.devices = 10
+const { mockEdgeMdnsViewDataList } = EdgeMdnsFixtures
 
 const mockedSetVisible = jest.fn()
 const mockedUseSearchParams = jest.fn()
@@ -101,6 +104,10 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
         (_, res, ctx) => res(ctx.json({ data: mockedSdLanDataList }))
+      ),
+      rest.post(
+        EdgeMdnsProxyUrls.getEdgeMdnsProxyViewDataList.url,
+        (_, res, ctx) => res(ctx.json({ data: mockEdgeMdnsViewDataList }))
       )
     )
   })
@@ -333,5 +340,25 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
         .closest('.ant-row.ant-form-item-row')
       expect(within(networkItemContainer as HTMLElement).getByText('2')).toBeVisible()
     })
+  })
+
+  it('should render mDNS detail successfully', async () => {
+    render(
+      <Provider>
+        <ServiceDetailDrawer
+          visible={true}
+          setVisible={mockedSetVisible}
+          serviceData={mockEdgeServiceList.data[4]}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(await screen.findByText('mDNS Settings')).toBeVisible()
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByRole('row', { name: 'Type From VLAN To VLAN' })).toBeVisible()
+    expect(screen.getByRole('row', { name: 'Apple TV 10 200' })).toBeVisible()
+    expect(screen.getByRole('row', { name: 'AirPrint 33 66' })).toBeVisible()
+    expect(screen.getByRole('row', { name: '_testCXCX._tcp. (Other) 5 120' })).toBeVisible()
   })
 })
