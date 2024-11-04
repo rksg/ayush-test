@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import {
+  Checkbox,
   Form,
   Input
 } from 'antd'
@@ -251,7 +252,8 @@ export function AddCustomRole () {
           className='grid-item'
           valuePropName='checked'
           initialValue={false}>
-          <Input type='checkbox' />
+          {/* <Input type='checkbox' /> */}
+          <Checkbox />
         </Form.Item>
 
         <Form.Item
