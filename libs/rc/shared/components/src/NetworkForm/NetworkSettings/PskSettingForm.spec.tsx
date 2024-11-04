@@ -4,9 +4,9 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn, useIsTierAllowed }           from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                        from '@acx-ui/feature-toggle'
 import { AaaUrls, CommonUrlsInfo, ExpirationType,
-  MacRegListUrlsInfo, RulesManagementUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+  MacRegListUrlsInfo, RulesManagementUrlsInfo, SoftGreUrls, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                                                  from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 import { UserUrlsInfo }                                                              from '@acx-ui/user'
@@ -17,7 +17,10 @@ import {
   networksResponse,
   successResponse,
   networkDeepResponse,
-  mockMacRegistrationPoolList, mockUpdatedMacRegistrationPoolList, mockAAAPolicyListResponse
+  mockMacRegistrationPoolList,
+  mockUpdatedMacRegistrationPoolList,
+  mockAAAPolicyListResponse,
+  mockSoftGreTable
 } from '../__tests__/fixtures'
 import { NetworkForm } from '../NetworkForm'
 
@@ -34,6 +37,11 @@ jest.mock('../utils', () => ({
     vxLanTunnels: undefined
   }),
   useUpdateEdgeSdLanActivations: jest.fn().mockReturnValue(() => {})
+}))
+
+jest.mock('../Venues/TunnelColumn/useTunnelColumn', () => ({
+  ...jest.requireActual('../Venues/TunnelColumn/useTunnelColumn'),
+  useTunnelColumn: jest.fn().mockReturnValue([])
 }))
 
 async function fillInBeforeSettings (networkName: string) {
@@ -173,7 +181,10 @@ describe('NetworkForm', () => {
       rest.post(
         WifiUrlsInfo.getVlanPoolViewModelList.url,
         (_, res, ctx) => res(ctx.json({ data: [] }))
-      )
+      ),
+      rest.post(
+        SoftGreUrls.getSoftGreViewDataList.url,
+        (_, res, ctx) => res(ctx.json(mockSoftGreTable)))
     )
   })
 

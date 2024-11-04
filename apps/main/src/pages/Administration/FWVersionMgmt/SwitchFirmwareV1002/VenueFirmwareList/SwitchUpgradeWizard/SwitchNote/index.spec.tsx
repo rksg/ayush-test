@@ -22,10 +22,9 @@ describe('SwitchNote', () => {
       <Provider>
         <Form>
           <SwitchNote
-            notes={[{
-              type: NotesEnum.NOTE8200_1,
-              data: icx8200AvGroupedData as SwitchFirmwareV1002[][]
-            }]} />
+            type={NotesEnum.NOTE8200_1}
+            data={icx8200AvGroupedData as SwitchFirmwareV1002[][]}
+          />
         </Form>
       </Provider>
       , {
