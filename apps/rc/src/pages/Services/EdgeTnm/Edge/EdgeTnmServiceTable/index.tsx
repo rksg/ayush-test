@@ -84,7 +84,6 @@ export function EdgeTnmServiceTable () {
         ])}
       />
       <Loader states={[tableQuery, { isLoading: false, isFetching: isDeleting }]}>
-        <ToolTipTableStyle.ToolTipStyle/>
         <Table
           rowKey='id'
           settingsId={settingsId}
