@@ -4,9 +4,10 @@ import { Switch }  from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps }        from '@acx-ui/components'
-import { EdgeClusterStatusLabel }           from '@acx-ui/rc/components'
 import { useGetEdgeClusterListQuery }       from '@acx-ui/rc/services'
 import { EdgeClusterStatus, useTableQuery } from '@acx-ui/rc/utils'
+
+import { EdgeClusterStatusLabel } from '../../../EdgeCluster/ClusterStatusText'
 
 interface EdgeClustersTableProps {
   venueId: string

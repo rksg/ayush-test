@@ -4,13 +4,20 @@ import { Col, Form, Row, Typography } from 'antd'
 import { get, groupBy, isNil, pick }  from 'lodash'
 import { useIntl }                    from 'react-intl'
 
-import { Loader, StepsForm, Table, TableProps, useStepFormContext }                                                     from '@acx-ui/components'
-import { CountAndNamesTooltip }                                                                                         from '@acx-ui/rc/components'
-import { useVenuesListQuery }                                                                                           from '@acx-ui/rc/services'
-import { EdgeMdnsProxyActivation, EdgeMdnsProxyViewData, arraySizeSort, defaultSort, sortProp, transformDisplayNumber } from '@acx-ui/rc/utils'
-import { filterByAccess }                                                                                               from '@acx-ui/user'
+import { Loader, StepsForm, Table, TableProps, useStepFormContext } from '@acx-ui/components'
+import { useVenuesListQuery }                                       from '@acx-ui/rc/services'
+import {
+  EdgeMdnsProxyActivation,
+  EdgeMdnsProxyViewData,
+  arraySizeSort,
+  defaultSort,
+  sortProp,
+  transformDisplayNumber
+} from '@acx-ui/rc/utils'
+import { filterByAccess } from '@acx-ui/user'
 
-import { messageMappings } from '../messageMappings'
+import { CountAndNamesTooltip } from '../../../CountAndNamesTooltip'
+import { messageMappings }      from '../messageMappings'
 
 import { EdgeClustersDrawer } from './EdgeClustersDrawer'
 
