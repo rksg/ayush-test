@@ -12,7 +12,7 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
 import {
   useAddNetworkMutation,
   useAddNetworkVenuesMutation,
@@ -43,7 +43,8 @@ import {
   useUpdateNetworkVenueMutation,
   useGetMacRegistrationPoolNetworkBindingQuery,
   useAddRbacNetworkVenueMutation,
-  useDeleteRbacNetworkVenueMutation
+  useDeleteRbacNetworkVenueMutation,
+  useActivateDirectoryServerMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -72,8 +73,8 @@ import { usePathBasedOnConfigTemplate } from '../configTemplates'
 import { useGetNetwork }                from '../NetworkDetails/services'
 import { useIsEdgeFeatureReady }        from '../useEdgeActions'
 
-import { APLDAPForm }              from './CaptivePortal/ApLdapForm'
 import { CloudpathForm }           from './CaptivePortal/CloudpathForm'
+import { DirectoryServerForm }     from './CaptivePortal/DirectoryServerForm'
 import { GuestPassForm }           from './CaptivePortal/GuestPassForm'
 import { HostApprovalForm }        from './CaptivePortal/HostApprovalForm'
 import { OnboardingForm }          from './CaptivePortal/OnboardingForm'
@@ -217,6 +218,7 @@ export function NetworkForm (props:{
   const activateDpskPool = useDpskServiceActivation()
   const activatePortal = useRbacProfileServiceActivation()
   const activateMacRegistrationPool = useMacRegistrationPoolActivation()
+  const [ activateDirectoryServer ] = useActivateDirectoryServerMutation()
   const addHotspot20NetworkActivations = useAddHotspot20Activation()
   const updateHotspot20NetworkActivations = useUpdateHotspot20Activation()
   const { updateRadiusServer, radiusServerConfigurations } = useRadiusServer()
@@ -239,6 +241,7 @@ export function NetworkForm (props:{
   const [portalDemo, setPortalDemo]=useState<Demo>()
   const [previousPath, setPreviousPath] = useState('')
   const [MLOButtonDisable, setMLOButtonDisable] = useState(true)
+  const [directoryServerId, setDirectoryServerId] = useState('')
   const { wifiCallingIds, updateWifiCallingActivation } = useWifiCalling(saveState.name === '')
   const { updateClientIsolationActivations }
     = useClientIsolationActivations(!(editMode || cloneMode), saveState, updateSaveState, form)
@@ -661,6 +664,30 @@ export function NetworkForm (props:{
 
   }
 
+  function pickOneCaptivePortalForm (saveState: NetworkSaveData) {
+    const guestNetworkType = saveState?.guestPortal?.guestNetworkType
+    switch (guestNetworkType) {
+      case GuestNetworkTypeEnum.ClickThrough:
+        return <OnboardingForm />
+      case GuestNetworkTypeEnum.SelfSignIn:
+        return <SelfSignInForm />
+      case GuestNetworkTypeEnum.Cloudpath:
+        return <CloudpathForm/>
+      case GuestNetworkTypeEnum.HostApproval:
+        return <HostApprovalForm />
+      case GuestNetworkTypeEnum.GuestPass:
+        return <GuestPassForm />
+      case GuestNetworkTypeEnum.WISPr:
+        return <WISPrForm />
+      case GuestNetworkTypeEnum.Directory:
+        return <DirectoryServerForm setDirectoryServerIdToNetworkForm={setDirectoryServerId}/>
+      default:
+      // eslint-disable-next-line no-console
+        console.error(`Unknown Network Type: ${saveState?.guestPortal?.guestNetworkType}`)
+        return <OnboardingForm />
+    }
+  }
+
   const handleRbacNetworkVenues = async (
     networkId : string,
     newNetworkVenues? : NetworkVenue[],
@@ -845,6 +872,11 @@ export function NetworkForm (props:{
           afterVenueActivationRequest.push(updateSoftGreActivations(networkId, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode, false))
         }
       }
+
+      if(directoryServerId) {
+        afterVenueActivationRequest.push(activateDirectoryServer({ params: { networkId: networkId, policyId: directoryServerId } }))
+      }
+
       await Promise.all(afterVenueActivationRequest)
 
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
@@ -979,6 +1011,10 @@ export function NetworkForm (props:{
           // eslint-disable-next-line max-len
           updateSoftGreActivations(payload.id, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode, true)
         )
+      }
+
+      if(directoryServerId) {
+        afterVenueActivationRequest.push(activateDirectoryServer({ params: { networkId: payload.id, policyId: directoryServerId } }))
       }
 
       await Promise.all(afterVenueActivationRequest)
@@ -1184,30 +1220,6 @@ function isPortalWebRender (saveState: NetworkSaveData): boolean {
   // eslint-disable-next-line max-len
   const guestNetworkType = saveState.guestPortal?.guestNetworkType
   return !!(guestNetworkType && portalWebTypes.includes(guestNetworkType))
-}
-
-function pickOneCaptivePortalForm (saveState: NetworkSaveData) {
-  const guestNetworkType = saveState?.guestPortal?.guestNetworkType
-  switch (guestNetworkType) {
-    case GuestNetworkTypeEnum.ClickThrough:
-      return <OnboardingForm />
-    case GuestNetworkTypeEnum.SelfSignIn:
-      return <SelfSignInForm />
-    case GuestNetworkTypeEnum.Cloudpath:
-      return <CloudpathForm/>
-    case GuestNetworkTypeEnum.HostApproval:
-      return <HostApprovalForm />
-    case GuestNetworkTypeEnum.GuestPass:
-      return <GuestPassForm />
-    case GuestNetworkTypeEnum.WISPr:
-      return <WISPrForm />
-    case GuestNetworkTypeEnum.Directory:
-      return <APLDAPForm />
-    default:
-      // eslint-disable-next-line no-console
-      console.error(`Unknown Network Type: ${saveState?.guestPortal?.guestNetworkType}`)
-      return <OnboardingForm />
-  }
 }
 
 function useAddInstance () {
