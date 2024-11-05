@@ -1,40 +1,37 @@
-import { Form }      from 'antd'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { Form }    from 'antd'
+import { useIntl } from 'react-intl'
 
-import { Drawer }                     from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
-import { ApMdnsProxySelector }        from '@acx-ui/rc/components'
-import { useAddMdnsProxyApsMutation } from '@acx-ui/rc/services'
+import { Drawer }                                    from '@acx-ui/components'
+import { EdgeMdnsProxySelector, useEdgeMdnsActions } from '@acx-ui/rc/components'
+
+import { EdgeMdnsProxyInstance } from './types'
 
 
 export interface ChangeMdnsProxyDrawerProps {
-  apSerialNumberList: string[];
   visible: boolean;
-  setVisible: (v: boolean) => void;
-  initialServiceId?: string;
+  onClose: () => void;
+  row: EdgeMdnsProxyInstance | undefined;
+  venueId: string;
 }
 
 export default function ChangeMdnsProxyDrawer (props: ChangeMdnsProxyDrawerProps) {
   const { $t } = useIntl()
-  const params = useParams()
   const {
-    apSerialNumberList,
     visible,
-    setVisible,
-    initialServiceId
+    onClose,
+    row,
+    venueId
   } = props
-  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const [ form ] = Form.useForm<{ serviceId: string }>()
-  const [ addMdnsProxyAps ] = useAddMdnsProxyApsMutation()
+  const { activateEdgeMdnsCluster } = useEdgeMdnsActions()
 
   const onSave = async (data: { serviceId: string }) => {
     try {
-      await addMdnsProxyAps({
-        params: { ...params, serviceId: data.serviceId },
-        payload: apSerialNumberList,
-        enableRbac
-      }).unwrap()
+      await activateEdgeMdnsCluster(
+        data.serviceId,
+        venueId,
+        row?.edgeClusterId ?? ''
+      )
 
       onClose()
     } catch (error) {
@@ -42,20 +39,16 @@ export default function ChangeMdnsProxyDrawer (props: ChangeMdnsProxyDrawerProps
     }
   }
 
-  const onClose = () => {
-    setVisible(false)
-  }
-
   const content = (
     <Form layout='vertical'
       form={form}
       preserve={false}
     >
-      <ApMdnsProxySelector
+      <EdgeMdnsProxySelector
         formItemProps={{
           name: 'serviceId',
           rules: [{ required: true }],
-          initialValue: initialServiceId
+          initialValue: row?.serviceId
         }}
       />
     </Form>

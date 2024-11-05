@@ -50,6 +50,7 @@ export enum Features {
   EDGE_HA_SUB_INTERFACE_TOGGLE = 'edge-ha-sub-interface-toggle',
   EDGE_FIRMWARE_NOTIFICATION_BATCH_OPERATION_TOGGLE= 'edge-firmware-notification-batch-operation-toggle',
   EDGE_MDNS_PROXY_TOGGLE = 'edge-mdns-proxy-toggle',
+  EDGE_THIRDPARTY_MGMT_TOGGLE = 'edge-poc-thirdparty-mgmt-toggle',
   ENTITLEMENT_EXTENDED_TRIAL_TOGGLE = 'entitlement-acx-extended-trial-toggle',
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
