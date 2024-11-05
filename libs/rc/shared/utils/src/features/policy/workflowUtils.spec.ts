@@ -10,7 +10,8 @@ import {
   findFirstStep,
   toReactFlowData,
   toStepMap,
-  useGetActionDefaultValueByType
+  useGetActionDefaultValueByType,
+  validateWifi4EuNetworkId
 } from './workflowUtils'
 
 
@@ -160,4 +161,12 @@ describe('WorkflowUtils', () => {
 
     expect(result.edges).toHaveLength(2)
   })
+
+  it('should validateWifi4EuNetworkId correctly', () => {
+    expect(validateWifi4EuNetworkId()).toBeFalsy()
+    expect(validateWifi4EuNetworkId('1244')).toBeFalsy()
+    expect(validateWifi4EuNetworkId('345097ee-e951-4bb9-b227-dd35e7f479d1')).toBeTruthy()
+  })
 })
+
+
