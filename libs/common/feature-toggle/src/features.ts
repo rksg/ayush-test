@@ -209,8 +209,7 @@ export enum Features {
   BRAND360_MDU_TOGGLE = 'acx-ui-brand360-mdu-toggle',
   SERVER_CERTIFICATE_MANAGEMENT_UI_TOGGLE = 'server-certificate-management-ui-toggle',
   WIFI_NETWORK_APPLICATION_CONTROL = 'wifi-network-application-control',
-  UX_OPTIMIZATION_FEATURE_TOGGLE = 'acx-ui-ux-optimization-feature-toggle',
-  WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE = 'wifi-captive-portal-directory-server-toggle'
+  UX_OPTIMIZATION_FEATURE_TOGGLE = 'acx-ui-ux-optimization-feature-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
