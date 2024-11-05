@@ -32,7 +32,13 @@ export const MdnsProxySummaryForm = (props: MdnsProxySummaryProps) => {
 
   return (
     <>
-      <StepsFormLegacy.Title>{ $t({ defaultMessage: 'Summary' }) }</StepsFormLegacy.Title>
+      <Row>
+        <Col span={24}>
+          <StepsFormLegacy.Title>
+            { $t({ defaultMessage: 'Summary' }) }
+          </StepsFormLegacy.Title>
+        </Col>
+      </Row>
       <Space direction='vertical' size='middle'>
         <Row gutter={[24, 8]}>
           <Col span={24}>

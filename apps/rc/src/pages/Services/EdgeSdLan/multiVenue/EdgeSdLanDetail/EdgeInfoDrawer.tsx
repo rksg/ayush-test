@@ -128,7 +128,7 @@ export const EdgeInfoDrawer = (props: EdgeInfoDrawerProps) => {
     {
       title: $t(
         { defaultMessage: 'Active {deviceType}' },
-        { deviceType: currentEdgeInfo?.isDmzCluster ? 'SEs' : 'APs' }
+        { deviceType: currentEdgeInfo?.isDmzCluster ? 'Edges' : 'APs' }
       ),
       key: 'activeDeviceCount',
       dataIndex: 'activeDeviceCount',
@@ -139,7 +139,7 @@ export const EdgeInfoDrawer = (props: EdgeInfoDrawerProps) => {
         [{
           title: $t(
             { defaultMessage: 'Primary {deviceType}' },
-            { deviceType: currentEdgeInfo?.isDmzCluster ? 'SEs' : 'APs' }
+            { deviceType: currentEdgeInfo?.isDmzCluster ? 'Edges' : 'APs' }
           ),
           key: 'allocatedDeviceCount',
           dataIndex: 'allocatedDeviceCount',
