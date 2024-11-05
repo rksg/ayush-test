@@ -45,6 +45,7 @@ export default function SelectPolicyForm () {
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const isWorkflowTierEnabled = useIsTierAllowed(Features.WORKFLOW_ONBOARD)
   const isWorkflowFFEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE)
+  const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const isEdgeQosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
   // eslint-disable-next-line
   const isSNMPv3PassphraseOn = useIsSplitOn(Features.WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE)
@@ -131,6 +132,11 @@ export default function SelectPolicyForm () {
       type: PolicyType.CERTIFICATE_TEMPLATE,
       categories: [RadioCardCategory.WIFI],
       disabled: !isCertificateTemplateEnabled
+    },
+    {
+      type: PolicyType.ETHERNET_PORT_PROFILE,
+      categories: [RadioCardCategory.WIFI],
+      disabled: !isEthernetPortProfileEnabled
     },
     {
       type: PolicyType.WORKFLOW,

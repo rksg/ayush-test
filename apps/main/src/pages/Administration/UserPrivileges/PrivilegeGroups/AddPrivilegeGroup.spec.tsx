@@ -354,6 +354,7 @@ describe('Add Privilege Group', () => {
     expect(screen.getByText('test')).toBeVisible()
 
     // Select customers
+    await userEvent.click(screen.getByRole('checkbox', { name: 'MSP Customers' }))
     await userEvent.click(screen.getByRole('radio', { name: 'Specific Customer(s)' }))
     await userEvent.click(screen.getByRole('button', { name: 'Select customers' }))
     await screen.findByText('Select Customers')

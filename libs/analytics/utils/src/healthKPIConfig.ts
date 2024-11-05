@@ -184,7 +184,7 @@ export const kpiConfig = {
       thresholdFormatter: null,
       valueFormatter: 'percentFormat',
       pillSuffix: pillSuffix.success,
-      tooltip: defineMessage({ defaultMessage: 'Metric of DHCP successful bindings for switches that have DHCP snooping configured.' })
+      tooltip: defineMessage({ defaultMessage: 'Metric of successful DHCP bindings of clients that are connected to the switches.' })
     }
   },
   radius: {
@@ -684,7 +684,7 @@ export const kpiConfig = {
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: numberWithPercentSymbol,
       valueFormatter: 'percentFormat',
-      tooltip: defineMessage({ defaultMessage: 'Compliance metric that refers to multicast packets received is >= 80%, when port is at or more than 80% of its in utilization.' })
+      tooltip: defineMessage({ defaultMessage: 'Compliance metrics that refers to multicast traffic received that is >= threshold.' })
     }
   },
   switchAuthentication: {

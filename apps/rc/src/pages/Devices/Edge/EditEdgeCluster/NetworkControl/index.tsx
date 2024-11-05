@@ -3,16 +3,31 @@ import { useState } from 'react'
 import { Col, Form, Row, Space, Switch } from 'antd'
 import { useIntl }                       from 'react-intl'
 
-import { Loader, StepsForm, Tooltip }                                                                                                                 from '@acx-ui/components'
-import { Features }                                                                                                                                   from '@acx-ui/feature-toggle'
-import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, EdgeDhcpSelectionForm, useEdgeDhcpActions, useIsEdgeFeatureReady }   from '@acx-ui/rc/components'
-import { useActivateHqosOnEdgeClusterMutation, useDeactivateHqosOnEdgeClusterMutation, useGetDhcpStatsQuery, useGetEdgeHqosProfileViewDataListQuery } from '@acx-ui/rc/services'
-import { EdgeClusterStatus, IncompatibilityFeatures }                                                                                                 from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }                                                                                                      from '@acx-ui/react-router-dom'
-import { EdgeScopes }                                                                                                                                 from '@acx-ui/types'
-import { hasCrossVenuesPermission, hasPermission }                                                                                                    from '@acx-ui/user'
+import { Loader, StepsForm, Tooltip } from '@acx-ui/components'
+import { Features }                   from '@acx-ui/feature-toggle'
+import {
+  ApCompatibilityToolTip,
+  EdgeCompatibilityDrawer,
+  EdgeCompatibilityType,
+  EdgeDhcpSelectionForm,
+  useEdgeDhcpActions,
+  useEdgeMdnsActions,
+  useIsEdgeFeatureReady
+} from '@acx-ui/rc/components'
+import {
+  useActivateHqosOnEdgeClusterMutation,
+  useDeactivateHqosOnEdgeClusterMutation,
+  useGetDhcpStatsQuery,
+  useGetEdgeHqosProfileViewDataListQuery
+} from '@acx-ui/rc/services'
+import { EdgeClusterStatus, IncompatibilityFeatures } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }      from '@acx-ui/react-router-dom'
+import { EdgeScopes }                                 from '@acx-ui/types'
+import { hasCrossVenuesPermission, hasPermission }    from '@acx-ui/user'
 
 import EdgeQosProfileSelectionForm from '../../../../Policies/HqosBandwidth/Edge/HqosBandwidthSelectionForm'
+
+import { MdnsProxyFormItem } from './mDNS'
 
 
 interface EdgeNetworkControlProps {
@@ -20,6 +35,12 @@ interface EdgeNetworkControlProps {
 }
 
 export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
+  const { $t } = useIntl()
+  const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
+  const isEdgeHqosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
+  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+  const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
+
   const { currentClusterStatus } = props
   const navigate = useNavigate()
   const params = useParams()
@@ -28,14 +49,11 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
   const [form] = Form.useForm()
   const [edgeFeatureName, setEdgeFeatureName] = useState<IncompatibilityFeatures | undefined>()
 
-  const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
-  const isEdgeHqosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
-  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
-
   const { activateEdgeDhcp, deactivateEdgeDhcp } = useEdgeDhcpActions()
   const [activateEdgeQos] = useActivateHqosOnEdgeClusterMutation()
   const [deactivateEdgeQos] = useDeactivateHqosOnEdgeClusterMutation()
-  const { $t } = useIntl()
+  const { activateEdgeMdnsCluster, deactivateEdgeMdnsCluster } = useEdgeMdnsActions()
+
 
   const edgeCpuCores = currentClusterStatus?.edgeList?.map(e => e.cpuCores)[0]
   const hqosReadOnly = (edgeCpuCores===undefined || edgeCpuCores < 4) ? true : false
@@ -73,9 +91,11 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
       isHqosLoading: isLoading
     })
   })
+
   const handleApply = async () => {
     await handleApplyDhcp()
     await handleApplyQos()
+    await handleApplyMdns()
   }
 
   const handleApplyDhcp = async () => {
@@ -109,6 +129,35 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
         return
       }
       await applyQosProfile(selectedHqosId)
+    }
+  }
+
+  const handleApplyMdns = async () => {
+    const isEdgeMdnsActive = form.getFieldValue('edgeMdnsSwitch')
+    const originMdnsId = form.getFieldValue('originEdgeMdnsId')
+    const selectedMdnsId = form.getFieldValue('edgeMdnsId')
+
+    if (!clusterId || !currentClusterStatus?.venueId || (!originMdnsId && !selectedMdnsId)) return
+
+    if (!isEdgeMdnsActive) {
+      if (originMdnsId) {
+        await deactivateEdgeMdnsCluster(
+          originMdnsId,
+          currentClusterStatus?.venueId,
+          clusterId
+        )
+      }
+
+      return
+    } else {
+      if (selectedMdnsId === originMdnsId)
+        return
+
+      await activateEdgeMdnsCluster(
+        selectedMdnsId,
+        currentClusterStatus?.venueId,
+        clusterId
+      )
     }
   }
 
@@ -181,7 +230,14 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
               {
                 isEdgeDhcpHaReady &&
                 <StepsForm.FieldLabel width='50%'>
-                  {$t({ defaultMessage: 'DHCP Service' })}
+                  <Space>
+                    {$t({ defaultMessage: 'DHCP Service' })}
+                    <ApCompatibilityToolTip
+                      title=''
+                      visible
+                      onClick={() => setEdgeFeatureName(IncompatibilityFeatures.DHCP)}
+                    />
+                  </Space>
                   <Form.Item
                     name='dhcpSwitch'
                     valuePropName='checked'
@@ -244,6 +300,12 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
               }
             </Col>
           </Row>
+
+          {isEdgeMdnsReady && <MdnsProxyFormItem
+            venueId={currentClusterStatus?.venueId}
+            clusterId={clusterId}
+            setEdgeFeatureName={setEdgeFeatureName}
+          />}
         </StepsForm.StepForm>
 
       </StepsForm>
