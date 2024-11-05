@@ -100,6 +100,7 @@ export function DirectoryServerForm ({ setDirectoryServerIdToNetworkForm } : { s
             label={$t({ defaultMessage: 'Select Directory Server' })}
             children={
               <Select
+                data-testid={'directory-server-select'}
                 value={selectedDirectory}
                 onChange={(value) => {
                   setDirectoryServerValue(value)
