@@ -49,7 +49,8 @@ import {
   baseVenueApi as venueApi,
   baseWorkflowApi,
   videoCallQoeApi,
-  baseRuckusAssistantApi as ruckusAssistantApi
+  baseRuckusAssistantApi as ruckusAssistantApi,
+  baseDirectoryServerApi as directoryServerApi
 } from './baseApi'
 
 const isDev = process.env['NODE_ENV'] === 'development'
@@ -102,7 +103,8 @@ export const store = configureStore({
     [smartZoneApi.reducerPath]: smartZoneApi.reducer,
     [ethernetPortProfileApi.reducerPath]: ethernetPortProfileApi.reducer,
     [edgeHqosProfilesApi.reducerPath]: edgeHqosProfilesApi.reducer,
-    [ruckusAssistantApi.reducerPath]: ruckusAssistantApi.reducer
+    [ruckusAssistantApi.reducerPath]: ruckusAssistantApi.reducer,
+    [directoryServerApi.reducerPath]: directoryServerApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -157,7 +159,8 @@ export const store = configureStore({
       smartZoneApi.middleware,
       ethernetPortProfileApi.middleware,
       edgeHqosProfilesApi.middleware,
-      ruckusAssistantApi.middleware
+      ruckusAssistantApi.middleware,
+      directoryServerApi.middleware
     ])
   },
 

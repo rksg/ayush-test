@@ -202,6 +202,7 @@ export enum Features {
   WIFI_AP_STICKY_CLIENT_STEERING_TOGGLE = 'wifi-ap-sticky-client-steering-toggle',
   WIFI_CAPTIVE_PORTAL_PSK = 'wifi-captive-portal-psk',
   WIFI_CAPTIVE_PORTAL_OWE = 'wifi-captive-portal-owe',
+  WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE = 'wifi-captive-portal-directory-server-toggle',
   WIFI_WLAN_DEPRECATE_WEP = 'wifi-wlan-deprecate-wpa',
   WIFI_OVER_THE_DS_FT_SUPPORT_TOGGLE = 'wifi-over-the-ds-ft-support-toggle',
   WIFI_COMPATIBILITY_BY_MODEL = 'wifi-compatibility-check-by-model-toggle',
