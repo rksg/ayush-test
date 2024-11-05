@@ -23,8 +23,7 @@ import {
   VenueMessages,
   useTableQuery,
   VeViewModel,
-  SwitchViewModel,
-  getSwitchModel
+  SwitchViewModel
 } from '@acx-ui/rc/utils'
 import { useParams }                     from '@acx-ui/react-router-dom'
 import { SwitchScopes }                  from '@acx-ui/types'
@@ -267,14 +266,8 @@ export function SwitchVeTable (props: {
     scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE]
   })
 
-  const isActionHidden = (data?: VeViewModel[]) => {
+  const isActionHidden = function () {
     return !isVenueLevel && switchDetail?.model?.startsWith('ICX8100')
-      && (data?.length || 0) > 0
-  }
-
-  const existVe8100 = (data?: VeViewModel[]) => {
-    return data?.filter(ve => ve.switchName && getSwitchModel(ve.switchName)?.startsWith('ICX8100'))
-      .map(ve => ve.switchName || '') ?? []
   }
 
   return <Loader states={[tableQuery]}>
@@ -296,7 +289,7 @@ export function SwitchVeTable (props: {
         getCheckboxProps: (record) => ({ disabled: record?.inactiveRow }),
         onChange: onSelectChange
       } : undefined}
-      actions={isActionHidden(tableQuery.data?.data) ? [] :
+      actions={isActionHidden() ? [] :
         filterByAccess([{
           label: $t({ defaultMessage: 'Add VLAN interface (VE)' }),
           scopeKey: [SwitchScopes.CREATE],
@@ -316,7 +309,6 @@ export function SwitchVeTable (props: {
       editData={editData}
       readOnly={isEditMode && cliApplied}
       switchInfo={props.switchInfo}
-      existVe8100={existVe8100(tableQuery.data?.data)}
     />}
 
   </Loader>
