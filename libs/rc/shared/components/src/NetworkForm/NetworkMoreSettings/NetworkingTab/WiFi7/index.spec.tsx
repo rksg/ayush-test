@@ -236,6 +236,7 @@ describe('test MLO_3LINK FF functions and components', () => {
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
+            isRuckusAiMode: false,
             data: mockAddNetworkEnabled6GHz
           } as NetworkFormContextType}>
             <Form>
@@ -272,6 +273,7 @@ describe('test MLO_3LINK FF functions and components', () => {
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
+            isRuckusAiMode: false,
             data: {
               name: 'test',
               type: 'open',
@@ -484,6 +486,7 @@ describe('test MLO_3LINK FF functions and components', () => {
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
+            isRuckusAiMode: false,
             data: mockAddNetworkEnabled6GHz
           } as NetworkFormContextType}>
             <Form>
@@ -518,6 +521,7 @@ describe('test MLO_3LINK FF functions and components', () => {
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
+            isRuckusAiMode: false,
             data: {
               name: 'test',
               type: 'open',
