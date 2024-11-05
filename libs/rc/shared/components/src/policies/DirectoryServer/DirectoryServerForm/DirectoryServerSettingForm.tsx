@@ -255,7 +255,8 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
           <Button
             style={{
               background: 'var(--acx-primary-black)',
-              color: 'var(--acx-primary-white)'
+              color: 'var(--acx-primary-white)',
+              borderColor: 'var(--acx-primary-black)'
             }}
             type='primary'
             htmlType='submit'
