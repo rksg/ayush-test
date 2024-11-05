@@ -137,7 +137,8 @@ export const validatorSwitchModel = ( props: SwitchModelParams ) => {
 
   if (modelNotSupportStack.indexOf(model) > -1) {
     return Promise.reject(
-      $t({ defaultMessage: "Serial number is invalid since it's not support stacking" })
+      // eslint-disable-next-line max-len
+      $t({ defaultMessage: 'This switch model does not support stacking. Add it as a standalone switch.' })
     )
   }
   if (serialNumber && activeSerialNumber && !isSameModelFamily(activeSerialNumber, serialNumber)) {
