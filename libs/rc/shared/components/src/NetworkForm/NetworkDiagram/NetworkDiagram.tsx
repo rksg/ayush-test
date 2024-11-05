@@ -23,6 +23,8 @@ import CloudpathProxyWithPskDiagram    from '../assets/images/network-wizard-dia
 import CloudpathProxyDiagram           from '../assets/images/network-wizard-diagrams/cloudpath-proxy.png'
 import CloudpathWithPskDiagram         from '../assets/images/network-wizard-diagrams/cloudpath-psk.png'
 import CloudpathDiagram                from '../assets/images/network-wizard-diagrams/cloudpath.png'
+import DirectoryServerWithOweDiagram   from '../assets/images/network-wizard-diagrams/directoryserver-owe.png'
+import DirectoryServerWithPskDiagram   from '../assets/images/network-wizard-diagrams/directoryserver-psk.png'
 import DirectoryServerDiagram          from '../assets/images/network-wizard-diagrams/directoryserver.png'
 import DpskUsingRadiusNonProxyDiagram  from '../assets/images/network-wizard-diagrams/dpsk-using-radius-non-proxy.png'
 import DpskUsingRadiusDiagram          from '../assets/images/network-wizard-diagrams/dpsk-using-radius.png'
@@ -161,7 +163,8 @@ function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {
       (wisprWithPsk ? WISPrWithAlwaysAcceptPskDiagram :
         (wisprWithOwe ? WISPrWithAlwaysAcceptOweDiagram : WISPrWithAlwaysAcceptDiagram)) :
       (wisprWithPsk ? WISPrWithPskDiagram : (wisprWithOwe ? WISPrWithOweDiagram : WISPrDiagram)),
-    [GuestNetworkTypeEnum.Directory]: DirectoryServerDiagram
+    [GuestNetworkTypeEnum.Directory]: wisprWithOwe ? DirectoryServerWithOweDiagram
+      : ( wisprWithPsk ? DirectoryServerWithPskDiagram : DirectoryServerDiagram)
   }
   return CaptivePortalDiagramMap[type] || ClickThroughDiagram
 }
