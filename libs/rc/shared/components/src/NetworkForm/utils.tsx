@@ -300,11 +300,16 @@ export function useRadiusServer () {
     fetchRadiusDetails()
   }, [radiusServerProfiles, radiusServerSettings])
 
+  const isWISPrNetwork = (formData: NetworkSaveData) => {
+    return formData.type === NetworkTypeEnum.CAPTIVEPORTAL
+      && formData.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr
+  }
+
   const isRadiusKeyChanged = (key: RadiusIdKey, formData: NetworkSaveData, serverData?: NetworkSaveData): boolean => {
     const keyFromForm = getRadiusIdFromFormData(key, formData)
     const keyFromServer = serverData?.[key]
 
-    if (formData.guestPortal?.wisprPage?.customExternalProvider) {
+    if (isWISPrNetwork(formData)) {
       return keyFromForm !== keyFromServer
     }
 
@@ -316,12 +321,9 @@ export function useRadiusServer () {
     const { guestPortal, enableAccountingService } = formData
     const wisprPage = guestPortal?.wisprPage
 
-    if (wisprPage?.customExternalProvider) {
-      if (key === 'authRadiusId') {
-        return wisprPage.authRadius?.id
-      }
-      if (_.has(wisprPage, 'accountingRadius')) {
-        return wisprPage.accountingRadius?.id
+    if (isWISPrNetwork(formData)) {
+      if (wisprPage?.customExternalProvider) {
+        return key === 'authRadiusId' ? wisprPage.authRadius?.id : wisprPage.accountingRadius?.id
       }
       return undefined
     }
@@ -409,7 +411,6 @@ function shouldSaveRadiusServerSettings (saveData: NetworkSaveData): boolean {
 function shouldSaveRadiusServerProfile (saveData: NetworkSaveData): boolean {
   if (saveData.type === NetworkTypeEnum.CAPTIVEPORTAL
     && saveData.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr
-    && saveData.guestPortal?.wisprPage?.customExternalProvider
   ) {
     return true
   }
