@@ -391,11 +391,10 @@ export function useClientIsolationActivations (shouldSkipMode: boolean,
 
     const venueClientIsolationMap = new Map<string, string>()
     _.forEach(clientIsolationBindingData?.data, item => {
-      const activation = _.find(item.activations, { wifiNetworkId: networkId })
-      if (activation) {
-        venueClientIsolationMap.set(activation.venueId, item.id)
-      }
+      const activations = _.filter(item.activations, { wifiNetworkId: networkId })
+      activations.forEach(activation => venueClientIsolationMap.set(activation.venueId, item.id))
     })
+
     const venueData = saveState?.venues?.map(v => ({ ...v,
       clientIsolationAllowlistId: venueClientIsolationMap.get(v.venueId!) }))
     const fullNetworkSaveData = { ...saveState, venues: venueData }

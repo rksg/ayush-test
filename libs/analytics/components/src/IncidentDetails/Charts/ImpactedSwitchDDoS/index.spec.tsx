@@ -1,4 +1,5 @@
 import { fakeIncidentDDoS, overlapsRollup }                    from '@acx-ui/analytics/utils'
+import { get }                                                 from '@acx-ui/config'
 import { dataApi, dataApiURL, Provider, store }                from '@acx-ui/store'
 import { findTBody, mockGraphqlQuery, render, within, screen } from '@acx-ui/test-utils'
 
@@ -6,10 +7,12 @@ import { ImpactedSwitch } from './services'
 
 import { ImpactedSwitchDDoSDonut, ImpactedSwitchDDoSTable } from '.'
 
-
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
   overlapsRollup: jest.fn().mockReturnValue(false)
+}))
+jest.mock('@acx-ui/config', () => ({
+  get: jest.fn()
 }))
 const mockOverlapsRollup = overlapsRollup as jest.Mock
 
@@ -58,20 +61,43 @@ describe('ImpactedSwitchDDoS',()=>{
 
   describe('ImpactedSwitchDDoSTable', () => {
     beforeEach(() => store.dispatch(dataApi.util.resetApiState()))
-    it('should render', async () => {
+    it('should render for R1', async () => {
       mockGraphqlQuery(dataApiURL, 'ImpactedSwitchDDoS', { data: response() })
-      render(<Provider><ImpactedSwitchDDoSTable incident={fakeIncidentDDoS} /></Provider>, {
-        route: {
-          path: '/tenantId/t/analytics/incidents',
-          wrapRoutes: false
-        }
-      })
+      render(
+        <Provider>
+          <ImpactedSwitchDDoSTable incident={fakeIncidentDDoS} />
+        </Provider>, {
+          route: {
+            path: '/tenantId/t/analytics/incidents',
+            wrapRoutes: false
+          }
+        })
 
       const body = within(await findTBody())
       const rows = await body.findAllByRole('row')
       expect(rows).toHaveLength(2)
       expect(within(rows[0]).getAllByRole('cell')[1].textContent).toMatch('58:FB:96:0B:12:CA')
       expect(within(rows[1]).getAllByRole('cell')[3].textContent).toMatch('1/1/1, 1/1/23')
+    })
+    it('should render for RA', async () => {
+      jest.mocked(get).mockReturnValue('true')
+      mockGraphqlQuery(dataApiURL, 'ImpactedSwitchDDoS', { data: response() })
+      render(
+        <Provider>
+          <ImpactedSwitchDDoSTable incident={fakeIncidentDDoS} />
+        </Provider>, {
+          route: {
+            path: '/tenantId/t/analytics/incidents',
+            wrapRoutes: false
+          }
+        })
+
+      const body = within(await findTBody())
+      const rows = await body.findAllByRole('row')
+      expect(rows).toHaveLength(2)
+      expect(within(rows[0]).getAllByRole('cell')[1].textContent).toMatch('58:FB:96:0B:12:CA')
+      expect(within(rows[1]).getAllByRole('cell')[3].textContent).toMatch('1/1/1, 1/1/23')
+
     })
     it('should hide table when under druidRollup', async () => {
       jest.mocked(mockOverlapsRollup).mockReturnValue(true)
