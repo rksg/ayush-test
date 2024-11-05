@@ -1,8 +1,8 @@
 
-import { Space, Typography } from 'antd'
-import { saveAs }            from 'file-saver'
-import JSZip                 from 'jszip'
-import { useIntl }           from 'react-intl'
+import { Space, Typography, Row, Col } from 'antd'
+import { saveAs }                      from 'file-saver'
+import JSZip                           from 'jszip'
+import { useIntl }                     from 'react-intl'
 
 import { Alert, Button, Card, PageHeader }                                             from '@acx-ui/components'
 import { PersonalIdentityNetworkDetailTableGroup, PersonalIdentityNetworkServiceInfo } from '@acx-ui/rc/components'
@@ -22,7 +22,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useParams } from '@acx-ui/react-router-dom'
 
-import * as UI from './styledComponents'
+import { CompatibilityCheck } from './CompatibilityCheck'
+import * as UI                from './styledComponents'
 
 const PersonalIdentityNetworkDetail = () => {
 
@@ -127,6 +128,13 @@ const PersonalIdentityNetworkDetail = () => {
         ]}
       />
       <Space direction='vertical' size={30}>
+        {(!!params.serviceId) && <Row>
+          <Col span={24}>
+            <CompatibilityCheck
+              serviceId={params.serviceId}
+            />
+          </Col>
+        </Row>}
         <PersonalIdentityNetworkServiceInfo pinId={params.serviceId || ''} />
         <Card>
           <UI.InstancesMargin>

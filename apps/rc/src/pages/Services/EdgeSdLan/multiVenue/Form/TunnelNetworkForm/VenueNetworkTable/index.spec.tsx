@@ -5,11 +5,11 @@ import { Form }                              from 'antd'
 import { cloneDeep }                         from 'lodash'
 import { rest }                              from 'msw'
 
-import { StepsForm, StepsFormProps }                                                from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
-import { venueApi }                                                                 from '@acx-ui/rc/services'
-import { CommonUrlsInfo, EdgeSdLanFixtures, WifiUrlsInfo, APCompatibilityFixtures } from '@acx-ui/rc/utils'
-import { Provider, store }                                                          from '@acx-ui/store'
+import { StepsForm, StepsFormProps }                                                                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                    from '@acx-ui/feature-toggle'
+import { venueApi }                                                                                  from '@acx-ui/rc/services'
+import { CommonUrlsInfo, EdgeSdLanFixtures, WifiUrlsInfo, APCompatibilityFixtures, EdgePinFixtures } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                           from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -23,6 +23,7 @@ import { EdgeMvSdLanContext, EdgeMvSdLanContextType } from '../../EdgeMvSdLanCon
 import { EdgeSdLanVenueNetworksTable, VenueNetworksTableProps } from '.'
 
 const { mockedMvSdLanDataList } = EdgeSdLanFixtures
+const { mockPinListForMutullyExclusive } = EdgePinFixtures
 const { mockApCompatibilitiesVenue } = APCompatibilityFixtures
 
 const mockedOverlapSdLans = cloneDeep(mockedMvSdLanDataList)
@@ -35,7 +36,8 @@ mockedOverlapSdLans[0].tunneledGuestWlans?.forEach(wlan => {
   wlan.venueId = targetVenue.id
 })
 const edgeMvSdlanContextValues = {
-  allSdLans: mockedMvSdLanDataList
+  allSdLans: mockedMvSdLanDataList,
+  allPins: []
 } as EdgeMvSdLanContextType
 
 jest.mock('@acx-ui/utils', () => ({
@@ -160,7 +162,7 @@ describe('Tunneled Venue Networks Table', () => {
   })
 
   it('should filter venues which has been tied with other SDLAN on add mode', async () => {
-    render(<MockedTargetComponent ctxValues={{ allSdLans: mockedOverlapSdLans }} />,
+    render(<MockedTargetComponent ctxValues={{ allSdLans: mockedOverlapSdLans, allPins: [] }} />,
       { route: { params: { tenantId: 't-id' } } })
 
     await basicCheck()
@@ -182,7 +184,7 @@ describe('Tunneled Venue Networks Table', () => {
     const { result: stepFormRef } = renderHook(useMockedFormHook)
 
     render(<MockedTargetComponent
-      ctxValues={{ allSdLans: mockedOverlapSdLans }}
+      ctxValues={{ allSdLans: mockedOverlapSdLans , allPins: [] }}
       form={stepFormRef.current}
       editMode={true}
     />, { route: { params: { tenantId: 't-id' } } })
@@ -191,6 +193,42 @@ describe('Tunneled Venue Networks Table', () => {
     screen.getByRole('row', { name: /My-Venue/i })
     screen.getByRole('row', { name: /SG office/i })
     expect(screen.queryByRole('row', { name: /airport/i })).not.toBe(null)
+  })
+
+  it('should filter venues which has been tied with PIN on add mode', async () => {
+    mockPinListForMutullyExclusive.data[0].venueId = targetVenue.id
+    render(<MockedTargetComponent ctxValues={{ allSdLans: [], allPins: [mockPinListForMutullyExclusive.data[0]] }} />,
+      { route: { params: { tenantId: 't-id' } } })
+
+    await basicCheck()
+    expect(screen.queryByRole('row', { name: /airport/i })).toBe(null)
+    screen.getByRole('row', { name: /My-Venue/i })
+    screen.getByRole('row', { name: /SG office/i })
+  })
+
+  it('should filter venues which has been tied with PIN on edit mode', async () => {
+    mockPinListForMutullyExclusive.data[0].venueId = targetVenue.id
+    const useMockedFormHook = (initData: Record<string, unknown>) => {
+      const [ form ] = Form.useForm()
+      form.setFieldsValue({
+        ...mockedOverlapSdLans[0],
+        ...initData
+      })
+      return form
+    }
+
+    const { result: stepFormRef } = renderHook(useMockedFormHook)
+
+    render(<MockedTargetComponent
+      ctxValues={{ allSdLans: [], allPins: [mockPinListForMutullyExclusive.data[0]] }}
+      form={stepFormRef.current}
+      editMode={true}
+    />, { route: { params: { tenantId: 't-id' } } })
+
+    await basicCheck()
+    screen.getByRole('row', { name: /My-Venue/i })
+    screen.getByRole('row', { name: /SG office/i })
+    expect(screen.queryByRole('row', { name: /airport/i })).toBe(null)
   })
 
   it('should have compatible warning', async () => {

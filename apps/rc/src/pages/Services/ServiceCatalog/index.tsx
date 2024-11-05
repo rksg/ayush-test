@@ -20,6 +20,15 @@ import { ServiceCard } from '../ServiceCard'
 
 import * as UI from './styledComponents'
 
+interface ServiceCardItem {
+  title: string
+  items: {
+    type: ServiceType
+    categories: RadioCardCategory[]
+    disabled?: boolean
+    helpIcon?: React.ReactNode
+  }[]
+}
 
 export default function ServiceCatalog () {
   const { $t } = useIntl()
@@ -32,6 +41,7 @@ export default function ServiceCatalog () {
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
+  const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
   const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
   // eslint-disable-next-line max-len
@@ -45,12 +55,22 @@ export default function ServiceCatalog () {
         {
           type: ServiceType.EDGE_DHCP,
           categories: [RadioCardCategory.EDGE],
+          helpIcon: <ApCompatibilityToolTip
+            title=''
+            visible
+            onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.PIN)}
+          />,
           disabled: !isEdgeHaReady || !isEdgeDhcpHaReady
         },
         { type: ServiceType.DPSK, categories: [RadioCardCategory.WIFI] },
         {
           type: ServiceType.PIN,
           categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
+          helpIcon: <ApCompatibilityToolTip
+            title=''
+            visible
+            onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.PIN)}
+          />,
           disabled: !isEdgePinReady
         },
         {
@@ -85,6 +105,11 @@ export default function ServiceCatalog () {
           categories: [RadioCardCategory.EDGE],
           disabled: !isEdgeMdnsReady
         },
+        {
+          type: ServiceType.EDGE_TNM_SERVICE,
+          categories: [RadioCardCategory.EDGE],
+          disabled: !isEdgeTnmServiceReady
+        },
         { type: ServiceType.WIFI_CALLING, categories: [RadioCardCategory.WIFI] }
       ]
     },
@@ -104,7 +129,7 @@ export default function ServiceCatalog () {
         }
       ]
     }
-  ]
+  ] as ServiceCardItem []
 
   return (
     <>

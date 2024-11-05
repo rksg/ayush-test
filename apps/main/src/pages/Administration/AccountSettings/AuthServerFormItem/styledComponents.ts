@@ -1,7 +1,14 @@
-import { Space } from 'antd'
-import styled    from 'styled-components/macro'
+import { Space, Typography } from 'antd'
+import styled                from 'styled-components/macro'
 
-import {  Drawer } from '@acx-ui/components'
+import { Drawer } from '@acx-ui/components'
+
+export const DrawerParagraph = styled(Typography.Paragraph)`
+  &.ant-typography {
+    color: var(--acx-neutrals-50);
+    font-size: 12px;
+  }
+`
 
 export const ImportFileDrawer = styled(Drawer)`
   .ant-drawer-body > span {
@@ -32,5 +39,13 @@ export const ButtonWrapper = styled(Space)`
   .ant-divider-vertical {
     margin: 0 4px;
     background: var(--acx-primary-black);
+  }
+`
+export const FormItemWrapper = styled(Space)`
+  .ant-form-item {
+    margin-bottom: -5px;
+  }
+  h3 {
+    overflow-wrap: break-word;
   }
 `

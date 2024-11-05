@@ -44,6 +44,7 @@ function PortalComponentList (props: {
 }) {
   const { display, onDisplayChange, value, onValueChange } = props
   const valueKeys = Object.keys(PortalComponentEnum) as Array<keyof typeof PortalComponentEnum>
+  const [wifi4euVisible, setWifi4euVisible] = useState(false)
   const { $t } = useIntl()
   return (
     <Form layout='vertical'>
@@ -60,13 +61,23 @@ function PortalComponentList (props: {
               checked={display.get(key)}
               onClick={(v) => {
                 onDisplayChange(new Map(display).set(key, v))
+                if (key === 'wifi4eu') {
+                  setWifi4euVisible(v)
+                }
               }}
             />
             {PortalComponentEnum[key] ===PortalComponentEnum.wifi4eu &&
                <WiFi4euModal wifi4eu={value.uiStyleSchema.wifi4EuNetworkId}
-                 onChange={(v) => onValueChange({ ...value,
-                   uiStyleSchema: { ...value.uiStyleSchema, wifi4EuNetworkId: v }
-                 })}/>
+                 visible={wifi4euVisible}
+                 onChange={(v) => {
+                   onValueChange({ ...value,
+                     uiStyleSchema: { ...value.uiStyleSchema, wifi4EuNetworkId: v }
+                   })
+                   setWifi4euVisible(false)
+                 }
+                 }
+                 onCancel={()=>setWifi4euVisible(false)}
+               />
             }
           </UI.CommonLabel>
           ))}
