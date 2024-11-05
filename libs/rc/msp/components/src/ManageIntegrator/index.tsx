@@ -429,7 +429,7 @@ export function ManageIntegrator () {
 
       if (isRbacPhase2Enabled && privilegeGroups.length > 0) {
         const pgIds = privilegeGroups?.map((pg: PrivilegeGroup)=> pg.id)
-        customer.privilegeGroups = pgIds
+        customer.privilege_group_ids = pgIds
       }
 
       const result =

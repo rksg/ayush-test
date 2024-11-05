@@ -312,7 +312,7 @@ export const AdminRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getMspEcDelegatePrivilegeGroups: {
     method: 'get',
-    url: '/roleAuthentications/privilegeGroupDelegations',
+    url: '/roleAuthentications/privilegeGroupDelegations?tenantId=:mspEcTenantId',
     newApi: true
   }
   //   deleteMspAggregations: {

@@ -838,11 +838,8 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
     }),
     getMspEcDelegatePrivilegeGroups: build.query<PrivilegeGroup[], RequestPayload>({
       query: ({ params }) => {
-        const CUSTOM_HEADER = {
-          'x-rks-tenantid': params?.mspEcTenantId
-        }
         const req = createHttpRequest(
-          AdminRbacUrlsInfo.getMspEcDelegatePrivilegeGroups, params, CUSTOM_HEADER, true)
+          AdminRbacUrlsInfo.getMspEcDelegatePrivilegeGroups, params)
         return{
           ...req
         }
