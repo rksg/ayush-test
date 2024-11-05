@@ -541,6 +541,23 @@ describe('Edge Cluster Network Control Tab', () => {
       await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
       expect(mockedActivateEdgeClusterReq).toBeCalledTimes(0)
     })
+
+    it('should show compatibility component', async () => {
+      render(
+        <Provider>
+          <EdgeNetworkControl
+            currentClusterStatus={mockEdgeClusterList.data[0] as EdgeClusterStatus} />
+        </Provider>, {
+          route: {
+            params,
+            path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab'
+          }
+        })
+      const toolTips = await screen.findAllByTestId('ApCompatibilityToolTip')
+      expect(toolTips.length).toBe(1)
+      toolTips.forEach(t => expect(t).toBeVisible())
+      expect(await screen.findByTestId('EdgeCompatibilityDrawer')).toBeVisible()
+    })
   })
 })
 
