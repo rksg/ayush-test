@@ -1160,10 +1160,16 @@ export function ipv6RegExp (value: string) {
   return Promise.resolve()
 }
 
-export function servicePolicyNameRegExp (value: string) {
+export function servicePolicyNameRegExp (value: string, maxLength?: number) {
   const { $t } = getIntl()
+
+  let namePattern = '(?=^((?!(`|\\$\\()).){2,32}$)^(\\S.*\\S)$'
+  if (maxLength) {
+    namePattern = namePattern.replace('32', `${maxLength}`)
+  }
+
   // regex from service and policy backend
-  const re = new RegExp('(?=^((?!(`|\\$\\()).){2,32}$)^(\\S.*\\S)$')
+  const re = new RegExp(namePattern)
 
   // make sure there is no special character in value
   if ([...value].length !== JSON.stringify(value).normalize().slice(1, -1).length) {
