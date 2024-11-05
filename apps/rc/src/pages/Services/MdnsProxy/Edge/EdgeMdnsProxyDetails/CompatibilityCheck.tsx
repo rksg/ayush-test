@@ -28,7 +28,7 @@ export const CompatibilityCheck = ({ serviceId }: { serviceId: string }) => {
   const data = get(compatibilities, IncompatibilityFeatures.EDGE_MDNS_PROXY)
   const edgeCount = data?.incompatible ?? 0
 
-  return !isLoading && compatibilities
+  return !isLoading && edgeCount
     ? <>
       <CompatibleAlertBanner
         title={$t({

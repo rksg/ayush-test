@@ -143,7 +143,7 @@ export const useEdgeMdnsDetailsCompatibilitiesData = (props: {
 
   let transformed: Record<string, ApCompatibility> = {}
   if (isNil(results.compatibilities)) return { compatibilities: transformed, isLoading: results.isLoading }
-  transformed = getFeaturesIncompatibleDetailData((compatibilities as EdgeServiceCompatibility[])[0])
+  transformed = getFeaturesIncompatibleDetailData((results.compatibilities[CompatibilityDeviceEnum.EDGE] as EdgeServiceCompatibility[])[0])
 
   return { compatibilities: transformed, isLoading: results.isLoading }
 }
