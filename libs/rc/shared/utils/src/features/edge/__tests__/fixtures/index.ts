@@ -13,6 +13,7 @@ import * as EdgePinFixtures           from './pin'
 import * as EdgePortConfigFixtures    from './portsConfig'
 import * as EdgeSdLanFixtures         from './sdLan'
 import * as EdgeSubInterfaceFixtures  from './subInterface'
+import * as EdgeTnmServiceFixtures    from './tnmService'
 import * as EdgeTunnelProfileFixtures from './tunnelProfile'
 import * as VenueFixtures             from './venue'
 
@@ -22,6 +23,7 @@ export {
   EdgePortConfigFixtures,
   EdgeSdLanFixtures,
   EdgeMdnsFixtures,
+  EdgeTnmServiceFixtures,
   EdgeAlarmFixtures,
   EdgeSubInterfaceFixtures,
   EdgeLagFixtures,
