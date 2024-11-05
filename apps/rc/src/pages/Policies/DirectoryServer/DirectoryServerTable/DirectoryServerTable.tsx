@@ -184,6 +184,16 @@ function useColumns () {
       }
     },
     {
+      key: 'serverAddress',
+      title: $t({ defaultMessage: 'Server Address' }),
+      dataIndex: 'serverAddress',
+      render: (_, row) => {
+        const host = row?.host
+        const port = row?.port
+        return host && port ? `${host}:${port}` : 'Unknown'
+      }
+    },
+    {
       key: 'domainName',
       title: $t({ defaultMessage: 'Domain Name' }),
       dataIndex: 'domainName',
