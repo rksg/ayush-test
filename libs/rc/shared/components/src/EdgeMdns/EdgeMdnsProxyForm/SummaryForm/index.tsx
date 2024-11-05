@@ -1,8 +1,9 @@
 import { groupBy } from 'lodash'
 
 import { useStepFormContext }                              from '@acx-ui/components'
-import { MdnsProxySummaryForm }                            from '@acx-ui/rc/components'
 import { EdgeMdnsProxyViewData, MdnsProxyFeatureTypeEnum } from '@acx-ui/rc/utils'
+
+import { MdnsProxySummaryForm } from '../../../services/MdnsProxySummaryForm'
 
 export function SummaryForm () {
   const { form } = useStepFormContext<EdgeMdnsProxyViewData>()

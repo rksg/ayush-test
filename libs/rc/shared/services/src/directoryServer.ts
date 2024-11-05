@@ -6,9 +6,9 @@ import {
   onSocketActivityChanged,
   onActivityMessageReceived, DirectoryServerViewData, DirectoryServerDiagnosisCommand
 } from '@acx-ui/rc/utils'
-import { baseDirectoryServerApi }              from '@acx-ui/store'
-import { RequestPayload }                      from '@acx-ui/types'
-import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
+import { baseDirectoryServerApi }                        from '@acx-ui/store'
+import { RequestPayload }                                from '@acx-ui/types'
+import { batchApi, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 export const directoryServerApi = baseDirectoryServerApi.injectEndpoints({
   endpoints: (build) => ({
@@ -54,12 +54,11 @@ export const directoryServerApi = baseDirectoryServerApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-    deleteDirectoryServer: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(DirectoryServerUrls.deleteSoftGre, params)
-        return {
-          ...req
-        }
+    deleteDirectoryServer: build.mutation<CommonResult, RequestPayload<string[]>>({
+      queryFn: async ({ payload }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const requests = payload!.map(policyId => ({ params: { policyId } }))
+        await batchApi(DirectoryServerUrls.deleteDirectoryServer, requests, fetchWithBQ)
+        return { data: {} as CommonResult }
       },
       invalidatesTags: [{ type: 'DirectoryServer', id: 'LIST' }]
     }),

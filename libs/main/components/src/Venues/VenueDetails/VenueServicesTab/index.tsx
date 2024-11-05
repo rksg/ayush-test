@@ -14,6 +14,7 @@ import DHCPInstance             from './DHCPInstance'
 import EdgeDhcpTab              from './DHCPInstance/Edge'
 import EdgeFirewall             from './Firewall'
 import MdnsProxyInstances       from './MdnsProxyInstances'
+import { EdgeMdnsTab }          from './MdnsProxyInstances/Edge'
 import { EdgePin }              from './Pin'
 import EdgeSdLan                from './SdLan'
 import { VenueRogueAps }        from './VenueRogueAps'
@@ -30,6 +31,7 @@ export function VenueServicesTab () {
   // eslint-disable-next-line max-len
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE) && !isTemplate
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE) && !isTemplate
+  const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
 
   const { $t } = useIntl()
 
@@ -151,8 +153,23 @@ export function VenueServicesTab () {
         }
         {
           !isTemplate && <>
-            <Tabs.TabPane tab={$t({ defaultMessage: 'mDNS Proxy' })} key={ServiceType.MDNS_PROXY}>
-              <MdnsProxyInstances />
+            <Tabs.TabPane key={ServiceType.MDNS_PROXY}
+              tab={$t({ defaultMessage: 'mDNS Proxy' })}>
+              {isEdgeMdnsReady
+                ? <Tabs type='third'>
+                  <Tabs.TabPane tab={$t({ defaultMessage: 'Wi-Fi' })}
+                    key={'wifi'}>
+                    <MdnsProxyInstances />
+                  </Tabs.TabPane>
+                  <Tabs.TabPane
+                    tab={$t({ defaultMessage: 'RUCKUS Edge' })}
+                    key={'smartEdge'}
+                  >
+                    <EdgeMdnsTab/>
+                  </Tabs.TabPane>
+                </Tabs>
+                : <MdnsProxyInstances />
+              }
             </Tabs.TabPane>
             <Tabs.TabPane
               tab={$t({ defaultMessage: 'Client Isolation Allowlist' })}
