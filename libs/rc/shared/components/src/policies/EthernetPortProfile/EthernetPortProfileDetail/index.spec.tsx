@@ -49,7 +49,7 @@ const detailPath = '/:tenantId/' + getPolicyRoutePath({
   oper: PolicyOperation.DETAIL
 })
 describe('EthernetPortProfileDetail', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     params = {
       tenantId: tenantId,
       policyId: 'testPolicyId'
@@ -108,6 +108,7 @@ describe('EthernetPortProfileDetail', () => {
     await screen.findByText('On (Port-based Authenticator)')
     await screen.findByText(mockAuthRadiusName)
     await screen.findAllByText(mockAccuntingRadiusName)
+    expect(screen.queryByText('Dynamic VLAN')).not.toBeInTheDocument()
   })
 
   it('Should render EthernetPortProfileDetail with Dynamic VLAN when MAC-based auth', async () => {
@@ -122,15 +123,15 @@ describe('EthernetPortProfileDetail', () => {
     mockServer.use(
       rest.get(
         EthernetPortProfileUrls.getEthernetPortProfile.url,
-        (req, res, ctx) => res(ctx.json(dummyEthernetPortProfileDVlan))
+        (_, res, ctx) => res(ctx.json(dummyEthernetPortProfileDVlan))
       ),
       rest.post(
         EthernetPortProfileUrls.getEthernetPortProfileViewDataList.url,
-        (req, res, ctx) => res(ctx.json(dummyQueryResult))
+        (_, res, ctx) => res(ctx.json(dummyQueryResult))
       ),
       rest.post(
         CommonUrlsInfo.getVenues.url,
-        (req, res, ctx) => res(ctx.json(mockedVenuesResult))
+        (_, res, ctx) => res(ctx.json(mockedVenuesResult))
       )
     )
 
@@ -140,8 +141,8 @@ describe('EthernetPortProfileDetail', () => {
       </Provider>, {
         route: { params, path: detailPath }
       })
-    await screen.findByText(mockEthernetPortProfileId7)
-    await screen.findByText('On (MAC-based Authenticator)')
-    await screen.findByText('Dynamic VLAN')
+    expect(await screen.findByText(mockEthernetPortProfileId7)).toBeVisible()
+    expect(await screen.findByText('On (MAC-based Authenticator)')).toBeVisible()
+    expect(await screen.findByText('Dynamic VLAN')).toBeVisible()
   })
 })
