@@ -85,9 +85,8 @@ export const ManageMspDelegationDrawer = (props: ManageMspDelegationDrawerProps)
         !SystemRoles.includes(pg.name as RolesEnum))
       setPrivilegeGroupData(pgs ?? [])
     }
-    if ( !isSkip && delegatedPGs ) {
-      setSelectedPrivilegeGroups(delegatedPGs)
-    }
+    const allCustomersPGs = privilegeGroupList?.filter(pg => pg.allCustomers === true) ?? []
+    setSelectedPrivilegeGroups(isSkip ? allCustomersPGs : (delegatedPGs ?? []))
   }, [privilegeGroupList, delegatedPGs])
 
   const delegatedAdmins =
