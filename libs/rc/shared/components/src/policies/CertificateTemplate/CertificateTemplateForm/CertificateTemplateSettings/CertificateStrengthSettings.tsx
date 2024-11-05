@@ -53,7 +53,8 @@ export default function CertificateStrengthSettings (props: {
         <Select
           style={{ width: '150px' }}
           placeholder={$t({ defaultMessage: 'Select Algorithm...' })}
-          options={props?.certType ? serverOptions : options}
+          options={props?.certType === CertificateCategoryType.SERVER_CERTIFICATES
+            ? serverOptions : options}
         />
       </Form.Item >
     </>
