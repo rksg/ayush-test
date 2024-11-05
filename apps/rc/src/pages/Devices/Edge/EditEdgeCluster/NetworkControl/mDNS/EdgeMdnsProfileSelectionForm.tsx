@@ -2,21 +2,20 @@
 import { Form, Select, Space } from 'antd'
 import { useIntl }             from 'react-intl'
 
-import { useGetEdgeHqosProfileViewDataListQuery }  from '@acx-ui/rc/services'
+import { useGetEdgeMdnsProxyViewDataListQuery }    from '@acx-ui/rc/services'
 import { EdgeScopes }                              from '@acx-ui/types'
 import { hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 
-import { AddHqosBandwidthModal }     from './AddHqosBandwidthModal'
-import { HqosBandwidthDetailDrawer } from './HqosBandwidthDetailDrawer'
+import { MdnsAddModal }     from './MdnsAddModal'
+import { MdnsDetailDrawer } from './MdnsDetailDrawer'
 
 
-export const EdgeQosProfileSelectionForm = () => {
-
+export const EdgeMdnsProfileSelectionForm = () => {
   const { $t } = useIntl()
 
   const {
-    edgeHqosOptions, isEdgeHqosOptionsLoading
-  } = useGetEdgeHqosProfileViewDataListQuery({
+    edgeMdnsOptions, isEdgeMdnsOptionsLoading
+  } = useGetEdgeMdnsProxyViewDataListQuery({
     payload: {
       fields: ['id', 'name'],
       pageSize: 10000,
@@ -26,8 +25,8 @@ export const EdgeQosProfileSelectionForm = () => {
   }, {
     selectFromResult: ({ data, isLoading }) => {
       return {
-        edgeHqosOptions: data?.data.map(item => ({ label: item.name, value: item.id })),
-        isEdgeHqosOptionsLoading: isLoading
+        edgeMdnsOptions: data?.data.map(item => ({ label: item.name, value: item.id })),
+        isEdgeMdnsOptionsLoading: isLoading
       }
     }
   })
@@ -35,43 +34,40 @@ export const EdgeQosProfileSelectionForm = () => {
   const hasUpdatePermission =!!hasCrossVenuesPermission({ needGlobalPermission: true })
   && hasPermission({ scopes: [EdgeScopes.CREATE] })
 
-
-  const content = <Form.Item
-    label={$t({ defaultMessage: 'HQoS Bandwitdth Profile' })}
-    data-testid='edge-cluster-qos-select-form-label'>
+  return <Form.Item
+    label={$t({ defaultMessage: 'mDNS Proxy Service' })}
+  >
     <Space>
       <Form.Item
-        name='hqosId'
+        name='edgeMdnsId'
         rules={[
           {
             required: true,
-            message: $t({ defaultMessage: 'Please select a HQoS Profile' })
+            message: $t({ defaultMessage: 'Please select a mDNS Proxy service' })
           }
         ]}
         noStyle
       >
         <Select
           style={{ width: '200px' }}
+          options={edgeMdnsOptions || []}
           placeholder={$t({ defaultMessage: 'Select...' })}
-          options={edgeHqosOptions || []}
-          loading={isEdgeHqosOptionsLoading}
+          loading={isEdgeMdnsOptionsLoading}
         />
       </Form.Item>
       <Form.Item
-        dependencies={['hqosId']}
+        dependencies={['edgeMdnsId']}
         noStyle
       >
         {
           ({ getFieldValue }) => {
-            return <HqosBandwidthDetailDrawer hqosId={getFieldValue('hqosId')} />
+            return <MdnsDetailDrawer serviceId={getFieldValue('edgeMdnsId')} />
           }
         }
       </Form.Item>
-      {hasUpdatePermission && <AddHqosBandwidthModal />}
+      {hasUpdatePermission && <MdnsAddModal />}
     </Space>
   </Form.Item>
-
-  return content
 }
 
-export default EdgeQosProfileSelectionForm
+export default EdgeMdnsProfileSelectionForm
