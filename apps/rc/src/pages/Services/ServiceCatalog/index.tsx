@@ -102,7 +102,12 @@ export default function ServiceCatalog () {
         {
           type: ServiceType.EDGE_MDNS_PROXY,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgeMdnsReady
+          disabled: !isEdgeMdnsReady,
+          helpIcon: <ApCompatibilityToolTip
+            title=''
+            visible
+            onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.EDGE_MDNS_PROXY)}
+          />
         },
         { type: ServiceType.WIFI_CALLING, categories: [RadioCardCategory.WIFI] }
       ]
