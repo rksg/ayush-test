@@ -15,7 +15,6 @@ import { RequestPayload }             from '@acx-ui/types'
 import { createHttpRequest }          from '@acx-ui/utils'
 import { QueryReturnValue } from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
-import { fetch } from 'msw/lib/types/context'
 
 export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints({
   endpoints: (build) => ({
@@ -76,27 +75,38 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
       },
       providesTags: [{ type: 'EthernetPortProfile', id: 'DETAIL' }]
     }),
-    // getEthernetPortProfileWithRelationsById: build.query<EthernetPortProfile, RequestPayload>({
-    //   async queryFn: ({ params }, _queryApi, _extraOptions, fetchWithBQ) {
-    //     if (!params?.id) return Promise.resolve({ data: null } as QueryReturnValue<
-    //       null,
-    //       FetchBaseQueryError,
-    //       FetchBaseQueryMeta
-    //     >)
+    getEthernetPortProfileWithRelationsById:
+    build.query<EthernetPortProfile | null, RequestPayload>({
+      async queryFn ({ payload, params }, _queryApi, _extraOptions, fetchWithBQ) {
+        if (!params?.id) return Promise.resolve({ data: null } as QueryReturnValue<
+          null,
+          FetchBaseQueryError,
+          FetchBaseQueryMeta
+        >)
 
-    //     const ethernetPortProfileQuery = await fetchWithBQ(
-    //       createHttpRequest(
-    //         EthernetPortProfileUrls.getEthernetPortProfileViewDataList, params)
-    //     )
+        const viewDataReq = createHttpRequest(
+          EthernetPortProfileUrls.getEthernetPortProfileViewDataList, params)
+        const ethListQuery = await fetchWithBQ({ ...viewDataReq, body: JSON.stringify(payload) })
+        let ethList = ethListQuery.data as TableResult<EthernetPortProfileViewData>
 
-    //     const ethernetPortProfile = await fetchWithBQ(
-    //       createHttpRequest(EthernetPortProfileUrls.getEthernetPortProfile, params)
-    //     )
+        const ethernetPortProfile = await fetchWithBQ(
+          createHttpRequest(EthernetPortProfileUrls.getEthernetPortProfile, params)
+        )
+        const ethernetPortProfileData = ethernetPortProfile.data as EthernetPortProfile
 
-    //     return 
-    //   },
-    //   providesTags: [{ type: 'EthernetPortProfile', id: 'DETAIL' }]
-    // }),
+        if (ethernetPortProfileData && ethList.data) {
+          ethernetPortProfileData.authRadiusId = ethList.data?.[0]?.authRadiusId
+          ethernetPortProfileData.accountingRadiusId = ethList.data?.[0]?.accountingRadiusId
+          ethernetPortProfileData.apSerialNumbers = ethList.data?.[0]?.apSerialNumbers
+        }
+
+        return ethernetPortProfileData
+          ? { data: ethernetPortProfileData }
+          : { error: ethernetPortProfile.error } as QueryReturnValue<
+          EthernetPortProfile, FetchBaseQueryError>
+      },
+      providesTags: [{ type: 'EthernetPortProfile', id: 'DETAIL' }]
+    }),
     updateEthernetPortProfile: build.mutation<EthernetPortProfile, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(EthernetPortProfileUrls.updateEthernetPortProfile, params)
@@ -213,6 +223,7 @@ export const {
   useLazyGetEthernetPortProfileViewDataListQuery,
   useDeleteEthernetPortProfileMutation,
   useGetEthernetPortProfileByIdQuery,
+  useGetEthernetPortProfileWithRelationsByIdQuery,
   useUpdateEthernetPortProfileMutation,
   useUpdateEthernetPortProfileRadiusIdMutation,
   useDeleteEthernetPortProfileRadiusIdMutation,
