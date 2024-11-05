@@ -20,7 +20,7 @@ import type { NamePath } from 'antd/lib/form/interface'
 const name = ['preferences','excludedAPs'] as const
 const label = defineMessage({ defaultMessage: 'APs Selection' })
 
-function transformSANetworkHierarchy (
+export function transformSANetworkHierarchy (
   nodes: NetworkNode[], parentPath: PathNode[]
 ) : CascaderOption[] {
   return nodes && nodes.map(node => {

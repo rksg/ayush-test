@@ -51,7 +51,7 @@ function checkAP (
     ? { type: 'AP', name: node.name, mac: node.mac } : false
 }
 
-function transformSANetworkHierarchy (
+export function transformSANetworkHierarchy (
   nodes: NetworkNode[], parentPath: PathNode[]
 ) : CascaderOption[] {
   return nodes.map(node => {
