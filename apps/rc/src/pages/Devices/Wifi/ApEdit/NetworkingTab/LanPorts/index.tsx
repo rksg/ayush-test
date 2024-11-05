@@ -102,6 +102,7 @@ export function LanPorts () {
   const { data: apLanPortsData, isLoading: isApLanPortsLoading } =
   useGetApLanPortsWithEthernetProfilesQuery({
     params: { tenantId, serialNumber, venueId },
+    enableRbac: isUseWifiRbacApi,
     enableEthernetProfile: isEthernetPortProfileEnabled
   })
   const { data: defaultLanPorts, isLoading: isDefaultPortsLoading } = useGetDefaultApLanPortsQuery({

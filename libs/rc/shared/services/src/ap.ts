@@ -909,7 +909,8 @@ export const apApi = baseApApi.injectEndpoints({
       providesTags: [{ type: 'Ap', id: 'LanPorts' }]
     }),
     getApLanPortsWithEthernetProfiles: build.query<WifiApSetting | null, RequestPayload>({
-      async queryFn ({ params, enableEthernetProfile }, _queryApi, _extraOptions, fetchWithBQ) {
+      async queryFn ({ params, enableRbac, enableEthernetProfile },
+        _queryApi, _extraOptions, fetchWithBQ) {
         if (!params?.serialNumber) {
           return Promise.resolve({ data: null } as QueryReturnValue<
             null,
@@ -917,9 +918,10 @@ export const apApi = baseApApi.injectEndpoints({
             FetchBaseQueryMeta
           >)
         }
-        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
         const apLanPortSettings = await fetchWithBQ(
-          createHttpRequest(WifiRbacUrlsInfo.getApLanPorts, params, apiCustomHeader)
+          createHttpRequest(urlsInfo.getApLanPorts, params, apiCustomHeader)
         )
         let apLanPorts = apLanPortSettings.data as WifiApSetting
 
