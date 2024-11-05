@@ -122,7 +122,8 @@ export enum ServiceType {
   RESIDENT_PORTAL = 'Resident Portal',
   EDGE_SD_LAN = 'SD-LAN',
   EDGE_SD_LAN_P2 = 'SD-LAN-P2', // temporary type before SD-LAN GA2 dev done.
-  EDGE_MDNS_PROXY = 'Edge mDNS Proxy'
+  EDGE_MDNS_PROXY = 'Edge mDNS Proxy',
+  EDGE_TNM_SERVICE = 'Edge Thirdparty Network Management'
 }
 
 export enum ServiceStatus {
