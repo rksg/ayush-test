@@ -227,6 +227,7 @@ export function deriveRadiusFieldsFromServerData (data: NetworkSaveData): Networ
   }
 }
 
+type RadiusIdKey = Extract<keyof NetworkSaveData, 'authRadiusId' | 'accountingRadiusId'>
 export function useRadiusServer () {
   const { isTemplate } = useConfigTemplate()
   const enableServicePolicyRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
@@ -299,17 +300,48 @@ export function useRadiusServer () {
     fetchRadiusDetails()
   }, [radiusServerProfiles, radiusServerSettings])
 
+  const isRadiusKeyChanged = (key: RadiusIdKey, formData: NetworkSaveData, serverData?: NetworkSaveData): boolean => {
+    const keyFromForm = getRadiusIdFromFormData(key, formData)
+    const keyFromServer = serverData?.[key]
+
+    if (formData.guestPortal?.wisprPage?.customExternalProvider) {
+      return keyFromForm !== keyFromServer
+    }
+
+    if (!formData.hasOwnProperty(key)) return false // key doesn't exist in formData means it's not changed on the form
+    return keyFromForm !== keyFromServer
+  }
+
+  const getRadiusIdFromFormData = (key: RadiusIdKey, formData: NetworkSaveData): string | undefined | null => {
+    const { guestPortal, enableAccountingService } = formData
+    const wisprPage = guestPortal?.wisprPage
+
+    if (wisprPage?.customExternalProvider) {
+      if (key === 'authRadiusId') {
+        return wisprPage.authRadius?.id
+      }
+      if (_.has(wisprPage, 'accountingRadius')) {
+        return wisprPage.accountingRadius?.id
+      }
+      return undefined
+    }
+
+    return (key === 'authRadiusId' || enableAccountingService) ? formData[key] : undefined
+  }
+
   const updateProfile = async (saveData: NetworkSaveData, networkId?: string) => {
+    if (!shouldSaveRadiusServerProfile(saveData)) return Promise.resolve()
+
     const mutations: Promise<CommonResult>[] = []
 
-    const radiusServerIdKeys: Extract<keyof NetworkSaveData, 'authRadiusId' | 'accountingRadiusId'>[] = ['authRadiusId', 'accountingRadiusId']
+    const radiusServerIdKeys: RadiusIdKey[] = ['authRadiusId', 'accountingRadiusId']
     radiusServerIdKeys.forEach(radiusKey => {
-      const newRadiusId = (radiusKey === 'authRadiusId' || saveData.enableAccountingService) ? saveData[radiusKey] : undefined
+      const newRadiusId = getRadiusIdFromFormData(radiusKey, saveData)
       const oldRadiusId = radiusServerConfigurations?.[radiusKey]
 
       if (!newRadiusId && !oldRadiusId) return
 
-      const isRadiusIdChanged = newRadiusId !== oldRadiusId
+      const isRadiusIdChanged = isRadiusKeyChanged(radiusKey, saveData, radiusServerConfigurations)
       const isDifferentNetwork = saveData.id !== networkId
 
       if (isRadiusIdChanged || isDifferentNetwork) {
@@ -372,6 +404,16 @@ function shouldSaveRadiusServerSettings (saveData: NetworkSaveData): boolean {
   }
 
   return false
+}
+
+function shouldSaveRadiusServerProfile (saveData: NetworkSaveData): boolean {
+  if (saveData.type === NetworkTypeEnum.CAPTIVEPORTAL
+    && saveData.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr
+    && saveData.guestPortal?.wisprPage?.customExternalProvider
+  ) {
+    return true
+  }
+  return shouldSaveRadiusServerSettings(saveData)
 }
 
 export function useClientIsolationActivations (shouldSkipMode: boolean,
