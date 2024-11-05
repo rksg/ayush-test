@@ -1,8 +1,7 @@
 import { FormInstance } from 'antd'
 
-import { StepsForm }                                                                 from '@acx-ui/components'
-import { EdgeMdnsProxyViewData, ServiceOperation, ServiceType, getServiceRoutePath } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                                                from '@acx-ui/react-router-dom'
+import { StepsForm }             from '@acx-ui/components'
+import { EdgeMdnsProxyViewData } from '@acx-ui/rc/utils'
 
 export interface EdgeMdnsProxyFormProps {
   form: FormInstance
@@ -10,21 +9,17 @@ export interface EdgeMdnsProxyFormProps {
     title: string
     content: React.FC
   }[]
+  onFinish: (formData: EdgeMdnsProxyViewData) => Promise<void>,
+  onCancel: () => void
   editData?: EdgeMdnsProxyViewData
-  onFinish: (formData: EdgeMdnsProxyViewData) => Promise<void>
 }
 export const EdgeMdnsProxyForm = (props: EdgeMdnsProxyFormProps) => {
-  const { form, steps, editData, onFinish } = props
-  const navigate = useNavigate()
+  const { form, steps, editData, onFinish, onCancel } = props
   const isEditMode = Boolean(editData)
-  const linkToServiceList = useTenantLink(getServiceRoutePath({
-    type: ServiceType.EDGE_MDNS_PROXY,
-    oper: ServiceOperation.LIST
-  }))
 
   return (<StepsForm
     form={form}
-    onCancel={() => navigate(linkToServiceList)}
+    onCancel={onCancel}
     onFinish={onFinish}
     editMode={isEditMode}
     initialValues={editData}

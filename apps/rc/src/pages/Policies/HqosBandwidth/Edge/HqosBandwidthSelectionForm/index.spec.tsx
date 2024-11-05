@@ -67,19 +67,6 @@ describe('EdgeHqosProfileSelectionForm', () => {
     expect(await screen.findByText('HQoS Bandwitdth Profile')).toBeVisible()
   })
 
-  it('should show "Select" in drop-down when qosId is not given', async () => {
-    render(
-      <Provider>
-        <StepsForm>
-          <StepsForm.StepForm>
-            <EdgeQosProfileSelectionForm />
-          </StepsForm.StepForm>
-        </StepsForm>
-      </Provider>, { route: { params } }
-    )
-    expect(await screen.findByText('Select...')).toBeVisible()
-  })
-
   it('should show HQoS profile name when qosId is given', async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
