@@ -12,6 +12,14 @@ export const isApRelatedEdgeFeature = (featureName: IncompatibilityFeatures): bo
       return false
   }
 }
+export const isSwitchRelatedEdgeFeature = (featureName: IncompatibilityFeatures): boolean => {
+  switch(featureName) {
+    case IncompatibilityFeatures.PIN:
+      return true
+    default:
+      return false
+  }
+}
 
 export const isEdgeCompatibilityFeature = (featureName: string) =>
   Object.values(EdgeFeatureEnum).includes(featureName as EdgeFeatureEnum)
