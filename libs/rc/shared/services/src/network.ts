@@ -1139,6 +1139,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         })
       }
     }),
+    // WARNING: This query is deprecated due to performance issues. Please do not use.
     dashboardV2Overview: build.query<Dashboard, RequestPayload>({
       query: ({ params, payload }) => {
         return {
