@@ -4,7 +4,7 @@ import { Col, Form, Input, InputNumber, Radio, Row, Space, Switch, Typography } 
 import { useIntl }                                                              from 'react-intl'
 import { useParams }                                                            from 'react-router-dom'
 
-import { Loader, Button, PasswordInput } from '@acx-ui/components'
+import { Loader, Button, PasswordInput }     from '@acx-ui/components'
 import {
   useGetDirectoryServerByIdQuery,
   useLazyGetDirectoryServerViewDataListQuery,
@@ -46,9 +46,9 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
   const form = Form.useFormInstance()
   const type = Form.useWatch('type')
   const [ getDirectoryServerViewDataList ] = useLazyGetDirectoryServerViewDataListQuery()
-  const [ testConnectionDirectoryServer] = useTestConnectionDirectoryServerMutation()
+  // eslint-disable-next-line max-len
+  const [ testConnectionDirectoryServer, { isLoading: isTesting }] = useTestConnectionDirectoryServerMutation()
   const { data, isLoading } = useGetDirectoryServerByIdQuery({ params }, { skip: !editMode })
-  const [isTesting, setIsTesting] = useState(false)
   const [testConnectionStatus, setTestConnectionStatus] = useState<TestConnectionStatusEnum>()
 
   useEffect(() => {
@@ -77,7 +77,11 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
   }
 
   const onClickTestConnection = async () => {
-    setIsTesting(true)
+    try {
+      await form.validateFields(['adminDomainName', 'adminPassword', 'host'])
+    } catch (error) {
+      return
+    }
     const { tlsEnabled, adminDomainName, adminPassword, host, port, type } = form.getFieldsValue()
     const payload: DirectoryServerDiagnosisCommand = {
       action: DirectoryServerDiagnosisCommandEnum.testConnection,
@@ -98,7 +102,6 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
     }catch (error) {
       setTestConnectionStatus(TestConnectionStatusEnum.FAIL)
     }
-    setIsTesting(false)
   }
 
   return (
