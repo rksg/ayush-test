@@ -153,10 +153,14 @@ export function LanPortSettings (props: {
 
   useEffect(()=> {
     if (!isLoadingEthPortList && ethernetPortListQuery?.data) {
-      setCurrentEthernetPortData(
-        ethernetPortListQuery.data.find((profile)=> ethernetProfileCreateId ?
-          profile.id === ethernetProfileCreateId : profile.id === ethernetPortProfileId))
-      setEthernetProfileCreateId(undefined)
+      const ethProfile = ethernetPortListQuery.data.find((profile)=> ethernetProfileCreateId ?
+      profile.id === ethernetProfileCreateId : profile.id === ethernetPortProfileId)
+
+      setCurrentEthernetPortData(ethProfile)
+      if (ethProfile && ethernetProfileCreateId) {
+        form.setFieldValue(['lan', index, 'ethernetPortProfileId'], ethernetProfileCreateId)
+        setEthernetProfileCreateId(undefined)
+      }
     }
   }, [ethernetPortProfileId, ethernetPortListQuery?.data])
 

@@ -4,11 +4,7 @@ export const EthernetPortProfileUrls: { [key: string]: ApiInfo } = {
   createEthernetPortProfile: {
     method: 'post',
     url: '/ethernetPortProfiles',
-    newApi: true,
-    defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1+json',
-      'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
+    newApi: true
   },
   getEthernetPortProfileViewDataList: {
     method: 'post',
