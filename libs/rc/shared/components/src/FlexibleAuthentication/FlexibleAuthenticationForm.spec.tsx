@@ -328,7 +328,7 @@ describe('FlexibleAuthenticationForm', ()=>{
         await userEvent.type(await screen.findByLabelText(/Profile Name/),'Profile-1')
         await userEvent.selectOptions(await screen.findByTestId('port-control-select'), PortControl.FORCE_AUTHORIZED)
 
-        const hiddenFieldLabel = ['auth-vlan-input', 'fail-action-select', 'timeout-action-select', 'restricted-vlan-input', 'critical-vlan-input']
+        const hiddenFieldLabel = ['restricted-vlan-input', 'critical-vlan-input']
         for (let i = 0; i < hiddenFieldLabel.length; i++) {
           const field = await screen.findByTestId(hiddenFieldLabel[i])
           // eslint-disable-next-line testing-library/no-node-access
@@ -362,7 +362,7 @@ describe('FlexibleAuthenticationForm', ()=>{
         await userEvent.type(await screen.findByLabelText(/Profile Name/),'Profile-1')
         await userEvent.selectOptions(await screen.findByTestId('port-control-select'), PortControl.FORCE_AUTHORIZED)
 
-        const hiddenFieldLabel = ['auth-vlan-input', 'fail-action-select', 'timeout-action-select', 'restricted-vlan-input', 'critical-vlan-input']
+        const hiddenFieldLabel = ['restricted-vlan-input', 'critical-vlan-input']
         for (let i = 0; i < hiddenFieldLabel.length; i++) {
           const field = await screen.findByTestId(hiddenFieldLabel[i])
           // eslint-disable-next-line testing-library/no-node-access
@@ -391,7 +391,7 @@ describe('FlexibleAuthenticationForm', ()=>{
         await userEvent.type(await screen.findByLabelText(/Profile Name/),'Profile-1')
         await userEvent.selectOptions(await screen.findByTestId('port-control-select'), PortControl.FORCE_UNAUTHORIZED)
 
-        const hiddenFieldLabel = ['auth-vlan-input', 'fail-action-select', 'timeout-action-select', 'restricted-vlan-input', 'critical-vlan-input']
+        const hiddenFieldLabel = ['restricted-vlan-input', 'critical-vlan-input']
         for (let i = 0; i < hiddenFieldLabel.length; i++) {
           const field = await screen.findByTestId(hiddenFieldLabel[i])
           // eslint-disable-next-line testing-library/no-node-access

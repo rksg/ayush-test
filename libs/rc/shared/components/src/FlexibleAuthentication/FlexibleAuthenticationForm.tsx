@@ -209,8 +209,13 @@ export const FlexibleAuthenticationForm = (props: {
             <Form.Item
               name='authDefaultVlan'
               label={$t({ defaultMessage: 'Auth Default VLAN' })}
-              hidden={shouldHideAuthField('authDefaultVlan', authFormWatchValues)}
+              // hidden={shouldHideAuthField('authDefaultVlan', authFormWatchValues)}
               validateFirst
+              // rules={(dot1xPortControl === PortControl.AUTO || dot1xPortControl === PortControl.NONE)
+              //   ? [{ required: true },
+              //     { validator: (_, value) => validateVlanExceptReservedVlanId(value) }]
+              //   : []
+              // }
               rules={[
                 { required: true },
                 { validator: (_, value) => validateVlanExceptReservedVlanId(value) }
@@ -218,7 +223,7 @@ export const FlexibleAuthenticationForm = (props: {
               children={
                 <Input
                   data-testid='auth-vlan-input'
-                  disabled={getAuthfieldDisabled('authDefaultVlan', authFormWatchValues)}
+                  // disabled={getAuthfieldDisabled('authDefaultVlan', authFormWatchValues)}
                 />
               }
             />
@@ -226,7 +231,7 @@ export const FlexibleAuthenticationForm = (props: {
               name='authFailAction'
               label={$t({ defaultMessage: 'Fail Action' })}
               initialValue={AuthFailAction.BLOCK}
-              hidden={shouldHideAuthField('authFailAction', authFormWatchValues)}
+              // hidden={shouldHideAuthField('authFailAction', authFormWatchValues)}
               children={<Select
                 data-testid='fail-action-select'
                 disabled={getAuthfieldDisabled('authFailAction', authFormWatchValues)}
@@ -272,7 +277,7 @@ export const FlexibleAuthenticationForm = (props: {
               name='authTimeoutAction'
               label={$t({ defaultMessage: 'Timeout Action' })}
               initialValue={AuthTimeoutAction.NONE}
-              hidden={shouldHideAuthField('authTimeoutAction', authFormWatchValues)}
+              // hidden={shouldHideAuthField('authTimeoutAction', authFormWatchValues)}
               children={<Select
                 data-testid='timeout-action-select'
                 disabled={getAuthfieldDisabled('authTimeoutAction', authFormWatchValues)}

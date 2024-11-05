@@ -188,15 +188,27 @@ export const getFlexAuthDefaultValue = (
     criticalVlan: '',
     authFailAction: AuthFailAction.BLOCK,
     authTimeoutAction: AuthTimeoutAction.NONE,
-    guestVlan: ''
+    guestVlan: '',
+    authenticationTypeCheckbox: false,
+    dot1xPortControlCheckbox: false,
+    authDefaultVlanCheckbox: false
+  }
+
+  const handleField = (key: string) => {
+    return !hasMultipleValueFields?.includes(key) && (portSetting[key as keyof typeof portSetting] !== undefined)
+      ? portSetting[key as keyof typeof portSetting]
+      : defaultValue[key as keyof typeof defaultValue]
+  }
+
+  const handleCheckbox = () => {
+    return hasMultipleValueFields?.includes('flexibleAuthenticationEnabled')
+    // || hasMultipleValueFields?.includes('authenticationCustomize')
   }
 
   return Object.keys(defaultValue).reduce((result: FlexibleAuthentication, key: string) => {
     return {
       ...result,
-      [key]: !hasMultipleValueFields?.includes(key) && (portSetting[key as keyof typeof portSetting] !== undefined)
-        ? portSetting[key as keyof typeof portSetting]
-        : defaultValue[key as keyof typeof defaultValue]
+      [key]: key.includes('Checkbox') ? handleCheckbox() : handleField(key)
     }
   }, {} as FlexibleAuthentication)
 }
@@ -266,7 +278,10 @@ export const checkAllSelectedPortsMatch = (
     const { selectedPortIdentifier, enableAuthPorts } = aggregateData
     const sortedSelectedPorts = [...(selectedPortIdentifier[port.switchMac] || [])].sort()
     const sortedAuthPorts = [...(enableAuthPorts[port.switchMac] || [])].sort()
-    return sortedAuthPorts?.length ? _.intersection(sortedSelectedPorts, sortedAuthPorts)?.length > 0 : true
+    // return sortedAuthPorts?.length ? _.intersection(sortedSelectedPorts, sortedAuthPorts)?.length > 0 : true
+    return sortedAuthPorts?.length
+      ? _.intersection(sortedSelectedPorts, sortedAuthPorts)?.length === sortedAuthPorts?.length
+      : true
   })
 
   return isAllPortsMatch
@@ -289,6 +304,7 @@ export const getCurrentVlansByKey = (props: {
 
   const fieldValue = isNaN(form.getFieldValue(key)) ? '' : form.getFieldValue(key)
   const transformedFieldValue = key === 'taggedVlans'
+    // untagged vlan might be 'Default VLAN (Multiple values)'
     ? fieldValue : (getDefaultVlanMapping(key, switchId, defaultVlanMap, fieldValue)?.untaggedVlan || fieldValue)
 
   const overrideValue = typeof transformedFieldValue === 'string'
@@ -337,15 +353,11 @@ export const validateApplyProfile = (
   const isRestrictedVlanDuplicateWithSwitchAuth = switchAuthDefaultVlans.includes(profile?.restrictedVlan)
   const isGuestVlanDuplicateWithSwitchAuth = switchAuthDefaultVlans.includes(profile?.guestVlan)
 
-  // TODO:
-  // const statusMapping = {
-  //   isDefaultVlanMismatch: () => {
-  //     return $t(FlexAuthMessages.CANNOT_SET_DIFF_PROFILE_AUTH_DEFAULT_VLAN, {
-  //       profileAuthDefaultVlan: profileDefaultVlans,
-  //       applyProfileAuthDefaultVlan: profile?.authDefaultVlan
-  //     });
-  //   }
-  // }
+  const isForceTypeProfile = profile?.dot1xPortControl === PortControl.FORCE_AUTHORIZED
+  || profile?.dot1xPortControl === PortControl.FORCE_UNAUTHORIZED
+
+  const isAuthDefaultVlanMismatch = isForceTypeProfile
+  && (switchAuthDefaultVlans?.length > 1 || !switchAuthDefaultVlans?.includes(profile?.authDefaultVlan))
 
   if (!allSelectedPortsMatch) {
     const isDefaultVlanMismatch = !!profileDefaultVlans.length
@@ -365,7 +377,13 @@ export const validateApplyProfile = (
           guestVlan: guestVlans.sort().join(', ')
         })
       )
+    } else if (isAuthDefaultVlanMismatch) {
+      //TODO: checking wording with UX
+      return Promise.reject(
+        $t({ defaultMessage: 'If the port control type is either Force Authorized or Force Unauthorized, the Auth-Default VLAN must be the same as the Auth Default VLAN setting at the switch level for all switches.' })
+      )
     }
+
   } else if (isDefaultVlanDuplicateWithSwitch) {
     return Promise.reject($t(FlexAuthMessages.VLAN_CANNOT_SAME_AS_TARGET_VLAN, {
       sourceVlan: $t(FlexAuthVlanLabel.AUTH_DEFAULT_VLAN),
@@ -376,6 +394,11 @@ export const validateApplyProfile = (
   //     sourceVlan: $t(FlexAuthVlanLabel.AUTH_DEFAULT_VLAN),
   //     targetVlan: $t(FlexAuthVlanLabel.TAGGED_VLANS)
   //   }))
+  } else if (isAuthDefaultVlanMismatch) {
+    //TODO: checking wording with UX
+    return Promise.reject(
+      $t({ defaultMessage: 'If the port control type is either Force Authorized or Force Unauthorized, the Auth-Default VLAN must be the same as the Auth Default VLAN setting at the switch level for all switches.' })
+    )
   } else if (isCriticalVlanDuplicateWithSwitch) {
     return Promise.reject($t(FlexAuthMessages.VLAN_CANNOT_SAME_AS_TARGET_VLAN, {
       sourceVlan: $t(FlexAuthVlanLabel.CRITICAL_VLAN),

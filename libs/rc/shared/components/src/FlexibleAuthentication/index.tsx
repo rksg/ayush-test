@@ -1,5 +1,8 @@
 import { FormInstance }                     from 'antd'
+import _                                    from 'lodash'
 import { MessageDescriptor, defineMessage } from 'react-intl'
+
+import { AggregatePortSettings } from '../SwitchPortTable/editPortDrawer.flexAuth.utils'
 
 export enum AuthenticationType {
 	_802_1X = '802.1x',
@@ -112,9 +115,10 @@ export const handleAuthFieldChange = (props: {
   field: string,
   value: string,
   form: FormInstance,
-  isMultipleEdit?: boolean
+  isMultipleEdit?: boolean,
+  aggregateData?: AggregatePortSettings
 }) => {
-  const { field, value, form, isMultipleEdit } = props
+  const { field, value, form, isMultipleEdit, aggregateData } = props
   switch(field) {
     case 'authenticationType':
       const values = form.getFieldsValue()
@@ -142,16 +146,25 @@ export const handleAuthFieldChange = (props: {
       })
       break
     case 'dot1xPortControl':
-      if (value !== PortControl.AUTO) {
+      if (value !== PortControl.AUTO && value !== PortControl.NONE) {
         const values = form.getFieldsValue()
+        const selectedSwitches = Object.keys(aggregateData?.selectedPortIdentifier ?? {})
+        const enabledAuthSwitches
+          = Object.keys(aggregateData?.switchLevelAuthDefaultVlan ?? {})
+        const switchAuthDefaultVlans
+          = _.uniq(Object.values(aggregateData?.switchLevelAuthDefaultVlan ?? {}).flat())
+        const authDefaultVlan = ((selectedSwitches?.length === enabledAuthSwitches?.length)
+          && switchAuthDefaultVlans?.length === 1) ? switchAuthDefaultVlans[0] : ''
+
         form.setFields([
           { name: 'authDefaultVlan', errors: [] },
           { name: 'restrictedVlan', errors: [] },
           { name: 'criticalVlan', errors: [] }
         ])
+
         form.setFieldsValue({
           ...values,
-          authDefaultVlan: '',
+          authDefaultVlan: authDefaultVlan,
           authFailAction: AuthFailAction.BLOCK,
           restrictedVlan: '',
           authTimeoutAction: AuthTimeoutAction.NONE,

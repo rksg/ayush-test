@@ -89,6 +89,7 @@ import {
   getAppliedProfile,
   getFlexAuthButtonStatus,
   getFlexAuthDefaultValue,
+  getUnionValuesByKey,
   isOverrideFieldNotChecked,
   renderAuthProfile,
   validateApplyProfile
@@ -515,7 +516,7 @@ export function EditPortDrawer ({
     const { tagged, untagged, voice } = getPortVenueVlans(vlansByVenue, selectedPorts?.[0])
     const aggregatedData = isSwitchFlexAuthEnabled
       ? aggregatePortSettings([portSetting], switchesDefaultVlan) : {}
-    // console.log('aggregatedData: ', aggregatedData)
+    //console.log('aggregatedData: ', aggregatedData)
 
     setVenueTaggedVlans(tagged)
     setVenueUntaggedVlan(untagged)
@@ -621,7 +622,7 @@ export function EditPortDrawer ({
     ])
     const aggregatedData = isSwitchFlexAuthEnabled
       ? aggregatePortSettings(portsSetting, switchesDefaultVlan, hasMultipleValue) : {}
-    // console.log('multi aggregatedData: ', aggregatedData)
+    //console.log('multi aggregatedData: ', aggregatedData)
 
     setDisablePoeCapability(poeCapabilityDisabled)
     setDisableCyclePoeCapability(cyclePoeMultiPortsDisabled)
@@ -635,6 +636,11 @@ export function EditPortDrawer ({
     setLldpQosList(portSetting?.lldpQos ?? [])
     setPortEditStatus('')
     setIsAppliedAuthProfile(!hasMultipleValueFields?.includes('authenticationProfileId'))
+
+    // console.log('hasMultipleValueFields: ', hasMultipleValueFields)
+    // console.log('getFlexAuthDefaultValue: ',
+    //   getFlexAuthDefaultValue(portSetting, hasMultipleValueFields)
+    // )
 
     form.setFieldsValue({
       ...portSetting,
@@ -716,6 +722,12 @@ export function EditPortDrawer ({
         return isMultipleEdit
           && !(flexibleAuthenticationEnabledCheckbox && flexibleAuthenticationEnabled)
       case 'authDefaultVlan':
+        const switchAuthVlans
+          = getUnionValuesByKey('switchLevelAuthDefaultVlan', aggregatePortsData)
+        return (isMultipleEdit && !checkboxEnabled)
+          || (dot1xPortControl !== PortControl.AUTO && dot1xPortControl !== PortControl.NONE
+            // && !!Object.values(aggregatePortsData?.switchLevelAuthDefaultVlan ?? {}).flat().length)
+            && !!switchAuthVlans.length)
       case 'changeAuthOrder':
       case 'dot1xPortControl':
       case 'authFailAction':
@@ -772,8 +784,7 @@ export function EditPortDrawer ({
     extraLabel?: boolean
   ) => {
     const shouldControlHiddenFields = [
-      'changeAuthOrder', 'authDefaultVlan', 'authFailAction',
-      'restrictedVlan', 'authTimeoutAction', 'criticalVlan'
+      'changeAuthOrder', 'restrictedVlan', 'criticalVlan' // 'authDefaultVlan',
     ]
     return <UI.FormItem
       hidden={shouldControlHiddenFields.includes(field)
@@ -915,7 +926,7 @@ export function EditPortDrawer ({
         }
       })
 
-      // console.log('payload: ', payload)
+      //console.log('payload: ', payload)
 
       await savePortsSetting({
         params: { tenantId, venueId: switchDetail?.venueId },
@@ -1126,7 +1137,7 @@ export function EditPortDrawer ({
     const shouldAlertAaa = aggregatePortsData?.shouldAlertAaaAndRadiusNotApply
     const flexAuthEnabled = form.getFieldValue('flexibleAuthenticationEnabled')
     try {
-      // console.log('** ', form.getFieldsValue())
+      //console.log('** ', form.getFieldsValue())
       const valid = await form.validateFields()
       if (valid) {
         if (isSwitchFlexAuthEnabled && shouldAlertAaa && flexAuthEnabled) {
@@ -1420,7 +1431,8 @@ export function EditPortDrawer ({
                     }))}
                     disabled={getFieldDisabled('dot1xPortControl')}
                     onChange={(value) => handleAuthFieldChange({
-                      field: 'dot1xPortControl', value, form, isMultipleEdit
+                      field: 'dot1xPortControl', value, form, isMultipleEdit,
+                      aggregateData: aggregatePortsData
                     })}
                   />}
               />,
@@ -1433,15 +1445,36 @@ export function EditPortDrawer ({
                 label={$t({ defaultMessage: 'Auth Default VLAN' })}
                 initialValue=''
                 validateFirst
-                rules={[
-                  ...((dot1xPortControl === PortControl.AUTO || isMultipleEdit) ? [
-                    { required: true },
-                    { validator: (_:unknown, value: string) =>
-                      validateVlanExceptReservedVlanId(value)
-                    },
-                    { validator: (_:unknown, value: string) =>
-                      checkVlanDiffFromSwitchDefaultVlan(value, aggregatePortsData)
+                // eslint-disable-next-line max-len
+                rules={(!isMultipleEdit || (flexibleAuthenticationEnabledCheckbox && flexibleAuthenticationEnabled))
+                  ? [{ validator: () => {
+                    const isDisabled = getFieldDisabled('authDefaultVlan')
+                    const switchDefaultVlans
+                          = getUnionValuesByKey('defaultVlan', aggregatePortsData)
+                    const isForceType = (dot1xPortControl === PortControl.FORCE_AUTHORIZED)
+                           || (dot1xPortControl === PortControl.FORCE_UNAUTHORIZED)
+
+                    if (isDisabled && isForceType && switchDefaultVlans?.length > 1) {
+                      const type = dot1xPortControl as PortControl
+                      return Promise.reject(
+                        //TODO: checking wording with UX
+                        // eslint-disable-next-line max-len
+                        $t({ defaultMessage: 'You cannot select {portControlField} to {portControlType} on these ports; please set them separately.' }, {
+                          portControlField: $t({ defaultMessage: '802.1x Port Control' }),
+                          portControlType: $t(portControlTypeLabel[type])
+                        })
+                      )
                     }
+                    return Promise.resolve()
+                  }
+                  },
+                  { required: true },
+                  { validator: (_:unknown, value: string) =>
+                    validateVlanExceptReservedVlanId(value)
+                  },
+                  { validator: (_:unknown, value: string) =>
+                    checkVlanDiffFromSwitchDefaultVlan(value, aggregatePortsData)
+                  }
                     // { validator: (rule:unknown, value: string) => {
                     //   //TODO
                     //   const allTaggedVlans = getCurrentVlansByKey({
@@ -1466,8 +1499,8 @@ export function EditPortDrawer ({
                     //   }
                     //   return Promise.resolve()
                     // } }
-                  ] : [])
-                ]}
+                  ] : []
+                }
                 children={shouldRenderMultipleText({
                   field: 'authDefaultVlan', ...commonRequiredProps
                 }) ? <MultipleText />
