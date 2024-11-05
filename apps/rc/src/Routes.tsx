@@ -42,7 +42,8 @@ import {
   WifiCallingConfigureForm,
   WifiCallingDetailView,
   WifiCallingForm,
-  WifiOperatorForm
+  WifiOperatorForm,
+  DirectoryServerForm
 } from '@acx-ui/rc/components'
 import {
   CertificateCategoryType,
@@ -1402,14 +1403,6 @@ function PolicyRoutes () {
         />
       </>
       }
-      {isDirectoryServerEnabled && <>
-        <Route
-          // eslint-disable-next-line max-len
-          path={getPolicyRoutePath({ type: PolicyType.DIRECTORY_SERVER, oper: PolicyOperation.LIST })}
-          element={<DirectoryServerTable />}
-        />
-      </>
-      }
       <Route
         path={getPolicyRoutePath({ type: PolicyType.SOFTGRE, oper: PolicyOperation.CREATE })}
         element={
@@ -1463,6 +1456,33 @@ function PolicyRoutes () {
           })}
           element={<EthernetPortProfileDetail/>}
         />
+      </>
+      }
+      {isDirectoryServerEnabled && <>
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.DIRECTORY_SERVER,
+            oper: PolicyOperation.LIST })}
+          element={<DirectoryServerTable />}
+        />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.DIRECTORY_SERVER,
+            oper: PolicyOperation.CREATE })}
+          element={
+            <PolicyAuthRoute policyType={PolicyType.DIRECTORY_SERVER} oper={PolicyOperation.CREATE}>
+              <DirectoryServerForm editMode={false} />
+            </PolicyAuthRoute>
+          } />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.DIRECTORY_SERVER,
+            oper: PolicyOperation.EDIT })}
+          element={
+            <PolicyAuthRoute policyType={PolicyType.DIRECTORY_SERVER} oper={PolicyOperation.CREATE}>
+              <DirectoryServerForm editMode={true} />
+            </PolicyAuthRoute>
+          } />
       </>
       }
     </Route>
