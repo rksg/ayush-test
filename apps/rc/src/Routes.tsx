@@ -1403,14 +1403,6 @@ function PolicyRoutes () {
         />
       </>
       }
-      {isDirectoryServerEnabled && <>
-        <Route
-          // eslint-disable-next-line max-len
-          path={getPolicyRoutePath({ type: PolicyType.DIRECTORY_SERVER, oper: PolicyOperation.LIST })}
-          element={<DirectoryServerTable />}
-        />
-      </>
-      }
       <Route
         path={getPolicyRoutePath({ type: PolicyType.SOFTGRE, oper: PolicyOperation.CREATE })}
         element={
@@ -1467,6 +1459,12 @@ function PolicyRoutes () {
       </>
       }
       {isDirectoryServerEnabled && <>
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.DIRECTORY_SERVER,
+            oper: PolicyOperation.LIST })}
+          element={<DirectoryServerTable />}
+        />
         <Route
           path={getPolicyRoutePath({
             type: PolicyType.DIRECTORY_SERVER,
