@@ -11,7 +11,6 @@ import { AupSettings } from './AupSettings'
 
 const uploadFile = jest.fn()
 
-const deleteFile = jest.fn()
 
 describe('AupSettings', () => {
 
@@ -19,9 +18,6 @@ describe('AupSettings', () => {
     mockServer.use(rest.post(WorkflowUrls.uploadFile.url, (req, res, ctx) => {
       uploadFile()
       return res(ctx.json({ url: '7c1a1cb9-548c-446e-b4dc-07d498759d9b-text.docs' }))
-    }), rest.delete(WorkflowUrls.deleteFile.url, (req, res, ctx) => {
-      deleteFile()
-      return res(ctx.status(200))
     }))
   })
 
@@ -329,7 +325,7 @@ describe('AupSettings', () => {
     Object.defineProperty(file, 'size', { value: 1024 * 1024 * 11 })
     const testfile = screen.getByTestId('aupPolicy')
     await userEvent.upload(testfile, file)
-    expect(await screen.findByText('File size (11 MB) is too big.')).toBeVisible()
+    expect(await screen.findByText('File size should be upto 2MB')).toBeVisible()
   })
 
   it('Should be able to upload file', async () => {

@@ -19,14 +19,19 @@ type MetaBase = { id: string }
 
 export function getMetaList<T extends MetaBase> (
   list: TableResult<T>,
-  metaListInfo: { urlInfo: ApiInfo, fields: string[] }
+  metaListInfo: { urlInfo: ApiInfo, fields: string[], filters?: { [key: string]: unknown; } }
 ) {
   const httpRequest = metaListInfo.urlInfo
   const body = {
     fields: metaListInfo.fields,
-    filters: {
-      id: list.data.map((item: { id: string }) => item.id)
-    }
+    filters: metaListInfo.filters ? {
+      id: list.data.map((item: { id: string }) => item.id),
+      fromTime: metaListInfo.filters['fromTime'],
+      toTime: metaListInfo.filters['toTime']
+    } :
+      {
+        id: list.data.map((item: { id: string }) => item.id)
+      }
   }
   return {
     ...httpRequest, body

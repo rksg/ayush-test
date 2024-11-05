@@ -33,6 +33,7 @@ export const EdgeServices = () => {
   const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+  const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
 
   const [currentData, setCurrentData] = useState({} as EdgeService)
   const [drawerVisible, setDrawerVisible] = useState(false)
@@ -68,6 +69,9 @@ export const EdgeServices = () => {
         break
       case EdgeServiceTypeEnum.PIN:
         if (!isEdgePinReady) return
+        break
+      case EdgeServiceTypeEnum.MDNS:
+        if (!isEdgeMdnsReady) return
         break
       default:
     }
@@ -197,7 +201,11 @@ export const EdgeServices = () => {
                 closeAfterAction: true,
                 handler: () => {
                   removeServices({
-                    params, payload: {
+                    params: {
+                      venueId: currentEdgeStatus?.venueId,
+                      edgeClusterId: currentEdgeStatus?.clusterId
+                    },
+                    payload: {
                       serviceList: selectedRows.map(item => ({
                         serviceId: item.serviceId,
                         serviceType: item.serviceType

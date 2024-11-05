@@ -32,6 +32,7 @@ import {
   RogueAPDetectionDetailView,
   RogueAPDetectionForm,
   RogueAPDetectionTable,
+  ServerClientCertificateForm,
   SoftGreForm,
   SyslogDetailView,
   SyslogForm,
@@ -99,6 +100,7 @@ import ClientIsolationTable                         from './pages/Policies/Clien
 import ConnectionMeteringDetail                     from './pages/Policies/ConnectionMetering/ConnectionMeteringDetail'
 import ConnectionMeteringPageForm                   from './pages/Policies/ConnectionMetering/ConnectionMeteringPageForm'
 import ConnectionMeteringTable                      from './pages/Policies/ConnectionMetering/ConnectionMeteringTable'
+import DirectoryServerTable                         from './pages/Policies/DirectoryServer/DirectoryServerTable/DirectoryServerTable'
 import EthernetPortProfileTable                     from './pages/Policies/EthernetPortProfile/EthernetPortProfileTable'
 import AddEdgeHqosBandwidth                         from './pages/Policies/HqosBandwidth/Edge/AddHqosBandwidth'
 import EditEdgeHqosBandwidth                        from './pages/Policies/HqosBandwidth/Edge/EditHqosBandwidth'
@@ -141,7 +143,11 @@ import EditFirewall                                                     from './
 import FirewallDetail                                                   from './pages/Services/EdgeFirewall/FirewallDetail'
 import FirewallTable                                                    from './pages/Services/EdgeFirewall/FirewallTable'
 import { AddEdgeSdLan, EdgeSdLanDetail, EdgeSdLanTable, EditEdgeSdLan } from './pages/Services/EdgeSdLan/index'
+import { EdgeTnmServiceTable }                                          from './pages/Services/EdgeTnm/Edge/EdgeTnmServiceTable'
+import AddEdgeMdnsProxy                                                 from './pages/Services/MdnsProxy/Edge/AddEdgeMdnsProxy'
+import EdgeMdnsProxyDetails                                             from './pages/Services/MdnsProxy/Edge/EdgeMdnsProxyDetails'
 import { EdgeMdnsProxyTable }                                           from './pages/Services/MdnsProxy/Edge/EdgeMdnsProxyTable'
+import EditEdgeMdnsProxy                                                from './pages/Services/MdnsProxy/Edge/EditEdgeMdnsProxy'
 import MdnsProxyDetail                                                  from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
 import MdnsProxyForm                                                    from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
 import MdnsProxyTable                                                   from './pages/Services/MdnsProxy/MdnsProxyTable/MdnsProxyTable'
@@ -542,10 +548,43 @@ const edgePinRoutes = () => {
 }
 
 const edgeMdnsRoutes = () => {
+  return <>
+    <Route
+      path={getServiceRoutePath({ type: ServiceType.EDGE_MDNS_PROXY,
+        oper: ServiceOperation.LIST })}
+      element={<EdgeMdnsProxyTable />}
+    />
+    <Route
+      path={getServiceRoutePath({ type: ServiceType.EDGE_MDNS_PROXY,
+        oper: ServiceOperation.CREATE })}
+      element={
+        <ServiceAuthRoute serviceType={ServiceType.EDGE_MDNS_PROXY} oper={ServiceOperation.CREATE}>
+          <AddEdgeMdnsProxy />
+        </ServiceAuthRoute>
+      }
+    />
+    <Route
+      path={getServiceRoutePath({ type: ServiceType.EDGE_MDNS_PROXY,
+        oper: ServiceOperation.EDIT })}
+      element={
+        <ServiceAuthRoute serviceType={ServiceType.EDGE_MDNS_PROXY} oper={ServiceOperation.EDIT}>
+          <EditEdgeMdnsProxy />
+        </ServiceAuthRoute>
+      }
+    />
+    <Route
+      path={getServiceRoutePath({ type: ServiceType.EDGE_MDNS_PROXY,
+        oper: ServiceOperation.DETAIL })}
+      element={<EdgeMdnsProxyDetails />}
+    />
+  </>
+}
+
+const edgeTnmRoutes = () => {
   return <Route
-    path={getServiceRoutePath({ type: ServiceType.EDGE_MDNS_PROXY,
+    path={getServiceRoutePath({ type: ServiceType.EDGE_TNM_SERVICE,
       oper: ServiceOperation.LIST })}
-    element={<EdgeMdnsProxyTable />}
+    element={<EdgeTnmServiceTable />}
   />
 }
 
@@ -555,6 +594,7 @@ function ServiceRoutes () {
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
+  const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
 
   return rootRoutes(
     <Route path=':tenantId/t'>
@@ -768,6 +808,8 @@ function ServiceRoutes () {
 
 
       {isEdgeMdnsReady && edgeMdnsRoutes()}
+
+      {isEdgeTnmServiceReady && edgeTnmRoutes()}
 
       <Route
         path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
@@ -1348,6 +1390,24 @@ function PolicyRoutes () {
         // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.DETAIL })}
           element={<CertificateTemplateDetail/>}
+        />
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.SERVER_CERTIFICATES, oper: PolicyOperation.CREATE })}
+          element={
+            // eslint-disable-next-line max-len
+            <PolicyAuthRoute policyType={PolicyType.SERVER_CERTIFICATES} oper={PolicyOperation.CREATE}>
+              <ServerClientCertificateForm/>
+            </PolicyAuthRoute>
+          }
+        />
+      </>
+      }
+      {isDirectoryServerEnabled && <>
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.DIRECTORY_SERVER, oper: PolicyOperation.LIST })}
+          element={<DirectoryServerTable />}
         />
       </>
       }

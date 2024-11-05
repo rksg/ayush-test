@@ -77,6 +77,7 @@ export function SwitchUpgradeNotification (props: {
 
   const isNeedUpgrade = modelNeedUpgrade[type].filter(model => validateModel.indexOf(model) > -1).length > 0
   const isRodanModel = switchModel?.includes('8200') || (validateModel[0]?.includes('8200') && isDisplayHeader)
+  const isBabyRodanModel = switchModel?.includes('8100') || (validateModel[0]?.includes('8100') && isDisplayHeader)
 
   const descriptionIndex = isNeedUpgrade ? 1 : 0
   //TODO: Check style with UX WarningTriangleSolid or WarningTriangleOutlined
@@ -112,6 +113,17 @@ export function SwitchUpgradeNotification (props: {
     }
   }
 
+  if (isBabyRodanModel) {
+    if(isDisplayHeader) {
+      return <UI.Wrapper style={{ padding: '8px', marginBottom: '8px' }}>
+        {$t({ defaultMessage: 'Switch Model:' })} {icon}
+        <UI.ValidateModel>{validateModel[0]}</UI.ValidateModel>
+      </UI.Wrapper>
+    } else {
+      return <></>
+    }
+  }
+
   const getVenueFirmware = function () {
     if (!switchModel) return ''
 
@@ -119,7 +131,7 @@ export function SwitchUpgradeNotification (props: {
       const model = checkSwitchModelGroup(validateModel[0])
       return venueFirmwareV1002?.find(v=> v.modelGroup === model)?.version || ''
     } else {
-      return (switchModel.includes('8200') ? venueAboveTenFirmware : venueFirmware)
+      return (switchModel.includes('8200') || switchModel.includes('8100') ? venueAboveTenFirmware : venueFirmware)
     }
   }
 
@@ -131,7 +143,9 @@ export function SwitchUpgradeNotification (props: {
 
       return SwitchModelGroupDisplayText[model]
     } else {
-      return switchModel?.includes('8200') ? '8200' : '7000'
+      if (switchModel.includes('8200')) return '8200'
+      if (switchModel.includes('8100')) return '8100'
+      return '7000'
     }
 
   }

@@ -238,8 +238,8 @@ export function EditPrivilegeGroup () {
         })
         privilegeGroupData.delegation = displayMspScope
         privilegeGroupData.policyEntityDTOS =
-        (selectedMspScope === ChoiceCustomerEnum.SPECIFIC_CUSTOMER && policyEntities.length > 0)
-          ? policyEntities : undefined
+        (displayMspScope && selectedMspScope === ChoiceCustomerEnum.SPECIFIC_CUSTOMER &&
+         policyEntities.length > 0) ? policyEntities : undefined
       }
 
       isClone ? await addPrivilegeGroup({ payload: privilegeGroupData }).unwrap()
@@ -489,7 +489,8 @@ export function EditPrivilegeGroup () {
           </Space>
         </Radio.Group>
       </Form.Item>
-      {selectedCustomers.length > 0 && selectedMspScope === ChoiceCustomerEnum.SPECIFIC_CUSTOMER &&
+      {displayMspScope && selectedCustomers.length > 0 &&
+       selectedMspScope === ChoiceCustomerEnum.SPECIFIC_CUSTOMER &&
        <DisplaySelectedCustomers />}
     </>
   }
@@ -547,7 +548,8 @@ export function EditPrivilegeGroup () {
           </Space>
         </Radio.Group>
       </Form.Item>
-      {selectedCustomers.length > 0 && selectedMspScope === ChoiceCustomerEnum.SPECIFIC_CUSTOMER &&
+      {displayMspScope && selectedCustomers.length > 0 &&
+       selectedMspScope === ChoiceCustomerEnum.SPECIFIC_CUSTOMER &&
         <DisplaySelectedCustomers />}
     </>
   }

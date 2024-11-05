@@ -9,19 +9,19 @@ export const MessageMapping = {
     }}
   />,
   pin_preparation_list_desc_2: <FormattedMessage
-    defaultMessage={'Enable the <b>Property management</b>service for the <venueSingular></venueSingular> on the <venueSingular></venueSingular> configuration page'}
+    defaultMessage={'Enable the <b>Property management</b> service for the <venueSingular></venueSingular> on the <venueSingular></venueSingular> configuration page'}
     values={{
       b: (content) => <b >{content}</b>
     }}
   />,
   pin_preparation_list_desc_2_1: <FormattedMessage
-    defaultMessage={'When enabling the property management, it’s necessary to create a <b>persona group</b> or select an existing persona group to associate with the property.'}
+    defaultMessage={'When enabling the property management, it’s necessary to create an <b>identity group</b> or select an existing identity group to associate with the property.'}
     values={{
       b: (content) => <b >{content}</b>
     }}
   />,
   pin_preparation_list_desc_2_2: <FormattedMessage
-    defaultMessage={'When creating the persona group, it’s necessary to select an existing <b>DPSK pool service</b> or create a new one to apply to the personas from the persona group'}
+    defaultMessage={'When creating the identity group, it’s necessary to select an existing <b>DPSK pool service</b> or create a new one to apply to the identities from the identity group'}
     values={{
       b: (content) => <b >{content}</b>
     }}
@@ -36,7 +36,7 @@ export const MessageMapping = {
     }}
   />,
   pin_preparation_list_for_wifi_desc_1_1: <FormattedMessage
-    defaultMessage={'Ensure the DPSK networks are using the <b>DPSK pool service</b> selected in the persona group in the property management of <venueSingular></venueSingular>. A DPSK network only can be associated with one personal identity network'}
+    defaultMessage={'Ensure the DPSK networks are using the <b>DPSK pool service</b> selected in the identity group in the property management of <venueSingular></venueSingular>. A DPSK network only can be associated with one personal identity network'}
     values={{
       b: (content) => <b >{content}</b>
     }}

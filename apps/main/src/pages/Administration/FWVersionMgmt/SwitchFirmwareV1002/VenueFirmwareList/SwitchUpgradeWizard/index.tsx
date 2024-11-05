@@ -80,8 +80,8 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
   }
 
   const wizardWidth = {
-    [SwitchFirmwareWizardType.update]: '1180px',
-    [SwitchFirmwareWizardType.schedule]: '1180px',
+    [SwitchFirmwareWizardType.update]: '1450px',
+    [SwitchFirmwareWizardType.schedule]: '1450px',
     [SwitchFirmwareWizardType.skip]: '1120px'
   }
 
@@ -102,6 +102,12 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
         version: form.getFieldValue('selectedICX7XVersion')
       })
     }
+    if (form.getFieldValue('selectedICX81Version')) {
+      versionsPayload.push({
+        modelGroup: SwitchFirmwareModelGroup.ICX81,
+        version: form.getFieldValue('selectedICX81Version')
+      })
+    }
     if (form.getFieldValue('selectedICX82Version')) {
       versionsPayload.push({
         modelGroup: SwitchFirmwareModelGroup.ICX82,
@@ -110,7 +116,6 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
     }
     return versionsPayload
   }
-
 
   const wizardFinish = {
     [SwitchFirmwareWizardType.update]: async () => {

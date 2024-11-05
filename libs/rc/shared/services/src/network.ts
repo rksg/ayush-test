@@ -43,7 +43,8 @@ import {
   IncompatibleFeatureLevelEnum,
   NewTableResult,
   transferToTableResult,
-  MacRegistrationPool
+  MacRegistrationPool,
+  TxStatus
 } from '@acx-ui/rc/utils'
 import { baseNetworkApi }                      from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -335,14 +336,17 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          const { useCase, status } = msg
           const targetUseCase = 'ActivateWifiNetworkOnVenue'
-          await handleCallbackWhenActivityDone({
-            api,
-            activityData: msg,
-            useCase: targetUseCase,
-            callback: requestArgs.callback,
-            failedCallback: requestArgs.failedCallback
-          })
+          if (useCase === targetUseCase && status === TxStatus.SUCCESS) {
+            await handleCallbackWhenActivityDone({
+              api,
+              activityData: msg,
+              useCase: targetUseCase,
+              callback: requestArgs.callback,
+              failedCallback: requestArgs.failedCallback
+            })
+          }
         })
       }
     }),
@@ -393,14 +397,17 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          const { useCase, status } = msg
           const targetUseCase = 'DeactivateWifiNetworkOnVenue'
-          await handleCallbackWhenActivityDone({
-            api,
-            activityData: msg,
-            useCase: targetUseCase,
-            callback: requestArgs.callback,
-            failedCallback: requestArgs.failedCallback
-          })
+          if (useCase === targetUseCase && status === TxStatus.SUCCESS) {
+            await handleCallbackWhenActivityDone({
+              api,
+              activityData: msg,
+              useCase: targetUseCase,
+              callback: requestArgs.callback,
+              failedCallback: requestArgs.failedCallback
+            })
+          }
         })
       }
     }),
@@ -473,7 +480,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         if (networkDeepData) {
           const arg = {
             params,
-            payload: {}
+            payload: { page: 1, pageSize: 10000 }
           }
 
           const {
@@ -1132,6 +1139,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         })
       }
     }),
+    // WARNING: This query is deprecated due to performance issues. Please do not use.
     dashboardV2Overview: build.query<Dashboard, RequestPayload>({
       query: ({ params, payload }) => {
         return {
@@ -1149,6 +1157,30 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Network', id: 'Overview' }]
+    }),
+    venueSummaries: build.query<Dashboard, RequestPayload>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(CommonUrlsInfo.getVenueSummaries, params),
+          body: payload
+        }
+      }
+    }),
+    deviceSummaries: build.query<Dashboard, RequestPayload>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(CommonUrlsInfo.getDeviceSummaries, params),
+          body: payload
+        }
+      }
+    }),
+    clientSummaries: build.query<Dashboard, RequestPayload>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(CommonUrlsInfo.getClientSummaries, params),
+          body: payload
+        }
+      }
     }),
     externalProviders: build.query<ExternalProviders, RequestPayload>({
       query: ({ params, enableRbac }) => {
@@ -1674,6 +1706,9 @@ export const {
   useLazyGetNetworkApCompatibilitiesQuery,
   useDashboardV2OverviewQuery,
   useAlarmSummariesQuery,
+  useVenueSummariesQuery,
+  useDeviceSummariesQuery,
+  useClientSummariesQuery,
   useExternalProvidersQuery,
   useGetCertificateTemplateNetworkBindingQuery,
   useGetMacRegistrationPoolNetworkBindingQuery,

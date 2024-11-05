@@ -50,6 +50,10 @@ jest.mock('./utils', () => ({
   ...jest.requireActual('./utils'),
   useNetworkVxLanTunnelProfileInfo: jest.fn().mockReturnValue({ enableVxLan: false })
 }))
+jest.mock('./Venues/TunnelColumn/useTunnelColumn', () => ({
+  ...jest.requireActual('./Venues/TunnelColumn/useTunnelColumn'),
+  useTunnelColumn: jest.fn().mockReturnValue([])
+}))
 
 async function fillInBeforeSettings (networkName: string) {
   const insertInput = screen.getByLabelText(/Network Name/)

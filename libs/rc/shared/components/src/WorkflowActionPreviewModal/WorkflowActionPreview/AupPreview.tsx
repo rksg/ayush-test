@@ -39,13 +39,7 @@ export function AupPreview (props: GenericActionPreviewProps<AupAction>) {
   }
 
   return <ContentPreview
-    title={<GridRow justify={'center'}
-      align={'middle'}>
-      <GridCol col={{ span: 24 }}
-        style={{ alignItems: 'center' }}>
-        <span dangerouslySetInnerHTML={{ __html: data?.title || '' }} />
-      </GridCol>
-    </GridRow>}
+    title={<span dangerouslySetInnerHTML={{ __html: data?.title || '' }} />}
     body={
       <><GridRow justify={'center'}
         align={'middle'}>

@@ -2,11 +2,21 @@ import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                                                                          from '@acx-ui/feature-toggle'
-import { edgeApi, edgeDhcpApi, edgeHqosProfilesApi }                                                                             from '@acx-ui/rc/services'
-import { EdgeClusterStatus, EdgeDHCPFixtures, EdgeDhcpUrls, EdgeGeneralFixtures, EdgeHqosProfileFixtures, EdgeHqosProfilesUrls } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                                       from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }                                                                                   from '@acx-ui/test-utils'
+import { Features }                                  from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                     from '@acx-ui/rc/components'
+import { edgeApi, edgeDhcpApi, edgeHqosProfilesApi } from '@acx-ui/rc/services'
+import {
+  EdgeClusterStatus,
+  EdgeDHCPFixtures,
+  EdgeDhcpUrls,
+  EdgeGeneralFixtures,
+  EdgeHqosProfileFixtures,
+  EdgeHqosProfilesUrls,
+  EdgeMdnsFixtures,
+  EdgeMdnsProxyUrls
+} from '@acx-ui/rc/utils'
+import { Provider, store }                     from '@acx-ui/store'
+import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { mockDhcpPoolStatsData } from '../../../../Services/DHCP/Edge/__tests__/fixtures'
 
@@ -15,6 +25,7 @@ import { EdgeNetworkControl } from '.'
 const { mockEdgeClusterList } = EdgeGeneralFixtures
 const { mockDhcpStatsData, mockEdgeDhcpDataList } = EdgeDHCPFixtures
 const { mockEdgeHqosProfileStatusList } = EdgeHqosProfileFixtures
+const { mockEdgeMdnsViewDataList } = EdgeMdnsFixtures
 
 const mockedUsedNavigate = jest.fn()
 const mockedActivateEdgeDhcp = jest.fn()
@@ -34,7 +45,8 @@ jest.mock('@acx-ui/rc/components', () => ({
     deactivateEdgeDhcp: mockedDeactivateEdgeDhcp
   }),
   ApCompatibilityToolTip: () => <div data-testid='ApCompatibilityToolTip' />,
-  EdgeCompatibilityDrawer: () => <div data-testid='EdgeCompatibilityDrawer' />
+  EdgeCompatibilityDrawer: () => <div data-testid='EdgeCompatibilityDrawer' />,
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
 
 type MockSelectProps = React.PropsWithChildren<{
@@ -45,7 +57,7 @@ type MockSelectProps = React.PropsWithChildren<{
 jest.mock('antd', () => {
   const components = jest.requireActual('antd')
   const Select = ({ loading, children, onChange, options, ...props }: MockSelectProps) => (
-    <select {...props} onChange={(e) => onChange?.(e.target.value)} value=''>
+    <select {...props} onChange={(e) => onChange?.(e.target.value)}>
       {/* Additional <option> to ensure it is possible to reset value to empty */}
       {children ? <><option value={''}></option>{children}</> : null}
       {options?.map((option, index) => (
@@ -62,7 +74,8 @@ describe('Edge Cluster Network Control Tab', () => {
   const mockEdgeClusterListForHqos = _.cloneDeep(mockEdgeClusterList.data[0])
   mockEdgeClusterListForHqos.edgeList.forEach(e => e.cpuCores = 4)
   beforeEach(() => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsEdgeFeatureReady)
+      .mockImplementation(ff => ff !== Features.EDGE_MDNS_PROXY_TOGGLE)
 
     store.dispatch(edgeApi.util.resetApiState())
     store.dispatch(edgeDhcpApi.util.resetApiState())
@@ -393,7 +406,152 @@ describe('Edge Cluster Network Control Tab', () => {
           path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab'
         }
       })
-    expect(await screen.findByTestId('ApCompatibilityToolTip')).toBeVisible()
+    const toolTips = await screen.findAllByTestId('ApCompatibilityToolTip')
+    expect(toolTips.length).toBe(2)
+    expect(toolTips[0]).toBeVisible()
+    expect(toolTips[1]).toBeVisible()
     expect(await screen.findByTestId('EdgeCompatibilityDrawer')).toBeVisible()
   })
+
+  describe('mDNS', () => {
+    beforeEach(() => {
+      jest.mocked(useIsEdgeFeatureReady)
+        .mockImplementation(ff => ff === Features.EDGE_MDNS_PROXY_TOGGLE)
+
+      params = {
+        tenantId: '1ecc2d7cf9d2342fdb31ae0e24958fcac',
+        clusterId: mockEdgeClusterList.data[0].clusterId,
+        activeTab: 'networkControl'
+      }
+
+      mockServer.use(
+        rest.post(
+          EdgeMdnsProxyUrls.getEdgeMdnsProxyViewDataList.url,
+          (_, res, ctx) => res(ctx.json({
+            data: mockEdgeMdnsViewDataList
+          }))
+        ))
+    })
+
+    it('should change cluster mDNS', async () => {
+      const mockedActivateEdgeClusterReq = jest.fn()
+      mockServer.use(
+        rest.put(
+          EdgeMdnsProxyUrls.activateEdgeMdnsProxyCluster.url,
+          (req, res, ctx) => {
+            mockedActivateEdgeClusterReq(req.params)
+            return res(ctx.status(202))
+          }
+        )
+      )
+
+      render(
+        <Provider>
+          <EdgeNetworkControl
+            currentClusterStatus={mockEdgeClusterList.data[0] as EdgeClusterStatus} />
+        </Provider>, {
+          route: {
+            params,
+            path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab'
+          }
+        })
+
+      await screen.findByText('mDNS Proxy')
+      const mdnsSwitch = getMdnsSwitchBtn()
+      await waitFor(() => expect(mdnsSwitch).toBeChecked())
+      const dropdown = getMdnsDropdownBtn()
+      await waitFor(() => expect(dropdown).toHaveValue(mockEdgeMdnsViewDataList[0].id))
+      await userEvent.selectOptions(
+        dropdown!,
+        await screen.findByRole('option', { name: mockEdgeMdnsViewDataList[1].name })
+      )
+
+      await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
+      expect(mockedActivateEdgeClusterReq).toBeCalledWith({
+        venueId: mockEdgeClusterList.data[0].venueId,
+        serviceId: mockEdgeMdnsViewDataList[1].id,
+        edgeClusterId: mockEdgeClusterList.data[0].clusterId
+      })
+    })
+
+    it('should deactivate cluster mDNS when switch into off', async () => {
+      const mockedDeactivateEdgeClusterReq = jest.fn()
+      mockServer.use(
+        rest.delete(
+          EdgeMdnsProxyUrls.deactivateEdgeMdnsProxyCluster.url,
+          (req, res, ctx) => {
+            mockedDeactivateEdgeClusterReq(req.params)
+            return res(ctx.status(202))
+          }
+        )
+      )
+
+      render(
+        <Provider>
+          <EdgeNetworkControl
+            currentClusterStatus={mockEdgeClusterList.data[0] as EdgeClusterStatus} />
+        </Provider>, {
+          route: {
+            params,
+            path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab'
+          }
+        })
+
+      expect(await screen.findByText(mockEdgeMdnsViewDataList[0].name)).toBeVisible()
+      const mdnsSwitch = getMdnsSwitchBtn()
+      expect(mdnsSwitch).toBeChecked()
+      await userEvent.click(mdnsSwitch!)
+      await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
+      expect(mockedDeactivateEdgeClusterReq).toBeCalledWith({
+        venueId: mockEdgeClusterList.data[0].venueId,
+        serviceId: mockEdgeMdnsViewDataList[0].id,
+        edgeClusterId: mockEdgeClusterList.data[0].clusterId
+      })
+    })
+
+    it('should not trigger API when there is no change', async () => {
+      const mockedActivateEdgeClusterReq = jest.fn()
+      mockServer.use(
+        rest.put(
+          EdgeMdnsProxyUrls.activateEdgeMdnsProxyCluster.url,
+          (req, res, ctx) => {
+            mockedActivateEdgeClusterReq(req.params)
+            return res(ctx.status(202))
+          }
+        )
+      )
+
+      render(
+        <Provider>
+          <EdgeNetworkControl
+            currentClusterStatus={mockEdgeClusterList.data[0] as EdgeClusterStatus} />
+        </Provider>, {
+          route: {
+            params,
+            path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab'
+          }
+        })
+
+      await screen.findByText('mDNS Proxy')
+      const mdnsSwitch = getMdnsSwitchBtn()
+      await waitFor(() => expect(mdnsSwitch).toBeChecked())
+      const dropdown = getMdnsDropdownBtn()
+      await waitFor(() => expect(dropdown).toHaveValue(mockEdgeMdnsViewDataList[0].id))
+
+      await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
+      expect(mockedActivateEdgeClusterReq).toBeCalledTimes(0)
+    })
+  })
 })
+
+const getMdnsSwitchBtn = () => {
+  const switchBtn = screen.getAllByRole('switch')
+  const mdnsSwitch = switchBtn.find(btn => btn.id === 'edgeMdnsSwitch')
+  return mdnsSwitch
+}
+
+const getMdnsDropdownBtn = () => {
+  const comboboxs = screen.getAllByRole('combobox')
+  const mdnsCombobox = comboboxs.find(btn => btn.id === 'edgeMdnsId')
+  return mdnsCombobox
+}

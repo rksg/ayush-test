@@ -1,5 +1,8 @@
 import React from 'react'
 
+import { Image, Typography } from 'antd'
+import { useIntl }           from 'react-intl'
+
 import { PoweredBy, WiFi4EuBanner }                                  from '@acx-ui/icons'
 import { DefaultUIConfiguration, getLogoImageSize, UIConfiguration } from '@acx-ui/rc/utils'
 
@@ -20,6 +23,7 @@ interface ContentPreviewProps {
 
 export function ContentPreview (props: ContentPreviewProps) {
   const { uiConfiguration, title, body, extra, hideNavigation = false, ...rest } = props
+  const { $t } = useIntl()
   const {
     uiColorSchema,
     uiStyleSchema
@@ -34,26 +38,29 @@ export function ContentPreview (props: ContentPreviewProps) {
       }
 
       {uiConfiguration?.logoImage &&
-        <img
-          style={{
-            height: getLogoImageSize(uiStyleSchema.logoSize),
-            width: getLogoImageSize(uiStyleSchema.logoSize),
-            margin: '24px'
-          }}
+        <Image
           src={uiConfiguration?.logoImage}
-          alt={'logo'}
+          width={getLogoImageSize(uiStyleSchema.logoSize)}
+          height={getLogoImageSize(uiStyleSchema.logoSize)}
+          alt={$t({ defaultMessage: 'Logo' })}
+          preview={false}
+          placeholder={true}
         />
       }
-      <UI.Title
+      <Typography.Title
         style={{
-          fontSize: `${uiStyleSchema.headerFontSize}px`,
-          letterSpacing: `${uiStyleSchema.headerFontSize * 0.03}px`,
-          lineHeight: `${uiStyleSchema.headerFontSize * 1.2}px`,
+          width: '100%',
+          textAlign: 'center',
           color: uiColorSchema.fontHeaderColor
+            ? uiColorSchema.fontHeaderColor
+            : DefaultUIConfiguration.uiColorSchema.fontHeaderColor,
+          fontSize: uiStyleSchema.headerFontSize
+            ? uiStyleSchema.headerFontSize
+            : DefaultUIConfiguration.uiStyleSchema.headerFontSize
         }}
       >
         {title}
-      </UI.Title>
+      </Typography.Title>
       <UI.Body
         style={{
           color: uiColorSchema.fontColor,

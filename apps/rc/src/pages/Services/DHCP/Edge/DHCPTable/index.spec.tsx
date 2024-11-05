@@ -1,8 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { edgeApi, edgeDhcpApi }   from '@acx-ui/rc/services'
 import {
+  EdgeCompatibilityFixtures,
   EdgeDhcpUrls,
   EdgeGeneralFixtures,
   EdgeUrlsInfo,
@@ -25,12 +27,18 @@ import { mockDhcpStatsData } from '../__tests__/fixtures'
 import DHCPTable from '.'
 
 const { mockEdgeClusterList } = EdgeGeneralFixtures
+const { mockEdgeDhcpCompatibilities } = EdgeCompatibilityFixtures
 const mockedGetClusterList = jest.fn()
 const mockedUsedNavigate = jest.fn()
 const mockedUpdateFn = jest.fn()
+const test123 = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
+}))
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  ApCompatibilityToolTip: () => <div data-testid='ApCompatibilityToolTip' />
 }))
 
 describe('EdgeDhcpTable', () => {
@@ -43,7 +51,7 @@ describe('EdgeDhcpTable', () => {
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
-
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockedGetClusterList.mockReset()
     store.dispatch(edgeApi.util.resetApiState())
     store.dispatch(edgeDhcpApi.util.resetApiState())
@@ -69,6 +77,12 @@ describe('EdgeDhcpTable', () => {
           mockedUpdateFn()
           return res(ctx.status(202))
         }
+      ),
+      rest.post(
+        EdgeDhcpUrls.getDhcpEdgeCompatibilities.url,
+        (req, res, ctx) => {
+          test123()
+          return res(ctx.json(mockEdgeDhcpCompatibilities))}
       )
     )
   })
@@ -84,6 +98,8 @@ describe('EdgeDhcpTable', () => {
     await waitFor(() => expect(mockedGetClusterList).toBeCalled())
     const row = await screen.findAllByRole('row', { name: /TestDHCP-/i })
     expect(row.length).toBe(4)
+    await waitFor(() => expect(test123).toBeCalled())
+    expect(await screen.findByTestId('ApCompatibilityToolTip')).toBeVisible()
   })
 
   it('should render breadcrumb correctly', async () => {

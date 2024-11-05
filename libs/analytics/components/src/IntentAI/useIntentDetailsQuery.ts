@@ -10,6 +10,8 @@ import { useParams }                                     from '@acx-ui/react-rou
 import { intentAIApi }                                   from '@acx-ui/store'
 import { getIntl, NetworkPath, noDataDisplay, NodeType } from '@acx-ui/utils'
 
+import { NetworkNode } from '../NetworkFilter/services'
+
 import { DisplayStates, Statuses, StatusReasons }        from './states'
 import { dataRetentionText, IntentWlan, isDataRetained } from './utils'
 
@@ -58,7 +60,9 @@ export type Intent = {
         currency: string
         value: number
       }
-    }
+      excludedAPs?: [NetworkNode[]]
+    },
+    unsupportedAPs?: string[]
   }
   sliceType: NodeType
   sliceValue: string

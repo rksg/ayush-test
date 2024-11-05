@@ -32,7 +32,10 @@ import {
   MspAssignmentSummary
 } from '@acx-ui/msp/utils'
 import {
-  EntitlementDeviceType, EntitlementUtil, ErrorDetails, ErrorsResult, useTableQuery
+  CatchErrorDetails,
+  EntitlementDeviceType,
+  EntitlementUtil,
+  useTableQuery
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -68,6 +71,14 @@ interface Assignment {
   quantity: number
   deviceType: EntitlementDeviceType
   useTemporaryMspEntitlement?: boolean
+}
+
+interface CatchErrorResponse<T> {
+  data: {
+    error: T,
+    requestId: string
+  },
+  status: number
 }
 
 export const entitlementAssignmentPayload = {
@@ -207,13 +218,14 @@ export function AssignMspLicense () {
     return Promise.resolve()
   }
 
-  const handleSubmitFailed = (error: ErrorsResult<ErrorDetails>) => {
+  const handleSubmitFailed = (error: CatchErrorResponse<CatchErrorDetails>) => {
+    const errData = error?.data
     let title = intl.$t({ defaultMessage: 'Assign Subscription Failed' })
     let message
     const status = error.status
     if (status === 409) {
       // eslint-disable-next-line max-len
-      message = error.data.errorMessage ?? intl.$t({ defaultMessage: 'Operation failed' })
+      message = (errData?.error?.message) ?? intl.$t({ defaultMessage: 'Operation failed' })
     } else {
       const status = error.status
       title = intl.$t({ defaultMessage: 'Server Error' })
@@ -382,7 +394,7 @@ export function AssignMspLicense () {
       }
       navigate(linkToSubscriptions, { replace: true })
     } catch (error) {
-      const respData = error as ErrorsResult<ErrorDetails>
+      const respData = error as CatchErrorResponse<CatchErrorDetails>
       handleSubmitFailed(respData)
     }
   }
