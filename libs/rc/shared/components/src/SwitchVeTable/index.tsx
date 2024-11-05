@@ -266,8 +266,9 @@ export function SwitchVeTable (props: {
     scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE]
   })
 
-  const isActionHidden = function () {
+  const isActionHidden = (data?: VeViewModel[]) => {
     return !isVenueLevel && switchDetail?.model?.startsWith('ICX8100')
+      && (data?.length || 0) > 0
   }
 
   return <Loader states={[tableQuery]}>
@@ -289,7 +290,7 @@ export function SwitchVeTable (props: {
         getCheckboxProps: (record) => ({ disabled: record?.inactiveRow }),
         onChange: onSelectChange
       } : undefined}
-      actions={isActionHidden() ? [] :
+      actions={isActionHidden(tableQuery.data?.data) ? [] :
         filterByAccess([{
           label: $t({ defaultMessage: 'Add VLAN interface (VE)' }),
           scopeKey: [SwitchScopes.CREATE],
