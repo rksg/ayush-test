@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from 'react'
 
 import { Form, Select, Space } from 'antd'
-import { DefaultOptionType }   from 'antd/lib/select'
 import { get, isEmpty }        from 'lodash'
+import _                       from 'lodash'
 import { useIntl }             from 'react-intl'
 import { useParams }           from 'react-router-dom'
 
@@ -48,14 +48,41 @@ export const AAAInstance = (props: AAAInstanceProps) => {
     queryOptions: { refetchOnMountOrArgChange: 10 }
   })
   const [ getAaaPolicy ] = useLazyGetAAAPolicyInstance()
+
+  const convertAaaListToDropdownItems = (
+    targetRadiusType: typeof radiusTypeMap[keyof typeof radiusTypeMap],
+    aaaList?: AAAViewModalType[]
+  ) => {
+    let cloneList = _.cloneDeep(aaaList)
+    if (supportRadsec && (
+      props.networkType === NetworkTypeEnum.PSK ||
+      (props.networkType === NetworkTypeEnum.DPSK && radiusType === 'ACCOUNTING')
+    )) {
+      cloneList = cloneList?.filter(m => m.radSecOptions?.tlsEnabled !== true)
+      if (form.getFieldValue('authRadiusId') &&
+        !cloneList?.find(l => l.id === form.getFieldValue('authRadiusId')) &&
+        props.networkType === NetworkTypeEnum.PSK) {
+        form.setFieldValue('authRadius', null)
+        form.setFieldValue('authRadiusId', '')
+      }
+      if (form.getFieldValue('accountingRadiusId') !== null &&
+        !cloneList?.find(l => l.id === form.getFieldValue('accountingRadiusId'))) {
+        form.setFieldValue('accountingRadius', null)
+        form.setFieldValue('accountingRadiusId', '')
+      }
+    }
+    // eslint-disable-next-line max-len
+    return cloneList?.filter(m => m.type === targetRadiusType).map(m => ({ label: m.name, value: m.id })) ?? []
+  }
+
   // eslint-disable-next-line max-len
-  const [ aaaDropdownItems, setAaaDropdownItems ]= useState(convertAaaListToDropdownItems(radiusType, aaaListQuery?.data, props.networkType))
+  const [ aaaDropdownItems, setAaaDropdownItems ]= useState(convertAaaListToDropdownItems(radiusType, aaaListQuery?.data))
   const { data, setData } = useContext(NetworkFormContext)
 
   useEffect(()=>{
     if (aaaListQuery?.data) {
       setAaaDropdownItems(
-        convertAaaListToDropdownItems(radiusType, aaaListQuery.data, props.networkType))
+        convertAaaListToDropdownItems(radiusType, aaaListQuery.data))
     }
   },[aaaListQuery])
 
@@ -175,16 +202,3 @@ export const AAAInstance = (props: AAAInstanceProps) => {
 }
 
 //export default AAAInstance
-
-function convertAaaListToDropdownItems (
-  targetRadiusType: typeof radiusTypeMap[keyof typeof radiusTypeMap],
-  aaaList?: AAAViewModalType[],
-  networkType?: NetworkTypeEnum
-): DefaultOptionType[] {
-  if (networkType === NetworkTypeEnum.PSK) {
-    aaaList = aaaList?.filter(m => m.radSecOptions?.tlsEnabled !== true)
-  }
-
-  // eslint-disable-next-line max-len
-  return aaaList?.filter(m => m.type === targetRadiusType).map(m => ({ label: m.name, value: m.id })) ?? []
-}

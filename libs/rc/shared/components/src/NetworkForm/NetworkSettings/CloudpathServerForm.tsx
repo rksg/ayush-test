@@ -116,7 +116,8 @@ export function CloudpathServerForm () {
         </UI.FieldLabel>
         {enableAccountingService && <>
           <AAAInstance serverLabel={$t({ defaultMessage: 'Accounting Server' })}
-            type='accountingRadius'/>
+            type='accountingRadius'
+            networkType={data?.type}/>
           {(data?.type && accountingProxyNetworkTypes.includes(data.type))&&
           <UI.FieldLabel width={labelWidth}>
             <Space align='start'>
