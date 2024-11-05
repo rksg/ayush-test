@@ -23,7 +23,8 @@ import {
   VenueMessages,
   useTableQuery,
   VeViewModel,
-  SwitchViewModel
+  SwitchViewModel,
+  getSwitchModel
 } from '@acx-ui/rc/utils'
 import { useParams }                     from '@acx-ui/react-router-dom'
 import { SwitchScopes }                  from '@acx-ui/types'
@@ -266,6 +267,16 @@ export function SwitchVeTable (props: {
     scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE]
   })
 
+  const isActionHidden = (data?: VeViewModel[]) => {
+    return !isVenueLevel && (switchDetail?.model?.startsWith('ICX8100') || false)
+      && (data?.length || 0) > 0
+  }
+
+  const existVe8100 = (data?: VeViewModel[]) => {
+    return data?.filter(ve => ve.switchName && getSwitchModel(ve.switchName)?.startsWith('ICX8100'))
+      .map(ve => ve.switchName || '') ?? []
+  }
+
   return <Loader states={[tableQuery]}>
     <Table
       settingsId='switch-ve-table'
@@ -285,16 +296,17 @@ export function SwitchVeTable (props: {
         getCheckboxProps: (record) => ({ disabled: record?.inactiveRow }),
         onChange: onSelectChange
       } : undefined}
-      actions={filterByAccess([{
-        label: $t({ defaultMessage: 'Add VLAN interface (VE)' }),
-        scopeKey: [SwitchScopes.CREATE],
-        disabled: cliApplied,
-        tooltip: cliApplied ? $t(VenueMessages.CLI_APPLIED) : '',
-        onClick: () => {
-          setIsEditMode(false)
-          setEditData({} as VeViewModel)
-          setVisible(true) }
-      }])}
+      actions={isActionHidden(tableQuery.data?.data) ? undefined :
+        filterByAccess([{
+          label: $t({ defaultMessage: 'Add VLAN interface (VE)' }),
+          scopeKey: [SwitchScopes.CREATE],
+          disabled: cliApplied,
+          tooltip: cliApplied ? $t(VenueMessages.CLI_APPLIED) : '',
+          onClick: () => {
+            setIsEditMode(false)
+            setEditData({} as VeViewModel)
+            setVisible(true) }
+        }])}
     />
     {visible && <SwitchVeDrawer
       visible={visible}
@@ -304,6 +316,7 @@ export function SwitchVeTable (props: {
       editData={editData}
       readOnly={isEditMode && cliApplied}
       switchInfo={props.switchInfo}
+      existVe8100={existVe8100(tableQuery.data?.data)}
     />}
 
   </Loader>

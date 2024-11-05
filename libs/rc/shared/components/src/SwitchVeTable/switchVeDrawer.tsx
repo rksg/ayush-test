@@ -36,12 +36,13 @@ interface SwitchVeProps {
   isVenueLevel: boolean
   editData: VeViewModel,
   readOnly: boolean,
-  switchInfo?: SwitchViewModel
+  switchInfo?: SwitchViewModel,
+  existVe8100: string[]
 }
 
 export const SwitchVeDrawer = (props: SwitchVeProps) => {
   const { $t } = useIntl()
-  const { visible, setVisible, isEditMode, isVenueLevel, editData, readOnly } = props
+  const { visible, setVisible, isEditMode, isVenueLevel, editData, readOnly, existVe8100 } = props
 
   const [form] = Form.useForm()
   const { switchId: sid, tenantId, venueId: vid } = useParams()
@@ -86,7 +87,8 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
       enableRbac: isSwitchRbacEnabled
     }, true))
       .data?.data?.filter(s => s.deviceStatus === 'ONLINE' && s.switchType === 'router')
-    setSwitchOption(switches?.map(s => ({ label: s.name, key: s.id, value: s.id })) ?? [])
+    setSwitchOption(switches?.filter(s => !existVe8100.includes(s.serialNumber || ''))
+      .map(s => ({ label: s.name, key: s.id, value: s.id })) ?? [])
   }
 
   const getSwitchDetailHeader = async (switchId: string) => {
