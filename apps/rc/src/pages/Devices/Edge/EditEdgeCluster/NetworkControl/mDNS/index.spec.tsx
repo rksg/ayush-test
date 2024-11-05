@@ -1,7 +1,7 @@
-import userEvent     from '@testing-library/user-event'
-import { Form }      from 'antd'
-import { cloneDeep } from 'lodash'
-import { rest }      from 'msw'
+import userEvent          from '@testing-library/user-event'
+import { Form }           from 'antd'
+import { cloneDeep, get } from 'lodash'
+import { rest }           from 'msw'
 
 import { StepsForm }      from '@acx-ui/components'
 import {
@@ -78,21 +78,25 @@ jest.mock('@acx-ui/rc/services', () => ({
 }))
 
 describe('Edge Cluster Network Control Tab > mDNS', () => {
+  const mockVenueId = 'mock_venue_1'
+  const mockClusterId= 'mock_cluster_2'
   let params: { tenantId: string, clusterId: string, activeTab?: string } = {
     tenantId: '1ecc2d7cf9d2342fdb31ae0e24958fcac',
-    clusterId: '1',
+    clusterId: mockClusterId,
     activeTab: 'networkControl'
   }
-  const mockVenueId = 'mock_venue_1'
-  const mockClusterId= 'mock_cluster_1'
 
   beforeEach(() => {
     mockServer.use(
       rest.post(
         EdgeMdnsProxyUrls.getEdgeMdnsProxyViewDataList.url,
-        (_, res, ctx) => res(ctx.json({
-          data: mockEdgeMdnsViewDataList
-        }))
+        (req, res, ctx) => {
+          const isSearch = get(req.body, 'matchFields')
+          // isSearch == true: mock as no bound mDNS for current cluster
+          return res(ctx.json({
+            data: isSearch ? [] : mockEdgeMdnsViewDataList
+          }))
+        }
       ),
       rest.get(
         EdgeMdnsProxyUrls.getEdgeMdnsProxy.url,

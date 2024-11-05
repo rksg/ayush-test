@@ -24,14 +24,16 @@ export const MdnsProxyFormItem = (props: {
       fields: [
         'id', 'activations'
       ],
-      filters: { 'activations.venueId': [venueId] }
+      matchFields: [{
+        field: 'edgeClusters.clusterId',
+        value: clusterId
+      }]
     }
   },
   {
     skip: !Boolean(venueId),
     selectFromResult: ({ data, isLoading }) => ({
-      // eslint-disable-next-line max-len
-      currentEdgeMdns: data?.data.find(item => item.activations?.some((a) => a.edgeClusterId === clusterId )),
+      currentEdgeMdns: data?.data[0],
       isMdnsLoading: isLoading
     })
   })
