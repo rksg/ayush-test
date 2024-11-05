@@ -461,7 +461,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       {
         key: 'uptime',
         title: $t({ defaultMessage: 'Up Time' }),
-        dataIndex: 'apStatusData.APSystem.uptime',
+        dataIndex: 'uptime',
         sorter: true,
         render: (data: ReactNode, row: NewAPModelExtended) => {
           const uptime = row?.uptime

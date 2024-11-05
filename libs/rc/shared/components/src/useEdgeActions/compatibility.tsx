@@ -5,11 +5,11 @@ import { UseLazyQuery }    from '@reduxjs/toolkit/dist/query/react/buildHooks'
 import { QueryDefinition } from '@reduxjs/toolkit/query'
 import { get, isNil }      from 'lodash'
 
+import { useIsSplitOn, Features }           from '@acx-ui/feature-toggle'
 import {
   useLazyGetApFeatureSetsQuery,
   useLazyGetEdgeFeatureSetsQuery,
-  // TODO: add back after BE code deploy
-  // useLazyGetPinApCompatibilitiesQuery,
+  useLazyGetPinApCompatibilitiesQuery,
   useLazyGetPinEdgeCompatibilitiesQuery,
   useLazyGetSdLanApCompatibilitiesQuery,
   useLazyGetSdLanEdgeCompatibilitiesQuery,
@@ -48,12 +48,13 @@ export const useEdgeSdLansCompatibilityData = (serviceIds: string[], skip: boole
 }
 
 export const useEdgePinsCompatibilityData = (serviceIds: string[], skip: boolean = false) => {
+  const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
+
   const results = useEdgeSvcsPcysCompatibilitiesData({
     serviceIds: serviceIds,
     skip: skip,
-    useEdgeSvcPcyCompatibleQuery: useLazyGetPinEdgeCompatibilitiesQuery
-    // TODO: waiting for BE
-    // useEdgeSvcPcyApCompatibleQuery: useLazyGetSdLanApCompatibilitiesQuery
+    useEdgeSvcPcyCompatibleQuery: useLazyGetPinEdgeCompatibilitiesQuery,
+    useEdgeSvcPcyApCompatibleQuery: isApCompatibilitiesByModel ? useLazyGetSdLanApCompatibilitiesQuery : undefined
   })
   return results as {
     compatibilities: Record<string, EdgeServiceCompatibility[] | EdgeServiceApCompatibility[]> | undefined
@@ -92,12 +93,13 @@ export const useEdgePinDetailsCompatibilitiesData = (props: {
   serviceId: string,
   skip?: boolean,
 }) => {
+  const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
+
   const results = useEdgeSvcsPcysCompatibilitiesData({
     serviceIds: props.serviceId,
     skip: props.skip,
-    useEdgeSvcPcyCompatibleQuery: useLazyGetPinEdgeCompatibilitiesQuery
-    // TODO: waiting for BE
-    // useEdgeSvcPcyApCompatibleQuery: useLazyGetPinApCompatibilitiesQuery
+    useEdgeSvcPcyCompatibleQuery: useLazyGetPinEdgeCompatibilitiesQuery,
+    useEdgeSvcPcyApCompatibleQuery: isApCompatibilitiesByModel ? useLazyGetPinApCompatibilitiesQuery : undefined
   })
 
   const transformed: Record<string, Record<string, ApCompatibility>> = {}
@@ -107,10 +109,9 @@ export const useEdgePinDetailsCompatibilitiesData = (props: {
     if(deviceType === CompatibilityDeviceEnum.EDGE) {
       const details = getFeaturesIncompatibleDetailData((compatibilities as EdgeServiceCompatibility[])[0])
       transformed[CompatibilityDeviceEnum.EDGE] = details
-    // TODO: waiting for BE
-    // } else if (deviceType === CompatibilityDeviceEnum.AP) {
-    //   const details = getFeaturesIncompatibleDetailData((compatibilities as EdgeServiceApCompatibility[])[0])
-    //   transformed[CompatibilityDeviceEnum.AP] = details
+    } else if (deviceType === CompatibilityDeviceEnum.AP) {
+      const details = getFeaturesIncompatibleDetailData((compatibilities as EdgeServiceApCompatibility[])[0])
+      transformed[CompatibilityDeviceEnum.AP] = details
     }
   })
 
