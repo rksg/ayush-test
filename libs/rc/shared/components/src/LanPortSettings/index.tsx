@@ -154,7 +154,7 @@ export function LanPortSettings (props: {
   useEffect(()=> {
     if (!isLoadingEthPortList && ethernetPortListQuery?.data) {
       const ethProfile = ethernetPortListQuery.data.find((profile)=> ethernetProfileCreateId ?
-      profile.id === ethernetProfileCreateId : profile.id === ethernetPortProfileId)
+        profile.id === ethernetProfileCreateId : profile.id === ethernetPortProfileId)
 
       setCurrentEthernetPortData(ethProfile)
       if (ethProfile && ethernetProfileCreateId) {
