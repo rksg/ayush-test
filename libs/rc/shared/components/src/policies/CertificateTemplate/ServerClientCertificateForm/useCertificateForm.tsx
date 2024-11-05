@@ -55,8 +55,10 @@ export default function useCertificateForm () {
       return res?.response?.id
     } else {
       const uploadCertData = new FormData()
-      if (formData.publicKey) uploadCertData.append('certificateFile', formData.publicKey.file)
-      if (formData.privateKey) uploadCertData.append('privateKeyFile', formData.privateKey.file)
+      if (formData.publicKey) uploadCertData.append('certificateFile',
+        new Blob([formData.publicKey.file], { type: formData.publicKey.file.type }))
+      if (formData.privateKey) uploadCertData.append('privateKeyFile',
+        new Blob([formData.privateKey.file], { type: formData.privateKey.file.type }))
       if (formData.name) uploadCertData.append('name', formData.name)
       if (formData.password) uploadCertData.append('password', formData.password)
 

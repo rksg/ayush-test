@@ -2,9 +2,9 @@ import { Checkbox, Form, Input, Select, Space } from 'antd'
 import moment                                   from 'moment'
 import { useIntl }                              from 'react-intl'
 
-import { DatePicker, GridCol, GridRow }                                                 from '@acx-ui/components'
-import { useGetCertificateAuthoritiesQuery, useGetServerCertificatesQuery }             from '@acx-ui/rc/services'
-import { trailingNorLeadingSpaces, checkObjectNotExists, ExtendedKeyUsages, KeyUsages } from '@acx-ui/rc/utils'
+import { DatePicker, GridCol, GridRow }                                                                          from '@acx-ui/components'
+import { useGetCertificateAuthoritiesQuery, useGetServerCertificatesQuery }                                      from '@acx-ui/rc/services'
+import { trailingNorLeadingSpaces, checkObjectNotExists, ExtendedKeyUsages, KeyUsages, CertificateCategoryType } from '@acx-ui/rc/utils'
 
 import CertificateStrengthSettings                                     from '../../CertificateTemplateForm/CertificateTemplateSettings/CertificateStrengthSettings'
 import { MAX_CERTIFICATE_PER_TENANT }                                  from '../../constants'
@@ -178,7 +178,7 @@ export default function GenerateCertificate () {
         <Description>{$t(caFormDescription.STRENGTH)}</Description>
         <GridRow>
           <GridCol col={{ span: 10 }} >
-            <CertificateStrengthSettings />
+            <CertificateStrengthSettings certType={CertificateCategoryType.SERVER_CERTIFICATES}/>
           </GridCol>
         </GridRow>
       </Section >

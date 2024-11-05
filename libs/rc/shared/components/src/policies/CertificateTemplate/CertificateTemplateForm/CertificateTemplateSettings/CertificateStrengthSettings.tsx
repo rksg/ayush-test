@@ -1,16 +1,21 @@
 import { Form, Slider } from 'antd'
 import { useIntl }      from 'react-intl'
 
-import { Select }        from '@acx-ui/components'
-import { AlgorithmType } from '@acx-ui/rc/utils'
+import { Select }                                                                from '@acx-ui/components'
+import { AlgorithmType, CertificateCategoryType, ServerClientCertAlgorithmType } from '@acx-ui/rc/utils'
 
-import { algorithmLabel, onboardSettingsDescription } from '../../contentsMap'
+import { algorithmLabel, onboardSettingsDescription, serverAlgorithmLabel } from '../../contentsMap'
 
-export default function CertificateStrengthSettings () {
+export default function CertificateStrengthSettings (props: {
+  certType?: CertificateCategoryType }) {
   const { $t } = useIntl()
 
   const options = Object.values(AlgorithmType).map(algo => {
     return { value: algo, label: $t(algorithmLabel[algo]) }
+  })
+
+  const serverOptions = Object.values(ServerClientCertAlgorithmType).map(algo => {
+    return { value: algo, label: $t(serverAlgorithmLabel[algo]) }
   })
 
   const validateMultipleOfEight = (value: number) => {
@@ -48,7 +53,7 @@ export default function CertificateStrengthSettings () {
         <Select
           style={{ width: '150px' }}
           placeholder={$t({ defaultMessage: 'Select Algorithm...' })}
-          options={options}
+          options={props?.certType ? serverOptions : options}
         />
       </Form.Item >
     </>
