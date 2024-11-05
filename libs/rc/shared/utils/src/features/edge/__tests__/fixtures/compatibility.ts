@@ -165,6 +165,85 @@ mockEdgePinCompatibilities.compatibilities.forEach((item, idx) => {
   })
 })
 
+export const mockEdgeMdnsCompatibilities = {
+  compatibilities: [
+    {
+      serviceId: 'mdns-1',
+      clusterEdgeCompatibilities: [
+        {
+          identityType: CompatibilityEntityTypeEnum.CLUSTER,
+          id: 'edgeCluster-1',
+          incompatibleFeatures: [
+            {
+              featureRequirement: {
+                featureName: IncompatibilityFeatures.EDGE_MDNS_PROXY,
+                requiredFw: '2.3.0.1'
+              },
+              incompatibleDevices: [
+                {
+                  firmware: '2.1.0.100',
+                  count: 1
+                }
+              ]
+            }
+          ],
+          total: 6,
+          incompatible: 2
+        },
+        {
+          identityType: CompatibilityEntityTypeEnum.CLUSTER,
+          id: 'edgeCluster-3',
+          incompatibleFeatures: [
+            {
+              featureRequirement: {
+                featureName: IncompatibilityFeatures.EDGE_MDNS_PROXY,
+                requiredFw: '2.3.0.1'
+              },
+              incompatibleDevices: [
+                {
+                  firmware: '2.1.0.100',
+                  count: 1
+                },
+                {
+                  firmware: '2.1.0.150',
+                  count: 3
+                }
+              ]
+            }
+          ],
+          total: 8,
+          incompatible: 5
+        }
+      ]
+    },  // end of service-1
+    {
+      serviceId: 'mdns-2',
+      clusterEdgeCompatibilities: [
+        {
+          identityType: CompatibilityEntityTypeEnum.CLUSTER,
+          id: 'edgeCluster-2',
+          incompatibleFeatures: [
+            {
+              featureRequirement: {
+                featureName: IncompatibilityFeatures.EDGE_MDNS_PROXY,
+                requiredFw: '2.3.0.1'
+              },
+              incompatibleDevices: [
+                {
+                  firmware: '2.1.0.100',
+                  count: 1
+                }
+              ]
+            }
+          ],
+          total: 6,
+          incompatible: 2
+        }
+      ]
+    }  // end of service-2
+  ]
+}
+
 export const mockEdgeHqosCompatibilities: EdgeServiceCompatibilitiesResponse = {
   compatibilities: [
     {
