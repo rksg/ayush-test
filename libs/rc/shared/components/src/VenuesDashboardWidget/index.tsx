@@ -1,9 +1,10 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { cssStr, Loader, Card , DonutChart } from '@acx-ui/components'
-import type { DonutChartData }               from '@acx-ui/components'
-import { useDashboardV2OverviewQuery }       from '@acx-ui/rc/services'
+import { cssStr, Loader, Card , DonutChart }                   from '@acx-ui/components'
+import type { DonutChartData }                                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
+import { useDashboardV2OverviewQuery, useVenueSummariesQuery } from '@acx-ui/rc/services'
 import {
   Dashboard,
   ApVenueStatusEnum
@@ -54,7 +55,10 @@ export function VenuesDashboardWidgetV2 () {
 
   const { venueIds } = useDashboardFilter()
 
-  const queryResults = useDashboardV2OverviewQuery({
+  const isNewDashboardQueryEnabled = useIsSplitOn(Features.DASHBOARD_NEW_API_TOGGLE)
+  const query = isNewDashboardQueryEnabled ? useVenueSummariesQuery : useDashboardV2OverviewQuery
+
+  const queryResults = query({
     params: useParams(),
     payload: {
       filters: {
