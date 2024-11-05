@@ -29,7 +29,6 @@ export default function DirectoryServerTable () {
   const navigate = useNavigate()
   const params = useParams()
   const tenantBasePath: Path = useTenantLink('')
-  const enableRbac = true
   const [ deleteFn ] = useDeleteDirectoryServerMutation()
 
   const settingsId = 'policies-directory-server-table'
@@ -42,18 +41,17 @@ export default function DirectoryServerTable () {
   const tableQuery = useTableQuery<DirectoryServerViewData>({
     useQuery: useGetDirectoryServerViewDataListQuery,
     defaultPayload,
-    pagination: { settingsId },
-    enableRbac
+    pagination: { settingsId }
   })
 
   const doDelete = (selectedRows: DirectoryServerViewData[], callback: () => void) => {
     doProfileDelete(
       selectedRows,
-      $t({ defaultMessage: 'Policy' }),
+      $t({ defaultMessage: 'Polic{plural}' }, { plural: selectedRows.length > 1 ? 'ies' : 'y' }),
       selectedRows[0].name,
       [{ fieldName: 'wifiNetworkIds', fieldText: $t({ defaultMessage: 'Network' }) }],
       async () => deleteFn({
-        params, payload: selectedRows.map(row => row.id), enableRbac }).then(callback)
+        params, payload: selectedRows.map(row => row.id) }).then(callback)
     )
   }
 

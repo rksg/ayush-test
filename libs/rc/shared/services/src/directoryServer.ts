@@ -1,5 +1,3 @@
-import _ from 'lodash'
-
 import {
   CommonResult,
   TableResult,
@@ -78,7 +76,7 @@ export const directoryServerApi = baseDirectoryServerApi.injectEndpoints({
         const req = createHttpRequest(DirectoryServerUrls.updateDirectoryServer, params)
         return {
           ...req,
-          body: JSON.stringify(_.omit(payload, ['activations']))
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'DirectoryServer', id: 'LIST' }]
