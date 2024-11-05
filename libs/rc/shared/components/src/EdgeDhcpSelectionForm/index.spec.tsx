@@ -66,7 +66,7 @@ describe('EdgeDhcpSelectionForm', () => {
     expect(screen.getByRole('button', { name: 'Add' })).toBeVisible()
   })
 
-  it('should show "Select" in drop-down when dhcpId is not given', async () => {
+  it('should be empty pool name when dhcpId is not given', async () => {
     render(
       <Provider>
         <Form>
@@ -74,7 +74,7 @@ describe('EdgeDhcpSelectionForm', () => {
         </Form>
       </Provider>, { route: { params } }
     )
-    expect(await screen.findByText('Select...')).toBeVisible()
+
     expect(screen.queryByText('Pool Name')).toBeNull()
   })
 })

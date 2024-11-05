@@ -1,5 +1,6 @@
-import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider  }          from '@acx-ui/store'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo }         from '@acx-ui/rc/utils'
+import { Provider  }              from '@acx-ui/store'
 import { render,
   screen, mockRestApiQuery,
   waitForElementToBeRemoved
@@ -34,9 +35,9 @@ jest.mock('@acx-ui/utils', () => ({
 }))
 
 describe('Dashboard Devices Widget V2', () => {
-
+  jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.DASHBOARD_NEW_API_TOGGLE)
   beforeEach(() => {
-    mockRestApiQuery(CommonUrlsInfo.getDashboardV2Overview.url, 'post',{})
+    mockRestApiQuery(CommonUrlsInfo.getDeviceSummaries.url, 'post',{})
   })
 
   it('should render loader and then chart', async () => {
