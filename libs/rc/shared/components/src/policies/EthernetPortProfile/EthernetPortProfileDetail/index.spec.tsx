@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn }                                                                                                          from '@acx-ui/feature-toggle'
-import { ethernetPortProfileApi }                                                                                                from '@acx-ui/rc/services'
+import { useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { ethernetPortProfileApi } from '@acx-ui/rc/services'
 import {
   AaaUrls,
   CommonRbacUrlsInfo,
@@ -13,8 +13,8 @@ import {
   TableResult,
   getPolicyRoutePath
 } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                                       from '@acx-ui/store'
-import { mockServer, render, screen }                                                                                            from '@acx-ui/test-utils'
+import { Provider, store }            from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import {
   dummyRadiusServiceList,
@@ -29,7 +29,7 @@ import {
   dummyTableResultWithSingle,
   mockedVenueApsList,
   dummyEthernetPortProfileAccessPortBased,
-  mockEthernetPortProfileId7} from '../__tests__/fixtures'
+  mockEthernetPortProfileId7 } from '../__tests__/fixtures'
 
 import { EthernetPortProfileDetail } from '.'
 

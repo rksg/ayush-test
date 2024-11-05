@@ -1,3 +1,6 @@
+import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/query/baseQueryTypes'
+import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
+
 import {
   CommonResult,
   onActivityMessageReceived,
@@ -13,8 +16,6 @@ import {
 import { baseEthernetPortProfileApi } from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
 import { createHttpRequest }          from '@acx-ui/utils'
-import { QueryReturnValue } from '@reduxjs/toolkit/dist/query/baseQueryTypes'
-import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 
 export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints({
   endpoints: (build) => ({

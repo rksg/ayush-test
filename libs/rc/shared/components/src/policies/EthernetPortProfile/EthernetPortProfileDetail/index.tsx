@@ -7,6 +7,7 @@ import {
   SummaryCard,
   Card
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import {
   useAaaPolicyQuery,
   useGetEthernetPortProfileWithRelationsByIdQuery
@@ -24,7 +25,6 @@ import { WifiScopes }            from '@acx-ui/types'
 import { filterByAccess }        from '@acx-ui/user'
 
 import { EthernetPortProfileInstanceTable } from './EthernetPortProfileInstanceTable'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 export const EthernetPortProfileDetail = () => {
 
