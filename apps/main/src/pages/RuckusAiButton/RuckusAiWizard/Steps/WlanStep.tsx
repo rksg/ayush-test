@@ -43,6 +43,36 @@ export function WlanStep (props: { payload: string; description: string }) {
     setData([...data, newProfile])
   }
 
+
+  const tooltipItems = [
+    {
+      label: $t({ defaultMessage: 'Internal' }),
+      description: $t({ defaultMessage: 'For employees, teachers, lecturers, and students.' })
+    },
+    {
+      label: $t({ defaultMessage: 'Guest' }),
+      description: $t({ defaultMessage: 'For external guests, visitors, and customers.' })
+    },
+    {
+      label: $t({ defaultMessage: 'VIP' }),
+      description: $t({ defaultMessage: 'For high-priority guests, visitors, and customers.' })
+    },
+    {
+      label: $t({ defaultMessage: 'Infrastructure' }),
+      // eslint-disable-next-line max-len
+      description: $t({ defaultMessage: 'For infrastructure devices, such as VoIP phones, barcode scanners, cameras, printers, security cameras, projectors, point-of-sale system, IoT devices, and smart home devices.' })
+    },
+    {
+      label: $t({ defaultMessage: 'Personal' }),
+      // eslint-disable-next-line max-len
+      description: $t({ defaultMessage: 'For home use, and personal devices, such as smartphones, tablets, and computers.' })
+    },
+    {
+      label: $t({ defaultMessage: 'Public' }),
+      description: $t({ defaultMessage: 'For open public use without authentication.' })
+    }
+  ]
+
   return (
     <UI.Container>
       <UI.HeaderWithAddButton>
@@ -97,25 +127,36 @@ export function WlanStep (props: { payload: string; description: string }) {
               <ProFormSelect
                 allowClear={false}
                 tooltip={{
-                  overlayStyle: { width: '700px' },
-                  title: (
+                  overlayStyle: { minWidth: '600px' },
+                  title: (<>
+                    <div style={{
+                      fontSize: '10px',
+                      fontWeight: '700',
+                      lineHeight: '16px',
+                      color: cssStr('--acx-neutrals-40'),
+                      marginBottom: '5px'
+                    }}>
+                      {$t({ defaultMessage: 'Network Objective Description' })}
+                    </div>
+                    <div style={{
+                      fontSize: '12px',
+                      lineHeight: '16px',
+                      color: cssStr('--acx-neutrals-40'),
+                      marginBottom: '10px'
+                    }} >
+                      {// eslint-disable-next-line max-len
+                        $t({ defaultMessage: 'Network Objective defines the purpose and access level of different types of network connections within an organization.' })}
+                    </div>
                     <ul style={{
                       margin: 0, padding: '0 20px',
                       display: 'flex', flexDirection: 'column', gap: '8px'
                     }}>
-                      <li>{// eslint-disable-next-line max-len
-                        $t({ defaultMessage: 'Internal: For employees, teachers, lecturers, and students.' })}</li>
-                      <li>{// eslint-disable-next-line max-len
-                        $t({ defaultMessage: 'Guest: For external guests, visitors, and customers.' })}</li>
-                      <li>{// eslint-disable-next-line max-len
-                        $t({ defaultMessage: 'VIP: For high-priority guests, visitors, and customers.' })}</li>
-                      <li>{ // eslint-disable-next-line max-len
-                        $t({ defaultMessage: 'Infrastructure: For infrastructure devices, such as VoIP phones, barcode scanners, cameras, printers, security cameras, projectors, point-of-sale system, IoT devices, and smart home devices.' })}</li>
-                      <li>{ // eslint-disable-next-line max-len
-                        $t({ defaultMessage: 'Personal: For home use, and personal devices, such as smartphones, tablets, and computers.' })}</li>
-                      <li>{ // eslint-disable-next-line max-len
-                        $t({ defaultMessage: 'Public: For open public use without authentication.' })}</li>
-                    </ul>
+                      {tooltipItems.map((item, index) => (
+                        <li key={index}>
+                          <span><strong>{item.label}</strong>: {item.description}</span>
+                        </li>
+                      ))}
+                    </ul></>
                   )
                 }}
                 width={200}
