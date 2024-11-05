@@ -4,7 +4,7 @@ import { Col, Form, Input, InputNumber, Radio, Row, Space, Switch, Typography } 
 import { useIntl }                                                              from 'react-intl'
 import { useParams }                                                            from 'react-router-dom'
 
-import { Loader, Button, PasswordInput }     from '@acx-ui/components'
+import { Loader, Button, PasswordInput } from '@acx-ui/components'
 import {
   useGetDirectoryServerByIdQuery,
   useLazyGetDirectoryServerViewDataListQuery,
@@ -230,33 +230,34 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
           />
         </Col>
         {type === DirectoryServerProfileEnum.LDAP && (
-          <>
-            <Col span={16}>
-              <Form.Item
-                name='keyAttribute'
-                label={$t({ defaultMessage: 'Key Attribute' })}
-                initialValue={''}
-                children={<Input/>}
-              />
-            </Col>
-            <Col span={16}>
-              <Form.Item
-                name='searchFilter'
-                label={$t({ defaultMessage: 'Search Filter' })}
-                initialValue={''}
-                children={<Input/>}
-              />
-            </Col>
-          </>
+          <Col span={16}>
+            <Form.Item
+              name='keyAttribute'
+              label={$t({ defaultMessage: 'Key Attribute' })}
+              initialValue={''}
+              children={<Input/>}
+            />
+            <Form.Item
+              name='searchFilter'
+              label={$t({ defaultMessage: 'Search Filter' })}
+              initialValue={''}
+              children={<Input/>}
+            />
+          </Col>
         )
         }
         <Col span={8}></Col>
 
         <Col span={5} style={{ marginRight: '16px' }}>
           <Button
+            style={{
+              background: 'var(--acx-primary-black)',
+              color: 'var(--acx-primary-white)'
+            }}
             type='primary'
             htmlType='submit'
             disabled={isTesting}
+            loading={isTesting}
             onClick={onClickTestConnection}
           >
             {$t({ defaultMessage: 'Test Connection' })}
