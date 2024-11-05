@@ -82,6 +82,7 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
     } catch (error) {
       return
     }
+    setTestConnectionStatus(undefined)
     const { tlsEnabled, adminDomainName, adminPassword, host, port, type } = form.getFieldsValue()
     const payload: DirectoryServerDiagnosisCommand = {
       action: DirectoryServerDiagnosisCommandEnum.testConnection,
