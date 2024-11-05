@@ -57,7 +57,7 @@ export default function ServiceCatalog () {
           helpIcon: <ApCompatibilityToolTip
             title=''
             visible
-            onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.PIN)}
+            onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.DHCP)}
           />,
           disabled: !isEdgeHaReady || !isEdgeDhcpHaReady
         },
