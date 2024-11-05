@@ -234,6 +234,7 @@ export function LanPortSettings (props: {
       <EthernetPortProfileInput
         currentEthernetPortData={currentEthernetPortData}
         currentIndex={index}
+        onGUIChanged={onGUIChanged}
         isEditable={!!serialNumber} /></>) :
       (<>
         <Form.Item

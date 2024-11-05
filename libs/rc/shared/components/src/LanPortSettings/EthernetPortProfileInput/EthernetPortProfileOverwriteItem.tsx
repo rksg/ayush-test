@@ -18,6 +18,7 @@ interface EthernetPortProfileOverwriteProps {
     fieldName: (string | number)[]
     width?: string
     rules?: Rule[]
+    onGUIChanged?: (fieldName: string) => void
 }
 
 const EthernetPortProfileOverwriteItem = (props:EthernetPortProfileOverwriteProps) => {
@@ -29,6 +30,7 @@ const EthernetPortProfileOverwriteItem = (props:EthernetPortProfileOverwriteProp
     isEditable=true,
     fieldName,
     width='200px',
+    onGUIChanged,
     rules=[] } = props
   const form = Form.useFormInstance()
   const [isEditMode, setEditMode] = useState(false)
@@ -76,6 +78,7 @@ const EthernetPortProfileOverwriteItem = (props:EthernetPortProfileOverwriteProp
 
   const reset = () => {
     form.setFieldValue(fieldName, defaultValue)
+    onGUIChanged?.(inputFieldName)
   }
 
   return (<>

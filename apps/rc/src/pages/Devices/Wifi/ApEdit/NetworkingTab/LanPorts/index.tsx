@@ -362,6 +362,10 @@ export function LanPorts () {
     navigate(`../venues/${venueId}/venue-details/overview`)
   }
 
+  const onGUIChanged = () => {
+    updateEditContext(formRef?.current as StepsFormLegacyInstance)
+  }
+
   return <Loader states={[{
     isLoading: formInitializing,
     isFetching: isApLanPortsUpdating || isApLanPortsResetting || isEthernetPortProfileUpdating
@@ -429,6 +433,7 @@ export function LanPorts () {
                           index={index}
                           useVenueSettings={useVenueSettings}
                           venueId={venueId}
+                          onGUIChanged={onGUIChanged}
                           serialNumber={serialNumber}
                         />
                       </Col>
