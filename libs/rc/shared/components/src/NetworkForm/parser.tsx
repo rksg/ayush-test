@@ -544,6 +544,10 @@ export function handleServicePolicyRbacPayload (data: NetworkSaveData): NetworkS
     'accountingRadius',
     'enableAuthProxy',
     'enableAccountingProxy',
-    'wlan.macAddressAuthenticationConfiguration'
+    'wlan.macAddressAuthenticationConfiguration',
+    'guestPortal.wisprPage.authRadius',
+    'guestPortal.wisprPage.authRadiusId',
+    'guestPortal.wisprPage.accountingRadius',
+    'guestPortal.wisprPage.accountingRadiusId'
   ])
 }
