@@ -888,8 +888,9 @@ export const mspApi = baseMspApi.injectEndpoints({
       }
     }),
     getAvailableMspRecCustomers: build.query<AvailableMspRecCustomers, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(MspUrlsInfo.getAvailableMspRecCustomers, params)
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const req = createHttpRequest(mspUrlsInfo.getAvailableMspRecCustomers, params)
         return {
           ...req,
           body: payload
