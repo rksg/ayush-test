@@ -61,8 +61,6 @@ export const ImpactedClientsTable = ({
       field: field,
       stage: (selectedStage && stageNameToCodeMap[selectedStage]) as string,
       topImpactedClientLimit: topImpactedClientLimit,
-      pieFilter: pieFilter?.rawKey ?? '',
-      chartKey: chartKey,
       pieData: pieData
     },
     {

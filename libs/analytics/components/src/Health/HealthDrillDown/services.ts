@@ -179,8 +179,6 @@ export const api = dataApi.injectEndpoints({
         field: string;
         topImpactedClientLimit: number;
         stage: string;
-        pieFilter: string;
-        chartKey: TabKeyType;
         pieData: {
           key: string;
           chartKey: TabKeyType;
@@ -189,12 +187,10 @@ export const api = dataApi.injectEndpoints({
       }
     >({
       query: (payload) => {
-        const impactedClientQuery = (type: string, stage: string, pieFilter: string, chartKey: TabKeyType) => {
+        const impactedClientQuery = (type: string, stage: string) => {
           return `impactedClients: ${type}(n: ${
             payload.topImpactedClientLimit + 1
           }, stage: "${stage}",
-          pieFilter: "${pieFilter}",
-          chartKey: "${chartKey}",
           pieData: $pieData) {
             mac
             manufacturer
@@ -215,7 +211,7 @@ export const api = dataApi.injectEndpoints({
             ) {
               network(start: $start, end: $end, filter: $filter) {
                 hierarchyNode(path: $path) {
-                  ${impactedClientQuery(payload.field, payload.stage, payload.pieFilter, payload.chartKey)}
+                  ${impactedClientQuery(payload.field, payload.stage)}
                 }
               }
             }
