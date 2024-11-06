@@ -270,21 +270,24 @@ export const getAppliedProfile = (
   return _.omit(profile, ['profileName', 'id'])
 }
 
-export const checkAllSelectedPortsMatch = (
-  selectedPorts: SwitchPortViewModel[],
-  aggregateData: AggregatePortSettings
-) => {
-  const isAllPortsMatch = selectedPorts.every(port => {
-    const { selectedPortIdentifier, enableAuthPorts } = aggregateData
-    const sortedSelectedPorts = [...(selectedPortIdentifier[port.switchMac] || [])].sort()
-    const sortedAuthPorts = [...(enableAuthPorts[port.switchMac] || [])].sort()
-    // return sortedAuthPorts?.length ? _.intersection(sortedSelectedPorts, sortedAuthPorts)?.length > 0 : true
-    return sortedAuthPorts?.length
-      ? _.intersection(sortedSelectedPorts, sortedAuthPorts)?.length === sortedAuthPorts?.length
-      : true
-  })
+export const getCurrentAuthDefaultVlan = (props: {
+  flexibleAuthenticationEnabled: boolean,
+  isAppliedAuthProfile: boolean,
+  authProfiles: FlexibleAuthentication[],
+  authenticationProfileId: string,
+  authDefaultVlan: string
+}) => {
+  const {
+    flexibleAuthenticationEnabled, isAppliedAuthProfile,
+    authProfiles, authenticationProfileId, authDefaultVlan
+  } = props
 
-  return isAllPortsMatch
+  return flexibleAuthenticationEnabled
+    ? (isAppliedAuthProfile
+      ? getAppliedProfile(authProfiles, authenticationProfileId)?.authDefaultVlan
+      : authDefaultVlan
+    )
+    : ''
 }
 
 export const getCurrentVlansByKey = (props: {
@@ -296,11 +299,14 @@ export const getCurrentVlansByKey = (props: {
   switchId?: string,
   form: FormInstance
 }): number[] => {
-  const { key, aggregateData, isMultipleEdit, portVlansCheckbox, hasMultipleValue, switchId = '', form } = props
-  // const isMultipleValues = aggregateData?.hasMultipleValue?.includes(key)
+  const { key, aggregateData, isMultipleEdit,
+    portVlansCheckbox, hasMultipleValue, switchId = '', form
+  } = props
+
+  const isGetVlansBySwitch = !!switchId
   const defaultVlanMap = { [switchId]: aggregateData.defaultVlan?.[switchId] } as Record<string, number>
-  const originalVlans = key === 'taggedVlans'
-    ? getUnionValuesByKey(key, aggregateData) : aggregateData['untaggedVlan']?.[switchId]
+  const originalVlans = isGetVlansBySwitch
+    ? aggregateData[key]?.[switchId] : getUnionValuesByKey(key, aggregateData)
 
   const fieldValue = isNaN(form.getFieldValue(key)) ? '' : form.getFieldValue(key)
   const transformedFieldValue = key === 'taggedVlans'
@@ -316,9 +322,6 @@ export const getCurrentVlansByKey = (props: {
       const isOverrideField = portVlansCheckbox && !shouldRenderMultipleText({
         field: key, isMultipleEdit, hasMultipleValue, form, ignoreCheckbox: true
       })
-      // if (isMultipleValues) {
-      //   return isOverrideField ? overrideValue : originalVlans
-      // }
       return isOverrideField ? overrideValue : originalVlans
     }
     return overrideValue
@@ -427,6 +430,22 @@ export const validateApplyProfile = (
   }
 
   return Promise.resolve()
+}
+
+export const checkAllSelectedPortsMatch = (
+  selectedPorts: SwitchPortViewModel[],
+  aggregateData: AggregatePortSettings
+) => {
+  const isAllPortsMatch = selectedPorts.every(port => {
+    const { selectedPortIdentifier, enableAuthPorts } = aggregateData
+    const sortedSelectedPorts = [...(selectedPortIdentifier[port.switchMac] || [])].sort()
+    const sortedAuthPorts = [...(enableAuthPorts[port.switchMac] || [])].sort()
+    return sortedAuthPorts?.length
+      ? _.intersection(sortedSelectedPorts, sortedAuthPorts)?.length === sortedAuthPorts?.length
+      : true
+  })
+
+  return isAllPortsMatch
 }
 
 export const checkVlanDiffFromSwitchDefaultVlan = (

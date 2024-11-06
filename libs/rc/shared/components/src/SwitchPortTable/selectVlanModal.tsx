@@ -51,7 +51,7 @@ export function SelectVlanModal (props: {
   updateSwitchVlans?: (vlan: Vlan) => void,
   vlanDisabledTooltip: string,
   defaultTabKey?: VlanModalType,
-  authDefaultVlan?: string,
+  authDefaultVlan?: string | number,
   flexAuthEnabled?: boolean,
 }) {
   const { $t } = getIntl()

@@ -28,7 +28,8 @@ import { useParams, TenantLink }        from '@acx-ui/react-router-dom'
 import { RequestPayload, SwitchScopes } from '@acx-ui/types'
 import { hasPermission }                from '@acx-ui/user'
 
-import { SwitchLagModal, SwitchLagParams } from '../SwitchLagDrawer/SwitchLagModal'
+import { authenticationTypeLabel, AuthenticationType } from '../FlexibleAuthentication'
+import { SwitchLagModal, SwitchLagParams }             from '../SwitchLagDrawer/SwitchLagModal'
 import {
   getInactiveTooltip,
   isLAGMemberPort,
@@ -51,7 +52,7 @@ export const defaultSwitchClientPayload = {
     'dhcpClientModelName', 'dhcpClientOsVendorName', 'id',
     'switchId', 'switchName', 'switchPort', 'switchPortFormatted',
     'switchPortId', 'switchSerialNumber', 'venueId', 'venueName',
-    'vlanName', 'vni'
+    'vlanName', 'vni', 'clientAuthType'
   ],
   sortField: 'clientMac',
   sortOrder: 'DESC',
@@ -298,6 +299,34 @@ export function ClientsTable (props: {
         _: React.ReactNode, { vni }: SwitchClient, __: number, highlightFn: TableHighlightFnArgs
       ) => {
         return searchable && vni ? highlightFn(vni) : vni
+      }
+    }]: []),
+    ...(isSwitchFlexAuthEnabled ? [{
+      key: 'clientAuthType',
+      title: intl.$t({ defaultMessage: 'Client Auth Type' }),
+      dataIndex: 'clientAuthType',
+      sorter: true,
+      // searchable: searchable,
+      // render: (
+      //   _: React.ReactNode, { clientAuthType }: SwitchClient, __: number, highlightFn: TableHighlightFnArgs
+      // ) => {
+      render: (_:React.ReactNode, { clientAuthType }: SwitchClient) => {
+        const convertType = (type?: string) => {
+          switch(type){
+            case 'DOT1X':
+              return intl.$t(authenticationTypeLabel[AuthenticationType._802_1X])
+            case 'MACAUTH':
+              return intl.$t(authenticationTypeLabel[AuthenticationType.MACAUTH])
+            case 'WEB_AUTH':
+              return intl.$t({ defaultMessage: 'WEB-AUTH' })
+            default:
+              return '--'
+          }
+        }
+        const authType = convertType(clientAuthType)
+        //TODO: BE need checking
+        // return searchable && authType ? highlightFn(authType) : authType
+        return authType
       }
     }]: []),
     {

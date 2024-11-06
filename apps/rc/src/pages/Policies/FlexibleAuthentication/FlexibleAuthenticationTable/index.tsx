@@ -2,7 +2,10 @@ import { useIntl }          from 'react-intl'
 import { FormattedMessage } from 'react-intl'
 
 import { Button, Loader, PageHeader, Table, TableProps, Tooltip, showActionModal } from '@acx-ui/components'
-import { authenticationTypeLabel }                                                 from '@acx-ui/rc/components'
+import {
+  authenticationTypeLabel,
+  AuthenticationType
+}                                                 from '@acx-ui/rc/components'
 import {
   useDeleteFlexAuthenticationProfileMutation,
   useGetFlexAuthenticationProfilesQuery
@@ -41,6 +44,10 @@ const FlexibleAuthenticationTable = () => {
   const navigate = useNavigate()
   const [deleteFlexAuthenticationProfile] = useDeleteFlexAuthenticationProfileMutation()
 
+  const typeFilterOptions = Object.values(AuthenticationType).map(key => ({
+    key, value: $t(authenticationTypeLabel[key])
+  }))
+
   const tableQuery = useTableQuery({
     useQuery: useGetFlexAuthenticationProfilesQuery,
     defaultPayload: {
@@ -77,7 +84,8 @@ const FlexibleAuthenticationTable = () => {
     title: $t({ defaultMessage: 'Type' }),
     key: 'authenticationType',
     dataIndex: 'authenticationType',
-    filterable: true,
+    filterMultiple: false,
+    filterable: typeFilterOptions,
     sorter: true,
     render: (_, { authenticationType }) => {
       return $t(authenticationTypeLabel[authenticationType as keyof typeof authenticationTypeLabel])
@@ -87,8 +95,6 @@ const FlexibleAuthenticationTable = () => {
     title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
     key: 'appliedVenues',
     dataIndex: 'appliedVenues',
-    filterable: true,
-    sorter: true,
     render: (_, { appliedVenues }) => {
       const venueCount = Object.keys(appliedVenues ?? {})?.length
       const venues = Object.values(appliedVenues ?? {})

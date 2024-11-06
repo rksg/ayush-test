@@ -87,6 +87,7 @@ import {
   handleClickCustomize,
   handlePortVlanChange,
   getAppliedProfile,
+  getCurrentAuthDefaultVlan,
   getFlexAuthButtonStatus,
   getFlexAuthDefaultValue,
   getUnionValuesByKey,
@@ -799,7 +800,8 @@ export function EditPortDrawer ({
         initialValue={false}
         children={<Checkbox
           data-testid={`${field}-override-checkbox`}
-          disabled={getOverrideDisabled(field)} />}
+          disabled={getOverrideDisabled(field)}
+        />}
       />}
       { extraLabel && <UI.ExtraLabel>{ labelName }</UI.ExtraLabel> }
       { content }
@@ -2327,17 +2329,17 @@ export function EditPortDrawer ({
         switchIds={switches}
         venueId={switchDetail?.venueId}
         authDefaultVlan={
-          flexibleAuthenticationEnabled
-            ? (isAppliedAuthProfile
-              ? getAppliedProfile(authProfiles, authenticationProfileId)?.authDefaultVlan
-              : authDefaultVlan
-            )
-            : null
-          // getFlexAuthStatus().defaultVlan
+          getCurrentAuthDefaultVlan({
+            flexibleAuthenticationEnabled,
+            isAppliedAuthProfile,
+            authenticationProfileId,
+            authProfiles,
+            authDefaultVlan
+          })
         }
         flexAuthEnabled={flexibleAuthenticationEnabled}
         defaultTabKey={flexibleAuthenticationEnabled ? VlanModalType.TAGGED : undefined}
-        updateSwitchVlans={async (values: Vlan) => {
+        updateSwitchVlans={async (values: Vlan) =>
           updateSwitchVlans(
             values,
             switchVlans,
@@ -2346,7 +2348,7 @@ export function EditPortDrawer ({
             setVenueVlans,
             isSwitchLevelVlanEnabled
           )
-        }}
+        }
       />}
 
       {lldpModalvisible && <EditLldpModal

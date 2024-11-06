@@ -119,6 +119,7 @@ export const handleAuthFieldChange = (props: {
   aggregateData?: AggregatePortSettings
 }) => {
   const { field, value, form, isMultipleEdit, aggregateData } = props
+  const isProfileLevel = isMultipleEdit === undefined
   switch(field) {
     case 'authenticationType':
       const values = form.getFieldsValue()
@@ -164,11 +165,13 @@ export const handleAuthFieldChange = (props: {
 
         form.setFieldsValue({
           ...values,
-          authDefaultVlan: authDefaultVlan,
           authFailAction: AuthFailAction.BLOCK,
           restrictedVlan: '',
           authTimeoutAction: AuthTimeoutAction.NONE,
           criticalVlan: '',
+          ...(!isProfileLevel ? {
+            authDefaultVlan: authDefaultVlan
+          } : {}),
           ...(isMultipleEdit ? {
             authDefaultVlanCheckbox: true,
             authFailActionCheckbox: true,
