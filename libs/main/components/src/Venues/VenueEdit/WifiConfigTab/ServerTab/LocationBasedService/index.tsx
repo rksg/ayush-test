@@ -11,7 +11,7 @@ import {
   useActivateLbsServerProfileOnVenueMutation,
   useDeactivateLbsServerProfileOnVenueMutation
 } from '@acx-ui/rc/services'
-import { VenueLbsActivationType } from '@acx-ui/rc/utils'
+import { hasPolicyPermission, PolicyOperation, PolicyType, VenueLbsActivationType } from '@acx-ui/rc/utils'
 import { useParams }              from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../..'
@@ -215,7 +215,9 @@ export function LocationBasedService () {
             })}
             style={{ width: '200px' }}
           />
-          {<Button
+          {hasPolicyPermission(
+            { type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.CREATE }) &&
+          <Button
             disabled={selectOptions.length >= LBS_SERVER_PROFILE_MAX_COUNT}
             type='link'
             style={{ marginLeft: '20px' }}
