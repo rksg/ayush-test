@@ -138,7 +138,7 @@ describe('Add switch form', () => {
     await userEvent.click(screen.getByRole('combobox', {
       name: /venue/i
     }))
-    const venue = await screen.findAllByText('My-Venue')
+    const venue = await screen.findAllByText('Karen-New')
     await userEvent.click(venue[0])
 
     const serialNumber = screen.getByRole('textbox', {

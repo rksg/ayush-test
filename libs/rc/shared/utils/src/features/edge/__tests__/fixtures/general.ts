@@ -84,7 +84,7 @@ export const mockEdgeList = {
 
 export const mockEdgeServiceList = {
   fields: null,
-  totalCount: 4,
+  totalCount: 5,
   page: 1,
   data: [
     {
@@ -119,6 +119,15 @@ export const mockEdgeServiceList = {
       serviceName: 'SDLAN-1',
       serviceId: 'sdlan-1',
       serviceType: EdgeServiceTypeEnum.SD_LAN,
+      status: 'Up',
+      currentVersion: '1.1.1',
+      targetVersion: ''
+    },
+    {
+      edgeId: '96B341ADD6C16C11ED8B8B000C296600F5',
+      serviceName: 'Mock mDNS',
+      serviceId: 'edge-mdns-1',
+      serviceType: EdgeServiceTypeEnum.MDNS,
       status: 'Up',
       currentVersion: '1.1.1',
       targetVersion: ''

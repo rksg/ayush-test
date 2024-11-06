@@ -15,7 +15,8 @@ import {
   useGetResidentPortalListQuery,
   useGetEdgeFirewallViewDataListQuery,
   useGetEdgeSdLanP2ViewDataListQuery,
-  useGetEdgeMdnsProxyViewDataListQuery
+  useGetEdgeMdnsProxyViewDataListQuery,
+  useGetEdgeTnmServiceListQuery
 } from '@acx-ui/rc/services'
 import {
   filterByAccessForServicePolicyMutation,
@@ -44,6 +45,7 @@ export default function MyServices () {
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
+  const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
@@ -101,6 +103,16 @@ export default function MyServices () {
         skip: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
       }).data?.totalCount,
       disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
+    },
+    {
+      type: ServiceType.EDGE_TNM_SERVICE,
+      categories: [RadioCardCategory.EDGE],
+      totalCount: useGetEdgeTnmServiceListQuery({
+        params, payload: defaultPayload
+      }, {
+        skip: !isEdgeTnmServiceReady
+      }).data?.totalCount,
+      disabled: !isEdgeTnmServiceReady
     },
     {
       type: ServiceType.EDGE_FIREWALL,

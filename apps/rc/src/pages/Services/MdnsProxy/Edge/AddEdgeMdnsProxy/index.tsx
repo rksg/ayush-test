@@ -1,9 +1,8 @@
+import { Row, Col } from 'antd'
+import { useIntl }  from 'react-intl'
 
-import { Form }    from 'antd'
-import { useIntl } from 'react-intl'
-
-import { PageHeader }         from '@acx-ui/components'
-import { useEdgeMdnsActions } from '@acx-ui/rc/components'
+import { PageHeader }                               from '@acx-ui/components'
+import { AddEdgeMdnsProxyForm, useEdgeMdnsActions } from '@acx-ui/rc/components'
 import {
   EdgeMdnsProxyViewData,
   ServiceOperation,
@@ -13,15 +12,9 @@ import {
 } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { EdgeMdnsProxyForm } from '../EdgeMdnsProxyForm'
-import { ScopeForm }         from '../EdgeMdnsProxyForm/ScopeForm'
-import { SettingsForm }      from '../EdgeMdnsProxyForm/SettingsForm'
-import { SummaryForm }       from '../EdgeMdnsProxyForm/SummaryForm'
-
 const AddEdgeMdnsProxy = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const [form] = Form.useForm()
   const { createEdgeMdns } = useEdgeMdnsActions()
 
   const routeToList = getServiceRoutePath({
@@ -30,17 +23,6 @@ const AddEdgeMdnsProxy = () => {
   })
 
   const linkToServiceList = useTenantLink(routeToList)
-
-  const steps = [ {
-    title: $t({ defaultMessage: 'Settings' }),
-    content: SettingsForm
-  }, {
-    title: $t({ defaultMessage: 'Scope' }),
-    content: ScopeForm
-  }, {
-    title: $t({ defaultMessage: 'Summary' }),
-    content: SummaryForm
-  }]
 
   const handleFinish = async (formData: EdgeMdnsProxyViewData) => {
     try {
@@ -63,11 +45,14 @@ const AddEdgeMdnsProxy = () => {
           { text: $t({ defaultMessage: 'Edge mDNS Proxy' }), link: routeToList }
         ]}
       />
-      <EdgeMdnsProxyForm
-        form={form}
-        steps={steps}
-        onFinish={handleFinish}
-      />
+      <Row>
+        <Col span={24}>
+          <AddEdgeMdnsProxyForm
+            onFinish={handleFinish}
+            onCancel={() => navigate(linkToServiceList)}
+          />
+        </Col>
+      </Row>
     </>
   )
 }
