@@ -54,7 +54,7 @@ export const useEdgePinsCompatibilityData = (serviceIds: string[], skip: boolean
     serviceIds: serviceIds,
     skip: skip,
     useEdgeSvcPcyCompatibleQuery: useLazyGetPinEdgeCompatibilitiesQuery,
-    useEdgeSvcPcyApCompatibleQuery: isApCompatibilitiesByModel ? useLazyGetSdLanApCompatibilitiesQuery : undefined
+    useEdgeSvcPcyApCompatibleQuery: isApCompatibilitiesByModel ? useLazyGetPinApCompatibilitiesQuery : undefined
   })
   return results as {
     compatibilities: Record<string, EdgeServiceCompatibility[] | EdgeServiceApCompatibility[]> | undefined
@@ -150,9 +150,9 @@ export const useEdgeSvcsPcysCompatibilitiesData = (props: {
       results.forEach((resultItem, index) => {
         if (resultItem.status === 'fulfilled') {
           if(index === 0) {
-            deviceTypeResultMap[CompatibilityDeviceEnum.EDGE] = (resultItem.value as EdgeServiceCompatibilitiesResponse).compatibilities
+            deviceTypeResultMap[CompatibilityDeviceEnum.EDGE] = (resultItem.value as EdgeServiceCompatibilitiesResponse)?.compatibilities ?? []
           } else {
-            deviceTypeResultMap[CompatibilityDeviceEnum.AP] = (resultItem.value as EdgeSdLanApCompatibilitiesResponse).compatibilities
+            deviceTypeResultMap[CompatibilityDeviceEnum.AP] = (resultItem.value as EdgeSdLanApCompatibilitiesResponse)?.compatibilities ?? []
           }
         }
       })
@@ -263,7 +263,7 @@ export const useVenueEdgeCompatibilitiesData = (props: Omit<EdgeCompatibilityDra
           } }
         }).unwrap()
 
-        edgeCompatibilitiesResponse = sdLanToApCompatibilityData(venueEdgeCompatibilities.compatibilities)
+        edgeCompatibilitiesResponse = sdLanToApCompatibilityData(venueEdgeCompatibilities.compatibilities ?? [])
       } else if (type === EdgeCompatibilityType.ALONE) {
         const edgeFeatureSets = await getEdgeFeatureSets({
           payload: { filters: { featureNames } }
