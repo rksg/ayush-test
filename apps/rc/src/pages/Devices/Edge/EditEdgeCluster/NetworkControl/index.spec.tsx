@@ -416,7 +416,8 @@ describe('Edge Cluster Network Control Tab', () => {
   describe('mDNS', () => {
     beforeEach(() => {
       jest.mocked(useIsEdgeFeatureReady)
-        .mockImplementation(ff => ff === Features.EDGE_MDNS_PROXY_TOGGLE)
+        .mockImplementation(ff => ff === Features.EDGE_MDNS_PROXY_TOGGLE
+          || ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
       params = {
         tenantId: '1ecc2d7cf9d2342fdb31ae0e24958fcac',
