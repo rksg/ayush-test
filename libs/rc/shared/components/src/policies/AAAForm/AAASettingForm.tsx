@@ -193,7 +193,6 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
   const handleSaveCertificateAuthority = (id?: string) => {
     if (id) {
       setCreatedCaId(id)
-      form.validateFields()
     }
     setShowCertificateAuthorityDrawer(false)
   }
@@ -201,7 +200,6 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
   const handleSaveClientCertificate = (id?: string) => {
     if (id) {
       setCreatedClientCertId(id)
-      form.validateFields()
     }
     setShowCertificateDrawer(false)
   }
@@ -209,7 +207,6 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
   const handleSaveServerCertificate = (id?: string) => {
     if (id) {
       setCreatedServerCertId(id)
-      form.validateFields()
     }
     setShowCertificateDrawer(false)
   }
@@ -222,6 +219,10 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
       if (saveState.radSecOptions?.ocspUrl) {
         form.setFieldValue(['radSecOptions', 'ocspValidationEnabled'], true)
       }
+      form.validateFields([
+        ['radSecOptions', 'certificateAuthorityId'],
+        ['radSecOptions', 'clientCertificateId'],
+        ['radSecOptions', 'serverCertificateId']])
     }
   }, [saveState])
 
