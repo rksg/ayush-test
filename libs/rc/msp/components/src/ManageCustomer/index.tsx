@@ -373,7 +373,7 @@ export function ManageCustomer () {
           lastName: userProfile.lastName,
           name: userProfile.firstName,
           email: userProfile.email,
-          role: userProfile.role as RolesEnum,
+          role: RolesEnum.PRIME_ADMIN,
           detailLevel: userProfile.detailLevel
         })
         setAdministrator(administrator)

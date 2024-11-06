@@ -166,7 +166,7 @@ export function AddRecCustomer () {
           lastName: userProfileData.lastName,
           name: userProfileData.firstName,
           email: userProfileData.email,
-          role: userProfileData.role as RolesEnum,
+          role: RolesEnum.PRIME_ADMIN,
           detailLevel: userProfileData.detailLevel
         })
         setAdministrator(administrator)
