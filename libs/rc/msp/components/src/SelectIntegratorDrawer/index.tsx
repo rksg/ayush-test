@@ -50,6 +50,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
   const [form] = Form.useForm()
   const [selectedKeys, setSelectedKeys] = useState<Key[]>([])
   const techPartnerAssignEcsEnabled = useIsSplitOn(Features.TECH_PARTNER_ASSIGN_ECS)
+  const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
 
   const [getAssignedEc] = useLazyGetAssignedMspEcToIntegratorQuery()
 
@@ -74,7 +75,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
         const integrtorId = original.id
         const ecData =
           await getAssignedEc({ params: { mspIntegratorId: integrtorId,
-            mspIntegratorType: tenantType } }).unwrap()
+            mspIntegratorType: tenantType }, enableRbac: isRbacEnabled }).unwrap()
         const newEcList = ecData?.mspec_list.filter(e => e !== tenantId)
         const numOfDays = moment(ecData?.expiry_date).diff(moment(Date()), 'days')
 
@@ -141,7 +142,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
       let payload = {
         AssignDelegatedRequest: integratorList
       }
-      assignMspCustomerToMutipleIntegrator({ payload })
+      assignMspCustomerToMutipleIntegrator({ payload, enableRbac: isRbacEnabled })
         .then(() => {
           setVisible(false)
           resetFields()
