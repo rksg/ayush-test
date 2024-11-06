@@ -65,7 +65,7 @@ describe('SoftGreDrawer', () => {
 
       const profileNameField = await screen.findByLabelText(/Profile Name/i)
       await user.type(profileNameField, 'createSoftGre')
-      const primaryGatewayField = await screen.findByLabelText(/Tunnel Primary Gateway Address/i)
+      const primaryGatewayField = await screen.findByLabelText(/Primary Gateway/i)
       await user.type(primaryGatewayField, '128.0.0.1')
 
       await user.click(screen.getByRole('button', { name: 'Add' }))
@@ -133,7 +133,7 @@ describe('SoftGreDrawer', () => {
       const profileNameField = await screen.findByLabelText(/Profile Name/i)
       await user.type(profileNameField, 'TestFailedToAddSoftGre')
       // eslint-disable-next-line max-len
-      const primaryGatewayField = await screen.findByLabelText(/Tunnel Primary Gateway Address/i)
+      const primaryGatewayField = await screen.findByLabelText(/Primary Gateway/i)
       await user.type(primaryGatewayField,'128.0.0.1')
 
       await user.click(screen.getByRole('button', { name: 'Add' }))

@@ -6,7 +6,8 @@ import { useIntl } from 'react-intl'
 import {
   MdnsProxyForwardingRule,
   BridgeServiceEnum,
-  mdnsProxyRuleTypeLabelMapping
+  mdnsProxyRuleTypeLabelMapping,
+  MdnsProxyFeatureTypeEnum
 } from '@acx-ui/rc/utils'
 import { render, renderHook, screen, waitFor, within } from '@acx-ui/test-utils'
 
@@ -42,12 +43,14 @@ jest.mock('antd', () => {
 const mockedRules: MdnsProxyForwardingRule[] = [
   {
     id: '__UUID__rule1',
+    ruleIndex: '__UUID__rule1',
     service: BridgeServiceEnum.AIRPLAY,
     fromVlan: 10,
     toVlan: 20
   },
   {
     id: '__UUID__rule2',
+    ruleIndex: '__UUID__rule2',
     service: BridgeServiceEnum.APPLETV,
     fromVlan: 21,
     toVlan: 30
@@ -56,7 +59,10 @@ const mockedRules: MdnsProxyForwardingRule[] = [
 
 describe('MdnsProxyForwardingRulesTable', () => {
   it('should render the table with the given data', async () => {
-    render(<MdnsProxyForwardingRulesTable rules={mockedRules} />)
+    render(<MdnsProxyForwardingRulesTable
+      featureType={MdnsProxyFeatureTypeEnum.WIFI}
+      rules={mockedRules}
+    />)
 
     const { result: targetTypeLabel } = renderHook(() => {
       const { $t } = useIntl()
@@ -71,6 +77,7 @@ describe('MdnsProxyForwardingRulesTable', () => {
   it('should render the readonly table', async () => {
     render(
       <MdnsProxyForwardingRulesTable
+        featureType={MdnsProxyFeatureTypeEnum.WIFI}
         rules={mockedRules}
         readonly={true}
       />
@@ -90,6 +97,7 @@ describe('MdnsProxyForwardingRulesTable', () => {
   it('should be invalid when creating the duplicated rule', async () => {
     const ruleToAdd: MdnsProxyForwardingRule = {
       id: '__RULE_ID__',
+      ruleIndex: '__RULE_ID__',
       service: BridgeServiceEnum.AIRPLAY,
       fromVlan: 1,
       toVlan: 2
@@ -100,7 +108,9 @@ describe('MdnsProxyForwardingRulesTable', () => {
     })
 
     render(
-      <MdnsProxyForwardingRulesTable rules={[ruleToAdd]} />
+      <MdnsProxyForwardingRulesTable
+        featureType={MdnsProxyFeatureTypeEnum.WIFI}
+        rules={[ruleToAdd]} />
     )
 
     await userEvent.click(await screen.findByRole('button', { name: 'Add Rule' }))
@@ -142,6 +152,7 @@ describe('MdnsProxyForwardingRulesTable', () => {
 
       return (
         <MdnsProxyForwardingRulesTable
+          featureType={MdnsProxyFeatureTypeEnum.WIFI}
           rules={rules}
           setRules={setRules}
         />
@@ -189,6 +200,7 @@ describe('MdnsProxyForwardingRulesTable', () => {
 
       return (
         <MdnsProxyForwardingRulesTable
+          featureType={MdnsProxyFeatureTypeEnum.WIFI}
           rules={rules}
           setRules={setRules}
         />
@@ -223,6 +235,7 @@ describe('MdnsProxyForwardingRulesTable', () => {
 
       return (
         <MdnsProxyForwardingRulesTable
+          featureType={MdnsProxyFeatureTypeEnum.WIFI}
           rules={rules}
           setRules={setRules}
         />

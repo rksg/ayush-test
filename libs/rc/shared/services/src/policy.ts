@@ -132,6 +132,15 @@ const LbsServerProfileMutationUseCases = [
   'DectivateLbsServerProfileOnVenue'
 ]
 
+const CertificateMutationUseCases = [
+  'ActivateCertificateAuthorityOnRadius',
+  'DectivateCertificateAuthorityOnRadius',
+  'ActivateClientCertificateOnRadius',
+  'DectivateClientCertificateOnRadius',
+  'ActivateServerCertificateOnRadius',
+  'DectivateServerCertificateOnRadius'
+]
+
 const L2AclUseCases = [
   'AddL2AclPolicy',
   'UpdateL2AclPolicy',
@@ -1624,6 +1633,88 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       }
     }),
+    getCertificateList: build.query<TableResult<Certificate>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(CertificateUrls.getCertificateList, params, customHeaders)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      providesTags: [{ type: 'Certificate', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, CertificateMutationUseCases, () => {
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'Policy', id: 'LIST' },
+              { type: 'Certificate', id: 'LIST' }
+            ]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
+    activateCertificateAuthorityOnRadius: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(
+          CertificateUrls.activateCertificateAuthorityOnRadius, params, customHeaders)
+        return {
+          ...req
+        }
+      }
+    }),
+    deactivateCertificateAuthorityOnRadius: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(
+          CertificateUrls.deactivateCertificateAuthorityOnRadius, params, customHeaders)
+        return {
+          ...req
+        }
+      }
+    }),
+    activateClientCertificateOnRadius: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(
+          CertificateUrls.activateClientCertificateOnRadius, params, customHeaders)
+        return {
+          ...req
+        }
+      }
+    }),
+    deactivateClientCertificateOnRadius: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(
+          CertificateUrls.deactivateClientCertificateOnRadius, params, customHeaders)
+        return {
+          ...req
+        }
+      }
+    }),
+    activateServerCertificateOnRadius: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(
+          CertificateUrls.activateServerCertificateOnRadius, params, customHeaders)
+        return {
+          ...req
+        }
+      }
+    }),
+    deactivateServerCertificateOnRadius: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(
+          CertificateUrls.deactivateServerCertificateOnRadius, params, customHeaders)
+        return {
+          ...req
+        }
+      }
+    }),
     // eslint-disable-next-line max-len
     getVLANPoolPolicyViewModelList: build.query<TableResult<VLANPoolViewModelType>, RequestPayload>({
       queryFn: getVLANPoolPolicyViewModelListFn(),
@@ -2106,13 +2197,13 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-    // TODO: Change RBAC API (API Done, Testing pending)
     getApSnmpPolicyList: build.query<ApSnmpPolicy[], RequestPayload>({
-      async queryFn ({ params, enableRbac }, _api, _extraOptions, fetchWithBQ) {
+      async queryFn ({ params, enableRbac, isSNMPv3PassphraseOn }, _api, _extraOptions, fetchWithBQ) {
         if (enableRbac) {
-          const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+          const viewModelHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+          const apiCustomHeader = GetApiVersionHeader((isSNMPv3PassphraseOn? ApiVersionEnum.v1_1 : ApiVersionEnum.v1))
           // eslint-disable-next-line max-len
-          const snmpListReq = { ...createHttpRequest(ApSnmpRbacUrls.getApSnmpFromViewModel, params, apiCustomHeader),
+          const snmpListReq = { ...createHttpRequest(ApSnmpRbacUrls.getApSnmpFromViewModel, params, viewModelHeader),
             body: enableRbac? JSON.stringify({}) : {}
           }
           const res = await fetchWithBQ(snmpListReq)
@@ -2152,15 +2243,15 @@ export const policyApi = basePolicyApi.injectEndpoints({
         })
       }
     }),
-    // TODO: Change RBAC API (API Done, Testing pending)
     getApSnmpPolicy: build.query<ApSnmpPolicy, RequestPayload>({
-      async queryFn ({ params, enableRbac }, _api, _extraOptions, fetchWithBQ) {
+      async queryFn ({ params, enableRbac, isSNMPv3PassphraseOn }, _api, _extraOptions, fetchWithBQ) {
         const urlsInfo = enableRbac? ApSnmpRbacUrls : ApSnmpUrls
         const customParams = {
           ...params,
           profileId: params?.policyId
         }
-        const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
+        const rbacApiVersion =
+          enableRbac ? (isSNMPv3PassphraseOn? ApiVersionEnum.v1_1 : ApiVersionEnum.v1) : undefined
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
         const req = createHttpRequest(urlsInfo.getApSnmpPolicy, customParams, apiCustomHeader)
         const res = await fetchWithBQ(req)
@@ -2278,14 +2369,14 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'SnmpAgent', id: 'LIST' }]
     }),
-    // TODO: Change RBAC API
     /* eslint-disable max-len */
     getApSnmpViewModel: build.query<TableResult<ApSnmpViewModelData>, RequestPayload>({
-      async queryFn ({ params, payload, enableRbac }, _api, _extraOptions, fetchWithBQ) {
+      async queryFn ({ params, payload, enableRbac, isSNMPv3PassphraseOn, customHeaders }, _api, _extraOptions, fetchWithBQ) {
         if (enableRbac) {
-          const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+          const viewmodelHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+          const apiCustomHeader = customHeaders ? customHeaders : GetApiVersionHeader((isSNMPv3PassphraseOn? ApiVersionEnum.v1_1 : ApiVersionEnum.v1))
           const req = {
-            ...createHttpRequest(ApSnmpRbacUrls.getApSnmpFromViewModel, params, apiCustomHeader),
+            ...createHttpRequest(ApSnmpRbacUrls.getApSnmpFromViewModel, params, viewmodelHeader),
             body: JSON.stringify({})
           }
           const res = await fetchWithBQ(req)
@@ -3364,6 +3455,17 @@ export const policyApi = basePolicyApi.injectEndpoints({
           }
         }
       }
+    }),
+    generateClientServerCertificates: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.generateClientServerCertificate, params, defaultCertTempVersioningHeaders)
+        return{
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'ServerCertificate', id: 'LIST' }]
     })
   })
 })
@@ -3492,6 +3594,13 @@ export const {
   useGetLbsServerProfileListQuery,
   useActivateLbsServerProfileOnVenueMutation,
   useDeactivateLbsServerProfileOnVenueMutation,
+  // Certificate
+  useGetCertificateListQuery,
+  useActivateCertificateAuthorityOnRadiusMutation,
+  useActivateClientCertificateOnRadiusMutation,
+  useDeactivateClientCertificateOnRadiusMutation,
+  useActivateServerCertificateOnRadiusMutation,
+  useDeactivateServerCertificateOnRadiusMutation,
   useLazyGetMacRegListQuery,
   useUploadMacRegistrationMutation,
   useAddSyslogPolicyMutation,
@@ -3602,5 +3711,6 @@ export const {
   useGetServerCertificatesQuery,
   useUpdateServerCertificateMutation,
   useLazyDownloadServerCertificateQuery,
-  useLazyDownloadServerCertificateChainsQuery
+  useLazyDownloadServerCertificateChainsQuery,
+  useGenerateClientServerCertificatesMutation
 } = policyApi

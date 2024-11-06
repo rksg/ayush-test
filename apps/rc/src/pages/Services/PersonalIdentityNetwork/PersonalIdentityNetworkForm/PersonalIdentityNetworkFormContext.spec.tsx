@@ -1,7 +1,9 @@
 import { useContext } from 'react'
 
-import { rest } from 'msw'
+import { clone } from 'lodash'
+import { rest }  from 'msw'
 
+import { commonApi, edgeApi, edgeSdLanApi, pinApi, serviceApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   DpskUrls,
@@ -16,9 +18,10 @@ import {
   PropertyUrlsInfo,
   TunnelProfileUrls,
   TunnelTypeEnum,
-  VenueFixtures
-} from '@acx-ui/rc/utils'
-import { Provider }                        from '@acx-ui/store'
+  VenueFixtures,
+  EdgeSdLanUrls,
+  EdgeSdLanFixtures } from '@acx-ui/rc/utils'
+import { Provider, store }                 from '@acx-ui/store'
 import { mockServer, renderHook, waitFor } from '@acx-ui/test-utils'
 
 import { PersonalIdentityNetworkFormContext, PersonalIdentityNetworkFormDataProvider } from './PersonalIdentityNetworkFormContext'
@@ -30,15 +33,20 @@ jest.mock('@acx-ui/utils', () => ({
 }))
 
 const createPinPath = '/:tenantId/services/personalIdentityNetwork/create'
-const { mockVenueOptions } = VenueFixtures
+const editPinPath = '/:tenantId/services/personalIdentityNetwork/:serviceId/edit'
+const { mockVenueOptions, mockVenueOptionsForMutuallyExclusive } = VenueFixtures
 const {
   mockPersonaGroup,
   mockDpsk,
+  mockDpskForPinMutullyExclusive,
   mockPropertyConfigs,
   mockDeepNetworkList,
   mockPinStatsList,
-  mockPinSwitchInfoData
+  mockPinSwitchInfoData,
+  mockPinListForMutullyExclusive,
+  mockDPSKNetworkList
 } = EdgePinFixtures
+const { mockSdLanDataForPinMutuallyExclusive } = EdgeSdLanFixtures
 const { mockEdgeClusterList } = EdgeGeneralFixtures
 const { mockedTunnelProfileViewData } = EdgeTunnelProfileFixtures
 const { mockDhcpStatsData } = EdgeDHCPFixtures
@@ -56,6 +64,12 @@ describe('PersonalIdentityNetworkFormContext', () => {
       tenantId,
       serviceId: 'testServiceId'
     }
+
+    store.dispatch(edgeApi.util.resetApiState())
+    store.dispatch(edgeSdLanApi.util.resetApiState())
+    store.dispatch(pinApi.util.resetApiState())
+    store.dispatch(commonApi.util.resetApiState())
+    store.dispatch(serviceApi.util.resetApiState())
 
     services.useVenueNetworkActivationsViewModelListQuery = jest.fn().mockImplementation(() => {
       return { dpskNetworkList: mockDeepNetworkList.response, isLoading: false }
@@ -101,74 +115,208 @@ describe('PersonalIdentityNetworkFormContext', () => {
       ),
       rest.post(
         EdgeDhcpUrls.getDhcpStats.url,
-        (_req, res, ctx) => res(ctx.json(mockDhcpStatsData)))
+        (_req, res, ctx) => res(ctx.json(mockDhcpStatsData))),
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_req, res, ctx) => res(ctx.json({ data: [] }))
+      )
     )
   })
 
-  it('should get data correctly', async () => {
-    const { result } = renderHook(() => useContext(PersonalIdentityNetworkFormContext), {
-      wrapper: ({ children }) => <Provider>
-        <PersonalIdentityNetworkFormDataProvider
-          venueId='venue-id'
-        >
-          {children}
-        </PersonalIdentityNetworkFormDataProvider>
-      </Provider>,
-      route: { params, path: createPinPath }
-    })
-    await waitFor(() => expect(result.current.venueOptions?.length).toBe(2))
-    expect(result.current.venueOptions?.[0].label).toBe(mockVenueOptions.data[0].name)
-    expect(result.current.venueOptions?.[1].label).toBe(mockVenueOptions.data[2].name)
-    expect(result.current.venueOptions?.[0].value).toBe(mockVenueOptions.data[0].id)
-    expect(result.current.venueOptions?.[1].value).toBe(mockVenueOptions.data[2].id)
-    await waitFor(() =>
-      expect(result.current.personaGroupId).toBe(mockPropertyConfigs.personaGroupId))
-    await waitFor(() =>
-      expect(result.current.personaGroupData?.id).toBe(mockPersonaGroup.id))
-    await waitFor(() =>
-      expect(result.current.dpskData?.id).toBe(mockDpsk.id))
-    await waitFor(() =>
-      expect(result.current.clusterOptions?.length).toBe(5))
-    expect(result.current.clusterOptions?.[0].label).toBe(mockEdgeClusterList.data[0].name)
-    expect(result.current.clusterOptions?.[0].value).toBe(mockEdgeClusterList.data[0].clusterId)
-    await waitFor(() =>
-      expect(result.current.tunnelProfileOptions?.length)
-        .toBe(pinTunnelData.data.length))
-    expect(result.current.tunnelProfileOptions?.[0].label)
-      .toBe(pinTunnelData.data[0].name)
-    expect(result.current.tunnelProfileOptions?.[0].value)
-      .toBe(pinTunnelData.data[0].id)
-    await waitFor(() =>
-      expect(result.current.networkOptions?.length)
-        .toBe(mockDeepNetworkList.response.length))
-    expect(result.current.networkOptions?.[0].label).toBe(mockDeepNetworkList.response[0].name)
-    expect(result.current.networkOptions?.[0].value).toBe(mockDeepNetworkList.response[0].id)
-    await waitFor(() =>
-      expect(result.current.switchList?.length)
-        .toBe(mockPinSwitchInfoData.distributionSwitches.length +
+  describe('edit mode', () => {
+    it('should get data correctly', async () => {
+      const { result } = renderHook(() => useContext(PersonalIdentityNetworkFormContext), {
+        wrapper: ({ children }) => <Provider>
+          <PersonalIdentityNetworkFormDataProvider
+            venueId='mock_venue_1'
+          >
+            {children}
+          </PersonalIdentityNetworkFormDataProvider>
+        </Provider>,
+        route: { params, path: editPinPath }
+      })
+      await waitFor(() => expect(result.current.venueOptions?.length).toBe(1))
+      expect(result.current.venueOptions?.[0].label).toBe(mockVenueOptions.data[2].name)
+      await waitFor(() =>
+        expect(result.current.personaGroupId).toBe(mockPropertyConfigs.personaGroupId))
+      await waitFor(() =>
+        expect(result.current.personaGroupData?.id).toBe(mockPersonaGroup.id))
+      await waitFor(() =>
+        expect(result.current.dpskData?.id).toBe(mockDpsk.id))
+      await waitFor(() =>
+        expect(result.current.clusterOptions?.length).toBe(1))
+      expect(result.current.clusterOptions?.[0].label).toBe(mockEdgeClusterList.data[0].name)
+      expect(result.current.clusterOptions?.[0].value).toBe(mockEdgeClusterList.data[0].clusterId)
+      await waitFor(() =>
+        expect(result.current.tunnelProfileOptions?.length)
+          .toBe(pinTunnelData.data.length))
+      expect(result.current.tunnelProfileOptions?.[0].label)
+        .toBe(pinTunnelData.data[0].name)
+      expect(result.current.tunnelProfileOptions?.[0].value)
+        .toBe(pinTunnelData.data[0].id)
+      await waitFor(() =>
+        expect(result.current.networkOptions?.length)
+          .toBe(mockDeepNetworkList.response.length))
+      expect(result.current.networkOptions?.[0].label).toBe(mockDeepNetworkList.response[0].name)
+      expect(result.current.networkOptions?.[0].value).toBe(mockDeepNetworkList.response[0].id)
+      await waitFor(() =>
+        expect(result.current.switchList?.length)
+          .toBe(mockPinSwitchInfoData.distributionSwitches.length +
           mockPinSwitchInfoData.accessSwitches.length))
+    })
+
+    it('should get name correctly', async () => {
+      const { result } = renderHook(() => useContext(PersonalIdentityNetworkFormContext), {
+        wrapper: ({ children }) => <Provider>
+          <PersonalIdentityNetworkFormDataProvider
+            venueId='mock_venue_1'
+          >
+            {children}
+          </PersonalIdentityNetworkFormDataProvider>
+        </Provider>,
+        route: { params, path: editPinPath }
+      })
+      await waitFor(() =>
+        expect(result.current.getVenueName('mock_venue_3')).toBe('Mock Venue 3'))
+      await waitFor(() =>
+        expect(result.current.getClusterName('clusterId_1')).toBe('Edge Cluster 1'))
+      await waitFor(() =>
+        expect(result.current.getDhcpName('1')).toBe('TestDhcp-1'))
+      await waitFor(() =>
+        expect(result.current.getTunnelProfileName('tunnelProfileId1')).toBe('tunnelProfile1'))
+      await waitFor(() =>
+        expect(result.current.getNetworksName(['1'])).toContain('Network 1'))
+
+      expect(result.current.getVenueName('mock_venue_1')).toBe('')
+    })
   })
 
-  it('should get name correctly', async () => {
+  it('should filter out venue already bound with existing PIN in create mode', async () => {
     const { result } = renderHook(() => useContext(PersonalIdentityNetworkFormContext), {
       wrapper: ({ children }) => <Provider>
-        <PersonalIdentityNetworkFormDataProvider
-          venueId='venue-id'
-        >
+        <PersonalIdentityNetworkFormDataProvider>
           {children}
         </PersonalIdentityNetworkFormDataProvider>
       </Provider>,
       route: { params, path: createPinPath }
     })
+
     await waitFor(() =>
-      expect(result.current.getVenueName('mock_venue_1')).toBe('Mock Venue 1'))
+      expect(result.current.getVenueName('mock_venue_3')).toBe('Mock Venue 3'))
+
+    expect(result.current.getVenueName('mock_venue_1')).toBe('')
+    expect(result.current.getVenueName('mock_venue_2')).toBe('')
+  })
+
+  it('should filter venue already bound with SD-LAN', async () => {
+    const edgeList = clone(mockEdgeClusterList)
+    edgeList.data[0].venueId = mockVenueOptionsForMutuallyExclusive.data[1].id
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (_req, res, ctx) => res(ctx.json(mockVenueOptionsForMutuallyExclusive))
+      ),
+      rest.post(
+        EdgePinUrls.getEdgePinStatsList.url,
+        (_req, res, ctx) => res(ctx.json(mockPinListForMutullyExclusive))
+      ),
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_req, res, ctx) => res(ctx.json({ data: mockSdLanDataForPinMutuallyExclusive }))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (_req, res, ctx) => res(ctx.json(edgeList))
+      )
+    )
+
+    const { result } = renderHook(() => useContext(PersonalIdentityNetworkFormContext), {
+      wrapper: ({ children }) => <Provider>
+        <PersonalIdentityNetworkFormDataProvider venueId='venue-id'>
+          {children}
+        </PersonalIdentityNetworkFormDataProvider>
+      </Provider>,
+      route: { params, path: createPinPath }
+    })
+
     await waitFor(() =>
-      expect(result.current.getClusterName('clusterId_1')).toBe('Edge Cluster 1'))
+      expect(result.current.getVenueName('mock_venue_5')).toBe(''))
     await waitFor(() =>
-      expect(result.current.getDhcpName('1')).toBe('TestDhcp-1'))
+      expect(result.current.getVenueName('mock_venue_4')).toBe(''))
     await waitFor(() =>
-      expect(result.current.getTunnelProfileName('tunnelProfileId1')).toBe('tunnelProfile1'))
+      expect(result.current.getVenueName('mock_venue_3')).toBe('Mock Venue 3'))
     await waitFor(() =>
-      expect(result.current.getNetworksName(['1'])).toContain('Network 1'))
+      expect(result.current.getVenueName('mock_venue_2')).toBe(''))
+    await waitFor(() =>
+      expect(result.current.getVenueName('mock_venue_1')).toBe(''))
+  })
+
+  it('should filter network already bound with SD-LAN', async () => {
+    services.useVenueNetworkActivationsViewModelListQuery = jest.fn().mockImplementation(() => {
+      return { dpskNetworkList: mockDPSKNetworkList.response, isLoading: false }
+    })
+
+    mockServer.use(
+      rest.get(
+        DpskUrls.getDpsk.url,
+        (_req, res, ctx) => res(ctx.json(mockDpskForPinMutullyExclusive))
+      ),
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_req, res, ctx) => res(ctx.json({ data: mockSdLanDataForPinMutuallyExclusive }))
+      )
+    )
+
+    const { result } = renderHook(() => useContext(PersonalIdentityNetworkFormContext), {
+      wrapper: ({ children }) => <Provider>
+        <PersonalIdentityNetworkFormDataProvider venueId='venue-id'>
+          {children}
+        </PersonalIdentityNetworkFormDataProvider>
+      </Provider>,
+      route: { params, path: createPinPath }
+    })
+
+    await waitFor(() =>
+      expect(result.current.getNetworksName(['network3'])).toEqual([]))
+    await waitFor(() =>
+      expect(result.current.getNetworksName(['network5'])).toEqual([]))
+
+    await waitFor(() =>
+      expect(result.current.getNetworksName(['network1'])).toContain('Network 1'))
+    await waitFor(() =>
+      expect(result.current.getNetworksName(['network2'])).toContain('Network 2'))
+    await waitFor(() =>
+      expect(result.current.getNetworksName(['network4'])).toContain('Network 4'))
+    await waitFor(() =>
+      expect(result.current.getNetworksName(['network6'])).toContain('Network 6'))
+  })
+
+  it('should filter cluster already bound with SD-LAN', async () => {
+    mockServer.use(
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_req, res, ctx) => res(ctx.json(mockSdLanDataForPinMutuallyExclusive))
+      )
+    )
+
+    const { result } = renderHook(() => useContext(PersonalIdentityNetworkFormContext), {
+      wrapper: ({ children }) => <Provider>
+        <PersonalIdentityNetworkFormDataProvider venueId='0000000005'>
+          {children}
+        </PersonalIdentityNetworkFormDataProvider>
+      </Provider>,
+      route: { params, path: createPinPath }
+    })
+
+    await waitFor(() =>
+      expect(result.current.getClusterName('clusterId_1')).toBe(''))
+    await waitFor(() =>
+      expect(result.current.getClusterName('clusterId_2')).toBe(''))
+    await waitFor(() =>
+      expect(result.current.getClusterName('clusterId_3')).toBe(''))
+    await waitFor(() =>
+      expect(result.current.getClusterName('clusterId_4')).toBe(''))
+    await waitFor(() =>
+      expect(result.current.getClusterName('clusterId_5')).toBe('Edge Cluster 5'))
   })
 })

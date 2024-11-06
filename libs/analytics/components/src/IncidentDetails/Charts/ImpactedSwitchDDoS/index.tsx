@@ -8,6 +8,7 @@ import {  Card, Loader, Table,
   TableProps, NoGranularityText, cssStr,
   DonutChart, showToast,
   Button } from '@acx-ui/components'
+import { get }          from '@acx-ui/config'
 import { intlFormats }  from '@acx-ui/formatter'
 import { CopyOutlined } from '@acx-ui/icons-new'
 import { TenantLink }   from '@acx-ui/react-router-dom'
@@ -17,7 +18,6 @@ import {
   useImpactedSwitchDDoSAndTotalSwitchCountQuery,
   useImpactedSwitchDDoSQuery
 } from './services'
-
 
 import type { ChartProps } from '../types'
 
@@ -103,13 +103,17 @@ function ImpactedSwitchTable (props: {
 }) {
   const { $t } = useIntl()
   const rows = props.data
+  const isMLISA = get('IS_MLISA_SA')
 
   const columns: TableProps<ImpactedSwitchPortRow>['columns'] = useMemo(()=>[{
     key: 'name',
     dataIndex: 'name',
     title: $t({ defaultMessage: 'Switch Name' }),
     render: (_, { mac, name },__,highlightFn) =>
-      <TenantLink to={`devices/switch/${mac}/serial/details/reports`}>
+      <TenantLink
+        to={`devices/switch/${isMLISA ? mac : mac?.toLowerCase()}/serial/details/${isMLISA
+          ? 'reports': 'overview'}`
+        }>
         {highlightFn(name)}
       </TenantLink>,
     fixed: 'left',

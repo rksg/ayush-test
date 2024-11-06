@@ -12,7 +12,7 @@ import { EdgeDetailsDataContext } from '../EdgeDetailsDataProvider'
 import { EdgeDhcp } from '.'
 
 const { mockEdgeDhcpHostStats, mockDhcpStatsData } = EdgeDHCPFixtures
-const { mockEdgeList } = EdgeGeneralFixtures
+const { mockEdgeList, mockEdgeCluster } = EdgeGeneralFixtures
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -73,7 +73,9 @@ describe('Edge DHCP', () => {
         <EdgeDetailsDataContext.Provider
           value={{
             currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
-            isEdgeStatusLoading: false
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
           }}
         >
           <EdgeDhcp />
@@ -96,7 +98,9 @@ describe('Edge DHCP', () => {
         <EdgeDetailsDataContext.Provider
           value={{
             currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
-            isEdgeStatusLoading: false
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
           }}
         >
           <EdgeDhcp />
@@ -120,7 +124,9 @@ describe('Edge DHCP', () => {
         <EdgeDetailsDataContext.Provider
           value={{
             currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
-            isEdgeStatusLoading: false
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
           }}
         >
           <EdgeDhcp />

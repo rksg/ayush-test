@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { Form, Input, InputNumber, Select, Space, Switch } from 'antd'
 import { DefaultOptionType }                               from 'antd/lib/select'
 import { FormattedMessage, useIntl }                       from 'react-intl'
-import { useParams }                                       from 'react-router-dom'
 
 import { cssStr, Tooltip }                     from '@acx-ui/components'
 import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
@@ -18,6 +17,7 @@ import {
   checkVlanMember,
   EhternetPortSettings,
   EthernetPortProfileViewData,
+  EthernetPortType,
   LanPort,
   useConfigTemplate,
   VenueLanPorts,
@@ -67,6 +67,8 @@ export function LanPortSettings (props: {
   isTrunkPortUntaggedVlanEnabled?: boolean,
   readOnly?: boolean,
   useVenueSettings?: boolean,
+  venueId?: string,
+  serialNumber?: string
 }) {
   const { $t } = useIntl()
   const {
@@ -79,11 +81,12 @@ export function LanPortSettings (props: {
     isDhcpEnabled,
     isTrunkPortUntaggedVlanEnabled,
     readOnly,
-    useVenueSettings
+    useVenueSettings,
+    venueId,
+    serialNumber
   } = props
 
   const [ drawerVisible, setDrawerVisible ] = useState(false)
-  const { venueId, serialNumber } = useParams()
   const form = Form.useFormInstance()
   const lan = form?.getFieldValue('lan')?.[index]
 
@@ -125,7 +128,8 @@ export function LanPortSettings (props: {
   const convertEthernetPortListToDropdownItems = (
     ethernetPortList?: EthernetPortProfileViewData[]): DefaultOptionType[] => {
     // eslint-disable-next-line max-len
-    return ethernetPortList?.map(m => ({ label: m.name, value: m.id })) ?? []
+    return ethernetPortList?.filter(m=> !(selectedPortCaps.trunkPortOnly && m.type !== EthernetPortType.TRUNK))
+      .map(m => ({ label: m.name, value: m.id })) ?? []
   }
 
   // Ethernet Port Profile
@@ -134,7 +138,8 @@ export function LanPortSettings (props: {
     useGetEthernetPortProfileViewDataListQuery({
       payload: {
         sortField: 'name',
-        sortOrder: 'ASC'
+        sortOrder: 'ASC',
+        pageSize: 1000
       }
     }, {
       skip: isTemplate || !isEthernetPortProfileEnabled,
@@ -157,8 +162,12 @@ export function LanPortSettings (props: {
   useEffect(()=> {
     if (!isLoadingEthPortList && ethernetPortListQuery?.data) {
       const eth = getOriginalEthProfile(ethernetPortListQuery?.data)
-      form.setFieldValue(['lan', index, 'ethernetPortProfileId'],
-        ethernetProfileCreateId ?? (eth?.id ?? null))
+
+      if(eth) {
+        form.setFieldValue(['lan', index, 'ethernetPortProfileId'],
+          ethernetProfileCreateId ?? (eth?.id ?? null))
+      }
+
       setCurrentEthernetPortData(eth)
       setEthernetProfileCreateId(undefined)
       if (onGUIChanged) {
@@ -170,8 +179,8 @@ export function LanPortSettings (props: {
   // AP level
   const { data: apEthPortSettings, isLoading: isApEthPortSettingsLoading } =
     useGetEthernetPortProfileSettingsByApPortIdQuery({
-      params: { venueId, serialNumber, portId: index as unknown as string }
-    }, { skip: isTemplate || !isEthernetPortProfileEnabled || !serialNumber })
+      params: { venueId, serialNumber, portId: lan?.portId }
+    }, { skip: isTemplate || !isEthernetPortProfileEnabled || !serialNumber || !venueId })
 
   useEffect(() => {
     if (!isApEthPortSettingsLoading && apEthPortSettings) {
@@ -183,10 +192,9 @@ export function LanPortSettings (props: {
     if (isLoadingEthPortList || !ethernetPortList) {
       return undefined
     }
-
     const portIndex = index + 1
     let ethProfile = undefined
-    if (venueId) {
+    if (venueId && !serialNumber) {
       ethProfile = ethernetPortList?.filter(
         m => m.venueIds && m.venueIds.includes(venueId) &&
         m.venueActivations?.map(v => v.apModel).includes((selectedModel as VenueLanPorts).model) &&
@@ -254,7 +262,6 @@ export function LanPortSettings (props: {
             disabled={readOnly
               || isDhcpEnabled
               || !lan?.enabled
-              || selectedPortCaps?.trunkPortOnly
               || lan?.vni > 0}
             options={[
               { label: $t({ defaultMessage: 'No ethernet port profile selected' }), value: null },

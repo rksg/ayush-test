@@ -121,7 +121,9 @@ export enum ServiceType {
   WEBAUTH_SWITCH = 'Web Auth',
   RESIDENT_PORTAL = 'Resident Portal',
   EDGE_SD_LAN = 'SD-LAN',
-  EDGE_SD_LAN_P2 = 'SD-LAN-P2' // temporary type before SD-LAN GA2 dev done.
+  EDGE_SD_LAN_P2 = 'SD-LAN-P2', // temporary type before SD-LAN GA2 dev done.
+  EDGE_MDNS_PROXY = 'Edge mDNS Proxy',
+  EDGE_TNM_SERVICE = 'Edge Thirdparty Network Management'
 }
 
 export enum ServiceStatus {
@@ -209,6 +211,11 @@ export enum CellularNetworkSelectionEnum {
   AUTO = 'AUTO',
   LTE = 'LTE',
   ThreeG = 'ThreeG',
+}
+
+export enum MdnsProxyFeatureTypeEnum {
+  WIFI = 'WIFI',
+  EDGE = 'EDGE',
 }
 
 export enum ConfigTypeEnum {
@@ -1121,6 +1128,38 @@ export const ICX_MODELS_INFORMATION: SwitchModelInfoMap = {
         { portLabel: PortLabelType.GENERAL }
       ]
     }
+  },
+  ICX8100: {
+    '24': {
+      powerSlots: 1, fanSlots: 1, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    },
+    '24P': {
+      powerSlots: 1, fanSlots: 2, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    },
+    '48': {
+      powerSlots: 1, fanSlots: 1, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    },
+    '48P': {
+      powerSlots: 1, fanSlots: 2, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    },
+    'C08PF': {
+      powerSlots: 1, fanSlots: 0, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    }
   }
 }
 
@@ -1140,5 +1179,6 @@ export const DHCP_LIMIT_NUMBER = 120
 export const VLAN_LIMIT_NUMBER = 64
 export const AAA_LIMIT_NUMBER = 32
 export const CLIENT_ISOLATION_LIMIT_NUMBER = 64
+export const DIRECTORY_SERVER_LIMIT_NUMBER = 64
 export const ACX_UI_AP_COMPATIBILITY_NOTE_HIDDEN_KEY = 'ACX-ap-compatibiliy-note-hidden'
 export const ACX_UI_EDGE_COMPATIBILITY_NOTE_HIDDEN_KEY = 'ACX-edge-compatibiliy-note-hidden'

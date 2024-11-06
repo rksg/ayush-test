@@ -302,6 +302,50 @@ export const availableVersions = [{
   id: '6.2.1.103.1579'
 }]
 
+export const switchVenueV1002NextSchedule = [
+  {
+    venueId: '2840ec89e34347298b00e5ac01e85214',
+    venueName: 'auto11',
+    versions: [
+      {
+        modelGroup: 'ICX71',
+        version: '09010j_cd2_rc14'
+      },
+      {
+        modelGroup: 'ICX82',
+        version: '10010b_rc88'
+      },
+      {
+        modelGroup: 'ICX7X',
+        version: '09010j_cd2_rc14'
+      }
+    ],
+    nextSchedule: {
+      timeSlot: {
+        startDateTime: '2024-11-13T00:00:00-05:00',
+        endDateTime: '2024-11-13T02:00:00-05:00'
+      },
+      supportModelGroupVersions: [
+        {
+          modelGroup: 'ICX82',
+          version: '10010f_b494'
+        },
+        {
+          modelGroup: 'ICX7X',
+          version: '10010f_b494'
+        },
+        {
+          modelGroup: 'ICX71',
+          version: '09010e_b295'
+        }
+      ]
+    },
+    preDownload: false,
+    status: 'NONE',
+    scheduleCount: 1
+  }
+]
+
 export const switchVenueV1002 = [
   {
     venueId: '28c547b442f54d1cbec835d6e9cc2ac6',
@@ -318,6 +362,10 @@ export const switchVenueV1002 = [
       {
         modelGroup: 'ICX7X',
         version: '09010h_cd2_b4'
+      },
+      {
+        modelGroup: 'ICX81',
+        version: '10010f_b467'
       }
     ],
     lastScheduleUpdateTime: '2024-05-23T03:55:15.151+00:00',
@@ -346,6 +394,10 @@ export const switchVenueV1002 = [
       {
         modelGroup: 'ICX7X',
         version: '09010h_cd2_b4'
+      },
+      {
+        modelGroup: 'ICX81',
+        version: '10010f_b467'
       }
     ],
     lastScheduleUpdateTime: '2024-06-29T10:45:43.117+00:00',
@@ -368,6 +420,10 @@ export const switchVenueV1002 = [
       {
         modelGroup: 'ICX7X',
         version: '09010f_b19'
+      },
+      {
+        modelGroup: 'ICX81',
+        version: '10010f_b467'
       }
     ],
     nextSchedule: {
@@ -406,6 +462,10 @@ export const switchVenueV1002 = [
       {
         modelGroup: 'ICX7X',
         version: '10010_rc3'
+      },
+      {
+        modelGroup: 'ICX81',
+        version: '10010f_b467'
       }
     ],
     lastScheduleUpdateTime: '2024-07-09T03:59:38.071+00:00',
@@ -428,6 +488,10 @@ export const switchVenueV1002 = [
       {
         modelGroup: 'ICX7X',
         version: '09010h_cd2_b4'
+      },
+      {
+        modelGroup: 'ICX81',
+        version: '10010f_b467'
       }
     ],
     lastScheduleUpdateTime: '2024-06-29T10:45:43.155+00:00',
@@ -450,6 +514,10 @@ export const switchVenueV1002 = [
       {
         modelGroup: 'ICX7X',
         version: '09010h_cd2_b4'
+      },
+      {
+        modelGroup: 'ICX81',
+        version: '10010f_b467'
       }
     ],
     preDownload: false,
@@ -471,6 +539,10 @@ export const switchVenueV1002 = [
       {
         modelGroup: 'ICX7X',
         version: '09010h_cd2_b4'
+      },
+      {
+        modelGroup: 'ICX81',
+        version: '10010f_b467'
       }
     ],
     preDownload: true,
@@ -492,6 +564,10 @@ export const switchVenueV1002 = [
       {
         modelGroup: 'ICX7X',
         version: '10010_rc2'
+      },
+      {
+        modelGroup: 'ICX81',
+        version: '10010f_b467'
       }
     ],
     nextSchedule: {
@@ -530,6 +606,10 @@ export const switchVenueV1002 = [
       {
         modelGroup: 'ICX7X',
         version: '10010_rc2'
+      },
+      {
+        modelGroup: 'ICX81',
+        version: '10010f_b467'
       }
     ],
     lastScheduleUpdateTime: '2024-07-02T02:38:06.961+00:00',
@@ -552,6 +632,10 @@ export const switchVenueV1002 = [
       {
         modelGroup: 'ICX7X',
         version: '09010f_b19'
+      },
+      {
+        modelGroup: 'ICX81',
+        version: '10010f_b467'
       }
     ],
     lastScheduleUpdateTime: '2024-07-03T01:56:49.881+00:00',
@@ -574,6 +658,10 @@ export const switchVenueV1002 = [
       {
         modelGroup: 'ICX7X',
         version: '09010h_cd2_b4'
+      },
+      {
+        modelGroup: 'ICX81',
+        version: '10010f_b467'
       }
     ],
     nextSchedule: {
@@ -622,6 +710,10 @@ export const switchVenueV1002 = [
       {
         modelGroup: 'ICX7X',
         version: '09010h_rc1'
+      },
+      {
+        modelGroup: 'ICX81',
+        version: '10010f_b467'
       }
     ],
     lastScheduleUpdateTime: '2024-07-07T11:06:32.307+00:00',
@@ -664,6 +756,17 @@ export const switchLatestV1002 = [
         createdDate: '2024-06-13T10:28:39.950+00:00'
       }
     ]
+  },
+  {
+    modelGroup: 'ICX81',
+    versions: [
+      {
+        id: '10010f_b467',
+        name: '10010f_b467',
+        category: 'RECOMMENDED',
+        createdDate: '2024-06-13T10:28:39.950+00:00'
+      }
+    ]
   }
 ]
 
@@ -701,6 +804,11 @@ export const switchRelease = [
   {
     id: '10010_rc3',
     name: '10010_rc3',
+    category: 'RECOMMENDED'
+  },
+  {
+    id: '10010f_b467',
+    name: '10010f_b467',
     category: 'RECOMMENDED'
   }
 ]

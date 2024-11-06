@@ -11,8 +11,8 @@ import { Features, useIsSplitOn }                                               
 import { ApTable, ApTableRefType, ApsTabContext, groupedFields, useApGroupsFilterOpts } from '@acx-ui/rc/components'
 import {
   useNewApListQuery,
-  useVenuesListQuery,
-  useApListQuery
+  useApListQuery,
+  useVenuesListQuery
 } from '@acx-ui/rc/services'
 import { usePollingTableQuery }  from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
@@ -54,6 +54,7 @@ export default function useApsTable () {
   const { tenantId } = useParams()
   const apTableRef = useRef<ApTableRefType>(null)
   const [apsCount, setApsCount] = useApsCount()
+  const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
 
   const { venueFilterOptions } = useVenuesListQuery(
     {
@@ -119,6 +120,7 @@ export default function useApsTable () {
         rowSelection={{
           type: 'checkbox'
         }}
+        filterPersistence={enabledUXOptFeature}
       />
     </ApsTabContext.Provider>
 

@@ -62,7 +62,7 @@ export default function CertificateTemplateList (props: { tabKey: CertificateCat
       $t({ defaultMessage: 'Add Certificate Authority' }),
     [CertificateCategoryType.CERTIFICATE]: $t({ defaultMessage: 'Generate Certificate' }),
     [CertificateCategoryType.SERVER_CERTIFICATES]:
-      $t({ defaultMessage: 'Generate Server Certificate' })
+      $t({ defaultMessage: 'Generate Certificate' })
   }
 
   const buttonLinkMapping: Record<CertificateCategoryType, string> = {
@@ -117,7 +117,7 @@ export default function CertificateTemplateList (props: { tabKey: CertificateCat
             />
             { isServerCertificateFFToggle &&
             <Tabs.TabPane
-              tab={$t({ defaultMessage: 'Server Certificates ({count})' },
+              tab={$t({ defaultMessage: 'Server & Client Certificates ({count})' },
                 { count: getServerCertificates.data?.totalCount || 0 })}
               key={CertificateCategoryType.SERVER_CERTIFICATES}
             />

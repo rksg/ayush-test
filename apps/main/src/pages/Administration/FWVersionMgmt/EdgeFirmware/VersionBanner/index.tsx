@@ -1,8 +1,8 @@
 
+import { getReleaseFirmware }            from '@acx-ui/rc/components'
 import { useGetLatestEdgeFirmwareQuery } from '@acx-ui/rc/services'
 
-import { FirmwareBanner }     from '../../FirmwareBanner'
-import { getReleaseFirmware } from '../../FirmwareUtils'
+import { FirmwareBanner } from '../../FirmwareBanner'
 
 
 export const VersionBanner = () => {

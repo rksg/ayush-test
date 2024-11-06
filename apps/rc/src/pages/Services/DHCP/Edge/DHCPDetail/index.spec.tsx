@@ -1,9 +1,10 @@
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                                                                                       from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, EdgeDhcpUrls, EdgeGeneralFixtures, EdgeUrlsInfo, getServiceRoutePath, ServiceOperation, ServiceType, VenueFixtures } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                                           from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved }                                                                              from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                                                                                                                  from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, EdgeCompatibilityFixtures, EdgeDhcpUrls, EdgeGeneralFixtures, EdgeUrlsInfo, getServiceRoutePath, ServiceOperation, ServiceType, VenueFixtures } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                                                                      from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved, within }                                                                                                 from '@acx-ui/test-utils'
 
 import { mockDhcpStatsData, mockDhcpUeSummaryStatsData } from '../__tests__/fixtures'
 
@@ -11,6 +12,7 @@ import EdgeDHCPDetail from '.'
 
 const { mockEdgeClusterList } = EdgeGeneralFixtures
 const { mockVenueOptions } = VenueFixtures
+const { mockEdgeDhcpCompatibilities } = EdgeCompatibilityFixtures
 
 describe('EdgeDhcpDetail', () => {
   let params: { tenantId: string, serviceId: string }
@@ -41,6 +43,10 @@ describe('EdgeDhcpDetail', () => {
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
         (req, res, ctx) => res(ctx.json(mockVenueOptions))
+      ),
+      rest.post(
+        EdgeDhcpUrls.getDhcpEdgeCompatibilities.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeDhcpCompatibilities))
       )
     )
   })
@@ -94,6 +100,29 @@ describe('EdgeDhcpDetail', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const rows = await screen.findAllByRole('row', { name: /Mock Venue/i })
     expect(rows.length).toBe(2)
+  })
+
+  it('should have compatible warning', async () => {
+    render(
+      <Provider>
+        <EdgeDHCPDetail />
+      </Provider>, {
+        route: { params, path: detailPath }
+      }
+    )
+
+    const compatibleWarning = await screen.findByText(/DHCP is not able to be brought up on/)
+    // eslint-disable-next-line testing-library/no-node-access
+    const detailBtn = within(compatibleWarning.closest('.ant-space') as HTMLElement)
+      .getByRole('button', { name: 'See details' })
+
+    await userEvent.click(detailBtn)
+    const compatibleInfoDrawer = await screen.findByRole('dialog')
+
+    // eslint-disable-next-line max-len
+    expect(await within(compatibleInfoDrawer).findByText(/RUCKUS Edge Firmware/)).toBeInTheDocument()
+    expect(within(compatibleInfoDrawer).getByText('2.1.0.200')).toBeValid()
+    expect(within(compatibleInfoDrawer).getByText('1 / 6')).toBeValid()
   })
 
   // it('restart service', async () => {

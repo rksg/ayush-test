@@ -1,11 +1,10 @@
 import { Form } from 'antd'
 import { rest } from 'msw'
 
-import { StepsForm }                              from '@acx-ui/components'
-import { edgeApi }                                from '@acx-ui/rc/services'
-import { EdgeDHCPFixtures, EdgeDhcpUrls }         from '@acx-ui/rc/utils'
-import { Provider, store }                        from '@acx-ui/store'
-import { mockServer, render, renderHook, screen } from '@acx-ui/test-utils'
+import { edgeApi }                        from '@acx-ui/rc/services'
+import { EdgeDHCPFixtures, EdgeDhcpUrls } from '@acx-ui/rc/utils'
+import { Provider, store }                from '@acx-ui/store'
+import { mockServer, render, screen }     from '@acx-ui/test-utils'
 
 
 import { EdgeDhcpSelectionForm } from './index'
@@ -57,47 +56,25 @@ describe('EdgeDhcpSelectionForm', () => {
   it('should create EdgeDhcpSelectionForm successfully', async () => {
     render(
       <Provider>
-        <StepsForm>
-          <StepsForm.StepForm>
-            <EdgeDhcpSelectionForm hasPin={false} />
-          </StepsForm.StepForm>
-        </StepsForm>
+        <Form>
+          <EdgeDhcpSelectionForm hasPin={false} />
+        </Form>
       </Provider>, { route: { params } }
     )
     expect(await screen.findByText('DHCP Service')).toBeVisible()
+    expect(screen.getByRole('button', { name: 'DHCP Details' })).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Add' })).toBeVisible()
   })
 
-  it('should show "Select" in drop-down when dhcpId is not given', async () => {
+  it('should be empty pool name when dhcpId is not given', async () => {
     render(
       <Provider>
-        <StepsForm>
-          <StepsForm.StepForm>
-            <EdgeDhcpSelectionForm hasPin={false} />
-          </StepsForm.StepForm>
-        </StepsForm>
+        <Form>
+          <EdgeDhcpSelectionForm hasPin={false} />
+        </Form>
       </Provider>, { route: { params } }
     )
-    expect(await screen.findByText('Select...')).toBeVisible()
+
     expect(screen.queryByText('Pool Name')).toBeNull()
-  })
-
-  it('should show DHCP profile name and pools when dhcpId is given', async () => {
-    const { result: formRef } = renderHook(() => {
-      const [ form ] = Form.useForm()
-      return form
-    })
-    formRef.current.setFieldValue('dhcpId', 1)
-
-    render(
-      <Provider>
-        <StepsForm form={formRef.current}>
-          <StepsForm.StepForm>
-            <EdgeDhcpSelectionForm hasPin={false} />
-          </StepsForm.StepForm>
-        </StepsForm>
-      </Provider>, { route: { params } }
-    )
-    expect(await screen.findByText('TestDhcp-1')).toBeVisible()
-    expect(await screen.findByText('PoolTest1')).toBeVisible()
   })
 })

@@ -169,6 +169,8 @@ export class GuestWlanAdvancedCustomization {
 
   qosMapSetOptions?: QosMapSetOptions
 
+  applicationVisibilityEnabled?: boolean
+
   constructor () {
     this.clientIsolation = true
 
@@ -292,5 +294,7 @@ export class GuestWlanAdvancedCustomization {
     this.qosMapSetEnabled = false
 
     this.qosMapSetOptions = new QosMapSetOptions()
+
+    this.applicationVisibilityEnabled = true
   }
 }

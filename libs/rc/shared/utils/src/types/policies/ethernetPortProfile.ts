@@ -12,9 +12,9 @@ export interface EthernetPortProfileViewData {
     authRadiusId: string
     accountingRadiusId?: string
     bypassMacAddressAuthentication?: boolean
-    supplicantAuthenticationOption?: EthernetPortSupplicantType
+    supplicantAuthenticationOptions?: EthernetPortSupplicantOptions
     dynamicVlanEnabled?: boolean
-    unauthenticatedguestVlan?: number
+    unauthenticatedGuestVlan?: number
     enableAuthProxy?: boolean
     enableAccountingProxy?: boolean,
     apSerialNumbers: string[],
@@ -34,11 +34,12 @@ export interface EthernetPortProfile {
     authRadiusId?: string
     accountingRadiusId?: string
     bypassMacAddressAuthentication?: boolean
-    supplicantAuthenticationOption?: EthernetPortSupplicantType
+    supplicantAuthenticationOptions?: EthernetPortSupplicantOptions
     dynamicVlanEnabled?: boolean
-    unauthenticatedguestVlan?: number
+    unauthenticatedGuestVlan?: number
     enableAuthProxy?: boolean
     enableAccountingProxy?: boolean
+    apSerialNumbers?: string[]
   }
 
 export interface EthernetPortProfileFormType extends EthernetPortProfile {
@@ -65,4 +66,10 @@ export interface ApActivation {
   venueId?: string
   apSerialNumber?: string
   portId?: number
+}
+
+export interface EthernetPortSupplicantOptions {
+  type: EthernetPortSupplicantType
+  username?: string
+  password?: string
 }

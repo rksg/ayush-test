@@ -21,7 +21,7 @@ import { messageMapping } from './messageMapping'
 
 export type ApCompatibilityFeatureProps = {
     count?: number,
-    deviceStatus?: ApDeviceStatusEnum | EdgeStatusEnum | string
+    deviceStatus?: ApDeviceStatusEnum | EdgeStatusEnum | string,
     onClick: () => void
   }
 
@@ -49,8 +49,8 @@ export const ApCompatibilityFeature = (props: ApCompatibilityFeatureProps) => {
   }
 
   const checkResult = getCompatibilityMessage(deviceStatus, count)
+  const isPartialCompatible = !!count && (deviceStatus === ApDeviceStatusEnum.OPERATIONAL)
 
-  const isPartialCompatible = !!count && ApDeviceStatusEnum.OPERATIONAL
 
   return <Space size='small'>
     {isPartialCompatible

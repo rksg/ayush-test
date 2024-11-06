@@ -27,6 +27,8 @@ describe('ServiceCatalog', () => {
 
     expect(screen.queryByText('Personal Identity Network')).toBeNull()
     expect(screen.queryByText('SD-LAN')).toBeNull()
+    expect(screen.queryByText('mDNS Proxy for RUCKUS Edge')).toBeNull()
+    expect(screen.queryByText('Thirdparty Network Management')).toBeNull()
   })
 
   it('should render service catalog with feature flag ON', async () => {
@@ -42,7 +44,9 @@ describe('ServiceCatalog', () => {
 
     expect(await screen.findByText('Personal Identity Network')).toBeVisible()
     expect(await screen.findByText('Network Control')).toBeVisible()
-    await screen.findAllByText('SD-LAN')
+    expect(screen.getByText('SD-LAN')).toBeVisible()
+    expect(screen.getByText('mDNS Proxy for RUCKUS Edge')).toBeVisible()
+    expect(screen.getByText('Thirdparty Network Management')).toBeVisible()
   })
 
   it('should not render edge-firewall service with the HA-FF OFF', async () => {

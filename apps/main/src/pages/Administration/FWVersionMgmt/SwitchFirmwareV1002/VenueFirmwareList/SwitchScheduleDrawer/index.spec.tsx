@@ -16,8 +16,8 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { VenueFirmwareList }                   from '..'
-import { switchLatestV1002, switchVenueV1002 } from '../../__tests__/fixtures'
+import { VenueFirmwareList }                               from '..'
+import { switchLatestV1002, switchVenueV1002NextSchedule } from '../../__tests__/fixtures'
 import {
   preference,
   switchReleaseV1002,
@@ -209,13 +209,13 @@ describe('SwitchFirmware - SwitchScheduleDrawer', () => {
         <SwitchScheduleDrawer
           visible={true}
           setVisible={() => { }}
-          data={switchVenueV1002[0] as FirmwareSwitchVenueV1002}
+          data={switchVenueV1002NextSchedule[0] as FirmwareSwitchVenueV1002}
         />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
 
-    expect(await screen.findByText('My-Venue-reg-profile')).toBeInTheDocument()
+    expect(await screen.findByText('auto11')).toBeInTheDocument()
   })
 
 

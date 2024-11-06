@@ -8,12 +8,14 @@ import { ScheduleTiming } from '../../common/ScheduleTiming'
 import { ScheduleWeekly } from '../../common/ScheduleWeekly'
 import { Intent }         from '../../useIntentDetailsQuery'
 
+import { APsSelection } from './APSelection'
 const { Paragraph } = Typography
 
 export function Settings () {
   const { $t } = useIntl()
   const { form } = useStepFormContext<Intent>()
   const enableExcludedHours = Form.useWatch(['preferences', 'enableExcludedHours'])
+  const enableExcludedAPs = Form.useWatch(['preferences', 'enableExcludedAPs'])
   const isEnabled = form.getFieldValue('preferences').enable
   const excludedHours = form.getFieldValue('preferences').excludedHours
 
@@ -22,13 +24,14 @@ export function Settings () {
     description: $t({ defaultMessage: 'You may direct RUCKUS AI to exclude certain time slots and/or specific APs from being moved to reduced power mode.' }),
     // eslint-disable-next-line max-len
     option1: $t({ defaultMessage: 'Do not apply EcoFlex during the following time slots of the week' }),
-    option2: $t({ defaultMessage: 'Do not apply EcoFlex to the following AP Groups / APs' })
+    option2: $t({ defaultMessage: 'Do not apply EcoFlex to the following APs' })
   }
 
   return <Row gutter={20}>
     <Col span={15}>
       <StepsForm.Title children={$t({ defaultMessage: 'Settings' })} />
       <ScheduleTiming disabled={!isEnabled} />
+
       <StepsForm.Subtitle children={$t({ defaultMessage: 'Optional' })} />
       <Paragraph><span>{content.description}</span></Paragraph>
       <Form.Item
@@ -44,6 +47,15 @@ export function Settings () {
         excludedHours={excludedHours}
         readonly={!isEnabled}
       />}
+      <Form.Item
+        name={['preferences','enableExcludedAPs']}
+        valuePropName='checked'>
+        <Checkbox
+          children={content.option2}
+          disabled={!isEnabled}
+        />
+      </Form.Item>
+      {enableExcludedAPs && <APsSelection isDisabled={!isEnabled}/>}
     </Col>
 
   </Row>

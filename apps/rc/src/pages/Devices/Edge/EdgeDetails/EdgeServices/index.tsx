@@ -33,6 +33,7 @@ export const EdgeServices = () => {
   const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+  const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
 
   const [currentData, setCurrentData] = useState({} as EdgeService)
   const [drawerVisible, setDrawerVisible] = useState(false)
@@ -59,21 +60,24 @@ export const EdgeServices = () => {
   const { restartEdgeDhcp } = useEdgeDhcpActions()
 
   const showServiceDetailsDrawer = (data: EdgeService) => {
-    setCurrentData(data)
     switch (data.serviceType) {
       case EdgeServiceTypeEnum.DHCP:
-        setDrawerVisible(isEdgeHaReady && isEdgeDhcpHaReady)
+        if (!isEdgeHaReady || !isEdgeDhcpHaReady) return
         break
       case EdgeServiceTypeEnum.FIREWALL:
-        setDrawerVisible(isEdgeHaReady && isEdgeFirewallHaReady)
+        if (!isEdgeHaReady || !isEdgeFirewallHaReady) return
         break
       case EdgeServiceTypeEnum.PIN:
-        setDrawerVisible(isEdgePinReady)
+        if (!isEdgePinReady) return
+        break
+      case EdgeServiceTypeEnum.MDNS:
+        if (!isEdgeMdnsReady) return
         break
       default:
-        setDrawerVisible(true)
-        break
     }
+
+    setCurrentData(data)
+    setDrawerVisible(true)
   }
 
   const columns: TableProps<EdgeService>['columns'] = [
@@ -197,7 +201,11 @@ export const EdgeServices = () => {
                 closeAfterAction: true,
                 handler: () => {
                   removeServices({
-                    params, payload: {
+                    params: {
+                      venueId: currentEdgeStatus?.venueId,
+                      edgeClusterId: currentEdgeStatus?.clusterId
+                    },
+                    payload: {
                       serviceList: selectedRows.map(item => ({
                         serviceId: item.serviceId,
                         serviceType: item.serviceType

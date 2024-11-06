@@ -1,8 +1,8 @@
 
 import { useMemo } from 'react'
 
-import { Space, Typography } from 'antd'
-import { useIntl }           from 'react-intl'
+import { Col, Row, Space, Typography } from 'antd'
+import { useIntl }                     from 'react-intl'
 
 import { Button, Card, Loader, PageHeader, SummaryCard, Table, TableProps }                                    from '@acx-ui/components'
 import { EdgeServiceStatusLight, useIsEdgeReady }                                                              from '@acx-ui/rc/components'
@@ -22,7 +22,8 @@ import {
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { noDataDisplay }         from '@acx-ui/utils'
 
-import * as UI from './styledComponents'
+import { CompatibilityCheck } from './CompatibilityCheck'
+import * as UI                from './styledComponents'
 
 interface EdgeTableType extends DhcpUeSummaryStats {
   edgeClusterName?: string
@@ -33,8 +34,8 @@ const EdgeDHCPDetail = () => {
 
   const { $t } = useIntl()
   const params = useParams()
-
   const isEdgeReady = useIsEdgeReady()
+
   const getDhcpStatsPayload = {
     fields: [
       'id',
@@ -198,18 +199,17 @@ const EdgeDHCPDetail = () => {
     },
     {
       title: $t({ defaultMessage: 'DHCP Relay' }),
-      content: dhcpStats &&
-        (dhcpStats?.dhcpRelay === 'true' ?
-          $t({ defaultMessage: 'ON' }) :
-          $t({ defaultMessage: 'OFF' }))
+      content: dhcpStats?.dhcpRelay === 'true' ?
+        $t({ defaultMessage: 'ON' }) :
+        $t({ defaultMessage: 'OFF' })
     },
     {
       title: $t({ defaultMessage: 'DHCP Pools' }),
-      content: dhcpStats && dhcpStats?.dhcpPoolNum
+      content: dhcpStats?.dhcpPoolNum ?? 0
     },
     {
       title: $t({ defaultMessage: 'Lease Time' }),
-      content: dhcpStats && (dhcpStats?.leaseTime)
+      content: dhcpStats?.leaseTime || noDataDisplay
     }
   ]
 
@@ -245,6 +245,14 @@ const EdgeDHCPDetail = () => {
         { isFetching: isDhcpStatsLoading || isDhcpUeSummaryStatsLoading ||
             isEdgeClusterInfoLoading || isVenueInfoLoading, isLoading: false }
       ]}>
+        {
+          !!params.serviceId &&
+          <Row>
+            <Col span={24}>
+              <CompatibilityCheck serviceId={params.serviceId} />
+            </Col>
+          </Row>
+        }
         <Space direction='vertical' size={30}>
           <SummaryCard data={dhcpInfo} />
           <Card>

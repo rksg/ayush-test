@@ -805,6 +805,16 @@ export function specialCharactersRegExp (value: string) {
   return Promise.resolve()
 }
 
+export function specialCharactersWithNewLineRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/^[\.$A-Za-z0-9_ \n-]+$/)
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.specialCharactersInvalid))
+  }
+  return Promise.resolve()
+}
+
 export function parsePhoneNumber (phoneNumber: string): {
   number: libphonenumber.PhoneNumber,
   type: PhoneNumberType
@@ -1150,10 +1160,11 @@ export function ipv6RegExp (value: string) {
   return Promise.resolve()
 }
 
-export function servicePolicyNameRegExp (value: string) {
+export function servicePolicyNameRegExp (value: string, maxLength: number=32) {
   const { $t } = getIntl()
+
   // regex from service and policy backend
-  const re = new RegExp('(?=^((?!(`|\\$\\()).){2,32}$)^(\\S.*\\S)$')
+  const re = new RegExp(`(?=^((?!(\`|\\$\\()).){2,${maxLength}}$)^(\\S.*\\S)$`)
 
   // make sure there is no special character in value
   if ([...value].length !== JSON.stringify(value).normalize().slice(1, -1).length) {

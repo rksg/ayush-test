@@ -43,6 +43,7 @@ import {
   ApDeviceStatusEnum,
   ApExtraParams,
   CommonResult,
+  CompatibilitySelectedApInfo,
   FILTER,
   ImportErrorRes,
   PowerSavingStatusEnum,
@@ -74,6 +75,13 @@ import { useExportCsv }  from './useExportCsv'
 
 import { APStatus, ApTableProps, ApTableRefType, channelTitleMap, defaultApPayload, retriedApIds, transformMeshRole } from '.'
 
+const DefaultSelectedApInfo = {
+  serialNumber: '',
+  name: '',
+  model: '',
+  firmwareVersion: ''
+} as CompatibilitySelectedApInfo
+
 export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedGrouped>, ref?: Ref<ApTableRefType>) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
@@ -83,8 +91,7 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
   const { searchable, filterables, enableGroups=true, enableApCompatibleCheck=false, settingsId = 'ap-table' } = props
   const { setApsCount } = useContext(ApsTabContext)
   const [ compatibilitiesDrawerVisible, setCompatibilitiesDrawerVisible ] = useState(false)
-  const [ selectedApSN, setSelectedApSN ] = useState('')
-  const [ selectedApName, setSelectedApName ] = useState('')
+  const [ selectedApInfo, setSelectedApInfo ] = useState<CompatibilitySelectedApInfo>(DefaultSelectedApInfo)
   const [ tableData, setTableData ] = useState([] as (APExtended|APExtendedGrouped)[])
   const [ hasGroupBy, setHasGroupBy ] = useState(false)
   const [ showFeatureCompatibilitiy, setShowFeatureCompatibilitiy ] = useState(false)
@@ -489,12 +496,13 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
       show: false,
       sorter: false,
       render: (_: React.ReactNode, row: APExtended) => {
+        const { incompatible, deviceStatus } = row || {}
         return (<ApCompatibilityFeature
-          count={row?.incompatible}
-          deviceStatus={row?.deviceStatus}
+          count={incompatible}
+          deviceStatus={deviceStatus}
           onClick={() => {
-            setSelectedApSN(row?.serialNumber)
-            setSelectedApName(row?.name ?? '')
+            const { serialNumber, name='', model='', fwVersion='' } = row || {}
+            setSelectedApInfo({ serialNumber, name, model, firmwareVersion: fwVersion })
             setCompatibilitiesDrawerVisible(true)
           }} />
         )
@@ -589,12 +597,9 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
   const [ importQuery ] = useLazyImportResultQuery()
   const [ importResult, setImportResult ] = useState<ImportErrorRes>({} as ImportErrorRes)
   const [ importErrors, setImportErrors ] = useState<FetchBaseQueryError>({} as FetchBaseQueryError)
-  const apGpsFlag = useIsSplitOn(Features.AP_GPS)
   const { acx_account_vertical } = getJwtTokenPayload()
   const isHospitality = acx_account_vertical === AccountVertical.HOSPITALITY ? AccountVertical.HOSPITALITY.toLowerCase() + '_' : ''
-  const importTemplateLink = apGpsFlag ?
-    `assets/templates/${isHospitality}aps_import_template_with_gps.csv` :
-    `assets/templates/${isHospitality}aps_import_template.csv`
+  const importTemplateLink = `assets/templates/${isHospitality}aps_import_template_with_gps.csv`
   // eslint-disable-next-line max-len
   const { exportCsv, disabled } = useExportCsv<APExtended>(tableQuery as TableQuery<APExtended, RequestPayload<unknown>, unknown>)
   const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
@@ -725,8 +730,8 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
           type={params.venueId?ApCompatibilityType.VENUE:ApCompatibilityType.NETWORK}
           venueId={params.venueId}
           networkId={params.networkId}
-          apIds={selectedApSN ? [selectedApSN] : []}
-          apName={selectedApName}
+          apIds={selectedApInfo?.serialNumber ? [selectedApInfo.serialNumber] : []}
+          apName={selectedApInfo?.name}
           isMultiple
           onClose={() => setCompatibilitiesDrawerVisible(false)}
         />
@@ -737,8 +742,7 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
         type={params.venueId?ApCompatibilityType.VENUE:ApCompatibilityType.NETWORK}
         venueId={params.venueId}
         networkId={params.networkId}
-        apId={selectedApSN}
-        apName={selectedApName}
+        apInfo={selectedApInfo}
         onClose={() => setCompatibilitiesDrawerVisible(false)}
       />}
     </Loader>

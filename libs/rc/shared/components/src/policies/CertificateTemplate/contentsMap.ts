@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { MessageDescriptor, defineMessage } from 'react-intl'
 
-import { AlgorithmType, CertificateAuthorityType, CertificateCategoryType, CertificateStatusType, ChromebookCertRemovalType, ChromebookEnrollmentType, EnrollmentType, ExpirationType, GenerationCaType, KeyUsageType, UsageType } from '@acx-ui/rc/utils'
+import { AlgorithmType, CertificateAuthorityType, CertificateCategoryType, CertificateGenerationType, CertificateStatusType, ChromebookCertRemovalType, ChromebookEnrollmentType, EnrollmentType, ExpirationType, ExtendedKeyUsages, GenerationCaType, KeyUsages, KeyUsageType, UsageType } from '@acx-ui/rc/utils'
 
 
 export const caTypeShortLabel: Record<CertificateAuthorityType, MessageDescriptor> = {
@@ -52,7 +52,7 @@ export const certDetailTitle: Record<CertificateCategoryType, MessageDescriptor>
   [CertificateCategoryType.CERTIFICATE]: defineMessage({ defaultMessage: 'Certificate Details' }),
   [CertificateCategoryType.CERTIFICATE_AUTHORITY]: defineMessage({ defaultMessage: 'Certificate Authority Details' }),
   [CertificateCategoryType.CERTIFICATE_TEMPLATE]: defineMessage({ defaultMessage: 'Certificate Template Details' }),
-  [CertificateCategoryType.SERVER_CERTIFICATES]: defineMessage({ defaultMessage: 'Server Certificate Template Details' })
+  [CertificateCategoryType.SERVER_CERTIFICATES]: defineMessage({ defaultMessage: 'Download' })
 }
 
 export const usagesLabel: Record<UsageType, MessageDescriptor> = {
@@ -167,5 +167,35 @@ export const certificateStatusTypeLabel: Record<CertificateStatusType, MessageDe
   }),
   [CertificateStatusType.EXPIRED]: defineMessage({
     defaultMessage: 'Expired'
+  })
+}
+
+export const generateCertificateTitle: Record<CertificateGenerationType, MessageDescriptor> = {
+  [CertificateGenerationType.NEW]: defineMessage({
+    defaultMessage: 'Generate Certificate'
+  }),
+  [CertificateGenerationType.WITH_CSR]: defineMessage({
+    defaultMessage: 'Generate Certificate with CSR'
+  }),
+  [CertificateGenerationType.UPLOAD]: defineMessage({
+    defaultMessage: 'Upload Certificate'
+  })
+}
+
+export const KeyUsagesLabels: Record<KeyUsages, MessageDescriptor> = {
+  [KeyUsages.DIGITAL_SIGNATURE]: defineMessage({
+    defaultMessage: 'Digital Signature'
+  }),
+  [KeyUsages.KEY_ENCIPHERMENT]: defineMessage({
+    defaultMessage: 'Key Encipherment'
+  })
+}
+
+export const ExtendedKeyUsagesLabels: Record<ExtendedKeyUsages, MessageDescriptor> = {
+  [ExtendedKeyUsages.CLIENT_AUTH]: defineMessage({
+    defaultMessage: 'Client Authentication'
+  }),
+  [ExtendedKeyUsages.SERVER_AUTH]: defineMessage({
+    defaultMessage: 'Server Authentication'
   })
 }

@@ -24,7 +24,8 @@ import { setUserProfile, getUserProfile } from '@acx-ui/user'
 
 import {
   apCompatibilities,
-  getApGroupsList
+  getApGroupsList,
+  mockVenueOptions
 } from './__test__/fixtures'
 
 import { ApTable } from '.'
@@ -112,6 +113,10 @@ describe('Aps', () => {
       rest.get(
         CommonUrlsInfo.getVenue.url,
         (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json({ ...mockVenueOptions }))
       )
     )
   })
@@ -353,9 +358,7 @@ describe('Aps', () => {
   })
 
   it('should import correctly', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
-      return ff === Features.AP_GPS || ff === Features.WIFI_RBAC_API
-    })
+    jest.mocked(useIsSplitOn).mockImplementation((ff) => ff === Features.WIFI_RBAC_API)
     const importAPSpy = jest.fn()
 
     mockServer.use(
@@ -381,7 +384,7 @@ describe('Aps', () => {
     const drawer = await screen.findByTestId('ImportFileDrawer')
     expect(drawer).toBeVisible()
 
-    expect(within(drawer).getByRole('combobox', { name: 'Venue' })).toBeInTheDocument()
+    expect(await within(drawer).findByRole('combobox', { name: 'Venue' })).toBeInTheDocument()
     await userEvent.click(await within(drawer).findByRole('button', { name: 'Import' }))
     await waitFor(() => expect(importAPSpy).toHaveBeenCalled())
   })

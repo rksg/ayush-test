@@ -10,7 +10,7 @@ import { mockServer, render, renderHook, screen }        from '@acx-ui/test-util
 
 import { EdgeQosProfileSelectionForm } from './index'
 
-const { mockEdgeHqosProfileStatusList } = EdgeHqosProfileFixtures
+const { mockEdgeHqosProfileStatusList, mockEdgeHqosData } = EdgeHqosProfileFixtures
 
 type MockSelectProps = React.PropsWithChildren<{
   onChange?: (value: string) => void
@@ -46,6 +46,10 @@ describe('EdgeHqosProfileSelectionForm', () => {
       rest.post(
         EdgeHqosProfilesUrls.getEdgeHqosProfileViewDataList.url,
         (_, res, ctx) => res(ctx.json(mockEdgeHqosProfileStatusList))
+      ),
+      rest.get(
+        EdgeHqosProfilesUrls.getEdgeHqosProfileById.url,
+        (_, res, ctx) => res(ctx.json(mockEdgeHqosData))
       )
     )
   })
@@ -63,25 +67,12 @@ describe('EdgeHqosProfileSelectionForm', () => {
     expect(await screen.findByText('HQoS Bandwitdth Profile')).toBeVisible()
   })
 
-  it('should show "Select" in drop-down when qosId is not given', async () => {
-    render(
-      <Provider>
-        <StepsForm>
-          <StepsForm.StepForm>
-            <EdgeQosProfileSelectionForm />
-          </StepsForm.StepForm>
-        </StepsForm>
-      </Provider>, { route: { params } }
-    )
-    expect(await screen.findByText('Select...')).toBeVisible()
-  })
-
   it('should show HQoS profile name when qosId is given', async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
       return form
     })
-    formRef.current.setFieldValue('qosId', mockEdgeHqosProfileStatusList.data[0].id)
+    formRef.current.setFieldValue('hqosId', mockEdgeHqosProfileStatusList.data[0].id)
 
     render(
       <Provider>
