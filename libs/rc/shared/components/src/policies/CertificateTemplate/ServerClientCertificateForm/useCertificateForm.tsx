@@ -4,7 +4,7 @@ import { Form } from 'antd'
 import moment   from 'moment'
 
 import { useGenerateClientServerCertificatesMutation, useUploadCertificateMutation } from '@acx-ui/rc/services'
-import { AlgorithmType, CertificateGenerationType }                                  from '@acx-ui/rc/utils'
+import { AlgorithmType, CertificateAcceptType, CertificateGenerationType }           from '@acx-ui/rc/utils'
 
 export default function useCertificateForm () {
   const [generateCertificateForm] = Form.useForm()
@@ -24,6 +24,15 @@ export default function useCertificateForm () {
       startDateMoment: moment(new Date().setMonth(new Date().getMonth() - 1)),
       expireDateMoment: moment(new Date().setFullYear(new Date().getFullYear() + 20))
     })
+  }
+
+  function getContentType (extension: string) {
+    switch (extension) {
+      case 'pem': return CertificateAcceptType.PEM
+      case 'p12': return CertificateAcceptType.PKCS12
+      case 'der': return CertificateAcceptType.DER
+      case 'key': return CertificateAcceptType.PKCS8
+    }
   }
 
   const handleFinish = async () => {
@@ -55,10 +64,18 @@ export default function useCertificateForm () {
       return res?.response?.id
     } else {
       const uploadCertData = new FormData()
-      if (formData.publicKey) uploadCertData.append('certificateFile',
-        new Blob([formData.publicKey.file], { type: formData.publicKey.file.type }))
-      if (formData.privateKey) uploadCertData.append('privateKeyFile',
-        new Blob([formData.privateKey.file], { type: formData.privateKey.file.type }))
+      if (formData.publicKey) {
+        const publickKeyext = formData.publicKey.file.name.split('.').pop() as string
+        uploadCertData.append('certificateFile',
+          new Blob([formData.publicKey.file],
+            { type: getContentType(publickKeyext) }))
+      }
+      if (formData.privateKey) {
+        const privateKeyExt = formData.publicKey.file.name.split('.').pop() as string
+        uploadCertData.append('privateKeyFile',
+          new Blob([formData.privateKey.file],
+            { type: getContentType(privateKeyExt) }))
+      }
       if (formData.name) uploadCertData.append('name', formData.name)
       if (formData.password) uploadCertData.append('password', formData.password)
 

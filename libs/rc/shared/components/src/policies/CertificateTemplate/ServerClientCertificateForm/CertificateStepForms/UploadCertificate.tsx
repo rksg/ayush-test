@@ -7,10 +7,10 @@ import {
 import { Button, Form, Input, Space, Typography, Upload } from 'antd'
 import { useIntl }                                        from 'react-intl'
 
-import { GridRow, GridCol }                                                               from '@acx-ui/components'
-import { formatter }                                                                      from '@acx-ui/formatter'
-import { useGetServerCertificatesQuery }                                                  from '@acx-ui/rc/services'
-import { CertificateAcceptType, checkObjectNotExists, KeyType, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
+import { GridRow, GridCol }                                        from '@acx-ui/components'
+import { formatter }                                               from '@acx-ui/formatter'
+import { useGetServerCertificatesQuery }                           from '@acx-ui/rc/services'
+import { checkObjectNotExists, KeyType, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
 
 import { caFormDescription }                          from '../../contentsMap'
 import { Description, Section, SettingsSectionTitle } from '../../styledComponents'
@@ -26,13 +26,6 @@ export function UploadCertificate () {
   const acceptablePublicKeyFileExts = ['pem', 'p12', 'der']
   const acceptablePrivateKeyFileExts = ['pem', 'key']
 
-  const acceptedPublicKeyFileFormatType = [CertificateAcceptType.PEM,
-    CertificateAcceptType.DER,
-    CertificateAcceptType.PKCS12 ]
-
-  const acceptedPrivateKeyFileFormatType = [CertificateAcceptType.PEM,
-    CertificateAcceptType.PKCS8]
-
   const beforeUpload = async (file: File, keyType: KeyType) => {
     try {
       let errorMsg = ''
@@ -40,13 +33,6 @@ export function UploadCertificate () {
       if ((keyType === KeyType.PUBLIC && !acceptablePublicKeyFileExts.includes(extension))
       || (keyType === KeyType.PRIVATE && !acceptablePrivateKeyFileExts.includes(extension))) {
         errorMsg = $t({ defaultMessage: 'Invalid file type.' })
-      }
-
-      const formatType = file?.type as CertificateAcceptType
-      if ((keyType === KeyType.PUBLIC && !acceptedPublicKeyFileFormatType.includes(formatType))
-        || (keyType === KeyType.PRIVATE
-      && !acceptedPrivateKeyFileFormatType.includes(formatType))) {
-        errorMsg = $t({ defaultMessage: 'Invalid file format.' })
       }
 
       if (file.size > maxSize) {
