@@ -13,7 +13,7 @@ import {
   StepsFormLegacyInstance
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                    from '@acx-ui/feature-toggle'
-import { MdnsProxySelector }                                         from '@acx-ui/rc/components'
+import { ApMdnsProxySelector }                                       from '@acx-ui/rc/components'
 import { useGetApQuery }                                             from '@acx-ui/rc/services'
 import { useAddMdnsProxyApsMutation, useDeleteMdnsProxyApsMutation } from '@acx-ui/rc/services'
 import { useParams }                                                 from '@acx-ui/react-router-dom'
@@ -43,7 +43,7 @@ const MdnsProxyFormField = styled((props: { className?: string, serviceId?: stri
         </Form.Item>
       </StepsFormLegacy.FieldLabel>
       {serviceEnabled &&
-        <MdnsProxySelector
+        <ApMdnsProxySelector
           formItemProps={{
             name: 'serviceId',
             rules: [{ required: true }],

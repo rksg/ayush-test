@@ -410,12 +410,12 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getVenueApEnhancedKey: {
     method: 'get',
-    url: '/venues/:venueId/apTlsKeyEnhancedModeSettings',
+    url: '/venues/:venueId/apTlsKeyEnhancedSettings',
     newApi: true
   },
   updateVenueApEnhancedKey: {
     method: 'put',
-    url: '/venues/:venueId/apTlsKeyEnhancedModeSettings',
+    url: '/venues/:venueId/apTlsKeyEnhancedSettings',
     newApi: true
   },
   getRoguePolicies: {

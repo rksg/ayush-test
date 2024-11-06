@@ -187,6 +187,9 @@ export {
   useEdgePinsCompatibilityData
 } from './useEdgeActions/compatibility'
 export * from './EdgeMdns/useEdgeMdnsActions'
+export * from './EdgeMdns/EdgeMdnsProxyForm'
+export { AddEdgeMdnsProxyForm } from './EdgeMdns/EdgeMdnsProxyForm/AddEdgeMdnsProxyForm'
+export { EditEdgeMdnsProxyForm } from './EdgeMdns/EdgeMdnsProxyForm/EditEdgeMdnsProxyForm'
 
 export { EdgeServiceStatusLight } from './EdgeServiceStatusLight'
 export { PropertyManagementForm } from './PropertyManagementForm'

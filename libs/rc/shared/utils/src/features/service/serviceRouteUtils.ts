@@ -47,6 +47,7 @@ const serviceTypePathMapping: Record<ServiceType, string> = {
   [ServiceType.WIFI_CALLING]: 'wifiCalling',
   [ServiceType.MDNS_PROXY]: 'mdnsProxy',
   [ServiceType.EDGE_MDNS_PROXY]: 'edgeMdnsProxy',
+  [ServiceType.EDGE_TNM_SERVICE]: 'edgeTnmService',
   [ServiceType.DPSK]: 'dpsk',
   [ServiceType.PIN]: 'personalIdentityNetwork',
   [ServiceType.WEBAUTH_SWITCH]: 'webAuth',

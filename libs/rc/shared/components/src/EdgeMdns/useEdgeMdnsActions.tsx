@@ -87,23 +87,27 @@ export const useEdgeMdnsActions = () => {
   }
 
   // eslint-disable-next-line max-len
-  const activateEdgeMdnsCluster = (serviceId: string, venueId: string, edgeClusterId: string): Promise<CommonResult> => {
+  const activateEdgeMdnsCluster = (serviceId: string, venueId: string, edgeClusterId: string, callback?: () => void): Promise<CommonResult> => {
     return activateEdgeMdns({
       params: {
         serviceId,
         venueId,
         edgeClusterId
-      }
+      },
+      callback
     }).unwrap()
   }
 
   // eslint-disable-next-line max-len
-  const deactivateEdgeMdnsCluster = (serviceId: string, venueId: string, edgeClusterId: string): Promise<CommonResult> => {
-    return deactivateEdgeMdns({ params: {
-      serviceId,
-      venueId,
-      edgeClusterId
-    } }).unwrap()
+  const deactivateEdgeMdnsCluster = (serviceId: string, venueId: string, edgeClusterId: string, callback?: () => void): Promise<CommonResult> => {
+    return deactivateEdgeMdns({
+      params: {
+        serviceId,
+        venueId,
+        edgeClusterId
+      },
+      callback
+    }).unwrap()
   }
   return {
     createEdgeMdns,
