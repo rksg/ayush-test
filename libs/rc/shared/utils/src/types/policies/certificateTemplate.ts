@@ -223,7 +223,8 @@ export interface Certificate {
   enrollmentType?: EnrollmentType
   identityId?: string
   identityName?: string
-  identityGroupId?: string
+  identityGroupId?: string,
+  status?: CertificateStatusType[]
 }
 
 export interface CertificateFormData {
