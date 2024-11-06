@@ -30,7 +30,7 @@ export const EthernetPortProfileDetail = () => {
 
   const { $t } = useIntl()
   const { policyId } = useParams()
-  const isDynamicVLANEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_DVLAN_TOGGLE)
+  const supportDynamicVLAN = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_DVLAN_TOGGLE)
   const { data: ethernetPortProfileData } = useGetEthernetPortProfileWithRelationsByIdQuery({
     payload: {
       sortField: 'name',
@@ -122,7 +122,7 @@ export const EthernetPortProfileDetail = () => {
         return (ethernetPortProfileData?.bypassMacAddressAuthentication)? 'On' : 'Off'
       }
     },
-    ...(isDynamicVLANEnabled &&
+    ...(supportDynamicVLAN &&
       ethernetPortProfileData?.authType === EthernetPortAuthType.MAC_BASED ?
       [{
         title: $t({ defaultMessage: 'Dynamic VLAN' }),
