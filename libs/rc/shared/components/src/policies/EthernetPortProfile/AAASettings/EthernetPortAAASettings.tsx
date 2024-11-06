@@ -1,8 +1,12 @@
+import { useEffect } from 'react'
+
 import { Form, Space, Switch } from 'antd'
 import { useWatch }            from 'antd/lib/form/Form'
 import { useIntl }             from 'react-intl'
 
-import { Subtitle , StepsForm } from '@acx-ui/components'
+import { Subtitle , StepsForm }      from '@acx-ui/components'
+import { useIsSplitOn, Features }    from '@acx-ui/feature-toggle'
+import { Radius, useConfigTemplate } from '@acx-ui/rc/utils'
 
 import { AAAInstance } from '../../../NetworkForm/AAAInstance'
 
@@ -10,8 +14,25 @@ import { AAAInstance } from '../../../NetworkForm/AAAInstance'
 export function EthernetPortAAASettings () {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-  const accountingEnabled = useWatch('accountingEnabled', form)
+  const [accountingEnabled, authRadius, acctRadius] = [useWatch('accountingEnabled', form),
+    useWatch<Radius>('authRadius', form),
+    useWatch<Radius>('accountingRadius', form)]
   const labelWidth = '280px'
+  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const { isTemplate } = useConfigTemplate()
+  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+
+  useEffect(() => {
+    if (supportRadsec && authRadius?.radSecOptions?.tlsEnabled) {
+      form.setFieldValue('enableAuthProxy', true)
+    }
+  }, [authRadius])
+
+  useEffect(() => {
+    if (supportRadsec && acctRadius?.radSecOptions?.tlsEnabled) {
+      form.setFieldValue('enableAccountingProxy', true)
+    }
+  }, [acctRadius])
 
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
@@ -25,7 +46,8 @@ export function EthernetPortAAASettings () {
             name='enableAuthProxy'
             valuePropName='checked'
             initialValue={false}
-            children={<Switch/>}
+            children={<Switch
+              disabled={supportRadsec && authRadius?.radSecOptions?.tlsEnabled}/>}
           />
         </StepsForm.FieldLabel>
       </div>
@@ -48,7 +70,8 @@ export function EthernetPortAAASettings () {
               name='enableAccountingProxy'
               valuePropName='checked'
               initialValue={false}
-              children={<Switch/>}
+              children={<Switch
+                disabled={supportRadsec && acctRadius?.radSecOptions?.tlsEnabled}/>}
             />
           </StepsForm.FieldLabel>
         </>}

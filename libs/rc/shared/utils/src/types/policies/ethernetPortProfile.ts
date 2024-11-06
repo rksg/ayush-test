@@ -40,6 +40,7 @@ export interface EthernetPortProfile {
     unauthenticatedGuestVlan?: number
     enableAuthProxy?: boolean
     enableAccountingProxy?: boolean
+    apSerialNumbers?: string[]
   }
 
 export interface EthernetPortProfileFormType extends EthernetPortProfile {
