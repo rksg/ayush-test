@@ -79,7 +79,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   const serialNumber = urlParams.serialNumber || props.params?.serialNumber
 
   const portPayload = {
-    fields: ['id', 'portIdentifier', 'opticsType', 'usedInFormingStack'],
+    fields: ['id', 'portIdentifier', 'opticsType', 'usedInFormingStack', 'authDefaultVlan'],
     page: 1,
     pageSize: 10000,
     filters: { switchId: [switchId] },
