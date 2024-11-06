@@ -210,7 +210,7 @@ function useColumns () {
     })
   })
 
-  const { clientCertificateMap } = useGetCertificateListQuery({
+  const { certificateMap } = useGetCertificateListQuery({
     params: { tenantId: params.tenantId },
     payload: {
       fields: ['name', 'id'],
@@ -221,7 +221,7 @@ function useColumns () {
     }
   }, {
     selectFromResult: ({ data }) => ({
-      clientCertificateMap: data?.data
+      certificateMap: data?.data
         ? data.data.map(cc => ({ key: cc.id, value: cc.name, status: cc.status }))
         : emptyCertificateResult
     })
@@ -305,7 +305,7 @@ function useColumns () {
       key: 'radSecOptions.clientCertificateId',
       title: $t({ defaultMessage: 'Client Certificate' }),
       dataIndex: 'radSecOptions.clientCertificateId',
-      filterable: clientCertificateMap,
+      filterable: certificateMap,
       render: (data: ReactNode, row: AAAViewModalType) => {
         return (!row.radSecOptions?.clientCertificateId)
           ? ''
@@ -313,15 +313,15 @@ function useColumns () {
             <TenantLink to={getPolicyRoutePath({
               type: PolicyType.SERVER_CERTIFICATES,
               oper: PolicyOperation.LIST })}>
-              {clientCertificateMap.find(
+              {certificateMap.find(
                 c => c.key === row.radSecOptions?.clientCertificateId)?.value || ''}
             </TenantLink>
-            {clientCertificateMap.find(
+            {certificateMap.find(
               c => c.key === row.radSecOptions?.clientCertificateId)?.status?.find(
               (s) => s === CertificateStatusType.EXPIRED || s === CertificateStatusType.REVOKED) ?
               <CertificateToolTip
                 placement='bottom'
-                status={clientCertificateMap.find(
+                status={certificateMap.find(
                   c => c.key === row.radSecOptions?.clientCertificateId)?.status}
               /> : []}
           </> )
@@ -331,10 +331,10 @@ function useColumns () {
       key: 'radSecOptions.serverCertificateId',
       title: $t({ defaultMessage: 'Server Certificate' }),
       dataIndex: 'radSecOptions.serverCertificateId',
-      filterable: clientCertificateMap,
+      filterable: certificateMap,
       sorter: false,
       render: (_: ReactNode, row: AAAViewModalType) => {
-        const serverCert = clientCertificateMap.find(
+        const serverCert = certificateMap.find(
           cert => cert.key === row.radSecOptions?.serverCertificateId)
         return (!row.radSecOptions?.serverCertificateId)
           ? ''
