@@ -8,8 +8,8 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { StepsFormLegacy, Tooltip }   from '@acx-ui/components'
-import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { StepsFormLegacy, Tooltip }                 from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   MacAuthMacFormatEnum,
   macAuthMacFormatOptions,
@@ -32,28 +32,40 @@ const { useWatch } = Form
 export function OpenSettingsForm () {
   const { editMode, cloneMode, data, isRuckusAiMode } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
+  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const { isTemplate } = useConfigTemplate()
+  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
 
+  // TODO: Remove deprecated codes below when RadSec feature is delivery
   useEffect(()=>{
-    if((editMode || cloneMode) && data){
-      form.setFieldsValue({
-        enableAuthProxy: data.enableAuthProxy,
-        enableAccountingProxy: data.enableAccountingProxy,
-        enableAccountingService: data.enableAccountingService,
-        wlan: {
-          isMacRegistrationList: !!data.wlan?.macRegistrationListId,
-          macAddressAuthentication: data.wlan?.macAddressAuthentication,
-          macRegistrationListId: data.wlan?.macRegistrationListId,
-          macAuthMacFormat: data.wlan?.macAuthMacFormat
-        },
-        authRadius: data.authRadius,
-        accountingRadius: data.accountingRadius,
-        accountingRadiusId: data.accountingRadiusId||data.accountingRadius?.id,
-        authRadiusId: data.authRadiusId||data.authRadius?.id
-      })
-      form.setFieldValue(['wlan', 'macAddressAuthentication'],
-        data.wlan?.macAddressAuthentication)
+    if(!supportRadsec && (editMode || cloneMode) && data){
+      setFieldsValue()
     }
   }, [data])
+
+  useEffect(()=>{
+    if(supportRadsec && (editMode || cloneMode) && data){
+      setFieldsValue()
+    }
+  }, [data?.id])
+
+  const setFieldsValue = () => {
+    data && form.setFieldsValue({
+      enableAuthProxy: data.enableAuthProxy,
+      enableAccountingProxy: data.enableAccountingProxy,
+      enableAccountingService: data.enableAccountingService,
+      wlan: {
+        isMacRegistrationList: !!data.wlan?.macRegistrationListId,
+        macAddressAuthentication: data.wlan?.macAddressAuthentication,
+        macRegistrationListId: data.wlan?.macRegistrationListId,
+        macAuthMacFormat: data.wlan?.macAuthMacFormat
+      },
+      authRadius: data.authRadius,
+      accountingRadius: data.accountingRadius,
+      accountingRadiusId: data.accountingRadiusId||data.accountingRadius?.id,
+      authRadiusId: data.authRadiusId||data.authRadius?.id
+    })
+  }
 
   return (<>
     <Row gutter={20}>
@@ -91,6 +103,9 @@ function SettingsForm () {
   const { disableMLO } = useContext(MLOContext)
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
+  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+
   const onMacAuthChange = (checked: boolean) => {
     setData && setData({
       ...data,
@@ -151,7 +166,10 @@ function SettingsForm () {
     if (data && 'enableOweTransition' in data) {
       delete data['enableOweTransition']
     }
-    form.setFieldsValue(data)
+    // TODO: Remove deprecated codes below when RadSec feature is delivery
+    if (!supportRadsec) {
+      form.setFieldsValue(data)
+    }
     if(data?.wlan?.wlanSecurity){
       form.setFieldValue('enableOwe',
         (data.wlan.wlanSecurity === WlanSecurityEnum.OWE ||
@@ -160,6 +178,12 @@ function SettingsForm () {
         data.wlan.wlanSecurity === WlanSecurityEnum.OWETransition ? true : false)
     }
   },[data])
+
+  useEffect(()=>{
+    if (supportRadsec) {
+      form.setFieldsValue(data)
+    }
+  },[data?.id])
 
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
