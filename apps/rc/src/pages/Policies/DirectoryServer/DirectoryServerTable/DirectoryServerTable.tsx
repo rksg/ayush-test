@@ -1,8 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, Loader, PageHeader, Table, TableProps } from '@acx-ui/components'
-// import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
-import { SimpleListTooltip } from '@acx-ui/rc/components'
+import { SimpleListTooltip }                             from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeleteDirectoryServerMutation,
@@ -23,6 +22,7 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { noDataDisplay }                                           from '@acx-ui/utils'
 
 export default function DirectoryServerTable () {
   const { $t } = useIntl()
@@ -179,8 +179,18 @@ function useColumns () {
           case DirectoryServerProfileEnum.AD:
             return 'Active Directory'
           default:
-            return row?.type || 'Unknown'
+            return row?.type || noDataDisplay
         }
+      }
+    },
+    {
+      key: 'serverAddress',
+      title: $t({ defaultMessage: 'Server Address' }),
+      dataIndex: 'serverAddress',
+      render: (_, row) => {
+        const host = row?.host
+        const port = row?.port
+        return host && port ? `${host}:${port}` : noDataDisplay
       }
     },
     {
