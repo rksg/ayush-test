@@ -16,6 +16,7 @@ import {
   CapabilitiesLanPort,
   checkVlanMember,
   EhternetPortSettings,
+  EthernetPortAuthType,
   EthernetPortProfileViewData,
   EthernetPortType,
   LanPort,
@@ -127,8 +128,15 @@ export function LanPortSettings (props: {
 
   const convertEthernetPortListToDropdownItems = (
     ethernetPortList?: EthernetPortProfileViewData[]): DefaultOptionType[] => {
-    // eslint-disable-next-line max-len
-    return ethernetPortList?.filter(m=> !(selectedPortCaps.trunkPortOnly && m.type !== EthernetPortType.TRUNK))
+    return ethernetPortList?.filter((m) => {
+      // Not allow port-based ethernet port when LAN port is single port
+      if(selectedModelCaps.lanPorts.length === 1 &&
+        m.authType === EthernetPortAuthType.PORT_BASED) {
+        return false
+      }
+
+      return !(selectedPortCaps.trunkPortOnly && m.type !== EthernetPortType.TRUNK)
+    })
       .map(m => ({ label: m.name, value: m.id })) ?? []
   }
 
