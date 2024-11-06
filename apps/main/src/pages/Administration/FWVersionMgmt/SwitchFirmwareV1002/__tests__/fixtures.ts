@@ -302,6 +302,50 @@ export const availableVersions = [{
   id: '6.2.1.103.1579'
 }]
 
+export const switchVenueV1002NextSchedule = [
+  {
+    venueId: '2840ec89e34347298b00e5ac01e85214',
+    venueName: 'auto11',
+    versions: [
+      {
+        modelGroup: 'ICX71',
+        version: '09010j_cd2_rc14'
+      },
+      {
+        modelGroup: 'ICX82',
+        version: '10010b_rc88'
+      },
+      {
+        modelGroup: 'ICX7X',
+        version: '09010j_cd2_rc14'
+      }
+    ],
+    nextSchedule: {
+      timeSlot: {
+        startDateTime: '2024-11-13T00:00:00-05:00',
+        endDateTime: '2024-11-13T02:00:00-05:00'
+      },
+      supportModelGroupVersions: [
+        {
+          modelGroup: 'ICX82',
+          version: '10010f_b494'
+        },
+        {
+          modelGroup: 'ICX7X',
+          version: '10010f_b494'
+        },
+        {
+          modelGroup: 'ICX71',
+          version: '09010e_b295'
+        }
+      ]
+    },
+    preDownload: false,
+    status: 'NONE',
+    scheduleCount: 1
+  }
+]
+
 export const switchVenueV1002 = [
   {
     venueId: '28c547b442f54d1cbec835d6e9cc2ac6',
