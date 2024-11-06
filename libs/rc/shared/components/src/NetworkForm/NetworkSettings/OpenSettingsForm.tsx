@@ -30,7 +30,7 @@ import MacRegistrationListComponent from './MacRegistrationListComponent'
 const { useWatch } = Form
 
 export function OpenSettingsForm () {
-  const { editMode, cloneMode, data } = useContext(NetworkFormContext)
+  const { editMode, cloneMode, data, isRuckusAiMode } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
   const { isTemplate } = useConfigTemplate()
@@ -76,7 +76,7 @@ export function OpenSettingsForm () {
         <NetworkDiagram />
       </Col>
     </Row>
-    {!(editMode) && <Row>
+    {!(editMode) && !(isRuckusAiMode) && <Row>
       <Col span={24}>
         <NetworkMoreSettingsForm wlanData={data} />
       </Col>

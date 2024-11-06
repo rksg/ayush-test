@@ -52,7 +52,7 @@ const { Option } = Select
 const { useWatch } = Form
 
 export function AaaSettingsForm () {
-  const { editMode, cloneMode, data } = useContext(NetworkFormContext)
+  const { editMode, cloneMode, data, isRuckusAiMode } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
@@ -101,7 +101,7 @@ export function AaaSettingsForm () {
         <NetworkDiagram />
       </Col>
     </Row>
-    {!(editMode) && <Row>
+    {!(editMode) && !(isRuckusAiMode) && <Row>
       <Col span={24}>
         <NetworkMoreSettingsForm wlanData={data} />
       </Col>

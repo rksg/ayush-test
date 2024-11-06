@@ -94,7 +94,14 @@ export function WISPrAuthAccServer (props : {
       setData && setData({
         ...data,
         authRadius,
-        authRadiusId: authRadius.id
+        authRadiusId: authRadius.id,
+        guestPortal: {
+          ...data?.guestPortal,
+          wisprPage: {
+            ...data!.guestPortal!.wisprPage!,
+            authRadius
+          }
+        }
       })
     }
   },[authRadius])
@@ -109,7 +116,14 @@ export function WISPrAuthAccServer (props : {
       setData && setData({
         ...data,
         accountingRadius,
-        accountingRadiusId: accountingRadius.id
+        accountingRadiusId: accountingRadius.id,
+        guestPortal: {
+          ...data?.guestPortal,
+          wisprPage: {
+            ...data!.guestPortal!.wisprPage!,
+            accountingRadius
+          }
+        }
       })
     }
   },[accountingRadius])

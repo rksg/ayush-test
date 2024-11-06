@@ -42,6 +42,7 @@ export * from './applicationPolicy'
 export * from './configTemplate'
 export * from './topology'
 export * from './mDnsFencingServie'
+export * from './ruckusAi'
 
 export interface CommonResult {
   requestId: string

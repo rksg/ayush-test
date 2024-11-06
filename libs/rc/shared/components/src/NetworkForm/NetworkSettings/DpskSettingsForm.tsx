@@ -40,7 +40,7 @@ const { Option } = Select
 const { useWatch } = Form
 
 export function DpskSettingsForm () {
-  const { editMode, cloneMode, data } = useContext(NetworkFormContext)
+  const { editMode, cloneMode, data, isRuckusAiMode } = useContext(NetworkFormContext)
   const { disableMLO } = useContext(MLOContext)
   const form = Form.useFormInstance()
   const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
@@ -87,7 +87,7 @@ export function DpskSettingsForm () {
         <NetworkDiagram />
       </Col>
     </Row>
-    {!(editMode) && <Row>
+    {!(editMode) && !(isRuckusAiMode) && <Row>
       <Col span={24}>
         <NetworkMoreSettingsForm
           wlanData={data} />
