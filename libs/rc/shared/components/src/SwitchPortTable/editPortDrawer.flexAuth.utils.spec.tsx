@@ -128,14 +128,27 @@ describe('getCurrentVlansByKey', () => {
 
   it('should get value correctly when editing multiple ports', async () => {
     formRef.current.setFieldValue('untaggedVlan', '')
+    formRef.current.setFieldValue('taggedVlans', [7])
     expect(getCurrentVlansByKey({
       key: 'untaggedVlan', switchId: 'c0:c5:20:aa:35:d9', aggregateData,
-      isMultipleEdit: true, portVlansCheckbox: false, hasMultipleValue: ['untaggedVlan'], form: formRef.current
+      isMultipleEdit: true, portVlansCheckbox: false, hasMultipleValue: ['untaggedVlan', 'taggedVlans'], form: formRef.current
     })).toStrictEqual([2])
+    expect(getCurrentVlansByKey({
+      key: 'taggedVlans', switchId: 'c0:c5:20:aa:35:d9', aggregateData,
+      isMultipleEdit: true, portVlansCheckbox: false, hasMultipleValue: ['untaggedVlan', 'taggedVlans'], form: formRef.current
+    })).toStrictEqual([3, 10])
+    expect(getCurrentVlansByKey({
+      key: 'untaggedVlan', aggregateData,
+      isMultipleEdit: true, portVlansCheckbox: false, hasMultipleValue: ['untaggedVlan', 'taggedVlans'], form: formRef.current
+    })).toStrictEqual([2, 1])
+    expect(getCurrentVlansByKey({
+      key: 'taggedVlans', aggregateData,
+      isMultipleEdit: true, portVlansCheckbox: false, hasMultipleValue: ['untaggedVlan', 'taggedVlans'], form: formRef.current
+    })).toStrictEqual([3, 10])
   })
 
   it('should get value correctly when overriding the port VLAN', async () => {
-    // after overriding untagged vlan, "untaggedVlan" would be remove from hasMultipleValue
+    // after overriding untagged vlan, "untaggedVlan" would be removed from hasMultipleValue
     formRef.current.setFieldsValue({
       untaggedVlan: '3',
       untaggedVlanCheckbox: true,
@@ -144,7 +157,7 @@ describe('getCurrentVlansByKey', () => {
 
     expect(getCurrentVlansByKey({
       key: 'untaggedVlan', switchId: 'c0:c5:20:aa:35:d9', aggregateData,
-      isMultipleEdit: true, portVlansCheckbox: true, hasMultipleValue: [], form: formRef.current
+      isMultipleEdit: true, portVlansCheckbox: true, hasMultipleValue: ['taggedVlans'], form: formRef.current
     })).toStrictEqual([3])
   })
 
