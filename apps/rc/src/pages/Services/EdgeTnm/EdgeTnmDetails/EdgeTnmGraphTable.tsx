@@ -1,0 +1,80 @@
+import { Row }     from 'antd'
+import { useIntl } from 'react-intl'
+
+import {
+  Table,
+  TableProps,
+  Loader } from '@acx-ui/components'
+import { useGetEdgeTnmHostGraphsConfigQuery } from '@acx-ui/rc/services'
+import {
+  EdgeTnmHostGraphConfig } from '@acx-ui/rc/utils'
+
+interface EdgeTnmHostGraphTableProps {
+  serviceId: string | undefined
+  hostId: string | undefined
+}
+export function EdgeTnmHostGraphTable (props: EdgeTnmHostGraphTableProps) {
+  const { serviceId, hostId } = props
+
+  const { data, isLoading, isFetching } = useGetEdgeTnmHostGraphsConfigQuery({
+    params: { serviceId, hostId }
+  }, { skip: !serviceId || !hostId })
+
+  return <Loader states={[{ isLoading, isFetching }]}>
+    <Table
+      rowKey='id'
+      columns={useColumns()}
+      dataSource={data}
+    />
+  </Loader>
+}
+
+function useColumns () {
+  const { $t } = useIntl()
+  const columns: TableProps<EdgeTnmHostGraphConfig>['columns'] = [
+    {
+      title: $t({ defaultMessage: 'Name' }),
+      key: 'name',
+      dataIndex: 'name',
+      sorter: true,
+      searchable: true,
+      fixed: 'left',
+      render: (_, row) =>
+        <Row justify='center'>
+          {row.name}
+        </Row>
+    },
+    {
+      title: $t({ defaultMessage: 'Graph Type' }),
+      key: 'type',
+      dataIndex: 'type',
+      align: 'center',
+      sorter: true,
+      render: (data) => data
+    },
+    {
+      title: $t({ defaultMessage: 'Width' }),
+      key: 'width',
+      dataIndex: 'width',
+      width: 80,
+      align: 'center',
+      render: (_, row) =>
+        <Row justify='center'>
+          {row.width}
+        </Row>
+    },
+    {
+      title: $t({ defaultMessage: 'Height' }),
+      key: 'height',
+      dataIndex: 'height',
+      width: 80,
+      align: 'center',
+      render: (_, row) =>
+        <Row justify='center'>
+          {row.height}
+        </Row>
+    }
+  ]
+
+  return columns
+}
