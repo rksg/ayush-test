@@ -23,7 +23,7 @@ export const mockPinListForMutullyExclusive = {
         { networkId: 'wlan-1' }
       ],
       venueId: 'mock_venue_5',
-      venueName: 'MockVenue1',
+      venueName: 'MockVenue5',
       personaGroupId: 'per-444',
       edgeClusterInfo: {
         id: '5e5a85d5-1540-4aab-86c4-a8d8b9f3e28b',
