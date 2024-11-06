@@ -1,10 +1,20 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn }                                                                                                          from '@acx-ui/feature-toggle'
-import { ethernetPortProfileApi }                                                                                                from '@acx-ui/rc/services'
-import { AaaUrls, CommonRbacUrlsInfo, CommonUrlsInfo, EthernetPortProfileUrls, PolicyOperation, PolicyType, getPolicyRoutePath } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                                       from '@acx-ui/store'
-import { mockServer, render, screen }                                                                                            from '@acx-ui/test-utils'
+import { useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { ethernetPortProfileApi } from '@acx-ui/rc/services'
+import {
+  AaaUrls,
+  CommonRbacUrlsInfo,
+  CommonUrlsInfo,
+  EthernetPortProfile,
+  EthernetPortProfileUrls,
+  PolicyOperation,
+  PolicyType,
+  TableResult,
+  getPolicyRoutePath
+} from '@acx-ui/rc/utils'
+import { Provider, store }            from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import {
   dummyRadiusServiceList,
@@ -15,8 +25,11 @@ import {
   mockAuthRadiusName,
   mockEthernetPortProfileId3,
   mockedVenuesResult,
+  dummyEthernetPortProfileDVlan,
   dummyTableResultWithSingle,
-  mockedVenueApsList } from '../__tests__/fixtures'
+  mockedVenueApsList,
+  dummyEthernetPortProfileAccessPortBased,
+  mockEthernetPortProfileId7 } from '../__tests__/fixtures'
 
 import { EthernetPortProfileDetail } from '.'
 
@@ -36,7 +49,7 @@ const detailPath = '/:tenantId/' + getPolicyRoutePath({
   oper: PolicyOperation.DETAIL
 })
 describe('EthernetPortProfileDetail', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     params = {
       tenantId: tenantId,
       policyId: 'testPolicyId'
@@ -44,6 +57,11 @@ describe('EthernetPortProfileDetail', () => {
 
     store.dispatch(ethernetPortProfileApi.util.resetApiState())
     mockServer.use(
+
+      rest.get(
+        EthernetPortProfileUrls.getEthernetPortProfile.url,
+        (req, res, ctx) => res(ctx.json(dummyEthernetPortProfileAccessPortBased))
+      ),
 
       rest.post(
         EthernetPortProfileUrls.getEthernetPortProfileViewDataList.url,
@@ -90,6 +108,41 @@ describe('EthernetPortProfileDetail', () => {
     await screen.findByText('On (Port-based Authenticator)')
     await screen.findByText(mockAuthRadiusName)
     await screen.findAllByText(mockAccuntingRadiusName)
+    expect(screen.queryByText('Dynamic VLAN')).not.toBeInTheDocument()
   })
 
+  it('Should render EthernetPortProfileDetail with Dynamic VLAN when MAC-based auth', async () => {
+    const dummyQueryResult: TableResult<EthernetPortProfile> = {
+      totalCount: 1,
+      page: 1,
+      data: [{
+        ...dummyEthernetPortProfileDVlan
+      }]
+    }
+
+    mockServer.use(
+      rest.get(
+        EthernetPortProfileUrls.getEthernetPortProfile.url,
+        (_, res, ctx) => res(ctx.json(dummyEthernetPortProfileDVlan))
+      ),
+      rest.post(
+        EthernetPortProfileUrls.getEthernetPortProfileViewDataList.url,
+        (_, res, ctx) => res(ctx.json(dummyQueryResult))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenues.url,
+        (_, res, ctx) => res(ctx.json(mockedVenuesResult))
+      )
+    )
+
+    render(
+      <Provider>
+        <EthernetPortProfileDetail />
+      </Provider>, {
+        route: { params, path: detailPath }
+      })
+    expect(await screen.findByText(mockEthernetPortProfileId7)).toBeVisible()
+    expect(await screen.findByText('On (MAC-based Authenticator)')).toBeVisible()
+    expect(await screen.findByText('Dynamic VLAN')).toBeVisible()
+  })
 })

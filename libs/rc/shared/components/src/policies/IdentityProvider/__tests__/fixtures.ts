@@ -18,6 +18,8 @@ export const mockedPolicyId = '__Policy_ID__'
 export const mockAuthRadiusId = '__Auth_Radius_ID__'
 export const mockAccountingRadiusId = '__Accounting_Radius_ID_1__'
 export const mockAccountingRadiusId2 = '__Accounting_Radius_ID_2__'
+export const mockRadSecAuthRadiusId = '__Auth_Radius_ID__'
+export const mockRadSecAccountingRadiusId = '__Accounting_Radius_ID_1__'
 
 export const newEmptyData = {
   name: '',
@@ -218,5 +220,59 @@ export const dummayRadiusServiceList = {
     networkCount: 0,
     networkIds: [],
     tenantId: '83a98239787940188137242bdf6795e9'
+  }]
+}
+
+export const dummyRadSecAuthRadius: AAAPolicyType = {
+  id: mockRadSecAuthRadiusId,
+  name: 'radSec-auth-1',
+  primary: {
+    ip: '192.168.1.100',
+    port: 2083
+  },
+  radSecOptions: {
+    tlsEnabled: true
+  },
+  type: 'AUTHENTICATION'
+}
+
+export const dummyRadSecAccounting: AAAPolicyType = {
+  id: mockRadSecAccountingRadiusId,
+  name: 'radSec-accounting-1',
+  primary: {
+    ip: '192.168.1.201',
+    port: 2083
+  },
+  radSecOptions: {
+    tlsEnabled: true
+  },
+  type: 'ACCOUNTING'
+}
+
+export const dummyRadSecRadiusServiceList = {
+  totalCount: 1,
+  page: 1,
+  data: [{
+    id: mockAuthRadiusId,
+    name: 'radSec-auth-1',
+    type: 'AUTHENTICATION',
+    primary: '192.168.1.100:2083',
+    radSecOptions: {
+      tlsEnabled: true
+    },
+    networkCount: 0,
+    networkIds: [],
+    tenantId: '93a98239787940188137242bdf6795e9'
+  }, {
+    id: mockAccountingRadiusId,
+    name: 'radSec-accounting-1',
+    type: 'ACCOUNTING',
+    primary: '192.168.1.201:2083',
+    radSecOptions: {
+      tlsEnabled: true
+    },
+    networkCount: 0,
+    networkIds: [],
+    tenantId: '93a98239787940188137242bdf6795e9'
   }]
 }
