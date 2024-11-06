@@ -451,6 +451,7 @@ describe('getNetworkFilterData', () => {
     const [apItem, switchItem] = firstItem.children!
     expect(JSON.parse(String(firstItem.value))[1].name).toEqual('Some Name')
     expect(apItem.value).toEqual('apsSome Name')
+    expect(apItem.children?.[0].label).toEqual('AP Name (00:00:00:00:00:00)')
     expect(JSON.parse(String(apItem.children?.[0].value))[1].name).toEqual('Some Name')
     expect(switchItem.value).toEqual('switchesSome Name')
     expect(JSON.parse(String(switchItem.children?.[0].value))[1].name).toEqual('Some Name')
