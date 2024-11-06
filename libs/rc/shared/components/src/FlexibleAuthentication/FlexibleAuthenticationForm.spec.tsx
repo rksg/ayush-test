@@ -168,7 +168,7 @@ describe('FlexibleAuthenticationForm', ()=>{
         authFailAction: 'restricted_vlan',
         authTimeoutAction: 'critical_vlan',
         authenticationType: '802.1x',
-        dot1xPortControl: 'auto',
+        dot1XPortControl: 'auto',
         profileName: 'Profile-1',
         authDefaultVlan: '1',
         criticalVlan: '12',

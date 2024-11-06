@@ -88,8 +88,8 @@ const FlexibleAuthenticationDetail = () => {
   }, {
     title: $t({ defaultMessage: '802.1x Port Control' }),
     content: () => {
-      const dot1xPortControl = profileDetail?.['dot1xPortControl']
-      return $t(portControlTypeLabel[dot1xPortControl as keyof typeof portControlTypeLabel])
+      const dot1XPortControl = profileDetail?.['dot1XPortControl']
+      return $t(portControlTypeLabel[dot1XPortControl as keyof typeof portControlTypeLabel])
     }
   }, {
     title: $t({ defaultMessage: 'Auth Default VLAN' }),

@@ -524,7 +524,7 @@ export interface SwitchPortViewModel extends GridDataRow {
   flexibleAuthenticationEnabled?: boolean
 	authenticationType?: string
 	changeAuthOrder?: boolean
-	dot1xPortControl?: string
+	dot1XPortControl?: string
 	authDefaultVlan?: number
 	restrictedVlan?: number
 	criticalVlan?: number
@@ -952,7 +952,7 @@ export interface FlexibleAuthentication {
 	flexibleAuthenticationEnabled?: boolean
 	authenticationType: string
 	changeAuthOrder?: boolean
-	dot1xPortControl: string
+	dot1XPortControl: string
 	authDefaultVlan: number
 	restrictedVlan?: number
 	criticalVlan?: number

@@ -35,7 +35,7 @@ export class PortSettingModel {
   profileAuthDefaultVlan?: number
   authenticationType?: string
   changeAuthOrder?: boolean
-  dot1xPortControl?: string
+  dot1XPortControl?: string
   authDefaultVlan?: number
   restrictedVlan?: number
   criticalVlan?: number

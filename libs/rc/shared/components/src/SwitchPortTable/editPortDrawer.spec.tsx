@@ -1994,8 +1994,8 @@ describe('EditPortDrawer', () => {
           await userEvent.click(await screen.findByText(/802.1x and MAC-AUTH/))
 
           expect(await screen.findByTestId('changeAuthOrder-override-checkbox')).not.toBeDisabled()
-          expect(await screen.findByTestId('dot1xPortControl-override-checkbox')).toBeChecked()
-          expect(await screen.findByTestId('dot1xPortControl-override-checkbox')).toBeDisabled()
+          expect(await screen.findByTestId('dot1XPortControl-override-checkbox')).toBeChecked()
+          expect(await screen.findByTestId('dot1XPortControl-override-checkbox')).toBeDisabled()
         })
 
         it('should handle untagged vlan changes correctly', async () => {
@@ -2689,7 +2689,7 @@ describe('EditPortDrawer', () => {
                 authenticationCustomize: true,
                 authenticationType: '802.1x_and_macauth',
                 changeAuthOrder: true,
-                dot1xPortControl: 'auto',
+                dot1XPortControl: 'auto',
                 authDefaultVlan: 10,
                 guestVlan: 9,
                 authFailAction: 'block',
@@ -2783,7 +2783,7 @@ describe('EditPortDrawer', () => {
                 authenticationCustomize: true,
                 authenticationType: '802.1x_and_macauth',
                 changeAuthOrder: true,
-                dot1xPortControl: 'auto',
+                dot1XPortControl: 'auto',
                 authDefaultVlan: 10,
                 authFailAction: 'restricted_vlan',
                 restrictedVlan: 8,
@@ -2798,7 +2798,7 @@ describe('EditPortDrawer', () => {
                 flexibleAuthenticationEnabled: true,
                 authenticationCustomize: true,
                 authenticationType: '802.1x',
-                dot1xPortControl: 'auto',
+                dot1XPortControl: 'auto',
                 authDefaultVlan: 10,
                 authFailAction: 'restricted_vlan',
                 restrictedVlan: 7,
@@ -2898,7 +2898,7 @@ describe('EditPortDrawer', () => {
                 authenticationCustomize: true,
                 authenticationType: '802.1x_and_macauth',
                 changeAuthOrder: true,
-                dot1xPortControl: 'auto',
+                dot1XPortControl: 'auto',
                 authDefaultVlan: 10,
                 authFailAction: 'restricted_vlan',
                 restrictedVlan: 8,
@@ -2913,7 +2913,7 @@ describe('EditPortDrawer', () => {
                 flexibleAuthenticationEnabled: true,
                 authenticationCustomize: true,
                 authenticationType: '802.1x',
-                dot1xPortControl: 'auto',
+                dot1XPortControl: 'auto',
                 authDefaultVlan: 10,
                 authFailAction: 'restricted_vlan',
                 restrictedVlan: 7,

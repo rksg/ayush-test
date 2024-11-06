@@ -82,16 +82,16 @@ export const authTimeoutActionTypeLabel: Record<AuthTimeoutAction, MessageDescri
 
 export const getAuthfieldDisabled = (field: string, values: string[]) => {
   const [
-    authenticationType, dot1xPortControl, ,
+    authenticationType, dot1XPortControl, ,
     authFailAction, authTimeoutAction
 	 ] = values
   const isPortControlNotAuto
-    = dot1xPortControl !== PortControl.AUTO && dot1xPortControl !== PortControl.NONE
+    = dot1XPortControl !== PortControl.AUTO && dot1XPortControl !== PortControl.NONE
 
   const fieldDisabledMapping = {
     authDefaultVlan: () => isPortControlNotAuto,
     changeAuthOrder: () => authenticationType !== AuthenticationType._802_1X_AND_MACAUTH,
-    dot1xPortControl: () => authenticationType !== AuthenticationType._802_1X,
+    dot1XPortControl: () => authenticationType !== AuthenticationType._802_1X,
     authFailAction: () => isPortControlNotAuto,
     restrictedVlan: () => isPortControlNotAuto || authFailAction === AuthFailAction.BLOCK,
     authTimeoutAction: () => isPortControlNotAuto,
@@ -127,9 +127,9 @@ export const handleAuthFieldChange = (props: {
         ...values,
         ...(value !== AuthenticationType._802_1X ? {
           // eslint-disable-next-line max-len
-          dot1xPortControl: value === AuthenticationType.MACAUTH ? PortControl.NONE : PortControl.AUTO,
+          dot1XPortControl: value === AuthenticationType.MACAUTH ? PortControl.NONE : PortControl.AUTO,
           ...(isMultipleEdit ? {
-            dot1xPortControlCheckbox: true
+            dot1XPortControlCheckbox: true
           } : {}),
           ...(isMultipleEdit && values.authFailAction === AuthFailAction.BLOCK ? {
             restrictedVlanCheckbox: false
@@ -138,7 +138,7 @@ export const handleAuthFieldChange = (props: {
             criticalVlanCheckbox: false
           } : {})
         }: {
-          dot1xPortControl: PortControl.AUTO
+          dot1XPortControl: PortControl.AUTO
         }),
         ...(value !== AuthenticationType._802_1X_AND_MACAUTH ? {
           changeAuthOrder: false,
@@ -146,7 +146,7 @@ export const handleAuthFieldChange = (props: {
         }: {})
       })
       break
-    case 'dot1xPortControl':
+    case 'dot1XPortControl':
       if (value !== PortControl.AUTO && value !== PortControl.NONE) {
         const values = form.getFieldsValue()
         const selectedSwitches = Object.keys(aggregateData?.selectedPortIdentifier ?? {})

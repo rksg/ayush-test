@@ -139,7 +139,7 @@ export const allMultipleEditableFields = [
   'rstpAdminEdgePort', 'stpBpduGuard', 'stpRootGuard', 'taggedVlans', 'voiceVlan',
   'lldpQos', 'tags', 'untaggedVlan', 'poeBudget', 'portProtected',
   'flexibleAuthenticationEnabled', 'authenticationCustomize', 'authenticationProfileId',
-  'authDefaultVlan', 'guestVlan', 'authenticationType', 'changeAuthOrder', 'dot1xPortControl',
+  'authDefaultVlan', 'guestVlan', 'authenticationType', 'changeAuthOrder', 'dot1XPortControl',
   'restrictedVlan', 'criticalVlan', 'authFailAction', 'authTimeoutAction'
 ]
 
@@ -199,7 +199,7 @@ export function EditPortDrawer ({
     flexibleAuthenticationEnabled,
     flexibleAuthenticationEnabledCheckbox,
     authenticationType,
-    dot1xPortControl,
+    dot1XPortControl,
     authDefaultVlan,
     authFailAction,
     authTimeoutAction
@@ -287,7 +287,7 @@ export function EditPortDrawer ({
     form, aggregateData: aggregatePortsData, portVlansCheckbox
   }
   const authFormWatchValues = [
-    authenticationType, dot1xPortControl, authDefaultVlan,
+    authenticationType, dot1XPortControl, authDefaultVlan,
     authFailAction, authTimeoutAction
   ]
 
@@ -587,7 +587,7 @@ export function EditPortDrawer ({
         //         authenticationCustomize: true,
         //         authenticationType: '802.1x_and_macauth',
         //         changeAuthOrder: true,
-        //         dot1xPortControl: 'auto',
+        //         dot1XPortControl: 'auto',
         //        ...( i ?  { authDefaultVlan: 10 } : {}),
         //         authFailAction: 'restricted_vlan',
         //         restrictedVlan: 8 + i,
@@ -685,7 +685,7 @@ export function EditPortDrawer ({
 
   const getFieldDisabled = (field: string) => {
     const authfieldValues = [
-      authenticationType, dot1xPortControl, authDefaultVlan,
+      authenticationType, dot1XPortControl, authDefaultVlan,
       authFailAction, authTimeoutAction
     ]
     const checkboxEnabled = form.getFieldValue(`${field}Checkbox`)
@@ -726,11 +726,11 @@ export function EditPortDrawer ({
         const switchAuthVlans
           = getUnionValuesByKey('switchLevelAuthDefaultVlan', aggregatePortsData)
         return (isMultipleEdit && !checkboxEnabled)
-          || (dot1xPortControl !== PortControl.AUTO && dot1xPortControl !== PortControl.NONE
+          || (dot1XPortControl !== PortControl.AUTO && dot1XPortControl !== PortControl.NONE
             // && !!Object.values(aggregatePortsData?.switchLevelAuthDefaultVlan ?? {}).flat().length)
             && !!switchAuthVlans.length)
       case 'changeAuthOrder':
-      case 'dot1xPortControl':
+      case 'dot1XPortControl':
       case 'authFailAction':
       case 'restrictedVlan':
       case 'authTimeoutAction':
@@ -744,7 +744,7 @@ export function EditPortDrawer ({
 
   const getOverrideDisabled = (field: string) => {
     const authfieldValues = [
-      authenticationType, dot1xPortControl, authDefaultVlan,
+      authenticationType, dot1XPortControl, authDefaultVlan,
       authFailAction, authTimeoutAction
     ]
     switch (field) {
@@ -765,7 +765,7 @@ export function EditPortDrawer ({
           || !(flexibleAuthenticationEnabledCheckbox && flexibleAuthenticationEnabled)
       case 'authDefaultVlan':
       case 'changeAuthOrder':
-      case 'dot1xPortControl':
+      case 'dot1XPortControl':
       case 'authFailAction':
       case 'restrictedVlan':
       case 'authTimeoutAction':
@@ -1419,11 +1419,11 @@ export function EditPortDrawer ({
             { getFieldTemplate(
               <Form.Item
                 {...getFormItemLayout(isMultipleEdit)}
-                name='dot1xPortControl'
+                name='dot1XPortControl'
                 label={$t({ defaultMessage: '802.1x Port Control' })}
                 initialValue={PortControl.AUTO}
                 children={shouldRenderMultipleText({
-                  field: 'dot1xPortControl', ...commonRequiredProps
+                  field: 'dot1XPortControl', ...commonRequiredProps
                 }) ? <MultipleText />
                   : <Select
                     options={Object.values(PortControl).map(controlType => ({
@@ -1431,14 +1431,14 @@ export function EditPortDrawer ({
                       value: controlType,
                       disabled: controlType === ''
                     }))}
-                    disabled={getFieldDisabled('dot1xPortControl')}
+                    disabled={getFieldDisabled('dot1XPortControl')}
                     onChange={(value) => handleAuthFieldChange({
-                      field: 'dot1xPortControl', value, form, isMultipleEdit,
+                      field: 'dot1XPortControl', value, form, isMultipleEdit,
                       aggregateData: aggregatePortsData
                     })}
                   />}
               />,
-              'dot1xPortControl', $t({ defaultMessage: '802.1x Port Control' })
+              'dot1XPortControl', $t({ defaultMessage: '802.1x Port Control' })
             )}
             { getFieldTemplate(
               <Form.Item
@@ -1453,11 +1453,11 @@ export function EditPortDrawer ({
                     const isDisabled = getFieldDisabled('authDefaultVlan')
                     const switchDefaultVlans
                           = getUnionValuesByKey('defaultVlan', aggregatePortsData)
-                    const isForceType = (dot1xPortControl === PortControl.FORCE_AUTHORIZED)
-                           || (dot1xPortControl === PortControl.FORCE_UNAUTHORIZED)
+                    const isForceType = (dot1XPortControl === PortControl.FORCE_AUTHORIZED)
+                           || (dot1XPortControl === PortControl.FORCE_UNAUTHORIZED)
 
                     if (isDisabled && isForceType && switchDefaultVlans?.length > 1) {
-                      const type = dot1xPortControl as PortControl
+                      const type = dot1XPortControl as PortControl
                       return Promise.reject(
                         //TODO: checking wording with UX
                         // eslint-disable-next-line max-len
