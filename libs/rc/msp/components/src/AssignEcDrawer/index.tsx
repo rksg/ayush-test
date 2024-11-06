@@ -167,8 +167,8 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
   const CustomerTable = () => {
     const assignedEcs =
       useGetAssignedMspEcToIntegratorQuery(
-        { params: { mspIntegratorId: tenantId, mspIntegratorType: tenantType } },
-        { skip: isSkip })
+        { params: { mspIntegratorId: tenantId, mspIntegratorType: tenantType },
+          enableRbac: isRbacEnabled }, { skip: isSkip })
     const queryResults = useTableQuery({
       useQuery: useMspCustomerListQuery,
       pagination: {
