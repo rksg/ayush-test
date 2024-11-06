@@ -57,8 +57,8 @@ export const DirectoryServerUrls: { [key: string]: ApiInfo } = {
     }
   },
   testConnectionDirectoryServer: {
-    method: 'put',
-    url: '/venues/:venueId/wifiNetworks/:networkId/DirectoryServerProfiles/:policyId',
+    method: 'PATCH',
+    url: '/directoryServer/diagnosisCommands',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
