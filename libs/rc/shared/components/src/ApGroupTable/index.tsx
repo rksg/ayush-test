@@ -12,7 +12,7 @@ import { useApGroupsListQuery, useDeleteApGroupMutation }                       
 import { ApGroupViewModel, FILTER, getFilters, transformDisplayNumber, usePollingTableQuery }      from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink }                                                               from '@acx-ui/react-router-dom'
 import { WifiScopes }                                                                              from '@acx-ui/types'
-import { filterByAccess }                                                                          from '@acx-ui/user'
+import { filterByAccess, hasPermission }                                                           from '@acx-ui/user'
 import { DateRange, getDateRangeFilter }                                                           from '@acx-ui/utils'
 
 import {  CountAndNamesTooltip } from '../'
@@ -195,6 +195,9 @@ export const ApGroupTable = (props : ApGroupTableProps<ApGroupViewModel>) => {
             } })
           }
         }]) : []}
+        rowSelection={hasPermission({
+          scopes: [WifiScopes.UPDATE, WifiScopes.DELETE]
+        }) && { type: 'checkbox' }}
         searchableWidth={260}
         filterableWidth={150}
       />
