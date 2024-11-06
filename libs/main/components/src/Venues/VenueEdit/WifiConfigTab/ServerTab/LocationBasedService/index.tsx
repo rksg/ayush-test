@@ -12,7 +12,7 @@ import {
   useDeactivateLbsServerProfileOnVenueMutation
 } from '@acx-ui/rc/services'
 import { hasPolicyPermission, PolicyOperation, PolicyType, VenueLbsActivationType } from '@acx-ui/rc/utils'
-import { useParams }              from '@acx-ui/react-router-dom'
+import { useParams }                                                                from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../..'
 
