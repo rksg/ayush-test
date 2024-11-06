@@ -1,3 +1,6 @@
+import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/query/baseQueryTypes'
+import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
+
 import {
   CommonResult,
   onActivityMessageReceived,
@@ -70,6 +73,38 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
         return {
           ...req
         }
+      },
+      providesTags: [{ type: 'EthernetPortProfile', id: 'DETAIL' }]
+    }),
+    getEthernetPortProfileWithRelationsById:
+    build.query<EthernetPortProfile | null, RequestPayload>({
+      async queryFn ({ payload, params }, _queryApi, _extraOptions, fetchWithBQ) {
+        if (!params?.id) return Promise.resolve({ data: null } as QueryReturnValue<
+          null,
+          FetchBaseQueryError,
+          FetchBaseQueryMeta
+        >)
+
+        const viewDataReq = createHttpRequest(
+          EthernetPortProfileUrls.getEthernetPortProfileViewDataList, params)
+        const ethListQuery = await fetchWithBQ({ ...viewDataReq, body: JSON.stringify(payload) })
+        let ethList = ethListQuery.data as TableResult<EthernetPortProfileViewData>
+
+        const ethernetPortProfile = await fetchWithBQ(
+          createHttpRequest(EthernetPortProfileUrls.getEthernetPortProfile, params)
+        )
+        const ethernetPortProfileData = ethernetPortProfile.data as EthernetPortProfile
+
+        if (ethernetPortProfileData && ethList.data) {
+          ethernetPortProfileData.authRadiusId = ethList.data?.[0]?.authRadiusId
+          ethernetPortProfileData.accountingRadiusId = ethList.data?.[0]?.accountingRadiusId
+          ethernetPortProfileData.apSerialNumbers = ethList.data?.[0]?.apSerialNumbers
+        }
+
+        return ethernetPortProfileData
+          ? { data: ethernetPortProfileData }
+          : { error: ethernetPortProfile.error } as QueryReturnValue<
+          EthernetPortProfile, FetchBaseQueryError>
       },
       providesTags: [{ type: 'EthernetPortProfile', id: 'DETAIL' }]
     }),
@@ -189,6 +224,7 @@ export const {
   useLazyGetEthernetPortProfileViewDataListQuery,
   useDeleteEthernetPortProfileMutation,
   useGetEthernetPortProfileByIdQuery,
+  useGetEthernetPortProfileWithRelationsByIdQuery,
   useUpdateEthernetPortProfileMutation,
   useUpdateEthernetPortProfileRadiusIdMutation,
   useDeleteEthernetPortProfileRadiusIdMutation,

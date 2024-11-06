@@ -117,7 +117,6 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
     return versionsPayload
   }
 
-
   const wizardFinish = {
     [SwitchFirmwareWizardType.update]: async () => {
       try {
