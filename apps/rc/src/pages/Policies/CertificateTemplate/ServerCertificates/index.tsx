@@ -95,8 +95,7 @@ export default function ServerCertificatesTable () {
       dataIndex: 'extendedKeyUsages',
       sorter: false,
       filterable: Object.entries(ExtendedKeyUsages)
-        .map(([key, value])=>(ExtendedKeyUsagesLabels[value]
-          && { key, value: $t(ExtendedKeyUsagesLabels[value]) })),
+        .map(([key, value])=>({ key, value: $t(ExtendedKeyUsagesLabels[value]) })),
       key: 'extendedKeyUsages',
       render: (_, row) => {
         return row.extendedKeyUsages?.length ?

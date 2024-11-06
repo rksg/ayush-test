@@ -10,7 +10,6 @@ import { certificateAuthorityList, serverCertificateList } from '../../__test__/
 
 import GenerateCertificateWithCSR from './GenerateCertificateWIthCSR'
 
-
 describe('GenerateCertificateWithCSR', () => {
   beforeEach(() => {
     mockServer.use(
