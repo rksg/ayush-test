@@ -50,12 +50,11 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
   const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
   const { isTemplate } = useConfigTemplate()
   const supportRadsec = isRadsecFeatureEnabled && !isTemplate
-  const [enableSecondaryServer, type, tlsEnabled, ocspValidationEnabled] //, clientCertId ]
+  const [enableSecondaryServer, type, tlsEnabled, ocspValidationEnabled]
     = [useWatch('enableSecondaryServer'),
       useWatch('type'),
       useWatch<boolean>(['radSecOptions', 'tlsEnabled']),
       useWatch<boolean>(['radSecOptions', 'ocspValidationEnabled'])]
-  // ,useWatch(['radSecOptions', 'clientCertificateId'])]
 
   const [showCertificateAuthorityDrawer, setShowCertificateAuthorityDrawer] = useState(false)
   const [showCertificateDrawer, setShowCertificateDrawer] = useState(false)
@@ -82,7 +81,6 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
       }
     })
 
-  // TODO How to identity radius ID which is bind to client or server cert?
   // TODO 3. Generate Certificate: if a certificate is generated from here, the Client or Server auth option in Extended key usage area should be forced to ‘enabled’,
   //         depending on which selector user generates, “Certificate with Client Auth Key” or “Certificate with Server Auth Key”.
   //         so that user can select it from the dropdown list then
@@ -91,8 +89,6 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
     {
       skip: !supportRadsec,
       selectFromResult: ({ data }) => {
-        // const certOptions = data?.data?.filter(
-        //   item => item.status?.includes(CertificateStatusType.VALID))
         const certOptions = data?.data?.map(item => ({
           label: item.name,
           value: item.id,
@@ -231,10 +227,6 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
       setSelectedServerCertId(saveState.radSecOptions?.serverCertificateId ?? null)
     }
   }, [saveState])
-
-  useEffect(() => {
-    form.setFieldValue(['radSecOptions', 'originalCertificateAuthorityId'], selectedCaId)
-  }, [selectedCaId])
 
   const ACCT_FORBIDDEN_PORT = 1812
   const AUTH_FORBIDDEN_PORT = 1813
