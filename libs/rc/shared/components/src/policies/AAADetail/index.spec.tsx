@@ -1,8 +1,8 @@
 import { rest } from 'msw'
 
-import { AaaUrls, CommonUrlsInfo, ConfigTemplateContext, ConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                               from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, within }                            from '@acx-ui/test-utils'
+import { AaaUrls, CertificateUrls, CommonUrlsInfo, ConfigTemplateContext, ConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                                                from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, within }                                             from '@acx-ui/test-utils'
 
 import {
   aaaServerNetworkList, aaaServerDetail,
@@ -27,6 +27,14 @@ describe('AAA Detail Page', () => {
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
         (_, res, ctx) => res(ctx.json(aaaServerNetworkList))
+      ),
+      rest.post(
+        CertificateUrls.getCAs.url,
+        (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        CertificateUrls.getCertificateList.url,
+        (_, res, ctx) => res(ctx.json({}))
       )
     )
   })
