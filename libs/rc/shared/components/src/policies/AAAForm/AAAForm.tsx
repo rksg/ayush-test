@@ -83,21 +83,7 @@ export const AAAForm = (props: AAAFormProps) => {
     if (data) {
       formRef?.current?.resetFields()
       formRef?.current?.setFieldsValue(data)
-      if (supportRadsec && data.radSecOptions) {
-        const newRadSecOptions = {
-          ...data.radSecOptions,
-          originalCertificateAuthorityId: data.radSecOptions?.certificateAuthorityId ?? undefined,
-          originalClientCertificateId: data.radSecOptions.clientCertificateId ?? undefined,
-          originalServerCertificateId: data.radSecOptions.serverCertificateId ?? undefined
-        }
-        const newSaveData = {
-          ...data,
-          radSecOptions: newRadSecOptions
-        }
-        setSaveState({ ...saveState, ...newSaveData })
-      } else {
-        setSaveState({ ...saveState, ...data })
-      }
+      setSaveState({ ...saveState, ...data })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])

@@ -134,12 +134,10 @@ const LbsServerProfileMutationUseCases = [
 ]
 
 const CertificateMutationUseCases = [
-  'ActivateCertificateAuthorityOnRadius',
-  'DectivateCertificateAuthorityOnRadius',
-  'ActivateClientCertificateOnRadius',
-  'DectivateClientCertificateOnRadius',
-  'ActivateServerCertificateOnRadius',
-  'DectivateServerCertificateOnRadius'
+  'UpdateRadius',
+  'ActivateCertificateOnRadiusServerProfile',
+  'DeactivateCertificateOnRadiusServerProfile',
+  'ActivateCertificateAuthorityOnRadiusServerProfile'
 ]
 
 const L2AclUseCases = [
