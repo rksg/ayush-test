@@ -6,6 +6,7 @@ export interface NetworkFormContextType {
   createType?: NetworkTypeEnum,
   editMode: boolean,
   cloneMode: boolean,
+  isRuckusAiMode: boolean,
   data: NetworkSaveData | null
   setData?: (data: NetworkSaveData) => void
 }
