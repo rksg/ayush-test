@@ -38,7 +38,7 @@ export const FeatureItem = (props: FeatureItemProps) => {
         >
           {requirement?.firmware}
         </Form.Item>
-        { requirement.models &&
+        { requirement.models && deviceType === CompatibilityDeviceEnum.SWITCH &&
           <Form.Item
             label={$t({ defaultMessage: 'Supported ICX Models' })}
             style={UI.detailStyle}

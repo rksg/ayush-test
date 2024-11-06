@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { UseLazyQuery }    from '@reduxjs/toolkit/dist/query/react/buildHooks'
 import { QueryDefinition } from '@reduxjs/toolkit/query'
@@ -198,7 +198,7 @@ export const useEdgeCompatibilityRequirementData = (featureName: Incompatibility
   const [ getSwitchFeatureSets ] = useLazyGetSwitchFeatureSetsQuery()
   const [ getApFeatureSets ] = useLazyGetApFeatureSetsQuery()
 
-  const fetchEdgeCompatibilities = async () => {
+  const fetchEdgeCompatibilities = useCallback(async () => {
     try {
       setIsInitializing(true)
 
@@ -246,12 +246,12 @@ export const useEdgeCompatibilityRequirementData = (featureName: Incompatibility
       console.error('EdgeCompatibilityDrawer api error:', e)
       setIsInitializing(false)
     }
-  }
+  }, [featureName, getApFeatureSets, getEdgeFeatureSets, getSwitchFeatureSets])
 
   useEffect(() => {
     if (!skip)
       fetchEdgeCompatibilities()
-  }, [skip])
+  }, [fetchEdgeCompatibilities, skip])
 
   return useMemo(() => ({ featureInfos: data, isLoading: isInitializing }),
     [data, isInitializing])

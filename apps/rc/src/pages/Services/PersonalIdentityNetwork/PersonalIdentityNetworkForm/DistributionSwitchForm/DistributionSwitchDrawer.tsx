@@ -89,7 +89,7 @@ export function DistributionSwitchDrawer (props: {
       availableSwitches.concat(removedSwitchList).filter(sw=>!inUseSwitchIds.includes(sw.id))
 
     setAvailableSwitchList(availableSwitchList)
-  }, [pinForm, availableSwitches, dsId, accessSwitches, requiredFw_DS])
+  }, [pinForm, availableSwitches, dsId, accessSwitches])
 
   const handleFormFinish = (values: DistributionSwitch) => {
     onSaveDS && onSaveDS({ ...values, accessSwitches: accessSwitches })
