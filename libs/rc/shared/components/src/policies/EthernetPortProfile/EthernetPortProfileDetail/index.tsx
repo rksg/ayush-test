@@ -1,9 +1,19 @@
 import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
-import { Button, PageHeader, SummaryCard, Card }                         from '@acx-ui/components'
-import { useAaaPolicyQuery, useGetEthernetPortProfileViewDataListQuery } from '@acx-ui/rc/services'
 import {
+  Button,
+  PageHeader,
+  SummaryCard,
+  Card
+} from '@acx-ui/components'
+import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import {
+  useAaaPolicyQuery,
+  useGetEthernetPortProfileWithRelationsByIdQuery
+} from '@acx-ui/rc/services'
+import {
+  EthernetPortAuthType,
   PolicyOperation,
   PolicyType,
   getEthernetPortAuthTypeString,
@@ -20,19 +30,17 @@ export const EthernetPortProfileDetail = () => {
 
   const { $t } = useIntl()
   const { policyId } = useParams()
-  const { ethernetPortProfileData } = useGetEthernetPortProfileViewDataListQuery({
+  const supportDynamicVLAN = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_DVLAN_TOGGLE)
+  const { data: ethernetPortProfileData } = useGetEthernetPortProfileWithRelationsByIdQuery({
     payload: {
       sortField: 'name',
       sortOrder: 'ASC',
       filters: {
         id: [policyId]
       }
-    }
-  }, {
-    selectFromResult: ({ data: queryResult })=>{
-      return {
-        ethernetPortProfileData: queryResult?.data[0]
-      }
+    },
+    params: {
+      id: policyId
     }
   })
 
@@ -113,7 +121,15 @@ export const EthernetPortProfileDetail = () => {
       content: () => {
         return (ethernetPortProfileData?.bypassMacAddressAuthentication)? 'On' : 'Off'
       }
-    }
+    },
+    ...(supportDynamicVLAN &&
+      ethernetPortProfileData?.authType === EthernetPortAuthType.MAC_BASED ?
+      [{
+        title: $t({ defaultMessage: 'Dynamic VLAN' }),
+        content: () => {
+          return (ethernetPortProfileData?.dynamicVlanEnabled)? 'On' : 'Off'
+        }
+      }] : [])
   ]
 
   return (<>
