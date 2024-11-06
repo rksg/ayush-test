@@ -4,11 +4,11 @@ import {
   DirectoryServerUrls,
   DirectoryServer,
   onSocketActivityChanged,
-  onActivityMessageReceived, DirectoryServerViewData
+  onActivityMessageReceived, DirectoryServerViewData, DirectoryServerDiagnosisCommand
 } from '@acx-ui/rc/utils'
-import { baseDirectoryServerApi }      from '@acx-ui/store'
-import { RequestPayload }              from '@acx-ui/types'
-import { batchApi, createHttpRequest } from '@acx-ui/utils'
+import { baseDirectoryServerApi }                        from '@acx-ui/store'
+import { RequestPayload }                                from '@acx-ui/types'
+import { batchApi, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 export const directoryServerApi = baseDirectoryServerApi.injectEndpoints({
   endpoints: (build) => ({
@@ -88,6 +88,19 @@ export const directoryServerApi = baseDirectoryServerApi.injectEndpoints({
       invalidatesTags: [
         { type: 'DirectoryServer', id: 'LIST' },
         { type: 'DirectoryServer', id: 'Options' }]
+    }),
+    // eslint-disable-next-line max-len
+    testConnectionDirectoryServer: build.mutation<CommonResult, RequestPayload<DirectoryServerDiagnosisCommand>>({
+      query: ({ payload }) => {
+        const req = createHttpRequest(DirectoryServerUrls.testConnectionDirectoryServer,
+          undefined,
+          { ...ignoreErrorModal }
+        )
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
     })
   })
 })
@@ -100,5 +113,6 @@ export const {
   useLazyGetDirectoryServerViewDataListQuery,
   useDeleteDirectoryServerMutation,
   useUpdateDirectoryServerMutation,
-  useActivateDirectoryServerMutation
+  useActivateDirectoryServerMutation,
+  useTestConnectionDirectoryServerMutation
 } = directoryServerApi
