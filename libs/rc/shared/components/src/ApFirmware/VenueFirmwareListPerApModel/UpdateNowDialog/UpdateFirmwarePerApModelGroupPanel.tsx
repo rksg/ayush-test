@@ -91,11 +91,15 @@ function convertToApModelGroupDisplayData (data: ApFirmwareUpdateGroupType[], in
 function getDefaultFirmwareFromPayload (updateGroup: ApFirmwareUpdateGroupType, initialValues?: UpdateFirmwarePerApModelFirmware): string {
   if (!initialValues || initialValues.length === 0) return updateGroup.firmwares[0].name
 
-  const targetFirmwares = initialValues.filter(fw => updateGroup.apModels.includes(fw.apModel))
+  // eslint-disable-next-line max-len
+  const targetFirmwares = initialValues.filter(initValue => updateGroup.apModels.includes(initValue.apModel))
+  const uniqueInitialFirmware = new Set([...targetFirmwares.map(tf => tf.firmware)])
+
   if (targetFirmwares.length === 0) {
     return ''
   } else if (targetFirmwares.length === updateGroup.apModels.length
-    && new Set([...targetFirmwares.map(tf => tf.firmware)]).size === 1) {
+    && uniqueInitialFirmware.size === 1
+    && updateGroup.firmwares.some(fw => fw.name === Array.from(uniqueInitialFirmware)[0])) {
     return targetFirmwares[0].firmware
   }
 
