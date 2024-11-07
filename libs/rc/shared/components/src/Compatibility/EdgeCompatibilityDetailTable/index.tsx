@@ -8,7 +8,7 @@ import { useIntl }    from 'react-intl'
 import { Table, TableProps }                                                                                                                                                                                                                                                        from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                                                                                                                                                                                                   from '@acx-ui/feature-toggle'
 import { useGetAvailableEdgeFirmwareVersionsQuery, useGetLatestEdgeFirmwareQuery, useGetVenueEdgeFirmwareListQuery, useStartEdgeFirmwareVenueUpdateNowMutation, useUpdateEdgeFirmwareNowMutation, useUpdateEdgeFirmwareVenueScheduleMutation, useUpdateEdgeVenueSchedulesMutation } from '@acx-ui/rc/services'
-import { EdgeFirmwareVersion, EdgeUpdateScheduleRequest, EdgeVenueFirmware, EntityCompatibility }                                                                                                                                                                                   from '@acx-ui/rc/utils'
+import { EdgeFirmwareVersion, EdgeUpdateScheduleRequest, EdgeVenueFirmware, EntityCompatibility, IncompatibilityFeatures, getCompatibilityFeatureDisplayName }                                                                                                                      from '@acx-ui/rc/utils'
 import { EdgeScopes }                                                                                                                                                                                                                                                               from '@acx-ui/types'
 import { filterByAccess, hasPermission }                                                                                                                                                                                                                                            from '@acx-ui/user'
 import { compareVersions }                                                                                                                                                                                                                                                          from '@acx-ui/utils'
@@ -35,7 +35,9 @@ const useColumns = () => {
     title: $t({ defaultMessage: 'Incompatible Feature' }),
     key: 'featureName',
     dataIndex: 'featureName',
-    defaultSortOrder: 'ascend'
+    defaultSortOrder: 'ascend',
+    // eslint-disable-next-line max-len
+    render: (_, row) => getCompatibilityFeatureDisplayName(row.featureName as IncompatibilityFeatures)
   }, {
     title: $t({ defaultMessage: 'Incompatible RUCKUS Edges' }),
     key: 'incompatible',
