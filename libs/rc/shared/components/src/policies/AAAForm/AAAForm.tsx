@@ -7,14 +7,19 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
 import {
   useAaaPolicyQuery,
   useAddAAAPolicyMutation,
   useUpdateAAAPolicyMutation,
   useAddAAAPolicyTemplateMutation,
   useGetAAAPolicyTemplateQuery,
-  useUpdateAAAPolicyTemplateMutation
+  useUpdateAAAPolicyTemplateMutation,
+  useActivateCertificateAuthorityOnRadiusMutation,
+  useActivateClientCertificateOnRadiusMutation,
+  useDeactivateClientCertificateOnRadiusMutation,
+  useActivateServerCertificateOnRadiusMutation,
+  useDeactivateServerCertificateOnRadiusMutation
 } from '@acx-ui/rc/services'
 import {
   AAAPolicyType,
@@ -52,6 +57,10 @@ export const AAAForm = (props: AAAFormProps) => {
   const isServicePolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const enableRbac = isTemplate ? isConfigTemplateRbacEnabled : isServicePolicyRbacEnabled
+  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+  const addRadSecActivations = useAddRadSecActivations()
+  const updateRadSecActivations = useUpdateRadSecActivations()
   const { data } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useAaaPolicyQuery,
     useTemplateQueryFn: useGetAAAPolicyTemplateQuery,
@@ -83,9 +92,18 @@ export const AAAForm = (props: AAAFormProps) => {
     try {
       if (isEdit) {
         await updateInstance(requestPayload).unwrap()
+        if (supportRadsec) {
+          updateRadSecActivations(data, requestPayload?.params?.policyId)
+        }
       } else {
-        await createInstance(requestPayload).unwrap().then(res => data.id = res?.response?.id)
+        await createInstance(requestPayload).unwrap().then(res => {
+          data.id = res?.response?.id
+          if (supportRadsec) {
+            addRadSecActivations(data, res?.response?.id)
+          }
+        })
       }
+
       networkView ? backToNetwork?.(data) : navigate(linkToInstanceList, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -94,6 +112,109 @@ export const AAAForm = (props: AAAFormProps) => {
 
   const onCancel = () => {
     networkView ? backToNetwork?.() : navigate(linkToInstanceList)
+  }
+
+  function useCertificateAuthorityActivation () {
+    const [activate] = useActivateCertificateAuthorityOnRadiusMutation()
+    const activateCertificateAuthority =
+      async (radiusId?: string, certificateAuthorityId?: string) => {
+        return radiusId && certificateAuthorityId ?
+          await activate({ params: { radiusId, certificateAuthorityId } }).unwrap() : null
+      }
+    return activateCertificateAuthority
+  }
+
+  function useClientCertificateActivation () {
+    const [activate] = useActivateClientCertificateOnRadiusMutation()
+    const activateClientCertificate =
+      async (radiusId?: string, clientCertificateId?: string) => {
+        return radiusId && clientCertificateId ?
+          await activate({ params: { radiusId, clientCertificateId } }).unwrap() : null
+      }
+    return activateClientCertificate
+  }
+
+  function useClientCertificateDeactivation () {
+    const [deactivate] = useDeactivateClientCertificateOnRadiusMutation()
+    const deactivateClientCertificate =
+      async (radiusId?: string, clientCertificateId?: string) => {
+        return radiusId && clientCertificateId ?
+          await deactivate({ params: { radiusId, clientCertificateId } }).unwrap() : null
+      }
+    return deactivateClientCertificate
+  }
+
+  function useServerCertificateActivation () {
+    const [activate] = useActivateServerCertificateOnRadiusMutation()
+    const activateServerCertificate =
+      async (radiusId?: string, serverCertificateId?: string) => {
+        return radiusId && serverCertificateId ?
+          await activate({ params: { radiusId, serverCertificateId } }).unwrap() : null
+      }
+    return activateServerCertificate
+  }
+
+  function useServerCertificateDeactivation () {
+    const [deactivate] = useDeactivateServerCertificateOnRadiusMutation()
+    const deactivateServerCertificate =
+      async (radiusId?: string, serverCertificateId?: string) => {
+        return radiusId && serverCertificateId ?
+          await deactivate({ params: { radiusId, serverCertificateId } }).unwrap() : null
+      }
+    return deactivateServerCertificate
+  }
+
+  function useAddRadSecActivations () {
+    const activateCertificateAuthority = useCertificateAuthorityActivation()
+    const activateClientCertificate = useClientCertificateActivation()
+    const activateServerCertificate = useServerCertificateActivation()
+    const addRadSecActivations =
+      async (aaa?: AAAPolicyType, radiusId?: string) => {
+        const radSecOptions = aaa?.radSecOptions
+
+        await activateCertificateAuthority(radiusId, radSecOptions?.certificateAuthorityId)
+        if (radSecOptions?.clientCertificateId) {
+          await activateClientCertificate(radiusId, radSecOptions?.clientCertificateId)
+        }
+        if (radSecOptions?.serverCertificateId) {
+          await activateServerCertificate(radiusId, radSecOptions?.serverCertificateId)
+        }
+      }
+    return addRadSecActivations
+  }
+
+  function useUpdateRadSecActivations () {
+    const activateCertificateAuthority = useCertificateAuthorityActivation()
+    const activateClientCertificate = useClientCertificateActivation()
+    const deactivateClientCertificate = useClientCertificateDeactivation()
+    const activateServerCertificate = useServerCertificateActivation()
+    const deactivateServerCertificate = useServerCertificateDeactivation()
+    const addRadSecActivations =
+      async (aaa?: AAAPolicyType, radiusId?: string) => {
+        const radSecOptions = aaa?.radSecOptions
+
+        if (radSecOptions?.originalCertificateAuthorityId
+          !== radSecOptions?.certificateAuthorityId) {
+          await activateCertificateAuthority(radiusId, radSecOptions?.certificateAuthorityId)
+        }
+        if (radSecOptions?.originalClientCertificateId !== radSecOptions?.clientCertificateId) {
+          if (radSecOptions?.clientCertificateId) {
+            await activateClientCertificate(radiusId, radSecOptions?.clientCertificateId)
+          } else if (radSecOptions?.originalClientCertificateId) {
+            await deactivateClientCertificate(
+              radiusId, radSecOptions?.originalClientCertificateId)
+          }
+        }
+        if (radSecOptions?.originalServerCertificateId !== radSecOptions?.serverCertificateId) {
+          if (radSecOptions?.serverCertificateId) {
+            await activateServerCertificate(radiusId, radSecOptions?.serverCertificateId)
+          } else if (radSecOptions?.originalServerCertificateId) {
+            await deactivateServerCertificate(
+              radiusId, radSecOptions?.originalServerCertificateId)
+          }
+        }
+      }
+    return addRadSecActivations
   }
 
   return (

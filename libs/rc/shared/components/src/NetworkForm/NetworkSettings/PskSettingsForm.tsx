@@ -48,7 +48,7 @@ const { useWatch } = Form
 const labelWidth = '250px'
 
 export function PskSettingsForm () {
-  const { editMode, cloneMode, data } = useContext(NetworkFormContext)
+  const { editMode, cloneMode, data, isRuckusAiMode } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   useEffect(()=>{
     if((editMode || cloneMode) && data && !form.isFieldsTouched()) {
@@ -85,7 +85,7 @@ export function PskSettingsForm () {
         <NetworkDiagram />
       </Col>
     </Row>
-    {!(editMode) && <Row>
+    {!(editMode) && !(isRuckusAiMode) && <Row>
       <Col span={24}>
         <NetworkMoreSettingsForm
           wlanData={data} />
@@ -396,6 +396,7 @@ function MACAuthService () {
   const { data, setData } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   const enableAccountingService = useWatch<boolean>(['enableAccountingService'])
+  const networkType = data?.type
 
   useEffect(()=>{
     form.setFieldsValue(data)
@@ -410,7 +411,8 @@ function MACAuthService () {
       <div>
         <Subtitle level={3}>{$t({ defaultMessage: 'Authentication Service' })}</Subtitle>
         <AAAInstance serverLabel={$t({ defaultMessage: 'Authentication Server' })}
-          type='authRadius'/>
+          type='authRadius'
+          networkType={networkType}/>
       </div>
       <div>
         <UI.FieldLabel width={labelWidth}>
@@ -424,7 +426,8 @@ function MACAuthService () {
         </UI.FieldLabel>
         {enableAccountingService &&
           <AAAInstance serverLabel={$t({ defaultMessage: 'Accounting Server' })}
-            type='accountingRadius'/>
+            type='accountingRadius'
+            networkType={networkType}/>
         }
       </div>
     </Space>
