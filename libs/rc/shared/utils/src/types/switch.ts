@@ -306,6 +306,7 @@ export class SwitchViewModel extends Switch {
   syncedAdminPassword?: boolean
   adminPassword?: string
   extIp?: string
+  veCount?: number
 }
 
 export interface SwitchRow {

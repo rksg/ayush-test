@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 
 import { Features, useIsSplitOn }                                                                  from '@acx-ui/feature-toggle'
 import { useGetVenueApModelFirmwaresQuery, useGetVenueVersionListQuery, useWifiCapabilitiesQuery } from '@acx-ui/rc/services'
-import { ApDeep, FirmwareType, FirmwareVenue, VenueExtended }                                      from '@acx-ui/rc/utils'
+import { FirmwareType, FirmwareVenue, VenueExtended }                                              from '@acx-ui/rc/utils'
 import { TenantLink }                                                                              from '@acx-ui/react-router-dom'
 import { compareVersions }                                                                         from '@acx-ui/utils'
 
@@ -15,11 +15,12 @@ const BASE_VERSION = '6.2.1'
 interface VenueInformationProps {
   isEditMode: boolean
   venue: VenueExtended
-  apDetails?: ApDeep
+  apModel: string
+  currentApFirmware: string
 }
 
 export function VenueFirmwareInformation (props: VenueInformationProps) {
-  const { isEditMode, venue, apDetails } = props
+  const { isEditMode, venue, apModel, currentApFirmware } = props
   const { $t } = useIntl()
   const supportUpgradeByModel = useIsSplitOn(Features.AP_FW_MGMT_UPGRADE_BY_MODEL)
   const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
@@ -44,16 +45,15 @@ export function VenueFirmwareInformation (props: VenueInformationProps) {
     }
   })
 
-  const { apFirmware } = useGetVenueApModelFirmwaresQuery({ params: { venueId: venue.id } }, {
+  // eslint-disable-next-line max-len
+  const { apFirmwareInVenue } = useGetVenueApModelFirmwaresQuery({ params: { venueId: venue.id } }, {
     skip: !supportUpgradeByModel || !venue.id,
     selectFromResult: ({ data }) => ({
-      apFirmware: data?.find(item => item.apModel === apDetails?.model)?.firmware
+      apFirmwareInVenue: data?.find(item => item.apModel === apModel)?.firmware
     })
   })
 
-  const targetDisplayFirmware = supportUpgradeByModel ? apFirmware : venueFirmware
-
-  if (!apDetails) return null
+  const targetDisplayFirmware = supportUpgradeByModel ? apFirmwareInVenue : venueFirmware
 
   const contentInfo = $t({
     defaultMessage: 'If you are adding an <b>{apModels} or {lastApModel}</b> AP, ' +
@@ -71,8 +71,8 @@ export function VenueFirmwareInformation (props: VenueInformationProps) {
   const checkTriApModelsAndBaseFwVersion = (version: string | undefined) => {
     if (!version) return false
 
-    if (isEditMode && apDetails) {
-      if (!triApModels.includes(apDetails.model)) return false
+    if (isEditMode && apModel) {
+      if (!triApModels.includes(apModel)) return false
     }
     return compareVersions(version, BASE_VERSION) < 0
   }
@@ -85,9 +85,9 @@ export function VenueFirmwareInformation (props: VenueInformationProps) {
     { !supportUpgradeByModel && checkTriApModelsAndBaseFwVersion(venueFirmware) &&
       <span>{contentInfo}</span>
     }
-    { isEditMode && apDetails && targetDisplayFirmware &&
+    { isEditMode && currentApFirmware && targetDisplayFirmware &&
       // eslint-disable-next-line max-len
-      <VersionChangeAlert targetVersion={targetDisplayFirmware} existingVersion={apDetails.firmware}/>
+      <VersionChangeAlert targetVersion={targetDisplayFirmware} existingVersion={currentApFirmware}/>
     }
   </Space>
 }

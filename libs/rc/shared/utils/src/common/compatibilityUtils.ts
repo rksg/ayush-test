@@ -23,7 +23,7 @@ export const getCompatibilityFeatureDisplayName = (featureName?: Incompatibility
     case IncompatibilityFeatures.HA_AA:
       return $t({ defaultMessage: 'High-availability’s active-acitve mode' })
     case IncompatibilityFeatures.EDGE_MDNS_PROXY:
-      return $t({ defaultMessage: 'Edge mDNS Proxy' })
+      return $t({ defaultMessage: 'mDNS Proxy' })
     case IncompatibilityFeatures.PIN_DS:
       return $t({ defaultMessage: 'Distribution Switch' })
     case IncompatibilityFeatures.PIN_AS:
