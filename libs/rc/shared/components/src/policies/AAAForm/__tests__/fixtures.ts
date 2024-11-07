@@ -1,4 +1,4 @@
-import { ExtendedKeyUsages } from "@acx-ui/rc/utils"
+import { ExtendedKeyUsages } from '@acx-ui/rc/utils'
 
 export const aaaData = {
   id: 'policy-id',
