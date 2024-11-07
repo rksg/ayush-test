@@ -6,7 +6,7 @@ export const EthernetPortProfileUrls: { [key: string]: ApiInfo } = {
     url: '/ethernetPortProfiles',
     newApi: true,
     defaultHeaders: {
-      Accept: 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
@@ -15,7 +15,7 @@ export const EthernetPortProfileUrls: { [key: string]: ApiInfo } = {
     url: '/ethernetPortProfiles/query',
     newApi: true,
     defaultHeaders: {
-      Accept: 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
@@ -40,7 +40,7 @@ export const EthernetPortProfileUrls: { [key: string]: ApiInfo } = {
     url: '/ethernetPortProfiles/:id',
     newApi: true,
     defaultHeaders: {
-      Accept: 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
@@ -74,7 +74,7 @@ export const EthernetPortProfileUrls: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/apModels/:apModel/lanPorts/:portId/settings',
     newApi: true,
     defaultHeaders: {
-      Accept: 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
@@ -99,7 +99,7 @@ export const EthernetPortProfileUrls: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber/lanPorts/:portId/settings',
     newApi: true,
     defaultHeaders: {
-      Accept: 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
