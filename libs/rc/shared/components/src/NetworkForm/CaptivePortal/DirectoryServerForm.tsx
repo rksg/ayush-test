@@ -1,19 +1,22 @@
 import { useEffect, useState, useContext, useRef } from 'react'
 
-
 import {
+  Divider,
   Form,
   Select,
   Button,
   Space
 } from 'antd'
 import { DefaultOptionType } from 'antd/lib/select'
+import _                     from 'lodash'
 import { useIntl }           from 'react-intl'
 import styled                from 'styled-components/macro'
 
-
-import { GridCol, GridRow, StepsFormLegacy, Tooltip } from '@acx-ui/components'
-import { useGetDirectoryServerViewDataListQuery }     from '@acx-ui/rc/services'
+import { GridCol, GridRow, StepsFormLegacy, Tooltip, Drawer, Descriptions } from '@acx-ui/components'
+import {
+  useGetDirectoryServerViewDataListQuery,
+  useGetDirectoryServerByIdQuery
+}                           from '@acx-ui/rc/services'
 import {
   NetworkSaveData,
   GuestNetworkTypeEnum,
@@ -61,6 +64,7 @@ export function DirectoryServerForm ({ setDirectoryServerIdToNetworkForm } : { s
   const { $t } = useIntl()
   const addedDirectoryServerUnderEditMode = useRef<string>('')
   const [ visible, setVisible ] = useState<boolean>(false)
+  const [ detailDrawerVisible, setDetailDrawerVisible ] = useState<boolean>(false)
   const [ selectedDirectory, setSelectedDirectory] = useState('')
   const [ directoryServerOptionsList, setDirectoryServerOptionsList] = useState<DefaultOptionType[]>([])
   // eslint-disable-next-line max-len
@@ -120,12 +124,24 @@ export function DirectoryServerForm ({ setDirectoryServerIdToNetworkForm } : { s
                 value={selectedDirectory}
                 onChange={(value) => {
                   setDirectoryServerValue(value)
+                  setVisible(false)
+                  setDetailDrawerVisible(false)
                 }}
                 options={directoryServerOptionsList}
               />
 
             }
           />
+          <Tooltip>
+            <Button type='link'
+              disabled={_.isEmpty(selectedDirectory)}
+              onClick={() => setDetailDrawerVisible(true)}>
+              {$t({ defaultMessage: 'Profile Detail' })}
+            </Button>
+          </Tooltip>
+          <Tooltip>
+            |
+          </Tooltip>
           <Tooltip>
             <Button type='link'
               onClick={() => setVisible(true)}>
@@ -154,6 +170,13 @@ export function DirectoryServerForm ({ setDirectoryServerIdToNetworkForm } : { s
       editMode={false}
       callbackFn={addDirectoryServerCallback}
     />
+    { // Set condition to prevent it render and send request during first render
+      // which has no directory server is selected at that moment
+      selectedDirectory && <DirectoryServerDetailDrawer
+        visible={detailDrawerVisible}
+        setVisible={setDetailDrawerVisible}
+        selectedDirectoryServerId={selectedDirectory}
+      />}
     {!(editMode) && <GridRow>
       <GridCol col={{ span: 24 }}>
         <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />
@@ -169,3 +192,76 @@ const ModifiedSpace = styled(Space)`
     width: 100%;
   }
 `
+
+interface DirectoryServerDetailDrawerProps {
+  visible: boolean
+  setVisible: (visible: boolean) => void
+  selectedDirectoryServerId: string
+}
+
+const DirectoryServerDetailDrawer = (props: DirectoryServerDetailDrawerProps) => {
+  const { $t } = useIntl()
+
+  const { visible, setVisible, selectedDirectoryServerId } = props
+
+  const { data: directoryServerDetail } = useGetDirectoryServerByIdQuery({ params: { policyId: selectedDirectoryServerId } })
+
+  const handleClose = async () => {
+    setVisible(false)
+  }
+
+  return (
+    <Drawer
+      title={`${$t({ defaultMessage: 'Directory Server Details' })}: ${directoryServerDetail?.name}`}
+      visible={visible}
+      width={450}
+      children={<>
+        <Divider />
+        <Space style={{ display: 'block' }}>
+          <Descriptions labelWidthPercent={50}>
+            <Descriptions.Item
+              label={$t({ defaultMessage: 'Server Type:' })}
+              children={directoryServerDetail?.type || '--'}
+            />
+            <Descriptions.Item
+              label={$t({ defaultMessage: 'TLS Encryption:' })}
+              children={
+                directoryServerDetail?.tlsEnabled ?
+                  $t({ defaultMessage: 'On' }) :
+                  $t({ defaultMessage: 'Off' })
+              }
+            />
+            <Descriptions.Item
+              label={$t({ defaultMessage: 'Server Address:' })}
+              children={directoryServerDetail?.host || '--'}
+            />
+            <Descriptions.Item
+              label={$t({ defaultMessage: 'Windows Domain Name:' })}
+              children={directoryServerDetail?.domainName || '--'}
+            />
+            <Descriptions.Item
+              label={$t({ defaultMessage: 'Admin Domain Name:' })}
+              children={directoryServerDetail?.adminDomainName || '--'}
+            />
+          </Descriptions>
+        </Space>
+      </>}
+      onClose={handleClose}
+      destroyOnClose={true}
+      footer={
+        <>
+          <div></div>
+          <div>
+            <Button
+              onClick={handleClose}
+              type='primary'
+            >
+              {$t({ defaultMessage: 'OK' })}
+            </Button>
+          </div>
+        </>
+      }
+    />
+  )
+
+}
