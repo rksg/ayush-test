@@ -885,10 +885,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
       query: commonQueryFn(AaaUrls.getAAAPolicy, AaaUrls.getAAAPolicyRbac),
       providesTags: [{ type: 'AAA', id: 'DETAIL' }]
     }),
-    aaaPolicyCertificate: build.query<AAAPolicyType | null, RequestPayload>({
+    aaaPolicyCertificate: build.query<AAAPolicyType | undefined, RequestPayload>({
       async queryFn ({ params }, _queryApi, _extraOptions, fetchWithBQ) {
-        if (!params?.policyId) return Promise.resolve({ data: null } as QueryReturnValue<
-          null,
+        if (!params?.policyId) return Promise.resolve({ data: undefined } as QueryReturnValue<
+          undefined,
           FetchBaseQueryError,
           FetchBaseQueryMeta
         >)
