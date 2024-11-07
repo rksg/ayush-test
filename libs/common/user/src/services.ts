@@ -14,7 +14,8 @@ import {
   UserProfile,
   UserSettingsUIModel,
   BetaStatus,
-  FeatureAPIResults
+  // FeatureAPIResults,
+  BetaFeatures
 } from './types'
 
 const getUserUrls = (enableRbac?: boolean | unknown) => {
@@ -197,12 +198,12 @@ export const UserRbacUrlsInfo = {
   },
   getBetaFeatureList: {
     method: 'get',
-    url: '/tenants/beta/feature-ids',
+    url: '/tenants/betaFeatures',
     newApi: true
   },
   updateBetaFeatureList: {
     method: 'put',
-    url: '/tenants/beta/feature-ids',
+    url: '/tenants/betaFeatures',
     newApi: true
   }
 }
@@ -421,7 +422,7 @@ export const {
       },
       providesTags: [{ type: 'Venue', id: 'LIST' }]
     }),
-    getBetaFeatureList: build.query<FeatureAPIResults[], RequestPayload>({
+    getBetaFeatureList: build.query<BetaFeatures, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(UserRbacUrlsInfo.getBetaFeatureList, params)
         return {

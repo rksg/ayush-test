@@ -89,8 +89,11 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
   const venuesList: string[] = (venues?.data.map(item => item.id)
     .filter((id): id is string => id !== undefined)) || []
 
-  const { data: betaFeatures } = useGetBetaFeatureListQuery({ params })
-  const betaFeaturesList: FeatureAPIResults[] = (betaFeatures?.filter((feature):
+  const { data: features } = useGetBetaFeatureListQuery({ params })
+  // const betaFeaturesList: FeatureAPIResults[] = features
+  //   ? (features?.betaFeatures.filter(feature => feature !== undefined)) : []
+
+  const betaFeaturesList: FeatureAPIResults[] = (features?.betaFeatures.filter((feature):
     feature is FeatureAPIResults => feature !== undefined)) || []
 
   if (allowedOperations && accountTier && !isFeatureFlagStatesLoading) {

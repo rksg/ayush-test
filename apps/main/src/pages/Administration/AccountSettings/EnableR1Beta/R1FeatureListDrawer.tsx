@@ -46,7 +46,7 @@ function R1FeatureListDrawer (
         }
       }).unwrap()
       // only send feature that is disabled
-      const payloadList = featureList.filter((feature => feature.isEnabled === false))
+      const payloadList = featureList.filter((feature => feature.enabled === false))
       await updateBetaFeatures({ params, payload: payloadList as FeatureAPIResults[] }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -59,9 +59,12 @@ function R1FeatureListDrawer (
   }
 
   useEffect(() => {
-    if (betaFeaturesList) {
-      const features = betaFeaturesList.map(f => {
-        const desc = $t(BetaListDetails.filter(detail => detail.key === f.id)[0].description)
+    if (betaFeaturesList?.betaFeatures) {
+      const features = betaFeaturesList.betaFeatures.map(f => {
+        const found = BetaListDetails.filter(detail => detail.key === f.id)
+        const desc = found.length > 0
+          ? $t(BetaListDetails.filter(detail => detail.key === f.id)[0].description)
+          : 'Sample: sample description'
         const updatedFeature: Feature = {
           name: desc.split(': ')[0],
           desc: desc.split(': ')[1],
@@ -76,7 +79,7 @@ function R1FeatureListDrawer (
   const onFeatureToggle = (checked: boolean, e: React.MouseEvent, feature: string) => {
     const features = featureList.map(f => {
       if (f.id === feature) {
-        f.isEnabled = checked
+        f.enabled = checked
       }
       return f
     })
@@ -110,8 +113,8 @@ function R1FeatureListDrawer (
               <UI.EarlyAccessFeatureSwitch
                 checkedChildren='ON'
                 unCheckedChildren='OFF'
-                defaultChecked={feature.isEnabled}
-                checked={feature.isEnabled}
+                defaultChecked={feature.enabled}
+                checked={feature.enabled}
                 onChange={(checked, e) => onFeatureToggle(checked, e, feature.id)} />
             </UI.FeatureTitleWrapper>
             <UI.FeatureDescription>{feature.desc}</UI.FeatureDescription>

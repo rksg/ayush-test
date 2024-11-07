@@ -8,8 +8,8 @@ import {
   screen } from '@acx-ui/test-utils'
 import { RolesEnum } from '@acx-ui/types'
 
-import { UserRbacUrlsInfo, UserUrlsInfo }                 from './services'
-import { CustomRoleType, FeatureAPIResults, UserProfile } from './types'
+import { UserRbacUrlsInfo, UserUrlsInfo }            from './services'
+import { BetaFeatures, CustomRoleType, UserProfile } from './types'
 import {
   useUserProfileContext,
   UserProfileProvider,
@@ -82,20 +82,22 @@ const fakedVenueList = {
   ]
 }
 
-const mockedBetaFeatures: FeatureAPIResults[] = [
-  {
-    id: 'BETA-DPSK3',
-    isEnabled: true
-  },
-  {
-    id: 'PLCY-EDGE',
-    isEnabled: false
-  },
-  {
-    id: 'SAMPLE',
-    isEnabled: true
-  }
-]
+const mockedBetaFeatures: BetaFeatures = {
+  betaFeatures: [
+    {
+      id: 'BETA-DPSK3',
+      enabled: true
+    },
+    {
+      id: 'PLCY-EDGE',
+      enabled: false
+    },
+    {
+      id: 'SAMPLE',
+      enabled: true
+    }
+  ]
+}
 
 describe('UserProfileContext', () => {
   const wrapper = (props: { children: React.ReactNode }) => (

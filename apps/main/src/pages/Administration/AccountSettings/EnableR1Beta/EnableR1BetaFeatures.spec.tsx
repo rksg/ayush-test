@@ -10,24 +10,26 @@ import {
   screen,
   waitFor
 } from '@acx-ui/test-utils'
-import { FeatureAPIResults, UserRbacUrlsInfo, UserUrlsInfo } from '@acx-ui/user'
+import { BetaFeatures, UserRbacUrlsInfo, UserUrlsInfo } from '@acx-ui/user'
 
 import { EnableR1BetaFeatures } from './EnableR1BetaFeatures'
 
-const fakeFeatures: FeatureAPIResults[] = [
-  {
-    id: 'BETA-DPSK3',
-    isEnabled: true
-  },
-  {
-    id: 'PLCY-EDGE',
-    isEnabled: false
-  },
-  {
-    id: 'SAMPLE',
-    isEnabled: true
-  }
-]
+const fakeFeatures: BetaFeatures = {
+  betaFeatures: [
+    {
+      id: 'BETA-DPSK3',
+      enabled: true
+    },
+    {
+      id: 'PLCY-EDGE',
+      enabled: false
+    },
+    {
+      id: 'SAMPLE',
+      enabled: true
+    }
+  ]
+}
 const user = require('@acx-ui/user')
 
 describe('Enable RUCKUS One Beta Feature List Checkbox', () => {

@@ -222,6 +222,9 @@ export enum TierFeatures { // for Tier (ex: Beta) feature flag
   CONFIG_TEMPLATE = 'CONFIG-TEMPLATE',
   WORKFLOW_ONBOARD = 'WORKFLOW-ONBOARD',
   LOCATION_BASED_SERVICES = 'LOCATION-BASED-SERVICES',
+  TEST_SELECTIVE_BETA_01 = 'TEST-SELECTIVE-BETA-01',
+  TEST_SELECTIVE_BETA_02 = 'TEST-SELECTIVE-BETA-02',
+  TEST_SELECTIVE_BETA_03 = 'TEST-SELECTIVE-BETA-03',
   SAMPLE = 'SAMPLE'
 }
 
@@ -244,5 +247,8 @@ export const BetaListDetails:BetaList[] = [
   { key: TierFeatures.SMART_EDGES, description: defineMessage({ defaultMessage: 'RUCKUS Edge: RUCKUS Edge is a platfrom to run RUCKUS services on. Network administrators can utilize SD-LAN service or Personal Identity Networking service on a RUCKUS Edge. SD-LAN provides WLAN tunnelling using VXLAN. This will provide end users a seamless roaming experience across a network. The Personal Identity Networking service provides individual networks for users which is typically used in a multi-dwelling facility.' }), status: true },
   { key: TierFeatures.CONFIG_TEMPLATE, description: defineMessage({ defaultMessage: 'Config Template: It allows MSP users to create templates for networks, <venuePlural></venuePlural>, services, and policies. These templates can then be applied to multiple customers, providing a centralized and efficient solution for managing RUCKUS brand network equipment across properties.' }), status: true },
   { key: TierFeatures.LOCATION_BASED_SERVICES, description: defineMessage({ defaultMessage: 'LBS: RUCKUS One now lets you create a Location Based Service (LBS) Server linked to multiple <venuePlural></venuePlural> for efficient tracking and management of location-specific information. This feature gathers location data from connected access points (APs) and routes it to third-party application servers. You can add and manage LBS server profiles and enable Location Based Services for any <venueSingular></venueSingular> directly from the RUCKUS One web interface, enhancing your <venueSingular></venueSingular> management capabilities.' }), status: true },
+  { key: TierFeatures.TEST_SELECTIVE_BETA_01, description: defineMessage({ defaultMessage: 'Test 01: Test selective 01.' }), status: true },
+  { key: TierFeatures.TEST_SELECTIVE_BETA_02, description: defineMessage({ defaultMessage: 'Test 02: Test selective 02.' }), status: true },
+  { key: TierFeatures.TEST_SELECTIVE_BETA_03, description: defineMessage({ defaultMessage: 'Test 03: Test selective 03.' }), status: true },
   { key: TierFeatures.SAMPLE, description: defineMessage({ defaultMessage: 'Sample: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus pronin sapien nunc.' }), status: true }
 ]

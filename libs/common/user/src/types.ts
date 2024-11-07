@@ -143,9 +143,13 @@ export interface BetaStatus {
   startDate?: string
 }
 
+export interface BetaFeatures {
+  betaFeatures: FeatureAPIResults[]
+}
+
 export interface FeatureAPIResults {
   id: string,
-  isEnabled: boolean
+  enabled: boolean
 }
 
 export interface Feature extends FeatureAPIResults {
