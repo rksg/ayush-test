@@ -223,8 +223,8 @@ export function ManageIntegrator () {
   })
   const assignedEcs =
   useGetAssignedMspEcToIntegratorQuery(
-    { params: { mspIntegratorId: mspEcTenantId, mspIntegratorType: tenantType } },
-    { skip: action !== 'edit' })
+    { params: { mspIntegratorId: mspEcTenantId, mspIntegratorType: tenantType },
+      enable: isRbacEnabled }, { skip: action !== 'edit' })
 
   useEffect(() => {
     if (licenseSummary) {

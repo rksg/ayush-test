@@ -241,9 +241,7 @@ export function AddCustomRole () {
           className='grid-item'
           valuePropName='checked'
           initialValue={false}>
-          <Input type='checkbox'
-            disabled={true}
-          />
+          <UI.PermissionCheckbox disabled={true} />
         </Form.Item>
 
         <Form.Item
@@ -251,7 +249,7 @@ export function AddCustomRole () {
           className='grid-item'
           valuePropName='checked'
           initialValue={false}>
-          <Input type='checkbox' />
+          <UI.PermissionCheckbox />
         </Form.Item>
 
         <Form.Item
@@ -259,7 +257,7 @@ export function AddCustomRole () {
           className='grid-item'
           valuePropName='checked'
           initialValue={false}>
-          <Input type='checkbox' />
+          <UI.PermissionCheckbox />
         </Form.Item>
 
         <Form.Item
@@ -267,7 +265,7 @@ export function AddCustomRole () {
           className='grid-item'
           valuePropName='checked'
           initialValue={false}>
-          <Input type='checkbox' />
+          <UI.PermissionCheckbox />
         </Form.Item>
       </UI.FieldLabelAttributes>
 
@@ -295,9 +293,7 @@ export function AddCustomRole () {
           className='grid-item'
           valuePropName='checked'
           initialValue={false}>
-          <Input type='checkbox'
-            disabled={true}
-          />
+          <UI.PermissionCheckbox disabled={true} />
         </Form.Item>
 
         <Form.Item
@@ -305,7 +301,7 @@ export function AddCustomRole () {
           className='grid-item'
           valuePropName='checked'
           initialValue={false}>
-          <Input type='checkbox' />
+          <UI.PermissionCheckbox />
         </Form.Item>
 
         <Form.Item
@@ -313,7 +309,7 @@ export function AddCustomRole () {
           className='grid-item'
           valuePropName='checked'
           initialValue={false}>
-          <Input type='checkbox' />
+          <UI.PermissionCheckbox />
         </Form.Item>
 
         <Form.Item
@@ -321,9 +317,8 @@ export function AddCustomRole () {
           className='grid-item'
           valuePropName='checked'
           initialValue={false}>
-          <Input type='checkbox' />
+          <UI.PermissionCheckbox />
         </Form.Item>
-
       </UI.FieldLabelAttributes>
 
       <UI.FieldLabelAttributes width='660'>
@@ -348,9 +343,7 @@ export function AddCustomRole () {
           className='grid-item'
           valuePropName='checked'
           initialValue={false}>
-          <Input type='checkbox'
-            disabled={true}
-          />
+          <UI.PermissionCheckbox disabled={true} />
         </Form.Item>
 
         <Form.Item
@@ -358,7 +351,7 @@ export function AddCustomRole () {
           className='grid-item'
           valuePropName='checked'
           initialValue={false}>
-          <Input type='checkbox' />
+          <UI.PermissionCheckbox />
         </Form.Item>
 
         <Form.Item
@@ -366,7 +359,7 @@ export function AddCustomRole () {
           className='grid-item'
           valuePropName='checked'
           initialValue={false}>
-          <Input type='checkbox' />
+          <UI.PermissionCheckbox />
         </Form.Item>
 
         <Form.Item
@@ -374,9 +367,8 @@ export function AddCustomRole () {
           className='grid-item'
           valuePropName='checked'
           initialValue={false}>
-          <Input type='checkbox' />
+          <UI.PermissionCheckbox />
         </Form.Item>
-
       </UI.FieldLabelAttributes>
 
     </div>
