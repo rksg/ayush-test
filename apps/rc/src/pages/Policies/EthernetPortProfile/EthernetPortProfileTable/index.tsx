@@ -12,18 +12,20 @@ import {
 import {
   AAAViewModalType,
   EthernetPortProfileViewData,
+  filterByAccessForServicePolicyMutation,
   getEthernetPortAuthTypeString,
   getEthernetPortTypeString,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
+  getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType,
   useTableQuery
 }                                                                  from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { WifiScopes }                                              from '@acx-ui/types'
-import { filterByAccess, hasPermission }                           from '@acx-ui/user'
+import { filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 
 
 const EthernetPortProfileTable = () => {
@@ -263,7 +265,10 @@ const EthernetPortProfileTable = () => {
           }
         ]}
 
-        extra={filterByAccess([<TenantLink scopeKey={[WifiScopes.CREATE]}
+        extra={hasCrossVenuesPermission() &&
+          filterByAccessForServicePolicyMutation([
+          <TenantLink
+          scopeKey={getScopeKeyByPolicy(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.CREATE) }
           // eslint-disable-next-line max-len
           to={getPolicyRoutePath({ type: PolicyType.ETHERNET_PORT_PROFILE , oper: PolicyOperation.CREATE })}
         >
