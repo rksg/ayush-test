@@ -84,6 +84,10 @@ export const EdgeTnmHostTable = (props: { serviceId: string | undefined }) => {
         rowKey='hostid'
         columns={useColumns(setCurrentHost)}
         dataSource={hostList}
+        pagination={{
+          defaultPageSize: 5,
+          pageSize: 5
+        }}
         rowActions={allowedRowActions}
         rowSelection={!!allowedRowActions.length && { type: 'checkbox' }}
         actions={filterByAccessForServicePolicyMutation(tableActions)}

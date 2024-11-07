@@ -41,6 +41,7 @@ function useColumns () {
       sorter: true,
       searchable: true,
       fixed: 'left',
+      width: 200,
       render: (_, row) => row.name
     },
     {
@@ -49,7 +50,7 @@ function useColumns () {
       dataIndex: 'type',
       align: 'center',
       sorter: true,
-      width: 80,
+      width: 50,
       render: (_, row) => edgeTnmGraphTypeName[row.graphtype]
         ? $t(edgeTnmGraphTypeName[row.graphtype])
         : ''
@@ -58,7 +59,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Width' }),
       key: 'width',
       dataIndex: 'width',
-      width: 80,
+      width: 50,
       align: 'center',
       render: (_, row) =>
         <Row justify='center'>
@@ -69,7 +70,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Height' }),
       key: 'height',
       dataIndex: 'height',
-      width: 80,
+      width: 50,
       align: 'center',
       render: (_, row) =>
         <Row justify='center'>
