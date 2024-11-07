@@ -11,12 +11,12 @@ import { useIntl } from 'react-intl'
 import { GridCol, GridRow, StepsFormLegacy }     from '@acx-ui/components'
 import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { GuestNetworkTypeEnum, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { useConfigTemplate }                     from '@acx-ui/rc/utils'
 
 import { GuestNetworkTypeDescription, GuestNetworkTypeLabel } from '../contentsMap'
 import { NetworkDiagram }                                     from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext                                     from '../NetworkFormContext'
 import { RadioDescription }                                   from '../styledComponents'
-
 
 export function PortalTypeForm () {
   const portalType = Form.useWatch(['guestPortal', 'guestNetworkType'])
@@ -44,6 +44,7 @@ function TypesForm () {
     modalMode,
     createType
   } = useContext(NetworkFormContext)
+  const { isTemplate } = useConfigTemplate()
   // eslint-disable-next-line max-len
   const isDirectoryServerEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE)
   const onChange = (e: RadioChangeEvent) => {
@@ -118,7 +119,8 @@ function TypesForm () {
               </RadioDescription>
             </Radio>
             {
-              isDirectoryServerEnabled && <Radio value={GuestNetworkTypeEnum.Directory}>
+              isDirectoryServerEnabled && !isTemplate &&
+              <Radio value={GuestNetworkTypeEnum.Directory}>
                 {GuestNetworkTypeLabel[GuestNetworkTypeEnum.Directory]}
                 <RadioDescription>
                   {GuestNetworkTypeDescription[GuestNetworkTypeEnum.Directory]}
