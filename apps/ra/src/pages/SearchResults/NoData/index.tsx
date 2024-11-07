@@ -2,13 +2,13 @@ import { Space, List } from 'antd'
 import { useIntl }     from 'react-intl'
 
 import { GridRow, GridCol }   from '@acx-ui/components'
+import { baseUrlFor }         from '@acx-ui/config'
 import { CaretRightList }     from '@acx-ui/icons'
 import { TenantLink }         from '@acx-ui/react-router-dom'
 import type { RaiPermission } from '@acx-ui/user'
 import { hasPermission }      from '@acx-ui/user'
 
-import noDataImageUrl from './SearchResultNoData.png'
-import * as UI        from './styledComponents'
+import * as UI from './styledComponents'
 
 const useLinkData = () => {
   const { $t } = useIntl()
@@ -88,7 +88,7 @@ function NoData () {
       </UI.StyledGridCol>
       {/* Hide until we get final image */}
       <GridCol col={{ span: 12 }} style={{ display: 'none' }}>
-        <img src={noDataImageUrl} alt='No Data' />
+        <img src={baseUrlFor('/assets/SearchResultNoData.png')} alt='No Data' />
       </GridCol>
     </GridRow>
   </>
