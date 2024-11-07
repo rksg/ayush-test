@@ -163,7 +163,7 @@ function getHealthPieChart (
       dataFormatter={tooltipFormatter(total, dataFormatter)}
       onClick={(params: EventParams) => onPieClick(params)}
       onLegendClick={(params: EventParams) => onLegendClick(params as unknown as PieChartData)}
-      clicked={!!pieFilter}
+      pieSelected={!!pieFilter} // this prop is used to highlight the selected pie chart slice
     /> : <NoData />
   )
 }

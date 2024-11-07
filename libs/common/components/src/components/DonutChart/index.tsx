@@ -78,7 +78,7 @@ export interface DonutChartProps extends DonutChartOptionalProps,
   onLegendClick?: (params: EventParams) => void
   style: EChartsReactProps['style'] & { width: number, height: number }
   labelTextStyle?: { overflow?: 'break' | 'breakAll' | 'truncate' | 'none' , width?: number }
-  clicked?: boolean
+  pieSelected?: boolean
   titleTextStyle?: TitleTextStyle
   secondaryTitleTextStyle?: TitleTextStyle
   isShowTooltip?: boolean
@@ -302,7 +302,7 @@ export function DonutChart ({
       left: props.size === 'x-large' ? '55%' : '60%',
       orient: 'vertical',
       icon: 'circle',
-      selectedMode: true,
+      selectedMode: props.onLegendClick ? true : false,
       itemGap: props.size === 'x-large'? 16 : 4,
       itemWidth: 8,
       itemHeight: 8,
@@ -350,7 +350,7 @@ export function DonutChart ({
             props.tooltipFormat
           )
         },
-        selectedMode: props.clicked ? 'single' : false,
+        selectedMode: props.pieSelected ? 'single' : false,
         emphasis: {
           scale: true,
           disabled: !isShowTooltip || isEmpty,
