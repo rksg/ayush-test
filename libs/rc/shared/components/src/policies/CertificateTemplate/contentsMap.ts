@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { MessageDescriptor, defineMessage } from 'react-intl'
 
-import { AlgorithmType, CertificateAuthorityType, CertificateCategoryType, CertificateGenerationType, CertificateStatusType, ChromebookCertRemovalType, ChromebookEnrollmentType, EnrollmentType, ExpirationType, ExtendedKeyUsages, GenerationCaType, KeyUsages, KeyUsageType, UsageType } from '@acx-ui/rc/utils'
+import { AlgorithmType, CertificateAuthorityType, CertificateCategoryType, CertificateGenerationType, CertificateStatusType, ChromebookCertRemovalType, ChromebookEnrollmentType, EnrollmentType, ExpirationType, ExtendedKeyUsages, GenerationCaType, KeyUsages, KeyUsageType, ServerClientCertAlgorithmType, UsageType } from '@acx-ui/rc/utils'
 
 
 export const caTypeShortLabel: Record<CertificateAuthorityType, MessageDescriptor> = {
@@ -23,10 +23,16 @@ export const certificateExpirationLabel: Record<ExpirationType, string> = {
 }
 
 export const algorithmLabel: Record<AlgorithmType, MessageDescriptor> = {
-  [AlgorithmType.SHA_1]: defineMessage({ defaultMessage: 'SHA-1' }),
   [AlgorithmType.SHA_256]: defineMessage({ defaultMessage: 'SHA-256' }),
   [AlgorithmType.SHA_384]: defineMessage({ defaultMessage: 'SHA-384' }),
   [AlgorithmType.SHA_512]: defineMessage({ defaultMessage: 'SHA-512' })
+}
+
+export const serverAlgorithmLabel: Record<ServerClientCertAlgorithmType, MessageDescriptor> = {
+  [ServerClientCertAlgorithmType.SHA_1]: defineMessage({ defaultMessage: 'SHA-1' }),
+  [ServerClientCertAlgorithmType.SHA_256]: defineMessage({ defaultMessage: 'SHA-256' }),
+  [ServerClientCertAlgorithmType.SHA_384]: defineMessage({ defaultMessage: 'SHA-384' }),
+  [ServerClientCertAlgorithmType.SHA_512]: defineMessage({ defaultMessage: 'SHA-512' })
 }
 
 export const enrollmentTypeLabel: Record<ChromebookEnrollmentType, MessageDescriptor> = {
@@ -161,6 +167,9 @@ export const deleteDescription: Record<string, MessageDescriptor> = {
 export const certificateStatusTypeLabel: Record<CertificateStatusType, MessageDescriptor> = {
   [CertificateStatusType.VALID]: defineMessage({
     defaultMessage: 'Valid'
+  }),
+  [CertificateStatusType.INVALID]: defineMessage({
+    defaultMessage: 'Invalid'
   }),
   [CertificateStatusType.REVOKED]: defineMessage({
     defaultMessage: 'Revoked'
