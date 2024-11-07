@@ -3,22 +3,38 @@ import { useContext } from 'react'
 import { Col, Row, Space, Typography } from 'antd'
 import { useIntl }                     from 'react-intl'
 
-import { useStepFormContext }                        from '@acx-ui/components'
+import { Loader }                                    from '@acx-ui/components'
 import { EdgeClusterVirtualIpSettingForm, TypeForm } from '@acx-ui/rc/components'
+import { useGetAllInterfacesByTypeQuery }            from '@acx-ui/rc/services'
+import { EdgePortTypeEnum }                          from '@acx-ui/rc/utils'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
-import { getLanInterfaces } from './utils'
+import { interfaceNameComparator } from './utils'
 
 export const VirtualIpForm = () => {
   const { $t } = useIntl()
   const { clusterInfo } = useContext(ClusterConfigWizardContext)
-  const { form } = useStepFormContext()
-  const lanInterfaces = getLanInterfaces(
-    form.getFieldValue('lagSettings'),
-    form.getFieldValue('portSettings'),
-    clusterInfo
-  )
+  const {
+    data: lanInterfaces,
+    isLoading: isLanInterfacesLoading
+  } = useGetAllInterfacesByTypeQuery({
+    payload: {
+      edgeIds: clusterInfo?.edgeList?.map(node => node.serialNumber),
+      portTypes: [EdgePortTypeEnum.LAN]
+    }
+  }, {
+    skip: (!clusterInfo?.edgeList || clusterInfo?.edgeList.length === 0),
+    selectFromResult: ({ data, ...rest }) => ({
+      data: data ? Object.fromEntries(
+        Object.entries(data)
+          .map(([key, interfaces]) => [
+            key,
+            interfaces.slice().sort(interfaceNameComparator)
+          ])) : undefined,
+      ...rest
+    })
+  })
 
   const header = <Space direction='vertical' size={5}>
     <Typography.Title level={2}>
@@ -40,9 +56,11 @@ export const VirtualIpForm = () => {
   </Row>
 
   return (
-    <TypeForm
-      header={header}
-      content={content}
-    />
+    <Loader states={[{ isLoading: false, isFetching: isLanInterfacesLoading }]}>
+      <TypeForm
+        header={header}
+        content={content}
+      />
+    </Loader>
   )
 }
