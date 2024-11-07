@@ -100,22 +100,19 @@ export default function ServerCertificatesTable () {
       render: (_, row) => {
         return row.extendedKeyUsages?.length ?
           row.extendedKeyUsages
-            .map((extendeKey) => $t(ExtendedKeyUsagesLabels[extendeKey])).join(', ')
+            .map((extendeKey) => ExtendedKeyUsagesLabels[extendeKey]
+            && $t(ExtendedKeyUsagesLabels[extendeKey])).join(', ')
           : noDataDisplay
       }
     }
   ]
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
-
     let _customFilters = {}
-    if(customFilters?.status) {
-      _customFilters = {
-        ...customFilters,
-        status: customFilters.status[0]
-      }
+    _customFilters = {
+      ...customFilters,
+      ...(customFilters?.status ? { status: customFilters.status[0] } : {})
     }
-
     tableQuery.handleFilterChange(_customFilters, customSearch)
   }
 
