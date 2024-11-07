@@ -91,7 +91,7 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
       selectFromResult: ({ data }) => {
         const certOptions = data?.data?.filter(c =>
           [saveState?.radSecOptions?.clientCertificateId,
-          saveState?.radSecOptions?.serverCertificateId].includes(c.id) ||
+            saveState?.radSecOptions?.serverCertificateId].includes(c.id) ||
           c.status.includes(CertificateStatusType.VALID))?.map(item => ({
           label: item.name,
           value: item.id,
