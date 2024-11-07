@@ -108,7 +108,7 @@ export function DirectoryServerForm ({ setDirectoryServerIdToNetworkForm } : { s
                 options={[
                   { label: $t({ defaultMessage: 'Select...' }), value: '' },
                   ...(directoryServerList && directoryServerList.map((server) => {
-                    return { label: server.name, value: server.id }
+                    return { label: `${server.name} (${server.type})` , value: server.id }
                   }) )
                 ]}
               />
