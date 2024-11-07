@@ -1,6 +1,7 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Space }                                     from 'antd'
+import { find }                                      from 'lodash'
 import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
 
 import { getSelectedNodePath, mapCodeToReason } from '@acx-ui/analytics/utils'
@@ -54,7 +55,8 @@ function getTopPieChartData (nodeData: NodeData[])
       ...val,
       name: val.name ? `${val.name} (${val.key})` : val.key,
       rawKey: val.key,
-      color: colors[index]
+      color: colors[index],
+      selected: false
     }))
 }
 
@@ -133,24 +135,51 @@ export const tooltipFormatter = (
 ) => (value: unknown) =>
   `${formatter('percentFormat')(value as number / total)}(${dataFormatter(value)})`
 
-function getHealthPieChart (
-  data: { key: string; value: number; name: string; color: string, code?: string }[],
+export function getHealthPieChart (
+  data: {
+    key: string; value: number; name: string;
+    color: string, code?: string, selected?: boolean
+  }[],
   dataFormatter: (value: unknown, tz?: string | undefined) => string,
   size: { width: number; height: number },
   onPieClick: (e: EventParams) => void,
   onLegendClick: (data: PieChartData) => void,
-  pieFilter: PieChartData | null
+  pieFilter: PieChartData | null,
+  selectedSlice: number | null,
+  setSelectedSlice: (slice: number | null) => void
 ) {
 
-  let tops = data.slice(0, topCount)
+  let tops = data.slice(0, topCount).map((item, index) => {
+    return({
+      ...item,
+      selected: pieFilter ? selectedSlice === index : false
+    })})
   if (data.slice(topCount)[0]?.key === 'Others') {
     tops.push({
       ...data.slice(topCount)[0],
-      key: getIntl().$t({ defaultMessage: 'Others' })
+      key: getIntl().$t({ defaultMessage: 'Others' }),
+      selected: pieFilter?.name === 'Others' ? true : false
     })
   }
 
   const total = tops.reduce((total, { value }) => value + total, 0)
+
+  const toggleSelection = (index: number) => {
+    setSelectedSlice(index === selectedSlice ? null : index)
+  }
+
+  const onChartClick = (params: EventParams) => {
+    toggleSelection(params.dataIndex)
+    onPieClick(params)
+  }
+
+  const onClickLegend = (params: EventParams) => {
+    const clickedIndex = data.findIndex(item => item.name === params.name)
+    if (clickedIndex !== -1) toggleSelection(clickedIndex)
+    const clickedData = find(data, (pie) => pie.name === params.name)
+    onLegendClick && onLegendClick(clickedData as PieChartData)
+  }
+
   return (
     data.length > 0 ? <DonutChart
       data={tops}
@@ -161,9 +190,9 @@ function getHealthPieChart (
       showTotal={false}
       labelTextStyle={{ overflow: 'truncate', width: size.width * 0.5 }} // 50% of width
       dataFormatter={tooltipFormatter(total, dataFormatter)}
-      onClick={(params: EventParams) => onPieClick(params)}
-      onLegendClick={(params: EventParams) => onLegendClick(params as unknown as PieChartData)}
-      pieSelected={!!pieFilter} // this prop is used to highlight the selected pie chart slice
+      onClick={onChartClick}
+      onLegendClick={onClickLegend}
+      singleSelect={true}
     /> : <NoData />
   )
 }
@@ -196,6 +225,7 @@ export const HealthPieChart = ({
   setPieList: (data: PieChartData[]) => void
 }) => {
   const { $t } = useIntl()
+  const [selectedSlice, setSelectedSlice] = useState<number | null>(null)
   const { startDate: start, endDate: end, filter } = filters
   const queryResults = usePieChartQuery(
     {
@@ -226,7 +256,9 @@ export const HealthPieChart = ({
     .map(({ key, data }) => ({
       label: titleMap[key as TabKeyType],
       value: key,
-      children: getHealthPieChart(data, valueFormatter, size, onPieClick, onLegendClick, pieFilter)
+      children: getHealthPieChart(
+        data, valueFormatter, size, onPieClick, onLegendClick,
+        pieFilter, selectedSlice, setSelectedSlice)
     }))
   const count = showTopNPieChartResult(
     $t,
@@ -237,6 +269,7 @@ export const HealthPieChart = ({
   useEffect(() => { setChartKey(tabDetails?.[0]?.value as TabKeyType) }, [tabDetails.length])
   useEffect(() => {
     setPieFilter(null)
+    setSelectedSlice(null)
     setPieList(tabsList.find((tab) => tab.key === chartKey)?.data || [])
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chartKey])

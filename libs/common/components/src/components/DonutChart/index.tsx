@@ -1,5 +1,3 @@
-import { useState } from 'react'
-
 import { Space }          from 'antd'
 import ReactECharts       from 'echarts-for-react'
 import { find }           from 'lodash'
@@ -75,10 +73,10 @@ export interface DonutChartProps extends DonutChartOptionalProps,
   value?: string
   dataFormatter?: (value: unknown) => string | null
   onClick?: (params: EventParams) => void
-  onLegendClick?: (params: EventParams) => void
+  onLegendClick?: (e: EventParams) => void,
   style: EChartsReactProps['style'] & { width: number, height: number }
   labelTextStyle?: { overflow?: 'break' | 'breakAll' | 'truncate' | 'none' , width?: number }
-  pieSelected?: boolean
+  singleSelect?: boolean
   titleTextStyle?: TitleTextStyle
   secondaryTitleTextStyle?: TitleTextStyle
   isShowTooltip?: boolean
@@ -140,7 +138,7 @@ export function DonutChart ({
   ...props
 }: DonutChartProps) {
   const dataFormatter = _dataFormatter ?? ((value: unknown) => String(value))
-  const [selectedSlice, setSelectedSlice] = useState<number | null>(null)
+  // const [selectedSlice, setSelectedSlice] = useState<number | null>(null)
 
   const sum = data.reduce((acc, cur) => acc + cur.value, 0)
   const colors = data.map(series => series.color)
@@ -257,22 +255,6 @@ export function DonutChart ({
     }
   }
 
-  const toggleSelection = (index: number) => {
-    setSelectedSlice(prevSlice => (prevSlice === index ? null : index))
-  }
-
-  const onChartClick = (params: EventParams) => {
-    toggleSelection(params.dataIndex)
-    props.onClick && props.onClick(params)
-  }
-
-  const onLegendClick = (params: EventParams) => {
-    const clickedIndex = data.findIndex(item => item.name === params.name)
-    if (clickedIndex !== -1) toggleSelection(clickedIndex)
-    const clickedData = find(data, (pie) => pie.name === params.name)
-    props.onLegendClick && props.onLegendClick(clickedData as EventParams)
-  }
-
   const option: EChartsOption = {
     animation: props.animation,
     tooltip: {
@@ -328,10 +310,7 @@ export function DonutChart ({
     series: [
       {
         animation: false,
-        data: data.length === 0 ? buildEmptyData() : data.map((item, index) => ({
-          ...item,
-          selected: index === selectedSlice
-        })),
+        data: data.length === 0 ? buildEmptyData() : data,
         type: 'pie',
         cursor: props.onClick ? 'pointer' : 'auto',
         center: [props.showLegend && !isEmpty ? '30%' : '50%', '50%'],
@@ -350,7 +329,7 @@ export function DonutChart ({
             props.tooltipFormat
           )
         },
-        selectedMode: props.pieSelected ? 'single' : false,
+        selectedMode: props.singleSelect ? 'single' : false,
         emphasis: {
           scale: true,
           disabled: !isShowTooltip || isEmpty,
@@ -383,8 +362,8 @@ export function DonutChart ({
         opts={{ renderer: 'svg' }}
         option={option}
         onEvents={{
-          click: onChartClick,
-          legendselectchanged: onLegendClick
+          click: props.onClick || (() => {}),
+          legendselectchanged: props.onLegendClick || (() => {})
         }}
       />
       { props.subTitle && <SubTitle width={props.style.width}>{props.subTitle}</SubTitle> }
