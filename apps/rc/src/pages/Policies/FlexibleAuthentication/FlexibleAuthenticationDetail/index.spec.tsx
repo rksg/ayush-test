@@ -96,6 +96,7 @@ describe('FlexibleAuthenticationDetail', ()=>{
 
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Profile02--auth1-guest5')).toBeVisible()
+    expect(await screen.findAllByText('--')).toHaveLength(2)
     expect(await screen.findByText('Instances (2)')).toBeVisible()
   })
 })

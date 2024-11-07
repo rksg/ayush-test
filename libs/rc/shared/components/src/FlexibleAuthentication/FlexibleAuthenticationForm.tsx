@@ -63,7 +63,7 @@ export const FlexibleAuthenticationForm = (props: {
 
   const authFormWatchValues = [
     useWatch<string>('authenticationType', form),
-    useWatch<string>('dot1XPortControl', form),
+    useWatch<string>('dot1xPortControl', form),
     useWatch<string>('authDefaultVlan', form),
     useWatch<string>('authFailAction', form),
     useWatch<string>('authTimeoutAction', form)
@@ -88,7 +88,10 @@ export const FlexibleAuthenticationForm = (props: {
 
   useEffect(() => {
     if (editMode && props.data) {
-      form.setFieldsValue(props.data)
+      form.setFieldsValue({
+        ...props.data,
+        dot1xPortControl: props.data?.dot1xPortControl ?? ''
+      })
     }
   }, [editMode, props.data])
 
@@ -113,7 +116,7 @@ export const FlexibleAuthenticationForm = (props: {
         form={form}
         onFinish={onFinish}
         onCancel={() =>
-          navigate(`${basePath.pathname}/flexibleAuthentication/list`)
+          navigate(`${basePath.pathname}/authentication/list`)
         }
         style={{ width: '280px' }}
         buttonLabel={{
@@ -190,7 +193,7 @@ export const FlexibleAuthenticationForm = (props: {
               />
             </Space>}
             <Form.Item
-              name='dot1XPortControl'
+              name='dot1xPortControl'
               label={$t({ defaultMessage: 'Port Control' })}
               initialValue={PortControl.AUTO}
               children={<Select
@@ -200,9 +203,9 @@ export const FlexibleAuthenticationForm = (props: {
                   value: controlType,
                   disabled: controlType === ''
                 }))}
-                disabled={getAuthfieldDisabled('dot1XPortControl', authFormWatchValues)}
+                disabled={getAuthfieldDisabled('dot1xPortControl', authFormWatchValues)}
                 onChange={(value) => handleAuthFieldChange({
-                  field: 'dot1XPortControl', value, form
+                  field: 'dot1xPortControl', value, form
                 })}
               />}
             />
@@ -211,7 +214,7 @@ export const FlexibleAuthenticationForm = (props: {
               label={$t({ defaultMessage: 'Auth Default VLAN' })}
               // hidden={shouldHideAuthField('authDefaultVlan', authFormWatchValues)}
               validateFirst
-              // rules={(dot1XPortControl === PortControl.AUTO || dot1XPortControl === PortControl.NONE)
+              // rules={(dot1xPortControl === PortControl.AUTO || dot1xPortControl === PortControl.NONE)
               //   ? [{ required: true },
               //     { validator: (_, value) => validateVlanExceptReservedVlanId(value) }]
               //   : []

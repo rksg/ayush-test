@@ -377,7 +377,7 @@ export function SwitchForm () {
   const handleEditSwitch = async (values: Switch) => {
     try {
       const omittedFields
-        = ['specifiedType', 'serialNumber', 'authEnable', 'authDefaultVlan', 'guestVlanvalues']
+        = ['specifiedType', 'serialNumber', 'authEnable', 'authDefaultVlan', 'guestVlan']
       let payload = {
         ..._.omit(values, omittedFields),
         stackMembers: [],

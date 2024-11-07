@@ -634,32 +634,32 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   addFlexAuthenticationProfile: {
     method: 'post',
-    url: '/flexibleAuthentication/profile',
+    url: '/switchAuthProfiles',
     newApi: true
   },
   getFlexAuthenticationProfiles: {
     method: 'post',
-    url: '/flexibleAuthentication/profiles/query',
+    url: '/switchAuthProfiles/query',
     newApi: true
   },
   getFlexAuthenticationProfileAppliedTargets: {
     method: 'post',
-    url: '/flexibleAuthentication/profile/:profileId/appliedTargets',
+    url: '/switchAuthProfiles/:profileId/appliedTargets/query',
     newApi: true
   },
   updateFlexAuthenticationProfile: {
     method: 'put',
-    url: '/flexibleAuthentication/profile',
+    url: '/switchAuthProfiles/:profileId',
     newApi: true
   },
   deleteFlexAuthenticationProfile: {
     method: 'delete',
-    url: '/flexibleAuthentication/profile/:profileId',
+    url: '/switchAuthProfiles/:profileId',
     newApi: true
   },
   getSwitchAuthentication: {
     method: 'get',
-    url: '/venues/:venueId/switches/:switchId/authentication',
+    url: '/venues/:venueId/switches/:switchId/authentications',
     newApi: true
   },
   getSwitchesAuthentication: {
@@ -669,7 +669,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   updateSwitchAuthentication: {
     method: 'put',
-    url: '/venues/:venueId/switches/:switchId/authentication',
+    url: '/venues/:venueId/switches/:switchId/authentications',
     newApi: true
   },
   getSwitchFeatureSets: {

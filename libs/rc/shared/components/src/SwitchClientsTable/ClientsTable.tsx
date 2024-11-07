@@ -306,6 +306,7 @@ export function ClientsTable (props: {
       title: intl.$t({ defaultMessage: 'Client Auth Type' }),
       dataIndex: 'clientAuthType',
       sorter: true,
+      //TODO: BE need checking
       // searchable: searchable,
       // render: (
       //   _: React.ReactNode, { clientAuthType }: SwitchClient, __: number, highlightFn: TableHighlightFnArgs

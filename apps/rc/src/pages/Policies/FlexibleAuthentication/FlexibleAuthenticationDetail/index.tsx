@@ -14,7 +14,8 @@ import {
   authenticationTypeLabel,
   authFailActionTypeLabel,
   authTimeoutActionTypeLabel,
-  portControlTypeLabel
+  portControlTypeLabel,
+  PortControl
 } from '@acx-ui/rc/components'
 import {
   useGetFlexAuthenticationProfilesQuery,
@@ -77,7 +78,9 @@ const FlexibleAuthenticationDetail = () => {
     title: $t({ defaultMessage: 'Type' }),
     content: () => {
       const type = profileDetail?.['authenticationType']
-      return $t(authenticationTypeLabel[type as keyof typeof authenticationTypeLabel])
+      return type
+        ? $t(authenticationTypeLabel[type as keyof typeof authenticationTypeLabel])
+        : noDataDisplay
     }
   }, {
     title: $t({ defaultMessage: 'Change Authentication Order' }),
@@ -88,8 +91,10 @@ const FlexibleAuthenticationDetail = () => {
   }, {
     title: $t({ defaultMessage: '802.1x Port Control' }),
     content: () => {
-      const dot1XPortControl = profileDetail?.['dot1XPortControl']
-      return $t(portControlTypeLabel[dot1XPortControl as keyof typeof portControlTypeLabel])
+      const dot1xPortControl = profileDetail?.['dot1xPortControl']
+      return dot1xPortControl
+        ? $t(portControlTypeLabel[dot1xPortControl as keyof typeof portControlTypeLabel])
+        : $t(portControlTypeLabel[PortControl.NONE])
     }
   }, {
     title: $t({ defaultMessage: 'Auth Default VLAN' }),
@@ -98,7 +103,10 @@ const FlexibleAuthenticationDetail = () => {
     title: $t({ defaultMessage: 'Fail Action' }),
     content: () => {
       const authFailAction = profileDetail?.['authFailAction']
-      return $t(authFailActionTypeLabel[authFailAction as keyof typeof authFailActionTypeLabel])
+      return authFailAction
+        // eslint-disable-next-line max-len
+        ? $t(authFailActionTypeLabel[authFailAction as keyof typeof authFailActionTypeLabel])
+        : noDataDisplay
     }
   }, {
     title: $t({ defaultMessage: 'Restricted VLAN' }),
@@ -107,9 +115,10 @@ const FlexibleAuthenticationDetail = () => {
     title: $t({ defaultMessage: 'Timeout Action' }),
     content: () => {
       const authTimeoutAction = profileDetail?.['authTimeoutAction']
-      return $t(
-        authTimeoutActionTypeLabel[authTimeoutAction as keyof typeof authTimeoutActionTypeLabel]
-      )
+      return authTimeoutAction
+        // eslint-disable-next-line max-len
+        ? $t(authTimeoutActionTypeLabel[authTimeoutAction as keyof typeof authTimeoutActionTypeLabel])
+        : noDataDisplay
     }
   }, {
     title: $t({ defaultMessage: 'Critical VLAN' }),
@@ -180,7 +189,7 @@ const FlexibleAuthenticationDetail = () => {
         </TenantLink>
       ])}
     />
-    <Loader states={[tableQuery]}>
+    <Loader states={[{ isLoading: isProfileDetailLoading || tableQuery.isLoading }]}>
       <Space direction='vertical' size={30}>
         <SummaryCard data={!isProfileDetailLoading ? profileInfo : []} colPerRow={6} />
         <Card>

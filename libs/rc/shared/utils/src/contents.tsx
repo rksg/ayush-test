@@ -367,6 +367,9 @@ export const PortStatusMessages = {
   USED_BY_OTHERS: defineMessage({
     defaultMessage: 'Port used by other VLAN setting'
   }),
+  USED_BY_AUTH: defineMessage({
+    defaultMessage: 'Port has already been enabled for Authentication'
+  }),
   CURRENT: defineMessage({
     defaultMessage: 'VLANs'
   })

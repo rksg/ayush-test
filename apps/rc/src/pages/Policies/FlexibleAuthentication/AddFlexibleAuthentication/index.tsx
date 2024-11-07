@@ -16,7 +16,7 @@ export const AddFlexibleAuthentication = () => {
       await addFlexAuthenticationProfile({
         payload: data
       }).unwrap()
-      navigate(`${basePath.pathname}/flexibleAuthentication/list`)
+      navigate(`${basePath.pathname}/authentication/list`)
 
     } catch (error) {
       // eslint-disable-next-line no-console

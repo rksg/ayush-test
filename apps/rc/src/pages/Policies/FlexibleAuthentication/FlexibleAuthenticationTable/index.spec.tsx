@@ -132,7 +132,7 @@ describe('FlexibleAuthenticationTable', ()=>{
 
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       // eslint-disable-next-line max-len
-      pathname: `/${params.tenantId}/t/policies/flexibleAuthentication/${flexAuthList.data[0].id}/edit`,
+      pathname: `/${params.tenantId}/t/policies/authentication/${flexAuthList.data[0].id}/edit`,
       hash: '',
       search: ''
     })

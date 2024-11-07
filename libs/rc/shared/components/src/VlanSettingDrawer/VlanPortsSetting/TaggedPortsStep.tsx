@@ -188,7 +188,7 @@ export function TaggedPortsStep (props:{ portsData?: SwitchPortViewModel[] }) {
         switchModel.taggedPorts?.split(',').includes(timeslot))) : []
 
     if (isAuthDefaultVlan) {
-      return <div>{$t({ defaultMessage: 'Port has already been enabled for Authentication' })}</div>
+      return <div>{$t(PortStatusMessages.USED_BY_AUTH)}</div>
     } else if(untaggedPorts.includes(timeslot)){
       return <div>{$t(PortStatusMessages.SET_AS_UNTAGGED)}</div>
     } else if (Object.keys(portsUsedBy?.lag ?? {})?.includes(timeslot)) {

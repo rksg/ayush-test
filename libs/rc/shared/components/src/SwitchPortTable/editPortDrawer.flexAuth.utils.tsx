@@ -132,8 +132,8 @@ export const renderAuthProfile = (data?: FlexibleAuthentication) => {
         />
         <Descriptions.Item
           label={$t({ defaultMessage: '802.1x Port Control' })}
-          children={data?.dot1XPortControl
-            ? $t(portControlTypeLabel[data.dot1XPortControl as keyof typeof portControlTypeLabel])
+          children={data?.dot1xPortControl
+            ? $t(portControlTypeLabel[data.dot1xPortControl as keyof typeof portControlTypeLabel])
             : noDataDisplay
           }
         />
@@ -182,7 +182,7 @@ export const getFlexAuthDefaultValue = (
     flexibleAuthenticationEnabled: false,
     authenticationType: AuthenticationType._802_1X,
     changeAuthOrder: false,
-    dot1XPortControl: PortControl.AUTO,
+    dot1xPortControl: PortControl.AUTO,
     authDefaultVlan: '',
     restrictedVlan: '',
     criticalVlan: '',
@@ -190,7 +190,7 @@ export const getFlexAuthDefaultValue = (
     authTimeoutAction: AuthTimeoutAction.NONE,
     guestVlan: '',
     authenticationTypeCheckbox: false,
-    dot1XPortControlCheckbox: false,
+    dot1xPortControlCheckbox: false,
     authDefaultVlanCheckbox: false
   }
 
@@ -356,8 +356,8 @@ export const validateApplyProfile = (
   const isRestrictedVlanDuplicateWithSwitchAuth = switchAuthDefaultVlans.includes(profile?.restrictedVlan)
   const isGuestVlanDuplicateWithSwitchAuth = switchAuthDefaultVlans.includes(profile?.guestVlan)
 
-  const isForceTypeProfile = profile?.dot1XPortControl === PortControl.FORCE_AUTHORIZED
-  || profile?.dot1XPortControl === PortControl.FORCE_UNAUTHORIZED
+  const isForceTypeProfile = profile?.dot1xPortControl === PortControl.FORCE_AUTHORIZED
+  || profile?.dot1xPortControl === PortControl.FORCE_UNAUTHORIZED
 
   const isAuthDefaultVlanMismatch = isForceTypeProfile
   && (switchAuthDefaultVlans?.length > 1 || !switchAuthDefaultVlans?.includes(profile?.authDefaultVlan))
@@ -608,7 +608,7 @@ export const handleClickCustomize = (props: {
       ),
       ...(isMultipleEdit && isEitherPortEnabledForFirstTime ? {
         authenticationTypeCheckbox: true,
-        dot1XPortControlCheckbox: true,
+        dot1xPortControlCheckbox: true,
         authDefaultVlanCheckbox: true
       }: {}
       )
@@ -626,7 +626,7 @@ export const handlePortVlanChange = (props: {
   const isFlexAuthEnabledOverride = form.getFieldValue('flexibleAuthenticationEnabledCheckbox')
   // const relatedFields = [
   //   'flexibleAuthenticationEnabled', 'authenticationProfileId', 'profileAuthDefaultVlan',
-  //   'authenticationType', 'changeAuthOrder', 'dot1XPortControl', 'authDefaultVlan',
+  //   'authenticationType', 'changeAuthOrder', 'dot1xPortControl', 'authDefaultVlan',
   //   'restrictedVlan', 'criticalVlan', 'authFailAction', 'authTimeoutAction', 'guestVlan'
   // ]
   if (isFlexAuthButtonDisabled && (isFlexAuthEnabledOverride || isFlexAuthEnabled)) {

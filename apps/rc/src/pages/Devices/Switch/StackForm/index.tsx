@@ -539,7 +539,7 @@ export function StackForm () {
       }
     }
     const omittedFields
-        = ['authEnable', 'authDefaultVlan', 'guestVlanvalues']
+        = ['authEnable', 'authDefaultVlan', 'guestVlan']
 
     try {
       let payload = {

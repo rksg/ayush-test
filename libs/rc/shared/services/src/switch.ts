@@ -365,7 +365,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           })
         })
       },
-      keepUnusedDataFor: 300, //APT_QUERY_CACHE_TIME,
+      keepUnusedDataFor: APT_QUERY_CACHE_TIME,
       providesTags: [{ type: 'SwitchPort', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
@@ -1600,7 +1600,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
         const listQuery = await fetchWithBQ(listInfo)
         const profileList = listQuery.data as TableResult<FlexibleAuthentication>
-        const profileIds = profileList.data.map(p => p.id)
+        const profileIds = profileList?.data.map(p => p.id)
         const enableAggregateAppliedTargets = arg?.payload?.enableAggregateAppliedTargets
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

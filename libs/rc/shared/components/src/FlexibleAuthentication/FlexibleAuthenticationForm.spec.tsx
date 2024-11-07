@@ -168,7 +168,7 @@ describe('FlexibleAuthenticationForm', ()=>{
         authFailAction: 'restricted_vlan',
         authTimeoutAction: 'critical_vlan',
         authenticationType: '802.1x',
-        dot1XPortControl: 'auto',
+        dot1xPortControl: 'auto',
         profileName: 'Profile-1',
         authDefaultVlan: '1',
         criticalVlan: '12',
@@ -198,7 +198,7 @@ describe('FlexibleAuthenticationForm', ()=>{
       await userEvent.type(await screen.findByLabelText(/Auth Default VLAN/),'1')
 
       await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
-      expect(mockedNavigate).toHaveBeenCalledWith('/tenant-id/t/policies/flexibleAuthentication/list')
+      expect(mockedNavigate).toHaveBeenCalledWith('/tenant-id/t/policies/authentication/list')
     })
 
     describe('Handle the visibility of form items', ()=>{

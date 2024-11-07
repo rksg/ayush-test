@@ -33,13 +33,14 @@ const EditFlexibleAuthentication = () => {
   const onFinish = async (data: FlexibleAuthentication) => {
     try {
       await updateFlexAuthenticationProfile({
+        params: { profileId: profileDetail?.id },
         payload: {
           ...data,
           id: profileDetail?.id,
           profileId: profileDetail?.id
         }
       }).unwrap()
-      navigate(`${basePath.pathname}/flexibleAuthentication/list`)
+      navigate(`${basePath.pathname}/authentication/list`)
     } catch (error) {
       // eslint-disable-next-line no-console
       console.log(error)

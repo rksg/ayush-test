@@ -265,7 +265,7 @@ describe('MyPolicies', () => {
             id: '7de28fc02c0245648dfd58590884bad2',
             profileName: 'Profile01--auth10-guest5',
             authenticationType: '802.1x',
-            dot1XPortControl: 'auto',
+            dot1xPortControl: 'auto',
             authDefaultVlan: 10,
             restrictedVlan: 3,
             criticalVlan: 4,

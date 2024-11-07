@@ -2162,8 +2162,8 @@ describe('EditPortDrawer', () => {
           await userEvent.click(await screen.findByText(/802.1x and MAC-AUTH/))
 
           expect(await screen.findByTestId('changeAuthOrder-override-checkbox')).not.toBeDisabled()
-          expect(await screen.findByTestId('dot1XPortControl-override-checkbox')).toBeChecked()
-          expect(await screen.findByTestId('dot1XPortControl-override-checkbox')).toBeDisabled()
+          expect(await screen.findByTestId('dot1xPortControl-override-checkbox')).toBeChecked()
+          expect(await screen.findByTestId('dot1xPortControl-override-checkbox')).toBeDisabled()
         })
 
         it('should handle untagged vlan changes correctly', async () => {
@@ -2859,7 +2859,7 @@ describe('EditPortDrawer', () => {
                 authenticationCustomize: true,
                 authenticationType: '802.1x_and_macauth',
                 changeAuthOrder: true,
-                dot1XPortControl: 'auto',
+                dot1xPortControl: 'auto',
                 authDefaultVlan: 10,
                 guestVlan: 9,
                 authFailAction: 'block',
@@ -2953,7 +2953,7 @@ describe('EditPortDrawer', () => {
                 authenticationCustomize: true,
                 authenticationType: '802.1x_and_macauth',
                 changeAuthOrder: true,
-                dot1XPortControl: 'auto',
+                dot1xPortControl: 'auto',
                 authDefaultVlan: 10,
                 authFailAction: 'restricted_vlan',
                 restrictedVlan: 8,
@@ -2968,7 +2968,7 @@ describe('EditPortDrawer', () => {
                 flexibleAuthenticationEnabled: true,
                 authenticationCustomize: true,
                 authenticationType: '802.1x',
-                dot1XPortControl: 'auto',
+                dot1xPortControl: 'auto',
                 authDefaultVlan: 10,
                 authFailAction: 'restricted_vlan',
                 restrictedVlan: 7,
@@ -3068,7 +3068,7 @@ describe('EditPortDrawer', () => {
                 authenticationCustomize: true,
                 authenticationType: '802.1x_and_macauth',
                 changeAuthOrder: true,
-                dot1XPortControl: 'auto',
+                dot1xPortControl: 'auto',
                 authDefaultVlan: 10,
                 authFailAction: 'block',
                 authTimeoutAction: 'none'
@@ -3080,7 +3080,7 @@ describe('EditPortDrawer', () => {
                 flexibleAuthenticationEnabled: true,
                 authenticationCustomize: true,
                 authenticationType: '802.1x',
-                dot1XPortControl: 'auto',
+                dot1xPortControl: 'auto',
                 authDefaultVlan: 11,
                 authFailAction: 'block',
                 authTimeoutAction: 'none'
@@ -3138,7 +3138,7 @@ describe('EditPortDrawer', () => {
                 authenticationCustomize: true,
                 authenticationType: '802.1x_and_macauth',
                 changeAuthOrder: true,
-                dot1XPortControl: 'auto',
+                dot1xPortControl: 'auto',
                 authDefaultVlan: 10,
                 authFailAction: 'restricted_vlan',
                 restrictedVlan: 8,
@@ -3153,7 +3153,7 @@ describe('EditPortDrawer', () => {
                 flexibleAuthenticationEnabled: true,
                 authenticationCustomize: true,
                 authenticationType: '802.1x',
-                dot1XPortControl: 'auto',
+                dot1xPortControl: 'auto',
                 authDefaultVlan: 10,
                 authFailAction: 'restricted_vlan',
                 restrictedVlan: 7,
@@ -3271,7 +3271,7 @@ describe('EditPortDrawer', () => {
           await userEvent.click(await screen.findByText('Customize'))
 
           expect(await screen.findByTestId('authenticationType-override-checkbox')).toBeChecked() //checked by default
-          expect(await screen.findByTestId('dot1XPortControl-override-checkbox')).toBeChecked() //checked by default
+          expect(await screen.findByTestId('dot1xPortControl-override-checkbox')).toBeChecked() //checked by default
           expect(await screen.findByTestId('authDefaultVlan-override-checkbox')).toBeChecked() //checked by default
         })
       })
