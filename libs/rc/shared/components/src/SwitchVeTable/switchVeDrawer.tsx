@@ -86,7 +86,8 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
       enableRbac: isSwitchRbacEnabled
     }, true))
       .data?.data?.filter(s => s.deviceStatus === 'ONLINE' && s.switchType === 'router')
-    setSwitchOption(switches?.map(s => ({ label: s.name, key: s.id, value: s.id })) ?? [])
+    setSwitchOption(switches?.filter(s => !(s.model?.startsWith('ICX8100') && (s.veCount ?? 0) > 0))
+      .map(s => ({ label: s.name, key: s.id, value: s.id })) ?? [])
   }
 
   const getSwitchDetailHeader = async (switchId: string) => {
