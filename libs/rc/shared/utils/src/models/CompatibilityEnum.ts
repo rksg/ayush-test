@@ -22,7 +22,7 @@ export enum IncompatibilityFeatures {
   HQOS = 'HQoS',
   DHCP = 'DHCP',  // edge DHCP
   PIN = 'PIN',
-  EDGE_MDNS_PROXY = 'MDNS'
+  EDGE_MDNS_PROXY = 'MDNS' // edge mDNS
 }
 
 export enum EdgeCompatibilityFeatureEnum {

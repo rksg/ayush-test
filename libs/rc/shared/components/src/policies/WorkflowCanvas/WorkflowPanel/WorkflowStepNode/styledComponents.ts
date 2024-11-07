@@ -103,7 +103,7 @@ export const EditButton = styled.div`
   }
 `
 
-export const PlusButton = styled.div`
+export const PlusButton = styled.div<{ disabled?: boolean }>`
   position: absolute;
   top: 79px;
   right: 102px;
@@ -128,7 +128,9 @@ export const PlusButton = styled.div`
   }
 
   :hover {
-    cursor: pointer;
+    ${props => props.disabled
+    ? 'cursor: not-allowed;'
+    : 'cursor: pointer;'}
     border: 1px solid var(--acx-accents-orange-50) !important;
     background-color: var(--acx-accents-orange-10) !important;
 
