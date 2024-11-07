@@ -3,8 +3,8 @@ import { useEffect } from 'react'
 import { Modal, Form, Input } from 'antd'
 import { useIntl }            from 'react-intl'
 
-import { Select }                                                        from '@acx-ui/components'
-import { useCreateEdgeTnmHostMutation, useGetEdgeTnmHostGroupListQuery } from '@acx-ui/rc/services'
+import { Select }                                                                                      from '@acx-ui/components'
+import { useCreateEdgeTnmHostMutation, useGetEdgeTnmHostGroupListQuery, useUpdateEdgeTnmHostMutation } from '@acx-ui/rc/services'
 import {
   EdgeTnmHostFormData,
   EdgeTnmHostSetting,
@@ -26,6 +26,7 @@ export const TnmHostModal = (props: TnmHostModalProps) => {
   const [ form ] = Form.useForm()
 
   const [addTnmHost, { isLoading: isCreating }] = useCreateEdgeTnmHostMutation()
+  const [updateTnmHost, { isLoading: isUpdating }] = useUpdateEdgeTnmHostMutation()
 
   const { groupOptions, isGroupOptsLoading } = useGetEdgeTnmHostGroupListQuery({
     params: { serviceId }
@@ -41,8 +42,12 @@ export const TnmHostModal = (props: TnmHostModalProps) => {
 
   const handleFinish = async (formValues: EdgeTnmHostFormData) => {
     try {
-      await addTnmHost({
-        params: { serviceId },
+
+      await (editData ? updateTnmHost : addTnmHost)({
+        params: {
+          serviceId,
+          hostId: editData ? editData.hostid : undefined
+        },
         payload: edgeTnmHostFormRequestPreProcess(formValues)
       }).unwrap()
 
@@ -82,7 +87,7 @@ export const TnmHostModal = (props: TnmHostModalProps) => {
     onOk={() => {form.submit()}}
     okText={$t({ defaultMessage: 'Add' })}
   >
-    <Form form={form} onFinish={handleFinish} disabled={isCreating}>
+    <Form form={form} onFinish={handleFinish} disabled={isCreating || isUpdating}>
       <Form.Item
         name='host'
         label={$t({ defaultMessage: 'Name' })}

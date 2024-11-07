@@ -56,6 +56,7 @@ export const edgeTnmServiceApi = baseEdgeTnmServiceApi.injectEndpoints({
       query: ({ params }) => {
         return createHttpRequest(EdgeTnmServiceUrls.getEdgeTnmHostList, params)
       },
+      providesTags: [{ type: 'EdgeTnmService', id: 'HOST_LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
     createEdgeTnmHost: build.mutation<CommonResult, RequestPayload>({
@@ -65,7 +66,8 @@ export const edgeTnmServiceApi = baseEdgeTnmServiceApi.injectEndpoints({
           ...req,
           body: JSON.stringify(payload)
         }
-      }
+      },
+      invalidatesTags: [{ type: 'EdgeTnmService', id: 'HOST_LIST' }]
     }),
     updateEdgeTnmHost: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -74,12 +76,14 @@ export const edgeTnmServiceApi = baseEdgeTnmServiceApi.injectEndpoints({
           ...req,
           body: JSON.stringify(payload)
         }
-      }
+      },
+      invalidatesTags: [{ type: 'EdgeTnmService', id: 'HOST_LIST' }]
     }),
     deleteEdgeTnmHost: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         return createHttpRequest(EdgeTnmServiceUrls.deleteEdgeTnmHost, params)
-      }
+      },
+      invalidatesTags: [{ type: 'EdgeTnmService', id: 'HOST_LIST' }]
     })
   })
 })

@@ -14,11 +14,12 @@ export const edgeTnmHostFormRequestPreProcess = (data: EdgeTnmHostFormData) => {
   return {
     host: data.host,
     interfaces: [{
+      ip: data.interface.ip,
+      port: data.interface.port,
       main: 1,
       type: 2,
       useip: 1,
-      ip: data.interface.ip,
-      port: data.interface.port,
+      dns: '',
       details: {
         version: '2',
         community: 'zabbix'
