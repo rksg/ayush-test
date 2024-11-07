@@ -65,13 +65,13 @@ Tooltip.Info = function InfoTooltip (props: PredefinedTooltipProps) {
 }
 
 // eslint-disable-next-line max-len
-const CustomWarningTriangleSolid = styled(WarningTriangleSolid)<{ fillColor?: string, strokeColor?: string }>`
+const CustomWarningTriangleSolid = styled(WarningTriangleSolid)<{ $fillColor?: string, $strokeColor?: string }>`
   path:nth-child(1) {
-    fill: ${props => props.fillColor || '#333333'};
+    fill: ${props => props.$fillColor || '#333333'};
   }
 
   path:nth-child(3) {
-    stroke: ${props => props.strokeColor || '#333333'};
+    stroke: ${props => props.$strokeColor || '#333333'};
   }
 `
 
@@ -80,8 +80,8 @@ Tooltip.Warning = function WarningTooltip (props: PredefinedTooltipProps) {
   const { color, borderColor } = iconStyle || {}
   const warningIcon = (isTriangle)
     ? (isFilled)
-      ? <CustomWarningTriangleSolid fillColor={color}
-        strokeColor={borderColor || color}
+      ? <CustomWarningTriangleSolid $fillColor={color}
+        $strokeColor={borderColor || color}
         {...(iconStyle && { style: iconStyle })}/>
       : <WarningTriangleOutlined {...(iconStyle && { style: iconStyle })}/>
     : (isFilled)
