@@ -219,10 +219,12 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
       if (saveState.radSecOptions?.ocspUrl) {
         form.setFieldValue(['radSecOptions', 'ocspValidationEnabled'], true)
       }
-      form.validateFields([
-        ['radSecOptions', 'certificateAuthorityId'],
-        ['radSecOptions', 'clientCertificateId'],
-        ['radSecOptions', 'serverCertificateId']])
+      if (saveState.radSecOptions) {
+        form.validateFields([
+          ['radSecOptions', 'certificateAuthorityId'],
+          ['radSecOptions', 'clientCertificateId'],
+          ['radSecOptions', 'serverCertificateId']])
+      }
     }
   }, [saveState])
 
