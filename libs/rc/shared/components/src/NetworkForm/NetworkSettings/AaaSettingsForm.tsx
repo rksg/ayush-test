@@ -30,6 +30,7 @@ import {
   NetworkSaveData,
   PolicyOperation,
   PolicyType,
+  Radius,
   WifiNetworkMessages,
   WlanSecurityEnum,
   hasPolicyPermission,
@@ -51,32 +52,45 @@ const { Option } = Select
 const { useWatch } = Form
 
 export function AaaSettingsForm () {
-  const { editMode, cloneMode, data } = useContext(NetworkFormContext)
+  const { editMode, cloneMode, data, isRuckusAiMode } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const { isTemplate } = useConfigTemplate()
+  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
 
+  // TODO: Remove deprecated codes below when RadSec feature is delivery
   useEffect(()=>{
-    if(data && (editMode || cloneMode)) {
-
-      form.setFieldsValue({
-        enableAuthProxy: data.enableAuthProxy,
-        enableAccountingProxy: data.enableAccountingProxy,
-        enableAccountingService: data.enableAccountingService,
-        authRadius: data.authRadius,
-        accountingRadius: data.accountingRadius,
-        accountingRadiusId: data.accountingRadiusId,
-        authRadiusId: data.authRadiusId,
-        useCertificateTemplate: data.useCertificateTemplate,
-        certificateTemplateId: data.certificateTemplateId,
-        wlan: {
-          wlanSecurity: data.wlan?.wlanSecurity,
-          managementFrameProtection: data.wlan?.managementFrameProtection,
-          // eslint-disable-next-line max-len
-          macAddressAuthenticationConfiguration: resolveMacAddressAuthenticationConfiguration(data, isWifiRbacEnabled)
-        }
-      })
+    if(!supportRadsec && data && (editMode || cloneMode)) {
+      setFieldsValue()
     }
   }, [data])
+
+  useEffect(()=>{
+    if(supportRadsec && data && (editMode || cloneMode)) {
+      setFieldsValue()
+    }
+  }, [data?.id])
+
+  const setFieldsValue = () => {
+    data && form.setFieldsValue({
+      enableAuthProxy: data.enableAuthProxy,
+      enableAccountingProxy: data.enableAccountingProxy,
+      enableAccountingService: data.enableAccountingService,
+      authRadius: data.authRadius,
+      accountingRadius: data.accountingRadius,
+      accountingRadiusId: data.accountingRadiusId,
+      authRadiusId: data.authRadiusId,
+      useCertificateTemplate: data.useCertificateTemplate,
+      certificateTemplateId: data.certificateTemplateId,
+      wlan: {
+        wlanSecurity: data.wlan?.wlanSecurity,
+        managementFrameProtection: data.wlan?.managementFrameProtection,
+        // eslint-disable-next-line max-len
+        macAddressAuthenticationConfiguration: resolveMacAddressAuthenticationConfiguration(data, isWifiRbacEnabled)
+      }
+    })
+  }
 
   return (<>
     <Row gutter={20}>
@@ -87,7 +101,7 @@ export function AaaSettingsForm () {
         <NetworkDiagram />
       </Col>
     </Row>
-    {!(editMode) && <Row>
+    {!(editMode) && !(isRuckusAiMode) && <Row>
       <Col span={24}>
         <NetworkMoreSettingsForm wlanData={data} />
       </Col>
@@ -259,8 +273,13 @@ function AaaService () {
   const enableAccountingService = useWatch('enableAccountingService', form)
   const enableMacAuthentication = useWatch<boolean>(
     ['wlan', 'macAddressAuthenticationConfiguration', 'macAddressAuthentication'])
+  const [selectedAuthRadius, selectedAcctRadius] =
+    [useWatch<Radius>('authRadius'), useWatch<Radius>('accountingRadius')]
   const support8021xMacAuth = useIsSplitOn(Features.WIFI_8021X_MAC_AUTH_TOGGLE)
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const { isTemplate } = useConfigTemplate()
+  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
   const labelWidth = '250px'
 
   const onProxyChange = (value: boolean, fieldName: string) => {
@@ -283,6 +302,18 @@ function AaaService () {
       }
     })
   }
+
+  useEffect(() => {
+    if (supportRadsec && selectedAuthRadius?.radSecOptions?.tlsEnabled) {
+      form.setFieldValue('enableAuthProxy', true)
+    }
+  }, [selectedAuthRadius])
+
+  useEffect(() => {
+    if (supportRadsec && selectedAcctRadius?.radSecOptions?.tlsEnabled) {
+      form.setFieldValue('enableAccountingProxy', true)
+    }
+  }, [selectedAcctRadius])
 
   const proxyServiceTooltip = <Tooltip.Question
     placement='bottom'
@@ -314,7 +345,9 @@ function AaaService () {
             name='enableAuthProxy'
             valuePropName='checked'
             initialValue={false}
-            children={<Switch onChange={(value) => onProxyChange(value,'enableAuthProxy')}/>}
+            children={<Switch
+              onChange={(value) => onProxyChange(value,'enableAuthProxy')}
+              disabled={supportRadsec && selectedAuthRadius?.radSecOptions?.tlsEnabled}/>}
           />
         </UI.FieldLabel>
       </div>
@@ -344,7 +377,8 @@ function AaaService () {
               valuePropName='checked'
               initialValue={false}
               children={<Switch
-                onChange={(value) => onProxyChange(value,'enableAccountingProxy')}/>}
+                onChange={(value) => onProxyChange(value,'enableAccountingProxy')}
+                disabled={supportRadsec && selectedAcctRadius?.radSecOptions?.tlsEnabled}/>}
             />
           </UI.FieldLabel>
         </>}

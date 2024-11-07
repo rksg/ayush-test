@@ -1,15 +1,21 @@
-import { useIntl } from 'react-intl'
+import { ReactNode } from 'react'
+
+import { AlignType } from 'rc-table/lib/interface'
+import { useIntl }   from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
 import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }                             from '@acx-ui/rc/components'
+import { CheckMark }                                     from '@acx-ui/icons'
+import { CertificateToolTip, SimpleListTooltip }         from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeleteAAAPolicyListMutation,
   useGetAAAPolicyViewModelListQuery,
   useNetworkListQuery,
   useWifiNetworkListQuery,
-  useGetIdentityProviderListQuery
+  useGetIdentityProviderListQuery,
+  useGetCertificateListQuery,
+  useGetCertificateAuthoritiesQuery
 } from '@acx-ui/rc/services'
 import {
   PolicyType,
@@ -22,7 +28,8 @@ import {
   AAAPurposeEnum,
   AAA_LIMIT_NUMBER,
   getScopeKeyByPolicy,
-  filterByAccessForServicePolicyMutation
+  filterByAccessForServicePolicyMutation,
+  CertificateStatusType
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 
@@ -142,10 +149,13 @@ export default function AAATable () {
 function useColumns () {
 
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const supportRadsec = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
 
   const { $t } = useIntl()
   const params = useParams()
   const emptyResult: { key: string, value: string }[] = []
+  const emptyCertificateResult:
+    { key: string, value: string, status: CertificateStatusType[] }[] = []
 
   const getNetworkListQuery = isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery
 
@@ -165,6 +175,7 @@ function useColumns () {
         : emptyResult
     })
   })
+
   const { identityProviderNameMap } = useGetIdentityProviderListQuery({
     params: { tenantId: params.tenantId },
     payload: {
@@ -181,6 +192,41 @@ function useColumns () {
         : emptyResult
     })
   })
+
+  const { certificateAuthorityNameMap } = useGetCertificateAuthoritiesQuery({
+    params: { tenantId: params.tenantId },
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC',
+      page: 1,
+      pageSize: 2048
+    }
+  }, {
+    selectFromResult: ({ data }) => ({
+      certificateAuthorityNameMap: data?.data
+        ? data.data.map(ca => ({ key: ca.id, value: ca.name }))
+        : emptyResult
+    })
+  })
+
+  const { clientCertificateMap } = useGetCertificateListQuery({
+    params: { tenantId: params.tenantId },
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC',
+      page: 1,
+      pageSize: 2048
+    }
+  }, {
+    selectFromResult: ({ data }) => ({
+      clientCertificateMap: data?.data
+        ? data.data.map(cc => ({ key: cc.id, value: cc.commonName, status: cc.status }))
+        : emptyCertificateResult
+    })
+  })
+
   const columns: TableProps<AAAViewModalType>['columns'] = [
     {
       key: 'name',
@@ -208,6 +254,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'RADIUS Type' }),
       dataIndex: 'type',
       sorter: true,
+      width: 160,
       render: (_, { type }) =>{
         return type ? AAAPurposeEnum[type] : ''
       }
@@ -224,6 +271,61 @@ function useColumns () {
       dataIndex: 'secondary',
       sorter: true
     },
+    ...(supportRadsec ? [{
+      key: 'radSecOptions.tlsEnabled',
+      title: $t({ defaultMessage: 'RadSec' }),
+      dataIndex: 'radSecOptions.tlsEnabled',
+      sorter: false,
+      align: 'center' as AlignType,
+      width: 80,
+      render: (data: ReactNode, row: AAAViewModalType) => {
+        return (row.radSecOptions?.tlsEnabled ? <CheckMark /> : null)
+      }
+    },
+    {
+      key: 'radSecOptions.certificateAuthorityId',
+      title: $t({ defaultMessage: 'Certificate Authority' }),
+      dataIndex: 'radSecOptions.certificateAuthorityId',
+      filterable: certificateAuthorityNameMap,
+      render: (data: ReactNode, row : AAAViewModalType) => {
+        return (!row.radSecOptions?.certificateAuthorityId)
+          ? ''
+          : (<TenantLink to={getPolicyRoutePath({
+            type: PolicyType.CERTIFICATE_AUTHORITY,
+            oper: PolicyOperation.LIST })}>
+            {certificateAuthorityNameMap.find(
+              c => c.key === row.radSecOptions?.certificateAuthorityId)?.value || ''}
+          </TenantLink>)
+      }
+    },
+    {
+      key: 'radSecOptions.clientCertificateId',
+      title: $t({ defaultMessage: 'Client Certificate' }),
+      dataIndex: 'radSecOptions.clientCertificateId',
+      filterable: clientCertificateMap,
+      width: 160,
+      render: (data: ReactNode, row : AAAViewModalType) => {
+        return (!row.radSecOptions?.clientCertificateId)
+          ? ''
+          : (<>
+            <TenantLink to={getPolicyRoutePath({
+              type: PolicyType.CERTIFICATE,
+              oper: PolicyOperation.LIST })}>
+              {clientCertificateMap.find(
+                c => c.key === row.radSecOptions?.clientCertificateId)?.value || ''}
+            </TenantLink>
+            {clientCertificateMap.find(
+              c => c.key === row.radSecOptions?.clientCertificateId)?.status?.find(
+              (s) => s === CertificateStatusType.EXPIRED || s === CertificateStatusType.REVOKED) ?
+              <CertificateToolTip
+                visible={true}
+                placement='bottom'
+                status={clientCertificateMap.find(
+                  c => c.key === row.radSecOptions?.clientCertificateId)?.status}
+              /> : []}
+          </> )
+      }
+    }] : []),
     {
       key: 'networkCount',
       title: $t({ defaultMessage: 'Networks' }),

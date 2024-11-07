@@ -20,6 +20,7 @@ export enum IncompatibilityFeatures {
   TUNNEL_PROFILE = 'Tunnel Profile',
   HA_AA = 'HA-AA',
   HQOS = 'HQoS',
-  DHCP = 'DHCP',
-  PIN = 'PIN'
+  DHCP = 'DHCP',  // edge DHCP
+  PIN = 'PIN',
+  EDGE_MDNS_PROXY = 'MDNS' // edge mDNS
 }
