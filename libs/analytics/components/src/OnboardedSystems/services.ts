@@ -3,8 +3,10 @@ import { defineMessage }           from 'react-intl'
 
 import { Tenant }                            from '@acx-ui/analytics/utils'
 import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
+import { TableResult }                       from '@acx-ui/rc/utils'
 import { smartZoneApi as basedSmartZoneApi } from '@acx-ui/store'
-import { getIntl }                           from '@acx-ui/utils'
+import { RequestPayload }                    from '@acx-ui/types'
+import { createHttpRequest, getIntl }        from '@acx-ui/utils'
 
 export type OnboardedSystem = {
   device_id: string
@@ -94,6 +96,7 @@ const apiServiceMap = {
   sz_api_error: defineMessage({ defaultMessage: 'SmartZone API' })
 }
 
+// TODO: discuss MK
 const sortOnboardedSystems = (
   smartzones: OnboardedSystem[],
   tenantId: string,
@@ -160,6 +163,7 @@ const getStatusErrors = (data: OnboardedSystem, errors: string[]) => {
 
 export const smartZoneApi = basedSmartZoneApi.injectEndpoints({
   endpoints: (build) => ({
+    // TODO: remove this?
     fetchSmartZoneList: build.query<
       FormattedOnboardedSystem[], {
         tenants: Tenant[],
@@ -194,8 +198,74 @@ export const smartZoneApi = basedSmartZoneApi.injectEndpoints({
             lastUpdateTime: data.sz_updated_at,
             canDelete: data.can_delete,
             accountName: tenantsMap[data.account_id].name
+            // TODO: add page, totalCount
           }
         })
+      }
+    }),
+    getSmartZoneList: build.query<
+      TableResult<FormattedOnboardedSystem>,
+      // {
+      //   // TODO: how to integrate this?
+      //   tenants: Tenant[],
+      //   tenantId: string
+      // } &
+      RequestPayload
+    >({
+      query: ({ payload }) => {
+        const customHeaders: Record<string, unknown> = {
+          'x-mlisa-tenant-ids': '[*]'
+        }
+        const req = createHttpRequest(
+          {
+            url: '/analytics/api/rsa-mlisa-smartzone/v1/smartzones/query',
+            method: 'post'
+          },
+          undefined, customHeaders)
+        return {
+          ...req,
+          credentials: 'include',
+          body: JSON.stringify(payload)
+        }
+      },
+      providesTags: [{ type: 'SmartZone', id: 'list' }],
+      // TODO: how to integrate this?
+      // transformResponse: (response: TableResult<OnboardedSystem>, _, { tenants, tenantId }) => {
+      transformResponse: (response: TableResult<OnboardedSystem>) => {
+        const { $t } = getIntl()
+        // TODO: how to integrate this?
+        // const tenantsMap = tenants.reduce((acc, tenant) => {
+        //   acc[tenant.id] = tenant
+        //   return acc
+        // }, {} as Record<string, Tenant>)
+        // TODO: do we still need sortOnboardedSystems?
+        // const viewDataList = sortOnboardedSystems(response.data, tenantId, tenantsMap)
+
+        console.log('response', response)
+
+        const viewDataList = response.data
+          .map((data) => {
+            const stateErrors = data.state_errors
+            return {
+              status: $t(smartZoneStateMap[data.state as keyof typeof smartZoneStateMap]),
+              statusType: getStatusType(data.state as keyof typeof smartZoneStateMap, stateErrors),
+              errors: getStatusErrors(data, stateErrors),
+              name: formatSmartZoneName(data.device_name),
+              id: data.device_id,
+              addedTime: data.created_at,
+              formattedAddedTime: formatter(DateFormatEnum.DateTimeFormat)(data.created_at),
+              lastUpdateTime: data.sz_updated_at,
+              canDelete: data.can_delete,
+              // TODO: how to get?
+              // accountName: tenantsMap[data.account_id].name
+              accountName: ''
+            }
+          })
+        return {
+          data: viewDataList,
+          page: response.page,
+          totalCount: response.totalCount
+        }
       }
     }),
     deleteSmartZone: build.mutation<string, { id: string }>({
@@ -211,7 +281,8 @@ export const smartZoneApi = basedSmartZoneApi.injectEndpoints({
 })
 
 export const {
-  useFetchSmartZoneListQuery
+  useFetchSmartZoneListQuery,
+  useGetSmartZoneListQuery
 } = smartZoneApi
 
 export function useDeleteSmartZone () {

@@ -6,10 +6,12 @@ import { defineMessage, useIntl } from 'react-intl'
 
 import { defaultSort, getUserProfile, sortProp }                          from '@acx-ui/analytics/utils'
 import { Loader, Table, TableProps, showActionModal, showToast, Tooltip } from '@acx-ui/components'
+import { TableResult, useTableQuery }                                     from '@acx-ui/rc/utils'
+import { UseQuery }                                                       from '@acx-ui/types'
 import { getIntl }                                                        from '@acx-ui/utils'
 
-import { useFetchSmartZoneListQuery, useDeleteSmartZone } from './services'
-import { Errors }                                         from './styledComponents'
+import { useFetchSmartZoneListQuery, useDeleteSmartZone, useGetSmartZoneListQuery } from './services'
+import { Errors }                                                                   from './styledComponents'
 
 import type { FormattedOnboardedSystem } from './services'
 
@@ -72,13 +74,53 @@ export const useOnboardedSystems = () => {
   const { deleteSmartZone } = useDeleteSmartZone()
   const [ selected, setSelected ] = useState<FormattedOnboardedSystem>()
 
-  const queryResults = useFetchSmartZoneListQuery({
-    tenantId,
-    tenants: tenant.tenants.filter(t => Boolean(t.permissions['READ_ONBOARDED_SYSTEMS']))
+  // const queryResults = useFetchSmartZoneListQuery({
+  //   tenantId,
+  //   tenants: tenant.tenants.filter(t => Boolean(t.permissions['READ_ONBOARDED_SYSTEMS']))
+  // })
+
+  // TODO: enhance content
+  const defaultPayload = {
+    fields: [
+      'id',
+      'name',
+      'description',
+      'primaryGatewayAddress',
+      'secondaryGatewayAddress',
+      'mtuType',
+      'mtuSize',
+      'keepAliveInterval',
+      'keepAliveRetryTimes',
+      'disassociateClientEnabled',
+      'activations'
+    ],
+    searchString: '',
+    filters: {
+      tenantId: tenant.tenants
+        .filter(t => Boolean(t.permissions['READ_ONBOARDED_SYSTEMS']))
+        .map(t => t.id)
+    },
+    searchTargetFields: ['account_name']
+  }
+  const settingsId = 'onboarded-system-table'
+  const tableQuery = useTableQuery<FormattedOnboardedSystem>({
+    useQuery: useGetSmartZoneListQuery,
+    pagination: { settingsId },
+    defaultPayload: defaultPayload,
+    sorter: {
+      sortField: 'account_name',
+      sortOrder: 'ASC'
+    }
+    // TODO: how to pass tenantId? Use filters?
+    // tenantId: tenantId,
+    // tenants: tenant.tenants.filter(t => Boolean(t.permissions['READ_ONBOARDED_SYSTEMS']))
   })
 
-  const [count, setCount] = useState(queryResults.data?.length || 0)
-  useEffect(() => { setCount(queryResults.data?.length || 0) }, [queryResults.data?.length])
+  // TODO: remove
+  // const [count, setCount] = useState(queryResults.data?.length || 0)
+  // useEffect(() => { setCount(queryResults.data?.length || 0) }, [queryResults.data?.length])
+  // const [count, setCount] = useState(tableQuery.data?.totalCount ?? 0)
+  // useEffect(() => { setCount(tableQuery.data?.totalCount ?? 0) }, [tableQuery.data?.totalCount])
 
   const title = defineMessage({
     defaultMessage: 'Onboarded Systems {count, select, null {} other {({count})}}',
@@ -134,11 +176,17 @@ export const useOnboardedSystems = () => {
     }
   ]
 
-  const component = <Loader states={[queryResults]}>
+  const component = <Loader states={[tableQuery]}>
     <Table
       rowKey='id'
+      settingsId={settingsId}
       columns={ColumnHeaders}
-      dataSource={queryResults.data}
+      dataSource={tableQuery.data?.data}
+      pagination={tableQuery.pagination}
+      // TODO: how to pass sorter fields?
+      onChange={tableQuery.handleTableChange}
+      // TODO
+      // onFilterChange={tableQuery.handleFilterChange}
       rowSelection={{
         type: 'radio',
         selectedRowKeys: selected ? [ selected.id ] : [],
@@ -174,11 +222,12 @@ export const useOnboardedSystems = () => {
         tooltip: !(selected?.canDelete)
           ? $t(errorMsgMap.CANNOT_DELETE) : $t({ defaultMessage: 'Delete' })
       }]}
-      onDisplayRowChange={
-        useCallback((dataSource: FormattedOnboardedSystem[]) => setCount(dataSource.length), [])
-      }
+      // TODO: remove?
+      // onDisplayRowChange={
+      //   useCallback((dataSource: FormattedOnboardedSystem[]) => setCount(dataSource.length), [])
+      // }
     />
   </Loader>
 
-  return { title: $t(title, { count }), component }
+  return { title: $t(title, { count: tableQuery.data?.totalCount ?? 0 }), component }
 }
