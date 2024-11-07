@@ -454,6 +454,7 @@ describe('getNetworkFilterData', () => {
     expect(apItem.children?.[0].label).toEqual('AP Name (00:00:00:00:00:00)')
     expect(JSON.parse(String(apItem.children?.[0].value))[1].name).toEqual('Some Name')
     expect(switchItem.value).toEqual('switchesSome Name')
+    expect(switchItem.children?.[0].label).toEqual('Switch Name (11:11:11:11:11:11)')
     expect(JSON.parse(String(switchItem.children?.[0].value))[1].name).toEqual('Some Name')
     /* eslint-enable testing-library/no-node-access */
   })

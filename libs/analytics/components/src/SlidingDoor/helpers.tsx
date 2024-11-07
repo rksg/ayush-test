@@ -55,6 +55,8 @@ export const customCapitalize = (node: Node) => {
     return $t({ defaultMessage: 'Entire Organization' })
   } else if (type ==='ap') {
     return capitalizeFirstLetter(`${name} (${node.mac}) (${nodeTypes('ap')})`)
+  } else if (type === 'switch') {
+    return capitalizeFirstLetter(`${name} (${node.mac}) (${nodeTypes('switch')})`)
   } else {
     return capitalizeFirstLetter(`${name} (${nodeTypes(type as NodeType)})`)
   }

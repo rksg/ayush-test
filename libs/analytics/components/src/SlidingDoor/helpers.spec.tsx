@@ -108,5 +108,10 @@ describe('Helper Functions', () => {
       const ap: Node = { name: 'example', type: 'ap', mac: '00:11:22:33:44:55' }
       expect(customCapitalize(ap)).toBe('Example (00:11:22:33:44:55) (Access Point)')
     })
+
+    it('should capitalize and format the node name and type correctly for Switch', () => {
+      const switchNode: Node = { name: 'example', type: 'switch', mac: '00:11:22:33:44:55' }
+      expect(customCapitalize(switchNode)).toBe('Example (00:11:22:33:44:55) (Switch)')
+    })
   })
 })

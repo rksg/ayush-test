@@ -169,7 +169,7 @@ export const getNetworkFilterData = (
             nodesWithSeverities[name]
           )
           return {
-            label: switchNode.name,
+            label: `${switchNode.name} (${switchNode.mac})`,
             extraLabel: <SeverityCircles severityCircles={severityData} />,
             value: JSON.stringify([...venuePath, { type: 'switch', name: switchNode.mac }])
           }
