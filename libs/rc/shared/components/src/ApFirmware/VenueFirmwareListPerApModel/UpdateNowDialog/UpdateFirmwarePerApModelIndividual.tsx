@@ -9,7 +9,7 @@ import { ApModelIndividualDisplayDataType } from '../venueFirmwareListPerApModel
 
 const { Option } = Select
 
-interface UpdateFirmwarePerApModelIndividualProps extends ApModelIndividualDisplayDataType {
+export interface UpdateFirmwarePerApModelIndividualProps extends ApModelIndividualDisplayDataType {
   update: (apModel: string, version: string) => void
   labelSize?: 'small' | 'large'
   emptyOptionLabel?: string
