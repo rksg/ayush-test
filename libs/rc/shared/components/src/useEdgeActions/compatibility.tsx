@@ -9,6 +9,7 @@ import { useIsSplitOn, Features }           from '@acx-ui/feature-toggle'
 import {
   useLazyGetApFeatureSetsQuery,
   useLazyGetEdgeFeatureSetsQuery,
+  useLazyGetMdnsEdgeCompatibilitiesQuery,
   useLazyGetPinApCompatibilitiesQuery,
   useLazyGetPinEdgeCompatibilitiesQuery,
   useLazyGetSdLanApCompatibilitiesQuery,
@@ -54,10 +55,22 @@ export const useEdgePinsCompatibilityData = (serviceIds: string[], skip: boolean
     serviceIds: serviceIds,
     skip: skip,
     useEdgeSvcPcyCompatibleQuery: useLazyGetPinEdgeCompatibilitiesQuery,
-    useEdgeSvcPcyApCompatibleQuery: isApCompatibilitiesByModel ? useLazyGetSdLanApCompatibilitiesQuery : undefined
+    useEdgeSvcPcyApCompatibleQuery: isApCompatibilitiesByModel ? useLazyGetPinApCompatibilitiesQuery : undefined
   })
   return results as {
     compatibilities: Record<string, EdgeServiceCompatibility[] | EdgeServiceApCompatibility[]> | undefined
+    isLoading: boolean
+  }
+}
+
+export const useEdgeMdnssCompatibilityData = (serviceIds: string[], skip: boolean = false) => {
+  const results = useEdgeSvcsPcysCompatibilitiesData({
+    serviceIds: serviceIds,
+    skip: skip,
+    useEdgeSvcPcyCompatibleQuery: useLazyGetMdnsEdgeCompatibilitiesQuery
+  })
+  return results as {
+    compatibilities: Record<string, EdgeServiceCompatibility[]> | undefined
     isLoading: boolean
   }
 }
@@ -118,6 +131,23 @@ export const useEdgePinDetailsCompatibilitiesData = (props: {
   return { compatibilities: transformed, isLoading: results.isLoading }
 }
 
+export const useEdgeMdnsDetailsCompatibilitiesData = (props: {
+  serviceId: string,
+  skip?: boolean,
+}) => {
+  const results = useEdgeSvcsPcysCompatibilitiesData({
+    serviceIds: props.serviceId,
+    skip: props.skip,
+    useEdgeSvcPcyCompatibleQuery: useLazyGetMdnsEdgeCompatibilitiesQuery
+  })
+
+  let transformed: Record<string, ApCompatibility> = {}
+  if (isNil(results.compatibilities)) return { compatibilities: transformed, isLoading: results.isLoading }
+  transformed = getFeaturesIncompatibleDetailData((results.compatibilities[CompatibilityDeviceEnum.EDGE] as EdgeServiceCompatibility[])[0])
+
+  return { compatibilities: transformed, isLoading: results.isLoading }
+}
+
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DefaultQueryDefinition<ResultType> = QueryDefinition<any, any, any, ResultType>
@@ -150,9 +180,9 @@ export const useEdgeSvcsPcysCompatibilitiesData = (props: {
       results.forEach((resultItem, index) => {
         if (resultItem.status === 'fulfilled') {
           if(index === 0) {
-            deviceTypeResultMap[CompatibilityDeviceEnum.EDGE] = (resultItem.value as EdgeServiceCompatibilitiesResponse).compatibilities
+            deviceTypeResultMap[CompatibilityDeviceEnum.EDGE] = (resultItem.value as EdgeServiceCompatibilitiesResponse)?.compatibilities ?? []
           } else {
-            deviceTypeResultMap[CompatibilityDeviceEnum.AP] = (resultItem.value as EdgeSdLanApCompatibilitiesResponse).compatibilities
+            deviceTypeResultMap[CompatibilityDeviceEnum.AP] = (resultItem.value as EdgeSdLanApCompatibilitiesResponse)?.compatibilities ?? []
           }
         }
       })
@@ -263,7 +293,7 @@ export const useVenueEdgeCompatibilitiesData = (props: Omit<EdgeCompatibilityDra
           } }
         }).unwrap()
 
-        edgeCompatibilitiesResponse = sdLanToApCompatibilityData(venueEdgeCompatibilities.compatibilities)
+        edgeCompatibilitiesResponse = sdLanToApCompatibilityData(venueEdgeCompatibilities.compatibilities ?? [])
       } else if (type === EdgeCompatibilityType.ALONE) {
         const edgeFeatureSets = await getEdgeFeatureSets({
           payload: { filters: { featureNames } }

@@ -312,6 +312,7 @@ export class SwitchViewModel extends Switch {
   adminPassword?: string
   extIp?: string
   vlanMapping?: string
+  veCount?: number
 }
 
 export interface SwitchRow {

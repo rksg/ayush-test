@@ -86,8 +86,8 @@ const NaiRealmDrawer = (props: NaiRealmDrawerProps) => {
         rules={[
           { required: true },
           { min: 2 },
-          { max: 32 },
-          { validator: (_, value) => servicePolicyNameRegExp(value) },
+          { max: 243 },
+          { validator: (_, value) => servicePolicyNameRegExp(value, 243) },
           { validator: (_, value) => nameDuplicationValidator(value) }
         ]}
         validateFirst
