@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 import { Space }                                     from 'antd'
 import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
@@ -196,7 +196,6 @@ export const HealthPieChart = ({
   setPieList: (data: PieChartData[]) => void
 }) => {
   const { $t } = useIntl()
-  const [initialRender, setInitialRender] = useState(true)
   const { startDate: start, endDate: end, filter } = filters
   const queryResults = usePieChartQuery(
     {
@@ -235,25 +234,10 @@ export const HealthPieChart = ({
     topCount
   )
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // useEffect(() => { setChartKey(tabDetails?.[0]?.value as TabKeyType) }, [tabDetails.length])
-  // useEffect(() => {
-  //   setPieFilter(null)
-  //   setPieList(tabsList.find((tab) => tab.key === chartKey)?.data || [])
-  // }, [chartKey])
-
+  useEffect(() => { setChartKey(tabDetails?.[0]?.value as TabKeyType) }, [tabDetails.length])
   useEffect(() => {
-    if (initialRender && tabDetails.length > 0) {
-      setChartKey(tabDetails[0]?.value as TabKeyType)
-      setInitialRender(false)
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tabDetails.length])
-
-  useEffect(() => {
-    if (!initialRender) {
-      setPieFilter(null)
-      setPieList(tabsList.find((tab) => tab.key === chartKey)?.data || [])
-    }
+    setPieFilter(null)
+    setPieList(tabsList.find((tab) => tab.key === chartKey)?.data || [])
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chartKey])
 

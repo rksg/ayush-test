@@ -183,7 +183,7 @@ export const api = dataApi.injectEndpoints({
           key: string;
           chartKey: TabKeyType;
           list: string[];
-        }
+        } | null;
       }
     >({
       query: (payload) => {

@@ -61,7 +61,7 @@ export const ImpactedClientsTable = ({
       field: field,
       stage: (selectedStage && stageNameToCodeMap[selectedStage]) as string,
       topImpactedClientLimit: topImpactedClientLimit,
-      pieData: pieData
+      pieData: pieFilter ? pieData : null
     },
     {
       selectFromResult: (result) => {
