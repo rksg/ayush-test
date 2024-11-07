@@ -5,7 +5,9 @@ import { CertificateGenerationType, GenerateCertificateFormData } from '@acx-ui/
 
 import { generateCertificateTitle } from '../../contentsMap'
 
-import GenerateCertificate from './GenerateCertificate'
+import GenerateCertificate        from './GenerateCertificate'
+import GenerateCertificateWithCSR from './GenerateCertificateWIthCSR'
+import { UploadCertificate }      from './UploadCertificate'
 
 export default function GenerateCertificateFormSelection () {
   const { $t } = useIntl()
@@ -13,9 +15,8 @@ export default function GenerateCertificateFormSelection () {
   const generation = Form.useWatch('generation', generateCertificateForm)
   const generationFormMapping = {
     [CertificateGenerationType.NEW]: <GenerateCertificate />,
-    [CertificateGenerationType.WITH_CSR]: <>{$t({ defaultMessage: 'Generate With CSR' })}</>, // TODO
-    [CertificateGenerationType.UPLOAD]: <>{
-      $t({ defaultMessage: 'Upload Client / Server Certificate' })}</> //TODO
+    [CertificateGenerationType.WITH_CSR]: <GenerateCertificateWithCSR />,
+    [CertificateGenerationType.UPLOAD]: <UploadCertificate />
   }
 
   return (

@@ -9,6 +9,7 @@ import { useIsSplitOn, Features }           from '@acx-ui/feature-toggle'
 import {
   useLazyGetApFeatureSetsQuery,
   useLazyGetEdgeFeatureSetsQuery,
+  useLazyGetMdnsEdgeCompatibilitiesQuery,
   useLazyGetPinApCompatibilitiesQuery,
   useLazyGetPinEdgeCompatibilitiesQuery,
   useLazyGetSdLanApCompatibilitiesQuery,
@@ -58,6 +59,18 @@ export const useEdgePinsCompatibilityData = (serviceIds: string[], skip: boolean
   })
   return results as {
     compatibilities: Record<string, EdgeServiceCompatibility[] | EdgeServiceApCompatibility[]> | undefined
+    isLoading: boolean
+  }
+}
+
+export const useEdgeMdnssCompatibilityData = (serviceIds: string[], skip: boolean = false) => {
+  const results = useEdgeSvcsPcysCompatibilitiesData({
+    serviceIds: serviceIds,
+    skip: skip,
+    useEdgeSvcPcyCompatibleQuery: useLazyGetMdnsEdgeCompatibilitiesQuery
+  })
+  return results as {
+    compatibilities: Record<string, EdgeServiceCompatibility[]> | undefined
     isLoading: boolean
   }
 }
@@ -114,6 +127,23 @@ export const useEdgePinDetailsCompatibilitiesData = (props: {
       transformed[CompatibilityDeviceEnum.AP] = details
     }
   })
+
+  return { compatibilities: transformed, isLoading: results.isLoading }
+}
+
+export const useEdgeMdnsDetailsCompatibilitiesData = (props: {
+  serviceId: string,
+  skip?: boolean,
+}) => {
+  const results = useEdgeSvcsPcysCompatibilitiesData({
+    serviceIds: props.serviceId,
+    skip: props.skip,
+    useEdgeSvcPcyCompatibleQuery: useLazyGetMdnsEdgeCompatibilitiesQuery
+  })
+
+  let transformed: Record<string, ApCompatibility> = {}
+  if (isNil(results.compatibilities)) return { compatibilities: transformed, isLoading: results.isLoading }
+  transformed = getFeaturesIncompatibleDetailData((results.compatibilities[CompatibilityDeviceEnum.EDGE] as EdgeServiceCompatibility[])[0])
 
   return { compatibilities: transformed, isLoading: results.isLoading }
 }

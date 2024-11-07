@@ -5,12 +5,12 @@ import { Space, Typography }      from 'antd'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { Button, Card, GridCol, GridRow, Loader, PageHeader, SummaryCard }                                                                                                   from '@acx-ui/components'
-import { EnrollmentPortalLink, WorkflowActionPreviewModal, WorkflowComparator, WorkflowDesigner, WorkflowPanel }                                                             from '@acx-ui/rc/components'
-import { useGetWorkflowByIdQuery, useGetWorkflowStepsByIdQuery, useLazySearchWorkflowsVersionListQuery, useUpdateWorkflowIgnoreErrorsMutation, useUpdateWorkflowMutation }   from '@acx-ui/rc/services'
-import { getPolicyListRoutePath, getPolicyRoutePath, getScopeKeyByPolicy, PolicyOperation, PolicyType, PublishStatus, Workflow, WorkflowPanelMode, WorkflowStepsEmptyCount } from '@acx-ui/rc/utils'
-import { TenantLink, useTenantLink }                                                                                                                                         from '@acx-ui/react-router-dom'
-import { hasPermission }                                                                                                                                                     from '@acx-ui/user'
+import { Button, Card, GridCol, GridRow, Loader, PageHeader, SummaryCard }                                                                                                  from '@acx-ui/components'
+import { EnrollmentPortalLink, WorkflowActionPreviewModal, WorkflowComparator, WorkflowDesigner, WorkflowPanel }                                                            from '@acx-ui/rc/components'
+import { useGetWorkflowByIdQuery, useGetWorkflowStepsByIdQuery, useLazySearchWorkflowsVersionListQuery, useUpdateWorkflowIgnoreErrorsMutation, useUpdateWorkflowMutation }  from '@acx-ui/rc/services'
+import { getPolicyListRoutePath, getPolicyRoutePath, getScopeKeyByPolicy, PolicyOperation, PolicyType, PublishStatus, Workflow, WorkflowPanelMode, InitialEmptyStepsCount } from '@acx-ui/rc/utils'
+import { TenantLink, useTenantLink }                                                                                                                                        from '@acx-ui/react-router-dom'
+import { hasPermission }                                                                                                                                                    from '@acx-ui/user'
 
 
 
@@ -81,7 +81,7 @@ export default function WorkflowDetails () {
 
   useEffect(()=> {
     if (!stepsData || stepsState.isFetching) return
-    if ((stepsData?.paging?.totalCount ?? 0 ) <= WorkflowStepsEmptyCount) {
+    if ((stepsData?.paging?.totalCount ?? 0 ) <= InitialEmptyStepsCount) {
       setPublishable(false)
     } else {
       checkWorkflowPublishable()
@@ -219,7 +219,7 @@ export default function WorkflowDetails () {
     <GridRow style={{ minHeight: 600, marginTop: '20px' }}>
       <GridCol col={{ span: 24 }}>
         <Loader states={[{ ...stepsState }]}>
-          {(stepsData?.paging?.totalCount ?? 0 ) <= WorkflowStepsEmptyCount ?
+          {(stepsData?.paging?.totalCount ?? 0 ) <= InitialEmptyStepsCount ?
             <Card
               title={$t({ defaultMessage: 'Active Workflow Design' })}
             ><div style={{ margin: 'auto' }}>

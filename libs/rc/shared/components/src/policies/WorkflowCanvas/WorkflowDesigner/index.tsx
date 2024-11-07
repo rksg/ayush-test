@@ -3,10 +3,10 @@ import { useState } from 'react'
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button }                                     from '@acx-ui/components'
-import { BrushSolid, EyeOpenOutlined, EyeOpenSolid }  from '@acx-ui/icons'
-import { useGetWorkflowStepsByIdQuery }               from '@acx-ui/rc/services'
-import { WorkflowPanelMode, WorkflowStepsEmptyCount } from '@acx-ui/rc/utils'
+import { Button }                                    from '@acx-ui/components'
+import { BrushSolid, EyeOpenOutlined, EyeOpenSolid } from '@acx-ui/icons'
+import { useGetWorkflowStepsByIdQuery }              from '@acx-ui/rc/services'
+import { WorkflowPanelMode, InitialEmptyStepsCount } from '@acx-ui/rc/utils'
 
 import { EnrollmentPortalDesignModal } from '../../../EnrollmentPortalDesignModal'
 import { WorkflowActionPreviewModal }  from '../../../WorkflowActionPreviewModal'
@@ -30,7 +30,7 @@ export function WorkflowDesigner (props: WorkflowDesignerProps) {
       policyId: workflowId, pageSize: '1', page: '0', sort: 'id,ASC', excludeContent: 'true'
     }
   })
-  const emptySteps = (stepsData?.paging?.totalCount ?? 0 ) <= WorkflowStepsEmptyCount
+  const emptySteps = (stepsData?.paging?.totalCount ?? 0 ) <= InitialEmptyStepsCount
 
   const title =
     <UI.WorkflowDesignerHeader>
