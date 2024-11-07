@@ -11,11 +11,12 @@ import { Features, useIsSplitOn }                                               
 import { ApTable, ApTableRefType, ApsTabContext, groupedFields, useApGroupsFilterOpts } from '@acx-ui/rc/components'
 import {
   useNewApListQuery,
-  useApListQuery
+  useApListQuery,
+  useVenuesListQuery
 } from '@acx-ui/rc/services'
-import { usePollingTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink }           from '@acx-ui/react-router-dom'
-import { WifiScopes }           from '@acx-ui/types'
+import { usePollingTableQuery }  from '@acx-ui/rc/utils'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { WifiScopes }            from '@acx-ui/types'
 
 const apsCountQueryPayload = {
   fields: ['serialNumber', 'name'],
@@ -50,9 +51,26 @@ const useApsCount = (): [number, React.Dispatch<React.SetStateAction<number>>] =
 
 export default function useApsTable () {
   const { $t } = useIntl()
+  const { tenantId } = useParams()
   const apTableRef = useRef<ApTableRefType>(null)
   const [apsCount, setApsCount] = useApsCount()
   const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
+
+  const { venueFilterOptions } = useVenuesListQuery(
+    {
+      params: { tenantId },
+      payload: {
+        fields: ['name', 'country', 'latitude', 'longitude', 'id'],
+        pageSize: 10000,
+        sortField: 'name',
+        sortOrder: 'ASC'
+      }
+    },
+    {
+      selectFromResult: ({ data }) => ({
+        venueFilterOptions: data?.data.map(v=>({ key: v.id, value: v.name })) || true
+      })
+    })
 
   const apgroupFilterOptions = useApGroupsFilterOpts()
 
@@ -96,6 +114,7 @@ export default function useApsTable () {
       <ApTable ref={apTableRef}
         searchable={true}
         filterables={{
+          venueId: venueFilterOptions,
           deviceGroupId: apgroupFilterOptions
         }}
         rowSelection={{

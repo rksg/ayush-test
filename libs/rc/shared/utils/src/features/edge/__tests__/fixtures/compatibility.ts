@@ -1,8 +1,9 @@
 import { cloneDeep } from 'lodash'
 
-import { IncompatibilityFeatures }                                                                                                   from '../../../../models/CompatibilityEnum'
-import { CompatibilityEntityTypeEnum }                                                                                               from '../../../../models/EdgeEnum'
-import { EdgeFeatureSets, EdgeSdLanApCompatibilitiesResponse, EdgeServiceCompatibilitiesResponse, VenueEdgeCompatibilitiesResponse } from '../../../../types/edge'
+import { IncompatibilityFeatures }                                                                                                                                          from '../../../../models/CompatibilityEnum'
+import { CompatibilityEntityTypeEnum }                                                                                                                                      from '../../../../models/EdgeEnum'
+import { EdgeFeatureSets, EdgeSdLanApCompatibilitiesResponse, EdgeServiceCompatibilitiesResponse, EdgeServicesApCompatibilitiesResponse, VenueEdgeCompatibilitiesResponse } from '../../../../types/edge'
+import { IncompatibleFeatureLevelEnum, IncompatibleFeatureTypeEnum }                                                                                                        from '../../../../types/venue'
 
 export const mockEdgeFeatureCompatibilities: EdgeFeatureSets = {
   featureSets: [
@@ -164,6 +165,85 @@ mockEdgePinCompatibilities.compatibilities.forEach((item, idx) => {
   })
 })
 
+export const mockEdgeMdnsCompatibilities = {
+  compatibilities: [
+    {
+      serviceId: 'mdns-1',
+      clusterEdgeCompatibilities: [
+        {
+          identityType: CompatibilityEntityTypeEnum.CLUSTER,
+          id: 'edgeCluster-1',
+          incompatibleFeatures: [
+            {
+              featureRequirement: {
+                featureName: IncompatibilityFeatures.EDGE_MDNS_PROXY,
+                requiredFw: '2.3.0.1'
+              },
+              incompatibleDevices: [
+                {
+                  firmware: '2.1.0.100',
+                  count: 1
+                }
+              ]
+            }
+          ],
+          total: 6,
+          incompatible: 2
+        },
+        {
+          identityType: CompatibilityEntityTypeEnum.CLUSTER,
+          id: 'edgeCluster-3',
+          incompatibleFeatures: [
+            {
+              featureRequirement: {
+                featureName: IncompatibilityFeatures.EDGE_MDNS_PROXY,
+                requiredFw: '2.3.0.1'
+              },
+              incompatibleDevices: [
+                {
+                  firmware: '2.1.0.100',
+                  count: 1
+                },
+                {
+                  firmware: '2.1.0.150',
+                  count: 3
+                }
+              ]
+            }
+          ],
+          total: 8,
+          incompatible: 5
+        }
+      ]
+    },  // end of service-1
+    {
+      serviceId: 'mdns-2',
+      clusterEdgeCompatibilities: [
+        {
+          identityType: CompatibilityEntityTypeEnum.CLUSTER,
+          id: 'edgeCluster-2',
+          incompatibleFeatures: [
+            {
+              featureRequirement: {
+                featureName: IncompatibilityFeatures.EDGE_MDNS_PROXY,
+                requiredFw: '2.3.0.1'
+              },
+              incompatibleDevices: [
+                {
+                  firmware: '2.1.0.100',
+                  count: 1
+                }
+              ]
+            }
+          ],
+          total: 6,
+          incompatible: 2
+        }
+      ]
+    }  // end of service-2
+  ]
+}
+
 export const mockEdgeHqosCompatibilities: EdgeServiceCompatibilitiesResponse = {
   compatibilities: [
     {
@@ -275,6 +355,102 @@ export const mockEdgeSdLanApCompatibilites: EdgeSdLanApCompatibilitiesResponse =
           ],
           total: 10,
           incompatible: 3
+        }
+      ]
+    }
+  ]
+}
+
+
+export const mockEdgePinApCompatibilites: EdgeServicesApCompatibilitiesResponse = {
+  compatibilities: [
+    {
+      serviceId: 'pinService-1',
+      venueEdgeServiceApCompatibilities: [
+        {
+          incompatibleFeatures: [
+            {
+              featureName: 'PIN',
+              requirements: [
+                {
+                  firmware: '7.0.0.200.6407',
+                  models: [
+                    'R750',
+                    'T750SE',
+                    'H670',
+                    'H350',
+                    'R850',
+                    'H550',
+                    'R350:R350E',
+                    'T350SE',
+                    'R550',
+                    'R770',
+                    'R650',
+                    'T750',
+                    'R760',
+                    'R350',
+                    'R560',
+                    'R670',
+                    'T670',
+                    'T350D',
+                    'T350C',
+                    'T670SN'
+                  ]
+                }
+              ],
+              featureType: IncompatibleFeatureTypeEnum.EDGE,
+              featureLevel: IncompatibleFeatureLevelEnum.VENUE,
+              incompatibleDevices: [
+                {
+                  firmware: '6.2.3.103.233',
+                  model: 'R720',
+                  count: 1
+                }
+              ]
+            },
+            {
+              featureName: 'Tunnel Profile',
+              requirements: [
+                {
+                  firmware: '7.0.0.200.6407',
+                  models: [
+                    'R750',
+                    'T750SE',
+                    'H670',
+                    'H350',
+                    'R850',
+                    'H550',
+                    'R350:R350E',
+                    'T350SE',
+                    'R550',
+                    'R770',
+                    'R650',
+                    'T750',
+                    'R760',
+                    'R350',
+                    'R560',
+                    'R670',
+                    'T670',
+                    'T350D',
+                    'T350C',
+                    'T670SN'
+                  ]
+                }
+              ],
+              featureType: IncompatibleFeatureTypeEnum.EDGE,
+              featureLevel: IncompatibleFeatureLevelEnum.VENUE,
+              incompatibleDevices: [
+                {
+                  firmware: '6.2.3.103.233',
+                  model: 'R720',
+                  count: 1
+                }
+              ]
+            }
+          ],
+          total: 1,
+          incompatible: 1,
+          venueId: 'venue-1'
         }
       ]
     }

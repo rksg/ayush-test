@@ -26,7 +26,7 @@ const SelectServerCertificate = (props: CertificateSelectorProps) => {
   }))
 
   const handleChange = (certificate: string) => {
-    setSelected(certificate)
+    setSelected(certificate ?? '')
   }
 
   return (

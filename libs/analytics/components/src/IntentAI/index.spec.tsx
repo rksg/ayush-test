@@ -367,6 +367,7 @@ describe('IntentAITabContent', () => {
     > EDU-MeshZone_S12348 (Venue)`,
       status: 'revertscheduled',
       displayStatus: 'revertscheduled',
+      metadata: { appliedAt: '2024-04-19T07:30:00.000Z' },
       statusTooltip: 'statusTooltip'
     }
     mockGraphqlQuery(intentAIUrl, 'IntentAIList', {

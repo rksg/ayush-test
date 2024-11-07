@@ -485,7 +485,7 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
               && msg.useCase === 'CREATE_WORKFLOW_ACTION') {
               if (msg.status === TxStatus.SUCCESS) {
                 requestArgs.onSuccess?.(response.data)
-              } else {
+              } else if (msg.status === TxStatus.FAIL) {
                 requestArgs?.onError?.()
               }
             }

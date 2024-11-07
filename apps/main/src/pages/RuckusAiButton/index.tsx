@@ -1,0 +1,244 @@
+import { useState } from 'react'
+
+
+import { Button, Form, Steps } from 'antd'
+import { useIntl }             from 'react-intl'
+
+
+import { cssStr }                                               from '@acx-ui/components'
+import { RuckusAiDog }                                          from '@acx-ui/icons'
+import { useStartConversationsMutation }                        from '@acx-ui/rc/services'
+import { RuckusAiConfigurationStepsEnum, RuckusAiConversation } from '@acx-ui/rc/utils'
+
+import BasicInformationPage from './BasicInformationPage'
+import Congratulations      from './Congratulations'
+import RuckusAiWizard       from './RuckusAiWizard'
+import * as UI              from './styledComponents'
+import VerticalPage         from './VerticalPage'
+import WelcomePage          from './WelcomePage'
+
+export enum RuckusAiStepsEnum {
+  WELCOME = 'WELCOME',
+  VERTICAL = 'VERTICAL',
+  BASIC = 'BASIC',
+  CONFIGURATION = 'CONFIGURATION',
+  FINISHED= 'FINISHED'
+}
+
+export default function RuckusAiButton () {
+  const { $t } = useIntl()
+  const [basicFormRef] = Form.useForm()
+
+  const [visible, setVisible] = useState(false)
+  const [isLoading, setIsLoading] = useState(false as boolean)
+
+  const [step, setStep] = useState(RuckusAiStepsEnum.WELCOME as RuckusAiStepsEnum)
+  const [nextStep, setNextStep] = useState({} as RuckusAiConversation)
+  const [currentStep, setCurrentStep] = useState(0 as number)
+  const [venueType, setVenueType] = useState('' as string)
+
+  const [startConversations] = useStartConversationsMutation()
+
+  const getWizardTitle = function () {
+    switch(step){
+      case RuckusAiStepsEnum.BASIC:
+      case RuckusAiStepsEnum.VERTICAL:
+        return <div style={{ display: 'flex', padding: '20px 20px 0px 20px' }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginRight: '20px'
+          }}>
+            <RuckusAiDog style={{ width: '43px', height: '36px' }} />
+          </div>
+          <div style={{
+            flexGrow: 1, display: 'flex',
+            flexDirection: 'column'
+          }}>
+            <div style={{
+              fontSize: '24px',
+              lineHeight: '28px',
+              marginBottom: '8px',
+              fontFamily: cssStr('--acx-accent-brand-font')
+            }}>{$t({ defaultMessage: 'Onboarding Assistant' })}</div>
+            <div
+              style={{
+                fontFamily: cssStr('--acx-neutral-brand-font'),
+                color: cssStr('--acx-neutrals-60'),
+                fontSize: '12px',
+                lineHeight: '16px',
+                flexGrow: 1
+              }}>
+              { // eslint-disable-next-line max-len
+                $t({ defaultMessage: 'Please answer the following questions for optimal network recommendations.' })}
+            </div>
+          </div>
+        </div>
+      case RuckusAiStepsEnum.CONFIGURATION:
+        return <div
+          style={{ width: '250px' }}>
+          <UI.GptStep
+            current={currentStep}
+            percent={100}
+            size='small'
+            type='default'>
+            {[
+              { key: RuckusAiConfigurationStepsEnum.WLANS },
+              { key: RuckusAiConfigurationStepsEnum.WLANDETAIL },
+              { key: RuckusAiConfigurationStepsEnum.VLAN },
+              { key: RuckusAiConfigurationStepsEnum.SUMMARY }
+            ].map((item) => (
+              <Steps.Step key={item.key} />
+            ))}
+          </UI.GptStep>
+        </div>
+      case RuckusAiStepsEnum.WELCOME:
+      case RuckusAiStepsEnum.FINISHED:
+      default:
+        return null
+    }
+  }
+
+  const renderFooter = function () {
+    switch (step) {
+      case RuckusAiStepsEnum.WELCOME:
+        return <Button key='next'
+          type='primary'
+          loading={isLoading}
+          onClick={async () => {
+            setStep(RuckusAiStepsEnum.VERTICAL)
+          }}>
+          {$t({ defaultMessage: 'Start' })}
+        </Button>
+      case RuckusAiStepsEnum.VERTICAL:
+        return <>
+          <Button key='back'
+            onClick={() => {
+              setStep(RuckusAiStepsEnum.WELCOME)
+            }}>
+            {$t({ defaultMessage: 'Back' })}
+          </Button>
+          <Button key='next'
+            type='primary'
+            loading={isLoading}
+            onClick={async () => {
+              basicFormRef.validateFields().then(() => {
+                const result = basicFormRef.getFieldsValue()
+                const type = result.venueType === 'OTHER' ? result.othersValue : result.venueType
+                setVenueType(type)
+                setStep(RuckusAiStepsEnum.BASIC)
+              }).catch(() => {
+                return
+              })
+            }}>
+            {$t({ defaultMessage: 'Next' })}
+          </Button>
+        </>
+      case RuckusAiStepsEnum.BASIC:
+        return <>
+          <Button key='back'
+            onClick={() => {
+              setStep(RuckusAiStepsEnum.VERTICAL)
+            }}>
+            {$t({ defaultMessage: 'Back' })}
+          </Button>
+          <Button key='next'
+            type='primary'
+            loading={isLoading}
+            onClick={async () => {
+              basicFormRef.validateFields().then(
+                async () => {
+                  try {
+                    setIsLoading(true)
+                    const result = basicFormRef.getFieldsValue()
+                    const response = await startConversations({
+                      payload: {
+                        venueName: result.venueName,
+                        venueType,
+                        description: result.description,
+                        ...(result.numberOfSwitch && { numberOfSwitch: result.numberOfSwitch }),
+                        ...(result.numberOfAp && { numberOfAp: result.numberOfAp })
+                      }
+                    }).unwrap()
+                    setIsLoading(false)
+                    setStep(RuckusAiStepsEnum.CONFIGURATION)
+                    setNextStep(response)
+                  } catch (error) {
+                    setIsLoading(false)
+                  }
+                }
+              ).catch(() => {
+                setIsLoading(false)
+                return
+              })
+            }}>
+            {$t({ defaultMessage: 'Next' })}
+          </Button>
+        </>
+      case RuckusAiStepsEnum.FINISHED:
+        return <Button key='next'
+          type='primary'
+          loading={isLoading}
+          onClick={closeModal}>
+          {$t({ defaultMessage: 'Finish' })}
+        </Button>
+      case RuckusAiStepsEnum.CONFIGURATION:
+      default:
+        return null
+    }
+  }
+
+  const closeModal = () => {
+    basicFormRef.resetFields()
+    setStep(RuckusAiStepsEnum.WELCOME)
+    setVisible(false)
+    setCurrentStep(0)
+  }
+  return <>
+    <UI.ButtonSolid
+      icon={<RuckusAiDog />}
+      onClick={() => {
+        setVisible(!visible)
+      }}
+    />
+    <UI.GptModal
+      needBackground={step === RuckusAiStepsEnum.WELCOME || step === RuckusAiStepsEnum.FINISHED}
+      titleType={step === RuckusAiStepsEnum.CONFIGURATION ? 'wizard' : 'default'}
+      title={getWizardTitle()}
+      footer={renderFooter()}
+      onCancel={closeModal}
+      visible={visible}
+      mask={true}
+      maskClosable={false}
+      width={1000}
+      children={
+        <>
+          <Form form={basicFormRef}
+            layout={'vertical'}
+            labelAlign='left'>
+            {step === RuckusAiStepsEnum.WELCOME && <WelcomePage />}
+            {step === RuckusAiStepsEnum.VERTICAL && <VerticalPage />}
+            {step === RuckusAiStepsEnum.BASIC && <BasicInformationPage />}
+          </Form>
+          {step === RuckusAiStepsEnum.CONFIGURATION && <RuckusAiWizard
+            sessionId={nextStep.sessionId}
+            requestId={nextStep.sessionId}
+            actionType={nextStep.nextStep}
+            description={nextStep.description}
+            payload={nextStep.payload}
+            currentStep={currentStep}
+            setStep={setStep}
+            step={step}
+            setCurrentStep={setCurrentStep}
+          />}
+          {step === RuckusAiStepsEnum.FINISHED && <Congratulations closeModal={closeModal} />}
+        </>
+      }
+    />
+  </>
+}
+
+export {
+  RuckusAiButton
+}
