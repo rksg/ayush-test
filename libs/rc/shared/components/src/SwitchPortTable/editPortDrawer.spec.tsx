@@ -86,36 +86,6 @@ const editPortVlans = async (
   await userEvent.click(await within(dialog).findByRole('button', { name: 'OK' }))
 }
 
-// jest.mock('antd', () => {
-//   const antd = jest.requireActual('antd')
-//   // @ts-ignore
-//   const Select = ({ children, onChange, id, options, ...otherProps }) => {
-//     if (options) {
-//       return <select
-//         role='combobox'
-//         onChange={e => onChange(e.target.value)}
-//         {...otherProps}>
-//         {options.map((option: { value: string }) =>
-//           <option key={option.value} value={option.value}>{option.value}</option>)}
-//       </select>
-//     }
-//     return <select
-//       role='combobox'
-//       onChange={e => onChange(e.target.value)}
-//       {...otherProps}>
-//       {children}
-//     </select>
-//   }
-
-//   // @ts-ignore
-//   Select.Option = ({ children, options, ...otherProps }) => {
-//     return <option role='option' {...otherProps}>{children}</option>
-//   }
-
-//   return { ...antd, Select }
-// })
-
-
 const mockedSavePortsSetting = jest.fn().mockImplementation(() => ({
   unwrap: jest.fn()
 }))
@@ -2657,9 +2627,7 @@ describe('EditPortDrawer', () => {
             await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox')
           )
           await userEvent.click(await screen.findByTestId('flex-enable-switch'))
-          await userEvent.click(
-            await screen.findByTestId('authenticationProfileId-override-checkbox')
-          )
+          expect(await screen.findByTestId('authenticationProfileId-override-checkbox')).toBeChecked() //checked by default
 
           const profileCombobox = await screen.findByRole('combobox', { name: /Profile/ })
           expect(await screen.findByTestId('flex-enable-switch')).not.toBeDisabled()
@@ -3266,6 +3234,8 @@ describe('EditPortDrawer', () => {
             await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox')
           )
           await userEvent.click(await screen.findByTestId('flex-enable-switch'))
+
+          expect(await screen.findByTestId('authenticationProfileId-override-checkbox')).toBeChecked() //checked by default
 
           expect(await screen.findByText('Customize')).toBeVisible()
           await userEvent.click(await screen.findByText('Customize'))

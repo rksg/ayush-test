@@ -216,9 +216,7 @@ export function EditPortDrawer ({
 
   const hasCreatePermission = hasPermission({ scopes: [SwitchScopes.CREATE] })
 
-  // const defaultVlanText = $t({ defaultMessage: 'Default VLAN (Multiple values)' })
   const switches: string[] = _.uniq(selectedPorts.map(p => p.switchMac))
-
   const selectedSwitchList = switchList?.filter(s => switches.includes(s.id))
   const isFirmwareAbove10010f = !!selectedSwitchList?.length
     && selectedSwitchList?.every(s => isFirmwareVersionAbove10010f(s.firmware))
@@ -786,7 +784,7 @@ export function EditPortDrawer ({
     extraLabel?: boolean
   ) => {
     const shouldControlHiddenFields = [
-      'changeAuthOrder', 'restrictedVlan', 'criticalVlan' // 'authDefaultVlan',
+      'changeAuthOrder', 'restrictedVlan', 'criticalVlan'
     ]
     return <UI.FormItem
       hidden={shouldControlHiddenFields.includes(field)
@@ -886,17 +884,6 @@ export function EditPortDrawer ({
       untaggedVlan: useVenueSettings ? '' : form.getFieldValue('untaggedVlan'),
       voiceVlan: useVenueSettings ? null : Number(form.getFieldValue('voiceVlan'))
     }
-
-    // const defaultVlanMap = switchesDefaultVlan?.reduce((result, item) => ({
-    //   ...result, [item.switchId]: item.defaultVlanId
-    // }), {})
-    // const getDefaultVlanMapping = (key: keyof typeof transformedValues, item: string) => {
-    //   return transformedValues?.[key] === defaultVlanText ? {
-    //     [key]: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
-    //   } : {}
-    // }
-
-
 
     const { transformedValues, ignoreFields } = transformData(values)
     const { untaggedVlan, voiceVlan } = transformedValues
@@ -1312,9 +1299,10 @@ export function EditPortDrawer ({
                     title={$t(EditPortMessages.GUIDE_TO_AUTHENTICATION)}
                   />
                 </>}
-                initialValue={null}
+                initialValue=''
                 validateFirst
                 rules={[
+                  // TODO: checking wording with UX
                   // ...(isMultipleEdit
                   //   && hasMultipleValue.includes('authenticationProfileId')
                   //   && !authenticationProfileIdCheckbox ? [{
@@ -1478,8 +1466,8 @@ export function EditPortDrawer ({
                   { validator: (_:unknown, value: string) =>
                     checkVlanDiffFromSwitchDefaultVlan(value, aggregatePortsData)
                   }
+                    //TODO
                     // { validator: (rule:unknown, value: string) => {
-                    //   //TODO
                     //   const allTaggedVlans = getCurrentVlansByKey({
                     //     ...commonRequiredProps,
                     //     key: 'taggedVlans'

@@ -189,10 +189,14 @@ export const getFlexAuthDefaultValue = (
     authFailAction: AuthFailAction.BLOCK,
     authTimeoutAction: AuthTimeoutAction.NONE,
     guestVlan: '',
+    authenticationProfileIdCheckbox: false,
     authenticationTypeCheckbox: false,
     dot1xPortControlCheckbox: false,
     authDefaultVlanCheckbox: false
   }
+
+  const isAllPortsEnabledAuth = portSetting?.flexibleAuthenticationEnabled
+    && !hasMultipleValueFields?.includes('flexibleAuthenticationEnabled')
 
   const handleField = (key: string) => {
     return !hasMultipleValueFields?.includes(key) && (portSetting[key as keyof typeof portSetting] !== undefined)
@@ -200,15 +204,10 @@ export const getFlexAuthDefaultValue = (
       : defaultValue[key as keyof typeof defaultValue]
   }
 
-  const handleCheckbox = () => {
-    return hasMultipleValueFields?.includes('flexibleAuthenticationEnabled')
-    // || hasMultipleValueFields?.includes('authenticationCustomize')
-  }
-
   return Object.keys(defaultValue).reduce((result: FlexibleAuthentication, key: string) => {
     return {
       ...result,
-      [key]: key.includes('Checkbox') ? handleCheckbox() : handleField(key)
+      [key]: key.includes('Checkbox') ? !isAllPortsEnabledAuth : handleField(key)
     }
   }, {} as FlexibleAuthentication)
 }
@@ -365,8 +364,8 @@ export const validateApplyProfile = (
   if (!allSelectedPortsMatch) {
     const isDefaultVlanMismatch = !!profileDefaultVlans.length
       && (profileDefaultVlans.length > 1 || !profileDefaultVlans.includes(profile?.authDefaultVlan))
-    const isGuestVlanMismatch = !!guestVlans.length && profile?.guestVlan
-      && (guestVlans.length > 1 || !guestVlans.includes(profile?.guestVlan))
+    const isGuestVlanMismatch = !!guestVlans.length
+      && (guestVlans.length > 1 || !profile?.guestVlan || !guestVlans.includes(profile?.guestVlan))
 
     if (isDefaultVlanMismatch) {
       return Promise.reject(
@@ -386,8 +385,9 @@ export const validateApplyProfile = (
         $t({ defaultMessage: 'If the port control type is either Force Authorized or Force Unauthorized, the Auth-Default VLAN must be the same as the Auth Default VLAN setting at the switch level for all switches.' })
       )
     }
+  }
 
-  } else if (isDefaultVlanDuplicateWithSwitch) {
+  if (isDefaultVlanDuplicateWithSwitch) {
     return Promise.reject($t(FlexAuthMessages.VLAN_CANNOT_SAME_AS_TARGET_VLAN, {
       sourceVlan: $t(FlexAuthVlanLabel.AUTH_DEFAULT_VLAN),
       targetVlan: $t(FlexAuthVlanLabel.DEFAULT_VLAN)
@@ -624,26 +624,12 @@ export const handlePortVlanChange = (props: {
   const isFlexAuthEnabled = form.getFieldValue('flexibleAuthenticationEnabled')
   // eslint-disable-next-line max-len
   const isFlexAuthEnabledOverride = form.getFieldValue('flexibleAuthenticationEnabledCheckbox')
-  // const relatedFields = [
-  //   'flexibleAuthenticationEnabled', 'authenticationProfileId', 'profileAuthDefaultVlan',
-  //   'authenticationType', 'changeAuthOrder', 'dot1xPortControl', 'authDefaultVlan',
-  //   'restrictedVlan', 'criticalVlan', 'authFailAction', 'authTimeoutAction', 'guestVlan'
-  // ]
   if (isFlexAuthButtonDisabled && (isFlexAuthEnabledOverride || isFlexAuthEnabled)) {
     const resetFieldValues = {
       ...form.getFieldsValue(),
       flexibleAuthenticationEnabled: false,
       flexibleAuthenticationEnabledCheckbox: false
-      // ...(relatedFields.reduce((result, key) => {
-      //   return {
-      //     ...result,
-      //     [`${key}Checkbox`]: false
-      //   }
-      // }, {}))
     }
-    // setTimeout(() => {
-    //   form.setFieldsValue(resetFieldValues)
-    // }, 200)
     form.setFieldsValue(resetFieldValues)
   }
 }
