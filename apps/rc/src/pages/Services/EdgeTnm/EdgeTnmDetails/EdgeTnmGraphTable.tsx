@@ -7,13 +7,15 @@ import {
   Loader } from '@acx-ui/components'
 import { useGetEdgeTnmHostGraphsConfigQuery } from '@acx-ui/rc/services'
 import {
-  EdgeTnmHostGraphConfig } from '@acx-ui/rc/utils'
+  EdgeTnmHostGraphConfig,
+  edgeTnmGraphTypeName
+} from '@acx-ui/rc/utils'
 
 interface EdgeTnmHostGraphTableProps {
   serviceId: string | undefined
   hostId: string | undefined
 }
-export function EdgeTnmHostGraphTable (props: EdgeTnmHostGraphTableProps) {
+export const EdgeTnmHostGraphTable = (props: EdgeTnmHostGraphTableProps) => {
   const { serviceId, hostId } = props
 
   const { data, isLoading, isFetching } = useGetEdgeTnmHostGraphsConfigQuery({
@@ -22,7 +24,7 @@ export function EdgeTnmHostGraphTable (props: EdgeTnmHostGraphTableProps) {
 
   return <Loader states={[{ isLoading, isFetching }]}>
     <Table
-      rowKey='id'
+      rowKey='graphId'
       columns={useColumns()}
       dataSource={data}
     />
@@ -33,16 +35,13 @@ function useColumns () {
   const { $t } = useIntl()
   const columns: TableProps<EdgeTnmHostGraphConfig>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Name' }),
+      title: $t({ defaultMessage: 'Graph Name' }),
       key: 'name',
       dataIndex: 'name',
       sorter: true,
       searchable: true,
       fixed: 'left',
-      render: (_, row) =>
-        <Row justify='center'>
-          {row.name}
-        </Row>
+      render: (_, row) => row.name
     },
     {
       title: $t({ defaultMessage: 'Graph Type' }),
@@ -50,7 +49,10 @@ function useColumns () {
       dataIndex: 'type',
       align: 'center',
       sorter: true,
-      render: (data) => data
+      width: 80,
+      render: (_, row) => edgeTnmGraphTypeName[row.graphtype]
+        ? $t(edgeTnmGraphTypeName[row.graphtype])
+        : ''
     },
     {
       title: $t({ defaultMessage: 'Width' }),

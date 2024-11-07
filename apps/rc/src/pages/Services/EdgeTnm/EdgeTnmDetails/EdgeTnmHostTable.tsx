@@ -1,7 +1,8 @@
 import { useState } from 'react'
 
-import { Row }     from 'antd'
-import { useIntl } from 'react-intl'
+import { Row, Space } from 'antd'
+import { find }       from 'lodash'
+import { useIntl }    from 'react-intl'
 
 import {
   Table,
@@ -20,25 +21,27 @@ import {
 } from '@acx-ui/rc/utils'
 
 import { EdgeTnmHostGraphTable } from './EdgeTnmGraphTable'
+import { TnmHostModal }          from './TnmHostModal'
 
 export const EdgeTnmHostTable = (props: { serviceId: string | undefined }) => {
   const { $t } = useIntl()
   const { serviceId } = props
 
-  // const [visible, setVisible] = useState<boolean>(false)
+  const [hostModalVisible, setHostModalVisible] = useState<boolean>(false)
   const [currentHost, setCurrentHost] = useState<string | undefined>(undefined)
 
   const [deleteFn, { isLoading: isDeleting }] = useDeleteEdgeTnmHostMutation()
-  const { data, isLoading, isFetching } = useGetEdgeTnmHostListQuery({
+  const { data: hostList, isLoading, isFetching } = useGetEdgeTnmHostListQuery({
     params: { serviceId }
   }, { skip: !serviceId })
-
 
   const rowActions: TableProps<EdgeTnmHostSetting>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
-      onClick: () => {
-        // setVisible(trrue)
+      visible: (selectedRows) => selectedRows.length === 1,
+      onClick: (rows) => {
+        setCurrentHost(rows[0].hostid)
+        setHostModalVisible(true)
       },
       scopeKey: getScopeKeyByService(ServiceType.EDGE_TNM_SERVICE, ServiceOperation.EDIT)
     },
@@ -65,20 +68,37 @@ export const EdgeTnmHostTable = (props: { serviceId: string | undefined }) => {
     }
   ]
 
+  const tableActions = [{
+    label: $t({ defaultMessage: 'Add TNM Host' }),
+    scopeKey: getScopeKeyByService(ServiceType.EDGE_TNM_SERVICE, ServiceOperation.CREATE),
+    onClick: () => {
+      setHostModalVisible(true)
+    }
+  }]
+
   const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
   return <Loader states={[{ isLoading, isFetching: isDeleting || isFetching }]}>
-    <Table
-      rowKey='hostid'
-      columns={useColumns(setCurrentHost)}
-      dataSource={data}
-      rowActions={allowedRowActions}
-      rowSelection={{ type: 'checkbox' }}
-    />
-    <EdgeTnmHostGraphTable
+    <Space size={60} direction='vertical'>
+      <Table
+        rowKey='hostid'
+        columns={useColumns(setCurrentHost)}
+        dataSource={hostList}
+        rowActions={allowedRowActions}
+        rowSelection={!!allowedRowActions.length && { type: 'checkbox' }}
+        actions={filterByAccessForServicePolicyMutation(tableActions)}
+      />
+      <EdgeTnmHostGraphTable
+        serviceId={serviceId}
+        hostId={currentHost}
+      />
+    </Space>
+    { serviceId && <TnmHostModal
       serviceId={serviceId}
-      hostId={currentHost}
-    />
+      visible={hostModalVisible}
+      setVisible={setHostModalVisible}
+      editData={find(hostList, { hostid: currentHost })}
+    />}
   </Loader>
 }
 
@@ -87,7 +107,7 @@ function useColumns (setCurrentHost: (id: string) => void) {
   const columns: TableProps<EdgeTnmHostSetting>['columns'] = [
     {
       key: 'name',
-      title: $t({ defaultMessage: 'Name' }),
+      title: $t({ defaultMessage: 'Host Name' }),
       dataIndex: 'name',
       sorter: true,
       searchable: true,

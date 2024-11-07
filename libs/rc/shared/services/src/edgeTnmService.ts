@@ -3,7 +3,8 @@ import {
   EdgeTnmServiceUrls,
   EdgeTnmServiceData,
   EdgeTnmHostSetting,
-  EdgeTnmHostGraphConfig
+  EdgeTnmHostGraphConfig,
+  EdgeTnmHostGroup
 } from '@acx-ui/rc/utils'
 import { baseEdgeTnmServiceApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
@@ -40,20 +41,26 @@ export const edgeTnmServiceApi = baseEdgeTnmServiceApi.injectEndpoints({
       invalidatesTags: [{ type: 'EdgeTnmService', id: 'LIST' }]
     }),
     getEdgeTnmHostGraphsConfig: build.query<EdgeTnmHostGraphConfig[], RequestPayload>({
-      query: () => {
-        return createHttpRequest(EdgeTnmServiceUrls.edgeTnmHostStats)
+      query: ({ params }) => {
+        return createHttpRequest(EdgeTnmServiceUrls.edgeTnmHostGraphsConfig, params)
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
+    getEdgeTnmHostGroupList: build.query<EdgeTnmHostGroup[], RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(EdgeTnmServiceUrls.getEdgeTnmHostGroupList, params)
       },
       extraOptions: { maxRetries: 5 }
     }),
     getEdgeTnmHostList: build.query<EdgeTnmHostSetting[], RequestPayload>({
-      query: () => {
-        return createHttpRequest(EdgeTnmServiceUrls.getEdgeTnmHostList)
+      query: ({ params }) => {
+        return createHttpRequest(EdgeTnmServiceUrls.getEdgeTnmHostList, params)
       },
       extraOptions: { maxRetries: 5 }
     }),
     createEdgeTnmHost: build.mutation<CommonResult, RequestPayload>({
-      query: ({ payload }) => {
-        const req = createHttpRequest(EdgeTnmServiceUrls.createEdgeTnmHost)
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeTnmServiceUrls.createEdgeTnmHost, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -85,5 +92,6 @@ export const {
   useGetEdgeTnmHostListQuery,
   useUpdateEdgeTnmHostMutation,
   useDeleteEdgeTnmHostMutation,
-  useGetEdgeTnmHostGraphsConfigQuery
+  useGetEdgeTnmHostGraphsConfigQuery,
+  useGetEdgeTnmHostGroupListQuery
 } = edgeTnmServiceApi

@@ -1,0 +1,132 @@
+import { useEffect } from 'react'
+
+import { Modal, Form, Input } from 'antd'
+import { useIntl }            from 'react-intl'
+
+import { Select }                                                        from '@acx-ui/components'
+import { useCreateEdgeTnmHostMutation, useGetEdgeTnmHostGroupListQuery } from '@acx-ui/rc/services'
+import {
+  EdgeTnmHostFormData,
+  EdgeTnmHostSetting,
+  edgeTnmHostFormRequestPreProcess,
+  generalIpAddressRegExp,
+  networkWifiPortRegExp
+} from '@acx-ui/rc/utils'
+
+interface TnmHostModalProps {
+  serviceId: string
+  visible: boolean
+  setVisible: (v: boolean) => void
+  editData: EdgeTnmHostSetting | undefined
+}
+
+export const TnmHostModal = (props: TnmHostModalProps) => {
+  const { $t } = useIntl()
+  const { serviceId, visible, setVisible, editData } = props
+  const [ form ] = Form.useForm()
+
+  const [addTnmHost, { isLoading: isCreating }] = useCreateEdgeTnmHostMutation()
+
+  const { groupOptions, isGroupOptsLoading } = useGetEdgeTnmHostGroupListQuery({
+    params: { serviceId }
+  }, {
+    skip: !serviceId,
+    selectFromResult: ({ data, isLoading }) => {
+      return {
+        groupOptions: data?.map(item => ({ label: item.name, value: item.groupid })),
+        isGroupOptsLoading: isLoading
+      }
+    }
+  })
+
+  const handleFinish = async (formValues: EdgeTnmHostFormData) => {
+    try {
+      await addTnmHost({
+        params: { serviceId },
+        payload: edgeTnmHostFormRequestPreProcess(formValues)
+      }).unwrap()
+
+      setVisible(false)
+    } catch(err) {
+      // eslint-disable-next-line no-console
+      console.log(err)
+    }
+  }
+
+  useEffect(() => {
+    if (visible) {
+      form.resetFields()
+
+      if (editData) {
+        form.setFieldsValue({
+          host: editData.host,
+          groupIds: editData.hostgroups.map(g => g.groupid),
+          interface: {
+            ip: editData.interfaces[0].ip,
+            port: editData.interfaces[0].port
+          }
+        })
+      }
+    }
+
+  }, [visible, editData])
+
+  return <Modal
+    title={$t({ defaultMessage: 'Create TNM Host' })}
+    width={500}
+    visible={visible}
+    mask
+    destroyOnClose
+    maskClosable={false}
+    onCancel={() => setVisible(false)}
+    onOk={() => {form.submit()}}
+    okText={$t({ defaultMessage: 'Add' })}
+  >
+    <Form form={form} onFinish={handleFinish} disabled={isCreating}>
+      <Form.Item
+        name='host'
+        label={$t({ defaultMessage: 'Name' })}
+        rules={[{
+          required: true,
+          message: $t({ defaultMessage: 'Please input name' })
+        }]}
+        children={<Input />}
+      />
+      <Form.Item
+        name='groupIds'
+        label={$t({ defaultMessage: 'Host Group' })}
+        rules={[{
+          required: true,
+          message: $t({ defaultMessage: 'Please select host group' })
+        }]}
+        children={<Select
+          loading={isGroupOptsLoading}
+          options={groupOptions}
+          mode='multiple'
+          showSearch
+          showArrow
+          allowClear
+          optionFilterProp='label'
+        />}
+      />
+      <Form.Item
+        name={['interface', 'ip']}
+        label={$t({ defaultMessage: 'IP Address' })}
+        rules={[
+          { required: true },
+          { validator: (_, value) => generalIpAddressRegExp(value) }
+        ]}
+        children={<Input />}
+      />
+      <Form.Item
+        name={['interface', 'port']}
+        label={$t({ defaultMessage: 'Port' })}
+        rules={[
+          { required: true },
+          { validator: (_, value) => networkWifiPortRegExp(value) }
+        ]}
+        children={<Input type='number' />}
+      />
+    </Form>
+  </Modal>
+}

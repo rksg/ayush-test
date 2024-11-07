@@ -24,6 +24,12 @@ export const EdgeTnmServiceUrls: { [key: string]: ApiInfo } = {
     newApi: true,
     defaultHeaders: versionHeaders
   },
+  getEdgeTnmHostGroupList: {
+    method: 'get',
+    url: '/edgeTnmZabbixServices/:serviceId/hostGroup',
+    newApi: true,
+    defaultHeaders: versionHeaders
+  },
   createEdgeTnmHost: {
     method: 'post',
     url: '/edgeTnmZabbixServices/:serviceId/host',
@@ -48,7 +54,7 @@ export const EdgeTnmServiceUrls: { [key: string]: ApiInfo } = {
     newApi: true,
     defaultHeaders: versionHeaders
   },
-  edgeTnmHostStats: {
+  edgeTnmHostGraphsConfig: {
     method: 'get',
     url: '/edgeTnmZabbixServices/:serviceId/host/:hostId/graph',
     newApi: true,

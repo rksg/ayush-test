@@ -1,3 +1,5 @@
+import { EdgeTnmGraphTypeEnum } from '../../models/EdgeTnmServiceEnum'
+
 export interface EdgeTnmServiceSetting {
   tenantId?: string
   venueId?: string
@@ -27,7 +29,7 @@ export interface EdgeTnmHostGraphConfig {
   templateid: string
   show_work_period: string
   show_triggers: string
-  graphtype: string
+  graphtype: EdgeTnmGraphTypeEnum
   show_legend: string
   show_3d: string
   percent_left: string
@@ -68,6 +70,12 @@ export interface EdgeTnmHostGraphConfig {
   startSearch?: string
 }
 
+export interface EdgeTnmHostGroup {
+  groupid: string
+  name: string
+  internal?: unknown
+}
+
 export interface EdgeTnmHostSetting {
   hostid: string
   host: string
@@ -90,6 +98,16 @@ export interface EdgeTnmHostSetting {
   vendor_version: string
   active_available: string
   assigned_proxyid: string
+  parentTemplates: {
+    templateid: string
+    name: string
+  }[],
+  hostgroups:{
+    groupid: string
+    name: string
+  }[],
+  interfaces: EdgeTnmHostInterface[]
+  tags: EdgeTnmHostTag[]
 }
 
 interface EdgeTnmHostInterface {
@@ -121,4 +139,13 @@ export interface EdgeTnmHostPayload {
   }[],
   tags: EdgeTnmHostTag[],
   description?: string
+}
+
+export interface EdgeTnmHostFormData {
+  host: string,
+  groupIds: string[],
+  interface: {
+    ip: string,
+    port: string
+  }
 }

@@ -19,10 +19,9 @@ export const EdgeTnmDetails = () => {
   const { serviceId } = useParams()
 
   const { data } = useGetEdgeTnmServiceListQuery({}, {
-    selectFromResult: ({ data, isLoading, isFetching }) => {
+    selectFromResult: ({ data }) => {
       return {
-        data: find(data, { id: serviceId }),
-        isLoading, isFetching
+        data: find(data, { id: serviceId })
       }
     }
   })

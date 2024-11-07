@@ -32,7 +32,7 @@ export const EdgeTnmCreateFormModal = (props: EdgeTnmCreateFormModalProps) => {
   const [addEdgeTnmService, { isLoading: isCreating }] = useAddEdgeTnmServiceMutation()
 
   const [ form ] = Form.useForm()
-  const venueId = Form.useWatch('venueId')
+  const venueId = Form.useWatch('venueId', form)
 
   const {
     venueOptions, isVenueOptsLoading
@@ -80,6 +80,7 @@ export const EdgeTnmCreateFormModal = (props: EdgeTnmCreateFormModalProps) => {
     visible={visible}
     mask
     destroyOnClose
+    maskClosable={false}
   >
     <Form form={form} onFinish={handleFinish} disabled={isCreating}>
       <Form.Item
