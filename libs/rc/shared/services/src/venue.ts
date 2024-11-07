@@ -1859,6 +1859,27 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       providesTags: [{ type: 'PropertyUnit', id: 'ID' }]
     }),
+    batchGetPropertyUnitsByIds: build.query<PropertyUnit[], RequestPayload<{ venueId: string, ids: string[] }>>({
+      async queryFn ({ payload }, _queryApi, _extraOptions, fetchWithBQ) {
+        if (payload?.ids && payload?.venueId) {
+          const venueId = payload.venueId
+          const requests = payload.ids.map(unitId => {
+            return fetchWithBQ({ ...createHttpRequest(PropertyUrlsInfo.getUnitById, { venueId, unitId }, customHeaders.v1) })
+          })
+          const result = await Promise.all(requests)
+          const error = result.find(r => r.error)
+
+          if (error) {
+            return { error: error as FetchBaseQueryError }
+          }
+
+          return { data: result.map(r => r.data as PropertyUnit) }
+        }
+
+        return { data: [] }
+      },
+      providesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
+    }),
     getPropertyUnitList: build.query<TableResult<PropertyUnit>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
@@ -2260,6 +2281,7 @@ export const {
   useAddPropertyUnitMutation,
   useGetPropertyUnitByIdQuery,
   useLazyGetPropertyUnitByIdQuery,
+  useLazyBatchGetPropertyUnitsByIdsQuery,
   useGetPropertyUnitListQuery,
   useLazyGetPropertyUnitListQuery,
   useUpdatePropertyUnitMutation,
