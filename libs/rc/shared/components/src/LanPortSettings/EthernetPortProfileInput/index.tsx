@@ -5,7 +5,6 @@ import { useIntl } from 'react-intl'
 
 import { StepsForm } from '@acx-ui/components'
 import {
-  EhternetPortSettings,
   EthernetPortAuthType,
   EthernetPortProfileViewData,
   EthernetPortType,
@@ -18,15 +17,15 @@ import EthernetPortProfileOverwriteItem from './EthernetPortProfileOverwriteItem
 
 interface EthernetPortProfileInputProps {
     currentEthernetPortData?: EthernetPortProfileViewData,
-    currentPortOverwirte?: EhternetPortSettings,
     currentIndex: number,
-    isEditable?: boolean
+    isEditable?: boolean,
+    onGUIChanged?: (fieldName: string) => void
 }
 
 const EthernetPortProfileInput = (props:EthernetPortProfileInputProps) => {
   const { $t } = useIntl()
-  const { currentIndex, currentEthernetPortData,
-    currentPortOverwirte, isEditable=true } = props
+  const { currentIndex, currentEthernetPortData, isEditable=true,
+    onGUIChanged } = props
   const form = Form.useFormInstance()
   const currentUntagId = Form.useWatch( ['lan', currentIndex, 'untagId'] ,form)
 
@@ -35,15 +34,6 @@ const EthernetPortProfileInput = (props:EthernetPortProfileInputProps) => {
       form.setFieldValue(['lan', currentIndex, 'vlanMembers'], currentUntagId)
     }
   }, [currentUntagId])
-
-  useEffect(()=> {
-    if (currentPortOverwirte && currentEthernetPortData) {
-      form.setFieldValue(['lan', currentIndex, 'untagId'],
-        currentPortOverwirte.overwriteUntagId ?? currentEthernetPortData?.untagId)
-      form.setFieldValue(['lan', currentIndex, 'vlanMembers'],
-        currentPortOverwirte.overwriteVlanMembers ?? currentEthernetPortData?.vlanMembers)
-    }
-  }, [currentEthernetPortData, currentPortOverwirte])
 
   return (<>
     <StepsForm.FieldLabel width={'200px'}>
@@ -56,8 +46,13 @@ const EthernetPortProfileInput = (props:EthernetPortProfileInputProps) => {
     <EthernetPortProfileOverwriteItem
       title='VLAN Untag ID'
       defaultValue={currentEthernetPortData?.untagId.toString() ?? ''}
+      initialData={
+        (currentEthernetPortData?.apPortOverwrites
+          ?.find(p => p.portId === currentIndex+1)?.overwriteUntagId?.toString()) ??
+        (currentEthernetPortData?.untagId.toString() ?? '')}
       isEditable={isEditable}
       fieldName={['lan', currentIndex, 'untagId']}
+      onGUIChanged={onGUIChanged}
       rules={[
         { validator: (_, value) => validateVlanId(value) }
       ]}
@@ -65,9 +60,14 @@ const EthernetPortProfileInput = (props:EthernetPortProfileInputProps) => {
     <EthernetPortProfileOverwriteItem
       title='VLAN Members'
       defaultValue={currentEthernetPortData?.vlanMembers.toString() ?? ''}
+      initialData={
+        (currentEthernetPortData?.apPortOverwrites
+          ?.find(p => p.portId === currentIndex+1)?.overwriteVlanMembers) ??
+        (currentEthernetPortData?.vlanMembers.toString() ?? '')}
       isEditable={isEditable &&
         (currentEthernetPortData?.type === EthernetPortType.SELECTIVE_TRUNK)}
       fieldName={['lan', currentIndex, 'vlanMembers']}
+      onGUIChanged={onGUIChanged}
       rules={[
         { validator: (_, value) => checkVlanMember(value) }
       ]}
