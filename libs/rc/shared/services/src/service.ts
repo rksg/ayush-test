@@ -655,18 +655,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, async (msg) => {
-          try {
-            const response = await api.cacheDataLoaded
-
-            if (requestArgs.callback)
-              (requestArgs.callback as Function)(response, msg)
-          } catch {
-            // do nothing
-          }
-        })
-      },
       providesTags: [{ type: 'Dpsk', id: 'DETAIL' }]
     }),
     deleteDpsk: build.mutation<CommonResult, RequestPayload>({
