@@ -9,7 +9,6 @@ import {
   useGetAAAPolicyTemplateQuery
 } from '@acx-ui/rc/services'
 import {
-  AAAPolicyType,
   filterByAccessForServicePolicyMutation,
   getScopeKeyByPolicy,
   PolicyOperation,
