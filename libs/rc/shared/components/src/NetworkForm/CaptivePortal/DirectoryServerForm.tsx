@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from 'react'
+import { useEffect, useState, useContext, useRef } from 'react'
 
 
 import {
@@ -7,15 +7,15 @@ import {
   Button,
   Space
 } from 'antd'
-import { useIntl } from 'react-intl'
-import styled      from 'styled-components/macro'
+import { DefaultOptionType } from 'antd/lib/select'
+import { useIntl }           from 'react-intl'
+import styled                from 'styled-components/macro'
 
 
 import { GridCol, GridRow, StepsFormLegacy, Tooltip } from '@acx-ui/components'
 import { useGetDirectoryServerViewDataListQuery }     from '@acx-ui/rc/services'
 import {
   NetworkSaveData,
-  DirectoryServerViewData,
   GuestNetworkTypeEnum,
   NetworkTypeEnum
 }                                                   from '@acx-ui/rc/utils'
@@ -59,9 +59,10 @@ export function DirectoryServerForm ({ setDirectoryServerIdToNetworkForm } : { s
     cloneMode
   } = useContext(NetworkFormContext)
   const { $t } = useIntl()
+  const addedDirectoryServerUnderEditMode = useRef<string>('')
   const [ visible, setVisible ] = useState<boolean>(false)
   const [ selectedDirectory, setSelectedDirectory] = useState('')
-  const [ directoryServerList, setDirectoryServerList ] = useState<DirectoryServerViewData[]>([])
+  const [ directoryServerOptionsList, setDirectoryServerOptionsList] = useState<DefaultOptionType[]>([])
   // eslint-disable-next-line max-len
   const { data: directoryServerListFromServer } = useGetDirectoryServerViewDataListQuery({ payload: defaultPayload })
 
@@ -76,16 +77,31 @@ export function DirectoryServerForm ({ setDirectoryServerIdToNetworkForm } : { s
     const directoryServerList = directoryServerListFromServer?.data ?? []
 
     if (directoryServerList) {
-      setDirectoryServerList(directoryServerList)
+      setDirectoryServerOptionsList([
+        { label: $t({ defaultMessage: 'Select...' }), value: '' },
+        ...(directoryServerList && directoryServerList.map((server) => {
+          return { label: `${server.name} (${server.type})` , value: server.id }
+        }) )
+      ])
     }
 
     if((editMode || cloneMode) && data){
       const wifiNetworkId = data?.id ?? ''
-      setDirectoryServerValue(directoryServerList.find((server) => server.wifiNetworkIds.includes(wifiNetworkId))?.id)
+      if (addedDirectoryServerUnderEditMode.current){
+        setDirectoryServerValue(addedDirectoryServerUnderEditMode.current)
+      } else {
+        setDirectoryServerValue(directoryServerList.find((server) => server.wifiNetworkIds.includes(wifiNetworkId))?.id)
+      }
     }
 
   }, [directoryServerListFromServer, data])
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const addDirectoryServerCallback = (option: DefaultOptionType, gatewayIps: string[]) : void => {
+    setDirectoryServerOptionsList([...directoryServerOptionsList, option])
+    setDirectoryServerValue(option.value as string)
+    addedDirectoryServerUnderEditMode.current = option.value as string
+  }
 
   return (<>
     <GridRow>
@@ -105,12 +121,7 @@ export function DirectoryServerForm ({ setDirectoryServerIdToNetworkForm } : { s
                 onChange={(value) => {
                   setDirectoryServerValue(value)
                 }}
-                options={[
-                  { label: $t({ defaultMessage: 'Select...' }), value: '' },
-                  ...(directoryServerList && directoryServerList.map((server) => {
-                    return { label: `${server.name} (${server.type})` , value: server.id }
-                  }) )
-                ]}
+                options={directoryServerOptionsList}
               />
 
             }
@@ -138,7 +149,10 @@ export function DirectoryServerForm ({ setDirectoryServerIdToNetworkForm } : { s
     <DirectoryServerDrawer
       visible={visible}
       setVisible={setVisible}
-      editMode={editMode}
+      // We just need to add but not edit server in this form, so keep it false.
+      // Otherwise it won't send any request.
+      editMode={false}
+      callbackFn={addDirectoryServerCallback}
     />
     {!(editMode) && <GridRow>
       <GridCol col={{ span: 24 }}>

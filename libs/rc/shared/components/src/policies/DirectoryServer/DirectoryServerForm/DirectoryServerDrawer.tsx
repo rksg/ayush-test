@@ -34,11 +34,13 @@ export default function DirectoryServerDrawer (props: DirectoryServerDrawerProps
         const resData = await createDirectoryServer({ params, payload: values }).unwrap()
         if (resData.response?.id) {
           const newOption = {
-            value: resData.response?.id, label: values.name
+            value: resData.response?.id,
+            label: `${values.name} (${values.type})`
           } as { value: string, label: string }
           // eslint-disable-next-line max-len
           callbackFn && callbackFn(newOption, [values.primaryGatewayAddress, values.secondaryGatewayAddress ?? ''])
         }
+        form.resetFields()
       }
       setVisible(false)
     } catch (error) {
