@@ -280,7 +280,7 @@ describe('Multi-venue SD-LAN Table', () => {
     // eslint-disable-next-line max-len
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
     const mockedData = cloneDeep(mockedMvSdLanDataList.slice(0, 1))
-    mockedData[0].id = mockEdgeSdLanCompatibilities.compatibilities[0].serviceId
+    mockedData[0].id = mockEdgeSdLanCompatibilities!.compatibilities![0].serviceId
     mockedData[0].name = 'compatible test'
 
     mockServer.use(
