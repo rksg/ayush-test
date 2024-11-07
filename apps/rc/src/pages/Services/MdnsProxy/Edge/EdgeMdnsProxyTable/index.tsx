@@ -1,3 +1,6 @@
+import { useMemo } from 'react'
+
+import { Space }   from 'antd'
 import { groupBy } from 'lodash'
 import { useIntl } from 'react-intl'
 
@@ -10,8 +13,8 @@ import {
   showActionModal,
   Tooltip
 } from '@acx-ui/components'
-import { CountAndNamesTooltip, MdnsProxyForwardingRulesTable, ToolTipTableStyle }                   from '@acx-ui/rc/components'
-import { useDeleteEdgeMdnsProxyMutation, useGetEdgeMdnsProxyViewDataListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
+import { CountAndNamesTooltip, MdnsProxyForwardingRulesTable, ToolTipTableStyle, useEdgeMdnssCompatibilityData } from '@acx-ui/rc/components'
+import { useDeleteEdgeMdnsProxyMutation, useGetEdgeMdnsProxyViewDataListQuery, useVenuesListQuery }              from '@acx-ui/rc/services'
 import {
   ServiceType,
   getServiceDetailsLink,
@@ -23,9 +26,12 @@ import {
   useTableQuery,
   EdgeMdnsProxyViewData,
   defaultSort,
-  MdnsProxyFeatureTypeEnum
+  MdnsProxyFeatureTypeEnum,
+  EdgeServiceCompatibility
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+
+import { CompatibilityCheck } from './CompatibilityCheck'
 
 const settingsId = 'services-edge-mdns-proxy-table'
 export function EdgeMdnsProxyTable () {
@@ -86,6 +92,13 @@ export function EdgeMdnsProxyTable () {
     }
   ]
 
+  const currentServiceIds = useMemo(
+    () => tableQuery.data?.data?.map(i => i.id!) ?? [],
+    [tableQuery.data?.data])
+  const skipFetchCompatibilities = currentServiceIds.length === 0
+  // eslint-disable-next-line max-len
+  const compatibilityData = useEdgeMdnssCompatibilityData(currentServiceIds, skipFetchCompatibilities)
+
   const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
   return (
@@ -115,7 +128,7 @@ export function EdgeMdnsProxyTable () {
         <Table
           rowKey='id'
           settingsId={settingsId}
-          columns={useColumns()}
+          columns={useColumns(compatibilityData.compatibilities)}
           dataSource={tableQuery.data?.data}
           rowActions={allowedRowActions}
           rowSelection={(allowedRowActions.length > 0) && { type: 'checkbox' }}
@@ -129,7 +142,7 @@ export function EdgeMdnsProxyTable () {
   )
 }
 
-function useColumns () {
+function useColumns (compatibilityData?: Record<string, EdgeServiceCompatibility[]>) {
   const { $t } = useIntl()
   const emptyVenues: { key: string, value: string }[] = []
   const { venueNameMap } = useVenuesListQuery({
@@ -157,7 +170,7 @@ function useColumns () {
       searchable: true,
       fixed: 'left',
       render: function (_, row) {
-        return (
+        return (<Space>
           <TenantLink
             to={getServiceDetailsLink({
               type: ServiceType.EDGE_MDNS_PROXY,
@@ -166,7 +179,11 @@ function useColumns () {
             })}>
             {row.name}
           </TenantLink>
-        )
+          <CompatibilityCheck
+            serviceId={row.id!}
+            compatibilityData={compatibilityData}
+          />
+        </Space>)
       }
     },
     {

@@ -49,6 +49,7 @@ import {
   baseVenueApi as venueApi,
   baseWorkflowApi,
   videoCallQoeApi,
+  baseRuckusAssistantApi as ruckusAssistantApi,
   baseDirectoryServerApi as directoryServerApi
 } from './baseApi'
 
@@ -102,6 +103,7 @@ export const store = configureStore({
     [smartZoneApi.reducerPath]: smartZoneApi.reducer,
     [ethernetPortProfileApi.reducerPath]: ethernetPortProfileApi.reducer,
     [edgeHqosProfilesApi.reducerPath]: edgeHqosProfilesApi.reducer,
+    [ruckusAssistantApi.reducerPath]: ruckusAssistantApi.reducer,
     [directoryServerApi.reducerPath]: directoryServerApi.reducer
   },
 
@@ -157,6 +159,7 @@ export const store = configureStore({
       smartZoneApi.middleware,
       ethernetPortProfileApi.middleware,
       edgeHqosProfilesApi.middleware,
+      ruckusAssistantApi.middleware,
       directoryServerApi.middleware
     ])
   },

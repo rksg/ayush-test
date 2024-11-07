@@ -25,5 +25,5 @@ export enum IncompatibilityFeatures {
   PIN = 'PIN',
   PIN_DS = 'PIN_DS',
   PIN_AS = 'PIN_AS',
-  EDGE_MDNS_PROXY = 'Edge mDNS Proxy'
+  EDGE_MDNS_PROXY = 'MDNS'
 }
