@@ -416,7 +416,8 @@ describe('Edge Cluster Network Control Tab', () => {
   describe('mDNS', () => {
     beforeEach(() => {
       jest.mocked(useIsEdgeFeatureReady)
-        .mockImplementation(ff => ff === Features.EDGE_MDNS_PROXY_TOGGLE)
+        .mockImplementation(ff => ff === Features.EDGE_MDNS_PROXY_TOGGLE
+          || ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
       params = {
         tenantId: '1ecc2d7cf9d2342fdb31ae0e24958fcac',
@@ -540,6 +541,23 @@ describe('Edge Cluster Network Control Tab', () => {
 
       await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
       expect(mockedActivateEdgeClusterReq).toBeCalledTimes(0)
+    })
+
+    it('should show compatibility component', async () => {
+      render(
+        <Provider>
+          <EdgeNetworkControl
+            currentClusterStatus={mockEdgeClusterList.data[0] as EdgeClusterStatus} />
+        </Provider>, {
+          route: {
+            params,
+            path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab'
+          }
+        })
+      const toolTips = await screen.findAllByTestId('ApCompatibilityToolTip')
+      expect(toolTips.length).toBe(1)
+      toolTips.forEach(t => expect(t).toBeVisible())
+      expect(await screen.findByTestId('EdgeCompatibilityDrawer')).toBeVisible()
     })
   })
 })
