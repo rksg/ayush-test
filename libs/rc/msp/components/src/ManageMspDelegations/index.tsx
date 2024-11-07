@@ -68,7 +68,7 @@ export const ManageMspDelegationDrawer = (props: ManageMspDelegationDrawerProps)
   const [delegatedAdminsData, setDelegatedAdminsData] = useState([] as MspEcDelegatedAdmins[])
   const [privilegeGroupData, setPrivilegeGroupData] = useState([] as PrivilegeGroup[])
 
-  const isSkip = (tenantIds === undefined || tenantIds.length !== 1)
+  const isSkip = tenantIds?.length !== 1
   const isTechPartner =
     (tenantType === AccountType.MSP_INSTALLER ||
      tenantType === AccountType.MSP_INTEGRATOR)
@@ -77,7 +77,7 @@ export const ManageMspDelegationDrawer = (props: ManageMspDelegationDrawerProps)
     = useGetPrivilegeGroupsWithAdminsQuery({ params })
 
   const { data: delegatedPGs } = useGetMspEcDelegatePrivilegeGroupsQuery({
-    params: { mspEcTenantId: tenantIds ? tenantIds[0] : undefined } }, { skip: isSkip })
+    params: { mspEcTenantId: tenantIds?.[0] } }, { skip: isSkip })
 
   useEffect(() => {
     if (privilegeGroupList) {
