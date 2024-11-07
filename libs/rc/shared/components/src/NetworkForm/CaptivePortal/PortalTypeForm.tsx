@@ -39,6 +39,7 @@ function TypesForm () {
     data,
     setData,
     editMode,
+    isRuckusAiMode,
     cloneMode,
     modalMode,
     createType
@@ -72,7 +73,8 @@ function TypesForm () {
           'Select the way users gain access to the network through the captive portal' })}
         rules={[{ required: true }]}
       >
-        <Radio.Group onChange={onChange} disabled={editMode || cloneMode || modalMode}>
+        <Radio.Group onChange={onChange}
+          disabled={!isRuckusAiMode && (editMode || cloneMode || modalMode)}>
           <Space direction='vertical'>
             <Radio value={GuestNetworkTypeEnum.ClickThrough}>
               {GuestNetworkTypeLabel[GuestNetworkTypeEnum.ClickThrough]}

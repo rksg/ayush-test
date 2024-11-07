@@ -2063,6 +2063,23 @@ export const mockAAAPolicyTemplateListResponse = {
   ]
 }
 
+export const mockCaListResponse = {
+  page: 1,
+  totalCount: 2,
+  data: [
+    {
+      id: '1',
+      name: 'CA-1',
+      status: ['VALID']
+    },
+    {
+      id: '2',
+      name: 'CA-2',
+      status: ['VALID']
+    }
+  ]
+}
+
 export const mockAAAPolicyTemplateResponse = mockAAAPolicyTemplateListResponse.data[1]
 
 export const mockAAAPolicyNewCreateResponse = {
@@ -2077,6 +2094,21 @@ export const mockAAAPolicyNewCreateResponse = {
     ip: '123.123.123.2',
     port: 1187,
     sharedSecret: '12345678'
+  },
+  type: 'AUTHENTICATION'
+}
+
+export const mockRadSecAAAPolicyNewCreateResponse = {
+  id: '3',
+  name: 'test 3',
+  primary: {
+    ip: '123.123.123.1',
+    port: 2083
+  },
+  radSecOptions: {
+    tlsEnabled: true,
+    cnSanIdentity: 'cnSan',
+    ocspUrl: 'aaa.com'
   },
   type: 'AUTHENTICATION'
 }

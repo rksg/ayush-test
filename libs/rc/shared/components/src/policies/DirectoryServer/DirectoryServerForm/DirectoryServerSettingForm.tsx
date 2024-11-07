@@ -46,9 +46,9 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
   const form = Form.useFormInstance()
   const type = Form.useWatch('type')
   const [ getDirectoryServerViewDataList ] = useLazyGetDirectoryServerViewDataListQuery()
-  const [ testConnectionDirectoryServer] = useTestConnectionDirectoryServerMutation()
+  // eslint-disable-next-line max-len
+  const [ testConnectionDirectoryServer, { isLoading: isTesting }] = useTestConnectionDirectoryServerMutation()
   const { data, isLoading } = useGetDirectoryServerByIdQuery({ params }, { skip: !editMode })
-  const [isTesting, setIsTesting] = useState(false)
   const [testConnectionStatus, setTestConnectionStatus] = useState<TestConnectionStatusEnum>()
 
   useEffect(() => {
@@ -77,7 +77,12 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
   }
 
   const onClickTestConnection = async () => {
-    setIsTesting(true)
+    try {
+      await form.validateFields(['adminDomainName', 'adminPassword', 'host'])
+    } catch (error) {
+      return
+    }
+    setTestConnectionStatus(undefined)
     const { tlsEnabled, adminDomainName, adminPassword, host, port, type } = form.getFieldsValue()
     const payload: DirectoryServerDiagnosisCommand = {
       action: DirectoryServerDiagnosisCommandEnum.testConnection,
@@ -98,7 +103,6 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
     }catch (error) {
       setTestConnectionStatus(TestConnectionStatusEnum.FAIL)
     }
-    setIsTesting(false)
   }
 
   return (
@@ -230,33 +234,35 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
           />
         </Col>
         {type === DirectoryServerProfileEnum.LDAP && (
-          <>
-            <Col span={16}>
-              <Form.Item
-                name='keyAttribute'
-                label={$t({ defaultMessage: 'Key Attribute' })}
-                initialValue={''}
-                children={<Input/>}
-              />
-            </Col>
-            <Col span={16}>
-              <Form.Item
-                name='searchFilter'
-                label={$t({ defaultMessage: 'Search Filter' })}
-                initialValue={''}
-                children={<Input/>}
-              />
-            </Col>
-          </>
+          <Col span={16}>
+            <Form.Item
+              name='keyAttribute'
+              label={$t({ defaultMessage: 'Key Attribute' })}
+              initialValue={''}
+              children={<Input/>}
+            />
+            <Form.Item
+              name='searchFilter'
+              label={$t({ defaultMessage: 'Search Filter' })}
+              initialValue={''}
+              children={<Input/>}
+            />
+          </Col>
         )
         }
         <Col span={8}></Col>
 
         <Col span={5} style={{ marginRight: '16px' }}>
           <Button
+            style={{
+              background: 'var(--acx-primary-black)',
+              color: 'var(--acx-primary-white)',
+              borderColor: 'var(--acx-primary-black)'
+            }}
             type='primary'
             htmlType='submit'
             disabled={isTesting}
+            loading={isTesting}
             onClick={onClickTestConnection}
           >
             {$t({ defaultMessage: 'Test Connection' })}

@@ -48,6 +48,7 @@ export function SelfSignInForm () {
   const {
     data,
     editMode,
+    isRuckusAiMode,
     cloneMode
   } = useContext(NetworkFormContext)
   const { useWatch } = Form
@@ -418,7 +419,7 @@ export function SelfSignInForm () {
           wlanSecurity={data?.wlan?.wlanSecurity} />
       </GridCol>
     </GridRow>
-    {!(editMode) && <GridRow>
+    {!(editMode) && !(isRuckusAiMode) && <GridRow>
       <GridCol col={{ span: 24 }}>
         <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />
       </GridCol>

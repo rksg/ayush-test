@@ -7,6 +7,7 @@ import {
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
+import { get }                                            from '@acx-ui/config'
 import {  DateFormatEnum, formatter, userDateTimeFormat } from '@acx-ui/formatter'
 import { ClockOutlined }                                  from '@acx-ui/icons'
 import {
@@ -14,8 +15,6 @@ import {
   DateRange,
   dateRangeMap,
   resetRanges,
-  getJwtTokenPayload,
-  AccountTier,
   dateRangeForLast
 } from '@acx-ui/utils'
 
@@ -74,6 +73,7 @@ export const RangePicker = ({
   showLast8hours
 }: DatePickerProps) => {
   const { $t } = useIntl()
+  const isRA = get('IS_MLISA_SA')
   const { translatedRanges, translatedOptions } = useMemo(() => {
     const ranges = defaultRanges(rangeOptions)
     const translatedRanges: RangesType = {}
@@ -90,13 +90,12 @@ export const RangePicker = ({
   const [range, setRange] = useState<DateRangeType>(selectedRange)
   const [boundary, setBoundary] = useState<string>('')
   const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false)
-  const { acx_account_tier: accountTier } = getJwtTokenPayload()
   const allowedDateRange = isReport
-    ? dateRangeForLast(12,'months')
-    : (accountTier === AccountTier.GOLD
-      ? dateRangeForLast(1,'month')
-      : dateRangeForLast(3,'months')
-    )
+    ? dateRangeForLast(12, 'months')
+    : isRA
+      ? dateRangeForLast(3, 'months')
+      : dateRangeForLast(1, 'month')
+
   const disabledDate = useCallback(
     (current: Moment) => (
       (boundary === 'start' && current.isAfter(range.startDate?.clone().add(3, 'months'))) ||
@@ -275,3 +274,4 @@ export const DateTimePicker = ({
     </UI.HiddenDateInput>
   </Tooltip>
 }
+
