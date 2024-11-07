@@ -9,11 +9,7 @@ export const EthernetPortProfileUrls: { [key: string]: ApiInfo } = {
   getEthernetPortProfileViewDataList: {
     method: 'post',
     url: '/ethernetPortProfiles/query',
-    newApi: true,
-    defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1+json',
-      'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
+    newApi: true
   },
   deleteEthernetPortProfile: {
     method: 'delete',
