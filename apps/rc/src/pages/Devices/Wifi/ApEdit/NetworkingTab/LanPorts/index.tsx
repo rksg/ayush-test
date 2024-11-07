@@ -19,7 +19,7 @@ import { ConvertPoeOutToFormData, LanPortPoeSettings, LanPortSettings } from '@a
 import {
   useLazyGetVenueLanPortsQuery,
   useLazyGetVenueSettingsQuery,
-  useGetApLanPortsQuery,
+  useGetApLanPortsWithEthernetProfilesQuery,
   useUpdateApLanPortsMutation,
   useResetApLanPortsMutation,
   useLazyGetDHCPProfileListViewModelQuery,
@@ -99,9 +99,11 @@ export function LanPorts () {
   const supportTrunkPortUntaggedVlan = useIsSplitOn(Features.WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE)
 
   const formRef = useRef<StepsFormLegacyInstance<WifiApSetting>>()
-  const { data: apLanPortsData, isLoading: isApLanPortsLoading } = useGetApLanPortsQuery({
+  const { data: apLanPortsData, isLoading: isApLanPortsLoading } =
+  useGetApLanPortsWithEthernetProfilesQuery({
     params: { tenantId, serialNumber, venueId },
-    enableRbac: isUseWifiRbacApi
+    enableRbac: isUseWifiRbacApi,
+    enableEthernetProfile: isEthernetPortProfileEnabled
   })
   const { data: defaultLanPorts, isLoading: isDefaultPortsLoading } = useGetDefaultApLanPortsQuery({
     params: { venueId, serialNumber }
@@ -361,6 +363,10 @@ export function LanPorts () {
     navigate(`../venues/${venueId}/venue-details/overview`)
   }
 
+  const onGUIChanged = () => {
+    updateEditContext(formRef?.current as StepsFormLegacyInstance)
+  }
+
   return <Loader states={[{
     isLoading: formInitializing,
     isFetching: isApLanPortsUpdating || isApLanPortsResetting || isEthernetPortProfileUpdating
@@ -428,6 +434,7 @@ export function LanPorts () {
                           index={index}
                           useVenueSettings={useVenueSettings}
                           venueId={venueId}
+                          onGUIChanged={onGUIChanged}
                           serialNumber={serialNumber}
                         />
                       </Col>
