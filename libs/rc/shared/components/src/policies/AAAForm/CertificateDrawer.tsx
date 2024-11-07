@@ -8,7 +8,6 @@ interface CertificateDrawerProps {
     visible: boolean,
     setVisible: (v: boolean) => void,
     handleSave: (id?: string) => void
-    // fixedServerCert?: boolean
 }
 
 const CertificateDrawer = (props: CertificateDrawerProps) => {
