@@ -40,7 +40,9 @@ export const TnmHostModal = (props: TnmHostModalProps) => {
     }
   })
 
-  const handleFinish = async (formValues: EdgeTnmHostFormData) => {
+  const handleFinish = async () => {
+    const formValues = form.getFieldsValue(true) as EdgeTnmHostFormData
+
     try {
       await (editData ? updateTnmHost : addTnmHost)({
         params: {
@@ -84,7 +86,7 @@ export const TnmHostModal = (props: TnmHostModalProps) => {
     maskClosable={false}
     onCancel={() => setVisible(false)}
     onOk={() => {form.submit()}}
-    okText={$t({ defaultMessage: 'Add' })}
+    okText={editData ? $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Add' })}
   >
     <Form form={form} onFinish={handleFinish} disabled={isCreating || isUpdating}>
       <Form.Item

@@ -37,7 +37,27 @@ export const mockTnmHostList = [{
   vendor_name: '',
   vendor_version: '',
   active_available: '0',
-  assigned_proxyid: '0'
+  assigned_proxyid: '0',
+  hostgroups: [{
+    groupid: '2',
+    name: 'Linux servers'
+  }],
+  interfaces: [{
+    interfaceid: '12',
+    ip: '192.168.1.1',
+    port: '161',
+    dns: '',
+    details: {
+      version: '2',
+      bulk: '1',
+      community: 'zabbix',
+      max_repetitions: '10'
+    }
+  }],
+  tags: [{
+    tag: 'host-name',
+    value: 'Sibi_Rodan_3u_Stack_Postman_2'
+  }]
 }]
 
 export const mockTnmHostGraphsConfig = [{

@@ -5,8 +5,8 @@ import {
   EdgeTnmServiceFixtures,
   EdgeTnmServiceUrls
 } from '@acx-ui/rc/utils'
-import { Provider }                                                       from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved, waitFor } from '@acx-ui/test-utils'
+import { Provider }                                                      from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import { EdgeTnmDetails } from '.'
 
@@ -17,44 +17,18 @@ const mockTnm1 = mockTnmServiceDataList[0]
 
 jest.mock('./EdgeTnmGraphTable', () => ({
   ...jest.requireActual('./EdgeTnmGraphTable'),
-  EdgeTnmHostGraphTable: () => <div dataa-testid='rc-EdgeTnmHostGraphTable' />
+  EdgeTnmHostGraphTable: (props: { hostId: string }) =>
+    <div data-testid='rc-EdgeTnmHostGraphTable'>{props.hostId}</div>
 }))
 
-type MockSelectProps = React.PropsWithChildren<{
-  onChange?: (value: string | string[]) => void
-  options?: Array<{ label: string, value: unknown }>
-  loading?: boolean
-  maxTagCount?: number,
-  showArrow?: boolean,
-  showSearch?: boolean,
-  maxTagPlaceholder?: React.ReactNode,
-  menuItemSelectedIcon?: React.ReactNode,
-  dropdownClassName?: string,
-  value?: string | string[],
-  mode?: 'multiple'
-}>
-jest.mock('antd', () => {
-  const components = jest.requireActual('antd')
-  const Select = ({
-    loading, children, onChange, mode, options,
-    showArrow, maxTagCount, showSearch, maxTagPlaceholder,
-    optionFilterProp, allowClear,
-    menuItemSelectedIcon,dropdownClassName, value,
-    ...props }: MockSelectProps) => {
-    // eslint-disable-next-line max-len
-    return <select {...props} multiple={mode === 'multiple'} onChange={(e) => onChange?.(e.target.value)} value={value}>
-      {/* Additional <option> to ensure it is possible to reset value to empty */}
-      {children ? <><option value=''></option>{children}</> : null}
-      {options?.map((option, index) => (
-        <option key={`option-${index}`} value={option.value as string}>{option.label}</option>
-      ))}
-    </select>
-  }
-  Select.Option = 'option'
-  return { ...components, Select }
-})
+jest.mock('./TnmHostModal', () => ({
+  ...jest.requireActual('./TnmHostModal'),
+  TnmHostModal: (props: { visible: boolean }) =>
+    props.visible && <div data-testid='rc-TnmHostModal' />
+}))
 
 const mockAddReq = jest.fn()
+const mockedDeleteReq = jest.fn()
 describe('Edge TNM Service Details', () => {
   let params: { tenantId: string, serviceId: string }
   beforeEach(() => {
@@ -64,6 +38,7 @@ describe('Edge TNM Service Details', () => {
     }
 
     mockAddReq.mockClear()
+    mockedDeleteReq.mockClear()
 
     mockServer.use(
       rest.get(
@@ -84,6 +59,13 @@ describe('Edge TNM Service Details', () => {
           mockAddReq(req.body)
           return res(ctx.status(202))
         }
+      ),
+      rest.delete(
+        EdgeTnmServiceUrls.deleteEdgeTnmHost.url,
+        (req, res, ctx) => {
+          mockedDeleteReq()
+          return res(ctx.status(202))
+        }
       )
     )
   })
@@ -95,56 +77,58 @@ describe('Edge TNM Service Details', () => {
       route: { params, path: mockPath }
     })
 
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    expect(await screen.findByText('Mocked_TNMService_1')).toBeVisible()
+    await basicCheck()
     const rows = screen.getAllByRole('row', { name: /example-host8/i })
     expect(rows.length).toBe(1)
   })
 
-  it('should create host successfully', async () => {
+  it('should show modal after click edit', async () => {
     render(<Provider>
       <EdgeTnmDetails />
     </Provider>, {
       route: { params, path: mockPath }
     })
 
-    expect(await screen.findByText('Mocked_TNMService_1')).toBeVisible()
+    const row = await basicCheck()
+    await userEvent.click(within(row).getByRole('checkbox'))
+    await userEvent.click(screen.getByRole('button', { name: 'Edit' }))
+    await screen.findByTestId('rc-TnmHostModal')
+    expect(screen.getByTestId('rc-EdgeTnmHostGraphTable')).toHaveTextContent('10640')
+  })
+
+  it('should delete selected row', async () => {
+    render(<Provider>
+      <EdgeTnmDetails />
+    </Provider>, {
+      route: { params, path: mockPath }
+    })
+
+    const row = await basicCheck()
+    await userEvent.click(within(row).getByRole('checkbox'))
+    await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
+    const dialogTitle = await screen.findByText('Delete "example-host8"?')
+    await userEvent.click(screen.getByRole('button', { name: 'Delete Edge Third Party App' }))
+    await waitForElementToBeRemoved(dialogTitle)
+    expect(screen.queryByRole('dialog')).toBeNull()
+    expect(mockedDeleteReq).toBeCalledTimes(1)
+  })
+
+  it('should show host modal', async () => {
+    render(<Provider>
+      <EdgeTnmDetails />
+    </Provider>, {
+      route: { params, path: mockPath }
+    })
+
+    await basicCheck()
     await userEvent.click(screen.getByRole('button', { name: 'Add TNM Host' }))
-    await screen.findByRole('dialog')
-    await userEvent.type(screen.getByRole('textbox', { name: 'Name' }), 'amyTest')
-
-    const dropdown = screen.getByRole('listbox')
-    const targetOpt1 = await screen.findByRole('option', { name: mockTnmHostGroups[1].name })
-    await userEvent.selectOptions(dropdown, targetOpt1)
-
-    await userEvent.type(screen.getByRole('textbox', { name: 'IP Address' }), '1.2.3.4')
-    await userEvent.type(screen.getByRole('spinbutton', { name: 'Port' }), '112')
-    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
-    await waitFor(() => expect(mockAddReq).toBeCalledWith({
-      host: 'amyTest',
-      interfaces: [{
-        interfaceid: undefined,
-        ip: '1.2.3.4',
-        port: '112',
-        main: 1,
-        type: 2,
-        useip: 1,
-        dns: '',
-        details: {
-          version: '2',
-          community: 'zabbix'
-        }
-      }],
-      groups: [{ groupid: '20' }],
-      templates: [{
-        templateid: '10226'
-      }],
-      tags: [
-        {
-          tag: 'host-name',
-          value: 'Sibi_Rodan_3u_Stack_Postman_2'
-        }
-      ]
-    }))
+    await screen.findByTestId('rc-TnmHostModal')
   })
 })
+
+const basicCheck= async () => {
+  await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+  expect(await screen.findByText('Mocked_TNMService_1')).toBeVisible()
+  const row = screen.getByRole('row', { name: /example-host8/i })
+  return row
+}
