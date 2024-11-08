@@ -24,7 +24,7 @@ export const EdgeTnmHostGraphTable = (props: EdgeTnmHostGraphTableProps) => {
 
   return <Loader states={[{ isLoading, isFetching }]}>
     <Table
-      rowKey='graphId'
+      rowKey='graphid'
       columns={useColumns()}
       dataSource={data}
     />

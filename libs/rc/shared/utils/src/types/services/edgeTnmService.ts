@@ -111,6 +111,7 @@ export interface EdgeTnmHostSetting {
 }
 
 interface EdgeTnmHostInterface {
+  interfaceid: string,
   type: number,
   main: number,
   useip: number,
@@ -143,8 +144,10 @@ export interface EdgeTnmHostPayload {
 
 export interface EdgeTnmHostFormData {
   host: string,
+  hostid: string,
   groupIds: string[],
   interface: {
+    interfaceid: string,
     ip: string,
     port: string
   }

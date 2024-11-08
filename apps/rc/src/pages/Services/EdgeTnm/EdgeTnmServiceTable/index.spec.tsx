@@ -24,6 +24,11 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+jest.mock('./EdgeTnmCreateFormModal', () => ({
+  ...jest.requireActual('./EdgeTnmCreateFormModal'),
+  EdgeTnmCreateFormModal: () => <div data-testid='rc-EdgeTnmCreateFormModal'></div>
+}))
+
 const { click } = userEvent
 
 describe('Edge TNM Service Table', () => {

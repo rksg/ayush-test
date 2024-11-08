@@ -42,7 +42,6 @@ export const TnmHostModal = (props: TnmHostModalProps) => {
 
   const handleFinish = async (formValues: EdgeTnmHostFormData) => {
     try {
-
       await (editData ? updateTnmHost : addTnmHost)({
         params: {
           serviceId,
@@ -65,10 +64,10 @@ export const TnmHostModal = (props: TnmHostModalProps) => {
       if (editData) {
         form.setFieldsValue({
           host: editData.host,
+          hostid: editData.hostid,
           groupIds: editData.hostgroups.map(g => g.groupid),
           interface: {
-            ip: editData.interfaces[0].ip,
-            port: editData.interfaces[0].port
+            ...editData.interfaces[0]
           }
         })
       }

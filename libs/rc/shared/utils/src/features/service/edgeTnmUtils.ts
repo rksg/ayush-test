@@ -14,6 +14,7 @@ export const edgeTnmHostFormRequestPreProcess = (data: EdgeTnmHostFormData) => {
   return {
     host: data.host,
     interfaces: [{
+      interfaceid: data.interface.interfaceid,
       ip: data.interface.ip,
       port: data.interface.port,
       main: 1,
@@ -25,7 +26,9 @@ export const edgeTnmHostFormRequestPreProcess = (data: EdgeTnmHostFormData) => {
         community: 'zabbix'
       }
     }],
-    groups: data.groupIds.map(groupid => ({ groupid })),
+    groups: Array.isArray(data.groupIds)
+      ? data.groupIds.map(groupid => ({ groupid }))
+      : [{ groupid: data.groupIds }],
     templates: [{
       templateid: '10226'
     }],

@@ -91,3 +91,56 @@ export const mockTnmHostGraphsConfig = [{
   sortorder: null,
   startSearch: null
 }]
+
+export const mockTnmHostGroups = [
+  {
+    groupid: '19',
+    name: 'Applications',
+    internal: null
+  },
+  {
+    groupid: '20',
+    name: 'Databases',
+    internal: null
+  },
+  {
+    groupid: '5',
+    name: 'Discovered hosts',
+    internal: null
+  },
+  {
+    groupid: '7',
+    name: 'Hypervisors',
+    internal: null
+  },
+  {
+    groupid: '24',
+    name: 'ICX Network',
+    internal: null
+  },
+  {
+    groupid: '2',
+    name: 'Linux servers',
+    internal: null
+  },
+  {
+    groupid: '23',
+    name: 'netwo',
+    internal: null
+  },
+  {
+    groupid: '22',
+    name: 'network',
+    internal: null
+  },
+  {
+    groupid: '6',
+    name: 'Virtual machines',
+    internal: null
+  },
+  {
+    groupid: '4',
+    name: 'Zabbix servers',
+    internal: null
+  }
+]

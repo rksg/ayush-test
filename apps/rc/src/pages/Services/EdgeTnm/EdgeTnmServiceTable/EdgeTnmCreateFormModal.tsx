@@ -37,7 +37,10 @@ export const EdgeTnmCreateFormModal = (props: EdgeTnmCreateFormModalProps) => {
   const {
     venueOptions, isVenueOptsLoading
   } = useVenuesListQuery(
-    { payload: venueOptionsDefaultPayload }, {
+    {
+      payload: venueOptionsDefaultPayload
+    }, {
+      skip: !visible,
       selectFromResult: ({ data, isLoading }) => {
         return {
           venueOptions: data?.data.filter(item => (item.edges ?? 0) > 0)
@@ -50,7 +53,7 @@ export const EdgeTnmCreateFormModal = (props: EdgeTnmCreateFormModalProps) => {
   const { clusterOptions, isClusterOptsLoading } = useGetEdgeClusterListQuery(
     { payload: clusterDataDefaultPayload },
     {
-      skip: !venueId,
+      skip: !visible || !venueId,
       selectFromResult: ({ data, isLoading }) => {
         return {
           clusterOptions: data?.data
@@ -81,6 +84,8 @@ export const EdgeTnmCreateFormModal = (props: EdgeTnmCreateFormModalProps) => {
     mask
     destroyOnClose
     maskClosable={false}
+    onOk={() => {form.submit()}}
+    okText={$t({ defaultMessage: 'Add' })}
   >
     <Form form={form} onFinish={handleFinish} disabled={isCreating}>
       <Form.Item

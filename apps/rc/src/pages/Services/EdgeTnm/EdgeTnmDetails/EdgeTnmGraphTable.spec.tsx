@@ -4,8 +4,8 @@ import {
   EdgeTnmServiceFixtures,
   EdgeTnmServiceUrls
 } from '@acx-ui/rc/utils'
-import { Provider }                                                      from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { Provider }                                              from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { EdgeTnmHostGraphTable } from './EdgeTnmGraphTable'
 
@@ -39,6 +39,6 @@ describe('Edge TNM Service Host Graphs', () => {
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     const rows = screen.getAllByRole('row', { name: /Interface ethernet /i })
     expect(rows.length).toBe(1)
-    expect(within(rows[0])).toHaveTextContent('Normal')
+    expect(rows[0]).toHaveTextContent('Normal')
   })
 })
