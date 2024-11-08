@@ -93,9 +93,9 @@ describe('ImpactedSwitchDDoS',()=>{
 
       const body = within(await findTBody())
       const rows = await body.findAllByRole('row')
-      fireEvent.click(within(rows[0]).getByRole('button'))
+      fireEvent.click(within(rows[0]).getByTestId('CopyOutlined'))
       expect(navigator.clipboard.writeText).toHaveBeenCalledWith('1/1/1')
-      fireEvent.click(within(rows[1]).getByRole('button'))
+      fireEvent.click(within(rows[1]).getByTestId('CopyOutlined'))
       expect(navigator.clipboard.writeText).toHaveBeenCalledWith('1/1/1, 1/1/23')
     })
     it('should render for RA', async () => {

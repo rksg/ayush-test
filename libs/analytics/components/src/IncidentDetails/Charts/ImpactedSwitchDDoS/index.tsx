@@ -7,7 +7,7 @@ import { defaultSort, overlapsRollup, sortProp } from '@acx-ui/analytics/utils'
 import {  Card, Loader, Table,
   TableProps, NoGranularityText, cssStr,
   DonutChart, showToast,
-  Button } from '@acx-ui/components'
+  Tooltip } from '@acx-ui/components'
 import { get }          from '@acx-ui/config'
 import { intlFormats }  from '@acx-ui/formatter'
 import { CopyOutlined } from '@acx-ui/icons-new'
@@ -151,21 +151,25 @@ function ImpactedSwitchTable (props: {
     title: $t({ defaultMessage: 'Action' }),
     width: 50,
     render: (_, { portNumbers, portCount }) => {
-      return (<Button
-        ghost
-        title={$t({ defaultMessage: 'Copy Port number{plural} to clipboard.' }
-          ,{ plural: portCount > 1 ? 's' : '' })}
-        icon={<CopyOutlined size='sm' style={{ cursor: 'pointer' }}/>}
-        onClick={() => {
-          navigator.clipboard.writeText(portNumbers)
-          showToast({
-            type: 'success',
-            content: $t({ defaultMessage: 'Port number{plural} copied to clipboard.' },
-              { plural: portCount > 1 ? 's' : '' }
-            )
-          })
-        }}
-      />)
+      return (
+        <Tooltip
+          title={$t({ defaultMessage: 'Copy Port number{plural} to clipboard.' }
+            ,{ plural: portCount > 1 ? 's' : '' })}
+          placement='top'>
+          <CopyOutlined
+            onClick={() => {
+              navigator.clipboard.writeText(portNumbers)
+              showToast({
+                type: 'success',
+                content: $t({ defaultMessage: 'Port number{plural} copied to clipboard.' },
+                  { plural: portCount > 1 ? 's' : '' }
+                )
+              })
+            }}
+            size='sm'
+            style={{ cursor: 'pointer' }}/>
+        </Tooltip>
+      )
     }
   }
     // eslint-disable-next-line react-hooks/exhaustive-deps
