@@ -248,7 +248,7 @@ export function NetworkForm (props:{
   const [portalDemo, setPortalDemo]=useState<Demo>()
   const [previousPath, setPreviousPath] = useState('')
   const [MLOButtonDisable, setMLOButtonDisable] = useState(true)
-  const [directoryServerId, setDirectoryServerId] = useState('')
+  const directoryServerDataRef = useRef<{ id:string,name:string }>({ id: '',name: '' })
   const { wifiCallingIds, updateWifiCallingActivation } = useWifiCalling(saveState.name === '')
   const { updateClientIsolationActivations }
     = useClientIsolationActivations(!(editMode || cloneMode), saveState, updateSaveState, form)
@@ -689,7 +689,7 @@ export function NetworkForm (props:{
       case GuestNetworkTypeEnum.WISPr:
         return <WISPrForm />
       case GuestNetworkTypeEnum.Directory:
-        return <DirectoryServerForm setDirectoryServerIdToNetworkForm={setDirectoryServerId}/>
+        return <DirectoryServerForm directoryServerDataRef={directoryServerDataRef} />
       default:
       // eslint-disable-next-line no-console
         console.error(`Unknown Network Type: ${saveState?.guestPortal?.guestNetworkType}`)
@@ -861,6 +861,12 @@ export function NetworkForm (props:{
         beforeVenueActivationRequest.push(activateDpskPool(saveState.dpskServiceProfileId, networkId))
         beforeVenueActivationRequest.push(activateMacRegistrationPool(saveState.wlan?.macRegistrationListId, networkId))
       }
+
+      if(directoryServerDataRef.current.id) {
+        beforeVenueActivationRequest.push(
+          activateDirectoryServer({ params: { networkId: networkId, policyId: directoryServerDataRef.current.id } })
+        )
+      }
       await Promise.all(beforeVenueActivationRequest)
       if (networkResponse?.response && payload.venues) {
         // @ts-ignore
@@ -885,10 +891,6 @@ export function NetworkForm (props:{
         // eslint-disable-next-line max-len
           afterVenueActivationRequest.push(updateSoftGreActivations(networkId, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode, false))
         }
-      }
-
-      if(directoryServerId) {
-        afterVenueActivationRequest.push(activateDirectoryServer({ params: { networkId: networkId, policyId: directoryServerId } }))
       }
 
       await Promise.all(afterVenueActivationRequest)
@@ -1006,6 +1008,11 @@ export function NetworkForm (props:{
       // eslint-disable-next-line max-len
       beforeVenueActivationRequest.push(updateVlanPoolActivation(payload.id, formData.wlan?.advancedCustomization?.vlanPool, vlanPoolId))
       beforeVenueActivationRequest.push(updateAccessControl(formData, data, payload.id))
+      if(directoryServerDataRef.current.id) {
+        beforeVenueActivationRequest.push(activateDirectoryServer(
+          { params: { networkId: payload.id, policyId: directoryServerDataRef.current.id } }
+        ))
+      }
       await Promise.all(beforeVenueActivationRequest)
 
       if (payload.id && (payload.venues || data?.venues)) {
@@ -1031,10 +1038,6 @@ export function NetworkForm (props:{
           // eslint-disable-next-line max-len
           updateSoftGreActivations(payload.id, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode, true)
         )
-      }
-
-      if(directoryServerId) {
-        afterVenueActivationRequest.push(activateDirectoryServer({ params: { networkId: payload.id, policyId: directoryServerId } }))
       }
 
       await Promise.all(afterVenueActivationRequest)
@@ -1133,7 +1136,11 @@ export function NetworkForm (props:{
                 name='summary'
                 title={intl.$t({ defaultMessage: 'Summary' })}
               >
-                <SummaryForm summaryData={saveState} portalData={portalDemo}/>
+                <SummaryForm
+                  summaryData={saveState}
+                  portalData={portalDemo}
+                  extraData={{ directoryServer: directoryServerDataRef.current }}
+                />
               </StepsFormLegacy.StepForm>
             </StepsFormLegacy>
           </MLOContext.Provider>

@@ -3,11 +3,12 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 
-import { StepsFormLegacy }                                            from '@acx-ui/components'
-import { AaaUrls, CommonUrlsInfo, WifiUrlsInfo, DirectoryServerUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                   from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }                        from '@acx-ui/test-utils'
-import { UserUrlsInfo }                                               from '@acx-ui/user'
+import { StepsFormLegacy }                                                                  from '@acx-ui/components'
+import { directoryServerApi }                                                               from '@acx-ui/rc/services'
+import { AaaUrls, CommonUrlsInfo, WifiUrlsInfo, DirectoryServerUrls, GuestNetworkTypeEnum } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                  from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }                                              from '@acx-ui/test-utils'
+import { UserUrlsInfo }                                                                     from '@acx-ui/user'
 
 import {
   venuesResponse,
@@ -27,13 +28,18 @@ import NetworkFormContext from '../NetworkFormContext'
 import { DirectoryServerForm } from './DirectoryServerForm'
 
 describe('CaptiveNetworkForm-Directory', () => {
-  const setNetworkFormValueFunction = jest.fn()
   const directoryServerAPI = jest.fn()
+
   beforeEach(() => {
     networkDeepResponse.name = 'Directory network test'
+    directoryServerAPI.mockClear()
     const wisprRes={ ...networkDeepResponse, enableDhcp: true, type: 'guest',
-      guestPortal: cloudPathDataNone.guestPortal,
+      guestPortal: {
+        ...cloudPathDataNone.guestPortal,
+        guestNetworkType: GuestNetworkTypeEnum.Directory
+      },
       wlan: { ...networkDeepResponse.wlan, ...cloudPathDataNone.wlan } }
+    store.dispatch(directoryServerApi.util.resetApiState())
     mockServer.use(
       rest.get(UserUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
@@ -71,12 +77,16 @@ describe('CaptiveNetworkForm-Directory', () => {
     action: 'edit'
   }
 
-  it('should test WISPr network successfully', async () => {
+  it('should test edit network successfully', async () => {
+    const directoryServerDataRef = { current: { id: '', name: '' } }
     render(
       <Provider>
         <NetworkFormContext.Provider
           value={{
-            editMode: true, cloneMode: true, data: cloudPathDataNone
+            editMode: true,
+            cloneMode: false,
+            data: { ...cloudPathDataNone, id: params.networkId },
+            isRuckusAiMode: false
           }}
         >
           <MLOContext.Provider value={{
@@ -86,18 +96,16 @@ describe('CaptiveNetworkForm-Directory', () => {
             <StepsFormLegacy>
               <StepsFormLegacy.StepForm>
                 <DirectoryServerForm
-                  setDirectoryServerIdToNetworkForm={setNetworkFormValueFunction}/>
+                  directoryServerDataRef={directoryServerDataRef}/>
               </StepsFormLegacy.StepForm>
             </StepsFormLegacy>
           </MLOContext.Provider>
         </NetworkFormContext.Provider>
       </Provider>, { route: { params } })
-    await waitFor(async () => {
-      expect(directoryServerAPI).toBeCalled()
-    })
+    await waitFor(() => expect(directoryServerAPI).toBeCalled())
     const server = screen.getByTestId('directory-server-select')
     expect(server).toBeInTheDocument()
-    userEvent.click(screen.getByText('Select...'))
-    expect(await screen.findByText('ldap-profile1')).toBeInTheDocument()
+    await userEvent.click(await screen.findByRole('combobox'))
+    expect(await screen.findByRole('option', { name: /ldap-profile1/ })).toBeInTheDocument()
   })
 })

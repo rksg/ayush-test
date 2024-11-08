@@ -1,21 +1,17 @@
-import { useEffect, useState, useContext, useRef } from 'react'
+import { useEffect, useState, useContext } from 'react'
 
 import {
   Divider,
   Form,
   Select,
-  Button,
-  Space
+  Button
 } from 'antd'
 import { DefaultOptionType } from 'antd/lib/select'
-import _                     from 'lodash'
 import { useIntl }           from 'react-intl'
-import styled                from 'styled-components/macro'
 
-import { GridCol, GridRow, StepsFormLegacy, Tooltip, Drawer, Descriptions } from '@acx-ui/components'
+import { GridCol, GridRow, StepsFormLegacy } from '@acx-ui/components'
 import {
-  useGetDirectoryServerViewDataListQuery,
-  useGetDirectoryServerByIdQuery
+  useGetDirectoryServerViewDataListQuery
 }                           from '@acx-ui/rc/services'
 import {
   NetworkSaveData,
@@ -34,27 +30,21 @@ import { RedirectUrlInput }                      from './RedirectUrlInput'
 import { BypassCaptiveNetworkAssistantCheckbox } from './SharedComponent/BypassCNA/BypassCaptiveNetworkAssistantCheckbox'
 import { WalledGardenTextArea }                  from './SharedComponent/WalledGarden/WalledGardenTextArea'
 import { WlanSecurityFormItems }                 from './SharedComponent/WlanSecurity/WlanSecuritySettings'
-
-
+import * as UI                                   from './styledComponents'
 const defaultPayload = {
   fields: [
     'id',
     'name',
-    'host',
-    'port',
     'type',
-    'domainName',
     'wifiNetworkIds'
-
   ],
-  pageSize: 10,
+  pageSize: 64,
   sortField: 'name',
   sortOrder: 'ASC'
 }
 
-/* eslint-disable no-unused-vars */
-/* eslint-disable max-len */
-export function DirectoryServerForm ({ setDirectoryServerIdToNetworkForm } : { setDirectoryServerIdToNetworkForm: Function }) {
+export function DirectoryServerForm ({ directoryServerDataRef } :
+  { directoryServerDataRef: React.MutableRefObject<{ id:string, name:string }> }) {
 
   const {
     data,
@@ -62,93 +52,117 @@ export function DirectoryServerForm ({ setDirectoryServerIdToNetworkForm } : { s
     cloneMode
   } = useContext(NetworkFormContext)
   const { $t } = useIntl()
-  const addedDirectoryServerUnderEditMode = useRef<string>('')
+  const form = Form.useFormInstance()
   const [ visible, setVisible ] = useState<boolean>(false)
   const [ detailDrawerVisible, setDetailDrawerVisible ] = useState<boolean>(false)
-  const [ selectedDirectory, setSelectedDirectory] = useState('')
-  const [ directoryServerOptionsList, setDirectoryServerOptionsList] = useState<DefaultOptionType[]>([])
-  // eslint-disable-next-line max-len
-  const { data: directoryServerListFromServer } = useGetDirectoryServerViewDataListQuery({ payload: defaultPayload })
+  const [ directoryServerData, setDirectoryServerData] =
+    useState<{ id:string, name:string }>({ id: '', name: '' })
+  const [ directoryServerList, setDirectoryServerList] = useState<DefaultOptionType[]>([])
+  const { data: directoryServerListFromServer } =
+    useGetDirectoryServerViewDataListQuery({ payload: defaultPayload })
 
-  const setDirectoryServerValue = (serverId?: string) => {
-    if (serverId) {
-      setSelectedDirectory(serverId)
-      setDirectoryServerIdToNetworkForm(serverId)
+  const setDirectoryServerValue = (id: string, name:string) => {
+    const selectedData = { id, name }
+    directoryServerDataRef.current = selectedData
+    setDirectoryServerData(selectedData)
+  }
+
+  const onChange = (value: string) => {
+    const serverList = directoryServerListFromServer?.data ?? []
+    const currentValue = serverList.find(
+      (server) => server.id === value
+    )
+    if (currentValue) {
+      setDirectoryServerValue(currentValue.id, currentValue.name)
+      setVisible(false)
+      setDetailDrawerVisible(false)
     }
   }
 
   useEffect(() => {
-    const directoryServerList = directoryServerListFromServer?.data ?? []
+    const serverList = directoryServerListFromServer?.data ?? []
 
-    if (directoryServerList) {
-      setDirectoryServerOptionsList([
-        { label: $t({ defaultMessage: 'Select...' }), value: '' },
-        ...(directoryServerList && directoryServerList.map((server) => {
+    if (serverList.length > 0) {
+      setDirectoryServerList(
+        serverList.map((server) => {
           return { label: `${server.name} (${server.type})` , value: server.id }
-        }) )
-      ])
-    }
-
-    if((editMode || cloneMode) && data){
-      const wifiNetworkId = data?.id ?? ''
-      if (addedDirectoryServerUnderEditMode.current){
-        setDirectoryServerValue(addedDirectoryServerUnderEditMode.current)
-      } else {
-        setDirectoryServerValue(directoryServerList.find((server) => server.wifiNetworkIds.includes(wifiNetworkId))?.id)
+        })
+      )
+      if (directoryServerDataRef?.current.id) {
+        const currentServerData = serverList.find(
+          (server) => server.id === directoryServerDataRef.current.id
+        )
+        currentServerData &&
+        setDirectoryServerValue( currentServerData.id, currentServerData.name)
+      } else if((editMode || cloneMode) && data?.id) {
+        const currentServerData = serverList.find(
+          (server) => server.wifiNetworkIds.includes(data.id!)
+        )
+        if (currentServerData) {
+          setDirectoryServerValue( currentServerData.id, currentServerData.name)
+          form.setFieldValue('directoryServerId', currentServerData.id!)
+        }
       }
     }
 
+
   }, [directoryServerListFromServer, data])
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const addDirectoryServerCallback = (option: DefaultOptionType, gatewayIps: string[]) : void => {
-    setDirectoryServerOptionsList([...directoryServerOptionsList, option])
-    setDirectoryServerValue(option.value as string)
-    addedDirectoryServerUnderEditMode.current = option.value as string
+  const addDirectoryServerCallback = (option: DefaultOptionType) => {
+    directoryServerDataRef.current = { id: option.value as string, name: option.label as string }
+    setDirectoryServerList((preState) => {
+      return [option, ...preState]
+    })
+    setDirectoryServerValue(option.value as string, option.label as string)
+    form.setFieldsValue({ directoryServerId: option.value })
   }
 
   return (<>
     <GridRow>
       <GridCol col={{ span: 10 }}>
         <StepsFormLegacy.Title>{$t({ defaultMessage: 'Onboarding' })}</StepsFormLegacy.Title>
-        <ModifiedSpace>
+        <UI.FieldSpace>
           <Form.Item
-            required
+            name={'directoryServerId'}
             rules={[
               { required: true, message: $t(validationMessages.DirectoryServerNotSelected) }
             ]}
             label={$t({ defaultMessage: 'Select Directory Server' })}
+            initialValue=''
             children={
               <Select
                 data-testid={'directory-server-select'}
-                value={selectedDirectory}
-                onChange={(value) => {
-                  setDirectoryServerValue(value)
-                  setVisible(false)
-                  setDetailDrawerVisible(false)
-                }}
-                options={directoryServerOptionsList}
+                value={directoryServerData.id}
+                onChange={onChange}
+                options={[
+                  {
+                    label: $t({ defaultMessage: 'Select...' }), value: ''
+                  },
+                  ...directoryServerList
+                ]}
+                placeholder={$t({ defaultMessage: 'Select...' })}
               />
 
             }
           />
-          <Tooltip>
+          <UI.TypeSpace split={<Divider type='vertical' />}>
             <Button type='link'
-              disabled={_.isEmpty(selectedDirectory)}
-              onClick={() => setDetailDrawerVisible(true)}>
+              disabled={!directoryServerData.id}
+              onClick={() => {
+                setDetailDrawerVisible(true)
+                visible && setVisible(false)
+              }}>
               {$t({ defaultMessage: 'Profile Detail' })}
             </Button>
-          </Tooltip>
-          <Tooltip>
-            |
-          </Tooltip>
-          <Tooltip>
             <Button type='link'
-              onClick={() => setVisible(true)}>
+              onClick={() => {
+                setVisible(true)
+                detailDrawerVisible && setDetailDrawerVisible(false)
+              }}>
               {$t({ defaultMessage: 'Add Server' })}
             </Button>
-          </Tooltip>
-        </ModifiedSpace>
+          </UI.TypeSpace>
+        </UI.FieldSpace>
         <WlanSecurityFormItems />
         <RedirectUrlInput />
         <DhcpCheckbox />
@@ -165,103 +179,20 @@ export function DirectoryServerForm ({ setDirectoryServerIdToNetworkForm } : { s
     <DirectoryServerDrawer
       visible={visible}
       setVisible={setVisible}
-      // We just need to add but not edit server in this form, so keep it false.
-      // Otherwise it won't send any request.
-      editMode={false}
       callbackFn={addDirectoryServerCallback}
     />
-    { // Set condition to prevent it render and send request during first render
-      // which has no directory server is selected at that moment
-      selectedDirectory && <DirectoryServerDetailDrawer
-        visible={detailDrawerVisible}
-        setVisible={setDetailDrawerVisible}
-        selectedDirectoryServerId={selectedDirectory}
-      />}
+    <DirectoryServerDrawer
+      visible={detailDrawerVisible}
+      readMode
+      setVisible={setDetailDrawerVisible}
+      policyId={directoryServerData.id}
+      policyName={directoryServerData.name}
+    />
     {!(editMode) && <GridRow>
       <GridCol col={{ span: 24 }}>
         <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />
       </GridCol>
     </GridRow>}
   </>)
-
-}
-/* eslint-enable no-unused-vars */
-
-const ModifiedSpace = styled(Space)`
-  .ant-space-item:first-child {
-    width: 100%;
-  }
-`
-
-interface DirectoryServerDetailDrawerProps {
-  visible: boolean
-  setVisible: (visible: boolean) => void
-  selectedDirectoryServerId: string
-}
-
-const DirectoryServerDetailDrawer = (props: DirectoryServerDetailDrawerProps) => {
-  const { $t } = useIntl()
-
-  const { visible, setVisible, selectedDirectoryServerId } = props
-
-  const { data: directoryServerDetail } = useGetDirectoryServerByIdQuery({ params: { policyId: selectedDirectoryServerId } })
-
-  const handleClose = async () => {
-    setVisible(false)
-  }
-
-  return (
-    <Drawer
-      title={`${$t({ defaultMessage: 'Directory Server Details' })}: ${directoryServerDetail?.name}`}
-      visible={visible}
-      width={450}
-      children={<>
-        <Divider />
-        <Space style={{ display: 'block' }}>
-          <Descriptions labelWidthPercent={50}>
-            <Descriptions.Item
-              label={$t({ defaultMessage: 'Server Type:' })}
-              children={directoryServerDetail?.type || '--'}
-            />
-            <Descriptions.Item
-              label={$t({ defaultMessage: 'TLS Encryption:' })}
-              children={
-                directoryServerDetail?.tlsEnabled ?
-                  $t({ defaultMessage: 'On' }) :
-                  $t({ defaultMessage: 'Off' })
-              }
-            />
-            <Descriptions.Item
-              label={$t({ defaultMessage: 'Server Address:' })}
-              children={directoryServerDetail?.host || '--'}
-            />
-            <Descriptions.Item
-              label={$t({ defaultMessage: 'Windows Domain Name:' })}
-              children={directoryServerDetail?.domainName || '--'}
-            />
-            <Descriptions.Item
-              label={$t({ defaultMessage: 'Admin Domain Name:' })}
-              children={directoryServerDetail?.adminDomainName || '--'}
-            />
-          </Descriptions>
-        </Space>
-      </>}
-      onClose={handleClose}
-      destroyOnClose={true}
-      footer={
-        <>
-          <div></div>
-          <div>
-            <Button
-              onClick={handleClose}
-              type='primary'
-            >
-              {$t({ defaultMessage: 'OK' })}
-            </Button>
-          </div>
-        </>
-      }
-    />
-  )
 
 }
