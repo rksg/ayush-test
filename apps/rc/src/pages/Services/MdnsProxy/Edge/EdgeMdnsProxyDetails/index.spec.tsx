@@ -88,7 +88,7 @@ describe('Edge mDNS Proxy Detail', () => {
 
     await screen.findByText('3')
 
-    const heteroWarning = await screen.findByText(/Edge mDNS Proxy is not able to be brought up on/)
+    const heteroWarning = await screen.findByText(/mDNS Proxy is not able to be brought up on/)
     // eslint-disable-next-line testing-library/no-node-access
     const detailBtn = within(heteroWarning.closest('.ant-space') as HTMLElement)
       .getByRole('button', { name: 'See details' })
