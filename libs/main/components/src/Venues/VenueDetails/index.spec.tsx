@@ -53,6 +53,7 @@ jest.mock('@acx-ui/rc/utils', () => ({
 }))
 const mockGet = get as jest.Mock
 jest.mock('@acx-ui/config', () => ({
+  ...jest.requireActual('@acx-ui/config'),
   get: jest.fn()
 }))
 

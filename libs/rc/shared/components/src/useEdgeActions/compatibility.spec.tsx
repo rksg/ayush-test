@@ -81,7 +81,8 @@ describe('useEdgeSvcsPcysCompatibilitiesData', () => {
     expect(apData).toStrictEqual(mockEdgeSdLanApCompatibilites.compatibilities)
   })
 
-  it('useEdgePinsCompatibilityData should return correct data', async () => {
+  // eslint-disable-next-line max-len
+  it('useEdgePinsCompatibilityData should not have AP Compatibilities query when FF off', async () => {
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.getPinEdgeCompatibilities.url,
@@ -101,6 +102,35 @@ describe('useEdgeSvcsPcysCompatibilitiesData', () => {
 
     const apData = resultData?.[CompatibilityDeviceEnum.AP]
     expect(apData).toBeUndefined()
+  })
+
+  it('useEdgePinsCompatibilityData should return correct data', async () => {
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockImplementation(i => i === Features.WIFI_COMPATIBILITY_BY_MODEL)
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getPinEdgeCompatibilities.url,
+        (_, res, ctx) => res(ctx.json(mockEdgePinCompatibilities))),
+      rest.post(
+        EdgeUrlsInfo.getPinApCompatibilities.url,
+        (_, res, ctx) => res(ctx.json(mockEdgePinApCompatibilites)))
+    )
+
+    const mockIds = ['mock_pin_id']
+    // eslint-disable-next-line max-len
+    const { result } = renderHook(() => useEdgePinsCompatibilityData(mockIds),
+      { wrapper: Provider })
+
+    await waitFor(() => {expect(result.current.isLoading).toBe(false)})
+
+    const resultData = result.current.compatibilities
+    const edgeData = resultData?.[CompatibilityDeviceEnum.EDGE]
+    expect(edgeData).toStrictEqual(mockEdgePinCompatibilities.compatibilities)
+
+    const apData = resultData?.[CompatibilityDeviceEnum.AP]
+    expect(apData).toStrictEqual(mockEdgePinApCompatibilites.compatibilities)
+
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
   })
 
   it('useEdgePinDetailsCompatibilitiesData should return correct data', async () => {
@@ -143,6 +173,43 @@ describe('useEdgeSvcsPcysCompatibilitiesData', () => {
   })
 
   // eslint-disable-next-line max-len
+  it('useEdgePinDetailsCompatibilitiesData should correctlt handle data when compatibility is empty', async () => {
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockImplementation(i => i === Features.WIFI_COMPATIBILITY_BY_MODEL)
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getPinEdgeCompatibilities.url,
+        (_, res, ctx) => res(ctx.json(mockEdgePinCompatibilities))),
+      rest.post(
+        EdgeUrlsInfo.getPinApCompatibilities.url,
+        (_, res, ctx) => res(ctx.json({})))
+    )
+
+    // eslint-disable-next-line max-len
+    const { result } = renderHook(() => useEdgePinDetailsCompatibilitiesData( { serviceId: 'mock_id' } ),
+      { wrapper: Provider })
+
+    await waitFor(() => {expect(result.current.isLoading).toBe(false)})
+
+    const resultData = result.current.compatibilities
+    const edgeData = resultData[CompatibilityDeviceEnum.EDGE]
+    const edgePin = edgeData[IncompatibilityFeatures.PIN]
+    expect(edgePin.total).toBe(14)
+    expect(edgePin.incompatible).toBe(5)
+
+    const edgeTunnelProfile = edgeData[IncompatibilityFeatures.TUNNEL_PROFILE]
+    expect(edgeTunnelProfile.total).toBe(14)
+    expect(edgeTunnelProfile.incompatible).toBe(7)
+
+    const apData = resultData[CompatibilityDeviceEnum.AP]
+    const apPin = apData[IncompatibilityFeatures.PIN]
+    expect(apPin).toBeUndefined()
+    const apTunnelProfile = apData[IncompatibilityFeatures.TUNNEL_PROFILE]
+    expect(apTunnelProfile).toBeUndefined()
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+  })
+
+  // eslint-disable-next-line max-len
   it('useEdgePinDetailsCompatibilitiesData should not trigger AP Compatibilities query when FF off', async () => {
     const apCompatibilityReq = jest.fn()
     mockServer.use(
@@ -180,7 +247,12 @@ describe('useEdgeSvcsPcysCompatibilitiesData', () => {
 })
 
 describe('getFeaturesIncompatibleDetailData', () => {
-  const serviceCompatibilityEdgeData = mockEdgeSdLanCompatibilities.compatibilities[0]
+  const serviceCompatibilityEdgeData = mockEdgeSdLanCompatibilities!.compatibilities![0]
+
+  it('should return empty object when given undefined', async () => {
+    const result = getFeaturesIncompatibleDetailData(undefined)
+    expect(result).toStrictEqual({})
+  })
 
   it('should return correct result base on edge compatibility data', async () => {
     const result = getFeaturesIncompatibleDetailData(serviceCompatibilityEdgeData)
@@ -198,8 +270,8 @@ describe('getFeaturesIncompatibleDetailData', () => {
   })
 
   it('should return correct result base on ap compatibility data', async () => {
-    const serviceCompatibilityApData = cloneDeep(mockEdgeSdLanApCompatibilites.compatibilities[0])
-    serviceCompatibilityApData.venueSdLanApCompatibilities[0].incompatibleFeatures?.push( {
+    const serviceCompatibilityApData = cloneDeep(mockEdgeSdLanApCompatibilites!.compatibilities![0])
+    serviceCompatibilityApData!.venueSdLanApCompatibilities![0].incompatibleFeatures?.push( {
       featureName: 'Tunnel Profile',
       requiredFw: '7.0.0.0.0',
       supportedModelFamilies: [

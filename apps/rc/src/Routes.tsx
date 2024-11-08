@@ -42,7 +42,8 @@ import {
   WifiCallingConfigureForm,
   WifiCallingDetailView,
   WifiCallingForm,
-  WifiOperatorForm
+  WifiOperatorForm,
+  DirectoryServerForm
 } from '@acx-ui/rc/components'
 import {
   CertificateCategoryType,
@@ -99,6 +100,7 @@ import ClientIsolationTable                         from './pages/Policies/Clien
 import ConnectionMeteringDetail                     from './pages/Policies/ConnectionMetering/ConnectionMeteringDetail'
 import ConnectionMeteringPageForm                   from './pages/Policies/ConnectionMetering/ConnectionMeteringPageForm'
 import ConnectionMeteringTable                      from './pages/Policies/ConnectionMetering/ConnectionMeteringTable'
+import DirectoryServerTable                         from './pages/Policies/DirectoryServer/DirectoryServerTable/DirectoryServerTable'
 import EthernetPortProfileTable                     from './pages/Policies/EthernetPortProfile/EthernetPortProfileTable'
 import AddEdgeHqosBandwidth                         from './pages/Policies/HqosBandwidth/Edge/AddHqosBandwidth'
 import EditEdgeHqosBandwidth                        from './pages/Policies/HqosBandwidth/Edge/EditHqosBandwidth'
@@ -854,6 +856,8 @@ function PolicyRoutes () {
   const isWorkflowTierEnabled = useIsTierAllowed(Features.WORKFLOW_ONBOARD)
   const isWorkflowFFEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE)
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
+  // eslint-disable-next-line max-len
+  const isDirectoryServerEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE)
 
   return rootRoutes(
     <Route path=':tenantId/t'>
@@ -1459,6 +1463,33 @@ function PolicyRoutes () {
           })}
           element={<EthernetPortProfileDetail/>}
         />
+      </>
+      }
+      {isDirectoryServerEnabled && <>
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.DIRECTORY_SERVER,
+            oper: PolicyOperation.LIST })}
+          element={<DirectoryServerTable />}
+        />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.DIRECTORY_SERVER,
+            oper: PolicyOperation.CREATE })}
+          element={
+            <PolicyAuthRoute policyType={PolicyType.DIRECTORY_SERVER} oper={PolicyOperation.CREATE}>
+              <DirectoryServerForm editMode={false} />
+            </PolicyAuthRoute>
+          } />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.DIRECTORY_SERVER,
+            oper: PolicyOperation.EDIT })}
+          element={
+            <PolicyAuthRoute policyType={PolicyType.DIRECTORY_SERVER} oper={PolicyOperation.CREATE}>
+              <DirectoryServerForm editMode={true} />
+            </PolicyAuthRoute>
+          } />
       </>
       }
     </Route>

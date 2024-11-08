@@ -9,11 +9,13 @@ import {
   LbsServerProfileViewModel,
   PolicyOperation,
   PolicyType,
+  filterByAccessForServicePolicyMutation,
   getPolicyDetailsLink,
+  getScopeKeyByPolicy,
   usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
-import { TenantLink }                               from '@acx-ui/react-router-dom'
-import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
+import { TenantLink }               from '@acx-ui/react-router-dom'
+import { hasCrossVenuesPermission } from '@acx-ui/user'
 
 import { LbsServerProfileInstancesTable } from './LbsServerProfileInstancesTable'
 import { LbsServerProfileOverview }       from './LbsServerProfileOverview'
@@ -47,12 +49,13 @@ const LbsServerProfileDetail = () => {
     <PageHeader
       title={data?.name || ''}
       breadcrumb={breadcrumb}
-      extra={hasCrossVenuesPermission() && filterByAccess([
+      extra={hasCrossVenuesPermission() && filterByAccessForServicePolicyMutation([
         <TenantLink to={getPolicyDetailsLink({
           type: PolicyType.LBS_SERVER_PROFILE,
           oper: PolicyOperation.EDIT,
           policyId: policyId as string
-        })}>
+        })}
+        scopeKey={getScopeKeyByPolicy(PolicyType.LBS_SERVER_PROFILE, PolicyOperation.CREATE)}>
           <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
         </TenantLink>
       ])} />

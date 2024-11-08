@@ -100,3 +100,24 @@ export const mockEdgeMdnsViewDataList = [
     ]
   }
 ]
+
+export const mockEdgeMdnsStatsList = [{
+  clusterId: 'clusterId_1',
+  rxPackets: 493,
+  rxBytes: 159,
+  txPackets: 233,
+  txBytes: 234,
+  rxRequest: 124,
+  rxResponse: 544,
+  numTypesMdnsServices: 1
+},
+{
+  clusterId: 'clusterId_1',
+  rxPackets: 435,
+  rxBytes: 211,
+  txPackets: 111,
+  txBytes: 234,
+  rxRequest: 66,
+  rxResponse: 234,
+  numTypesMdnsServices: 1
+}]
