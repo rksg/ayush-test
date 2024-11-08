@@ -175,5 +175,34 @@ Refer to [Nx.md](Nx.md) for other Nx related commands.
 ### Split.io Feature toggle
 Refer to [Feature Flag Operators & Usage in ACX-UI](https://jira-wiki.ruckuswireless.com/pages/viewpage.action?pageId=260188984) wiki on how to make use of feature toggle with Split.io
 
+##### Tool for generating Feature toggle code in R1
+From acx-ui/ root directory run following script
+```sh
+node tools/dev/createFF.js -n <toggle-name> -d <description> -t <tags separated by space>
+for eg:
+node tools/dev/createFF.js -n acx-ui-roaming-type-events-toggle -d "Feature flag for CT roaming type events" -t acx-ui MLSA-8666
+```
+The script refers to local repos `gitops-flux-nonbom` & `acx-nondb-schema` located at the same level of `acx-ui`. However can modify the paths in the script if required - 
+```sh
+// config path for repos, relative to acx-ui/ repo
+const GIT_OPS_PATH = '../gitops-flux-nonbom'
+const NONDB_SCHEMA_PATH = '../acx-nondb-schema'
+```
+
+Also the script sets default state for `dev` & `int` env as on. However it can be customised by modifying the cofig - 
+```sh
+// config envs with state
+const envs = [
+  { env: 'dev', state: 'on' },
+  { env: 'int', state: 'on' },
+  { env: 'prod', state: 'off' },
+  { env: 'prod-eu', state: 'off' },
+  { env: 'prod-sg', state: 'off' },
+  { env: 'qa', state: 'off' },
+  { env: 'stage', state: 'off' }
+]
+```
+After successfully running the sc
+
 ### I18n strings extraction and compilation
 Refer to  [Locale.md](Locale.md)
