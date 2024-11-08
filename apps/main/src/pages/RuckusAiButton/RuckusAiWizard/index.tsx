@@ -102,7 +102,12 @@ export default function RuckusAiWizard (props: {
       name: RuckusAiConfigurationStepsEnum.WLANS,
       title: '',
       component: (
-        <WlanStep payload={props.payload} description={props.description} />
+        props.payload ?
+          <WlanStep
+            formInstance={formMapRef.current[0]?.current}
+            payload={props.payload}
+            description={props.description} />
+          : (null)
       ),
       onFinish: async () =>
         handleOnFinish(RuckusAiConfigurationStepsEnum.WLANS)
