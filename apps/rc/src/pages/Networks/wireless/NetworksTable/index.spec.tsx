@@ -96,7 +96,7 @@ describe('Networks Table', () => {
     render(<Component/>, { wrapper: Provider, route: {} })
 
     const row = await screen.findByRole('row', { name: /network-01/i })
-    const icon = await within(row).findByTestId('InformationSolid')
+    const icon = await within(row).findByTestId('WarningTriangleSolid')
     expect(icon).toBeVisible()
   })
 
@@ -110,7 +110,7 @@ describe('Networks Table', () => {
     render(<Component/>, { wrapper: Provider, route: {} })
 
     const row = await screen.findByRole('row', { name: /network-01/i })
-    const icon = await within(row).findByTestId('InformationSolid')
+    const icon = await within(row).findByTestId('WarningTriangleSolid')
     expect(icon).toBeVisible()
   })
 

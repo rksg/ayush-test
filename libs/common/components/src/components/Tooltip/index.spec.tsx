@@ -40,4 +40,13 @@ describe('Tooltip', () => {
     const icon = await screen.findByTestId('WarningCircleSolid')
     expect(icon).toBeVisible()
   })
+
+  it('renders Tooltip.Warning with triangle and filled', async () => {
+    render(<Tooltip.Warning title='question tooltip'
+      isFilled
+      isTriangle
+      iconStyle={{ width: '16px' }}/>)
+    const icon = await screen.findByTestId('WarningTriangleSolid')
+    expect(icon).toBeVisible()
+  })
 })
