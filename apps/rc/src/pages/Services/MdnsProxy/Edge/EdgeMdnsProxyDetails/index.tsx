@@ -15,7 +15,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
-import { InstancesTable } from './InstancesTable'
+import { CompatibilityCheck } from './CompatibilityCheck'
+import { InstancesTable }     from './InstancesTable'
 
 const EdgeMdnsProxyDetails = () => {
   const { $t } = useIntl()
@@ -50,6 +51,13 @@ const EdgeMdnsProxyDetails = () => {
           </TenantLink>
         ])}
       />
+      {!!params.serviceId && <GridRow>
+        <GridCol col={{ span: 24 }}>
+          <CompatibilityCheck
+            serviceId={params.serviceId}
+          />
+        </GridCol>
+      </GridRow>}
       <GridRow>
         <GridCol col={{ span: 24 }}>
           {

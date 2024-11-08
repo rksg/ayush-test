@@ -18,6 +18,7 @@ import { Features, useIsSplitOn }                                       from '@a
 import { ConvertPoeOutToFormData, LanPortPoeSettings, LanPortSettings } from '@acx-ui/rc/components'
 import {
   useLazyGetVenueSettingsQuery,
+  useGetApLanPortsWithEthernetProfilesQuery,
   useUpdateApLanPortsMutation,
   useResetApLanPortsMutation,
   useLazyGetDHCPProfileListViewModelQuery,
@@ -101,23 +102,12 @@ export function LanPorts () {
   const supportTrunkPortUntaggedVlan = useIsSplitOn(Features.WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE)
 
   const formRef = useRef<StepsFormLegacyInstance<WifiApSetting>>()
-  const apLanPortsQueryPayload = {
+  const { data: apLanPortsData, isLoading: isApLanPortsLoading } =
+  useGetApLanPortsWithEthernetProfilesQuery({
     params: { tenantId, serialNumber, venueId },
-    enableRbac: isUseWifiRbacApi
-  }
-
-  const { data: apLanPortsNoEthData, isLoading: isApLanPortsNoEthLoading } =
-    useGetApLanPortsQuery(apLanPortsQueryPayload, { skip: isEthernetPortProfileEnabled })
-
-  const { data: apLanPortsWithEthData, isLoading: isApLanPortsWithEthLoading } =
-    useGetApLanPortsWithEthernetSettingsQuery(
-      apLanPortsQueryPayload,
-      { skip: !isEthernetPortProfileEnabled }
-    )
-
-  const apLanPortsData = apLanPortsWithEthData || apLanPortsNoEthData
-  const isApLanPortsLoading = isApLanPortsWithEthLoading || isApLanPortsNoEthLoading
-
+    enableRbac: isUseWifiRbacApi,
+    enableEthernetProfile: isEthernetPortProfileEnabled
+  })
   const { data: defaultLanPorts, isLoading: isDefaultPortsLoading } = useGetDefaultApLanPortsQuery({
     params: { venueId, serialNumber }
   }, { skip: !isResetLanPortEnabled })
@@ -385,6 +375,10 @@ export function LanPorts () {
     navigate(`../venues/${venueId}/venue-details/overview`)
   }
 
+  const onGUIChanged = () => {
+    updateEditContext(formRef?.current as StepsFormLegacyInstance)
+  }
+
   return <Loader states={[{
     isLoading: formInitializing,
     isFetching: isApLanPortsUpdating || isApLanPortsResetting || isEthernetPortProfileUpdating
@@ -452,6 +446,7 @@ export function LanPorts () {
                           index={index}
                           useVenueSettings={useVenueSettings}
                           venueId={venueId}
+                          onGUIChanged={onGUIChanged}
                           serialNumber={serialNumber}
                         />
                       </Col>

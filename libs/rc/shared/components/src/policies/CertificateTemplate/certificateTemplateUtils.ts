@@ -1,10 +1,6 @@
 import moment from 'moment-timezone'
 
-import { AlgorithmType, CertificateExpirationType, CertificateTemplateFormData, ExpirationDateEntity, ExpirationMode, ExpirationType, OnboardCA } from '@acx-ui/rc/utils'
-import { getIntl, noDataDisplay }                                                                                                                 from '@acx-ui/utils'
-
-
-import { algorithmLabel } from './contentsMap'
+import { CertificateExpirationType, CertificateTemplateFormData, ExpirationDateEntity, ExpirationMode, ExpirationType, OnboardCA } from '@acx-ui/rc/utils'
 
 const toLocalDateString = (date: string) => {
   return moment(date).startOf('day').local().format()
@@ -70,9 +66,4 @@ export const transferExpirationFormDataToPayload = (formData: CertificateTemplat
     // eslint-disable-next-line max-len
     ...setPayloadExpiration(formData.notBefore, { typeKey: 'notBeforeType', valueKey: 'notBeforeValue', dateKey: 'notBeforeDate' })
   }
-}
-
-export const getDisplayedAlgorithm = (algorithm: AlgorithmType) => {
-  const { $t } = getIntl()
-  return algorithm ? $t(algorithmLabel[algorithm]) : noDataDisplay
 }

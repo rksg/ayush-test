@@ -2,8 +2,10 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import {
+  EdgeCompatibilityFixtures,
   EdgeMdnsFixtures,
   EdgeMdnsProxyUrls,
+  EdgeUrlsInfo,
   getServiceDetailsLink,
   getServiceRoutePath,
   ServiceOperation,
@@ -15,6 +17,7 @@ import { mockServer, render, screen, within } from '@acx-ui/test-utils'
 import EdgeMdnsProxyDetails from './'
 
 const { mockEdgeMdnsSetting } = EdgeMdnsFixtures
+const { mockEdgeMdnsCompatibilities } = EdgeCompatibilityFixtures
 
 jest.mock('./InstancesTable', () => ({
   ...jest.requireActual('./InstancesTable'),
@@ -32,10 +35,10 @@ describe('Edge mDNS Proxy Detail', () => {
     mockServer.use(
       rest.get(
         EdgeMdnsProxyUrls.getEdgeMdnsProxy.url,
-        (_req, res, ctx) => {
-          return res(ctx.json(mockEdgeMdnsSetting))
-        }
-      )
+        (_req, res, ctx) => res(ctx.json(mockEdgeMdnsSetting))),
+      rest.post(
+        EdgeUrlsInfo.getMdnsEdgeCompatibilities.url,
+        (_, res, ctx) => res(ctx.json(mockEdgeMdnsCompatibilities)))
     )
   })
 
@@ -72,5 +75,30 @@ describe('Edge mDNS Proxy Detail', () => {
     await screen.findByText('3')
     // eslint-disable-next-line max-len
     expect(await screen.findByRole('link', { name: 'Configure' })).toHaveAttribute('href', editLink)
+  })
+
+  it('should have compatible warning', async () => {
+    render(
+      <Provider>
+        <EdgeMdnsProxyDetails />
+      </Provider>, {
+        route: { params, path: '/:tenantId/services/edgeSdLanP2/:serviceId/detail' }
+      }
+    )
+
+    await screen.findByText('3')
+
+    const heteroWarning = await screen.findByText(/mDNS Proxy is not able to be brought up on/)
+    // eslint-disable-next-line testing-library/no-node-access
+    const detailBtn = within(heteroWarning.closest('.ant-space') as HTMLElement)
+      .getByRole('button', { name: 'See details' })
+
+    await userEvent.click(detailBtn)
+    const compatibleInfoDrawer = await screen.findByRole('dialog')
+
+    // eslint-disable-next-line max-len
+    expect(await within(compatibleInfoDrawer).findByText(/RUCKUS Edge Firmware/)).toBeInTheDocument()
+    expect(within(compatibleInfoDrawer).getByText('2.3.0.1')).toBeValid()
+    expect(within(compatibleInfoDrawer).getByText('5 / 14')).toBeValid()
   })
 })
