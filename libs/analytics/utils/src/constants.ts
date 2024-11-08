@@ -11,6 +11,7 @@ export const productNames = get('IS_MLISA_SA')
 export enum IncidentToggle {
   AirtimeIncidents = 'airtime-incidents',
   SwitchDDoSIncidents = 'switch-ddos-incidents',
+  SwitchLoopDetectionIncidents = 'switch-loop-detection-incidents',
 }
 
 export type IncidentsToggleFilter = {
@@ -37,6 +38,7 @@ const allIncidentCodes = [
   'i-apserv-continuous-reboots',
   'i-apserv-downtime-high',
   'i-switch-vlan-mismatch',
+  'i-switch-loop-detection',
   'i-switch-poe-pd',
   'i-apinfra-poe-low',
   'i-apinfra-wanthroughput-low',
@@ -73,6 +75,10 @@ const incidentsToggleMap: Record<
   [IncidentToggle.SwitchDDoSIncidents]: {
     categories: ['all', 'security'],
     code: ['s-switch-tcp-syn-ddos']
+  },
+  [IncidentToggle.SwitchLoopDetectionIncidents]: {
+    categories: ['all', 'security'],
+    code: ['i-switch-loop-detection']
   }
 }
 
@@ -168,6 +174,7 @@ export const categoryCodeMap = {
       'i-apserv-downtime-high',
       'i-switch-vlan-mismatch',
       'i-switch-poe-pd',
+      'i-switch-loop-detection',
       'i-apinfra-poe-low',
       'i-apinfra-wanthroughput-low'
     ] as IncidentCode[]

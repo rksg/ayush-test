@@ -117,6 +117,7 @@ export const codeToFailureTypeMap: Record<IncidentCode, string> = {
   'i-apserv-continuous-reboots': 'ap-reboot',
   'i-apserv-downtime-high': 'ap-sz-conn-failure',
   'i-switch-vlan-mismatch': 'vlan-mismatch',
+  'i-switch-loop-detection': 'loop-detection',
   'i-switch-poe-pd': 'poe-pd',
   'i-apinfra-poe-low': 'ap-poe-low',
   'i-apinfra-wanthroughput-low': 'ap-wanthroughput-low',
@@ -1201,6 +1202,16 @@ export const rootCauseRecommendationMap = {
       }),
       recommendations: defineMessage({
         defaultMessage: '<p>Use/configure TCP SYN DDoS protection on the ICX to ensure the network is secure from security threats and remains operational despite the attacks. Please do note that such attacks can be distributed with flood requests coming in from different sources so blocking by a single source may not always be effective.</p>'
+      })
+    }
+  },
+  'loop-detection': {
+    DEFAULT: {
+      rootCauses: defineMessage({
+        defaultMessage: '<p>Wired switch links intended for backup can by incorrect configuration permit more than one path between switch ports on a VLAN. This causes a L2 loop which can cause performance issues that will potentially bring down or degrade the network (high CPU usage, Broadcast storms, Unstable CAM(Content Addressable memory) tables, high consumption of network bandwidth, loss of responses)</p>'
+      }),
+      recommendations: defineMessage({
+        defaultMessage: '<p>Use/configure a spanning tree or any other loop avoidance protocol for this VLAN %XXX%. This will help disable redundant paths until they are needed, effectively preventing the formation of loops and restore the functioning of the network.</p>'
       })
     }
   },

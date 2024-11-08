@@ -210,6 +210,17 @@ export const incidentInformation: Record<IncidentCode, IncidentInformation> = {
     }),
     incidentType: 'switch'
   },
+  'i-switch-loop-detection': {
+    category: defineMessage({ defaultMessage: 'Infrastructure' }),
+    subCategory: defineMessage({ defaultMessage: 'Loop detection' }),
+    shortDescription: defineMessage({
+      defaultMessage: 'Loop detection found in {scope}'
+    }),
+    longDescription: defineMessage({
+      defaultMessage: 'Loop detection found in {scope}.'
+    }),
+    incidentType: 'switch'
+  },
   'p-switch-memory-high': {
     category: defineMessage({ defaultMessage: 'Performance' }),
     subCategory: defineMessage({ defaultMessage: 'Memory' }),
