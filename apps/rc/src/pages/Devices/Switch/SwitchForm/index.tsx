@@ -449,6 +449,9 @@ export function SwitchForm () {
       setIsOnlyFirmware(!!modelOnlyFirmware.find(item => model?.indexOf(item) > -1))
       setSerialNumber(value)
       setFirmwareType(value)
+      if (isSupport8100 && isBabyRodanModel) {
+        formRef.current?.setFieldValue('initialVlanId', null)
+      }
     }
     return Promise.resolve()
   }
@@ -703,7 +706,7 @@ export function SwitchForm () {
                   </>}
                   children={
                     <Select
-                      disabled={dhcpClientOption?.length < 1 || isBabyRodanModel}
+                      disabled={dhcpClientOption?.length < 1 || (isSupport8100 && isBabyRodanModel)}
                       options={[
                         { label: $t({ defaultMessage: 'Select VLAN...' }), value: null },
                         ...dhcpClientOption
