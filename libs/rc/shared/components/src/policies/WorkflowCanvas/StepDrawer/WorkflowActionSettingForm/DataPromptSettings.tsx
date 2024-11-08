@@ -1,5 +1,3 @@
-import React, { useState } from 'react'
-
 import { Divider, Form, Input, Select, Switch } from 'antd'
 import { MessageDescriptor, useIntl }           from 'react-intl'
 
@@ -125,8 +123,11 @@ function DataPromptField () {
 
 export function DataPromptSettings () {
   const { $t } = useIntl()
-  const [showTitle, setShowTitle] = useState(true)
-  const [showIntroText, setShowIntroText] = useState(true)
+  const { useWatch } = Form
+  const showTitle = useWatch<boolean>('displayTitle')
+  const showIntroText = useWatch<boolean>('displayMessageHtml')
+
+
   return (
     <>
       <CommonActionSettings actionType={ActionType.DATA_PROMPT} />
@@ -137,7 +138,7 @@ export function DataPromptSettings () {
           name={'displayTitle'}
           valuePropName={'checked'}
         >
-          <Switch data-testid={'switch-title'} onChange={setShowTitle}/>
+          <Switch data-testid={'switch-title'}/>
         </Form.Item>
       </FieldLabel>
       { showTitle &&
@@ -161,8 +162,7 @@ export function DataPromptSettings () {
           name={'displayMessageHtml'}
           valuePropName={'checked'}
         >
-          <Switch data-testid={'switch-messageHtml'}
-            onChange={setShowIntroText}/>
+          <Switch data-testid={'switch-messageHtml'}/>
         </Form.Item>
       </FieldLabel>
       { showIntroText &&
