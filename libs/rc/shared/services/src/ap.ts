@@ -4,7 +4,7 @@ import { MaybePromise }                                       from '@reduxjs/too
 import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 import { omit, reduce }                                       from 'lodash'
 
-import { Filter }         from '@acx-ui/components'
+import { Filter }               from '@acx-ui/components'
 import {
   AFCInfo,
   AFCPowerMode,
@@ -85,7 +85,8 @@ import {
   SwitchClient,
   SwitchInformation,
   FeatureSetResponse,
-  CompatibilityResponse
+  CompatibilityResponse,
+  EthernetPortProfileViewData
 } from '@acx-ui/rc/utils'
 import { baseApApi }      from '@acx-ui/store'
 import { RequestPayload } from '@acx-ui/types'
@@ -907,6 +908,45 @@ export const apApi = baseApApi.injectEndpoints({
       },
       providesTags: [{ type: 'Ap', id: 'LanPorts' }]
     }),
+
+    getApLanPortsWithEthernetSettings: build.query<WifiApSetting, RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+
+        const urlsInfo = arg.enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const rbacApiVersion = arg.enableRbac ? ApiVersionEnum.v1 : undefined
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const apLanPortsQuery = await fetchWithBQ(createHttpRequest(urlsInfo.getApLanPorts, arg.params, apiCustomHeader))
+        const apLanSetting = apLanPortsQuery.data as WifiApSetting
+        // const venueId = arg.params?.venueId
+        const serialNumber = arg.params?.serialNumber
+
+        if(serialNumber) {
+          const ethernetPortProfileReq = createHttpRequest(EthernetPortProfileUrls.getEthernetPortProfileViewDataList)
+          const ethernetPortProfileQuery = await fetchWithBQ(
+            { ...ethernetPortProfileReq,
+              body: JSON.stringify({
+                filters: { apSerialNumbers: [serialNumber] }
+              })
+            }
+          )
+          const ethernetPortProfiles = (ethernetPortProfileQuery.data as TableResult<EthernetPortProfileViewData>).data
+
+          ethernetPortProfiles.forEach((profile) => {
+            if (profile.apActivations) {
+              profile.apActivations.forEach((activity)=>{
+                const targetLanPort = apLanSetting.lanPorts?.find(lanPort => lanPort.portId?.toString() === activity.portId?.toString())
+                if(targetLanPort) {
+                  targetLanPort.ethernetPortProfileId = profile.id
+                }
+              })
+            }
+          })
+        }
+        return { data: apLanSetting }
+      }
+    }),
+
+
     updateApLanPorts: build.mutation<WifiApSetting, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
@@ -1558,6 +1598,7 @@ export const {
   useStartPacketCaptureMutation,
   useGetDefaultApLanPortsQuery,
   useGetApLanPortsQuery,
+  useGetApLanPortsWithEthernetSettingsQuery,
   useUpdateApLanPortsMutation,
   useUpdateApEthernetPortsMutation,
   useResetApLanPortsMutation,
