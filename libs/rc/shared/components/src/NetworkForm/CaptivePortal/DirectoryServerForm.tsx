@@ -75,7 +75,6 @@ export function DirectoryServerForm ({ directoryServerDataRef } :
     if (currentValue) {
       setDirectoryServerValue(currentValue.id, `${currentValue.name} (${currentValue.type})`)
       setVisible(false)
-      setDetailDrawerVisible(false)
     }
   }
 
