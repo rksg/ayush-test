@@ -126,7 +126,7 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
     return () => {
       currentTestConnectionFun && currentTestConnectionFun.abort()
     }
-  }, [currentTestConnectionFun])
+  }, [])
 
   return (
     <Loader states={[{ isLoading }]}>

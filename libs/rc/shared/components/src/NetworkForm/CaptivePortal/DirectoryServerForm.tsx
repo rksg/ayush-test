@@ -73,10 +73,19 @@ export function DirectoryServerForm ({ directoryServerDataRef } :
       (server) => server.id === value
     )
     if (currentValue) {
-      setDirectoryServerValue(currentValue.id, currentValue.name)
+      setDirectoryServerValue(currentValue.id, `${currentValue.name} (${currentValue.type})`)
       setVisible(false)
       setDetailDrawerVisible(false)
     }
+  }
+
+  const addDirectoryServerCallback = (option: DefaultOptionType) => {
+    directoryServerDataRef.current = { id: option.value as string, name: option.label as string }
+    setDirectoryServerList((preState) => {
+      return [option, ...preState]
+    })
+    setDirectoryServerValue(option.value as string, option.label as string)
+    form.setFieldsValue({ directoryServerId: option.value })
   }
 
   useEffect(() => {
@@ -93,13 +102,18 @@ export function DirectoryServerForm ({ directoryServerDataRef } :
           (server) => server.id === directoryServerDataRef.current.id
         )
         currentServerData &&
-        setDirectoryServerValue( currentServerData.id, currentServerData.name)
+        setDirectoryServerValue(
+          currentServerData.id,
+          `${currentServerData.name} (${currentServerData.type})`
+        )
       } else if((editMode || cloneMode) && data?.id) {
         const currentServerData = serverList.find(
           (server) => server.wifiNetworkIds.includes(data.id!)
         )
         if (currentServerData) {
-          setDirectoryServerValue( currentServerData.id, currentServerData.name)
+          setDirectoryServerValue(
+            currentServerData.id,
+            `${currentServerData.name} (${currentServerData.type})`)
           form.setFieldValue('directoryServerId', currentServerData.id!)
         }
       }
@@ -107,15 +121,6 @@ export function DirectoryServerForm ({ directoryServerDataRef } :
 
 
   }, [directoryServerListFromServer, data])
-
-  const addDirectoryServerCallback = (option: DefaultOptionType) => {
-    directoryServerDataRef.current = { id: option.value as string, name: option.label as string }
-    setDirectoryServerList((preState) => {
-      return [option, ...preState]
-    })
-    setDirectoryServerValue(option.value as string, option.label as string)
-    form.setFieldsValue({ directoryServerId: option.value })
-  }
 
   return (<>
     <GridRow>
@@ -186,7 +191,7 @@ export function DirectoryServerForm ({ directoryServerDataRef } :
       readMode
       setVisible={setDetailDrawerVisible}
       policyId={directoryServerData.id}
-      policyName={directoryServerData.name}
+      policyName={directoryServerData.name.replace(/ \([^)]*\)/, '')}
     />
     {!(editMode) && <GridRow>
       <GridCol col={{ span: 24 }}>
