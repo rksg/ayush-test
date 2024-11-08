@@ -57,7 +57,8 @@ const defaultPayload = {
     'minimumRequiredVersion',
     'clientMldMac',
     'turnOnTimestamp',
-    'turnOffTimestamp'
+    'turnOffTimestamp',
+    'portList'
   ]
 }
 

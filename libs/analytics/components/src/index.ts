@@ -1,9 +1,10 @@
+import React from 'react'
+
 export * from './DescriptionSection'
 export { AccountManagement, AccountManagementTabEnum } from './AccountManagement'
 export { AnalyticsTabs } from './AnalyticsTabs'
 export { AIDrivenRRM } from './AIDrivenRRM'
 export { AIOperations } from './AIOperations'
-export { AppInsights } from './AppInsights'
 export { Brand360 } from './Brand360'
 export { ChatWithMelissa } from './ChatWithMelissa'
 export { ClientHealth } from './ClientTroubleshooting/ClientHealth'
@@ -89,3 +90,5 @@ export * from './Developers/Webhooks'
 export { IntentAIForm } from './IntentAI/IntentAIForm'
 export { IntentAIDetails } from './IntentAI/IntentAIDetails'
 export { IntentAIWidget } from './IntentAI/IntentAIWidget'
+
+export const AppInsights = React.lazy(() => import('./AppInsights'))

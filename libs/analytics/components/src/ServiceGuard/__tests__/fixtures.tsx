@@ -561,3 +561,22 @@ export const mockSystems = {
     { deviceId: '00000000-0000-0000-0000-000000000005', deviceName: 'system 5', onboarded: true, controllerVersion: '4.0' }
   ]
 }
+
+export const mockNetworkNodes = [
+  {
+    type: 'apGroup',
+    name: 'default',
+    children: [
+      {
+        type: 'AP',
+        name: 'RuckusAP',
+        mac: '60:D0:2C:18:7C:70'
+      },
+      {
+        type: 'AP',
+        name: 'RuckusAP',
+        mac: 'B4:79:C8:3E:C0:B0'
+      }
+    ]
+  }
+]
