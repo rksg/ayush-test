@@ -7,6 +7,7 @@ import type { CompatibilityNodeError, SingleNodeDetailsField, VipConfigType } fr
 import {
   ClusterHaFallbackScheduleTypeEnum,
   ClusterHaLoadDistributionEnum,
+  ClusterHighAvailabilityModeEnum,
   ClusterNetworkSettings,
   EdgeClusterStatus,
   EdgePortInfo,
@@ -328,8 +329,10 @@ export const lagSettingsCompatibleCheck = (
   return getCompatibleCheckResult(checkResult)
 }
 
-export const transformFromFormToApiData =
-(data: InterfaceSettingsFormType): ClusterNetworkSettings => {
+export const transformFromFormToApiData = (
+  data: InterfaceSettingsFormType,
+  highAvailabilityMode?: ClusterHighAvailabilityModeEnum
+): ClusterNetworkSettings => {
   const portSettings = []
   for(let [k, v] of Object.entries(data.portSettings)) {
     portSettings.push({
@@ -374,11 +377,18 @@ export const transformFromFormToApiData =
         break
     }
   }
+
+  const shouldPatchVip = highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY
+  const shouldPatchHaSetting = fallbackSettings &&
+    highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
+
   return {
     lagSettings: data.lagSettings,
     portSettings,
-    virtualIpSettings,
-    ...(fallbackSettings ? {
+    ...(shouldPatchVip ? {
+      virtualIpSettings
+    } : {}),
+    ...(shouldPatchHaSetting ? {
       highAvailabilitySettings: {
         fallbackSettings,
         loadDistribution: data.loadDistribution
