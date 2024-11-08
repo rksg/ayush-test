@@ -1,12 +1,12 @@
-import { Dispatch, SetStateAction } from 'react'
+import { Dispatch, SetStateAction, useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
 import { Modal, ModalType, useStepFormContext }             from '@acx-ui/components'
 import { NetworkForm }                                      from '@acx-ui/rc/components'
-import { serviceApi }                                       from '@acx-ui/rc/services'
 import { NetworkTypeEnum, PersonalIdentityNetworkFormData } from '@acx-ui/rc/utils'
-import { store }                                            from '@acx-ui/store'
+
+import { PersonalIdentityNetworkFormContext } from '../PersonalIdentityNetworkFormContext'
 
 interface AddDpskModalProps {
   visible: boolean
@@ -18,18 +18,15 @@ export const AddDpskModal = (props: AddDpskModalProps) => {
   const { visible, setVisible } = props
   const { $t } = useIntl()
   const { form } = useStepFormContext<PersonalIdentityNetworkFormData>()
+  const { personaGroupData, addNetworkCallback } = useContext(PersonalIdentityNetworkFormContext)
   const venueId = form.getFieldValue('venueId')
 
   const onModalCallBack = () => {
     // close modal
     setVisible(false)
 
-    // refetch DPSK
-    store.dispatch(
-      serviceApi.util.invalidateTags([
-        { type: 'Dpsk', id: 'DETAIL' }
-      ]))
-
+    if (personaGroupData?.dpskPoolId)
+      addNetworkCallback(personaGroupData.dpskPoolId)
   }
 
   const content = <NetworkForm
