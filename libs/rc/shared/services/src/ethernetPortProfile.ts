@@ -87,7 +87,7 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
           }
           const ethOverwriteList = {
             data: ethList.data?.filter(
-              m => m.apSerialNumbers && !m.apSerialNumbers.includes(params.serialNumber!)
+              m => !(m.apSerialNumbers && m.apSerialNumbers.includes(params.serialNumber!))
             ).concat(apEthPortProfiles) } as TableResult<EthernetPortProfileViewData>
 
           return ethOverwriteList
