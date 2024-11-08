@@ -20,7 +20,9 @@ import {
   getPolicyListRoutePath,
   getPolicyRoutePath,
   useTableQuery,
-  Venue
+  Venue,
+  getScopeKeyByPolicy,
+  filterByAccessForServicePolicyMutation
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { WifiScopes }                                              from '@acx-ui/types'
@@ -99,9 +101,9 @@ export default function LbsServerProfileTable () {
             link: getPolicyListRoutePath(true)
           }
         ]}
-        extra={hasCrossVenuesPermission() && filterByAccess([
+        extra={hasCrossVenuesPermission() && filterByAccessForServicePolicyMutation([
           <TenantLink
-            scopeKey={[WifiScopes.CREATE]}
+            scopeKey={getScopeKeyByPolicy(PolicyType.LBS_SERVER_PROFILE, PolicyOperation.CREATE)}
             to={getPolicyRoutePath({
               type: PolicyType.LBS_SERVER_PROFILE,
               oper: PolicyOperation.CREATE
