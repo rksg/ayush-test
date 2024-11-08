@@ -5,11 +5,8 @@ import { useIntl } from 'react-intl'
 import { Loader, Table, TableProps }         from '@acx-ui/components'
 import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import { useApListQuery, useGetVenuesQuery } from '@acx-ui/rc/services'
-import {
-  AP,
-  useTableQuery
-} from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { AP, useTableQuery }                 from '@acx-ui/rc/utils'
+import { TenantLink, useParams }             from '@acx-ui/react-router-dom'
 
 interface EthernetPortTableProps {
   apSerialNumbers: string[]
