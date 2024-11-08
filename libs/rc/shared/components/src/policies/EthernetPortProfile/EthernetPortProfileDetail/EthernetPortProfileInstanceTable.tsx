@@ -9,7 +9,7 @@ import {
   AP,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }             from '@acx-ui/react-router-dom'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 interface EthernetPortTableProps {
   apSerialNumbers: string[]

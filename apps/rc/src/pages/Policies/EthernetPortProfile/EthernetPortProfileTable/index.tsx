@@ -267,14 +267,15 @@ const EthernetPortProfileTable = () => {
 
         extra={hasCrossVenuesPermission() &&
           filterByAccessForServicePolicyMutation([
-          <TenantLink
-          scopeKey={getScopeKeyByPolicy(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.CREATE) }
-          // eslint-disable-next-line max-len
-          to={getPolicyRoutePath({ type: PolicyType.ETHERNET_PORT_PROFILE , oper: PolicyOperation.CREATE })}
-        >
-          <Button type='primary'>{$t({ defaultMessage: 'Add Ethernet Port Profile' })}</Button>
-        </TenantLink>
-        ])}
+            <TenantLink
+              scopeKey={
+                getScopeKeyByPolicy(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.CREATE)}
+              // eslint-disable-next-line max-len
+              to={getPolicyRoutePath({ type: PolicyType.ETHERNET_PORT_PROFILE , oper: PolicyOperation.CREATE })}
+            >
+              <Button type='primary'>{$t({ defaultMessage: 'Add Ethernet Port Profile' })}</Button>
+            </TenantLink>
+          ])}
       />
       <Loader states={[tableQuery]}>
         <Table
