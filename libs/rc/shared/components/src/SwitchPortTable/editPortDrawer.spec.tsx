@@ -1642,6 +1642,7 @@ describe('EditPortDrawer', () => {
               flexibleAuthenticationEnabled: true,
               authenticationProfileId: '7de28fc02c0245648dfd58590884bad2',
               authenticationCustomize: false,
+              changeAuthOrder: false,
               ...profile01
             })
           )
@@ -1934,7 +1935,7 @@ describe('EditPortDrawer', () => {
           const profile01 = _.omit(flexAuthList.data[0], ['id', 'profileName'])
           const profile03 = _.omit(flexAuthList.data[2], ['id', 'profileName'])
           const authFields = Object.keys(profile03)
-          const ignoreFields = _.difference(allMultipleEditableFields, ['authenticationProfileId', 'flexibleAuthenticationEnabled', ...authFields])
+          const ignoreFields = _.difference(allMultipleEditableFields, ['authenticationProfileId', 'flexibleAuthenticationEnabled', 'changeAuthOrder', ...authFields])
 
           mockServer.use(
             rest.post(SwitchRbacUrlsInfo.getPortsSetting.url,
@@ -2018,6 +2019,7 @@ describe('EditPortDrawer', () => {
               ports: ['5'],
               authenticationProfileId: 'dccf7d0272024d3ca03bcf5b48497685',
               flexibleAuthenticationEnabled: true,
+              changeAuthOrder: false,
               ...profile03
             }, {
               switchId: '58:fb:96:0e:82:8a',
@@ -2026,6 +2028,7 @@ describe('EditPortDrawer', () => {
               ports: ['1/1/5'],
               authenticationProfileId: 'dccf7d0272024d3ca03bcf5b48497685',
               flexibleAuthenticationEnabled: true,
+              changeAuthOrder: false,
               ...profile03
             }]
           })

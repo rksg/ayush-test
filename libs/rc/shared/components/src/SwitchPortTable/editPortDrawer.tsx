@@ -1131,27 +1131,23 @@ export function EditPortDrawer ({
   const handleApply = async () => {
     const shouldAlertAaa = aggregatePortsData?.shouldAlertAaaAndRadiusNotApply
     const flexAuthEnabled = form.getFieldValue('flexibleAuthenticationEnabled')
-    try {
-      //console.log('** ', form.getFieldsValue())
-      const valid = await form.validateFields()
-      if (valid) {
-        if (isSwitchFlexAuthEnabled && shouldAlertAaa && flexAuthEnabled) {
-          showActionModal({
-            type: 'confirm',
-            width: 450,
-            title: $t({ defaultMessage: 'Modify Port?' }),
-            content: $t(EditPortMessages.NEED_CONFIGURE_AAA_RADIUS_SETTINGS),
-            okText: $t({ defaultMessage: 'Apply Changes' }),
-            cancelText: $t({ defaultMessage: 'Cancel' }),
-            onOk: applyForm
-          })
-          return
-        }
-        applyForm()
+    form.validateFields().then(() => {
+      if (isSwitchFlexAuthEnabled && shouldAlertAaa && flexAuthEnabled) {
+        showActionModal({
+          type: 'confirm',
+          width: 450,
+          title: $t({ defaultMessage: 'Modify Port?' }),
+          content: $t(EditPortMessages.NEED_CONFIGURE_AAA_RADIUS_SETTINGS),
+          okText: $t({ defaultMessage: 'Apply Changes' }),
+          cancelText: $t({ defaultMessage: 'Cancel' }),
+          onOk: applyForm
+        })
+        return
       }
-    } catch (err) {
+      applyForm()
+    }).catch((err) => {
       console.log(err) // eslint-disable-line no-console
-    }
+    })
   }
 
   const footer = [

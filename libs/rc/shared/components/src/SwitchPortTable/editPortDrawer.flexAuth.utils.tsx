@@ -195,12 +195,26 @@ export const getFlexAuthDefaultValue = (
     authDefaultVlanCheckbox: false
   }
 
+  const checkValueEqual = (key: string, portSetting: Partial<PortSettingModel>) => {
+    const fieldKey = key as keyof typeof portSetting
+    return !hasMultipleValueFields?.includes(key) && (portSetting[fieldKey] !== undefined)
+  }
+
   const isAllPortsEnabledAuth = portSetting?.flexibleAuthenticationEnabled
     && !hasMultipleValueFields?.includes('flexibleAuthenticationEnabled')
 
   const handleField = (key: string) => {
-    return !hasMultipleValueFields?.includes(key) && (portSetting[key as keyof typeof portSetting] !== undefined)
-      ? portSetting[key as keyof typeof portSetting]
+    const fieldKey = key as keyof typeof portSetting
+    const isValueEqual = checkValueEqual(key, portSetting)
+
+    if (key === 'authenticationProfileId' && isValueEqual) {
+      const authenticationCustomize = portSetting?.authenticationCustomize
+      const isCustomized = checkValueEqual('authenticationCustomize', portSetting) && authenticationCustomize
+      return isCustomized ? '' : portSetting[fieldKey]
+    }
+
+    return isValueEqual
+      ? portSetting[fieldKey]
       : defaultValue[key as keyof typeof defaultValue]
   }
 
@@ -266,7 +280,16 @@ export const getAppliedProfile = (
   profileId: string
 ) => {
   const profile = profiles.find(p => p.id === profileId)
-  return _.omit(profile, ['profileName', 'id'])
+  const appliedProfile = {
+    // need set some default values for API data
+    changeAuthOrder: false,
+    dot1xPortControl: profile?.authenticationType === AuthenticationType.MACAUTH ? '' : PortControl.AUTO,
+    restrictedVlan: '',
+    criticalVlan: '',
+    guestVlan: '',
+    ...profile
+  } as FlexibleAuthentication
+  return _.omit(appliedProfile, ['profileName', 'id'])
 }
 
 export const getCurrentAuthDefaultVlan = (props: {
@@ -506,7 +529,7 @@ export const checkGuestVlanConsistency = (
   const hasAssignedGuestVlan = !!guestVlans.length
   const isGuestVlanNotConsistent = guestVlans.length > 1 || !guestVlans.includes(Number(value))
 
-  if (value && !allSelectedPortsMatch && hasAssignedGuestVlan && isGuestVlanNotConsistent) {
+  if (!allSelectedPortsMatch && hasAssignedGuestVlan && isGuestVlanNotConsistent) {
     return Promise.reject(
       $t(FlexAuthMessages.CANNOT_SET_DIFF_GUEST_VLAN, { guestVlan: guestVlans.sort().join(', ') })
     )
@@ -591,15 +614,15 @@ export const handleClickCustomize = (props: {
   } = props
 
   const toggleCustomized = !authenticationCustomize
-  const isEitherPortEnabledForFirstTime
-    = selectedPorts?.length > Object.values(aggregateData.authDefaultVlan).flat()?.length
+  const authDefaultVlan = Object.values(aggregateData.authDefaultVlan).flat()
+  const isEitherPortEnabledForFirstTime = selectedPorts?.length > authDefaultVlan?.length
 
   form.setFieldValue('authenticationCustomize', toggleCustomized)
 
   if (toggleCustomized) {
     form.setFieldsValue({
       ...form.getFieldsValue(),
-      ...(!isMultipleEdit && authenticationProfileId
+      ...(!isMultipleEdit && !authDefaultVlan?.length && authenticationProfileId
         ? getAppliedProfile(authProfiles, authenticationProfileId) : {}
       ),
       ...(isMultipleEdit && isEitherPortEnabledForFirstTime ? {
