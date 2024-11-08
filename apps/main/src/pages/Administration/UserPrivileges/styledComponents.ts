@@ -1,5 +1,5 @@
-import { Space } from 'antd'
-import styled    from 'styled-components/macro'
+import { Checkbox, Space } from 'antd'
+import styled              from 'styled-components/macro'
 
 export const Wrapper = styled(Space)`
   .ant-pro-table-list-toolbar-title {
@@ -107,4 +107,9 @@ export const SelectedCount = styled.div`
   background-color: var(--acx-accents-blue-10);
   margin-bottom: -36px;
   z-index: 10000;
+`
+export const PermissionCheckbox = styled(Checkbox)`
+  .ant-checkbox {
+    background-color: var(--acx-primary-white);
+  }
 `
