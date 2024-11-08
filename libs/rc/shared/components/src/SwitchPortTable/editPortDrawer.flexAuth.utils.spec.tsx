@@ -3,12 +3,14 @@ import { Form } from 'antd'
 
 import {
   PortSettingModel,
-  SwitchDefaultVlan
+  SwitchDefaultVlan,
+  SwitchPortViewModel
 } from '@acx-ui/rc/utils'
 import { renderHook } from '@acx-ui/test-utils'
 
 import {
   aggregatePortSettings,
+  checkAllSelectedPortsMatch,
   getCurrentVlansByKey,
   getUnionValuesByKey
 } from './editPortDrawer.flexAuth.utils'
@@ -90,6 +92,75 @@ describe('aggregatePortSettings', () => {
       taggedVlans: { 'c0:c5:20:aa:32:55': [] },
       untaggedVlan: { 'c0:c5:20:aa:32:55': ['1'] }
     })
+  })
+})
+
+describe('checkAllSelectedPortsMatch', () => {
+  const selectedPorts = [{
+    switchMac: 'c0:c5:20:aa:35:d9'
+  }, {
+    switchMac: 'c0:c5:20:aa:32:55'
+  }] as SwitchPortViewModel[]
+  const aggregateData = {
+    authDefaultVlan: { 'c0:c5:20:aa:35:d9': [3,10] },
+    authDefaultVlan2: { 'c0:c5:20:aa:35:d9': { '1/1/3': [3], '1/1/4': [10] } },
+    authenticationProfileId: {},
+    criticalVlan: {},
+    defaultVlan: { 'c0:c5:20:aa:35:d9': 1, 'c0:c5:20:aa:32:55': 1 },
+    enableAuthPorts: { 'c0:c5:20:aa:35:d9': ['1/1/3', '1/1/4'], 'c0:c5:20:aa:32:55': [] },
+    guestVlan: {},
+    hasMultipleValue: [],
+    profileAuthDefaultVlan: {},
+    restrictedVlan: { 'c0:c5:20:aa:35:d9': 9 },
+    selectedPortIdentifier: {
+      'c0:c5:20:aa:35:d9': ['1/1/3', '1/1/4'], 'c0:c5:20:aa:32:55': ['1/1/5']
+    },
+    switchLevelAuthDefaultVlan: { 'c0:c5:20:aa:35:d9': 3, 'c0:c5:20:aa:32:55': 12 },
+    taggedVlans: { 'c0:c5:20:aa:35:d9': ['3', '10'], 'c0:c5:20:aa:32:55': ['3'] },
+    untaggedVlan: { 'c0:c5:20:aa:35:d9': ['2'], 'c0:c5:20:aa:32:55': ['1'] },
+    shouldAlertAaaAndRadiusNotApply: false
+  }
+
+  it('should check correctly', async () => {
+    expect(checkAllSelectedPortsMatch(selectedPorts, aggregateData)).toBe(true)
+    expect(checkAllSelectedPortsMatch(selectedPorts.slice(0,1), aggregateData)).toBe(true)
+    expect(checkAllSelectedPortsMatch(selectedPorts.slice(1,2), aggregateData)).toBe(true)
+    expect(checkAllSelectedPortsMatch(selectedPorts, {
+      ...aggregateData,
+      enableAuthPorts: { 'c0:c5:20:aa:35:d9': ['1/1/3', '1/1/4'], 'c0:c5:20:aa:32:55': ['1/1/5'] }
+    })).toBe(true)
+    expect(checkAllSelectedPortsMatch(selectedPorts, {
+      ...aggregateData,
+      enableAuthPorts: {}
+    })).toBe(true)
+    expect(checkAllSelectedPortsMatch(selectedPorts, {
+      ...aggregateData,
+      enableAuthPorts: { 'c0:c5:20:aa:35:d9': [], 'c0:c5:20:aa:32:55': [] }
+    })).toBe(true)
+    expect(checkAllSelectedPortsMatch(selectedPorts.slice(0,1), {
+      ...aggregateData,
+      selectedPortIdentifier: { 'c0:c5:20:aa:35:d9': ['1/1/3', '1/1/4'] },
+      enableAuthPorts: { 'c0:c5:20:aa:35:d9': ['1/1/3', '1/1/4'] }
+    })).toBe(true)
+
+    expect(checkAllSelectedPortsMatch(selectedPorts, {
+      ...aggregateData,
+      enableAuthPorts: { 'c0:c5:20:aa:35:d9': ['1/1/3', '1/1/4', '1/1/5'], 'c0:c5:20:aa:32:55': [] }
+    })).toBe(false)
+    expect(checkAllSelectedPortsMatch(selectedPorts, {
+      ...aggregateData,
+      enableAuthPorts: { 'c0:c5:20:aa:35:d9': ['1/1/3', '1/1/4'], 'c0:c5:20:aa:32:55': ['1/1/3'] }
+    })).toBe(false)
+    expect(checkAllSelectedPortsMatch(selectedPorts, {
+      ...aggregateData,
+      selectedPortIdentifier: { 'c0:c5:20:aa:35:d9': ['1/1/3'], 'c0:c5:20:aa:32:55': ['1/1/3'] },
+      enableAuthPorts: { 'c0:c5:20:aa:35:d9': ['1/1/3', '1/1/4'], 'c0:c5:20:aa:32:55': ['1/1/3'] }
+    })).toBe(false)
+    expect(checkAllSelectedPortsMatch(selectedPorts.slice(0,1), {
+      ...aggregateData,
+      selectedPortIdentifier: { 'c0:c5:20:aa:35:d9': ['1/1/3'] },
+      enableAuthPorts: { 'c0:c5:20:aa:35:d9': ['1/1/3', '1/1/4'] }
+    })).toBe(false)
   })
 })
 

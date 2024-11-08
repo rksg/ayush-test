@@ -1446,6 +1446,54 @@ describe('EditPortDrawer', () => {
           // TODO
           // expect(await screen.findByTestId('auth-profile-select')).toHaveValue('7de28fc02c0245648dfd58590884bad2')
           expect(await screen.findByText('Customize')).toBeVisible()
+          expect(await screen.findByTestId('auth-profile-card')).toBeVisible()
+        })
+
+        it('should show an error messsage when the profile\'s Restricted VLAN duplicate with the Default VLAN', async () => {
+          const profile01 = _.omit(flexAuthList.data[0], ['id', 'profileName'])
+          mockServer.use(
+            rest.post(SwitchRbacUrlsInfo.getPortSetting.url,
+              (_, res, ctx) => res(ctx.json([{
+                ...portSetting[0],
+                flexibleAuthenticationEnabled: true,
+                authenticationProfileId: '7de28fc02c0245648dfd58590884bad2',
+                authenticationCustomize: false,
+                ...profile01
+              }]))
+            )
+          )
+
+          render(<Provider>
+            <EditPortDrawer
+              visible={true}
+              setDrawerVisible={jest.fn()}
+              isCloudPort={false}
+              isMultipleEdit={selectedPorts?.slice(0, 1)?.length > 1}
+              isVenueLevel={false}
+              selectedPorts={selectedPorts?.slice(0, 1)}
+              switchList={switchList}
+              authProfiles={flexAuthList.data}
+            />
+          </Provider>, {
+            route: {
+              params,
+              path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/overview/ports'
+            }
+          })
+          await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+          await screen.findByText('Edit Port')
+          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByTestId('flex-enable-switch')).not.toBeDisabled()
+          expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
+
+          expect(await screen.findByText('Customize')).toBeVisible()
+          expect(await screen.findByTestId('auth-profile-card')).toBeVisible()
+
+          const profileCombobox = await screen.findByRole('combobox', { name: /Profile/ })
+          await userEvent.click(profileCombobox)
+          await userEvent.click(await screen.findByText('Profile05--auth10-r1-c4-g5'))
+          expect(await screen.findByText(/Restricted VLAN can not be the same as Default VLAN/)).toBeVisible()
+          expect(screen.queryByTestId('auth-profile-card')).toBeNull()
         })
 
         it('should render correctly when customizing the flex authentication', async () => {

@@ -82,8 +82,8 @@ export const aggregatePortSettings = (
     enforceUnique = true
   ) => {
     const newValue = Array.isArray(value) ? value : [value]
-    const combinedValues = [...(result[index] || []), ...newValue]
-    result[index] = enforceUnique ? _.uniq(combinedValues) : combinedValues
+    const updatedValues = [...(result[index] || []), ...newValue]
+    result[index] = enforceUnique ? _.uniq(updatedValues) : updatedValues
     return result[index]
   }
 
@@ -436,16 +436,12 @@ export const checkAllSelectedPortsMatch = (
   selectedPorts: SwitchPortViewModel[],
   aggregateData: AggregatePortSettings
 ) => {
-  const isAllPortsMatch = selectedPorts.every(port => {
+  return selectedPorts.every(port => {
     const { selectedPortIdentifier, enableAuthPorts } = aggregateData
-    const sortedSelectedPorts = [...(selectedPortIdentifier[port.switchMac] || [])].sort()
-    const sortedAuthPorts = [...(enableAuthPorts[port.switchMac] || [])].sort()
-    return sortedAuthPorts?.length
-      ? _.intersection(sortedSelectedPorts, sortedAuthPorts)?.length === sortedAuthPorts?.length
-      : true
+    const selectedPorts = selectedPortIdentifier[port.switchMac]
+    const authPorts = enableAuthPorts[port.switchMac]
+    return !authPorts?.length || _.intersection(selectedPorts, authPorts)?.length === authPorts?.length
   })
-
-  return isAllPortsMatch
 }
 
 export const checkVlanDiffFromSwitchDefaultVlan = (

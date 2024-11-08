@@ -682,5 +682,17 @@ export const flexAuthList = {
     guestVlan: 5,
     authFailAction: 'block',
     authTimeoutAction: 'none'
+  },
+  {
+    id: '8814a74f53c04c08bf280f247fab527c',
+    profileName: 'Profile05--auth10-r1-c4-g5',
+    authenticationType: '802.1x',
+    dot1xPortControl: 'auto',
+    authDefaultVlan: 10,
+    restrictedVlan: 1,
+    criticalVlan: 4,
+    guestVlan: 5,
+    authFailAction: 'block',
+    authTimeoutAction: 'none'
   }]
 }

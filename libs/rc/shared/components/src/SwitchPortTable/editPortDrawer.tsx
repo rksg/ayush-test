@@ -517,8 +517,8 @@ export function EditPortDrawer ({
     const { tagged, untagged, voice } = getPortVenueVlans(vlansByVenue, selectedPorts?.[0])
     const aggregatedData = isSwitchFlexAuthEnabled
       ? aggregatePortSettings([portSetting], switchesDefaultVlan) : {}
-    //console.log('portSetting: ', portSetting)
-    //console.log('aggregatedData: ', aggregatedData)
+    // console.log('portSetting: ', portSetting)
+    // console.log('aggregatedData: ', aggregatedData)
 
     setVenueTaggedVlans(tagged)
     setVenueUntaggedVlan(untagged)
