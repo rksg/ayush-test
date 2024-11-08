@@ -26,6 +26,7 @@ export class PortSettingModel {
   ingressAcl?: string
   switchSerialNumber: string
   status?: string // ignore
+  name?: string
   // Flex auth
   switchLevelAuthDefaultVlan?: number
   shouldAlertAaaAndRadiusNotApply?: boolean

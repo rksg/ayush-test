@@ -472,6 +472,8 @@ export function EditPortDrawer ({
     if (isDataReady) {
       resetFields()
       setData()
+    } else if (selectedPorts) {
+      setLoading(true)
     }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps, max-len
@@ -515,6 +517,7 @@ export function EditPortDrawer ({
     const { tagged, untagged, voice } = getPortVenueVlans(vlansByVenue, selectedPorts?.[0])
     const aggregatedData = isSwitchFlexAuthEnabled
       ? aggregatePortSettings([portSetting], switchesDefaultVlan) : {}
+    //console.log('portSetting: ', portSetting)
     //console.log('aggregatedData: ', aggregatedData)
 
     setVenueTaggedVlans(tagged)
@@ -537,6 +540,7 @@ export function EditPortDrawer ({
 
     form.setFieldsValue({
       ...portSetting,
+      name: portSetting.name ?? '',
       poeEnable: portSetting.poeCapability ? portSetting.poeEnable : false,
       poeBudget: portSetting.poeBudget === 0 ? '' : portSetting.poeBudget,
       portSpeed: portSpeed.find(item => item === portSetting.portSpeed)
@@ -622,7 +626,8 @@ export function EditPortDrawer ({
     ])
     const aggregatedData = isSwitchFlexAuthEnabled
       ? aggregatePortSettings(portsSetting, switchesDefaultVlan, hasMultipleValue) : {}
-    //console.log('multi aggregatedData: ', aggregatedData)
+    // console.log('portsSetting: ', portsSetting)
+    // console.log('multi aggregatedData: ', aggregatedData)
 
     setDisablePoeCapability(poeCapabilityDisabled)
     setDisableCyclePoeCapability(cyclePoeMultiPortsDisabled)
