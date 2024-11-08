@@ -24,7 +24,7 @@ export const VirtualIpForm = () => {
       portTypes: [EdgePortTypeEnum.LAN]
     }
   }, {
-    skip: (!clusterInfo?.edgeList || clusterInfo?.edgeList.length === 0),
+    skip: !clusterInfo?.edgeList?.length,
     selectFromResult: ({ data, ...rest }) => ({
       data: data ? Object.fromEntries(
         Object.entries(data)
