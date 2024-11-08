@@ -16,7 +16,6 @@ import {
 import {
   ClusterHighAvailabilityModeEnum,
   EdgeClusterStatus,
-  EdgeFeatureEnum,
   EdgeStatusEnum,
   IncompatibilityFeatures,
   deriveEdgeModel,
@@ -85,7 +84,7 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
     selectFromResult: ({ data, isLoading }) => {
       return {
         requiredFw: data?.featureSets
-          ?.find(item => item.featureName === EdgeFeatureEnum.HA_AA)?.requiredFw,
+          ?.find(item => item.featureName === IncompatibilityFeatures.HA_AA)?.requiredFw,
         isLoading
       }
     }

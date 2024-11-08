@@ -22,3 +22,17 @@ export interface EdgeMdnsProxyActivation {
   edgeClusterId: string,
   edgeClusterName: string
 }
+
+export interface EdgeMdnsProxyStatsData {
+  profileId?: string
+  edgeId?: string
+  clusterId?: string
+  venueId?: string
+  rxPackets?: number
+  rxBytes?: number
+  txPackets?: number
+  txBytes?: number
+  rxRequest?: number
+  rxResponse?: number
+  numTypesMdnsServices?: number
+}

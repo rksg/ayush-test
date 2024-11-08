@@ -26,14 +26,16 @@ export function DataPromptPreview (props: GenericActionPreviewProps<DataPromptAc
   }
 
   return <ContentPreview
-    title={data?.title}
+    title={data?.displayTitle ? data?.title : undefined}
     body={
       <GridRow justify={'center'} align={'middle'}>
-        <GridCol col={{ span: 24 }}>
-          <Text>{data?.messageHtml}</Text>
-        </GridCol>
         <GridCol col={{ span: 24 }} style={{ alignItems: 'center' }}>
           <Form layout='vertical' style={{ width: '250px' }}>
+            {data?.displayMessageHtml &&
+            <Form.Item>
+              <Text>{data?.messageHtml}</Text>
+            </Form.Item>
+            }
             {data?.variables?.map((formField:DataPromptVariable) => {
               return <Form.Item
                 key={getFormFieldLabel(formField)}

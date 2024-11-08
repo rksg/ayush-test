@@ -411,7 +411,7 @@ const useVenueEdgeCompatibilities = (tableQuery: TableQuery<Venue, RequestPayloa
       }).unwrap()
 
       const result = cloneDeep(tableData) ?? []
-      res?.compatibilities.forEach((item) => {
+      res?.compatibilities?.forEach((item) => {
         const idx = findIndex(tableQuery.data?.data, { id: item.id })
         if (idx !== -1)
           result[idx].incompatibleEdges = item.incompatible ?? 0
