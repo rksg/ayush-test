@@ -7,12 +7,12 @@ import {
   ServiceOperation,
   ServiceType
 } from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { Provider }                                              from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { InstancesTable } from './'
 
-const { mockEdgeMdnsViewDataList } = EdgeMdnsFixtures
+const { mockEdgeMdnsViewDataList, mockEdgeMdnsStatsList } = EdgeMdnsFixtures
 
 describe('Edge mDNS InstancesTable', () => {
   const params = {
@@ -31,6 +31,13 @@ describe('Edge mDNS InstancesTable', () => {
           return res(ctx.json({
             data: mockEdgeMdnsViewDataList
           }))
+        }),
+      rest.post(
+        EdgeMdnsProxyUrls.getEdgeMdnsProxyStatsList.url,
+        (_, res, ctx) => {
+          return res(ctx.json({
+            data: mockEdgeMdnsStatsList
+          }))
         })
     )
   })
@@ -43,10 +50,12 @@ describe('Edge mDNS InstancesTable', () => {
         route: { params, path: detailPath }
       }
     )
-
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Instances (2)')).toBeVisible()
-    expect(screen.getByRole('row', { name: /Edge Cluster 1/ })).toBeVisible()
-    expect(screen.getByRole('row', { name: /Edge Cluster 3/ })).toBeVisible()
+    // eslint-disable-next-line max-len
+    expect(screen.getByRole('row', { name: 'Edge Cluster 1 Mock Venue 1 928 | 370 B 344 | 468 B 190 778 2' })).toBeVisible()
+    // eslint-disable-next-line max-len
+    expect(screen.getByRole('row', { name: 'Edge Cluster 3 Mock Venue 3 0 | 0 B 0 | 0 B 0 0 0' })).toBeVisible()
   })
 
   it('should render correctly when no instances', async () => {
