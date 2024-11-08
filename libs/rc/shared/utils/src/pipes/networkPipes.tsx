@@ -212,6 +212,10 @@ export const captiveNetworkTypes: Record<GuestNetworkTypeEnum, MessageDescriptor
   [GuestNetworkTypeEnum.Cloudpath]: defineMessage({
     defaultMessage: 'Captive Portal',
     description: 'Guest network type - Captive Portal'
+  }),
+  [GuestNetworkTypeEnum.Directory]: defineMessage({
+    defaultMessage: 'Active Directory / LDAP Server',
+    description: 'Guest network type - Active Directory/ LDAP Server'
   })
 }
 

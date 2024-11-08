@@ -100,6 +100,7 @@ import ClientIsolationTable                         from './pages/Policies/Clien
 import ConnectionMeteringDetail                     from './pages/Policies/ConnectionMetering/ConnectionMeteringDetail'
 import ConnectionMeteringPageForm                   from './pages/Policies/ConnectionMetering/ConnectionMeteringPageForm'
 import ConnectionMeteringTable                      from './pages/Policies/ConnectionMetering/ConnectionMeteringTable'
+import DirectoryServerDetail                        from './pages/Policies/DirectoryServer/DirectoryServerDetail/DirectoryServerDetail'
 import DirectoryServerTable                         from './pages/Policies/DirectoryServer/DirectoryServerTable/DirectoryServerTable'
 import EthernetPortProfileTable                     from './pages/Policies/EthernetPortProfile/EthernetPortProfileTable'
 import AddEdgeHqosBandwidth                         from './pages/Policies/HqosBandwidth/Edge/AddHqosBandwidth'
@@ -1464,6 +1465,13 @@ function PolicyRoutes () {
             type: PolicyType.DIRECTORY_SERVER,
             oper: PolicyOperation.LIST })}
           element={<DirectoryServerTable />}
+        />
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({
+            type: PolicyType.DIRECTORY_SERVER,
+            oper: PolicyOperation.DETAIL })}
+          element={<DirectoryServerDetail />}
         />
         <Route
           path={getPolicyRoutePath({
