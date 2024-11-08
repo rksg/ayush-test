@@ -1,6 +1,6 @@
-import { DefaultOptionType }             from 'antd/lib/select'
-import _, { difference, flatMap, sumBy } from 'lodash'
-import { IntlShape }                     from 'react-intl'
+import { DefaultOptionType }                    from 'antd/lib/select'
+import _, { difference, flatMap, isNil, sumBy } from 'lodash'
+import { IntlShape }                            from 'react-intl'
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
@@ -435,13 +435,14 @@ const getTotalScopedCount = (clusterCompatibilities: EntityCompatibility[] | Ven
 }
 
 // eslint-disable-next-line max-len
-export const getFeaturesIncompatibleDetailData = (compatibleData: EdgeServiceCompatibility | EdgeSdLanApCompatibility | EdgeServiceApCompatibility) => {
+export const getFeaturesIncompatibleDetailData = (compatibleData: EdgeServiceCompatibility | EdgeSdLanApCompatibility | EdgeServiceApCompatibility | undefined) => {
+  const resultMapping : Record<string, ApCompatibility> = {}
+  if (isNil(compatibleData)) return resultMapping
+
   const isEdgePerspective = compatibleData.hasOwnProperty('clusterEdgeCompatibilities')
 
-  const resultMapping : Record<string, ApCompatibility> = {}
-
   if (isEdgePerspective) {
-    const data = (compatibleData as EdgeServiceCompatibility).clusterEdgeCompatibilities
+    const data = (compatibleData as EdgeServiceCompatibility).clusterEdgeCompatibilities ?? []
     const totalScoped = getTotalScopedCount(data)
 
     data.forEach(clusterCompatibilities => {
@@ -472,9 +473,9 @@ export const getFeaturesIncompatibleDetailData = (compatibleData: EdgeServiceCom
   } else {
     const isNewDataModel = compatibleData.hasOwnProperty('venueEdgeServiceApCompatibilities')
 
-    const data = isNewDataModel
+    const data = (isNewDataModel
       ? (compatibleData as EdgeServiceApCompatibility).venueEdgeServiceApCompatibilities
-      : (compatibleData as EdgeSdLanApCompatibility).venueSdLanApCompatibilities
+      : (compatibleData as EdgeSdLanApCompatibility).venueSdLanApCompatibilities) ?? []
     const totalScoped = getTotalScopedCount(data)
 
     data.forEach(item => {

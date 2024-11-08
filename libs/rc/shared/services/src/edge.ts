@@ -133,7 +133,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
             const compatibilityQuery = await fetchWithBQ(compatibilityReq)
             const compatibilities = compatibilityQuery.data as VenueEdgeCompatibilitiesResponse
 
-            compatibilities.compatibilities.forEach((item) => {
+            compatibilities.compatibilities?.forEach((item) => {
               const idx = findIndex(edgesData, { serialNumber: item.id })
               if (idx !== -1)
                 edgesData[idx].incompatible = item.incompatibleFeatures?.length ?? 0
