@@ -22,8 +22,7 @@ import {
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getScopeKeyByPolicy } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }    from '@acx-ui/react-router-dom'
-import { hasCrossVenuesPermission } from '@acx-ui/user'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 import { EthernetPortProfileInstanceTable } from './EthernetPortProfileInstanceTable'
 
@@ -144,7 +143,7 @@ export const EthernetPortProfileDetail = () => {
         }
       ]}
       extra={
-        hasCrossVenuesPermission() && filterByAccessForServicePolicyMutation([
+        filterByAccessForServicePolicyMutation([
           <TenantLink
             scopeKey={getScopeKeyByPolicy(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.EDIT)}
             to={getPolicyDetailsLink({

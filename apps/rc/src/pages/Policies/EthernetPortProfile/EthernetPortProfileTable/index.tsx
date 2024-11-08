@@ -25,7 +25,7 @@ import {
 }                                                                  from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { WifiScopes }                                              from '@acx-ui/types'
-import { filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
+import { filterByAccess, hasPermission }                           from '@acx-ui/user'
 
 
 const EthernetPortProfileTable = () => {
@@ -265,7 +265,7 @@ const EthernetPortProfileTable = () => {
           }
         ]}
 
-        extra={hasCrossVenuesPermission() &&
+        extra={
           filterByAccessForServicePolicyMutation([
             <TenantLink
               scopeKey={
