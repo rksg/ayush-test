@@ -138,7 +138,8 @@ const CertificateMutationUseCases = [
   'ActivateClientCertificateOnRadius',
   'DectivateClientCertificateOnRadius',
   'ActivateServerCertificateOnRadius',
-  'DectivateServerCertificateOnRadius'
+  'DectivateServerCertificateOnRadius',
+  'GENERATE_SERVER_CERT'
 ]
 
 const L2AclUseCases = [

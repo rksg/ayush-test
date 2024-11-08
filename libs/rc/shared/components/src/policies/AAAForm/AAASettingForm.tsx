@@ -14,7 +14,8 @@ import {
   useConfigTemplate,
   hasPolicyPermission,
   PolicyOperation,
-  CertificateStatusType
+  CertificateStatusType,
+  ExtendedKeyUsages
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -354,7 +355,7 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
                 disabled={caSelectOptions.length >= CERTIFICATE_AUTHORITY_MAX_COUNT}
                 onClick={handleAddCertificateAuthority}
                 children={$t({ defaultMessage: 'Add CA' })}
-                hidden={true}/>}
+              />}
           </Space>
           <Form.Item
             label={$t({ defaultMessage: 'Client Certificate' })}
@@ -379,7 +380,7 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
             disabled={clientCertSelectOptions.length >= CERTIFICATE_MAX_COUNT}
             onClick={handleAddClientCertificate}
             children={$t({ defaultMessage: 'Generate new client certificate' })}
-            hidden={true}/>
+          />
         </UI.RacSecDiv>
         }
         <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
@@ -502,6 +503,7 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
           visible={showCertificateDrawer}
           setVisible={setShowCertificateDrawer}
           handleSave={handleSaveClientCertificate}
+          extendedKeyUsages={[ExtendedKeyUsages.CLIENT_AUTH]}
         />
 
       </GridCol>
