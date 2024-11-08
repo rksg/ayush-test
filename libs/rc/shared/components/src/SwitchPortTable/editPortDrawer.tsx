@@ -101,7 +101,7 @@ import {
   checkAclIgnore,
   checkPortEditStatus,
   checkVlanIgnore,
-  handlePortSpeedFor765048F,
+  FIELD_LABEL,
   getAclOptions,
   getAllSwitchVlans,
   getDefaultVlanMapping,
@@ -117,6 +117,7 @@ import {
   getPortVenueVlans,
   getToggleClassName,
   getVlanOptions,
+  handlePortSpeedFor765048F,
   shouldRenderMultipleText,
   sortOptions,
   PortVlan,
@@ -782,12 +783,12 @@ export function EditPortDrawer ({
     }
   }
 
-  const getFieldTemplate = (
+  const getFieldTemplate = (props: {
     content: React.ReactNode,
     field: string,
-    labelName: string,
     extraLabel?: boolean
-  ) => {
+  }) => {
+    const { content, field, extraLabel } = props
     const shouldControlHiddenFields = [
       'changeAuthOrder', 'restrictedVlan', 'criticalVlan'
     ]
@@ -807,7 +808,7 @@ export function EditPortDrawer ({
           disabled={getOverrideDisabled(field)}
         />}
       />}
-      { extraLabel && <UI.ExtraLabel>{ labelName }</UI.ExtraLabel> }
+      { extraLabel && <UI.ExtraLabel>{ $t(FIELD_LABEL[field]) }</UI.ExtraLabel> }
       { content }
     </UI.FormItem>
   }
@@ -1224,8 +1225,10 @@ export function EditPortDrawer ({
 
         {/* Flex Auth */}
         { isSwitchFlexAuthEnabled && (isFirmwareAbove10010f || isMultipleEdit) && <>
-          { getFieldTemplate(
-            <Form.Item
+          { getFieldTemplate({
+            field: 'flexibleAuthenticationEnabled',
+            extraLabel: true,
+            content: <Form.Item
               noStyle
               label={false}
               children={shouldRenderMultipleText({
@@ -1284,14 +1287,14 @@ export function EditPortDrawer ({
                   </Space>
                 </Tooltip>
               }
-            />,
-            'flexibleAuthenticationEnabled', $t({ defaultMessage: 'Authentication' }), true
-          )}
+            />
+          })}
 
           { flexibleAuthenticationEnabled && !authenticationCustomize &&
           <Space style={{ display: 'block', marginLeft: isMultipleEdit ? '24px' : '0' }}>
-            { getFieldTemplate(
-              <Form.Item
+            { getFieldTemplate({
+              field: 'authenticationProfileId',
+              content: <Form.Item
                 {...getFormItemLayout(isMultipleEdit)}
                 name='authenticationProfileId'
                 label={<>
@@ -1344,9 +1347,8 @@ export function EditPortDrawer ({
                     }))}
                     disabled={getFieldDisabled('authenticationProfileId')}
                   />}
-              />,
-              'authenticationProfileId', $t({ defaultMessage: 'Profile' })
-            )}
+              />
+            })}
             { !getFieldDisabled('renderAuthProfile')
               && renderAuthProfile(getAppliedProfile(authProfiles, authenticationProfileId))
             }
@@ -1354,11 +1356,12 @@ export function EditPortDrawer ({
 
           { authenticationCustomize &&
           <Space style={{ display: 'block', marginLeft: isMultipleEdit ? '24px' : '0' }}>
-            { getFieldTemplate(
-              <Form.Item
+            { getFieldTemplate({
+              field: 'authenticationType',
+              content: <Form.Item
                 {...getFormItemLayout(isMultipleEdit)}
                 name='authenticationType'
-                label={$t({ defaultMessage: 'Type' })}
+                label={$t(FIELD_LABEL.authenticationType)}
                 initialValue={AuthenticationType._802_1X}
                 children={shouldRenderMultipleText({
                   field: 'authenticationType', ...commonRequiredProps
@@ -1373,11 +1376,12 @@ export function EditPortDrawer ({
                       field: 'authenticationType', value, form, isMultipleEdit
                     })}
                   />}
-              />,
-              'authenticationType', $t({ defaultMessage: 'Type' })
-            )}
-            { getFieldTemplate(
-              <Form.Item
+              />
+            })}
+            { getFieldTemplate({
+              field: 'changeAuthOrder',
+              extraLabel: true,
+              content: <Form.Item
                 noStyle
                 label={false}
                 children={
@@ -1403,14 +1407,14 @@ export function EditPortDrawer ({
                       </Space>
                     </Tooltip>
                 }
-              />,
-              'changeAuthOrder', $t({ defaultMessage: 'Change Authentication Order' }), true
-            )}
-            { getFieldTemplate(
-              <Form.Item
+              />
+            })}
+            { getFieldTemplate({
+              field: 'dot1xPortControl',
+              content: <Form.Item
                 {...getFormItemLayout(isMultipleEdit)}
                 name='dot1xPortControl'
-                label={$t({ defaultMessage: '802.1x Port Control' })}
+                label={$t(FIELD_LABEL.dot1xPortControl)}
                 initialValue={PortControl.AUTO}
                 children={shouldRenderMultipleText({
                   field: 'dot1xPortControl', ...commonRequiredProps
@@ -1427,14 +1431,14 @@ export function EditPortDrawer ({
                       aggregateData: aggregatePortsData
                     })}
                   />}
-              />,
-              'dot1xPortControl', $t({ defaultMessage: '802.1x Port Control' })
-            )}
-            { getFieldTemplate(
-              <Form.Item
+              />
+            })}
+            { getFieldTemplate({
+              field: 'authDefaultVlan',
+              content: <Form.Item
                 {...getFormItemLayout(isMultipleEdit)}
                 name='authDefaultVlan'
-                label={$t({ defaultMessage: 'Auth Default VLAN' })}
+                label={$t(FIELD_LABEL.authDefaultVlan)}
                 initialValue=''
                 validateFirst
                 // eslint-disable-next-line max-len
@@ -1498,14 +1502,14 @@ export function EditPortDrawer ({
                 }) ? <MultipleText />
                   : <Input disabled={getFieldDisabled('authDefaultVlan')} maxLength={255} />
                 }
-              />,
-              'authDefaultVlan', $t({ defaultMessage: 'Auth Default VLAN' })
-            )}
-            { getFieldTemplate(
-              <Form.Item
+              />
+            })}
+            { getFieldTemplate({
+              field: 'authFailAction',
+              content: <Form.Item
                 {...getFormItemLayout(isMultipleEdit)}
                 name='authFailAction'
-                label={$t({ defaultMessage: 'Fail Action' })}
+                label={$t(FIELD_LABEL.authFailAction)}
                 initialValue={AuthFailAction.BLOCK}
                 children={shouldRenderMultipleText({
                   field: 'authFailAction', ...commonRequiredProps
@@ -1520,14 +1524,14 @@ export function EditPortDrawer ({
                       field: 'authFailAction', value, form, isMultipleEdit
                     })}
                   />}
-              />,
-              'authFailAction', $t({ defaultMessage: 'Fail Action' })
-            )}
-            { getFieldTemplate(
-              <Form.Item
+              />
+            })}
+            { getFieldTemplate({
+              field: 'restrictedVlan',
+              content: <Form.Item
                 {...getFormItemLayout(isMultipleEdit)}
                 name='restrictedVlan'
-                label={$t({ defaultMessage: 'Restricted VLAN' })}
+                label={$t(FIELD_LABEL.restrictedVlan)}
                 initialValue=''
                 validateFirst
                 rules={[
@@ -1572,14 +1576,14 @@ export function EditPortDrawer ({
                 }) ? <MultipleText />
                   : <Input disabled={getFieldDisabled('restrictedVlan')} maxLength={255} />
                 }
-              />,
-              'restrictedVlan', $t({ defaultMessage: 'Restricted VLAN' })
-            )}
-            { getFieldTemplate(
-              <Form.Item
+              />
+            })}
+            { getFieldTemplate({
+              field: 'authTimeoutAction',
+              content: <Form.Item
                 {...getFormItemLayout(isMultipleEdit)}
                 name='authTimeoutAction'
-                label={$t({ defaultMessage: 'Timeout Action' })}
+                label={$t(FIELD_LABEL.authTimeoutAction)}
                 initialValue={AuthTimeoutAction.NONE}
                 children={shouldRenderMultipleText({
                   field: 'authTimeoutAction', ...commonRequiredProps
@@ -1594,14 +1598,14 @@ export function EditPortDrawer ({
                       field: 'authTimeoutAction', value, form, isMultipleEdit
                     })}
                   />}
-              />,
-              'authTimeoutAction', $t({ defaultMessage: 'Timeout Action' })
-            )}
-            { getFieldTemplate(
-              <Form.Item
+              />
+            })}
+            { getFieldTemplate({
+              field: 'criticalVlan',
+              content: <Form.Item
                 {...getFormItemLayout(isMultipleEdit)}
                 name='criticalVlan'
-                label={$t({ defaultMessage: 'Critical VLAN' })}
+                label={$t(FIELD_LABEL.criticalVlan)}
                 initialValue=''
                 validateFirst
                 rules={[
@@ -1646,14 +1650,14 @@ export function EditPortDrawer ({
                 }) ? <MultipleText />
                   : <Input disabled={getFieldDisabled('criticalVlan')} maxLength={255} />
                 }
-              />,
-              'criticalVlan', $t({ defaultMessage: 'Critical VLAN' })
-            )}
-            { getFieldTemplate(
-              <Form.Item
+              />
+            })}
+            { getFieldTemplate({
+              field: 'guestVlan',
+              content: <Form.Item
                 {...getFormItemLayout(isMultipleEdit)}
                 name='guestVlan'
-                label={$t({ defaultMessage: 'Guest VLAN' })}
+                label={$t(FIELD_LABEL.guestVlan)}
                 initialValue=''
                 validateFirst
                 rules={[
@@ -1702,9 +1706,8 @@ export function EditPortDrawer ({
                 }) ? <MultipleText />
                   : <Input disabled={getFieldDisabled('guestVlan')} maxLength={255} />
                 }
-              />,
-              'guestVlan', $t({ defaultMessage: 'Guest VLAN' })
-            )}
+              />
+            })}
           </Space>}
           <UI.ContentDivider />
         </>
@@ -1780,7 +1783,7 @@ export function EditPortDrawer ({
               </UI.PortStatus>
             }
             <Form.Item
-              label={$t({ defaultMessage: 'Untagged VLAN' })}
+              label={$t(FIELD_LABEL.untaggedVlan)}
               labelCol={{ span: 8 }}
               wrapperCol={{ span: 24 }}
               style={{ width: '95%' }}
@@ -1802,7 +1805,7 @@ export function EditPortDrawer ({
             />
             <Form.Item
               label={<>
-                {$t({ defaultMessage: 'Tagged VLAN' })}
+                {$t(FIELD_LABEL.taggedVlans)}
                 <Tooltip.Question
                   title={$t(EditPortMessages.TAGGED_VLAN_VOICE_TOOLTIP)}
                 />
@@ -1884,8 +1887,10 @@ export function EditPortDrawer ({
 
         <UI.ContentDivider />
 
-        { getFieldTemplate(
-          <Form.Item
+        { getFieldTemplate({
+          field: 'portEnable',
+          extraLabel: true,
+          content: <Form.Item
             noStyle
             label={false}
             children={
@@ -1911,12 +1916,13 @@ export function EditPortDrawer ({
                   </Space>
                 </Tooltip>
             }
-          />,
-          'portEnable', $t({ defaultMessage: 'Port Enabled' }), true
-        )}
+          />
+        })}
 
-        { getFieldTemplate(
-          <Form.Item
+        { getFieldTemplate({
+          field: 'poeEnable',
+          extraLabel: true,
+          content: <Form.Item
             noStyle
             children={shouldRenderMultipleText({
               field: 'poeEnable', ...commonRequiredProps
@@ -1939,15 +1945,15 @@ export function EditPortDrawer ({
               </Tooltip>
 
             }
-          />,
-          'poeEnable', $t({ defaultMessage: 'PoE Enabled' }), true
-        )}
+          />
+        })}
 
-        { getFieldTemplate(
-          <Form.Item
+        { getFieldTemplate({
+          field: 'poeClass',
+          content: <Form.Item
             {...getFormItemLayout(isMultipleEdit)}
             name='poeClass'
-            label={$t({ defaultMessage: 'PoE Class' })}
+            label={$t(FIELD_LABEL.poeClass)}
             initialValue='UNSET'
             children={shouldRenderMultipleText({
               field: 'poeClass', ...commonRequiredProps
@@ -1957,15 +1963,15 @@ export function EditPortDrawer ({
                   p => ({ label: $t(p.label), value: p.value }))}
                 disabled={getFieldDisabled('poeClass')}
               />}
-          />,
-          'poeClass', $t({ defaultMessage: 'PoE Class' })
-        )}
+          />
+        })}
 
-        { getFieldTemplate(
-          <Form.Item
+        { getFieldTemplate({
+          field: 'poePriority',
+          content: <Form.Item
             {...getFormItemLayout(isMultipleEdit)}
             name='poePriority'
-            label={$t({ defaultMessage: 'PoE Priority' })}
+            label={$t(FIELD_LABEL.poePriority)}
             initialValue={1}
             children={
               shouldRenderMultipleText({
@@ -1975,16 +1981,16 @@ export function EditPortDrawer ({
                   options={poePriorityOptions}
                   disabled={getFieldDisabled('poePriority')}
                 />}
-          />,
-          'poePriority', $t({ defaultMessage: 'PoE Priority' })
-        )}
+          />
+        })}
 
-        { getFieldTemplate(
-          <>
+        { getFieldTemplate({
+          field: 'poeBudget',
+          content: <>
             <Form.Item
               {...getFormItemLayout(isMultipleEdit)}
               name='poeBudget'
-              label={$t({ defaultMessage: 'PoE Budget' })}
+              label={$t(FIELD_LABEL.poeBudget)}
               rules={[
                 { validator: (_, value) => poeBudgetRegExp(value) }
               ]}
@@ -2007,14 +2013,15 @@ export function EditPortDrawer ({
               }}>
               {$t({ defaultMessage: 'mWatts' })}</Space>
             }
-          </>,
-          'poeBudget', $t({ defaultMessage: 'PoE Budget' })
-        )}
+          </>
+        })}
 
         <UI.ContentDivider />
 
-        { getFieldTemplate(
-          <Form.Item
+        { getFieldTemplate({
+          field: 'portProtected',
+          extraLabel: true,
+          content: <Form.Item
             noStyle
             label={false}
             name='portProtected'
@@ -2027,12 +2034,13 @@ export function EditPortDrawer ({
                 disabled={getFieldDisabled('portProtected')}
                 className={getToggleClassName('portProtected', isMultipleEdit, hasMultipleValue)}
               />}
-          />,
-          'portProtected', $t({ defaultMessage: 'Protected Port' }), true
-        )}
+          />
+        })}
 
-        { getFieldTemplate(
-          <Form.Item
+        { getFieldTemplate({
+          field: 'lldpEnable',
+          extraLabel: true,
+          content: <Form.Item
             noStyle
             label={false}
             name='lldpEnable'
@@ -2045,14 +2053,14 @@ export function EditPortDrawer ({
                 disabled={getFieldDisabled('lldpEnable')}
                 className={getToggleClassName('lldpEnable', isMultipleEdit, hasMultipleValue)}
               />}
-          />,
-          'lldpEnable', $t({ defaultMessage: 'LLDP Enabled' }), true
-        )}
+          />
+        })}
 
-        { getFieldTemplate(
-          <Form.Item
+        { getFieldTemplate({
+          field: 'portSpeed',
+          content: <Form.Item
             {...getFormItemLayout(isMultipleEdit)}
-            label={$t({ defaultMessage: 'Port Speed' })}
+            label={$t(FIELD_LABEL.portSpeed)}
             children={shouldRenderMultipleText({
               field: 'portSpeed', ...commonRequiredProps
             }) ? <MultipleText />
@@ -2070,12 +2078,13 @@ export function EditPortDrawer ({
                 </Form.Item>
               </Tooltip>
             }
-          />,
-          'portSpeed', $t({ defaultMessage: 'Port Speed' })
-        )}
+          />
+        })}
 
-        { getFieldTemplate(
-          <Form.Item
+        { getFieldTemplate({
+          field: 'rstpAdminEdgePort',
+          extraLabel: true,
+          content: <Form.Item
             noStyle
             name='rstpAdminEdgePort'
             valuePropName='checked'
@@ -2088,12 +2097,13 @@ export function EditPortDrawer ({
                 className={
                   getToggleClassName('rstpAdminEdgePort', isMultipleEdit, hasMultipleValue)
                 }/>}
-          />,
-          'rstpAdminEdgePort', $t({ defaultMessage: 'RSTP Admin Edge Port' }), true
-        )}
+          />
+        })}
 
-        { getFieldTemplate(
-          <Form.Item
+        { getFieldTemplate({
+          field: 'stpBpduGuard',
+          extraLabel: true,
+          content: <Form.Item
             noStyle
             label={false}
             name='stpBpduGuard'
@@ -2106,12 +2116,13 @@ export function EditPortDrawer ({
                 disabled={getFieldDisabled('stpBpduGuard')}
                 className={getToggleClassName('stpBpduGuard', isMultipleEdit, hasMultipleValue)}
               />}
-          />,
-          'stpBpduGuard', $t({ defaultMessage: 'STP BPDU Guard' }), true
-        )}
+          />
+        })}
 
-        { getFieldTemplate(
-          <Form.Item
+        { getFieldTemplate({
+          field: 'stpRootGuard',
+          extraLabel: true,
+          content: <Form.Item
             noStyle
             label={false}
             name='stpRootGuard'
@@ -2125,14 +2136,15 @@ export function EditPortDrawer ({
                 className={getToggleClassName('stpRootGuard', isMultipleEdit, hasMultipleValue)}
               />
             }
-          />,
-          'stpRootGuard', $t({ defaultMessage: 'STP Root Guard' }), true
-        )}
+          />
+        })}
 
         <UI.ContentDivider />
 
-        { getFieldTemplate(
-          <Form.Item
+        { getFieldTemplate({
+          field: 'dhcpSnoopingTrust',
+          extraLabel: true,
+          content: <Form.Item
             noStyle
             label={false}
             name='dhcpSnoopingTrust'
@@ -2148,12 +2160,13 @@ export function EditPortDrawer ({
                 }
               />
             }
-          />,
-          'dhcpSnoopingTrust', $t({ defaultMessage: 'DHCP Snooping Trust' }), true
-        )}
+          />
+        })}
 
-        { getFieldTemplate(
-          <Form.Item
+        { getFieldTemplate({
+          field: 'ipsg',
+          extraLabel: true,
+          content: <Form.Item
             noStyle
             children={shouldRenderMultipleText({
               field: 'ipsg', ...commonRequiredProps
@@ -2170,12 +2183,13 @@ export function EditPortDrawer ({
                   className={getToggleClassName('ipsg', isMultipleEdit, hasMultipleValue)}
                 />
               </Form.Item>}
-          />,
-          'ipsg', $t({ defaultMessage: 'IPSG' }), true
-        )}
+          />
+        })}
 
-        { getFieldTemplate(
-          <Form.Item
+        { getFieldTemplate({
+          field: 'lldpQos',
+          extraLabel: true,
+          content: <Form.Item
             noStyle
             name='lldpQos'
             initialValue={false}
@@ -2193,9 +2207,8 @@ export function EditPortDrawer ({
                 {$t({ defaultMessage: 'Create' })}
               </Button>
             }
-          />,
-          'lldpQos', $t({ defaultMessage: 'LLDP QoS' }), true
-        )}
+          />
+        })}
 
         <div style={{ marginBottom: '20px' }}>
           <LldpQOSTable
@@ -2215,12 +2228,13 @@ export function EditPortDrawer ({
           setAclsOptions={setAclsOptions}
           profileId={switchConfigurationProfileId}
         />
-        { getFieldTemplate(
-          <>
+        { getFieldTemplate({
+          field: 'ingressAcl',
+          content: <>
             <Form.Item
               {...getFormItemLayout(isMultipleEdit)}
               name='ingressAcl'
-              label={$t({ defaultMessage: 'Ingress ACL (IPv4)' })}
+              label={$t(FIELD_LABEL.ingressAcl)}
               initialValue=''
               children={shouldRenderMultipleText({
                 field: 'ingressAcl', ...commonRequiredProps
@@ -2244,16 +2258,16 @@ export function EditPortDrawer ({
                 </Button>
               </Space>
             </Tooltip>}
-          </>,
-          'ingressAcl', $t({ defaultMessage: 'Ingress ACL (IPv4)' })
-        )}
+          </>
+        })}
 
-        { getFieldTemplate(
-          <>
+        { getFieldTemplate({
+          field: 'egressAcl',
+          content: <>
             <Form.Item
               {...getFormItemLayout(isMultipleEdit)}
               name='egressAcl'
-              label={$t({ defaultMessage: 'Egress ACL (IPv4)' })}
+              label={$t(FIELD_LABEL.egressAcl)}
               initialValue=''
               children={shouldRenderMultipleText({
                 field: 'egressAcl', ...commonRequiredProps
@@ -2276,24 +2290,23 @@ export function EditPortDrawer ({
                 </Button>
               </Space>
             </Tooltip>}
-          </>,
-          'egressAcl', $t({ defaultMessage: 'Egress ACL (IPv4)' })
-        )}
+          </>
+        })}
 
-        {getFieldTemplate(
-          <Form.Item
+        {getFieldTemplate({
+          field: 'tags',
+          content: <Form.Item
             {...getFormItemLayout(isMultipleEdit)}
             name='tags'
-            label={$t({ defaultMessage: 'Tags' })}
+            label={$t(FIELD_LABEL.tags)}
             initialValue=''
             children={shouldRenderMultipleText({
               field: 'tags', ...commonRequiredProps
             }) ? <MultipleText />
               : <Input disabled={getFieldDisabled('tags')} maxLength={255} />
             }
-          />,
-          'tags', $t({ defaultMessage: 'Tags' })
-        )}
+          />
+        })}
 
       </UI.Form>
 

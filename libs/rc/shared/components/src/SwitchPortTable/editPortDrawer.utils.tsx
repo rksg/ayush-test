@@ -1,7 +1,7 @@
-import { FormInstance, Space } from 'antd'
-import { DefaultOptionType }   from 'antd/lib/select'
-import _                       from 'lodash'
-import { defineMessage }       from 'react-intl'
+import { FormInstance, Space }              from 'antd'
+import { DefaultOptionType }                from 'antd/lib/select'
+import _                                    from 'lodash'
+import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import { cssStr }    from '@acx-ui/components'
 import { switchApi } from '@acx-ui/rc/services'
@@ -25,6 +25,39 @@ export interface PortVlan {
   untagged: string
   voice: number | string
   isDefaultVlan: boolean
+}
+
+export const FIELD_LABEL: Record<string, MessageDescriptor> = {
+  flexibleAuthenticationEnabled: defineMessage({ defaultMessage: 'Authentication' }),
+  authenticationProfileId: defineMessage({ defaultMessage: 'Profile' }),
+  authenticationType: defineMessage({ defaultMessage: 'Type' }),
+  changeAuthOrder: defineMessage({ defaultMessage: 'Change Authentication Order' }),
+  dot1xPortControl: defineMessage({ defaultMessage: '802.1x Port Control' }),
+  authDefaultVlan: defineMessage({ defaultMessage: 'Auth Default VLAN' }),
+  authFailAction: defineMessage({ defaultMessage: 'Fail Action' }),
+  restrictedVlan: defineMessage({ defaultMessage: 'Restricted VLAN' }),
+  authTimeoutAction: defineMessage({ defaultMessage: 'Timeout Action' }),
+  criticalVlan: defineMessage({ defaultMessage: 'Critical VLAN' }),
+  guestVlan: defineMessage({ defaultMessage: 'Guest VLAN' }),
+  untaggedVlan: defineMessage({ defaultMessage: 'Untagged VLAN' }),
+  taggedVlans: defineMessage({ defaultMessage: 'Tagged VLAN' }),
+  portEnable: defineMessage({ defaultMessage: 'Port Enabled' }),
+  poeEnable: defineMessage({ defaultMessage: 'PoE Enabled' }),
+  poeClass: defineMessage({ defaultMessage: 'PoE Class' }),
+  poePriority: defineMessage({ defaultMessage: 'PoE Priority' }),
+  poeBudget: defineMessage({ defaultMessage: 'PoE Budget' }),
+  portProtected: defineMessage({ defaultMessage: 'Protected Port' }),
+  lldpEnable: defineMessage({ defaultMessage: 'LLDP Enabled' }),
+  portSpeed: defineMessage({ defaultMessage: 'Port Speed' }),
+  rstpAdminEdgePort: defineMessage({ defaultMessage: 'RSTP Admin Edge Port' }),
+  stpBpduGuard: defineMessage({ defaultMessage: 'STP BPDU Guard' }),
+  stpRootGuard: defineMessage({ defaultMessage: 'STP Root Guard' }),
+  dhcpSnoopingTrust: defineMessage({ defaultMessage: 'DHCP Snooping Trust' }),
+  ipsg: defineMessage({ defaultMessage: 'IPSG' }),
+  lldpQos: defineMessage({ defaultMessage: 'LLDP QoS' }),
+  ingressAcl: defineMessage({ defaultMessage: 'Ingress ACL (IPv4)' }),
+  egressAcl: defineMessage({ defaultMessage: 'Egress ACL (IPv4)' }),
+  tags: defineMessage({ defaultMessage: 'Tags' })
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

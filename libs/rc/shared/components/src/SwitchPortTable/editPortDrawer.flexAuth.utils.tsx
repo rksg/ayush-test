@@ -150,7 +150,7 @@ export const renderAuthProfile = (data?: FlexibleAuthentication) => {
         />
         <Descriptions.Item
           label={$t({ defaultMessage: 'Restricted VLAN' })}
-          children={data?.restrictedVlan ?? noDataDisplay}
+          children={!!data?.restrictedVlan ? data?.restrictedVlan : noDataDisplay}
         />
         <Descriptions.Item
           label={$t({ defaultMessage: 'Timeout Action' })}
@@ -161,11 +161,11 @@ export const renderAuthProfile = (data?: FlexibleAuthentication) => {
         />
         <Descriptions.Item
           label={$t({ defaultMessage: 'Critical VLAN' })}
-          children={data?.criticalVlan ?? noDataDisplay}
+          children={!!data?.criticalVlan ? data?.criticalVlan : noDataDisplay}
         />
         <Descriptions.Item
           label={$t({ defaultMessage: 'Guest VLAN' })}
-          children={data?.guestVlan ?? noDataDisplay}
+          children={!!data?.guestVlan ? data?.guestVlan : noDataDisplay}
         />
       </UI.Descriptions>
     </UI.Card>
@@ -578,6 +578,7 @@ export const checkMultipleVlansDifferences = async (props: {
     return Promise.resolve()
   } catch (error) {
     return Promise.reject(
+      //TODO: checking wording with UX
       new Error($t({ defaultMessage: 'Please enter {vlanType}' }, { vlanType: vlanType }))
     )
   }
@@ -589,9 +590,7 @@ export const isOverrideFieldNotChecked = (props: {
   hasMultipleValue: string[],
   form: FormInstance
 }) => {
-  const {
-    field, isMultipleEdit, hasMultipleValue, form
-  } = props
+  const { field, isMultipleEdit, hasMultipleValue, form } = props
   const checkboxEnabled = form.getFieldValue(`${field}Checkbox`)
 
   return isMultipleEdit
