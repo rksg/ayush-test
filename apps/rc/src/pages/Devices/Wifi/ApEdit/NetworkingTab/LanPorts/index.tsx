@@ -25,8 +25,6 @@ import {
   useGetDefaultApLanPortsQuery,
   useUpdateApEthernetPortsMutation,
   useLazyGetVenueLanPortWithEthernetSettingsQuery,
-  useGetApLanPortsWithEthernetSettingsQuery,
-  useGetApLanPortsQuery,
   useLazyGetVenueLanPortsQuery
 } from '@acx-ui/rc/services'
 import {

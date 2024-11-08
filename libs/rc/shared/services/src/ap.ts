@@ -909,44 +909,6 @@ export const apApi = baseApApi.injectEndpoints({
       providesTags: [{ type: 'Ap', id: 'LanPorts' }]
     }),
 
-    getApLanPortsWithEthernetSettings: build.query<WifiApSetting, RequestPayload>({
-      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
-
-        const urlsInfo = arg.enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
-        const rbacApiVersion = arg.enableRbac ? ApiVersionEnum.v1 : undefined
-        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
-        const apLanPortsQuery = await fetchWithBQ(createHttpRequest(urlsInfo.getApLanPorts, arg.params, apiCustomHeader))
-        const apLanSetting = apLanPortsQuery.data as WifiApSetting
-        // const venueId = arg.params?.venueId
-        const serialNumber = arg.params?.serialNumber
-
-        if(serialNumber) {
-          const ethernetPortProfileReq = createHttpRequest(EthernetPortProfileUrls.getEthernetPortProfileViewDataList)
-          const ethernetPortProfileQuery = await fetchWithBQ(
-            { ...ethernetPortProfileReq,
-              body: JSON.stringify({
-                filters: { apSerialNumbers: [serialNumber] }
-              })
-            }
-          )
-          const ethernetPortProfiles = (ethernetPortProfileQuery.data as TableResult<EthernetPortProfileViewData>).data
-
-          ethernetPortProfiles.forEach((profile) => {
-            if (profile.apActivations) {
-              profile.apActivations.forEach((activity)=>{
-                const targetLanPort = apLanSetting.lanPorts?.find(lanPort => lanPort.portId?.toString() === activity.portId?.toString())
-                if(targetLanPort) {
-                  targetLanPort.ethernetPortProfileId = profile.id
-                }
-              })
-            }
-          })
-        }
-        return { data: apLanSetting }
-      }
-    }),
-
-
     getApLanPortsWithEthernetProfiles: build.query<WifiApSetting | null, RequestPayload>({
       async queryFn ({ params, enableRbac, enableEthernetProfile },
         _queryApi, _extraOptions, fetchWithBQ) {
@@ -1655,7 +1617,6 @@ export const {
   useStartPacketCaptureMutation,
   useGetDefaultApLanPortsQuery,
   useGetApLanPortsQuery,
-  useGetApLanPortsWithEthernetSettingsQuery,
   useGetApLanPortsWithEthernetProfilesQuery,
   useUpdateApLanPortsMutation,
   useUpdateApEthernetPortsMutation,
