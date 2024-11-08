@@ -24,7 +24,7 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
         const req = createHttpRequest(EthernetPortProfileUrls.createEthernetPortProfile)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'EthernetPortProfile', id: 'LIST' }]
@@ -37,7 +37,7 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
           EthernetPortProfileUrls.getEthernetPortProfileViewDataList, params)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'EthernetPortProfile', id: 'LIST' }],
@@ -172,7 +172,7 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
         const req = createHttpRequest(EthernetPortProfileUrls.updateEthernetPortProfile, params)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'EthernetPortProfile', id: 'LIST' }]
@@ -184,7 +184,7 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
         )
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'EthernetPortProfile', id: 'LIST' }]

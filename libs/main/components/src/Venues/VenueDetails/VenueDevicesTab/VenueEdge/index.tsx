@@ -60,7 +60,7 @@ export const VenueEdge = () => {
       <SpaceWrapper direction='vertical' align='end' size={0}>
         {(isEdgeCompatibilityEnabled && edgeCompatibilities) &&
           <CompatibilityCheck
-            data={edgeCompatibilities!.compatibilities}
+            data={edgeCompatibilities!.compatibilities ?? []}
             venueId={params.venueId}
           />
         }

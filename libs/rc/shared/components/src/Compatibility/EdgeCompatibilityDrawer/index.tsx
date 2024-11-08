@@ -148,7 +148,7 @@ const useVenueEdgeCompatibilitiesData = (props: EdgeCompatibilityDrawerProps, sk
           } }
         }).unwrap()
         // eslint-disable-next-line max-len
-        edgeCompatibilitiesResponse = sdLanToApCompatibilityData(venueEdgeCompatibilities.compatibilities)
+        edgeCompatibilitiesResponse = sdLanToApCompatibilityData(venueEdgeCompatibilities.compatibilities ?? [])
       } else if (type === EdgeCompatibilityType.ALONE) {
         const edgeFeatureSets = await getEdgeFeatureSets({
           payload: { filters: { featureNames } }
