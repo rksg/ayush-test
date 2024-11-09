@@ -182,7 +182,7 @@ export const getFlexAuthDefaultValue = (
     flexibleAuthenticationEnabled: false,
     authenticationType: AuthenticationType._802_1X,
     changeAuthOrder: false,
-    dot1xPortControl: PortControl.AUTO,
+    dot1xPortControl: portSetting?.authenticationType === AuthenticationType.MACAUTH ? '' : PortControl.AUTO,
     authDefaultVlan: '',
     restrictedVlan: '',
     criticalVlan: '',
@@ -650,4 +650,27 @@ export const handlePortVlanChange = (props: {
     }
     form.setFieldsValue(resetFieldValues)
   }
+}
+
+export const handleAuthenticationOverrideChange = (props: {
+  form: FormInstance,
+}) => {
+  const { form } = props
+  const authFields = [
+    'authenticationProfileId', 'authenticationType', 'changeAuthOrder',
+    'dot1xPortControl', 'authDefaultVlan', 'authFailAction',
+    'restrictedVlan', 'authTimeoutAction', 'criticalVlan', 'guestVlan'
+  ]
+  const needResetFields = Object.keys(authFields).reduce((result, key: string) => {
+    return {
+      ...result,
+      [`${key}Checkbox`]: false
+    }
+  }, {})
+
+  const resetFieldValues = {
+    ...form.getFieldsValue(),
+    ...needResetFields
+  }
+  form.setFieldsValue(resetFieldValues)
 }

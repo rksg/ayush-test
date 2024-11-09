@@ -86,6 +86,7 @@ import {
   checkVlanDiffFromSwitchAuthDefaultVlan,
   handleClickCustomize,
   handlePortVlanChange,
+  handleAuthenticationOverrideChange,
   getAppliedProfile,
   getCurrentAuthDefaultVlan,
   getFlexAuthButtonStatus,
@@ -824,10 +825,15 @@ export function EditPortDrawer ({
         && !(hasBreakoutPortAndVenueSettings)) {
         overrideFields.push('taggedVlans', 'untaggedVlan', 'voiceVlan')
       }
-      if (isSwitchFlexAuthEnabled && overrideFields?.includes('authenticationProfileId')) {
-        const profile = getAppliedProfile(authProfiles, data.authenticationProfileId as string)
-        const profileFields = Object.keys(profile ?? {})
-        overrideFields.push(...profileFields)
+      if (isSwitchFlexAuthEnabled) {
+        if (overrideFields?.includes('flexibleAuthenticationEnabled')) {
+          overrideFields.push('authenticationCustomize')
+        }
+        if (overrideFields?.includes('authenticationProfileId')) {
+          const profile = getAppliedProfile(authProfiles, data.authenticationProfileId as string)
+          const profileFields = Object.keys(profile ?? {})
+          overrideFields.push(...profileFields)
+        }
       }
       return isMultipleEdit
         ? allMultipleEditableFields.filter(f => !overrideFields.includes(f))
@@ -922,7 +928,7 @@ export function EditPortDrawer ({
         }
       })
 
-      //console.log('payload: ', payload)
+      // console.log('payload: ', payload)
 
       await savePortsSetting({
         params: { tenantId, venueId: switchDetail?.venueId },
@@ -1085,6 +1091,10 @@ export function EditPortDrawer ({
           portVlansCheckbox: changedValue as boolean
         })
         handlePortVlanChange({ isFlexAuthButtonDisabled, form })
+      } else if (changedField === 'flexibleAuthenticationEnabledCheckbox' && isMultipleEdit) {
+        if (!changedValue) {
+          handleAuthenticationOverrideChange({ form })
+        }
       }
     }
 
@@ -1305,7 +1315,9 @@ export function EditPortDrawer ({
                 </>}
                 initialValue=''
                 validateFirst
-                rules={[
+                // eslint-disable-next-line max-len
+                rules={(!isMultipleEdit || (flexibleAuthenticationEnabledCheckbox && flexibleAuthenticationEnabled))
+                  ? [
                   // TODO: checking wording with UX
                   // ...(isMultipleEdit
                   //   && hasMultipleValue.includes('authenticationProfileId')
@@ -1320,20 +1332,20 @@ export function EditPortDrawer ({
                   //       return Promise.resolve()
                   //     }
                   //   }] : []),
-                  { required: true, message: $t({ defaultMessage: 'Please select Profile' }) },
-                  { validator: (_, value) => {
-                    return validateApplyProfile(
-                      value, authProfiles, selectedPorts, aggregatePortsData
-                    ).then(() => {
-                      setIsAppliedAuthProfile(true)
-                      return Promise.resolve()
-                    })
-                      .catch(error => {
-                        setIsAppliedAuthProfile(false)
-                        return Promise.reject(error)
+                    { required: true, message: $t({ defaultMessage: 'Please select Profile' }) },
+                    { validator: (_, value) => {
+                      return validateApplyProfile(
+                        value, authProfiles, selectedPorts, aggregatePortsData
+                      ).then(() => {
+                        setIsAppliedAuthProfile(true)
+                        return Promise.resolve()
                       })
-                  } }
-                ]}
+                        .catch(error => {
+                          setIsAppliedAuthProfile(false)
+                          return Promise.reject(error)
+                        })
+                    } }
+                  ] : []}
                 // style={{ marginBottom: '0' }}
                 children={shouldRenderMultipleText({
                   field: 'authenticationProfileId', ...commonRequiredProps

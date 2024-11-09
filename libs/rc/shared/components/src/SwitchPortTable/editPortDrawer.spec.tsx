@@ -1443,8 +1443,7 @@ describe('EditPortDrawer', () => {
           expect(await screen.findByText('Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).not.toBeDisabled()
           expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
-          // TODO
-          // expect(await screen.findByTestId('auth-profile-select')).toHaveValue('7de28fc02c0245648dfd58590884bad2')
+
           expect(await screen.findByText('Customize')).toBeVisible()
           expect(await screen.findByTestId('auth-profile-card')).toBeVisible()
         })
@@ -1935,7 +1934,7 @@ describe('EditPortDrawer', () => {
           const profile01 = _.omit(flexAuthList.data[0], ['id', 'profileName'])
           const profile03 = _.omit(flexAuthList.data[2], ['id', 'profileName'])
           const authFields = Object.keys(profile03)
-          const ignoreFields = _.difference(allMultipleEditableFields, ['authenticationProfileId', 'flexibleAuthenticationEnabled', 'changeAuthOrder', ...authFields])
+          const ignoreFields = _.difference(allMultipleEditableFields, ['authenticationProfileId', 'flexibleAuthenticationEnabled', 'authenticationCustomize', 'changeAuthOrder', ...authFields])
 
           mockServer.use(
             rest.post(SwitchRbacUrlsInfo.getPortsSetting.url,
@@ -2019,6 +2018,7 @@ describe('EditPortDrawer', () => {
               ports: ['5'],
               authenticationProfileId: 'dccf7d0272024d3ca03bcf5b48497685',
               flexibleAuthenticationEnabled: true,
+              authenticationCustomize: false,
               changeAuthOrder: false,
               ...profile03
             }, {
@@ -2028,6 +2028,7 @@ describe('EditPortDrawer', () => {
               ports: ['1/1/5'],
               authenticationProfileId: 'dccf7d0272024d3ca03bcf5b48497685',
               flexibleAuthenticationEnabled: true,
+              authenticationCustomize: false,
               changeAuthOrder: false,
               ...profile03
             }]
@@ -2855,7 +2856,7 @@ describe('EditPortDrawer', () => {
 
         it('should apply different guest vlan from customized when selected ports matches all enabled authentication ports', async () => {
           const profile01 = _.omit(flexAuthList.data[0], ['id', 'profileName'])
-          const ignoreFields = _.difference(allMultipleEditableFields, ['flexibleAuthenticationEnabled', 'guestVlan'])
+          const ignoreFields = _.difference(allMultipleEditableFields, ['flexibleAuthenticationEnabled', 'authenticationCustomize', 'guestVlan'])
 
           mockServer.use(
             rest.post(SwitchRbacUrlsInfo.getPortsSetting.url,
@@ -2946,6 +2947,7 @@ describe('EditPortDrawer', () => {
               port: '5',
               ports: ['5'],
               flexibleAuthenticationEnabled: true,
+              authenticationCustomize: true,
               guestVlan: '7'
             }, {
               switchId: '58:fb:96:0e:82:8a',
@@ -2953,13 +2955,14 @@ describe('EditPortDrawer', () => {
               port: '1/1/5',
               ports: ['1/1/5'],
               flexibleAuthenticationEnabled: true,
+              authenticationCustomize: true,
               guestVlan: '7'
             }]
           })
         })
 
         it('should override VLANs correctly', async () => {
-          const ignoreFields = _.difference(allMultipleEditableFields, ['flexibleAuthenticationEnabled', 'restrictedVlan', 'criticalVlan', 'guestVlan'])
+          const ignoreFields = _.difference(allMultipleEditableFields, ['flexibleAuthenticationEnabled', 'authenticationCustomize', 'restrictedVlan', 'criticalVlan', 'guestVlan'])
 
           mockServer.use(
             rest.post(SwitchRbacUrlsInfo.getPortsSetting.url,
@@ -3059,6 +3062,7 @@ describe('EditPortDrawer', () => {
               port: '5',
               ports: ['5'],
               flexibleAuthenticationEnabled: true,
+              authenticationCustomize: true,
               restrictedVlan: '7',
               criticalVlan: '7',
               guestVlan: '7'
@@ -3068,6 +3072,7 @@ describe('EditPortDrawer', () => {
               port: '1/1/5',
               ports: ['1/1/5'],
               flexibleAuthenticationEnabled: true,
+              authenticationCustomize: true,
               restrictedVlan: '7',
               criticalVlan: '7',
               guestVlan: '7'
