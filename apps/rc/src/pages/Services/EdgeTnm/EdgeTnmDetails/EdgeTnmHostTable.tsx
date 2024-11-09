@@ -145,7 +145,7 @@ function useColumns (setCurrentHost: (id: string) => void) {
     },
     {
       key: 'parentTemplates',
-      title: $t({ defaultMessage: 'Tempaltes' }),
+      title: $t({ defaultMessage: 'Templates' }),
       dataIndex: 'parentTemplates',
       render: (_, row) => <Space size={0} split={<span>,&nbsp;&nbsp;</span>}>
         {row.parentTemplates.map(item => item.name)}
