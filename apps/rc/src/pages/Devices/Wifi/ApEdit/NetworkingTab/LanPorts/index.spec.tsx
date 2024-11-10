@@ -221,7 +221,7 @@ describe('Lan Port', () => {
           (_, res, ctx) => res(ctx.json({}))),
         rest.get(EthernetPortProfileUrls.getEthernetPortProfile.url,
           (_, res, ctx) => res(ctx.json(mockDefaultTunkEthertnetPortProfile))),
-        rest.get(EthernetPortProfileUrls.getEthernetPortSettingsByApPortId.url,
+        rest.get(EthernetPortProfileUrls.getEthernetPortOverwritesByApPortId.url,
           (_, res, ctx) => res(ctx.json(lanPortSettingPort1)))
       )
     })
