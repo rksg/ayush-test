@@ -239,6 +239,7 @@ export { showSdLanGuestFwdConflictModal } from './EdgeSdLan/SdLanGuestFwdConflic
 export {
   ApCompatibilityType,
   InCompatibilityFeatures,
+  retrievedApCompatibilitiesOptions,
   retrievedCompatibilitiesOptions,
   ApCompatibilityFeature,
   ApCompatibilityToolTip,
