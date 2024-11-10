@@ -548,6 +548,7 @@ export function handleServicePolicyRbacPayload (data: NetworkSaveData): NetworkS
     'guestPortal.wisprPage.authRadius',
     'guestPortal.wisprPage.authRadiusId',
     'guestPortal.wisprPage.accountingRadius',
-    'guestPortal.wisprPage.accountingRadiusId'
+    'guestPortal.wisprPage.accountingRadiusId',
+    'directoryServerId'
   ])
 }

@@ -152,7 +152,8 @@ function getCols (intl: ReturnType<typeof useIntl>, isUseWifiRbacApi: boolean) {
                   {apCount}
                 </TenantLink>}
               {row?.incompatible && row.incompatible > 0 ?
-                <Tooltip.Info isFilled
+                <Tooltip.Warning isFilled
+                  isTriangle
                   title={intl.$t({
                     defaultMessage: 'Some access points may not be compatible with ' +
                     'certain features on this network.'
@@ -163,7 +164,9 @@ function getCols (intl: ReturnType<typeof useIntl>, isUseWifiRbacApi: boolean) {
                     width: '16px',
                     marginBottom: '-3px',
                     marginLeft: '4px',
-                    color: cssStr('--acx-semantics-yellow-50') }}
+                    color: cssStr('--acx-semantics-yellow-50'),
+                    borderColor: cssStr('--acx-accents-orange-30')
+                  }}
                 /> : []
               }
             </>
