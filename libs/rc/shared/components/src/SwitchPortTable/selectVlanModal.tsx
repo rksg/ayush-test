@@ -51,7 +51,7 @@ export function SelectVlanModal (props: {
   updateSwitchVlans?: (vlan: Vlan) => void,
   vlanDisabledTooltip: string,
   defaultTabKey?: VlanModalType,
-  authDefaultVlan?: string | number,
+  authDefaultVlan?: string[],
   flexAuthEnabled?: boolean,
 }) {
   const { $t } = getIntl()
@@ -100,7 +100,7 @@ export function SelectVlanModal (props: {
   const getTaggedVlanOptions = (selectedUntaggedVlan: number) => {
     const vlanOptions = switchVlans.map((v: SwitchVlan) => {
       const isSelectedUntagged = v.vlanId?.toString() === selectedUntaggedVlan?.toString()
-      const isSelectedAuthDefault = v.vlanId?.toString() === authDefaultVlan?.toString()
+      const isSelectedAuthDefault = authDefaultVlan?.includes(v.vlanId?.toString())
       const extra = isSelectedUntagged
         ? $t({ defaultMessage: '(Set as untagged VLAN)' })
         : (isSelectedAuthDefault

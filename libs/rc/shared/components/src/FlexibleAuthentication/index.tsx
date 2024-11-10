@@ -93,10 +93,11 @@ export const getAuthfieldDisabled = (field: string, values: string[]) => {
     changeAuthOrder: () => authenticationType !== AuthenticationType._802_1X_AND_MACAUTH,
     dot1xPortControl: () => authenticationType !== AuthenticationType._802_1X,
     authFailAction: () => isPortControlNotAuto,
-    restrictedVlan: () => isPortControlNotAuto || authFailAction === AuthFailAction.BLOCK,
+    restrictedVlan: () =>
+      isPortControlNotAuto || authFailAction !== AuthFailAction.RESTRICTED_VLAN,
     authTimeoutAction: () => isPortControlNotAuto,
-    criticalVlan: () => isPortControlNotAuto
-      || authTimeoutAction !== AuthTimeoutAction.CRITICAL_VLAN
+    criticalVlan: () =>
+      isPortControlNotAuto || authTimeoutAction !== AuthTimeoutAction.CRITICAL_VLAN
   }
   const checkFieldDisabled = fieldDisabledMapping[field as keyof typeof fieldDisabledMapping]
 
@@ -116,33 +117,41 @@ export const handleAuthFieldChange = (props: {
   value: string,
   form: FormInstance,
   isMultipleEdit?: boolean,
+  hasMultipleValue?: string[],
   aggregateData?: AggregatePortSettings
 }) => {
-  const { field, value, form, isMultipleEdit, aggregateData } = props
+  const { field, value, form, isMultipleEdit, hasMultipleValue, aggregateData } = props
   const isProfileLevel = isMultipleEdit === undefined
   switch(field) {
     case 'authenticationType':
       const values = form.getFieldsValue()
+      const isFailActionEqualBlock = values.authFailAction === AuthFailAction.BLOCK
+      const isFailActionHasMultiValues = hasMultipleValue?.includes('authFailAction')
+      const isTimeoutActionEqualNone = values.authTimeoutAction === AuthTimeoutAction.NONE
+      const isTimeoutActionHasMultiValues = hasMultipleValue?.includes('authTimeoutAction')
+
       form.setFieldsValue({
         ...values,
+        ...(isMultipleEdit ? {
+          changeAuthOrderCheckbox: true,
+          dot1xPortControlCheckbox: true
+        } : {}),
+        // Type = MAC-AUTH / 802.1 & MAC-AUTH
         ...(value !== AuthenticationType._802_1X ? {
           // eslint-disable-next-line max-len
           dot1xPortControl: value === AuthenticationType.MACAUTH ? PortControl.NONE : PortControl.AUTO,
-          ...(isMultipleEdit ? {
-            dot1xPortControlCheckbox: true
-          } : {}),
-          ...(isMultipleEdit && values.authFailAction === AuthFailAction.BLOCK ? {
+          ...(isMultipleEdit && isFailActionEqualBlock && !isFailActionHasMultiValues ? {
             restrictedVlanCheckbox: false
           } : {}),
-          ...(isMultipleEdit && values.authTimeoutAction === AuthTimeoutAction.NONE ? {
+          ...(isMultipleEdit && isTimeoutActionEqualNone && !isTimeoutActionHasMultiValues ? {
             criticalVlanCheckbox: false
           } : {})
         }: {
           dot1xPortControl: PortControl.AUTO
         }),
+        // Type = 802.1 / MAC-AUTH
         ...(value !== AuthenticationType._802_1X_AND_MACAUTH ? {
-          changeAuthOrder: false,
-          ...(isMultipleEdit ? { changeAuthOrderCheckbox: false } : {})
+          changeAuthOrder: false
         }: {})
       })
       break
@@ -182,22 +191,29 @@ export const handleAuthFieldChange = (props: {
         })
       } else if (value === PortControl.AUTO || value === PortControl.NONE) {
         const values = form.getFieldsValue()
+        const isFailActionHasMultiValues = hasMultipleValue?.includes('authFailAction')
+        const isTimeoutActionHasMultiValues = hasMultipleValue?.includes('authTimeoutAction')
+
         form.setFieldsValue({
           ...values,
-          ...(isMultipleEdit ? {
-            restrictedVlanCheckbox: false,
+          ...(isMultipleEdit && !isFailActionHasMultiValues ? {
+            restrictedVlanCheckbox: false
+          } : {}),
+          ...(isMultipleEdit && !isTimeoutActionHasMultiValues ? {
             criticalVlanCheckbox: false
           } : {})
         })
       }
       break
     case 'authFailAction':
-      if (value === AuthFailAction.BLOCK) {
+      if (value !== AuthFailAction.RESTRICTED_VLAN) {
         const values = form.getFieldsValue()
         form.setFieldsValue({
           ...values,
           restrictedVlan: '',
-          ...(isMultipleEdit ? { restrictedVlanCheckbox: false } : {})
+          ...(isMultipleEdit ? {
+            restrictedVlanCheckbox: true
+          } : {})
         })
       }
       break
@@ -207,7 +223,9 @@ export const handleAuthFieldChange = (props: {
         form.setFieldsValue({
           ...values,
           criticalVlan: '',
-          ...(isMultipleEdit ? { criticalVlanCheckbox: false } : {})
+          ...(isMultipleEdit ? {
+            criticalVlanCheckbox: true
+          } : {})
         })
       }
       break

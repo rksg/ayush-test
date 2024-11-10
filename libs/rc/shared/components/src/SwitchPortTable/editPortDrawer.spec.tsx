@@ -2234,6 +2234,7 @@ describe('EditPortDrawer', () => {
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox')).not.toBeDisabled()
           await userEvent.click(await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox'))
+          expect(await screen.findByTestId('flex-enable-switch')).not.toBeChecked()
 
           // Edit Port VLANs
           // enable override portVlans
@@ -2248,7 +2249,7 @@ describe('EditPortDrawer', () => {
           expect(await screen.findByText(/VLAN-ID: 5/)).toBeVisible()
           // port is untagged port, so disable the flex auth setting automatically
           expect(await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox')).toBeDisabled()
-          expect(await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox')).not.toBeChecked()
+          expect(await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox')).toBeChecked()
 
           // disable override portVlans
           await userEvent.click(await screen.findByTestId('portVlans-override-checkbox'))

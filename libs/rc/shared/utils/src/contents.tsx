@@ -346,6 +346,9 @@ export const FlexAuthMessages = {
   CANNOT_SET_DIFF_GUEST_VLAN: defineMessage({
     defaultMessage: 'Guest-VLAN is set to {guestVlan} previously and needs to be consistent across all the ports that have authentication enabled.'
   }),
+  CANNOT_SET_AUTH_DEFAULT_VALN_WITH_FORCE_TYPE: defineMessage({
+    defaultMessage: 'If the port control type is either Force Authorized or Force Unauthorized, the Auth-Default VLAN must be the same as the Auth Default VLAN setting at the switch level for all switches.'
+  }),
   VLAN_CANNOT_SAME_AS_TARGET_VLAN: defineMessage({
     defaultMessage: '{sourceVlan} can not be the same as {targetVlan}'
   })

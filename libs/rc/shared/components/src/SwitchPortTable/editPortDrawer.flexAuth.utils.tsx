@@ -45,7 +45,6 @@ export interface AggregatePortSettings {
   switchLevelAuthDefaultVlan: Record<string, number | undefined>
   guestVlan: Record<string, number | undefined>
   authDefaultVlan: Record<string, number[]>
-  // authDefaultVlan2: Record<string, Record<string, number[]>>
   restrictedVlan: Record<string, number | undefined>
   criticalVlan: Record<string, number | undefined>
   shouldAlertAaaAndRadiusNotApply: boolean
@@ -56,7 +55,6 @@ export const aggregatePortSettings = (
   switchesDefaultVlan?: SwitchDefaultVlan[],
   hasMultipleValue?: string[]
 ): AggregatePortSettings => {
-  // console.log('portsSetting: ', portsSetting)
   const initialData: AggregatePortSettings = {
     taggedVlans: {},
     untaggedVlan: {},
@@ -69,7 +67,6 @@ export const aggregatePortSettings = (
     switchLevelAuthDefaultVlan: {},
     guestVlan: {},
     authDefaultVlan: {},
-    // authDefaultVlan2: {}, //TODO
     restrictedVlan: {},
     criticalVlan: {},
     shouldAlertAaaAndRadiusNotApply: false
@@ -128,6 +125,12 @@ export const renderAuthProfile = (data?: FlexibleAuthentication) => {
           children={data?.authenticationType
             ? $t(authenticationTypeLabel[data.authenticationType as keyof typeof authenticationTypeLabel])
             : noDataDisplay
+          }
+        />
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'Change Authentication Order' })}
+          children={data?.changeAuthOrder
+            ? $t({ defaultMessage: 'ON' }) : $t({ defaultMessage: 'OFF' })
           }
         />
         <Descriptions.Item
@@ -230,9 +233,6 @@ export const getUnionValuesByKey = (
   key: keyof AggregatePortSettings,
   aggregateData: AggregatePortSettings
 ) => {
-  // const values = key === 'authDefaultVlan2'
-  //   ? Object.values(aggregateData[key] ?? {}).flatMap(Object.values)
-  //   : Object.values(aggregateData[key] ?? {})
   const values = Object.values(aggregateData[key] ?? {})
   return _.uniq(_.flatten(values))
 }
@@ -253,7 +253,6 @@ export const getFlexAuthButtonStatus = (props: {
 
   const checkUntaggedPortMismatch = (id: string) => {
     const defaultVlan = aggregateData?.defaultVlan?.[id]
-    // const untaggedVlan = aggregateData?.untaggedVlan?.[id] //TODO
     const untaggedVlan = getCurrentVlansByKey({
       key: 'untaggedVlan', switchId: id, aggregateData,
       isMultipleEdit, portVlansCheckbox, hasMultipleValue, form
@@ -275,6 +274,17 @@ export const getFlexAuthButtonStatus = (props: {
   return ''
 }
 
+export const getFlexAuthEnabled = (
+  aggregateData: AggregatePortSettings,
+  isMultipleEdit: boolean,
+  flexAuthEnabled: boolean,
+  flexibleAuthenticationEnabledCheckbox: boolean
+) => {
+  const authDefaultVlans = getUnionValuesByKey('authDefaultVlan', aggregateData)
+  return flexAuthEnabled
+    || (isMultipleEdit && !flexibleAuthenticationEnabledCheckbox && !!authDefaultVlans?.length)
+}
+
 export const getAppliedProfile = (
   profiles: FlexibleAuthentication[],
   profileId: string
@@ -293,23 +303,35 @@ export const getAppliedProfile = (
 }
 
 export const getCurrentAuthDefaultVlan = (props: {
-  flexibleAuthenticationEnabled: boolean,
-  isAppliedAuthProfile: boolean,
   authProfiles: FlexibleAuthentication[],
   authenticationProfileId: string,
-  authDefaultVlan: string
+  authDefaultVlan: string,
+  aggregatePortsData: AggregatePortSettings,
+  flexibleAuthenticationEnabled: boolean,
+  flexibleAuthenticationEnabledCheckbox: boolean,
+  isAppliedAuthProfile: boolean,
+  isMultipleEdit: boolean
 }) => {
+  let authVlans:string[] = []
   const {
     flexibleAuthenticationEnabled, isAppliedAuthProfile,
-    authProfiles, authenticationProfileId, authDefaultVlan
+    isMultipleEdit, flexibleAuthenticationEnabledCheckbox,
+    aggregatePortsData, authProfiles, authenticationProfileId, authDefaultVlan
   } = props
 
-  return flexibleAuthenticationEnabled
-    ? (isAppliedAuthProfile
-      ? getAppliedProfile(authProfiles, authenticationProfileId)?.authDefaultVlan
-      : authDefaultVlan
-    )
-    : ''
+  if (isMultipleEdit && !flexibleAuthenticationEnabledCheckbox) {
+    const authDefaultVlan = getUnionValuesByKey('authDefaultVlan', aggregatePortsData)?.map(String)
+    authVlans = authVlans.concat(authDefaultVlan)
+  } else if (flexibleAuthenticationEnabled) {
+    if (isAppliedAuthProfile) {
+      const authVlan = getAppliedProfile(authProfiles, authenticationProfileId)?.authDefaultVlan
+      authVlan && authVlans.push(authVlan?.toString())
+    } else if (authDefaultVlan) {
+      authVlans.push(authDefaultVlan.toString())
+    }
+  }
+
+  return authVlans
 }
 
 export const getCurrentVlansByKey = (props: {
@@ -367,10 +389,8 @@ export const validateApplyProfile = (
   const profileDefaultVlans = getUnionValuesByKey('profileAuthDefaultVlan', aggregateData)
   const switchDefaultVlans = getUnionValuesByKey('defaultVlan', aggregateData)
   const switchAuthDefaultVlans = getUnionValuesByKey('switchLevelAuthDefaultVlan', aggregateData)
-  // const taggedVlans = getUnionValuesByKey('taggedVlans', aggregateData)
 
   const isDefaultVlanDuplicateWithSwitch = switchDefaultVlans.includes(profile?.authDefaultVlan)
-  // const isDefaultVlanDuplicateWithTagged = taggedVlans.includes(profile?.authDefaultVlan.toString())
   const isCriticalVlanDuplicateWithSwitch = switchDefaultVlans.includes(profile?.criticalVlan)
   const isRestrictedVlanDuplicateWithSwitch = switchDefaultVlans.includes(profile?.restrictedVlan)
 
@@ -403,9 +423,8 @@ export const validateApplyProfile = (
         })
       )
     } else if (isAuthDefaultVlanMismatch) {
-      //TODO: checking wording with UX
       return Promise.reject(
-        $t({ defaultMessage: 'If the port control type is either Force Authorized or Force Unauthorized, the Auth-Default VLAN must be the same as the Auth Default VLAN setting at the switch level for all switches.' })
+        $t(FlexAuthMessages.CANNOT_SET_AUTH_DEFAULT_VALN_WITH_FORCE_TYPE)
       )
     }
   }
@@ -415,15 +434,9 @@ export const validateApplyProfile = (
       sourceVlan: $t(FlexAuthVlanLabel.AUTH_DEFAULT_VLAN),
       targetVlan: $t(FlexAuthVlanLabel.DEFAULT_VLAN)
     }))
-  // } else if (isDefaultVlanDuplicateWithTagged) {
-  //   return Promise.reject($t(FlexAuthMessages.VLAN_CANNOT_SAME_AS_TARGET_VLAN, {
-  //     sourceVlan: $t(FlexAuthVlanLabel.AUTH_DEFAULT_VLAN),
-  //     targetVlan: $t(FlexAuthVlanLabel.TAGGED_VLANS)
-  //   }))
   } else if (isAuthDefaultVlanMismatch) {
-    //TODO: checking wording with UX
     return Promise.reject(
-      $t({ defaultMessage: 'If the port control type is either Force Authorized or Force Unauthorized, the Auth-Default VLAN must be the same as the Auth Default VLAN setting at the switch level for all switches.' })
+      $t(FlexAuthMessages.CANNOT_SET_AUTH_DEFAULT_VALN_WITH_FORCE_TYPE)
     )
   } else if (isCriticalVlanDuplicateWithSwitch) {
     return Promise.reject($t(FlexAuthMessages.VLAN_CANNOT_SAME_AS_TARGET_VLAN, {
@@ -598,6 +611,47 @@ export const isOverrideFieldNotChecked = (props: {
     && !checkboxEnabled
 }
 
+export const getNeedPreselectFields = (props: {
+  changedField?: string,
+  isOverridden?: boolean,
+  isCustomized?: boolean,
+  isMultipleEdit: boolean,
+  selectedPorts: SwitchPortViewModel[],
+  aggregateData: AggregatePortSettings
+}) => {
+  const { isMultipleEdit, isCustomized, changedField, isOverridden, aggregateData, selectedPorts } = props
+  const authDefaultVlan = Object.values(aggregateData.authDefaultVlan).flat()
+  const isEitherPortEnabledForFirstTime = selectedPorts?.length > authDefaultVlan?.length
+
+  if (changedField === 'authenticationTypeCheckbox') {
+    return {
+      changeAuthOrderCheckbox: isOverridden,
+      dot1xPortControlCheckbox: isOverridden
+    }
+  } else if (changedField === 'authFailActionCheckbox') {
+    return {
+      restrictedVlanCheckbox: isOverridden
+    }
+  } else if (changedField === 'authTimeoutActionCheckbox') {
+    return {
+      criticalVlanCheckbox: isOverridden
+    }
+  }
+
+  // If any of the selected ports are without authentication settings
+  // will pre-select the specific override checkbox
+  return (isMultipleEdit && isEitherPortEnabledForFirstTime)
+    ? (isCustomized ? {
+      authenticationTypeCheckbox: true,
+      changeAuthOrderCheckbox: true,
+      dot1xPortControlCheckbox: true,
+      authDefaultVlanCheckbox: true
+    } : {
+      authenticationProfileIdCheckbox: true
+    })
+    : {}
+}
+
 export const handleClickCustomize = (props: {
   selectedPorts: SwitchPortViewModel[],
   authenticationCustomize: boolean,
@@ -614,22 +668,25 @@ export const handleClickCustomize = (props: {
 
   const toggleCustomized = !authenticationCustomize
   const authDefaultVlan = Object.values(aggregateData.authDefaultVlan).flat()
-  const isEitherPortEnabledForFirstTime = selectedPorts?.length > authDefaultVlan?.length
+  const preselectFields = getNeedPreselectFields({
+    isMultipleEdit, isCustomized: toggleCustomized,
+    selectedPorts, aggregateData
+  })
 
-  form.setFieldValue('authenticationCustomize', toggleCustomized)
-
-  if (toggleCustomized) {
+  if (toggleCustomized) { // customized
     form.setFieldsValue({
       ...form.getFieldsValue(),
+      authenticationCustomize: toggleCustomized,
       ...(!isMultipleEdit && !authDefaultVlan?.length && authenticationProfileId
         ? getAppliedProfile(authProfiles, authenticationProfileId) : {}
       ),
-      ...(isMultipleEdit && isEitherPortEnabledForFirstTime ? {
-        authenticationTypeCheckbox: true,
-        dot1xPortControlCheckbox: true,
-        authDefaultVlanCheckbox: true
-      }: {}
-      )
+      ...preselectFields
+    })
+  } else { // use profile setting
+    form.setFieldsValue({
+      ...form.getFieldsValue(),
+      authenticationCustomize: toggleCustomized,
+      ...preselectFields
     })
   }
 }
@@ -640,9 +697,7 @@ export const handlePortVlanChange = (props: {
 }) => {
   const { form, isFlexAuthButtonDisabled } = props
   const isFlexAuthEnabled = form.getFieldValue('flexibleAuthenticationEnabled')
-  // eslint-disable-next-line max-len
-  const isFlexAuthEnabledOverride = form.getFieldValue('flexibleAuthenticationEnabledCheckbox')
-  if (isFlexAuthButtonDisabled && (isFlexAuthEnabledOverride || isFlexAuthEnabled)) {
+  if (isFlexAuthButtonDisabled && isFlexAuthEnabled) {
     const resetFieldValues = {
       ...form.getFieldsValue(),
       flexibleAuthenticationEnabled: false,
@@ -652,25 +707,60 @@ export const handlePortVlanChange = (props: {
   }
 }
 
+export const handleAuthOverrideFieldChange = (props: {
+  changedField: string,
+  form: FormInstance,
+  isOverridden: boolean,
+  isMultipleEdit: boolean,
+  selectedPorts: SwitchPortViewModel[],
+  aggregateData: AggregatePortSettings
+}) => {
+  const { form, changedField } = props
+  if (changedField === 'flexibleAuthenticationEnabledCheckbox') {
+    handleAuthenticationOverrideChange(props)
+  } else {
+    const preselectFields = getNeedPreselectFields(props)
+    form.setFieldsValue({
+      ...form.getFieldsValue(),
+      ...preselectFields
+    })
+  }
+}
+
 export const handleAuthenticationOverrideChange = (props: {
   form: FormInstance,
+  isOverridden: boolean,
+  isMultipleEdit: boolean,
+  selectedPorts: SwitchPortViewModel[],
+  aggregateData: AggregatePortSettings
 }) => {
-  const { form } = props
+  const { form, isOverridden, isMultipleEdit, selectedPorts, aggregateData } = props
+  const isCustomized = form.getFieldValue('authenticationCustomize')
   const authFields = [
     'authenticationProfileId', 'authenticationType', 'changeAuthOrder',
     'dot1xPortControl', 'authDefaultVlan', 'authFailAction',
     'restrictedVlan', 'authTimeoutAction', 'criticalVlan', 'guestVlan'
   ]
-  const needResetFields = Object.keys(authFields).reduce((result, key: string) => {
-    return {
-      ...result,
-      [`${key}Checkbox`]: false
-    }
-  }, {})
 
-  const resetFieldValues = {
-    ...form.getFieldsValue(),
-    ...needResetFields
+  if (!isOverridden) {
+    const resetFields = authFields.reduce((result, key) => ({
+      ...result, [`${key}Checkbox`]: false
+    }), {})
+
+    form.setFieldsValue({
+      ...form.getFieldsValue(),
+      ...resetFields
+    })
+
+  } else {
+    const preselectFields = getNeedPreselectFields({
+      isMultipleEdit, isCustomized, selectedPorts, aggregateData
+    })
+
+    form.setFieldsValue({
+      ...form.getFieldsValue(),
+      ...preselectFields
+    })
   }
-  form.setFieldsValue(resetFieldValues)
+
 }
