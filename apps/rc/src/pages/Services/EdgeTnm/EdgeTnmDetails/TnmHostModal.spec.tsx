@@ -98,13 +98,13 @@ describe('Edge TNM Service Host Modal', () => {
   })
 
   it('should create host successfully', async () => {
-    const mockSetVisibleFn = jest.fn()
+    const mockCloseFn = jest.fn()
 
     render(<Provider>
       <TnmHostModal
         visible
         serviceId='mock-serviceId'
-        setVisible={mockSetVisibleFn}
+        onClose={mockCloseFn}
       />
     </Provider>, {
       route: { params, path: mockPath }
@@ -146,7 +146,7 @@ describe('Edge TNM Service Host Modal', () => {
       ]
     }))
 
-    await waitFor(() => expect(mockSetVisibleFn).toBeCalledWith(false))
+    await waitFor(() => expect(mockCloseFn).toBeCalled())
   })
 
   it('should edit host name successfully', async () => {
@@ -154,7 +154,7 @@ describe('Edge TNM Service Host Modal', () => {
       <TnmHostModal
         visible
         serviceId='mock-serviceId'
-        setVisible={jest.fn()}
+        onClose={jest.fn()}
         editData={mockTnmHostList[0]}
       />
     </Provider>, {

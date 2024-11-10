@@ -16,13 +16,13 @@ import {
 interface TnmHostModalProps {
   serviceId: string
   visible: boolean
-  setVisible: (v: boolean) => void
+  onClose: () => void
   editData: EdgeTnmHostSetting | undefined
 }
 
 export const TnmHostModal = (props: TnmHostModalProps) => {
   const { $t } = useIntl()
-  const { serviceId, visible, setVisible, editData } = props
+  const { serviceId, visible, onClose, editData } = props
   const [ form ] = Form.useForm()
 
   const [addTnmHost, { isLoading: isCreating }] = useCreateEdgeTnmHostMutation()
@@ -52,7 +52,7 @@ export const TnmHostModal = (props: TnmHostModalProps) => {
         payload: edgeTnmHostFormRequestPreProcess(formValues)
       }).unwrap()
 
-      setVisible(false)
+      onClose()
     } catch(err) {
       // eslint-disable-next-line no-console
       console.log(err)
@@ -84,7 +84,7 @@ export const TnmHostModal = (props: TnmHostModalProps) => {
     mask
     destroyOnClose
     maskClosable={false}
-    onCancel={() => setVisible(false)}
+    onCancel={onClose}
     onOk={() => {form.submit()}}
     okText={editData ? $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Add' })}
   >
