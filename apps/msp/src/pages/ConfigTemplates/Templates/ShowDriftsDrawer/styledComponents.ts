@@ -20,6 +20,12 @@ export const DriftSetCollapse = styled(Collapse)`
     }
   }
 `
+
+export const DriftHeader = styled.span`
+  font-weight: 600;
+  word-break: break-all;
+`
+
 export const DriftInstanceCollapse = styled(Collapse)`
   width: 100%;
   .ant-collapse-item .ant-collapse-header {

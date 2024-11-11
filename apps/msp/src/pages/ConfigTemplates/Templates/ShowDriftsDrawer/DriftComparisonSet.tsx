@@ -13,7 +13,7 @@ export function DriftComparisonSet (props: ConfigTemplateDriftSet) {
     expandIconPosition='start'
     expandIcon={({ isActive }) => isActive ? <MinusSquareOutlined /> : <PlusSquareOutlined />}
   >
-    <Collapse.Panel header={<span style={{ fontWeight: '600' }}>{diffName}</span>} key={diffName}>
+    <Collapse.Panel header={<UI.DriftHeader>{diffName}</UI.DriftHeader>} key={diffName}>
       {diffData.map((item, index) => {
         return <div key={index} style={{ marginLeft: '12px' }}>
           <DriftComparison {...item} />
