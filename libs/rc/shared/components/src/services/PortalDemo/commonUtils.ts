@@ -19,7 +19,7 @@ export const getBase64 = (img: RcFile, callback: (url: string) => void) => {
     })
     return
   }
-  const isLt5M = img.size / 1024 / 1024 < 1
+  const isLt5M = img.size / 1024 / 1024 < 5
   if (!isLt5M) {
     const content = $t({ defaultMessage: 'Image must smaller than 5MB!' })
     showToast({
