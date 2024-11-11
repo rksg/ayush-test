@@ -243,7 +243,7 @@ describe('NetworkVenuesTab', () => {
     await waitFor(() => rows.forEach(row => expect(row).toBeChecked()))
 
     const row2 = await screen.findByRole('row', { name: /My-Venue/i })
-    const icon = await within(row2).findByTestId('InformationSolid')
+    const icon = await within(row2).findByTestId('WarningTriangleSolid')
     expect(icon).toBeVisible()
 
     expect(row2).toHaveTextContent(/VLAN Pool/i)

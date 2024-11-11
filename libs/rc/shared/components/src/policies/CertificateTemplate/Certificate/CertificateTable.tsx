@@ -62,6 +62,7 @@ export function CertificateTable (
   const [generateCertificate] = useGenerateCertificateToIdentityMutation()
 
   const filterOptions = [
+    { key: 'INVALID', label: $t({ defaultMessage: 'Invalid Certificates' }), value: 'INVALID' },
     { key: 'VALID', label: $t({ defaultMessage: 'Valid Certificates' }), value: 'VALID' },
     { key: 'REVOKED', label: $t({ defaultMessage: 'Revoked Certificates' }), value: 'REVOKED' },
     { key: 'EXPIRED', label: $t({ defaultMessage: 'Expired Certificates' }), value: 'EXPIRED' }

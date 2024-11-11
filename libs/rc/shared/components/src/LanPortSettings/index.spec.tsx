@@ -221,7 +221,7 @@ describe('LanPortSettings - Ethernet Port Profile', () => {
         }))
       ),
       rest.get(
-        EthernetPortProfileUrls.getEthernetPortSettingsByApPortId.url,
+        EthernetPortProfileUrls.getEthernetPortOverwritesByApPortId.url,
         (_, res, ctx) => res(ctx.json({
           data: {
             enabled: true
@@ -283,7 +283,7 @@ describe('LanPortSettings - Ethernet Port Profile', () => {
     expect(screen.getByText('802.1X')).toBeInTheDocument()
 
     const untagIdReloadBtn = screen.getByRole('button',
-      { name: 'VLAN Untag ID 1 (Custom) reload' })
+      { name: 'VLAN Untag ID (Default)' })
     expect(untagIdReloadBtn).toBeVisible()
     await userEvent.click(untagIdReloadBtn)
 

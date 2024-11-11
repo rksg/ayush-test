@@ -4,6 +4,7 @@ import { throttle } from 'lodash'
 import { useIntl }  from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal }        from '@acx-ui/components'
+import { baseUrlFor }                                                            from '@acx-ui/config'
 import { Features, useIsSplitOn }                                                from '@acx-ui/feature-toggle'
 import { PortalPreviewModal, SimpleListTooltip, getLanguage, initialPortalData } from '@acx-ui/rc/components'
 import {
@@ -31,10 +32,9 @@ import {
 import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { getImageDownloadUrl }                                     from '@acx-ui/utils'
 
-
-import Photo   from '../../../../assets/images/portal-demo/PortalPhoto.svg'
-import Powered from '../../../../assets/images/portal-demo/PoweredLogo.svg'
-import Logo    from '../../../../assets/images/portal-demo/RuckusCloud.svg'
+const Photo = baseUrlFor('/assets/images/portal/PortalPhoto.jpg')
+const Powered = baseUrlFor('/assets/images/portal/PoweredLogo.png')
+const Logo = baseUrlFor('/assets/images/portal/RuckusCloud.png')
 
 export default function PortalTable () {
   const intl = useIntl()
