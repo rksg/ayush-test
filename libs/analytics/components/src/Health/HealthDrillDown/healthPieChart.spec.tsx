@@ -292,7 +292,8 @@ describe('transformData', () => {
         color: '#66B1E8',
         key: 'Apple, Inc.',
         name: 'Apple, Inc.',
-        value: 1028
+        value: 1028,
+        selected: false
       }
     )
     expect(
@@ -302,7 +303,8 @@ describe('transformData', () => {
       color: '#66B1E8',
       key: 'Previous Auth Invalid',
       name: 'Previous Auth Invalid',
-      value: 3243
+      value: 3243,
+      selected: false
     })
   })
 })
