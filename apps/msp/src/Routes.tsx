@@ -198,7 +198,7 @@ export function ConfigTemplatesRoutes () {
         <Route index
           element={<TenantNavigate replace to={CONFIG_TEMPLATE_LIST_PATH} tenantType='v'/>}
         />
-        <Route path=':activeTab' element={<ConfigTemplate />} />
+        <Route path='templates' element={<ConfigTemplate />} />
         {configTemplateVisibilityMap[ConfigTemplateType.RADIUS] && <>
           <Route
             path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}
