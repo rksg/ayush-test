@@ -7,6 +7,7 @@ import type { CompatibilityNodeError, SingleNodeDetailsField, VipConfigType } fr
 import {
   ClusterHaFallbackScheduleTypeEnum,
   ClusterHaLoadDistributionEnum,
+  ClusterHighAvailabilityModeEnum,
   ClusterNetworkSettings,
   EdgeClusterStatus,
   EdgePortInfo,
@@ -328,8 +329,10 @@ export const lagSettingsCompatibleCheck = (
   return getCompatibleCheckResult(checkResult)
 }
 
-export const transformFromFormToApiData =
-(data: InterfaceSettingsFormType): ClusterNetworkSettings => {
+export const transformFromFormToApiData = (
+  data: InterfaceSettingsFormType,
+  highAvailabilityMode?: ClusterHighAvailabilityModeEnum
+): ClusterNetworkSettings => {
   const portSettings = []
   for(let [k, v] of Object.entries(data.portSettings)) {
     portSettings.push({
@@ -374,13 +377,18 @@ export const transformFromFormToApiData =
         break
     }
   }
+
+  const shouldPatchVip = highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY
+  const shouldPatchHaSetting = fallbackSettings &&
+    highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
+
   return {
     lagSettings: data.lagSettings,
     portSettings,
-    ...(virtualIpSettings.length > 0 ? {
+    ...(shouldPatchVip ? {
       virtualIpSettings
     } : {}),
-    ...(fallbackSettings ? {
+    ...(shouldPatchHaSetting ? {
       highAvailabilitySettings: {
         fallbackSettings,
         loadDistribution: data.loadDistribution
@@ -403,4 +411,24 @@ export const loadDistributions = {
   [ClusterHaLoadDistributionEnum.RANDOM]: defineMessage({ defaultMessage: 'Random distribution' }),
   // eslint-disable-next-line max-len
   [ClusterHaLoadDistributionEnum.AP_GROUP]: defineMessage({ defaultMessage: 'Per AP group distribution' })
+}
+
+const splitInterfaceName = (ifName: string) => {
+  return ifName.replace('port', '').split('.').map(Number)
+}
+
+export const interfaceNameComparator =
+(port1: EdgePortInfo, port2: EdgePortInfo): number => {
+  const splitPort1 = splitInterfaceName(port1.portName)
+  const splitPort2 = splitInterfaceName(port2.portName)
+
+  for (let i = 0; i < 2; i++) {
+    const segmentA = splitPort1[i] || 0
+    const segmentB = splitPort2[i] || 0
+
+    if (segmentA !== segmentB) {
+      return segmentA - segmentB
+    }
+  }
+  return 0
 }
