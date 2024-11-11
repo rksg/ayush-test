@@ -320,3 +320,8 @@ export enum ServerClientCertAlgorithmType {
   SHA_384 = 'SHA_384',
   SHA_512 = 'SHA_512'
 }
+
+export type ServerClientCertificateResult = {
+  requestId: string
+  id?: string
+}
