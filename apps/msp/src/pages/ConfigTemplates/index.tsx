@@ -2,7 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { PageHeader } from '@acx-ui/components'
 
-import { ConfigTemplateList }       from './Templates'
+import { ConfigTemplateList } from './Templates'
 
 export enum ConfigTemplateTabKey {
   TEMPLATES = 'templates',
