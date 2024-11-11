@@ -39,7 +39,7 @@ export enum WisprSecurityOptionsDescription {
   /* eslint-disable max-len */
   NONE = '',
   PSK = 'Require users to enter a passphrase to connect',
-  OWE = 'In OWE mode, the Diffie-Hellman key exchange algorithm is used to encrypt data on the Wi-Fi network'
+  OWE = 'Secures open Wi-Fi networks by encrypting data without needing passwords.'
   /* eslint-enable */
 }
 
@@ -147,7 +147,7 @@ export const WifiNetworkMessages = {
     defaultMessage: 'MAC Authentication provides an additional level of security for corporate networks. Client MAC Addresses are passed to the configured RADIUS servers for authentication and accounting. Note that changing this option requires to re-create the network (no edit option)'
   }),
   ENABLE_OWE_TOOLTIP: defineMessage({
-    defaultMessage: 'In OWE mode, the Diffie-Hellman key exchange algorithm is used to encrypt data on the Wi-Fi network.'
+    defaultMessage: 'Secures open Wi-Fi networks by encrypting data without needing passwords.'
   }),
   ENABLE_OWE_TRANSITION_TOOLTIP: defineMessage({
     defaultMessage: 'For STAs that do not support OWE authentication, the OWE transition mode is available so that such STAs can access the network in open authentication mode.'

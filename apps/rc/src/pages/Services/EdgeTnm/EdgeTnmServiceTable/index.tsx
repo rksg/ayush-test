@@ -1,8 +1,9 @@
+import { useState } from 'react'
+
 import { Row }     from 'antd'
 import { useIntl } from 'react-intl'
 
 import {
-  Button,
   PageHeader,
   Table,
   TableProps,
@@ -14,26 +15,23 @@ import {
   ServiceType,
   ServiceOperation,
   getServiceListRoutePath,
-  getServiceRoutePath,
   getScopeKeyByService,
   filterByAccessForServicePolicyMutation,
-  useTableQuery,
-  EdgeTnmServiceData
+  EdgeTnmServiceData,
+  transformDisplayNumber,
+  getServiceDetailsLink
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
+
+import { EdgeTnmCreateFormModal } from './EdgeTnmCreateFormModal'
 
 const settingsId = 'services-edge-tnm-service-table'
 export function EdgeTnmServiceTable () {
   const { $t } = useIntl()
-  const [ deleteFn, { isLoading: isDeleting } ] = useDeleteEdgeTnmServiceMutation()
+  const [visible, setVisible] = useState<boolean>(false)
 
-  const tableQuery = useTableQuery({
-    useQuery: useGetEdgeTnmServiceListQuery,
-    defaultPayload: {
-      filters: {}
-    },
-    pagination: { settingsId }
-  })
+  const [ deleteFn, { isLoading: isDeleting } ] = useDeleteEdgeTnmServiceMutation()
+  const { data, isLoading, isFetching } = useGetEdgeTnmServiceListQuery({})
 
   const rowActions: TableProps<EdgeTnmServiceData>['rowActions'] = [
     {
@@ -65,37 +63,36 @@ export function EdgeTnmServiceTable () {
       <PageHeader
         title={
           $t({ defaultMessage: 'Thirdparty Network Management ({count})' },
-            { count: tableQuery.data?.totalCount })
+            { count: transformDisplayNumber(data?.length) })
         }
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
-        extra={filterByAccessForServicePolicyMutation([
-          <TenantLink
-            scopeKey={getScopeKeyByService(ServiceType.EDGE_TNM_SERVICE, ServiceOperation.CREATE)}
-            // eslint-disable-next-line max-len
-            to={getServiceRoutePath({ type: ServiceType.EDGE_TNM_SERVICE, oper: ServiceOperation.CREATE })}
-          >
-            <Button type='primary'>
-              {$t({ defaultMessage: 'Add TNM Service' })}</Button>
-          </TenantLink>
-        ])}
+        // extra={filterByAccessForServicePolicyMutation([
+        //   <Button type='primary'
+        //     scopeKey={getScopeKeyByService(ServiceType.EDGE_TNM_SERVICE, ServiceOperation.CREATE)}
+        //     onClick={() => {
+        //       setVisible(true)
+        //     }}>
+        //     {$t({ defaultMessage: 'Add TNM Service' })}
+        //   </Button>
+        // ])}
       />
-      <Loader states={[tableQuery, { isLoading: false, isFetching: isDeleting }]}>
+      <Loader states={[{ isLoading, isFetching: isFetching || isDeleting }]}>
         <Table
           rowKey='id'
           settingsId={settingsId}
           columns={useColumns()}
-          dataSource={tableQuery.data?.data}
+          dataSource={data}
           rowActions={allowedRowActions}
           rowSelection={(allowedRowActions.length > 0) && { type: 'checkbox' }}
-          onChange={tableQuery.handleTableChange}
-          onFilterChange={tableQuery.handleFilterChange}
-          pagination={tableQuery.pagination}
-          enableApiFilter
         />
       </Loader>
+      <EdgeTnmCreateFormModal
+        visible={visible}
+        setVisible={setVisible}
+      />
     </>
   )
 }
@@ -111,9 +108,14 @@ function useColumns () {
       searchable: true,
       fixed: 'left',
       render: (_, row) =>
-        <Row justify='center'>
+        <TenantLink
+          to={getServiceDetailsLink({
+            type: ServiceType.EDGE_TNM_SERVICE,
+            oper: ServiceOperation.DETAIL,
+            serviceId: row.id!
+          })}>
           {row.name}
-        </Row>
+        </TenantLink>
     },
     {
       key: 'version',
