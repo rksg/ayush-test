@@ -1,14 +1,17 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { defaultNetworkPath }                              from '@acx-ui/analytics/utils'
 import { get }                                             from '@acx-ui/config'
 import { dataApi, dataApiURL, rbacApi, rbacApiURL, store } from '@acx-ui/store'
 import { mockGraphqlQuery, mockServer, screen, within }    from '@acx-ui/test-utils'
 
-import { mockNetworkHierarchy, mockHiddenAPs, renderForm, mockApHierarchy, mockSystems } from '../../../__tests__/fixtures'
-import { ClientType }                                                                    from '../../../types'
+import { NetworkNode }                                                                                     from '../../../../NetworkFilter/services'
+import { mockNetworkHierarchy, mockHiddenAPs, renderForm, mockApHierarchy, mockSystems, mockNetworkNodes } from '../../../__tests__/fixtures'
+import { ClientType }                                                                                      from '../../../types'
 
-import { APsSelection } from './APsSelection'
+import { APsSelection, transformSANetworkHierarchy } from './APsSelection'
+
 
 const { click, type } = userEvent
 
@@ -290,5 +293,16 @@ describe('RA', () => {
         .toBeVisible()
       expect(await field.findByText(/system 1 \(SZ Cluster\) — 1 AP/)).toBeVisible()
     })
+  })
+})
+
+describe('transformSANetworkHierarchy', () => {
+  it('transform label correctly', () => {
+    const data = mockNetworkNodes as NetworkNode[]
+    const expectLabels = data[0]['children']?.map(ap => `${ap.name} (${ap.mac}) (Access Point)`)
+    const result = transformSANetworkHierarchy(data, defaultNetworkPath)
+    const labels = result[0]['children']?.map(node => node.label)
+    expect(result[0].label).toEqual(`${data[0].name} (AP Group)`)
+    expect(labels).toEqual(expectLabels)
   })
 })

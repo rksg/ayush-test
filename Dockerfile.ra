@@ -50,7 +50,7 @@ COPY --from=build-locales /app/apps/ra/src/locales ./apps/ra/src/locales
 
 RUN echo NX_GIT_SHA=$CIRCLE_SHA1 >> .env
 RUN echo NX_GIT_DATE=$(date -R) >> .env
-RUN node ./node_modules/.bin/nx run-many --target=build --projects=ra
+RUN node ./node_modules/.bin/nx run ra:build
 
 ###############################################################
 FROM nginx:1.21.6-alpine
@@ -71,9 +71,9 @@ COPY --from=build /app/dist/apps ./
 
 RUN \
   # Create structure to match deployment need
-  mkdir -p tenant/t && \
+  mkdir -p ai && \
   # Move all files into it
-  cp -a ra/* tenant/t && \
+  cp -a ra/* ai && \
   # Remove the ra folder
   rm -rf ra
 
