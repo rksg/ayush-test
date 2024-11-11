@@ -520,9 +520,10 @@ export const mspApi = baseMspApi.injectEndpoints({
       providesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
     getAssignedMspEcToIntegrator: build.query<AssignedEc, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
         const mspAssignedEcListReq =
-          createHttpRequest(MspUrlsInfo.getAssignedMspEcToIntegrator, params)
+          createHttpRequest(mspUrlsInfo.getAssignedMspEcToIntegrator, params)
         return {
           ...mspAssignedEcListReq
         }
@@ -540,8 +541,9 @@ export const mspApi = baseMspApi.injectEndpoints({
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
     assignMspEcToIntegrator_v1: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(MspUrlsInfo.assignMspEcToIntegrator, params)
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const req = createHttpRequest(mspUrlsInfo.assignMspEcToIntegrator, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -888,8 +890,9 @@ export const mspApi = baseMspApi.injectEndpoints({
       }
     }),
     getAvailableMspRecCustomers: build.query<AvailableMspRecCustomers, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(MspUrlsInfo.getAvailableMspRecCustomers, params)
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const req = createHttpRequest(mspUrlsInfo.getAvailableMspRecCustomers, params)
         return {
           ...req,
           body: payload
@@ -907,8 +910,9 @@ export const mspApi = baseMspApi.injectEndpoints({
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
     assignMspEcToMultiIntegrators: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(MspUrlsInfo.assignMspEcToMultiIntegrators, params)
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const req = createHttpRequest(mspUrlsInfo.assignMspEcToMultiIntegrators, params)
         return {
           ...req,
           body: payload
@@ -1018,6 +1022,26 @@ export const mspApi = baseMspApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    updateMspEcDelegations: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspRbacUrlsInfo.updateMspEcDelegations, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    updateMspMultipleEcDelegations: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspRbacUrlsInfo.updateMspMultipleEcDelegations, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     })
   })
 })
@@ -1135,7 +1159,9 @@ export const {
   useGetMspUploadURLMutation,
   useGetEntitlementsCompliancesQuery,
   useGetEntitlementsAttentionNotesQuery,
-  useGetCalculatedLicencesMutation
+  useGetCalculatedLicencesMutation,
+  useUpdateMspEcDelegationsMutation,
+  useUpdateMspMultipleEcDelegationsMutation
 } = mspApi
 
 export * from './hospitalityVerticalFFCheck'

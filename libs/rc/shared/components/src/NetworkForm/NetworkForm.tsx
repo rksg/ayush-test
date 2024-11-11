@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, createContext } from 'react'
 
 import { Form }                                                                     from 'antd'
 import { get, isEqual, isNil, isNull, isUndefined, merge, omit, omitBy, cloneDeep } from 'lodash'
+import _                                                                            from 'lodash'
 import { defineMessage, useIntl }                                                   from 'react-intl'
 
 import {
@@ -12,7 +13,7 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
 import {
   useAddNetworkMutation,
   useAddNetworkVenuesMutation,
@@ -43,7 +44,8 @@ import {
   useUpdateNetworkVenueMutation,
   useGetMacRegistrationPoolNetworkBindingQuery,
   useAddRbacNetworkVenueMutation,
-  useDeleteRbacNetworkVenueMutation
+  useDeleteRbacNetworkVenueMutation,
+  useActivateDirectoryServerMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -73,6 +75,7 @@ import { useGetNetwork }                from '../NetworkDetails/services'
 import { useIsEdgeFeatureReady }        from '../useEdgeActions'
 
 import { CloudpathForm }           from './CaptivePortal/CloudpathForm'
+import { DirectoryServerForm }     from './CaptivePortal/DirectoryServerForm'
 import { GuestPassForm }           from './CaptivePortal/GuestPassForm'
 import { HostApprovalForm }        from './CaptivePortal/HostApprovalForm'
 import { OnboardingForm }          from './CaptivePortal/OnboardingForm'
@@ -154,20 +157,25 @@ interface UserConnection {
 interface GuestMore {
   guestPortal?: GuestPortal,
   userConnection?: UserConnection
-
 }
 export function NetworkForm (props:{
   modalMode?: boolean,
   createType?: NetworkTypeEnum,
-  modalCallBack?: ()=>void,
-  defaultActiveVenues?: string[]
+  modalCallBack?: (payload?: NetworkSaveData)=>void,
+  defaultActiveVenues?: string[],
+  isRuckusAiMode?: boolean,
+  gptEditId?: string
 }) {
+  const isRuckusAiMode = props.isRuckusAiMode === true
+  const wifiRbacApiEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const configTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const serviceRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
-  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const isUseWifiRbacApi = isRuckusAiMode ? false : wifiRbacApiEnabled
+  const isConfigTemplateRbacEnabled = isRuckusAiMode ? false : configTemplateRbacEnabled
   const { isTemplate } = useConfigTemplate()
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isUseWifiRbacApi
-  const enableServiceRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const enableServiceRbac = isRuckusAiMode ? false : serviceRbacEnabled
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
 
@@ -178,7 +186,8 @@ export function NetworkForm (props:{
   const wifi7Mlo3LinkFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_3LINK_TOGGLE)
   const linkToNetworks = usePathBasedOnConfigTemplate('/networks', '/templates')
   const params = useParams()
-  const editMode = params.action === 'edit'
+  const gptEditId = props.gptEditId || ''
+  const editMode = params.action === 'edit' || !_.isEmpty(gptEditId)
   const cloneMode = params.action === 'clone'
   const addNetworkInstance = useAddInstance()
   const updateNetworkInstance = useUpdateInstance()
@@ -216,6 +225,7 @@ export function NetworkForm (props:{
   const activateDpskPool = useDpskServiceActivation()
   const activatePortal = useRbacProfileServiceActivation()
   const activateMacRegistrationPool = useMacRegistrationPoolActivation()
+  const [ activateDirectoryServer ] = useActivateDirectoryServerMutation()
   const addHotspot20NetworkActivations = useAddHotspot20Activation()
   const updateHotspot20NetworkActivations = useUpdateHotspot20Activation()
   const { updateRadiusServer, radiusServerConfigurations } = useRadiusServer()
@@ -238,6 +248,7 @@ export function NetworkForm (props:{
   const [portalDemo, setPortalDemo]=useState<Demo>()
   const [previousPath, setPreviousPath] = useState('')
   const [MLOButtonDisable, setMLOButtonDisable] = useState(true)
+  const directoryServerDataRef = useRef<{ id:string,name:string }>({ id: '',name: '' })
   const { wifiCallingIds, updateWifiCallingActivation } = useWifiCalling(saveState.name === '')
   const { updateClientIsolationActivations }
     = useClientIsolationActivations(!(editMode || cloneMode), saveState, updateSaveState, form)
@@ -258,13 +269,13 @@ export function NetworkForm (props:{
         delete saveData?.authRadiusId
       }
 
-      const newSavedata = { ...updateSate, ...saveData }
+      const newSavedata = merge({}, updateSate, saveData)
       newSavedata.wlan = { ...updateSate?.wlan, ...saveData.wlan }
       return { ...saveState, ...newSavedata }
     })
   }
 
-  const { data, isLoading } = useGetNetwork()
+  const { data, isLoading } = useGetNetwork({ isRuckusAiMode, gptEditId })
   const networkVxLanTunnelProfileInfo = useNetworkVxLanTunnelProfileInfo(data ?? null)
   const { certificateTemplateId } = useGetCertificateTemplateNetworkBindingQuery(
     { params: { networkId: data?.id } },
@@ -275,7 +286,7 @@ export function NetworkForm (props:{
 
   const { data: macRegistrationPool } = useGetMacRegistrationPoolNetworkBindingQuery(
     { params: { networkId: data?.id } },
-    { skip: !data?.wlan?.macAddressAuthentication }
+    { skip: !saveState?.wlan?.macAddressAuthentication }
   )
 
   const { data: dpskService } = useConfigTemplateQueryFnSwitcher({
@@ -413,9 +424,11 @@ export function NetworkForm (props:{
     if(modalMode&&createType){
       detailsSaveData.type = createType
     }
-    if(createType === NetworkTypeEnum.CAPTIVEPORTAL){
-      updateSaveData({ ...detailsSaveData,
-        guestPortal: { guestNetworkType: GuestNetworkTypeEnum.GuestPass } })
+    if (createType === NetworkTypeEnum.CAPTIVEPORTAL && !isRuckusAiMode) {
+      updateSaveData({
+        ...detailsSaveData,
+        guestPortal: { guestNetworkType: GuestNetworkTypeEnum.GuestPass }
+      })
     }
     else updateSaveData(detailsSaveData)
     return true
@@ -660,6 +673,30 @@ export function NetworkForm (props:{
 
   }
 
+  function pickOneCaptivePortalForm (saveState: NetworkSaveData) {
+    const guestNetworkType = saveState?.guestPortal?.guestNetworkType
+    switch (guestNetworkType) {
+      case GuestNetworkTypeEnum.ClickThrough:
+        return <OnboardingForm />
+      case GuestNetworkTypeEnum.SelfSignIn:
+        return <SelfSignInForm />
+      case GuestNetworkTypeEnum.Cloudpath:
+        return <CloudpathForm/>
+      case GuestNetworkTypeEnum.HostApproval:
+        return <HostApprovalForm />
+      case GuestNetworkTypeEnum.GuestPass:
+        return <GuestPassForm />
+      case GuestNetworkTypeEnum.WISPr:
+        return <WISPrForm />
+      case GuestNetworkTypeEnum.Directory:
+        return <DirectoryServerForm directoryServerDataRef={directoryServerDataRef} />
+      default:
+      // eslint-disable-next-line no-console
+        console.error(`Unknown Network Type: ${saveState?.guestPortal?.guestNetworkType}`)
+        return <OnboardingForm />
+    }
+  }
+
   const handleRbacNetworkVenues = async (
     networkId : string,
     newNetworkVenues? : NetworkVenue[],
@@ -792,6 +829,11 @@ export function NetworkForm (props:{
     try {
       const payload = processAddData(saveState)
 
+      if (isRuckusAiMode) {
+        modalCallBack?.(payload)
+        return
+      }
+
       // eslint-disable-next-line max-len
       const networkResponse = await addNetworkInstance({
         params,
@@ -819,6 +861,12 @@ export function NetworkForm (props:{
         beforeVenueActivationRequest.push(activateDpskPool(saveState.dpskServiceProfileId, networkId))
         beforeVenueActivationRequest.push(activateMacRegistrationPool(saveState.wlan?.macRegistrationListId, networkId))
       }
+
+      if(directoryServerDataRef.current.id) {
+        beforeVenueActivationRequest.push(
+          activateDirectoryServer({ params: { networkId: networkId, policyId: directoryServerDataRef.current.id } })
+        )
+      }
       await Promise.all(beforeVenueActivationRequest)
       if (networkResponse?.response && payload.venues) {
         // @ts-ignore
@@ -844,6 +892,7 @@ export function NetworkForm (props:{
           afterVenueActivationRequest.push(updateSoftGreActivations(networkId, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode, false))
         }
       }
+
       await Promise.all(afterVenueActivationRequest)
 
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
@@ -924,6 +973,12 @@ export function NetworkForm (props:{
       processEditData(formData)
       const oldData = cloneDeep(saveContextRef.current)
       const payload = updateClientIsolationAllowlist(saveContextRef.current as NetworkSaveData)
+
+      if (isRuckusAiMode) {
+        modalCallBack?.(payload)
+        return
+      }
+
       await updateNetworkInstance({
         params,
         payload: resolvedRbacEnabled ? handleServicePolicyRbacPayload(payload) : payload,
@@ -953,6 +1008,11 @@ export function NetworkForm (props:{
       // eslint-disable-next-line max-len
       beforeVenueActivationRequest.push(updateVlanPoolActivation(payload.id, formData.wlan?.advancedCustomization?.vlanPool, vlanPoolId))
       beforeVenueActivationRequest.push(updateAccessControl(formData, data, payload.id))
+      if(directoryServerDataRef.current.id) {
+        beforeVenueActivationRequest.push(activateDirectoryServer(
+          { params: { networkId: payload.id, policyId: directoryServerDataRef.current.id } }
+        ))
+      }
       await Promise.all(beforeVenueActivationRequest)
 
       if (payload.id && (payload.venues || data?.venues)) {
@@ -999,6 +1059,7 @@ export function NetworkForm (props:{
           createType,
           editMode,
           cloneMode,
+          isRuckusAiMode,
           data: saveState,
           setData: updateSaveState
         }}>
@@ -1015,13 +1076,15 @@ export function NetworkForm (props:{
               }
               onFinish={editMode ? handleEditNetwork : handleAddNetwork}
             >
-              <StepsFormLegacy.StepForm
-                name='details'
-                title={intl.$t({ defaultMessage: 'Network Details' })}
-                onFinish={handleDetails}
-              >
-                <NetworkDetailForm />
-              </StepsFormLegacy.StepForm>
+              {!isRuckusAiMode &&
+                <StepsFormLegacy.StepForm
+                  name='details'
+                  title={intl.$t({ defaultMessage: 'Network Details' })}
+                  onFinish={handleDetails}
+                >
+                  <NetworkDetailForm />
+                </StepsFormLegacy.StepForm>
+              }
 
               <StepsFormLegacy.StepForm
                 name='settings'
@@ -1060,18 +1123,24 @@ export function NetworkForm (props:{
                 <PortalInstance updatePortalData={(data)=>setPortalDemo(data)}/>
               </StepsFormLegacy.StepForm>
               }
-              <StepsFormLegacy.StepForm
-                name='venues'
-                title={intl.$t({ defaultMessage: '<VenuePlural></VenuePlural>' })}
-                onFinish={handleVenues}
-              >
-                <Venues defaultActiveVenues={defaultActiveVenues} />
-              </StepsFormLegacy.StepForm>
+              {!isRuckusAiMode &&
+                <StepsFormLegacy.StepForm
+                  name='venues'
+                  title={intl.$t({ defaultMessage: '<VenuePlural></VenuePlural>' })}
+                  onFinish={handleVenues}
+                >
+                  <Venues defaultActiveVenues={defaultActiveVenues} />
+                </StepsFormLegacy.StepForm>}
+
               <StepsFormLegacy.StepForm
                 name='summary'
                 title={intl.$t({ defaultMessage: 'Summary' })}
               >
-                <SummaryForm summaryData={saveState} portalData={portalDemo}/>
+                <SummaryForm
+                  summaryData={saveState}
+                  portalData={portalDemo}
+                  extraData={{ directoryServer: directoryServerDataRef.current }}
+                />
               </StepsFormLegacy.StepForm>
             </StepsFormLegacy>
           </MLOContext.Provider>
@@ -1084,6 +1153,7 @@ export function NetworkForm (props:{
           createType,
           editMode,
           cloneMode,
+          isRuckusAiMode,
           data: saveState,
           setData: updateSaveState
         }}>
@@ -1100,13 +1170,16 @@ export function NetworkForm (props:{
               }
               onFinish={editMode ? handleEditNetwork : handleAddNetwork}
             >
-              <StepsForm.StepForm
-                name='details'
-                title={intl.$t({ defaultMessage: 'Network Details' })}
-                onFinish={handleDetails}
-              >
-                <NetworkDetailForm />
-              </StepsForm.StepForm>
+              {
+                !isRuckusAiMode && <StepsForm.StepForm
+                  name='details'
+                  title={intl.$t({ defaultMessage: 'Network Details' })}
+                  onFinish={handleDetails}
+                >
+                  <NetworkDetailForm />
+                </StepsForm.StepForm>
+
+              }
 
               <StepsForm.StepForm
                 name='settings'
@@ -1135,15 +1208,16 @@ export function NetworkForm (props:{
                       pickOneCaptivePortalForm(saveState)}
                 </StepsForm.StepForm>
               }
-              {editMode &&
-              <StepsForm.StepForm
-                name='moreSettings'
-                title={intl.$t({ defaultMessage: 'More Settings' })}
-                onFinish={handleMoreSettings}>
+              { editMode && !isRuckusAiMode &&
+                <StepsForm.StepForm
+                  name='moreSettings'
+                  title={intl.$t({ defaultMessage: 'More Settings' })}
+                  onFinish={handleMoreSettings}>
 
-                <NetworkMoreSettingsForm wlanData={saveState} />
+                  <NetworkMoreSettingsForm wlanData={saveState} />
 
-              </StepsForm.StepForm>}
+                </StepsForm.StepForm>
+              }
               { isPortalWebRender(saveState) &&<StepsForm.StepForm
                 name='portalweb'
                 title={intl.$t({ defaultMessage: 'Portal Web Page' })}
@@ -1152,13 +1226,16 @@ export function NetworkForm (props:{
                 <PortalInstance updatePortalData={(data)=>setPortalDemo(data)}/>
               </StepsForm.StepForm>
               }
-              <StepsForm.StepForm
-                name='venues'
-                title={intl.$t({ defaultMessage: '<VenuePlural></VenuePlural>' })}
-                onFinish={handleVenues}
-              >
-                <Venues />
-              </StepsForm.StepForm>
+              {!isRuckusAiMode &&
+                  <StepsForm.StepForm
+                    name='venues'
+                    title={intl.$t({ defaultMessage: '<VenuePlural></VenuePlural>' })}
+                    onFinish={handleVenues}
+                  >
+                    <Venues />
+                  </StepsForm.StepForm>
+              }
+
             </StepsForm>
           </MLOContext.Provider>
         </NetworkFormContext.Provider>
@@ -1176,34 +1253,13 @@ function isPortalWebRender (saveState: NetworkSaveData): boolean {
     GuestNetworkTypeEnum.ClickThrough,
     GuestNetworkTypeEnum.SelfSignIn,
     GuestNetworkTypeEnum.GuestPass,
-    GuestNetworkTypeEnum.HostApproval
+    GuestNetworkTypeEnum.HostApproval,
+    GuestNetworkTypeEnum.Directory
   ]
 
   // eslint-disable-next-line max-len
   const guestNetworkType = saveState.guestPortal?.guestNetworkType
   return !!(guestNetworkType && portalWebTypes.includes(guestNetworkType))
-}
-
-function pickOneCaptivePortalForm (saveState: NetworkSaveData) {
-  const guestNetworkType = saveState?.guestPortal?.guestNetworkType
-  switch (guestNetworkType) {
-    case GuestNetworkTypeEnum.ClickThrough:
-      return <OnboardingForm />
-    case GuestNetworkTypeEnum.SelfSignIn:
-      return <SelfSignInForm />
-    case GuestNetworkTypeEnum.Cloudpath:
-      return <CloudpathForm/>
-    case GuestNetworkTypeEnum.HostApproval:
-      return <HostApprovalForm />
-    case GuestNetworkTypeEnum.GuestPass:
-      return <GuestPassForm />
-    case GuestNetworkTypeEnum.WISPr:
-      return <WISPrForm />
-    default:
-      // eslint-disable-next-line no-console
-      console.error(`Unknown Network Type: ${saveState?.guestPortal?.guestNetworkType}`)
-      return <OnboardingForm />
-  }
 }
 
 function useAddInstance () {

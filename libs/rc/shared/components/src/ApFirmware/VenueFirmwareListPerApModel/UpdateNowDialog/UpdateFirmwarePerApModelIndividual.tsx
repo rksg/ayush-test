@@ -9,11 +9,12 @@ import { ApModelIndividualDisplayDataType } from '../venueFirmwareListPerApModel
 
 const { Option } = Select
 
-interface UpdateFirmwarePerApModelIndividualProps extends ApModelIndividualDisplayDataType {
+export interface UpdateFirmwarePerApModelIndividualProps extends ApModelIndividualDisplayDataType {
   update: (apModel: string, version: string) => void
   labelSize?: 'small' | 'large'
   emptyOptionLabel?: string
   noOptionsMessage?: string
+  isUpgrade?: boolean
 }
 
 // eslint-disable-next-line max-len
@@ -22,26 +23,64 @@ export function UpdateFirmwarePerApModelIndividual (props: UpdateFirmwarePerApMo
   const { apModel, versionOptions, update, defaultVersion, extremeFirmware,
     labelSize = 'small',
     emptyOptionLabel = $t({ defaultMessage: 'Do not update firmware' }),
-    noOptionsMessage = $t({ defaultMessage: 'The AP is up-to-date' })
+    noOptionsMessage = $t({ defaultMessage: 'The AP is up-to-date' }),
+    isUpgrade = true
   } = props
   const [ selectedVersion, setSelectedVersion ] = useState(defaultVersion)
 
+  const resolvedVersionOptions = isUpgrade
+    ? versionOptions
+    : versionOptions // When donwgrade, only show the last 4 versions and sort by release date
+      .sort((a, b) => new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime())
+      .slice(0, 4)
+
+  const [ filteredOptions, setFilteredOptions ] = useState(resolvedVersionOptions)
+
+  const refreshVersionOptions = (version: string) => {
+    if (resolvedVersionOptions.find(option => option.key === version)) {
+      setFilteredOptions(resolvedVersionOptions)
+    } else {
+      const target = versionOptions.find(option => option.key === version)
+      if (target) {
+        setFilteredOptions([target, ...resolvedVersionOptions])
+      }
+    }
+  }
+
   const onSelectedVersionChange = (value: string) => {
+    refreshVersionOptions(value)
     setSelectedVersion(value)
     update(apModel, value)
+  }
+
+  const handleSearch = (value: string) => {
+    if (value) {
+      setFilteredOptions(versionOptions.filter(option =>
+        option.label.toLowerCase().includes(value.toLowerCase())
+      ))
+    } else {
+      setFilteredOptions(resolvedVersionOptions)
+    }
+  }
+
+  if (versionOptions.length === 0) {
+    return <div>{noOptionsMessage} (<strong>{extremeFirmware}</strong>)</div>
   }
 
   return (
     <Space>
       <div style={{ width: labelSize === 'small' ? 50 : 90 }}>{apModel}</div>
-      {versionOptions.length > 0
-        // eslint-disable-next-line max-len
-        ? <Select onChange={onSelectedVersionChange} value={selectedVersion} style={{ width: 400 }} showSearch>
-          {versionOptions.map(option => <Option key={option.key}>{option.label}</Option>)}
-          <Option key={''}>{emptyOptionLabel}</Option>
-        </Select>
-        : <div>{noOptionsMessage} (<strong>{extremeFirmware}</strong>)</div>
-      }
+      <Select
+        value={selectedVersion}
+        onChange={onSelectedVersionChange}
+        style={{ width: 400 }}
+        showSearch
+        filterOption={false}
+        onSearch={handleSearch}
+      >
+        {filteredOptions.map(option => <Option key={option.key}>{option.label}</Option>)}
+        <Option key={''}>{emptyOptionLabel}</Option>
+      </Select>
     </Space>
   )
 }

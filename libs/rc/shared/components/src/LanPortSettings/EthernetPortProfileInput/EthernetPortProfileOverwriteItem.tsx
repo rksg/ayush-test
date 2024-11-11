@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { EditOutlined, ReloadOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons'
-import { Form, Input, Space }                                         from 'antd'
+import { Form, Input, Space, Tooltip }                                from 'antd'
 import { Rule }                                                       from 'antd/lib/form'
 import { useWatch }                                                   from 'antd/lib/form/Form'
 import { ValidateErrorEntity }                                        from 'rc-field-form/es/interface'
@@ -13,27 +13,38 @@ import { Button, StepsForm } from '@acx-ui/components'
 interface EthernetPortProfileOverwriteProps {
     title: string
     defaultValue: string
+    initialData: string
     isEditable?: boolean
     fieldName: (string | number)[]
-    width?: string,
+    width?: string
     rules?: Rule[]
+    onGUIChanged?: (fieldName: string) => void
 }
 
 const EthernetPortProfileOverwriteItem = (props:EthernetPortProfileOverwriteProps) => {
   const { $t } = useIntl()
-  const { title, defaultValue, isEditable=true, fieldName, width='200px', rules=[] } = props
+  const {
+    title,
+    defaultValue,
+    initialData,
+    isEditable=true,
+    fieldName,
+    width='200px',
+    onGUIChanged,
+    rules=[] } = props
   const form = Form.useFormInstance()
   const [isEditMode, setEditMode] = useState(false)
   const currentFieldValue = useWatch(fieldName, form)
-  const isDirty = (currentFieldValue?.toString() !== defaultValue)
   const inputFieldName = fieldName.join('_')
+  const isDirty = (currentFieldValue?.toString() !== defaultValue)
 
 
   useEffect(() => {
-    if (currentFieldValue === ''){
-      form.setFieldValue(fieldName, defaultValue)
+    if (currentFieldValue !== initialData ){
+      form.setFieldValue(fieldName, initialData)
+      form.setFieldValue(inputFieldName, initialData)
     }
-  } ,[defaultValue])
+  } ,[initialData])
 
   const handleEdit = () => {
     setEditMode(true)
@@ -67,6 +78,7 @@ const EthernetPortProfileOverwriteItem = (props:EthernetPortProfileOverwriteProp
 
   const reset = () => {
     form.setFieldValue(fieldName, defaultValue)
+    onGUIChanged?.(inputFieldName)
   }
 
   return (<>
@@ -83,7 +95,6 @@ const EthernetPortProfileOverwriteItem = (props:EthernetPortProfileOverwriteProp
       <Space>
         <Form.Item
           name={inputFieldName}
-          initialValue={form.getFieldValue(fieldName)}
           rules={rules}
         >
           <Input width={'100px'} />
@@ -109,22 +120,35 @@ const EthernetPortProfileOverwriteItem = (props:EthernetPortProfileOverwriteProp
           {currentFieldValue}{(isEditable) ? (isDirty? '(Custom)': '(Default)') : ''}
           { isEditable &&
             <>
-              <Button
-                type='link'
-                icon={<EditOutlined />}
-                onClick={(e)=>{
-                  e.preventDefault()
-                  handleEdit()
-                }}
-              />
+              <Tooltip
+                title={$t({ defaultMessage: 'Override the {title}' }, { title })}
+                placement='top'>
+                <Button
+                  type='link'
+                  icon={<EditOutlined />}
+                  onClick={(e)=>{
+                    e.preventDefault()
+                    handleEdit()
+                  }}
+                />
+              </Tooltip>
+
               { isDirty &&
-              <Button
-                type='link'
-                icon={<ReloadOutlined />}
-                onClick={(e)=>{
-                  e.preventDefault()
-                  reset()
-                }}></Button>
+              <Tooltip
+                title={$t({
+                  // eslint-disable-next-line max-len
+                  defaultMessage: 'Reset to the default value specified by the selected port profile'
+                })}
+                placement='top'>
+                <Button
+                  type='link'
+                  icon={<ReloadOutlined />}
+                  onClick={(e)=>{
+                    e.preventDefault()
+                    reset()
+                  }}
+                />
+              </Tooltip>
               }
             </>
           }

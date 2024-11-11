@@ -4,9 +4,9 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
-import { AaaUrls, EthernetPortProfileUrls } from '@acx-ui/rc/utils'
-import { Provider }                         from '@acx-ui/store'
+import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
+import { AaaUrls, EthernetPortProfileUrls, FirmwareUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                           from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -14,7 +14,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { dummyRadiusServiceList, ethernetPortProfileList } from './__tests__/fixtures'
+import { dummyRadiusServiceList, ethernetPortProfileList, initLanData, mockDefaultTunkEthertnetPortProfile, mockedApModelFamilies, selectedSinglePortModel, selectedSinglePortModelCaps, selectedTrunkPortCaps, trunkWithPortBasedName } from './__tests__/fixtures'
 
 import { LanPortSettings } from '.'
 
@@ -23,7 +23,20 @@ const venueId='mock-venue-id'
 const selectedModelCaps = {
   canSupportPoeMode: true,
   canSupportPoeOut: false,
-  model: 'R650'
+  model: 'R650',
+  lanPorts: [{
+    type: 'TRUNK',
+    untagId: 1,
+    vlanMembers: '1-4094',
+    portId: '1',
+    enabled: true
+  }, {
+    type: 'TRUNK',
+    untagId: 1,
+    vlanMembers: '1-4094',
+    portId: '2',
+    enabled: true
+  }]
 }
 
 const selectedPortCaps = {
@@ -67,6 +80,17 @@ const lanData = [{
   portId: '2',
   enabled: true
 }]
+
+beforeEach(() => {
+  mockServer.use(
+    rest.post(FirmwareUrlsInfo.getApModelFamilies.url,
+      (_, res, ctx) => {
+        return res(ctx.json(mockedApModelFamilies))
+      }
+    )
+  )
+})
+
 
 describe('LanPortSettings', () => {
   it('should render correctly', async () => {
@@ -197,11 +221,17 @@ describe('LanPortSettings - Ethernet Port Profile', () => {
         }))
       ),
       rest.get(
-        EthernetPortProfileUrls.getEthernetPortSettingsByApPortId.url,
+        EthernetPortProfileUrls.getEthernetPortOverwritesByApPortId.url,
         (_, res, ctx) => res(ctx.json({
           data: {
             enabled: true
           }
+        }))
+      ),
+      rest.get(
+        EthernetPortProfileUrls.getEthernetPortProfile.url,
+        (_, res, ctx) => res(ctx.json({
+          data: mockDefaultTunkEthertnetPortProfile
         }))
       ),
       rest.post(AaaUrls.getAAAPolicyViewModelList.url,
@@ -253,12 +283,51 @@ describe('LanPortSettings - Ethernet Port Profile', () => {
     expect(screen.getByText('802.1X')).toBeInTheDocument()
 
     const untagIdReloadBtn = screen.getByRole('button',
-      { name: 'VLAN Untag ID 1 (Custom) reload' })
+      { name: 'VLAN Untag ID (Default)' })
     expect(untagIdReloadBtn).toBeVisible()
     await userEvent.click(untagIdReloadBtn)
 
     const checkBtn = screen.getByRole('button', { name: 'check' })
     expect(checkBtn).toBeVisible()
     await userEvent.click(checkBtn)
+  })
+
+  it('AP Level - Single port AP model should filter out Port-Based ethernet port', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
+      return ff === Features.ETHERNET_PORT_PROFILE_TOGGLE
+    })
+
+    const apParams = {
+      tenantId: 'tenant-id',
+      serialNumber: '123456789042'
+    }
+
+    render(<Provider>
+      <Form initialValues={{ lan: initLanData }}>
+        <LanPortSettings
+          index={0}
+          readOnly={false}
+          selectedPortCaps={selectedTrunkPortCaps}
+          selectedModel={selectedSinglePortModel}
+          setSelectedPortCaps={jest.fn()}
+          selectedModelCaps={selectedSinglePortModelCaps}
+          isDhcpEnabled={false}
+          isTrunkPortUntaggedVlanEnabled={true}
+          useVenueSettings={false}
+          serialNumber={apParams.serialNumber}
+          venueId={venueId}
+        />
+      </Form>
+    </Provider>, {
+      route: { params: apParams, path: '/:tenantId/t/devices/wifi/:serialNumber/edit/networking' }
+    })
+
+    expect(screen.getByLabelText(/Ethernet Port Profile/)).toBeInTheDocument()
+    const ethernetPortProfileCombo = screen.getByRole('combobox', { name: 'Ethernet Port Profile' })
+    await userEvent.click(ethernetPortProfileCombo)
+
+    expect((await screen.findAllByText('Default Trunk'))[0]).toBeInTheDocument()
+    expect(screen.queryByText(trunkWithPortBasedName)).not.toBeInTheDocument()
+
   })
 })

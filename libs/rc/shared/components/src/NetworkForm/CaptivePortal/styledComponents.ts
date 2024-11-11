@@ -1,4 +1,5 @@
-import styled from 'styled-components/macro'
+import { Space } from 'antd'
+import styled    from 'styled-components/macro'
 
 export const PopOverDiv = styled.div`
   span {
@@ -10,4 +11,17 @@ export const FieldLabel = styled.div`
   display: grid;
   line-height: 32px;
   grid-template-columns: 192px;
+`
+
+export const TypeSpace = styled(Space)`
+    gap: 0px !important;
+  .ant-divider-vertical{
+    background-color: var(--acx-neutrals-60);
+  }
+`
+
+export const FieldSpace = styled(Space)`
+  .ant-space-item:first-child {
+    width: 100%;
+  }
 `

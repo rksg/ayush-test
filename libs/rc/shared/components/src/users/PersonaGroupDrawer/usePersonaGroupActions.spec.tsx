@@ -53,6 +53,12 @@ describe('usePersonaGroupActions', () => {
         }
       ),
       rest.put(
+        PersonaUrls.associateCertTemplate.url,
+        (req, res, ctx) => {
+          return res(ctx.json({}))
+        }
+      ),
+      rest.put(
         PersonaUrls.associateMacRegistration.url,
         (req, res, ctx) => {
           spyAssociateMacRegistration()

@@ -12,15 +12,16 @@ export interface EthernetPortProfileViewData {
     authRadiusId: string
     accountingRadiusId?: string
     bypassMacAddressAuthentication?: boolean
-    supplicantAuthenticationOption?: EthernetPortSupplicantType
+    supplicantAuthenticationOptions?: EthernetPortSupplicantOptions
     dynamicVlanEnabled?: boolean
-    unauthenticatedguestVlan?: number
+    unauthenticatedGuestVlan?: number
     enableAuthProxy?: boolean
     enableAccountingProxy?: boolean,
     apSerialNumbers: string[],
     venueIds: string[],
     venueActivations?: VenueActivation[],
     apActivations?: ApActivation[]
+    apPortOverwrites?: EthernetPortOverwrites[]
   }
 
 export interface EthernetPortProfile {
@@ -34,11 +35,12 @@ export interface EthernetPortProfile {
     authRadiusId?: string
     accountingRadiusId?: string
     bypassMacAddressAuthentication?: boolean
-    supplicantAuthenticationOption?: EthernetPortSupplicantType
+    supplicantAuthenticationOptions?: EthernetPortSupplicantOptions
     dynamicVlanEnabled?: boolean
-    unauthenticatedguestVlan?: number
+    unauthenticatedGuestVlan?: number
     enableAuthProxy?: boolean
     enableAccountingProxy?: boolean
+    apSerialNumbers?: string[]
   }
 
 export interface EthernetPortProfileFormType extends EthernetPortProfile {
@@ -49,7 +51,8 @@ export interface EthernetPortProfileFormType extends EthernetPortProfile {
     accountingEnabled?: boolean
   }
 
-export interface EhternetPortSettings {
+export interface EthernetPortOverwrites {
+  portId?: number
   enabled?: boolean
   overwriteUntagId?: number
   overwriteVlanMembers?: string
@@ -65,4 +68,10 @@ export interface ApActivation {
   venueId?: string
   apSerialNumber?: string
   portId?: number
+}
+
+export interface EthernetPortSupplicantOptions {
+  type: EthernetPortSupplicantType
+  username?: string
+  password?: string
 }

@@ -1,14 +1,14 @@
 import { useContext, useEffect, useState } from 'react'
 
 import { Form, Select, Space } from 'antd'
-import { DefaultOptionType }   from 'antd/lib/select'
-import { get }                 from 'lodash'
+import { get, isEmpty }        from 'lodash'
+import _                       from 'lodash'
 import { useIntl }             from 'react-intl'
 import { useParams }           from 'react-router-dom'
 
-import { Tooltip, PasswordInput }                                  from '@acx-ui/components'
-import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
-import { AaaServerOrderEnum, AAAViewModalType, useConfigTemplate } from '@acx-ui/rc/utils'
+import { Tooltip, PasswordInput }                                                   from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
+import { AaaServerOrderEnum, AAAViewModalType, NetworkTypeEnum, useConfigTemplate } from '@acx-ui/rc/utils'
 
 import { useLazyGetAAAPolicyInstance, useGetAAAPolicyInstanceList } from '../../policies/AAAForm/aaaPolicyQuerySwitcher'
 import * as contents                                                from '../contentsMap'
@@ -23,7 +23,8 @@ const radiusTypeMap: { [key:string]: string } = {
 
 interface AAAInstanceProps {
   serverLabel: string
-  type: 'authRadius' | 'accountingRadius'
+  type: 'authRadius' | 'accountingRadius',
+  networkType?: NetworkTypeEnum
 }
 
 export const AAAInstance = (props: AAAInstanceProps) => {
@@ -38,18 +39,50 @@ export const AAAInstance = (props: AAAInstanceProps) => {
   const isServicePolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const enableRbac = isTemplate ? isConfigTemplateRbacEnabled : isServicePolicyRbacEnabled
+  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+  const primaryRadius = watchedRadius?.[AaaServerOrderEnum.PRIMARY]
+  const secondaryRadius = watchedRadius?.[AaaServerOrderEnum.SECONDARY]
 
   const { data: aaaListQuery } = useGetAAAPolicyInstanceList({
     queryOptions: { refetchOnMountOrArgChange: 10 }
   })
   const [ getAaaPolicy ] = useLazyGetAAAPolicyInstance()
+
+  const convertAaaListToDropdownItems = (
+    targetRadiusType: typeof radiusTypeMap[keyof typeof radiusTypeMap],
+    aaaList?: AAAViewModalType[]
+  ) => {
+    let cloneList = _.cloneDeep(aaaList)
+    if (supportRadsec && (
+      props.networkType === NetworkTypeEnum.PSK ||
+      (props.networkType === NetworkTypeEnum.DPSK && radiusType === 'ACCOUNTING')
+    )) {
+      cloneList = cloneList?.filter(m => m.radSecOptions?.tlsEnabled !== true)
+      if (form.getFieldValue('authRadiusId') &&
+        !cloneList?.find(l => l.id === form.getFieldValue('authRadiusId')) &&
+        props.networkType === NetworkTypeEnum.PSK) {
+        form.setFieldValue('authRadius', null)
+        form.setFieldValue('authRadiusId', '')
+      }
+      if (form.getFieldValue('accountingRadiusId') !== null &&
+        !cloneList?.find(l => l.id === form.getFieldValue('accountingRadiusId'))) {
+        form.setFieldValue('accountingRadius', null)
+        form.setFieldValue('accountingRadiusId', '')
+      }
+    }
+    // eslint-disable-next-line max-len
+    return cloneList?.filter(m => m.type === targetRadiusType).map(m => ({ label: m.name, value: m.id })) ?? []
+  }
+
   // eslint-disable-next-line max-len
   const [ aaaDropdownItems, setAaaDropdownItems ]= useState(convertAaaListToDropdownItems(radiusType, aaaListQuery?.data))
   const { data, setData } = useContext(NetworkFormContext)
 
   useEffect(()=>{
     if (aaaListQuery?.data) {
-      setAaaDropdownItems(convertAaaListToDropdownItems(radiusType, aaaListQuery.data))
+      setAaaDropdownItems(
+        convertAaaListToDropdownItems(radiusType, aaaListQuery.data))
     }
   },[aaaListQuery])
 
@@ -117,36 +150,46 @@ export const AAAInstance = (props: AAAInstanceProps) => {
       </Form.Item>
       <div style={{ marginTop: 6, backgroundColor: 'var(--acx-neutrals-20)',
         width: 210, paddingLeft: 5 }}>
-        {watchedRadius?.[AaaServerOrderEnum.PRIMARY] && <>
-          <Form.Item
-            label={$t(contents.aaaServerTypes[AaaServerOrderEnum.PRIMARY])}
-            children={$t({ defaultMessage: '{ipAddress}:{port}' }, {
-              ipAddress: get(watchedRadius, `${AaaServerOrderEnum.PRIMARY}.ip`),
-              port: get(watchedRadius, `${AaaServerOrderEnum.PRIMARY}.port`)
-            })} />
-          <Form.Item
-            label={$t({ defaultMessage: 'Shared Secret' })}
-            children={<PasswordInput
-              readOnly
-              bordered={false}
-              value={get(watchedRadius, `${AaaServerOrderEnum.PRIMARY}.sharedSecret`)}
+        {!isEmpty(get(watchedRadius, 'id')) && <>
+          {primaryRadius &&
+            <Form.Item
+              label={$t(contents.aaaServerTypes[AaaServerOrderEnum.PRIMARY])}
+              children={$t({ defaultMessage: '{ipAddress}:{port}' }, {
+                ipAddress: get(watchedRadius, `${AaaServerOrderEnum.PRIMARY}.ip`),
+                port: get(watchedRadius, `${AaaServerOrderEnum.PRIMARY}.port`)
+              })} />}
+          {primaryRadius && !get(watchedRadius, 'radSecOptions.tlsEnabled') &&
+            <Form.Item
+              label={$t({ defaultMessage: 'Shared Secret' })}
+              children={<PasswordInput
+                readOnly
+                bordered={false}
+                value={get(watchedRadius, `${AaaServerOrderEnum.PRIMARY}.sharedSecret`)}
+              />}
             />}
-          /></>}
-        {watchedRadius?.[AaaServerOrderEnum.SECONDARY] && <>
-          <Form.Item
-            label={$t(contents.aaaServerTypes[AaaServerOrderEnum.SECONDARY])}
-            children={$t({ defaultMessage: '{ipAddress}:{port}' }, {
-              ipAddress: get(watchedRadius, `${AaaServerOrderEnum.SECONDARY}.ip`),
-              port: get(watchedRadius, `${AaaServerOrderEnum.SECONDARY}.port`)
-            })} />
-          <Form.Item
-            label={$t({ defaultMessage: 'Shared Secret' })}
-            children={<PasswordInput
-              readOnly
-              bordered={false}
-              value={get(watchedRadius, `${AaaServerOrderEnum.SECONDARY}.sharedSecret`)}
+          {secondaryRadius &&
+            <Form.Item
+              label={$t(contents.aaaServerTypes[AaaServerOrderEnum.SECONDARY])}
+              children={$t({ defaultMessage: '{ipAddress}:{port}' }, {
+                ipAddress: get(watchedRadius, `${AaaServerOrderEnum.SECONDARY}.ip`),
+                port: get(watchedRadius, `${AaaServerOrderEnum.SECONDARY}.port`)
+              })} />}
+          {secondaryRadius && !get(watchedRadius, 'radSecOptions.tlsEnabled') &&
+            <Form.Item
+              label={$t({ defaultMessage: 'Shared Secret' })}
+              children={<PasswordInput
+                readOnly
+                bordered={false}
+                value={get(watchedRadius, `${AaaServerOrderEnum.SECONDARY}.sharedSecret`)}
+              />}
             />}
-          />
+          {supportRadsec &&
+            <Form.Item
+              label={$t({ defaultMessage: 'RadSec' })}
+              children={$t({ defaultMessage: '{tlsEnabled}' }, {
+                tlsEnabled: get(watchedRadius, 'radSecOptions.tlsEnabled') ? 'On' : 'Off'
+              })}
+            />}
         </>}
       </div>
       <Form.Item
@@ -159,11 +202,3 @@ export const AAAInstance = (props: AAAInstanceProps) => {
 }
 
 //export default AAAInstance
-
-function convertAaaListToDropdownItems (
-  targetRadiusType: typeof radiusTypeMap[keyof typeof radiusTypeMap],
-  aaaList?: AAAViewModalType[]
-): DefaultOptionType[] {
-  // eslint-disable-next-line max-len
-  return aaaList?.filter(m => m.type === targetRadiusType).map(m => ({ label: m.name, value: m.id })) ?? []
-}

@@ -215,23 +215,24 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/mspCustomers/:mspEcTenantId/delegations',
     newApi: true
   },
-  // assignMspEcToIntegrator: {
-  //   method: 'PATCH',
-  //   url: '/mspIntegrators/:mspIntegratorId',
-  //   oldUrl: '/api/mspservice/tenant/assign/:mspIntegratorId',
-  //   newApi: true
-  // },
-  assignMspEcToMultiIntegrators: {
-    method: 'PATCH',
-    url: '/mspCustomers/delegations',
+  assignMspEcToIntegrator: {
+    method: 'put',
+    url: '/tenants/:mspIntegratorId/tenantDelegations',
+    oldUrl: '/mspIntegrators/:mspIntegratorId',
     newApi: true
   },
-  // getAssignedMspEcToIntegrator: {
-  //   method: 'get',
-  //   url: '/mspIntegrators/:mspIntegratorId?delegationType=:mspIntegratorType',
-  //   oldUrl: '/api/mspservice/tenant/assign/:mspIntegratorId?delegationType=:mspIntegratorType',
-  //   newApi: true
-  // },
+  assignMspEcToMultiIntegrators: {
+    method: 'PATCH',
+    url: '/tenantDelegations',
+    oldUrl: '/mspCustomers/delegations',
+    newApi: true
+  },
+  getAssignedMspEcToIntegrator: {
+    method: 'get',
+    url: '/tenants/:mspIntegratorId/tenantDelegations?delegationType=:mspIntegratorType',
+    oldUrl: '/mspIntegrators/:mspIntegratorId?delegationType=:mspIntegratorType',
+    newApi: true
+  },
   // updateAssignedMspEcDelegatedAdmins: {
   //   method: 'put',
   //   url: '/api/mspservice/tenant/:mspEcTenantId/delegation/assignedmspadmins'
@@ -390,5 +391,16 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/entitlements/availabilityReports/query',
     newApi: true
+  },
+  updateMspEcDelegations: {
+    method: 'put',
+    url: '/tenants/:mspEcTenantId/adminDelegations',
+    newApi: true
+  },
+  updateMspMultipleEcDelegations: {
+    method: 'PATCH',
+    url: '/adminDelegations',
+    newApi: true
   }
+
 }
