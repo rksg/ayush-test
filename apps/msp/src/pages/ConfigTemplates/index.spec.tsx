@@ -25,6 +25,7 @@ describe('ConfigTemplate', () => {
       }
     )
 
+    // eslint-disable-next-line max-len
     expect(await screen.findByRole('heading', { name: /Configuration Templates/i })).toBeInTheDocument()
     expect(await screen.findByText(/Config Template List/i)).toBeInTheDocument()
   })
