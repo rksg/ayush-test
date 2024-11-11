@@ -112,6 +112,7 @@ export function DistributionSwitchDrawer (props: {
         onSave={async () => {
           const values: DistributionSwitchSaveData = form.getFieldsValue()
           try {
+            await form.validateFields()
             await validateDistributionSwitchInfo({
               params: { tenantId, venueId },
               payload: { ...values, siteName: edgeClusterId }
@@ -149,7 +150,7 @@ export function DistributionSwitchDrawer (props: {
         >
           <Select placeholder={$t({ defaultMessage: 'Select ...' })}
             options={availableSwitchList.filter(item =>
-              item.firmwareVersion && !isVerGEVer(requiredFw_DS, item.firmwareVersion, true)
+              item.firmwareVersion && isVerGEVer(item.firmwareVersion, requiredFw_DS, false)
             ).map(item => ({
               value: item.id,
               label: item.name
@@ -251,7 +252,7 @@ export function DistributionSwitchDrawer (props: {
         onCancel={() => setOpenModal(false)}
         selected={accessSwitches}
         availableAs={availableSwitchList.filter(item =>
-          item.firmwareVersion && !isVerGEVer(requiredFw_AS, item.firmwareVersion, true)
+          item.firmwareVersion && isVerGEVer(item.firmwareVersion, requiredFw_AS, false)
         ).concat(accessSwitches || [])}
         switchId={dsId} />
     </Drawer>
