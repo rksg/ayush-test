@@ -2,7 +2,10 @@ import {
   ApCompatibility,
   ApCompatibilityResponse,
   ApIncompatibleFeature,
-  ApIncompatibleDevice
+  ApIncompatibleDevice,
+  CompatibilityResponse,
+  Compatibility,
+  IncompatibleFeature
 } from '@acx-ui/rc/utils'
 export enum ApCompatibilityType {
   NETWORK = 'Network',
@@ -21,7 +24,7 @@ export enum InCompatibilityFeatures {
   TUNNEL_PROFILE = 'Tunnel Profile'
 }
 
-export const retrievedCompatibilitiesOptions = (
+export const retrievedApCompatibilitiesOptions = (
   response?: ApCompatibilityResponse
 ) => {
   const data = response?.apCompatibilities as ApCompatibility[]
@@ -54,6 +57,52 @@ export const retrievedCompatibilitiesOptions = (
       incompatible
     }
   }
+  return {
+    compatibilitiesFilterOptions,
+    apCompatibilities: data,
+    incompatible: 0
+  }
+}
+
+export const retrievedCompatibilitiesOptions = (
+  response?: CompatibilityResponse
+) => {
+  const data = response?.compatibilities as Compatibility[]
+  const compatibilitiesFilterOptions: {
+    key: string;
+    value: string;
+    label: string;
+  }[] = []
+
+  if (data?.[0]) {
+    const { incompatibleFeatures, incompatible } = data[0]
+    if (incompatible > 0) {
+      incompatibleFeatures?.forEach((feature: IncompatibleFeature) => {
+        const { featureName, incompatibleDevices } = feature
+        const keys: string[] = []
+        incompatibleDevices?.forEach((device: ApIncompatibleDevice) => {
+          //const { firmware, model } = device
+          //const key = `${firmware}_${model}`
+          const { firmware: key } = device
+          if (!keys.includes(key)) {
+            keys.push(key)
+          }
+        })
+        compatibilitiesFilterOptions.push({
+          key: keys.join(','),
+          value: featureName,
+          label: featureName
+        })
+      })
+    }
+
+    return {
+      compatibilitiesFilterOptions,
+      apCompatibilities: data,
+      incompatible
+    }
+  }
+
   return {
     compatibilitiesFilterOptions,
     apCompatibilities: data,

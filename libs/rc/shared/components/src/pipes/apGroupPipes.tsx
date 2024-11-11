@@ -171,10 +171,18 @@ export const transformAps = (
     <>
       <Tooltip title={(network && apGroupTooltip('aps', currentVenue, network)) || result}><Button type='link' onClick={callback} disabled={readOnly}>{result}</Button></Tooltip>
       {incompatible && incompatible > 0 ?
-        <Tooltip.Info isFilled
+        <Tooltip.Warning isFilled
+          isTriangle
           title={$t({ defaultMessage: 'Some access points may not be compatible with certain Wi-Fi features in this <venueSingular></venueSingular>.' })}
           placement='right'
-          iconStyle={{ height: '16px', width: '16px', marginBottom: '-2px', marginLeft: '6px', color: cssStr('--acx-semantics-yellow-50') }}
+          iconStyle={{
+            height: '16px',
+            width: '16px',
+            marginBottom: '-2px',
+            marginLeft: '6px',
+            color: cssStr('--acx-semantics-yellow-50'),
+            borderColor: cssStr('--acx-accents-orange-30')
+          }}
         /> :[]
       }
     </>
