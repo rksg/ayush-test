@@ -8,7 +8,6 @@ import { BetaIndicator, Button, Drawer, showActionModal } from '@acx-ui/componen
 import { BetaListDetails }                                from '@acx-ui/feature-toggle'
 import {
   Feature,
-  FeatureAPIResults,
   useGetBetaFeatureListQuery,
   useToggleBetaStatusMutation,
   useUpdateBetaFeatureListMutation
@@ -45,9 +44,11 @@ function R1FeatureListDrawer (
           enable: true + ''
         }
       }).unwrap()
-      // only send feature that is disabled
-      const payloadList = featureList.filter((feature => feature.enabled === false))
-      await updateBetaFeatures({ params, payload: payloadList as FeatureAPIResults[] }).unwrap()
+      // only send feature(ids) that is disabled
+      const payloadList = featureList.filter((feature =>
+        feature.enabled === false)).map((item) => item.id )
+      const payload = { betaFeatureIds: payloadList }
+      await updateBetaFeatures({ params, payload: payload }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
