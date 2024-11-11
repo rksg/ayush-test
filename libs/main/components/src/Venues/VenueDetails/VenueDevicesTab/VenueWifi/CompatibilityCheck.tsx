@@ -7,11 +7,15 @@ import {
   ApGeneralCompatibilityDrawer as EnhancedApCompatibilityDrawer,
   ApCompatibilityType,
   CompatibleAlertBanner } from '@acx-ui/rc/components'
-import { useGetApCompatibilitiesVenueQuery, useGetVenueApCompatibilitiesQuery } from '@acx-ui/rc/services'
+import {
+  useGetApCompatibilitiesVenueQuery,
+  useGetVenueApCompatibilitiesQuery
+} from '@acx-ui/rc/services'
 import {
   ACX_UI_AP_COMPATIBILITY_NOTE_HIDDEN_KEY,
   ApCompatibility,
   Compatibility,
+  IncompatibleFeatureLevelEnum,
   isEdgeCompatibilityFeature
 } from '@acx-ui/rc/utils'
 
@@ -36,7 +40,10 @@ const useGetApCompatibilityData = (venueId: string) => {
   const { newVenueCompatibilities, isNewLoading } = useGetVenueApCompatibilitiesQuery({
     params: { venueId },
     payload: {
-      filters: { venueIds: [ venueId ] },
+      filters: {
+        venueIds: [ venueId ],
+        featureLevels: [IncompatibleFeatureLevelEnum.VENUE]
+      },
       page: 1,
       pageSize: 10
     }

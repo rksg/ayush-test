@@ -181,6 +181,13 @@ export interface NetworkSaveData {
   softGreAssociationUpdate?: NetworkTunnelSoftGreAction
 }
 
+export interface NetworkSummaryExtracData {
+  directoryServer? : {
+    id:string,
+    name:string
+  }
+}
+
 export enum MaxRateEnum {
   PER_AP = 'perAp',
   UNLIMITED = 'unlimited'
