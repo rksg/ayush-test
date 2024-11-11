@@ -1,8 +1,8 @@
 import { useState } from 'react'
 
-import { Row, Space } from 'antd'
-import { find }       from 'lodash'
-import { useIntl }    from 'react-intl'
+import { Space }   from 'antd'
+import { find }    from 'lodash'
+import { useIntl } from 'react-intl'
 
 import {
   Table,
@@ -23,11 +23,16 @@ import {
 import { EdgeTnmHostGraphTable } from './EdgeTnmGraphTable'
 import { TnmHostModal }          from './TnmHostModal'
 
+enum hostModalModeEnum {
+  CLOSE ,
+  CREATE,
+  EDIT
+}
 export const EdgeTnmHostTable = (props: { serviceId: string | undefined }) => {
   const { $t } = useIntl()
   const { serviceId } = props
 
-  const [hostModalVisible, setHostModalVisible] = useState<boolean>(false)
+  const [hostModalMode, setHostModalMode] = useState<hostModalModeEnum>(hostModalModeEnum.CLOSE)
   const [currentHost, setCurrentHost] = useState<string | undefined>(undefined)
 
   const [deleteFn, { isLoading: isDeleting }] = useDeleteEdgeTnmHostMutation()
@@ -41,7 +46,7 @@ export const EdgeTnmHostTable = (props: { serviceId: string | undefined }) => {
       visible: (selectedRows) => selectedRows.length === 1,
       onClick: (rows) => {
         setCurrentHost(rows[0].hostid)
-        setHostModalVisible(true)
+        setHostModalMode(hostModalModeEnum.EDIT)
       },
       scopeKey: getScopeKeyByService(ServiceType.EDGE_TNM_SERVICE, ServiceOperation.EDIT)
     },
@@ -72,9 +77,11 @@ export const EdgeTnmHostTable = (props: { serviceId: string | undefined }) => {
     label: $t({ defaultMessage: 'Add TNM Host' }),
     scopeKey: getScopeKeyByService(ServiceType.EDGE_TNM_SERVICE, ServiceOperation.CREATE),
     onClick: () => {
-      setHostModalVisible(true)
+      setHostModalMode(hostModalModeEnum.CREATE)
     }
   }]
+
+  const handleCloseModal = () => {setHostModalMode(hostModalModeEnum.CLOSE)}
 
   const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
@@ -99,9 +106,11 @@ export const EdgeTnmHostTable = (props: { serviceId: string | undefined }) => {
     </Space>
     { serviceId && <TnmHostModal
       serviceId={serviceId}
-      visible={hostModalVisible}
-      setVisible={setHostModalVisible}
-      editData={find(hostList, { hostid: currentHost })}
+      visible={hostModalMode !== hostModalModeEnum.CLOSE}
+      onClose={handleCloseModal}
+      editData={hostModalMode === hostModalModeEnum.EDIT
+        ? find(hostList, { hostid: currentHost })
+        : undefined}
     />}
   </Loader>
 }
@@ -127,15 +136,20 @@ function useColumns (setCurrentHost: (id: string) => void) {
       }
     },
     {
-      key: 'ipmi_privilege',
-      title: $t({ defaultMessage: 'ipmi Privilege' }),
-      dataIndex: 'ipmi_privilege',
-      align: 'center',
-      sorter: true,
-      render: (_, row) =>
-        <Row justify='center'>
-          {row.ipmi_privilege}
-        </Row>
+      key: 'interfaces',
+      title: $t({ defaultMessage: 'Interface' }),
+      dataIndex: 'interfaces',
+      render: (_, row) => <Space>
+        {row.interfaces.map(item => `${item.ip}: ${item.port}`)}
+      </Space>
+    },
+    {
+      key: 'parentTemplates',
+      title: $t({ defaultMessage: 'Templates' }),
+      dataIndex: 'parentTemplates',
+      render: (_, row) => <Space size={0} split={<span>,&nbsp;&nbsp;</span>}>
+        {row.parentTemplates.map(item => item.name)}
+      </Space>
     }
   ]
 

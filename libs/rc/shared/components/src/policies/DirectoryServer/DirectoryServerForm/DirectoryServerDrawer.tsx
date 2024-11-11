@@ -10,17 +10,17 @@ import { useParams }                        from '@acx-ui/react-router-dom'
 
 import { DirectoryServerSettingForm } from './DirectoryServerSettingForm'
 
-
 interface DirectoryServerDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
-  editMode: boolean
+  readMode?: boolean
   policyId?:string
-  callbackFn?: (option: DefaultOptionType, gatewayIps:string[]) => void
+  policyName?: string
+  callbackFn?: (option: DefaultOptionType) => void
 }
 
 export default function DirectoryServerDrawer (props: DirectoryServerDrawerProps) {
-  const { visible, setVisible, editMode, policyId, callbackFn } = props // handleSave
+  const { visible, setVisible, readMode=false, policyId, policyName, callbackFn } = props
   const { $t } = useIntl()
   const params = useParams()
   const [form] = Form.useForm()
@@ -28,17 +28,18 @@ export default function DirectoryServerDrawer (props: DirectoryServerDrawerProps
 
   const handleAdd = async () => {
     try {
-      if (!editMode) {
+      if (!readMode) {
         await form.validateFields()
         const values = form.getFieldsValue()
         const resData = await createDirectoryServer({ params, payload: values }).unwrap()
         if (resData.response?.id) {
           const newOption = {
-            value: resData.response?.id, label: values.name
+            value: resData.response?.id,
+            label: `${values.name} (${values.type})`
           } as { value: string, label: string }
-          // eslint-disable-next-line max-len
-          callbackFn && callbackFn(newOption, [values.primaryGatewayAddress, values.secondaryGatewayAddress ?? ''])
+          callbackFn && callbackFn(newOption)
         }
+        form.resetFields()
       }
       setVisible(false)
     } catch (error) {
@@ -53,14 +54,21 @@ export default function DirectoryServerDrawer (props: DirectoryServerDrawerProps
 
   return (
     <Drawer
-      title={$t({ defaultMessage: 'Add DirectoryServer' })}
+      title={readMode
+        ? $t({ defaultMessage: 'Directory Server Details: {name}' }, { name: policyName })
+        : $t({ defaultMessage: 'Add DirectoryServer' })
+      }
       visible={visible}
       width={450}
-      children={visible && <Form<DirectoryServer> layout='vertical' form={form} >
+      children={visible &&
+      <Form<DirectoryServer>
+        {...(readMode ? { labelAlign: 'left' } : {})}
+        layout='vertical'
+        form={form} >
         <Row gutter={20}>
           <Col span={24}>
             <DirectoryServerSettingForm
-              editMode={editMode}
+              readMode={readMode}
               policyId={policyId}
             />
           </Col>
@@ -69,7 +77,7 @@ export default function DirectoryServerDrawer (props: DirectoryServerDrawerProps
       onClose={handleClose}
       destroyOnClose={true}
       footer={
-        <Drawer.FormFooter
+        !readMode && <Drawer.FormFooter
           buttonLabel={{
             save: $t({ defaultMessage: 'Add' })
           }}

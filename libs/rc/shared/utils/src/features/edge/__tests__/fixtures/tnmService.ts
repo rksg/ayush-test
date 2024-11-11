@@ -38,6 +38,13 @@ export const mockTnmHostList = [{
   vendor_version: '',
   active_available: '0',
   assigned_proxyid: '0',
+  parentTemplates: [{
+    templateid: '10001',
+    name: 'Linux by Zabbix agent'
+  }, {
+    templateid: '10047',
+    name: 'Zabbix server health'
+  }],
   hostgroups: [{
     groupid: '2',
     name: 'Linux servers'

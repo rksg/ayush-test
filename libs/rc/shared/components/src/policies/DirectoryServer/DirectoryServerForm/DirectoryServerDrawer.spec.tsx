@@ -2,22 +2,17 @@ import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { directoryServerApi }                              from '@acx-ui/rc/services'
-import { DirectoryServerProfileEnum, DirectoryServerUrls } from '@acx-ui/rc/utils'
-import { Provider, store }                                 from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }             from '@acx-ui/test-utils'
+import { directoryServerApi }                                             from '@acx-ui/rc/services'
+import { DirectoryServerProfileEnum, DirectoryServerUrls }                from '@acx-ui/rc/utils'
+import { Provider, store }                                                from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import {  mockDirectoryServerTable } from './__tests__/fixtures'
 import DirectoryServerDrawer         from './DirectoryServerDrawer'
 
-
-const createViewPath = '/:tenantId/t/policies/directoryServer/create'
-
 const params = {
-  tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-  policyId: 'a5ac9a7a3be54dba9c8741c67d1c41fa'
+  tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 }
-
 
 describe('DirectoryServerDrawer', () => {
   const user = userEvent.setup()
@@ -55,11 +50,10 @@ describe('DirectoryServerDrawer', () => {
           <DirectoryServerDrawer
             visible={true}
             setVisible={mockedSetVisible}
-            editMode={false}
             callbackFn={mockedCallBack}
           />
         </Provider>,
-        { route: { path: createViewPath, params } }
+        { route: { params } }
       )
 
       const profileNameField = await screen.findByLabelText(/Profile Name/i)
@@ -99,11 +93,10 @@ describe('DirectoryServerDrawer', () => {
           <DirectoryServerDrawer
             visible={true}
             setVisible={mockedSetVisible}
-            editMode={false}
             callbackFn={mockedCallBack}
           />
         </Provider>,
-        { route: { path: createViewPath, params } }
+        { route: { params } }
       )
       await user.click(screen.getByRole('button', { name: 'Cancel' }))
       await waitFor(() => expect(mockedSetVisible).toBeCalledTimes(1))
@@ -130,11 +123,10 @@ describe('DirectoryServerDrawer', () => {
           <DirectoryServerDrawer
             visible={true}
             setVisible={mockedSetVisible}
-            editMode={false}
             callbackFn={mockedCallBack}
           />
         </Provider>,
-        { route: { path: createViewPath, params } }
+        { route: { params } }
       )
       const profileNameField = await screen.findByLabelText(/Profile Name/i)
       await user.type(profileNameField, 'TestFailedToAddDirectoryServer')
@@ -156,6 +148,48 @@ describe('DirectoryServerDrawer', () => {
         }))
       })
     })
+  })
+
+  describe('ViewDirectoryServerDetailDrawer', () => {
+    beforeEach(() => {
+      mockedSetVisible.mockClear()
+      store.dispatch(directoryServerApi.util.resetApiState())
+      mockServer.use(
+        rest.get(
+          DirectoryServerUrls.getDirectoryServer.url,
+          (_, res, ctx) => res(ctx.json(mockDirectoryServerTable.data.data[2]))
+        )
+      )
+    })
+
+    afterEach(() => {
+      Modal.destroyAll()
+    })
+
+    it('should display LDAP correct', async () => {
+      render(
+        <Provider>
+          <DirectoryServerDrawer
+            visible={true}
+            readMode
+            setVisible={mockedSetVisible}
+            policyId={mockDirectoryServerTable.data.data[2].id}
+            policyName={mockDirectoryServerTable.data.data[2].name}
+          />
+        </Provider>,
+        { route: { params } }
+      )
+
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      expect(
+        await screen.findByText('Directory Server Details: Online LDAP Test Server3')
+      ).toBeVisible()
+      expect(await screen.findByText('ou=mathematicians,dc=example,dc=com')).toBeVisible()
+      expect(await screen.findByText(/Key Attribute/i)).toBeVisible()
+      expect(await screen.findByText(/Search Filter/i)).toBeVisible()
+
+    })
+
   })
 })
 

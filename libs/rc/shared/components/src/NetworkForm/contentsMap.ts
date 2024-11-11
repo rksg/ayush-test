@@ -112,6 +112,10 @@ export const captiveNetworkTypes: Record<GuestNetworkTypeEnum, MessageDescriptor
   [GuestNetworkTypeEnum.Cloudpath]: defineMessage({
     defaultMessage: 'Captive Portal',
     description: 'Guest network type - Captive Portal'
+  }),
+  [GuestNetworkTypeEnum.Directory]: defineMessage({
+    defaultMessage: 'Active Directory/ LDAP Server',
+    description: 'Guest network type - Active Directory/ LDAP Server'
   })
 }
 
@@ -132,7 +136,8 @@ export const GuestNetworkTypeLabel: Record<GuestNetworkTypeEnum, string> = {
   [GuestNetworkTypeEnum.Cloudpath]: 'Cloudpath Captive Portal',
   [GuestNetworkTypeEnum.HostApproval]: 'Host Approval',
   [GuestNetworkTypeEnum.GuestPass]: 'Guest Pass',
-  [GuestNetworkTypeEnum.WISPr]: '3rd Party Captive Portal (WISPr)'
+  [GuestNetworkTypeEnum.WISPr]: '3rd Party Captive Portal (WISPr)',
+  [GuestNetworkTypeEnum.Directory]: 'Active Directory/ LDAP Server'
 }
 
 export const GuestNetworkTypeDescription: Record<GuestNetworkTypeEnum, string> = {
@@ -141,7 +146,8 @@ export const GuestNetworkTypeDescription: Record<GuestNetworkTypeEnum, string> =
   [GuestNetworkTypeEnum.Cloudpath]: 'Users connect through an enhanced captive portal experience with Cloudpath',
   [GuestNetworkTypeEnum.HostApproval]: 'Users register their details in the portal including their host email - the host needs to approve the request',
   [GuestNetworkTypeEnum.GuestPass]: 'Users sign in with personal password which they need to get in advance from the network administration staff',
-  [GuestNetworkTypeEnum.WISPr]: 'Users connect through a 3rd party captive portal, authenticated by a AAA server'
+  [GuestNetworkTypeEnum.WISPr]: 'Users connect through a 3rd party captive portal, authenticated by a AAA server',
+  [GuestNetworkTypeEnum.Directory]: 'Users are required to enter an organizational username and password to gain access to the network'
 }
 
 export const NetworkTypeTitle: Partial<Record<NetworkTypeEnum, MessageDescriptor>> = {
@@ -187,7 +193,9 @@ export const captiveTypes: Record<GuestNetworkTypeEnum, MessageDescriptor> = {
   [GuestNetworkTypeEnum.Cloudpath]: defineMessage({ defaultMessage: 'Cloudpath Captive Portal' }),
   [GuestNetworkTypeEnum.HostApproval]: defineMessage({ defaultMessage: 'Host Approval' }),
   [GuestNetworkTypeEnum.GuestPass]: defineMessage({ defaultMessage: 'Guest Pass' }),
-  [GuestNetworkTypeEnum.WISPr]: defineMessage({ defaultMessage: '3rd Party Captive Portal(WISPr)' })
+  [GuestNetworkTypeEnum.WISPr]: defineMessage({ defaultMessage: '3rd Party Captive Portal(WISPr)' }),
+  [GuestNetworkTypeEnum.Directory]: defineMessage({ defaultMessage: 'Active Directory/ LDAP Server' })
+
 }
 
 /* eslint-disable max-len */
@@ -215,6 +223,10 @@ export const captiveTypesDescription: Record<GuestNetworkTypeEnum, MessageDescri
   [GuestNetworkTypeEnum.WISPr]: defineMessage({
     defaultMessage: 'Users connect through a 3rd party captive portal, authenticated by a AAA server',
     description: 'Description for 3rd Party Captive Portal(WISPr)'
+  }),
+  [GuestNetworkTypeEnum.Directory]: defineMessage({
+    defaultMessage: 'Users are required to enter an organizational username and password to gain access to the network',
+    description: 'Description for Active Directory/ LDAP Server'
   })
 }
 
