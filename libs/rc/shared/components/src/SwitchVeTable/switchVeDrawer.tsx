@@ -289,11 +289,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
   const updateOspfAreaEnabled = (switchId: string) => {
     if (isSupport8100 && switchModelMap) {
       const switchModel = switchModelMap.get(switchId) ?? ''
-      if (switchModel.startsWith('ICX8100')) {
-        setOspfAreaEnabled(false)
-      } else {
-        setOspfAreaEnabled(true)
-      }
+      setOspfAreaEnabled(!switchModel.startsWith('ICX8100'))
     }
   }
 
