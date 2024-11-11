@@ -24,6 +24,11 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+jest.mock('./EdgeTnmCreateFormModal', () => ({
+  ...jest.requireActual('./EdgeTnmCreateFormModal'),
+  EdgeTnmCreateFormModal: () => <div data-testid='rc-EdgeTnmCreateFormModal'></div>
+}))
+
 const { click } = userEvent
 
 describe('Edge TNM Service Table', () => {
@@ -41,9 +46,7 @@ describe('Edge TNM Service Table', () => {
     mockServer.use(
       rest.get(
         EdgeTnmServiceUrls.getEdgeTnmServiceList.url,
-        (_, res, ctx) => res(ctx.json({
-          data: mockTnmServiceDataList
-        }))
+        (_, res, ctx) => res(ctx.json(mockTnmServiceDataList))
       ),
       rest.delete(
         EdgeTnmServiceUrls.deactivateEdgeTnmServiceAppCluster.url,

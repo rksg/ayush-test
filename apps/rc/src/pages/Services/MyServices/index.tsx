@@ -107,11 +107,9 @@ export default function MyServices () {
     {
       type: ServiceType.EDGE_TNM_SERVICE,
       categories: [RadioCardCategory.EDGE],
-      totalCount: useGetEdgeTnmServiceListQuery({
-        params, payload: defaultPayload
-      }, {
+      totalCount: useGetEdgeTnmServiceListQuery({}, {
         skip: !isEdgeTnmServiceReady
-      }).data?.totalCount,
+      }).data?.length,
       disabled: !isEdgeTnmServiceReady
     },
     {

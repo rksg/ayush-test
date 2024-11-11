@@ -61,7 +61,7 @@ export function CertificateToolTip (props: CertificateToolTipProps) {
       />
     }
     placement={placement ?? 'right'}>
-    {icon ?? <Tooltip.Warning
+    {icon ?? <Tooltip.Warning isFilled
       placement='right'
       iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px', marginLeft: '4px', fill: cssStr('--acx-semantics-red-60') }}
     />}
