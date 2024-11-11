@@ -62,11 +62,7 @@ describe('MyServices', () => {
       ),
       rest.get(
         EdgeTnmServiceUrls.getEdgeTnmServiceList.url,
-        (_, res, ctx) => res(ctx.json({
-          totalCount: mockTnmServiceDataList.length,
-          page: 1,
-          data: mockTnmServiceDataList
-        }))
+        (_, res, ctx) => res(ctx.json(mockTnmServiceDataList))
       )
     )
   })

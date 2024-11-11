@@ -1,9 +1,10 @@
 import { Space, List } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { GridRow, GridCol }                   from '@acx-ui/components'
-import { CaretRightList, SearchResultNoData } from '@acx-ui/icons'
-import { TenantLink }                         from '@acx-ui/react-router-dom'
+import { GridRow, GridCol } from '@acx-ui/components'
+import { baseUrlFor }       from '@acx-ui/config'
+import { CaretRightList }   from '@acx-ui/icons'
+import { TenantLink }       from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
@@ -53,7 +54,7 @@ function NoData () {
       </UI.StyledGridCol>
       {/* Hide until we get final image */}
       <GridCol col={{ span: 12 }} style={{ display: 'none' }}>
-        <SearchResultNoData />
+        <img src={baseUrlFor('/assets/SearchResultNoData.png')} alt='No Data' />
       </GridCol>
     </GridRow>
   </>

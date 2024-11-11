@@ -331,7 +331,7 @@ describe('VenueNetworksTab', () => {
 
     const row = await screen.findByRole('row', { name: /test_1/i })
 
-    const icon = await within(row).findByTestId('InformationSolid')
+    const icon = await within(row).findByTestId('WarningTriangleSolid')
     expect(icon).toBeVisible()
   })
 
