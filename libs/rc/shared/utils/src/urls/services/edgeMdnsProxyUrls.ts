@@ -47,5 +47,11 @@ export const EdgeMdnsProxyUrls: { [key: string]: ApiInfo } = {
     url: '/edgeMulticastDnsProxyProfiles/:serviceId/venues/:venueId/edgeClusters/:edgeClusterId',
     newApi: true,
     defaultHeaders: versionHeaders
+  },
+  getEdgeMdnsProxyStatsList: {
+    method: 'post',
+    url: '/edgeMulticastDnsProxyStats/query',
+    newApi: true,
+    defaultHeaders: versionHeaders
   }
 }

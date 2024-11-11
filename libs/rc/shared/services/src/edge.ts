@@ -133,7 +133,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
             const compatibilityQuery = await fetchWithBQ(compatibilityReq)
             const compatibilities = compatibilityQuery.data as VenueEdgeCompatibilitiesResponse
 
-            compatibilities.compatibilities.forEach((item) => {
+            compatibilities.compatibilities?.forEach((item) => {
               const idx = findIndex(edgesData, { serialNumber: item.id })
               if (idx !== -1)
                 edgesData[idx].incompatible = item.incompatibleFeatures?.length ?? 0
@@ -1089,6 +1089,16 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Edge', id: 'PIN_AP_COMPATIBILITY' }]
+    }),
+    getMdnsEdgeCompatibilities: build.query<EdgeServiceCompatibilitiesResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getMdnsEdgeCompatibilities, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'MDNS_EDGE_COMPATIBILITY' }]
     })
   })
 })
@@ -1242,5 +1252,6 @@ export const {
   useGetHqosEdgeCompatibilitiesQuery,
   useGetPinEdgeCompatibilitiesQuery,
   useLazyGetPinEdgeCompatibilitiesQuery,
-  useLazyGetPinApCompatibilitiesQuery
+  useLazyGetPinApCompatibilitiesQuery,
+  useLazyGetMdnsEdgeCompatibilitiesQuery
 } = edgeApi

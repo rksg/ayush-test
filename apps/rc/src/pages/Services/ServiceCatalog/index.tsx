@@ -41,6 +41,7 @@ export default function ServiceCatalog () {
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
+  const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
   const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
   // eslint-disable-next-line max-len
@@ -57,7 +58,7 @@ export default function ServiceCatalog () {
           helpIcon: <ApCompatibilityToolTip
             title=''
             visible
-            onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.PIN)}
+            onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.DHCP)}
           />,
           disabled: !isEdgeHaReady || !isEdgeDhcpHaReady
         },
@@ -102,7 +103,17 @@ export default function ServiceCatalog () {
         {
           type: ServiceType.EDGE_MDNS_PROXY,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgeMdnsReady
+          disabled: !isEdgeMdnsReady,
+          helpIcon: <ApCompatibilityToolTip
+            title=''
+            visible
+            onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.EDGE_MDNS_PROXY)}
+          />
+        },
+        {
+          type: ServiceType.EDGE_TNM_SERVICE,
+          categories: [RadioCardCategory.EDGE],
+          disabled: !isEdgeTnmServiceReady
         },
         { type: ServiceType.WIFI_CALLING, categories: [RadioCardCategory.WIFI] }
       ]

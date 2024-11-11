@@ -223,8 +223,8 @@ export function ManageIntegrator () {
   })
   const assignedEcs =
   useGetAssignedMspEcToIntegratorQuery(
-    { params: { mspIntegratorId: mspEcTenantId, mspIntegratorType: tenantType } },
-    { skip: action !== 'edit' })
+    { params: { mspIntegratorId: mspEcTenantId, mspIntegratorType: tenantType },
+      enable: isRbacEnabled }, { skip: action !== 'edit' })
 
   useEffect(() => {
     if (licenseSummary) {
@@ -272,7 +272,7 @@ export function ManageIntegrator () {
           lastName: userProfile.lastName,
           name: userProfile.firstName,
           email: userProfile.email,
-          role: userProfile.role as RolesEnum,
+          role: RolesEnum.PRIME_ADMIN,
           detailLevel: userProfile.detailLevel
         })
         setAdministrator(administrator)
@@ -429,7 +429,7 @@ export function ManageIntegrator () {
 
       if (isRbacPhase2Enabled && privilegeGroups.length > 0) {
         const pgIds = privilegeGroups?.map((pg: PrivilegeGroup)=> pg.id)
-        customer.privilegeGroups = pgIds
+        customer.privilege_group_ids = pgIds
       }
 
       const result =

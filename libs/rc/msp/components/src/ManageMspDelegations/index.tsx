@@ -20,11 +20,11 @@ import {
   MspEcDelegatedAdmins,
   SelectedMspMspAdmins
 } from '@acx-ui/msp/utils'
-import { useGetPrivilegeGroupsWithAdminsQuery } from '@acx-ui/rc/services'
-import { PrivilegeGroup }                       from '@acx-ui/rc/utils'
-import { useParams }                            from '@acx-ui/react-router-dom'
-import { RolesEnum }                            from '@acx-ui/types'
-import { AccountType }                          from '@acx-ui/utils'
+import { useGetMspEcDelegatePrivilegeGroupsQuery, useGetPrivilegeGroupsWithAdminsQuery } from '@acx-ui/rc/services'
+import { PrivilegeGroup }                                                                from '@acx-ui/rc/utils'
+import { useParams }                                                                     from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                                     from '@acx-ui/types'
+import { AccountType }                                                                   from '@acx-ui/utils'
 
 import { SelectPGs }   from './SelectPGs'
 import { SelectUsers } from './SelectUsers'
@@ -68,8 +68,16 @@ export const ManageMspDelegationDrawer = (props: ManageMspDelegationDrawerProps)
   const [delegatedAdminsData, setDelegatedAdminsData] = useState([] as MspEcDelegatedAdmins[])
   const [privilegeGroupData, setPrivilegeGroupData] = useState([] as PrivilegeGroup[])
 
+  const isSkip = tenantIds?.length !== 1
+  const isTechPartner =
+    (tenantType === AccountType.MSP_INSTALLER ||
+     tenantType === AccountType.MSP_INTEGRATOR)
+
   const { data: privilegeGroupList, isLoading, isFetching }
     = useGetPrivilegeGroupsWithAdminsQuery({ params })
+
+  const { data: delegatedPGs } = useGetMspEcDelegatePrivilegeGroupsQuery({
+    params: { mspEcTenantId: tenantIds?.[0] } }, { skip: isSkip })
 
   useEffect(() => {
     if (privilegeGroupList) {
@@ -77,12 +85,9 @@ export const ManageMspDelegationDrawer = (props: ManageMspDelegationDrawerProps)
         !SystemRoles.includes(pg.name as RolesEnum))
       setPrivilegeGroupData(pgs ?? [])
     }
-  }, [privilegeGroupList])
-
-  const isSkip = (tenantIds === undefined || tenantIds.length !== 1)
-  const isTechPartner =
-    (tenantType === AccountType.MSP_INSTALLER ||
-     tenantType === AccountType.MSP_INTEGRATOR)
+    const allCustomersPGs = privilegeGroupList?.filter(pg => pg.allCustomers === true) ?? []
+    setSelectedPrivilegeGroups(isSkip ? allCustomersPGs : (delegatedPGs ?? []))
+  }, [privilegeGroupList, delegatedPGs])
 
   const delegatedAdmins =
       useGetMspEcDelegatedAdminsQuery({
