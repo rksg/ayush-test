@@ -43,6 +43,10 @@ describe('DirectoryServerSettingForm', () => {
       rest.post(
         DirectoryServerUrls.getDirectoryServerViewDataList.url,
         (_, res, ctx) => res(ctx.json(mockDirectoryServerTable.data))
+      ),
+      rest.get(
+        DirectoryServerUrls.getDirectoryServer.url,
+        (_, res, ctx) => res(ctx.json(mockDirectoryServerTable.data.data[0]))
       )
     )
   })
@@ -91,5 +95,30 @@ describe('DirectoryServerSettingForm', () => {
     await user.clear(host)
     await user.type(host,'1.1.1.1')
     expect(errMsg).not.toBeInTheDocument()
+  })
+
+  it('should render correct on readMode', async () => {
+    const { result: formRef } = renderHook(() => {
+      return Form.useForm()[0]
+    })
+
+    const currentData = mockDirectoryServerTable.data.data[0]
+
+    render(
+      <Provider>
+        <Form form={formRef.current}>
+          <DirectoryServerSettingForm
+            readMode
+            policyId={currentData.id}/>
+        </Form>
+      </Provider>,
+      { route: { params } }
+    )
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByText('Active Directory')).toBeVisible()
+    expect(await screen.findByText('Server Address')).toBeVisible()
+    expect(await screen.findByText(`${currentData.host}:${currentData.port}`)).toBeVisible()
+    expect(await screen.findByText('Off')).toBeVisible()
   })
 })
