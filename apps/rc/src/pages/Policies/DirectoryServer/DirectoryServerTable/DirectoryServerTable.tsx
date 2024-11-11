@@ -175,9 +175,9 @@ function useColumns () {
       render: (_, row) => {
         switch (row?.type) {
           case DirectoryServerProfileEnum.LDAP:
-            return 'LDAP'
+            return $t({ defaultMessage: 'LDAP' })
           case DirectoryServerProfileEnum.AD:
-            return 'Active Directory'
+            return $t({ defaultMessage: 'Active Directory' })
           default:
             return row?.type || noDataDisplay
         }
