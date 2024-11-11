@@ -453,8 +453,13 @@ export function Venues (props: VenuesProps) {
       dataIndex: 'aps',
       width: 80,
       render: function (_, row) {
-        return transformAps(getCurrentVenue(row),
-          data as NetworkSaveData, (e) => handleClickApGroups(row, e))
+        return transformAps(
+          getCurrentVenue(row),
+          data as NetworkSaveData,
+          (e) => handleClickApGroups(row, e),
+          false,
+          row?.incompatible
+        )
       }
     },
     {
