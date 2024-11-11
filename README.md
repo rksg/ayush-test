@@ -190,7 +190,7 @@ Note: The script by default refers to local repos `gitops-flux-nonbom` & `acx-no
 
 The script sets default state for `dev` & `int` env as on. 
 
-After successfully running the sc
+After successfully running the script the files should be generated in the respective repos locally.
 
 ### I18n strings extraction and compilation
 Refer to  [Locale.md](Locale.md)
