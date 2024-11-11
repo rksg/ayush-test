@@ -5,13 +5,13 @@ import { CertificateToolTip } from './CertificateToolTip'
 
 describe('CertificateToolTip', () => {
   it('should visible render correctly', async () => {
-    render(<CertificateToolTip visible={true} status={[CertificateStatusType.EXPIRED]}/>)
+    render(<CertificateToolTip status={[CertificateStatusType.EXPIRED]}/>)
     const icon = await screen.findByTestId('WarningCircleSolid')
     expect(icon).toBeVisible()
   })
 
   it('should invisible render correctly', async () => {
-    render(<CertificateToolTip visible={false} status={[CertificateStatusType.EXPIRED]}/>)
+    render(<CertificateToolTip status={[CertificateStatusType.EXPIRED]}/>)
     expect(screen.queryByTestId('tooltip-button')).toBeNull()
   })
 

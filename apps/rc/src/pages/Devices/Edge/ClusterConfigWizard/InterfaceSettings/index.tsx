@@ -275,7 +275,7 @@ export const InterfaceSettings = () => {
                 venueId: clusterInfo?.venueId,
                 clusterId
               },
-              payload: transformFromFormToApiData(value)
+              payload: transformFromFormToApiData(value, clusterInfo?.highAvailabilityMode)
             }).unwrap()
             callback()
           }
@@ -286,7 +286,7 @@ export const InterfaceSettings = () => {
             venueId: clusterInfo?.venueId,
             clusterId
           },
-          payload: transformFromFormToApiData(value)
+          payload: transformFromFormToApiData(value, clusterInfo?.highAvailabilityMode)
         }).unwrap()
         callback()
       }

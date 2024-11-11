@@ -183,7 +183,8 @@ export interface CertificateAuthority {
   keyUsages?: KeyUsageType[]
   chain?: string
   details?: string
-  description?: string
+  description?: string,
+  status: CertificateStatusType[]
 }
 
 export interface CertificateAuthorityFormData extends CertificateAuthority {
@@ -223,7 +224,7 @@ export interface Certificate {
   enrollmentType?: EnrollmentType
   identityId?: string
   identityName?: string
-  identityGroupId?: string,
+  identityGroupId?: string
   status?: CertificateStatusType[]
 }
 
