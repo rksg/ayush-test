@@ -100,6 +100,7 @@ import ClientIsolationTable                         from './pages/Policies/Clien
 import ConnectionMeteringDetail                     from './pages/Policies/ConnectionMetering/ConnectionMeteringDetail'
 import ConnectionMeteringPageForm                   from './pages/Policies/ConnectionMetering/ConnectionMeteringPageForm'
 import ConnectionMeteringTable                      from './pages/Policies/ConnectionMetering/ConnectionMeteringTable'
+import DirectoryServerDetail                        from './pages/Policies/DirectoryServer/DirectoryServerDetail/DirectoryServerDetail'
 import DirectoryServerTable                         from './pages/Policies/DirectoryServer/DirectoryServerTable/DirectoryServerTable'
 import EthernetPortProfileTable                     from './pages/Policies/EthernetPortProfile/EthernetPortProfileTable'
 import AddEdgeHqosBandwidth                         from './pages/Policies/HqosBandwidth/Edge/AddHqosBandwidth'
@@ -143,7 +144,8 @@ import EditFirewall                                                     from './
 import FirewallDetail                                                   from './pages/Services/EdgeFirewall/FirewallDetail'
 import FirewallTable                                                    from './pages/Services/EdgeFirewall/FirewallTable'
 import { AddEdgeSdLan, EdgeSdLanDetail, EdgeSdLanTable, EditEdgeSdLan } from './pages/Services/EdgeSdLan/index'
-import { EdgeTnmServiceTable }                                          from './pages/Services/EdgeTnm/Edge/EdgeTnmServiceTable'
+import { EdgeTnmDetails }                                               from './pages/Services/EdgeTnm/EdgeTnmDetails'
+import { EdgeTnmServiceTable }                                          from './pages/Services/EdgeTnm/EdgeTnmServiceTable'
 import AddEdgeMdnsProxy                                                 from './pages/Services/MdnsProxy/Edge/AddEdgeMdnsProxy'
 import EdgeMdnsProxyDetails                                             from './pages/Services/MdnsProxy/Edge/EdgeMdnsProxyDetails'
 import { EdgeMdnsProxyTable }                                           from './pages/Services/MdnsProxy/Edge/EdgeMdnsProxyTable'
@@ -581,11 +583,17 @@ const edgeMdnsRoutes = () => {
 }
 
 const edgeTnmRoutes = () => {
-  return <Route
+  return <><Route
     path={getServiceRoutePath({ type: ServiceType.EDGE_TNM_SERVICE,
       oper: ServiceOperation.LIST })}
     element={<EdgeTnmServiceTable />}
   />
+  <Route
+    path={getServiceRoutePath({ type: ServiceType.EDGE_TNM_SERVICE,
+      oper: ServiceOperation.DETAIL })}
+    element={<EdgeTnmDetails />}
+  />
+  </>
 }
 
 function ServiceRoutes () {
@@ -1464,6 +1472,13 @@ function PolicyRoutes () {
             type: PolicyType.DIRECTORY_SERVER,
             oper: PolicyOperation.LIST })}
           element={<DirectoryServerTable />}
+        />
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({
+            type: PolicyType.DIRECTORY_SERVER,
+            oper: PolicyOperation.DETAIL })}
+          element={<DirectoryServerDetail />}
         />
         <Route
           path={getPolicyRoutePath({

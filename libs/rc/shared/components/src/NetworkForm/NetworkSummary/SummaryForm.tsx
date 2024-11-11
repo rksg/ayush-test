@@ -9,7 +9,9 @@ import { Features, useIsTierAllowed }              from '@acx-ui/feature-toggle'
 import { useMacRegListsQuery, useVenuesListQuery } from '@acx-ui/rc/services'
 import {
   Demo,
+  GuestNetworkTypeEnum,
   NetworkSaveData,
+  NetworkSummaryExtracData,
   NetworkTypeEnum,
   networkTypes,
   transformDisplayText,
@@ -39,12 +41,13 @@ const defaultPayload = {
 
 export function SummaryForm (props: {
   summaryData: NetworkSaveData,
-  portalData?: Demo
+  portalData?: Demo,
+  extraData?: NetworkSummaryExtracData
 }) {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
   const { isRuckusAiMode } = useContext(NetworkFormContext)
-  const { summaryData, portalData } = props
+  const { summaryData, portalData, extraData } = props
   const params = useParams()
   const { data } = useVenuesListQuery({
     params: { tenantId: params.tenantId, networkId: 'UNKNOWN-NETWORK-ID' },
@@ -115,6 +118,13 @@ export function SummaryForm (props: {
               (summaryData.guestPortal?.guestNetworkType &&
                  $t(captiveTypes[summaryData.guestPortal?.guestNetworkType]))}
           />}
+          {summaryData.type === NetworkTypeEnum.CAPTIVEPORTAL &&
+            summaryData.guestPortal &&
+            summaryData.guestPortal.guestNetworkType === GuestNetworkTypeEnum.Directory &&
+            <Form.Item
+              label={$t({ defaultMessage: 'Directory Server:' })}
+              children={extraData?.directoryServer?.name ?? ''}
+            />}
           {summaryData.type !== NetworkTypeEnum.PSK && summaryData.type !== NetworkTypeEnum.AAA &&
             summaryData.type!==NetworkTypeEnum.CAPTIVEPORTAL &&
             summaryData.type !== NetworkTypeEnum.HOTSPOT20
