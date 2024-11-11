@@ -20,7 +20,7 @@ import {
   whitespaceOnlyRegExp,
   PolicyOperation,
   PolicyType,
-  validateVlanExceptReservedVlanId
+  validateVlanExcludingReserved
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -35,7 +35,7 @@ import {
   AuthTimeoutAction,
   authTimeoutActionTypeLabel,
   handleAuthFieldChange,
-  getAuthfieldDisabled,
+  getAuthFieldDisabled,
   shouldHideAuthField,
   PortControl,
   portControlTypeLabel,
@@ -187,7 +187,7 @@ export const FlexibleAuthenticationForm = (props: {
                 children={
                   <Switch
                     data-testid='change-auth-order-switch'
-                    disabled={getAuthfieldDisabled('changeAuthOrder', authFormWatchValues)}
+                    disabled={getAuthFieldDisabled('changeAuthOrder', authFormWatchValues)}
                   />
                 }
               />
@@ -203,7 +203,7 @@ export const FlexibleAuthenticationForm = (props: {
                   value: controlType,
                   disabled: controlType === ''
                 }))}
-                disabled={getAuthfieldDisabled('dot1xPortControl', authFormWatchValues)}
+                disabled={getAuthFieldDisabled('dot1xPortControl', authFormWatchValues)}
                 onChange={(value) => handleAuthFieldChange({
                   field: 'dot1xPortControl', value, form
                 })}
@@ -215,7 +215,7 @@ export const FlexibleAuthenticationForm = (props: {
               validateFirst
               rules={[
                 { required: true },
-                { validator: (_, value) => validateVlanExceptReservedVlanId(value) }
+                { validator: (_, value) => validateVlanExcludingReserved(value) }
               ]}
               children={
                 <Input data-testid='auth-vlan-input' />
@@ -227,7 +227,7 @@ export const FlexibleAuthenticationForm = (props: {
               initialValue={AuthFailAction.BLOCK}
               children={<Select
                 data-testid='fail-action-select'
-                disabled={getAuthfieldDisabled('authFailAction', authFormWatchValues)}
+                disabled={getAuthFieldDisabled('authFailAction', authFormWatchValues)}
                 options={Object.values(AuthFailAction).map(failType => ({
                   label: $t(authFailActionTypeLabel[failType]),
                   value: failType
@@ -246,7 +246,7 @@ export const FlexibleAuthenticationForm = (props: {
                 ...(authFailAction === AuthFailAction.RESTRICTED_VLAN
                   ? [{
                     validator: (_:unknown, value: string) =>
-                      validateVlanExceptReservedVlanId(value)
+                      validateVlanExcludingReserved(value)
                   },
                   { validator: (_:unknown, value: string) =>
                     checkVlanDiffFromTargetVlan(
@@ -262,7 +262,7 @@ export const FlexibleAuthenticationForm = (props: {
               children={
                 <Input
                   data-testid='restricted-vlan-input'
-                  disabled={getAuthfieldDisabled('restrictedVlan', authFormWatchValues)}
+                  disabled={getAuthFieldDisabled('restrictedVlan', authFormWatchValues)}
                 />
               }
             />
@@ -272,7 +272,7 @@ export const FlexibleAuthenticationForm = (props: {
               initialValue={AuthTimeoutAction.NONE}
               children={<Select
                 data-testid='timeout-action-select'
-                disabled={getAuthfieldDisabled('authTimeoutAction', authFormWatchValues)}
+                disabled={getAuthFieldDisabled('authTimeoutAction', authFormWatchValues)}
                 options={Object.values(AuthTimeoutAction).map(timeoutType => ({
                   label: $t(authTimeoutActionTypeLabel[timeoutType]),
                   value: timeoutType
@@ -291,7 +291,7 @@ export const FlexibleAuthenticationForm = (props: {
                 ...(authTimeoutAction === AuthTimeoutAction.CRITICAL_VLAN
                   ? [{
                     validator: (_:unknown, value: string) =>
-                      validateVlanExceptReservedVlanId(value)
+                      validateVlanExcludingReserved(value)
                   },
                   { validator: (_:unknown, value: string) =>
                     checkVlanDiffFromTargetVlan(
@@ -307,7 +307,7 @@ export const FlexibleAuthenticationForm = (props: {
               children={
                 <Input
                   data-testid='critical-vlan-input'
-                  disabled={getAuthfieldDisabled('criticalVlan', authFormWatchValues)}
+                  disabled={getAuthFieldDisabled('criticalVlan', authFormWatchValues)}
                 />
               }
             />
@@ -321,7 +321,7 @@ export const FlexibleAuthenticationForm = (props: {
                   if (!value) {
                     return Promise.resolve()
                   }
-                  return validateVlanExceptReservedVlanId(value)
+                  return validateVlanExcludingReserved(value)
                 }
               },
               { validator: (_:unknown, value: string) =>
@@ -335,7 +335,7 @@ export const FlexibleAuthenticationForm = (props: {
               }]}
               children={
                 <Input
-                  disabled={getAuthfieldDisabled('guestVlan', authFormWatchValues)}
+                  disabled={getAuthFieldDisabled('guestVlan', authFormWatchValues)}
                 />
               }
             />

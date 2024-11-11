@@ -40,7 +40,7 @@ const EditFlexibleAuthentication = () => {
           profileId: profileDetail?.id
         }
       }).unwrap()
-      navigate(`${basePath.pathname}/authentication/list`)
+      navigate(`${basePath.pathname}/authentication/${profileDetail?.id}/detail`)
     } catch (error) {
       // eslint-disable-next-line no-console
       console.log(error)

@@ -376,19 +376,15 @@ export function SwitchForm () {
 
   const handleEditSwitch = async (values: Switch) => {
     try {
-      const omittedFields
-        = ['specifiedType', 'serialNumber', 'authEnable', 'authDefaultVlan', 'guestVlan']
+      const omittedFields = [
+        'specifiedType', 'serialNumber', 'authEnable', 'authDefaultVlan', 'guestVlan',
+        ...(disableIpSetting ? ['ipAddress', 'subnetMask', 'defaultGateway', 'ipAddressType'] : [])
+
+      ]
       let payload = {
         ..._.omit(values, omittedFields),
         stackMembers: [],
         trustPorts: []
-      }
-
-      if(disableIpSetting){
-        delete payload.ipAddress
-        delete payload.subnetMask
-        delete payload.defaultGateway
-        delete payload.ipAddressType
       }
 
       payload.rearModule = _.get(payload, 'rearModuleOption') === true ? 'stack-40g' : 'none'

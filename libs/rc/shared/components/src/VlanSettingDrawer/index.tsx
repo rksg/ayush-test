@@ -21,7 +21,7 @@ import {
   SwitchSlot,
   StackMember,
   PortStatusMessages,
-  validateVlanExceptReservedVlanId,
+  validateVlanExcludingReserved,
   validateDuplicateVlanId,
   validateVlanNameWithoutDVlans,
   Vlan
@@ -320,7 +320,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           initialValue={isRuckusAiMode ? gptObject?.vlanId : ''}
           rules={[
             { required: true },
-            { validator: (_, value) => validateVlanExceptReservedVlanId(value) },
+            { validator: (_, value) => validateVlanExcludingReserved(value) },
             {
               validator: (_, value) => {
                 if (isRuckusAiMode) {return Promise.resolve()}

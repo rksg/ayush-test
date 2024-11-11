@@ -49,7 +49,7 @@ import {
   PortSettingModel,
   isFirmwareVersionAbove10010f,
   isVerGEVer,
-  validateVlanExceptReservedVlanId,
+  validateVlanExcludingReserved,
   Vlan,
   VlanModalType
 } from '@acx-ui/rc/utils'
@@ -67,7 +67,7 @@ import {
   AuthTimeoutAction,
   authTimeoutActionTypeLabel,
   checkVlanDiffFromTargetVlan,
-  getAuthfieldDisabled,
+  getAuthFieldDisabled,
   PortControl,
   portControlTypeLabel,
   shouldHideAuthField
@@ -508,8 +508,6 @@ export function EditPortDrawer ({
     const { tagged, untagged, voice } = getPortVenueVlans(vlansByVenue, selectedPorts?.[0])
     const aggregatedData = isSwitchFlexAuthEnabled
       ? aggregatePortSettings([portSetting], switchesDefaultVlan) : {}
-    // console.log('portSetting: ', portSetting)
-    // console.log('aggregatedData: ', aggregatedData)
 
     setVenueTaggedVlans(tagged)
     setVenueUntaggedVlan(untagged)
@@ -578,8 +576,6 @@ export function EditPortDrawer ({
     ])
     const aggregatedData = isSwitchFlexAuthEnabled
       ? aggregatePortSettings(portsSetting, switchesDefaultVlan, hasMultipleValue) : {}
-    // console.log('portsSetting: ', portsSetting)
-    // console.log('multi aggregatedData: ', aggregatedData)
 
     setDisablePoeCapability(poeCapabilityDisabled)
     setDisableCyclePoeCapability(cyclePoeMultiPortsDisabled)
@@ -688,7 +684,7 @@ export function EditPortDrawer ({
       case 'authTimeoutAction':
       case 'criticalVlan':
         return (isMultipleEdit && !checkboxEnabled)
-          || getAuthfieldDisabled(field, authfieldValues)
+          || getAuthFieldDisabled(field, authfieldValues)
       default:
         return isMultipleEdit && !checkboxEnabled
     }
@@ -718,13 +714,13 @@ export function EditPortDrawer ({
       case 'restrictedVlan':
         return !form.getFieldValue('flexibleAuthenticationEnabledCheckbox')
           || !flexibleAuthenticationEnabledCheckbox
-          || getAuthfieldDisabled(field, authfieldValues)
-          || hasMultipleValue?.includes('authFailAction') && authFailActionCheckbox
+          || getAuthFieldDisabled(field, authfieldValues)
+          || (hasMultipleValue?.includes('authFailAction') && authFailActionCheckbox)
       case 'criticalVlan':
         return !form.getFieldValue('flexibleAuthenticationEnabledCheckbox')
           || !flexibleAuthenticationEnabledCheckbox
-          || getAuthfieldDisabled(field, authfieldValues)
-          || hasMultipleValue?.includes('authTimeoutAction') && authTimeoutActionCheckbox
+          || getAuthFieldDisabled(field, authfieldValues)
+          || (hasMultipleValue?.includes('authTimeoutAction') && authTimeoutActionCheckbox)
       case 'authDefaultVlan':
       case 'changeAuthOrder':
       case 'dot1xPortControl':
@@ -732,7 +728,7 @@ export function EditPortDrawer ({
       case 'authTimeoutAction':
         return !form.getFieldValue('flexibleAuthenticationEnabledCheckbox')
           || !flexibleAuthenticationEnabledCheckbox
-          || getAuthfieldDisabled(field, authfieldValues)
+          || getAuthFieldDisabled(field, authfieldValues)
 
       default: return false
     }
@@ -881,8 +877,6 @@ export function EditPortDrawer ({
           }
         }
       })
-
-      // console.log('payload: ', payload)
 
       await savePortsSetting({
         params: { tenantId, venueId: switchDetail?.venueId },
@@ -1443,7 +1437,7 @@ export function EditPortDrawer ({
                   },
                   { required: true },
                   { validator: (_:unknown, value: string) =>
-                    validateVlanExceptReservedVlanId(value)
+                    validateVlanExcludingReserved(value)
                   },
                   { validator: (_:unknown, value: string) =>
                     checkVlanDiffFromSwitchDefaultVlan(value, aggregatePortsData)
@@ -1504,7 +1498,7 @@ export function EditPortDrawer ({
                       : authFailAction === AuthFailAction.RESTRICTED_VLAN)
                       ? [{
                         validator: (_:unknown, value: string) =>
-                          validateVlanExceptReservedVlanId(value)
+                          validateVlanExcludingReserved(value)
                       },
                       { validator: (_:unknown, value: string) =>
                         checkVlanDiffFromSwitchDefaultVlan(value, aggregatePortsData)
@@ -1581,7 +1575,7 @@ export function EditPortDrawer ({
                       : authTimeoutAction === AuthTimeoutAction.CRITICAL_VLAN)
                       ? [{
                         validator: (_:unknown, value: string) =>
-                          validateVlanExceptReservedVlanId(value)
+                          validateVlanExcludingReserved(value)
                       },
                       { validator: (_:unknown, value: string) =>
                         checkVlanDiffFromSwitchDefaultVlan(value, aggregatePortsData)
@@ -1631,7 +1625,7 @@ export function EditPortDrawer ({
                   }] : [{
                     validator: (_:unknown, value: string) => {
                       if (value) {
-                        return validateVlanExceptReservedVlanId(value)
+                        return validateVlanExcludingReserved(value)
                       }
                       return Promise.resolve()
                     }

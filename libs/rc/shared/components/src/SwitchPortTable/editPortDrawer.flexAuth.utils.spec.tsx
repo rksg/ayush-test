@@ -103,7 +103,6 @@ describe('checkAllSelectedPortsMatch', () => {
   }] as SwitchPortViewModel[]
   const aggregateData = {
     authDefaultVlan: { 'c0:c5:20:aa:35:d9': [3,10] },
-    authDefaultVlan2: { 'c0:c5:20:aa:35:d9': { '1/1/3': [3], '1/1/4': [10] } },
     authenticationProfileId: {},
     criticalVlan: {},
     defaultVlan: { 'c0:c5:20:aa:35:d9': 1, 'c0:c5:20:aa:32:55': 1 },
@@ -167,7 +166,6 @@ describe('checkAllSelectedPortsMatch', () => {
 describe('getCurrentVlansByKey', () => {
   const aggregateData = {
     authDefaultVlan: { 'c0:c5:20:aa:35:d9': [3,10] },
-    authDefaultVlan2: { 'c0:c5:20:aa:35:d9': { '1/1/3': [3], '1/1/4': [10] } },
     authenticationProfileId: {},
     criticalVlan: {},
     defaultVlan: { 'c0:c5:20:aa:35:d9': 1, 'c0:c5:20:aa:32:55': 1 },
@@ -237,7 +235,6 @@ describe('getCurrentVlansByKey', () => {
 describe('getUnionValuesByKey', () => {
   const aggregateData = {
     authDefaultVlan: { 'c0:c5:20:aa:35:d9': [3,10] },
-    authDefaultVlan2: { 'c0:c5:20:aa:35:d9': { '1/1/3': [3], '1/1/4': [10] } },
     authenticationProfileId: {},
     criticalVlan: {},
     defaultVlan: { 'c0:c5:20:aa:35:d9': 1, 'c0:c5:20:aa:32:55': 1 },
@@ -256,7 +253,6 @@ describe('getUnionValuesByKey', () => {
   }
   it('should get union values correctly', async () => {
     expect(getUnionValuesByKey('authDefaultVlan', aggregateData)).toStrictEqual([3, 10])
-    // expect(getUnionValuesByKey('authDefaultVlan2', aggregateData)).toStrictEqual([3, 10])
     expect(getUnionValuesByKey('defaultVlan', aggregateData)).toStrictEqual([1])
     expect(getUnionValuesByKey('restrictedVlan', aggregateData)).toStrictEqual([9])
     expect(getUnionValuesByKey(

@@ -80,24 +80,24 @@ export const authTimeoutActionTypeLabel: Record<AuthTimeoutAction, MessageDescri
   })
 }
 
-export const getAuthfieldDisabled = (field: string, values: string[]) => {
+export const getAuthFieldDisabled = (field: string, values: string[]) => {
   const [
     authenticationType, dot1xPortControl, ,
     authFailAction, authTimeoutAction
 	 ] = values
-  const isPortControlNotAuto
+  const isPortControlInForceType
     = dot1xPortControl !== PortControl.AUTO && dot1xPortControl !== PortControl.NONE
 
   const fieldDisabledMapping = {
-    authDefaultVlan: () => isPortControlNotAuto,
+    authDefaultVlan: () => isPortControlInForceType,
     changeAuthOrder: () => authenticationType !== AuthenticationType._802_1X_AND_MACAUTH,
     dot1xPortControl: () => authenticationType !== AuthenticationType._802_1X,
-    authFailAction: () => isPortControlNotAuto,
+    authFailAction: () => isPortControlInForceType,
     restrictedVlan: () =>
-      isPortControlNotAuto || authFailAction !== AuthFailAction.RESTRICTED_VLAN,
-    authTimeoutAction: () => isPortControlNotAuto,
+      isPortControlInForceType || authFailAction !== AuthFailAction.RESTRICTED_VLAN,
+    authTimeoutAction: () => isPortControlInForceType,
     criticalVlan: () =>
-      isPortControlNotAuto || authTimeoutAction !== AuthTimeoutAction.CRITICAL_VLAN
+      isPortControlInForceType || authTimeoutAction !== AuthTimeoutAction.CRITICAL_VLAN
   }
   const checkFieldDisabled = fieldDisabledMapping[field as keyof typeof fieldDisabledMapping]
 
@@ -109,7 +109,7 @@ export const shouldHideAuthField = (
   values: string[],
   isMultipleEdit: boolean = false
 ): boolean => {
-  return !isMultipleEdit && getAuthfieldDisabled(field, values)
+  return !isMultipleEdit && getAuthFieldDisabled(field, values)
 }
 
 export const handleAuthFieldChange = (props: {

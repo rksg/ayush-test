@@ -272,7 +272,7 @@ export const EditPortMessages = {
     defaultMessage: '<VenueSingular></VenueSingular> settings default VLAN ID is the same as one of switch VLANs'
   }),
   USE_VENUE_SETTINGS_DISABLED_WHEN_FLEX_AUTH_ENABLED: defineMessage({
-    defaultMessage: 'Can not use <venueSingular></venueSingular> setting when Authentication enabled'
+    defaultMessage: 'Can not use <venueSingular></venueSingular> settings when Authentication enabled'
   }),
   POE_CAPABILITY_DISABLE: defineMessage({
     defaultMessage: 'Can not configure PoE configurations(PoE Enable, PoE Class, and PoE Priority) since this port doesn\'t have PoE capability.'

@@ -19,7 +19,7 @@ import {
   validateSwitchIpAddress,
   validateSwitchSubnetIpAddress,
   validateSwitchGatewayIpAddress,
-  validateVlanExceptReservedVlanId,
+  validateVlanExcludingReserved,
   SwitchViewModel,
   SWITCH_DEFAULT_VLAN_NAME
 } from '@acx-ui/rc/utils'
@@ -327,7 +327,7 @@ export function SwitchStackSetting (props: {
               validateFirst
               rules={[
                 { required: true },
-                { validator: (_, value) => validateVlanExceptReservedVlanId(value) },
+                { validator: (_, value) => validateVlanExcludingReserved(value) },
                 { validator: (_, value) =>
                   checkVlanDiffFromTargetVlan(
                     value, defaultVlan,
@@ -351,7 +351,7 @@ export function SwitchStackSetting (props: {
                   if (!value) {
                     return Promise.resolve()
                   }
-                  return validateVlanExceptReservedVlanId(value)
+                  return validateVlanExcludingReserved(value)
                 }
                 },
                 { validator: (_, value) =>

@@ -98,7 +98,7 @@ const FlexibleAuthenticationDetail = () => {
     }
   }, {
     title: $t({ defaultMessage: 'Auth Default VLAN' }),
-    content: () => (getContent('authDefaultVlan'))
+    content: () => getContent('authDefaultVlan')
   }, {
     title: $t({ defaultMessage: 'Fail Action' }),
     content: () => {
@@ -110,7 +110,7 @@ const FlexibleAuthenticationDetail = () => {
     }
   }, {
     title: $t({ defaultMessage: 'Restricted VLAN' }),
-    content: () => (getContent('restrictedVlan'))
+    content: () => getContent('restrictedVlan')
   }, {
     title: $t({ defaultMessage: 'Timeout Action' }),
     content: () => {
@@ -122,10 +122,10 @@ const FlexibleAuthenticationDetail = () => {
     }
   }, {
     title: $t({ defaultMessage: 'Critical VLAN' }),
-    content: () => (getContent('criticalVlan'))
+    content: () => getContent('criticalVlan')
   }, {
     title: $t({ defaultMessage: 'Guest VLAN' }),
-    content: () => (getContent('guestVlan'))
+    content: () => getContent('guestVlan')
   }] as {
     title: string;
     content: () => string | number | boolean
@@ -156,7 +156,7 @@ const FlexibleAuthenticationDetail = () => {
     key: 'port',
     dataIndex: 'ports',
     render: (_, { ports }) => {
-      const portList = ports?.[0].split(',')
+      const portList = ports?.[0].split(',')?.sort()
       return portList?.length
         ? <Tooltip dottedUnderline title={getItemTooltip(portList)}>{ portList?.length }</Tooltip>
         : noDataDisplay

@@ -97,7 +97,7 @@ const FlexibleAuthenticationTable = () => {
     dataIndex: 'appliedVenues',
     render: (_, { appliedVenues }) => {
       const venueCount = Object.keys(appliedVenues ?? {})?.length
-      const venues = Object.values(appliedVenues ?? {})
+      const venues = Object.values(appliedVenues ?? {})?.sort()
       return venueCount
         ? <Tooltip dottedUnderline title={getItemTooltip(venues)}>{ venueCount }</Tooltip>
         : noDataDisplay

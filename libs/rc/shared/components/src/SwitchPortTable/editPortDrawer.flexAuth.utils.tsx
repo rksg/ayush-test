@@ -45,8 +45,8 @@ export interface AggregatePortSettings {
   switchLevelAuthDefaultVlan: Record<string, number | undefined>
   guestVlan: Record<string, number | undefined>
   authDefaultVlan: Record<string, number[]>
-  restrictedVlan: Record<string, number | undefined>
-  criticalVlan: Record<string, number | undefined>
+  restrictedVlan: Record<string, number[]>
+  criticalVlan: Record<string, number[]>
   shouldAlertAaaAndRadiusNotApply: boolean
 }
 
@@ -73,7 +73,7 @@ export const aggregatePortSettings = (
   }
 
   const updateResult = <T extends string | number | Number>(
-    result: Record<string, T[]>,
+    result: Record<string | number, T[]>,
     index: string,
     value: T | T[],
     enforceUnique = true
@@ -98,8 +98,8 @@ export const aggregatePortSettings = (
       result.authDefaultVlan[index] = updateResult(result.authDefaultVlan, index, authDefaultVlan, false)
     if (switchLevelAuthDefaultVlan) result.switchLevelAuthDefaultVlan[index] = switchLevelAuthDefaultVlan
     if (guestVlan) result.guestVlan[index] = guestVlan
-    if (restrictedVlan) result.restrictedVlan[index] = restrictedVlan
-    if (criticalVlan) result.criticalVlan[index] = criticalVlan
+    if (restrictedVlan) updateResult(result.restrictedVlan, index, restrictedVlan)
+    if (criticalVlan) updateResult(result.criticalVlan, index, criticalVlan)
     if (profileAuthDefaultVlan) result.profileAuthDefaultVlan[index] = profileAuthDefaultVlan
     if (authenticationProfileId) result.authenticationProfileId[index] = authenticationProfileId
     if (shouldAlertAaaAndRadiusNotApply) result.shouldAlertAaaAndRadiusNotApply = true
@@ -299,6 +299,7 @@ export const getAppliedProfile = (
     guestVlan: '',
     ...profile
   } as FlexibleAuthentication
+
   return _.omit(appliedProfile, ['profileName', 'id'])
 }
 
