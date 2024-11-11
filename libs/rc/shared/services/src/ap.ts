@@ -908,6 +908,7 @@ export const apApi = baseApApi.injectEndpoints({
       },
       providesTags: [{ type: 'Ap', id: 'LanPorts' }]
     }),
+
     getApLanPortsWithEthernetProfiles: build.query<WifiApSetting | null, RequestPayload>({
       async queryFn ({ params, enableRbac, enableEthernetProfile },
         _queryApi, _extraOptions, fetchWithBQ) {
