@@ -2125,7 +2125,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'ExternalAntenna', id: 'LIST' }]
     }),
 
-    getVenueLanPortWithEthernetPortSettings: build.query<VenueLanPorts[], RequestPayload>({
+    getVenueLanPortWithEthernetSettings: build.query<VenueLanPorts[], RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
 
         const urlsInfo = arg.enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
@@ -2133,16 +2133,18 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
         const venueLanPortsQuery = await fetchWithBQ(createHttpRequest(urlsInfo.getVenueLanPorts, arg.params, apiCustomHeader))
         const venueLanPortSettings = venueLanPortsQuery.data as VenueLanPorts[]
-
         const venueId = arg.params?.venueId
+
         if(venueId) {
           const ethernetPortProfileReq = createHttpRequest(EthernetPortProfileUrls.getEthernetPortProfileViewDataList)
           const ethernetPortProfileQuery = await fetchWithBQ(
-            { ...ethernetPortProfileReq, body: JSON.stringify({
-              filters: {
-                venueIds: [venueId]
-              }
-            }) }
+            { ...ethernetPortProfileReq,
+              body: JSON.stringify({
+                filters: {
+                  venueIds: [venueId]
+                }
+              })
+            }
           )
           const ethernetPortProfiles = (ethernetPortProfileQuery.data as TableResult<EthernetPortProfileViewData>).data
 
@@ -2310,7 +2312,8 @@ export const {
   useLazyGetVenueApSmartMonitorQuery,
   useUpdateVenueApSmartMonitorMutation,
 
-  useGetVenueLanPortWithEthernetPortSettingsQuery
+  useGetVenueLanPortWithEthernetSettingsQuery,
+  useLazyGetVenueLanPortWithEthernetSettingsQuery
 } = venueApi
 
 
