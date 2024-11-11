@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
+import { directoryServerApi } from '@acx-ui/rc/services'
 import {
   CommonRbacUrlsInfo,
   DirectoryServerUrls,
@@ -10,7 +11,7 @@ import {
   PolicyOperation,
   PolicyType
 } from '@acx-ui/rc/utils'
-import { Provider } from '@acx-ui/store'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -77,6 +78,7 @@ describe('DirectoryServerTable', () => {
   const tablePath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.DIRECTORY_SERVER, oper: PolicyOperation.LIST })
 
   beforeEach(async () => {
+    store.dispatch(directoryServerApi.util.resetApiState())
     mockServer.use(
       rest.post(
         DirectoryServerUrls.getDirectoryServerViewDataList.url,

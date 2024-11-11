@@ -761,13 +761,15 @@ export function ApForm () {
             {!sameAsVenue && <Button
               type='link'
               size='small'
-              onClick={() => onSaveCoordinates(
-                selectedVenue?.latitude ? {
+              onClick={() => {
+                const deviceGpsObject = selectedVenue?.latitude ? {
                   latitude: selectedVenue.latitude,
                   longitude: selectedVenue.longitude
                 } as unknown as DeviceGps
                   : null
-              )}
+                formRef?.current?.setFieldValue('deviceGps', deviceGpsObject)
+                onSaveCoordinates(deviceGpsObject)
+              }}
             >
               {$t({ defaultMessage: 'Same as <VenueSingular></VenueSingular>' })}
             </Button>}
@@ -907,7 +909,9 @@ function CoordinatesModal (props: {
           message: $t(validationMessages.gpsCoordinates)
         }, {
           validator: (_, value) => {
-            const latLng = value.split(',').map((v: string) => v.trim())
+            const latLng = typeof value === 'string'
+              ? value.split(',').map((v: string) => v.trim())
+              : [value.latitude, value.longitude]
             const sameAsVenue = isEqual([selectedVenue?.latitude, selectedVenue?.longitude], latLng)
             return sameAsVenue
               ? Promise.resolve()

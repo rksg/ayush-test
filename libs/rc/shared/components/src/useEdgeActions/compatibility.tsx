@@ -266,7 +266,7 @@ export const useEdgeCompatibilityRequirementData = (featureName: Incompatibility
   useEffect(() => {
     if (!skip)
       fetchEdgeCompatibilities()
-  }, [skip])
+  }, [skip, featureName])
 
   return useMemo(() => ({ featureInfos: data, isLoading: isInitializing }),
     [data, isInitializing])
