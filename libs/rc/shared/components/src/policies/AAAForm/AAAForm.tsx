@@ -7,7 +7,7 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useAaaPolicyQuery,
   useAddAAAPolicyMutation,
@@ -19,7 +19,8 @@ import {
   useActivateClientCertificateOnRadiusMutation,
   useDeactivateClientCertificateOnRadiusMutation,
   useActivateServerCertificateOnRadiusMutation,
-  useDeactivateServerCertificateOnRadiusMutation
+  useDeactivateServerCertificateOnRadiusMutation,
+  useAaaPolicyCertificateQuery
 } from '@acx-ui/rc/services'
 import {
   AAAPolicyType,
@@ -62,7 +63,7 @@ export const AAAForm = (props: AAAFormProps) => {
   const addRadSecActivations = useAddRadSecActivations()
   const updateRadSecActivations = useUpdateRadSecActivations()
   const { data } = useConfigTemplateQueryFnSwitcher({
-    useQueryFn: useAaaPolicyQuery,
+    useQueryFn: supportRadsec ? useAaaPolicyCertificateQuery : useAaaPolicyQuery,
     useTemplateQueryFn: useGetAAAPolicyTemplateQuery,
     skip: !isEdit,
     enableRbac
