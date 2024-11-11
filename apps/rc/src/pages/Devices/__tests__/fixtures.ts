@@ -1244,7 +1244,8 @@ export const mockEthProfiles = {
       apActivations: [
         {
           venueId: mockVenue.id,
-          portId: 1
+          portId: 1,
+          apSerialNumber: 'serial-number'
         }
       ]
     },
@@ -1259,7 +1260,8 @@ export const mockEthProfiles = {
       apActivations: [
         {
           venueId: mockVenue.id,
-          portId: 2
+          portId: 2,
+          apSerialNumber: 'serial-number'
         }
       ]
     }
