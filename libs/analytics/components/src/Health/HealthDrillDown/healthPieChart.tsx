@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
-import { Space }                                     from 'antd'
-import { find }                                      from 'lodash'
+import { Space } from 'antd'
+// import { find }                                      from 'lodash'
 import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
 
 import { getSelectedNodePath, mapCodeToReason } from '@acx-ui/analytics/utils'
@@ -135,6 +135,37 @@ export const tooltipFormatter = (
 ) => (value: unknown) =>
   `${formatter('percentFormat')(value as number / total)}(${dataFormatter(value)})`
 
+export function toggleSelection (
+  index: number,
+  selectedSlice: number | null,
+  setSelectedSlice: (slice: number | null) => void
+) {
+  setSelectedSlice(index === selectedSlice ? null : index)
+}
+
+export function onChartClick (
+  params: EventParams,
+  selectedSlice: number | null,
+  setSelectedSlice: (slice: number | null) => void,
+  onPieClick: (e: EventParams) => void
+) {
+  toggleSelection(params.dataIndex, selectedSlice, setSelectedSlice)
+  onPieClick(params)
+}
+
+export function onClickLegend (
+  params: EventParams,
+  data: { name: string }[],
+  selectedSlice: number | null,
+  setSelectedSlice: (slice: number | null) => void,
+  onLegendClick: (data: PieChartData) => void
+) {
+  const clickedIndex = data.findIndex((item) => item.name === params.name)
+  if (clickedIndex !== -1) toggleSelection(clickedIndex, selectedSlice, setSelectedSlice)
+  const clickedData = data.find((pie) => pie.name === params.name)
+  onLegendClick && onLegendClick(clickedData as PieChartData)
+}
+
 export function getHealthPieChart (
   data: {
     key: string; value: number; name: string;
@@ -164,22 +195,6 @@ export function getHealthPieChart (
 
   const total = tops.reduce((total, { value }) => value + total, 0)
 
-  const toggleSelection = (index: number) => {
-    setSelectedSlice(index === selectedSlice ? null : index)
-  }
-
-  const onChartClick = (params: EventParams) => {
-    toggleSelection(params.dataIndex)
-    onPieClick(params)
-  }
-
-  const onClickLegend = (params: EventParams) => {
-    const clickedIndex = data.findIndex(item => item.name === params.name)
-    if (clickedIndex !== -1) toggleSelection(clickedIndex)
-    const clickedData = find(data, (pie) => pie.name === params.name)
-    onLegendClick && onLegendClick(clickedData as PieChartData)
-  }
-
   return (
     data.length > 0 ? <DonutChart
       data={tops}
@@ -190,8 +205,10 @@ export function getHealthPieChart (
       showTotal={false}
       labelTextStyle={{ overflow: 'truncate', width: size.width * 0.5 }} // 50% of width
       dataFormatter={tooltipFormatter(total, dataFormatter)}
-      onClick={onChartClick}
-      onLegendClick={onClickLegend}
+      onClick={(params) => onChartClick(params, selectedSlice, setSelectedSlice, onPieClick)}
+      onLegendClick={(params) =>
+        onClickLegend(params, data, selectedSlice, setSelectedSlice, onLegendClick)
+      }
       singleSelect={true}
     /> : <NoData />
   )
