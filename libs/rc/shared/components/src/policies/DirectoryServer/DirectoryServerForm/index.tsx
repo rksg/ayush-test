@@ -78,7 +78,6 @@ export const DirectoryServerForm = (props: DirectoryServerFormProps) => {
           <Row gutter={20}>
             <Col span={10}>
               <DirectoryServerSettingForm
-                editMode={editMode}
                 policyId={params?.policyId}
               />
             </Col>
