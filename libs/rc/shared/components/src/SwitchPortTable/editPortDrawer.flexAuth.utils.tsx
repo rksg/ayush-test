@@ -47,6 +47,7 @@ export interface AggregatePortSettings {
   authDefaultVlan: Record<string, number[]>
   restrictedVlan: Record<string, number[]>
   criticalVlan: Record<string, number[]>
+  dot1xPortControl: Record<string, string[]>
   shouldAlertAaaAndRadiusNotApply: boolean
 }
 
@@ -69,6 +70,7 @@ export const aggregatePortSettings = (
     authDefaultVlan: {},
     restrictedVlan: {},
     criticalVlan: {},
+    dot1xPortControl: {},
     shouldAlertAaaAndRadiusNotApply: false
   }
 
@@ -88,7 +90,7 @@ export const aggregatePortSettings = (
     switchMac, port, taggedVlans = [], untaggedVlan = '',
     switchLevelAuthDefaultVlan, guestVlan, authDefaultVlan, restrictedVlan, criticalVlan,
     profileAuthDefaultVlan, authenticationProfileId,
-    enableAuthPorts, shouldAlertAaaAndRadiusNotApply
+    dot1xPortControl, enableAuthPorts, shouldAlertAaaAndRadiusNotApply
   }) => {
     const index = switchMac as string
     result.taggedVlans[index] = updateResult(result.taggedVlans, index, taggedVlans)
@@ -100,6 +102,7 @@ export const aggregatePortSettings = (
     if (guestVlan) result.guestVlan[index] = guestVlan
     if (restrictedVlan) updateResult(result.restrictedVlan, index, restrictedVlan)
     if (criticalVlan) updateResult(result.criticalVlan, index, criticalVlan)
+    if (dot1xPortControl) updateResult(result.dot1xPortControl, index, dot1xPortControl)
     if (profileAuthDefaultVlan) result.profileAuthDefaultVlan[index] = profileAuthDefaultVlan
     if (authenticationProfileId) result.authenticationProfileId[index] = authenticationProfileId
     if (shouldAlertAaaAndRadiusNotApply) result.shouldAlertAaaAndRadiusNotApply = true
@@ -598,6 +601,12 @@ export const checkMultipleVlansDifferences = async (props: {
   }
 }
 
+export const isForceControlType = (portControl: string[]) => {
+  return portControl.includes(PortControl.FORCE_AUTHORIZED)
+|| portControl.includes(PortControl.FORCE_UNAUTHORIZED)
+}
+
+
 export const isOverrideFieldNotChecked = (props: {
   field: string,
   isMultipleEdit: boolean,
@@ -613,14 +622,19 @@ export const isOverrideFieldNotChecked = (props: {
 }
 
 export const getNeedPreselectFields = (props: {
+  form?: FormInstance,
   changedField?: string,
   isOverridden?: boolean,
   isCustomized?: boolean,
   isMultipleEdit: boolean,
   selectedPorts: SwitchPortViewModel[],
-  aggregateData: AggregatePortSettings
+  aggregateData: AggregatePortSettings,
+  hasMultipleValue?: string[]
 }) => {
-  const { isMultipleEdit, isCustomized, changedField, isOverridden, aggregateData, selectedPorts } = props
+  const { form, changedField, isMultipleEdit, isCustomized, isOverridden,
+    aggregateData, selectedPorts, hasMultipleValue
+  } = props
+
   const authDefaultVlan = Object.values(aggregateData.authDefaultVlan).flat()
   const isEitherPortEnabledForFirstTime = selectedPorts?.length > authDefaultVlan?.length
 
@@ -636,6 +650,23 @@ export const getNeedPreselectFields = (props: {
   } else if (changedField === 'authTimeoutActionCheckbox') {
     return {
       criticalVlanCheckbox: isOverridden
+    }
+  } else if (changedField === 'dot1xPortControlCheckbox' && !isOverridden) {
+    const currentPortControl = form?.getFieldValue('dot1xPortControl')
+    const unionPortControl = getUnionValuesByKey('dot1xPortControl', aggregateData)
+    const isAnyForceControl = isForceControlType(unionPortControl)
+    const isCurrentForceControl = isForceControlType([currentPortControl])
+    // If any of the port controls is force type, auth default vlan cannot be changed
+    if (hasMultipleValue?.includes('dot1xPortControl') && isAnyForceControl) {
+      return {
+        authDefaultVlanCheckbox: false,
+        ...(isCurrentForceControl ? {
+          authFailActionCheckbox: false,
+          restrictedVlanCheckbox: false,
+          authTimeoutActionCheckbox: false,
+          criticalVlanCheckbox: false
+        }: {})
+      }
     }
   }
 
@@ -714,7 +745,8 @@ export const handleAuthOverrideFieldChange = (props: {
   isOverridden: boolean,
   isMultipleEdit: boolean,
   selectedPorts: SwitchPortViewModel[],
-  aggregateData: AggregatePortSettings
+  aggregateData: AggregatePortSettings,
+  hasMultipleValue?: string[]
 }) => {
   const { form, changedField } = props
   if (changedField === 'flexibleAuthenticationEnabledCheckbox') {

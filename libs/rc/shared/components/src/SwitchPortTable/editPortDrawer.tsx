@@ -94,6 +94,7 @@ import {
   getFlexAuthEnabled,
   getUnionValuesByKey,
   isOverrideFieldNotChecked,
+  isForceControlType,
   renderAuthProfile,
   validateApplyProfile
 } from './editPortDrawer.flexAuth.utils'
@@ -203,6 +204,7 @@ export function EditPortDrawer ({
     flexibleAuthenticationEnabledCheckbox,
     authenticationType,
     dot1xPortControl,
+    dot1xPortControlCheckbox,
     authDefaultVlan,
     authFailAction,
     authFailActionCheckbox,
@@ -308,7 +310,7 @@ export function EditPortDrawer ({
     })
 
   // eslint-disable-next-line max-len
-  const { data: switchesDefaultVlan, isLoading: isDefaultVlanLoading, isFetching: isDefaultVlanFetching } = useGetDefaultVlanQuery({
+  const { data: switchesDefaultVlan, isLoading: isDefaultVlanLoading } = useGetDefaultVlanQuery({
     params: { tenantId, venueId: switchDetail?.venueId },
     payload: switches,
     enableRbac: isSwitchRbacEnabled
@@ -484,7 +486,7 @@ export function EditPortDrawer ({
     }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps, max-len
-  }, [selectedPorts, isSwitchDetailLoading, isSwitchDataLoading, isDefaultVlanLoading, isDefaultVlanFetching, visible])
+  }, [selectedPorts, isSwitchDetailLoading, isSwitchDataLoading, isDefaultVlanLoading, visible])
 
   const getSinglePortValue = async (
     portSpeed: string[],
@@ -695,6 +697,10 @@ export function EditPortDrawer ({
       authenticationType, dot1xPortControl, authDefaultVlan,
       authFailAction, authTimeoutAction
     ]
+    const isNotOverrideAuthEnabled
+      // eslint-disable-next-line max-len
+      = !form.getFieldValue('flexibleAuthenticationEnabledCheckbox') || !flexibleAuthenticationEnabledCheckbox
+
     switch (field) {
       case 'poeEnable': return disablePoeCapability
       case 'poeClass':
@@ -708,26 +714,29 @@ export function EditPortDrawer ({
       case 'authenticationProfileId':
       case 'authenticationType':
       case 'guestVlan':
-        return !form.getFieldValue('flexibleAuthenticationEnabledCheckbox')
-          || !flexibleAuthenticationEnabledCheckbox
+        return isNotOverrideAuthEnabled
           || !(flexibleAuthenticationEnabledCheckbox && flexibleAuthenticationEnabled)
       case 'restrictedVlan':
-        return !form.getFieldValue('flexibleAuthenticationEnabledCheckbox')
-          || !flexibleAuthenticationEnabledCheckbox
+        return isNotOverrideAuthEnabled
           || getAuthFieldDisabled(field, authfieldValues)
           || (hasMultipleValue?.includes('authFailAction') && authFailActionCheckbox)
       case 'criticalVlan':
-        return !form.getFieldValue('flexibleAuthenticationEnabledCheckbox')
-          || !flexibleAuthenticationEnabledCheckbox
+        return isNotOverrideAuthEnabled
           || getAuthFieldDisabled(field, authfieldValues)
           || (hasMultipleValue?.includes('authTimeoutAction') && authTimeoutActionCheckbox)
       case 'authDefaultVlan':
+        const unionPortControl = getUnionValuesByKey('dot1xPortControl', aggregatePortsData)
+        const isAnyForceControl = isForceControlType(unionPortControl)
+        return isNotOverrideAuthEnabled
+          || getAuthFieldDisabled(field, authfieldValues)
+          || (!dot1xPortControlCheckbox
+            && hasMultipleValue.includes('dot1xPortControl') && isAnyForceControl
+          )
       case 'changeAuthOrder':
       case 'dot1xPortControl':
       case 'authFailAction':
       case 'authTimeoutAction':
-        return !form.getFieldValue('flexibleAuthenticationEnabledCheckbox')
-          || !flexibleAuthenticationEnabledCheckbox
+        return isNotOverrideAuthEnabled
           || getAuthFieldDisabled(field, authfieldValues)
 
       default: return false
@@ -1040,7 +1049,8 @@ export function EditPortDrawer ({
       } else if (isMultipleEdit) {
         const handleOverrideFields = [
           'flexibleAuthenticationEnabledCheckbox',
-          'authenticationTypeCheckbox', 'authFailActionCheckbox', 'authTimeoutActionCheckbox']
+          'authenticationTypeCheckbox', 'dot1xPortControlCheckbox',
+          'authFailActionCheckbox', 'authTimeoutActionCheckbox']
 
         if (changedField === 'portVlansCheckbox') {
           const isFlexAuthButtonDisabled = !!getFlexAuthButtonStatus({
@@ -1052,7 +1062,7 @@ export function EditPortDrawer ({
         } else if (handleOverrideFields.includes(changedField)) {
           handleAuthOverrideFieldChange({
             changedField, form, isOverridden: !!changedValue, isMultipleEdit,
-            selectedPorts, aggregateData: aggregatePortsData
+            selectedPorts, aggregateData: aggregatePortsData, hasMultipleValue
           })
         }
       }
@@ -1068,7 +1078,7 @@ export function EditPortDrawer ({
     const voiceVlanField = form?.getFieldValue('voiceVlan')
     const taggedVlansField = form?.getFieldValue('taggedVlans')
     let isInvalid = voiceVlanField &&
-    taggedVlansField.split(',').indexOf(String(voiceVlanField)) === -1
+    taggedVlansField?.split(',').indexOf(String(voiceVlanField)) === -1
     if (applyVenueSetting && voiceVlanField && !taggedVlansField) {
       isInvalid = false
     }

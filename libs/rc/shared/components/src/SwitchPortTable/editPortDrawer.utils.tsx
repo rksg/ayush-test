@@ -303,7 +303,7 @@ export const getPoeCapabilityDisabled = (portSettings: PortSettingModel[]) => {
 }
 
 export const getMultiPoeCapabilityDisabled = (portSettings: PortSettingModel[]) => {
-  return portSettings?.filter(s => !s?.poeCapability)?.length === portSettings.length
+  return portSettings?.filter(s => !s?.poeCapability)?.length === portSettings?.length
 }
 
 export const getOverrideFields = (fieldsValue: PortSettingModel) => {

@@ -605,8 +605,7 @@ describe('EditPortDrawer', () => {
 
       await userEvent.click(await within(drawer).findByRole('button', { name: 'Add' }))
       expect(mockedAddSwitchVlan).toBeCalled()
-      //TODO: check
-      //expect(await within(dialog).findByText(/VLAN-ID-777 \(vlan777\)/)).toBeVis
+      expect(await within(dialog).findByText(/VLAN-ID-777 \(vlan777\)/)).toBeVisible()
     })
   })
 

@@ -58,6 +58,7 @@ describe('aggregatePortSettings', () => {
       authDefaultVlan: { 'c0:c5:20:aa:32:55': [5, 5], 'c0:c5:20:aa:35:d9': [5] },
       authenticationProfileId: {}, criticalVlan: {},
       defaultVlan: { 'c0:c5:20:aa:32:55': 1, 'c0:c5:20:aa:35:d9': 1 },
+      dot1xPortControl: {},
       enableAuthPorts: { 'c0:c5:20:aa:32:55': [], 'c0:c5:20:aa:35:d9': [] },
       guestVlan: {}, hasMultipleValue: [], profileAuthDefaultVlan: {}, restrictedVlan: {},
       selectedPortIdentifier: {
@@ -72,6 +73,7 @@ describe('aggregatePortSettings', () => {
       authDefaultVlan: { 'c0:c5:20:aa:32:55': [5, 5] },
       authenticationProfileId: {}, criticalVlan: {},
       defaultVlan: { 'c0:c5:20:aa:32:55': 1 },
+      dot1xPortControl: {},
       enableAuthPorts: { 'c0:c5:20:aa:32:55': [] },
       guestVlan: {}, hasMultipleValue: [], profileAuthDefaultVlan: {}, restrictedVlan: {},
       selectedPortIdentifier: { 'c0:c5:20:aa:32:55': ['1/1/2', '1/1/3'] },
@@ -84,6 +86,7 @@ describe('aggregatePortSettings', () => {
       authDefaultVlan: { 'c0:c5:20:aa:32:55': [5] },
       authenticationProfileId: {}, criticalVlan: {},
       defaultVlan: { 'c0:c5:20:aa:32:55': 1 },
+      dot1xPortControl: {},
       enableAuthPorts: { 'c0:c5:20:aa:32:55': [] },
       guestVlan: {}, hasMultipleValue: [], profileAuthDefaultVlan: {}, restrictedVlan: {},
       selectedPortIdentifier: { 'c0:c5:20:aa:32:55': ['1/1/3'] },
