@@ -55,6 +55,8 @@ export function UpdateFirmwarePerApModelIndividualPanel (props: UpdateFirmwarePe
 
   return (<Loader states={[{ isLoading }]}><UI.Section>
     <Space direction='vertical' size={20}>
+      {/* eslint-disable-next-line max-len */}
+      <span>{$t({ defaultMessage: 'Only the latest four versions are shown. Use dropdown search for more.' })}</span>
       <Checkbox
         onChange={handleShowAvailableFirmwareOnlyChange}
         checked={showAvailableFirmwareOnly}
@@ -69,6 +71,7 @@ export function UpdateFirmwarePerApModelIndividualPanel (props: UpdateFirmwarePe
             {...item}
             update={update}
             labelSize={labelSize}
+            isUpgrade={isUpgrade}
             // eslint-disable-next-line max-len
             {...(!isUpgrade && { emptyOptionLabel: $t({ defaultMessage: 'Do not downgrade firmware' }) })}
             // eslint-disable-next-line max-len
