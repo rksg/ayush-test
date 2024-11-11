@@ -22,5 +22,14 @@ export enum IncompatibilityFeatures {
   HQOS = 'HQoS',
   DHCP = 'DHCP',  // edge DHCP
   PIN = 'PIN',
-  EDGE_MDNS_PROXY = 'Edge mDNS Proxy'
+  EDGE_MDNS_PROXY = 'MDNS' // edge mDNS
+}
+
+export enum EdgeCompatibilityFeatureEnum {
+  SD_LAN = 'SD-LAN',
+  TUNNEL_PROFILE = 'Tunnel Profile',
+  HA_AA = 'HA-AA',
+  HQOS = 'HQoS',
+  DHCP = 'DHCP',
+  MDNS = 'MDNS'
 }

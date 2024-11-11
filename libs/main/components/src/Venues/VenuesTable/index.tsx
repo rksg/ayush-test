@@ -35,6 +35,15 @@ import { EdgeScopes, RequestPayload, SwitchScopes, WifiScopes, RolesEnum }   fro
 import { hasCrossVenuesPermission, filterByAccess, hasPermission, hasRoles } from '@acx-ui/user'
 import { transformToCityListOptions }                                        from '@acx-ui/utils'
 
+const incompatibleIconStyle = {
+  height: '16px',
+  width: '16px',
+  marginBottom: '-3px',
+  marginLeft: '4px',
+  color: cssStr('--acx-semantics-yellow-50'),
+  borderColor: cssStr('--acx-accents-orange-30')
+}
+
 function useColumns (
   searchable?: boolean,
   filterables?: { [key: string]: ColumnType['filterable'] }
@@ -121,10 +130,11 @@ function useColumns (
               children={count ? count : 0}
             />
             {row?.incompatible && row.incompatible > 0 ?
-              <Tooltip.Info isFilled
+              <Tooltip.Warning isFilled
+                isTriangle
                 title={$t({ defaultMessage: 'Some access points may not be compatible with certain features in this <venueSingular></venueSingular>.' })}
                 placement='right'
-                iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px', marginLeft: '4px', color: cssStr('--acx-semantics-yellow-50') }}
+                iconStyle={incompatibleIconStyle}
               />:[]
             }
           </>
@@ -192,10 +202,11 @@ function useColumns (
               children={row.edges ? row.edges : 0}
             />
             {row?.incompatibleEdges && row.incompatibleEdges > 0 ?
-              <Tooltip.Info isFilled
+              <Tooltip.Warning isFilled
+                isTriangle
                 title={$t({ defaultMessage: 'Some RUCKUS Edges may not be compatible with certain features in this <venueSingular></venueSingular>.' })}
                 placement='right'
-                iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px', marginLeft: '4px', color: cssStr('--acx-semantics-yellow-50') }}
+                iconStyle={incompatibleIconStyle}
               />:[]
             }
           </>
@@ -400,7 +411,7 @@ const useVenueEdgeCompatibilities = (tableQuery: TableQuery<Venue, RequestPayloa
       }).unwrap()
 
       const result = cloneDeep(tableData) ?? []
-      res?.compatibilities.forEach((item) => {
+      res?.compatibilities?.forEach((item) => {
         const idx = findIndex(tableQuery.data?.data, { id: item.id })
         if (idx !== -1)
           result[idx].incompatibleEdges = item.incompatible ?? 0

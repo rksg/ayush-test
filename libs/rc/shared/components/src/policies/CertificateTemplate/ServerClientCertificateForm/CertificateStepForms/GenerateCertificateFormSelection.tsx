@@ -5,7 +5,9 @@ import { CertificateGenerationType, ExtendedKeyUsages, GenerateCertificateFormDa
 
 import { generateCertificateTitle } from '../../contentsMap'
 
-import { GenerateCertificate } from './GenerateCertificate'
+import { GenerateCertificate }    from './GenerateCertificate'
+import GenerateCertificateWithCSR from './GenerateCertificateWIthCSR'
+import { UploadCertificate }      from './UploadCertificate'
 
 type GenerateCertificateFormSelectionFormProps = {
   extendedKeyUsages?: ExtendedKeyUsages[]
@@ -17,11 +19,10 @@ export const GenerateCertificateFormSelection =
   const generateCertificateForm = Form.useFormInstance<GenerateCertificateFormData>()
   const generation = Form.useWatch('generation', generateCertificateForm)
   const generationFormMapping = {
-    [CertificateGenerationType.NEW]:
-      <GenerateCertificate extendedKeyUsages={props?.extendedKeyUsages}/>,
-    [CertificateGenerationType.WITH_CSR]: <>{$t({ defaultMessage: 'Generate With CSR' })}</>, // TODO
-    [CertificateGenerationType.UPLOAD]: <>{
-      $t({ defaultMessage: 'Upload Client / Server Certificate' })}</> //TODO
+    [CertificateGenerationType.NEW]: <GenerateCertificate
+      extendedKeyUsages={props?.extendedKeyUsages}/>,
+    [CertificateGenerationType.WITH_CSR]: <GenerateCertificateWithCSR />,
+    [CertificateGenerationType.UPLOAD]: <UploadCertificate />
   }
 
   return (

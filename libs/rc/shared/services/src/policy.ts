@@ -3467,6 +3467,17 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'ServerCertificate', id: 'LIST' }]
+    }),
+    uploadCertificate: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload, customHeaders }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.uploadCertificate, params, { ...defaultCertTempVersioningHeaders, ...customHeaders })
+        return{
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'ServerCertificate', id: 'LIST' }]
     })
   })
 })
@@ -3713,5 +3724,6 @@ export const {
   useUpdateServerCertificateMutation,
   useLazyDownloadServerCertificateQuery,
   useLazyDownloadServerCertificateChainsQuery,
-  useGenerateClientServerCertificatesMutation
+  useGenerateClientServerCertificatesMutation,
+  useUploadCertificateMutation
 } = policyApi

@@ -357,5 +357,10 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/personalIdentityNetworks/apCompatibilities/query',
     newApi: true
+  },
+  getMdnsEdgeCompatibilities: {
+    method: 'post',
+    url: '/edgeMulticastDnsProxyProfiles/edgeCompatibilities/query',
+    newApi: true
   }
 }

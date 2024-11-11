@@ -65,6 +65,9 @@ const mockedTenantPath: Path = {
   search: '',
   hash: ''
 }
+const state= {
+  networkIds: undefined
+}
 
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
@@ -235,6 +238,8 @@ describe('AAATable', () => {
     expect(mockedUseNavigate).toHaveBeenCalledWith({
       ...mockedTenantPath,
       pathname: `${mockedTenantPath.pathname}/${editPath}`
+    }, {
+      state
     })
   })
 })

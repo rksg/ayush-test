@@ -68,7 +68,7 @@ export async function handleCallbackWhenActivitySuccess (
 
     if (
       activityData.useCase === targetUseCase &&
-      activityData.steps?.find(step => step.id === targetUseCase)?.status !== 'IN_PROGRESS'
+      activityData.steps?.find(step => step.id === targetUseCase)?.status !== TxStatus.IN_PROGRESS
     ) {
       callback()
     }
