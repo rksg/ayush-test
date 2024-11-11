@@ -178,30 +178,18 @@ Refer to [Feature Flag Operators & Usage in ACX-UI](https://jira-wiki.ruckuswire
 ##### Tool for generating Feature toggle code in R1
 From acx-ui/ root directory run following script
 ```sh
+export GIT_OPS_PATH=<path-to-local-gitops-flux-nonbom-repo>
+export NONDB_SCHEMA_PATH=<path-to-local-acx-nondb-schema-repo>
 node tools/dev/createFF.js -n <toggle-name> -d <description> -t <tags separated by space>
 for eg:
+export GIT_OPS_PATH=../gitops-flux-nonbom
+export NONDB_SCHEMA_PATH=../acx-nondb-schema
 node tools/dev/createFF.js -n acx-ui-roaming-type-events-toggle -d "Feature flag for CT roaming type events" -t acx-ui MLSA-8666
 ```
-The script refers to local repos `gitops-flux-nonbom` & `acx-nondb-schema` located at the same level of `acx-ui`. However can modify the paths in the script if required - 
-```sh
-// config path for repos, relative to acx-ui/ repo
-const GIT_OPS_PATH = '../gitops-flux-nonbom'
-const NONDB_SCHEMA_PATH = '../acx-nondb-schema'
-```
+Note: The script by default refers to local repos `gitops-flux-nonbom` & `acx-nondb-schema` located at the same level of `acx-ui`, hence there is no need to export the repo paths if repos happen to be at the mentioned location.
 
-Also the script sets default state for `dev` & `int` env as on. However it can be customised by modifying the cofig - 
-```sh
-// config envs with state
-const envs = [
-  { env: 'dev', state: 'on' },
-  { env: 'int', state: 'on' },
-  { env: 'prod', state: 'off' },
-  { env: 'prod-eu', state: 'off' },
-  { env: 'prod-sg', state: 'off' },
-  { env: 'qa', state: 'off' },
-  { env: 'stage', state: 'off' }
-]
-```
+The script sets default state for `dev` & `int` env as on. 
+
 After successfully running the sc
 
 ### I18n strings extraction and compilation

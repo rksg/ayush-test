@@ -6,8 +6,8 @@ const fs = require('fs')
 const commandLineArgs = require('command-line-args')
 
 // config path for repos, relative to acx-ui/ repo
-const GIT_OPS_PATH = '../gitops-flux-nonbom'
-const NONDB_SCHEMA_PATH = '../acx-nondb-schema'
+const GIT_OPS_PATH = process.env.GIT_OPS_PATH || '../gitops-flux-nonbom'
+const NONDB_SCHEMA_PATH = process.env.NONDB_SCHEMA_PATH || '../acx-nondb-schema'
 
 // config envs with state
 const envs = [
