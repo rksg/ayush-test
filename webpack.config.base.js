@@ -38,17 +38,19 @@ const modifyVars = require('./libs/common/components/src/theme/modify-vars')
       ...config.resolve // Retain the existing resolve configuration
     }
 
-    // Remove ForkTsCheckerWebpackPlugin from the plugins list
-    config.plugins = config.plugins.filter(plugin => {
-      return plugin.constructor.name !== 'ForkTsCheckerWebpackPlugin'; // Filter out the ForkTsCheckerWebpackPlugin
-    })
+    if (process.env.NODE_ENV === 'production') {
+      // Remove ForkTsCheckerWebpackPlugin from the plugins list
+      config.plugins = config.plugins.filter(plugin => {
+        return plugin.constructor.name !== 'ForkTsCheckerWebpackPlugin'; // Filter out the ForkTsCheckerWebpackPlugin
+      })
 
-    config.module.rules = config.module.rules.map(rule => {
-      // remove handling of less from existing rules
-      if (!rule.test.toString().includes('.less')) return rule
-      rule.test = /\.css$|\.scss$|\.sass$|\.styl$/
-      return rule
-    })
+      config.module.rules = config.module.rules.map(rule => {
+        // remove handling of less from existing rules
+        if (!rule.test.toString().includes('.less')) return rule
+        rule.test = /\.css$|\.scss$|\.sass$|\.styl$/
+        return rule
+      })
+    }
 
     config.module.rules.push({
       test: /\.less$/,
