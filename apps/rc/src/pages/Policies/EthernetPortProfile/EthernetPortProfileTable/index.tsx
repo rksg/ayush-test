@@ -25,7 +25,6 @@ import {
 }                                                                  from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { WifiScopes }                                              from '@acx-ui/types'
-import { filterByAccess, hasPermission }                           from '@acx-ui/user'
 
 
 const EthernetPortProfileTable = () => {
@@ -244,9 +243,7 @@ const EthernetPortProfileTable = () => {
     }
   ]
 
-  const isSelectionVisible = hasPermission({
-    scopes: [WifiScopes.UPDATE, WifiScopes.DELETE]
-  })
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
   return (
     <>
@@ -281,8 +278,8 @@ const EthernetPortProfileTable = () => {
         <Table
           rowKey={(row: EthernetPortProfileViewData) => `${row.id}-${row.name}`}
           columns={columns}
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={isSelectionVisible && { type: 'checkbox' }}
+          rowActions={allowedRowActions}
+          rowSelection={(allowedRowActions.length > 0) && { type: 'checkbox' }}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
