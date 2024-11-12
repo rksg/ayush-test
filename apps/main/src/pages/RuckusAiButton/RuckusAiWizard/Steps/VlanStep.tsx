@@ -5,7 +5,7 @@ import { Button, Divider }                               from 'antd'
 import { useIntl }                                       from 'react-intl'
 
 import { cssStr }                   from '@acx-ui/components'
-import { RuckusAiDog }              from '@acx-ui/icons'
+import { CrownSolid, RuckusAiDog }  from '@acx-ui/icons'
 import { VlanSettingDrawer }        from '@acx-ui/rc/components'
 import {
   useCreateOnboardConfigsMutation,
@@ -25,7 +25,7 @@ type NetworkConfig = {
   'id': string;
 }
 
-export function VlanStep (props: { payload: string, sessionId: string,
+export function VlanStep (props: { payload: string, sessionId: string, description: string,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   formInstance: ProFormInstance<any> | undefined
 }) {
@@ -165,12 +165,22 @@ export function VlanStep (props: { payload: string, sessionId: string,
             {$t({ defaultMessage: 'Add VLAN' })}
           </Button>
         </UI.HeaderWithAddButton>
-        <UI.Description>
-          { // eslint-disable-next-line max-len
-            $t({ defaultMessage: 'Now, let us set up the VLANs for your school network. Setting up VLANs effectively will help in managing and segmenting your network traffic efficiently in your educational environment. Here’s how you can structure your VLANs for different use cases.'
-            })}
-        </UI.Description>
       </UI.Header>
+
+      <UI.HighlightedBox>
+        <UI.HighlightedTitle>
+          <CrownSolid
+            style={{
+              width: '20px',
+              height: '20px',
+              verticalAlign: 'text-bottom',
+              color: cssStr('--acx-semantics-yellow-50')
+            }}
+          />
+          <span>{$t({ defaultMessage: 'Recommended VLANs' })}</span>
+        </UI.HighlightedTitle>
+        <UI.HighlightedDescription>{props.description}</UI.HighlightedDescription>
+      </UI.HighlightedBox>
 
       {data.map((item, index) => (
         <React.Fragment key={item.id}>
