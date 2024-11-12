@@ -130,6 +130,7 @@ export const codeToFailureTypeMap: Record<IncidentCode, string> = {
   'p-airtime-b-24g-high': 'airtime-b',
   'p-airtime-b-5g-high': 'airtime-b',
   'p-airtime-b-6(5)g-high': 'airtime-b',
+  'p-switch-port-congestion': 'port-congestion',
   's-switch-tcp-syn-ddos': 'tcp-syn-ddos'
 }
 
@@ -1212,6 +1213,28 @@ export const rootCauseRecommendationMap = {
       }),
       recommendations: defineMessage({
         defaultMessage: '<p>Use/configure a spanning tree or any other loop avoidance protocol for this VLAN %XXX%. This will help disable redundant paths until they are needed, effectively preventing the formation of loops and restore the functioning of the network.</p>'
+      })
+    }
+  },
+  'port-congestion': {
+    DEFAULT: {
+      rootCauses: defineMessage({
+        defaultMessage: `<p>This "Congestion" incident could be potentially triggered due to multiple reasons:
+
+1. Excessive bandwidth consumption: Certain users or devices on the network may occasionally utilize more bandwidth than the average user or device, causing network congestion.
+2. Broadcast Storms: A broadcast storm occurs when there is a sudden upsurge in the number of requests to a network.
+3. Multicasting: A collision can occur when two packets are sent at the same time in multicasting.
+4. Too many devices: If the network has too many devices linked to it, the network may become burdened with data requests. </p>`
+      }),
+      recommendations: defineMessage({
+        defaultMessage: `<p>There are several options to assess for to remediate network congestion and should be planned based on exact circumstance of the network.
+
+1. Use link aggregation: Multiple connections are combined in parallel.
+2. Increase Bandwidth or move to a higher bandwidth port: The most common cause of network congestion is insufficient bandwidth. If the network's traffic exceeds its bandwidth capacity, increasing the bandwidth can help alleviate the congestion.
+3. Implement Traffic Shaping: Traffic shaping, also known as packet shaping, is a network traffic management technique that delays some or all datagrams to bring them into compliance with a desired traffic profile.
+4. Use Quality of Service (QoS): QoS mechanisms can prioritize certain types of traffic, ensuring that important data gets through even during times of congestion.
+5. Implement Load Balancing: Load balancing distributes network traffic across multiple servers to ensure no single server becomes overwhelmed with too much traffic.
+6. Monitor Network Traffic: Regular monitoring of network traffic can help identify patterns and trends, enabling proactive management of network congestion.</p>`
       })
     }
   },

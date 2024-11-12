@@ -221,6 +221,17 @@ export const incidentInformation: Record<IncidentCode, IncidentInformation> = {
     }),
     incidentType: 'switch'
   },
+  'p-switch-port-congestion': {
+    category: defineMessage({ defaultMessage: 'Performance' }),
+    subCategory: defineMessage({ defaultMessage: 'Congestion' }),
+    shortDescription: defineMessage({
+      defaultMessage: 'Port congestion detected in {scope}'
+    }),
+    longDescription: defineMessage({
+      defaultMessage: 'Port congestion detected in {scope}.'
+    }),
+    incidentType: 'switch'
+  },
   'p-switch-memory-high': {
     category: defineMessage({ defaultMessage: 'Performance' }),
     subCategory: defineMessage({ defaultMessage: 'Memory' }),

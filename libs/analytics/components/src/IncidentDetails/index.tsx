@@ -24,6 +24,7 @@ import { RadiusFailure }           from './Details/RadiusFailure'
 import { SwitchLoopDetection }     from './Details/SwitchLoopDetection'
 import { SwitchMemoryHigh }        from './Details/SwitchMemoryHigh'
 import { SwitchPoePd }             from './Details/SwitchPoePd'
+import { SwitchPortCongestion }    from './Details/SwitchPortCongestion'
 import { SwitchTcpSynDDoS }        from './Details/SwitchTcpSynDDoS'
 import { SwitchVlanMismatch }      from './Details/SwitchVlanMismatch'
 import { Ttc }                     from './Details/Ttc'
@@ -65,6 +66,7 @@ export const incidentDetailsMap = {
   'p-airtime-tx-24g-high': AirtimeTx,
   'p-airtime-tx-5g-high': AirtimeTx,
   'p-airtime-tx-6(5)g-high': AirtimeTx,
+  'p-switch-port-congestion': SwitchPortCongestion,
   's-switch-tcp-syn-ddos': SwitchTcpSynDDoS
 }
 

@@ -95,7 +95,8 @@ describe('constants', () => {
       const toggles = {
         [IncidentToggle.AirtimeIncidents]: false,
         [IncidentToggle.SwitchDDoSIncidents]: false,
-        [IncidentToggle.SwitchLoopDetectionIncidents]: false
+        [IncidentToggle.SwitchLoopDetectionIncidents]: false,
+        [IncidentToggle.SwitchPortCongestionIncidents]: false
       }
       expect(getWiredWirelessIncidentCodes(toggles)).toEqual([
         [
@@ -130,11 +131,13 @@ describe('constants', () => {
       const toggles = {
         [IncidentToggle.AirtimeIncidents]: false,
         [IncidentToggle.SwitchDDoSIncidents]: true,
-        [IncidentToggle.SwitchLoopDetectionIncidents]: true
+        [IncidentToggle.SwitchLoopDetectionIncidents]: true,
+        [IncidentToggle.SwitchPortCongestionIncidents]: true
       }
       expect(getWiredWirelessIncidentCodes(toggles)).toEqual([
         [
           'p-switch-memory-high',
+          'p-switch-port-congestion',
           'i-switch-vlan-mismatch',
           'i-switch-poe-pd',
           'i-switch-loop-detection',
