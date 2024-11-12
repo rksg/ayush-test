@@ -38,26 +38,26 @@ describe('DriftComparisonSet', () => {
     it('filters out records with paths ending with "Id" if a corresponding "Name" record exists', () => {
       const input: ConfigTemplateDriftRecord[] = [
         { path: 'fooId', data: { template: '', instance: '' } },
-        { path: 'fooName', data: { template: '', instance: '' } },
+        { path: 'fooIdName', data: { template: '', instance: '' } },
         { path: 'barId', data: { template: '', instance: '' } }
       ]
       const expectedOutput: ConfigTemplateDriftRecord[] = [
-        { path: 'fooName', data: { template: '', instance: '' } },
+        { path: 'fooIdName', data: { template: '', instance: '' } },
         { path: 'barId', data: { template: '', instance: '' } }
       ]
       expect(filterDriftRecordIdByName(input)).toEqual(expectedOutput)
     })
 
     // eslint-disable-next-line max-len
-    it('filters out records with paths matching the "Ids/\\d+$" pattern if a corresponding "Names/\\d+" record exists', () => {
+    it('filters out records with paths matching the "Id/\\d+$" pattern if a corresponding "IdName/\\d+" record exists', () => {
       const input: ConfigTemplateDriftRecord[] = [
-        { path: 'fooIds/1', data: { template: '', instance: '' } },
-        { path: 'fooNames/1', data: { template: '', instance: '' } },
-        { path: 'barIds/2', data: { template: '', instance: '' } }
+        { path: 'fooId/1', data: { template: '', instance: '' } },
+        { path: 'fooIdName/1', data: { template: '', instance: '' } },
+        { path: 'barId/2', data: { template: '', instance: '' } }
       ]
       const expectedOutput: ConfigTemplateDriftRecord[] = [
-        { path: 'fooNames/1', data: { template: '', instance: '' } },
-        { path: 'barIds/2', data: { template: '', instance: '' } }
+        { path: 'fooIdName/1', data: { template: '', instance: '' } },
+        { path: 'barId/2', data: { template: '', instance: '' } }
       ]
       expect(filterDriftRecordIdByName(input)).toEqual(expectedOutput)
     })

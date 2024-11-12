@@ -21,7 +21,7 @@ export const DriftSetCollapse = styled(Collapse)`
   }
 `
 
-export const DriftHeader = styled.span`
+export const BoldLabel = styled.span`
   font-weight: 600;
   word-break: break-all;
 `
@@ -29,6 +29,7 @@ export const DriftHeader = styled.span`
 export const DriftInstanceCollapse = styled(Collapse)`
   width: 100%;
   .ant-collapse-item .ant-collapse-header {
+    padding: 0 !important;
     border-bottom: none !important;
     font-size: var(--acx-subtitle-4-font-size) !important;
     .ant-collapse-expand-icon {
@@ -43,12 +44,11 @@ export const DriftInstanceCollapse = styled(Collapse)`
     padding-bottom: 4px;
   }
 `
-export const DriftInstanceHeader = styled.div`
-  backgroundColor: #F2F2F2;
-  padding: 8px 30px 8px 16px;
-  width: 100%;
-  display: inline-flex;
-  align-items: center;
-  border-top: 1px solid #D7D7D7;
-  border-bottom: 1px solid #D7D7D7
+
+export const SelectedCustomersIndicator = styled.div`
+  padding: 6px;
+  background-color: var(--acx-accents-blue-10);
+  border-radius: 4px;
+  font-size: var(--acx-body-4-font-size);
+  font-weight: normal;
 `

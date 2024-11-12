@@ -10,7 +10,7 @@ export function DriftComparison (props: ConfigTemplateDriftRecord) {
   const { templateValueBgColor, instanceValueBgColor } = getItemBgColor(template, instance)
 
   return <div>
-    <UI.DriftHeader>{path}</UI.DriftHeader>
+    <UI.BoldLabel>{path}</UI.BoldLabel>
     <Row style={{ marginBottom: '12px' }} gutter={8}>
       {/* eslint-disable-next-line max-len */}
       <Col span={12} style={{ backgroundColor: templateValueBgColor, wordBreak: 'break-all', borderRight: '2px solid #FFF' }}>

@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 
-import { Checkbox, Col, Row }  from 'antd'
+import { Checkbox }            from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
-import { useIntl }             from 'react-intl'
 
 import { Collapse, Loader }                 from '@acx-ui/components'
 import { CollapseActive, CollapseInactive } from '@acx-ui/icons'
@@ -11,6 +10,8 @@ import { ConfigTemplateDriftSet }           from '@acx-ui/rc/utils'
 
 import { DriftComparisonSet } from './DriftComparisonSet'
 import * as UI                from './styledComponents'
+
+import { DriftInstanceRow } from '.'
 
 
 
@@ -24,7 +25,6 @@ export interface DriftInstanceProps {
 }
 
 export function DriftInstance (props: DriftInstanceProps) {
-  const { $t } = useIntl()
   // eslint-disable-next-line max-len
   const { templateId, instanceName, instanceId, selected = false, updateSelection, disalbed = false } = props
   const [ getDriftReport, { isLoading: isLoadingDriftData } ] = useLazyGetDriftReportQuery()
@@ -48,23 +48,17 @@ export function DriftInstance (props: DriftInstanceProps) {
     onCheckboxChange(selected)
   }, [selected])
 
-  const header = <UI.DriftInstanceHeader>
-    <Checkbox
-      style={{ flex: '0 0 26px' }}
-      onChange={(e: CheckboxChangeEvent) => onCheckboxChange(e.target.checked)}
-      onClick={(e) => e.stopPropagation()}
-      checked={checked}
-      disabled={!checked && disalbed}
+  const header = <div style={{ paddingTop: '8px', paddingBottom: '8px' }}>
+    <DriftInstanceRow
+      head={<Checkbox
+        onChange={(e: CheckboxChangeEvent) => onCheckboxChange(e.target.checked)}
+        onClick={(e) => e.stopPropagation()}
+        checked={checked}
+        disabled={!checked && disalbed}
+      />}
+      body={<span style={{ fontWeight: 'normal' }}>{instanceName}</span>}
     />
-    <Row style={{ flex: '1 1 auto' }}>
-      <Col span={12}>
-        {$t({ defaultMessage: 'Configurations in Template' })}
-      </Col>
-      <Col span={12}>
-        {$t({ defaultMessage: 'Configurations in {instanceName}' }, { instanceName })}
-      </Col>
-    </Row>
-  </UI.DriftInstanceHeader>
+  </div>
 
   return <UI.DriftInstanceCollapse
     ghost

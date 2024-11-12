@@ -7,7 +7,8 @@ import { useIntl }                                 from 'react-intl'
 import {
   Button,
   Drawer,
-  Loader
+  Loader,
+  Tooltip
 } from '@acx-ui/components'
 import { useGetDriftInstancesQuery, usePatchDriftReportMutation } from '@acx-ui/rc/services'
 import { ConfigTemplate }                                         from '@acx-ui/rc/utils'
@@ -16,6 +17,7 @@ import { MAX_SYNC_EC_TENANTS } from '../../constants'
 import { useEcFilters }        from '../templateUtils'
 
 import { DriftInstance } from './DriftInstance'
+import * as UI           from './styledComponents'
 
 export interface ShowDriftsDrawerProps {
   setVisible: (visible: boolean) => void
@@ -102,19 +104,20 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
       destroyOnClose={true}
       width={650}
     >
-      <Space direction='vertical' size='small'>
+      <Space direction='vertical' size='small' style={{ marginBottom: '6px' }}>
         {/* eslint-disable-next-line max-len */}
         <p>{ $t({ defaultMessage: 'During sync all configurations in the selected template overwrite the corresponding configuration in the associated customers.' }) }</p>
         <Toolbar
           customerOptions={driftInstances}
-          onSyncAllChange={onSyncAllChange}
           onInstanceFilterSelect={onInstanceFilterSelect}
         />
-        <SelectedCustomersIndicator selectedCount={selectedInstances.length} />
       </Space>
       <Loader states={[{ isLoading: isDriftInstancesLoading }]}>
         <List
-          split={false}
+          header={<DriftInstanceListHeader
+            onSyncAllChange={onSyncAllChange}
+            selectedCount={selectedInstances.length}
+          />}
           pagination={{ position: 'bottom' }}
           // eslint-disable-next-line max-len
           dataSource={driftInstances.filter(ins => selectedFilterValue ? ins.id === selectedFilterValue : true)}
@@ -138,20 +141,14 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
 
 interface ToolbarProps {
   customerOptions: Array<{ name: string, id: string }>
-  onSyncAllChange: (e: CheckboxChangeEvent) => void
   onInstanceFilterSelect: (value: string | undefined) => void
 }
 
 function Toolbar (props: ToolbarProps) {
-  const { customerOptions, onSyncAllChange, onInstanceFilterSelect } = props
+  const { customerOptions, onInstanceFilterSelect } = props
   const { $t } = useIntl()
 
-  return <Row justify='space-between' align='middle' style={{ paddingLeft: '16px' }}>
-    <Col span={12}>
-      <Checkbox onChange={onSyncAllChange}>
-        {$t({ defaultMessage: 'Sync all drifts for all customers' })}
-      </Checkbox>
-    </Col>
+  return <Row justify='end' align='middle' style={{ paddingLeft: '16px' }}>
     <Col span={12} style={{ textAlign: 'right' }}>
       <Select
         style={{ minWidth: 200, textAlign: 'left' }}
@@ -174,11 +171,40 @@ export function SelectedCustomersIndicator (props: { selectedCount: number }) {
 
   if (selectedCount === 0) return null
 
-  return <div style={{
-    padding: '6px 20px',
-    backgroundColor: 'var(--acx-accents-blue-10)',
-    borderRadius: '4px'
-  }}>
+  return <UI.SelectedCustomersIndicator>
     { $t({ defaultMessage: '{num} selected' }, { num: selectedCount }) }
+  </UI.SelectedCustomersIndicator>
+}
+
+function DriftInstanceListHeader (props: {
+  onSyncAllChange: (e: CheckboxChangeEvent) => void,
+  selectedCount: number
+}) {
+  const { onSyncAllChange, selectedCount } = props
+  const { $t } = useIntl()
+
+  return <Space direction='vertical' style={{ width: '100%' }}>
+    <DriftInstanceRow
+      head={<Tooltip title={$t({ defaultMessage: 'Select All' })}>
+        <Checkbox onChange={onSyncAllChange} />
+      </Tooltip>}
+      body={<Row style={{ fontWeight: '600' }}>
+        <Col span={12}>
+          {$t({ defaultMessage: 'Configurations in Template' })}
+        </Col>
+        <Col span={12}>
+          {$t({ defaultMessage: 'Configurations in Customer' })}
+        </Col>
+      </Row>}
+    />
+    <SelectedCustomersIndicator selectedCount={selectedCount} />
+  </Space>
+}
+
+export function DriftInstanceRow (props: { head: React.ReactNode, body: React.ReactNode }) {
+  const { head, body } = props
+  return <div style={{ display: 'inline-flex', alignItems: 'center', width: '100%' }}>
+    <div style={{ flex: '0 0 26px' }}>{head}</div>
+    <div style={{ flex: '1 1 auto' }}>{body}</div>
   </div>
 }

@@ -13,7 +13,7 @@ export function DriftComparisonSet (props: ConfigTemplateDriftSet) {
     expandIconPosition='start'
     expandIcon={({ isActive }) => isActive ? <MinusSquareOutlined /> : <PlusSquareOutlined />}
   >
-    <Collapse.Panel header={<UI.DriftHeader>{diffName}</UI.DriftHeader>} key={diffName}>
+    <Collapse.Panel header={<UI.BoldLabel>{diffName}</UI.BoldLabel>} key={diffName}>
       {filterDriftRecordIdByName(diffData).map((item, index) => {
         return <div key={index} style={{ marginLeft: '12px' }}>
           <DriftComparison {...item} />
@@ -28,12 +28,12 @@ export function filterDriftRecordIdByName (input: ConfigTemplateDriftRecord[]): 
   return input.filter((record: ConfigTemplateDriftRecord) => {
     if (record.path.endsWith('Id')) {
       const isNameRecordExisted = input.some((item: ConfigTemplateDriftRecord) => {
-        return item.path === record.path.replace('Id', 'Name')
+        return item.path === `${record.path}Name`
       })
       return !isNameRecordExisted
-    } else if (/Ids\/\d+$/.test(record.path)) {
+    } else if (/Id\/\d+$/.test(record.path)) {
       const isNameRecordExisted = input.some((item: ConfigTemplateDriftRecord) => {
-        return item.path === record.path.replace(/(Ids)\/(\d+)$/, (match, p1, p2) => `Names/${p2}`)
+        return item.path === record.path.replace(/(Id)\/(\d+)$/, (match, p1, p2) => `IdName/${p2}`)
       })
 
       return !isNameRecordExisted
