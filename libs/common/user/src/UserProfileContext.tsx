@@ -48,13 +48,15 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
 
   let abacEnabled = false, isCustomRole = false
   const abacFF = 'abac-policies-toggle'
+  const betaListFF = 'acx-ui-selective-early-access-toggle'
 
   const { data: featureFlagStates, isLoading: isFeatureFlagStatesLoading }
     = useFeatureFlagStatesQuery(
-      { params: { tenantId }, payload: [abacFF] },
+      { params: { tenantId }, payload: [abacFF, betaListFF] },
       { skip: !Boolean(profile) }
     )
   abacEnabled = featureFlagStates?.[abacFF] ?? false
+  const betaListEnabled = featureFlagStates?.[betaListFF] ?? false
 
   const { data: beta } = useGetBetaStatusQuery(
     { params: { tenantId }, enableRbac: abacEnabled },
@@ -89,9 +91,8 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
   const venuesList: string[] = (venues?.data.map(item => item.id)
     .filter((id): id is string => id !== undefined)) || []
 
-  const { data: features } = useGetBetaFeatureListQuery({ params })
-  // const betaFeaturesList: FeatureAPIResults[] = features
-  //   ? (features?.betaFeatures.filter(feature => feature !== undefined)) : []
+  const { data: features } = useGetBetaFeatureListQuery({ params },
+    { skip: !(beta?.enabled === 'true') || !betaListEnabled })
 
   const betaFeaturesList: FeatureAPIResults[] = (features?.betaFeatures.filter((feature):
     feature is FeatureAPIResults => feature !== undefined)) || []
