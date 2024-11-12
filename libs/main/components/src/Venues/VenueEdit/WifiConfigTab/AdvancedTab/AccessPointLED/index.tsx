@@ -34,7 +34,10 @@ export function AccessPointLED () {
   const venueLed = useGetVenueLedOnQuery(
     { params: { tenantId, venueId }, enableRbac: isUseRbacApi }
   )
-  const venueApModels = useGetVenueApModelsQuery({ params: { tenantId, venueId } })
+  const venueApModels = useGetVenueApModelsQuery({
+    params: { tenantId, venueId },
+    enableRbac: isUseRbacApi
+  })
   const [updateVenueLedOn, { isLoading: isUpdatingVenueLedOn }] = useUpdateVenueLedOnMutation()
   const {
     editContextData,
@@ -87,7 +90,7 @@ export function AccessPointLED () {
         .map(apModel => apModel.model)
       const venueApLeds = venueLed?.data?.map((item: VenueLed) => ({
         ...item,
-        manual: !venueApModels?.data?.models?.includes(item.model)
+        manual: !venueApModels?.data?.models?.map((ap) => ap.toUpperCase()).includes(item.model)
       }))
       const existingModels = venueApLeds?.map((item: VenueLed) => item.model)
       const availableModels = supportModels
