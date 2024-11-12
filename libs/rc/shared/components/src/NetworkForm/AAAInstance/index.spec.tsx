@@ -165,7 +165,7 @@ describe('AAA Instance Page', () => {
       mockRadSecAAAPolicyNewCreateResponse.radSecOptions.cnSanIdentity)
 
     const comboboxes = await screen.findAllByRole('combobox')
-    expect(comboboxes.length).toBe(3)
+    expect(comboboxes.length).toBe(4)
 
     await userEvent.click(comboboxes[1])
     await userEvent.click(await screen.findByText('CA-1'))

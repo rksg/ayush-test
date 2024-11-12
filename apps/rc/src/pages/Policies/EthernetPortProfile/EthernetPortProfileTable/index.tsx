@@ -12,11 +12,13 @@ import {
 import {
   AAAViewModalType,
   EthernetPortProfileViewData,
+  filterByAccessForServicePolicyMutation,
   getEthernetPortAuthTypeString,
   getEthernetPortTypeString,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
+  getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType,
   useTableQuery
@@ -263,13 +265,17 @@ const EthernetPortProfileTable = () => {
           }
         ]}
 
-        extra={filterByAccess([<TenantLink scopeKey={[WifiScopes.CREATE]}
-          // eslint-disable-next-line max-len
-          to={getPolicyRoutePath({ type: PolicyType.ETHERNET_PORT_PROFILE , oper: PolicyOperation.CREATE })}
-        >
-          <Button type='primary'>{$t({ defaultMessage: 'Add Ethernet Port Profile' })}</Button>
-        </TenantLink>
-        ])}
+        extra={
+          filterByAccessForServicePolicyMutation([
+            <TenantLink
+              scopeKey={
+                getScopeKeyByPolicy(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.CREATE)}
+              // eslint-disable-next-line max-len
+              to={getPolicyRoutePath({ type: PolicyType.ETHERNET_PORT_PROFILE , oper: PolicyOperation.CREATE })}
+            >
+              <Button type='primary'>{$t({ defaultMessage: 'Add Ethernet Port Profile' })}</Button>
+            </TenantLink>
+          ])}
       />
       <Loader states={[tableQuery]}>
         <Table

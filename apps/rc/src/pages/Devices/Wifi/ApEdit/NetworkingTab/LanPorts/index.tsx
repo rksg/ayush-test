@@ -17,14 +17,15 @@ import {
 import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import { ConvertPoeOutToFormData, LanPortPoeSettings, LanPortSettings } from '@acx-ui/rc/components'
 import {
-  useLazyGetVenueLanPortsQuery,
   useLazyGetVenueSettingsQuery,
   useGetApLanPortsWithEthernetProfilesQuery,
   useUpdateApLanPortsMutation,
   useResetApLanPortsMutation,
   useLazyGetDHCPProfileListViewModelQuery,
   useGetDefaultApLanPortsQuery,
-  useUpdateApEthernetPortsMutation
+  useUpdateApEthernetPortsMutation,
+  useLazyGetVenueLanPortWithEthernetSettingsQuery,
+  useLazyGetVenueLanPortsQuery
 } from '@acx-ui/rc/services'
 import {
   LanPort,
@@ -109,6 +110,7 @@ export function LanPorts () {
     params: { venueId, serialNumber }
   }, { skip: !isResetLanPortEnabled })
 
+  const [getVenueLanPortsWithEthernet] = useLazyGetVenueLanPortWithEthernetSettingsQuery()
   const [getVenueLanPorts] = useLazyGetVenueLanPortsQuery()
   const getDhcpEnabled = useFetchIsVenueDhcpEnabled()
 
@@ -153,10 +155,18 @@ export function LanPorts () {
       }
 
       const setData = async () => {
-        const venueLanPortsData = (await getVenueLanPorts({
+
+        const queryPayload = {
           params: { tenantId, venueId },
           enableRbac: isUseWifiRbacApi
-        }, true).unwrap())?.filter(item => item.model === apDetails?.model)?.[0]
+        }
+
+        const venueLanPortsData = (
+          (isEthernetPortProfileEnabled)?
+            await getVenueLanPortsWithEthernet(queryPayload, true).unwrap():
+            // eslint-disable-next-line max-len
+            await getVenueLanPorts(queryPayload, true).unwrap())
+          ?.filter(item => item.model === apDetails?.model)?.[0]
 
         const isDhcpEnabled = await getDhcpEnabled(venueId!)
 
@@ -496,32 +506,32 @@ export function LanPorts () {
         }</Button>}
     </Space>
   }
-}
 
-function getLanPortsWithDefaultEthernetPortProfile (
-  lanPorts: LanPort[],
-  lanPortsCap: LanPort[],
-  tenantId?: string) {
+  function getLanPortsWithDefaultEthernetPortProfile (
+    lanPorts: LanPort[],
+    lanPortsCap: LanPort[],
+    tenantId?: string) {
 
-  if(!lanPorts) {
-    return lanPorts
-  }
-
-  const newLanPorts = cloneDeep(lanPorts)
-  newLanPorts.forEach((lanPort: LanPort)=>{
-    if (!lanPort.hasOwnProperty('ethernetPortProfileId') ||
-         lanPort.ethernetPortProfileId === null) {
-      const defaultType = lanPortsCap.find(cap => cap.id === lanPort.portId)?.defaultType
-      switch (defaultType){
-        case ApLanPortTypeEnum.ACCESS:
-          lanPort.ethernetPortProfileId = tenantId + '_' + ApLanPortTypeEnum.ACCESS.toString()
-          break
-        case ApLanPortTypeEnum.TRUNK:
-          lanPort.ethernetPortProfileId = tenantId + '_' + ApLanPortTypeEnum.TRUNK.toString()
-          break
-      }
+    if(!lanPorts || !isEthernetPortProfileEnabled) {
+      return lanPorts
     }
-  })
 
-  return newLanPorts
+    const newLanPorts = cloneDeep(lanPorts)
+    newLanPorts.forEach((lanPort: LanPort)=>{
+      if (!lanPort.hasOwnProperty('ethernetPortProfileId') ||
+           lanPort.ethernetPortProfileId === null) {
+        const defaultType = lanPortsCap.find(cap => cap.id === lanPort.portId)?.defaultType
+        switch (defaultType){
+          case ApLanPortTypeEnum.ACCESS:
+            lanPort.ethernetPortProfileId = tenantId + '_' + ApLanPortTypeEnum.ACCESS.toString()
+            break
+          case ApLanPortTypeEnum.TRUNK:
+            lanPort.ethernetPortProfileId = tenantId + '_' + ApLanPortTypeEnum.TRUNK.toString()
+            break
+        }
+      }
+    })
+
+    return newLanPorts
+  }
 }

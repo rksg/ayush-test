@@ -63,6 +63,15 @@ jest.mock('@acx-ui/rc/components', () => ({
   EdgeHaSettingsForm: () => <div data-testid='rc-HaSettingForm' />
 }))
 
+const { mockLanInterfaces } = EdgePortConfigFixtures
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useGetAllInterfacesByTypeQuery: () => ({
+    data: mockLanInterfaces,
+    isLoading: false
+  })
+}))
+
 const MockedPortForm = ({ children, ...others }: React.PropsWithChildren<{
  portIfName: string
   }>) => <div data-testid='rc-PortForm'>
@@ -359,7 +368,7 @@ describe('InterfaceSettings', () => {
     // eslint-disable-next-line max-len
     const vipInputs = await within(stepsForm).findAllByRole('textbox', { name: 'Virtual IP Address' })
     await userEvent.clear(vipInputs[0])
-    await userEvent.type(vipInputs[0], '2.2.2.10')
+    await userEvent.type(vipInputs[0], '192.168.13.135')
     await userEvent.click(nextBtn)
     await within(stepsForm).findByTestId('rc-Summary')
     await userEvent.click(screen.getByRole('button', { name: 'Apply & Continue' }))

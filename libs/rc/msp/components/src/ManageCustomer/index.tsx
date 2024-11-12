@@ -373,7 +373,7 @@ export function ManageCustomer () {
           lastName: userProfile.lastName,
           name: userProfile.firstName,
           email: userProfile.email,
-          role: userProfile.role as RolesEnum,
+          role: RolesEnum.PRIME_ADMIN,
           detailLevel: userProfile.detailLevel
         })
         setAdministrator(administrator)
@@ -561,7 +561,7 @@ export function ManageCustomer () {
       }
       if (isRbacPhase2Enabled && privilegeGroups.length > 0) {
         const pgIds = privilegeGroups?.map((pg: PrivilegeGroup)=> pg.id)
-        customer.privilegeGroups = pgIds
+        customer.privilege_group_ids = pgIds
       }
 
       const result =
