@@ -6,10 +6,10 @@ import { PortalLanguageEnum } from '@acx-ui/rc/utils'
 import { getDisplayLanguage } from '@acx-ui/utils'
 import { getIntl }            from '@acx-ui/utils'
 
-
+const IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/svg+xml']
 export const getBase64 = (img: RcFile, callback: (url: string) => void) => {
   const { $t } = getIntl()
-  const acceptedImageTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/svg+xml']
+  const acceptedImageTypes = IMAGE_TYPES
   const validImage = acceptedImageTypes.includes(img.type)
   if (!validImage) {
     const content = $t({ defaultMessage: 'Invalid Image type!' })
@@ -19,9 +19,9 @@ export const getBase64 = (img: RcFile, callback: (url: string) => void) => {
     })
     return
   }
-  const isLt20M = img.size / 1024 / 1024 < 20
-  if (!isLt20M) {
-    const content = $t({ defaultMessage: 'Image must smaller than 20MB!' })
+  const isLt5M = img.size / 1024 / 1024 < 5
+  if (!isLt5M) {
+    const content = $t({ defaultMessage: 'Image must smaller than 5MB!' })
     showToast({
       type: 'error',
       content
