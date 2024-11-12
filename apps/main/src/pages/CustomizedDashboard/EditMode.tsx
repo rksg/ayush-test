@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Space, Divider } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { Button }                                                                                                                                                                from '@acx-ui/components'
+import { Button, cssStr }                                                                                                                                                                from '@acx-ui/components'
 import { ArrowDown, ArrowUp, ClockOutlined, DashboardOutlined, DataStudioOutlined, DeleteOutlined, EraserOutlined, EyeOpenOutlined, EyeSlashOutlined, Link, Plus, Reload, Text } from '@acx-ui/icons'
 
 import * as UI from './styledComponents'
@@ -25,7 +25,7 @@ export default function EditMode (props: {
   const [ sectionsSubVisible, setSectionsSubVisible ] = useState(false)
   const [ restoreSubVisible, setRestoreSubVisible ] = useState(false)
   const [ dirty, setDirty ] = useState(false)
-  const siderWidth = localStorage.getItem('acx-sider-width') || '200px'
+  const siderWidth = localStorage.getItem('acx-sider-width') || cssStr('--acx-sider-width')
   const onClickToolbar = (item?: ToolbarItems) => {
     if(!dirty){
       setDirty(true)

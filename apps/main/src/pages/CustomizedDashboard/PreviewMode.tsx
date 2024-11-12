@@ -1,7 +1,7 @@
 import { Space, Divider } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { Button }       from '@acx-ui/components'
+import { Button, cssStr }       from '@acx-ui/components'
 import { EditOutlined } from '@acx-ui/icons'
 
 import * as UI from './styledComponents'
@@ -11,7 +11,7 @@ export default function PreviewMode (props: {
 }) {
   const { $t } = useIntl()
   const { visible, setVisible } = props
-  const siderWidth = localStorage.getItem('acx-sider-width') || '200px'
+  const siderWidth = localStorage.getItem('acx-sider-width') || cssStr('--acx-sider-width')
 
   return (
     visible ? <UI.Preview $siderWidth={siderWidth}>

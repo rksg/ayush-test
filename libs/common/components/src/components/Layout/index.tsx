@@ -240,7 +240,7 @@ export function Layout ({
 
   useEffect(() => {
     if (!collapsed) {
-      localStorage.setItem('acx-sider-width', '200px')
+      localStorage.setItem('acx-sider-width', '216px')
     } else {
       localStorage.setItem('acx-sider-width', '60px')
     }
