@@ -206,6 +206,7 @@ export function EditPortDrawer ({
     dot1xPortControl,
     dot1xPortControlCheckbox,
     authDefaultVlan,
+    authDefaultVlanCheckbox,
     authFailAction,
     authFailActionCheckbox,
     restrictedVlanCheckbox,
@@ -508,7 +509,7 @@ export function EditPortDrawer ({
       : portSettingArray
 
     const { tagged, untagged, voice } = getPortVenueVlans(vlansByVenue, selectedPorts?.[0])
-    const aggregatedData = isSwitchFlexAuthEnabled
+    const aggregatedData = isSwitchFlexAuthEnabled && portSetting
       ? aggregatePortSettings([portSetting], switchesDefaultVlan) : {}
 
     setVenueTaggedVlans(tagged)
@@ -576,7 +577,7 @@ export function EditPortDrawer ({
       ...((!vlansValue.isUntagEqual && ['untaggedVlan']) || []),
       ...((!vlansValue.isVoiceVlanEqual && ['voiceVlan']) || [])
     ])
-    const aggregatedData = isSwitchFlexAuthEnabled
+    const aggregatedData = isSwitchFlexAuthEnabled && portsSetting
       ? aggregatePortSettings(portsSetting, switchesDefaultVlan, hasMultipleValue) : {}
 
     setDisablePoeCapability(poeCapabilityDisabled)
@@ -994,8 +995,10 @@ export function EditPortDrawer ({
 
     const setButtonStatus = () => {
       const isPoeBudgetInvalid = form?.getFieldError('poeBudget').length > 0
+      const isOverridePortVlans
+        = !!(changedField === 'portVlansCheckbox' ? changedValue : portVlansCheckbox)
       const isVlansInvalid
-      = (!isMultipleEdit || !!portVlansCheckbox) && (!untaggedVlan && !taggedVlans)
+      = (!isMultipleEdit || isOverridePortVlans) && (!untaggedVlan && !taggedVlans)
       const isNoOverrideFields = isMultipleEdit && !getOverrideFields(form.getFieldsValue())?.length
 
       setDisableSaveButton(isPoeBudgetInvalid || isVlansInvalid || isNoOverrideFields)
@@ -1288,20 +1291,19 @@ export function EditPortDrawer ({
                 // eslint-disable-next-line max-len
                 rules={(!isMultipleEdit || (flexibleAuthenticationEnabledCheckbox && flexibleAuthenticationEnabled))
                   ? [
-                  // TODO: checking with UX
-                  // ...(isMultipleEdit
-                  //   && hasMultipleValue.includes('authenticationProfileId')
-                  //   && !authenticationProfileIdCheckbox ? [{
-                  //     validator: (_:unknown, value: string) => {
-                  //       const appliedProfileIds
-                  //       // eslint-disable-next-line max-len
-                  //         = getUnionValuesByKey('authenticationProfileId', aggregatePortsData)?.filter(pid => pid)
-                  //       if (appliedProfileIds?.length !== switches.length) {
-                  //         return Promise.reject($t({ defaultMessage: 'Please select Profile' }))
-                  //       }
-                  //       return Promise.resolve()
-                  //     }
-                  //   }] : []),
+                    ...(isMultipleEdit
+                    && hasMultipleValue.includes('authenticationProfileId')
+                    && !authenticationProfileIdCheckbox ? [{
+                        validator: () => {
+                        // eslint-disable-next-line max-len
+                          const appliedProfileIds = getUnionValuesByKey('authenticationProfileId', aggregatePortsData)?.filter(pid => pid)
+                          if (appliedProfileIds?.length !== switches.length) {
+                          // TODO: checking with UX
+                            return Promise.reject($t(FlexAuthMessages.CANNOT_APPLIED_DIFF_PROFILES))
+                          }
+                          return Promise.resolve()
+                        }
+                      }] : []),
                     { required: true, message: $t({ defaultMessage: 'Please select Profile' }) },
                     { validator: (_, value) => {
                       return validateApplyProfile(
@@ -1424,34 +1426,41 @@ export function EditPortDrawer ({
                 validateFirst
                 // eslint-disable-next-line max-len
                 rules={(!isMultipleEdit || (flexibleAuthenticationEnabledCheckbox && flexibleAuthenticationEnabled))
-                  ? [{ validator: () => {
-                    const isDisabled = getFieldDisabled('authDefaultVlan')
-                    const switchDefaultVlans
+                  ? [
+                    ...(isMultipleEdit
+                      && hasMultipleValue.includes('authDefaultVlan')
+                      && !authDefaultVlanCheckbox ? [{
+                        validator: () => {
+                          // eslint-disable-next-line max-len
+                          const authDefaultVlans = getUnionValuesByKey('authDefaultVlan', aggregatePortsData)
+                          if (authDefaultVlans?.length !== switches.length) {
+                            // TODO: checking with UX
+                            // eslint-disable-next-line max-len
+                            return Promise.reject($t(FlexAuthMessages.CANNOT_APPLIED_DIFF_AUTH_DEFAULT_VLAN))
+                          }
+                          return Promise.resolve()
+                        }
+                      }] : []),
+                    { validator: () => {
+                      const isDisabled = getFieldDisabled('authDefaultVlan')
+                      const switchDefaultVlans
                           = getUnionValuesByKey('defaultVlan', aggregatePortsData)
-                    const isForceType = (dot1xPortControl === PortControl.FORCE_AUTHORIZED)
-                           || (dot1xPortControl === PortControl.FORCE_UNAUTHORIZED)
-
-                    if (isDisabled && isForceType && switchDefaultVlans?.length > 1) {
-                      const type = dot1xPortControl as PortControl
-                      return Promise.reject(
+                      const isAnyForceControl = isForceControlType([dot1xPortControl])
+                      if (isDisabled && isAnyForceControl && switchDefaultVlans?.length > 1) {
                         //TODO: checking wording with UX
-                        // eslint-disable-next-line max-len
-                        $t({ defaultMessage: 'You cannot select {portControlField} to {portControlType} on these ports; please set them separately.' }, {
-                          portControlField: $t({ defaultMessage: '802.1x Port Control' }),
-                          portControlType: $t(portControlTypeLabel[type])
-                        })
-                      )
+                        // const type = dot1xPortControl as PortControl
+                        return Promise.reject($t(FlexAuthMessages.CANNOT_SET_FORCE_CONTROL_TYPE))
+                      }
+                      return Promise.resolve()
                     }
-                    return Promise.resolve()
-                  }
-                  },
-                  { required: true },
-                  { validator: (_:unknown, value: string) =>
-                    validateVlanExcludingReserved(value)
-                  },
-                  { validator: (_:unknown, value: string) =>
-                    checkVlanDiffFromSwitchDefaultVlan(value, aggregatePortsData)
-                  }] : []
+                    },
+                    { required: true },
+                    { validator: (_:unknown, value: string) =>
+                      validateVlanExcludingReserved(value)
+                    },
+                    { validator: (_:unknown, value: string) =>
+                      checkVlanDiffFromSwitchDefaultVlan(value, aggregatePortsData)
+                    }] : []
                 }
                 children={shouldRenderMultipleText({
                   field: 'authDefaultVlan', ...commonRequiredProps
@@ -1504,7 +1513,7 @@ export function EditPortDrawer ({
                   }] : [
                     ...((isMultipleEdit
                       // eslint-disable-next-line max-len
-                      ? (restrictedVlanCheckbox && authFailAction === AuthFailAction.RESTRICTED_VLAN)
+                      ? (restrictedVlanCheckbox && (authFailAction === AuthFailAction.RESTRICTED_VLAN))
                       : authFailAction === AuthFailAction.RESTRICTED_VLAN)
                       ? [{
                         validator: (_:unknown, value: string) =>
@@ -1518,7 +1527,7 @@ export function EditPortDrawer ({
                       },
                       { validator: (_:unknown, value: string) =>
                         // eslint-disable-next-line max-len
-                        isOverrideFieldNotChecked({ field: 'authDefaultVlan', ...commonRequiredProps })
+                        (!authDefaultVlanCheckbox || isOverrideFieldNotChecked({ field: 'authDefaultVlan', ...commonRequiredProps }))
                           ? checkVlanDiffFromAuthDefaultVlan(value, aggregatePortsData)
                           : checkVlanDiffFromTargetVlan(
                             value, authDefaultVlan,
@@ -1581,7 +1590,7 @@ export function EditPortDrawer ({
                   }] : [
                     ...((isMultipleEdit
                       // eslint-disable-next-line max-len
-                      ? (criticalVlanCheckbox && authTimeoutAction === AuthTimeoutAction.CRITICAL_VLAN)
+                      ? (criticalVlanCheckbox && (authTimeoutAction === AuthTimeoutAction.CRITICAL_VLAN))
                       : authTimeoutAction === AuthTimeoutAction.CRITICAL_VLAN)
                       ? [{
                         validator: (_:unknown, value: string) =>
@@ -1595,7 +1604,7 @@ export function EditPortDrawer ({
                       },
                       { validator: (_:unknown, value: string) =>
                         // eslint-disable-next-line max-len
-                        isOverrideFieldNotChecked({ field: 'authDefaultVlan', ...commonRequiredProps })
+                        (!authDefaultVlanCheckbox || isOverrideFieldNotChecked({ field: 'authDefaultVlan', ...commonRequiredProps }))
                           ? checkVlanDiffFromAuthDefaultVlan(value, aggregatePortsData)
                           : checkVlanDiffFromTargetVlan(
                             value, authDefaultVlan,
@@ -1651,7 +1660,7 @@ export function EditPortDrawer ({
                   }, {
                     validator: (_:unknown, value: string) =>
                     // eslint-disable-next-line max-len
-                      isOverrideFieldNotChecked({ field: 'authDefaultVlan', ...commonRequiredProps })
+                      (!authDefaultVlanCheckbox || isOverrideFieldNotChecked({ field: 'authDefaultVlan', ...commonRequiredProps }))
                         ? checkVlanDiffFromAuthDefaultVlan(value, aggregatePortsData)
                         : checkVlanDiffFromTargetVlan(
                           value, authDefaultVlan,

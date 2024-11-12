@@ -194,7 +194,7 @@ export const FlexibleAuthenticationForm = (props: {
             </Space>}
             <Form.Item
               name='dot1xPortControl'
-              label={$t({ defaultMessage: 'Port Control' })}
+              label={$t({ defaultMessage: '802.1x Port Control' })}
               initialValue={PortControl.AUTO}
               children={<Select
                 data-testid='port-control-select'

@@ -412,7 +412,7 @@ export const validateApplyProfile = (
     const isDefaultVlanMismatch = !!profileDefaultVlans.length
       && (profileDefaultVlans.length > 1 || !profileDefaultVlans.includes(profile?.authDefaultVlan))
     const isGuestVlanMismatch = !!guestVlans.length
-      && (guestVlans.length > 1 || !profile?.guestVlan || !guestVlans.includes(profile?.guestVlan))
+      && (guestVlans.length > 1 || !guestVlans.includes(profile?.guestVlan))
 
     if (isDefaultVlanMismatch) {
       return Promise.reject(
@@ -422,13 +422,15 @@ export const validateApplyProfile = (
       )
     } else if (isGuestVlanMismatch) {
       return Promise.reject(
-        $t(FlexAuthMessages.CANNOT_SET_DIFF_GUEST_VLAN_FOR_PROFILE, {
-          guestVlan: guestVlans.sort().join(', ')
-        })
+        $t(FlexAuthMessages.CANNOT_SET_DIFF_GUEST_VLAN_FOR_PROFILE)
+        // TODO: checking with UX
+        // $t(FlexAuthMessages.CANNOT_SET_DIFF_GUEST_VLAN_FOR_PROFILE, {
+        //   guestVlan: guestVlans.sort().join(', ')
+        // })
       )
     } else if (isAuthDefaultVlanMismatch) {
       return Promise.reject(
-        $t(FlexAuthMessages.CANNOT_SET_AUTH_DEFAULT_VALN_WITH_FORCE_TYPE)
+        $t(FlexAuthMessages.CANNOT_SET_FORCE_CONTROL_TYPE_FOR_PROFILE)
       )
     }
   }
@@ -440,7 +442,7 @@ export const validateApplyProfile = (
     }))
   } else if (isAuthDefaultVlanMismatch) {
     return Promise.reject(
-      $t(FlexAuthMessages.CANNOT_SET_AUTH_DEFAULT_VALN_WITH_FORCE_TYPE)
+      $t(FlexAuthMessages.CANNOT_SET_FORCE_CONTROL_TYPE_FOR_PROFILE)
     )
   } else if (isCriticalVlanDuplicateWithSwitch) {
     return Promise.reject($t(FlexAuthMessages.VLAN_CANNOT_SAME_AS_TARGET_VLAN, {
@@ -548,7 +550,9 @@ export const checkGuestVlanConsistency = (
 
   if (!allSelectedPortsMatch && hasAssignedGuestVlan && isGuestVlanNotConsistent) {
     return Promise.reject(
-      $t(FlexAuthMessages.CANNOT_SET_DIFF_GUEST_VLAN, { guestVlan: guestVlans.sort().join(', ') })
+      // TODO: checking with UX
+      // $t(FlexAuthMessages.CANNOT_SET_DIFF_GUEST_VLAN, { guestVlan: guestVlans.sort().join(', ') })
+      $t(FlexAuthMessages.CANNOT_SET_DIFF_GUEST_VLAN)
     )
   }
   return Promise.resolve()
@@ -563,7 +567,7 @@ export const checkMultipleVlansDifferences = async (props: {
   form: FormInstance
 }) => {
   const { $t } = getIntl()
-  const { field, aggregateData, selectedPorts, vlanType, isMultipleEdit, form } = props
+  const { field, aggregateData, vlanType, isMultipleEdit, form } = props
   const vlans = getUnionValuesByKey(field, aggregateData)
 
   const isOverrideAuthDefaultVlan = isMultipleEdit && form.getFieldValue('authDefaultVlanCheckbox')
@@ -573,12 +577,17 @@ export const checkMultipleVlansDifferences = async (props: {
     await Promise.all(
       vlans.map(vlan =>
         Promise.all([
-          ...( field === 'guestVlan'
-            ? [ checkGuestVlanConsistency(vlan, selectedPorts, aggregateData) ]
-            : []
-          ),
-          checkVlanDiffFromSwitchDefaultVlan(vlan, aggregateData),
-          checkVlanDiffFromSwitchAuthDefaultVlan(vlan, aggregateData),
+          //TODO:
+          // ...( field === 'guestVlan'
+          //   ? [ checkGuestVlanConsistency(vlan, selectedPorts, aggregateData) ]
+          //   : []
+          // ),
+          // checkVlanDiffFromSwitchDefaultVlan(vlan, aggregateData).catch(error => {
+          //   throw { validateType: 'DEFAULT_VLAN', vlan, error }
+          // }),
+          // checkVlanDiffFromSwitchAuthDefaultVlan(vlan, aggregateData).catch(error => {
+          //   throw { validateType: 'SWITCH_AUTH_DEFAULT_VLAN', vlan, error }
+          // }),
           (isOverrideAuthDefaultVlan
             ? checkVlanDiffFromTargetVlan(
               vlan, authDefaultVlan,
@@ -586,24 +595,32 @@ export const checkMultipleVlansDifferences = async (props: {
                 sourceVlan: $t(FlexAuthVlanLabel.VLAN_ID),
                 targetVlan: $t(FlexAuthVlanLabel.AUTH_DEFAULT_VLAN)
               })
-            )
-            : checkVlanDiffFromAuthDefaultVlan(vlan, aggregateData)
+            ).catch(error => {
+              throw { validateType: 'AUTH_DEFAULT_VLAN', vlan, error }
+            })
+            : checkVlanDiffFromAuthDefaultVlan(vlan, aggregateData).catch(error => {
+              throw { validateType: 'AUTH_DEFAULT_VLAN', vlan, error }
+            })
           )
         ])
       )
     )
     return Promise.resolve()
-  } catch (error) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
     return Promise.reject(
       //TODO: checking wording with UX
-      new Error($t({ defaultMessage: 'Please enter {vlanType}' }, { vlanType: vlanType }))
+      new Error($t({ defaultMessage: 'Among the selected ports, the {vlanType} value conflicts with the {validateType}. Please enter a different value' }, {
+        validateType: $t(FlexAuthVlanLabel[error?.validateType as keyof typeof FlexAuthVlanLabel]),
+        vlanType: vlanType
+      }))
     )
   }
 }
 
 export const isForceControlType = (portControl: string[]) => {
   return portControl.includes(PortControl.FORCE_AUTHORIZED)
-|| portControl.includes(PortControl.FORCE_UNAUTHORIZED)
+  || portControl.includes(PortControl.FORCE_UNAUTHORIZED)
 }
 
 
@@ -651,20 +668,20 @@ export const getNeedPreselectFields = (props: {
     return {
       criticalVlanCheckbox: isOverridden
     }
-  } else if (changedField === 'dot1xPortControlCheckbox' && !isOverridden) {
+  } else if (changedField === 'dot1xPortControlCheckbox') {
     const currentPortControl = form?.getFieldValue('dot1xPortControl')
     const unionPortControl = getUnionValuesByKey('dot1xPortControl', aggregateData)
     const isAnyForceControl = isForceControlType(unionPortControl)
     const isCurrentForceControl = isForceControlType([currentPortControl])
     // If any of the port controls is force type, auth default vlan cannot be changed
-    if (hasMultipleValue?.includes('dot1xPortControl') && isAnyForceControl) {
+    if ((hasMultipleValue?.includes('dot1xPortControl') && isAnyForceControl) || isCurrentForceControl) {
       return {
-        authDefaultVlanCheckbox: false,
+        authDefaultVlanCheckbox: isOverridden,
         ...(isCurrentForceControl ? {
-          authFailActionCheckbox: false,
-          restrictedVlanCheckbox: false,
-          authTimeoutActionCheckbox: false,
-          criticalVlanCheckbox: false
+          authFailActionCheckbox: isOverridden,
+          restrictedVlanCheckbox: isOverridden,
+          authTimeoutActionCheckbox: isOverridden,
+          criticalVlanCheckbox: isOverridden
         }: {})
       }
     }

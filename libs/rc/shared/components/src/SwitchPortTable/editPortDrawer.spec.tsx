@@ -2545,7 +2545,7 @@ describe('EditPortDrawer', () => {
 
           const guestVlanInput = await screen.findByLabelText('Guest VLAN')
           await userEvent.type(guestVlanInput, '9')
-          expect(await screen.findByText(/Guest-VLAN is set to/)).toBeVisible()
+          expect(await screen.findByText(/Guest VLAN is already defined previously and needs to be consistent across all the ports/)).toBeVisible()
         })
 
         it('should not apply different profile auth default vlan', async () => {
@@ -2687,7 +2687,7 @@ describe('EditPortDrawer', () => {
           await userEvent.click(profileCombobox)
           await userEvent.click(await screen.findByText('Profile03--auth10-r3-c4-g99'))
 
-          expect(await screen.findByText(/Please select another profile that has the matching Guest VLAN in order to proceed/)).toBeVisible()
+          expect(await screen.findByText(/Select a different profile that has a matching Guest VLAN/)).toBeVisible()
         })
 
         it('should apply different profile auth default vlan when selected ports matches all enabled authentication ports', async () => {
@@ -3227,9 +3227,9 @@ describe('EditPortDrawer', () => {
 
           expect(mockedSavePortsSetting).not.toBeCalled()
           // auth default vlan cannot be the same as either of the other VLANs
-          expect(await screen.findByText(/Please enter Restricted VLAN/)).toBeVisible()
-          expect(await screen.findByText(/Please enter Critical VLAN/)).toBeVisible()
-          expect(await screen.findByText(/Please enter Guest VLAN/)).toBeVisible()
+          expect(await screen.findByText(/Among the selected ports, the Restricted VLAN value conflicts with the Auth Default VLAN. Please enter a different value/)).toBeVisible()
+          expect(await screen.findByText(/Among the selected ports, the Critical VLAN value conflicts with the Auth Default VLAN. Please enter a different value/)).toBeVisible()
+          expect(await screen.findByText(/Among the selected ports, the Guest VLAN value conflicts with the Auth Default VLAN. Please enter a different value/)).toBeVisible()
         })
 
         it('should pre-select the fields correctly when either port has a different enable status.', async () => {

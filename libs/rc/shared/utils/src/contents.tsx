@@ -272,7 +272,7 @@ export const EditPortMessages = {
     defaultMessage: '<VenueSingular></VenueSingular> settings default VLAN ID is the same as one of switch VLANs'
   }),
   USE_VENUE_SETTINGS_DISABLED_WHEN_FLEX_AUTH_ENABLED: defineMessage({
-    defaultMessage: 'Can not use <venueSingular></venueSingular> settings when Authentication enabled'
+    defaultMessage: 'When authentication is enabled, <venueSingular></venueSingular> settings cannot be applied.'
   }),
   POE_CAPABILITY_DISABLE: defineMessage({
     defaultMessage: 'Can not configure PoE configurations(PoE Enable, PoE Class, and PoE Priority) since this port doesn\'t have PoE capability.'
@@ -338,19 +338,28 @@ export const FlexAuthVlanLabel = {
 
 export const FlexAuthMessages = {
   CANNOT_SET_DIFF_PROFILE_AUTH_DEFAULT_VLAN: defineMessage({
-    defaultMessage: 'Another Auth-Default VLAN is already defined on this switch. Either select a different profile that has a matching Auth-Default VLAN or use the customize option to set the Auth-Default VLAN to {applyProfileAuthDefaultVlan}'
+    defaultMessage: 'Another Auth-Default VLAN is already defined on this switch. Either select a different profile that has a matching Auth-Default VLAN or use the customize option to set the Auth-Default VLAN to {applyProfileAuthDefaultVlan}.'
   }),
   CANNOT_SET_DIFF_GUEST_VLAN_FOR_PROFILE: defineMessage({
-    defaultMessage: 'Guest-VLAN is set to {guestVlan} previously and needs to be consistent across all the ports that have authentication enabled. Please select another profile that has the matching Guest VLAN in order to proceed'
+    defaultMessage: 'Guest VLAN is already defined on the switch(es). Select a different profile that has a matching Guest VLAN.'
   }),
   CANNOT_SET_DIFF_GUEST_VLAN: defineMessage({
-    defaultMessage: 'Guest-VLAN is set to {guestVlan} previously and needs to be consistent across all the ports that have authentication enabled.'
+    defaultMessage: 'Guest VLAN is already defined previously and needs to be consistent across all the ports that have authentication enabled.'
   }),
-  CANNOT_SET_AUTH_DEFAULT_VALN_WITH_FORCE_TYPE: defineMessage({
-    defaultMessage: 'If the port control type is either Force Authorized or Force Unauthorized, the Auth-Default VLAN must be the same as the Auth Default VLAN setting at the switch level for all switches.'
+  CANNOT_SET_FORCE_CONTROL_TYPE: defineMessage({
+    defaultMessage: 'The Auth Default VLAN is a required setting. When the 802.1x Port Control value is set to Force Authorized or Force Unauthorized, the Auth Default VLAN cannot be configured. Please change the 802.1x Port Control value to reconfigure it.'
+  }),
+  CANNOT_SET_FORCE_CONTROL_TYPE_FOR_PROFILE: defineMessage({
+    defaultMessage: 'When the 802.1x Port Control value in the selected profile(s) is/are set to Force Authorized or Force Unauthorized, the Auth Default VLAN value must match the switch-level Auth Default VLAN.'
   }),
   VLAN_CANNOT_SAME_AS_TARGET_VLAN: defineMessage({
     defaultMessage: '{sourceVlan} can not be the same as {targetVlan}'
+  }),
+  CANNOT_APPLIED_DIFF_PROFILES: defineMessage({
+    defaultMessage: 'The selected profiles may either be unset or assigned to different profiles. Please assign the same value.'
+  }),
+  CANNOT_APPLIED_DIFF_AUTH_DEFAULT_VLAN: defineMessage({
+    defaultMessage: 'The selected ports may either be unset or assigned to different Auth Default VLAN. Please assign the same value.'
   })
 }
 
@@ -371,7 +380,7 @@ export const PortStatusMessages = {
     defaultMessage: 'Port used by other VLAN setting'
   }),
   USED_BY_AUTH: defineMessage({
-    defaultMessage: 'Port has already been enabled for Authentication'
+    defaultMessage: 'This port has already enabled authentication'
   }),
   CURRENT: defineMessage({
     defaultMessage: 'VLANs'
