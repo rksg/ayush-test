@@ -1,7 +1,8 @@
 import { Col, Row } from 'antd'
 
 import { ConfigTemplateDriftRecord, ConfigTemplateDriftValueType } from '@acx-ui/rc/utils'
-import * as UI             from './styledComponents'
+
+import * as UI from './styledComponents'
 
 export function DriftComparison (props: ConfigTemplateDriftRecord) {
   const { path, data } = props
@@ -11,6 +12,7 @@ export function DriftComparison (props: ConfigTemplateDriftRecord) {
   return <div>
     <UI.DriftHeader>{path}</UI.DriftHeader>
     <Row style={{ marginBottom: '12px' }} gutter={8}>
+      {/* eslint-disable-next-line max-len */}
       <Col span={12} style={{ backgroundColor: templateValueBgColor, wordBreak: 'break-all', borderRight: '2px solid #FFF' }}>
         {convertDriftDisplayValue(template)}
       </Col>
