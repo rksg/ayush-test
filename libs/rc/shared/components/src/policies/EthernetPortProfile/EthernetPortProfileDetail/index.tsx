@@ -164,7 +164,7 @@ export const EthernetPortProfileDetail = () => {
         <Typography.Title level={2}>
           {$t(
             { defaultMessage: 'Instances ({count})' },
-            { count: 0 }
+            { count: ethernetPortProfileData?.apSerialNumbers?.length }
           )}
         </Typography.Title>
         <EthernetPortProfileInstanceTable
