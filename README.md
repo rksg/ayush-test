@@ -175,5 +175,22 @@ Refer to [Nx.md](Nx.md) for other Nx related commands.
 ### Split.io Feature toggle
 Refer to [Feature Flag Operators & Usage in ACX-UI](https://jira-wiki.ruckuswireless.com/pages/viewpage.action?pageId=260188984) wiki on how to make use of feature toggle with Split.io
 
+##### Tool for generating Feature toggle code in R1
+From acx-ui/ root directory run following script
+```sh
+export GIT_OPS_PATH=<path-to-local-gitops-flux-nonbom-repo>
+export NONDB_SCHEMA_PATH=<path-to-local-acx-nondb-schema-repo>
+node tools/dev/createFF.js -n <toggle-name> -d <description> -t <tags separated by space>
+for eg:
+export GIT_OPS_PATH=../gitops-flux-nonbom
+export NONDB_SCHEMA_PATH=../acx-nondb-schema
+node tools/dev/createFF.js -n acx-ui-roaming-type-events-toggle -d "Feature flag for CT roaming type events" -t acx-ui MLSA-8666
+```
+Note: The script by default refers to local repos `gitops-flux-nonbom` & `acx-nondb-schema` located at the same level of `acx-ui`, hence there is no need to export the repo paths if repos happen to be at the mentioned location.
+
+The script sets default state for `dev` & `int` env as on. 
+
+After successfully running the script the files should be generated in the respective repos locally.
+
 ### I18n strings extraction and compilation
 Refer to  [Locale.md](Locale.md)
