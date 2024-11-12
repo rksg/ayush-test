@@ -133,6 +133,8 @@ export function MspRecCustomers () {
       'alarmCount',
       'mspAdminCount',
       'mspEcAdminCount',
+      'integratorCount',
+      'installerCount',
       'creationDate',
       'expirationDate',
       'wifiLicense',
