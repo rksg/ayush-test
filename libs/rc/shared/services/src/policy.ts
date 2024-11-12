@@ -135,6 +135,7 @@ const LbsServerProfileMutationUseCases = [
 ]
 
 const CertificateMutationUseCases = [
+  'ADD_CA',
   'GENERATE_SERVER_CERT',
   'UpdateRadius',
   'ActivateCertificateOnRadiusServerProfile',
