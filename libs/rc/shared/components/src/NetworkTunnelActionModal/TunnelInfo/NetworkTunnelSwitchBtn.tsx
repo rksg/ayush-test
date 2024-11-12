@@ -3,6 +3,7 @@ import { useIntl }         from 'react-intl'
 
 import { EdgeMvSdLanViewData } from '@acx-ui/rc/utils'
 
+import { messageMappings }       from '../messageMappings'
 import { NetworkTunnelTypeEnum } from '../types'
 
 interface NetworkTunnelSwitchBtnProps {
@@ -20,8 +21,7 @@ export const NetworkTunnelSwitchBtn = (props: NetworkTunnelSwitchBtnProps) => {
   const isTheLastSdLanWlan = (venueSdLanInfo?.tunneledWlans?.length ?? 0) === 1 && tunnelType === NetworkTunnelTypeEnum.SdLan
   const needDisabled = isTheLastSdLanWlan || tunnelType === NetworkTunnelTypeEnum.Pin
   const tooltip = isTheLastSdLanWlan
-  // eslint-disable-next-line max-len
-    ? $t({ defaultMessage: 'Cannot deactivate the last network at this <venueSingular></venueSingular>' })
+    ? $t(messageMappings.disable_deactivate_last_network)
     : undefined
 
   return<Tooltip title={props.tooltip || tooltip}>

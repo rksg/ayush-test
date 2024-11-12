@@ -51,6 +51,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
   const networkId = network?.id ?? TMP_NETWORK_ID
 
   const pinScopedNetworkVenues = useEdgePinScopedNetworkVenueMap(networkId)
+  const isPinNetwork = Object.keys(pinScopedNetworkVenues).length > 0
 
   const softGreAssociationUpdate = Form.useWatch('softGreAssociationUpdate')
   // eslint-disable-next-line max-len
@@ -111,6 +112,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
         venueId,
         venueName: currentVenue.name
       },
+      isPinNetwork,
       cachedActs,
       cachedSoftGre
     } as NetworkTunnelActionModalProps)

@@ -45,6 +45,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
   const deactivateNetworkTunnelByType = useDeactivateNetworkTunnelByType()
   const softGreVenueMap = useGetSoftGreScopeNetworkMap(networkId)
   const pinScopedNetworkVenues = useEdgePinScopedNetworkVenueMap(networkId)
+  const isPinNetwork = Object.keys(pinScopedNetworkVenues).length > 0
 
   const handleClickNetworkTunnel = (currentVenue: Venue, currentNetwork: NetworkSaveData) => () => {
     const cachedSoftGre = networkId && softGreVenueMap[currentVenue.id] ?
@@ -59,10 +60,10 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
         venueId: currentVenue.id,
         venueName: currentVenue.name
       },
+      isPinNetwork,
       cachedSoftGre: cachedSoftGre ?? []
     } as NetworkTunnelActionModalProps)
   }
-
   return isTemplate
     ? []
     : [...(((isEdgeMvSdLanReady || isSoftGreEnabled) && !isEdgePinHaReady) ? [{
@@ -158,6 +159,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
           const targetSoftGre = venueSoftGre?.filter(sg => sg.networkIds.includes(networkId))
           // eslint-disable-next-line max-len
           const venuePinInfo = (pinScopedNetworkVenues[row.id] as PersonalIdentityNetworksViewData[])?.[0]
+
           return <NetworkTunnelInfoLabel
             network={networkInfo}
             isVenueActivated={Boolean(row.activated?.isActivated)}
