@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useContext } from 'react'
+import { Dispatch, SetStateAction, useCallback, useContext, useMemo } from 'react'
 
 import { useIntl } from 'react-intl'
 
@@ -21,20 +21,23 @@ export const AddDpskModal = (props: AddDpskModalProps) => {
   const { personaGroupData, addNetworkCallback } = useContext(PersonalIdentityNetworkFormContext)
   const venueId = form.getFieldValue('venueId')
 
-  const onModalCallBack = () => {
+  const onModalCallBack = useCallback(() => {
     // close modal
     setVisible(false)
 
     if (personaGroupData?.dpskPoolId)
       addNetworkCallback(personaGroupData.dpskPoolId)
-  }
+  }, [personaGroupData?.dpskPoolId, addNetworkCallback])
 
-  const content = <NetworkForm
+  const content = useMemo(() => <NetworkForm
     createType={NetworkTypeEnum.DPSK}
-    defaultActiveVenues={[venueId]}
+    defaultValues={{
+      dpskServiceProfileId: personaGroupData?.dpskPoolId,
+      defaultActiveVenues: [venueId]
+    }}
     modalCallBack={onModalCallBack}
     modalMode
-  />
+  />, [venueId, personaGroupData?.dpskPoolId, onModalCallBack])
 
   return (
     <Modal
