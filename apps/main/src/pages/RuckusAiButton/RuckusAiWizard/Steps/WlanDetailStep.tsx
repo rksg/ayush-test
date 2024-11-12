@@ -29,7 +29,8 @@ export function WlanDetailStep (props: {
 }) {
   const { $t } = useIntl()
   const { formInstance } = props
-  const data = props.payload ? JSON.parse(props.payload) as NetworkConfig[] : []
+  const initialData = JSON.parse(props.payload || '[]') as NetworkConfig[]
+  const [data, setData] = useState<NetworkConfig[]>(initialData)
 
   const [modalType, setModalType] = useState<NetworkTypeEnum>(NetworkTypeEnum.OPEN)
   const [modalId, setModalId] = useState('')
@@ -41,7 +42,8 @@ export function WlanDetailStep (props: {
   const [configuredIndex, setConfiguredIndex] = useState<number>(0)
 
   useEffect(() => {
-    if (data.length > 0) {
+    if (initialData !== data) {
+      setData(initialData)
       setSsidTypes(data.map(item => item['SSID Type']))
       setConfiguredFlags(Array(data.length).fill(false))
     }

@@ -184,7 +184,6 @@ export function WlanStep (props: { payload: string; description: string,
                   { validator: (_, value) => wlanNameValidator(value) }
                 ] : []}
                 validateFirst
-                hasFeedback
                 disabled={!checkboxStates[index]}
                 validateTrigger={'onBlur'}
               />
