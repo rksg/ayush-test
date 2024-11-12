@@ -22,7 +22,7 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { useEdgePinScopedNetworkVenueMap } from '../../NetworkTunnelActionModal/useEdgePinData'
+import { useEdgePinScopedNetworkVenueMap } from '../../NetworkTunnelActionModal'
 
 import { list }            from './__tests__/fixtures'
 import { useTunnelColumn } from './useTunnelColumn'
