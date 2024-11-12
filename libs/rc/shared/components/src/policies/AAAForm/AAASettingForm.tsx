@@ -76,8 +76,8 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
       selectFromResult: ({ data }) => {
         const caOptions = data?.data?.filter(c =>
           saveState?.radSecOptions?.certificateAuthorityId?.includes(c.id) ||
-          c.status.includes(CertificateStatusType.VALID))?.
-            map(item => ({ label: item.name, value: item.id })) ?? []
+          c.status.includes(CertificateStatusType.VALID))
+          ?.map(item => ({ label: item.name, value: item.id })) ?? []
         return { caSelectOptions: caOptions }
       }
     })
