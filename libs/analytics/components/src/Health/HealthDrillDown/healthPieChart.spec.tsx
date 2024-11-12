@@ -239,13 +239,48 @@ describe('HealthPieChart', () => {
       })
     expect(await screen.findByText('Top 5 Impacted Venues')).toBeVisible()
     expect(await screen.findByText('WLANs')).toBeVisible()
-    fireEvent.click(await screen.findByText('WLANs'))
-    expect(mockSetChartKey).toHaveBeenCalledWith('wlans')
     expect(await screen.findByText('Manufacturers')).toBeVisible()
     expect(await screen.findByText('Events')).toBeVisible()
     expect(await screen.findByText('Others')).toBeVisible()
     // eslint-disable-next-line max-len
     expect(await screen.findByText('Detailed breakup of all items beyond Top 5 can be explored using Data Studio custom charts.')).toBeInTheDocument()
+  })
+
+  it.only('should handle chart switching', async () => {
+    mockGraphqlQuery(dataApiURL, 'Network', { data: mockConnectionFailureResponse })
+    render(
+      <Provider>
+        <div style={{ height: 300, width: 300 }}>
+          <HealthPieChart
+            size={size}
+            filters={filters}
+            queryType='connectionFailure'
+            selectedStage='Authentication'
+            valueFormatter={formatter('countFormat')}
+            setPieFilter={mockSetPieFilter}
+            chartKey='nodes'
+            pieFilter={null}
+            setChartKey={mockSetChartKey}
+            onPieClick={mockOnPieClick}
+            onLegendClick={mockOnLegendClick}
+            setPieList={mockSetPieList}
+          />,
+        </div>
+      </Provider>,
+      {
+        route: {
+          params: { tenantId: 'test' }
+        }
+      })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    expect(await screen.findByText('Authentication')).toBeVisible()
+    expect(await screen.findByText('5 Impacted Venues')).toBeVisible()
+    fireEvent.click(await screen.findByText('WLANs'))
+    expect(mockSetChartKey).toHaveBeenCalledWith('wlans')
+    fireEvent.click(await screen.findByText('Manufacturers'))
+    expect(mockSetChartKey).toHaveBeenCalledWith('osManufacturers')
+    fireEvent.click(await screen.findByText('Events'))
+    expect(mockSetChartKey).toHaveBeenCalledWith('events')
   })
 
   describe('tooltipFormatter', () => {
