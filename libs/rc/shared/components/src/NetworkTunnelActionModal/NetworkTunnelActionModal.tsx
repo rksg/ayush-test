@@ -189,7 +189,7 @@ export const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) =
               />
             }
 
-            <Loader states={[{ isLoading }]}>
+            <Loader states={[{ isLoading }]} style={{ backgroundColor: 'transparent' }}>
               {network && visible && isEdgeSdLanMvEnabled && !venuePinInfo &&
               <EdgeSdLanRadioOption
                 tunnelTypeInitVal={tunnelTypeInitVal}
