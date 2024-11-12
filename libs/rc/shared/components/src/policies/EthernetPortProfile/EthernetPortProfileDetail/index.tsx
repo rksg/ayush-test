@@ -19,7 +19,8 @@ import {
   getEthernetPortAuthTypeString,
   getEthernetPortTypeString,
   getPolicyDetailsLink,
-  getPolicyListRoutePath } from '@acx-ui/rc/utils'
+  getPolicyListRoutePath,
+  transformDisplayNumber } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { WifiScopes }            from '@acx-ui/types'
 import { filterByAccess }        from '@acx-ui/user'
