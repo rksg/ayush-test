@@ -137,12 +137,10 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
 
   // reset form fields when modal is closed
   const prevOpenRef = useRef(false)
+  const prevOpen = prevOpenRef.current
+
   useEffect(() => {
     prevOpenRef.current = open
-  }, [open])
-
-  const prevOpen = prevOpenRef.current
-  useEffect(() => {
     if (!open && prevOpen) {
       setLoading(false)
       form.resetFields()
@@ -155,10 +153,10 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
     vlanMembers: networkVenue?.vlanMembers ?? []
   } : null, wlan?.vlanId)
 
-  const networkApGroupsQuery = useNetworkApGroupsInstance()
+  const { data: networkApGroupsQuery, isLoading: isNetworkLoading } = useNetworkApGroupsInstance()
 
   function useNetworkApGroupsInstance () {
-    const networkApGroupsV2Query = useGetNetworkApGroupsV2Query({ params: { tenantId },
+    const { data: networkApGroupsV2Query, isLoading: isLoadingV2 } = useGetNetworkApGroupsV2Query({ params: { tenantId },
       payload: [{
         networkId: networkVenue?.networkId,
         venueId: networkVenue?.venueId,
@@ -166,7 +164,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
       }]
     }, { skip: isWifiRbacEnabled || !networkVenue || !wlan })
 
-    const networkApGroupsRbacQuery = useGetRbacNetworkApGroupsQuery({ params: { tenantId },
+    const { data: networkApGroupsRbacQuery, isLoading: isLoadingRbac } = useGetRbacNetworkApGroupsQuery({ params: { tenantId },
       payload: [{
         networkId: networkVenue?.networkId,
         venueId: networkVenue?.venueId,
@@ -174,7 +172,10 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
       }]
     }, { skip: !isWifiRbacEnabled || !networkVenue || !wlan })
 
-    return isWifiRbacEnabled ? networkApGroupsRbacQuery : networkApGroupsV2Query
+    return {
+      data: isWifiRbacEnabled ? networkApGroupsRbacQuery : networkApGroupsV2Query,
+      isLoading: isLoadingV2 || isLoadingRbac
+    }
   }
 
   const formInitData = useMemo(() => {
@@ -182,9 +183,9 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
     // then the "select specific AP group" option should be selected
     const isAllAps = networkVenue?.isAllApGroups !== false && !isDisableAllAPs(networkVenue?.apGroups)
 
-    const networkApGroupsData = networkApGroupsQuery.data
+    const networkApGroupsData = networkApGroupsQuery || []
 
-    let allApGroups: NetworkApGroupWithSelected[] = (networkApGroupsData || [])
+    let allApGroups: NetworkApGroupWithSelected[] = networkApGroupsData
       .map(nv => nv.apGroups || []).flat()
       .map(allAg => {
         const apGroup = _.find(networkVenue?.apGroups, ['apGroupId', allAg.apGroupId])
@@ -198,11 +199,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
       apgroups: allApGroups,
       apTags: []
     }
-  }, [networkVenue, networkApGroupsQuery.data])
-
-  useEffect(() => {
-    form.setFieldsValue(formInitData)
-  }, [form, formInitData])
+  }, [networkVenue, networkApGroupsQuery])
 
   const [loading, setLoading] = useState(false)
 
@@ -218,12 +215,13 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
   })
 
   useEffect(() => {
+    form.setFieldsValue(formInitData)
     if (instanceListResult) {
       setVlanPoolSelectOptions(instanceListResult.data.map(m => {
         return { name: m.name, id: m.id } as VlanPool
       }) as VlanPool[])
     }
-  },[instanceListResult])
+  },[formInitData, instanceListResult])
 
 
   const ApGroupItem = ({ apgroup, name }: { apgroup: NetworkApGroup, name: number }) => {
@@ -251,7 +249,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
     const selected = Form.useWatch(['apgroups', name, 'selected'], form)
 
     let errorTooltip = ''
-    if (apgroup.validationError) {
+    if (apgroup?.validationError) {
       if (apgroup.validationErrorReachedMaxConnectedNetworksLimit) {
         errorTooltip = $t({ defaultMessage: 'You cannot activate this network on this AP Group because it already has 15 active networks' })
       } else {
@@ -357,10 +355,10 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
       closable={true}
       width={840}
       onOk={onOk}
-      okButtonProps={{ disabled: loading }}
-      cancelButtonProps={{ disabled: loading }}
+      okButtonProps={{ disabled: loading || isNetworkLoading }}
+      cancelButtonProps={{ disabled: loading || isNetworkLoading }}
     >
-      <Spin spinning={loading}><Form
+      <Spin spinning={loading || isNetworkLoading}><Form
         form={form}
         layout='horizontal'
         size='small'
