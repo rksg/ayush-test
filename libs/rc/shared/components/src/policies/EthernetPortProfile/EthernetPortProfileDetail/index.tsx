@@ -16,14 +16,15 @@ import {
   EthernetPortAuthType,
   PolicyOperation,
   PolicyType,
+  filterByAccessForServicePolicyMutation,
   getEthernetPortAuthTypeString,
   getEthernetPortTypeString,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
-  transformDisplayNumber } from '@acx-ui/rc/utils'
+  getScopeKeyByPolicy,
+  transformDisplayNumber
+} from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { WifiScopes }            from '@acx-ui/types'
-import { filterByAccess }        from '@acx-ui/user'
 
 import { EthernetPortProfileInstanceTable } from './EthernetPortProfileInstanceTable'
 
@@ -144,9 +145,9 @@ export const EthernetPortProfileDetail = () => {
         }
       ]}
       extra={
-        filterByAccess([
+        filterByAccessForServicePolicyMutation([
           <TenantLink
-            scopeKey={[WifiScopes.UPDATE]}
+            scopeKey={getScopeKeyByPolicy(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.EDIT)}
             to={getPolicyDetailsLink({
               type: PolicyType.ETHERNET_PORT_PROFILE,
               oper: PolicyOperation.EDIT,
