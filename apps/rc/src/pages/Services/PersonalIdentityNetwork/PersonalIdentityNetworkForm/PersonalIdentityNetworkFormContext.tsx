@@ -183,21 +183,6 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
       }
     })
 
-  // const {
-  //   dpskData,
-  //   isDpskLoading
-  // } = useGetDpskQuery(
-  //   { params: { serviceId: personaGroupData?.dpskPoolId } },
-  //   {
-  //     skip: !!!personaGroupData?.dpskPoolId,
-  //     selectFromResult: ({ data, isLoading, isFetching }) => {
-  //       return {
-  //         dpskData: data,
-  //         isDpskLoading: isLoading || isFetching
-  //       }
-  //     }
-  //   })
-
   const { tunnelProfileOptions, isTunnelLoading } = useGetTunnelProfileViewDataListQuery({
     payload: tunnelProfileDefaultPayload
   }, {
