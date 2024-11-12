@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { Space } from 'antd'
-// import { find }                                      from 'lodash'
+import { Space }                                     from 'antd'
 import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
 
 import { getSelectedNodePath, mapCodeToReason } from '@acx-ui/analytics/utils'
