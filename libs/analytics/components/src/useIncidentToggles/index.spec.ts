@@ -11,7 +11,8 @@ describe('useIncidentToggles', () => {
       [IncidentToggle.AirtimeIncidents]: true,
       [IncidentToggle.SwitchDDoSIncidents]: true,
       [IncidentToggle.SwitchLoopDetectionIncidents]: true,
-      [IncidentToggle.SwitchPortCongestionIncidents]: true
+      [IncidentToggle.SwitchPortCongestionIncidents]: true,
+      [IncidentToggle.SwitchUplinkPortCongestionIncidents]: true
     })
 
     jest.mocked(useIsSplitOn).mockReturnValue(false)
@@ -19,7 +20,8 @@ describe('useIncidentToggles', () => {
       [IncidentToggle.AirtimeIncidents]: false,
       [IncidentToggle.SwitchDDoSIncidents]: false,
       [IncidentToggle.SwitchLoopDetectionIncidents]: false,
-      [IncidentToggle.SwitchPortCongestionIncidents]: false
+      [IncidentToggle.SwitchPortCongestionIncidents]: false,
+      [IncidentToggle.SwitchUplinkPortCongestionIncidents]: false
     })
   })
 })
