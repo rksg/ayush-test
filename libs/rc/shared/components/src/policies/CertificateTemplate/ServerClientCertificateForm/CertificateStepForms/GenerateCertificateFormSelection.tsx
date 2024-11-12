@@ -5,9 +5,9 @@ import { CertificateGenerationType, ExtendedKeyUsages, GenerateCertificateFormDa
 
 import { generateCertificateTitle } from '../../contentsMap'
 
-import { GenerateCertificate }    from './GenerateCertificate'
-import GenerateCertificateWithCSR from './GenerateCertificateWIthCSR'
-import { UploadCertificate }      from './UploadCertificate'
+import { GenerateCertificate }        from './GenerateCertificate'
+import { GenerateCertificateWithCSR } from './GenerateCertificateWIthCSR'
+import { UploadCertificate }          from './UploadCertificate'
 
 type GenerateCertificateFormSelectionFormProps = {
   extendedKeyUsages?: ExtendedKeyUsages[]
@@ -21,7 +21,8 @@ export const GenerateCertificateFormSelection =
   const generationFormMapping = {
     [CertificateGenerationType.NEW]: <GenerateCertificate
       extendedKeyUsages={props?.extendedKeyUsages}/>,
-    [CertificateGenerationType.WITH_CSR]: <GenerateCertificateWithCSR />,
+    [CertificateGenerationType.WITH_CSR]: <GenerateCertificateWithCSR
+      extendedKeyUsages={props?.extendedKeyUsages}/>,
     [CertificateGenerationType.UPLOAD]: <UploadCertificate />
   }
 

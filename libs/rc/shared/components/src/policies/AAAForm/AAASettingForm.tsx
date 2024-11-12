@@ -74,10 +74,10 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
     { payload: defaultPayload }, {
       skip: !supportRadsec,
       selectFromResult: ({ data }) => {
-
-        const d = data?.data
-        const caOptions = d?.filter(c => c.status.includes(CertificateStatusType.VALID))
-          .map(item => ({ label: item.name, value: item.id })) ?? []
+        const caOptions = data?.data?.filter(c =>
+          saveState?.radSecOptions?.certificateAuthorityId?.includes(c.id) ||
+          c.status.includes(CertificateStatusType.VALID))?.
+            map(item => ({ label: item.name, value: item.id })) ?? []
         return { caSelectOptions: caOptions }
       }
     })
@@ -356,7 +356,9 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
             { hasPolicyPermission({
               type: PolicyType.CERTIFICATE_AUTHORITY, oper: PolicyOperation.CREATE }) &&
                 <Button type='link'
-                  disabled={caSelectOptions.length >= CERTIFICATE_AUTHORITY_MAX_COUNT}
+                  disabled={caSelectOptions.length >= CERTIFICATE_AUTHORITY_MAX_COUNT
+                    || (showCertificateAuthorityDrawer || showCertificateDrawer)
+                  }
                   onClick={handleAddCertificateAuthority}
                   children={$t({ defaultMessage: 'Add CA' })} />}
           </Space>
@@ -378,7 +380,8 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
                 { hasPolicyPermission({
                   type: PolicyType.CERTIFICATE, oper: PolicyOperation.CREATE }) &&
                 <Button type='link'
-                  disabled={certTotalCount >= CERTIFICATE_MAX_COUNT}
+                  disabled={certTotalCount >= CERTIFICATE_MAX_COUNT
+                    || (showCertificateAuthorityDrawer || showCertificateDrawer)}
                   onClick={handleAddClientCertificate}
                   children={$t({ defaultMessage: 'Generate new client certificate' })} />}
               </div>
@@ -413,7 +416,9 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
                 { hasPolicyPermission({
                   type: PolicyType.SERVER_CERTIFICATES, oper: PolicyOperation.CREATE }) &&
                 <Button type='link'
-                  disabled={certTotalCount >= CERTIFICATE_MAX_COUNT}
+                  disabled={certTotalCount >= CERTIFICATE_MAX_COUNT
+                    || (showCertificateAuthorityDrawer || showCertificateDrawer)
+                  }
                   onClick={handleAddServerCertificate}
                   children={$t({ defaultMessage: 'Generate new server certificate' })} />}
               </div>

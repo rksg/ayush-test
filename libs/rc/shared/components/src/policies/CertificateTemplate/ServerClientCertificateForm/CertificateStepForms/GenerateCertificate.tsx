@@ -229,7 +229,8 @@ export const GenerateCertificate = (props: GenerateCertificateFormProps) => {
                       value={ExtendedKeyUsages.SERVER_AUTH}
                       key={ExtendedKeyUsages.SERVER_AUTH}
                       children={$t(ExtendedKeyUsagesLabels[ExtendedKeyUsages.SERVER_AUTH])}
-                      disabled={props?.extendedKeyUsages?.includes(ExtendedKeyUsages.SERVER_AUTH)}/>
+                      disabled={props?.extendedKeyUsages?.includes(ExtendedKeyUsages.SERVER_AUTH)}
+                    />
                   </Space>
                 </Checkbox.Group>
               }
