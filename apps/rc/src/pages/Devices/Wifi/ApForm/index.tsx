@@ -78,7 +78,7 @@ const defaultPayload = {
 }
 
 const defaultApPayload = {
-  fields: ['serialNumber', 'name', 'venueId', 'apStatusData'],
+  fields: ['serialNumber', 'name', 'venueId', 'apStatusData', 'firmwareVersion'],
   pageSize: 10000
 }
 
@@ -153,6 +153,9 @@ export function ApForm () {
   const location = useLocation()
   const venueFromNavigate = location.state as { venueId?: string }
 
+  const currentApFirmware = isUseWifiRbacApi
+    ? apList?.data?.find(item => item.serialNumber === serialNumber)?.fwVersion
+    : apDetails?.firmware
 
   // the payload would different based on the feature flag
   const retrieveDhcpAp = (dhcpApResponse: DhcpAp) => {
@@ -619,11 +622,12 @@ export function ApForm () {
                   onChange={async (value) => await handleVenueChange(value)}
                 />}
               />
-              <VenueFirmwareInformation
+              {apDetails?.model && currentApFirmware && <VenueFirmwareInformation
                 isEditMode={isEditMode}
                 venue={selectedVenue}
-                apDetails={apDetails}
-              />
+                apModel={apDetails.model}
+                currentApFirmware={currentApFirmware}
+              />}
               { displayAFCGeolocation() && isVenueSameCountry &&
                   <Alert message={
                     $t({ defaultMessage:

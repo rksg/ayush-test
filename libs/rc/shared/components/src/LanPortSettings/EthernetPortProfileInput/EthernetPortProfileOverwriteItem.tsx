@@ -13,27 +13,38 @@ import { Button, StepsForm } from '@acx-ui/components'
 interface EthernetPortProfileOverwriteProps {
     title: string
     defaultValue: string
+    initialData: string
     isEditable?: boolean
     fieldName: (string | number)[]
-    width?: string,
+    width?: string
     rules?: Rule[]
+    onGUIChanged?: (fieldName: string) => void
 }
 
 const EthernetPortProfileOverwriteItem = (props:EthernetPortProfileOverwriteProps) => {
   const { $t } = useIntl()
-  const { title, defaultValue, isEditable=true, fieldName, width='200px', rules=[] } = props
+  const {
+    title,
+    defaultValue,
+    initialData,
+    isEditable=true,
+    fieldName,
+    width='200px',
+    onGUIChanged,
+    rules=[] } = props
   const form = Form.useFormInstance()
   const [isEditMode, setEditMode] = useState(false)
   const currentFieldValue = useWatch(fieldName, form)
-  const isDirty = (currentFieldValue?.toString() !== defaultValue)
   const inputFieldName = fieldName.join('_')
+  const isDirty = (currentFieldValue?.toString() !== defaultValue)
 
 
   useEffect(() => {
-    if (currentFieldValue === ''){
-      form.setFieldValue(fieldName, defaultValue)
+    if (currentFieldValue !== initialData ){
+      form.setFieldValue(fieldName, initialData)
+      form.setFieldValue(inputFieldName, initialData)
     }
-  } ,[defaultValue])
+  } ,[initialData])
 
   const handleEdit = () => {
     setEditMode(true)
@@ -67,6 +78,7 @@ const EthernetPortProfileOverwriteItem = (props:EthernetPortProfileOverwriteProp
 
   const reset = () => {
     form.setFieldValue(fieldName, defaultValue)
+    onGUIChanged?.(inputFieldName)
   }
 
   return (<>
@@ -83,7 +95,6 @@ const EthernetPortProfileOverwriteItem = (props:EthernetPortProfileOverwriteProp
       <Space>
         <Form.Item
           name={inputFieldName}
-          initialValue={form.getFieldValue(fieldName)}
           rules={rules}
         >
           <Input width={'100px'} />
